@@ -41,7 +41,7 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 /**
  * Process the websevices.xml to configure EndpointInfo
  */
-@Component(service = { EndpointInfoConfigurator.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = false, property = { "service.vendor=IBM" })
+@Component(service = { EndpointInfoConfigurator.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = false)
 public class WebservicesXMLEndpointInfoConfigurator extends AbstractEndpointInfoConfigurator {
     private static final TraceComponent tc = Tr.register(WebservicesXMLEndpointInfoConfigurator.class);
 

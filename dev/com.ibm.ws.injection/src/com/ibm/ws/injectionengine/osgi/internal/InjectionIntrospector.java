@@ -19,8 +19,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.wsspi.logging.Introspector;
 
-@Component(service = Introspector.class,
-           property = { "service.vendor=IBM" })
+@Component(service = Introspector.class)
 public class InjectionIntrospector implements Introspector {
     private OSGiInjectionEngineImpl injectionEngine;
 

@@ -33,7 +33,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jndi.WSName;
 import com.ibm.ws.jndi.internal.literals.LiteralParser;
 
-@Component(configurationPolicy = IGNORE, property = "service.vendor=IBM")
+@Component(configurationPolicy = IGNORE)
 public class JNDIConsole implements CommandProvider {
 
     private Context ctx;

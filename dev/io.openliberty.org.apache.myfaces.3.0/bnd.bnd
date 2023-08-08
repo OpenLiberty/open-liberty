@@ -31,12 +31,11 @@ Include-Resource: \
 Service-Component: \
   io.openliberty.faces_3_0.taglib; \
     implementation:=com.ibm.ws.faces.taglibconfig.FacesGlobalTagLibConfig; \
-    provide:='com.ibm.wsspi.jsp.taglib.config.GlobalTagLibConfig'; \
-    properties:="service.vendor=IBM", \
+    provide:='com.ibm.wsspi.jsp.taglib.config.GlobalTagLibConfig', \
   io.openliberty.faces_3_0.cdiextension; \
     implementation:=com.ibm.ws.jsf.shared.ext.CdiExtension; \
     provide:='com.ibm.ws.cdi.extension.WebSphereCDIExtension'; \
-    properties:="service.vendor=IBM,\
+    properties:="\
     bean.defining.annotations=jakarta.faces.flow.FlowScoped;jakarta.faces.view.ViewScoped,\
     api.classes=jakarta.faces.flow.builder.FlowDefinition;jakarta.faces.flow.builder.FlowBuilderParameter,\
     extension.classes.only=true",\

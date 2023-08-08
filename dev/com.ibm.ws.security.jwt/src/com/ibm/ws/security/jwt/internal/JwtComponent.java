@@ -48,7 +48,7 @@ import com.ibm.ws.security.jwt.config.JwtConfigUtil;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 
-@Component(service = JwtConfig.class, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.security.jwt.builder", name = "jwtConfig", property = "service.vendor=IBM")
+@Component(service = JwtConfig.class, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.security.jwt.builder", name = "jwtConfig")
 public class JwtComponent implements JwtConfig {
 
     private static final TraceComponent tc = Tr.register(JwtComponent.class);

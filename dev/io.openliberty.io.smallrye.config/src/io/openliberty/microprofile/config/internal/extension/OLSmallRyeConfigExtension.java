@@ -27,7 +27,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.smallrye.config.inject.ConfigExtension;
 
-@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" }, immediate = true)
+@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class OLSmallRyeConfigExtension extends ConfigExtension implements Extension, WebSphereCDIExtension {
     private static final CheckpointPhase phase = CheckpointPhase.getPhase();
     private static final ThreadLocal<AtomicBoolean> recordingPaused = new ThreadLocal<AtomicBoolean>() {

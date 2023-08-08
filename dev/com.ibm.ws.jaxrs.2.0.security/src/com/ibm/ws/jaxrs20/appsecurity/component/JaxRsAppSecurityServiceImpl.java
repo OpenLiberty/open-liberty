@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.websphere.security.web.WebSecurityHelper;
 import com.ibm.ws.jaxrs20.api.JaxRsAppSecurityService;
 
-@Component(name = "com.ibm.ws.jaxrs20.JaxRsAppSecurityServiceImpl", property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.jaxrs20.JaxRsAppSecurityServiceImpl")
 public class JaxRsAppSecurityServiceImpl implements JaxRsAppSecurityService {
 
     @Override

@@ -35,13 +35,11 @@ Service-Component: \
     cdiService=com.ibm.ws.cdi.CDIService; \
     injectionEngine=com.ibm.wsspi.injectionengine.InjectionEngine; \
     configuration-policy:=ignore;\
-    immediate:=true;\
-    properties:="service.vendor=IBM", \
+    immediate:=true, \
   com.ibm.ws.wsoc.injection.class.list.collaborator; \
      implementation:=com.ibm.ws.wsoc.cdi.weld.WebSocketInjectionClassListCollaborator ; \
      provide:='com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollaborator'; \
-     immediate:=true; \
-     properties:="service.vendor=IBM"
+     immediate:=true
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging,\

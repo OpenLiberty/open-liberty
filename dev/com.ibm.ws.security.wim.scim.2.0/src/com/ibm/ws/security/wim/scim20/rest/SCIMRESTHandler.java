@@ -61,8 +61,7 @@ import com.ibm.wsspi.rest.handler.RESTResponse;
  * (especially if we replace Jackson with JSONB). In September 2019, I believe Java 7 support
  * ends at which time SCIM 1.0 would move up to (at least) Java 8.
  */
-@Component(service = { RESTHandler.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM",
-                                                                                                                             RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=/scim",
+@Component(service = { RESTHandler.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = {                                                                                                                              RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=/scim",
                                                                                                                              RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_SECURITY + "=true" })
 public class SCIMRESTHandler implements RESTHandler {
 

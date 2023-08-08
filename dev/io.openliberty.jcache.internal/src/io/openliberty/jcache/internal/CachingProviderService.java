@@ -37,8 +37,7 @@ import com.ibm.wsspi.library.Library;
 /**
  * Service that configures a {@link CachingProvider} to use with JCache caching.
  */
-@Component(service = CachingProviderService.class, immediate = true, configurationPolicy = REQUIRE, configurationPid = "io.openliberty.jcache.cachingprovider",
-           property = { "service.vendor=IBM" })
+@Component(service = CachingProviderService.class, immediate = true, configurationPolicy = REQUIRE, configurationPid = "io.openliberty.jcache.cachingprovider")
 public class CachingProviderService {
     private static final TraceComponent tc = Tr.register(CachingProviderService.class);
 

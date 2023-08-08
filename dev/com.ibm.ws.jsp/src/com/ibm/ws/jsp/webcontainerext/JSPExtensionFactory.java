@@ -82,8 +82,7 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 import io.openliberty.el.internal.cdi.ELFactoryWrapperForCDI;
 
 @Component(configurationPid="com.ibm.ws.jsp.2.2",
-   configurationPolicy=ConfigurationPolicy.REQUIRE,
-   property="service.vendor=IBM")
+   configurationPolicy=ConfigurationPolicy.REQUIRE)
 public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements ExtensionFactory {
     static protected Logger logger;
     private static final String CLASS_NAME="com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory";

@@ -88,8 +88,7 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
            name = "com.ibm.ws.security.jaspi",
            configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
-           property = { "service.vendor=IBM",
-                        "com.ibm.ws.security.webAuthenticator.type=JASPI" })
+           property = {                         "com.ibm.ws.security.webAuthenticator.type=JASPI" })
 public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
 
     private static final TraceComponent tc = Tr.register(JaspiServiceImpl.class);

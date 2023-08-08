@@ -22,7 +22,7 @@ import com.ibm.wsspi.application.handler.ApplicationTypeSupported;
 
 @Component(service = ApplicationTypeSupported.class, immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM", "type:String=rar" })
+           property = { "type:String=rar" })
 public class RARApplicationTypeSupported implements ApplicationTypeSupported {
 
     @Activate

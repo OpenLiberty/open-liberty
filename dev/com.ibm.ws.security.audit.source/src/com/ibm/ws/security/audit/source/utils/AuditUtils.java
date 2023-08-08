@@ -43,7 +43,6 @@ import com.ibm.wsspi.security.registry.RegistryHelper;
  * Various and sundry utility methods for auditing.
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = "service.vendor=IBM",
            immediate = true)
 public class AuditUtils {
 

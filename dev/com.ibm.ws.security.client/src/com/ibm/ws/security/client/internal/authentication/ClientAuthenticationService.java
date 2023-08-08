@@ -44,8 +44,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 @Component(service = ClientAuthenticationService.class,
                 name = "com.ibm.ws.security.client.authentication",
                 immediate = true,
-                configurationPolicy = ConfigurationPolicy.IGNORE,
-                property = "service.vendor=IBM")
+                configurationPolicy = ConfigurationPolicy.IGNORE)
 public class ClientAuthenticationService {
     static final String KEY_CREDENTIALS_SERVICE = "credentialsService";
     private final AtomicServiceReference<CredentialsService> credentialsServiceRef = new AtomicServiceReference<CredentialsService>(KEY_CREDENTIALS_SERVICE);

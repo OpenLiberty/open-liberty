@@ -24,7 +24,7 @@ import com.ibm.wsspi.webcontainer.servlet.IServletContext;
  * This factory creates instances of the PrepareJspHelper class that are
  * specific to the JSP 2.2 spec.
  */
-@Component(property = { "service.vendor=IBM" })
+@Component
 public class PrepareJspHelper22Factory implements PrepareJspHelperFactory {
 
     /* (non-Javadoc)

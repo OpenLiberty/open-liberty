@@ -38,7 +38,7 @@ import com.ibm.wsspi.annocache.util.Util_InternMap;
 import com.ibm.wsspi.annocache.util.Util_RelativePath;
 import com.ibm.wsspi.anno.util.Util_InternMap.ValueType;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class UtilImpl_Factory implements Util_Factory {
     private static final Logger logger = Logger.getLogger("com.ibm.ws.annocache.util");
     

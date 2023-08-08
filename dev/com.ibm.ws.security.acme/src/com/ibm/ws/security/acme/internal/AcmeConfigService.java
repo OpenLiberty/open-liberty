@@ -35,8 +35,7 @@ import com.ibm.wsspi.kernel.service.utils.DictionaryUtils;
  * ACME configuration service. This service is used to validate configuration
  * before it is passed onto the {@link AcmeProviderImpl} service.
  */
-@Component(immediate = true, configurationPolicy = REQUIRE, configurationPid = ACME_CONFIG_PID, service = {}, property = {
-		"service.vendor=IBM" })
+@Component(immediate = true, configurationPolicy = REQUIRE, configurationPid = ACME_CONFIG_PID, service = {})
 public class AcmeConfigService {
 
 	private static final TraceComponent tc = Tr.register(AcmeConfigService.class);

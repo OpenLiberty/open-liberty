@@ -47,7 +47,7 @@ import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.kernel.service.utils.FileUtils;
 
 @Component(service = DeployedAppInfoFactory.class,
-           property = { "service.vendor=IBM", "type=" + SPRING_APP_TYPE })
+           property = { "type=" + SPRING_APP_TYPE })
 public class SpringBootApplicationFactory implements DeployedAppInfoFactory {
 
     private final AtomicInteger nextAppID = new AtomicInteger(0);

@@ -54,7 +54,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  */
 @Component(service = { ApplicationStateListener.class,
                        RuntimeUpdateListener.class,
-                       ModuleStateListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
+                       ModuleStateListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class GeneratePluginConfigListener implements RuntimeUpdateListener, ApplicationStateListener, ModuleStateListener {
 
     private static final TraceComponent tc = Tr.register(GeneratePluginConfigListener.class);

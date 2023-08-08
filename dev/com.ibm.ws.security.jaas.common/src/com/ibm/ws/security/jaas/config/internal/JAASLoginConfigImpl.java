@@ -45,7 +45,7 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.library.Library;
 
-@Component(service = { JAASLoginConfig.class }, name = "JAASLoginConfig", configurationPid = "com.ibm.ws.security.jaas.config.JAASLoginConfig", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(service = { JAASLoginConfig.class }, name = "JAASLoginConfig", configurationPid = "com.ibm.ws.security.jaas.config.JAASLoginConfig", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class JAASLoginConfigImpl extends Parser implements JAASLoginConfig {
     private static TraceComponent tc = Tr.register(JAASLoginConfigImpl.class);
 

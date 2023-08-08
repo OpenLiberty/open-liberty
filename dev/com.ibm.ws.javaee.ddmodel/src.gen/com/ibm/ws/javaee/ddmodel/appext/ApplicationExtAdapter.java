@@ -41,8 +41,7 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
     service = ContainerAdapter.class,
-    property = { "service.vendor=IBM",
-                 "toType=com.ibm.ws.javaee.dd.appext.ApplicationExt" })
+    property = {                  "toType=com.ibm.ws.javaee.dd.appext.ApplicationExt" })
 public class ApplicationExtAdapter extends BndExtAdapter<ApplicationExt> {
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE,

@@ -48,7 +48,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 /**
  * Listening a Web/EJB module metadata events, and build JaxRsModuleInfos.
  */
-@Component(immediate = true, property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.OPTIONAL)
+@Component(immediate = true, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class JaxRsModuleMetaDataListener implements ModuleMetaDataListener, ModuleMetaDataExtender {
 
     private static final TraceComponent tc = Tr.register(JaxRsModuleMetaDataListener.class);

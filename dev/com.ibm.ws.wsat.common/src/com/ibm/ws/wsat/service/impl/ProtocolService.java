@@ -25,7 +25,7 @@ import com.ibm.ws.wsat.service.WSATFault;
 /**
  * OSGI service implementation provided to support the generated protocol web services.
  */
-@Component(property = { "service.vendor=IBM" })
+@Component
 public class ProtocolService implements Protocol {
 
     RegistrationImpl registrationService = RegistrationImpl.getInstance();

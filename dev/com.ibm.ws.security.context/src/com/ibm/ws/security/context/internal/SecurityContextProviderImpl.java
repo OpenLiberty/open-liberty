@@ -51,8 +51,7 @@ import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 
 @Component(service = ThreadContextProvider.class,
            name = "com.ibm.ws.security.context.provider",
-           configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = "service.vendor=IBM")
+           configurationPolicy = ConfigurationPolicy.IGNORE)
 @SuppressWarnings("deprecation")
 public class SecurityContextProviderImpl implements ThreadContextProvider {
 

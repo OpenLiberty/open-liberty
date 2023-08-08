@@ -24,8 +24,7 @@ import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
-configurationPid = "com.ibm.ws.sip.container.was.filters.AppState",
-property = {"service.vendor=IBM"} )
+configurationPid = "com.ibm.ws.sip.container.was.filters.AppState")
 public class ApplState implements ApplicationStateListener{
 
 	 private static final LogMgr c_logger =

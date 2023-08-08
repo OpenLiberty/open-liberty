@@ -31,7 +31,7 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 @Component(service = EntryAdapter.class,
            configurationPolicy = ConfigurationPolicy.OPTIONAL,
            immediate = true,
-           property = { "service.vendor=IBM", "toType=com.ibm.ws.classloading.internal.NativeLibrary" })
+           property = { "toType=com.ibm.ws.classloading.internal.NativeLibrary" })
 public class NativeLibraryAdapter implements EntryAdapter<NativeLibrary> {
     @Override
     public NativeLibrary adapt(Container root, OverlayContainer rootOverlay, ArtifactEntry artifactEntry, Entry entryToAdapt) throws UnableToAdaptException {

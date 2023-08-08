@@ -40,8 +40,7 @@ import io.openliberty.microprofile.metrics.internal.monitor.internal.MappingTabl
 import io.openliberty.microprofile.metrics.internal.monitor.internal.MonitorMetrics;
 import io.openliberty.microprofile.metrics50.SharedMetricRegistries;
 
-@Component(name = "io.openliberty.microprofile.metrics.internal.monitor.MonitorMetricsHandler",
-        property = { "service.vendor=IBM" })
+@Component(name = "io.openliberty.microprofile.metrics.internal.monitor.MonitorMetricsHandler")
 public class MonitorMetricsHandler {
 
     private static final TraceComponent tc = Tr.register(MonitorMetricsHandler.class);

@@ -39,8 +39,7 @@ import com.ibm.ws.sip.properties.SipPropertiesMap;
 @Component(
 		service = BaseTimerService.class, 
 		immediate = false,
-		configurationPolicy = ConfigurationPolicy.OPTIONAL,
-		property = "service.vendor=IBM" 
+		configurationPolicy = ConfigurationPolicy.OPTIONAL 
 	)
 public class TimerServiceImpl implements BaseTimerService
 {

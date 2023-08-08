@@ -35,7 +35,7 @@ Service-Component:\
           com.ibm.ws.request.interrupt.internal.InterruptibleThreadInfrastructureImpl';\
         appRecycleCoordinator=com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;\
         scheduledExecutor=java.util.concurrent.ScheduledExecutorService; \
-        properties:="service.vendor=IBM,creates.objectClass=com.ibm.websphere.interrupt.InterruptibleThreadInfrastructure,jndiName=interrupt/iti"; \
+        properties:="creates.objectClass=com.ibm.websphere.interrupt.InterruptibleThreadInfrastructure,jndiName=interrupt/iti"; \
         immediate:='true'
               
 #Include-Resource: \

@@ -32,8 +32,7 @@ import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 /**
  *
  */
-@Component(service = { ResourceFactoryBuilder.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM",
-                                                                                                                                        "creates.objectClass=javax.mail.Session"
+@Component(service = { ResourceFactoryBuilder.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = {                                                                                                                                         "creates.objectClass=javax.mail.Session"
 })
 public class MailSessionResourceFactoryBuilder implements ResourceFactoryBuilder {
 

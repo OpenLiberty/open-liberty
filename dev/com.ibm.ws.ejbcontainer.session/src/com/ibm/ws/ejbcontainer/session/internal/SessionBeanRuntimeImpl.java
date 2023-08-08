@@ -21,8 +21,7 @@ import com.ibm.ws.ejbcontainer.osgi.SessionBeanRuntime;
  * in the core container.
  */
 @Component(service = SessionBeanRuntime.class,
-           name = "com.ibm.ws.ejbcontainer.session.runtime",
-           property = "service.vendor=IBM")
+           name = "com.ibm.ws.ejbcontainer.session.runtime")
 public class SessionBeanRuntimeImpl implements SessionBeanRuntime {
     // Nothing currently needs to be done.  The presence of this class in the
     // service registry enables session beans.

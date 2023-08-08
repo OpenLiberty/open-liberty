@@ -30,7 +30,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.wab.configure.WABConfiguration;
 
 @Component(service = { MetricsConfig.class }, configurationPid = "com.ibm.ws.microprofile.metrics",
-        configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true, property = { "service.vendor=IBM" })
+        configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
 public class MetricsConfig {
 
     private static final TraceComponent tc = Tr.register(MetricsConfig.class);

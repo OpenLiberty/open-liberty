@@ -57,7 +57,7 @@ import com.ibm.wsspi.security.wim.model.PersonAccount;
 @Component(configurationPid = "com.ibm.ws.security.wim.core.config",
            configurationPolicy = ConfigurationPolicy.OPTIONAL,
            service = { ConfigManager.class, RuntimeUpdateListener.class },
-           property = { "service.vendor=IBM", "com.ibm.ws.security.registry.type=WIM", "config.id=default-WIM" })
+           property = { "com.ibm.ws.security.registry.type=WIM", "config.id=default-WIM" })
 public class ConfigManager implements RuntimeUpdateListener {
 
     private static final TraceComponent tc = Tr.register(ConfigManager.class);

@@ -39,8 +39,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 @Component(service = { SSOAuthFilter.class },
            name = "com.ibm.ws.webcontainer.security.util.SSOAuthFilter",
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class SSOAuthFilterImpl implements com.ibm.ws.webcontainer.security.util.SSOAuthFilter {
     public static final TraceComponent tc = Tr.register(SSOAuthFilterImpl.class);
     public static final String KEY_SERVICE_PID = "service.pid";

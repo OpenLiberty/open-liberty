@@ -28,7 +28,7 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 
 @Component(
                 name = "com.ibm.ws.cdi.servletInitializer",
-                property = { "service.vendor=IBM", "service.ranking:Integer=101" })
+                property = { "service.ranking:Integer=101" })
 public class WeldServletInitializer extends AbstractServletInitializer implements ServletContainerInitializer {
 
     @Override

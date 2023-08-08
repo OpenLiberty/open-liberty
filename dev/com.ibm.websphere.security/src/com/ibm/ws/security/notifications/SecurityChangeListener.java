@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,7 @@ package com.ibm.ws.security.notifications;
  * Components desiring to receive notifications for changes in other
  * security components need to implement this interface. The notifying
  * component must declare the listeners in its bnd file. For example,
+ *
  * <pre>
  * com.ibm.ws.security.MyChangeNotifier; \
  * implementation:=com.ibm.ws.security.MyChangeNotifier; \
@@ -28,7 +29,6 @@ package com.ibm.ws.security.notifications;
  * optional:='changeListener'; \
  * multiple:='changeListener'; \
  * dynamic:='changeListener'; \
- * properties:='service.vendor=IBM'
  * </pre>
  */
 public interface SecurityChangeListener {

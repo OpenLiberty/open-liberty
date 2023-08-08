@@ -62,8 +62,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.registry.RegistryHelper;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class WSBatchAuthServiceImpl implements WSBatchAuthService {
 
     public static final String BATCH_AUTH_ID = "com.ibm.ws.batch";

@@ -68,7 +68,7 @@ import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
  * and (3) the CSS is a valid document.
  */
 @Component(service = { CustomCSSProcessor.class,
-                       ServerQuiesceListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
+                       ServerQuiesceListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public final class CustomCSSProcessor implements FileMonitor, ServerQuiesceListener {
 
     private static final TraceComponent tc = Tr.register(CustomCSSProcessor.class);

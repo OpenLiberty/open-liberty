@@ -27,7 +27,7 @@ import com.ibm.ws.sip.container.was.message.SipMessageFactory;
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
 service = com.ibm.ws.sip.container.was.message.SipMessageFactory.class,
 configurationPid = "com.ibm.ws.sip.container.was.servlet31.SipMessageFactory",
-property = {"service.vendor=IBM","service.ranking:Integer=1" } )
+property = {"service.ranking:Integer=1" } )
 public class SipMessageFactory31 extends SipMessageFactory {
 	
 	

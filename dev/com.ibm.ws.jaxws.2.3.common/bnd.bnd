@@ -87,23 +87,19 @@ Service-Component: \
      applicationBusListener/registerApplicationBusListener=com.ibm.ws.jaxws.bus.LibertyApplicationBusListener*; \
      extensionProvider/registerExtensionProvider=com.ibm.ws.jaxws.bus.ExtensionProvider*; \
      implementation:=com.ibm.ws.jaxws.support.JaxWsServiceImpl; \
-     provide:='com.ibm.wsspi.jaxws.JaxWsService'; \
-     properties:="service.vendor=IBM", \
+     provide:='com.ibm.wsspi.jaxws.JaxWsService', \
   com.ibm.ws.jaxws.metadata.builder.EndpointInfoBuilder; \
     implementation:=com.ibm.ws.jaxws.metadata.builder.EndpointInfoBuilder; \
     provide:='com.ibm.ws.jaxws.metadata.builder.EndpointInfoBuilder'; \
     endpointInfoConfigurators/setEndpointInfoConfigurator=com.ibm.ws.jaxws.metadata.builder.EndpointInfoConfigurator*; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM", \
+    configuration-policy:=ignore, \
   com.ibm.ws.jaxws.metadata.builder.EJBContextRootJaxWsModuleInfoBuilderExtension; \
     implementation:=com.ibm.ws.jaxws.metadata.builder.EJBContextRootJaxWsModuleInfoBuilderExtension; \
     provide:='com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoBuilderExtension'; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM", \
+    configuration-policy:=ignore, \
   com.ibm.ws.jaxws.injection.WebServiceContextObjectFactoryInfo; \
      implementation:=com.ibm.ws.jaxws.injection.WebServiceContextObjectFactoryInfo; \
-     provide:='com.ibm.wsspi.injectionengine.ObjectFactoryInfo'; \
-     properties:="service.vendor=IBM", \
+     provide:='com.ibm.wsspi.injectionengine.ObjectFactoryInfo', \
   com.ibm.ws.jaxws.support.jaxWsModuleMetaDataListener; \
     implementation:=com.ibm.ws.jaxws.support.JaxWsModuleMetaDataListener; \
     provide:='com.ibm.ws.container.service.metadata.ModuleMetaDataListener,\
@@ -112,63 +108,54 @@ Service-Component: \
     classLoadingService=com.ibm.wsspi.classloading.ClassLoadingService; \
     jaxWsModuleInfoBuilders/registerJaxWsModuleInfoBuilder=com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoBuilder*; \
     configuration-policy:=optional; \
-    immediate:=true; \
-    properties:="service.vendor=IBM", \
+    immediate:=true, \
   com.ibm.ws.jaxws.client.injection.webServiceRefProcessorProvider;\
     implementation:=com.ibm.ws.jaxws.client.injection.WebServiceRefProcessorProvider; \
 	provide:=com.ibm.wsspi.injectionengine.InjectionProcessorProvider;\
 	configuration-policy:=optional,\
   com.ibm.ws.jaxws.support.jaxWsInjectionMetaDataListener;\
     implementation:=com.ibm.ws.jaxws.support.JaxWsInjectionMetaDataListener;\
-    provide:='com.ibm.wsspi.injectionengine.InjectionMetaDataListener';\
-    properties:="service.vendor=IBM", \
+    provide:='com.ibm.wsspi.injectionengine.InjectionMetaDataListener', \
   com.ibm.ws.jaxws.metadata.builder.jaxWsModuleInfo.adapter; \
      implementation:=com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoAdapter; \
      provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter; \
-     properties:="service.vendor=IBM,toType=com.ibm.ws.jaxws.metadata.JaxWsModuleInfo", \
+     properties:="toType=com.ibm.ws.jaxws.metadata.JaxWsModuleInfo", \
   com.ibm.ws.jaxws.endpoint.jaxWsEndpointConfiguratorManager; \
      implementation:=com.ibm.ws.jaxws.endpoint.JaxWsEndpointConfiguratorManager; \
      provide:=com.ibm.ws.jaxws.endpoint.JaxWsEndpointConfiguratorManager; \
      endpointTypeJaxWsEndpointConfiguratorMap/registerJaxWsEndpointConfigurator=com.ibm.ws.jaxws.endpoint.JaxWsEndpointConfigurator*; \
-     configuration-policy:=optional; \
-     properties:="service.vendor=IBM", \
+     configuration-policy:=optional, \
   com.ibm.ws.jaxws.endpoint.endpointPublisherManager; \
      implementation:=com.ibm.ws.jaxws.endpoint.EndpointPublisherManager; \
      provide:=com.ibm.ws.jaxws.endpoint.EndpointPublisherManager; \
      typeEndpointPublisherManagerMap/registerEndpointPublisher=com.ibm.ws.jaxws.endpoint.EndpointPublisher*; \
-     configuration-policy:=optional; \
-     properties:="service.vendor=IBM", \
+     configuration-policy:=optional, \
   com.ibm.ws.jaxws.monitor; \
      immediate:=true; \
      configuration-policy:=optional; \
      activate:=activate; \
      deactivate:=deactivate; \
      implementation:=com.ibm.ws.jaxws.monitor.LibertyJaxWsMonitor; \
-     provide:='com.ibm.ws.jaxws.monitor.LibertyJaxWsMonitor'; \
-     properties:="service.vendor=IBM", \
+     provide:='com.ibm.ws.jaxws.monitor.LibertyJaxWsMonitor', \
   com.ibm.ws.jaxws.jmx; \
      implementation:=com.ibm.ws.jaxws.jmx.internal.JMXMBeanServerDelegation; \
      provide:='com.ibm.ws.jaxws.jmx.internal.JMXMBeanServerDelegation'; \
      activate:=activate; \
      deactivate:=deactivate; \
      immediate:=true; \
-     configuration-policy:=optional; \
-     properties:="service.vendor=IBM", \
+     configuration-policy:=optional, \
   com.ibm.ws.jaxws.jaxbContextPool.initializer; \
      implementation:=com.ibm.ws.jaxws.jaxb.JAXBContextPoolInitializer; \
      provide:='com.ibm.ws.jaxws.bus.LibertyApplicationBusListener'; \
-     configuration-policy:=optional; \
-     properties:="service.vendor=IBM", \
+     configuration-policy:=optional, \
   com.ibm.ws.jaxws.catalog.listener; \
      configuration-policy:=optional; \
      implementation:=com.ibm.ws.jaxws.catalog.OASISCatalogApplicationBusListener; \
-     provide:='com.ibm.ws.jaxws.bus.LibertyApplicationBusListener'; \
-     properties:="service.vendor=IBM", \
+     provide:='com.ibm.ws.jaxws.bus.LibertyApplicationBusListener', \
   com.ibm.ws.jaxws.policy.PolicyAttachmentApplicationBusListener; \
      configuration-policy:=optional; \
      implementation:=com.ibm.ws.jaxws.policy.PolicyAttachmentApplicationBusListener; \
-     provide:='com.ibm.ws.jaxws.bus.LibertyApplicationBusListener'; \
-     properties:="service.vendor=IBM"
+     provide:='com.ibm.ws.jaxws.bus.LibertyApplicationBusListener'
 
 instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 

@@ -42,7 +42,7 @@ import com.ibm.wsspi.cache.CoreCache;
  * This class creates and holds all(servlet and/or object) cache instances created.
  */
 
-@Component(service = ServerCache.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
+@Component(service = ServerCache.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class ServerCache {
 
     private static TraceComponent tc = Tr.register(ServerCache.class, "WebSphere Dynamic Cache", "com.ibm.ws.cache.resources.dynacache");

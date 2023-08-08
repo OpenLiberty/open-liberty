@@ -32,12 +32,10 @@ Service-Component: \
   com.ibm.ws.jaxws.security.internal.JaxWsModuleInfoSecurityBuilder; \
     implementation:=com.ibm.ws.jaxws.security.internal.SecurityJaxWsModuleInfoBuilderExtension; \
     provide:='com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoBuilderExtension'; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM", \
+    configuration-policy:=ignore, \
   com.ibm.ws.jaxws.security.internal.JaxWsWebAppSecurityConfigurator; \
      implementation:=com.ibm.ws.jaxws.security.internal.JaxWsWebAppSecurityConfigurator; \
-     provide:='com.ibm.ws.jaxws.webcontainer.JaxWsWebAppConfigurator'; \
-     properties:="service.vendor=IBM"
+     provide:='com.ibm.ws.jaxws.webcontainer.JaxWsWebAppConfigurator'
 
 Private-Package: com.ibm.ws.jaxws.security.internal, \
  com.ibm.ws.jaxws.security.internal.resources

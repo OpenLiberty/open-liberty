@@ -56,7 +56,7 @@ import org.eclipse.microprofile.graphql.ConfigKey;
 import org.osgi.service.component.annotations.Component;
 import org.jboss.jandex.IndexView;
 
-@Component(property = { "service.vendor=IBM" })
+@Component
 public class GraphQLServletContainerInitializer implements ServletContainerInitializer, Introspector {
     private static final TraceComponent tc = Tr.register(GraphQLServletContainerInitializer.class);
 

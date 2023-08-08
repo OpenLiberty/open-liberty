@@ -36,7 +36,7 @@ import org.apache.cxf.binding.soap.SoapMessage;
 /**
  *
  */
-@Component(service = WSSecurityFeatureHelper.class, name = "WSSecurityFeatureHelper", immediate = true, property = "service.vendor=IBM")
+@Component(service = WSSecurityFeatureHelper.class, name = "WSSecurityFeatureHelper", immediate = true)
 public class WSSecurityFeatureHelper {
 	private static final TraceComponent tc = Tr.register(WSSecurityFeatureHelper.class);
 	static final String WSSEC_HELPER_SERVICE = "WSSecurityFeatureHelperService";

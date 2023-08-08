@@ -36,8 +36,7 @@ import componenttest.serverinfo.FATServerInfoMBean;
 @Component(service = { FATServerInfoMBean.class, DynamicMBean.class },
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM",
-                        "jmx.objectname=" + FATServerInfoMBean.OBJECT_NAME })
+           property = {                         "jmx.objectname=" + FATServerInfoMBean.OBJECT_NAME })
 public class FATServerInfoMBeanImpl extends StandardMBean implements FATServerInfoMBean {
     private static final String REFERENCE_JPA_RUNTIME = "jpaRuntime";
 

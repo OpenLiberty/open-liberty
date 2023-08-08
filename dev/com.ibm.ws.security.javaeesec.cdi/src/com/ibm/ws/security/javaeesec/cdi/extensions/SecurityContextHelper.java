@@ -24,8 +24,7 @@ import com.ibm.ws.security.intfc.SubjectManagerService;
  */
 @Component(service = { SecurityContextHelper.class },
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class SecurityContextHelper {
 
     private static AuthorizationService authorizationService;

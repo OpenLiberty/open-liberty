@@ -45,7 +45,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * CDI customizer : responsible for CDI life cycle management if the Restful Application/Resource/Provider is a CDI managed bean
  * Priority is higher than EJB by default
  */
-@Component(name = "ImplBeanCustomizer", immediate = true, property = { "service.vendor=IBM" })
+@Component(name = "ImplBeanCustomizer", immediate = true)
 public class JaxWsImplBeanCDICustomizer implements ImplBeanCustomizer {
 
     private static final TraceComponent tc = Tr.register(JaxWsImplBeanCDICustomizer.class);

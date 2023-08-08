@@ -21,7 +21,7 @@ import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
 
-@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class ReactiveStreamsEngineInjectionExtension implements Extension, WebSphereCDIExtension {
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {

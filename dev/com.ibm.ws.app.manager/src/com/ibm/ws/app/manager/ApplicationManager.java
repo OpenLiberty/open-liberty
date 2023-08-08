@@ -34,8 +34,7 @@ import com.ibm.ws.app.manager.internal.AppManagerConstants;
 @Component(service = ApplicationManager.class,
            immediate = true,
            configurationPid = AppManagerConstants.MANAGEMENT_PID,
-           configurationPolicy = ConfigurationPolicy.REQUIRE,
-           property = "service.vendor=IBM")
+           configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class ApplicationManager {
 
     private boolean expandApps;

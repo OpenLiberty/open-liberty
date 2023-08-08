@@ -22,7 +22,7 @@ Service-Component: \
  com.ibm.ws.cdi.ejb.deserializationClassProvider;\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
-    properties:="service.vendor=IBM,\
+    properties:="\
       packages=com.ibm.ws.cdi.ejb.impl"
   
 Export-Package: \

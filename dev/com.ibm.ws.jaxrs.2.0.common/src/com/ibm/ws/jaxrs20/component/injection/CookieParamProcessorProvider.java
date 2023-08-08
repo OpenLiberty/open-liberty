@@ -29,8 +29,7 @@ import com.ibm.ws.jaxrs20.injection.CookieParamProcessor;
 import com.ibm.wsspi.injectionengine.InjectionSimpleProcessor;
 import com.ibm.wsspi.injectionengine.InjectionSimpleProcessorProvider;
 
-@Component(name = "com.ibm.ws.jaxrs20.component.injection.CookieParamProcessorProvider", service = com.ibm.wsspi.injectionengine.InjectionProcessorProvider.class,
-           property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.jaxrs20.component.injection.CookieParamProcessorProvider", service = com.ibm.wsspi.injectionengine.InjectionProcessorProvider.class)
 public class CookieParamProcessorProvider extends InjectionSimpleProcessorProvider<CookieParam> {
 
     final private static TraceComponent tc = Tr.register(CookieParamProcessorProvider.class);

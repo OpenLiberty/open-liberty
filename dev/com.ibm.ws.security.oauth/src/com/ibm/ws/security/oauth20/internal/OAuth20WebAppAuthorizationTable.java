@@ -37,8 +37,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * This class implements the builtin authorization table for the Oauth 2.0
  * web application
  */
-@Component(configurationPid = "com.ibm.ws.security.oauth20.roles", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, property = { "service.vendor=IBM",
-        "com.ibm.ws.security.authorization.table.name=oauth20" })
+@Component(configurationPid = "com.ibm.ws.security.oauth20.roles", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, property = {         "com.ibm.ws.security.authorization.table.name=oauth20" })
 public class OAuth20WebAppAuthorizationTable
         extends AbstractSecurityAuthorizationTable
         implements AuthorizationTableService, UserRegistryChangeListener {

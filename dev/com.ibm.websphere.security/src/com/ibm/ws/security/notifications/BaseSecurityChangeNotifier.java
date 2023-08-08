@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,6 +23,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
  * If a component wants to send notifications it needs to create a
  * component that has a class that extends this one and its bnd
  * file must declare the listeners it wants to accept. For example,
+ *
  * <pre>
  * Service-Component: \
  * com.ibm.ws.security.MyComponent; \
@@ -34,7 +35,6 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
  * immediate:=true; \
  * myChangeNotifier=com.ibm.ws.security.MyChangeNotifier; \
  * dynamic:='myChangeNotifier'; \
- * properties:='service.vendor=IBM', \
  * com.ibm.ws.security.MyChangeNotifier; \
  * implementation:=com.ibm.ws.security.MyChangeNotifier; \
  * provide:='com.ibm.ws.security.MyChangeNotifier'; \
@@ -46,9 +46,8 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
  * optional:='changeListener'; \
  * multiple:='changeListener'; \
  * dynamic:='changeListener'; \
- * properties:='service.vendor=IBM'
  * </pre>
- * 
+ *
  */
 public class BaseSecurityChangeNotifier implements SecurityChangeNotifier {
 
@@ -78,6 +77,7 @@ public class BaseSecurityChangeNotifier implements SecurityChangeNotifier {
     }
 
     /** {@inheritDoc} */
+    @Override
     public synchronized void notifyListeners() {
         for (SecurityChangeListener listener : listeners.services()) {
             listener.notifyChange();

@@ -31,7 +31,7 @@ import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 
 @Component(service = SubsystemFactory.class,
                 configurationPolicy = ConfigurationPolicy.IGNORE,
-                property = { "service.vendor=IBM", "service.ranking:Integer=3" })
+                property = { "service.ranking:Integer=3" })
 public class CSIv2ClientSubsystemFactory extends AbstractCsiv2SubsystemFactory {
 
     /** {@inheritDoc} */

@@ -38,8 +38,7 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
-           service = { VirtualHostListener.class },
-           property = { "service.vendor=IBM" })
+           service = { VirtualHostListener.class })
 public class RESTAppListener implements VirtualHostListener {
 
     private static final TraceComponent tc = Tr.register(RESTAppListener.class,

@@ -60,8 +60,7 @@ Service-Component: \
     changeListener=com.ibm.ws.security.notifications.SecurityChangeListener; \
     optional:='changeListener'; \
     multiple:='changeListener'; \
-    dynamic:='changeListener'; \
-    properties:='service.vendor=IBM'
+    dynamic:='changeListener'
 
 -dsannotations: \
   com.ibm.ws.security.jaas.common.JAASConfigurationFactory, \

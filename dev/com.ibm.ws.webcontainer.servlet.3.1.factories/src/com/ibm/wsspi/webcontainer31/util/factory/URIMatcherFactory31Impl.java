@@ -20,7 +20,7 @@ import com.ibm.wsspi.webcontainer.util.URIMatcherFactory;
 /**
  *
  */
-@Component(service = URIMatcherFactory.class, property = { "service.vendor=IBM" })
+@Component(service = URIMatcherFactory.class)
 public class URIMatcherFactory31Impl implements URIMatcherFactory {
 
     /** {@inheritDoc} */

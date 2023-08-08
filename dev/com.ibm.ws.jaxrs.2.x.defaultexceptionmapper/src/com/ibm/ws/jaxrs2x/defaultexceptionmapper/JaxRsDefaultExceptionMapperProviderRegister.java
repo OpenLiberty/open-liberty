@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import com.ibm.ws.jaxrs.defaultexceptionmapper.DefaultExceptionMapper;
 import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
 
-@Component(immediate = true, property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.IGNORE, service = {JaxRsProviderRegister.class})
+@Component(immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, service = {JaxRsProviderRegister.class})
 public class JaxRsDefaultExceptionMapperProviderRegister implements JaxRsProviderRegister {
 
     @Override

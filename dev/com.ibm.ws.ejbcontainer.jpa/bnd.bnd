@@ -36,18 +36,15 @@ Service-Component:\
     implementation:=com.ibm.ws.ejbcontainer.jpa.internal.EJBJPAContainerImpl;\
     provide:='com.ibm.ws.ejbcontainer.runtime.EJBJPAContainer';\
     jpaComponent/setJPAComponent=com.ibm.ws.jpa.JPAComponent;\
-    ejbContainer/setEJBContainer=com.ibm.ws.ejbcontainer.osgi.EJBContainer;\
-    properties:="service.vendor=IBM",\
+    ejbContainer/setEJBContainer=com.ibm.ws.ejbcontainer.osgi.EJBContainer,\
   com.ibm.ws.ejbcontainer.jpa.context;\
     implementation:=com.ibm.ws.ejbcontainer.jpa.internal.JPAContextAccessor;\
     provide:='com.ibm.ws.jpa.JPAExPcBindingContextAccessor';\
-    ejbContainer/setEJBContainer=com.ibm.ws.ejbcontainer.osgi.EJBContainer;\
-    properties:="service.vendor=IBM",\
+    ejbContainer/setEJBContainer=com.ibm.ws.ejbcontainer.osgi.EJBContainer,\
   com.ibm.ws.ejbcontainer.jpa.factory;\
     implementation:=com.ibm.ws.ejbcontainer.jpa.injection.factory.HybridJPAObjectFactory;\
     provide:='javax.naming.spi.ObjectFactory,com.ibm.ws.ejbcontainer.jpa.injection.factory.HybridJPAObjectFactory';\
-    lookupDelegate=com.ibm.ws.jpa.JPALookupDelegate?;\
-    properties:="service.vendor=IBM"
+    lookupDelegate=com.ibm.ws.jpa.JPALookupDelegate?
 
 instrument.classesExcludes: com/ibm/ws/ejbcontainer/jpa/resources/*.class
 

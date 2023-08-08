@@ -54,8 +54,7 @@ Service-Component: \
     activate:=activate; \
     deactivate:=deactivate; \
     modified:=modify; \
-    configuration-policy:=require; \
-    properties:='service.vendor=IBM'
+    configuration-policy:=require
 
 instrument.classesExcludes: com/ibm/ws/security/internal/resources/*.class
 

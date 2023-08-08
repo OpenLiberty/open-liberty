@@ -32,7 +32,7 @@ import com.ibm.ws.container.service.annocache.CDIContainerAnnotationsAdapter;
 @Component(
     service = ContainerAdapter.class, immediate = true,
     configurationPolicy = ConfigurationPolicy.IGNORE,
-    property = { "service.vendor=IBM", "toType=com.ibm.ws.container.service.annocache.CDIContainerAnnotations" })
+    property = { "toType=com.ibm.ws.container.service.annocache.CDIContainerAnnotations" })
 public class CDIContainerAnnotationsAdapterImpl
     extends AnnotationsAdapterImpl
     implements CDIContainerAnnotationsAdapter {

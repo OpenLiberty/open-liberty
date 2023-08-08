@@ -32,7 +32,7 @@ import com.ibm.wsspi.library.Library;
  * that has a classloader configured in the server.xml.
  */
 
-@Component(configurationPid = ApplicationClassloadingServiceFactory.COMPONENT_FACTORY_PID, configurationPolicy = ConfigurationPolicy.REQUIRE, property = "service.vendor=IBM")
+@Component(configurationPid = ApplicationClassloadingServiceFactory.COMPONENT_FACTORY_PID, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class ApplicationClassloadingServiceImpl implements ApplicationClassloadingService {
 
     @SuppressWarnings("unused")

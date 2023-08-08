@@ -30,7 +30,7 @@ import com.ibm.wsspi.application.handler.ApplicationMonitoringInformation;
 import com.ibm.wsspi.application.lifecycle.ApplicationStartBarrier;
 
 @Component(service = ApplicationHandler.class,
-           property = { "service.vendor=IBM", "type:String=ejb" })
+           property = { "type:String=ejb" })
 public class EJBApplicationHandlerImpl implements ApplicationHandler<DeployedAppInfo> {
     private FutureMonitor futureMonitor;
     private DeployedAppInfoFactory deployedAppFactory;

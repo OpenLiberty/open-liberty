@@ -56,7 +56,7 @@ import io.openliberty.security.mp.jwt.osgi.MpJwtRuntimeVersion;
 /**
  *
  */
-@Component(name = "com.ibm.ws.security.mp.jwt", configurationPid = "com.ibm.ws.security.mp.jwt", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = { MicroProfileJwtConfig.class, JwtConsumerConfig.class }, property = { "service.vendor=IBM", "type=microProfileJwtConfig" })
+@Component(name = "com.ibm.ws.security.mp.jwt", configurationPid = "com.ibm.ws.security.mp.jwt", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = { MicroProfileJwtConfig.class, JwtConsumerConfig.class }, property = { "type=microProfileJwtConfig" })
 public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
 
     private static TraceComponent tc = Tr.register(MicroProfileJwtConfigImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);

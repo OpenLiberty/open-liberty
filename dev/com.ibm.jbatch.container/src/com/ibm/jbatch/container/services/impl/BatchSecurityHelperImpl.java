@@ -46,7 +46,7 @@ import com.ibm.ws.security.authentication.principals.WSPrincipal;
  *
  *
  */
-@Component(property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.IGNORE)
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class BatchSecurityHelperImpl implements BatchSecurityHelper {
 
     /**

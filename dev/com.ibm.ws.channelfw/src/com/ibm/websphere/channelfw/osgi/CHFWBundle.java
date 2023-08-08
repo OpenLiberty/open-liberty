@@ -69,8 +69,7 @@ import com.ibm.wsspi.timer.QuickApproxTime;
            name = "com.ibm.ws.channelfw",
            configurationPid = "com.ibm.ws.channelfw",
            configurationPolicy = ConfigurationPolicy.OPTIONAL,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class CHFWBundle implements ServerQuiesceListener {
 
     /** Trace service */

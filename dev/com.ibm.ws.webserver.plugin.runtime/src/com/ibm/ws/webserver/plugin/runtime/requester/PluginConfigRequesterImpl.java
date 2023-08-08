@@ -40,7 +40,7 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
  */
 @Component(service = { PluginConfigRequester.class },
                 immediate = true,
-                property = { "service.vendor=IBM", "jmx.objectname=" + PluginConfigRequester.OBJECT_NAME, })
+                property = { "jmx.objectname=" + PluginConfigRequester.OBJECT_NAME, })
 public class PluginConfigRequesterImpl extends StandardMBean implements PluginConfigRequester {
 
     private static final TraceComponent tc = Tr.register(PluginConfigRequesterImpl.class, PluginRuntimeConstants.TR_GROUP, PluginRuntimeConstants.NLS_PROPS);

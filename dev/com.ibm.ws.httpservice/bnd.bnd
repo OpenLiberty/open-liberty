@@ -45,14 +45,12 @@ Service-Component: com.ibm.ws.httpservice; \
       logService=org.osgi.service.log.LogService; \
       modified:='modified'; \
       dynamic:='logService';\
-      immediate:=true;\
-      properties:="service.vendor=IBM", \
+      immediate:=true, \
     OSGIHttpService; \
       implementation:=com.ibm.ws.httpsvc.internal.RegisteredHttpServiceImpl; \
       provide:='org.osgi.service.http.HttpService'; \
       httpContainer=com.ibm.ws.httpsvc.internal.HttpServiceContainer; \
-      servicefactory:=true; \
-      properties:="service.vendor=IBM"
+      servicefactory:=true
 
 instrument.disabled: true
 

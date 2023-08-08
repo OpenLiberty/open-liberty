@@ -48,7 +48,7 @@ import com.ibm.wsspi.anno.info.InfoStore;
 /**
  * Scan the annotations and configure the EndpointInfo
  */
-@Component(service = { EndpointInfoConfigurator.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = false, property = { "service.vendor=IBM" })
+@Component(service = { EndpointInfoConfigurator.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = false)
 public class AnnotationEndpointInfoConfigurator extends AbstractEndpointInfoConfigurator {
 
     private static final TraceComponent tc = Tr.register(AnnotationEndpointInfoConfigurator.class);

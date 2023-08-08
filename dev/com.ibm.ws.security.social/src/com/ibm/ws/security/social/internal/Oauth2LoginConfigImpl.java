@@ -53,7 +53,7 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
 import io.openliberty.security.oidcclientcore.token.auth.PrivateKeyJwtAuthMethod;
 
-@Component(name = "com.ibm.ws.security.social.oauth2login", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = SocialLoginConfig.class, property = { "service.vendor=IBM", "type=oauth2Login" })
+@Component(name = "com.ibm.ws.security.social.oauth2login", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = SocialLoginConfig.class, property = { "type=oauth2Login" })
 public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     public static final TraceComponent tc = Tr.register(Oauth2LoginConfigImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 

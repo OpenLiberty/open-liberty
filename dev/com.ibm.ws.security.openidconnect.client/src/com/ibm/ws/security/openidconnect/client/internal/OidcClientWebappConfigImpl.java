@@ -33,8 +33,7 @@ import com.ibm.wsspi.wab.configure.WABConfiguration;
         configurationPolicy = ConfigurationPolicy.REQUIRE,
         name = "oidcClientWebappConfig",
         service = WABConfiguration.class,
-        immediate = true,
-        property = { "service.vendor=IBM" })
+        immediate = true)
 public class OidcClientWebappConfigImpl implements WABConfiguration {
     // yes it really is empty
     private static final TraceComponent tc = Tr.register(OidcClientWebappConfigImpl.class);

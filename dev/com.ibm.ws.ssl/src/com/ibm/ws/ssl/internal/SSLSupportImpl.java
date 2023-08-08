@@ -40,8 +40,7 @@ import com.ibm.wsspi.ssl.SSLSupport;
  * Wrapper to expose SSLComponent as SSLSupport only when at least one repertoire and keystore are bound.
  */
 @Component(service = {},
-           configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = "service.vendor=IBM")
+           configurationPolicy = ConfigurationPolicy.IGNORE)
 public class SSLSupportImpl implements SSLSupport {
 
     private SSLSupportOptional delegate;

@@ -15,7 +15,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-@Component(service = SingletonAgent.class, configurationPolicy = REQUIRE, property = "service.vendor=IBM")
+@Component(service = SingletonAgent.class, configurationPolicy = REQUIRE)
 public final class SingletonAgent {
 	public static final TraceComponent tc = Tr.register(SingletonAgent.class);
     private final static int PREFIX_LENGTH = SingletonAgent.class.getPackage().getName().length() + 1;

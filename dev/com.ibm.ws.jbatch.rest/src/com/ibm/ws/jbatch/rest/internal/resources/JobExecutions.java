@@ -74,8 +74,7 @@ import com.ibm.wsspi.rest.handler.RESTResponse;
                 configurationPolicy = ConfigurationPolicy.IGNORE,
                 immediate = true,
                 property = {
-                            "service.vendor=IBM",
-                            RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + APIConstants.BATCH_API_JOBEXECUTIONS_PATH,
+                                                        RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + APIConstants.BATCH_API_JOBEXECUTIONS_PATH,
                             RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + APIConstants.BATCH_API_JOBEXECUTIONS_ID_PATH,
                             RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + APIConstants.BATCH_API_JOBEXECUTIONS_ID_JOBINSTANCE_PATH,
                             RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + APIConstants.BATCH_API_JOBEXECUTIONS_ID_JOBLOGS_PATH,

@@ -28,8 +28,7 @@ Private-Package: \
 Service-Component: \
   com.ibm.ws.managedbeans.runtime;\
     implementation:=com.ibm.ws.managedbeans.osgi.internal.MBRuntimeImpl;\
-    provide:='com.ibm.ws.ejbcontainer.osgi.ManagedBeanRuntime';\
-    properties:="service.vendor=IBM"
+    provide:='com.ibm.ws.ejbcontainer.osgi.ManagedBeanRuntime'
 
 -buildpath: \
 	com.ibm.wsspi.org.osgi.service.component,\

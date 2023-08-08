@@ -27,11 +27,11 @@ Service-Component:\
   test.config.extensions.super.component;\
     provide:='org.osgi.service.cm.ManagedServiceFactory,test.config.extensions.ConfigPropertiesProvider';\
     implementation:=test.config.extensions.ExtensionsTest;\
-    properties:="service.pid=test.config.extensions.super,service.vendor=IBM",\
+    properties:="service.pid=test.config.extensions.super",\
   test.config.extensions.internal.super.component;\
     provide:='org.osgi.service.cm.ManagedServiceFactory,test.config.extensions.ConfigPropertiesProvider';\
     implementation:=test.config.extensions.ExtensionsTest;\
-    properties:="service.pid=test.config.extensions.internal.super,service.vendor=IBM"
+    properties:="service.pid=test.config.extensions.internal.super"
 
 Include-Resource:\
  OSGI-INF/metatype/metatype-extensions.xml=test-bundles/test.config.extensions/resources/metatype-extensions.xml

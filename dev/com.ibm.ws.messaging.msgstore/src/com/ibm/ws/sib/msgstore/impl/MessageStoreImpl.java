@@ -123,7 +123,7 @@ import com.ibm.ws.sib.utils.ras.SibTr;
  * 
  */
 
-@Component(service = {MessageStore.class, Singleton.class}, configurationPolicy = IGNORE, property={"type=com.ibm.ws.sib.msgstore.MessageStore", "service.vendor=IBM"})
+@Component(service = {MessageStore.class, Singleton.class}, configurationPolicy = IGNORE, property={"type=com.ibm.ws.sib.msgstore.MessageStore"})
 public final class MessageStoreImpl extends MessageStore {
     private static TraceNLS nls = TraceNLS.getTraceNLS(MessageStoreConstants.MSG_BUNDLE);
     private static final TraceComponent tc = SibTr.register(MessageStoreImpl.class, MSG_GROUP, MSG_BUNDLE);

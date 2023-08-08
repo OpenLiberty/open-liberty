@@ -51,7 +51,7 @@ import com.ibm.wsspi.ssl.SSLSupport;
  * to a Logstash instance using Lumberjack protocol
  */
 
-@Component(name = LogstashCollector.COMPONENT_NAME, service = { Handler.class }, configurationPolicy = ConfigurationPolicy.REQUIRE, property = { "service.vendor=IBM" })
+@Component(name = LogstashCollector.COMPONENT_NAME, service = { Handler.class }, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class LogstashCollector extends Collector {
 
     private static final TraceComponent tc = Tr.register(LogstashCollector.class, "logstashCollector",

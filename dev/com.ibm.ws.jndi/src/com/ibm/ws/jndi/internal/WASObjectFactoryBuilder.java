@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-@Component(configurationPolicy = IGNORE, property = "service.vendor=IBM")
+@Component(configurationPolicy = IGNORE)
 public class WASObjectFactoryBuilder implements ObjectFactoryBuilder {
 
     private static final TraceNLS nls = TraceNLS.getTraceNLS(WSContext.class, "com.ibm.ws.jndi.internal.resources.JNDIMessages");

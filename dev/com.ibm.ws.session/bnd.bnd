@@ -30,8 +30,7 @@ Service-Component: \
         dynamic:="sessionStoreService,locationService"; \
         greedy:="sessionStoreService,locationService"; \
         modified:='modified'; \
-        immediate:=true; \
-        properties:='service.vendor=IBM'
+        immediate:=true
 
 Export-Package: \
    	com.ibm.websphere.servlet.session;provide:=true, \

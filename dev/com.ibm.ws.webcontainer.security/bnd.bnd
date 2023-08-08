@@ -49,22 +49,20 @@ Service-Component: \
     implementation:=com.ibm.ws.webcontainer.security.metadata.SecurityServletConfiguratorHelperFactory;\
     provide:=com.ibm.ws.container.service.config.ServletConfiguratorHelperFactory;\
     configuration-policy:=ignore;\
-    immediate:=true;\
-    properties:="service.vendor=IBM",\
+    immediate:=true,\
   com.ibm.ws.webcontainer.security.LoggedOutTokenCacheImpl;\
     implementation:=com.ibm.ws.webcontainer.security.LoggedOutTokenCacheImpl;\
     configuration-policy:=ignore;\
     activate:=activate;\
     deactivate:=deactivate;\
     tokenManager=com.ibm.ws.security.token.TokenManager;\
-    properties:="service.vendor=IBM,service.ranking:Integer=1",\
+    properties:="service.ranking:Integer=1",\
   com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl;\
     implementation:=com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl;\
     configuration-policy:=ignore;\
     activate:=activate;\
     deactivate:=deactivate;\
-    tokenManager=com.ibm.ws.security.token.TokenManager;\
-    properties:="service.vendor=IBM"
+    tokenManager=com.ibm.ws.security.token.TokenManager
 
 -dsannotations: com.ibm.ws.webcontainer.security.internal.WebAuthenticatorFactoryImpl
 

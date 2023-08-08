@@ -58,8 +58,7 @@ import com.ibm.wsspi.kernel.service.utils.FileUtils;
            property = {
                        "jmx.objectname=" + FileServiceMXBean.OBJECT_NAME,
                        "publishAttributesToCollectiveController=true",
-                       "service.vendor=IBM",
-                       EventConstants.EVENT_TOPIC
+                                              EventConstants.EVENT_TOPIC
                                        + "=com/ibm/wsspi/collective/repository/publishStatus/mbean"
                        , EventConstants.EVENT_FILTER
                          + "=(mbeanObjectName="

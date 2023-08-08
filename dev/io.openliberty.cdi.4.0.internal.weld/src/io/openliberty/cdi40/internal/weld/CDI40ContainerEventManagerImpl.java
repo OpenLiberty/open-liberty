@@ -41,7 +41,6 @@ import jakarta.enterprise.inject.spi.DeploymentException;
 @Trivial
 @Component(name = "io.openliberty.cdi40.internal.weld.CDI40ContainerEventManagerImpl",
                 service = { CDIContainerEventManager.class },
-                property = { "service.vendor=IBM" },
                 configurationPolicy = ConfigurationPolicy.IGNORE)
 public class CDI40ContainerEventManagerImpl implements CDIContainerEventManager {
 

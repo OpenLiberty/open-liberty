@@ -46,11 +46,11 @@ Service-Component: \
         optional:='sslConfig';\
         multiple:='sslConfig';\
         dynamic:='sslConfig,approxTime'; \
-        properties:='service.vendor=IBM,type:String=SSLChannel,service.pid=com.ibm.ws.sslchannel.options',\
+        properties:='type:String=SSLChannel,service.pid=com.ibm.ws.sslchannel.options',\
     com.ibm.ws.sslchannel.SSLEventHandler; \
         implementation:=com.ibm.ws.channel.ssl.internal.SSLEventHandler; \
         provide:=com.ibm.websphere.event.EventHandler; \
-        properties:="event.topics=com/ibm/ws/channel/ssl/QUEUED_WORK,service.vendor=IBM"
+        properties:="event.topics=com/ibm/ws/channel/ssl/QUEUED_WORK"
 
 instrument.disabled: true
 

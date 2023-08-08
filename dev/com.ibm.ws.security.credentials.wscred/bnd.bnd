@@ -33,7 +33,7 @@ Service-Component: \
     provide:=com.ibm.ws.security.credentials.CredentialProvider; \
     userRegistryService=com.ibm.ws.security.registry.UserRegistryService; \
     credentialsService=com.ibm.ws.security.credentials.CredentialsService; \
-    properties:="service.vendor=IBM,type=WSCredential"
+    properties:="type=WSCredential"
 
 -buildpath: \
 	com.ibm.websphere.org.osgi.core,\

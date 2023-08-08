@@ -30,8 +30,7 @@ import com.ibm.ws.ssl.config.SSLConfigManager;
  */
 @Component(configurationPid = "com.ibm.ws.ssl.repertoire",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { RepertoireConfigService.class, com.ibm.wsspi.ssl.SSLConfiguration.class },
-           property = "service.vendor=IBM")
+           service = { RepertoireConfigService.class, com.ibm.wsspi.ssl.SSLConfiguration.class })
 public class RepertoireConfigService extends GenericSSLConfigService implements com.ibm.wsspi.ssl.SSLConfiguration {
     private static final TraceComponent tc = Tr.register(RepertoireConfigService.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 

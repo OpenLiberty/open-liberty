@@ -73,8 +73,7 @@ Service-Component: \
     oauth20Provider=com.ibm.ws.security.oauth20.api.OAuth20Provider; \
     dynamic:='oidcServerConfig,oauth20Provider'; \
     multiple:='oidcServerConfig,oauth20Provider'; \
-    greedy:='oidcServerConfig'; \
-    properties:="service.vendor=IBM", \
+    greedy:='oidcServerConfig', \
   com.ibm.ws.security.openidconnect.server.oidcServerConfig; \
     implementation:=com.ibm.ws.security.openidconnect.server.internal.OidcServerConfigImpl; \
     provide:=com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig; \
@@ -87,8 +86,7 @@ Service-Component: \
     keyStoreService=com.ibm.ws.ssl.KeyStoreService; \
     sslSupport=com.ibm.wsspi.ssl.SSLSupport; \
     dynamic:='configurationAdmin,sslSupport,keyStoreService'; \
-    optional:='sslSupport,keyStoreService'; \
-    properties:="service.vendor=IBM", \
+    optional:='sslSupport,keyStoreService', \
   com.ibm.ws.security.openidconnect.server.plugins.IDTokenHandler; \
     implementation:=com.ibm.ws.security.openidconnect.server.plugins.IDTokenHandler; \
     provide:=com.ibm.oauth.core.internal.oauth20.tokentype.OAuth20TokenTypeHandler; \
@@ -96,8 +94,7 @@ Service-Component: \
     activate:=activate; \
     modified:=modified; \
     deactivate:=deactivate; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM", \
+    configuration-policy:=ignore, \
   com.ibm.ws.security.openidconnect.server.plugins.OIDCGrantTypeHandlerFactoryImpl; \
     implementation:=com.ibm.ws.security.openidconnect.server.plugins.OIDCGrantTypeHandlerFactoryImpl; \
     provide:=com.ibm.oauth.core.internal.oauth20.granttype.OAuth20GrantTypeHandlerFactory; \
@@ -105,8 +102,7 @@ Service-Component: \
     activate:=activate; \
     modified:=modified; \
     deactivate:=deactivate; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM", \
+    configuration-policy:=ignore, \
   com.ibm.ws.security.openidconnect.server.plugins.OIDCResponseTypeHandlerFactoryImpl; \
     implementation:=com.ibm.ws.security.openidconnect.server.plugins.OIDCResponseTypeHandlerFactoryImpl; \
     provide:=com.ibm.oauth.core.internal.oauth20.responsetype.OAuth20ResponseTypeHandlerFactory; \
@@ -114,8 +110,7 @@ Service-Component: \
     activate:=activate; \
     modified:=modified; \
     deactivate:=deactivate; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM"
+    configuration-policy:=ignore
 
 Include-Resource: \
     WEB-INF=resources/WEB-INF, \

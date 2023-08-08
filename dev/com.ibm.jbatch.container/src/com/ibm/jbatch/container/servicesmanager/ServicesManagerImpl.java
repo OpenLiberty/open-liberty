@@ -54,7 +54,7 @@ import com.ibm.jbatch.spi.services.IBatchThreadPoolService;
 import com.ibm.jbatch.spi.services.IJobXMLLoaderService;
 import com.ibm.jbatch.spi.services.ITransactionManagementService;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class ServicesManagerImpl implements BatchContainerConstants, ServicesManager {
 
     private final static String sourceClass = ServicesManagerImpl.class.getName();

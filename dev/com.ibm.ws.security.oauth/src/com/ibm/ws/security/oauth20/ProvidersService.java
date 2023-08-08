@@ -42,7 +42,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 /**
  * This class reads the OAuth providers config
  */
-@Component(configurationPid = "com.ibm.ws.security.oauth20.provider.config", configurationPolicy = ConfigurationPolicy.IGNORE, service = { ProvidersService.class }, immediate = true, property = { "service.vendor=IBM" })
+@Component(configurationPid = "com.ibm.ws.security.oauth20.provider.config", configurationPolicy = ConfigurationPolicy.IGNORE, service = { ProvidersService.class }, immediate = true)
 public class ProvidersService {
 
     private static final String KEY_ID = "id";

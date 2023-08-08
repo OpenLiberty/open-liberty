@@ -48,7 +48,7 @@ import com.ibm.wsspi.resource.ResourceInfo;
 @Component(name = "com.ibm.ws.mongo.mongoDB",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            service = { ResourceFactory.class, ApplicationRecycleComponent.class },
-           property = { "service.vendor=IBM", "creates.objectClass=com.mongodb.DB" })
+           property = { "creates.objectClass=com.mongodb.DB" })
 public class MongoDBService implements ResourceFactory, ApplicationRecycleComponent, MongoChangeListener {
     private static final TraceComponent tc = Tr.register(MongoDBService.class);
 

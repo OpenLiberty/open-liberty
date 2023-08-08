@@ -55,7 +55,7 @@ import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-@Component(service = OAuth20ClientMetatypeService.class, name = "oauth20ClientMetatypeService", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
+@Component(service = OAuth20ClientMetatypeService.class, name = "oauth20ClientMetatypeService", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class OAuth20ClientMetatypeService {
 
     private static TraceComponent tc = Tr.register(OAuth20ClientMetatypeService.class);

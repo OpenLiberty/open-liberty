@@ -48,8 +48,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FileUtils;
 
 @Component(service = ServerSchemaGenerator.class,
-           property = { "jmx.objectname=" + ServerSchemaGenerator.OBJECT_NAME,
-                       "service.vendor=IBM" })
+           property = { "jmx.objectname=" + ServerSchemaGenerator.OBJECT_NAME })
 public class ServerSchemaGeneratorImpl extends StandardMBean implements ServerSchemaGenerator {
 
     private static final TraceComponent tc = Tr.register(ServerSchemaGeneratorImpl.class);

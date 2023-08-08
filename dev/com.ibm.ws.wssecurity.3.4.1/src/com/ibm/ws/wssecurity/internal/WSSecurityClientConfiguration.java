@@ -47,8 +47,7 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 @Component(configurationPid = "com.ibm.ws.wssecurity.client.config",
            configurationPolicy = ConfigurationPolicy.OPTIONAL, //really? 
            service = { WSSecurityClientConfiguration.class, ConfigurationListener.class },
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class WSSecurityClientConfiguration implements ConfigurationListener {
 
     private static final TraceComponent tc = Tr.register(WSSecurityClientConfiguration.class, WSSecurityConstants.TR_GROUP, WSSecurityConstants.TR_RESOURCE_BUNDLE);

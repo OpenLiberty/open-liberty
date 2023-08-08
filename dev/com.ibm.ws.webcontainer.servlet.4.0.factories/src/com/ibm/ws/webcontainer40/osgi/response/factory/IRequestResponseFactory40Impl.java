@@ -22,7 +22,7 @@ import com.ibm.ws.webcontainer40.osgi.request.IRequest40Impl;
 import com.ibm.ws.webcontainer40.osgi.response.IResponse40Impl;
 import com.ibm.wsspi.http.HttpInboundConnection;
 
-@Component(property = { "service.vendor=IBM", "service.ranking:Integer=31", "servlet.version=3.1" })
+@Component(property = { "service.ranking:Integer=31", "servlet.version=3.1" })
 public class IRequestResponseFactory40Impl implements IRequestFactory, IResponseFactory {
 
     /*

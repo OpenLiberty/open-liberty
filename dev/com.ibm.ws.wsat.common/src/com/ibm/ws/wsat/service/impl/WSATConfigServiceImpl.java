@@ -39,8 +39,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  *
  */
 @Component(name = "com.ibm.ws.wsat.service.wsatconfigservice",
-           immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE,
-           property = { "service.vendor=IBM" })
+           immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class WSATConfigServiceImpl implements WSATConfigService {
 
     private static final TraceComponent TC = Tr.register(WSATConfigServiceImpl.class);

@@ -24,7 +24,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxrs20.api.JaxRsAppSecurityService;
 
-@Component(name = "com.ibm.ws.jaxrs20.client.component.JaxRsAppSecurity", immediate = true, property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.jaxrs20.client.component.JaxRsAppSecurity", immediate = true)
 public class JaxRsAppSecurity {
     private static final TraceComponent tc = Tr.register(JaxRsAppSecurity.class);
     private static volatile JaxRsAppSecurityService appSecurityService = null;

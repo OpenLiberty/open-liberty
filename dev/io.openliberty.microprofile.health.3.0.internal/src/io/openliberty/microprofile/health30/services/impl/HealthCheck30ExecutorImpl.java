@@ -33,7 +33,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 import io.openliberty.microprofile.health30.services.HealthCheck30CDIBeanInvoker;
 import io.openliberty.microprofile.health30.services.HealthCheck30Executor;
 
-@Component(service = HealthCheck30Executor.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(service = HealthCheck30Executor.class, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class HealthCheck30ExecutorImpl implements HealthCheck30Executor {
 
     /**

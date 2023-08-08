@@ -81,7 +81,7 @@ Service-Component: \
       configuration-policy:=optional; \
       optional:="annoService"; \
       dynamic:="annoService"; \
-      properties:="service.vendor=IBM,toType=com.ibm.ws.container.service.annotations.ContainerAnnotations", \
+      properties:="toType=com.ibm.ws.container.service.annotations.ContainerAnnotations", \
    com.ibm.ws.container.service.annotations.ModuleAnnotationsAdapter; \
       implementation:=com.ibm.ws.container.service.annotations.internal.ModuleAnnotationsAdapter; \
       provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter; \
@@ -89,7 +89,7 @@ Service-Component: \
       configuration-policy:=optional; \
       optional:="annoService"; \
       dynamic:="annoService"; \
-      properties:="service.vendor=IBM,toType=com.ibm.ws.container.service.annotations.ModuleAnnotations", \
+      properties:="toType=com.ibm.ws.container.service.annotations.ModuleAnnotations", \
    com.ibm.ws.container.service.annotations.WebAnnotationsAdapter; \
       implementation:=com.ibm.ws.container.service.annotations.internal.WebAnnotationsAdapter; \
       provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter; \
@@ -97,12 +97,11 @@ Service-Component: \
       configuration-policy:=optional; \
       optional:="annoService"; \
       dynamic:="annoService"; \
-      properties:="service.vendor=IBM,toType=com.ibm.ws.container.service.annotations.WebAnnotations", \
+      properties:="toType=com.ibm.ws.container.service.annotations.WebAnnotations", \
    com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoFactory; \
       implementation:=com.ibm.ws.container.service.app.deploy.internal.ApplicationInfoFactoryImpl; \
       provide:=com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoFactory; \
-      j2eeNameFactory=com.ibm.websphere.csi.J2EENameFactory; \
-      properties:="service.vendor=IBM", \
+      j2eeNameFactory=com.ibm.websphere.csi.J2EENameFactory, \
    com.ibm.ws.container.service.app.deploy.InjectionClassListAdapter; \
       implementation:=com.ibm.ws.container.service.app.deploy.internal.InjectionClassListAdapter; \
       provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter; \
@@ -112,19 +111,19 @@ Service-Component: \
       optional:="injectionClassListProviders"; \
       dynamic:="injectionClassListProviders"; \
       multiple:="injectionClassListProviders"; \
-      properties:="service.vendor=IBM,toType=com.ibm.ws.container.service.app.deploy.InjectionClassList", \
+      properties:="toType=com.ibm.ws.container.service.app.deploy.InjectionClassList", \
    com.ibm.ws.container.service.app.deploy.WebModuleClassesInfoAdapter; \
       implementation:=com.ibm.ws.container.service.app.deploy.internal.WebModuleClassesInfoAdapter; \
       provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter; \
       configuration-policy:=optional; \
-      properties:="service.vendor=IBM,toType=com.ibm.ws.container.service.app.deploy.WebModuleClassesInfo", \
+      properties:="toType=com.ibm.ws.container.service.app.deploy.WebModuleClassesInfo", \
    com.ibm.ws.container.service.config.WebFragmentsInfoAdapter; \
       implementation:=com.ibm.ws.container.service.config.internal.WebFragmentsInfoAdapter; \
       provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter; \
       version=com.ibm.ws.javaee.version.ServletVersion?;\
       greedy:=version;\
       configuration-policy:=optional; \
-      properties:="service.vendor=IBM,toType=com.ibm.ws.container.service.config.WebFragmentsInfo", \
+      properties:="toType=com.ibm.ws.container.service.config.WebFragmentsInfo", \
    com.ibm.ws.container.service.metadata.MetaDataService; \
       implementation:=com.ibm.ws.container.service.metadata.internal.MetaDataServiceImpl; \
       provide:='com.ibm.ws.container.service.metadata.MetaDataService,com.ibm.ws.container.service.metadata.internal.MetaDataServiceImpl,com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService'; \
@@ -133,35 +132,31 @@ Service-Component: \
       componentMetaDataListeners/addComponentMetaDataListener=com.ibm.ws.container.service.metadata.ComponentMetaDataListener*; \
       methodMetaDataListeners/addMethodMetaDataListener=com.ibm.ws.container.service.metadata.MethodMetaDataListener*; \
       deferredMetaDataFactory=com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory*; \
-      greedy:="deferredMetaDataFactory";\
-      properties:="service.vendor=IBM", \
+      greedy:="deferredMetaDataFactory", \
    com.ibm.ws.container.service.metadata.MetaDataSlotService; \
       implementation:=com.ibm.ws.container.service.metadata.internal.MetaDataSlotServiceImpl; \
       servicefactory:=true; \
       provide:=com.ibm.ws.container.service.metadata.MetaDataSlotService; \
-      metaDataService=com.ibm.ws.container.service.metadata.internal.MetaDataServiceImpl; \
-      properties:="service.vendor=IBM", \
+      metaDataService=com.ibm.ws.container.service.metadata.internal.MetaDataServiceImpl, \
    com.ibm.ws.container.service.metadata.internal.J2EENameFactoryImpl; \
       implementation:=com.ibm.ws.container.service.metadata.internal.J2EENameFactoryImpl; \
-      provide:=com.ibm.websphere.csi.J2EENameFactory; \
-      properties:="service.vendor=IBM", \
+      provide:=com.ibm.websphere.csi.J2EENameFactory, \
    com.ibm.ws.container.service.serialization.classProvider; \
       implementation:=com.ibm.ws.serialization.DeserializationClassProvider; \
       provide:=com.ibm.ws.serialization.DeserializationClassProvider; \
-      properties:="service.vendor=IBM, \
+      properties:=" \
       classes=com.ibm.ws.container.service.metadata.internal.J2EENameImpl", \
    com.ibm.ws.container.service.security.SecurityRolesAdapter; \
       implementation:=com.ibm.ws.container.service.security.internal.SecurityRolesAdapter; \
       provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter; \
       configAdmin=org.osgi.service.cm.ConfigurationAdmin; \
       configuration-policy:=ignore; \
-      properties:="service.vendor=IBM,toType=com.ibm.ws.container.service.security.SecurityRoles", \
+      properties:="toType=com.ibm.ws.container.service.security.SecurityRoles", \
    com.ibm.ws.container.service.state.StateChangeService; \
       implementation:=com.ibm.ws.container.service.state.internal.StateChangeServiceImpl; \
       provide:='com.ibm.ws.container.service.state.StateChangeService,com.ibm.ws.container.service.state.internal.StateChangeServiceImpl'; \
       applicationStateListeners/addApplicationStateListener=com.ibm.ws.container.service.state.ApplicationStateListener*; \
-      moduleStateListeners/addModuleStateListener=com.ibm.ws.container.service.state.ModuleStateListener*; \
-      properties:="service.vendor=IBM"
+      moduleStateListeners/addModuleStateListener=com.ibm.ws.container.service.state.ModuleStateListener*
 
 instrument.classesExcludes: com/ibm/ws/container/service/resources/*.class
 

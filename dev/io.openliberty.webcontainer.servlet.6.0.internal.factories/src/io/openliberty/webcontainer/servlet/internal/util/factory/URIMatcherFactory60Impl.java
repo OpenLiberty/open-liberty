@@ -18,7 +18,7 @@ import com.ibm.wsspi.webcontainer.util.URIMatcher;
 import com.ibm.wsspi.webcontainer.util.URIMatcherFactory;
 import com.ibm.wsspi.webcontainer40.util.URIMatcher40;
 
-@Component(service = URIMatcherFactory.class, property = { "service.vendor=IBM" })
+@Component(service = URIMatcherFactory.class)
 public class URIMatcherFactory60Impl implements URIMatcherFactory {
 
     @Override

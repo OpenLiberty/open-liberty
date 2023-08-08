@@ -37,7 +37,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * Core of file global handler service. Looks for registered global handlers (via declarative services).
  * 
  */
-@Component(immediate = true, property = { "service.vendor=IBM" })
+@Component(immediate = true)
 public class JaxwsGlobalHandlerServiceImpl {
 
     static final TraceComponent tc = Tr.register(JaxwsGlobalHandlerServiceImpl.class);

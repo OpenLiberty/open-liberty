@@ -46,7 +46,7 @@ import com.ibm.wsspi.artifact.factory.contributor.ArtifactContainerFactoryContri
  *     implementation:=com.ibm.ws.artifact.fat_bvt.bundle.CustomContainerFactory; \
  *     provide:=com.ibm.wsspi.artifact.factory.contributor.ArtifactContainerFactoryContributor; \
  *     configuration-policy:=ignore; \
- *     properties:="service.vendor=IBM,category=CUSTOM,handlesType=java.io.File,handlesEntries=.custom"
+ *     properties:="category=CUSTOM,handlesType=java.io.File,handlesEntries=.custom"
  * </pre>
  */
 public class CustomContainerFactory implements ArtifactContainerFactoryContributor {

@@ -49,7 +49,6 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
  * and id as those values may have been set.
  */
 @Component(configurationPid = "com.ibm.ws.security.service",
-           property = "service.vendor=IBM",
            immediate = true,
            service = {})
 public class SecurityServiceImpl implements SecurityService, ServicePropertySupplier {

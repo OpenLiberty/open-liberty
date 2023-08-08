@@ -42,8 +42,7 @@ import io.openliberty.jcache.utils.CacheConfigUtil;
 /**
  * Service that configures a {@link CacheManager} to use with JCache caching.
  */
-@Component(immediate = true, configurationPolicy = REQUIRE, configurationPid = "io.openliberty.jcache.cachemanager",
-           property = { "service.vendor=IBM" })
+@Component(immediate = true, configurationPolicy = REQUIRE, configurationPid = "io.openliberty.jcache.cachemanager")
 public class CacheManagerServiceImpl implements CacheManagerService {
     private static final TraceComponent tc = Tr.register(CacheManagerServiceImpl.class);
 

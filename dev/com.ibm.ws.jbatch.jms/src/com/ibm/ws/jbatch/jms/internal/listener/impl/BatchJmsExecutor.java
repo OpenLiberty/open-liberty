@@ -80,9 +80,7 @@ import com.ibm.wsspi.resource.ResourceInfo;
         property = { 
                 // prevent the optional connection factory reference from being satisfied
                 // until configuration and metatype processing is complete
-                CONN_FACTORY_REF_NAME + ".cardinality.minimum=" + Integer.MAX_VALUE, 
-                "service.vendor=IBM" 
-                }
+                CONN_FACTORY_REF_NAME + ".cardinality.minimum=" + Integer.MAX_VALUE}
         )
 public class BatchJmsExecutor {
 

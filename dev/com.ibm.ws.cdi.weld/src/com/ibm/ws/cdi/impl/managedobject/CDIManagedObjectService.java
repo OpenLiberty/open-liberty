@@ -36,8 +36,7 @@ import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-@Component(name = "com.ibm.ws.cdi.impl.managedobject.CDIManagedObjectService", service = { ManagedObjectService.class }, immediate = true, property = { "service.vendor=IBM",
-                                                                                                                                                        "service.ranking:Integer=9999" })
+@Component(name = "com.ibm.ws.cdi.impl.managedobject.CDIManagedObjectService", service = { ManagedObjectService.class }, immediate = true, property = {                                                                                                                                                         "service.ranking:Integer=9999" })
 public class CDIManagedObjectService implements ManagedObjectService {
 
     private final DefaultManagedObjectService defaultMOS;

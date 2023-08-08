@@ -34,8 +34,7 @@ Service-Component: \
   RecoveryLogManager; \
     implementation:=com.ibm.ws.recoverylog.spi.RecLogServiceImpl; \
     provide:='com.ibm.ws.recoverylog.spi.RecLogServiceImpl'; \
-    immediate:='true'; \
-    properties:='service.vendor=IBM'
+    immediate:='true'
 
 Private-Package: com.ibm.ws.recoverylog.resources
 

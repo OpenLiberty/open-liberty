@@ -29,7 +29,7 @@ import com.ibm.wsspi.anno.targets.AnnotationTargets_Factory;
 import com.ibm.wsspi.anno.util.Util_Factory;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory {
     public static final TraceComponent tc = Tr.register(AnnotationTargetsImpl_Factory.class);
     public static final String CLASS_NAME = AnnotationTargetsImpl_Factory.class.getName();

@@ -108,7 +108,7 @@ import com.ibm.wsspi.webcontainer.util.URIMatcherFactory;
 /**
  * @author asisin
  */
-@Component(name="com.ibm.ws.webcontainer", configurationPid="com.ibm.ws.webcontainer", configurationPolicy=ConfigurationPolicy.REQUIRE, property={"service.vendor=IBM","type:String=web"})
+@Component(name="com.ibm.ws.webcontainer", configurationPid="com.ibm.ws.webcontainer", configurationPolicy=ConfigurationPolicy.REQUIRE, property={"type:String=web"})
 public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implements ModuleRuntimeContainer, VirtualHostListener {
     // Note: registration of this class as a  VirtualHostListener is used by the HttpDispatcher to help migrate config
     

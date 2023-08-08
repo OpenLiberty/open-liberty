@@ -30,7 +30,7 @@ Service-Component: \
     configuration-policy:=ignore;\
     containerFactory=com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;\
     dynamic:='containerFactory';\
-    properties:="service.vendor=IBM,handlesType=java.io.File,category=DIR"
+    properties:="handlesType=java.io.File,category=DIR"
 
 -buildpath: \
 	com.ibm.websphere.org.osgi.core,\

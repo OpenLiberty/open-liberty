@@ -35,7 +35,7 @@ import com.ibm.ws.security.mp.jwt.tai.TAIJwtUtils;
  * The JsonWebTokenUtilImpl service only activate when running with JDK 8 and it's handler the JsonWebToken in subject
  */
 
-@org.osgi.service.component.annotations.Component(service = JsonWebTokenUtil.class, name = "JsonWebTokenUtil", immediate = true, property = "service.vendor=IBM")
+@org.osgi.service.component.annotations.Component(service = JsonWebTokenUtil.class, name = "JsonWebTokenUtil", immediate = true)
 public class JsonWebTokenUtilImpl implements JsonWebTokenUtil {
 
     public static final TraceComponent tc = Tr.register(JsonWebTokenUtilImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);

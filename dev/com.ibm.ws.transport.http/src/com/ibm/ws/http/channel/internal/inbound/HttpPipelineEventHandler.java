@@ -28,7 +28,7 @@ import com.ibm.ws.http.channel.internal.HttpMessages;
 /**
  * OSGI event handler to handle HTTP pipelined request events.
  */
-@Component(configurationPid = "com.ibm.ws.http.HttpPipelineEventHandler", property = { "event.topics=com/ibm/ws/http/channel/events/PIPELINING", "service.vendor=IBM" })
+@Component(configurationPid = "com.ibm.ws.http.HttpPipelineEventHandler", property = { "event.topics=com/ibm/ws/http/channel/events/PIPELINING" })
 public class HttpPipelineEventHandler implements EventHandler {
 
     /** trace variable */

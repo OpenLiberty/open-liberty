@@ -30,7 +30,7 @@ import com.ibm.ws.security.credentials.CredentialProvider;
 
 @Component(service = CredentialProvider.class,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM", "type=SPNEGO" })
+           property = { "type=SPNEGO" })
 public class GSSCredentialProvider implements CredentialProvider {
     private static final TraceComponent tc = Tr.register(GSSCredentialProvider.class);
 

@@ -58,7 +58,7 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
  * not configured as servlet(if not metadata complete) 2. pojo webservices which
  * are also configured as servlet
  */
-@Component(name = "com.ibm.ws.jaxrs20.module.info.builder", immediate = true, property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.OPTIONAL)
+@Component(name = "com.ibm.ws.jaxrs20.module.info.builder", immediate = true, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class JaxRsWebModuleInfoBuilder implements JaxRsModuleInfoBuilder {
     private final static TraceComponent tc = Tr.register(JaxRsWebModuleInfoBuilder.class);
 

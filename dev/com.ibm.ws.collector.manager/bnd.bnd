@@ -53,13 +53,11 @@ Service-Component:\
         multiple:='source,handler'; \
         dynamic:='source,handler'; \
         modified:='modified'; \
-        immediate:='true'; \
-	    properties:="service.vendor=IBM", \
+        immediate:='true', \
     com.ibm.ws.logging.source.ffdcsource;\
         implementation:=com.ibm.ws.logging.ffdc.source.FFDCSource;\
         provide:=com.ibm.wsspi.collector.manager.Source; \
-        bufferManager='com.ibm.wsspi.collector.manager.BufferManager(source=com.ibm.ws.logging.ffdc.source.ffdcsource)'; \
-        properties:="service.vendor=IBM"
+        bufferManager='com.ibm.wsspi.collector.manager.BufferManager(source=com.ibm.ws.logging.ffdc.source.ffdcsource)'
 
 	
 Private-Package: \

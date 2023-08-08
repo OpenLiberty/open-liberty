@@ -32,7 +32,7 @@ import com.ibm.ws.jaxrs20.client.MpJwtPropagation;
 /*
  * This is a utility service to retrieve MicroProfile JsonWebToken in a subject
  */
-@Component(service = MpJwtPropagation.class, name = "MpJwtPropagation", immediate = true, property = "service.vendor=IBM")
+@Component(service = MpJwtPropagation.class, name = "MpJwtPropagation", immediate = true)
 public class MpJwtPropagationImpl implements MpJwtPropagation {
     private static final TraceComponent tc = Tr.register(MpJwtPropagationImpl.class);
 

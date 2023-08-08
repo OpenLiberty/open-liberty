@@ -64,7 +64,7 @@ import com.ibm.wsspi.security.auth.callback.WSMappingCallbackHandler;
  * 2) ManagedConnectionFactory holds references to the JDBC driver classloader, and when configuration changes are made
  * since the subject cache keeps a reference to the old ManagedConnectionFactory, it causes a classloader leak.
  */
-@Component(name = "com.ibm.ws.security.jca.authdata.service", configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
+@Component(name = "com.ibm.ws.security.jca.authdata.service", configurationPolicy = ConfigurationPolicy.IGNORE)
 public class AuthDataServiceImpl implements AuthDataService {
 
     private static final TraceComponent tc = Tr.register(AuthDataServiceImpl.class);

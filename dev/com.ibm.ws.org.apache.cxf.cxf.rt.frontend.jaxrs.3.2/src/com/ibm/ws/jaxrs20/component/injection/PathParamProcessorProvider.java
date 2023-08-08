@@ -29,8 +29,7 @@ import com.ibm.ws.jaxrs20.injection.PathParamProcessor;
 import com.ibm.wsspi.injectionengine.InjectionSimpleProcessor;
 import com.ibm.wsspi.injectionengine.InjectionSimpleProcessorProvider;
 
-@Component(name = "com.ibm.ws.jaxrs20.component.injection.PathParamProcessorProvider", service = com.ibm.wsspi.injectionengine.InjectionProcessorProvider.class,
-           property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.jaxrs20.component.injection.PathParamProcessorProvider", service = com.ibm.wsspi.injectionengine.InjectionProcessorProvider.class)
 public class PathParamProcessorProvider extends InjectionSimpleProcessorProvider<PathParam> {
 
     final private static TraceComponent tc = Tr.register(PathParamProcessorProvider.class);

@@ -94,7 +94,6 @@ interface UserRegistryRefConfig {
 //order means config.displayId comes from factory config
            configurationPid = { "com.ibm.ws.security.registry.internal.UserRegistryRefConfig", "com.ibm.ws.security.registry" },
            configurationPolicy = ConfigurationPolicy.OPTIONAL,
-           property = "service.vendor=IBM",
            service = {})
 public class UserRegistryServiceImpl implements UserRegistryService, ServicePropertySupplier {
 

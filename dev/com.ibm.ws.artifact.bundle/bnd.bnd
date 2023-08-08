@@ -29,7 +29,7 @@ Service-Component: \
     configuration-policy:=ignore;\
     containerFactory=com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;\
     dynamic:='containerFactory';\
-    properties:="service.vendor=IBM,handlesType=org.osgi.framework.Bundle,category=BUNDLE"
+    properties:="handlesType=org.osgi.framework.Bundle,category=BUNDLE"
 
 -buildpath: \
 	com.ibm.websphere.org.osgi.core,\

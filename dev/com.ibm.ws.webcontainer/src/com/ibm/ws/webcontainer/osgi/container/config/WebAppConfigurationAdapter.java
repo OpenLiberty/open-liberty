@@ -44,8 +44,7 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 
 @Component(service = ContainerAdapter.class, immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = {"service.vendor=IBM",
-                       "toType=com.ibm.ws.webcontainer.osgi.webapp.WebAppConfiguration" } )
+           property = {                       "toType=com.ibm.ws.webcontainer.osgi.webapp.WebAppConfiguration" } )
 public class WebAppConfigurationAdapter implements ContainerAdapter<WebAppConfiguration>
 {
     @SuppressWarnings("unused")

@@ -37,8 +37,7 @@ import com.ibm.wsspi.channelfw.ChannelConfiguration;
  */
 @Component(
         configurationPid = "com.ibm.ws.messaging.comms.server",
-        configurationPolicy = REQUIRE, 
-        property = "service.vendor=IBM")
+        configurationPolicy = REQUIRE)
 public class InboundSecureFacetImpl implements InboundSecureFacet {
     private static final TraceComponent tc = Tr.register(InboundSecureFacetImpl.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
     private final ChannelConfiguration sslOptions;

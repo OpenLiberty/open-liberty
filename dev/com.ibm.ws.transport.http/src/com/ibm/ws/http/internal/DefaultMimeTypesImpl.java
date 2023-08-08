@@ -34,7 +34,7 @@ import com.ibm.wsspi.http.DefaultMimeTypes;
  * See metatype-mimetype.xml and metatype-mimetype.properties in
  * resources/OSGI-INF for the default types and extensions
  */
-@Component(configurationPid = "com.ibm.ws.http.mimetype", immediate = true, property = { "service.vendor=IBM" })
+@Component(configurationPid = "com.ibm.ws.http.mimetype", immediate = true)
 public class DefaultMimeTypesImpl implements DefaultMimeTypes {
     private static final TraceComponent tc = Tr.register(DefaultMimeTypesImpl.class);
     private static final String CFG_KEY_DEFAULT_TYPES = "defaultType";

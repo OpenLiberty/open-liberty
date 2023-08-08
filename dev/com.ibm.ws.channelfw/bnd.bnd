@@ -62,18 +62,18 @@ Service-Component: \
         provide:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
         modified:='modified';\
         immediate:=true;\
-        properties:="service.vendor=IBM,service.ranking:Integer=0,type:String=TCPChannel", \
+        properties:="service.ranking:Integer=0,type:String=TCPChannel", \
     com.ibm.ws.udpchannel.options; \
         implementation:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
         provide:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
         modified:='modified';\
         immediate:=true;\
-        properties:="service.vendor=IBM,service.ranking:Integer=0,type:String=UDPChannel", \
+        properties:="service.ranking:Integer=0,type:String=UDPChannel", \
     com.ibm.ws.channelfw.CHFWEventHandler; \
         implementation:=com.ibm.ws.channelfw.internal.CHFWEventHandler; \
         configuration-policy:=ignore;\
         provide:=com.ibm.websphere.event.EventHandler; \
-        properties:="event.topics=com/ibm/websphere/channelfw/*,service.vendor=IBM"
+        properties:="event.topics=com/ibm/websphere/channelfw/*"
 
 instrument.disabled: true
 

@@ -27,7 +27,7 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 /**
  * process custom binding file ibm-ws-bnd.xml
  */
-@Component(service = { EndpointInfoConfigurator.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = false, property = { "service.vendor=IBM" })
+@Component(service = { EndpointInfoConfigurator.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = false)
 public class WebServicesBndEndpointInfoConfigurator extends AbstractEndpointInfoConfigurator {
 
     /**

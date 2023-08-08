@@ -45,7 +45,7 @@ import com.ibm.wsspi.ssl.SSLSupport;
  * The implementation of JaxWsSecurityConfigurationService, internal use only
  */
 @Component(service = { JaxWsSecurityConfigurationService.class }, configurationPolicy = ConfigurationPolicy.IGNORE,
-           immediate = false, property = { "service.vendor=IBM" })
+           immediate = false)
 public class JaxWsSecurityConfigurationServiceImpl implements JaxWsSecurityConfigurationService {
     private static final TraceComponent tc = Tr.register(JaxWsSecurityConfigurationServiceImpl.class);
 

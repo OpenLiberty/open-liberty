@@ -18,7 +18,7 @@ import com.ibm.ws.webcontainer.httpsession.SessionManager;
 import com.ibm.ws.webcontainer.session.impl.SessionContextRegistryImpl;
 import com.ibm.ws.webcontainer.session.impl.SessionContextRegistryImplFactory;
 
-@Component(service=SessionContextRegistryImplFactory.class, property = { "service.vendor=IBM" })
+@Component(service=SessionContextRegistryImplFactory.class)
 public class SessionContextRegistryImplFactoryImpl implements SessionContextRegistryImplFactory {
 
     /* (non-Javadoc)

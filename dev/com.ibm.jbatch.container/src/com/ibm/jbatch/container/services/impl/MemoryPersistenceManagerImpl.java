@@ -88,8 +88,7 @@ import com.ibm.jbatch.spi.services.IBatchConfig;
  * injectors of IPersistenceManagerService should set the GREEDY option so that they
  * always get injected with JPA over Memory if it's available.
  */
-@Component(service = IPersistenceManagerService.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM",
-                                                                                                                      "service.ranking:Integer=10",
+@Component(service = IPersistenceManagerService.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.ranking:Integer=10",
                                                                                                                       "persistenceType=In-Memory" })
 public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager implements IPersistenceManagerService {
 
@@ -162,12 +161,10 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
     }
 
     @Override
-    public void init(IBatchConfig batchConfig) {
-    }
+    public void init(IBatchConfig batchConfig) {}
 
     @Override
-    public void shutdown() {
-    }
+    public void shutdown() {}
 
     @Override
     public JobInstanceEntity createJobInstance(String appName, String jobXMLName, String submitter, Date createTime) {

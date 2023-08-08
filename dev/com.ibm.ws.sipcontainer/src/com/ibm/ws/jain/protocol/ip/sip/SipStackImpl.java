@@ -38,8 +38,7 @@ import jain.protocol.ip.sip.*;
 @Component(service = SipStack.class,
 configurationPolicy = ConfigurationPolicy.OPTIONAL,
 configurationPid = "com.ibm.ws.jain.protocol.ip.sip",
-name = "com.ibm.ws.jain.protocol.ip.sip",
-property = {"service.vendor=IBM"} )
+name = "com.ibm.ws.jain.protocol.ip.sip")
 public class SipStackImpl
 	implements SipStack
 {

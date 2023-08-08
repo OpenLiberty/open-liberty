@@ -73,7 +73,7 @@ import com.ibm.wsspi.http.VirtualHost;
 /**
  *
  */
-@Component(service = { ApplicationProcessor.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
+@Component(service = { ApplicationProcessor.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class ApplicationProcessor {
 
     private static final TraceComponent tc = Tr.register(ApplicationProcessor.class);

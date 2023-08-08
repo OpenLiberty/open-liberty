@@ -39,8 +39,7 @@ import com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollabora
 
 @Component(name = "com.ibm.ws.resteasy.cdi.component.ResteasyInjectionClassListCollaborator",
            service = WebAppInjectionClassListCollaborator.class,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class ResteasyInjectionClassListCollaborator implements WebAppInjectionClassListCollaborator {
     private final static TraceComponent tc = Tr.register(ResteasyInjectionClassListCollaborator.class);
 

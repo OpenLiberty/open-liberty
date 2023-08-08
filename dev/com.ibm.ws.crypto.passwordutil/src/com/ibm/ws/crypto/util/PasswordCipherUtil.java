@@ -57,8 +57,7 @@ import com.ibm.wsspi.security.crypto.EncryptedInfo;
 @Component(service = PasswordCipherUtil.class,
            name = "com.ibm.ws.crypto.util.PasswordCipherUtil",
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           immediate = true,
-           property = "service.vendor=IBM")
+           immediate = true)
 public class PasswordCipherUtil {
 
     private static final Class<?> CLASS_NAME = PasswordCipherUtil.class;

@@ -60,7 +60,7 @@ Service-Component: \
     greedy:='ssoService, securityService'; \
     dynamic:='ssoService,userResolver,securityService'; \
     multiple:="ssoService"; \
-    properties:="service.vendor=IBM,type=wssecurity", \
+    properties:="type=wssecurity", \
   com.ibm.ws.wssecurity.config; \
     implementation:=com.ibm.ws.wssecurity.internal.WSSecurityConfiguration; \
     provide:='com.ibm.ws.wssecurity.internal.WSSecurityConfiguration,\
@@ -75,8 +75,7 @@ Service-Component: \
     keyStoreService=com.ibm.ws.ssl.KeyStoreService; \
     sslSupport=com.ibm.wsspi.ssl.SSLSupport; \
     optional:='keyStoreService,sslSupport'; \
-    dynamic:='configurationAdmin,securityService,keyStoreService,sslSupport'; \
-    properties:="service.vendor=IBM"
+    dynamic:='configurationAdmin,securityService,keyStoreService,sslSupport'
 
 instrument.classesExcludes: com/ibm/ws/wssecurity/resources/*.class
 

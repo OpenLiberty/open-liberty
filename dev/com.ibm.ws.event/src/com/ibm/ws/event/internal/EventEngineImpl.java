@@ -49,8 +49,7 @@ import com.ibm.ws.event.internal.adapter.ServiceEventAdapter;
  * is the heart of the event-based runtime model so this implementation is
  * intended to be optimized, extensible, and spec-compliant.
  */
-@Component(configurationPid = "com.ibm.ws.event",
-           property = { "service.vendor=IBM" })
+@Component(configurationPid = "com.ibm.ws.event")
 public class EventEngineImpl implements EventEngine, org.osgi.service.event.EventAdmin {
 
     private static final TraceComponent tc = Tr.register(EventEngineImpl.class);

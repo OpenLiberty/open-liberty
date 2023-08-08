@@ -23,7 +23,7 @@ import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
-@Component(service = JwtConfigUtil.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, name = "jwtConfigUtil", property = "service.vendor=IBM")
+@Component(service = JwtConfigUtil.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, name = "jwtConfigUtil")
 public class JwtConfigUtil {
 
     private static final String KEY_JWT_SERVICE = "jwtComponent";

@@ -39,7 +39,7 @@ import com.ibm.wsspi.sib.core.SelectionCriteriaFactory;
         service = {CommsClientServiceFacade.class, CommsClientServiceFacadeInterface.class, Singleton.class},
         configurationPolicy = IGNORE,
         immediate = true,
-        property= {"type=messaging.comms.client.service","service.vendor=IBM"})
+        property= {"type=messaging.comms.client.service"})
 public class CommsClientServiceFacade implements CommsClientServiceFacadeInterface, Singleton {
     private static final TraceComponent tc = Tr.register(CommsClientServiceFacade.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
 

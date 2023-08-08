@@ -42,7 +42,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.client.MpJwtPropagation;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-@Component(service = OAuthPropagationHelper.class, name = "OAuthPropagationHelper", immediate = true, property = "service.vendor=IBM")
+@Component(service = OAuthPropagationHelper.class, name = "OAuthPropagationHelper", immediate = true)
 public class OAuthPropagationHelper {
     private static final TraceComponent tc = Tr.register(OAuthPropagationHelper.class);
     public static final String ISSUED_JWT_TOKEN = "issuedJwt"; // new jwt token

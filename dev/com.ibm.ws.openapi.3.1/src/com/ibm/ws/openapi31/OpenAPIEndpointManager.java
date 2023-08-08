@@ -38,7 +38,7 @@ import com.ibm.wsspi.wab.configure.WABConfiguration;
 /**
  * This component manages the life cycle and configuration of the public and private endpoints.
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class OpenAPIEndpointManager {
 
     private static final TraceComponent tc = Tr.register(OpenAPIEndpointManager.class);

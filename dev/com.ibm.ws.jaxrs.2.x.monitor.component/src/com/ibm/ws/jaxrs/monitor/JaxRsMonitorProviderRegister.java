@@ -22,7 +22,7 @@ import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.jaxrs.monitor.JaxRsMonitorFilter.RestMetricInfo;
 import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
 
-@Component(immediate = true, property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.IGNORE, service = {JaxRsProviderRegister.class})
+@Component(immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, service = {JaxRsProviderRegister.class})
 public class JaxRsMonitorProviderRegister implements JaxRsProviderRegister {
 
 	private JaxRsMonitorFilter monitorFilter = new JaxRsMonitorFilter();

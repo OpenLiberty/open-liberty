@@ -51,7 +51,6 @@ import com.ibm.wsspi.security.wim.model.SearchControl;
 
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE,
            configurationPid = "com.ibm.ws.security.wim.adapter.file.config",
-           property = "service.vendor=IBM",
            reference = @Reference(bind = "setSecurityService", unbind = "unsetSecurityService", service = SecurityService.class, name = BaseRepository.KEY_SECURITY_SERVICE))
 public class FileAdapter extends BaseRepository implements ConfiguredRepository {
 

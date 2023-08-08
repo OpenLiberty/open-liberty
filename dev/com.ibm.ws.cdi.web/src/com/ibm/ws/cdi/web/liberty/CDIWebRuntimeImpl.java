@@ -33,7 +33,7 @@ import com.ibm.wsspi.webcontainer.facade.ServletContextFacade;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 
-@Component(name = "com.ibm.ws.cdi.web.liberty.CDIWebRuntimeImpl", service = CDIWebRuntime.class, immediate = true, property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.cdi.web.liberty.CDIWebRuntimeImpl", service = CDIWebRuntime.class, immediate = true)
 public class CDIWebRuntimeImpl implements CDIWebRuntime {
 
     private static final TraceComponent tc = Tr.register(CDIWebRuntimeImpl.class);

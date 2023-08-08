@@ -26,59 +26,59 @@ Service-Component:\
 		implementation:=com.ibm.ws.artifact.fat_bvt.bundle.custom.CustomContainerFactory;\
 		provide:=com.ibm.wsspi.artifact.factory.contributor.ArtifactContainerFactoryContributor;\
 		configuration-policy:=ignore;\
-		properties:="service.vendor=IBM,category=CUSTOM,handlesType=java.io.File,handlesEntries=.custom",\
+		properties:="category=CUSTOM,handlesType=java.io.File,handlesEntries=.custom",\
 	com.ibm.ws.artifact.fat_bvt.overlay.container.adapter;\
 		implementation:=com.ibm.ws.artifact.fat_bvt.bundle.adapters.ContainerAdapterOverlay;\
 		provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
 		configuration-policy:=ignore;\
-		properties:="service.vendor=IBM,toType=com.ibm.wsspi.artifact.overlay.OverlayContainer",\
+		properties:="toType=com.ibm.wsspi.artifact.overlay.OverlayContainer",\
 	com.ibm.ws.artifact.fat_bvt.bundle.integer.entry.adapter;\
 		implementation:=com.ibm.ws.artifact.fat_bvt.bundle.adapters.EntryAdapterInteger;\
 		provide:=com.ibm.wsspi.adaptable.module.adapters.EntryAdapter;\
 		configuration-policy:=ignore;\
-		properties:="service.vendor=IBM,toType=java.lang.Integer",\
+		properties:="toType=java.lang.Integer",\
 	com.ibm.ws.artifact.fat_bvt.integer.container.adapter;\
 		implementation:=com.ibm.ws.artifact.fat_bvt.bundle.adapters.ContainerAdapterInteger;\
 		provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
 		configuration-policy:=ignore;\
-		properties:="service.vendor=IBM,toType=java.lang.Integer",\
+		properties:="toType=java.lang.Integer",\
 	com.ibm.ws.artifact.fat_bvt.string.entry.adapter;\
 		implementation:=com.ibm.ws.artifact.fat_bvt.bundle.adapters.EntryAdapterString;\
 		provide:=com.ibm.wsspi.adaptable.module.adapters.EntryAdapter;\
 		configuration-policy:=ignore;\
-		properties:="service.vendor=IBM,toType=java.lang.String",\
+		properties:="toType=java.lang.String",\
 	com.ibm.ws.artifact.fat_bvt.string.container.adapter;\
 		implementation:=com.ibm.ws.artifact.fat_bvt.bundle.adapters.ContainerAdapterString;\
 		provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
 		configuration-policy:=ignore;\
-		properties:="service.vendor=IBM,toType=java.lang.String",\
+		properties:="toType=java.lang.String",\
 	com.ibm.ws.artifact.fat_bvt.after.unable.float.entry.adapter;\
 		implementation:=com.ibm.ws.artifact.fat_bvt.bundle.adapters.EntryAdapterFloatUnableAfter;\
 		provide:=com.ibm.wsspi.adaptable.module.adapters.EntryAdapter;\
 		configuration-policy:=ignore;\
-		properties:="service.vendor=IBM,service.ranking:Integer=1,toType=java.lang.Float",\
+		properties:="service.ranking:Integer=1,toType=java.lang.Float",\
 	com.ibm.ws.artifact.fat_bvt.after.unable.float.container.adapter;\
 		implementation:=com.ibm.ws.artifact.fat_bvt.bundle.adapters.ContainerAdapterFloatUnableAfter;\
 		provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
 		configuration-policy:=ignore;\
-		properties:="service.vendor=IBM,service.ranking:Integer=1,toType=java.lang.Float",\
+		properties:="service.ranking:Integer=1,toType=java.lang.Float",\
 	com.ibm.ws.artifact.fat_bvt.before.unable.float.entry.adapter;\
 		implementation:=com.ibm.ws.artifact.fat_bvt.bundle.adapters.EntryAdapterFloatUnableBefore;\
 		provide:=com.ibm.wsspi.adaptable.module.adapters.EntryAdapter;\
 		configuration-policy:=ignore;\
-		properties:="service.vendor=IBM,service.ranking:Integer=3,toType=java.lang.Float",\
+		properties:="service.ranking:Integer=3,toType=java.lang.Float",\
 	com.ibm.ws.artifact.fat_bvt.before.unable.float.container.adapter;\
 		implementation:=com.ibm.ws.artifact.fat_bvt.bundle.adapters.ContainerAdapterFloatUnableBefore;\
 		provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
 		configuration-policy:=ignore;\
-		properties:="service.vendor=IBM,service.ranking:Integer=3,toType=java.lang.Float",\
+		properties:="service.ranking:Integer=3,toType=java.lang.Float",\
 	com.ibm.ws.artifact.fat_bvt.unable.float.entry.adapter;\
 		implementation:=com.ibm.ws.artifact.fat_bvt.bundle.adapters.EntryAdapterFloatUnable;\
 		provide:=com.ibm.wsspi.adaptable.module.adapters.EntryAdapter;\
 		configuration-policy:=ignore;\
-		properties:="service.vendor=IBM,service.ranking:Integer=2,toType=java.lang.Float",\
+		properties:="service.ranking:Integer=2,toType=java.lang.Float",\
 	com.ibm.ws.artifact.fat_bvt.unable.float.container.adapter;\
 		implementation:=com.ibm.ws.artifact.fat_bvt.bundle.adapters.ContainerAdapterFloatUnable;\
 		provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
 		configuration-policy:=ignore;\
-		properties:="service.vendor=IBM,service.ranking:Integer=2,toType=java.lang.Float"
+		properties:="service.ranking:Integer=2,toType=java.lang.Float"

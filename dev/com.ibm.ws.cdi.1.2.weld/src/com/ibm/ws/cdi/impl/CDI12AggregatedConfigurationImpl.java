@@ -25,6 +25,5 @@ import com.ibm.ws.cdi.internal.config.CDIConfiguration;
 @Component(name = "com.ibm.ws.cdi.impl.CDI12AggregatedConfigurationImpl",
                 service = { CDIConfiguration.class, AggregatedConfiguration.class },
                 configurationPolicy = ConfigurationPolicy.IGNORE,
-                immediate = true,
-                property = { "service.vendor=IBM" })
+                immediate = true)
 public class CDI12AggregatedConfigurationImpl extends CDI12AggregatedConfiguration {}

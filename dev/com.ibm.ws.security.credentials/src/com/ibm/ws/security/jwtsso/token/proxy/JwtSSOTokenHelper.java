@@ -32,7 +32,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 /**
  *
  */
-@Component(service = JwtSSOTokenHelper.class, name = "JwtSSOTokenHelper", immediate = true, property = "service.vendor=IBM")
+@Component(service = JwtSSOTokenHelper.class, name = "JwtSSOTokenHelper", immediate = true)
 public class JwtSSOTokenHelper {
 
     private static final TraceComponent tc = Tr.register(JwtSSOTokenHelper.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);

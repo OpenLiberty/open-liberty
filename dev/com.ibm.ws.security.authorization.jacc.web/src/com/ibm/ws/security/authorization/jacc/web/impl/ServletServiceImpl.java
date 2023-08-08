@@ -27,8 +27,7 @@ import com.ibm.ws.security.authorization.jacc.web.WebSecurityValidator;
 @Component(service = ServletService.class,
                 immediate = true,
                 name = "com.ibm.ws.security.authorization.jacc.web.servletservice",
-                configurationPolicy = ConfigurationPolicy.IGNORE,
-                property = { "service.vendor=IBM" })
+                configurationPolicy = ConfigurationPolicy.IGNORE)
 public class ServletServiceImpl implements ServletService {
     private static final TraceComponent tc = Tr.register(ServletServiceImpl.class);
 

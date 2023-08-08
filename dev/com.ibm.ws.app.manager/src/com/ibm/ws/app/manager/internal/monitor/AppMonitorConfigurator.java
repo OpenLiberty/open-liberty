@@ -29,8 +29,7 @@ import com.ibm.ws.app.manager.internal.AppManagerConstants;
  */
 @Component(service = AppMonitorConfigurator.class, immediate = true,
            configurationPid = AppManagerConstants.MONITOR_PID,
-           configurationPolicy = ConfigurationPolicy.REQUIRE,
-           property = "service.vendor=IBM")
+           configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class AppMonitorConfigurator {
 
     private ApplicationMonitor appMonitor;

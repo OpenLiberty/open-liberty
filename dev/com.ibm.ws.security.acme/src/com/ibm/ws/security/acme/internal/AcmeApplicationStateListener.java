@@ -40,7 +40,7 @@ import com.ibm.ws.security.acme.internal.web.AcmeAuthorizationServlet;
  */
 @Component(immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, service = {
 		AcmeApplicationStateListener.class,
-		ApplicationStateListener.class }, property = { "service.vendor=IBM", "includeAppsWithoutConfig=true" })
+		ApplicationStateListener.class }, property = { "includeAppsWithoutConfig=true" })
 public class AcmeApplicationStateListener implements ApplicationStateListener {
 
 	private static final TraceComponent tc = Tr.register(AcmeApplicationStateListener.class);

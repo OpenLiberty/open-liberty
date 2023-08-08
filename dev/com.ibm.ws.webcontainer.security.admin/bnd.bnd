@@ -47,7 +47,7 @@ Service-Component: \
     greedy:='ssoAuthFilter,interceptorService,webAuthenticator,authenticatorFactory'; \
     optional:='taiService,interceptorService,webAuthenticator'; \
     dynamic:='ssoAuthFilter,taiService,interceptorService,webAuthenticator,authenticatorFactory'; \
-    properties:="service.vendor=IBM,com.ibm.ws.security.type=com.ibm.ws.management"
+    properties:="com.ibm.ws.security.type=com.ibm.ws.management"
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging,\

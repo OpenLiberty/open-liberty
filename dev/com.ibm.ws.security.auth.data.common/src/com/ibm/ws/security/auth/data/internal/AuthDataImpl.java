@@ -28,7 +28,7 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 /**
  * The auth data from server.xml.
  */
-@Component(service = com.ibm.websphere.security.auth.data.AuthData.class, configurationPid = "com.ibm.ws.security.jca.internal.authdata.config", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, property = { "service.vendor=IBM" })
+@Component(service = com.ibm.websphere.security.auth.data.AuthData.class, configurationPid = "com.ibm.ws.security.jca.internal.authdata.config", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true)
 public class AuthDataImpl implements AuthData {
 
     protected static final String CFG_KEY_ID = "id";

@@ -23,7 +23,7 @@ import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 /**
  *
  */
-@Component(property = { "service.vendor=IBM" })
+@Component
 public class PrepareJspHelper23Factory implements PrepareJspHelperFactory {
 
     /*

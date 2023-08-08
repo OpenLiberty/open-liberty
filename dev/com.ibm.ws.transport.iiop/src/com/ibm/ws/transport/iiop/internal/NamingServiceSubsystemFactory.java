@@ -26,7 +26,7 @@ import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 
 @Component(service = SubsystemFactory.class,
                 configurationPolicy = ConfigurationPolicy.IGNORE,
-                property = { "service.vendor=IBM", "service.ranking:Integer=1" })
+                property = { "service.ranking:Integer=1" })
 public class NamingServiceSubsystemFactory extends SubsystemFactory {
     private static final String INITIALIZER_CLASS_NAME = NameServiceInitializer.class.getName();
 

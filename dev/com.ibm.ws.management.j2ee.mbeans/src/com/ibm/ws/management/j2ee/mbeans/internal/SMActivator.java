@@ -38,8 +38,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * Registers System Management(SM) related J2EE MBeans (JVMMBean, J2EEDomainMBean, J2EEServerMBean and JavaMailResourceMBean) with MBeanServer.
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
-                immediate = true,
-                property = { "service.vendor=IBM" })
+                immediate = true)
 public class SMActivator {
 
     public static final String TRACE_GROUP_SM_MBEANS = "management.j2ee.mbeans";

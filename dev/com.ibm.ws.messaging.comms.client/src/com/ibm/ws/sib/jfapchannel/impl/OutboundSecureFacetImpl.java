@@ -40,7 +40,7 @@ import com.ibm.wsspi.channelfw.ChannelConfiguration;
 @Component(
         configurationPid = "com.ibm.ws.messaging.comms.wasJmsOutbound",
         configurationPolicy = REQUIRE, 
-        property = { "sslOptions.cardinality.minimum=1", "service.vendor=IBM" }
+        property = { "sslOptions.cardinality.minimum=1" }
         )
 public class OutboundSecureFacetImpl implements OutboundSecureFacet {
     private static final TraceComponent tc = Tr.register(OutboundSecureFacetImpl.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);

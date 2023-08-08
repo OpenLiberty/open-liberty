@@ -23,7 +23,7 @@ import com.ibm.ws.webcontainer.osgi.webapp.WebAppFactory;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 
 
-@Component(service= WebAppFactory.class, property = { "service.vendor=IBM" })
+@Component(service= WebAppFactory.class)
 public class WebAppFactoryImpl implements WebAppFactory {
    /* (non-Javadoc)
     * @see com.ibm.ws.webcontainer.osgi.webapp.WebAppFactory#createWebApp(com.ibm.ws.webcontainer.osgi.webapp.WebAppConfiguration, java.lang.ClassLoader, com.ibm.wsspi.injectionengine.ReferenceContext, com.ibm.ws.container.service.metadata.MetaDataService, com.ibm.websphere.csi.J2EENameFactory)

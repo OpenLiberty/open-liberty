@@ -58,7 +58,6 @@ Service-Component: \
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
     properties:="\
-      service.vendor=IBM,\
       classes=com.ibm.ws.security.mp.jwt.impl.DefaultJsonWebTokenImpl"
 
 -dsannotations: com.ibm.ws.security.mp.jwt.impl.MicroProfileJwtConfigImpl, \

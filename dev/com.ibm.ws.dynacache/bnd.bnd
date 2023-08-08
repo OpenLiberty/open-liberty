@@ -34,11 +34,10 @@ Service-Component: \
  com.ibm.ws.cache.deserialization; \
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
-    properties:="packages=com.ibm.ws.cache;service.vendor=IBM",\
+    properties:="packages=com.ibm.ws.cache",\
  com.ibm.ws.cache.util.SerializationUtility;\
     implementation:=com.ibm.ws.cache.util.SerializationUtility;\
-    serializationService=com.ibm.ws.serialization.SerializationService;\
-    properties:="service.vendor=IBM"
+    serializationService=com.ibm.ws.serialization.SerializationService
 
 Export-Package: \
  com.ibm.websphere.cache*; provide:=true, \

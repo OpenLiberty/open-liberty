@@ -43,13 +43,11 @@ Service-Component: \
     basicAuthCredentialProvider='com.ibm.ws.security.credentials.CredentialProvider(type=BasicAuthCredential)'; \
     optional:='credentialProvider,basicAuthCredentialProvider'; \
     multiple:='credentialProvider'; \
-    dynamic:='credentialProvider,basicAuthCredentialProvider'; \
-    properties:="service.vendor=IBM", \
+    dynamic:='credentialProvider,basicAuthCredentialProvider', \
   com.ibm.ws.security.credentials.classProvider;\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
     properties:="\
-      service.vendor=IBM,\
       classes=com.ibm.ws.security.authentication.principals.WSPrincipal|\
               com.ibm.ws.security.credentials.wscred.WSCredentialImpl"
 

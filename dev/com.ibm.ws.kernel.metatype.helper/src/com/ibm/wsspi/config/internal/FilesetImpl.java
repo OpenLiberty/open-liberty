@@ -59,8 +59,7 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
            immediate = true,
            configurationPid = "com.ibm.ws.kernel.metatype.helper.fileset",
            property = {
-                        "service.vendor=IBM",
-                        "monitor.filter=files",
+                                                "monitor.filter=files",
                         "monitor.recurse:Boolean=false" })
 public class FilesetImpl implements Fileset, FileMonitor, ServicePropertySupplier {
     private static final TraceComponent tc = Tr.register(FilesetImpl.class);

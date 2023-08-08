@@ -28,7 +28,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 
-@Component(configurationPolicy=IGNORE,property={"service.vendor=ibm","osgi.jndi.url.scheme=corbaname"})
+@Component(configurationPolicy=IGNORE,property={"osgi.jndi.url.scheme=corbaname"})
 public class CorbanameUrlContextFactory extends UrlContextFactory implements ObjectFactory, ApplicationRecycleComponent {
     static class Escaper{
         static final TraceComponent tc = Tr.register(CorbanameUrlContextFactory.Escaper.class);

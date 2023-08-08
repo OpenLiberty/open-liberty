@@ -23,7 +23,7 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.application.handler.ApplicationInformation;
 
 @Component(service = DeployedAppInfoFactory.class,
-property = { "service.vendor=IBM", "type:String=sar" })
+property = { "type:String=sar" })
 public class SARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
 
 	protected ModuleHandler webModuleHandler;

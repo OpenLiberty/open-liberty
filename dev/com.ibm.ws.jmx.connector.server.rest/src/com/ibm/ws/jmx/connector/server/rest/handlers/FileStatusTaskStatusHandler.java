@@ -43,8 +43,7 @@ import com.ibm.wsspi.rest.handler.helper.RESTHandlerMethodNotAllowedError;
 @Component(service = { RESTHandler.class },
            configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
-           property = { "service.vendor=IBM",
-                       RESTHandler.PROPERTY_REST_HANDLER_CONTEXT_ROOT + "=" + APIConstants.JMX_CONNECTOR_API_ROOT_PATH,
+           property = {                        RESTHandler.PROPERTY_REST_HANDLER_CONTEXT_ROOT + "=" + APIConstants.JMX_CONNECTOR_API_ROOT_PATH,
                        RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + APIConstants.PATH_FILE_STATUS,
                        RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + APIConstants.PATH_FILE_STATUS_TASKID })
 public class FileStatusTaskStatusHandler implements RESTHandler {

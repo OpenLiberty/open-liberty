@@ -61,8 +61,7 @@ Service-Component: \
     credentialsService=com.ibm.ws.security.credentials.CredentialsService; \
     optional:='delegationProvider,defaultDelegationProvider,credentialsService'; \
     greedy:='delegationProvider,defaultDelegationProvider'; \
-    dynamic:='delegationProvider,defaultDelegationProvider'; \
-    properties:="service.vendor=IBM", \
+    dynamic:='delegationProvider,defaultDelegationProvider', \
   com.ibm.ws.security.authentication.cache; \
     implementation:=com.ibm.ws.security.authentication.internal.cache.AuthCacheServiceImpl; \
     provide:='com.ibm.ws.security.authentication.cache.AuthCacheService,com.ibm.ws.security.registry.UserRegistryChangeListener,com.ibm.ws.security.notifications.SecurityChangeListener'; \
@@ -75,28 +74,23 @@ Service-Component: \
     optional:='cacheKeyProvider,cacheEvictionListener,credentialsService,cacheService,serverStartedPhase2'; \
     multiple:='cacheKeyProvider,cacheEvictionListener'; \
     dynamic:='serverStartedPhase2'; \
-    properties:="service.vendor=IBM,cacheService.target=(id=unbound)", \
+    properties:="cacheService.target=(id=unbound)", \
   com.ibm.ws.security.authentication.internal.cache.keyproviders.BasicAuthCacheKeyProvider; \
     implementation:=com.ibm.ws.security.authentication.internal.cache.keyproviders.BasicAuthCacheKeyProvider; \
-    provide:=com.ibm.ws.security.authentication.cache.CacheKeyProvider; \
-    properties:="service.vendor=IBM", \
+    provide:=com.ibm.ws.security.authentication.cache.CacheKeyProvider, \
   com.ibm.ws.security.authentication.internal.cache.keyproviders.SSOTokenBytesCacheKeyProvider; \
     implementation:=com.ibm.ws.security.authentication.internal.cache.keyproviders.SSOTokenBytesCacheKeyProvider; \
-    provide:=com.ibm.ws.security.authentication.cache.CacheKeyProvider; \
-    properties:="service.vendor=IBM", \
+    provide:=com.ibm.ws.security.authentication.cache.CacheKeyProvider, \
   com.ibm.ws.security.authentication.internal.cache.keyproviders.X509CertCacheKeyProvider; \
     implementation:=com.ibm.ws.security.authentication.internal.cache.keyproviders.X509CertCacheKeyProvider; \
-    provide:=com.ibm.ws.security.authentication.cache.CacheKeyProvider; \
-    properties:="service.vendor=IBM", \
+    provide:=com.ibm.ws.security.authentication.cache.CacheKeyProvider, \
   com.ibm.ws.security.authentication.internal.cache.keyproviders.CustomCacheKeyProvider; \
     implementation:=com.ibm.ws.security.authentication.internal.cache.keyproviders.CustomCacheKeyProvider; \
     provide:=com.ibm.ws.security.authentication.cache.CacheKeyProvider; \
-    tokenManager=com.ibm.ws.security.token.TokenManager; \
-    properties:="service.vendor=IBM", \
+    tokenManager=com.ibm.ws.security.token.TokenManager, \
   com.ibm.ws.security.authentication.internal.cache.keyproviders.JwtSSOTokenBytesCacheKeyProvider; \
     implementation:=com.ibm.ws.security.authentication.internal.cache.keyproviders.JwtSSOTokenBytesCacheKeyProvider; \
-    provide:=com.ibm.ws.security.authentication.cache.CacheKeyProvider; \
-    properties:="service.vendor=IBM", \
+    provide:=com.ibm.ws.security.authentication.cache.CacheKeyProvider, \
   com.ibm.ws.security.authentication.UnauthenticatedSubjectService; \
     implementation:=com.ibm.ws.security.authentication.internal.UnauthenticatedSubjectServiceImpl; \
     provide:='com.ibm.ws.security.authentication.UnauthenticatedSubjectService,com.ibm.ws.security.registry.UserRegistryChangeListener'; \
@@ -108,8 +102,7 @@ Service-Component: \
     credentialProvider=com.ibm.ws.security.credentials.CredentialProvider; \
     optional:='credentialProvider'; \
     multiple:='credentialProvider'; \
-	dynamic:='credentialProvider'; \
-    properties:="service.vendor=IBM"
+	dynamic:='credentialProvider'
 
 -dsannotations: \
   com.ibm.ws.security.authentication.internal.jaas.JAASServiceImpl, \

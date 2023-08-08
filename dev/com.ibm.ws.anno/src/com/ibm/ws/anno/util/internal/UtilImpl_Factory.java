@@ -30,7 +30,7 @@ import com.ibm.wsspi.anno.util.Util_Factory;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 import com.ibm.wsspi.anno.util.Util_InternMap.ValueType;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class UtilImpl_Factory implements Util_Factory {
     private static final TraceComponent tc = Tr.register(UtilImpl_Factory.class);
     public static final String CLASS_NAME = UtilImpl_Factory.class.getName();

@@ -50,7 +50,7 @@ import com.ibm.ws.kernel.service.util.SecureAction;
  * Object factory to inject a proxy instance for fields annotated with @Context.
  * The proxy will get the actual Object off the RuntimeContext.
  */
-@Component(name = "com.ibm.ws.jaxrs20.component.injection.ContextObjectFactory", service = javax.naming.spi.ObjectFactory.class, property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.jaxrs20.component.injection.ContextObjectFactory", service = javax.naming.spi.ObjectFactory.class)
 public class ContextObjectFactory implements ObjectFactory {
 
     private static final TraceComponent tc = Tr.register(ContextObjectFactory.class, TR_GROUP, TR_RESOURCE_BUNDLE);

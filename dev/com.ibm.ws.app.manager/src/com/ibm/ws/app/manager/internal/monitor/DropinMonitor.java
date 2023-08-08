@@ -56,8 +56,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  * appropriate.
  */
 @Component(service = DropinMonitor.class, immediate = true,
-           configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = "service.vendor=IBM")
+           configurationPolicy = ConfigurationPolicy.IGNORE)
 public class DropinMonitor {
     private static final TraceComponent _tc = Tr.register(DropinMonitor.class, new String[] { "applications", com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_GROUP },
                                                           com.ibm.ws.app.manager.internal.AppManagerConstants.TRACE_MESSAGES,

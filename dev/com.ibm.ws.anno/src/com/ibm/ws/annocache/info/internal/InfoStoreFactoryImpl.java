@@ -26,7 +26,7 @@ import com.ibm.wsspi.annocache.info.InfoStoreException;
 import com.ibm.wsspi.annocache.info.InfoStoreFactory;
 import com.ibm.wsspi.annocache.util.Util_Factory;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class InfoStoreFactoryImpl implements InfoStoreFactory {
     private static final Logger logger = Logger.getLogger("com.ibm.ws.annocache.info");
 

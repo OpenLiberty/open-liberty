@@ -39,8 +39,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
  *
  */
 @Component(service = JAASConfigurationFactory.class,
-                configurationPolicy = ConfigurationPolicy.IGNORE,
-                property = "service.vendor=IBM")
+                configurationPolicy = ConfigurationPolicy.IGNORE)
 public class JAASConfigurationFactory {
 
     private static TraceComponent tc = Tr.register(JAASConfigurationFactory.class);

@@ -27,7 +27,7 @@ import com.ibm.ws.io.smallrye.graphql.component.GraphQLServletContainerInitializ
 
 import org.osgi.service.component.annotations.Component;
 
-@Component(property = { "service.vendor=IBM" })
+@Component
 public class GraphQLAuthorizationServletContainerInitializer implements ServletContainerInitializer {
     private static final TraceComponent tc = Tr.register(GraphQLAuthorizationServletContainerInitializer.class);
     private static final String AUTH_FILTER_NAME = "AuthorizationFilter";

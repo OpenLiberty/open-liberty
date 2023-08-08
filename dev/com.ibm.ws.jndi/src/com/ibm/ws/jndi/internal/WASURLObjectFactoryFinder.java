@@ -35,7 +35,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-@Component(configurationPolicy = IGNORE, property = "service.vendor=IBM")
+@Component(configurationPolicy = IGNORE)
 public class WASURLObjectFactoryFinder implements URLObjectFactoryFinder {
     private static final TraceComponent tc = Tr.register(WASURLObjectFactoryFinder.class);
 

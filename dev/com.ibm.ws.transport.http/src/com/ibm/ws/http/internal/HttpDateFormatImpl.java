@@ -43,7 +43,7 @@ import com.ibm.wsspi.http.HttpDateFormat;
  * HTTP formats.
  * <br>
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class HttpDateFormatImpl implements HttpDateFormat {
 
     /** RAS trace variable */

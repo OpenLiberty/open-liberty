@@ -26,25 +26,21 @@ Service-Component: com.ibm.ws.jaxws.webcontainer.jaxWsWebContainerManager; \
      webModuleHandler='com.ibm.ws.app.manager.module.internal.ModuleHandler(type=web)'; \
      artifactContainerFactory=com.ibm.wsspi.artifact.factory.ArtifactContainerFactory; \
      adaptableModuleFactory= com.ibm.wsspi.adaptable.module.AdaptableModuleFactory; \
-     wsLocationAdmin=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
-     properties:="service.vendor=IBM", \
+     wsLocationAdmin=com.ibm.wsspi.kernel.service.location.WsLocationAdmin, \
   com.ibm.ws.jaxws.webcontainer.extensionFactory; \
      implementation:=com.ibm.ws.jaxws.webcontainer.JaxWsExtensionFactory; \
      provide:='com.ibm.wsspi.webcontainer.extension.ExtensionFactory'; \
      endpointPublisherManager=com.ibm.ws.jaxws.endpoint.EndpointPublisherManager; \
-     jaxWsWebAppConfigurator=com.ibm.ws.jaxws.webcontainer.JaxWsWebAppConfigurator*; \
-     properties:="service.vendor=IBM", \
+     jaxWsWebAppConfigurator=com.ibm.ws.jaxws.webcontainer.JaxWsWebAppConfigurator*, \
   com.ibm.ws.jaxws.webcontainer.webEndpointPublisher; \
      implementation:=com.ibm.ws.jaxws.webcontainer.WebEndpointPublisher; \
      provide:='com.ibm.ws.jaxws.endpoint.EndpointPublisher'; \
      jaxWsEndpointConfiguratorManager=com.ibm.ws.jaxws.endpoint.JaxWsEndpointConfiguratorManager;\
-     ImplBeanCustomizer/registerImplBeanCustomizer=com.ibm.ws.jaxws.ImplBeanCustomizer*;\
-     properties:="service.vendor=IBM", \
+     ImplBeanCustomizer/registerImplBeanCustomizer=com.ibm.ws.jaxws.ImplBeanCustomizer*, \
   com.ibm.ws.jaxws.router.initializer; \
      implementation:=com.ibm.ws.jaxws.webcontainer.JaxWsRouterServletContainerInitializer; \
      provide:=javax.servlet.ServletContainerInitializer; \
-     immediate:=true;\
-     properties:="service.vendor=IBM"
+     immediate:=true
   
 
 Export-Package: \

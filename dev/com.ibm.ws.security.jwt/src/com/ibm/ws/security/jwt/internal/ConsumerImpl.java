@@ -48,7 +48,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
  *
  * @ibm-api
  */
-@Component(service = Consumer.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM", name = "consumer")
+@Component(service = Consumer.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = name = "consumer")
 public class ConsumerImpl implements Consumer {
 
 	private static final TraceComponent tc = Tr.register(ConsumerImpl.class, TraceConstants.TRACE_GROUP,

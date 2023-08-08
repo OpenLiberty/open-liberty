@@ -24,8 +24,7 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
 @Component(name = "com.ibm.ws.jaxrs20.concurrent.component.ManagedExecutorRunnableWrapper",
            service = AsyncClientRunnableWrapper.class,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class ManagedExecutorRunnableWrapper implements AsyncClientRunnableWrapper {
 
     @Override

@@ -37,7 +37,7 @@ import com.ibm.wsspi.ssl.SSLSupport;
 import io.openliberty.org.jboss.resteasy.common.client.JAXRSClientConstants;
 import io.openliberty.restfulWS.client.ClientBuilderListener;
 
-@Component(immediate = true, property = { "service.vendor=IBM" }, service = ClientBuilderListener.class)
+@Component(immediate = true, service = ClientBuilderListener.class)
 public class SslClientBuilderListener implements ClientBuilderListener {
 
     private static JSSEHelper jsseHelper;

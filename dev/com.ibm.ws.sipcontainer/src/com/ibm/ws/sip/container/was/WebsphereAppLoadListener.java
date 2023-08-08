@@ -56,8 +56,7 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
 configurationPid = "com.ibm.ws.sip.container.was.WebsphereAppLoadListener",
-service = com.ibm.wsspi.webcontainer.collaborator.WebAppInitializationCollaborator.class,
-property = {"service.vendor=IBM"} )
+service = com.ibm.wsspi.webcontainer.collaborator.WebAppInitializationCollaborator.class)
 public class WebsphereAppLoadListener implements WebAppInitializationCollaborator
 {
 	/**

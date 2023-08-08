@@ -34,4 +34,4 @@ Service-Component: \
     provide:=com.ibm.wsspi.security.tai.TrustAssociationInterceptor; \
     configurationAdmin=org.osgi.service.cm.ConfigurationAdmin; \
     dynamic:=configurationAdmin; \
-    properties:="com.ibm.websphere.security.invokeAfterSSO:Boolean=true, TAIName=SampleTAI, service.vendor=IBM"
+    properties:="com.ibm.websphere.security.invokeAfterSSO:Boolean=true, TAIName=SampleTAI"

@@ -42,18 +42,18 @@ Service-Component: \
     provide:=javax.naming.spi.ObjectFactory;\
     configuration-policy:=ignore;\
     helpers/addHelper=com.ibm.ws.container.service.naming.JavaColonNamingHelper*;\
-    properties:="service.vendor=IBM, osgi.jndi.url.scheme=java",\
+    properties:=" osgi.jndi.url.scheme=java",\
   com.ibm.ws.jndi.javacolon.names;\
     implementation:=com.ibm.ws.jndi.url.contexts.javacolon.internal.JavaColonNameService;\
     provide:='com.ibm.ws.container.service.metadata.ApplicationMetaDataListener,\
               com.ibm.ws.container.service.metadata.ModuleMetaDataListener,\
               com.ibm.ws.container.service.naming.JavaColonNamingHelper';\
     metaDataSlotService=com.ibm.ws.container.service.metadata.MetaDataSlotService;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.container.service.naming.JavaColonName",\
+    properties:="toType=com.ibm.ws.container.service.naming.JavaColonName",\
   com.ibm.ws.ejbcontainer.classProvider;\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
-    properties:="service.vendor=IBM,\
+    properties:="\
       classes=com.ibm.ws.jndi.url.contexts.javacolon.internal.JavaURLContextReplacement"
 
 instrument.classesExcludes: com/ibm/ws/jndi/internal/url/contexts/resources/*.class

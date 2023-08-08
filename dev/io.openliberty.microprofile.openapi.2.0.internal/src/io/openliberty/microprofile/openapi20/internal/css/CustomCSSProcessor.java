@@ -72,8 +72,7 @@ import io.openliberty.microprofile.openapi20.internal.utils.MessageConstants;
  * 2) the header contains* sections with the exact text ".swagger-ui .headerbar "
  * 3) the CSS is a valid document.
  */
-@Component(service = { CustomCSSProcessor.class, ServerQuiesceListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true,
-           property = { "service.vendor=IBM" })
+@Component(service = { CustomCSSProcessor.class, ServerQuiesceListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public final class CustomCSSProcessor implements FileMonitor, ServerQuiesceListener {
 
     private static final TraceComponent tc = Tr.register(CustomCSSProcessor.class);

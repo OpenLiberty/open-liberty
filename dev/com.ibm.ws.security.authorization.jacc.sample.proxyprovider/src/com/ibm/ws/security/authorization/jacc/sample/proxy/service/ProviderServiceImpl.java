@@ -60,8 +60,7 @@ import com.ibm.wsspi.security.authorization.jacc.ProviderService;
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE,
            name = "com.ibm.ws.security.authorization.jacc.sample.proxyprovider",
            service = ProviderService.class,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class ProviderServiceImpl implements ProviderService {
     private static final TraceComponent tc = Tr.register(ProviderServiceImpl.class);
 

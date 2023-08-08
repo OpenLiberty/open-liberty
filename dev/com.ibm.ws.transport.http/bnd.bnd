@@ -72,36 +72,35 @@ Service-Component: \
         provide:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
         modified:='modified';\
         immediate:=true;\
-        properties:="service.vendor=IBM,service.ranking:Integer=0", \
+        properties:="service.ranking:Integer=0", \
     com.ibm.ws.http.logging.source.accesslog;\
         implementation:=com.ibm.ws.http.logging.source.AccessLogSource;\
         provide:=com.ibm.wsspi.collector.manager.Source; \
-        bufferManager='com.ibm.wsspi.collector.manager.BufferManager(source=com.ibm.ws.http.logging.source.accesslog)'; \
-        properties:="service.vendor=IBM", \
+        bufferManager='com.ibm.wsspi.collector.manager.BufferManager(source=com.ibm.ws.http.logging.source.accesslog)', \
     com.ibm.ws.http.remoteip; \
     	implementation:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
     	provide:=com.ibm.wsspi.channelfw.ChannelConfiguration;\
     	modified:='modified';\
     	immediate:=true;\
-    	properties:="service.vendor=IBM,service.ranking:Integer=0,type:String=RemoteIp", \
+    	properties:="service.ranking:Integer=0,type:String=RemoteIp", \
     com.ibm.ws.http.compression; \
     	implementation:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
     	provide:=com.ibm.wsspi.channelfw.ChannelConfiguration;\
     	modified:='modified';\
     	immediate:=true;\
-    	properties:="service.vendor=IBM,service.ranking:Integer=0,type:String=Compression", \
+    	properties:="service.ranking:Integer=0,type:String=Compression", \
     com.ibm.ws.http.samesite; \
     	implementation:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
     	provide:=com.ibm.wsspi.channelfw.ChannelConfiguration;\
     	modified:='modified';\
     	immediate:=true;\
-    	properties:="service.vendor=IBM,service.ranking:Integer=0,type:String=samesite", \
+    	properties:="service.ranking:Integer=0,type:String=samesite", \
     com.ibm.ws.http.headers; \
     	implementation:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
     	provide:=com.ibm.wsspi.channelfw.ChannelConfiguration;\
     	modified:='modified';\
     	immediate:=true;\
-    	properties:="service.vendor=IBM,service.ranking:Integer=0,type:String=headers"
+    	properties:="service.ranking:Integer=0,type:String=headers"
 
 Provide-Capability: \
     welcome.translation.provider; \

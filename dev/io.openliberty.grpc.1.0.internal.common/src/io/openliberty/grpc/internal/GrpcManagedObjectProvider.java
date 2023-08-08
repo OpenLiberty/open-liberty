@@ -36,7 +36,7 @@ import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-@Component(name = "io.openliberty.grpc.internal.GrpcManagedObjectProvider", immediate = true, property = { "service.vendor=IBM" })
+@Component(name = "io.openliberty.grpc.internal.GrpcManagedObjectProvider", immediate = true)
 public class GrpcManagedObjectProvider implements ModuleStateListener {
 	
     private static final TraceComponent tc = Tr.register(GrpcManagedObjectProvider.class);

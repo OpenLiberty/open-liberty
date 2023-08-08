@@ -28,7 +28,7 @@ import com.ibm.ws.cdi.internal.interfaces.SecurityContextStore;
 /**
  * Implementation of {@link SecurityContextStore} which can retrieve the current principal when running in the client container.
  */
-@Component(name = "com.ibm.ws.cdi.ClientSecurityContextStore", immediate = true, property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.cdi.ClientSecurityContextStore", immediate = true)
 public class ClientSecurityContextStore implements SecurityContextStore {
 
     private static final TraceComponent tc = Tr.register(ClientSecurityContextStore.class);

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -41,8 +41,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 import io.smallrye.reactive.streams.Engine;
 
 @Component(name = "com.ibm.ws.microprofile.reactive.streams.operators.spi.impl.WASReactiveStreamsEngineImpl", service = {
-        ReactiveStreamsEngine.class }, property = {
-                "service.vendor=IBM" }, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
+        ReactiveStreamsEngine.class }, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class WASReactiveStreamsEngineImpl extends Engine implements ReactiveStreamsEngine {
 
     private static final TraceComponent tc = Tr.register(WASReactiveStreamsEngineImpl.class);

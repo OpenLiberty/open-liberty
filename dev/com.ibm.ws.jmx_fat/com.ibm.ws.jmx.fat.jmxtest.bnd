@@ -36,28 +36,27 @@ Service-Component: \
     provide:='javax.management.DynamicMBean';\
     immediate:=true;\
     configuration-policy:=ignore;\
-    properties:="service.vendor=IBM,jmx.objectname=WebSphere:name=com.ibm.ws.jmx.test.fat.testBean1",\
+    properties:="jmx.objectname=WebSphere:name=com.ibm.ws.jmx.test.fat.testBean1",\
   com.ibm.ws.jmx.test.fat.testBean2;\
     implementation:=com.ibm.ws.jmx.test.fat.TestBean2;\
     provide:='javax.management.DynamicMBean';\
     immediate:=true;\
     configuration-policy:=ignore;\
-    properties:="service.vendor=IBM,jmx.objectname=WebSphere:name=com.ibm.ws.jmx.test.fat.testBean2",\
+    properties:="jmx.objectname=WebSphere:name=com.ibm.ws.jmx.test.fat.testBean2",\
   com.ibm.ws.jmx.test.fat.testBean3;\
     implementation:=com.ibm.ws.jmx.test.fat.TestBean3;\
     provide:='javax.management.DynamicMBean';\
     immediate:=false;\
     configuration-policy:=ignore;\
-    properties:="service.vendor=IBM,jmx.objectname=WebSphere:name=com.ibm.ws.jmx.test.fat.testBean3",\
+    properties:="jmx.objectname=WebSphere:name=com.ibm.ws.jmx.test.fat.testBean3",\
   com.ibm.ws.jmx.test.fat.beanCounter;\
     implementation:=com.ibm.ws.jmx.test.fat.BeanCounter;\
     jmxServer=com.ibm.ws.jmx.PlatformMBeanService;\
     provide:='javax.management.DynamicMBean';\
     immediate:=true;\
     configuration-policy:=ignore;\
-    properties:="service.vendor=IBM,jmx.objectname=WebSphere:name=com.ibm.ws.jmx.test.fat.beanCounter",\
+    properties:="jmx.objectname=WebSphere:name=com.ibm.ws.jmx.test.fat.beanCounter",\
   ServerTestConnector;\
     implementation:=com.ibm.ws.jmx.test.fat.ServerConnector;\
     jmxServer=com.ibm.ws.jmx.PlatformMBeanService;\
-    immediate:=true;\
-    properties:="service.vendor=IBM"
+    immediate:=true

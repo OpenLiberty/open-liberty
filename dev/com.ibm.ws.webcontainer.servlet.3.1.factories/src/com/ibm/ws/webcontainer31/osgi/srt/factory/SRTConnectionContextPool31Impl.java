@@ -20,7 +20,7 @@ import com.ibm.ws.webcontainer31.osgi.srt.SRTConnectionContext31;
 /**
  * A simple pool for SRTConnectionContext31 objects.
  */
-@Component(property = { "service.vendor=IBM", "service.ranking:Integer=31", "servlet.version=3.1" })
+@Component(property = { "service.ranking:Integer=31", "servlet.version=3.1" })
 public class SRTConnectionContextPool31Impl implements SRTConnectionContextPool {
     private final ThreadLocal<com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext> head = new ThreadLocal<com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext>();
 

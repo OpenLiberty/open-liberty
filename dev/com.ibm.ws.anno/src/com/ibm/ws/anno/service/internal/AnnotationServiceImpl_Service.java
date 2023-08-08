@@ -22,15 +22,13 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.anno.info.internal.InfoStoreFactoryImpl;
-import com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Factory;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 import com.ibm.wsspi.anno.info.InfoStoreFactory;
 import com.ibm.wsspi.anno.service.AnnotationService_Service;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Factory;
 import com.ibm.wsspi.anno.util.Util_Factory;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class AnnotationServiceImpl_Service implements AnnotationService_Service {
     public static final TraceComponent tc = Tr.register(AnnotationServiceImpl_Service.class);
     public static final String CLASS_NAME = AnnotationServiceImpl_Service.class.getName();

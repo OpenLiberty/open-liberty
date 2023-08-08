@@ -25,7 +25,7 @@ Bundle-Description: CDI 1.2 EJB, version ${bVersion}
 Service-Component: com.ibm.ws.cdi_1_2.ejb.deserializationClassProvider;\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
-    properties:="service.vendor=IBM,\
+    properties:="\
       packages=com.ibm.ws.cdi.ejb.interceptor\
               |com.ibm.ws.cdi.ejb.interceptor.liberty\
               |com.ibm.ws.cdi.ejb.security"

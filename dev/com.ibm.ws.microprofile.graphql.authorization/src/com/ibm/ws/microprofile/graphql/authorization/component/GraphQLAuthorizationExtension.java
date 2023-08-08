@@ -32,8 +32,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
 immediate = true,
 property = { "api.classes=org.eclipse.microprofile.graphql.GraphQLApi",
-             "bean.defining.annotations=org.eclipse.microprofile.graphql.GraphQLApi",
-             "service.vendor=IBM" })
+             "bean.defining.annotations=org.eclipse.microprofile.graphql.GraphQLApi" })
 public class GraphQLAuthorizationExtension implements Extension, WebSphereCDIExtension {
     TraceComponent tc = Tr.register(GraphQLAuthorizationExtension.class);
 

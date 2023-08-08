@@ -65,7 +65,7 @@ import com.ibm.wsspi.sib.core.DestinationType;
  * A Singleton class to fetch JsAdminServiceImpl
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, 
-           property={"type=com.ibm.ws.sib.admin.JsMainAdminService", "service.vendor=IBM"})
+           property={"type=com.ibm.ws.sib.admin.JsMainAdminService"})
 public class JsMainAdminServiceImpl implements Singleton, JsMainAdminService {
 
     /** RAS trace variable */

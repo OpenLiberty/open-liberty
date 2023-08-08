@@ -82,7 +82,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.security.oauth20.JwtAccessTokenMediator;
 import com.ibm.wsspi.security.oauth20.TokenIntrospectProvider;
 
-@Component(service = OAuth20EndpointServices.class, name = "com.ibm.ws.security.oauth20.web.OAuth20EndpointServices", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
+@Component(service = OAuth20EndpointServices.class, name = "com.ibm.ws.security.oauth20.web.OAuth20EndpointServices", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class OAuth20EndpointServices {
     private static TraceComponent tc = Tr.register(OAuth20EndpointServices.class);
     private static TraceComponent tc2 = Tr.register(OAuth20EndpointServices.class, // use this one when bundle is the usual bundle.

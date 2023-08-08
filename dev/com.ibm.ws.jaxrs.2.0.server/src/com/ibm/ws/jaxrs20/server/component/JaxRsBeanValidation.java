@@ -27,7 +27,7 @@ import com.ibm.ws.jaxrs20.api.JaxRsBeanValidationService;
 /**
  * 
  */
-@Component(name = "com.ibm.ws.jaxrs20.server.component.JaxRsBeanValidation", immediate = true, property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.jaxrs20.server.component.JaxRsBeanValidation", immediate = true)
 public class JaxRsBeanValidation {
     private static final TraceComponent tc = Tr.register(JaxRsBeanValidation.class);
     private static volatile JaxRsBeanValidationService veanValidationService = null;

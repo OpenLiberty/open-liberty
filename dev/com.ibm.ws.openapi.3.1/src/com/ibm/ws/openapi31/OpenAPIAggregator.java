@@ -54,7 +54,7 @@ import com.ibm.wsspi.openapi31.OASProvider;
 /**
  *
  */
-@Component(name = "OpenAPIAggregator", service = { OpenAPIAggregator.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
+@Component(name = "OpenAPIAggregator", service = { OpenAPIAggregator.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class OpenAPIAggregator {
 
     private static final TraceComponent tc = Tr.register(OpenAPIAggregator.class,com.ibm.ws.openapi31.TraceConstants.TRACE_GROUP, com.ibm.ws.openapi31.TraceConstants.TRACE_BUNDLE_CORE);

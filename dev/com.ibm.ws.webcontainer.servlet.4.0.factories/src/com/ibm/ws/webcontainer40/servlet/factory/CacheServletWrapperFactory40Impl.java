@@ -22,7 +22,7 @@ import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.ws.webcontainer40.servlet.CacheServletWrapper40;
 import com.ibm.wsspi.webcontainer.servlet.IServletWrapper;
 
-@Component(service = CacheServletWrapperFactory.class, property = { "service.vendor=IBM" })
+@Component(service = CacheServletWrapperFactory.class)
 public class CacheServletWrapperFactory40Impl implements CacheServletWrapperFactory {
 
     @Override

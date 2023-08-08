@@ -46,8 +46,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
            name = "SpnegoHelperProxy",
            configurationPid = "com.ibm.ws.security.spnego.internal.SpnegoHelperProxy",
            immediate = true,
-           configurationPolicy = ConfigurationPolicy.REQUIRE,
-           property = "service.vendor=IBM")
+           configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class SpnegoHelperProxy {
     private static Map<String, Object> delegateSubjectCache = null;
     private static final int MAX_CACHE = 10;

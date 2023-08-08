@@ -57,8 +57,7 @@ import com.ibm.wsspi.timer.QuickApproxTime;
  * HTTP traffic to registered HttpContainers
  */
 @Component(configurationPid = "com.ibm.ws.http.dispatcher",
-           service = HttpDispatcher.class,
-           property = { "service.vendor=IBM" })
+           service = HttpDispatcher.class)
 public class HttpDispatcher {
     /** trace variable */
     private static final TraceComponent tc = Tr.register(HttpDispatcher.class);

@@ -69,7 +69,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 @Component(configurationPid = "com.ibm.ws.ejbcontainer.mdb.internal.MDBRuntimeImpl",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            immediate = true,
-           property = { "service.vendor=IBM", "application.prereq.id=MDBRuntime" })
+           property = { "application.prereq.id=MDBRuntime" })
 public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener, ApplicationPrereq {
     private static final TraceComponent tc = Tr.register(MDBRuntimeImpl.class);
 

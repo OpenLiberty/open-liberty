@@ -24,7 +24,7 @@ import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
 
-@Component(name = "com.ibm.ws.security.social.twitter", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = SocialLoginConfig.class, property = { "service.vendor=IBM", "type=twitterLogin" })
+@Component(name = "com.ibm.ws.security.social.twitter", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = SocialLoginConfig.class, property = { "type=twitterLogin" })
 public class TwitterLoginConfigImpl extends Oauth2LoginConfigImpl {
     public static final TraceComponent tc = Tr.register(TwitterLoginConfigImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 

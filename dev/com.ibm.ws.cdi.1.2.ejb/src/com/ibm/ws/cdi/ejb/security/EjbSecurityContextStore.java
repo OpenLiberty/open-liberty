@@ -30,7 +30,7 @@ import com.ibm.ws.cdi.internal.interfaces.SecurityContextStore;
  * of state data.
  *
  */
-@Component(name = "com.ibm.ws.cdi.ejb.security.EJBSecurityContextStore", immediate = true, property = { "service.vendor=IBM", "service.ranking:Integer=99" })
+@Component(name = "com.ibm.ws.cdi.ejb.security.EJBSecurityContextStore", immediate = true, property = { "service.ranking:Integer=99" })
 public class EjbSecurityContextStore implements SecurityContextStore {
 
     private static final TraceComponent tc = Tr.register(EjbSecurityContextStore.class);

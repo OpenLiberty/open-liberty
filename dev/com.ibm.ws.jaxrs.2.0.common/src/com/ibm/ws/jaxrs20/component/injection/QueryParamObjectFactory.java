@@ -44,7 +44,7 @@ import com.ibm.ws.jaxrs20.injection.metadata.InjectionRuntimeContext;
  * Object factory to inject a proxy instance for fields annotated with @Context.
  * The proxy will get the actual Object off the RuntimeContext.
  */
-@Component(name = "com.ibm.ws.jaxrs20.component.injection.QueryParamObjectFactory", service = javax.naming.spi.ObjectFactory.class, property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.jaxrs20.component.injection.QueryParamObjectFactory", service = javax.naming.spi.ObjectFactory.class)
 public class QueryParamObjectFactory implements ObjectFactory {
 
     private static final TraceComponent tc = Tr.register(QueryParamObjectFactory.class, TR_GROUP, TR_RESOURCE_BUNDLE);

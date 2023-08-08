@@ -28,8 +28,7 @@ import com.ibm.websphere.ras.TraceComponent;
 
 @Component(immediate = true,
            configurationPid = "com.ibm.ws.jaxrs20.common.clientConfig",
-           configurationPolicy = ConfigurationPolicy.REQUIRE,
-           property = { "service.vendor=IBM" })
+           configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class JAXRSClientConfig {
     private static final TraceComponent tc = Tr.register(JAXRSClientConfig.class);
     private static final String URI = "uri";

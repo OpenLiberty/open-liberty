@@ -59,7 +59,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 /**
  *
  */
-@Component(service = ModuleRuntimeContainer.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "type:String=connector" })
+@Component(service = ModuleRuntimeContainer.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "type:String=connector" })
 public class ConnectorModuleRuntimeContainer implements ModuleRuntimeContainer {
 
     private static final TraceComponent tc = Tr.register(ConnectorModuleRuntimeContainer.class);

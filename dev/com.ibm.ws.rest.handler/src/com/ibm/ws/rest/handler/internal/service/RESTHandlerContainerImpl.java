@@ -61,8 +61,7 @@ import com.ibm.wsspi.rest.handler.helper.RESTRoutingHelper;
  */
 @Component(service = { RESTHandlerContainer.class },
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class RESTHandlerContainerImpl implements RESTHandlerContainer {
     private static final TraceComponent tc = Tr.register(RESTHandlerContainerImpl.class);
 

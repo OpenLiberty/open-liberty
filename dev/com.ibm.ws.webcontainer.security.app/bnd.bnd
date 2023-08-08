@@ -53,7 +53,7 @@ Service-Component: \
     greedy:='ssoAuthFilter,interceptorService, webAuthenticator, unprotectedResourceService,authenticatorFactory'; \
     optional:='taiService,interceptorService,webAuthenticator,jaccService,unprotectedResourceService,webAppSecurityConfigChangeListener,loggedOutCookieCacheService'; \
     dynamic:='ssoAuthFilter,taiService,interceptorService,webAuthenticator,jaccService,unprotectedResourceService,authenticatorFactory,webAppSecurityConfigChangeListener'; \
-    properties:="service.vendor=IBM,loggedOutCookieCacheService.target=(id=unbound)", \
+    properties:="loggedOutCookieCacheService.target=(id=unbound)", \
   com.ibm.ws.webcontainer.security.ServletStartedListener; \
     implementation:=com.ibm.ws.webcontainer.security.ServletStartedListener; \
     provide:='com.ibm.wsspi.webcontainer.collaborator.WebAppInitializationCollaborator'; \
@@ -62,14 +62,12 @@ Service-Component: \
     jaccService=com.ibm.ws.security.authorization.jacc.JaccService;\
     dynamic:='jaccService';\
     optional:='jaccService';\
-    configuration-policy:=ignore;\
-    properties:="service.vendor=IBM", \
+    configuration-policy:=ignore, \
   SecurityTransferContextService; \
     implementation:=com.ibm.ws.webcontainer.security.context.SecurityTransferContextService; \
     provide:=com.ibm.wsspi.webcontainer.servlet.ITransferContextService; \
     configuration-policy:=ignore; \
-    securityService=com.ibm.ws.security.SecurityService; \
-    properties:="service.vendor=IBM", \
+    securityService=com.ibm.ws.security.SecurityService, \
   MetaDataListenerImpl; \
     implementation:=com.ibm.ws.webcontainer.security.MetaDataListenerImpl; \
     provide:='com.ibm.ws.container.service.metadata.ModuleMetaDataListener'; \
@@ -78,7 +76,6 @@ Service-Component: \
     deactivate:=deactivate; \
     jaccService=com.ibm.ws.security.authorization.jacc.JaccService; \
     dynamic:='jaccService'; \
-    optional:='jaccService'; \
-    properties:="service.vendor=IBM"
+    optional:='jaccService'
 
 -buildpath: com.ibm.ws.webcontainer.security;version=latest

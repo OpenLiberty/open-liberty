@@ -42,7 +42,7 @@ import com.ibm.wsspi.webcontainer.collaborator.IWebAppSecurityCollaborator;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
-           property = { "service.vendor=IBM", "com.ibm.ws.security.type=com.ibm.ws.management" })
+           property = { "com.ibm.ws.security.type=com.ibm.ws.management" })
 public class WebAdminSecurityCollaboratorImpl extends WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborator {
     protected volatile WebAppSecurityConfig webAdminSecConfig = new WebAdminSecurityConfigImpl(null);
     private SecurityMetadata secMetadata = null;

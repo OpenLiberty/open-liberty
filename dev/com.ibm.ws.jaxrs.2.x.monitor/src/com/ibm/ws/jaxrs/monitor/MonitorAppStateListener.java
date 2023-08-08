@@ -19,7 +19,7 @@ import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.jaxrs.monitor.JaxRsMonitorFilter.RestMetricInfo;
 
-@Component(immediate = true, property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.IGNORE, service = {ApplicationStateListener.class})
+@Component(immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, service = {ApplicationStateListener.class})
 public class MonitorAppStateListener implements ApplicationStateListener {
 
 	@Override

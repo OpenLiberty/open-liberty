@@ -42,8 +42,7 @@ import com.ibm.wsspi.kernel.service.utils.FileUtils;
 
 @Component(service = FeatureListMBean.class,
            property = {
-                       "jmx.objectname=" + FeatureListMBean.OBJECT_NAME,
-                       "service.vendor=IBM" })
+                       "jmx.objectname=" + FeatureListMBean.OBJECT_NAME })
 public class FeatureListMBeanImpl extends StandardMBean implements FeatureListMBean {
 
     private static final TraceComponent tc = Tr.register(FeatureListMBeanImpl.class);

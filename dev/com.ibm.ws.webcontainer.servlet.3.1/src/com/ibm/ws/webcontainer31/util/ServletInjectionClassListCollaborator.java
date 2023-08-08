@@ -48,8 +48,7 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
  */
 @Component(name = "com.ibm.ws.webcontainer31.util.ServletInjectionClassListCollaborator",
            service = WebAppInjectionClassListCollaborator.class,
-           immediate = true,
-           property = { "service.vendor=IBM"})
+           immediate = true)
 public class ServletInjectionClassListCollaborator implements WebAppInjectionClassListCollaborator {
     private final static TraceComponent tc =
         Tr.register(ServletInjectionClassListCollaborator.class,

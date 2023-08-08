@@ -21,7 +21,7 @@ import com.ibm.ws.cache.servlet.CacheProxyResponseFactory;
 
 import org.osgi.service.component.annotations.Component;
 
-@Component(service=CacheProxyResponseFactory.class, property = { "service.vendor=IBM", "service.ranking:Integer=10" })
+@Component(service=CacheProxyResponseFactory.class, property = { "service.ranking:Integer=10" })
 public class CacheProxyResponseFactoryImpl31 implements CacheProxyResponseFactory {
 	 private static TraceComponent tc = Tr.register(CacheProxyResponseFactoryImpl31.class,
              "WebSphere Dynamic Cache", "com.ibm.ws.cache.resources.dynacache");

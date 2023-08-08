@@ -84,7 +84,7 @@ import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
-@Component(service = { IBatchKernelService.class, ServerQuiesceListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(service = { IBatchKernelService.class, ServerQuiesceListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class BatchKernelImpl implements IBatchKernelService, ServerQuiesceListener {
 
     private final static Logger logger = Logger.getLogger(BatchKernelImpl.class.getName(),

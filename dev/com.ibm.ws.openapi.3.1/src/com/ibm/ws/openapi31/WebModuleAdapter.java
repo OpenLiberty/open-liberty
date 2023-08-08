@@ -26,7 +26,7 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 /**
  *
  */
-@Component(service = ContainerAdapter.class, property = { "service.vendor=IBM", "toType=com.ibm.ws.openapi31.OpenAPIWebProvider" })
+@Component(service = ContainerAdapter.class, property = { "toType=com.ibm.ws.openapi31.OpenAPIWebProvider" })
 public class WebModuleAdapter implements ContainerAdapter<OpenAPIWebProvider> {
 
     public ComponentContext ccontext = null;

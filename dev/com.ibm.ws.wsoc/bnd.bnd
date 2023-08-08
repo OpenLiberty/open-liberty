@@ -50,31 +50,29 @@ Service-Component: \
     implementation:=com.ibm.ws.wsoc.WebSocketServletContainerInitializer; \
     provide:=javax.servlet.ServletContainerInitializer; \
     immediate:=true; \
-    properties:="service.vendor=IBM,service.ranking:Integer=150", \
+    properties:="service.ranking:Integer=150", \
   com.ibm.ws.wsoc.manager;\
     implementation:=com.ibm.ws.wsoc.ServiceManager; \
     chfwBundle=com.ibm.websphere.channelfw.osgi.CHFWBundle; \
     configuration-policy:=ignore;\
     immediate:=true;\
-    scheduledExecutorService='java.util.concurrent.ScheduledExecutorService(service.vendor=IBM)'; \
-    executorService='java.util.concurrent.ExecutorService(service.vendor=IBM)'; \
+    scheduledExecutorService='java.util.concurrent.ScheduledExecutorService'; \
+    executorService='java.util.concurrent.ExecutorService'; \
     injectionEngine=com.ibm.wsspi.injectionengine.InjectionEngine; \
     injectionService=com.ibm.ws.wsoc.injection.InjectionService; \
     injectionService12=com.ibm.ws.wsoc.injection.InjectionService12; \
     optional:='injectionEngine,injectionService,injectionService12'; \
-    dynamic:='injectionEngine,injectionService,injectionService12'; \
-    properties:="service.vendor=IBM", \
+    dynamic:='injectionEngine,injectionService,injectionService12', \
   com.ibm.ws.wsoc.version;\
     implementation:=com.ibm.ws.wsoc.WebSocketVersionServiceManager; \
     configuration-policy:=ignore;\
     immediate:=true;\
-    websocketFactoryService='com.ibm.ws.wsoc.external.WebSocketFactory(service.vendor=IBM)'; \
-    servletContainerFactoryService='com.ibm.ws.wsoc.servercontainer.ServletContainerFactory(service.vendor=IBM)'; \
-    httpRequestorFactoryService='com.ibm.ws.wsoc.outbound.HttpRequestorFactory(service.vendor=IBM)'; \
-    clientEndpointConfigCopyFactoryService='com.ibm.ws.wsoc.ClientEndpointConfigCopyFactory(service.vendor=IBM)'; \
+    websocketFactoryService='com.ibm.ws.wsoc.external.WebSocketFactory'; \
+    servletContainerFactoryService='com.ibm.ws.wsoc.servercontainer.ServletContainerFactory'; \
+    httpRequestorFactoryService='com.ibm.ws.wsoc.outbound.HttpRequestorFactory'; \
+    clientEndpointConfigCopyFactoryService='com.ibm.ws.wsoc.ClientEndpointConfigCopyFactory'; \
     dynamic:='websocketFactoryService,servletContainerFactoryService,httpRequestorFactoryService,clientEndpointConfigCopyFactoryService'; \
-    optional:='websocketFactoryService,servletContainerFactoryService,httpRequestorFactoryService,clientEndpointConfigCopyFactoryService'; \
-    properties:="service.vendor=IBM", \
+    optional:='websocketFactoryService,servletContainerFactoryService,httpRequestorFactoryService,clientEndpointConfigCopyFactoryService', \
   com.ibm.ws.wsoc.outbound.wsocOutbound;\
     implementation:=com.ibm.ws.wsoc.outbound.WsocOutboundChain;\
     chfwBundle=com.ibm.websphere.channelfw.osgi.CHFWBundle; \
@@ -85,8 +83,7 @@ Service-Component: \
     dynamic:='tcpOptions,httpOptions,sslOptions';\
     modified:='modified'; \
     optional:='sslOptions,sslSupport';\
-    greedy:='tcpOptions,httpOptions,sslOptions'; \
-    properties:='service.vendor=IBM', \
+    greedy:='tcpOptions,httpOptions,sslOptions', \
   ${bSymbolicName}_${replace;${bVersion};\\.;_}.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \

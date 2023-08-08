@@ -60,7 +60,7 @@ import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.library.Library;
 
-@Component(service = JAASLoginModuleConfig.class, configurationPid = "com.ibm.ws.security.authentication.internal.jaas.jaasLoginModuleConfig", configurationPolicy = ConfigurationPolicy.REQUIRE, property = "service.vendor=IBM")
+@Component(service = JAASLoginModuleConfig.class, configurationPid = "com.ibm.ws.security.authentication.internal.jaas.jaasLoginModuleConfig", configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig, SynchronousBundleListener {
     private static final TraceComponent tc = Tr.register(JAASLoginModuleConfigImpl.class);
 

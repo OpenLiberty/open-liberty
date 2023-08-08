@@ -35,7 +35,7 @@ import com.ibm.ws.security.acme.AcmeProvider;
  * A {@link DefaultSSLCertificateCreator} OSGi service that will create a default
  * certificate using the ACME 2.0 protocol.
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class AcmeSSLCertificateCreator implements DefaultSSLCertificateCreator {
 
     private static final TraceComponent tc = Tr.register(AcmeSSLCertificateCreator.class);

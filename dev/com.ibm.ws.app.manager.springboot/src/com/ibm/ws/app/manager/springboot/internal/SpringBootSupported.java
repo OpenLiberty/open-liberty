@@ -21,7 +21,7 @@ import com.ibm.wsspi.application.handler.ApplicationTypeSupported;
 
 @Component(service = ApplicationTypeSupported.class, immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM", "type=" + SPRING_APP_TYPE })
+           property = { "type=" + SPRING_APP_TYPE })
 public class SpringBootSupported implements ApplicationTypeSupported {
     // do nothing
 }

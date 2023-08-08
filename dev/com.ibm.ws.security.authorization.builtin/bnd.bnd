@@ -41,13 +41,12 @@ Service-Component: \
     optional:='authorizationTableService,featureAuthzTableService'; \
     dynamic:='authorizationTableService,featureAuthzTableService'; \
     multiple:='authorizationTableService'; \
-    properties:="service.vendor=IBM,com.ibm.ws.security.authorization.type=Builtin", \
+    properties:="com.ibm.ws.security.authorization.type=Builtin", \
   accessDecisionService; \
     implementation:=com.ibm.ws.security.authorization.builtin.internal.BuiltinAccessDecisionService; \
     provide:=com.ibm.ws.security.authorization.AccessDecisionService; \
     version=com.ibm.ws.javaee.version.JavaEEVersion?; \
-    greedy:=version; \
-    properties:="service.vendor=IBM"
+    greedy:=version
     
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 

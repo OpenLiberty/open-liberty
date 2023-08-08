@@ -34,8 +34,7 @@ import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 @Component(service = { ServerInfoMBean.class, DynamicMBean.class },
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM",
-                        "jmx.objectname=" + ServerInfoMBean.OBJECT_NAME })
+           property = {                         "jmx.objectname=" + ServerInfoMBean.OBJECT_NAME })
 public class ServerInfoMBeanImpl extends StandardMBean implements ServerInfoMBean {
     static final String VAR_DEFAULTHOSTNAME = "${defaultHostName}";
 

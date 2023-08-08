@@ -82,7 +82,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * F138708: this supports the EJB jaxrs in EJB bundle.
  * This builder will scan all possible jaxrs EJB beans and create endpointInfo into the JaxRsModuleInfo
  */
-@Component(name = "com.ibm.ws.jaxrs20.module.info.ejbbuilder", immediate = true, property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.OPTIONAL)
+@Component(name = "com.ibm.ws.jaxrs20.module.info.ejbbuilder", immediate = true, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class JaxRsEJBModuleInfoBuilder implements JaxRsModuleInfoBuilder {
 
     private static final TraceComponent tc = Tr.register(JaxRsEJBModuleInfoBuilder.class);

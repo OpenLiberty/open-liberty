@@ -52,7 +52,7 @@ import jakarta.enterprise.inject.spi.Extension;
 
 @Component(service = { CDIExtensionMetadata.class, SmallryeMetricsCDIMetadata.class },
         configurationPid = "com.ibm.ws.microprofile.metrics", configurationPolicy = ConfigurationPolicy.REQUIRE,
-        immediate = true, property = { "service.vendor=IBM" })
+        immediate = true)
 public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
 
     private static final TraceComponent tc = Tr.register(SmallryeMetricsCDIMetadata.class);

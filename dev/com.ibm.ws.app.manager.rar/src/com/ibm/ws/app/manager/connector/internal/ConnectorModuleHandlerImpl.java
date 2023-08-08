@@ -28,7 +28,7 @@ import com.ibm.ws.container.service.app.deploy.extended.ModuleRuntimeContainer;
 import com.ibm.ws.jca.metadata.ConnectorModuleMetaData;
 
 @Component(service = ModuleHandler.class,
-           property = { "service.vendor=IBM", "type:String=connector" })
+           property = { "type:String=connector" })
 public class ConnectorModuleHandlerImpl extends ModuleHandlerBase {
     private static final TraceComponent tc = Tr.register(ConnectorModuleHandlerImpl.class);
 

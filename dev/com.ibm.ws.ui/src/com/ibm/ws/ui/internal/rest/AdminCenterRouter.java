@@ -53,8 +53,7 @@ import com.ibm.wsspi.rest.handler.RESTResponse;
 @Component(service = { RESTHandler.class },
            configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
-           property = { "service.vendor=IBM",
-                        RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + APIConstants.ADMIN_CENTER_ROOT_PATH,
+           property = {                         RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + APIConstants.ADMIN_CENTER_ROOT_PATH,
                         RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_SECURITY + "=" + "true" })
 public class AdminCenterRouter implements RESTHandler, HTTPConstants {
     private static transient final TraceComponent tc = Tr.register(AdminCenterRouter.class);

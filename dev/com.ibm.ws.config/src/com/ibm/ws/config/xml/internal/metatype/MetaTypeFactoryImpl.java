@@ -30,7 +30,7 @@ import com.ibm.websphere.metatype.ObjectClassDefinitionProperties;
 /**
  *
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class MetaTypeFactoryImpl implements MetaTypeFactory {
 
     static final String DURATION_TYPE_NAME = "duration";

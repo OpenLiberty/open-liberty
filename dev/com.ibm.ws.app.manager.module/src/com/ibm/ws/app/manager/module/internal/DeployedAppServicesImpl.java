@@ -53,7 +53,7 @@ import com.ibm.wsspi.kernel.service.utils.FileUtils;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.library.Library;
 
-@Component(service = DeployedAppServices.class, property = { "service.vendor=IBM" })
+@Component(service = DeployedAppServices.class)
 public class DeployedAppServicesImpl implements DeployedAppServices {
 
     static final String SERVER_APPS_DIR = WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR + "apps/";

@@ -77,7 +77,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * @ibm-api
  */
 
-@Component(service = JwtBuilder.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM", name = "jwtBuilder")
+@Component(service = JwtBuilder.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = name = "jwtBuilder")
 public class JwtBuilder {
 
     private Builder builder;

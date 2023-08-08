@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -43,17 +43,14 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * consulted during object lookup in the appropriate namespace. <p>
  */
 @Trivial
-@Component(
-                property = { "service.vendor=IBM" })
-public class BeanManagerJavaColonNamingHelper implements JavaColonNamingHelper
-{
+@Component
+public class BeanManagerJavaColonNamingHelper implements JavaColonNamingHelper {
     private static final TraceComponent tc = Tr.register(BeanManagerJavaColonNamingHelper.class);
     private final AtomicServiceReference<CDIService> cdiServiceRef = new AtomicServiceReference<CDIService>("cdiService");
     private static final String BEAN_MANAGER = "BeanManager";
 
     @Override
-    public Object getObjectInstance(JavaColonNamespace namespace, String name) throws NamingException
-    {
+    public Object getObjectInstance(JavaColonNamespace namespace, String name) throws NamingException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         // This helper only provides support for java:comp
@@ -85,8 +82,7 @@ public class BeanManagerJavaColonNamingHelper implements JavaColonNamingHelper
     }
 
     @Override
-    public boolean hasObjectWithPrefix(JavaColonNamespace namespace, String name) throws NamingException
-    {
+    public boolean hasObjectWithPrefix(JavaColonNamespace namespace, String name) throws NamingException {
         if (name == null) {
             throw new InvalidNameException();
         }
@@ -101,8 +97,7 @@ public class BeanManagerJavaColonNamingHelper implements JavaColonNamingHelper
     }
 
     @Override
-    public Collection<? extends NameClassPair> listInstances(JavaColonNamespace namespace, String nameInContext) throws NamingException
-    {
+    public Collection<? extends NameClassPair> listInstances(JavaColonNamespace namespace, String nameInContext) throws NamingException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         Collection<NameClassPair> retVal = null;
@@ -122,29 +117,24 @@ public class BeanManagerJavaColonNamingHelper implements JavaColonNamingHelper
         return retVal;
     }
 
-    public void activate(ComponentContext context)
-    {
+    public void activate(ComponentContext context) {
         cdiServiceRef.activate(context);
     }
 
-    public void deactivate(ComponentContext context)
-    {
+    public void deactivate(ComponentContext context) {
         cdiServiceRef.deactivate(context);
     }
 
     @Reference(name = "cdiService", service = CDIService.class)
-    protected void setCdiService(ServiceReference<CDIService> ref)
-    {
+    protected void setCdiService(ServiceReference<CDIService> ref) {
         cdiServiceRef.setReference(ref);
     }
 
-    protected void unsetCdiService(ServiceReference<CDIService> ref)
-    {
+    protected void unsetCdiService(ServiceReference<CDIService> ref) {
         cdiServiceRef.unsetReference(ref);
     }
 
-    private CDIService getCdiService()
-    {
+    private CDIService getCdiService() {
         return cdiServiceRef.getService();
     }
 }

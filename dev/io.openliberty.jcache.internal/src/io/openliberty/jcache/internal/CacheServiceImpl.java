@@ -55,8 +55,7 @@ import io.openliberty.jcache.SerializationException;
  * Service that configures an individual {@link Cache} instance for JCache
  * caching.
  */
-@Component(immediate = true, configurationPolicy = REQUIRE, configurationPid = "io.openliberty.jcache.cache",
-           property = { "service.vendor=IBM" })
+@Component(immediate = true, configurationPolicy = REQUIRE, configurationPid = "io.openliberty.jcache.cache")
 public class CacheServiceImpl implements CacheService {
 
     private static final TraceComponent tc = Tr.register(CacheServiceImpl.class);

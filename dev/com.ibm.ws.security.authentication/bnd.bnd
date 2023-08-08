@@ -33,7 +33,6 @@ Service-Component:\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
     properties:="\
-      service.vendor=IBM,\
       classes=com.ibm.ws.security.authentication.cache.CacheEvictionListener|\
               com.ibm.ws.security.authentication.cache.CacheObject"
 

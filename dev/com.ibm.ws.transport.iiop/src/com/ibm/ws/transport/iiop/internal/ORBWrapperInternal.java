@@ -57,8 +57,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 /**
  * Provides access to the ORB.
  */
-@Component(factory = "com.ibm.ws.transport.iiop.internal.ORBWrapperInternal",
-                property = { "service.vendor=IBM" })
+@Component(factory = "com.ibm.ws.transport.iiop.internal.ORBWrapperInternal")
 @DSExt.PersistentFactoryComponent
 public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef, ClientORBRef, ServerPolicySource {
     private static final TraceComponent tc = Tr.register(ORBWrapperInternal.class);

@@ -35,7 +35,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.health.impl.HealthCheckResponseBuilderImpl;
 
-@Component(service = { HealthCheckResponseProvider.class }, property = { "service.vendor=IBM" }, immediate = true)
+@Component(service = { HealthCheckResponseProvider.class }, immediate = true)
 public class HealthCheckResponseProviderImpl implements HealthCheckResponseProvider {
 
     private static final TraceComponent tc = Tr.register(HealthCheckResponseProviderImpl.class);

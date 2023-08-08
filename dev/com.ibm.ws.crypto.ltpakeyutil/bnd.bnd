@@ -29,7 +29,6 @@ Service-Component:\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
     properties:="\
-      service.vendor=IBM,\
       classes=com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey|\
               com.ibm.ws.crypto.ltpakeyutil.LTPAPublicKey"
 

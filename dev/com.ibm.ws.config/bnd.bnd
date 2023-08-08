@@ -47,8 +47,7 @@ Service-Component=com.ibm.ws.config.schemagen.internal; \
   com.ibm.websphere.config.metatypeFactoryService; \
   		implementation:=com.ibm.ws.config.xml.internal.metatype.MetaTypeFactoryImpl; \
   		provide:='com.ibm.websphere.metatype.MetaTypeFactory'; \
-  		configuration-policy:=ignore;\
-  		properties:="service.vendor=IBM"
+  		configuration-policy:=ignore
 
 -dsannotations: com.ibm.ws.config.xml.internal.MetaTypeIntrospection, \
 com.ibm.ws.config.xml.internal.ConfigIntrospection, \

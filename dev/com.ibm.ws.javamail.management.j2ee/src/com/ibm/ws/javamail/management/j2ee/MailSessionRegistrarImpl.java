@@ -39,8 +39,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * Registers JavaMailResourceMBean with MBeanServer.
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
-                immediate = true,
-                property = { "service.vendor=IBM" })
+                immediate = true)
 public class MailSessionRegistrarImpl implements MailSessionRegistrar {
 
     public static final String TRACE_GROUP_JAVAMAIL = "javamail.management.j2ee";

@@ -37,8 +37,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * Registers JMS related J2EE MBeans (as per JSR 77 spec)
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
-                immediate = true,
-                property = { "service.vendor=IBM" })
+                immediate = true)
 public class JMSMbeansActivator {
 
     // because we use a pack-info.java for trace options our group and message file is already there

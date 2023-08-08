@@ -48,8 +48,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 @Component(service = { WebAuthenticator.class },
            name = "com.ibm.ws.security.spnego",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           property = { "service.vendor=IBM",
-                        "com.ibm.ws.security.webAuthenticator.type=SPNEGO" })
+           property = {                         "com.ibm.ws.security.webAuthenticator.type=SPNEGO" })
 public class SpnegoService implements WebAuthenticator {
     public static final TraceComponent tc = Tr.register(SpnegoService.class);
 

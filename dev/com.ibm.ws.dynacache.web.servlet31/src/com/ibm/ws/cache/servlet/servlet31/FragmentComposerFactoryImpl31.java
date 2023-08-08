@@ -21,7 +21,7 @@ import com.ibm.ws.cache.servlet.CacheProxyResponse;
 import com.ibm.ws.cache.servlet.FragmentComposer;
 import com.ibm.ws.cache.servlet.FragmentComposerFactory;
 
-@Component(service=FragmentComposerFactory.class, property = { "service.vendor=IBM", "service.ranking:Integer=10" })
+@Component(service=FragmentComposerFactory.class, property = { "service.ranking:Integer=10" })
 public class FragmentComposerFactoryImpl31 implements FragmentComposerFactory {
 	private static TraceComponent tc = Tr.register(FragmentComposerFactoryImpl31.class,
 			"WebSphere Dynamic Cache", "com.ibm.ws.cache.resources.dynacache");

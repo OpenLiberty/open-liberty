@@ -37,7 +37,7 @@ import com.ibm.ws.sib.mfp.trm.TrmMessageFactory;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.sib.core.SelectionCriteriaFactory;
 
-@Component(configurationPolicy = IGNORE, property = {"type=com.ibm.ws.sib.common.service", "service.vendor=IBM"})
+@Component(configurationPolicy = IGNORE, property = {"type=com.ibm.ws.sib.common.service"})
 public class CommonServiceFacade implements Singleton {
     private static final TraceComponent tc = SibTr.register(CommonServiceFacade.class, MSG_GROUP, MSG_BUNDLE);
     private static final String CLASS_NAME = "com.ibm.ws.sib.common.service.CommonServiceFacade";

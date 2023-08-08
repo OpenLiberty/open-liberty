@@ -38,8 +38,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
  * 
  * */
 @Component(service = JAASConfiguration.class,
-                configurationPolicy = ConfigurationPolicy.IGNORE,
-                property = "service.vendor=IBM")
+                configurationPolicy = ConfigurationPolicy.IGNORE)
 public class JAASClientConfigurationImpl implements JAASConfiguration {
     static final TraceComponent tc = Tr.register(JAASClientConfigurationImpl.class);
 

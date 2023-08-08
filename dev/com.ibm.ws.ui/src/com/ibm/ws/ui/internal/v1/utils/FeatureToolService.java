@@ -67,8 +67,7 @@ import com.ibm.wsspi.kernel.service.location.VariableRegistry;
  *
  */
 @Component(service = { IFeatureToolService.class },
-           configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM" })
+           configurationPolicy = ConfigurationPolicy.IGNORE)
 public class FeatureToolService implements IFeatureToolService, EventHandler {
     private static final TraceComponent tc = Tr.register(FeatureToolService.class);
 

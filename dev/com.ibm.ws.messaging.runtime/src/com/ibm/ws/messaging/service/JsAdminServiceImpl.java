@@ -40,7 +40,7 @@ import com.ibm.ws.sib.admin.SIBExceptionBusNotFound;
 import com.ibm.ws.sib.admin.internal.JsMainImpl;
 import com.ibm.ws.sib.utils.ras.SibTr;
 
-@Component (configurationPolicy=IGNORE, property={"type=com.ibm.ws.sib.admin.JsAdminService", "service.vendor=IBM"})
+@Component (configurationPolicy=IGNORE, property={"type=com.ibm.ws.sib.admin.JsAdminService"})
 public class JsAdminServiceImpl implements JsAdminService, Singleton {
   private static TraceComponent tc = SibTr.register(JsAdminServiceImpl.class, JsConstants.MSG_GROUP, JsConstants.MSG_BUNDLE);
 

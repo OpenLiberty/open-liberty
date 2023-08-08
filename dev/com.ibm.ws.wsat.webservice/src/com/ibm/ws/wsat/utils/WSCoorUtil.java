@@ -56,7 +56,7 @@ import com.ibm.ws.wsat.webservice.client.wscoor.Expires;
 /**
  *
  */
-@Component(name = "com.ibm.ws.wsat.utils.CommonService", immediate = true, property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.wsat.utils.CommonService", immediate = true)
 public class WSCoorUtil {
     private static final TraceComponent tc = Tr.register(WSCoorUtil.class, WSCoorConstants.TRACE_GROUP);
 

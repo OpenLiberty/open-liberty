@@ -40,17 +40,15 @@ Service-Component: \
         classLoadingService=com.ibm.wsspi.classloading.ClassLoadingService;\
         cdiJSFInitializerService=com.ibm.ws.jsf.shared.cdi.CDIJSFInitializer; \
         greedy:="cdiJSFInitializerService"; \
-        optional:="cdiJSFInitializerService"; \
-        properties:="service.vendor=IBM", \
+        optional:="cdiJSFInitializerService", \
     io.openliberty.myfaces_4_0.initializer; \
         implementation:=io.openliberty.faces40.internal.ee.WASMyFacesContainerInitializer; \
         provide:=jakarta.servlet.ServletContainerInitializer; \
-        properties:="service.vendor=IBM,service.ranking:Integer=101", \
+        properties:="service.ranking:Integer=101", \
     io.openliberty.faces_4_0.injection.class.list.collaborator; \
         implementation:=com.ibm.ws.jsf.shared.util.JSFInjectionClassListCollaborator ; \
         provide:='com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollaborator'; \
-        immediate:=true; \
-        properties:="service.vendor=IBM", \
+        immediate:=true, \
     io.openliberty.org.apache.myfaces_4_0.ResourceProvider; \
         implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
         provide:=com.ibm.wsspi.classloading.ResourceProvider; \

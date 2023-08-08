@@ -32,8 +32,7 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
  * We are specifically interested in the state when the servlets are stopping.
  */
 @Component(service = { WebAppInitializationCollaborator.class },
-                immediate = true,
-                property = { "service.vendor=IBM" })
+                immediate = true)
 public class GenPluginConfigCollaborator implements WebAppInitializationCollaborator {
     private static final TraceComponent tc = Tr.register(GenPluginConfigCollaborator.class);
 

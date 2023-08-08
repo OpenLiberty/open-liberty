@@ -45,8 +45,7 @@ import com.ibm.ws.webcontainer.httpsession.SessionMgrComponentImpl;
 @Component(service = { SessionManagerMBean.class, DynamicMBean.class },
            configurationPid = "com.ibm.ws.session",
            configurationPolicy = ConfigurationPolicy.OPTIONAL,
-           property = { "service.vendor=IBM",
-                       "jmx.objectname=" + SessionManagerMBean.OBJECT_NAME })
+           property = {                        "jmx.objectname=" + SessionManagerMBean.OBJECT_NAME })
 public class SessionManagerMBeanImpl extends StandardEmitterMBean implements SessionManagerMBean {
     private static final String methodClassName = "SessionManagerMBeanImpl";
 

@@ -23,7 +23,7 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.application.handler.ApplicationInformation;
 
 @Component(service = DeployedAppInfoFactory.class,
-           property = { "service.vendor=IBM", "type:String=rar" })
+           property = { "type:String=rar" })
 public class RARDeployedAppInfoFactoryImpl implements DeployedAppInfoFactory {
 
     @Reference

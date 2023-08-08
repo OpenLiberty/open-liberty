@@ -41,7 +41,7 @@ import com.ibm.ws.security.openidconnect.token.IDTokenValidationFailedException;
 import com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException;
 import com.ibm.wsspi.ssl.SSLSupport;
 
-@Component(name = "com.ibm.ws.security.openidconnect.backchannellogout.LogoutTokenValidator", service = {}, property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.security.openidconnect.backchannellogout.LogoutTokenValidator", service = {})
 public class LogoutTokenValidator {
 
     private static TraceComponent tc = Tr.register(LogoutTokenValidator.class);

@@ -42,7 +42,7 @@ import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 /**
  * Provides access to the ORB.
  */
-@Component(configurationPolicy = REQUIRE, service = {}, property = { "service.vendor=IBM", "service.ranking:Integer=5" })
+@Component(configurationPolicy = REQUIRE, service = {}, property = { "service.ranking:Integer=5" })
 public final class ORBWrapper {
     public static final String pid = ORBWrapperInternal.class.getName();
     private final ReadyListenerImpl readyListener;

@@ -38,8 +38,7 @@ import com.ibm.ws.management.j2ee.mejb.ManagementEJB;
 @Component(service = { ManagementEJBService.class },
                 configurationPid = "com.ibm.ws.management.j2ee.mejb.service.ManagementEJBService",
                 configurationPolicy = ConfigurationPolicy.IGNORE,
-                immediate = true,
-                property = { "service.vendor=IBM" })
+                immediate = true)
 public class ManagementEJBService {
 
     private static final TraceComponent tc = Tr.register(ManagementEJBService.class, "mejb", "com.ibm.ws.management.j2ee.mejb.resources.Messages");

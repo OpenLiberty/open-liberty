@@ -59,8 +59,7 @@ import com.ibm.wsspi.rest.handler.RESTResponse;
 
 @Component(service = { FileTransferHelper.class },
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class FileTransferHelper {
 
     private static final TraceComponent tc = Tr.register(FileTransferHelper.class,

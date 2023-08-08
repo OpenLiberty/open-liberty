@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -48,7 +48,6 @@ import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
 
 @Component(immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM" },
            service = {})
 public class AdapterFactoryServiceImpl implements AdapterFactoryService, ServicePropertySupplier {
 

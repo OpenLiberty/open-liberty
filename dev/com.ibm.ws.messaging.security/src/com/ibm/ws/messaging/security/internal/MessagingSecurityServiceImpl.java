@@ -66,8 +66,7 @@ import com.ibm.wsspi.sib.utils.ras.SibTr;
  */
 @Component(configurationPid = "com.ibm.ws.messaging.security",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class MessagingSecurityServiceImpl implements MessagingSecurityService, ConfigurationListener {
 
     // Trace component for the MessagingSecurityService Implementation class

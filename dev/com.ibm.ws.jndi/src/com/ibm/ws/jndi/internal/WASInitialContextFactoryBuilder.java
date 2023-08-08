@@ -27,7 +27,7 @@ import javax.naming.spi.InitialContextFactoryBuilder;
 
 import org.osgi.service.component.annotations.Component;
 
-@Component(immediate = true, configurationPolicy = IGNORE, property = "service.vendor=IBM")
+@Component(immediate = true, configurationPolicy = IGNORE)
 public class WASInitialContextFactoryBuilder implements InitialContextFactoryBuilder {
 
     @Override

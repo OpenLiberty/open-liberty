@@ -36,7 +36,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 /*
  * This is a utility service for MicroProfile JsonWebToken in a subject
  */
-@Component(service = MpJwtHelper.class, name = "MpJwtHelper", immediate = true, property = "service.vendor=IBM")
+@Component(service = MpJwtHelper.class, name = "MpJwtHelper", immediate = true)
 public class MpJwtHelper {
     private static final TraceComponent tc = Tr.register(MpJwtHelper.class);
     static final String JSON_WEB_TOKEN_UTIL_REF = "JsonWebTokenUtil";

@@ -21,7 +21,7 @@ import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
 import com.ibm.ws.webcontainer.async.AsyncContextImpl;
 import com.ibm.ws.webcontainer.async.AsyncContextFactory;
 
-@Component(service=AsyncContextFactory.class, property = { "service.vendor=IBM" })
+@Component(service=AsyncContextFactory.class)
 public class AsyncContextFactoryImpl implements AsyncContextFactory {
     
     public AsyncContext getAsyncContext(IExtendedRequest iExtendedRequest, IExtendedResponse iExtendedResponse, IWebAppDispatcherContext webAppDispatcherContext){

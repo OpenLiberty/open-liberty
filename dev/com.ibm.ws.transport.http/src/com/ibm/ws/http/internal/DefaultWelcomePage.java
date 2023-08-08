@@ -29,8 +29,7 @@ import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
 import com.ibm.ws.kernel.productinfo.DuplicateProductInfoException;
 import com.ibm.wsspi.http.WelcomePage;
 
-@Component(service = WelcomePage.class,
-           property = { "service.vendor=IBM" })
+@Component(service = WelcomePage.class)
 public class DefaultWelcomePage implements WelcomePage {
 
   private Bundle bundle;

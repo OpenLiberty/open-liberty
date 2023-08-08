@@ -30,12 +30,10 @@ Service-Component: \
     implementation:=sample.source.handler.SampleSourceImpl;\
     provide:=com.ibm.wsspi.collector.manager.Source; \
     executor=java.util.concurrent.ExecutorService; \
-    bufferManager='com.ibm.wsspi.collector.manager.BufferManager(source=com.ibm.ws.collector.manager.sample.source)'; \
-    properties:="service.vendor=IBM", \
+    bufferManager='com.ibm.wsspi.collector.manager.BufferManager(source=com.ibm.ws.collector.manager.sample.source)', \
   CollectorHandler;\
     implementation:=sample.source.handler.SampleHandlerImpl;\
     provide:=com.ibm.wsspi.collector.manager.Handler; \
     executor=java.util.concurrent.ExecutorService; \
     modified:='modified'; \
-    immediate:='true'; \
-    properties:="service.vendor=IBM"
+    immediate:='true'

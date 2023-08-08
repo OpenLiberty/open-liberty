@@ -58,8 +58,7 @@ Service-Component: \
     dynamic:='securityService'; \
     greedy:='securityService,samlService'; \
     optional:='samlService'; \
-    multiple:='samlService'; \
-    properties:="service.vendor=IBM"
+    multiple:='samlService'
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\

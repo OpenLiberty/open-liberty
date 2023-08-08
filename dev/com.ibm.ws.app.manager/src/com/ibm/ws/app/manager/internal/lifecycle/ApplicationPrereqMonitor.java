@@ -63,8 +63,7 @@ import com.ibm.wsspi.logging.Introspector;
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            property = {
                         "osgi.command.scope=app",
-                        "osgi.command.function=prereqs",
-                        "service.vendor=IBM"
+                        "osgi.command.function=prereqs"
            })
 public class ApplicationPrereqMonitor implements Introspector {
     public static final TraceComponent tc = Tr.register(ApplicationPrereqMonitor.class);

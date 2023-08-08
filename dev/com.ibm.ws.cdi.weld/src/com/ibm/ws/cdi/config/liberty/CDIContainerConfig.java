@@ -27,7 +27,7 @@ import com.ibm.ws.cdi.internal.config.AggregatedConfiguration;
 /**
  * DS for custom CDI properties. The active instance can either be retrieved through DS or through a static getter method.
  */
-@Component(name = "com.ibm.ws.cdi.config.liberty.CDIContainerConfig", service = CDIContainerConfig.class, configurationPid = "io.openliberty.cdi.configuration", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.cdi.config.liberty.CDIContainerConfig", service = CDIContainerConfig.class, configurationPid = "io.openliberty.cdi.configuration", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true)
 public class CDIContainerConfig {
 
     private static final TraceComponent tc = Tr.register(CDIContainerConfig.class);

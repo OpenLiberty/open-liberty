@@ -43,7 +43,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 
 @Component(service = { ModuleMetaDataListener.class,
-                       VirtualHostListener.class }, immediate = true, property = { "service.vendor=IBM" })
+                       VirtualHostListener.class }, immediate = true)
 
 public class OpenAPIModuleListener implements ModuleMetaDataListener, VirtualHostListener {
 

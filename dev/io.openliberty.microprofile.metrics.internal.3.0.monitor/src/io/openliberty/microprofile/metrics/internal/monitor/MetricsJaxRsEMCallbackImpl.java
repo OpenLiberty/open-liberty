@@ -37,8 +37,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 @Component(service = {
-        DefaultExceptionMapperCallback.class }, configurationPolicy = ConfigurationPolicy.IGNORE, property = {
-                "service.vendor=IBM" })
+        DefaultExceptionMapperCallback.class }, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class MetricsJaxRsEMCallbackImpl implements DefaultExceptionMapperCallback {
 
     private static final TraceComponent tc = Tr.register(MetricsJaxRsEMCallbackImpl.class);

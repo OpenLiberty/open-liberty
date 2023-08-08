@@ -27,12 +27,10 @@ Private-Package: com.ibm.ws.resource.*
 
 Service-Component: \
   com.ibm.ws.resource.ResourceFactoryTracker;\
-    implementation:=com.ibm.ws.resource.internal.ResourceFactoryTracker;\
-    properties:="service.vendor=IBM",\
+    implementation:=com.ibm.ws.resource.internal.ResourceFactoryTracker,\
   com.ibm.ws.resource.ResourceRefConfigFactory;\
     implementation:=com.ibm.ws.resource.internal.ResourceRefConfigFactoryImpl;\
-    provide:='com.ibm.wsspi.resource.ResourceConfigFactory,com.ibm.ws.resource.ResourceRefConfigFactory';\
-    properties:="service.vendor=IBM",\
+    provide:='com.ibm.wsspi.resource.ResourceConfigFactory,com.ibm.ws.resource.ResourceRefConfigFactory',\
   com.ibm.ws.resource.deserialization;\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\

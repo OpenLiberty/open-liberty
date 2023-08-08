@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -76,8 +76,7 @@ import com.ibm.wsspi.resource.ResourceInfo;
 
 @Component(service = { CacheService.class, ResourceFactory.class, ServletContainerInitializer.class }, configurationPid = "com.ibm.ws.cache",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           property = {
-                        ResourceFactory.CREATES_OBJECT_CLASS + "=com.ibm.websphere.cache.DistributedObjectCache", "service.vendor=IBM" })
+           property = { ResourceFactory.CREATES_OBJECT_CLASS + "=com.ibm.websphere.cache.DistributedObjectCache" })
 public class CacheServiceImpl implements CacheService, ResourceFactory, ServletContextListener, ServletContainerInitializer {
     /**  */
     private static final String DISK_CACHE_ALIAS = "diskCache";
@@ -640,7 +639,7 @@ public class CacheServiceImpl implements CacheService, ResourceFactory, ServletC
                         throw (RuntimeException) e2;
                     }
                 }
-                
+
                 osgiCacheConfig.update(props);
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Created OSGI Configuration", osgiCacheConfig.getProperties());
@@ -904,8 +903,7 @@ public class CacheServiceImpl implements CacheService, ResourceFactory, ServletC
         cacheProvider = provider;
     }
 
-    protected void unsetCacheProvider(CacheProvider provider) {
-    }
+    protected void unsetCacheProvider(CacheProvider provider) {}
 
     @Reference(name = "sharedLib", service = Library.class, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
@@ -919,7 +917,7 @@ public class CacheServiceImpl implements CacheService, ResourceFactory, ServletC
      * Declarative Services method for unsetting the shared library service reference
      *
      * @param ref
-     *                reference to the service
+     *            reference to the service
      */
     protected void unsetSharedLib(Library ref) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())

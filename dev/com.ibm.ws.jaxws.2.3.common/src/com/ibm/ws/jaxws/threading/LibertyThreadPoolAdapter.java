@@ -37,7 +37,7 @@ import com.ibm.wsspi.threading.WSExecutorService;
 /**
  * LibertyThreadPool Adapter will register an initializer for set the AutomaticWorkQueue for each created bus instance.
  */
-@Component(immediate = true, property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.IGNORE)
+@Component(immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class LibertyThreadPoolAdapter {
 
     private static final TraceComponent tc = Tr.register(LibertyThreadPoolAdapter.class);

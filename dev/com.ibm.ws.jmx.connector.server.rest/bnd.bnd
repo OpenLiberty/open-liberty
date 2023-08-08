@@ -46,8 +46,7 @@ Service-Component: \
    com.ibm.ws.jmx.connector.server.rest.JSONSerializationHelper; \
       implementation:=com.ibm.ws.jmx.connector.server.rest.JSONSerializationHelper; \
       serializationService=com.ibm.ws.serialization.SerializationService; \
-      immediate:=true; \
-      properties:="service.vendor=IBM"
+      immediate:=true
 
 -dsannotations: \
   com.ibm.ws.jmx.connector.server.rest.RESTAppListener, \

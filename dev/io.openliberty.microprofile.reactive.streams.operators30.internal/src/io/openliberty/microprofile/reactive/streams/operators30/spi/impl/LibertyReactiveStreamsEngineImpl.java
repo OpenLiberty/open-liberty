@@ -33,7 +33,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 
 import io.smallrye.mutiny.jakarta.streams.Engine;
 
-@Component(name = "io.openliberty.microprofile.reactive.streams.operators30.spi.impl.LibertyReactiveStreamsEngineImpl", service = { ReactiveStreamsEngine.class }, property = { "service.vendor=IBM" }, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
+@Component(name = "io.openliberty.microprofile.reactive.streams.operators30.spi.impl.LibertyReactiveStreamsEngineImpl", service = { ReactiveStreamsEngine.class }, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class LibertyReactiveStreamsEngineImpl extends Engine implements ReactiveStreamsEngine {
 
     private ExecutorService executorService;

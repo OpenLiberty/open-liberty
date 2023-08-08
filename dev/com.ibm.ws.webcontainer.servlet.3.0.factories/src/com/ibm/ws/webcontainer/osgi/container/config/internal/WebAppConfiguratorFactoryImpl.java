@@ -21,7 +21,7 @@ import com.ibm.ws.resource.ResourceRefConfigFactory;
 import com.ibm.ws.webcontainer.osgi.container.config.WebAppConfiguratorHelper;
 import com.ibm.ws.webcontainer.osgi.container.config.WebAppConfiguratorHelperFactory;
 
-@Component(service = WebAppConfiguratorHelperFactory.class, property = { "service.vendor=IBM" })
+@Component(service = WebAppConfiguratorHelperFactory.class)
 public class WebAppConfiguratorFactoryImpl implements WebAppConfiguratorHelperFactory {
 
     @Override

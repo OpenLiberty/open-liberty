@@ -46,8 +46,7 @@ Service-Component: \
     greedy:='interceptorService'; \
     optional:='interceptorService'; \
 	dynamic:='interceptorService'; \
-	multiple:='interceptorService'; \
-    properties:="service.vendor=IBM", \
+	multiple:='interceptorService', \
    com.ibm.ws.security.authentication.tai.interceptor; \
     implementation:=com.ibm.ws.security.authentication.tai.internal.InterceptorConfigImpl; \
     provide:=com.ibm.wsspi.security.tai.TrustAssociationInterceptor; \
@@ -55,8 +54,7 @@ Service-Component: \
     sharedLib=com.ibm.wsspi.library.Library; \
     configurationAdmin=org.osgi.service.cm.ConfigurationAdmin; \
 	dynamic:='configurationAdmin,sharedLib'; \
-    modified:='modified'; \
-    properties:="service.vendor=IBM"
+    modified:='modified'
 
 instrument.classesExcludes: com/ibm/ws/security/authentication/tai/internal/resources/*.class
 

@@ -51,7 +51,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 
 // This class handles the builder objects, the JwtSsoComponent class handles the consumer objects.
 @Component(service = { JwtSsoBuilderConfig.class,
-		JwtConfig.class }, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.security.jwtsso", name = "jwtSsoBuilderConfig", property = "service.vendor=IBM")
+		JwtConfig.class }, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.security.jwtsso", name = "jwtSsoBuilderConfig")
 public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
 
 	private static final TraceComponent tc = Tr.register(JwtSsoBuilderComponent.class);

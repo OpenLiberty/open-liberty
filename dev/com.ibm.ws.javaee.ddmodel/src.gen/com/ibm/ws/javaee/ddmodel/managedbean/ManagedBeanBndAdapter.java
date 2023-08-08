@@ -28,8 +28,7 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
     service = ContainerAdapter.class,
-    property = { "service.vendor=IBM",
-                 "toType=com.ibm.ws.javaee.dd.managedbean.ManagedBeanBnd" })
+    property = {                  "toType=com.ibm.ws.javaee.dd.managedbean.ManagedBeanBnd" })
 public class ManagedBeanBndAdapter extends BndExtAdapter<ManagedBeanBnd> {
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE,

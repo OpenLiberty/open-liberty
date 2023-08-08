@@ -56,7 +56,7 @@ import com.ibm.ws.util.ObjectPool;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 //import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 
-@Component(service = ConfigManager.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
+@Component(service = ConfigManager.class, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class ConfigManager {
 
     private static TraceComponent tc = Tr.register(ConfigManager.class, "WebSphere Dynamic Cache", "com.ibm.ws.cache.resources.dynacache");

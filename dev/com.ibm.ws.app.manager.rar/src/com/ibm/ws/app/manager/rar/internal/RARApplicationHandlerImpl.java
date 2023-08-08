@@ -37,7 +37,7 @@ import com.ibm.wsspi.application.handler.DefaultApplicationMonitoringInformation
 import com.ibm.wsspi.application.lifecycle.ApplicationStartBarrier;
 
 @Component(service = { ApplicationHandler.class },
-           property = { "service.vendor=IBM", "type:String=rar" })
+           property = { "type:String=rar" })
 public class RARApplicationHandlerImpl extends AppMessageHelper implements ApplicationHandler<DeployedAppInfo> {
     private static final TraceComponent _tc = Tr.register(RARApplicationHandlerImpl.class);
 

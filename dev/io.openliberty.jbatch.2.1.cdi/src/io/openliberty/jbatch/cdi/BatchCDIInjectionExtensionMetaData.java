@@ -28,8 +28,7 @@ import io.openliberty.cdi.spi.CDIExtensionMetadata;
                                                                                                                  "jakarta.batch.api.BatchProperty;" +
                                                                                                                  "jakarta.batch.operations.JobOperator;" +
                                                                                                                  "jakarta.batch.runtime.context.JobContext;" +
-                                                                                                                 "jakarta.batch.runtime.context.StepContext",
-                                                                                                                 "service.vendor=IBM" })
+                                                                                                                 "jakarta.batch.runtime.context.StepContext" })
 public class BatchCDIInjectionExtensionMetaData implements CDIExtensionMetadata {
 
     public Set<Class<? extends Extension>> getExtensions() {

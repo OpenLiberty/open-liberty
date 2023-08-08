@@ -20,7 +20,7 @@ Service-Component: \
  com.ibm.ws.cdi.interfaces.deserializationClassProvider;\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
-    properties:="service.vendor=IBM,\
+    properties:="\
       packages=com.ibm.ws.cdi\
         |com.ibm.ws.cdi.extension\
         |io.openliberty.cdi.spi"

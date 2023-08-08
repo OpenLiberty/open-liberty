@@ -27,7 +27,7 @@ import com.ibm.ws.request.timing.config.RequestTimingConfigParser;
 import com.ibm.ws.request.timing.config.Timing;
 import com.ibm.ws.request.timing.config.TimingConfigGroup;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM", service = { RequestTimingConfigParser.class })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = service = { RequestTimingConfigParser.class })
 public class ConfigParser implements RequestTimingConfigParser {
 
     /** Name for servlet timing element of Request Timing **/

@@ -24,7 +24,7 @@ import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
  * <p/>This class is merely a OSGi service wrapper for the
  * {@link com.ibm.ws.crypto.certificateutil.keytool.KeytoolSSLCertificateCreator} class.
  */
-@Component(service = DefaultSSLCertificateCreator.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(service = DefaultSSLCertificateCreator.class, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class KeytoolSSLCertificateCreator extends com.ibm.ws.crypto.certificateutil.keytool.KeytoolSSLCertificateCreator {
 
     public KeytoolSSLCertificateCreator() {

@@ -81,7 +81,7 @@ import com.ibm.wsspi.security.audit.AuditService;
 @Component(service = { ProbeExtension.class }, 
            name = "com.ibm.ws.security.audit.pe", 
            configurationPolicy = ConfigurationPolicy.IGNORE, 
-           property = "service.vendor=IBM", 
+           property = 
            immediate = true)
 public class AuditPE implements ProbeExtension {
 

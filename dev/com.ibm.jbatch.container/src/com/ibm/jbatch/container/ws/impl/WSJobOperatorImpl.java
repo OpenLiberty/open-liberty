@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -52,8 +52,7 @@ import com.ibm.jbatch.spi.services.IJobXMLLoaderService;
 
 /**
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE,
-                property = { "service.vendor=IBM" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class WSJobOperatorImpl implements WSJobOperator {
 
     private final static String sourceClass = WSJobOperatorImpl.class.getName();
@@ -72,9 +71,7 @@ public class WSJobOperatorImpl implements WSJobOperator {
 
     private IJobXMLLoaderService jslLoaderService;
 
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
-                    policy = ReferencePolicy.DYNAMIC,
-                    policyOption = ReferencePolicyOption.GREEDY)
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setWSBatchAuthService(WSBatchAuthService bas) {
         this.authService = bas;
     }
@@ -135,9 +132,7 @@ public class WSJobOperatorImpl implements WSJobOperator {
     /**
      * DS injection
      */
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
-                    policy = ReferencePolicy.DYNAMIC,
-                    policyOption = ReferencePolicyOption.GREEDY)
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setEventsPublisher(BatchEventsPublisher publisher) {
         eventsPublisher = publisher;
     }
@@ -150,9 +145,9 @@ public class WSJobOperatorImpl implements WSJobOperator {
     /**
      * @param appName
      * @param jobXMLName
-     * 
+     *
      * @return newly created JobInstance (Note: job instance must be started separately)
-     * 
+     *
      *         Note: Inline JSL takes precedence over JSL within .war
      */
     @Override
@@ -168,7 +163,7 @@ public class WSJobOperatorImpl implements WSJobOperator {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Note: this method must be called while running under the app's context.
      */
     @Override
@@ -253,10 +248,8 @@ public class WSJobOperatorImpl implements WSJobOperator {
      * {@inheritDoc}
      */
     @Override
-    public Entry<Long, Future<?>> restartInstance(long instanceId, Properties restartParameters, long executionId)
-                    throws JobExecutionAlreadyCompleteException,
-                    NoSuchJobExecutionException, JobExecutionNotMostRecentException,
-                    JobRestartException, JobSecurityException {
+    public Entry<Long, Future<?>> restartInstance(long instanceId, Properties restartParameters,
+                                                  long executionId) throws JobExecutionAlreadyCompleteException, NoSuchJobExecutionException, JobExecutionNotMostRecentException, JobRestartException, JobSecurityException {
 
         if (authService != null) {
             authService.authorizedJobRestartByInstance(instanceId);
@@ -280,8 +273,7 @@ public class WSJobOperatorImpl implements WSJobOperator {
      * {@inheritDoc}
      */
     @Override
-    public void stop(long executionId) throws NoSuchJobExecutionException,
-                    JobExecutionNotRunningException, JobSecurityException {
+    public void stop(long executionId) throws NoSuchJobExecutionException, JobExecutionNotRunningException, JobSecurityException {
 
         if (authService != null) {
             authService.authorizedJobStopByExecution(executionId);
@@ -291,7 +283,7 @@ public class WSJobOperatorImpl implements WSJobOperator {
 
     /**
      * Publish events
-     * 
+     *
      * @param jobInstance
      * @param topicToPublish
      */

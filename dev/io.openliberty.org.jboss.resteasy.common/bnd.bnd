@@ -45,8 +45,7 @@ Service-Component: \
   io.openliberty.org.jboss.resteasy.client.clientbuilder; \
      implementation:=org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl; \
      provide:=javax.ws.rs.client.ClientBuilder; \
-     immediate:=true;\
-     properties:="service.vendor=IBM", \
+     immediate:=true, \
   io.openliberty.restfulWS.client.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \

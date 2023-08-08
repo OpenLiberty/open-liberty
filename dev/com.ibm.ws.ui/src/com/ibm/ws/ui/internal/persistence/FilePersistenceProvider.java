@@ -49,7 +49,7 @@ import com.ibm.wsspi.kernel.service.utils.FileUtils;
  */
 @Component(service = { IPersistenceProvider.class },
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM", "service.ranking:Integer=0", "com.ibm.ws.ui.persistence.provider=FILE" })
+           property = { "service.ranking:Integer=0", "com.ibm.ws.ui.persistence.provider=FILE" })
 public class FilePersistenceProvider implements IPersistenceProvider {
     private static final TraceComponent tc = Tr.register(FilePersistenceProvider.class);
 

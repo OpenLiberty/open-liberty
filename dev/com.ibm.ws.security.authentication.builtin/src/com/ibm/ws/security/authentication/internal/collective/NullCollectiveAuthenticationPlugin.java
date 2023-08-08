@@ -31,7 +31,7 @@ import com.ibm.ws.security.authentication.collective.CollectiveAuthenticationPlu
  */
 @Component(service = CollectiveAuthenticationPlugin.class,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM", "name=NullCollectiveAuthenticationPlugin", "service.ranking:Integer=-1" })
+           property = { "name=NullCollectiveAuthenticationPlugin", "service.ranking:Integer=-1" })
 public class NullCollectiveAuthenticationPlugin implements CollectiveAuthenticationPlugin {
 
     @Activate

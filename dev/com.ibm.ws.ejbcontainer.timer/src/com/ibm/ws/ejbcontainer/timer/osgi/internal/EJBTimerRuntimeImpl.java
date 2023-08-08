@@ -46,7 +46,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
            service = EJBTimerRuntime.class,
            configurationPid = "com.ibm.ws.ejbcontainer.timer.runtime",
            configurationPolicy = ConfigurationPolicy.OPTIONAL,
-           property = { "service.vendor=IBM", "contextService.target=(id=unbound)" })
+           property = { "contextService.target=(id=unbound)" })
 public class EJBTimerRuntimeImpl implements EJBTimerRuntime {
 
     private static final TraceComponent tc = Tr.register(EJBTimerRuntimeImpl.class);

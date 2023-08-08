@@ -40,8 +40,7 @@ Service-Component: \
     provide:=com.ibm.ws.jaxrs21.clientconfig.JAXRSClientCompletionStageFactoryConfig; \
     completionStageFactory=com.ibm.ws.threading.CompletionStageFactory; \
     configuration-policy:=ignore; \
-    immediate:=true;\
-    properties:="service.vendor=IBM"
+    immediate:=true
 
 -includeresource: \
   @${repo;org.apache.cxf:cxf-rt-rs-client;${cxfVersion};EXACT}!/!META-INF/*, \

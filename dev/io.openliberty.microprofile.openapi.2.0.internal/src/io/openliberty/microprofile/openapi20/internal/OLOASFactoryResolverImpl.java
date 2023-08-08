@@ -21,7 +21,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import io.smallrye.openapi.spi.OASFactoryResolverImpl;
 
-@Component(service = OASFactoryResolver.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" }, immediate = true)
+@Component(service = OASFactoryResolver.class, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class OLOASFactoryResolverImpl extends OASFactoryResolverImpl {
     /**
      * Activate a context and set the instance

@@ -37,7 +37,7 @@ import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
  * 
  * @version $Revision: 497125 $ $Date: 2007-01-17 10:51:30 -0800 (Wed, 17 Jan 2007) $
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "orb.type=yoko", "service.ranking:Integer=5" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "orb.type=yoko", "service.ranking:Integer=5" })
 public class ORBConfigAdapter implements com.ibm.ws.transport.iiop.config.ConfigAdapter {
 
     private static final TraceComponent tc = Tr.register(ORBConfigAdapter.class);

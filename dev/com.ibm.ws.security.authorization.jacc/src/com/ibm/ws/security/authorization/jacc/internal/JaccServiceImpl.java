@@ -59,7 +59,7 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.authorization.jacc.ProviderService;
 
-@Component(service = JaccService.class, name = "com.ibm.ws.security.authorization.jacc", configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
+@Component(service = JaccService.class, name = "com.ibm.ws.security.authorization.jacc", configurationPolicy = ConfigurationPolicy.IGNORE)
 public class JaccServiceImpl implements JaccService {
     private static final TraceComponent tc = Tr.register(JaccServiceImpl.class);
 

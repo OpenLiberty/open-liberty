@@ -40,7 +40,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * 
  * @ibm-api
  */
-@Component(service = JwtConsumer.class, name = "com.ibm.websphere.security.jwt.JwtConsumer", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
+@Component(service = JwtConsumer.class, name = "com.ibm.websphere.security.jwt.JwtConsumer", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class JwtConsumer {
 
     /**

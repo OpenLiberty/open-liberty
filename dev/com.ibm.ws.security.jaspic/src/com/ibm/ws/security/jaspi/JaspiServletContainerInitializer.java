@@ -39,8 +39,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 @Component(service = { ServletContainerInitializer.class },
            name = "com.ibm.ws.security.jaspi.servlet.container.initializer",
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class JaspiServletContainerInitializer implements ServletContainerInitializer {
 
     /*

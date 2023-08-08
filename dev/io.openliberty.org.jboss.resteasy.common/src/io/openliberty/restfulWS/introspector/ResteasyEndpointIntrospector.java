@@ -24,8 +24,7 @@ import com.ibm.wsspi.logging.Introspector;
 
 @Component(service = { Introspector.class, RESTfulEndpointLoggingIntrospector.class },
            immediate = true,
-           configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = "service.vendor=IBM")
+           configurationPolicy = ConfigurationPolicy.IGNORE)
 public class ResteasyEndpointIntrospector implements Introspector, RESTfulEndpointLoggingIntrospector {
 
     private static final Map<ServletConfig, StringBuffer> applicationEndpoints = new WeakHashMap<ServletConfig, StringBuffer>();

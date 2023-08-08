@@ -39,8 +39,7 @@ import com.ibm.wsspi.webcontainer.servlet.IServletContext;
  *  PostEventListenerProviders are notified to register a listener, of a servlet context, after all other listeners. 
  *    
  */
-@Component(name = "com.ibm.ws.webcontainer31.osgi.listener.RegisterEventListenerProvider",
-           property = { "service.vendor=IBM"})
+@Component(name = "com.ibm.ws.webcontainer31.osgi.listener.RegisterEventListenerProvider")
 public class RegisterEventListenerProvider {
     
     private final static TraceComponent tc = Tr.register(RegisterEventListenerProvider.class, WebContainerConstants.TR_GROUP, WebContainerConstants.NLS_PROPS);

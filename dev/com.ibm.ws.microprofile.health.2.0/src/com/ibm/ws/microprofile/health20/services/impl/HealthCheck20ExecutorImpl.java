@@ -37,7 +37,7 @@ import com.ibm.ws.microprofile.health20.services.HealthCheck20CDIBeanInvoker;
 import com.ibm.ws.microprofile.health20.services.HealthCheck20Executor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
-@Component(service = HealthCheck20Executor.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(service = HealthCheck20Executor.class, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class HealthCheck20ExecutorImpl implements HealthCheck20Executor {
 
     /**

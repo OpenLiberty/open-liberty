@@ -28,8 +28,7 @@ Private-Package: io.openliberty.microprofile.lra.internal.resources
 #Service-Component: \
 #  com.ibm.ws.lra;\
 #    implementation:=com.ibm.ws.lra.SampleComponent;\
-#    configuration-policy:=ignore;\
-#    properties:="service.vendor=IBM"
+#    configuration-policy:=ignore
     
 -dsannotations: \
     io.openliberty.microprofile.lra.internal.LraFilterComponent, \

@@ -33,7 +33,7 @@ Service-Component: \
     provide:='com.ibm.ws.security.credentials.CredentialProvider'; \
     tokenManager=com.ibm.ws.security.token.TokenManager; \
     credentialsService=com.ibm.ws.security.credentials.CredentialsService; \
-    properties:='service.vendor=IBM,type=SSOTokenCredential'
+    properties:='type=SSOTokenCredential'
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.kernel.service,\

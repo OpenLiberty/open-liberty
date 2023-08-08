@@ -32,7 +32,7 @@ import com.ibm.ws.container.service.annocache.ContainerAnnotationsAdapter;
 @Component(
     service = ContainerAdapter.class, immediate = true,
     configurationPolicy = ConfigurationPolicy.IGNORE,
-    property = { "service.vendor=IBM", "toType=com.ibm.ws.container.service.annocache.ContainerAnnotations" })
+    property = { "toType=com.ibm.ws.container.service.annocache.ContainerAnnotations" })
 public class ContainerAnnotationsAdapterImpl
     extends AnnotationsAdapterImpl
     implements ContainerAnnotationsAdapter {

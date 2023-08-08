@@ -59,8 +59,7 @@ import com.ibm.wsspi.security.audit.AuditService;
  * This class is the security audit service. It handles audit config and is also
  * a collector manager Source for audit events.
  */
-@Component(service = { AuditService.class, Source.class }, configurationPid = "com.ibm.ws.security.audit.event", configurationPolicy = ConfigurationPolicy.OPTIONAL,
-           property = "service.vendor=IBM", immediate = true)
+@Component(service = { AuditService.class, Source.class }, configurationPid = "com.ibm.ws.security.audit.event", configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
 
 public class AuditServiceImpl implements AuditService, Source {
 

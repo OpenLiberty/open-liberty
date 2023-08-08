@@ -21,7 +21,7 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.jaxrs20.api.JaxRsBeanValidationService;
 
-@Component(name = "com.ibm.ws.jaxrs20.JaxRsBeanValidationServiceImpl", property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.jaxrs20.JaxRsBeanValidationServiceImpl")
 public class JaxRsBeanValidationServiceImpl implements JaxRsBeanValidationService {
 
     @Override

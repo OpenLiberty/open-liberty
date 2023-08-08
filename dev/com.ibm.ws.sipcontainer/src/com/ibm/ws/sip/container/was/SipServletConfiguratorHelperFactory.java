@@ -36,8 +36,7 @@ import com.ibm.ws.sip.container.internal.SipContainerComponent;
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
 configurationPid = "com.ibm.ws.sip.container.was.sipServletConfigurator",
-service = com.ibm.ws.container.service.config.ServletConfiguratorHelperFactory.class,
-property = {"service.vendor=IBM"} )
+service = com.ibm.ws.container.service.config.ServletConfiguratorHelperFactory.class)
 public class SipServletConfiguratorHelperFactory implements ServletConfiguratorHelperFactory {
 	
 	/*

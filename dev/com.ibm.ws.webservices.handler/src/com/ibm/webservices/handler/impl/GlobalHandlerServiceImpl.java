@@ -37,7 +37,7 @@ import com.ibm.wsspi.webservices.handler.HandlerConstants;
  * Core of file global handler service. Looks for registered global handlers (via declarative services).
  * 
  */
-@Component(immediate = true, property = { "service.vendor=IBM" })
+@Component(immediate = true)
 public class GlobalHandlerServiceImpl implements GlobalHandlerService {
     static final String HANDLER = "Handler";
 

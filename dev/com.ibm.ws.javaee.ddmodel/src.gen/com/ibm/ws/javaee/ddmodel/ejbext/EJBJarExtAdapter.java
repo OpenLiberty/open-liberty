@@ -42,8 +42,7 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
     service = ContainerAdapter.class,
-    property = { "service.vendor=IBM",
-                 "toType=com.ibm.ws.javaee.dd.ejbext.EJBJarExt" })
+    property = {                  "toType=com.ibm.ws.javaee.dd.ejbext.EJBJarExt" })
 public class EJBJarExtAdapter extends BndExtAdapter<EJBJarExt> {
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE,

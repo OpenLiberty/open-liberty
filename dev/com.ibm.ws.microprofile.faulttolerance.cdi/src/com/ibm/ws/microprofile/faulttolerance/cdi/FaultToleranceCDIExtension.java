@@ -53,7 +53,7 @@ import com.ibm.ws.microprofile.faulttolerance.cdi.config.FallbackConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.RetryConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.TimeoutConfig;
 
-@Component(service = WebSphereCDIExtension.class, immediate = true, property = { "service.vendor=IBM", "application.bdas.visible=true" })
+@Component(service = WebSphereCDIExtension.class, immediate = true, property = { "application.bdas.visible=true" })
 public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtension {
 
     private static final TraceComponent tc = Tr.register(FaultToleranceCDIExtension.class);

@@ -37,16 +37,14 @@ Service-Component:\
         implementation:=com.ibm.ws.request.timing.probeExtensionImpl.SlowRequestProbeExtension; \
         provide:='\
           com.ibm.wsspi.probeExtension.ProbeExtension,\
-          com.ibm.ws.request.timing.probeExtensionImpl.SlowRequestProbeExtension';\
-        properties:="service.vendor=IBM"; \
+          com.ibm.ws.request.timing.probeExtensionImpl.SlowRequestProbeExtension'; \
         immediate:='true', \
     com.ibm.ws.request.timing.probeExtensionImpl.HungRequestProbeExtension; \
         implementation:=com.ibm.ws.request.timing.probeExtensionImpl.HungRequestProbeExtension; \
         provide:='\
           com.ibm.wsspi.logging.Introspector,\
           com.ibm.wsspi.probeExtension.ProbeExtension,\
-          com.ibm.ws.request.timing.probeExtensionImpl.HungRequestProbeExtension';\
-        properties:="service.vendor=IBM"; \
+          com.ibm.ws.request.timing.probeExtensionImpl.HungRequestProbeExtension'; \
         interruptibleRequestLifecycle=com.ibm.ws.request.interrupt.InterruptibleRequestLifecycle; \
         immediate:='true', \
     com.ibm.ws.request.timing.RequestTimingService; \
@@ -62,7 +60,6 @@ Service-Component:\
         hungRequestProbeExt=com.ibm.ws.request.timing.probeExtensionImpl.HungRequestProbeExtension; \
         hungRequestNotification=com.ibm.ws.request.timing.notification.HungRequestNotification; \
         configParser=com.ibm.ws.request.timing.config.RequestTimingConfigParser; \
-        properties:="service.vendor=IBM"; \
         multiple:='hungRequestNotification,configParser'; \
         dynamic:='hungRequestNotification,configParser';\
         optional:='hungRequestNotification,configParser';\
@@ -75,7 +72,6 @@ Service-Component:\
          com.ibm.ws.request.timing.stats.internal.RequestTimingStatistics'; \
         slowRequestProbeExt=com.ibm.ws.request.timing.probeExtensionImpl.SlowRequestProbeExtension; \
         hungRequestProbeExt=com.ibm.ws.request.timing.probeExtensionImpl.HungRequestProbeExtension; \
-        properties:="service.vendor=IBM"; \
         immediate:='true'
     	
 Include-Resource: \

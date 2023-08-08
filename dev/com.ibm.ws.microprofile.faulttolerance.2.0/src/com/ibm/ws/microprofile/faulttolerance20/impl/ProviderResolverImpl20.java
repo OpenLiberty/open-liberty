@@ -19,7 +19,7 @@ import com.ibm.ws.microprofile.faulttolerance.impl.AbstractProviderResolverImpl;
 import com.ibm.ws.microprofile.faulttolerance.spi.ExecutorBuilder;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProviderResolver;
 
-@Component(service = { FaultToleranceProviderResolver.class }, property = { "service.vendor=IBM" }, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
+@Component(service = { FaultToleranceProviderResolver.class }, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class ProviderResolverImpl20 extends AbstractProviderResolverImpl {
 
     @Override

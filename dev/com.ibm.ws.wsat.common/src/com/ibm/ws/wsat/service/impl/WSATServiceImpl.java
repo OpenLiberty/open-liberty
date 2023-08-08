@@ -27,8 +27,7 @@ import com.ibm.wsspi.webservices.wsat.WSATService;
  *
  */
 @Component(name = "com.ibm.ws.wsat.service.wsatservice",
-           immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM" })
+           immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class WSATServiceImpl implements WSATService {
 
     @Activate

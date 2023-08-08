@@ -35,7 +35,7 @@ import com.ibm.wsspi.application.handler.ApplicationInformation;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 
 @Component(service = DeployedAppInfoFactory.class,
-           property = { "service.vendor=IBM", "type:String=war" })
+           property = { "type:String=war" })
 public class WARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactory implements DeployedAppInfoFactory {
 
     private static final TraceComponent tc = Tr.register(WARDeployedAppInfoFactoryImpl.class);

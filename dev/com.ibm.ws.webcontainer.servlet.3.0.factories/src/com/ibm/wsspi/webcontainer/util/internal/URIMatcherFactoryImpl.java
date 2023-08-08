@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.wsspi.webcontainer.util.URIMatcher;
 import com.ibm.wsspi.webcontainer.util.URIMatcherFactory;
 
-@Component(service=URIMatcherFactory.class, property = { "service.vendor=IBM" })
+@Component(service=URIMatcherFactory.class)
 public class URIMatcherFactoryImpl implements URIMatcherFactory{
 
     /* (non-Javadoc)

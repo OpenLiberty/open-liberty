@@ -43,7 +43,7 @@ import io.openliberty.microprofile.health31.services.HealthCheck31Executor;
 /**
  * Microprofile Health Check Service Implementation
  */
-@Component(service = HealthCheck31Service.class, property = { "service.vendor=IBM" })
+@Component(service = HealthCheck31Service.class)
 
 public class HealthCheck31ServiceImpl implements HealthCheck31Service {
 

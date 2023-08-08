@@ -31,7 +31,7 @@ import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 @Component(service = { NestedModuleMetaDataFactory.class, ModuleMetaDataExtender.class, EJBClientMetaDataRuntime.class },
-           property = { "service.vendor=IBM", "type:String=client" })
+           property = { "type:String=client" })
 public class EJBClientMetaDataRuntime implements NestedModuleMetaDataFactory, ModuleMetaDataExtender {
     private final AtomicServiceReference<MetaDataSlotService> metaDataSlotServiceSR = new AtomicServiceReference<MetaDataSlotService>("metaDataSlotService");
     private final AtomicServiceReference<EJBContainer> ejbContainerSR = new AtomicServiceReference<EJBContainer>("ejbContainer");

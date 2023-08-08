@@ -64,7 +64,7 @@ import com.ibm.ws.sib.utils.ras.SibTr;
 @Component (
 		service= {JsMainImpl.class, JsMain.class, Singleton.class},
 		configurationPolicy=IGNORE,
-        property={"type=com.ibm.ws.sib.admin.internal.JsMain", "service.vendor=IBM"})
+        property={"type=com.ibm.ws.sib.admin.internal.JsMain"})
 public final class JsMainImpl implements JsMain, Singleton {
 
     private static final String CLASS_NAME = "com.ibm.ws.sib.admin.internal.JsMainImpl";

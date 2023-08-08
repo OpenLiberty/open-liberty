@@ -109,7 +109,7 @@ import com.ibm.wsspi.resource.ResourceFactory;
 
 import io.openliberty.security.oauth20.internal.config.OAuthEndpointSettings;
 
-@Component(configurationPid = "com.ibm.ws.security.oauth20.provider", configurationPolicy = ConfigurationPolicy.REQUIRE, service = { OAuth20Provider.class, ConfigurationListener.class, ServerQuiesceListener.class }, immediate = false, property = { "service.vendor=IBM", "dataSourceFactory.target=(id=unbound)" })
+@Component(configurationPid = "com.ibm.ws.security.oauth20.provider", configurationPolicy = ConfigurationPolicy.REQUIRE, service = { OAuth20Provider.class, ConfigurationListener.class, ServerQuiesceListener.class }, immediate = false, property = { "dataSourceFactory.target=(id=unbound)" })
 public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationListener, ServerQuiesceListener {
 
     private static final TraceComponent tc = Tr.register(LibertyOAuth20Provider.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);

@@ -32,7 +32,7 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 /**
  * Process the web.xml to configure EndpointInfo
  */
-@Component(service = { EndpointInfoConfigurator.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = false, property = { "service.vendor=IBM" })
+@Component(service = { EndpointInfoConfigurator.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = false)
 public class WebXMLEndpointInfoConfigurator extends AbstractEndpointInfoConfigurator {
 
     private static final TraceComponent tc = Tr.register(WebXMLEndpointInfoConfigurator.class);

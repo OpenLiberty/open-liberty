@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -119,8 +119,7 @@ import com.ibm.wsspi.persistence.PersistenceServiceUnit;
  */
 @Component(configurationPid = "com.ibm.ws.jbatch.container.persistence", service = { IPersistenceManagerService.class,
                                                                                      DDLGenerationParticipant.class,
-}, configurationPolicy = ConfigurationPolicy.REQUIRE, property = { "service.vendor=IBM",
-                                                                   "service.ranking:Integer=20",
+}, configurationPolicy = ConfigurationPolicy.REQUIRE, property = { "service.ranking:Integer=20",
                                                                    "persistenceType=JPA" })
 public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implements IPersistenceManagerService, DDLGenerationParticipant {
 
@@ -259,12 +258,10 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     /* Interface methods */
 
     @Override
-    public void init(IBatchConfig batchConfig) {
-    }
+    public void init(IBatchConfig batchConfig) {}
 
     @Override
-    public void shutdown() {
-    }
+    public void shutdown() {}
 
     //private static boolean writtenDDL = false;
 
@@ -3129,7 +3126,8 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 final String causeClassName = cause.getClass().getCanonicalName();
                 logger.fine("Next chained RemotablePartition persistence exception: exc class = " + causeClassName + "; causeMsg = " + causeMsg);
                 if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")
-			|| causeClassName.contains("SQLServerException")) &&
+                     || causeClassName.contains("SQLServerException"))
+                    &&
                     causeMsg != null &&
                     (causeMsg.contains("REMOTABLEPARTITION") || causeMsg.contains("ORA-00942"))) {
                     // The table isn't there.

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,7 +27,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 
-@Component(service = Scheduler.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
+@Component(service = Scheduler.class, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class Scheduler {
 
     private static TraceComponent tc = Tr.register(Scheduler.class, "WebSphere Dynamic Cache", "com.ibm.ws.cache.resources.dynacache");
@@ -52,7 +52,7 @@ public class Scheduler {
      * reschedule them with the new one.
      *
      * @param schedulerRef
-     *                         ServiceReference for the required/dynamic ScheduledExcecutorService
+     *            ServiceReference for the required/dynamic ScheduledExcecutorService
      */
 
     @Reference(service = ScheduledExecutorService.class, target = "(deferrable=false)")
@@ -60,7 +60,7 @@ public class Scheduler {
         scheduledExecutorService.getAndSet(scheduler);
     }
 
-    @Reference(service = ExecutorService.class, target = "(service.vendor=IBM)")
+    @Reference(service = ExecutorService.class)
     protected void setExecutorService(ExecutorService es) {
         executorService.getAndSet(es);
     }
@@ -72,7 +72,7 @@ public class Scheduler {
      * calling unset to unbind the old one.
      *
      * @param scheduler
-     *                      the service to remove.
+     *            the service to remove.
      */
     protected void unsetScheduledExecutorService(ScheduledExecutorService schedulerRef) {
         scheduledExecutorService.compareAndSet(schedulerRef, null);
@@ -87,7 +87,7 @@ public class Scheduler {
      *
      * @return bound ScheduledExecutorService
      * @throws IllegalStateException
-     *                                   if the ScheduledExecutorService is not found
+     *             if the ScheduledExecutorService is not found
      */
     public ScheduledExecutorService getScheduledExecutorService() {
         ScheduledExecutorService sRef = scheduledExecutorService.get();

@@ -42,8 +42,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  */
 @Component(
                 name = "com.ibm.ws.cdi.jndi.liberty.BeanManagerObjectFactoryInfo",
-                service = { ObjectFactoryInfo.class, ObjectFactory.class, BeanManagerObjectFactoryInfo.class },
-                property = { "service.vendor=IBM" })
+                service = { ObjectFactoryInfo.class, ObjectFactory.class, BeanManagerObjectFactoryInfo.class })
 public class BeanManagerObjectFactoryInfo extends ObjectFactoryInfo implements ObjectFactory
 {
 

@@ -36,7 +36,7 @@ import com.ibm.wsspi.http.EncodingUtils;
  * EncodingUtils provides various methods for manipulating and retrieving
  * information related to charsets, locales, and other encoding data.
  */
-@Component(configurationPid = "com.ibm.ws.transport.http.encoding", property = { "service.vendor=IBM" })
+@Component(configurationPid = "com.ibm.ws.transport.http.encoding")
 public class EncodingUtilsImpl implements EncodingUtils {
     /** Debug variable */
     private static final TraceComponent tc = Tr.register(EncodingUtilsImpl.class);

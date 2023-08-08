@@ -38,8 +38,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
                 name = "com.ibm.ws.webcontainer.cors.request.interceptor",
                 configurationPolicy = ConfigurationPolicy.IGNORE,
                 immediate = true,
-                property = { "service.vendor=IBM",
-                            RequestInterceptor.INTERCEPT_POINTS_PROPERTY + "=" + RequestInterceptor.INTERCEPT_POINT_AFTER_FILTERS,
+                property = {                             RequestInterceptor.INTERCEPT_POINTS_PROPERTY + "=" + RequestInterceptor.INTERCEPT_POINT_AFTER_FILTERS,
                             Constants.SERVICE_RANKING + ":Integer=" + Integer.MAX_VALUE })
 public class CorsRequestInterceptor implements RequestInterceptor {
     private static final TraceComponent tc = Tr.register(CorsRequestInterceptor.class);

@@ -37,7 +37,7 @@ Service-Component: \
     uowCurrent=com.ibm.ws.Transaction.UOWCurrent; \
     userTransaction=javax.transaction.UserTransaction; \
     dynamic:="dataSourceFactory,embeddableWebSphereTransactionManager,localTransactionCurrent,resourceRefConfigFactory,uowCurrent,userTransaction"; \
-    properties:='service.vendor=IBM,service.ranking:Integer=100,dataSourceFactory.target=(id=unbound)'
+    properties:='service.ranking:Integer=100,dataSourceFactory.target=(id=unbound)'
 
 instrument.disabled: true
 

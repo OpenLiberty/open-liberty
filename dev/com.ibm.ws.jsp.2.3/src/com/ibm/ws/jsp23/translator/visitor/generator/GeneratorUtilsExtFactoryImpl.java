@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.ws.jsp.translator.visitor.generator.GeneratorUtilsExt;
 import com.ibm.ws.jsp.translator.visitor.generator.GeneratorUtilsExtFactory;
 
-@Component(property = { "service.vendor=IBM" })
+@Component
 public class GeneratorUtilsExtFactoryImpl implements GeneratorUtilsExtFactory {
 
     private static final GeneratorUtilsExtImpl gue = new GeneratorUtilsExtImpl();

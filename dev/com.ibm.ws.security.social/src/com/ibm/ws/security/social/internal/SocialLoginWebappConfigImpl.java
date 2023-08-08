@@ -37,7 +37,7 @@ import com.ibm.wsspi.wab.configure.WABConfiguration;
  * This class allows the context root to be specified in server.xml
  */
 
-@Component(configurationPid = "com.ibm.ws.security.social.webapp", configurationPolicy = ConfigurationPolicy.REQUIRE, service = { SocialLoginWebappConfig.class, WABConfiguration.class }, immediate = true, property = { "service.vendor=IBM" })
+@Component(configurationPid = "com.ibm.ws.security.social.webapp", configurationPolicy = ConfigurationPolicy.REQUIRE, service = { SocialLoginWebappConfig.class, WABConfiguration.class }, immediate = true)
 public class SocialLoginWebappConfigImpl implements SocialLoginWebappConfig {
 
     private static final TraceComponent tc = Tr.register(SocialLoginWebappConfigImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);

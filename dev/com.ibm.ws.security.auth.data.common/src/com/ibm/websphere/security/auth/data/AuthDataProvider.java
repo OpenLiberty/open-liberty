@@ -39,7 +39,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 /**
  *
  */
-@Component(service = AuthDataProvider.class, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
+@Component(service = AuthDataProvider.class, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class AuthDataProvider {
 
     protected static final String CFG_KEY_ID = "id";

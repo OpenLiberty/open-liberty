@@ -23,7 +23,7 @@ import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
 import jakarta.enterprise.inject.spi.Extension;
 
-@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" }, immediate = true)
+@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class OLSmallRyeConfigExtension extends ConfigExtension implements Extension, WebSphereCDIExtension {
     private static final CheckpointPhase phase = CheckpointPhase.getPhase();
     private static final ThreadLocal<AtomicBoolean> recordingPaused = new ThreadLocal<AtomicBoolean>() {

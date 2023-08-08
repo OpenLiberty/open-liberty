@@ -49,7 +49,7 @@ import io.netty.handler.ssl.SslContextBuilder;
 import io.openliberty.grpc.internal.client.GrpcClientMessages;
 import io.openliberty.grpc.internal.client.GrpcSSLService;
 
-@Component(service = {GrpcSSLService.class}, property = { "service.vendor=IBM" })
+@Component(service = {GrpcSSLService.class})
 public class LibertyGrpcClientSSLSupport implements GrpcSSLService{
 
 	private static final TraceComponent tc = Tr.register(LibertyGrpcClientSSLSupport.class, GrpcClientMessages.GRPC_TRACE_NAME, GrpcClientMessages.GRPC_CLIENT_SECURITY_BUNDLE);

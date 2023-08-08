@@ -23,7 +23,7 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.application.handler.ApplicationInformation;
 
 @Component(service = DeployedAppInfoFactory.class,
-           property = { "service.vendor=IBM", "type:String=ejb" })
+           property = { "type:String=ejb" })
 public class EJBDeployedAppInfoFactoryImpl implements DeployedAppInfoFactory {
     @Reference
     protected DeployedAppServices deployedAppServices;

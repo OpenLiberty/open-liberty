@@ -59,8 +59,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
            name = "SpnegoHelper",
            configurationPid = "com.ibm.websphere.security.s4u2proxy.SpnegoHelper",
            immediate = true,
-           configurationPolicy = ConfigurationPolicy.REQUIRE,
-           property = "service.vendor=IBM")
+           configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class SpnegoHelper {
     private static final TraceComponent tc = Tr.register(SpnegoHelper.class, TraceConstants.GROUP, TraceConstants.MESSAGE_BUNDLE);
     private static Map<String, Object> delegateSubjectCache = null;

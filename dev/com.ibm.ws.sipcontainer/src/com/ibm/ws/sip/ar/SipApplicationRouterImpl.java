@@ -48,8 +48,7 @@ import com.ibm.ws.sip.properties.SipPropertiesMap;
 @Component(service = SipApplicationRouter.class,
 configurationPolicy = ConfigurationPolicy.OPTIONAL,
 configurationPid = "com.ibm.ws.sip.ar",
-name = "com.ibm.ws.sip.ar",
-property = {"service.vendor=IBM"} )
+name = "com.ibm.ws.sip.ar")
 public class SipApplicationRouterImpl implements SipApplicationRouter {
 	
 	/**

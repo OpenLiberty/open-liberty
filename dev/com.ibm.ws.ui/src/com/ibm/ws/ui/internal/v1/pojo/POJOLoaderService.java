@@ -51,8 +51,7 @@ import com.ibm.ws.ui.persistence.InvalidPOJOException;
  * instance is irrelevant.
  */
 @Component(service = { ICatalogService.class, IToolboxService.class },
-           configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM" })
+           configurationPolicy = ConfigurationPolicy.IGNORE)
 public class POJOLoaderService implements ICatalogService, IToolboxService {
     private static final TraceComponent tc = Tr.register(POJOLoaderService.class);
 

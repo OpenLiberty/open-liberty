@@ -33,8 +33,7 @@ import io.openliberty.mail.internal.MailSessionService;
 /**
  *
  */
-@Component(service = { ResourceFactoryBuilder.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM",
-                                                                                                                                        "creates.objectClass=jakarta.mail.Session"
+@Component(service = { ResourceFactoryBuilder.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = {                                                                                                                                         "creates.objectClass=jakarta.mail.Session"
 })
 public class MailSessionResourceFactoryBuilder implements ResourceFactoryBuilder {
 

@@ -34,8 +34,7 @@ import com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollabora
  */
 @Component(name = "com.ibm.ws.jaxrs20.web.JaxRsInjectionClassListCollaborator",
            service = WebAppInjectionClassListCollaborator.class,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class JaxRsInjectionClassListCollaborator implements WebAppInjectionClassListCollaborator {
     private final static TraceComponent tc = Tr.register(JaxRsInjectionClassListCollaborator.class);
 

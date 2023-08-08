@@ -38,48 +38,38 @@ DynamicImport-Package: \
 Service-Component: \
   com.ibm.ws.diagnostics.java.EnvironmentVariables; \
     provide:=com.ibm.wsspi.logging.Introspector; \
-    implementation:=com.ibm.ws.diagnostics.java.EnvironmentVariables; \
-    properties:="service.vendor=IBM", \
+    implementation:=com.ibm.ws.diagnostics.java.EnvironmentVariables, \
   com.ibm.ws.diagnostics.java.JavaRuntimeInformation; \
     provide:=com.ibm.wsspi.logging.Introspector; \
-    implementation:=com.ibm.ws.diagnostics.java.JavaRuntimeInformation; \
-    properties:="service.vendor=IBM", \
+    implementation:=com.ibm.ws.diagnostics.java.JavaRuntimeInformation, \
   com.ibm.ws.diagnostics.java.JavaHeapMBeanIntrospector; \
     provide:=com.ibm.wsspi.logging.Introspector; \
-    implementation:=com.ibm.ws.diagnostics.java.JavaHeapMBeanIntrospector; \
-    properties:="service.vendor=IBM", \
+    implementation:=com.ibm.ws.diagnostics.java.JavaHeapMBeanIntrospector, \
   com.ibm.ws.diagnostics.java.NetworkInterfaces; \
     provide:=com.ibm.wsspi.logging.Introspector; \
-    implementation:=com.ibm.ws.diagnostics.java.NetworkInterfaces; \
-    properties:="service.vendor=IBM", \
+    implementation:=com.ibm.ws.diagnostics.java.NetworkInterfaces, \
   com.ibm.ws.diagnostics.java.OperatingSystemMBeanIntrospector; \
     provide:=com.ibm.wsspi.logging.Introspector; \
-    implementation:=com.ibm.ws.diagnostics.java.OperatingSystemMBeanIntrospector; \
-    properties:="service.vendor=IBM", \
+    implementation:=com.ibm.ws.diagnostics.java.OperatingSystemMBeanIntrospector, \
   com.ibm.ws.diagnostics.java.ThreadInfoIntrospector; \
     provide:=com.ibm.wsspi.logging.Introspector; \
-    implementation:=com.ibm.ws.diagnostics.java.ThreadInfoIntrospector; \
-    properties:="service.vendor=IBM", \
+    implementation:=com.ibm.ws.diagnostics.java.ThreadInfoIntrospector, \
   com.ibm.ws.logging.internal.bundlestate; \
     version:=1.1.0; \
     provide:='com.ibm.wsspi.logging.Introspector'; \
-    implementation:=com.ibm.ws.diagnostics.osgi.BundleStateIntrospection; \
-    properties:="service.vendor=IBM", \
+    implementation:=com.ibm.ws.diagnostics.osgi.BundleStateIntrospection, \
   com.ibm.ws.logging.internal.bundlewiring; \
     version:=1.1.0; \
     provide:='com.ibm.wsspi.logging.Introspector'; \
-    implementation:=com.ibm.ws.diagnostics.osgi.BundleWiringIntrospection; \
-    properties:="service.vendor=IBM", \
+    implementation:=com.ibm.ws.diagnostics.osgi.BundleWiringIntrospection, \
   com.ibm.ws.logging.internal.serviceinfo; \
     version:=1.1.0; \
     provide:='com.ibm.wsspi.logging.Introspector'; \
-    implementation:=com.ibm.ws.diagnostics.osgi.ServiceIntrospection; \
-    properties:="service.vendor=IBM", \
+    implementation:=com.ibm.ws.diagnostics.osgi.ServiceIntrospection, \
   com.ibm.ws.logging.internal.configurationinfo; \
     version:=1.1.0; \
     provide:='com.ibm.wsspi.logging.Introspector'; \
     implementation:=com.ibm.ws.diagnostics.osgi.ConfigAdminIntrospection; \
-    properties:="service.vendor=IBM"; \
     configAdmin=org.osgi.service.cm.ConfigurationAdmin
 
 -buildpath: \

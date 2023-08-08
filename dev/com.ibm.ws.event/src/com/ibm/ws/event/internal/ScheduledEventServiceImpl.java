@@ -30,8 +30,7 @@ import com.ibm.websphere.event.Topic;
  * Implementation of the scheduled event service. This puts runnables on the
  * Java executor service, which fire OSGi events from the run() method.
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class ScheduledEventServiceImpl implements ScheduledEventService {
 
     private ScheduledExecutorService execSvc = null;

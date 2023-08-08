@@ -24,8 +24,7 @@ Service-Component: \
   com.ibm.ws.jaxws.web.class.list.collaborator; \
      implementation:=com.ibm.ws.jaxws.web.JaxWsInjectionClassListCollaborator ; \
      provide:='com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollaborator'; \
-     immediate:=true; \
-     properties:="service.vendor=IBM", \
+     immediate:=true, \
   com.ibm.ws.jaxws.web.jaxws.module.info.builder; \
      implementation:=com.ibm.ws.jaxws.web.WebJaxWsModuleInfoBuilder; \
      provide:='com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoBuilder'; \
@@ -35,12 +34,10 @@ Service-Component: \
      optional:='endpointInfoBuilder'; \
      configuration-policy:=optional; \
      activate:=activate; \
-     deactivate:=deactivate; \
-     properties:="service.vendor=IBM", \
+     deactivate:=deactivate, \
   com.ibm.ws.jaxws.web.jaxwsServletEndpointConfigurator; \
      implementation:=com.ibm.ws.jaxws.web.JaxWsServletEndpointConfigurator; \
-     provide:='com.ibm.ws.jaxws.endpoint.JaxWsEndpointConfigurator'; \
-     properties:="service.vendor=IBM"
+     provide:='com.ibm.ws.jaxws.endpoint.JaxWsEndpointConfigurator'
 
 Export-Package: \
     com.ibm.ws.jaxws.web

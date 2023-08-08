@@ -31,7 +31,7 @@ import com.ibm.ws.webcontainer.security.LoggedOutCookieCacheHelper;
  * Allows for defense against cookie hijacking attacks,
  * reuse of a previously logged out cookie value can be detected and authentication refused.
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class LoggedOutJwtSsoCookieCache {
     private static final TraceComponent tc = Tr.register(LoggedOutJwtSsoCookieCache.class);
 

@@ -63,8 +63,7 @@ import com.ibm.wsspi.classloading.ClassLoadingService;
                         "org.hibernate.validator.internal.engine.ValidatorFactoryImpl;" +
                         "org.hibernate.validator.cdi.internal.InjectingConstraintValidatorFactory;" +
                         "com.ibm.ws.beanvalidation.v20.cdi.internal.LibertyValidatorBean;" +
-                        "com.ibm.ws.beanvalidation.v20.cdi.internal.LibertyValidatorFactoryBean",
-                        "service.vendor=IBM"
+                        "com.ibm.ws.beanvalidation.v20.cdi.internal.LibertyValidatorFactoryBean"
            })
 public class LibertyHibernateValidatorExtension implements Extension, WebSphereCDIExtension {
 

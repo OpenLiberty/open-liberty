@@ -14,23 +14,19 @@ package com.ibm.ws.sip.container.router;
 
 import java.util.Set;
 
-import javax.servlet.ServletContainerInitializer;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
+import javax.servlet.*;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.sip.container.was.filters.SipFilter;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 
 @Component(service = javax.servlet.ServletContainerInitializer.class,
 configurationPolicy = ConfigurationPolicy.IGNORE,
 configurationPid = "com.ibm.ws.sip.container.router.SipApplicationListener",
-name = "com.ibm.ws.sip.container.router.SipApplicationListener",
-property = {"service.vendor=IBM"} )
+name = "com.ibm.ws.sip.container.router.SipApplicationListener")
 public class SipApplicationListener implements ServletContainerInitializer {
 	
 	/*

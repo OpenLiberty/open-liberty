@@ -58,8 +58,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
         configurationPolicy = REQUIRE,
      	configurationPid = "com.ibm.ws.messaging.lifecycle.singletons",
         property = {
-                "service.vendor=IBM",
-                "singletons.cardinality.minimum=100000",
+                                "singletons.cardinality.minimum=100000",
                 "singletons.target=(id=unbound)",
                 "allSingletons.cardinality.minimum=100000"})
 public final class SingletonsReady {

@@ -22,7 +22,7 @@ import com.ibm.ws.container.service.state.ApplicationStateListener;
 import io.openliberty.microprofile.metrics50.SharedMetricRegistries;
 import io.openliberty.restfulws.mpmetrics.RestfulWsMonitorFilter.RestMetricInfo;
 
-@Component(immediate = true, property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.IGNORE,
+@Component(immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE,
         service = { ApplicationStateListener.class })
 public class MonitorAppStateListener implements ApplicationStateListener {
 

@@ -27,4 +27,4 @@ Service-Component: \
   com.ibm.ws.logging.fat.brokenfeature; \
     implementation:=com.ibm.ws.logging.fat.fallalloverthefloor.userfeature.BrokenFeature; \
     configurationAdmin=org.osgi.service.cm.ConfigurationAdmin; \
-    properties:="service.vendor=IBM,com.ibm.ws.wim.repository.type=File"
+    properties:="com.ibm.ws.wim.repository.type=File"

@@ -24,7 +24,7 @@ import com.ibm.ws.webcontainer31.async.AsyncContext31Impl;
 /**
  *
  */
-@Component(service=AsyncContextFactory.class, property = { "service.vendor=IBM" })
+@Component(service=AsyncContextFactory.class)
 public class AsyncContextFactory31Impl implements AsyncContextFactory{
    
     public AsyncContext getAsyncContext(IExtendedRequest iExtendedRequest, IExtendedResponse iExtendedResponse, IWebAppDispatcherContext webAppDispatcherContext){

@@ -45,8 +45,7 @@ import com.ibm.wsspi.rest.handler.helper.RESTHandlerMethodNotAllowedError;
            configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
            property = {
-                       "service.vendor=IBM",
-                       RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_ROUTING + "=true",
+                                              RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_ROUTING + "=true",
                        RESTHandler.PROPERTY_REST_HANDLER_CONTEXT_ROOT + "=" + APIConstants.JMX_CONNECTOR_API_ROOT_PATH,
                        RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + APIConstants.PATH_NOTIFICATIONS_CLIENTID_REGISTRATIONS,
                        RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + APIConstants.PATH_NOTIFICATIONS_CLIENTID_REGISTRATIONS_OBJECTNAME })

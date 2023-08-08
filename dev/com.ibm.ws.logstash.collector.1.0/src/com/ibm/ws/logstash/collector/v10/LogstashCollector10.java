@@ -18,7 +18,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.ws.logstash.collector.LogstashRuntimeVersion;
 
-@Component(name = LogstashCollector10.COMPONENT_NAME, service = { LogstashRuntimeVersion.class }, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(name = LogstashCollector10.COMPONENT_NAME, service = { LogstashRuntimeVersion.class }, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class LogstashCollector10 implements LogstashRuntimeVersion {
 
     public static final String COMPONENT_NAME = "com.ibm.ws.logstash.collector.v10.LogstashCollector10";

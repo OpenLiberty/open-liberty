@@ -28,7 +28,7 @@ import com.ibm.ws.runtime.metadata.ModuleMetaData;
 /**
  * Listening a Web/EJB module metadata events, and clean up JAXRSClientImpl objects on destroy.
  */
-@Component(immediate = true, property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.OPTIONAL)
+@Component(immediate = true, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class JaxRsClientModuleMetaDataListener implements ModuleMetaDataListener {
 
     private static final TraceComponent tc = Tr.register(JaxRsClientModuleMetaDataListener.class);

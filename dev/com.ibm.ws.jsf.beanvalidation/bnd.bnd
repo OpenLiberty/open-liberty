@@ -22,8 +22,7 @@ bVersion=1.0
 Service-Component: com.ibm.ws.jsf.beanvalidation; \
    implementation:=com.ibm.ws.jsf.beanvalidation.extprocessor.JSFBeanValidationExtensionFactory; \
    provide:='com.ibm.wsspi.webcontainer.extension.ExtensionFactory'; \
-   beanValidation=com.ibm.ws.beanvalidation.service.BeanValidation; \
-   properties:="service.vendor=IBM"
+   beanValidation=com.ibm.ws.beanvalidation.service.BeanValidation
 
 Import-Package: \
   javax.validation; version="[1.1,3)",\

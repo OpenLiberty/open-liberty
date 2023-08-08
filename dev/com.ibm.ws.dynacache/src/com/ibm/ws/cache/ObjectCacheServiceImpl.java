@@ -42,7 +42,7 @@ import com.ibm.wsspi.kernel.service.location.VariableRegistry;
  * This class holds the Object Cache Service to support object caching on top of Core Cache Service.
  */
 
-//@Component(service = ServletContainerInitializer.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
+//@Component(service = ServletContainerInitializer.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class ObjectCacheServiceImpl implements ServletContextListener, ServletContainerInitializer {
 
     private static TraceComponent tc = Tr.register(ObjectCacheServiceImpl.class, "WebSphere Dynamic Cache", "com.ibm.ws.cache.resources.dynacache");

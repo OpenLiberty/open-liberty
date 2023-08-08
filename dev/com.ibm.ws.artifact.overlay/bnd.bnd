@@ -33,8 +33,7 @@ Service-Component: \
     implementation:=com.ibm.ws.artifact.overlay.internal.OverlayContainerFactoryImpl;\
     provide:=com.ibm.wsspi.artifact.overlay.OverlayContainerFactory;\
     configuration-policy:=ignore;\
-    containerFactory='com.ibm.wsspi.artifact.factory.ArtifactContainerFactory(&(category=DIR)(category=JAR))';\
-    properties:="service.vendor=IBM"
+    containerFactory='com.ibm.wsspi.artifact.factory.ArtifactContainerFactory(&(category=DIR)(category=JAR))'
 
 -buildpath: \
 	com.ibm.ws.logging.core, \

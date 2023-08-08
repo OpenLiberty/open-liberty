@@ -38,7 +38,7 @@ Service-Component: \
   com.ibm.ws.jpa.serialization.classProvider;\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
-    properties:="service.vendor=IBM,\
+    properties:="\
   classes=com.ibm.ws.jpa.JPAPuId\
         |com.ibm.ws.jpa.management.JPATxEntityManager\
         |com.ibm.ws.jpa.management.JPAEMFactory"

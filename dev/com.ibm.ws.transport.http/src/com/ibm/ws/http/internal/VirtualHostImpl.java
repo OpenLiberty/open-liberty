@@ -85,8 +85,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @Component(configurationPid = "com.ibm.ws.http.virtualhost",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            immediate = true,
-           service = { VirtualHostImpl.class },
-           property = { "service.vendor=IBM" })
+           service = { VirtualHostImpl.class })
 public class VirtualHostImpl implements VirtualHost {
     static final TraceComponent tc = Tr.register(VirtualHostImpl.class);
 

@@ -56,7 +56,7 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 /**
  * Web endpoint publisher supports to publish the web services into web container.
  */
-@Component(name = "WebEndpointPublisher", immediate = true, property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.IGNORE)
+@Component(name = "WebEndpointPublisher", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class JaxRsWebEndpointPublisher implements EndpointPublisher {
     private static final TraceComponent tc = Tr.register(JaxRsWebEndpointPublisher.class);
 

@@ -36,8 +36,7 @@ import com.ibm.ws.security.internal.SecurityServiceImpl;
  */
 @Component(service = { AccessIdUtil.class },
            immediate = true,
-           configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM" })
+           configurationPolicy = ConfigurationPolicy.IGNORE)
 public final class AccessIdUtil {
     static final TraceComponent tc = Tr.register(AccessIdUtil.class);
     static final Pattern p = Pattern.compile("([^:]+):([^/]+)/(.+)");

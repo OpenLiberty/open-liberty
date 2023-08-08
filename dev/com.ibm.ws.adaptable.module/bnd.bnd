@@ -39,33 +39,32 @@ Service-Component: \
     adapterFactoryService=com.ibm.wsspi.adaptable.module.adapters.AdapterFactoryService;\
     containerFactory='com.ibm.wsspi.artifact.factory.ArtifactContainerFactory(&(category=DIR)(category=JAR)(category=LOOSE))';\
     overlayContainerFactory=com.ibm.wsspi.artifact.overlay.OverlayContainerFactory;\
-    immediate:=true;\
-    properties:="service.vendor=IBM",\
+    immediate:=true,\
   com.ibm.ws.adaptable.module.fast.mode.container.adapter;\
     implementation:=com.ibm.ws.adaptable.module.internal.FastModeControlContainerAdapter;\
     provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
     configuration-policy:=ignore;\
-    properties:="service.vendor=IBM,toType=com.ibm.wsspi.adaptable.module.FastModeControl",\
+    properties:="toType=com.ibm.wsspi.adaptable.module.FastModeControl",\
   com.ibm.ws.adaptable.module.cache.container.adapter;\
     implementation:=com.ibm.ws.adaptable.module.internal.NonPersistentCacheContainerAdapter;\
     provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
     configuration-policy:=ignore;\
-    properties:="service.vendor=IBM,toType=com.ibm.wsspi.adaptable.module.NonPersistentCache",\
+    properties:="toType=com.ibm.wsspi.adaptable.module.NonPersistentCache",\
   com.ibm.ws.adaptable.module.cache.entry.adapter;\
     implementation:=com.ibm.ws.adaptable.module.internal.NonPersistentCacheEntryAdapter;\
     provide:=com.ibm.wsspi.adaptable.module.adapters.EntryAdapter;\
     configuration-policy:=ignore;\
-    properties:="service.vendor=IBM,toType=com.ibm.wsspi.adaptable.module.NonPersistentCache",\
+    properties:="toType=com.ibm.wsspi.adaptable.module.NonPersistentCache",\
   com.ibm.ws.adaptable.module.masked.path.entry.adapter;\
     implementation:=com.ibm.ws.adaptable.module.internal.MaskedPathEntryAdapter;\
     provide:=com.ibm.wsspi.adaptable.module.adapters.EntryAdapter;\
     configuration-policy:=ignore;\
-    properties:="service.vendor=IBM,toType=com.ibm.wsspi.adaptable.module.MaskedPathEntry",\
+    properties:="toType=com.ibm.wsspi.adaptable.module.MaskedPathEntry",\
   com.ibm.ws.adaptable.module.overlay.entry.adapter;\
     implementation:=com.ibm.ws.adaptable.module.internal.AddEntryToOverlayContainerAdapter;\
     provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
     configuration-policy:=ignore;\
-    properties:="service.vendor=IBM,toType=com.ibm.wsspi.adaptable.module.AddEntryToOverlay"
+    properties:="toType=com.ibm.wsspi.adaptable.module.AddEntryToOverlay"
 
 -buildpath: \
 	com.ibm.ws.artifact;version=latest,\

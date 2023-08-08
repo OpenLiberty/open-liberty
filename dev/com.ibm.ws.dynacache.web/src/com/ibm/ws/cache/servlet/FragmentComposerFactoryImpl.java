@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-@Component(service=FragmentComposerFactory.class, property = { "service.vendor=IBM" })
+@Component(service=FragmentComposerFactory.class)
 public class FragmentComposerFactoryImpl implements FragmentComposerFactory {
 	private static TraceComponent tc = Tr.register(FragmentComposerFactoryImpl.class,
 			"WebSphere Dynamic Cache", "com.ibm.ws.cache.resources.dynacache");

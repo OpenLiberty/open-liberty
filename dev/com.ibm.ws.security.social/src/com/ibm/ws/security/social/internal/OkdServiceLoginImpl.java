@@ -44,7 +44,7 @@ import com.ibm.ws.security.social.internal.utils.SocialConfigUtils;
 import com.ibm.ws.security.social.tai.SocialLoginTAI;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-@Component(name = "com.ibm.ws.security.social.okdServiceLogin", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = SocialLoginConfig.class, property = { "service.vendor=IBM", "type=okdServiceLogin" })
+@Component(name = "com.ibm.ws.security.social.okdServiceLogin", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = SocialLoginConfig.class, property = { "type=okdServiceLogin" })
 public class OkdServiceLoginImpl implements SocialLoginConfig {
     public static final TraceComponent tc = Tr.register(OkdServiceLoginImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 

@@ -30,7 +30,7 @@ import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 
 @Component(service = SubsystemFactory.class,
                 configurationPolicy = ConfigurationPolicy.IGNORE,
-                property = { "service.vendor=IBM", "service.ranking:Integer=1" })
+                property = { "service.ranking:Integer=1" })
 public class DispatchSubsystemFactory extends SubsystemFactory {
     private ExecutorDispatchPolicy dispatcherPolicy;
 

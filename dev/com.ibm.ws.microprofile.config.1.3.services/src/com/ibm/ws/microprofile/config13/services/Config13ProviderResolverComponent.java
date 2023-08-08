@@ -20,5 +20,5 @@ import com.ibm.ws.microprofile.config13.impl.Config13ProviderResolverImpl;
 
 import io.openliberty.microprofile.config.internal.common.ConfigIntrospectionProvider;
 
-@Component(service = { ConfigProviderResolver.class, ApplicationStateListener.class, ConfigIntrospectionProvider.class }, property = { "service.vendor=IBM" }, immediate = true)
+@Component(service = { ConfigProviderResolver.class, ApplicationStateListener.class, ConfigIntrospectionProvider.class }, immediate = true)
 public class Config13ProviderResolverComponent extends Config13ProviderResolverImpl {}

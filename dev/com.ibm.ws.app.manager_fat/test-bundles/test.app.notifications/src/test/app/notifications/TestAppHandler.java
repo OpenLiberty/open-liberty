@@ -44,7 +44,7 @@ import com.ibm.wsspi.artifact.factory.contributor.ArtifactContainerFactoryContri
            service = { ApplicationHandler.class, RuntimeUpdateListener.class, ApplicationTypeSupported.class, ArtifactContainerFactoryContributor.class },
            configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
-           property = { "service.vendor=IBM", "type=tan", "handlesType=java.io.File" })
+           property = { "type=tan", "handlesType=java.io.File" })
 public class TestAppHandler implements ApplicationHandler<String>, RuntimeUpdateListener, ApplicationTypeSupported, ArtifactContainerFactoryContributor {
     private static final String RETURN_NULL = "returnNull";
     private static final String RETURN_FAILED = "returnFailed";

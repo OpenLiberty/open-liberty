@@ -34,8 +34,7 @@ Service-Component:\
         instrumentation=java.lang.instrument.Instrumentation~; \
         requestProbeMetaDataProvider=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
         multiple:='requestProbeMetaDataProvider'; \
-        dynamic:='requestProbeMetaDataProvider';\
-        properties:="service.vendor=IBM", \
+        dynamic:='requestProbeMetaDataProvider', \
     com.ibm.ws.request.probe.RequestProbeService; \
         implementation:=com.ibm.ws.request.probe.RequestProbeService; \
         provide:=com.ibm.ws.request.probe.RequestProbeService; \
@@ -43,12 +42,10 @@ Service-Component:\
         multiple:='requestProbe'; \
         dynamic:='requestProbe';\
         modified:='modified'; \
-        properties:="service.vendor=IBM"; \
         immediate:='true', \
      com.ibm.ws.request.probe.RequestProbeIntrospector; \
         provide:=com.ibm.wsspi.logging.IntrospectableService; \
-        implementation:=com.ibm.ws.request.probe.RequestProbeIntrospector; \
-        properties:="service.vendor=IBM"
+        implementation:=com.ibm.ws.request.probe.RequestProbeIntrospector
 
 instrument.disabled: true
 

@@ -24,7 +24,7 @@ import io.openliberty.webcontainer60.session.impl.SessionContextRegistryImpl60;
 /**
  *
  */
-@Component(service = SessionContextRegistryImplFactory.class, property = { "service.vendor=IBM" })
+@Component(service = SessionContextRegistryImplFactory.class)
 public class SessionContextRegistryImplFactory60Impl implements SessionContextRegistryImplFactory {
 
     /*

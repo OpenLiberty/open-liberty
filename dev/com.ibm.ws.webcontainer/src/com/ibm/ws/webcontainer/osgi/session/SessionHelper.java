@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 /**
  * Helper class to encapsulate the session dependency
  */
-@Component(service={SessionHelper.class}, property={"service.vendor=IBM"})
+@Component(service={SessionHelper.class})
 public class SessionHelper {
 
     private SessionManager manager = null;

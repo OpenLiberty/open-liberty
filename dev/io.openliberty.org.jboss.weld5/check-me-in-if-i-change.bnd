@@ -16,7 +16,7 @@ Service-Component: \
   com.ibm.ws.weld.deserializationClassProvider;\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
-    properties:="service.vendor=IBM,\
+    properties:="\
       packages=org.jboss.weld.annotated\
         |org.jboss.weld.annotated.slim\
         |org.jboss.weld.annotated.slim.backed\

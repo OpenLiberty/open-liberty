@@ -49,8 +49,7 @@ import com.ibm.wsspi.application.handler.ApplicationMonitoringInformation;
  * Application monitoring service. It monitors all installed applications for changes and acts accordingly
  */
 @Component(service = ApplicationMonitor.class, immediate = true,
-           configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = "service.vendor=IBM")
+           configurationPolicy = ConfigurationPolicy.IGNORE)
 public class ApplicationMonitor {
     private final static TraceComponent tc = Tr.register(ApplicationMonitor.class);
 

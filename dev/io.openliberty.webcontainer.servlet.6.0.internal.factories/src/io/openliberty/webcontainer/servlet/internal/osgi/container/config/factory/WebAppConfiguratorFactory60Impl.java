@@ -26,7 +26,7 @@ import io.openliberty.webcontainer60.osgi.container.config.WebAppConfiguratorHel
 /**
  *
  */
-@Component(service = WebAppConfiguratorHelperFactory.class, property = { "service.vendor=IBM" })
+@Component(service = WebAppConfiguratorHelperFactory.class)
 public class WebAppConfiguratorFactory60Impl implements WebAppConfiguratorHelperFactory {
 
     @Override

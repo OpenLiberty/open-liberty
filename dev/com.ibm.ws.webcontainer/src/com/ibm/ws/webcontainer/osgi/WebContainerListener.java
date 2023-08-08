@@ -53,7 +53,7 @@ import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
                       ApplicationStateListener.class,
                       ServerQuiesceListener.class,
                       DeferredMetaDataFactory.class },
-           property = { "service.vendor=IBM", "deferredMetaData=WEB", "supportsDeferredInit:Boolean=true" })
+           property = { "deferredMetaData=WEB", "supportsDeferredInit:Boolean=true" })
 public class WebContainerListener implements ModuleMetaDataListener, 
                                              ApplicationStateListener, 
                                              AllServiceListener, 

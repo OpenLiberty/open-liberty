@@ -59,8 +59,7 @@ Service-Component: \
   com.ibm.ws.security.java2sec.policyConfig; \
     configuration-policy:=require; \
     implementation:=com.ibm.ws.classloading.java2sec.JavaPermissionsConfiguration; \
-    provide:=com.ibm.ws.classloading.java2sec.JavaPermissionsConfiguration; \
-    properties:="service.vendor=IBM", \
+    provide:=com.ibm.ws.classloading.java2sec.JavaPermissionsConfiguration, \
   com.ibm.ws.classloading.java2sec.PermissionManager; \
     configuration-policy:=ignore; \
     immediate:=true;\
@@ -72,8 +71,7 @@ Service-Component: \
     dynamic:='permission'; \
     multiple:='permission'; \
     greedy:='permission'; \
-    optional:='permission'; \
-    properties:="service.vendor=IBM"
+    optional:='permission'
 
 instrument.classesExcludes: com/ibm/ws/classloading/internal/resources/*.class
 

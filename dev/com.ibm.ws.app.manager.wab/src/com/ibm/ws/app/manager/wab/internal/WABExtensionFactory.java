@@ -24,8 +24,7 @@ import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { WABExtensionFactory.class, ExtensionFactory.class },
-           immediate = true,
-           property = "service.vendor=IBM")
+           immediate = true)
 public class WABExtensionFactory implements ExtensionFactory {
 
     private volatile ExtensionFactory delegate;

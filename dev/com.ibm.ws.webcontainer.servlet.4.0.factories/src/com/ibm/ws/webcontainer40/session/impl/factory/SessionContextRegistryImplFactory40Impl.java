@@ -22,7 +22,7 @@ import com.ibm.ws.webcontainer31.session.impl.SessionContextRegistry31Impl;
 /**
  *
  */
-@Component(service = SessionContextRegistryImplFactory.class, property = { "service.vendor=IBM" })
+@Component(service = SessionContextRegistryImplFactory.class)
 public class SessionContextRegistryImplFactory40Impl implements SessionContextRegistryImplFactory {
 
     /*

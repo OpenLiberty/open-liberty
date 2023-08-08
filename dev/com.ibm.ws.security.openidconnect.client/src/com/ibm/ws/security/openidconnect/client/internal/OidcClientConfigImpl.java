@@ -84,7 +84,7 @@ import io.openliberty.security.oidcclientcore.discovery.DiscoveryHandler;
 /**
  * Process the OpenID Connect client entry in the server.xml file
  */
-@Component(configurationPid = "com.ibm.ws.security.openidconnect.client.oidcClientConfig", configurationPolicy = ConfigurationPolicy.REQUIRE, service = OidcClientConfig.class, property = { "service.vendor=IBM" })
+@Component(configurationPid = "com.ibm.ws.security.openidconnect.client.oidcClientConfig", configurationPolicy = ConfigurationPolicy.REQUIRE, service = OidcClientConfig.class)
 public class OidcClientConfigImpl implements OidcClientConfig {
 
     private static final TraceComponent tc = Tr.register(OidcClientConfigImpl.class);

@@ -54,8 +54,7 @@ Service-Component: \
     sslConfig=com.ibm.wsspi.ssl.SSLConfiguration; \
     dynamic:='openidClientConfig,sslSupport,sslConfig'; \
     optional:='sslSupport,sslConfig'; \
-    multiple:='sslConfig';\
-    properties:="service.vendor=IBM", \
+    multiple:='sslConfig', \
   com.ibm.ws.security.openid20.openidClientConfig; \
     implementation:=com.ibm.ws.security.openid20.internal.OpenidClientConfigImpl; \
     provide:=com.ibm.ws.security.openid20.OpenidClientConfig; \
@@ -65,8 +64,7 @@ Service-Component: \
     deactivate:=deactivate; \
     configuration-policy:=require; \
     configurationAdmin=org.osgi.service.cm.ConfigurationAdmin; \
-    dynamic:='configurationAdmin'; \
-    properties:="service.vendor=IBM", \
+    dynamic:='configurationAdmin', \
   com.ibm.ws.security.openid20.tai; \
     implementation:=com.ibm.ws.security.openid20.tai.OpenidTAI; \
     provide:=com.ibm.wsspi.security.tai.TrustAssociationInterceptor; \
@@ -82,7 +80,7 @@ Service-Component: \
 	dynamic:='openidClientConfig,authenticationFilter'; \
 	greedy:='authenticationFilter'; \
 	multiple:='authenticationFilter'; \
-	properties:="service.vendor=IBM,TAIName=OpenidTAI,id=com.ibm.ws.security.openid20.tai,invokeAfterSSO:Boolean=true"
+	properties:="TAIName=OpenidTAI,id=com.ibm.ws.security.openid20.tai,invokeAfterSSO:Boolean=true"
 
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF

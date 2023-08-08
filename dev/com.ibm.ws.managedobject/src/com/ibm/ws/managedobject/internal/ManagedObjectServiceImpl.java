@@ -24,7 +24,7 @@ import com.ibm.wsspi.injectionengine.ReferenceContext;
 @Component(name = "com.ibm.ws.managedobject.internal.ManagedObjectServiceImpl",
            service = { ManagedObjectService.class, DefaultManagedObjectService.class },
            immediate = true,
-           property = { "service.vendor=IBM", "service.ranking:Integer=-1" })
+           property = { "service.ranking:Integer=-1" })
 public class ManagedObjectServiceImpl implements DefaultManagedObjectService {
 
     @Override

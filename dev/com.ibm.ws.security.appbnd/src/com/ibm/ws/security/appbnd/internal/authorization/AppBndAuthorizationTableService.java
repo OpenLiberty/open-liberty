@@ -69,7 +69,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
            name = "com.ibm.ws.security.appbnd.AppBndAuthorizationTableService",
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM", "com.ibm.ws.security.authorization.table.name=WebApp" })
+           property = { "com.ibm.ws.security.authorization.table.name=WebApp" })
 public class AppBndAuthorizationTableService extends BaseAuthorizationTableService implements ApplicationMetaDataListener, AuthorizationTableService, UserRegistryChangeListener {
     private static final TraceComponent tc = Tr.register(AppBndAuthorizationTableService.class);
 

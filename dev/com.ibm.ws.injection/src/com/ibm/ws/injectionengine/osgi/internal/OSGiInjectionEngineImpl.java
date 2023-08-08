@@ -111,8 +111,7 @@ import com.ibm.wsspi.resource.ResourceBindingListener;
                        ApplicationMetaDataListener.class,
                        ModuleMetaDataListener.class,
                        ComponentMetaDataListener.class,
-                       ApplicationStateListener.class },
-           property = { "service.vendor=IBM" })
+                       ApplicationStateListener.class })
 public class OSGiInjectionEngineImpl extends AbstractInjectionEngine implements InjectionEngine, ApplicationMetaDataListener, ModuleMetaDataListener, ComponentMetaDataListener, ApplicationStateListener {
 
     private static final TraceComponent tc = Tr.register(OSGiInjectionEngineImpl.class);

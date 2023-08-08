@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-@Component(service = SubsystemFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "service.ranking:Integer=1" })
+@Component(service = SubsystemFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.ranking:Integer=1" })
 public class DefaultSocketFactorySubsystemFactory extends SubsystemFactory {
     private static enum MyLocalFactory implements LocalFactory {
         INSTANCE;

@@ -42,7 +42,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  */
 @Component(configurationPolicy = REQUIRE,
            service = ValidationConfigurationFactory.class,
-           property = { "service.vendor=IBM", "service.ranking:Integer=11" })
+           property = { "service.ranking:Integer=11" })
 public class ValidationConfigurationV11FactoryImpl implements ValidationConfigurationFactory {
 
     private static final String REFERENCE_VALIDATION_RELEASABLE_FACTORY = "ValidationReleasableFactory";

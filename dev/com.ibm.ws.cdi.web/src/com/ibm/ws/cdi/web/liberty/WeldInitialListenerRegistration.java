@@ -36,7 +36,7 @@ import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 @Component(name = "com.ibm.ws.cdi.weldInitialListener",
                 service = PreEventListenerProvider.class,
                 immediate = true,
-                property = { "service.vendor=IBM", "service.ranking:Integer=100" })
+                property = { "service.ranking:Integer=100" })
 public class WeldInitialListenerRegistration extends AbstractInitialListenerRegistration implements PreEventListenerProvider {
     
     private final AtomicServiceReference<CDIWebRuntime> cdiWebRuntimeRef = new AtomicServiceReference<CDIWebRuntime>(

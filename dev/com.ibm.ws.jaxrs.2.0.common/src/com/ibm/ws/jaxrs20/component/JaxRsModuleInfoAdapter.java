@@ -23,8 +23,7 @@ import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 @Component(name = "com.ibm.ws.jaxrs20.component.JaxRsModuleInfoAdapter", service = ContainerAdapter.class,
-           property = { "service.vendor=IBM",
-                       "toType=com.ibm.ws.jaxrs20.metadata.JaxRsModuleInfo" })
+           property = {                        "toType=com.ibm.ws.jaxrs20.metadata.JaxRsModuleInfo" })
 public class JaxRsModuleInfoAdapter implements ContainerAdapter<JaxRsModuleInfo> {
 
     /** {@inheritDoc} */

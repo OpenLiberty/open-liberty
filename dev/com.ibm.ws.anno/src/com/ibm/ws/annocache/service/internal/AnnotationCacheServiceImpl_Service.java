@@ -24,7 +24,7 @@ import com.ibm.wsspi.annocache.targets.AnnotationTargets_Factory;
 import com.ibm.wsspi.annocache.targets.cache.TargetCache_Factory;
 import com.ibm.wsspi.annocache.util.Util_Factory;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class AnnotationCacheServiceImpl_Service implements AnnotationCacheService_Service {
     public static final String CLASS_NAME = "AnnotationCacheServiceImpl_Service";
 

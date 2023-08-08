@@ -47,8 +47,7 @@ import com.ibm.ws.ssl.config.WSKeyStore;
  *
  */
 @Component(service = KeyStoreService.class,
-           configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM" })
+           configurationPolicy = ConfigurationPolicy.IGNORE)
 public class KeyStoreServiceImpl implements KeyStoreService {
     // Intentionally left package protected for unit test
     KeyStoreManager ksMgr;

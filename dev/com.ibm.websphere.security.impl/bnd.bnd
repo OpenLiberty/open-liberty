@@ -30,8 +30,7 @@ Service-Component: \
     immediate:=true; \
     configuration-policy:=ignore; \
     activate:=activate; \
-    deactivate:=deactivate; \
-    properties:='service.vendor=IBM', \
+    deactivate:=deactivate, \
   wsSecurityService; \
     implementation:=com.ibm.ws.security.intfc.internal.WSSecurityServiceImpl; \
     provide:=com.ibm.ws.security.intfc.WSSecurityService; \
@@ -41,8 +40,7 @@ Service-Component: \
     deactivate:=deactivate; \
     securityService=com.ibm.ws.security.SecurityService; \
     dynamic:='securityService'; \
-    optional:='securityService'; \
-    properties:='service.vendor=IBM'
+    optional:='securityService'
 
 -buildpath: \
 	com.ibm.websphere.security;version=latest,\

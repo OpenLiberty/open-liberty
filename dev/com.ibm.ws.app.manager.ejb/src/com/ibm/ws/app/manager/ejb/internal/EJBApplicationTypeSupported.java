@@ -17,5 +17,5 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.wsspi.application.handler.ApplicationTypeSupported;
 
 @Component(service = ApplicationTypeSupported.class,
-           property = { "service.vendor=IBM", "type:String=ejb" })
+           property = { "type:String=ejb" })
 public class EJBApplicationTypeSupported implements ApplicationTypeSupported {}

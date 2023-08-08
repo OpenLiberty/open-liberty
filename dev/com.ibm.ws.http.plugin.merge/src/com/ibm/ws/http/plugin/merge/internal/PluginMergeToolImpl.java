@@ -76,7 +76,7 @@ import com.ibm.ws.http.plugin.merge.PluginMergeTool;
  *
  * @author bparees
  */
-@Component(service = { PluginMergeTool.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
+@Component(service = { PluginMergeTool.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class PluginMergeToolImpl implements PluginMergeTool {
     private static final TraceComponent traceComponent = Tr.register(PluginMergeToolImpl.class);
     private static final String NO_MERGE_ERR = "Error encountered, no merged file was written";

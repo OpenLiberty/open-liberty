@@ -55,7 +55,7 @@ import com.ibm.jbatch.jsl.model.Step;
  */
 @Component(service = BatchDispatcher.class,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM", "service.ranking:Integer=2", "type=Local" })
+           property = { "service.ranking:Integer=2", "type=Local" })
 public class BatchLocalDispatcher implements BatchDispatcher {
 	
     /**

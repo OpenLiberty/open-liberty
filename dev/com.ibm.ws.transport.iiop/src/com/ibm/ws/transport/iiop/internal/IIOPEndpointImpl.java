@@ -44,7 +44,7 @@ import com.ibm.wsspi.channelfw.ChannelConfiguration;
  * to use either plain socket listeners or SSL listeners
  * 
  */
-@Component(configurationPolicy = ConfigurationPolicy.REQUIRE, property = { "service.vendor=IBM" })
+@Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class IIOPEndpointImpl implements IIOPEndpoint {
 
     private static final TraceComponent tc = Tr.register(IIOPEndpointImpl.class);

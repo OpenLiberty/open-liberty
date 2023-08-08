@@ -27,7 +27,7 @@ import com.ibm.ws.injectionengine.osgi.internal.OSGiInjectionScopeData;
  * deferred reference data is not unnecessarily processed eagerly.
  */
 @Component(service = JavaColonNamingHelper.class,
-           property = { "service.vendor=IBM", "service.ranking:Integer=-1" })
+           property = { "service.ranking:Integer=-1" })
 public class DeferredNonCompInjectionJavaColonHelper extends InjectionJavaColonHelper {
     @Override
     protected OSGiInjectionScopeData getInjectionScopeData(NamingConstants.JavaColonNamespace namespace) throws NamingException {

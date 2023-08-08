@@ -50,20 +50,17 @@ Service-Component: \
     tokenService=com.ibm.ws.security.token.TokenService; \
     dynamic:='tokenService'; \
     optional:='tokenService'; \
-    multiple:='tokenService'; \
-    properties:='service.vendor=IBM', \
+    multiple:='tokenService', \
   com.ibm.wsspi.security.token.WSSecurityPropagationHelper;\
     implementation:=com.ibm.wsspi.security.token.WSSecurityPropagationHelper;\
     configuration-policy:=ignore;\
     activate:=activate;\
     deactivate:=deactivate;\
-    tokenManager=com.ibm.ws.security.token.TokenManager;\
-    properties:="service.vendor=IBM", \
+    tokenManager=com.ibm.ws.security.token.TokenManager, \
   com.ibm.ws.security.token.classProvider;\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
     properties:="\
-      service.vendor=IBM,\
       classes=com.ibm.ws.security.token.internal.SingleSignonTokenImpl"
 
 instrument.classesExcludes: com/ibm/ws/security/token/internal/resources/*.class

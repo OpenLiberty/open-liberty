@@ -57,8 +57,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * Methods return a Future object represented the newly started jobs or partitions
  */
 @Component(service = BatchInternalDispatcher.class,
-		   configurationPolicy = ConfigurationPolicy.IGNORE,
-		   property = { "service.vendor=IBM" })
+		   configurationPolicy = ConfigurationPolicy.IGNORE)
 public class BatchInternalDispatcherImpl implements BatchInternalDispatcher {
 
 	/**

@@ -26,7 +26,7 @@ import com.ibm.wsspi.injectionengine.ReferenceContext;
 /**
 *
 */
-@Component(service = WebAppFactory.class, property = { "service.vendor=IBM" })
+@Component(service = WebAppFactory.class)
 public class WebAppFactory60Impl implements WebAppFactory {
 
     /*

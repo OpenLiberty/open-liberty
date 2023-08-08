@@ -41,7 +41,7 @@ import com.ibm.ws.webcontainer.cors.config.CorsConfig;
 import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
-@Component(service = { CorsHelper.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
+@Component(service = { CorsHelper.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class CorsHelper {
     private static final TraceComponent tc = Tr.register(CorsHelper.class);
 

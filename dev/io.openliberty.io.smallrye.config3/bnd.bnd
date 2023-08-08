@@ -30,7 +30,7 @@ Service-Component: \
  com.ibm.ws.microprofile.config.smallrye.deserializationClassProvider;\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
-    properties:="service.vendor=IBM,\
+    properties:="\
       packages=io.smallrye.config\
         |io.smallrye.config.inject\
         |io.smallrye.config.common\

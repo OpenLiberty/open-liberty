@@ -23,20 +23,14 @@ import javax.security.auth.login.CredentialExpiredException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.jbatch.container.exception.BatchContainerRuntimeException;
-import com.ibm.jbatch.container.services.IPersistenceManagerService;
-import com.ibm.jbatch.container.ws.WSJobInstance;
-import com.ibm.jbatch.container.ws.WSJobRepository;
 import com.ibm.jbatch.container.ws.BatchGroupSecurityHelper;
 import com.ibm.websphere.security.auth.CredentialDestroyedException;
 import com.ibm.websphere.security.cred.WSCredential;
-import com.ibm.ws.security.AccessIdUtil;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 
-@Component(property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.IGNORE)
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class BatchGroupSecurityHelperImpl implements BatchGroupSecurityHelper {
 		
     public Set<String> getGroupsForSubject(Subject subject) {

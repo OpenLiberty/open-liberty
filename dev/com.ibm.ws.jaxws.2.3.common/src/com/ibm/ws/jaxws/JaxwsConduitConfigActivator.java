@@ -53,7 +53,7 @@ import com.ibm.ws.jaxws.bus.LibertyApplicationBusListener;
  *  Lifted from org.apache.cxf.transport.http.asyncclient.Activator
  */
 //Liberty Code Change
-@Component(immediate = true, property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.OPTIONAL)
+@Component(immediate = true, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class JaxwsConduitConfigActivator implements ExtensionProvider {
     private ConduitConfigurerService conduitConfigurerService;
     public static BundleContext context;

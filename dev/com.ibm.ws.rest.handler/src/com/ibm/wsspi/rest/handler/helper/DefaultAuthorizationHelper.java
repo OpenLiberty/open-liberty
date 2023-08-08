@@ -48,8 +48,7 @@ import com.ibm.wsspi.rest.handler.RESTResponse;
  */
 @Component(service = { DefaultAuthorizationHelper.class },
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class DefaultAuthorizationHelper {
 
     /**

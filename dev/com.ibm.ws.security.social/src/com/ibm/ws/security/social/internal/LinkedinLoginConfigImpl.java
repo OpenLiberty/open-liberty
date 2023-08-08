@@ -25,7 +25,7 @@ import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
 import com.ibm.ws.security.social.internal.utils.ClientConstants;
 
-@Component(name = "com.ibm.ws.security.social.linkedin", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = SocialLoginConfig.class, property = { "service.vendor=IBM", "type=linkedinLogin" })
+@Component(name = "com.ibm.ws.security.social.linkedin", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = SocialLoginConfig.class, property = { "type=linkedinLogin" })
 public class LinkedinLoginConfigImpl extends Oauth2LoginConfigImpl {
     public static final TraceComponent tc = Tr.register(LinkedinLoginConfigImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 

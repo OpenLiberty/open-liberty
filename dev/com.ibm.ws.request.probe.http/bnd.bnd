@@ -28,12 +28,10 @@ Private-Package: com.ibm.ws.request.probe.http
 Service-Component= \
   com.ibm.ws.request.probe.http.HttpInboundServiceContextImplLogFinalResponseTransformDescriptor; \
     implementation:=com.ibm.ws.request.probe.http.HttpInboundServiceContextImplLogFinalResponseTransformDescriptor; \
-    provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
-    properties:="service.vendor=IBM", \
+    provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor, \
   com.ibm.ws.request.probe.http.HttpDispatcherLinkWrapHandlerAndExecuteTransformDescriptor; \
     implementation:=com.ibm.ws.request.probe.http.HttpDispatcherLinkWrapHandlerAndExecuteTransformDescriptor; \
-    provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
-    properties:="service.vendor=IBM"
+    provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor
 
 instrument.disabled: true
 

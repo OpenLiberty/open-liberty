@@ -40,8 +40,7 @@ import io.openliberty.grpc.internal.GrpcMessages;
  * Adapted from com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfig
  */
 @Component(immediate = true, service = { GrpcServiceConfig.class,
-        ApplicationRecycleComponent.class }, configurationPid = "io.openliberty.grpc.serverConfig", configurationPolicy = ConfigurationPolicy.REQUIRE, property = {
-                "service.vendor=IBM" })
+        ApplicationRecycleComponent.class }, configurationPid = "io.openliberty.grpc.serverConfig", configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class GrpcServiceConfigImpl implements GrpcServiceConfig, ApplicationRecycleComponent {
     private static final TraceComponent tc = Tr.register(GrpcServiceConfigImpl.class, GrpcMessages.GRPC_TRACE_NAME, GrpcMessages.GRPC_BUNDLE);
 

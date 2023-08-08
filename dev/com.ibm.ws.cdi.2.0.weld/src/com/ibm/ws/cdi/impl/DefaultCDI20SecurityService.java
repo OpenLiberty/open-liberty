@@ -41,7 +41,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  *
  * @see org.jboss.weld.security.spi.SecurityServices
  */
-@Component(name = "com.ibm.ws.cdi.impl.DefaultCDI20SecurityService", property = { "service.vendor=IBM", "service.ranking:Integer=50" })
+@Component(name = "com.ibm.ws.cdi.impl.DefaultCDI20SecurityService", property = { "service.ranking:Integer=50" })
 public class DefaultCDI20SecurityService implements SecurityServices {
 
     private static final TraceComponent tc = Tr.register(DefaultCDI20SecurityService.class);

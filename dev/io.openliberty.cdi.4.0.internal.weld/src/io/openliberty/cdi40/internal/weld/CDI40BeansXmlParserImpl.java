@@ -28,7 +28,7 @@ import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 /**
  *
  */
-@Component(name = "io.openliberty.cdi40.internal.weld.CDI40BeanParserImpl", service = { BeansXmlParser.class }, property = { "service.vendor=IBM" })
+@Component(name = "io.openliberty.cdi40.internal.weld.CDI40BeanParserImpl", service = { BeansXmlParser.class })
 public class CDI40BeansXmlParserImpl implements BeansXmlParser {
 
     private static final TraceComponent tc = Tr.register(CDI40BeansXmlParserImpl.class);

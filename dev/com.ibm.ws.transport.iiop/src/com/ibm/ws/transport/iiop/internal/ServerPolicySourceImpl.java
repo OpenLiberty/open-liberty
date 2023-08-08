@@ -47,7 +47,7 @@ import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
  * @version $Revision: 497125 $ $Date: 2007-01-17 10:51:30 -0800 (Wed, 17 Jan 2007) $
  */
 @Component(factory = "com.ibm.ws.transport.iiop.internal.ServerPolicySourceImpl",
-                property = { "service.vendor=IBM", "service.ranking:Integer=10" })
+                property = { "service.ranking:Integer=10" })
 @DSExt.PersistentFactoryComponent
 public class ServerPolicySourceImpl implements ServerPolicySource {
 

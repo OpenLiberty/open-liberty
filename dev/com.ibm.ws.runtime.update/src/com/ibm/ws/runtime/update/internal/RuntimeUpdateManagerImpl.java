@@ -63,8 +63,7 @@ import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
  */
 @Component(service = { RuntimeUpdateManager.class },
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, SynchronousBundleListener {
     private static final TraceComponent tc = Tr.register(RuntimeUpdateManagerImpl.class);
 

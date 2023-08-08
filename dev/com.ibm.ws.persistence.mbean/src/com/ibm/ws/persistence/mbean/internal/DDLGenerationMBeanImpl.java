@@ -52,8 +52,7 @@ import com.ibm.wsspi.persistence.DDLGenerationParticipant;
 
 @Component(service = { DDLGenerationMBean.class, DynamicMBean.class },
                 immediate = true,
-                property = { "service.vendor=IBM",
-                            "jmx.objectname=" + DDLGenerationMBean.OBJECT_NAME })
+                property = {                             "jmx.objectname=" + DDLGenerationMBean.OBJECT_NAME })
 public class DDLGenerationMBeanImpl extends StandardMBean implements DDLGenerationMBean {
     private static final String OUTPUT_DIR = WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR + "ddl" + File.separator;
 

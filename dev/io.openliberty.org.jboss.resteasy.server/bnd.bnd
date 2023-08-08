@@ -29,8 +29,7 @@ Service-Component: \
   io.openliberty.org.jboss.resteasy.servlet.initializer; \
      implementation:=io.openliberty.org.jboss.resteasy.server.component.RESTfulServletContainerInitializer; \
      provide:=javax.servlet.ServletContainerInitializer; \
-     immediate:=true;\
-     properties:="service.vendor=IBM"
+     immediate:=true
 
 Export-Package: \
   com.ibm.websphere.jaxrs.server;version=3.0.0;thread-context=true, \

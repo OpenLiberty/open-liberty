@@ -45,7 +45,7 @@ import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.ssl.SSLSupport;
 
-@Component(service = JwtConsumerConfig.class, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.security.jwt.consumer", name = "jwtConsumerConfig", property = "service.vendor=IBM")
+@Component(service = JwtConsumerConfig.class, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.security.jwt.consumer", name = "jwtConsumerConfig")
 public class JwtConsumerConfigImpl implements JwtConsumerConfig {
 
     private static final TraceComponent tc = Tr.register(JwtConsumerConfigImpl.class);

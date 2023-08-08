@@ -20,7 +20,7 @@ import com.ibm.ws.app.manager.module.internal.ModuleHandlerBase;
 import com.ibm.ws.container.service.app.deploy.extended.ModuleRuntimeContainer;
 
 @Component(service = ModuleHandler.class,
-           property = { "service.vendor=IBM", "type:String=web" })
+           property = { "type:String=web" })
 public class WebModuleHandlerImpl extends ModuleHandlerBase {
 
     @Reference(target = "(type=web)")

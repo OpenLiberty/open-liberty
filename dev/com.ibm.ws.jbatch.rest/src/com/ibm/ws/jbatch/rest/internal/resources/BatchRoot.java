@@ -39,8 +39,7 @@ import com.ibm.wsspi.rest.handler.RESTResponse;
 @Component(service = { RESTHandler.class },
                 configurationPolicy = ConfigurationPolicy.IGNORE,
                 immediate = true,
-                property = { "service.vendor=IBM",
-                            RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + APIConstants.BATCH_API_ROOT_PATH,
+                property = {                             RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + APIConstants.BATCH_API_ROOT_PATH,
                             RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_SECURITY + "=true" })
 public class BatchRoot implements RESTHandler {
 

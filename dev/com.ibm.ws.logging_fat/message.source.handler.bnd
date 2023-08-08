@@ -31,5 +31,4 @@ Service-Component: \
     provide:=com.ibm.wsspi.collector.manager.Handler; \
      executor=java.util.concurrent.ExecutorService; \
     modified:='modified'; \
-    immediate:='true'; \
-    properties:="service.vendor=IBM"
+    immediate:='true'

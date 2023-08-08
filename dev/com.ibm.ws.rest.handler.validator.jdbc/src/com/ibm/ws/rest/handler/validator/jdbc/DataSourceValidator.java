@@ -40,7 +40,7 @@ import com.ibm.wsspi.validator.Validator;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { Validator.class },
-           property = { "service.vendor=IBM", "com.ibm.wsspi.rest.handler.root=/validation", "com.ibm.wsspi.rest.handler.config.pid=com.ibm.ws.jdbc.dataSource" })
+           property = { "com.ibm.wsspi.rest.handler.root=/validation", "com.ibm.wsspi.rest.handler.config.pid=com.ibm.ws.jdbc.dataSource" })
 public class DataSourceValidator implements Validator {
     private final static TraceComponent tc = Tr.register(DataSourceValidator.class);
 

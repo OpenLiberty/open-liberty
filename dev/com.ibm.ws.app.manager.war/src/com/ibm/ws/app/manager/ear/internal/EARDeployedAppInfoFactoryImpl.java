@@ -49,7 +49,7 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoForContainer;
 
 @Component(service = DeployedAppInfoFactory.class,
-           property = { "service.vendor=IBM", "type:String=ear" })
+           property = { "type:String=ear" })
 public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactory {
     private static final TraceComponent _tc = Tr.register(EARDeployedAppInfoFactoryImpl.class,
                                                           new String[] { "webcontainer", "applications", "app.manager" },

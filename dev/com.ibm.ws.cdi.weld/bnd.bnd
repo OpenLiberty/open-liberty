@@ -32,7 +32,7 @@ Service-Component: \
  com.ibm.ws.cdi.weld.deserializationClassProvider;\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
-    properties:="service.vendor=IBM,\
+    properties:="\
       packages=com.ibm.ws.cdi.liberty\
         |com.ibm.ws.cdi.impl\
         |com.ibm.ws.cdi.impl.weld\

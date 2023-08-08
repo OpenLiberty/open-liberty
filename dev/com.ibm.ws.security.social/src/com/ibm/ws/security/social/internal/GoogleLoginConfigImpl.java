@@ -29,7 +29,7 @@ import com.ibm.ws.security.social.TraceConstants;
  * . The other is for JwtConsumerConfig. This make googleLogin does not need to define an additional jJwtConsumerConfig
  * .. So, we can reuse the jwksUri and sslRef defined in the googleLogin.
  */
-@Component(name = "com.ibm.ws.security.social.google", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = { SocialLoginConfig.class, JwtConsumerConfig.class }, property = { "service.vendor=IBM", "type=googleLogin" })
+@Component(name = "com.ibm.ws.security.social.google", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = { SocialLoginConfig.class, JwtConsumerConfig.class }, property = { "type=googleLogin" })
 public class GoogleLoginConfigImpl extends OidcLoginConfigImpl {
     public static final TraceComponent tc = Tr.register(GoogleLoginConfigImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 

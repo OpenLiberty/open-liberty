@@ -29,8 +29,7 @@ import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
  * The traditional core service, used when we're below Java 1.7
  */
 @Component(configurationPolicy = ConfigurationPolicy.OPTIONAL, configurationPid = "com.ibm.ws.kernel.filemonitor",
-           service = { FileNotification.class, ServerQuiesceListener.class },
-           property = { "service.vendor=IBM" })
+           service = { FileNotification.class, ServerQuiesceListener.class })
 public class ScanningCoreServiceImpl extends CoreServiceImpl {
 
     @Override

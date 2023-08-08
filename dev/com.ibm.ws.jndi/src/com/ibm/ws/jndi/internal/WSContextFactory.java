@@ -52,8 +52,7 @@ import com.ibm.ws.jndi.internal.JNDIServiceBinderManager.JNDIServiceBinderHolder
  */
 @Component(service = { InitialContextFactory.class, ObjectFactory.class, WSContextFactory.class },
            servicefactory = true,
-           configurationPolicy = IGNORE,
-           property = "service.vendor=IBM")
+           configurationPolicy = IGNORE)
 public class WSContextFactory implements InitialContextFactory, ObjectFactory, AllServiceListener {
     private final static TraceComponent tc = Tr.register(WSContextFactory.class);
     /** The bundle that is using this {@link InitialContextFactory}. */

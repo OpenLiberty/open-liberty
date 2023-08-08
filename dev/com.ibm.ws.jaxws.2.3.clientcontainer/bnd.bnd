@@ -73,12 +73,10 @@ Service-Component: \
      applicationBusListener/registerApplicationBusListener=com.ibm.ws.jaxws.bus.LibertyApplicationBusListener*; \
      extensionProvider/registerExtensionProvider=com.ibm.ws.jaxws.bus.ExtensionProvider*; \
      implementation:=com.ibm.ws.jaxws.support.JaxWsServiceImpl; \
-     provide:='com.ibm.wsspi.jaxws.JaxWsService'; \
-     properties:="service.vendor=IBM", \
+     provide:='com.ibm.wsspi.jaxws.JaxWsService', \
   com.ibm.ws.jaxws.injection.WebServiceContextObjectFactoryInfo; \
      implementation:=com.ibm.ws.jaxws.injection.WebServiceContextObjectFactoryInfo; \
-     provide:='com.ibm.wsspi.injectionengine.ObjectFactoryInfo'; \
-     properties:="service.vendor=IBM", \
+     provide:='com.ibm.wsspi.injectionengine.ObjectFactoryInfo', \
   com.ibm.ws.jaxws.support.jaxWsModuleMetaDataListener; \
     implementation:=com.ibm.ws.jaxws.support.JaxWsModuleMetaDataListener; \
     provide:='com.ibm.ws.container.service.metadata.ModuleMetaDataListener'; \
@@ -86,20 +84,18 @@ Service-Component: \
     classLoadingService=com.ibm.wsspi.classloading.ClassLoadingService; \
     jaxWsModuleInfoBuilders/registerJaxWsModuleInfoBuilder=com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoBuilder*; \
     configuration-policy:=optional; \
-    immediate:=true; \
-    properties:="service.vendor=IBM", \
+    immediate:=true, \
   com.ibm.ws.jaxws.client.injection.webServiceRefProcessorProvider;\
     implementation:=com.ibm.ws.jaxws.client.injection.WebServiceRefProcessorProvider; \
 	provide:=com.ibm.wsspi.injectionengine.InjectionProcessorProvider;\
 	configuration-policy:=optional,\
   com.ibm.ws.jaxws.support.jaxWsInjectionMetaDataListener;\
     implementation:=com.ibm.ws.jaxws.support.JaxWsInjectionMetaDataListener;\
-    provide:='com.ibm.wsspi.injectionengine.InjectionMetaDataListener';\
-    properties:="service.vendor=IBM", \
+    provide:='com.ibm.wsspi.injectionengine.InjectionMetaDataListener', \
   com.ibm.ws.jaxws.metadata.builder.jaxWsModuleInfo.adapter; \
      implementation:=com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoAdapter; \
      provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter; \
-     properties:="service.vendor=IBM,toType=com.ibm.ws.jaxws.metadata.JaxWsModuleInfo"
+     properties:="toType=com.ibm.ws.jaxws.metadata.JaxWsModuleInfo"
 
 instrument.classesExcludes: com/ibm/ws/jaxws/clientcontainer/internal/resources/*.class
 

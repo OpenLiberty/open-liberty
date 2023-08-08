@@ -40,7 +40,7 @@ import com.ibm.ws.security.jwt.utils.TokenBuilder;
 import com.ibm.ws.security.jwt.web.JwtRequest.EndpointType;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 
-@Component(service = JwtEndpointServices.class, name = "com.ibm.ws.security.jwt.web.JwtEndpointServices", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
+@Component(service = JwtEndpointServices.class, name = "com.ibm.ws.security.jwt.web.JwtEndpointServices", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class JwtEndpointServices {
     private static TraceComponent tc = Tr.register(JwtEndpointServices.class, TraceConstants.TRACE_GROUP,
             TraceConstants.MESSAGE_BUNDLE);

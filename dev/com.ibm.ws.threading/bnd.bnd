@@ -32,17 +32,16 @@ Service-Component=com.ibm.ws.threading.internal.DeferrableScheduledExecutorImpl;
         implementation:=com.ibm.ws.threading.internal.DeferrableScheduledExecutorImpl; \
         executor='java.util.concurrent.ScheduledExecutorService(deferrable=false)'; \
         provide:='java.util.concurrent.ScheduledExecutorService'; \
-        properties:="service.vendor=IBM,service.ranking:Integer=-1,deferrable:Boolean=true", \
+        properties:="service.ranking:Integer=-1,deferrable:Boolean=true", \
     com.ibm.ws.threading.internal.ScheduledExecutorImpl; \
         implementation:=com.ibm.ws.threading.internal.ScheduledExecutorImpl; \
         executor=java.util.concurrent.ExecutorService; \
         provide:='java.util.concurrent.ScheduledExecutorService'; \
-        properties:="service.vendor=IBM,deferrable:Boolean=false", \
+        properties:="deferrable:Boolean=false", \
     com.ibm.ws.threading.internal.FutureMonitorImpl; \
         implementation:=com.ibm.ws.threading.internal.FutureMonitorImpl; \
         provide:='com.ibm.ws.threading.FutureMonitor'; \
-        executor=java.util.concurrent.ScheduledExecutorService; \
-        properties:="service.vendor=IBM"
+        executor=java.util.concurrent.ScheduledExecutorService
     
 -includeresource: \
     OSGI-INF/permissions.perm=resources/permissions.perm, \

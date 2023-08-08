@@ -41,7 +41,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
  * A {@link ModuleContainerFinder} service is used to locate containers for the bundle files this factory
  * creates.
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class ModuleBundleFileFactoryImpl implements ModuleBundleFileFactory {
     ConcurrentServiceReferenceSet<ModuleContainerFinder> containerFinders = new ConcurrentServiceReferenceSet<ModuleContainerFinder>("ContainerFinder");
     Map<File, Container> nestedFiles = Collections.synchronizedMap(new HashMap<File, Container>());

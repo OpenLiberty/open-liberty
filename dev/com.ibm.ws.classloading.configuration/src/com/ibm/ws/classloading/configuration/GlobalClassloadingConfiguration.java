@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 
 @Component(service = GlobalClassloadingConfiguration.class, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE,
-           configurationPid = "com.ibm.ws.classloading.global", property = "service.vendor=IBM")
+           configurationPid = "com.ibm.ws.classloading.global")
 public class GlobalClassloadingConfiguration {
 
     private Map<String, Object> properties;

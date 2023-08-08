@@ -110,7 +110,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
            // Use a higher service.ranking to ensure app/module listeners can
            // register class transformers before other components attempt to
            // load classes.
-           property = { "service.vendor=IBM", "service.ranking:Integer=1000" })
+           property = { "service.ranking:Integer=1000" })
 public class JPAComponentImpl extends AbstractJPAComponent implements ApplicationStateListener, ModuleStateListener, Introspector {
     private static final TraceComponent tc = Tr.register(JPAComponentImpl.class);
     final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());

@@ -73,8 +73,7 @@ import com.ibm.wsspi.security.wim.model.Root;
 }
 
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { VMMService.class },
-           property = "service.vendor=IBM")
+           service = { VMMService.class })
 public class VMMService implements Service, RealmConfigChangeListener {
 
     private static final TraceComponent tc = Tr.register(VMMService.class);

@@ -39,7 +39,7 @@ import com.ibm.ws.runtime.metadata.MetaDataImpl;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threading.FutureMonitor;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "type:String=spring" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "type:String=spring" })
 public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
     private static final TraceComponent tc = Tr.register(SpringBootRuntimeContainer.class);
 

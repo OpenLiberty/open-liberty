@@ -62,7 +62,7 @@ import com.ibm.wsspi.channelfw.ChannelConfiguration;
 @Component(
         configurationPid = "com.ibm.ws.messaging.comms.server",
         configurationPolicy = REQUIRE,
-        property = {"type=messaging.comms.server.service", "service.vendor=IBM"})
+        property = {"type=messaging.comms.server.service"})
 public class CommsServerServiceFacade implements Singleton {
     private static final String SECURE_PORT = "wasJmsSSLPort";
     private static final String BASIC_PORT = "wasJmsPort";

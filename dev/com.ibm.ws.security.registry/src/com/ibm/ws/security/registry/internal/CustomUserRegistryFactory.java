@@ -35,8 +35,7 @@ import com.ibm.ws.security.registry.UserRegistryService;
  */
 @Component(service = CustomUserRegistryFactory.class,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class CustomUserRegistryFactory {
 
     static final String KEY_CUSTOM = "customUserRegistry";

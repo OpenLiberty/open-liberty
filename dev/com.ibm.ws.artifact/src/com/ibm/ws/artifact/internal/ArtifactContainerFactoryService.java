@@ -45,7 +45,6 @@ import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
 
 @Component(immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM" },
            service = {})
 public class ArtifactContainerFactoryService implements ArtifactContainerFactory, ServicePropertySupplier {
 

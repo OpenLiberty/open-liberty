@@ -21,7 +21,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
  *
  */
 @Component(service = RemoteObjectInstanceFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true,
-           property = { "service.vendor=IBM", "service.ranking:Integer=1" })
+           property = { "service.ranking:Integer=1" })
 public class RemoteObjectInstanceFactoryImpl implements RemoteObjectInstanceFactory {
 
     /*

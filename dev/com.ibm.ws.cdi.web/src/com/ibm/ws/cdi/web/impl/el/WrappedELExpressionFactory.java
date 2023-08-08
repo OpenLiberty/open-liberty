@@ -26,7 +26,7 @@ import io.openliberty.el.internal.cdi.ELFactoryWrapperForCDI;
 /**
  *
  */
-@Component(name = "com.ibm.ws.cdi.web.el.WrappedELExpressionFactory", service = { ELFactoryWrapperForCDI.class }, immediate = true, property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.cdi.web.el.WrappedELExpressionFactory", service = { ELFactoryWrapperForCDI.class }, immediate = true)
 public class WrappedELExpressionFactory extends ExpressionFactory implements ELFactoryWrapperForCDI {
     private ExpressionFactory wrapped;
 

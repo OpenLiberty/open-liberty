@@ -34,7 +34,7 @@ import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenProxy;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 @Component(service = CredentialProvider.class, name = "JwtSSOTokenCredentialProvider", configurationPolicy = ConfigurationPolicy.IGNORE, property = {
-		"service.vendor=IBM", "type=JwtSSOToken" })
+		"type=JwtSSOToken" })
 public class JwtSSOTokenCredentialProvider implements CredentialProvider {
 	private static final TraceComponent tc = Tr.register(JwtSSOTokenCredentialProvider.class);
 	public static final String JSON_WEB_TOKEN_SSO_PROXY = "JwtSSOTokenProxy";

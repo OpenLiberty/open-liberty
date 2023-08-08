@@ -31,8 +31,7 @@ import com.ibm.wsspi.injectionengine.InjectionSimpleProcessorProvider;
 /**
  *
  */
-@Component(name = "com.ibm.ws.jaxrs20.component.injection.BeanParamProcessProvider", service = com.ibm.wsspi.injectionengine.InjectionProcessorProvider.class,
-           property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.jaxrs20.component.injection.BeanParamProcessProvider", service = com.ibm.wsspi.injectionengine.InjectionProcessorProvider.class)
 public class BeanParamProcessProvider extends InjectionSimpleProcessorProvider<BeanParam> {
 
     final private static TraceComponent tc = Tr.register(BeanParamProcessProvider.class);

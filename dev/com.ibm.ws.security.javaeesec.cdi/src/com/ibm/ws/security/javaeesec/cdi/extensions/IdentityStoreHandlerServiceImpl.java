@@ -43,8 +43,7 @@ import org.osgi.service.component.annotations.Deactivate;
  */
 @Component(service = { IdentityStoreHandlerService.class },
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class IdentityStoreHandlerServiceImpl implements IdentityStoreHandlerService {
     Utils utils = new Utils();
 

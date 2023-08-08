@@ -22,7 +22,7 @@ import com.ibm.ws.container.service.app.deploy.extended.ModuleRuntimeContainer;
 import com.ibm.ws.kernel.LibertyProcess;
 
 @Component(service = ModuleHandler.class,
-           property = { "service.vendor=IBM", "type:String=ejb" })
+           property = { "type:String=ejb" })
 public class EJBModuleHandlerImpl extends ModuleHandlerBase {
 
     @Reference(service = LibertyProcess.class, target = "(wlp.process.type=server)")

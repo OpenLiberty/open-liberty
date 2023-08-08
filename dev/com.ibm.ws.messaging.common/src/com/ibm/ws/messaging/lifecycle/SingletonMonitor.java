@@ -63,8 +63,7 @@ import com.ibm.wsspi.logging.Introspector;
         configurationPid = "com.ibm.ws.messaging.lifecycle.singletons",
         property = {
                 "osgi.command.scope=sib",
-                "osgi.command.function=singletons",
-                "service.vendor=IBM"
+                "osgi.command.function=singletons"
         })
 public class SingletonMonitor implements Introspector {
     public static final TraceComponent tc = Tr.register(SingletonMonitor.class);

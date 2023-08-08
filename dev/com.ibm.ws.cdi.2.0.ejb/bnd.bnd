@@ -26,7 +26,7 @@ Service-Component: \
  com.ibm.ws.cdi_2_0.ejb.deserializationClassProvider;\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
-    properties:="service.vendor=IBM,\
+    properties:="\
       packages=com.ibm.ws.cdi.ejb.interceptor\
               |com.ibm.ws.cdi.ejb.interceptor.liberty\
               |com.ibm.ws.cdi.ejb.security"

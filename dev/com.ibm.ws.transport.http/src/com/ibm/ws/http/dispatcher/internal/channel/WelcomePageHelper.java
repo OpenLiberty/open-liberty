@@ -33,8 +33,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
  * Component that handles managing the WelcomePage for the HttpDispatcherLink
  */
 @Component(service = WelcomePageHelper.class,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class WelcomePageHelper {
   private static ConcurrentServiceReferenceSet<WelcomePage> welcomePages = new ConcurrentServiceReferenceSet<WelcomePage>("welcomePage");
 

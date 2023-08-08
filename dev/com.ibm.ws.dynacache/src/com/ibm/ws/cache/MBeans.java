@@ -102,8 +102,7 @@ import com.ibm.wsspi.cache.CacheStatistics;
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = {
-                       "service.vendor=IBM",
-                       "jmx.objectname=WebSphere:feature=CacheAdmin,type=DynaCache,name=DistributedMap" })
+                                              "jmx.objectname=WebSphere:feature=CacheAdmin,type=DynaCache,name=DistributedMap" })
 public class MBeans extends StandardMBean implements CacheAdmin {
 
     private static TraceComponent tc = Tr.register(MBeans.class, DynaCacheConstants.TRACE_GROUP, DynaCacheConstants.NLS_FILE);

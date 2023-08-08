@@ -33,7 +33,7 @@ import com.ibm.ws.sip.container.router.SipAppDescManager;
 import com.ibm.ws.webcontainer.osgi.metadata.WebModuleMetaDataImpl;
 import com.ibm.ws.webcontainer.webapp.WebAppConfiguration;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, configurationPid = "com.ibm.ws.sip.container.was.SipModuleStateListener", service = ModuleStateListener.class, property = { "service.vendor=IBM" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, configurationPid = "com.ibm.ws.sip.container.was.SipModuleStateListener", service = ModuleStateListener.class)
 public class SipModuleStateListener implements ModuleStateListener {
 
 	/**

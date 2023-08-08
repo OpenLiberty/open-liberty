@@ -33,7 +33,7 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
  */
 @Component(service = CredentialProvider.class,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM", "type=BasicAuthCredential" })
+           property = { "type=BasicAuthCredential" })
 public class BasicAuthCredentialProvider implements CredentialProvider {
 
     protected static final String KEY_BASIC_AUTH_REALM = "com.ibm.ws.security.cred.realm";

@@ -37,7 +37,7 @@ import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
 /**
  * Servlet for OpenID Connect Back-Channel Logout (https://openid.net/specs/openid-connect-backchannel-1_0.html)
  */
-@Component(name = "com.ibm.ws.security.openidconnect.client.web.OidcBackchannelLogoutServlet", service = {}, property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.security.openidconnect.client.web.OidcBackchannelLogoutServlet", service = {})
 public class OidcBackchannelLogoutServlet extends HttpServlet {
 
     private static TraceComponent tc = Tr.register(OidcBackchannelLogoutServlet.class);

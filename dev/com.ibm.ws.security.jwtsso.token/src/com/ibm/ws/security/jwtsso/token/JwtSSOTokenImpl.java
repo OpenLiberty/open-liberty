@@ -47,7 +47,7 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
 /*
  * This is a utility service to retrieve MicroProfile JsonWebToken in a subject
  */
-@Component(service = JwtSSOTokenProxy.class, name = "JwtSSOTokenProxy", immediate = true, property = "service.vendor=IBM")
+@Component(service = JwtSSOTokenProxy.class, name = "JwtSSOTokenProxy", immediate = true)
 public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 
 	private static final TraceComponent tc = Tr.register(JwtSSOTokenImpl.class);

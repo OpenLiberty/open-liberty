@@ -37,7 +37,7 @@ import net.sf.ehcache.config.Configuration;
 /**
  *
  */
-@org.osgi.service.component.annotations.Component(service = WSSecurityFeatureHelperService.class, name = "WSSecurityFeatureHelperService", immediate = true, property = "service.vendor=IBM")
+@org.osgi.service.component.annotations.Component(service = WSSecurityFeatureHelperService.class, name = "WSSecurityFeatureHelperService", immediate = true)
 public class WSSecurityFeatureHelperServiceImpl implements WSSecurityFeatureHelperService {
     public static final String CACHE_CONFIG_FILE = "ws-security.cache.config.file";
     public static final TraceComponent tc = Tr.register(WSSecurityFeatureHelperServiceImpl.class);

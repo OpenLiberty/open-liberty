@@ -27,8 +27,7 @@ import com.ibm.ws.sip.container.parser.SipAppDesc;
  * @author sagia
  *
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, configurationPid = "com.ibm.ws.sip.container.was.message.SipMessageFactory", service=SipMessageFactory.class,
-property = {"service.vendor=IBM"} )
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, configurationPid = "com.ibm.ws.sip.container.was.message.SipMessageFactory", service=SipMessageFactory.class)
 public class SipMessageFactory {
 	
 	

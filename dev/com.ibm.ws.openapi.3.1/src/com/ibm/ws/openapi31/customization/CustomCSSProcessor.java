@@ -66,7 +66,7 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
  * in UTF-8, (2) the header contains sections with the exact text ".swagger-ui .headerbar ",
  * and (3) the CSS is a valid document.
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public final class CustomCSSProcessor implements FileMonitor {
 
     private static final TraceComponent tc = Tr.register(CustomCSSProcessor.class);

@@ -49,8 +49,7 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE,
            service = KerberosService.class,
            configurationPid = "com.ibm.ws.security.kerberos.auth.KerberosService",
-           immediate = true,
-           property = "service.vendor=IBM")
+           immediate = true)
 public class KerberosService {
 
     private static final TraceComponent tc = Tr.register(KerberosService.class);

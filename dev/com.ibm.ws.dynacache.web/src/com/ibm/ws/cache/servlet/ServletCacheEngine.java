@@ -42,7 +42,7 @@ import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
  * This class provides a hook to enable dynamic implementation of the
  * servlet/JSP caching code.
  */
-@Component(configurationPolicy=ConfigurationPolicy.IGNORE, property="service.vendor=IBM")
+@Component(configurationPolicy=ConfigurationPolicy.IGNORE)
 public class ServletCacheEngine implements CacheManager {
 
 	private static TraceComponent tc = Tr.register(ServletCacheEngine.class,"WebSphere Dynamic Cache", "com.ibm.ws.cache.resources.dynacache");

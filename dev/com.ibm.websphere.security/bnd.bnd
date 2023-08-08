@@ -49,8 +49,7 @@ Service-Component: \
     deactivate:=deactivate; \
     subjectManagerService=com.ibm.ws.security.intfc.SubjectManagerService; \
     dynamic:='subjectManagerService'; \
-    optional:='subjectManagerService'; \
-    properties:='service.vendor=IBM', \
+    optional:='subjectManagerService', \
   wsSecurityHelperService; \
     implementation:=com.ibm.websphere.security.WSSecurityHelper; \
     immediate:=true; \
@@ -59,8 +58,7 @@ Service-Component: \
     deactivate:=deactivate; \
     wsSecurityService=com.ibm.ws.security.intfc.WSSecurityService; \
     dynamic:='wsSecurityService'; \
-    optional:='wsSecurityService'; \
-    properties:='service.vendor=IBM', \
+    optional:='wsSecurityService', \
   registryHelperService; \
     implementation:=com.ibm.wsspi.security.registry.RegistryHelper; \
     immediate:=true; \
@@ -69,8 +67,7 @@ Service-Component: \
     deactivate:=deactivate; \
     wsSecurityService=com.ibm.ws.security.intfc.WSSecurityService; \
     dynamic:='wsSecurityService'; \
-    optional:='wsSecurityService'; \
-    properties:='service.vendor=IBM'
+    optional:='wsSecurityService'
 
 -dsannotations: \
    com.ibm.ws.security.utils.SecurityUtils

@@ -37,7 +37,7 @@ import io.smallrye.reactive.messaging.impl.ConfiguredChannelFactory;
 import io.smallrye.reactive.messaging.impl.InternalChannelRegistry;
 import io.smallrye.reactive.messaging.impl.LegacyConfiguredChannelFactory;
 
-@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "application.bdas.visible=true" })
+@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "application.bdas.visible=true" })
 public class OLReactiveMessagingExtension extends ReactiveMessagingExtension implements Extension, WebSphereCDIExtension {
 
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery discovery, BeanManager beanManager) {

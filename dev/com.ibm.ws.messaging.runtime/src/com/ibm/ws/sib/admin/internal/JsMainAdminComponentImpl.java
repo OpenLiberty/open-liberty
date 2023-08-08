@@ -47,8 +47,7 @@ import com.ibm.wsspi.sib.core.SelectionCriteriaFactory;
  */
 @Component(configurationPid = "com.ibm.ws.messaging.runtime",
            configurationPolicy = REQUIRE,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class JsMainAdminComponentImpl implements JsMainAdminComponent, ApplicationPrereq {
     private static final TraceComponent tc = SibTr.register(JsMainAdminComponentImpl.class, JsConstants.TRGRP_AS, JsConstants.MSG_BUNDLE);
     private static final String CLASS_NAME = "com.ibm.ws.sib.admin.internal.JsMainAdminComponentImpl";

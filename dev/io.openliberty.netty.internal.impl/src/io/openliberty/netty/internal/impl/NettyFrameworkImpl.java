@@ -66,7 +66,7 @@ import com.ibm.websphere.channelfw.EndPointMgr;
  * Liberty NettyFramework implementation bundle
  */
 @Component(configurationPid = "io.openliberty.netty.internal", immediate = true, service = { NettyFramework.class,
-        ServerQuiesceListener.class }, property = { "service.vendor=IBM" })
+        ServerQuiesceListener.class })
 public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework {
 
     private static final TraceComponent tc = Tr.register(NettyFrameworkImpl.class, NettyConstants.NETTY_TRACE_NAME,

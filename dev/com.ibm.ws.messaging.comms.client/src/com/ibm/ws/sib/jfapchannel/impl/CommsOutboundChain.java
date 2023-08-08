@@ -55,8 +55,7 @@ import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 
 @Component(
         configurationPid = "com.ibm.ws.messaging.comms.wasJmsOutbound",
-        configurationPolicy = REQUIRE,
-        property = "service.vendor=IBM")
+        configurationPolicy = REQUIRE)
 public class CommsOutboundChain implements ApplicationPrereq {
     private static final TraceComponent tc = Tr.register(CommsOutboundChain.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
     private static final TraceNLS nls = TraceNLS.getTraceNLS(JFapChannelConstants.MSG_BUNDLE);

@@ -37,7 +37,7 @@ import com.ibm.wsspi.ssl.SSLSupport;
 
 import io.openliberty.security.mp.jwt.osgi.MpJwtRuntimeVersion;
 
-@Component(service = MicroProfileJwtService.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM", name = "microProfileJwtService")
+@Component(service = MicroProfileJwtService.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = name = "microProfileJwtService")
 public class MicroProfileJwtServiceImpl implements MicroProfileJwtService {
 
     public static final TraceComponent tc = Tr.register(MicroProfileJwtServiceImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);

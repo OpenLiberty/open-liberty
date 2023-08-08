@@ -70,7 +70,7 @@ import com.ibm.wsspi.ssl.SSLSupport;
  *
  * @ibm-api
  */
-@Component(service = Builder.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM", name = "builder")
+@Component(service = Builder.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = name = "builder")
 public class BuilderImpl implements Builder {
 
     private static final TraceComponent tc = Tr.register(BuilderImpl.class, TraceConstants.TRACE_GROUP,

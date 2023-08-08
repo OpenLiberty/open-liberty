@@ -28,8 +28,7 @@ import com.ibm.ws.security.jaas.common.JAASLoginContextEntry;
 import com.ibm.ws.security.jaas.common.JAASLoginModuleConfig;
 
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE,
-                configurationPid = "com.ibm.ws.security.authentication.internal.jaas.jaasLoginContextEntry",
-                property = "service.vendor=IBM")
+                configurationPid = "com.ibm.ws.security.authentication.internal.jaas.jaasLoginContextEntry")
 public class JAASLoginContextEntryImpl implements JAASLoginContextEntry {
 
     static final String KEY_SERVICE_PID = "service.pid";

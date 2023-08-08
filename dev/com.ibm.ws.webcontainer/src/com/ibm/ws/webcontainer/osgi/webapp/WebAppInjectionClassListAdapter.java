@@ -41,8 +41,7 @@ import com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollabora
 @Component(service = {ContainerAdapter.class, InjectionClassListProvider.class},
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = {"service.vendor=IBM",
-                       "toType=com.ibm.ws.webcontainer.osgi.webapp.WebAppInjectionClassList" } )
+           property = {                       "toType=com.ibm.ws.webcontainer.osgi.webapp.WebAppInjectionClassList" } )
 public class WebAppInjectionClassListAdapter implements ContainerAdapter<WebAppInjectionClassList>, InjectionClassListProvider{
     
     private final ConcurrentServiceReferenceSet<WebAppInjectionClassListCollaborator> webAppInjectionClassListCollaborators = new ConcurrentServiceReferenceSet<WebAppInjectionClassListCollaborator>("webAppInjectionClassListCollaborators");

@@ -41,8 +41,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
  *  This class listens for registration of RequestInterceptors.
  *      
  */
-@Component(name = "com.ibm.ws.webcontainer.osgi.interceptor.RegisterRequestInterceptor",
-           property = { "service.vendor=IBM"})
+@Component(name = "com.ibm.ws.webcontainer.osgi.interceptor.RegisterRequestInterceptor")
 public class RegisterRequestInterceptor {
     
     private final static TraceComponent tc = Tr.register(RegisterRequestInterceptor.class, WebContainerConstants.TR_GROUP, WebContainerConstants.NLS_PROPS);

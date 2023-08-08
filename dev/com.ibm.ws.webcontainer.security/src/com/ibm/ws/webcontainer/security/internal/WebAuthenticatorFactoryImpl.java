@@ -54,7 +54,7 @@ import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
 /**
  *
  */
-@Component(service = WebAuthenticatorFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(service = WebAuthenticatorFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
 
     static final String KEY_OAUTH_SERVICE = "oauthService";

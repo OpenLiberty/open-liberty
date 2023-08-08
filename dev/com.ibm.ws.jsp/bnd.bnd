@@ -25,8 +25,7 @@ Service-Component:  \
   com.ibm.ws.jsp.webxml.configurator;\
    implementation:=com.ibm.ws.jsp.webxml.JspConfiguratorHelperFactory;\
    provide:=com.ibm.ws.container.service.config.ServletConfiguratorHelperFactory;\
-   configuration-policy:=ignore;\
-   properties:="service.vendor=IBM",\
+   configuration-policy:=ignore,\
   com.ibm.ws.jsp.taglib.adapter;\
    implementation:=com.ibm.ws.jsp.taglib.SharedLibClassesContainerInfoAdapter;\
    provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
@@ -35,17 +34,16 @@ Service-Component:  \
    artifactFactory=com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;\
    moduleFactory= com.ibm.wsspi.adaptable.module.AdaptableModuleFactory;\
    configuration-policy:=ignore;\
-   properties:="service.vendor=IBM,toType=com.ibm.ws.jsp.taglib.SharedLibClassesContainerInfo", \
+   properties:="toType=com.ibm.ws.jsp.taglib.SharedLibClassesContainerInfo", \
   com.ibm.ws.jsp.webxml.adapter;\
    implementation:=com.ibm.ws.jsp.webxml.JspXmlExtConfigAdapter;\
    provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
    configuration-policy:=ignore;\
-   properties:="service.vendor=IBM,toType=com.ibm.ws.jsp.configuration.JspXmlExtConfig", \
+   properties:="toType=com.ibm.ws.jsp.configuration.JspXmlExtConfig", \
   com.ibm.ws.jsp.taglib.InjectionService; \
    implementation:=com.ibm.ws.jsp.taglib.InjectionServiceImpl; \
    provide:='com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollaborator'; \
-   immediate:=true; \
-   properties:="service.vendor=IBM"
+   immediate:=true
 
 Export-Package: com.ibm.ws.jsp.runtime;version=2.2;thread-context=true, \
    com.ibm.ws.jsp.jsx.tags;version=2.2;thread-context=true, \

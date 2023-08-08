@@ -32,8 +32,7 @@ import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager.DirectByteBufferHelper;
 /**
  *
  */
-@Component(service = ByteBufferConfiguration.class, name = "com.ibm.ws.bytebuffer", configurationPid = "com.ibm.ws.bytebuffer", configurationPolicy = ConfigurationPolicy.OPTIONAL,
-           property = { "service.vendor=IBM" })
+@Component(service = ByteBufferConfiguration.class, name = "com.ibm.ws.bytebuffer", configurationPid = "com.ibm.ws.bytebuffer", configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class ByteBufferConfiguration {
     /** Trace service */
     private static final TraceComponent tc =

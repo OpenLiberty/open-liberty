@@ -24,7 +24,7 @@ import com.ibm.ws.webcontainer.session.impl.SessionContextRegistryImplFactory;
  * application.
  * Support for in Servlet 3.1 environment.
  */
-@Component(service=SessionContextRegistryImplFactory.class, property = { "service.vendor=IBM","service.ranking:Integer=2" })
+@Component(service=SessionContextRegistryImplFactory.class, property = { "service.ranking:Integer=2" })
 public class SessionContextRegistryImplFactoryImpl31Converged implements SessionContextRegistryImplFactory {
 
 	

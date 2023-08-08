@@ -31,8 +31,7 @@ import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 @Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "api.classes=" +
                                                                                                                  "javax.batch.api.BatchProperty;" +
                                                                                                                  "javax.batch.runtime.context.JobContext;" +
-                                                                                                                 "javax.batch.runtime.context.StepContext",
-                                                                                                                 "service.vendor=IBM" })
+                                                                                                                 "javax.batch.runtime.context.StepContext" })
 
 public class BatchCDIInjectionExtension implements WebSphereCDIExtension, Extension {
 

@@ -26,8 +26,7 @@ Service-Component: \
     implementation:=com.ibm.ws.wsoc.external.v11.WebSocketFactoryV11; \
     provide:=com.ibm.ws.wsoc.external.WebSocketFactory; \
     configuration-policy:=ignore;\
-    immediate:=true;\
-    properties:="service.vendor=IBM"
+    immediate:=true
 
 -buildpath: \
   com.ibm.websphere.javaee.websocket.1.1;version=latest, \

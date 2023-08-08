@@ -90,8 +90,7 @@ Service-Component: \
     configuration-policy:=ignore; \
     oauth20Provider=com.ibm.ws.security.oauth20.api.OAuth20Provider; \
     dynamic:='oauth20Provider'; \
-    multiple:='oauth20Provider'; \
-    properties:="service.vendor=IBM"
+    multiple:='oauth20Provider'
 
 Include-Resource: \
     WEB-INF=resources/WEB-INF, \

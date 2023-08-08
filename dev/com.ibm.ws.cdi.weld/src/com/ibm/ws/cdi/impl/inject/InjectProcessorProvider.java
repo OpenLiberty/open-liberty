@@ -26,7 +26,7 @@ import com.ibm.wsspi.injectionengine.InjectionSimpleProcessor;
 import com.ibm.wsspi.injectionengine.InjectionSimpleProcessorProvider;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-@Component(name = "com.ibm.ws.cdi.services.injectProcessorProvider", service = InjectionProcessorProvider.class, property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.cdi.services.injectProcessorProvider", service = InjectionProcessorProvider.class)
 public class InjectProcessorProvider extends InjectionSimpleProcessorProvider<Inject> {
 
     private final AtomicServiceReference<CDIService> cdiServiceRef = new AtomicServiceReference<CDIService>("cdiService");

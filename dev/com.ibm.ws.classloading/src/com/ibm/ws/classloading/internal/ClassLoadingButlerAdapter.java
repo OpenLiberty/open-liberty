@@ -31,7 +31,7 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 @Component(service = ContainerAdapter.class,
            configurationPolicy = ConfigurationPolicy.OPTIONAL,
            immediate = true,
-           property = { "service.vendor=IBM", "toType=com.ibm.ws.classloading.ClassLoadingButler" })
+           property = { "toType=com.ibm.ws.classloading.ClassLoadingButler" })
 public class ClassLoadingButlerAdapter implements ContainerAdapter<ClassLoadingButler> {
     private final static TraceComponent tc = Tr.register(ClassLoadingButlerAdapter.class);
 

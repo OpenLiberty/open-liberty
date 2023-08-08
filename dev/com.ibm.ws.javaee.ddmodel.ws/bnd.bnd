@@ -22,7 +22,7 @@ com.ibm.ws.javaee.ddmodel.ws.adapter;\
     implementation:=com.ibm.ws.javaee.ddmodel.ws.WebservicesAdapter;\
     provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
     configuration-policy:=ignore;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.ws.Webservices"
+    properties:="toType=com.ibm.ws.javaee.dd.ws.Webservices"
 
 Export-Package: \
   com.ibm.ws.javaee.dd.ws,\

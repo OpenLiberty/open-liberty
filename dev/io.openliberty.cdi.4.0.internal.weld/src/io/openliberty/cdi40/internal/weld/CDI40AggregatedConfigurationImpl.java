@@ -22,7 +22,7 @@ import com.ibm.ws.cdi.internal.config.CDIConfiguration;
  * DS for custom CDI 4.0 properties.
  */
 @Component(name = "io.openliberty.cdi40.internal.weld.CDI40AggregatedConfigurationImpl", service = { CDIConfiguration.class,
-                                                                                                     AggregatedConfiguration.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
+                                                                                                     AggregatedConfiguration.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class CDI40AggregatedConfigurationImpl extends AggregatedConfiguration {
 
 }

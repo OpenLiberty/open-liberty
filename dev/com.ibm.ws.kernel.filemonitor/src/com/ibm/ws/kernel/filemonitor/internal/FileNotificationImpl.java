@@ -27,7 +27,7 @@ import com.ibm.ws.kernel.filemonitor.FileNotificationMBean;
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = DynamicMBean.class,
            immediate = true,
-           property = { "service.vendor=IBM", "jmx.objectname=WebSphere:service=com.ibm.ws.kernel.filemonitor.FileNotificationMBean" })
+           property = { "jmx.objectname=WebSphere:service=com.ibm.ws.kernel.filemonitor.FileNotificationMBean" })
 public class FileNotificationImpl extends StandardMBean implements FileNotificationMBean, com.ibm.websphere.filemonitor.FileNotificationMBean {
 
     /** required injected service */

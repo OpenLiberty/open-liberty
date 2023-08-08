@@ -30,8 +30,7 @@ import com.ibm.wsspi.rest.handler.RESTResponse;
 @Component(service = { RESTHandler.class },
            configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
-           property = { "service.vendor=IBM",
-                        RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=/test/tracelogger" })
+           property = {                         RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=/test/tracelogger" })
 public class RESTHandlerTraceLogger implements RESTHandler {
     private static final TraceComponent tc = Tr.register(RESTHandlerTraceLogger.class, "TraceHandler",
                                                          "collector.manager_fat.RESTHandlerTraceLoggerMessages");

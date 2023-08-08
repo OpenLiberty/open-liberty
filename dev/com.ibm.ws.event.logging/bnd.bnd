@@ -28,8 +28,7 @@ Service-Component:\
         implementation:=com.ibm.ws.event.logging.probeExtensionImpl.EventLoggingProbeExtension; \
         provide:=com.ibm.wsspi.probeExtension.ProbeExtension; \
         immediate:='true'; \
-        modified:='modified'; \
-        properties:="service.vendor=IBM"
+        modified:='modified'
         
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF

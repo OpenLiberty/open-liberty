@@ -36,8 +36,7 @@ Service-Component=messaging.util.AlarmManager; \
   provide:=com.ibm.ejs.util.am.AlarmManager; \
   scheduledExecutor=java.util.concurrent.ScheduledExecutorService; \
   immediate:=true; \
-  configuration-policy:=ignore; \
-  properties:="service.vendor=IBM"
+  configuration-policy:=ignore
 
 instrument.disabled: true
 

@@ -20,5 +20,5 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 
-@Component(configurationPolicy=IGNORE,property={"service.vendor=ibm","osgi.jndi.url.scheme=ior"})
+@Component(configurationPolicy=IGNORE,property={"osgi.jndi.url.scheme=ior"})
 public class IorUrlContextFactory extends UrlContextFactory implements ObjectFactory, ApplicationRecycleComponent {}

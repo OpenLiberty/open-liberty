@@ -39,7 +39,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
  * property. As such it is called for handling JNDI names starting with "ejblocal:".
  *
  */
-@Component(configurationPolicy = IGNORE, property = { "service.vendor=ibm", "osgi.jndi.url.scheme=ejblocal" })
+@Component(configurationPolicy = IGNORE, property = { "osgi.jndi.url.scheme=ejblocal" })
 public class EJBLocalURLContextFactory implements ObjectFactory {
 
     static final TraceComponent tc = Tr.register(EJBLocalURLContextFactory.class);

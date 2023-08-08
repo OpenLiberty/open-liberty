@@ -23,7 +23,7 @@ import com.ibm.ws.cache.stat.CachePerfFactory;
 import com.ibm.wsspi.pmi.factory.StatsFactory;
 import com.ibm.wsspi.pmi.factory.StatsFactoryException;
 
-@Component(service = CachePerfFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = "service.vendor=IBM")
+@Component(service = CachePerfFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class CacheStatsFactory implements CachePerfFactory {
     private static TraceComponent tc = Tr
             .register(CacheStatsFactory.class, "WebSphere Dynamic Cache Monitor", "com.ibm.ws.cache.resources.dynacache");

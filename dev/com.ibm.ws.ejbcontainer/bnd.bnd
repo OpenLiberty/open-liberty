@@ -129,16 +129,14 @@ Include-Resource: \
 Service-Component: \
   com.ibm.ws.ejb.injection.processor.EJBProcessorProvider;\
     implementation:=com.ibm.ws.ejb.injection.processor.EJBProcessorProvider;\
-    provide:=com.ibm.wsspi.injectionengine.InjectionProcessorProvider;\
-    properties:="service.vendor=IBM",\
+    provide:=com.ibm.wsspi.injectionengine.InjectionProcessorProvider,\
   com.ibm.ws.ejbcontainer.injection.factory.MBLinkObjectFactory;\
     implementation:=com.ibm.ws.ejbcontainer.injection.factory.MBLinkObjectFactory;\
-    provide:='javax.naming.spi.ObjectFactory,com.ibm.ws.ejbcontainer.injection.factory.MBLinkObjectFactory';\
-    properties:="service.vendor=IBM",\
+    provide:='javax.naming.spi.ObjectFactory,com.ibm.ws.ejbcontainer.injection.factory.MBLinkObjectFactory',\
   com.ibm.ws.ejbcontainer.classProvider;\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
-    properties:="service.vendor=IBM,\
+    properties:="\
       classes=com.ibm.ejs.container.passivator.EJBObjectInfo\
         |com.ibm.ejs.container.passivator.EJBObjectInfo$FieldInfo\
         |com.ibm.ejs.container.passivator.PassivatorSerializableHandle\

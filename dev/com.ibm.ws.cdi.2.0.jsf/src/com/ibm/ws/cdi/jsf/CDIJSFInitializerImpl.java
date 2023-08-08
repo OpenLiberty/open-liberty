@@ -27,7 +27,7 @@ import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.jsf.shared.cdi.CDIJSFInitializer;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-@Component(name = "com.ibm.ws.jsf.cdi.CDIJSFInitializer", property = { "service.vendor=IBM", "service.ranking:Integer=100" })
+@Component(name = "com.ibm.ws.jsf.cdi.CDIJSFInitializer", property = { "service.ranking:Integer=100" })
 public class CDIJSFInitializerImpl implements CDIJSFInitializer {
 
     private final AtomicServiceReference<CDIService> cdiServiceRef = new AtomicServiceReference<CDIService>("cdiService");

@@ -24,7 +24,7 @@ import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedResponse;
 import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
 
-@Component(service = AsyncContextFactory.class, property = { "service.vendor=IBM" })
+@Component(service = AsyncContextFactory.class)
 public class AsyncContextFactory60Impl implements AsyncContextFactory {
 
     @Override

@@ -108,7 +108,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 @Component(configurationPid = "com.ibm.ws.jbatch.jms.dispatcher", 
            service = BatchDispatcher.class, 
            configurationPolicy = ConfigurationPolicy.REQUIRE, 
-           property = { "service.vendor=IBM", "service.ranking:Integer=10", "type=JMS" })
+           property = { "service.ranking:Integer=10", "type=JMS" })
 public class BatchJmsDispatcher implements BatchDispatcher {
 
     private static final TraceComponent tc = Tr.register(BatchJmsDispatcher.class, "wsbatch", "com.ibm.ws.jbatch.jms.internal.resources.BatchJmsMessages");

@@ -41,7 +41,7 @@ import com.ibm.wsspi.annocache.targets.cache.TargetCache_Factory;
 import com.ibm.wsspi.annocache.targets.cache.TargetCache_InternalConstants;
 import com.ibm.wsspi.annocache.targets.cache.TargetCache_Options;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class TargetCacheImpl_Factory implements TargetCache_Factory {
     private static final String CLASS_NAME = TargetCacheImpl_Factory.class.getSimpleName();
 

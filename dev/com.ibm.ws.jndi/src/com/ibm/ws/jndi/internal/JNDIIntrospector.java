@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.wsspi.logging.Introspector;
 
-@Component(property = "service.vendor=IBM")
+@Component
 public class JNDIIntrospector implements Introspector {
 
     @Override

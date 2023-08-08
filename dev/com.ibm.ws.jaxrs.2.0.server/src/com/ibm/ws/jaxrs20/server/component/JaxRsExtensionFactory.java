@@ -45,7 +45,7 @@ import com.ibm.wsspi.webcontainer.extension.ExtensionProcessor;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 
-@Component(name = "com.ibm.ws.jaxrs20.server.extensionFactory", immediate = true, property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.jaxrs20.server.extensionFactory", immediate = true)
 public class JaxRsExtensionFactory implements ExtensionFactory {
 
     private static final TraceComponent tc = Tr.register(JaxRsExtensionFactory.class);

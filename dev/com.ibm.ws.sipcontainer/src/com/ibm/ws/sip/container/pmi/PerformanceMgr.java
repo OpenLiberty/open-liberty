@@ -60,8 +60,7 @@ import com.ibm.ws.sip.stack.util.StackExternalizedPerformanceMgr;
 @Component(service = PerformanceMgr.class,
 configurationPolicy = ConfigurationPolicy.OPTIONAL,
 name = "com.ibm.ws.sip.container.pmi",
-configurationPid = "com.ibm.ws.sip.container.pmi",
-property = {"service.vendor=IBM"})
+configurationPid = "com.ibm.ws.sip.container.pmi")
 public class PerformanceMgr implements ConcurentLoadListener, StackExternalizedPerformanceMgr {
 
 	/*

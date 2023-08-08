@@ -44,7 +44,7 @@ import com.ibm.wsspi.webservices.handler.Handler;
 
 
 
-@Component(immediate = true, service = RESTfulWSHandlerImpl.class, property = { "service.vendor=IBM" })
+@Component(immediate = true, service = RESTfulWSHandlerImpl.class)
 @Provider
 public class RESTfulWSHandlerImpl implements ClientRequestFilter, ClientResponseFilter,
                                              ContainerRequestFilter, ContainerResponseFilter {

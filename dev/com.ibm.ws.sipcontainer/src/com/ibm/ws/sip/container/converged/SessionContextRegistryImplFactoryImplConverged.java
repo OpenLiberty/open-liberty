@@ -24,7 +24,7 @@ import com.ibm.wsspi.sip.converge.SessionContextRegistryConvergedImpl;
  * SipContainer added as a feature. In this case we will want to support Converged (SIP and HTTP)
  * application.
  */
-@Component(service=SessionContextRegistryImplFactory.class, property = { "service.vendor=IBM","service.ranking:Integer=1" })
+@Component(service=SessionContextRegistryImplFactory.class, property = { "service.ranking:Integer=1" })
 public class SessionContextRegistryImplFactoryImplConverged implements SessionContextRegistryImplFactory {
 
     /* (non-Javadoc)

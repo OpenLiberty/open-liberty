@@ -54,7 +54,7 @@ import com.ibm.ws.jndi.internal.literals.LiteralParser;
  * name of the parsed value and will have the &lt;JNDI_NAME&gt; set in the "osgi.jndi.service.name" property of the service registration.
  * </p>
  */
-@Component(configurationPolicy = REQUIRE, property = "service.vendor=IBM", immediate = true)
+@Component(configurationPolicy = REQUIRE, property = immediate = true)
 public class JNDIURLEntry implements ObjectFactory {
 
     private static final TraceComponent tc = Tr.register(JNDIURLEntry.class);

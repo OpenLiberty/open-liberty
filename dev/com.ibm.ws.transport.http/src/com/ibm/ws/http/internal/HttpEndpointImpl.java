@@ -73,8 +73,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @Component(configurationPid = "com.ibm.ws.http",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            immediate = true,
-           service = { HttpEndpointImpl.class, RuntimeUpdateListener.class, PauseableComponent.class },
-           property = { "service.vendor=IBM" })
+           service = { HttpEndpointImpl.class, RuntimeUpdateListener.class, PauseableComponent.class })
 public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableComponent {
 
     public static AtomicReference<AccessLog> getAccessLogger(String name) {

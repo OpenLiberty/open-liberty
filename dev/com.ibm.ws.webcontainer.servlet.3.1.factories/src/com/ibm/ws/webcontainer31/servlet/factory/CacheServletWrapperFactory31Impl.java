@@ -24,7 +24,7 @@ import com.ibm.wsspi.webcontainer.servlet.IServletWrapper;
 /**
  *
  */
-@Component(service = CacheServletWrapperFactory.class, property = { "service.vendor=IBM" })
+@Component(service = CacheServletWrapperFactory.class)
 public class CacheServletWrapperFactory31Impl implements CacheServletWrapperFactory {
 
     /** {@inheritDoc} */

@@ -25,7 +25,7 @@ import com.ibm.ws.security.jwt.config.MpConfigProperties;
 import com.ibm.ws.security.mp.jwt.MpConfigProxyService;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
 
-@Component(property = { "service.vendor=IBM" })
+@Component
 public class MpConfigUtil {
     private static TraceComponent tc = Tr.register(MpConfigUtil.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 

@@ -39,7 +39,7 @@ import com.ibm.ws.security.acme.internal.util.AcmeConstants;
  * part of this request's URI.
  */
 @WebServlet("*")
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class AcmeAuthorizationServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -8515248242091988849L;

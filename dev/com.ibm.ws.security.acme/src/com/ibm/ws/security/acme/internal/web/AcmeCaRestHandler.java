@@ -57,8 +57,7 @@ import com.ibm.wsspi.rest.handler.RESTResponse;
  * A {@link RESTHandler} implementation that allows interaction with the
  * acmeCA-2.0 feature.
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM",
-		RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + AcmeCaRestHandler.PATH_ROOT,
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { 		RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + AcmeCaRestHandler.PATH_ROOT,
 		RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_SECURITY + "=true" })
 public class AcmeCaRestHandler implements RESTHandler {
 

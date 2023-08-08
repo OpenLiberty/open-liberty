@@ -47,7 +47,7 @@ import io.openliberty.netty.internal.tls.NettyTlsProvider;
 
 //We need the immediate=true flag because of the race condition between the point when Channel Framework calls to the "started"
 //callback and point when we take listening point when Container starts. 
-@Component(configurationPid = "com.ibm.ws.sip.endpoint", configurationPolicy = ConfigurationPolicy.OPTIONAL, service = { GenericEndpointImpl.class }, immediate = false, property = { "service.vendor=IBM" })
+@Component(configurationPid = "com.ibm.ws.sip.endpoint", configurationPolicy = ConfigurationPolicy.OPTIONAL, service = { GenericEndpointImpl.class }, immediate = false)
 public class GenericEndpointImpl {
     
 	final public static String s_UDP_PORT = "sipUDPPort";

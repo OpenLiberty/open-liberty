@@ -47,7 +47,7 @@ import com.ibm.wsspi.webcontainer.filter.IFilterConfig;
  * "CDI Conversation Filter" mapping specified in the web.xml.  Not sure if it is valid to specify
  * this in a web fragment.
  */
-@Component(service = ServletConfiguratorHelperFactory.class, property = { "service.vendor=IBM" })
+@Component(service = ServletConfiguratorHelperFactory.class)
 public class WeldConfiguratorHelperFactory implements ServletConfiguratorHelperFactory {
 
     /** {@inheritDoc} */

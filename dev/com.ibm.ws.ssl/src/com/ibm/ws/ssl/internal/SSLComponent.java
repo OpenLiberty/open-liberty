@@ -63,8 +63,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  */
 @Component(immediate = true,
            configurationPid = "com.ibm.ws.ssl.default",
-           configurationPolicy = ConfigurationPolicy.REQUIRE,
-           property = "service.vendor=IBM")
+           configurationPolicy = ConfigurationPolicy.REQUIRE)
 @SatisfyingConditionTarget("(" + Condition.CONDITION_ID + "=" + CheckpointPhase.CONDITION_PROCESS_RUNNING_ID + ")")
 public class SSLComponent extends GenericSSLConfigService implements SSLSupportOptional {
 

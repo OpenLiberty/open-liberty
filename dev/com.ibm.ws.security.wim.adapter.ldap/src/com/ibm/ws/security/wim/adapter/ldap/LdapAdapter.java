@@ -174,8 +174,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  * of this component to avoid doing any connections to LDAP during checkpoint.
  */
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE,
-           configurationPid = "com.ibm.ws.security.registry.ldap.config",
-           property = "service.vendor=IBM")
+           configurationPid = "com.ibm.ws.security.registry.ldap.config")
 @SatisfyingConditionTarget("(" + Condition.CONDITION_ID + "=" + CheckpointPhase.CONDITION_PROCESS_RUNNING_ID + ")")
 public class LdapAdapter extends BaseRepository implements ConfiguredRepository, RealmConfigChangeListener {
 

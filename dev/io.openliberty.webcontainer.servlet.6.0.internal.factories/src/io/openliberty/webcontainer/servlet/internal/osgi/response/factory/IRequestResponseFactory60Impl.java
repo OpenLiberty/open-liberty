@@ -23,7 +23,7 @@ import com.ibm.wsspi.http.HttpInboundConnection;
 import io.openliberty.webcontainer60.osgi.request.IRequest60Impl;
 import io.openliberty.webcontainer60.osgi.response.IResponse60Impl;
 
-@Component(property = { "service.vendor=IBM", "service.ranking:Integer=60", "servlet.version=6.0" })
+@Component(property = { "service.ranking:Integer=60", "servlet.version=6.0" })
 public class IRequestResponseFactory60Impl implements IRequestFactory, IResponseFactory {
 
     /*

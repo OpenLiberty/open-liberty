@@ -38,8 +38,7 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 @Component(service = { BridgeBuilderService.class },
            name = "com.ibm.ws.security.javaeesec",
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class BridgeBuilderImpl implements BridgeBuilderService {
 
     private static final TraceComponent tc = Tr.register(BridgeBuilderImpl.class);

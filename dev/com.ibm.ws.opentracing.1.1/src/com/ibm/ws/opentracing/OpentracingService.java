@@ -34,7 +34,7 @@ import io.opentracing.tag.Tags;
 /**
  * Opentracing configuration and static utilities such as running filters on a URI.
  */
-@Component(configurationPid = "com.ibm.ws.opentracing", configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true, property = { "service.vendor=IBM" })
+@Component(configurationPid = "com.ibm.ws.opentracing", configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
 public class OpentracingService {
 
     private static final TraceComponent tc = Tr.register(OpentracingService.class);

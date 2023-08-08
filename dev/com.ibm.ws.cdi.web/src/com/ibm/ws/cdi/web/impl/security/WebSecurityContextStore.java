@@ -27,7 +27,7 @@ import com.ibm.ws.cdi.internal.interfaces.SecurityContextStore;
 /**
  * Class stores web context information for real-time extraction of state data.
  */
-@Component(name = "com.ibm.ws.cdi.WebSecurityContextStore", immediate = true, property = { "service.vendor=IBM", "service.ranking:Integer=100" })
+@Component(name = "com.ibm.ws.cdi.WebSecurityContextStore", immediate = true, property = { "service.ranking:Integer=100" })
 public class WebSecurityContextStore implements SecurityContextStore {
 
     private static final TraceComponent tc = Tr.register(WebSecurityContextStore.class);

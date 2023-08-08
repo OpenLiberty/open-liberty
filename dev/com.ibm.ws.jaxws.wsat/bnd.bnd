@@ -43,8 +43,7 @@ Service-Component: \
      deactivate:=deactivate; \
      implementation:=com.ibm.ws.jaxws.wsat.components.WSATFeatureService; \
      featureProvisioner=com.ibm.ws.kernel.feature.FeatureProvisioner;\
-     configuration-policy:=ignore; \
-     properties:="service.vendor=IBM"
+     configuration-policy:=ignore
 
 -buildpath: \
 	com.ibm.ws.jaxws.2.3.common;version=latest, \

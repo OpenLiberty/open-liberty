@@ -34,7 +34,7 @@ import com.ibm.ws.wsat.service.impl.RegistrationImpl;
  * Resource factory used by the transaction manager to obtain a RecoveryCoordinator
  * for WSAT transaction participants
  */
-@Component(property = { Constants.WS_FACTORY_COORD, "service.vendor=IBM" })
+@Component(property = { Constants.WS_FACTORY_COORD })
 public class CoordinatorFactoryService implements RecoveryCoordinatorFactory {
 
     private static final String CLASS_NAME = CoordinatorFactoryService.class.getName();

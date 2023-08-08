@@ -22,16 +22,14 @@ Service-Component: \
      implementation:=com.ibm.ws.jaxws.ejb.EJBInWarJaxWsModuleInfoBuilderExtension; \
      provide:='com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoBuilderExtension'; \
      endpointInfoBuilder=com.ibm.ws.jaxws.metadata.builder.EndpointInfoBuilder?; \
-     configuration-policy:=optional; \
-     properties:="service.vendor=IBM", \
+     configuration-policy:=optional, \
   com.ibm.ws.jaxws.ejb.jaxwsEJBEndpointConfigurator; \
      implementation:=com.ibm.ws.jaxws.ejb.JaxWsEJBEndpointConfigurator; \
      provide:='com.ibm.ws.jaxws.endpoint.JaxWsEndpointConfigurator'; \
      ejbContainer/setEJBContainer=com.ibm.ws.ejbcontainer.osgi.EJBContainer; \
      configuration-policy:=optional; \
      activate:=activate; \
-     deactivate:=deactivate; \
-     properties:="service.vendor=IBM", \
+     deactivate:=deactivate, \
   com.ibm.ws.jaxws.ejb.jaxws.module.info.builder; \
      implementation:=com.ibm.ws.jaxws.ejb.EJBJaxWsModuleInfoBuilder; \
      provide:='com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoBuilder'; \
@@ -42,13 +40,11 @@ Service-Component: \
      optional:='jaxWsWebContainerManager'; \
      activate:=activate; \
      deactivate:=deactivate; \
-     configuration-policy:=optional; \
-     properties:="service.vendor=IBM", \
+     configuration-policy:=optional, \
   com.ibm.ws.jaxws.ejb.handler.resolver; \
      implementation:=com.ibm.ws.jaxws.ejb.EJBHandlerResolver; \
      provide:='com.ibm.wsspi.ejbcontainer.WSEJBHandlerResolver'; \
-     configuration-policy:=optional; \
-     properties:="service.vendor=IBM"
+     configuration-policy:=optional
 
 Export-Package: \
    com.ibm.ws.jaxws.ejb

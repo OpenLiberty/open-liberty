@@ -51,7 +51,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.security.oauth20.JwtAccessTokenMediator;
 import com.ibm.wsspi.security.openidconnect.IDTokenMediator;
 
-@Component(service = ConfigUtils.class, name = "com.ibm.ws.security.oauth20.util.ConfigUtils", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
+@Component(service = ConfigUtils.class, name = "com.ibm.ws.security.oauth20.util.ConfigUtils", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class ConfigUtils {
 
     private static TraceComponent tc = Tr.register(ConfigUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);

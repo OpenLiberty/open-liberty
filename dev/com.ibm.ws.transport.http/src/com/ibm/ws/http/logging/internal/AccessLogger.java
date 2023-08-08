@@ -62,8 +62,7 @@ import java.util.TimerTask;
  * a background thread, not on the caller's thread.
  *
  */
-@Component(configurationPid = "com.ibm.ws.http.log.access", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = AccessLogger.class,
-           property = { "service.vendor=IBM" })
+@Component(configurationPid = "com.ibm.ws.http.log.access", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = AccessLogger.class)
 public class AccessLogger extends LoggerOffThread implements AccessLog {
 
     /**  */

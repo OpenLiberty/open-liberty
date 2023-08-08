@@ -104,7 +104,6 @@ Service-Component: \
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
     properties:="\
-      service.vendor=IBM,\
       classes=com.ibm.ws.security.jwt.internal.ClaimsImpl|\
               com.ibm.ws.security.jwt.internal.JwtTokenConsumerImpl"
 

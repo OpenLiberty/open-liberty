@@ -73,7 +73,7 @@ import com.ibm.wsspi.security.audit.AuditSigningException;
  * This class is a collector manager Handler that takes audit events from the
  * BufferManager and writes them to local files. (copied from com.ibm.ws.logging temporary)
  */
-@Component(service = Handler.class, configurationPid = "com.ibm.ws.security.audit.file.handler", configurationPolicy = ConfigurationPolicy.OPTIONAL, property = "service.vendor=IBM", immediate = true)
+@Component(service = Handler.class, configurationPid = "com.ibm.ws.security.audit.file.handler", configurationPolicy = ConfigurationPolicy.OPTIONAL, property = immediate = true)
 public class AuditFileHandler implements SynchronousHandler {
 
     private static final TraceComponent tc = Tr.register(AuditFileHandler.class);

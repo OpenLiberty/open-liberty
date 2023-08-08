@@ -27,7 +27,7 @@ import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.microprofile.health30.impl.HealthCheck30ResponseBuilderImpl;
 
-@Component(service = { HealthCheckResponseProvider.class }, property = { "service.vendor=IBM" }, immediate = true)
+@Component(service = { HealthCheckResponseProvider.class }, immediate = true)
 public class HealthCheck31ResponseProviderImpl implements HealthCheckResponseProvider {
 
     private static final TraceComponent tc = Tr.register(HealthCheck31ResponseProviderImpl.class);

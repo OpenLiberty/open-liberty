@@ -46,8 +46,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.audit.AuditService;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public final class AuditJMXPipeline extends MBeanServerForwarderDelegate {
     private static final TraceComponent tc = Tr.register(AuditJMXPipeline.class);
 

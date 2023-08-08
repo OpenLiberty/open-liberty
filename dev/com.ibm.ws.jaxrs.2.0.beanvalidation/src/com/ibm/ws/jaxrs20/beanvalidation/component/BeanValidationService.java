@@ -34,7 +34,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 /**
  * DS to provide bean validation service to the JAX-RS BeanValidationProvider.
  */
-@Component(name = "com.ibm.ws.jaxrs20.BeanValidationService", property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.jaxrs20.BeanValidationService")
 public class BeanValidationService {
 
     private static final TraceComponent tc = Tr.register(BeanValidationService.class);

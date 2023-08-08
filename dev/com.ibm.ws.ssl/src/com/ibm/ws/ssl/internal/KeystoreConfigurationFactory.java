@@ -65,7 +65,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  */
 @Component(service = ManagedServiceFactory.class,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM", "service.pid=com.ibm.ws.ssl.keystore" })
+           property = { "service.pid=com.ibm.ws.ssl.keystore" })
 @SatisfyingConditionTarget("(" + Condition.CONDITION_ID + "=" + CheckpointPhase.CONDITION_PROCESS_RUNNING_ID + ")")
 public class KeystoreConfigurationFactory implements ManagedServiceFactory, FileBasedActionable, KeyringBasedActionable {
     /** Trace service */

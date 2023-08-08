@@ -40,7 +40,7 @@ import com.ibm.ws.webcontainer.webapp.WebAppConfiguration;
  * @author SAGIA
  * 
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, configurationPid = "com.ibm.ws.sip.container.was.SipModuleMetadataListener", service = ModuleMetaDataListener.class, property = { "service.vendor=IBM" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, configurationPid = "com.ibm.ws.sip.container.was.SipModuleMetadataListener", service = ModuleMetaDataListener.class)
 public class SipModuleMetadataListener implements ModuleMetaDataListener {
 
 	/**

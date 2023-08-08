@@ -39,7 +39,7 @@ import com.ibm.wsspi.application.handler.DefaultApplicationMonitoringInformation
  */
 @Component(service = { ApplicationHandler.class },
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM", "type:String=sar" })
+           property = { "type:String=sar" })
 public class SARApplicationHandlerImpl implements ApplicationHandler<DeployedAppInfo> {
   //  private static final TraceComponent _tc = Tr.register(SARApplicationHandlerImpl.class);
 

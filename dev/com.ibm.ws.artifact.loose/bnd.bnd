@@ -29,7 +29,7 @@ Service-Component: \
     locationService=com.ibm.wsspi.kernel.service.location.WsLocationAdmin;\
     containerFactory=com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;\
     dynamic:='containerFactory';\
-    properties:="service.vendor=IBM,handlesType=java.io.File,category=LOOSE"
+    properties:="handlesType=java.io.File,category=LOOSE"
 
 instrument.classesExcludes: com/ibm/ws/artifact/loose/internal/resources/*.class
 

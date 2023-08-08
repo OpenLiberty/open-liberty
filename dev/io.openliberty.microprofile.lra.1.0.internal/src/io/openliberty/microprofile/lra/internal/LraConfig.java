@@ -28,7 +28,7 @@ import com.ibm.websphere.ras.TraceComponent;
 /**
  *
  */
-@Component(name = "io.openliberty.microprofile.lra.1.0.internal.config", service = LraConfig.class, configurationPid = "io.openliberty.microprofile.lra.1.0.internal.config", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, property = { "service.vendor=IBM" })
+@Component(name = "io.openliberty.microprofile.lra.1.0.internal.config", service = LraConfig.class, configurationPid = "io.openliberty.microprofile.lra.1.0.internal.config", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true)
 public class LraConfig {
     private static final TraceComponent tc = Tr.register(LraConfig.class);
 

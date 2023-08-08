@@ -70,8 +70,7 @@ import com.ibm.wsspi.resource.ResourceInfo;
  */
 @Component(configurationPid = "com.ibm.ws.jbatch.jms.events",
 configurationPolicy = ConfigurationPolicy.REQUIRE,
-service = BatchEventsPublisher.class,
-property = {"service.vendor=IBM"})
+service = BatchEventsPublisher.class)
 public class BatchEventsPublisherImpl implements BatchEventsPublisher {
 
 	private static final TraceComponent tc = Tr.register(BatchEventsPublisherImpl.class, "wsbatch", "com.ibm.ws.jbatch.jms.internal.resources.BatchJmsMessages");

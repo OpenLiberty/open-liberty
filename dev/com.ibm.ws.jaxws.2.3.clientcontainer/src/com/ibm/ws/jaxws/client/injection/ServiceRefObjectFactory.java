@@ -71,7 +71,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  *
  */
 @Component(service = { javax.naming.spi.ObjectFactory.class, com.ibm.ws.jaxws.client.injection.ServiceRefObjectFactory.class },
-           configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
+           configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
 
     private static final TraceComponent tc = Tr.register(ServiceRefObjectFactory.class);

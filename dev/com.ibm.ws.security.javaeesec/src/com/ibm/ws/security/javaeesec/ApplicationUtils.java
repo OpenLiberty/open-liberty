@@ -43,8 +43,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
  */
 @Component(service = { ApplicationMetaDataListener.class, WebAppSecurityConfigChangeListener.class },
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class ApplicationUtils implements ApplicationMetaDataListener, WebAppSecurityConfigChangeListener {
     private static final TraceComponent tc = Tr.register(ApplicationUtils.class);
 

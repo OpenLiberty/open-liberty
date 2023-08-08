@@ -35,7 +35,7 @@ import com.ibm.ws.container.service.annocache.WebAnnotationsAdapter;
 @Component(
     service = ContainerAdapter.class, immediate = true,
     configurationPolicy = ConfigurationPolicy.IGNORE,
-    property = { "service.vendor=IBM", "toType=com.ibm.ws.container.service.annocache.WebAnnotations" })
+    property = { "toType=com.ibm.ws.container.service.annocache.WebAnnotations" })
 public class WebAnnotationsAdapterImpl
     extends AnnotationsAdapterImpl
     implements WebAnnotationsAdapter {

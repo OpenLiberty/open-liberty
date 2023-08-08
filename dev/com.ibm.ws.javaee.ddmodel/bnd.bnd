@@ -24,79 +24,79 @@ Service-Component:\
     configuration-policy:=ignore;\
     version=com.ibm.ws.javaee.version.JavaEEVersion?;\
     greedy:=version;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.app.Application",\
+    properties:="toType=com.ibm.ws.javaee.dd.app.Application",\
    com.ibm.ws.javaee.dd.client.adapter;\
     implementation:=com.ibm.ws.javaee.ddmodel.client.ApplicationClientAdapter;\
     provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
     configuration-policy:=ignore;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.client.ApplicationClient",\
+    properties:="toType=com.ibm.ws.javaee.dd.client.ApplicationClient",\
    com.ibm.ws.javaee.dd.client.entry.adapter;\
     implementation:=com.ibm.ws.javaee.ddmodel.client.ApplicationClientEntryAdapter;\
     provide:=com.ibm.wsspi.adaptable.module.adapters.EntryAdapter;\
     configuration-policy:=ignore;\
     version=com.ibm.ws.javaee.ddmodel.client.ApplicationClientDDParserVersion?;\
     greedy:=version;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.client.ApplicationClient",\
+    properties:="toType=com.ibm.ws.javaee.dd.client.ApplicationClient",\
    com.ibm.ws.javaee.dd.web.app.adapter;\
     implementation:=com.ibm.ws.javaee.ddmodel.web.WebAppAdapter;\
     provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
     configuration-policy:=ignore;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.web.WebApp",\
+    properties:="toType=com.ibm.ws.javaee.dd.web.WebApp",\
    com.ibm.ws.javaee.dd.web.app.entry.adapter;\
     implementation:=com.ibm.ws.javaee.ddmodel.web.WebAppEntryAdapter;\
     provide:=com.ibm.wsspi.adaptable.module.adapters.EntryAdapter;\
     configuration-policy:=ignore;\
     version=com.ibm.ws.javaee.version.ServletVersion?;\
     greedy:=version;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.web.WebApp",\
+    properties:="toType=com.ibm.ws.javaee.dd.web.WebApp",\
    com.ibm.ws.javaee.dd.web.fragment.adapter;\
     implementation:=com.ibm.ws.javaee.ddmodel.web.WebFragmentAdapter;\
     provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
     configuration-policy:=ignore;\
     version=com.ibm.ws.javaee.version.ServletVersion?;\
     greedy:=version;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.web.WebFragment",\
+    properties:="toType=com.ibm.ws.javaee.dd.web.WebFragment",\
    com.ibm.ws.javaee.dd.jsf.adapter;\
     implementation:=com.ibm.ws.javaee.ddmodel.jsf.FacesConfigAdapter;\
     provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
     configuration-policy:=ignore;\
     version=com.ibm.ws.javaee.version.FacesVersion?;\
     greedy:=version;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.jsf.FacesConfig",\
+    properties:="toType=com.ibm.ws.javaee.dd.jsf.FacesConfig",\
    com.ibm.ws.javaee.dd.jsf.entry.adapter;\
     implementation:=com.ibm.ws.javaee.ddmodel.jsf.FacesConfigEntryAdapter;\
     provide:=com.ibm.wsspi.adaptable.module.adapters.EntryAdapter;\
     configuration-policy:=ignore;\
     version=com.ibm.ws.javaee.version.FacesVersion?;\
     greedy:=version;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.jsf.FacesConfig",\
+    properties:="toType=com.ibm.ws.javaee.dd.jsf.FacesConfig",\
    com.ibm.ws.javaee.dd.ejb.adapter;\
     implementation:=com.ibm.ws.javaee.ddmodel.ejb.EJBJarAdapter;\
     provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
     configuration-policy:=ignore;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.ejb.EJBJar",\
+    properties:="toType=com.ibm.ws.javaee.dd.ejb.EJBJar",\
    com.ibm.ws.javaee.dd.ejb.entry.adapter;\
     implementation:=com.ibm.ws.javaee.ddmodel.ejb.EJBJarEntryAdapter;\
     provide:=com.ibm.wsspi.adaptable.module.adapters.EntryAdapter;\
     configuration-policy:=ignore;\
     version=com.ibm.ws.javaee.ddmodel.ejb.EJBJarDDParserVersion?;\
     greedy:=version;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.ejb.EJBJar",\
+    properties:="toType=com.ibm.ws.javaee.dd.ejb.EJBJar",\
    com.ibm.ws.javaee.dd.bval.adapter;\
     implementation:=com.ibm.ws.javaee.ddmodel.bval.ValidationConfigAdapter;\
     provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
     configuration-policy:=ignore;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.bval.ValidationConfig",\
+    properties:="toType=com.ibm.ws.javaee.dd.bval.ValidationConfig",\
    com.ibm.ws.javaee.dd.bval.entry.adapter;\
     implementation:=com.ibm.ws.javaee.ddmodel.bval.ValidationConfigEntryAdapter;\
     provide:=com.ibm.wsspi.adaptable.module.adapters.EntryAdapter;\
     configuration-policy:=ignore;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.bval.ValidationConfig",\
+    properties:="toType=com.ibm.ws.javaee.dd.bval.ValidationConfig",\
    com.ibm.ws.javaee.dd.permissions.adapter;\
      implementation:=com.ibm.ws.javaee.ddmodel.permissions.PermissionsAdapter;\
      provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
      configuration-policy:=ignore;\
-     properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.permissions.PermissionsConfig"
+     properties:="toType=com.ibm.ws.javaee.dd.permissions.PermissionsConfig"
 
 Include-Resource: OSGI-INF/metatype=resources.gen/OSGI-INF/metatype,OSGI-INF=resources.gen/OSGI-INF,OSGI-INF/l10n=resources/OSGI-INF/l10n
   

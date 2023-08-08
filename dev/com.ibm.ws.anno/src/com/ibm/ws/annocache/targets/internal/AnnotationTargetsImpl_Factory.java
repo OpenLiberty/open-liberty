@@ -37,7 +37,7 @@ import com.ibm.wsspi.annocache.targets.cache.TargetCache_Factory;
 import com.ibm.wsspi.annocache.util.Util_Factory;
 import com.ibm.wsspi.annocache.util.Util_InternMap;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory {
     protected static final Logger logger = AnnotationCacheServiceImpl_Logging.ANNO_LOGGER;
 

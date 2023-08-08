@@ -43,7 +43,7 @@ import com.ibm.ws.jndi.internal.literals.LiteralParser;
  * is optional; true indicates that the &lt;VALUE&gt; is encrypted and needs to be decoded.
  * </p>
  */
-@Component(configurationPolicy = REQUIRE, property = "service.vendor=IBM")
+@Component(configurationPolicy = REQUIRE)
 public class JNDIEntry {
 
     private static final TraceComponent tc = Tr.register(JNDIEntry.class);

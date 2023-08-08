@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(name = "com.ibm.ws.cdi.weldTerminalListener",
                 service = PostEventListenerProvider.class,
                 immediate = true,
-                property = { "service.vendor=IBM", "service.ranking:Integer=-1" })
+                property = { "service.ranking:Integer=-1" })
 public class WeldTerminalListenerRegistration extends AbstractTerminalListenerRegistration implements PostEventListenerProvider {
     
     private final AtomicServiceReference<CDIWebRuntime> cdiWebRuntimeRef = new AtomicServiceReference<CDIWebRuntime>(

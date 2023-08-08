@@ -43,7 +43,7 @@ import io.smallrye.config.SmallRyeConfigBuilder;
 import io.smallrye.config.SmallRyeConfigProviderResolver;
 
 @Component(service = { ConfigProviderResolver.class, ApplicationStateListener.class, ConfigIntrospectionProvider.class },
-           configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" }, immediate = true)
+           configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class OLSmallRyeConfigProviderResolver extends SmallRyeConfigProviderResolver implements ApplicationStateListener, ConfigIntrospectionProvider {
 
     private static final TraceComponent tc = Tr.register(OLSmallRyeConfigProviderResolver.class);

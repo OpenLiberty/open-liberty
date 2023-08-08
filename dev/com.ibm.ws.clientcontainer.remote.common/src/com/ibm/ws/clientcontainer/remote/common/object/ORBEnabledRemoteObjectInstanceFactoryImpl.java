@@ -25,7 +25,7 @@ import com.ibm.ws.container.service.naming.RemoteObjectInstanceFactoryImpl;
  *
  */
 @Component(service = RemoteObjectInstanceFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true,
-           property = { "service.vendor=IBM", "service.ranking:Integer=10" })
+           property = { "service.ranking:Integer=10" })
 public class ORBEnabledRemoteObjectInstanceFactoryImpl extends RemoteObjectInstanceFactoryImpl {
 
     /*

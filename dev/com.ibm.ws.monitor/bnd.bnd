@@ -38,7 +38,6 @@ Service-Component=com.ibm.ws.monitor.internal.ProbeManagerImpl; \
         implementation:="com.ibm.ws.monitor.internal.ProbeManagerImpl"; \
         provide:="com.ibm.websphere.monitor.MonitorManager"; \
         instrumentation=java.lang.instrument.Instrumentation; \
-        properties:="service.vendor=IBM"; \
         version:=1.1, \
     com.ibm.ws.monitor.internal.MonitoringFrameworkExtender; \
         implementation:="com.ibm.ws.monitor.internal.MonitoringFrameworkExtender"; \

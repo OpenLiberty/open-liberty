@@ -35,7 +35,7 @@ import com.ibm.wsspi.application.lifecycle.ApplicationStartBarrier;
 
 @Component(service = ApplicationHandler.class, immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM", "type:String=ear" })
+           property = { "type:String=ear" })
 public class EARApplicationHandlerImpl implements ApplicationHandler<DeployedAppInfo> {
     private static final TraceComponent _tc = Tr.register(EARApplicationHandlerImpl.class);
 

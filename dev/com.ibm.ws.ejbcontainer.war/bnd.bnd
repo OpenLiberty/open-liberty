@@ -27,8 +27,7 @@ Service-Component:\
     implementation:=com.ibm.ws.ejbcontainer.war.internal.EJBWARRuntimeImpl;\
     provide:=com.ibm.ws.container.service.state.ModuleStateListener;\
     ejbContainer/setEJBContainer=com.ibm.ws.ejbcontainer.osgi.EJBContainer;\
-    ejbWARMetaDataRuntime/setEJBWARMetaDataRuntime=com.ibm.ws.ejbcontainer.war.internal.EJBWARMetaDataRuntime;\
-    properties:="service.vendor=IBM",\
+    ejbWARMetaDataRuntime/setEJBWARMetaDataRuntime=com.ibm.ws.ejbcontainer.war.internal.EJBWARMetaDataRuntime,\
   com.ibm.ws.ejbcontainer.war.metaDataRuntime;\
     implementation:=com.ibm.ws.ejbcontainer.war.internal.EJBWARMetaDataRuntime;\
     provide:='com.ibm.ws.container.service.metadata.extended.NestedModuleMetaDataFactory,\
@@ -37,7 +36,7 @@ Service-Component:\
     ejbContainer/setEJBContainer=com.ibm.ws.ejbcontainer.osgi.EJBContainer;\
     metaDataService=com.ibm.ws.container.service.metadata.MetaDataService;\
     metaDataSlotService=com.ibm.ws.container.service.metadata.MetaDataSlotService;\
-    properties:="service.vendor=IBM,type:String=web,service.ranking:Integer=-2147483648"
+    properties:="type:String=web,service.ranking:Integer=-2147483648"
 
 -buildpath: \
 	com.ibm.ws.logging,\

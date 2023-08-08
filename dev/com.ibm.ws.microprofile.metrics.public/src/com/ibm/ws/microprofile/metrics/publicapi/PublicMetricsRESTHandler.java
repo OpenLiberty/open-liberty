@@ -31,8 +31,7 @@ import com.ibm.ws.microprofile.metrics.helper.Util;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 import com.ibm.wsspi.rest.handler.RESTHandler;
 
-@Component(service = { RESTHandler.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM",
-                                                                                                                             RESTHandler.PROPERTY_REST_HANDLER_CONTEXT_ROOT + "="
+@Component(service = { RESTHandler.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = {                                                                                                                              RESTHandler.PROPERTY_REST_HANDLER_CONTEXT_ROOT + "="
                                                                                                                                                    + Constants.PATH_METRICS,
                                                                                                                              RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + Constants.PATH_ROOT,
                                                                                                                              RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + Constants.PATH_SUB,

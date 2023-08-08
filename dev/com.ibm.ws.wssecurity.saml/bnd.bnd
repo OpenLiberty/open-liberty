@@ -43,7 +43,7 @@ Service-Component: \
     greedy:='ssoService, securityService'; \
     dynamic:='ssoService,securityService'; \
     multiple:="ssoService"; \
-    properties:="service.vendor=IBM,type=wssSaml"
+    properties:="type=wssSaml"
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\

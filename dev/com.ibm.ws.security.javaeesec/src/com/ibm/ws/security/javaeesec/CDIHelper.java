@@ -31,8 +31,7 @@ import com.ibm.ws.cdi.CDIService;
 
 @Component(service = { CDIHelper.class },
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class CDIHelper {
 
     private static CDIService cdiService;

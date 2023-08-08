@@ -38,7 +38,7 @@ import com.ibm.wsspi.sib.core.SelectionCriteriaFactory;
  * This component is the point of entry for JCA into SIB messaging.
  * Any dependencies that need to be in place for JCA to work should be expressed here.
  */
-@Component (configurationPolicy = IGNORE, immediate = true, property= {"type=wasJms","service.vendor=IBM"})
+@Component (configurationPolicy = IGNORE, immediate = true, property= {"type=wasJms"})
 public class JmsServiceFacade implements ResourceAdapterBundleService {
 
     private static final TraceComponent tc = SibTr.register(JmsServiceFacade.class, TraceGroups.TRGRP_RA,

@@ -52,8 +52,7 @@ import com.ibm.websphere.ras.TraceComponent;
 @Component(configurationPid = "com.ibm.ws.http.proxyredirect",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            immediate = true,
-           service = HttpProxyRedirect.class,
-           property = { "service.vendor=IBM" })
+           service = HttpProxyRedirect.class)
 public class HttpProxyRedirect {
 
     private final static TraceComponent tc = Tr.register(HttpProxyRedirect.class, "HTTPTransport");

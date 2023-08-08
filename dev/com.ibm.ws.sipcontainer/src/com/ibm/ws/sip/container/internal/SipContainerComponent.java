@@ -56,8 +56,7 @@ import com.ibm.wsspi.kernel.service.utils.*;
 @Component(service = SipContainerComponent.class,
 configurationPolicy = ConfigurationPolicy.OPTIONAL,
 configurationPid = "com.ibm.ws.sip.container.internal.SipContainerComponent",
-name = "com.ibm.ws.sip.container.internal.SipContainerComponent",
-property = {"service.vendor=IBM"} )
+name = "com.ibm.ws.sip.container.internal.SipContainerComponent")
 public class SipContainerComponent {
 	/**
      * Class Logger. 

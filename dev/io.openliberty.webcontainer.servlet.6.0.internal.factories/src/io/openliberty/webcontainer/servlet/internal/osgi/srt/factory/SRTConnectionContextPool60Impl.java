@@ -18,7 +18,7 @@ import com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContextPool;
 
 import io.openliberty.webcontainer60.osgi.srt.SRTConnectionContext60;
 
-@Component(property = { "service.vendor=IBM", "service.ranking:Integer=60", "servlet.version=6.0" })
+@Component(property = { "service.ranking:Integer=60", "servlet.version=6.0" })
 public class SRTConnectionContextPool60Impl implements SRTConnectionContextPool {
     private final ThreadLocal<com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext> head = new ThreadLocal<com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext>();
 

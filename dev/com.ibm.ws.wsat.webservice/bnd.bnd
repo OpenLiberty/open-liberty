@@ -67,8 +67,7 @@ Service-Component: \
      implementation:=com.ibm.ws.wsat.interceptor.WSATInterceptorServiceImpl; \
      provide:='com.ibm.ws.jaxws.wsat.components.WSATInterceptorService'; \
      featureProvisioner=com.ibm.ws.kernel.feature.FeatureProvisioner;\
-     configuration-policy:=ignore; \
-     properties:="service.vendor=IBM"
+     configuration-policy:=ignore
 
 -buildpath: \
 	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\

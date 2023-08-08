@@ -39,8 +39,7 @@ import com.ibm.ws.ui.persistence.IPersistenceProvider;
  * plain text from/to the storage.
  */
 @Component(service = { IToolDataService.class },
-           configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM" })
+           configurationPolicy = ConfigurationPolicy.IGNORE)
 public class PlainTextLoaderService implements IToolDataService {
     private static final TraceComponent tc = Tr.register(PlainTextLoaderService.class);
 

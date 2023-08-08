@@ -54,7 +54,6 @@ import com.ibm.wsspi.threading.WSExecutorService;
  */
 @Component(name = "com.ibm.ws.threading",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           property = "service.vendor=IBM",
            service = { java.util.concurrent.ExecutorService.class, com.ibm.wsspi.threading.WSExecutorService.class })
 public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuiesce, AvailableProcessorsListener {
 

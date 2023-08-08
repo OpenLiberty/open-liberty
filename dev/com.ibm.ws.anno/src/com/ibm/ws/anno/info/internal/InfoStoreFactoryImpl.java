@@ -28,7 +28,7 @@ import com.ibm.wsspi.anno.info.InfoStoreException;
 import com.ibm.wsspi.anno.info.InfoStoreFactory;
 import com.ibm.wsspi.anno.util.Util_Factory;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class InfoStoreFactoryImpl implements InfoStoreFactory {
 
     public static final TraceComponent tc = Tr.register(InfoStoreFactoryImpl.class);

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -54,7 +54,7 @@ public class ModelAdapterClassGenerator extends ModelClassGenerator {
 
         out.append("@Component(configurationPolicy = ConfigurationPolicy.IGNORE,").println();
         out.append("    service = ContainerAdapter.class,").println();
-        out.append("    property = { \"service.vendor=IBM\", \"toType=").append(rootType.interfaceName).append("\" })").println();
+        out.append("    property = { \"toType=").append(rootType.interfaceName).append("\" })").println();
         out.append("public class ").append(simpleName).append(" implements ContainerAdapter<").append(rootType.interfaceName).append("> {").println();
         writeStatics(out);
 

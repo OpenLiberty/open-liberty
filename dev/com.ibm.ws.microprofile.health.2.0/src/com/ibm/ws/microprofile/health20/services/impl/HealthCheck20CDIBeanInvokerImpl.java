@@ -39,7 +39,7 @@ import com.ibm.ws.microprofile.health.services.HealthCheckBeanCallException;
 import com.ibm.ws.microprofile.health20.internal.HealthCheckConstants;
 import com.ibm.ws.microprofile.health20.services.HealthCheck20CDIBeanInvoker;
 
-@Component(service = HealthCheck20CDIBeanInvoker.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(service = HealthCheck20CDIBeanInvoker.class, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class HealthCheck20CDIBeanInvokerImpl implements HealthCheck20CDIBeanInvoker {
 
     private final static TraceComponent tc = Tr.register(com.ibm.ws.microprofile.health20.services.impl.HealthCheck20CDIBeanInvokerImpl.class);

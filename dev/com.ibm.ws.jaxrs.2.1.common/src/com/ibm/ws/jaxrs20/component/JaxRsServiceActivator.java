@@ -44,7 +44,7 @@ import com.ibm.ws.util.ThreadContextAccessor;
 /**
  * JAXWSServiceImpl is used to initial global JAX-RS configurations
  */
-@Component(immediate = true, property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.OPTIONAL)
+@Component(immediate = true, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class JaxRsServiceActivator {
     private CXFActivator cxfActivator;
     private HTTPTransportActivator httpTransportActivator;

@@ -92,7 +92,7 @@ import com.ibm.wsspi.security.openidconnect.UserinfoProvider;
 import io.openliberty.security.common.jwt.JwtParsingUtils;
 import io.openliberty.security.common.jwt.jws.JwsSignatureVerifier;
 
-@Component(service = { OidcEndpointServices.class }, name = "com.ibm.ws.security.openidconnect.web.OidcEndpointServices", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
+@Component(service = { OidcEndpointServices.class }, name = "com.ibm.ws.security.openidconnect.web.OidcEndpointServices", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class OidcEndpointServices extends OAuth20EndpointServices {
 
     private static TraceComponent tc = Tr.register(OidcEndpointServices.class,

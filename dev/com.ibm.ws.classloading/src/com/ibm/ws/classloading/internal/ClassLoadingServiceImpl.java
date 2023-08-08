@@ -103,8 +103,7 @@ import com.ibm.wsspi.logging.Introspector;
 
 @Component(service = { ClassLoadingService.class, LibertyClassLoadingService.class, ClassLoaderIdentifierService.class, Introspector.class },
            immediate = true,
-           configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = "service.vendor=IBM")
+           configurationPolicy = ConfigurationPolicy.IGNORE)
 public class ClassLoadingServiceImpl implements LibertyClassLoadingService<LibertyLoader>, ClassLoaderIdentifierService, Introspector {
     static final TraceComponent tc = Tr.register(ClassLoadingServiceImpl.class);
     private final Map<ClassLoader, StackTraceElement[]> leakDetectionMap = new ConcurrentHashMap<ClassLoader, StackTraceElement[]>();

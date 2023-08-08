@@ -35,7 +35,7 @@ import com.ibm.ws.container.service.annocache.ModuleAnnotations;
 @Component(
     service = ContainerAdapter.class, immediate = true,
     configurationPolicy = ConfigurationPolicy.IGNORE,
-    property = { "service.vendor=IBM", "toType=com.ibm.ws.container.service.annocache.ModuleAnnotations" })
+    property = { "toType=com.ibm.ws.container.service.annocache.ModuleAnnotations" })
 public class ModuleAnnotationsAdapterImpl
     extends AnnotationsAdapterImpl
     implements ModuleAnnotationsAdapter {

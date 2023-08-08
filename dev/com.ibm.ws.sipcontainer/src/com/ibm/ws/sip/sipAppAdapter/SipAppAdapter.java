@@ -43,7 +43,7 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  * @author SAGIA
  *
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, configurationPid = "com.ibm.ws.sip.sipAppAdapter.SipAppAdapter", service = ContainerAdapter.class, property = { "service.vendor=IBM","toType=com.ibm.ws.javaee.dd.web.WebApp","service.ranking:Integer=1" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, configurationPid = "com.ibm.ws.sip.sipAppAdapter.SipAppAdapter", service = ContainerAdapter.class, property = { "toType=com.ibm.ws.javaee.dd.web.WebApp","service.ranking:Integer=1" })
 public class SipAppAdapter implements ContainerAdapter<WebApp>{
 
 

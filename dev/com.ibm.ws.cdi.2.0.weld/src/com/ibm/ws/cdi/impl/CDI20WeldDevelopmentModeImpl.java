@@ -29,8 +29,7 @@ import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 import com.ibm.ws.cdi.internal.interfaces.WeldDevelopmentMode;
 
 @Component(name = "com.ibm.ws.cdi.impl.CDI20WeldDevelopmentModeImpl",
-                service = { WeldDevelopmentMode.class },
-                property = { "service.vendor=IBM" })
+                service = { WeldDevelopmentMode.class })
 public class CDI20WeldDevelopmentModeImpl implements WeldDevelopmentMode {
     private ExtensionArchive probeExtensionArchive;
 

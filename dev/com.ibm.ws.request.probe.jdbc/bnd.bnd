@@ -28,44 +28,34 @@ Private-Package: com.ibm.ws.request.probe.jdbc
 
 Service-Component= com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_EXECUTE_UPDATE; \
         implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgeExecuteUpdate; \
-        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
-        properties:="service.vendor=IBM", \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor, \
         com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_EXECUTE; \
         implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgeExecute; \
-        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
-        properties:="service.vendor=IBM", \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor, \
         com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_EXECUTE_QUERY; \
         implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgeExecuteQuery; \
-        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
-        properties:="service.vendor=IBM", \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor, \
         com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_PS_EXECUTE; \
         implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgePSExecute; \
-        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
-        properties:="service.vendor=IBM", \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor, \
         com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_PS_EXECUTE_QUERY; \
         implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgePSExecuteQuery; \
-        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
-        properties:="service.vendor=IBM", \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor, \
         com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_PS_EXECUTE_UPDATE; \
         implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgePSExecuteUpdate; \
-        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
-        properties:="service.vendor=IBM", \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor, \
         com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_RS_CANCEL_ROW_UPDATES; \
         implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgeRSCancelRowUpdates; \
-        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
-        properties:="service.vendor=IBM", \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor, \
         com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_RS_DELETE_ROW; \
         implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgeRSDeleteRow; \
-        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
-        properties:="service.vendor=IBM", \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor, \
         com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_RS_INSERT_ROW; \
         implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgeRSInsertRow; \
-        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
-        properties:="service.vendor=IBM", \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor, \
         com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_RS_UPDATE_ROW; \
         implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgeRSUpdateRow; \
-        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
-        properties:="service.vendor=IBM"
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor
 
 instrument.disabled: true
 

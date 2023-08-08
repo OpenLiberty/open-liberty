@@ -35,8 +35,7 @@ import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 
 @Component(service = { CFWManager.class },
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class CFWManager {
 
     /*

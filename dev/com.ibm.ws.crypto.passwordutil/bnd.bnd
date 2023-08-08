@@ -39,8 +39,7 @@ Service-Component: \
     implementation:=com.ibm.ws.crypto.util.VariableResolver; \
     immediate:=true; \
     variableRegistry=com.ibm.wsspi.kernel.service.location.VariableRegistry; \
-    dynamic:='variableRegistry'; \
-    properties:='service.vendor=IBM'
+    dynamic:='variableRegistry'
 
 instrument.disabled: true
 

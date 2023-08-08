@@ -74,7 +74,7 @@ import com.ibm.ws.microprofile.openapi.impl.model.servers.ServerVariableImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.servers.ServerVariablesImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.tags.TagImpl;
 
-@Component(service = { OASFactoryResolver.class }, property = { "service.vendor=IBM" }, immediate = true)
+@Component(service = { OASFactoryResolver.class }, immediate = true)
 public class OASFactoryResolverImpl extends OASFactoryResolver {
 
     private static final Map<Class<? extends Constructible>, Class<? extends Constructible>> MODEL_CLASS_MAP = new HashMap<>();

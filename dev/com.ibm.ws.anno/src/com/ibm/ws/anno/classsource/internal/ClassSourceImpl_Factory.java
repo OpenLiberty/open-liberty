@@ -40,7 +40,7 @@ import com.ibm.wsspi.anno.classsource.ClassSource_Options;
 import com.ibm.wsspi.anno.util.Util_Factory;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class ClassSourceImpl_Factory implements ClassSource_Factory {
     public static final String CLASS_NAME = ClassSourceImpl_Factory.class.getName();
     private static final TraceComponent tc = Tr.register(ClassSourceImpl_Factory.class);

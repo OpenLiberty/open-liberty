@@ -58,7 +58,7 @@ import io.openliberty.security.oidcclientcore.token.auth.PrivateKeyJwtAuthMethod
  * . The other is for JwtConsumerConfig. This make oidcLogin does not need to define an additional jJwtConsumerConfig
  * .. So, we can reuse the jwksUri and sslRef defined in the oidcLogin.
  */
-@Component(name = "com.ibm.ws.security.social.oidclogin", configurationPolicy = ConfigurationPolicy.REQUIRE, service = { SocialLoginConfig.class, JwtConsumerConfig.class }, property = { "service.vendor=IBM", "type=oidcLogin" })
+@Component(name = "com.ibm.ws.security.social.oidclogin", configurationPolicy = ConfigurationPolicy.REQUIRE, service = { SocialLoginConfig.class, JwtConsumerConfig.class }, property = { "type=oidcLogin" })
 public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements ConvergedClientConfig {
     public static final TraceComponent tc = Tr.register(OidcLoginConfigImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 

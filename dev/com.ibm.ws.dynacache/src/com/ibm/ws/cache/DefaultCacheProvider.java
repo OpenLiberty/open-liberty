@@ -18,7 +18,7 @@ import com.ibm.wsspi.cache.CacheFeatureSupport;
 import com.ibm.wsspi.cache.CacheProvider;
 import com.ibm.wsspi.cache.CoreCache;
 
-@Component(service = CacheProvider.class, property = { "name=" + CacheConfig.CACHE_PROVIDER_DYNACACHE, "service.vendor=IBM" })
+@Component(service = CacheProvider.class, property = { "name=" + CacheConfig.CACHE_PROVIDER_DYNACACHE })
 public class DefaultCacheProvider implements CacheProvider {
     @Override
     public void stop() {

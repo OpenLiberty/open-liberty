@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
  *
  * <p>This implementation is stateless. A single container filter is used by all applications.</p> *
  */
-@Component(service = { DefaultExceptionMapperCallback.class }, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(service = { DefaultExceptionMapperCallback.class }, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class OpentracingJaxRsEMCallbackImpl implements DefaultExceptionMapperCallback {
     private static final TraceComponent tc = Tr.register(OpentracingJaxRsEMCallbackImpl.class);
     

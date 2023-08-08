@@ -27,7 +27,7 @@ import com.ibm.ws.ejbcontainer.osgi.JCDIHelperFactory;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.wsspi.adaptable.module.Container;
 
-@Component(name = "com.ibm.ws.cdi.ejb.interceptor.liberty.JCDIHelperFactoryImpl", property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.cdi.ejb.interceptor.liberty.JCDIHelperFactoryImpl")
 public class JCDIHelperFactoryImpl implements JCDIHelperFactory {
 
     private static final TraceComponent tc = Tr.register(JCDIHelperFactoryImpl.class);

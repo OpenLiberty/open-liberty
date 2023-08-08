@@ -29,7 +29,6 @@ import com.ibm.wsspi.request.probe.bci.TransformDescriptorHelper;
 @Component(service = { RequestProbeTransformDescriptor.class },
                 name = "com.ibm.ws.security.audit.rptd",
                 configurationPolicy = ConfigurationPolicy.IGNORE,
-                property = "service.vendor=IBM",
                 immediate = true)
 public class AuditRPTD implements RequestProbeTransformDescriptor {
 

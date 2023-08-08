@@ -42,7 +42,7 @@ import com.ibm.ws.wsat.service.impl.RegistrationImpl;
  * Resource factory used by the transaction manager to obtain XRResources
  * for WSAT transaction participants
  */
-@Component(property = { Constants.WS_FACTORY_PART, "service.vendor=IBM" })
+@Component(property = { Constants.WS_FACTORY_PART })
 public class ParticipantFactoryService implements XAResourceFactory {
 
     private static final TraceComponent TC = Tr.register(ParticipantFactoryService.class);

@@ -31,7 +31,7 @@ Service-Component:\
   com.ibm.ws.managedobject.deserialization;\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
-    properties:="service.vendor=IBM,classes=com.ibm.ws.managedobject.internal.ManagedObjectImpl"
+    properties:="classes=com.ibm.ws.managedobject.internal.ManagedObjectImpl"
 
 -buildpath: \
 	com.ibm.ws.container.service;version=latest,\

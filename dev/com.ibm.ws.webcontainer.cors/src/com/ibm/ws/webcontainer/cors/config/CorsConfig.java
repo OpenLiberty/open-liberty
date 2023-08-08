@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Modified;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-@Component(service = { CorsConfig.class }, configurationPid = "com.ibm.ws.webcontainer.cors", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, property = { "service.vendor=IBM" })
+@Component(service = { CorsConfig.class }, configurationPid = "com.ibm.ws.webcontainer.cors", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true)
 public class CorsConfig {
     private static final TraceComponent tc = Tr.register(CorsConfig.class);
 

@@ -47,8 +47,7 @@ Service-Component: \
     credentialsService=com.ibm.ws.security.credentials.CredentialsService; \
     jaccService=com.ibm.ws.security.authorization.jacc.JaccService;\
     dynamic:='jaccService'; \
-    optional:='jaccService'; \
-    properties:="service.vendor=IBM"
+    optional:='jaccService'
 
 instrument.classesExcludes: com/ibm/ws/ejbcontainer/security/internal/resources/*.class
 

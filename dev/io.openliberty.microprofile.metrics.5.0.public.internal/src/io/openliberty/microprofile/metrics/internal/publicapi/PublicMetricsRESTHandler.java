@@ -30,8 +30,7 @@ import io.openliberty.microprofile.metrics50.SharedMetricRegistries;
 import io.openliberty.microprofile.metrics50.rest.MetricRESTHandler;
 
 @Component(service = { RESTHandler.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true,
-        property = { "service.vendor=IBM",
-                RESTHandler.PROPERTY_REST_HANDLER_CONTEXT_ROOT + "=" + Constants.PATH_METRICS,
+        property = {                 RESTHandler.PROPERTY_REST_HANDLER_CONTEXT_ROOT + "=" + Constants.PATH_METRICS,
                 RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + Constants.PATH_ROOT,
                 RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + Constants.PATH_SUB,
                 RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + Constants.PATH_SUB_ATTRIBUTE })

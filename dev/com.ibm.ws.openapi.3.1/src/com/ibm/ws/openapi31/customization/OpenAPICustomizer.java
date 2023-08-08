@@ -50,7 +50,7 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
 /**
  * Customize OpenAPI document and explorer
  */
-@Component(service = { OpenAPICustomizer.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
+@Component(service = { OpenAPICustomizer.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class OpenAPICustomizer implements FileMonitor {
 
     private static final TraceComponent tc = Tr.register(OpenAPICustomizer.class);

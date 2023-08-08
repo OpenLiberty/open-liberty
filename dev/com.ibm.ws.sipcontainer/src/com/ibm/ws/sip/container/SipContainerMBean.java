@@ -43,8 +43,7 @@ import com.ibm.ws.sip.container.pmi.PerformanceMgr;
            immediate = false,
            service = { SipContainerInterface.class, DynamicMBean.class },
            property = {
-                       "service.vendor=IBM",
-                       "jmx.objectname=WebSphere:name=com.ibm.ws.sip.container.SipContainerMBean" })
+                                              "jmx.objectname=WebSphere:name=com.ibm.ws.sip.container.SipContainerMBean" })
 public class SipContainerMBean extends StandardMBean implements SipContainerInterface {
 
     /**

@@ -56,7 +56,7 @@ import com.ibm.ws.transport.iiop.spi.IIOPEndpoint;
 import com.ibm.ws.transport.iiop.spi.ReadyListener;
 import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 
-@Component(service = SubsystemFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "service.ranking:Integer=3" })
+@Component(service = SubsystemFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.ranking:Integer=3" })
 @TraceOptions(traceGroup = TraceConstants.TRACE_GROUP, messageBundle = TraceConstants.MESSAGE_BUNDLE)
 public class CSIv2SubsystemFactory extends AbstractCsiv2SubsystemFactory {
 

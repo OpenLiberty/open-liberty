@@ -37,8 +37,7 @@ import com.ibm.ws.kernel.boot.jmx.service.MBeanServerPipeline;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
-           service = { PlatformMBeanService.class },
-           property = { "service.vendor=IBM" })
+           service = { PlatformMBeanService.class })
 public final class DelayedMBeanActivatorHelper implements PlatformMBeanService, ServiceTrackerCustomizer<Object, ServiceReference<?>> {
 
     private volatile DelayedMBeanActivator mDelayedMBeanActivator;

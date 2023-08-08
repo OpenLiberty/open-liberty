@@ -67,7 +67,7 @@ Service-Component: \
     sslSupport=com.ibm.wsspi.ssl.SSLSupport; \
     optional:='keyStoreService,sslSupport'; \
     dynamic:='configurationAdmin,securityService,keyStoreService,sslSupport'; \
-    properties:="service.vendor=IBM,type=samlSso", \
+    properties:="type=samlSso", \
   com.ibm.ws.security.saml.sso20.request.tai; \
     implementation:=com.ibm.ws.security.saml.sso20.internal.SAMLRequestTAI; \
     provide:='com.ibm.wsspi.security.tai.TrustAssociationInterceptor,\
@@ -87,7 +87,7 @@ Service-Component: \
     dynamic:='securityService'; \
     greedy:='authFilter,ssoSamlService'; \
     multiple:='authFilter,ssoSamlService,userResolver'; \
-    properties:="service.vendor=IBM,id=SAML20RequestTAI,TAIName=SAMLRequestTAI,invokeAfterSSO:Boolean=true", \
+    properties:="id=SAML20RequestTAI,TAIName=SAMLRequestTAI,invokeAfterSSO:Boolean=true", \
   com.ibm.ws.security.saml.sso20.response.tai; \
     implementation:=com.ibm.ws.security.saml.sso20.internal.SAMLResponseTAI; \
     provide:='com.ibm.wsspi.security.tai.TrustAssociationInterceptor'; \
@@ -96,7 +96,7 @@ Service-Component: \
     activate:='activate'; \
     deactivate:='deactivate'; \
     immediate:=true; \
-    properties:="service.vendor=IBM,id=SAML20ResponseTAI,TAIName=SAMLResponseTAI,invokeAfterSSO:Boolean=false", \
+    properties:="id=SAML20ResponseTAI,TAIName=SAMLResponseTAI,invokeAfterSSO:Boolean=false", \
   com.ibm.ws.security.saml.impl.Saml20SsoServiceImpl; \
     implementation:=com.ibm.ws.security.saml.impl.Saml20SsoServiceImpl; \
     provide:=com.ibm.ws.security.sso.common.SsoService; \
@@ -109,7 +109,7 @@ Service-Component: \
     greedy:='ssoService'; \
     dynamic:='ssoService'; \
     multiple:="ssoService"; \
-    properties:="service.vendor=IBM,type=saml20", \
+    properties:="type=saml20", \
   com.ibm.ws.security.saml.sso20.rs.SamlInboundService; \
     implementation:=com.ibm.ws.security.saml.sso20.rs.SamlInboundService;\
     provide:='com.ibm.ws.security.saml.sso20.rs.SamlInboundService'; \
@@ -117,13 +117,11 @@ Service-Component: \
     modified:='modified'; \
     activate:='activate'; \
     deactivate:='deactivate'; \
-    immediate:=true; \
-    properties:="service.vendor=IBM", \
+    immediate:=true, \
   com.ibm.ws.security.saml.websso20.classProvider; \
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider; \
     provide:=com.ibm.ws.serialization.DeserializationClassProvider; \
     properties:=" \
-      service.vendor=IBM, \
       classes=com.ibm.ws.security.saml.sso20.token.Saml20TokenImpl"
 
 -buildpath: \

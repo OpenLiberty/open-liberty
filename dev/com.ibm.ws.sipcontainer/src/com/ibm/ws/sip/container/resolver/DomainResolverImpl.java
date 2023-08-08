@@ -54,8 +54,7 @@ import io.openliberty.netty.internal.NettyFramework;
 @Component(service = DomainResolverImpl.class,
    configurationPolicy = ConfigurationPolicy.OPTIONAL,
    configurationPid = "com.ibm.ws.sip.container.resolver.DomainResolverImpl",
-   name = "com.ibm.ws.sip.container.resolver.DomainResolverImpl",
-   property = {"service.vendor=IBM"} )
+   name = "com.ibm.ws.sip.container.resolver.DomainResolverImpl")
 public class DomainResolverImpl implements DomainResolver, SipStackDomainResolver {
 	
 	/** trace variable */

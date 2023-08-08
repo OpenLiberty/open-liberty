@@ -72,7 +72,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 /**
  * ACME 2.0 support component service.
  */
-@Component(immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class AcmeProviderImpl implements AcmeProvider {
 
 	private static final TraceComponent tc = Tr.register(AcmeProviderImpl.class);

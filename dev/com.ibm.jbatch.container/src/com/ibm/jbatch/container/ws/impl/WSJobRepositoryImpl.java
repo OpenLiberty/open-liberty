@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -54,7 +54,7 @@ import com.ibm.jbatch.spi.BatchSecurityHelper;
 /**
  * {@inheritDoc}
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class WSJobRepositoryImpl implements WSJobRepository {
 
     private final static String CLASSNAME = WSJobRepositoryImpl.class.getName();

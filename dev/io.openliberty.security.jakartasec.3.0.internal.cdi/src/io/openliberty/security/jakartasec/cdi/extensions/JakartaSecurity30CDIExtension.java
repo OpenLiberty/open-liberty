@@ -47,8 +47,7 @@ import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthentic
  */
 @Component(service = {},
            immediate = true,
-           configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = "service.vendor=IBM")
+           configurationPolicy = ConfigurationPolicy.IGNORE)
 public class JakartaSecurity30CDIExtension implements Extension {
 
     private static final TraceComponent tc = Tr.register(JakartaSecurity30CDIExtension.class);

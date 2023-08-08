@@ -38,7 +38,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 /**
  * DS to provide transaction services to cdi; shared across all threads and applications
  */
-@Component(property = { "service.vendor=IBM" })
+@Component
 public class LibertyTransactionService implements TransactionService {
 
     private static final TraceComponent TC = Tr.register(LibertyTransactionService.class);

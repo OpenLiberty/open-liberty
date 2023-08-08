@@ -38,7 +38,7 @@ import com.ibm.ws.microprofile.health.services.HealthCheckBeanCallException;
 import io.openliberty.microprofile.health.internal.common.HealthCheckConstants;
 import io.openliberty.microprofile.health30.services.HealthCheck30CDIBeanInvoker;
 
-@Component(service = HealthCheck30CDIBeanInvoker.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(service = HealthCheck30CDIBeanInvoker.class, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class HealthCheck30CDIBeanInvokerImpl implements HealthCheck30CDIBeanInvoker {
 
     private final static TraceComponent tc = Tr.register(io.openliberty.microprofile.health30.services.impl.HealthCheck30CDIBeanInvokerImpl.class);

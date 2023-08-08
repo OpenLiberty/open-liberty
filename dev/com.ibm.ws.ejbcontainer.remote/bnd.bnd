@@ -53,7 +53,7 @@ Service-Component: \
   com.ibm.ws.ejbcontainer.classProvider;\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
-    properties:="service.vendor=IBM,\
+    properties:="\
       classes=com.ibm.ws.ejbcontainer.remote.internal.SerializedStubString"
 
 -buildpath: \

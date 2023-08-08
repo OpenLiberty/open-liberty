@@ -27,8 +27,7 @@ import com.ibm.ws.container.service.state.StateChangeException;
  */
 @Component(
            name = "com.ibm.ws.jaxws.cdi.component.JAXWSCDIServiceImplByJndi",
-           service = { ApplicationStateListener.class },
-           property = { "service.vendor=IBM" })
+           service = { ApplicationStateListener.class })
 public class JAXWSCDIServiceImplByJndi implements ApplicationStateListener {
     private static final TraceComponent tc = Tr.register(JAXWSCDIServiceImplByJndi.class);
 

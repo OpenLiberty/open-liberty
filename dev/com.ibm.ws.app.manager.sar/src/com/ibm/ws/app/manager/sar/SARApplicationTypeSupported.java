@@ -26,7 +26,7 @@ import com.ibm.wsspi.application.handler.ApplicationTypeSupported;
  */
 @Component(service = ApplicationTypeSupported.class, immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM", "type:String=sar" })
+           property = { "type:String=sar" })
 public class SARApplicationTypeSupported implements ApplicationTypeSupported {
 
     @Activate

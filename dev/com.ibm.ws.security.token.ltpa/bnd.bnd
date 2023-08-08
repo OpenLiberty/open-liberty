@@ -50,7 +50,7 @@ Service-Component: \
     executorService=java.util.concurrent.ExecutorService; \
     ltpaKeysChangeNotifier=com.ibm.ws.security.token.ltpa.internal.LTPAKeysChangeNotifier; \
     dynamic:='ltpaKeysChangeNotifier'; \
-    properties:='service.vendor=IBM,tokenType=Ltpa2', \
+    properties:='tokenType=Ltpa2', \
   com.ibm.ws.security.token.ltpa.LTPATokenService; \
     implementation:=com.ibm.ws.security.token.ltpa.internal.LTPATokenService; \
     provide:='com.ibm.ws.security.token.TokenService'; \
@@ -58,7 +58,7 @@ Service-Component: \
     deactivate:=deactivate; \
     configuration-policy:=ignore; \
     ltpaConfig=com.ibm.ws.security.token.ltpa.LTPAConfiguration; \
-    properties:='service.vendor=IBM,tokenType=Ltpa2', \
+    properties:='tokenType=Ltpa2', \
   com.ibm.ws.security.token.ltpa.internal.LTPAKeysChangeNotifier; \
     implementation:=com.ibm.ws.security.token.ltpa.internal.LTPAKeysChangeNotifier; \
     provide:='com.ibm.ws.security.token.ltpa.internal.LTPAKeysChangeNotifier'; \
@@ -69,13 +69,11 @@ Service-Component: \
     changeListener=com.ibm.ws.security.notifications.SecurityChangeListener; \
     optional:='changeListener'; \
     multiple:='changeListener'; \
-    dynamic:='changeListener'; \
-    properties:='service.vendor=IBM', \
+    dynamic:='changeListener', \
   com.ibm.ws.security.token.ltpa.classProvider;\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
     properties:="\
-      service.vendor=IBM,\
       classes=com.ibm.ws.security.token.ltpa.internal.LTPAToken2|\
               com.ibm.ws.security.token.ltpa.internal.UserData"
 

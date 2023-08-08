@@ -20,7 +20,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.request.interrupt.internal.InterruptibleThreadInfrastructureImpl;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM", service = { InterruptibleThreadStatus.class })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = service = { InterruptibleThreadStatus.class })
 public class InterruptibleThreadStatusImpl implements InterruptibleThreadStatus {
 	
 	private InterruptibleThreadInfrastructureImpl iti = null;

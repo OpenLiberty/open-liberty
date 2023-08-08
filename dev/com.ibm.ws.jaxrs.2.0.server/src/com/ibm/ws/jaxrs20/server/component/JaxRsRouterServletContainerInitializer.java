@@ -33,7 +33,7 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 /**
  *
  */
-@Component(name = "com.ibm.ws.jaxrs20.server.JaxRsRouterServletContainerInitializer", property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.jaxrs20.server.JaxRsRouterServletContainerInitializer")
 public class JaxRsRouterServletContainerInitializer implements ServletContainerInitializer {
 
     private final static TraceComponent tc = Tr.register(JaxRsRouterServletContainerInitializer.class);

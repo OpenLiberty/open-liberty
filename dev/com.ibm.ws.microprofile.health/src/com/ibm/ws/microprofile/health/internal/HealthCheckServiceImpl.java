@@ -43,7 +43,7 @@ import com.ibm.ws.microprofile.health.services.HealthExecutor;
 /**
  * Microprofile Health Check Service Implementation
  */
-@Component(service = HealthCheckService.class, property = { "service.vendor=IBM" })
+@Component(service = HealthCheckService.class)
 
 public class HealthCheckServiceImpl implements HealthCheckService {
 

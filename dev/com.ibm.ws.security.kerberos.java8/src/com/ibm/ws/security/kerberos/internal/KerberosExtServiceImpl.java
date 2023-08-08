@@ -56,8 +56,7 @@ import com.ibm.ws.security.s4u2proxy.KerberosExtService;
            name = "KerberosExtService",
            immediate = true,
            configurationPid = "com.ibm.ws.security.s4u2proxy.KerberosExtService",
-           configurationPolicy = ConfigurationPolicy.REQUIRE,
-           property = { "service.vendor=IBM" })
+           configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class KerberosExtServiceImpl implements KerberosExtService {
     private static final TraceComponent tc = Tr.register(KerberosExtServiceImpl.class);
     static final String KEY_KRB5_HELPER_JDK = "Krb5HelperJdk";

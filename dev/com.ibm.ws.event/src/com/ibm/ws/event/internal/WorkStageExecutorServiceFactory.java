@@ -21,8 +21,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.event.ExecutorServiceFactory;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class WorkStageExecutorServiceFactory implements ExecutorServiceFactory {
 
     ExecutorService executorService;

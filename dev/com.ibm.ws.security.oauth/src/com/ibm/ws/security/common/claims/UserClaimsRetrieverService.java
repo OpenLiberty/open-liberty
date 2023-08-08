@@ -30,8 +30,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 @Component(service = UserClaimsRetrieverService.class,
         name = "com.ibm.ws.security.openidconnect.server.internal.userclaimsretriever",
         immediate = true,
-        configurationPolicy = ConfigurationPolicy.IGNORE,
-        property = "service.vendor=IBM")
+        configurationPolicy = ConfigurationPolicy.IGNORE)
 public class UserClaimsRetrieverService {
 
     private static final String KEY_AUTH_CACHE_SERVICE = "authCacheService";

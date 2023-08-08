@@ -54,7 +54,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
            name = "com.ibm.ws.security.delegation.DefaultDelegationProvider",
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM", "type=defaultProvider" })
+           property = { "type=defaultProvider" })
 public class DefaultDelegationProviderImpl implements DefaultDelegationProvider {
     private static final TraceComponent tc = Tr.register(DefaultDelegationProviderImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 

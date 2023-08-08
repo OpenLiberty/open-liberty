@@ -42,8 +42,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 //            ConfigurationListener.class },
 @Component(configurationPid = "com.ibm.ws.webcontainer.security.feature.authorizationConfig",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class FeatureAuthorizationTable extends AbstractSecurityAuthorizationTable
                 implements AuthorizationTableService, UserRegistryChangeListener, ConfigurationListener {
     private static final TraceComponent tc = Tr.register(FeatureAuthorizationTable.class);

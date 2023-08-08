@@ -32,7 +32,7 @@ import com.ibm.ws.security.mp.jwt.MpConfigProxyService;
 
 import io.openliberty.security.mp.jwt.v21.config.TraceConstants;
 
-@Component(service = MpConfigProxyService.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "version=2.1", "service.ranking:Integer=21" }, name = "mpConfigProxyService")
+@Component(service = MpConfigProxyService.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "version=2.1", "service.ranking:Integer=21" }, name = "mpConfigProxyService")
 public class MpConfigProxyServiceImpl implements MpConfigProxyService {
     public static final TraceComponent tc = Tr.register(MpConfigProxyServiceImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 

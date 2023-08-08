@@ -40,8 +40,7 @@ import com.ibm.ws.kernel.launch.service.PauseableComponentControllerRequestFaile
 @Component(service = { ServerEndpointControlMBean.class },
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM",
-                        "jmx.objectname=" + ServerEndpointControlMBean.OBJECT_NAME })
+           property = {                         "jmx.objectname=" + ServerEndpointControlMBean.OBJECT_NAME })
 
 public class ServerEndpointControlMBeanImpl extends StandardMBean implements ServerEndpointControlMBean {
 

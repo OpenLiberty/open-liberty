@@ -185,7 +185,7 @@ import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
            service = { WABInstaller.class, EventHandler.class, RuntimeUpdateListener.class, ServerQuiesceListener.class, ServerReadyStatus.class },
-           property = { "service.vendor=IBM", "event.topics=org/osgi/service/web/UNDEPLOYED" })
+           property = { "event.topics=org/osgi/service/web/UNDEPLOYED" })
 public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpdateListener, ServerQuiesceListener, ServerReadyStatus {
 
     private static final TraceComponent tc = Tr.register(WABInstaller.class);

@@ -36,7 +36,7 @@ import com.ibm.ws.sib.processor.impl.store.itemstreams.SourceProtocolItemStream;
 import com.ibm.ws.sib.processor.impl.store.itemstreams.SubscriptionItemStream;
 import com.ibm.ws.sib.processor.impl.store.itemstreams.TargetProtocolItemStream;
 
-@Component(configurationPolicy=IGNORE, property={"type=com.ibm.ws.sib.processor.ItemInterface", "service.vendor=IBM"})
+@Component(configurationPolicy=IGNORE, property={"type=com.ibm.ws.sib.processor.ItemInterface"})
 public class ItemInterfaceFactory implements ItemInterface, Singleton {
     public AbstractItem getItemStreamInstance(String name) {
         switch (name) {

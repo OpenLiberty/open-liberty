@@ -35,8 +35,7 @@ import com.ibm.ws.sib.utils.ras.SibTr;
  */
 @Component(configurationPid = "com.ibm.ws.messaging.security.RuntimeSecurityServiceImpl",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           immediate = true,
-           property = { "service.vendor=IBM" })
+           immediate = true)
 public class RuntimeSecurityServiceImpl implements RuntimeSecurityService {
 
     // Trace component for the Authentication class

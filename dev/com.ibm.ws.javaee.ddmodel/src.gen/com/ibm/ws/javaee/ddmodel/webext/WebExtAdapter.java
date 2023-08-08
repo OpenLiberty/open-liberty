@@ -46,8 +46,7 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = ContainerAdapter.class,
-           property = { "service.vendor=IBM",
-                        "toType=com.ibm.ws.javaee.dd.webext.WebExt" })
+           property = {                         "toType=com.ibm.ws.javaee.dd.webext.WebExt" })
 public class WebExtAdapter extends BndExtAdapter<WebExt> {
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE,

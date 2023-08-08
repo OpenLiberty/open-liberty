@@ -50,7 +50,7 @@ import com.ibm.wsspi.application.handler.ApplicationMonitoringInformation;
 import com.ibm.wsspi.application.handler.DefaultApplicationMonitoringInformation;
 import com.ibm.wsspi.application.lifecycle.ApplicationStartBarrier;
 
-@Component(property = { "service.vendor=IBM", "type=" + SPRING_APP_TYPE })
+@Component(property = { "type=" + SPRING_APP_TYPE })
 public class SpringBootHandler implements ApplicationHandler<DeployedAppInfo> {
     private static final TraceComponent tc = Tr.register(SpringBootHandler.class);
 

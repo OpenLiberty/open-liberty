@@ -49,7 +49,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.ssl.SSLSupport;
 
 @Component(service = { JwtSsoConfig.class, MicroProfileJwtConfig.class,
-        JwtConsumerConfig.class }, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.security.jwtsso", name = "jwtSsoConfig", property = "service.vendor=IBM")
+        JwtConsumerConfig.class }, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.security.jwtsso", name = "jwtSsoConfig")
 public class JwtSsoComponent implements JwtSsoConfig {
 
     private static final TraceComponent tc = Tr.register(JwtSsoComponent.class);

@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.ws.jsp.translator.visitor.validator.ElValidatorExt;
 import com.ibm.ws.jsp.translator.visitor.validator.ElValidatorExtFactory;
 
-@Component(property = { "service.vendor=IBM" })
+@Component
 public class ElValidatorExtFactoryImpl implements ElValidatorExtFactory {
 	
 	private static final ELValidatorExtImpl eve = new ELValidatorExtImpl();

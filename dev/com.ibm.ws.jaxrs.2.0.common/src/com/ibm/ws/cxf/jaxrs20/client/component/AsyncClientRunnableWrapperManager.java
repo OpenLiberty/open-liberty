@@ -24,8 +24,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.ws.cxf.jaxrs20.client.AsyncClientRunnableWrapper;
 
-@Component(name = "com.ibm.ws.cxf.jaxrs20.client.component.AsyncClientRunnableWrapperManager",
-           property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.cxf.jaxrs20.client.component.AsyncClientRunnableWrapperManager")
 public class AsyncClientRunnableWrapperManager {
 
     private static final List<AsyncClientRunnableWrapper> wrappers = new CopyOnWriteArrayList<>();

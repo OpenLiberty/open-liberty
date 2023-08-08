@@ -28,8 +28,7 @@ import com.ibm.wsspi.timer.ApproximateTime;
  *
  */
 @Component(service = ApproximateTime.class,
-           configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM" })
+           configurationPolicy = ConfigurationPolicy.IGNORE)
 public class QuickApproxTimeImpl implements ApproximateTime {
 
     // Testing has shown that currentTimeMillis is now not such a performance drag, as it was years ago.

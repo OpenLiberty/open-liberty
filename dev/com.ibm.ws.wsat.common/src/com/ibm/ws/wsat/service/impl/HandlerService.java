@@ -24,7 +24,7 @@ import com.ibm.ws.wsat.service.WSATException;
 /**
  * OSGI service implementation of the WSAT interceptor Handler interface
  */
-@Component(property = { "service.vendor=IBM" })
+@Component
 public class HandlerService implements Handler {
 
     private static final String CLASS_NAME = HandlerService.class.getName();

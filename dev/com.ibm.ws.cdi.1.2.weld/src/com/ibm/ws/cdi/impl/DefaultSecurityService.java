@@ -36,7 +36,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
  * @see org.jboss.weld.security.spi.SecurityServices
  */
 @Component(name = "com.ibm.ws.cdi.impl.DefaultSecurityService",
-                property = { "service.vendor=IBM", "service.ranking:Integer=50" })
+                property = { "service.ranking:Integer=50" })
 public class DefaultSecurityService implements SecurityServices {
 
     private static final TraceComponent tc = Tr.register(DefaultSecurityService.class);

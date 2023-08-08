@@ -48,7 +48,7 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 /**
  * This class holds the Servlet Cache Service to support servlet caching on top of Core Cache Service.
  */
-@Component(name = "com.ibm.ws.cache.servlet", service = { ServletContainerInitializer.class, ServletCacheServiceImpl.class }, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
+@Component(name = "com.ibm.ws.cache.servlet", service = { ServletContainerInitializer.class, ServletCacheServiceImpl.class }, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class ServletCacheServiceImpl implements ServletContainerInitializer, ServletContextListener {
 
     private static TraceComponent tc = Tr.register(ServletCacheServiceImpl.class, "WebSphere Dynamic Cache", "com.ibm.ws.cache.resources.dynacache");

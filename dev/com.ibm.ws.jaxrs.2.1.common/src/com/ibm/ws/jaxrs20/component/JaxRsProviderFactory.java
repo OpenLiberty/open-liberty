@@ -36,7 +36,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-@Component(immediate = true, property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.IGNORE)
+@Component(immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class JaxRsProviderFactory implements JaxRsProviderFactoryService {
     
     // referencing the JsonProvider OSGI service reference ensures that the implementation
