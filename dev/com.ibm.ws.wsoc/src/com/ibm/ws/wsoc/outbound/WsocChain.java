@@ -36,7 +36,7 @@ import io.openliberty.netty.internal.NettyFramework;
 public class WsocChain {
     private static final TraceComponent tc = Tr.register(WsocChain.class);
 
-    private final WsocOutboundChain owner;
+    private WsocOutboundChain owner = null;
     private final boolean isHttps;
     private final boolean useNetty;
 
@@ -79,7 +79,8 @@ public class WsocChain {
         }
         this.useNetty = false;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "Use netty: false");
+            Tr.debug(this, tc, "Use netty: false, old method");
+            new Exception().printStackTrace();
         }
     }
 
@@ -89,7 +90,7 @@ public class WsocChain {
      * @param httpEndpointImpl the owning endpoint: used for notifications
      * @param isHttps          true if this is to be an https chain.
      */
-    public WsocChain(NettyWsocOutboundChain owner, boolean isHttps, boolean useNetty) {
+    public WsocChain(WsocOutboundChain owner, boolean isHttps, boolean useNetty) {
         this.owner = owner;
         this.isHttps = isHttps;
         if (!isHttps) {
@@ -97,7 +98,7 @@ public class WsocChain {
         }
         this.useNetty = useNetty;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "Use netty: " + useNetty);
+            Tr.debug(this, tc, "Use netty: " + useNetty + "new method");
         }
     }
 

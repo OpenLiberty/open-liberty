@@ -54,7 +54,6 @@ Service-Component: \
     properties:="service.vendor=IBM,service.ranking:Integer=150", \
   com.ibm.ws.wsoc.manager;\
     implementation:=com.ibm.ws.wsoc.ServiceManager; \
-    nettyBundle=io.openliberty.netty.internal.NettyFramework;\
     chfwBundle=com.ibm.websphere.channelfw.osgi.CHFWBundle; \
     configuration-policy:=ignore;\
     immediate:=true;\
@@ -79,8 +78,8 @@ Service-Component: \
     properties:="service.vendor=IBM", \
   com.ibm.ws.wsoc.outbound.wsocOutbound;\
     implementation:=com.ibm.ws.wsoc.outbound.WsocOutboundChain;\
-    nettyBundle=io.openliberty.netty.internal.NettyFramework;\
     chfwBundle=com.ibm.websphere.channelfw.osgi.CHFWBundle; \
+    nettyBundle=io.openliberty.netty.internal.NettyFramework;\
     tcpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
     httpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
     sslOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
@@ -127,7 +126,6 @@ instrument.classesExcludes: \
 	io.openliberty.io.netty.ssl,\
 	io.openliberty.netty.internal;version=latest,\
 	io.openliberty.netty.internal.impl;version=latest,\
-	com.ibm.ws.kernel.service,\
 	com.ibm.ws.kernel.boot
 	
 -testpath: \

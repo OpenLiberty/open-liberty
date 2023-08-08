@@ -118,6 +118,8 @@ public class WebSocketVersionServiceManager {
     }
 
     protected void setNettyBundle(ServiceReference<NettyFramework> ref) {
+        Tr.debug(tc, "setNettyBundle");
+
         nettyRef.setReference(ref);
     }
 
@@ -126,6 +128,7 @@ public class WebSocketVersionServiceManager {
     }
 
     public static NettyFramework getNettyBundle() {
+        Tr.debug(tc, "getNettyBundle");
         return nettyRef.getService();
     }
 
@@ -216,7 +219,7 @@ public class WebSocketVersionServiceManager {
                 Properties prop = new Properties();
                 prop.load(input);
                 String version = prop.getProperty("version");
-                Tr.debug(tc, "Loading WebSocket version " + version + " from wsocSpecLevel.propertie");
+                Tr.debug(tc, "Loading WebSocket version " + version + " from wsocSpecLevel.properties");
                 return version;
             } else {
                 if (tc.isDebugEnabled()) {
