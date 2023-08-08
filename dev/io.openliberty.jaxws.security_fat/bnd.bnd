@@ -82,6 +82,7 @@ tested.features: jaxws-2.3, \
 	org.springframework:spring-core;version=3.0.7.RELEASE,\
 	org.springframework:spring-expression;version=3.0.7.RELEASE,\
 	org.springframework:spring-web;version=3.0.7.RELEASE,\
+	com.ibm.ws.jmx.connector.client.restConnector;version=latest,\
 	fattest.simplicity,\
 	com.ibm.ws.jaxb.tools.2.2.10;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.core.3.2,\

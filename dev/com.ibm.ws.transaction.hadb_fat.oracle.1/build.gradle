@@ -32,6 +32,7 @@ task copyCommonFiles {
 }
 
 task copyFeatureBundle(type: Copy) {
+  dependsOn jar
   from buildDir
   into new File(autoFvtDir, 'publish/shared/resources/ifx')
   include 'ifxjdbc.jar'

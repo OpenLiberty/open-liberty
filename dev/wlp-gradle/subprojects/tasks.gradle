@@ -29,7 +29,7 @@ if (parseBoolean(bnd.get('globalize', 'true'))) {
 
     ext.destinationDir = new File(buildDir, "src/${name}/java")
 
-    inputs.files(fileTree(dir: project.file('resources'), include: '**/*.nlsprops')).skipWhenEmpty()
+    inputs.files(fileTree(dir: project.file('resources'), include: '**/*.nlsprops')).ignoreEmptyDirectories().skipWhenEmpty()
     outputs.dir destinationDir
     doFirst {
       project.mkdir(destinationDir)
@@ -174,7 +174,7 @@ if (!parseBoolean(bnd.get('instrument.disabled', 'false'))) {
       }
     }
   }
-
+  compileTestJava.dependsOn(instrument)
   jar.dependsOn(instrument)
 }
 

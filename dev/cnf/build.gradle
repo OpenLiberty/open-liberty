@@ -481,6 +481,10 @@ publishing {
   }
 }
 
+afterEvaluate {
+  publishLibertyVersionsPublicationToMavenRepository.dependsOn libertyReleaseVersions
+}
+
 task printProjectDependencies() {
     doLast {
         def kernelProps = new Properties()
