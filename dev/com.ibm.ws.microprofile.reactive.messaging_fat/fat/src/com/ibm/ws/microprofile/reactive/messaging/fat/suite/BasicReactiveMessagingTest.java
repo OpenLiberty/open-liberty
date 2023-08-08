@@ -37,8 +37,8 @@ public class BasicReactiveMessagingTest extends FATServletClient {
     public static final String SERVER_NAME = "SimpleRxMessagingServer";
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20, ReactiveMessagingActions.MP50, ReactiveMessagingActions.MP60,
-                                                                  ReactiveMessagingActions.MP61);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30,
+                                                                  ReactiveMessagingActions.MP61_RM30);
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = SimpleReactiveMessagingServlet.class, contextRoot = APP_NAME)

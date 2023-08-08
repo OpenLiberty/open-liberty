@@ -12,9 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.fat.repeat;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -22,7 +21,6 @@ import componenttest.rules.repeater.FeatureSet;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatActions;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.impl.JavaInfo;
 
 /**
  * Contains static methods for creating standard RepeatTests rules for Fault Tolerance tests
@@ -47,39 +45,24 @@ public class RepeatFaultTolerance {
 
     public static final FeatureSet MP21_METRICS20 = MicroProfileActions.MP21.removeFeature("mpMetrics-1.1").addFeature("mpMetrics-2.0").build(MP21_METRICS20_ID);
 
-    public static final Set<FeatureSet> ALL;
+    //All MicroProfile ReactiveMessaging FeatureSets - must be descending order
+    private static final List<FeatureSet> ALL;
+
     static {
-        ALL = new HashSet<>(MicroProfileActions.ALL);
-        ALL.add(MP21_METRICS20);
+        ALL = new ArrayList<>(MicroProfileActions.ALL);
+        //put the updated FeatureSet in just before MP21
+        ALL.add(ALL.indexOf(MicroProfileActions.MP21), MP21_METRICS20);
     }
 
     /**
-     * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will always be run in LITE mode.
-     * The others will run in the mode specified.
-     *
      * @param server The server to repeat on
-     * @param otherFeatureSetsTestMode The mode to repeate the other FeatureSets in
-     * @param firstFeatureSet The first FeatureSet
-     * @param otherFeatureSets The other FeatureSets
-     * @return a RepeatTests instance
+     * @param otherFeatureSetsTestMode The test mode to run the otherFeatureSets
+     * @param firstFeatureSet The first FeatureSet to repeat with. This is run in LITE mode.
+     * @param otherFeatureSets The other FeatureSets to repeat with. These are in the mode specified by otherFeatureSetsTestMode
+     * @return A RepeatTests instance
      */
-    public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
-
-        Set<FeatureSet> otherFeatureSetsSet = new HashSet<>(Arrays.asList(otherFeatureSets));
-
-        int currentJavaLevel = JavaInfo.forCurrentVM().majorVersion();
-        if (currentJavaLevel < firstFeatureSet.getMinJavaLevel().majorVersion()) {
-            // For MP60, just replace it with MP50 (same implementation but running with EE9)
-            if (firstFeatureSet == MicroProfileActions.MP60) {
-                firstFeatureSet = MicroProfileActions.MP50;
-                otherFeatureSetsSet.remove(MicroProfileActions.MP50);
-            } else {
-                // Otherwise fail, this logic needs updating
-                throw new RuntimeException("First feature set is not compatible with Java " + currentJavaLevel);
-            }
-        }
-
-        return RepeatActions.repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, otherFeatureSetsSet);
+    public static RepeatTests repeat(String serverName, TestMode otherFeatureSetsTestMode, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
+        return RepeatActions.repeat(serverName, otherFeatureSetsTestMode, ALL, firstFeatureSet, otherFeatureSets);
     }
 
     /**
@@ -144,5 +127,4 @@ public class RepeatFaultTolerance {
                       MicroProfileActions.MP40,
                       MicroProfileActions.MP50);
     }
-
 }

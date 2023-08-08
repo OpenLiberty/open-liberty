@@ -49,7 +49,7 @@ import io.smallrye.reactive.streams.Engine;
 public class ReactiveStreamsTckTest {
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(null, ReactiveMessagingActions.MP20);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(null, ReactiveMessagingActions.MP20_RM10);
 
     @BeforeClass
     public static void setup() {

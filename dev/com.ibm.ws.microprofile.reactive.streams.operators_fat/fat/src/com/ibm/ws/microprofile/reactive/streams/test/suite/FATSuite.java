@@ -9,8 +9,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.streams.test.suite;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -19,6 +19,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.FeatureSet;
 import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatActions;
 import componenttest.rules.repeater.RepeatActions.SEVersion;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -33,40 +34,35 @@ public class FATSuite {
     public static final String MP_REACTIVE_STREAMS_10 = "mpReactiveStreams-1.0";
     public static final String MP_REACTIVE_STREAMS_30 = "mpReactiveStreams-3.0";
 
-    public static final String MPRSO10_ID = MicroProfileActions.MP21_ID + "_" + "mpRSO10";
-    public static final String MPRSO30_MP50_ID = MicroProfileActions.MP50_ID + "_" + "mpRSO30";
-    public static final String MPRSO30_MP60_ID = MicroProfileActions.MP60_ID + "_" + "mpRSO30";
-    public static final String MPRSO30_MP61_ID = MicroProfileActions.MP61_ID + "_" + "mpRSO30";
+    public static final String MP21_RSO10_ID = MicroProfileActions.MP21_ID + "_" + "mpRSO10";
+    public static final String MP50_RSO30_ID = MicroProfileActions.MP50_ID + "_" + "mpRSO30";
+    public static final String MP60_RSO30_ID = MicroProfileActions.MP60_ID + "_" + "mpRSO30";
+    public static final String MP61_RSO30_ID = MicroProfileActions.MP61_ID + "_" + "mpRSO30";
 
-    public static final FeatureSet MPRSO10 = MicroProfileActions.MP21.addFeature(MP_REACTIVE_STREAMS_10).build(MPRSO10_ID);
-    public static final FeatureSet MPRSO30_MP50 = MicroProfileActions.MP50.addFeature(MP_REACTIVE_STREAMS_30).setMinJavaLevel(SEVersion.JAVA11).build(MPRSO30_MP50_ID);
-    public static final FeatureSet MPRSO30_MP60 = MicroProfileActions.MP60.addFeature(MP_REACTIVE_STREAMS_30).build(MPRSO30_MP60_ID);
-    public static final FeatureSet MPRSO30_MP61 = MicroProfileActions.MP61.addFeature(MP_REACTIVE_STREAMS_30).build(MPRSO30_MP61_ID);
+    public static final FeatureSet MP21_RSO10 = MicroProfileActions.MP21.addFeature(MP_REACTIVE_STREAMS_10).build(MP21_RSO10_ID);
+    //MP50 runs on Java 8 but RSO30 will only run on Java11 or higher
+    public static final FeatureSet MP50_RSO30 = MicroProfileActions.MP50.addFeature(MP_REACTIVE_STREAMS_30).setMinJavaLevel(SEVersion.JAVA11).build(MP50_RSO30_ID);
+    public static final FeatureSet MP60_RSO30 = MicroProfileActions.MP60.addFeature(MP_REACTIVE_STREAMS_30).build(MP60_RSO30_ID);
+    public static final FeatureSet MP61_RSO30 = MicroProfileActions.MP61.addFeature(MP_REACTIVE_STREAMS_30).build(MP61_RSO30_ID);
 
-    public static final Set<FeatureSet> ALL;
-    static {
-        ALL = new HashSet<>(MicroProfileActions.ALL);
-        ALL.add(MPRSO10);
-        ALL.add(MPRSO30_MP50);
-        ALL.add(MPRSO30_MP60);
-        ALL.add(MPRSO30_MP61);
-    }
+    //All MicroProfile ReactiveMessaging FeatureSets - must be descending order
+    private static final FeatureSet[] ALL_RSO_SETS_ARRAY = { MP61_RSO30, MP60_RSO30, MP50_RSO30, MP21_RSO10 };
+    private static final List<FeatureSet> ALL = Arrays.asList(ALL_RSO_SETS_ARRAY);
 
     public static RepeatTests repeatDefault(String serverName) {
-        return repeat(serverName, TestMode.LITE, FATSuite.MPRSO30_MP61, FATSuite.MPRSO10, FATSuite.MPRSO30_MP50, FATSuite.MPRSO30_MP60);
+        return repeat(serverName, TestMode.LITE, FATSuite.MP61_RSO30, FATSuite.MP21_RSO10, FATSuite.MP50_RSO30, FATSuite.MP60_RSO30);
     }
 
     /**
-     * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will always be run in LITE mode.
-     * The others will run in the mode specified.
+     * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will be run in LITE mode. The others will be run in the mode specified.
      *
      * @param server The server to repeat on
-     * @param otherFeatureSetsTestMode The mode to repeate the other FeatureSets in
+     * @param otherFeatureSetsTestMode The mode to run the other FeatureSets
      * @param firstFeatureSet The first FeatureSet
      * @param otherFeatureSets The other FeatureSets
      * @return a RepeatTests instance
      */
     public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
-        return MicroProfileActions.repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, otherFeatureSets);
+        return RepeatActions.repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, Arrays.asList(otherFeatureSets));
     }
 }

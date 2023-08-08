@@ -61,7 +61,7 @@ public class ConsumerRecordTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20);//, ReactiveMessagingActions.MP61);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20_RM10);//, ReactiveMessagingActions.MP61);
 
     @BeforeClass
     public static void setup() throws Exception {

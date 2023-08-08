@@ -72,7 +72,7 @@ public class KafkaMessagingTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20_RM10);
 
     private static KafkaConsumer<String, String> kafkaConsumer;
     private static KafkaProducer<String, String> kafkaProducer;
