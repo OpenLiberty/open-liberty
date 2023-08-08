@@ -54,6 +54,8 @@ Export-Package: \
   org.apache.cxf:cxf-rt-ws-addr;strategy=exact;version=${cxfVersion},\
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2, \
+  com.ibm.websphere.javaee.jaxb.2.2;version=latest, \
+  com.ibm.websphere.javaee.jaxws.2.2;version=latest, \
   com.ibm.websphere.javaee.wsdl4j.1.2, \
   com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3, \
   com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest,\

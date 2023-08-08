@@ -77,6 +77,7 @@ tested.features: \
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
 	com.ibm.websphere.javaee.jsp.2.2;version=latest,\
+	com.ibm.websphere.javaee.jws.1.0;version=latest,\
 	com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\

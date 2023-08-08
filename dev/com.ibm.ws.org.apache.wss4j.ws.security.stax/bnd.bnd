@@ -27,5 +27,6 @@ instrument.classesExcludes: org/apache/wss4j/stax/setup/*.class
 	com.ibm.ws.org.slf4j.api;version=latest,\
 	com.ibm.ws.org.apache.wss4j.bindings;version=latest,\
 	com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	io.openliberty.xmlBinding.3.0.internal.tools, \
 	com.ibm.ws.org.joda.time.2.9.9;version=latest

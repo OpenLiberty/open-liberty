@@ -18,6 +18,9 @@ bVersion=1.0
 cxfVersion=3.5.5
 
 
+# Using version=! in order to not have a version attached to the import for packages that were removed
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
+# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
   !java.*, \
   !com.ctc.wstx.*, \
@@ -32,6 +35,7 @@ Import-Package: \
   !org.apache.aries.*, \
   !org.apache.cxf.transport.https, \
   !org.osgi.service.blueprint.*, \
+  javax.annotation;version=!, \
   javax.xml.bind;version=!, \
   javax.xml.bind.annotation;version=!, \
   javax.xml.bind.annotation.adapters;version=!, \
@@ -58,6 +62,7 @@ instrument.ffdc: false
 
 -buildpath: \
   org.apache.cxf:cxf-rt-ws-policy;strategy=exact;version=${cxfVersion}, \
+  com.ibm.websphere.javaee.annotation.1.1;version=latest, \
   com.ibm.websphere.javaee.wsdl4j.1.2;version=latest, \
   com.ibm.websphere.org.osgi.core, \
   com.ibm.ws.logging.core, \
