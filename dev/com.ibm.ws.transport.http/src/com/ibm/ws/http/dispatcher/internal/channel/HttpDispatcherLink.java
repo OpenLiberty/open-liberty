@@ -43,6 +43,7 @@ import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.internal.VirtualHostImpl;
 import com.ibm.ws.http.internal.VirtualHostMap;
 import com.ibm.ws.http.internal.VirtualHostMap.RequestHelper;
+import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyHttpRequestImpl;
 import com.ibm.ws.http.netty.NettyHttpResponseImpl;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
@@ -180,16 +181,22 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "New conn: netty context=" + context);
         }
-
+        String probe = "DispatcherLink.init";
+        MSP.debug(probe);
         nettyContext = context;
         this.isc = new HttpInboundServiceContextImpl(context);
+        MSP.debug(probe);
         this.isc.setHttpConfig(config);
+        MSP.debug(probe);
 
         nettyRequest = request;
+        MSP.debug(probe);
         this.request = new NettyHttpRequestImpl(HttpDispatcher.useEE7Streams());
+        MSP.debug(probe);
         ((NettyHttpRequestImpl) this.request).init(request, context.channel(), isc);
-
+        MSP.debug(probe);
         this.response = new NettyHttpResponseImpl(this);
+        MSP.debug(probe);
         this.isc.setNettyRequest(request);
         this.usingNetty = true;
 

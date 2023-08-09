@@ -23,5 +23,6 @@ public class NettyHttpConstants {
     public static final AttributeKey<String[]> FORWARDED_FOR_KEY = AttributeKey.valueOf("forwardedFor");
     public static final AttributeKey<Long> REQUEST_START_TIME = AttributeKey.valueOf("requestStartTime");
     public static final AttributeKey<Long> RESPONSE_BYTES_WRITTEN = AttributeKey.valueOf("bytesWritten");
+    public static final AttributeKey<Boolean> IS_SECURE = AttributeKey.valueOf("isSecure");
 
 }
