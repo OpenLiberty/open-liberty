@@ -12,6 +12,7 @@ package com.ibm.ws.http.netty;
 import java.util.List;
 import java.util.Objects;
 
+import com.ibm.wsspi.http.channel.HttpConstants;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 import io.netty.handler.codec.http.HttpHeaders;
@@ -67,6 +68,14 @@ public class NettyHeaderUtils {
         } else {
             headers.set(HttpHeaderKeys.HDR_VARY.getName(), value);
         }
+    }
+
+    /**
+     * @param acceptEncodingHeader
+     * @return
+     */
+    public static String stripWhiteSpaces(String string) {
+        return Objects.isNull(string) ? HttpConstants.EMPTY_STRING : string.replaceAll("\\s+", "");
     }
 
 }

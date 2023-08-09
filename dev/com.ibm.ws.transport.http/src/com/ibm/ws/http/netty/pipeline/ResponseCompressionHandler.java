@@ -9,21 +9,28 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.http.channel.internal.HttpBaseMessageImpl;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
-import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
 import com.ibm.ws.http.netty.NettyHeaderUtils;
+import com.ibm.wsspi.http.channel.HttpConstants;
 import com.ibm.wsspi.http.channel.values.ContentEncodingValues;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpUtil;
 
 /**
  *
@@ -37,7 +44,16 @@ public class ResponseCompressionHandler {
     private final HttpResponse response;
     private final HttpHeaders headers;
 
-    private final String acceptEncodingHeader;
+    private String acceptEncodingHeader;
+
+    private Map<String, Float> acceptableEncodings;
+    private final Set<String> unacceptableEncodings;
+    private String preferredEncoding;
+    private String outgoingEncoding;
+
+    private boolean starEncodingParsed = Boolean.FALSE;
+
+    private final int contentLengthMinimum = 2048;
 
     public ResponseCompressionHandler(HttpChannelConfig config, HttpResponse response, String acceptEncodingHeader) {
         Objects.requireNonNull(config);
@@ -48,6 +64,12 @@ public class ResponseCompressionHandler {
         this.headers = response.headers();
 
         Objects.requireNonNull(acceptEncodingHeader);
+        this.acceptEncodingHeader = acceptEncodingHeader;
+
+        this.acceptableEncodings = new HashMap<String, Float>();
+        this.unacceptableEncodings = new HashSet<String>();
+
+        preferredEncoding = config.getPreferredCompressionAlgorithm();
 
     }
 
@@ -64,180 +86,172 @@ public class ResponseCompressionHandler {
      */
     private boolean isAutoCompression() {
 
+        boolean doCompression = Boolean.FALSE;
+
         if (config.useAutoCompression()) {
             //set the Vary header
             NettyHeaderUtils.setVary(headers, HttpHeaderKeys.HDR_ACCEPT.toString());
 
+            //check and set highest priority compression encoding if set
+            //on the Accept-Encoding header
+            parseAcceptEncodingHeader();
 
-        //check and set highest priority compression encoding if set
-        //on the Accept-Encoding header
-        parseAcceptEncodingHeader();
-        boolean rc = isOutgoingMsgEncoded();
-
-        //Check if the message has the appropriate type and size before attempting compression
-        if (this.getHttpConfig().useAutoCompression() && !this.isCompressionCompliant()) {
-            rc = false;
-        }
-
-        else if (msg.containsHeader(HttpHeaderKeys.HDR_CONTENT_ENCODING) && !"identity".equalsIgnoreCase(msg.getHeader(HttpHeaderKeys.HDR_CONTENT_ENCODING).asString())) {
-            //Body has already been marked as compressed above the channel, do not attempt to compress
-            rc = false;
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Response already contains Content-Encoding: [" + msg.getHeader(HttpHeaderKeys.HDR_CONTENT_ENCODING).asString() + "]");
-            }
-
-        }
-
-        else if (rc) {
-            preferredEncoding = outgoingMsgEncoding.getName();
-            if (!this.isSupportedEncoding() || !isCompressionAllowed()) {
-
-                rc = false;
-            }
-        }
-
-        else {
-
-            // check private compression header
-            preferredEncoding = msg.getHeader(HttpHeaderKeys.HDR_$WSZIP).asString();
-            if (null != preferredEncoding) {
+            if (headers.contains(HttpHeaderKeys.HDR_CONTENT_ENCODING.getName())
+                && !ContentEncodingValues.IDENTITY.getName().equalsIgnoreCase(headers.get(HttpHeaderKeys.HDR_CONTENT_ENCODING.toString()))) {
+                //Body has already been marked as compressed above the channel, do not attempt to compress
+                doCompression = false;
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Header requests compression: [" + preferredEncoding + "]");
-                }
-
-                msg.removeSpecialHeader(HttpHeaderKeys.HDR_$WSZIP);
-
-                if (this.isSupportedEncoding() && isCompressionAllowed() && !this.unacceptedEncodings.contains(preferredEncoding)) {
-                    rc = true;
-                    setCompressionFlags();
-
+                    Tr.debug(tc, "Response already contains Content-Encoding: [" + headers.get(HttpHeaderKeys.HDR_CONTENT_ENCODING.asString()) + "]");
                 }
 
             }
 
-            //if the private header didn't provide a valid compression
-            //target, use the encodings from the accept-encoding header
-            if (this.getHttpConfig().useAutoCompression() && !rc) {
+            //Check if the message has the appropriate type and size before attempting compression
+            else if (isCompressionCompliant()) {
+                doCompression = Boolean.TRUE;
+            }
 
-                String serverPreferredEncoding = getHttpConfig().getPreferredCompressionAlgorithm().toLowerCase(Locale.ENGLISH);
+            else if (doCompression) {
+                preferredEncoding = outgoingMsgEncoding.getName();
+                if (!this.isSupportedEncoding() || !isCompressionAllowed()) {
 
-                //if the compression element has a configured preferred compression
-                //algorithm, check that the client accepts it and the server supports it.
-                //If so, set this to be the compression algorithm.
-                if (!"none".equalsIgnoreCase(serverPreferredEncoding) &&
-                    (acceptableEncodings.containsKey(serverPreferredEncoding) || (bStarEncodingParsed && !this.unacceptedEncodings.contains(serverPreferredEncoding)))) {
+                    doCompression = false;
+                }
+            }
 
-                    this.preferredEncoding = serverPreferredEncoding;
-                    if (this.isSupportedEncoding() && isCompressionAllowed()) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Setting server preferred encoding");
-                        }
-                        rc = true;
-                        setCompressionFlags();
+            else {
+
+                // check private compression header
+                preferredEncoding = msg.getHeader(HttpHeaderKeys.HDR_$WSZIP).asString();
+                if (null != preferredEncoding) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Header requests compression: [" + preferredEncoding + "]");
+                    }
+
+                    headers.remove(HttpHeaderKeys.HDR_$WSZIP.getName());
+
+                    if (this.isEncodingSupported(preferredEncoding) && isCompressionAllowed() && !this.unacceptableEncodings.contains(preferredEncoding)) {
+                        doCompression = Boolean.TRUE;
+
                     }
 
                 }
 
-                //At this point, find the compression algorithm by finding the first
-                //algorithm that is both supported by the client and server by iterating
-                //through the sorted list of compression algorithms specified by the
-                //Accept-Encoding header. This returns the first match or gzip in the case
-                //that gzip is tied with other algorithms for the highest quality value.
-                if (!rc) {
+                //if the private header didn't provide a valid compression
+                //target, use the encodings from the accept-encoding header
+                if (config.useAutoCompression() && !doCompression) {
 
-                    float gZipQV = 0F;
-                    boolean checkedGZipCompliance = false;
+                    String serverPreferredEncoding = config.getPreferredCompressionAlgorithm().toLowerCase(Locale.ENGLISH);
 
-                    //check if GZIP (preferred encoding) was provided
-                    if (acceptableEncodings.containsKey(ContentEncodingValues.GZIP.getName())) {
-                        gZipQV = acceptableEncodings.get(ContentEncodingValues.GZIP.getName());
-                    } else {
-                        checkedGZipCompliance = true;
+                    //if the compression element has a configured preferred compression
+                    //algorithm, check that the client accepts it and the server supports it.
+                    //If so, set this to be the compression algorithm.
+                    if (!"none".equalsIgnoreCase(serverPreferredEncoding) &&
+                        (acceptableEncodings.containsKey(serverPreferredEncoding) || (bStarEncodingParsed && !this.unacceptableEncodings.contains(serverPreferredEncoding)))) {
+
+                        this.preferredEncoding = serverPreferredEncoding;
+                        if (this.isSupportedEncoding() && isCompressionAllowed()) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Setting server preferred encoding");
+                            }
+                            doCompression = Boolean.TRUE;
+                        }
+
                     }
 
-                    for (String encoding : acceptableEncodings.keySet()) {
-                        //if gzip has the same qv and we have yet to evaluate gzip,
-                        //prioritize gzip over any other encoding.
-                        if (acceptableEncodings.get(encoding) == gZipQV && !checkedGZipCompliance) {
-                            preferredEncoding = ContentEncodingValues.GZIP.getName();
-                            checkedGZipCompliance = true;
-                            if (this.isSupportedEncoding() && isCompressionAllowed()) {
-                                rc = true;
-                                setCompressionFlags();
+                    //At this point, find the compression algorithm by finding the first
+                    //algorithm that is both supported by the client and server by iterating
+                    //through the sorted list of compression algorithms specified by the
+                    //Accept-Encoding header. This returns the first match or gzip in the case
+                    //that gzip is tied with other algorithms for the highest quality value.
+                    if (!doCompression) {
+
+                        float gZipQV = 0F;
+                        boolean checkedGZipCompliance = Boolean.FALSE;
+
+                        //check if GZIP (preferred encoding) was provided
+                        if (acceptableEncodings.containsKey(ContentEncodingValues.GZIP.getName())) {
+                            gZipQV = acceptableEncodings.get(ContentEncodingValues.GZIP.getName());
+                        } else {
+                            checkedGZipCompliance = Boolean.TRUE;
+                        }
+
+                        for (String encoding : acceptableEncodings.keySet()) {
+                            //if gzip has the same qv and we have yet to evaluate gzip,
+                            //prioritize gzip over any other encoding.
+                            if (acceptableEncodings.get(encoding) == gZipQV && !checkedGZipCompliance) {
+                                preferredEncoding = ContentEncodingValues.GZIP.getName();
+                                checkedGZipCompliance = true;
+                                if (this.isEncodingSupported(preferredEncoding) && isCompressionAllowed()) {
+                                    doCompression = Boolean.TRUE;
+                                    break;
+                                }
+                            }
+
+                            preferredEncoding = encoding;
+                            if (this.isEncodingSupported(preferredEncoding) && isCompressionAllowed()) {
+                                doCompression = true;
                                 break;
                             }
                         }
+                        //If there aren't any explicit matches of acceptable encodings,
+                        //check if the '*' character was set as acceptable. If so, default
+                        //to gzip encoding. If not allowed, try deflate. If neither are allowed,
+                        //disable further attempts.
+                        if (starEncodingParsed) {
+                            if (!this.unacceptableEncodings.contains(HttpConstants.GZIP)) {
+                                preferredEncoding = ContentEncodingValues.GZIP.getName();
+                                doCompression = Boolean.TRUE;
+                            } else if (!this.unacceptableEncodings.contains(HttpConstants.DEFLATE)) {
 
-                        preferredEncoding = encoding;
-                        if (this.isSupportedEncoding() && isCompressionAllowed()) {
-                            rc = true;
-                            setCompressionFlags();
-                            break;
+                                preferredEncoding = ContentEncodingValues.DEFLATE.getName();
+                                doCompression = Boolean.TRUE;
+                            }
+
                         }
-                    }
-                    //If there aren't any explicit matches of acceptable encodings,
-                    //check if the '*' character was set as acceptable. If so, default
-                    //to gzip encoding. If not allowed, try deflate. If neither are allowed,
-                    //disable further attempts.
-                    if (bStarEncodingParsed) {
-                        if (!this.unacceptedEncodings.contains(ContentEncodingValues.GZIP.getName())) {
-                            preferredEncoding = ContentEncodingValues.GZIP.getName();
-                            rc = true;
-                            setCompressionFlags();
-                        } else if (!this.unacceptedEncodings.contains(ContentEncodingValues.DEFLATE.getName())) {
-
-                            preferredEncoding = ContentEncodingValues.DEFLATE.getName();
-                            rc = true;
-                            setCompressionFlags();
-                        }
-
                     }
                 }
+
             }
 
-        }
+            if (!doCompression) {
 
-        if (!rc) {
-            //compression not allowed, disable further attempts
-            this.setGZipEncoded(false);
-            this.setXGZipEncoded(false);
-            this.setZlibEncoded(false);
-            setOutgoingMsgEncoding(ContentEncodingValues.IDENTITY);
+                setOutgoingMsgEncoding(ContentEncodingValues.IDENTITY);
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.exit(tc, "Outgoing Encoding: [" + this.outgoingMsgEncoding + "]");
+            Tr.exit(tc, "Outgoing Encoding: [" + +"]");
         }
 
-        return rc;
+        return shouldAutoCompress;
     }
 
     private boolean isCompressionAllowed() {
+        String method = "isCompressionAllowed";
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "isCompressionAllowed");
+            Tr.entry(tc, method);
         }
 
         boolean isAllowed = Boolean.FALSE;
 
-// TODO: get from attribute value of ACCEPT ENCODING
-//        if (getRequest().getHeader(HttpHeaderKeys.HDR_ACCEPT_ENCODING).asString() == null) {
-//            //If no accept-encoding field is present in a request, the server MAY assume
-//            //that the client will accept any content coding.
-//            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                Tr.exit(tc, "isCompressionAllowed(1)", Boolean.TRUE);
-//            }
-//            return true;
-//        }
+        //If no Accept-Encoding header field is present in a request, the server MAY assume
+        //that the client will accept any content coding.
+        if (Objects.isNull(acceptEncodingHeader)) {
 
-        if (acceptableEncodings.containsKey(this.preferredEncoding)) {
+            isAllowed = Boolean.TRUE;
+        }
+
+        else if (acceptableEncodings.containsKey(this.preferredEncoding)) {
             //found encoding, verify if value is non-zero
-            rc = (acceptableEncodings.get(this.preferredEncoding) > 0f);
+            isAllowed = (acceptableEncodings.get(this.preferredEncoding) > 0f);
         }
 
         else if (ContentEncodingValues.GZIP.getName().equals(preferredEncoding)) {
             //gzip and x-gzip are functionally the same
             if (acceptableEncodings.containsKey(ContentEncodingValues.XGZIP.getName())) {
-                rc = (acceptableEncodings.get(ContentEncodingValues.XGZIP.getName()) > 0f);
+                isAllowed = (acceptableEncodings.get(ContentEncodingValues.XGZIP.getName()) > 0f);
             }
         }
 
@@ -245,7 +259,7 @@ public class ResponseCompressionHandler {
             //Identity is always acceptable unless specifically set to 0. Since it
             //wasn't found in acceptableEncodings, return true
 
-            rc = true;
+            isAllowed = true;
         }
 
         else {
@@ -257,9 +271,235 @@ public class ResponseCompressionHandler {
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "isCompressionAllowed(2): " + rc);
+            Tr.exit(tc, method, isAllowed);
         }
-        return rc;
+        return isAllowed;
+    }
+
+    /**
+     * Parse the Accept-Encoding request header to map what compression types
+     * the client accepts and attribute their configured quality value.
+     */
+    private void parseAcceptEncodingHeader() {
+        String method = "parseAcceptEncodingHeader";
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, method);
+        }
+
+        if (Objects.isNull(acceptEncodingHeader)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, method, "parsing [" + acceptEncodingHeader);
+            }
+            return;
+        }
+
+        acceptEncodingHeader = NettyHeaderUtils.stripWhiteSpaces(acceptEncodingHeader).toLowerCase();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, method, "parsing [" + acceptEncodingHeader + "]");
+        }
+
+        String[] codingParts;
+        String encodingName;
+        String qualityValueAsString;
+        float qualityValue;
+        int indexOfQValue;
+
+        //As defined by section 14.3 Accept-Encoding, the header's possible
+        //values constructed as a comma delimited list:
+        // 1#( codings[ ";" "q" "=" qvalue ])
+        // = ( content-coding | "*" )
+        //Therefore, parse this header value by all defined codings
+
+        for (String coding : acceptEncodingHeader.split(HttpConstants.COMMA)) {
+            if (coding.endsWith(HttpConstants.SEMICOLON)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, method, "Encoding token was malformed with semicolon delimiter but no quality value. Skipping [" + coding + "]");
+                }
+                continue;
+            }
+            //If this coding contains a qvalue, it will be delimited by a semicolon
+            codingParts = coding.split(HttpConstants.SEMICOLON);
+            if (codingParts.length < 1 || codingParts.length > 2) {
+                //If the codingParts contain less than 1 part or more than 2, it is malformed.
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, method, "Encoding token was malformed with multiple semicolon delimeters. Skipping [" + coding + "]");
+                }
+                continue;
+            }
+            if (codingParts.length == 2) {
+                indexOfQValue = codingParts[1].indexOf("q=");
+                if (indexOfQValue != 0) {
+                    //coding section was delimited by semicolon but had no quality value
+                    //or did not start with the quality value identifier.
+                    //Malformed section, ignoring and continue parsing
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, method, "Encoding token was malformed with a bad quality value location. Skipping [" + coding + "]");
+                    }
+                    continue;
+                }
+                //skip past "q=" to obtain the quality value and try to parse
+                //first evaluate the value against the rules defined by section 5.3.1 on quality values
+                //'The weight is normalized to a real number in the range 0 through 1.
+                //' ... A sender of qvalue MUST NOT generate more than three digits after the decimal
+                // point'.
+                qualityValueAsString = codingParts[1].substring(indexOfQValue + 2);
+                Matcher matcher = config.getCompressionQValueRegex().matcher(qualityValueAsString);
+
+                if (!matcher.matches()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Encoding token was malformed with a bad quality value. Must be normalized between 0 and 1 with no more than three digits. Skipping ["
+                                     + coding + "]");
+                    }
+                    continue;
+                }
+
+                try {
+
+                    qualityValue = Float.parseFloat(qualityValueAsString);
+                    if (qualityValue < 0) {
+                        //Quality values should never be negative, but if a malformed negative
+                        //value is parsed, set it as 0 (disallowed)
+                        qualityValue = 0;
+                    }
+                } catch (NumberFormatException e) {
+                    //Malformed quality value, ignore this coding and continue parsing
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Encoding token was malformed with a malformed quality value number. Skipping [" + coding + "]");
+                    }
+                    continue;
+                }
+
+            } else {
+                //Following the convention for section 14.1 Accept, qvalue scale ranges from 0 to 1 with
+                //the default value being q=1;
+                qualityValue = 1f;
+            }
+
+            encodingName = codingParts[0];
+
+            if (qualityValue == 0) {
+                this.unacceptableEncodings.add(encodingName);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, method, "Parsed a non accepted content-encoding: [" + encodingName + "]");
+                }
+            }
+
+            else if (HttpConstants.STAR.equals(encodingName)) {
+                this.starEncodingParsed = (qualityValue > 0f);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, method, "Parsed Wildcard - * with value: " + starEncodingParsed);
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, method, "Parsed Encoding - name: [" + encodingName + "] value: [" + qualityValue + "]");
+                }
+                //Save to key-value pair accept-encoding map
+                acceptableEncodings.put(encodingName, qualityValue);
+            }
+
+        }
+        //Sort map in decreasing order
+        acceptableEncodings = sortAcceptableEncodings(acceptableEncodings);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, method);
+        }
+    }
+
+    /**
+     * Utility method used to sort the accept-encoding parsed encodings in descending order
+     * or their quality values (qv)
+     *
+     * @param encodings
+     * @return
+     */
+    private Map<String, Float> sortAcceptableEncodings(Map<String, Float> encodings) {
+
+        final Map<String, Float> sortedEncodings = encodings.entrySet().stream().sorted(Map.Entry.comparingByValue()).collect(Collectors.toMap(Map.Entry::getKey,
+                                                                                                                                               Map.Entry::getValue, (e1, e2) -> e1,
+                                                                                                                                               LinkedHashMap::new));
+
+        return sortedEncodings;
+    }
+
+    /**
+     * Used to determine if the chosen encoding is supported
+     *
+     * @param encoding
+     * @return
+     */
+    private boolean isEncodingSupported(String encoding) {
+        boolean result = Boolean.TRUE;
+
+        switch (encoding.toLowerCase()) {
+            case (HttpConstants.GZIP):
+                break;
+            case (HttpConstants.X_GZIP):
+                break;
+            case (HttpConstants.ZLIB):
+                break;
+            case (HttpConstants.DEFLATE):
+                break;
+            case (HttpConstants.IDENTITY):
+                break;
+
+            default:
+                result = Boolean.FALSE;
+        }
+
+        return result;
+    }
+
+    /**
+     * Verifies if the response meets all criteria for compression to take place
+     */
+    private boolean isCompressionCompliant() {
+        String method = "isCompressionCompliant";
+
+        boolean isCompliant = Boolean.TRUE;
+        CharSequence mimeTypeChars = HttpUtil.getMimeType(response);
+        String mimeType = null;
+        String mimeTypeWildcard = null;
+        int contentLength = HttpUtil.getContentLength(response, HttpConstants.INT_UNDEFINED);
+
+        if (Objects.nonNull(mimeTypeChars)) {
+            mimeType = mimeTypeChars.toString();
+            mimeTypeWildcard = new StringBuilder().append(mimeType.split(HttpConstants.SLASH)[0]).append(HttpConstants.SLASH).append(HttpConstants.STAR).toString();
+        }
+
+        if (contentLength < this.contentLengthMinimum) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, method, "Response content length is less than 2048 bytes, do not attempt to compress");
+            }
+            isCompliant = Boolean.FALSE;
+        }
+
+        else if (Objects.isNull(mimeTypeChars)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, method, "No content type defined for this response, do not attempt to compress");
+            }
+            isCompliant = Boolean.FALSE;
+        }
+
+        else if (config.getExcludedCompressionContentTypes().contains(mimeType) ||
+                 config.getExcludedCompressionContentTypes().contains(mimeTypeWildcard)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.debug(tc, method, "The Content-Type: " + mimeType + " is not configured as a compressable content type");
+            }
+            isCompliant = Boolean.FALSE;
+        }
+
+        else if (!!!config.getCompressionContentTypes().contains(mimeType) &&
+                 !!!config.getCompressionContentTypes().contains(mimeTypeWildcard)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, method, "The Content-Type: " + mimeType + "is not configured as a compressable content type");
+            }
+            isCompliant = Boolean.FALSE;
+
+        }
+        return isCompliant;
     }
 
 }

@@ -31,5 +31,17 @@ public interface HttpConstants {
     String HTTPUnlimitedMessageMark = "UNLIMITED_HTTP_MESSAGE_SIZE";
     /** HTTP/2 MAGIC string */
     byte[] HTTP2PrefaceBytes = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n".getBytes();
-    String EMPTY_STRING = "";
+    public static final int INT_UNDEFINED = -1;
+    public static final String SLASH = "/";
+    public static final String STAR = "*";
+    public static final String EMPTY_STRING = "";
+    public static final String COMMA = ",";
+    public static final String SEMICOLON = ";";
+
+    //Compression
+    public static final String GZIP = "gzip";
+    public static final String X_GZIP = "x-gzip";
+    public static final String ZLIB = "zlib";
+    public static final String DEFLATE = "deflate";
+    public static final String IDENTITY = "identity";
 }
