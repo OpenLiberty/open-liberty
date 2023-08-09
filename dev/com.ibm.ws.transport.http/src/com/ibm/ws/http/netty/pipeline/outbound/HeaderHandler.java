@@ -35,6 +35,10 @@ public class HeaderHandler {
 
     HttpChannelConfig config;
     HttpResponse response;
+    HttpHeaders headers;
+
+    private static final String NOCACHE_VALUE = "no-cache=\"set-cookie, set-cookie2\"";
+    private static final String LONG_AGO = "Thu, 01 Dec 1994 16:00:00 GMT";
 
     public HeaderHandler(HttpChannelConfig config, HttpResponse response) {
         Objects.requireNonNull(config);
@@ -42,6 +46,7 @@ public class HeaderHandler {
 
         Objects.requireNonNull(response);
         this.response = response;
+        this.headers = response.headers();
 
     }
 
@@ -50,8 +55,6 @@ public class HeaderHandler {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, method);
         }
-
-        HttpHeaders headers = response.headers();
 
         if (!headers.contains(HttpHeaderKeys.HDR_DATE.getName())) {
 
@@ -74,7 +77,7 @@ public class HeaderHandler {
         }
 
         if (config.shouldCookiesConfigureNoCache()) {
-            //TODO updateCacheControl();
+            updateCacheControl();
         }
 
         if (config.useHeadersConfiguration()) {
@@ -110,6 +113,56 @@ public class HeaderHandler {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, method);
         }
+    }
+
+    /**
+     * Update the caching related headers for a response. This will configure the
+     * response headers such that if Set-Cookie information is present, then additional
+     * headers will be added to ensure that the message is not cached on any intermediate
+     * caches.
+     */
+    private void updateCacheControl() {
+        boolean hasCookiev1 = headers.contains(HttpHeaderKeys.HDR_SET_COOKIE.getName());
+        boolean hasCookiev2 = headers.contains(HttpHeaderKeys.HDR_SET_COOKIE2.getName());
+
+        if (!hasCookiev1 && !hasCookiev2) {
+            return;
+        }
+
+        if (headers.contains(HttpHeaderKeys.HDR_EXPIRES.toString())) {
+            headers.set(HttpHeaderKeys.HDR_EXPIRES.getName(), LONG_AGO);
+        }
+
+        if (headers.contains(HttpHeaderKeys.HDR_CACHE_CONTROL.getName())) {
+            StringBuilder builder = new StringBuilder();
+            String header;
+            if (hasCookiev1) {
+                builder.append("set-cookie");
+            }
+            if (hasCookiev1 && hasCookiev2) {
+                builder.append(", ");
+            }
+            if (hasCookiev2) {
+                builder.append("set-cookie2");
+            }
+            header = builder.toString();
+
+            if (!header.isEmpty()) {
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+
+                    Tr.event(tc, "Updating Cache-Control for Set-Cookie");
+                }
+                headers.set(HttpHeaderKeys.HDR_CACHE_CONTROL, header);
+            }
+
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Adding Cache-Control due to Set-Cookie");
+            }
+            headers.set(HttpHeaderKeys.HDR_CACHE_CONTROL.getName(), NOCACHE_VALUE);
+        }
+
     }
 
 }
