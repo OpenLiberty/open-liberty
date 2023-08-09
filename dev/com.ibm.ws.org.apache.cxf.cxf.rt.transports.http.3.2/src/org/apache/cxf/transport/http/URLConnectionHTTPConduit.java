@@ -33,6 +33,9 @@ import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -43,6 +46,7 @@ import org.apache.cxf.common.util.SystemPropertyAction;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.io.CacheAndWriteOutputStream;
+import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.service.model.EndpointInfo;
@@ -472,6 +476,22 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
         protected void setFixedLengthStreamingMode(int i) {
             // [CXF-6227] do not call connection.setFixedLengthStreamingMode(i)
             // to prevent https://bugs.openjdk.java.net/browse/JDK-8044726
+        
+            // Liberty Change for issue #25866-unexpected_EOF_from_server
+            // The bug [CXF-6227] is a performance bug observed for Java 7
+            // In case of a performance drop is observed, need to create a work around
+            boolean isRestMessage = true; // It's safer to set isRestMessage, because 
+            // calling setFixedLengthStreamingMode method creates IllegalStateException at JAX-RS 
+            Exchange exchange = outMessage.getExchange();
+            if(exchange != null)        {
+                //This property return true if it's a rest web service
+                isRestMessage = PropertyUtils.isTrue(exchange.get(org.apache.cxf.message.Message.REST_MESSAGE));
+            }
+            // Call setFixedLengthStreamingMode for JAX-WS only
+            if(!isRestMessage)   { 
+                connection.setFixedLengthStreamingMode(i);
+            }
+            // Liberty Change End
         }
         @FFDCIgnore(PrivilegedActionException.class) // Liberty Change
         protected void handleNoOutput() throws IOException {
