@@ -14,7 +14,7 @@
 bVersion=1.0.0
 
 Bundle-Name:  Extension To Test CDI SPI 
-Bundle-SymbolicName: cdi.spi.extension
+Bundle-SymbolicName: cdi.spi.extension.with.internals
 Bundle-Description: This bundle tests the cdi runtime spi; version=${bVersion}
 
 Import-Package: \
@@ -23,17 +23,17 @@ Import-Package: \
   *
 
 Export-Package: \
-	com.ibm.ws.cdi.extension.spi.test.bundle;version=1.0.0,\
-	com.ibm.ws.cdi.extension.spi.test.bundle.annotations;version=1.0.0,\
-	com.ibm.ws.cdi.extension.spi.test.bundle.buildcompatible;version=1.0.0,\
-	com.ibm.ws.cdi.extension.spi.test.bundle.extension;version=1.0.0,\
-	com.ibm.ws.cdi.extension.spi.test.bundle.getclass.producer;version=1.0.0,\
-	com.ibm.ws.cdi.extension.spi.test.bundle.getclass.beaninjection;version=1.0.0,\
-	com.ibm.ws.cdi.extension.spi.test.bundle.getclass.interceptor;version=1.0.0
+	com.ibm.ws.cdi.extension.spi.test.bundle.with.internals;version=1.0.0,\
+	com.ibm.ws.cdi.extension.spi.test.bundle.with.internals.annotations;version=1.0.0,\
+	com.ibm.ws.cdi.extension.spi.test.bundle.with.internals.buildcompatible;version=1.0.0,\
+	com.ibm.ws.cdi.extension.spi.test.bundle.with.internals.extension;version=1.0.0,\
+	com.ibm.ws.cdi.extension.spi.test.bundle.with.internals.getclass.producer;version=1.0.0,\
+	com.ibm.ws.cdi.extension.spi.test.bundle.with.internals.getclass.beaninjection;version=1.0.0,\
+	com.ibm.ws.cdi.extension.spi.test.bundle.with.internals.getclass.interceptor;version=1.0.0
 
 -cdiannotations:
 
 -dsannotations-inherit: true
 -dsannotations: \
-  com.ibm.ws.cdi.extension.spi.test.bundle.SPIMetaData
+  com.ibm.ws.cdi.extension.spi.test.bundle.with.internals.SPIMetaData
   

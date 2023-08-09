@@ -40,6 +40,7 @@ public class CDIExtensionRepeatActions {
     public static final String SPI_XTOR_FAIL_EXTENSION_BUNDLE_ID = "cdi.spi.constructor.fail.extension";
     public static final String HELLOWORLD_EXTENSION_BUNDLE_ID = "cdi.helloworld.extension";
     public static final String CDI_SPI_EXTENSION_BUNDLE_ID = "cdi.spi.extension";
+    public static final String CDI_SPI_EXTENSION_BUNDLE_WITH_INTERNALS_ID = "cdi.spi.extension.with.internals";
     public static final String CDI_INTERNALS_BUNDLE_ID = "cdi.internals";
     public static final String CDI_SPI_MISPLACED_BUNDLE_ID = "cdi.spi.misplaced";
 
@@ -82,7 +83,7 @@ public class CDIExtensionRepeatActions {
         } else if (eeVersion == EEVersion.EE9) {
             name = bundleID + "-3.0";
         } else if (eeVersion == EEVersion.EE10) {
-            name = bundleID + "-3.0";
+            name = bundleID + "-4.0";
         } else {
             throw new RuntimeException("Unknown EE version: " + eeVersion);
         }
@@ -109,7 +110,7 @@ public class CDIExtensionRepeatActions {
 
     public static final FeatureSet EE10_PLUS = EERepeatActions.EE10.addFeature("usr:" + getFeatureName(SPI_XTOR_FAIL_EXTENSION_BUNDLE_ID, EEVersion.EE10))
                                                                    .addFeature("usr:" + getFeatureName(HELLOWORLD_EXTENSION_BUNDLE_ID, EEVersion.EE10))
-                                                                   .addFeature("usr:" + getFeatureName(CDI_SPI_EXTENSION_BUNDLE_ID, EEVersion.EE10))
+                                                                   .addFeature("usr:" + getFeatureName(CDI_SPI_EXTENSION_BUNDLE_WITH_INTERNALS_ID, EEVersion.EE10))
                                                                    .addFeature(getFeatureName(CDI_INTERNALS_BUNDLE_ID, EEVersion.EE10))
                                                                    .build(EE10_PLUS_ID);
 

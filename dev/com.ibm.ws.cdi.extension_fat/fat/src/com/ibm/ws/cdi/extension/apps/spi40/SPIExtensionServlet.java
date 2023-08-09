@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.extension.apps.spi;
+package com.ibm.ws.cdi.extension.apps.spi40;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -22,11 +22,11 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
-import com.ibm.ws.cdi.extension.spi.test.bundle.UnregisteredBean;
-import com.ibm.ws.cdi.extension.spi.test.bundle.buildcompatible.BCExtraBean;
-import com.ibm.ws.cdi.extension.spi.test.bundle.extension.MyExtensionString;
-import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.beaninjection.MyBeanInjectionString;
-import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.producer.MyProducedString;
+import com.ibm.ws.cdi.extension.spi.test.bundle.with.internals.UnregisteredBean;
+import com.ibm.ws.cdi.extension.spi.test.bundle.with.internals.buildcompatible.BCExtraBean;
+import com.ibm.ws.cdi.extension.spi.test.bundle.with.internals.extension.MyExtensionString;
+import com.ibm.ws.cdi.extension.spi.test.bundle.with.internals.getclass.beaninjection.MyBeanInjectionString;
+import com.ibm.ws.cdi.extension.spi.test.bundle.with.internals.getclass.producer.MyProducedString;
 
 import componenttest.app.FATServlet;
 
@@ -44,6 +44,9 @@ public class SPIExtensionServlet extends FATServlet {
 
     @Inject
     AppBean appBean;
+
+    @Inject
+    BCExtraBean bcExtraBean;
 
     @Inject
     CustomBDABean customBDABean;
@@ -69,6 +72,11 @@ public class SPIExtensionServlet extends FATServlet {
         } catch (UnsatisfiedResolutionException e) {
             //expected
         }
+    }
+
+    @Test
+    public void bceViaSPI() {
+        assertEquals("bean registered in a BCE registered via SPI", bcExtraBean.toString());
     }
 
     @Test

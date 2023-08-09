@@ -22,9 +22,9 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.cdi.extension.apps.spi.CrossWireTestServlet;
-import com.ibm.ws.cdi.extension.apps.spi.MisplacedTestServlet;
-import com.ibm.ws.cdi.extension.apps.spi.SPIExtensionServlet;
+import com.ibm.ws.cdi.extension.apps.spi40.CrossWireTestServlet;
+import com.ibm.ws.cdi.extension.apps.spi40.MisplacedTestServlet;
+import com.ibm.ws.cdi.extension.apps.spi40.SPIExtensionServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -41,10 +41,10 @@ import componenttest.topology.utils.FATServletClient;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
-public class CDI12ExtensionSPITest extends FATServletClient {
+public class CDI40ExtensionSPITest extends FATServletClient {
 
-    public static final String APP_NAME = "SPIExtension";
-    public static final String SERVER_NAME = "cdi12SPIExtensionServer";
+    public static final String APP_NAME = "SPI40Extension";
+    public static final String SERVER_NAME = "cdi40SPIExtensionServer";
 
     @Server(SERVER_NAME)
     @TestServlets({
@@ -55,14 +55,13 @@ public class CDI12ExtensionSPITest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = CDIExtensionRepeatActions.repeat(SERVER_NAME,
-                                                                   CDIExtensionRepeatActions.EE9_PLUS,
-                                                                   CDIExtensionRepeatActions.EE7_PLUS);
+                                                                   CDIExtensionRepeatActions.EE10_PLUS);
 
     @BeforeClass
     public static void setUp() throws Exception {
         System.out.println("Install the user feature bundle... cdi.internals");
         CDIExtensionRepeatActions.installSystemFeature(server, CDIExtensionRepeatActions.CDI_INTERNALS_BUNDLE_ID);
-        CDIExtensionRepeatActions.installUserExtension(server, CDIExtensionRepeatActions.CDI_SPI_EXTENSION_BUNDLE_ID);
+        CDIExtensionRepeatActions.installUserExtension(server, CDIExtensionRepeatActions.CDI_SPI_EXTENSION_BUNDLE_WITH_INTERNALS_ID);
         CDIExtensionRepeatActions.installUserBundle(server, CDIExtensionRepeatActions.CDI_SPI_MISPLACED_BUNDLE_ID);
 
         WebArchive classSPIExtension = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
@@ -83,6 +82,6 @@ public class CDI12ExtensionSPITest extends FATServletClient {
         Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Removing cdi extension test user feature files.");
         CDIExtensionRepeatActions.uninstallUserExtension(server, CDIExtensionRepeatActions.CDI_SPI_EXTENSION_BUNDLE_ID);
         CDIExtensionRepeatActions.uninstallUserBundle(server, CDIExtensionRepeatActions.CDI_SPI_MISPLACED_BUNDLE_ID);
-        CDIExtensionRepeatActions.uninstallSystemFeature(server, CDIExtensionRepeatActions.CDI_INTERNALS_BUNDLE_ID);
+        CDIExtensionRepeatActions.uninstallSystemFeature(server, CDIExtensionRepeatActions.CDI_SPI_EXTENSION_BUNDLE_WITH_INTERNALS_ID);
     }
 }

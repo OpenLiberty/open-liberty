@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-bundles/cdi.spi.extension/src"/>
+	<classpathentry kind="src" path="test-bundles/cdi.spi.extension.with.internals/src"/>
 	<classpathentry kind="src" path="test-bundles/cdi.spi.constructor.fail.extension/src"/>
 	<classpathentry kind="src" path="test-bundles/cdi.helloworld.extension/src"/>
 	<classpathentry kind="src" path="test-bundles/cdi.spi.misplaced/src"/>

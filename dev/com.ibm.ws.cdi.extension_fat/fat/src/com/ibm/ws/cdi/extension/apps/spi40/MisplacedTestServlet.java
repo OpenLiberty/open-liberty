@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.extension.apps.spi;
+package com.ibm.ws.cdi.extension.apps.spi40;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -22,19 +22,14 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
-import com.ibm.ws.cdi.extension.spi.test.bundle.UnregisteredBean;
-import com.ibm.ws.cdi.extension.spi.test.bundle.buildcompatible.BCExtraBean;
-import com.ibm.ws.cdi.extension.spi.test.bundle.extension.MyExtensionString;
-import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.beaninjection.MyBeanInjectionString;
-import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.producer.MyProducedString;
+import com.ibm.ws.cdi.misplaced.spi.test.bundle.extension.MyExtensionString;
+import com.ibm.ws.cdi.misplaced.spi.test.bundle.getclass.beaninjection.MyBeanInjectionString;
+import com.ibm.ws.cdi.misplaced.spi.test.bundle.getclass.producer.MyProducedString;
 
 import componenttest.app.FATServlet;
 
-@WebServlet("/spi")
-public class SPIExtensionServlet extends FATServlet {
-
-    @Inject
-    MyExtensionString extensionString;
+@WebServlet("/misplaced")
+public class MisplacedTestServlet extends FATServlet {
 
     @Inject
     MyProducedString classString;
@@ -53,27 +48,12 @@ public class SPIExtensionServlet extends FATServlet {
     @Test
     public void testUnregisteredBean() {
         try {
-            UnregisteredBean ub = CDI.current().select(UnregisteredBean.class).get();
-            fail("Found unregistered bean: " + ub);
+            //This will fail because while the extension will run as expected and add MyExtensionString to the BDA, it will be filtered out later because it cannot be found in the bundle.
+            MyExtensionString ub = CDI.current().select(MyExtensionString.class).get();
+            fail("Bean registered via an extension when both the bean and the extension are in a different bundle to the SPI impl class. This is unexpected: " + ub);
         } catch (UnsatisfiedResolutionException e) {
             //expected
         }
-
-    }
-
-    @Test
-    public void testUnregisteredBDABean() {
-        try {
-            UnregisteredBDABean ub = CDI.current().select(UnregisteredBDABean.class).get();
-            fail("Found unregistered bean: " + ub);
-        } catch (UnsatisfiedResolutionException e) {
-            //expected
-        }
-    }
-
-    @Test
-    public void testSPIProducer() {
-        assertEquals("Injection from a producer registered in a CDI extension that was registered through the SPI", extensionString.toString());
     }
 
     @Test
@@ -97,5 +77,4 @@ public class SPIExtensionServlet extends FATServlet {
         assertEquals("A Bean with an annotation registered via getBeanDefiningAnnotationClasses was successfully injected into a different bean with an annotation registered via getBeanDefiningAnnotationClasses",
                      customBDABean.toString());
     }
-
 }
