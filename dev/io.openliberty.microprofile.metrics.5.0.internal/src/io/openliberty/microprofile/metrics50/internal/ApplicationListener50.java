@@ -61,7 +61,8 @@ public class ApplicationListener50 implements ApplicationStateListener {
 
         MetricRegistry[] registryArray = new MetricRegistry[] {
                 sharedMetricRegistry.getOrCreate(MetricRegistry.APPLICATION_SCOPE),
-                sharedMetricRegistry.getOrCreate(MetricRegistry.BASE_SCOPE) };
+                sharedMetricRegistry.getOrCreate(MetricRegistry.BASE_SCOPE),
+                sharedMetricRegistry.getOrCreate(MetricRegistry.VENDOR_SCOPE) };
         for (MetricRegistry registry : registryArray) {
             if (Util.SR_LEGACY_METRIC_REGISTRY_CLASS.isInstance(registry)) {
                 try {
