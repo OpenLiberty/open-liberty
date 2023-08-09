@@ -101,7 +101,7 @@ public class KafkaTlsTest {
 
     @AfterClass
     public static void teardownKafka() throws IOException, ExecutionException, InterruptedException {
-        KafkaUtils.cleanKafka(TlsTests.kafkaContainer);
+        KafkaUtils.deleteKafkaTopics(TlsTests.kafkaContainer);
     }
 
 }

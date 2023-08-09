@@ -67,7 +67,21 @@ public class KafkaUtils {
         Files.copy(file.toPath(), tmpDest, StandardCopyOption.REPLACE_EXISTING);
     }
 
-    public static void cleanKafka(ExtendedKafkaContainer container) throws IOException, ExecutionException, InterruptedException {
+    /**
+     * Attempt to delete all the topics in the provided container*
+     *
+     * Due to the async and seemingly unreliable nature of kafka topic deletion this operation is done on a
+     * best effort basis and may leave topics in a `Marked for deletion` state
+     *
+     * If a test is susceptible to ending up in this state which is typically due to have >1 partition for a topic
+     * then using unique topic names per repeat is the recommended workaround
+     *
+     * @param container
+     * @throws IOException
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    public static void deleteKafkaTopics(ExtendedKafkaContainer container) throws IOException, ExecutionException, InterruptedException {
         Map<String, Object> adminClientProps = new HashMap<>();
         adminClientProps.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, container.getBootstrapServers());
 
@@ -92,8 +106,11 @@ public class KafkaUtils {
         AdminClient adminClient = AdminClient.create(adminClientProps);
 
         ListTopicsResult topics = adminClient.listTopics();
+        // `.get()` returns when the Future completes with a result.
         Set<String> topicNames = topics.names().get();
-        adminClient.deleteTopics(topicNames);
+        //`.all()` wraps all the futures from deleteTopics into a signle future that can be
+        // used to block progress given the async nature of the base deleteTopics command
+        adminClient.deleteTopics(topicNames).all().get();
     }
 
 }

@@ -42,6 +42,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
@@ -65,6 +66,10 @@ public class LivePartitionTestServlet extends AbstractKafkaTestServlet {
     @Inject
     private LivePartitionTestBean bean;
 
+    @Inject
+    @ConfigProperty(name = "mp.messaging.incoming." + LivePartitionTestBean.CHANNEL_IN + ".topic")
+    private String topic;
+
     @Test
     public void testLivePartitionAssignment() throws Exception {
 
@@ -80,14 +85,14 @@ public class LivePartitionTestServlet extends AbstractKafkaTestServlet {
             for (int partition = 0; partition < PARTITION_COUNT; partition++) {
                 for (int message = 0; message < 100; message++) {
                     String value = partition + "-" + message;
-                    ProducerRecord<String, String> record = new ProducerRecord<String, String>(LivePartitionTestBean.CHANNEL_IN, partition, null, value);
+                    ProducerRecord<String, String> record = new ProducerRecord<String, String>(topic, partition, null, value);
                     producer.send(record);
                     sentMessages.add(value);
                 }
 
                 // Add a sentinal message to the end of each partition
                 String value = partition + "-" + LivePartitionTestBean.FINAL_MESSAGE_NUMBER;
-                ProducerRecord<String, String> record = new ProducerRecord<String, String>(LivePartitionTestBean.CHANNEL_IN, partition, null, value);
+                ProducerRecord<String, String> record = new ProducerRecord<String, String>(topic, partition, null, value);
                 producer.send(record);
                 sentMessages.add(value);
             }
@@ -104,7 +109,7 @@ public class LivePartitionTestServlet extends AbstractKafkaTestServlet {
         Thread.sleep(700);
 
         // Start a second consumer
-        LivePartitionTestConsumer consumer1 = new LivePartitionTestConsumer(consumerConfig, LivePartitionTestBean.CHANNEL_IN);
+        LivePartitionTestConsumer consumer1 = new LivePartitionTestConsumer(consumerConfig, topic);
         Future<?> future1 = executor.submit(consumer1);
 
         // Wait for it to finish and close
@@ -114,7 +119,7 @@ public class LivePartitionTestServlet extends AbstractKafkaTestServlet {
         Thread.sleep(700);
 
         // Start a third consumer
-        LivePartitionTestConsumer consumer2 = new LivePartitionTestConsumer(consumerConfig, LivePartitionTestBean.CHANNEL_IN);
+        LivePartitionTestConsumer consumer2 = new LivePartitionTestConsumer(consumerConfig, topic);
         Future<?> future2 = executor.submit(consumer2);
 
         // Wait for it to finish and close

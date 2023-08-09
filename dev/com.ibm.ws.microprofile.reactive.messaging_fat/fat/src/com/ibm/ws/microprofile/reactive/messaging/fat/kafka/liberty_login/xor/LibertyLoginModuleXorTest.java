@@ -110,7 +110,7 @@ public class LibertyLoginModuleXorTest {
 
     @AfterClass
     public static void teardownKafka() throws ExecutionException, InterruptedException, IOException {
-        KafkaUtils.cleanKafka(SaslPlainTests.kafkaContainer);
+        KafkaUtils.deleteKafkaTopics(SaslPlainTests.kafkaContainer);
     }
 
 }

@@ -94,7 +94,7 @@ public class KafkaCustomSerializerTest {
 
     @AfterClass
     public static void teardownKafka() throws ExecutionException, InterruptedException, IOException {
-        KafkaUtils.cleanKafka(PlaintextTests.kafkaContainer);
+        KafkaUtils.deleteKafkaTopics(PlaintextTests.kafkaContainer);
     }
 
 }

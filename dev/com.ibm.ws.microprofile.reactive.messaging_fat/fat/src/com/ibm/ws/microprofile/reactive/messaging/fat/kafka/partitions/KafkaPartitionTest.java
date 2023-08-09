@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -68,24 +69,28 @@ public class KafkaPartitionTest {
 
     @BeforeClass
     public static void setup() throws Exception {
+        //Generate unique topic names for each repeat
+        String livePartitionTopicName = LivePartitionTestBean.CHANNEL_IN + RepeatTestFilter.getRepeatActionsAsString();
+        String partitionTopicName = PartitionTestReceptionBean.CHANNEL_NAME + RepeatTestFilter.getRepeatActionsAsString();
+
         // Create a topic with two partitions
         Map<String, Object> adminClientProps = new HashMap<>();
         adminClientProps.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, PlaintextTests.kafkaContainer.getBootstrapServers());
         AdminClient adminClient = AdminClient.create(adminClientProps);
 
         List<NewTopic> newTopics = new ArrayList<>();
-        newTopics.add(new NewTopic(PartitionTestReceptionBean.CHANNEL_NAME, 2, (short) 1));
-        newTopics.add(new NewTopic(LivePartitionTestBean.CHANNEL_IN, LivePartitionTestBean.PARTITION_COUNT, (short) 1));
+        newTopics.add(new NewTopic(partitionTopicName, 2, (short) 1));
+        newTopics.add(new NewTopic(livePartitionTopicName, LivePartitionTestBean.PARTITION_COUNT, (short) 1));
         adminClient.createTopics(newTopics).all().get(KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
 
         // Create and deploy the app
         PropertiesAsset appConfig = new PropertiesAsset()
                         .addProperty(AbstractKafkaTestServlet.KAFKA_BOOTSTRAP_PROPERTY, PlaintextTests.kafkaContainer.getBootstrapServers())
-                        .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.connectionProperties(), PartitionTestReceptionBean.CHANNEL_NAME,
-                                                                           KafkaPartitionTestServlet.APP_GROUPID)
+                        .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.connectionProperties(), ConnectorProperties.DEFAULT_CONNECTOR_ID, PartitionTestReceptionBean.CHANNEL_NAME,
+                                                                           KafkaPartitionTestServlet.APP_GROUPID, partitionTopicName)
                                         .addProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "5"))
-                        .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.connectionProperties(), LivePartitionTestBean.CHANNEL_IN,
-                                                                           LivePartitionTestServlet.APP_GROUPID)
+                        .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.connectionProperties(), ConnectorProperties.DEFAULT_CONNECTOR_ID, LivePartitionTestBean.CHANNEL_IN,
+                                                                           LivePartitionTestServlet.APP_GROUPID, livePartitionTopicName)
                                         .addProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "5")
                                         .addProperty(KafkaConnectorConstants.UNACKED_LIMIT, "100")); // Want to simulate having lots of unacked messages
 
@@ -105,7 +110,7 @@ public class KafkaPartitionTest {
     @AfterClass
     public static void shutdown() throws Exception {
         server.stopServer();
-        KafkaUtils.cleanKafka(PlaintextTests.kafkaContainer);
+        KafkaUtils.deleteKafkaTopics(PlaintextTests.kafkaContainer);
     }
 
 }

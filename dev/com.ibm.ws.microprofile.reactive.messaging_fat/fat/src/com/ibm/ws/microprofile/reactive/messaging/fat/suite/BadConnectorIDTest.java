@@ -83,8 +83,9 @@ public class BadConnectorIDTest {
 
     @Test
     public void testBadConnectorID() throws Exception {
+        // Message in Reactive Messaging 3.0 added msg identifier and quotes around channel. So string needs to support message id and quotes, but allow for them to be missing as well
         List<String> errors = server
-                        .findStringsInLogs("java.lang.IllegalArgumentException: Unknown connector for " + BasicMessagingBean.CHANNEL_OUT);
+                        .findStringsInLogs("java.lang.IllegalArgumentException:( SRMSG00072:)? Unknown connector for (`)?" + BasicMessagingBean.CHANNEL_OUT+"(`)?");
         assertTrue(errors.size() > 0);
     }
 

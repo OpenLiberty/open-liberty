@@ -32,6 +32,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
+import com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
 
@@ -98,6 +99,6 @@ public class KafkaCustomKeySerializerTest {
 
     @AfterClass
     public static void teardownKafka() throws ExecutionException, InterruptedException, IOException {
-        KafkaUtils.cleanKafka(PlaintextTests.kafkaContainer);
+        KafkaUtils.deleteKafkaTopics(PlaintextTests.kafkaContainer);
     }
 }

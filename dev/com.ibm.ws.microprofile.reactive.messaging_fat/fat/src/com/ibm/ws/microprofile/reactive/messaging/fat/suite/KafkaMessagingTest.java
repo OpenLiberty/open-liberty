@@ -169,7 +169,7 @@ public class KafkaMessagingTest {
 
     @AfterClass
     public static void teardownKafka() throws ExecutionException, InterruptedException, IOException {
-        KafkaUtils.cleanKafka(PlaintextTests.kafkaContainer);
+        KafkaUtils.deleteKafkaTopics(PlaintextTests.kafkaContainer);
     }
 
 }
