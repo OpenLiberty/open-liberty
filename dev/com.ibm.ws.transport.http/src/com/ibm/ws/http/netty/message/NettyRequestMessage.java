@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import com.ibm.ejs.ras.Tr;
+import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.genericbnf.internal.GenericUtils;
 import com.ibm.ws.http.channel.internal.HttpMessages;
@@ -46,6 +46,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http.QueryStringDecoder;
 
 /**
  *
@@ -63,6 +64,8 @@ public class NettyRequestMessage implements HttpRequestMessage {
 
     private MethodValues method;
     private SchemeValues scheme;
+
+    private QueryStringDecoder query;
 
     public NettyRequestMessage(FullHttpRequest request, HttpInboundServiceContext isc) {
         Objects.requireNonNull(request);
@@ -142,7 +145,10 @@ public class NettyRequestMessage implements HttpRequestMessage {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "No bodyExpected: " + this);
             }
-        }
+        } //TODO: finish
+
+        return result;
+
     }
 
     @Override
@@ -804,26 +810,27 @@ public class NettyRequestMessage implements HttpRequestMessage {
 
     @Override
     public int getVirtualPort() {
-        // TODO Auto-generated method stub
+        if (Objects.isNull(query)) {
+
+        }
         return 0;
     }
 
     @Override
     public void setQueryString(String query) {
-        // TODO Auto-generated method stub
+        this.query = new QueryStringDecoder(query);
 
     }
 
     @Override
     public void setQueryString(byte[] query) {
-        // TODO Auto-generated method stub
+        setQueryString(GenericUtils.getEnglishString(query));
 
     }
 
     @Override
     public SchemeValues getSchemeValue() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.scheme;
     }
 
     @Override
