@@ -153,7 +153,7 @@ public class HeaderHandler {
 
                     Tr.event(tc, "Updating Cache-Control for Set-Cookie");
                 }
-                headers.set(HttpHeaderKeys.HDR_CACHE_CONTROL, header);
+                headers.set(HttpHeaderKeys.HDR_CACHE_CONTROL.getName(), header);
             }
 
         } else {
