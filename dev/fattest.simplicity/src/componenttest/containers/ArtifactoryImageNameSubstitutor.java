@@ -30,9 +30,9 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
     private static final Class<?> c = ArtifactoryImageNameSubstitutor.class;
 
     /**
-     * Manual override that will allow builds or users to pull from Artifactory instead of DockerHub.
+     * Manual override that will allow builds or users to pull from the default registry instead of Artifactory.
      */
-    private static final String substitutionOverride = "fat.test.use.artifactory.substitution";
+    private static final String forceExternal = "fat.test.artifactory.force.external.repo";
 
     /**
      * Artifactory keeps a cache of docker images from DockerHub within
@@ -56,33 +56,43 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
                 break;
             }
 
-            // Priority 2: If registry was explicit set, do not substitute
+            // Priority 2: If the image is known to only exist in an Artifactory registry
+            if (original.getRegistry() != null && original.getRegistry().contains("artifactory.swg-devops.com")) {
+                throw new RuntimeException("Not all developers of Open Liberty have access to artifactory, must use a public registry.");
+            }
+
+            // Priority 3: If a public registry was explicitly set on an image, do not substitute
             if (original.getRegistry() != null && !original.getRegistry().isEmpty()) {
                 result = original;
                 reason = "Image name is explicitally set with registry, cannot modify registry.";
                 break;
             }
 
-            // Priority 3: If the image is known to only exist in an Artifactory organization
-            // No need to check for this in Open Liberty since all images need to be accessible outside of Artifactory.
-
-            // Priority 4: System property use.artifactory.substitution (NOTE: only honor this property if set to true)
-            if (Boolean.getBoolean(substitutionOverride)) {
-                result = DockerImageName.parse(mirror + '/' + original.asCanonicalNameString())
-                                .withRegistry(ArtifactoryRegistry.instance().getRegistry())
-                                .asCompatibleSubstituteFor(original);
-                needsArtifactory = true;
-                reason = "System property [ fat.test.use.artifactory.substitution ] was set to true, must use Artifactory registry.";
-                break;
-            }
-
-            // Priority 5: Always use Artifactory if using remote docker host.
+            // Priority 4: Always use Artifactory if using remote docker host.
             if (DockerClientFactory.instance().isUsing(EnvironmentAndSystemPropertyClientProviderStrategy.class)) {
                 result = DockerImageName.parse(mirror + '/' + original.asCanonicalNameString())
                                 .withRegistry(ArtifactoryRegistry.instance().getRegistry())
                                 .asCompatibleSubstituteFor(original);
                 needsArtifactory = true;
                 reason = "Using a remote docker host, must use Artifactory registry";
+                break;
+            }
+
+            // Priority 5: System property artifactory.force.external.repo (NOTE: only honor this property if set to true)
+            if (Boolean.getBoolean(forceExternal)) {
+                result = original;
+                needsArtifactory = false;
+                reason = "System property [ fat.test.artifactory.force.external.repo ] was set to true, must use original image name.";
+                break;
+            }
+
+            // Priority 6: If Artifactory registry is available use it to avoid rate limits on other registries
+            if (ArtifactoryRegistry.instance().isArtifactoryAvailable()) {
+                result = DockerImageName.parse(mirror + '/' + original.asCanonicalNameString())
+                                .withRegistry(ArtifactoryRegistry.instance().getRegistry())
+                                .asCompatibleSubstituteFor(original);
+                needsArtifactory = true;
+                reason = "Artifactory was available.";
                 break;
             }
 
