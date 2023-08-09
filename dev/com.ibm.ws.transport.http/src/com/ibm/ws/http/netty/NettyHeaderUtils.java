@@ -12,6 +12,8 @@ package com.ibm.ws.http.netty;
 import java.util.List;
 import java.util.Objects;
 
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
+
 import io.netty.handler.codec.http.HttpHeaders;
 
 /**
@@ -36,6 +38,35 @@ public class NettyHeaderUtils {
         }
 
         return value;
+    }
+
+    /**
+     * Utility method that sets a Vary header with the given value. If a Vary header
+     * already exists, this method will append it to the value using a comma ',' as
+     * the delimiter.
+     *
+     * @param headers
+     * @param value
+     * @return
+     */
+    public static void setVary(HttpHeaders headers, String value) {
+
+        Objects.nonNull(headers);
+        Objects.nonNull(value);
+
+        String headerValue;
+
+        if (headers.contains(HttpHeaderKeys.HDR_VARY.getName())) {
+            headerValue = headers.get(HttpHeaderKeys.HDR_VARY.getName()).toLowerCase();
+
+            if (!headerValue.isEmpty() && !headerValue.contains(value.toLowerCase())) {
+                headerValue = new StringBuilder().append(headerValue).append(", ").append(value).toString();
+                headers.set(HttpHeaderKeys.HDR_VARY.getName(), headerValue);
+
+            }
+        } else {
+            headers.set(HttpHeaderKeys.HDR_VARY.getName(), value);
+        }
     }
 
 }

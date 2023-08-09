@@ -42,6 +42,9 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
             HeaderHandler headerHandler = new HeaderHandler(config, response);
             headerHandler.complianceCheck();
 
+            ResponseCompressionHandler compressionHandler = new ResponseCompressionHandler(config, response);
+            compressionHandler.process();
+
         }
 
         ctx.writeAndFlush(msg);
