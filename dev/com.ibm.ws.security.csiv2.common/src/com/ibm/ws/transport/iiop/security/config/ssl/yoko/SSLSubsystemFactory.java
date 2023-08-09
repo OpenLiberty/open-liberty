@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -82,7 +82,7 @@ public class SSLSubsystemFactory implements SubsystemFactory {
     private boolean isAnySecureTransportAddressAvailable(Map<String, Object> extraConfig) {
         Object addrMap = extraConfig.get(ADDR_KEY);
         if (null == addrMap) return true;
-        return ((Map<?,?>)addrMap).keySet().size() != 1;
+        return ((Map<?,?>)addrMap).size() != 1;
     }
 
     @Override

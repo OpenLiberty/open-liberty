@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+/*
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,10 +9,11 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ */
 package com.ibm.ws.transport.iiop.server.security;
 
 import static com.ibm.ws.security.csiv2.server.TraceConstants.TRACE_GROUP;
+import static java.util.stream.Collectors.toCollection;
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
 import java.util.ArrayList;
@@ -31,7 +32,6 @@ import org.omg.CORBA.ORB;
 import org.omg.CORBA.Policy;
 import org.omg.CSIIOP.TransportAddress;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
@@ -229,11 +229,9 @@ public class CSIv2SubsystemFactory extends AbstractCsiv2SubsystemFactory impleme
                 .flatMap(List::stream)
                 .map(map -> (String) map.get("sslRef"))
                 .map(alias -> null == alias ? defaultAlias : alias)
-                .collect(HashSet::new, Set::add, Set::addAll);
-        // 
+                .collect(toCollection(HashSet::new));
         result.addAll(new ClientConfigHelper(null, null, defaultAlias).extractSslRefs(properties));
         result.addAll(new ServerConfigHelper(null, null, null, null, defaultAlias).extractSslRefs(properties));
         return result;
     }
-
 }

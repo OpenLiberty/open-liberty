@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+/*
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ */
 package com.ibm.ws.transport.iiop.security;
 
 import static com.ibm.websphere.ras.Tr.debug;
@@ -137,15 +137,13 @@ public abstract class AbstractCsiv2SubsystemFactory implements SubsystemFactory 
 
     @Override
     public void register(ReadyListener listener, Map<String, Object> properties, List<IIOPEndpoint> endpoints) {
-        Optional.ofNullable((String) properties.get("orbSSLInitTimeout"))
-                .filter(s -> !s.isEmpty())
-                .map(Long::valueOf)
-                .ifPresent(timeout -> {
-                    if (isAnyTracingEnabled() && tc.isDebugEnabled())
-                        debug(tc, "TIMEOUT_SECONDS = " + TIMEOUT_SECONDS);
-                    TIMEOUT_SECONDS = timeout;
-                });
-
+        String timeoutValue = (String) properties.get("orbSSLInitTimeout");
+        if (timeoutValue != null & timeoutValue.length() > 0) {
+            TIMEOUT_SECONDS = Long.valueOf(timeoutValue);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "TIMEOUT_SECONDS = " + TIMEOUT_SECONDS);
+            }
+        }
         ReadyRegistration rr = new ReadyRegistration(extractSslRefs(properties, endpoints), listener);
         regs.add(rr);
         rr.check();
@@ -210,9 +208,10 @@ public abstract class AbstractCsiv2SubsystemFactory implements SubsystemFactory 
         void check() {
             boolean containsAll = AbstractCsiv2SubsystemFactory.this.check(requiredSslRefs);
             listener.readyChanged(AbstractCsiv2SubsystemFactory.this, containsAll);
-            if (isAnyTracingEnabled() && tc.isDebugEnabled())
+            if (isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 debug(tc, "Check: Known ssl configurations: {0}, required: {1}, containsAll: {2} timeout exists: {3}",
                         sslRefs, requiredSslRefs, containsAll, future != null);
+            }
             synchronized (this) {
                 if (containsAll) {
                     cancelTimeout();
