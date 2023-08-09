@@ -2497,6 +2497,11 @@
       <version>3.0.2</version>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.microprofile.config</groupId>
+      <artifactId>microprofile-config-api</artifactId>
+      <version>3.1-RC2</version>
+    </dependency>
+    <dependency>
       <groupId>org.eclipse.microprofile.context-propagation</groupId>
       <artifactId>microprofile-context-propagation-api</artifactId>
       <version>1.0</version>
