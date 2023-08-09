@@ -807,6 +807,10 @@ public class GenericEndpointImpl {
 		}
 		m_nettyBundle = bundle;
 	}
+    
+    public static NettyFramework getNettyBundle() {
+    	return m_nettyBundle;
+    }
 
 	/**
 	 * This is a required static reference, this won't be called until the
