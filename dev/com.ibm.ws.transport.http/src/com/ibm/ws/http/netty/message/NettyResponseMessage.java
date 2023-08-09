@@ -716,7 +716,6 @@ public class NettyResponseMessage implements HttpResponseMessage {
      * @return
      */
     public HttpServiceContext getServiceContext() {
-        // TODO Auto-generated method stub
         return this.context;
     }
 
