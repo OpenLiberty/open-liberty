@@ -38,6 +38,10 @@ import componenttest.topology.utils.FATServletClient;
 
 /**
  * Test the runtime extension to function correctly
+ *
+ * This is split from CDI12ExtensionSPITest because the test-bundle needs access to CDI internals. 
+ * getBuildCompatibleExtensions() is only avaialbe to internal components.
+ * Rather than enable access to internals for everything I split the test so we can test with and without that access.
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
@@ -62,6 +66,7 @@ public class CDI40ExtensionSPITest extends FATServletClient {
         System.out.println("Install the user feature bundle... cdi.internals");
         CDIExtensionRepeatActions.installSystemFeature(server, CDIExtensionRepeatActions.CDI_INTERNALS_BUNDLE_ID);
         CDIExtensionRepeatActions.installUserExtension(server, CDIExtensionRepeatActions.CDI_SPI_EXTENSION_BUNDLE_WITH_INTERNALS_ID);
+        CDIExtensionRepeatActions.installUserExtension(server, CDIExtensionRepeatActions.CDI_SPI_WITH_NO_EXTENSION_BUNDLE_ID);
         CDIExtensionRepeatActions.installUserBundle(server, CDIExtensionRepeatActions.CDI_SPI_MISPLACED_BUNDLE_ID);
 
         WebArchive classSPIExtension = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
@@ -83,5 +88,6 @@ public class CDI40ExtensionSPITest extends FATServletClient {
         CDIExtensionRepeatActions.uninstallUserExtension(server, CDIExtensionRepeatActions.CDI_SPI_EXTENSION_BUNDLE_ID);
         CDIExtensionRepeatActions.uninstallUserBundle(server, CDIExtensionRepeatActions.CDI_SPI_MISPLACED_BUNDLE_ID);
         CDIExtensionRepeatActions.uninstallSystemFeature(server, CDIExtensionRepeatActions.CDI_SPI_EXTENSION_BUNDLE_WITH_INTERNALS_ID);
+        CDIExtensionRepeatActions.uninstallSystemFeature(server, CDIExtensionRepeatActions.CDI_SPI_WITH_NO_EXTENSION_BUNDLE_ID);
     }
 }

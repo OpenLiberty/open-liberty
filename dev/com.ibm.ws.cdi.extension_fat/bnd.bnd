@@ -22,6 +22,7 @@ src: \
 	test-bundles/cdi.helloworld.extension/src, \
 	test-bundles/cdi.spi.misplaced/src, \
 	test-bundles/cdi.spi.extension/src, \
+	test-bundles/cdi.spi.with.no.extension/src, \
 	test-bundles/cdi.spi.extension.with.internals/src, \
 	test-bundles/cdi.spi.constructor.fail.extension/src
 	

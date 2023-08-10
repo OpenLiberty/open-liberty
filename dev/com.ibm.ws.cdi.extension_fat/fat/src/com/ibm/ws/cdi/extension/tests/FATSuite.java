@@ -28,6 +28,7 @@ import com.ibm.ws.fat.util.FatLogHandler;
                 CDI12ExtensionTest.class,
                 CDI12ExtensionSPIConstructorExceptionTest.class,
                 CDI12ExtensionSPITest.class,
+                CDI12NoExtensionSPITest.class,
                 CDI40ExtensionSPITest.class,
                 DynamicBeanExtensionTest.class,
                 ObserverTest.class,
