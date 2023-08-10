@@ -60,7 +60,7 @@ public class SharedMetricRegistries {
          * Unsuccessful activation. SmallRye and Micrometer classes were not loaded
          * properly.
          */
-        if (!smallryeMetricsCDIMetadata.isSuccesfulActivation()) {
+        if (!smallryeMetricsCDIMetadata.isSuccessfulActivation()) {
             return null;
         }
 
@@ -93,7 +93,7 @@ public class SharedMetricRegistries {
          * Unsuccessful activation. SmallRye and Micrometer classes were not loaded
          * properly.
          */
-        if (!smallryeMetricsCDIMetadata.isSuccesfulActivation()) {
+        if (!smallryeMetricsCDIMetadata.isSuccessfulActivation()) {
             return;
         }
 
@@ -127,7 +127,7 @@ public class SharedMetricRegistries {
          * Unsuccessful activation. SmallRye and Micrometer classes were not loaded
          * properly.
          */
-        if (!smallryeMetricsCDIMetadata.isSuccesfulActivation()) {
+        if (!smallryeMetricsCDIMetadata.isSuccessfulActivation()) {
             return null;
         }
 
