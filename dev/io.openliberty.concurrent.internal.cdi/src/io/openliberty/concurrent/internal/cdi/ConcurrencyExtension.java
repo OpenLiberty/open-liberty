@@ -14,7 +14,6 @@ package io.openliberty.concurrent.internal.cdi;
 
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -55,8 +54,7 @@ public class ConcurrencyExtension implements Extension {
     /**
      * Invoked for each matching injection point:
      *
-     * @Inject @Qualifier1 @Qualifier2 ...
-     *         ManagedExecutorService executor;
+     * @Inject {@Qualifier1 @Qualifier2 ...} ManagedExecutorService executor;
      *
      * @param <T>         bean class that has the injection point
      * @param event       event
@@ -64,19 +62,19 @@ public class ConcurrencyExtension implements Extension {
      */
     public <T> void processExecutorInjectionPoint(@Observes ProcessInjectionPoint<T, ManagedExecutorService> event, BeanManager beanManager) {
         if (ConcurrencyExtensionMetadata.eeVersion.getMajor() >= 11) {
-            // TODO check if producer already exists for the injection point and skip
             InjectionPoint injectionPoint = event.getInjectionPoint();
             Set<Annotation> qualifiers = injectionPoint.getQualifiers();
             executorQualifiers.add(qualifiers);
         }
     }
 
-    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event) {
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
         if (ConcurrencyExtensionMetadata.eeVersion.getMajor() >= 11) {
-            for (Iterator<Set<Annotation>> it = executorQualifiers.iterator(); it.hasNext();) {
-                Set<Annotation> qualifiers = it.next();
-                it.remove();
-                if (CDI.current().select(ManagedExecutorService.class, qualifiers.toArray(new Annotation[qualifiers.size()])).isUnsatisfied()) {
+            CDI<Object> cdi = CDI.current();
+            for (Set<Annotation> qualifiers : executorQualifiers) {
+                if (cdi.select(ManagedExecutorService.class, qualifiers.toArray(new Annotation[qualifiers.size()])).isResolvable()) {
+                    System.out.println("ManagedExecutorService with qualifiers " + qualifiers + " already exists.");
+                } else {
                     // It doesn't already exist, so try to add it:
                     if (DEFAULT_QUALIFIER.equals(qualifiers)) {
                         Bean<ManagedExecutorService> bean = new ConcurrencyResourceBean<>(ManagedExecutorService.class, //
@@ -84,10 +82,11 @@ public class ConcurrencyExtension implements Extension {
                                         Set.of(ManagedExecutorService.class, ExecutorService.class, Executor.class), //
                                         qualifiers);
                         event.addBean(bean);
-                        System.out.println("Added " + bean.getBeanClass().getName() + " with qualifiers " + qualifiers);
+                        System.out.println("Added ManagedExecutorService with qualifiers " + qualifiers);
                     } // TODO else configured ManagedExecutorService instances with qualifiers
                 }
             }
+            executorQualifiers.clear();
         }
     }
 }
