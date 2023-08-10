@@ -145,7 +145,7 @@ public class SRSharedMetricRegistriesAdapter {
             if (setAppNameResolverMethod == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc,
-                            "Unable to load by reflection the expected SharedMetricRegistries.setVendorAppNameResolverMethod(AppNameResolver) method");
+                            "Unable to load by reflection the expected SharedMetricRegistries.setAppNameResolver(AppNameResolver) method");
                 }
             }
         }
