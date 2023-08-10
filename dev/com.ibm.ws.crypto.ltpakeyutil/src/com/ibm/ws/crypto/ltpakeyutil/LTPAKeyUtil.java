@@ -17,8 +17,20 @@ import com.ibm.ws.kernel.service.util.JavaInfo;
 public final class LTPAKeyUtil {
 
   public static boolean ibmJCEAvailable = false;
+  public static boolean openJCEPlusAvailable = false;
   public static boolean providerChecked = false;
+  public static boolean zosProviderChecked = false;
+
+  public static boolean javaVersionChecked = false;
+  public static boolean isJava11orHigher = false;
+
+  public static String osName = System.getProperty("os.name");
+  public static boolean isZOS = false;
+  public static boolean osVersionChecked = false;
+
+
   public static String IBM_JCE_PROVIDER = "com.ibm.crypto.provider.IBMJCE"; 
+  public static String OPENJCEPLUS_PROVIDER = "com.ibm.crypto.plus.provider.OpenJCEPlus";
 
   public static byte[] encrypt(byte[] data, byte[] key, String cipher) throws Exception {
     return LTPACrypto.encrypt(data, key, cipher);
@@ -67,5 +79,45 @@ public final class LTPAKeyUtil {
     }
 
   }
+
+    public static boolean isOpenJCEPlusAvailable() {
+      //change to z
+    if (zosProviderChecked) {
+      return openJCEPlusAvailable;
+    }
+    else {
+     openJCEPlusAvailable = JavaInfo.isSystemClassAvailable(OPENJCEPLUS_PROVIDER);
+      zosProviderChecked = true;
+      return openJCEPlusAvailable;
+    }
+
+  }
+
+  public static boolean isJava11orHigher(){
+    if(javaVersionChecked){
+    return isJava11orHigher;
+    }
+    else {
+      javaVersionChecked = true;
+      isJava11orHigher = JavaInfo.majorVersion() >= 11;
+      return isJava11orHigher;
+    } 
+  }
+
+  public static boolean isZOS(){
+    if(osVersionChecked){
+    return isZOS;
+    }
+    else {
+      osVersionChecked = true;
+      isZOS = (osName.equalsIgnoreCase("z/OS") || osName.equalsIgnoreCase("OS/390"));
+      return isZOS;
+    } 
+  }
+
+  public static boolean isZOSandRunningJava11orHigher(){
+    return isJava11orHigher() && isZOS();
+  }
+
 
 }
