@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.internal.utils;
 
@@ -16,16 +13,22 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue.ValueType;
@@ -1287,18 +1290,23 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_addProjectNameAsGroup_noProjectInUserMetadata() {
-        JsonObject userMetadata = Json.createObjectBuilder().add("name", "value").add("other key", 42).build();
+    public void test_addGroupInfoToResult_noProjectInUserMetadata() {
+        String userName = "T. Anderson";
+        JsonObject userApiResponse = getStandardUserApiResponse(userName);
+        JsonObject userMetadata = Json.createObjectBuilder().add("name", userName).add("other key", 42).build();
         final String userNameAttribute = "name";
+        final String groupNameAttribute = "groups";
         mockery.checking(new Expectations() {
             {
+                one(config).getGroupNameAttribute();
+                will(returnValue(groupNameAttribute));
                 one(config).getUserNameAttribute();
                 will(returnValue(userNameAttribute));
             }
         });
         JsonObject result = null;
         try {
-            result = userApiUtils.addProjectNameAsGroup(userMetadata);
+            result = userApiUtils.addGroupInfoToResult(userMetadata, userApiResponse);
         } catch (SocialLoginException e) {
             outputMgr.failWithThrowable(testName.getMethodName(), e);
         }
@@ -1306,44 +1314,46 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_addProjectNameAsGroup_singleCharacterProject() {
-        JsonObject userMetadata = Json.createObjectBuilder().add("name", "p:username").add("groups", "group123").build();
+    public void test_addGroupInfoToResult_singleCharacterProject() {
+        String project = "m";
+        String userName = project + ":T. Anderson";
+        JsonObject userApiResponse = getStandardUserApiResponse(userName);
+        JsonObject userMetadata = Json.createObjectBuilder().add("name", userName).add("groups", "group123").build();
         final String userNameAttribute = "name";
         final String groupNameAttribute = "groups";
-        String groupsValue = "p";
         mockery.checking(new Expectations() {
             {
-                one(config).getUserNameAttribute();
-                will(returnValue(userNameAttribute));
                 one(config).getGroupNameAttribute();
                 will(returnValue(groupNameAttribute));
+                one(config).getUserNameAttribute();
+                will(returnValue(userNameAttribute));
             }
         });
         JsonObject result = null;
         try {
-            result = userApiUtils.addProjectNameAsGroup(userMetadata);
+            result = userApiUtils.addGroupInfoToResult(userMetadata, userApiResponse);
         } catch (SocialLoginException e) {
             outputMgr.failWithThrowable(testName.getMethodName(), e);
         }
-        assertEquals("Groups entry in result did not match the expected value.", groupsValue, result.getString(groupNameAttribute));
+        verifyGroupsContainsAllExpectedEntries(result, groupNameAttribute, project);
     }
 
     @Test
-    public void test_addProjectNameAsGroup_nullGroupNameAttribute() {
-        JsonObject userMetadata = Json.createObjectBuilder().add("name", "p:username").add("groups", "group123").build();
-        final String userNameAttribute = "name";
+    public void test_addGroupInfoToResult_nullGroupNameAttribute() {
+        String project = "m";
+        String userName = project + ":T. Anderson";
+        JsonObject userApiResponse = getStandardUserApiResponse(userName);
+        JsonObject userMetadata = Json.createObjectBuilder().add("name", userName).add("groups", "group123").build();
 
         mockery.checking(new Expectations() {
             {
-                one(config).getUserNameAttribute();
-                will(returnValue(userNameAttribute));
                 one(config).getGroupNameAttribute();
                 will(returnValue(null));
             }
         });
         JsonObject result = null;
         try {
-            result = userApiUtils.addProjectNameAsGroup(userMetadata);
+            result = userApiUtils.addGroupInfoToResult(userMetadata, userApiResponse);
         } catch (SocialLoginException e) {
             outputMgr.failWithThrowable(testName.getMethodName(), e);
         }
@@ -1351,11 +1361,14 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_addProjectNameAsGroup() {
+    public void test_addGroupInfoToResult_originalResponseIncludesGroups() {
+        String project = "myproject";
+        String userName = project + ":T. Anderson";
+        JsonObject userApiResponse = getStandardUserApiResponse(userName, "programmer", "hacker");
+
         JsonObject userMetadata = Json.createObjectBuilder().add("name", "myproject:userA").add("groups", "groupABC").build();
         final String userNameAttribute = "name";
         final String groupNameAttribute = "groups";
-        String groupsValue = "myproject";
         mockery.checking(new Expectations() {
             {
                 one(config).getUserNameAttribute();
@@ -1366,11 +1379,160 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
         });
         JsonObject result = null;
         try {
-            result = userApiUtils.addProjectNameAsGroup(userMetadata);
+            result = userApiUtils.addGroupInfoToResult(userMetadata, userApiResponse);
         } catch (SocialLoginException e) {
             outputMgr.failWithThrowable(testName.getMethodName(), e);
         }
-        assertEquals("Groups entry in result did not match the expected value.", groupsValue, result.getString(groupNameAttribute));
+        verifyGroupsContainsAllExpectedEntries(result, groupNameAttribute, project, "programmer", "hacker");
+    }
+
+    @Test
+    public void test_addGroupsFromOriginalApiResponse_missingGroups() {
+        final String groupNameAttribute = "groups";
+        JsonObject userApiResponse = Json.createObjectBuilder().add("one", 1).build();
+
+        JsonArrayBuilder result = userApiUtils.addGroupsFromOriginalApiResponse(Json.createArrayBuilder(), userApiResponse, groupNameAttribute);
+        JsonArray builtResult = result.build();
+        assertTrue("Result should have been empty but was: " + builtResult, builtResult.isEmpty());
+    }
+
+    @Test
+    public void test_addGroupsFromOriginalApiResponse_oneEntry() {
+        final String groupNameAttribute = "groups";
+        JsonObject userApiResponse = Json.createObjectBuilder().add(groupNameAttribute, "red group").build();
+
+        JsonArrayBuilder result = userApiUtils.addGroupsFromOriginalApiResponse(Json.createArrayBuilder(), userApiResponse, groupNameAttribute);
+        JsonArray builtResult = result.build();
+        verifyGroupsContainsAllExpectedEntries(builtResult, groupNameAttribute, "red group");
+    }
+
+    @Test
+    public void test_addGroupsFromOriginalApiResponse_arrayEntry() {
+        final String groupNameAttribute = "groups";
+        JsonObject userApiResponse = Json.createObjectBuilder().add(groupNameAttribute, Json.createArrayBuilder().add("red group").add("blue group")).build();
+
+        JsonArrayBuilder result = userApiUtils.addGroupsFromOriginalApiResponse(Json.createArrayBuilder(), userApiResponse, groupNameAttribute);
+        JsonArray builtResult = result.build();
+        verifyGroupsContainsAllExpectedEntries(builtResult, groupNameAttribute, "red group", "blue group");
+    }
+
+    @Test
+    public void test_getProjectName_keyMissing() {
+        JsonObject userMetadata = Json.createObjectBuilder().add("key1", "entry1").add("key2", "entry2").build();
+        final String userNameAttribute = "name";
+        mockery.checking(new Expectations() {
+            {
+                one(config).getUserNameAttribute();
+                will(returnValue(userNameAttribute));
+            }
+        });
+        try {
+            String result = userApiUtils.getProjectName(userMetadata);
+            fail("Should have thrown an exception but didn't. Got: [" + result + "].");
+        } catch (SocialLoginException e) {
+            verifyException(e, CWWKS5385E_JSON_MISSING_KEY + ".+" + userNameAttribute);
+        }
+    }
+
+    @Test
+    public void test_getProjectName_missingProject() {
+        final String userNameAttribute = "name";
+        String userName = "T. Anderson";
+        JsonObject userMetadata = Json.createObjectBuilder().add(userNameAttribute, userName).build();
+        mockery.checking(new Expectations() {
+            {
+                one(config).getUserNameAttribute();
+                will(returnValue(userNameAttribute));
+            }
+        });
+        try {
+            String result = userApiUtils.getProjectName(userMetadata);
+            assertNull("Project name should have been null but was [" + result + "].", result);
+        } catch (SocialLoginException e) {
+            outputMgr.failWithThrowable(testName.getMethodName(), e);
+        }
+    }
+
+    @Test
+    public void test_getProjectName_allColons() {
+        final String userNameAttribute = "name";
+        String userName = "::::";
+        JsonObject userMetadata = Json.createObjectBuilder().add(userNameAttribute, userName).build();
+        mockery.checking(new Expectations() {
+            {
+                one(config).getUserNameAttribute();
+                will(returnValue(userNameAttribute));
+            }
+        });
+        try {
+            String result = userApiUtils.getProjectName(userMetadata);
+            assertEquals("Project name did not match expected value.", "", result);
+        } catch (SocialLoginException e) {
+            outputMgr.failWithThrowable(testName.getMethodName(), e);
+        }
+    }
+
+    @Test
+    public void test_getProjectName() {
+        final String userNameAttribute = "name";
+        String projectName = "software";
+        String userName = projectName + "::::";
+        JsonObject userMetadata = Json.createObjectBuilder().add(userNameAttribute, userName).build();
+        mockery.checking(new Expectations() {
+            {
+                one(config).getUserNameAttribute();
+                will(returnValue(userNameAttribute));
+            }
+        });
+        try {
+            String result = userApiUtils.getProjectName(userMetadata);
+            assertEquals("Project name did not match expected value.", projectName, result);
+        } catch (SocialLoginException e) {
+            outputMgr.failWithThrowable(testName.getMethodName(), e);
+        }
+    }
+
+    private JsonObject getStandardUserApiResponse(String userName, String... groups) {
+        JsonObjectBuilder userApiResponse = Json.createObjectBuilder();
+        userApiResponse.add("kind", "User");
+        userApiResponse.add("metadata", Json.createObjectBuilder().add("name", userName));
+        JsonArrayBuilder groupsBuilder = Json.createArrayBuilder();
+        if (groups != null) {
+            for (String group : groups) {
+                groupsBuilder.add(group);
+            }
+        }
+        userApiResponse.add("groups", groupsBuilder.build());
+        return userApiResponse.build();
+    }
+
+    private void verifyGroupsContainsAllExpectedEntries(JsonObject result, String groupNameAttribute, String... expectedGroupsList) {
+        JsonArray groups = result.getJsonArray(groupNameAttribute);
+        verifyGroupsContainsAllExpectedEntries(groups, groupNameAttribute, expectedGroupsList);
+    }
+
+    private void verifyGroupsContainsAllExpectedEntries(JsonArray groups, String groupNameAttribute, String... expectedGroupsList) {
+        assertEquals("Did not find the expected number of groups. Groups were: " + groups, expectedGroupsList.length, groups.size());
+
+        Set<String> expectedGroups = new HashSet<>();
+        for (String expectedGroup : expectedGroupsList) {
+            expectedGroups.add(expectedGroup);
+        }
+        List<String> missingGroups = new ArrayList<>();
+        for (int i = 0; i < groups.size(); i++) {
+            String groupInResult = groups.getString(i);
+            if (!expectedGroups.contains(groupInResult)) {
+                missingGroups.add(groupInResult);
+            } else {
+                expectedGroups.remove(groupInResult);
+            }
+        }
+        if (!missingGroups.isEmpty()) {
+            fail("Groups entry contained the following unexpected values: " + missingGroups + ". Groups in the result were: " + groups + ". The expected groups were: " + expectedGroups);
+        }
+        if (!expectedGroups.isEmpty()) {
+            fail("Groups entry was missing the following expected groups: " + expectedGroups + ". Groups in the result were: " + groups);
+        }
     }
 
 }
