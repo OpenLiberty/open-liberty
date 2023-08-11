@@ -48,6 +48,7 @@ final class LTPACrypto {
 	private static final String ENCRYPT_ALGORITHM = "DESede";
 	private static final String IBMJCE_NAME = "IBMJCE";
 	private static final String OPENJCEPLUS_NAME = "OpenJCEPlus";
+	private static String provider = getProvider();
 
 	private static int MAX_CACHE = 500;
 	private static IvParameterSpec ivs8 = null;
@@ -234,13 +235,7 @@ final class LTPACrypto {
 		BigInteger q = new BigInteger(key[4]);
 		BigInteger d = e.modInverse((p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE)));
 		KeyFactory kFact = null;
-		if (LTPAKeyUtil.isIBMJCEAvailable()) {
-			kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM, IBMJCE_NAME);
-		} else if(LTPAKeyUtil.isZOSandRunningJava11orHigher() && LTPAKeyUtil.isOpenJCEPlusAvailable()){
-			kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM, OPENJCEPLUS_NAME);
-		}else {
-			kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM);
-		}
+		kFact = (provider != "")? KeyFactory.getInstance(CRYPTO_ALGORITHM, provider):KeyFactory.getInstance(CRYPTO_ALGORITHM);
 
 		BigInteger pep = new BigInteger(key[5]);
 		BigInteger peq = new BigInteger(key[6]);
@@ -249,13 +244,7 @@ final class LTPACrypto {
 		PrivateKey privKey = kFact.generatePrivate(privCrtKeySpec);
 
 		Signature rsaSig = null;
-		if (LTPAKeyUtil.isIBMJCEAvailable()) {
-			rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM, IBMJCE_NAME);
-		} else if(LTPAKeyUtil.isZOSandRunningJava11orHigher() && LTPAKeyUtil.isOpenJCEPlusAvailable()){
-			rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM, OPENJCEPLUS_NAME);
-		}else {
-			rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM);
-		}
+		rsaSig = (provider != "")? Signature.getInstance(SIGNATURE_ALGORITHM, provider):Signature.getInstance(SIGNATURE_ALGORITHM);
 		rsaSig.initSign(privKey);
 		rsaSig.update(data, off, len);
 		byte[] sig = rsaSig.sign();
@@ -518,22 +507,10 @@ final class LTPACrypto {
 		KeyFactory kFact = null;
 		Signature rsaSig = null;
 
-		if (LTPAKeyUtil.isIBMJCEAvailable()) {
-			kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM, IBMJCE_NAME);
-		} else if(LTPAKeyUtil.isZOSandRunningJava11orHigher() && LTPAKeyUtil.isOpenJCEPlusAvailable()){
-			kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM, OPENJCEPLUS_NAME);
-		}else {
-			kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM);
-		}
+		kFact = (provider != "")? KeyFactory.getInstance(CRYPTO_ALGORITHM, provider):KeyFactory.getInstance(CRYPTO_ALGORITHM);
 		RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(n, e);
 		PublicKey pubKey = kFact.generatePublic(pubKeySpec);
-		if (LTPAKeyUtil.isIBMJCEAvailable()) {
-			rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM, IBMJCE_NAME);
-		} else if(LTPAKeyUtil.isZOSandRunningJava11orHigher() && LTPAKeyUtil.isOpenJCEPlusAvailable()){
-			rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM, OPENJCEPLUS_NAME);
-		}else {
-			rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM);
-		}
+		rsaSig = (provider != "")? Signature.getInstance(SIGNATURE_ALGORITHM, provider):Signature.getInstance(SIGNATURE_ALGORITHM);
 		rsaSig.initVerify(pubKey);
 		rsaSig.update(data, off, len);
 		verified = rsaSig.verify(sig);
@@ -607,13 +584,7 @@ final class LTPACrypto {
 		} else {
 			DESedeKeySpec kSpec = new DESedeKeySpec(key);
 			SecretKeyFactory kFact = null;
-			if (LTPAKeyUtil.isIBMJCEAvailable()) {
-				kFact = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM, IBMJCE_NAME);
-			} else if(LTPAKeyUtil.isZOSandRunningJava11orHigher() && LTPAKeyUtil.isOpenJCEPlusAvailable()){
-				kFact = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM, OPENJCEPLUS_NAME);
-			}else {
-				kFact = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM);
-			}
+			kFact = (provider != "")? SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM, provider):SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM);
 			sKey = kFact.generateSecret(kSpec);
 		}
 		return sKey;
@@ -634,14 +605,8 @@ final class LTPACrypto {
 			InvalidAlgorithmParameterException, NoSuchProviderException {
 
 		Cipher ci = null;
-
-		if (LTPAKeyUtil.isIBMJCEAvailable()) {
-			ci = Cipher.getInstance(cipher, IBMJCE_NAME);
-		} else if(LTPAKeyUtil.isZOSandRunningJava11orHigher() && LTPAKeyUtil.isOpenJCEPlusAvailable()){
-			ci = Cipher.getInstance(cipher, OPENJCEPLUS_NAME);
-		}else {
-			ci = Cipher.getInstance(cipher);
-		}
+		
+		ci = (provider != "")? Cipher.getInstance(cipher, provider):Cipher.getInstance(cipher);
 		if (cipher.indexOf("ECB") == -1) {
 			if (cipher.indexOf("AES") != -1) {
 				if (ivs16 == null) {
@@ -1055,15 +1020,8 @@ final class LTPACrypto {
 		KeyPairGenerator keyGen = null;
 		try {
 
-			if (LTPAKeyUtil.isIBMJCEAvailable()) {
-				// IBMJCE_NAME needed for hardware crypto
-				keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM, IBMJCE_NAME);
-			} else if(LTPAKeyUtil.isZOSandRunningJava11orHigher() && LTPAKeyUtil.isOpenJCEPlusAvailable()){
-				keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM, OPENJCEPLUS_NAME);
-			}else {
-				keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM);
-			}
-			
+			keyGen = (provider != "")? KeyPairGenerator.getInstance(CRYPTO_ALGORITHM, provider):KeyPairGenerator.getInstance(CRYPTO_ALGORITHM);
+
 			keyGen.initialize(len * 8, new SecureRandom());
 			pair = keyGen.generateKeyPair();
 			RSAPublicKey rsaPubKey = (RSAPublicKey) pair.getPublic();
@@ -1097,4 +1055,13 @@ final class LTPACrypto {
 		return key;
 	}
 
+	private static String getProvider(){
+		String provider = "";
+		if (LTPAKeyUtil.isIBMJCEAvailable()) {
+			provider = IBMJCE_NAME;
+		} else if(LTPAKeyUtil.isZOSandRunningJava11orHigher() && LTPAKeyUtil.isOpenJCEPlusAvailable()){
+			provider = OPENJCEPLUS_NAME;
+		}
+		return provider;
+	}
 }

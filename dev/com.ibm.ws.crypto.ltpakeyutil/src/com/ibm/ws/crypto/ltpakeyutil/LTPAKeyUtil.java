@@ -12,7 +12,7 @@ package com.ibm.ws.crypto.ltpakeyutil;
 
 import java.security.Provider;
 import java.security.Security;
-import com.ibm.ws.kernel.service.util.JavaInfo; 
+import com.ibm.ws.kernel.service.util.JavaInfo;
 
 public final class LTPAKeyUtil {
 
@@ -28,8 +28,7 @@ public final class LTPAKeyUtil {
   public static boolean isZOS = false;
   public static boolean osVersionChecked = false;
 
-
-  public static String IBM_JCE_PROVIDER = "com.ibm.crypto.provider.IBMJCE"; 
+  public static String IBM_JCE_PROVIDER = "com.ibm.crypto.provider.IBMJCE";
   public static String OPENJCEPLUS_PROVIDER = "com.ibm.crypto.plus.provider.OpenJCEPlus";
 
   public static byte[] encrypt(byte[] data, byte[] key, String cipher) throws Exception {
@@ -40,7 +39,8 @@ public final class LTPAKeyUtil {
     return LTPACrypto.decrypt(msg, key, cipher);
   }
 
-  public static boolean verifyISO9796(byte[][] key, byte[] data, int off, int len, byte[] sig, int sigOff, int sigLen) throws Exception {
+  public static boolean verifyISO9796(byte[][] key, byte[] data, int off, int len, byte[] sig, int sigOff, int sigLen)
+      throws Exception {
     return LTPACrypto.verifyISO9796(key, data, off, len, sig, sigOff, sigLen);
   }
 
@@ -71,8 +71,7 @@ public final class LTPAKeyUtil {
   public static boolean isIBMJCEAvailable() {
     if (providerChecked) {
       return ibmJCEAvailable;
-    }
-    else {
+    } else {
       ibmJCEAvailable = JavaInfo.isSystemClassAvailable(IBM_JCE_PROVIDER);
       providerChecked = true;
       return ibmJCEAvailable;
@@ -80,44 +79,40 @@ public final class LTPAKeyUtil {
 
   }
 
-    public static boolean isOpenJCEPlusAvailable() {
-      //change to z
+  public static boolean isOpenJCEPlusAvailable() {
+    // change to z
     if (zosProviderChecked) {
       return openJCEPlusAvailable;
-    }
-    else {
-     openJCEPlusAvailable = JavaInfo.isSystemClassAvailable(OPENJCEPLUS_PROVIDER);
+    } else {
+      openJCEPlusAvailable = JavaInfo.isSystemClassAvailable(OPENJCEPLUS_PROVIDER);
       zosProviderChecked = true;
       return openJCEPlusAvailable;
     }
 
   }
 
-  public static boolean isJava11orHigher(){
-    if(javaVersionChecked){
-    return isJava11orHigher;
-    }
-    else {
-      javaVersionChecked = true;
-      isJava11orHigher = JavaInfo.majorVersion() >= 11;
+  private static boolean isJava11orHigher() {
+    if (javaVersionChecked) {
       return isJava11orHigher;
-    } 
-  }
-
-  public static boolean isZOS(){
-    if(osVersionChecked){
-    return isZOS;
+    } else {
+      isJava11orHigher = JavaInfo.majorVersion() >= 11;
+      javaVersionChecked = true;
+      return isJava11orHigher;
     }
-    else {
-      osVersionChecked = true;
-      isZOS = (osName.equalsIgnoreCase("z/OS") || osName.equalsIgnoreCase("OS/390"));
-      return isZOS;
-    } 
   }
 
-  public static boolean isZOSandRunningJava11orHigher(){
+  private static boolean isZOS() {
+    if (osVersionChecked) {
+      return isZOS;
+    } else {
+      isZOS = (osName.equalsIgnoreCase("z/OS") || osName.equalsIgnoreCase("OS/390"));
+      osVersionChecked = true;
+      return isZOS;
+    }
+  }
+
+  public static boolean isZOSandRunningJava11orHigher() {
     return isJava11orHigher() && isZOS();
   }
-
 
 }
