@@ -142,12 +142,11 @@ public class ConcurrencyExtension implements Extension {
                     if (DEFAULT_QUALIFIER.equals(qualifiers)) {
                         Bean<ManagedExecutorService> bean = new ConcurrencyResourceBean<>(ManagedExecutorService.class, //
                                         "(id=DefaultManagedExecutorService)", //
-                                        Set.of(ManagedExecutorService.class, ExecutorService.class, Executor.class), //
-                                        qualifiers);
+                                        Set.of(ManagedExecutorService.class, ExecutorService.class, Executor.class), qualifiers);
+                        // TODO should ExecutorService.class, Executor.class be removed? If not, must avoid collisions with application's producers
                         event.addBean(bean);
                         System.out.println("Added ManagedExecutorService with qualifiers " + qualifiers);
                     } // TODO else configured ManagedExecutorService instances with qualifiers
-                      // TODO if the same qualifiers list is used for both MES and MSES, create as MSES instead?
                 }
             }
             executorQualifiers.clear();
@@ -160,9 +159,8 @@ public class ConcurrencyExtension implements Extension {
                     if (DEFAULT_QUALIFIER.equals(qualifiers)) {
                         Bean<ManagedScheduledExecutorService> bean = new ConcurrencyResourceBean<>(ManagedScheduledExecutorService.class, //
                                         "(id=DefaultManagedScheduledExecutorService)", //
-                                        Set.of(ManagedScheduledExecutorService.class, ScheduledExecutorService.class,
-                                               ManagedExecutorService.class, ExecutorService.class, Executor.class), // TODO will these collide?
-                                        qualifiers);
+                                        Set.of(ManagedScheduledExecutorService.class, ScheduledExecutorService.class), qualifiers);
+                        // TODO should ScheduledExecutorService.class be removed? If not, must avoid collisions with application's producers
                         event.addBean(bean);
                         System.out.println("Added ManagedScheduledExecutorService with qualifiers " + qualifiers);
                     } // TODO else configured ManagedScheduledExecutorService instances with qualifiers

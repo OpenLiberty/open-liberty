@@ -25,8 +25,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import jakarta.enterprise.concurrent.ContextService;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -50,6 +53,12 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
     @Inject
     ContextService defaultContextSvc;
+
+    @Inject
+    ManagedExecutorService defaultManagedExecutor;
+
+    @Inject
+    ManagedScheduledExecutorService defaultManagedScheduledExecutor;
 
     private ExecutorService unmanagedThreads;
 
@@ -123,5 +132,41 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
         Object found = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertEquals("value2", found);
+    }
+
+    /**
+     * Inject default instance of ManagedExecutorService and use it.
+     */
+    @Test
+    public void testInjectManagedExecutorServiceDefaultInstance() throws Exception {
+        assertNotNull(defaultManagedExecutor);
+
+        // Requires the application's context (to look up a java:comp name)
+        Callable<?> task = () -> InitialContext.doLookup("java:comp/env/entry2");
+        Future<?> future = defaultManagedExecutor.submit(task);
+
+        Object result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("value2", result);
+    }
+
+    /**
+     * Inject default instance of ManagedScheduledExecutorService and use it.
+     */
+    @Test
+    public void testInjectManagedScheduledExecutorServiceDefaultInstance() throws Exception {
+        assertNotNull(defaultManagedScheduledExecutor);
+
+        final AtomicInteger executionCount = new AtomicInteger();
+        Future<?> future1 = defaultManagedScheduledExecutor.schedule(() -> executionCount.incrementAndGet(), 30, TimeUnit.MINUTES);
+
+        // Requires the application's context (to look up a java:comp name)
+        Callable<?> task2 = () -> InitialContext.doLookup("java:comp/env/entry2");
+        Future<?> future2 = defaultManagedScheduledExecutor.schedule(task2, 122, TimeUnit.MILLISECONDS);
+
+        Object result = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("value2", result);
+
+        assertEquals(true, future1.cancel(false));
+        assertEquals(0, executionCount.get());
     }
 }
