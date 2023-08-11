@@ -243,6 +243,9 @@ public class DataValidationTestServlet extends FATServlet {
         c.weight = 452.9f;
         c = creatures.save(c);
         assertEquals(452.9f, c.weight, 0.00001f);
+
+        violations = validator.validate(c);
+        assertEquals(violations.toString(), 0, violations.size());
     }
 
     /**
