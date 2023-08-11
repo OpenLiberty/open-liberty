@@ -235,6 +235,10 @@ public class DataValidationTestServlet extends FATServlet {
         // Validation does not apply to find operations.
         Creature c = creatures.findById(900l).orElseThrow();
 
+        // The application can choose to validate entities from find operations manually:
+        Set<?> violations = validator.validate(c);
+        assertEquals(violations.toString(), 1, violations.size());
+
         // Should be able to update the entity to fix it.
         c.weight = 452.9f;
         c = creatures.save(c);
