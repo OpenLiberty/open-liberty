@@ -63,6 +63,7 @@ import com.ibm.ws.container.service.metadata.MetaDataUtils;
 import com.ibm.ws.container.service.metadata.ModuleMetaDataListener;
 import com.ibm.ws.container.service.naming.NamingConstants;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
+import com.ibm.ws.container.service.state.ApplicationStateListenerConstants;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.injectionengine.AbstractInjectionEngine;
@@ -112,7 +113,7 @@ import com.ibm.wsspi.resource.ResourceBindingListener;
                        ModuleMetaDataListener.class,
                        ComponentMetaDataListener.class,
                        ApplicationStateListener.class },
-           property = { "service.vendor=IBM" })
+           property = { "service.vendor=IBM", "service.ranking:Integer="+ApplicationStateListenerConstants.INJECTION_ENGINE_SERVICE_RANK })
 public class OSGiInjectionEngineImpl extends AbstractInjectionEngine implements InjectionEngine, ApplicationMetaDataListener, ModuleMetaDataListener, ComponentMetaDataListener, ApplicationStateListener {
 
     private static final TraceComponent tc = Tr.register(OSGiInjectionEngineImpl.class);

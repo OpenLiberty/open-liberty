@@ -22,4 +22,7 @@ public class ApplicationStateListenerConstants {
     //CDI must shut down before EJB as EJBs can have a cdi application scope and according to the CDI spec "jakarta.enterprise.event.Shutdown is not after @BeforeDestroyed(ApplicationScoped.class)"
     public static final int CDI_SERVICE_RANK = 1;
 
+    //CDI can trigger application code during startup. This application code may do JNDI lookups, thus injection engine must start before CDI so it can provide JNDI results.
+    public static final int INJECTION_ENGINE_SERVICE_RANK = 2;
+
 }
