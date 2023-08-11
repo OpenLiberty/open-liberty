@@ -235,7 +235,7 @@ final class LTPACrypto {
 		BigInteger q = new BigInteger(key[4]);
 		BigInteger d = e.modInverse((p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE)));
 		KeyFactory kFact = null;
-		kFact = (provider != "")? KeyFactory.getInstance(CRYPTO_ALGORITHM, provider):KeyFactory.getInstance(CRYPTO_ALGORITHM);
+		kFact = (provider == null)? KeyFactory.getInstance(CRYPTO_ALGORITHM):KeyFactory.getInstance(CRYPTO_ALGORITHM, provider);
 
 		BigInteger pep = new BigInteger(key[5]);
 		BigInteger peq = new BigInteger(key[6]);
@@ -244,7 +244,7 @@ final class LTPACrypto {
 		PrivateKey privKey = kFact.generatePrivate(privCrtKeySpec);
 
 		Signature rsaSig = null;
-		rsaSig = (provider != "")? Signature.getInstance(SIGNATURE_ALGORITHM, provider):Signature.getInstance(SIGNATURE_ALGORITHM);
+		rsaSig = (provider == null)? Signature.getInstance(SIGNATURE_ALGORITHM):Signature.getInstance(SIGNATURE_ALGORITHM, provider);
 		rsaSig.initSign(privKey);
 		rsaSig.update(data, off, len);
 		byte[] sig = rsaSig.sign();
@@ -507,10 +507,10 @@ final class LTPACrypto {
 		KeyFactory kFact = null;
 		Signature rsaSig = null;
 
-		kFact = (provider != "")? KeyFactory.getInstance(CRYPTO_ALGORITHM, provider):KeyFactory.getInstance(CRYPTO_ALGORITHM);
+		kFact = (provider == null)? KeyFactory.getInstance(CRYPTO_ALGORITHM):KeyFactory.getInstance(CRYPTO_ALGORITHM, provider);
 		RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(n, e);
 		PublicKey pubKey = kFact.generatePublic(pubKeySpec);
-		rsaSig = (provider != "")? Signature.getInstance(SIGNATURE_ALGORITHM, provider):Signature.getInstance(SIGNATURE_ALGORITHM);
+		rsaSig = (provider == null)? Signature.getInstance(SIGNATURE_ALGORITHM):Signature.getInstance(SIGNATURE_ALGORITHM, provider);
 		rsaSig.initVerify(pubKey);
 		rsaSig.update(data, off, len);
 		verified = rsaSig.verify(sig);
@@ -584,7 +584,7 @@ final class LTPACrypto {
 		} else {
 			DESedeKeySpec kSpec = new DESedeKeySpec(key);
 			SecretKeyFactory kFact = null;
-			kFact = (provider != "")? SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM, provider):SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM);
+			kFact = (provider == null)? SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM):SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM, provider);
 			sKey = kFact.generateSecret(kSpec);
 		}
 		return sKey;
@@ -606,7 +606,7 @@ final class LTPACrypto {
 
 		Cipher ci = null;
 		
-		ci = (provider != "")? Cipher.getInstance(cipher, provider):Cipher.getInstance(cipher);
+		ci = (provider == null)? Cipher.getInstance(cipher):Cipher.getInstance(cipher, provider);
 		if (cipher.indexOf("ECB") == -1) {
 			if (cipher.indexOf("AES") != -1) {
 				if (ivs16 == null) {
@@ -1020,7 +1020,7 @@ final class LTPACrypto {
 		KeyPairGenerator keyGen = null;
 		try {
 
-			keyGen = (provider != "")? KeyPairGenerator.getInstance(CRYPTO_ALGORITHM, provider):KeyPairGenerator.getInstance(CRYPTO_ALGORITHM);
+			keyGen = (provider == null)? KeyPairGenerator.getInstance(CRYPTO_ALGORITHM):KeyPairGenerator.getInstance(CRYPTO_ALGORITHM, provider);
 
 			keyGen.initialize(len * 8, new SecureRandom());
 			pair = keyGen.generateKeyPair();
@@ -1056,7 +1056,7 @@ final class LTPACrypto {
 	}
 
 	private static String getProvider(){
-		String provider = "";
+		String provider = null;
 		if (LTPAKeyUtil.isIBMJCEAvailable()) {
 			provider = IBMJCE_NAME;
 		} else if(LTPAKeyUtil.isZOSandRunningJava11orHigher() && LTPAKeyUtil.isOpenJCEPlusAvailable()){

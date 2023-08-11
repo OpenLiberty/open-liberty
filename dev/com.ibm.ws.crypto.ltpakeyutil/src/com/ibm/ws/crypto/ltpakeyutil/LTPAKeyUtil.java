@@ -24,6 +24,9 @@ public final class LTPAKeyUtil {
   public static boolean javaVersionChecked = false;
   public static boolean isJava11orHigher = false;
 
+  public static boolean zOSAndJAVA11orHigherChecked = false; 
+  public static boolean iszOSAndJava11orHigher = false; 
+
   public static String osName = System.getProperty("os.name");
   public static boolean isZOS = false;
   public static boolean osVersionChecked = false;
@@ -112,7 +115,14 @@ public final class LTPAKeyUtil {
   }
 
   public static boolean isZOSandRunningJava11orHigher() {
-    return isJava11orHigher() && isZOS();
+    if (zOSAndJAVA11orHigherChecked){
+      return iszOSAndJava11orHigher;
+    }
+    else {
+      iszOSAndJava11orHigher = isJava11orHigher() && isZOS();
+      zOSAndJAVA11orHigherChecked = true;
+      return iszOSAndJava11orHigher;
+    }
   }
 
 }
