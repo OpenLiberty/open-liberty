@@ -412,6 +412,11 @@ public class DependencyManager<S, T> implements ReferenceManager<S, T>
                 m_componentManager.getLogger().log(Level.DEBUG,
                     "dm {0} tracking {1} MultipleDynamic removed (deactivate) {2}",
                     null, getName(), trackingCount, serviceReference );
+                if (event != null) {
+                    // After event has been processed make sure to check if we missed anything
+                    // while deactivating; this will possibly reactivate
+                    event.addComponentManager(m_componentManager);
+                }
             }
             ungetService(refPair);
         }
@@ -1136,6 +1141,11 @@ public class DependencyManager<S, T> implements ReferenceManager<S, T>
                 tracked(trackingCount);
                 untracked = false;
                 deactivateComponentManager();
+                if (event != null) {
+                    // After event has been processed make sure to check if we missed anything
+                    // while deactivating; this will possibly reactivate
+                    event.addComponentManager(m_componentManager);
+                }
             }
 
             if (untracked) // not ours
