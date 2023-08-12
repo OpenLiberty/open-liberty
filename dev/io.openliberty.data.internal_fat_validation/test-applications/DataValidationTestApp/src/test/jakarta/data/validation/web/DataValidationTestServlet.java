@@ -176,6 +176,33 @@ public class DataValidationTestServlet extends FATServlet {
     }
 
     /**
+     * Save a Java class (no entity annotation) without any constraint violations.
+     * Modify the entity in the database such that it violates constraints for Positive.
+     * Verify that the invalid entity can be successfully removed.
+     */
+    @Test
+    public void testRemoveInvalidNegative_Class() {
+        Creature c = new Creature(800l, "Hooded Merganser", "Lophodytes cucullatus", //
+                        BigDecimal.valueOf(47187965l, 6), BigDecimal.valueOf(-95193545l, 6), //
+                        ZonedDateTime.of(2023, 8, 7, 15, 17, 18, 888, ZoneId.of("America/Chicago")).toOffsetDateTime(), //
+                        0.81f);
+        creatures.save(c);
+
+        // Validation does not apply to updates made in ways that do not involve the class
+        assertEquals(true, creatures.updateByIdSetWeight(800L, -0.823f));
+
+        // Validation does not apply to find operations.
+        c = creatures.findById(800l).orElseThrow();
+
+        // The application can choose to validate entities from find operations manually:
+        Set<?> violations = validator.validate(c);
+        assertEquals(violations.toString(), 1, violations.size());
+
+        // It must be possible to remove invalid entities:
+        creatures.delete(c);
+    }
+
+    /**
      * Save a record that has no constraint violations.
      */
     @Test
@@ -191,10 +218,41 @@ public class DataValidationTestServlet extends FATServlet {
     }
 
     /**
+     * Save a Java class (no entity annotation) without any constraint violations.
+     * Modify the entity in the database such that it violates constraints for Positive.
+     * Verify that the invalid entity can be updated to be made valid again.
+     */
+    @Test
+    public void testUpdateFixInvalidNegative_Class() {
+        creatures.save(new Creature(900l, "Moose", "Alces alces", //
+                        BigDecimal.valueOf(47513117l, 6), BigDecimal.valueOf(-91169845l, 6), //
+                        ZonedDateTime.of(2023, 8, 7, 15, 18, 19, 999, ZoneId.of("America/Chicago")).toOffsetDateTime(), //
+                        459.2f));
+
+        // Validation does not apply to updates made in ways that do not involve the class
+        assertEquals(true, creatures.updateByIdSetWeight(900L, -452.9f));
+
+        // Validation does not apply to find operations.
+        Creature c = creatures.findById(900l).orElseThrow();
+
+        // The application can choose to validate entities from find operations manually:
+        Set<?> violations = validator.validate(c);
+        assertEquals(violations.toString(), 1, violations.size());
+
+        // Should be able to update the entity to fix it.
+        c.weight = 452.9f;
+        c = creatures.save(c);
+        assertEquals(452.9f, c.weight, 0.00001f);
+
+        violations = validator.validate(c);
+        assertEquals(violations.toString(), 0, violations.size());
+    }
+
+    /**
      * Attempt to save updates to Jakarta Persistence entities where the updates violate one or more constraints.
      */
     @Test
-    public void testUpdateInvalidMinAndEmail_Entity() {
+    public void testUpdateSaveInvalidMinAndEmail_Entity() {
         Entitlement[] e = new Entitlement[2];
         e[0] = new Entitlement(4, "US-SNAP", "person4@openliberty.io", Frequency.AS_NEEDED, 50, null, 23.00f, BigDecimal.valueOf(43.00f));
         e[1] = new Entitlement(5, "US-TANF", "person5@openliberty.io", Frequency.MONTHLY, 13, null, 1549.00f, BigDecimal.valueOf(5266.00f));
@@ -241,7 +299,7 @@ public class DataValidationTestServlet extends FATServlet {
      * Attempt to save updates to Java class entities (no entity annotation) where the updates violate one or more constraints.
      */
     @Test
-    public void testUpdateInvalidPatternAndMax_Class() {
+    public void testUpdateSaveInvalidPatternAndMax_Class() {
         final ZoneId CENTRAL = ZoneId.of("America/Chicago");
         Iterable<Creature> added = creatures.saveAll(List.of( //
                                                              new Creature(600l, "Beaver", "Castor canadensis", //
@@ -301,7 +359,7 @@ public class DataValidationTestServlet extends FATServlet {
      * Attempt to save updates to record entities where the updates violate one or more constraints.
      */
     @Test
-    public void testUpdateInvalidZeroWidth_Records() {
+    public void testUpdateSaveInvalidZeroWidth_Records() {
         rectangles.saveAll(new Rectangle("R6", 600l, 660l, 16, 60),
                            new Rectangle("R7", 700l, 770l, 17, 70));
 
