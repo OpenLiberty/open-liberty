@@ -47,7 +47,6 @@ com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen:2.6.10.W
 com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa:2.6.10.WAS-f193aac
 com.ibm.ws.org.objenesis:objenesis:1.0
 com.ibm.ws:geronimo-validation:1.1
-com.ibm.ws:nekohtml:1.9.18
 io.openliberty.jakarta.ws.rs:jakarta-restful-ws-tck:3.1.2
 io.openliberty.org.codehaus.jackson:jackson-core-asl:1.9.13.1
 io.openliberty.org.codehaus.jackson:jackson-jaxrs:1.9.13.1
