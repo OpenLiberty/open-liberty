@@ -43,11 +43,29 @@ public interface LTPAConfiguration {
      */
     public static final String CFG_KEY_MONITOR_INTERVAL = "monitorInterval";
 
+    /**
+     * The Boolean to monitor the token keys file's directory.
+     */
     static final String CFG_KEY_MONITOR_DIRECTORY = "monitorDirectory";
 
+    /**
+     * The token validation keys.
+     */
     static final String CFG_KEY_VALIDATION_KEYS = "validationKeys";
+
+    /**
+     * The token validation keys file(s).
+     */
     static final String CFG_KEY_VALIDATION_FILE_NAME = "fileName";
+
+    /**
+     * The token validation keys file password.
+     */
     static final String CFG_KEY_VALIDATION_PASSWORD = "password";
+
+    /**
+     * The the date-time to stop using the token validation keys.
+     */
     static final String CFG_KEY_VALIDATION_NOT_USE_AFTER_DATE = "notUseAfterDate";
 
     /**

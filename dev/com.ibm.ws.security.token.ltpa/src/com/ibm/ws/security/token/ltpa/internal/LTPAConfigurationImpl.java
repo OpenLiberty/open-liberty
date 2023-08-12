@@ -136,6 +136,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     }
     //TODO: add sensitive to all password later.
 
+    @Sensitive
     private void loadConfig(Map<String, Object> props) {
         primaryKeyImportFile = (String) props.get(CFG_KEY_IMPORT_FILE);
         SerializableProtectedString sps = (SerializableProtectedString) props.get(CFG_KEY_PASSWORD);
@@ -202,6 +203,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      *
      **/
     @SuppressWarnings("unlikely-arg-type")
+    @Sensitive
     private List<Properties> getUnConfigValidationKeys() {
         List<Properties> validationKeysInDirectory = new ArrayList<Properties>();
         WsResource keysFileInDirectory = locationService.getServiceWithException().resolveResource(primaryKeyImportDir);
@@ -336,8 +338,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     }
 
     @Override
-    public void performFileBasedAction(Collection<File> modifiedFiles) {
-    }
+    public void performFileBasedAction(Collection<File> modifiedFiles) {}
 
     /**
      * Action is needed if a file is modified or if it is recreated after it was deleted
@@ -697,6 +698,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      * @param elementName the element being processed
      * @param attrKeys    get attributes
      */
+    @Sensitive
     private Properties getValidationKeysProps(Map<String, Object> configProps, String elementName, String... attrKeys) {
         Properties properties = new Properties();
         for (String attrKey : attrKeys) {
