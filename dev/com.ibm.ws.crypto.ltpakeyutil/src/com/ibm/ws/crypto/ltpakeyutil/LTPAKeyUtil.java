@@ -83,7 +83,6 @@ public final class LTPAKeyUtil {
   }
 
   public static boolean isOpenJCEPlusAvailable() {
-    // change to z
     if (zosProviderChecked) {
       return openJCEPlusAvailable;
     } else {
