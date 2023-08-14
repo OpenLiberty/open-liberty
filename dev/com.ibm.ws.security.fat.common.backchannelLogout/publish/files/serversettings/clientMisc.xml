@@ -21,5 +21,6 @@
 	<webAppSecurity
 		httpOnlyCookies="false"
 		ssoCookieName="${clientCookieName}"
+		trackLoggedOutSSOCookies="true"
 		allowFailOverToBasicAuth="true" />
 </server>

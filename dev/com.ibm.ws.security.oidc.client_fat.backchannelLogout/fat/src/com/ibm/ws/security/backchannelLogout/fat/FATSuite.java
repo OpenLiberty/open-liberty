@@ -13,15 +13,21 @@
 
 package com.ibm.ws.security.backchannelLogout.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.security.fat.common.actions.LargeProjectRepeatActions;
+
+import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.RepeatTests;
+
 @RunWith(Suite.class)
 @SuiteClasses({
-        //        AlwaysPassesTest.class,
-        //        HttpMethodsTests.class,
-        //        LogoutTokenValidationTests.class,
+        AlwaysPassesTest.class,
+        HttpMethodsTests.class,
+        LogoutTokenValidationTests.class,
         BasicBCLTests.class,
         MultiServerBCLTests.class
 
@@ -36,7 +42,7 @@ public class FATSuite {
      *
      * This was done to increase coverage of EE9 while not adding a large amount of of test runtime.
      */
-    //    @ClassRule
-    //    public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10Repeats("servlet-5.0", "servlet-6.0");
+    @ClassRule
+    public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10Repeats("servlet-5.0", "servlet-6.0");
 
 }

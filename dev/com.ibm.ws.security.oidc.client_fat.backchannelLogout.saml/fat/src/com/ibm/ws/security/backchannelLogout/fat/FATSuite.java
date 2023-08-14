@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,16 +13,26 @@
 
 package com.ibm.ws.security.backchannelLogout.fat;
 
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.actions.LargeProjectRepeatActions;
+import com.ibm.ws.security.fat.common.utils.ldaputils.CommonLocalLDAPServerSuite;
+
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
         AlwaysPassesTest.class,
-        BasicBCLTests.class
+        // HttpMethodsTests.class,  doesn't need to run with SAML as this is a client only test
+        // LogoutTokenValidationTests.class,  doesn't need to run with SAML as this is a client only test
+        BasicBCLTests.class,
+        MultiServerBCLTests.class
 
 })
 /**
@@ -35,16 +45,18 @@ public class FATSuite {
      *
      * This was done to increase coverage of EE9 while not adding a large amount of of test runtime.
      */
-    //    @ClassRule
-    //    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
-    //            .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
-    //            .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().alwaysAddFeature("servlet-5.0").fullFATOnly());
+    @ClassRule
+    public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10Repeats();
 
-    //    @BeforeClass
-    //    public static void setup() throws Exception {
-    //        /*
-    //         * Force the tests to use local LDAP server
-    //         */
-    //        System.setProperty("fat.test.really.use.local.ldap", "true");
-    //    }
+    @BeforeClass
+    public static void setup() throws Exception {
+        /*
+         * Force the tests to use local LDAP server
+         */
+        Log.info(FATSuite.class, "setup", "Before setting fat.test.really.use.local.ldap");
+        System.setProperty("fat.test.really.use.local.ldap", "true");
+        Log.info(FATSuite.class, "setup", "fat.test.really.use.local.ldap: " + System.getProperty("fat.test.really.use.local.ldap"));
+        CommonLocalLDAPServerSuite.ldapSetUp();
+
+    }
 }

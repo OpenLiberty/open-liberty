@@ -303,10 +303,15 @@ public class AfterLogoutStates {
         setOPJSessionIdRemoved();
     }
 
-    public void setOPNoCookiesRemoved() throws Exception {
+    public void setOPNoCookiesRemoved(boolean isSaml) throws Exception {
 
-        opCookieExists = true;
-        opCookieMatchesPrevious = true;
+        if (isSaml) {
+            opCookieExists = false;
+            opCookieMatchesPrevious = false;
+        } else {
+            opCookieExists = true;
+            opCookieMatchesPrevious = true;
+        }
         opJSessionIdExists = true;
         opJSessionIdMatchesPrevious = true;
 
@@ -370,17 +375,17 @@ public class AfterLogoutStates {
         return opCookieMatchesPrevious;
     }
 
-    //    public void setClientCookieExists(boolean value) {
-    //        clientCookieExists = value;
-    //    }
+    public void setClientCookieExists(boolean value) {
+        clientCookieExists = value;
+    }
 
     public boolean getClientCookieExists() {
         return clientCookieExists;
     }
 
-    //    public void setClientCookieMatchesPrevious(boolean value) {
-    //        clientCookieMatchesPrevious = value;
-    //    }
+    public void setClientCookieMatchesPrevious(boolean value) {
+        clientCookieMatchesPrevious = value;
+    }
 
     public boolean getClientCookieMatchesPrevious() {
         return clientCookieMatchesPrevious;
@@ -424,8 +429,16 @@ public class AfterLogoutStates {
         return spCookieExists;
     }
 
+    public void setSpCookieExists(boolean value) {
+        spCookieExists = value;
+    }
+
     public boolean getSpCookieMatchesPrevious() {
         return spCookieMatchesPrevious;
+    }
+
+    public void setSpCookieMatchesPrevious(boolean value) {
+        spCookieMatchesPrevious = value;
     }
 
     public boolean getIdpCookieExists() {

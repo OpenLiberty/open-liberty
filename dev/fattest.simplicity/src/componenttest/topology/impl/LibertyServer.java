@@ -2067,7 +2067,7 @@ public class LibertyServer implements LogMonitorClient {
      *
      * @throws Exception
      */
-    private void initializeAnyExistingMarks() throws Exception {
+    public void initializeAnyExistingMarks() throws Exception {
         final String method = "initializeAnyExistingMarks";
 
         // First we clear any marks - it's possible this
