@@ -24,6 +24,7 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -32,7 +33,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
+import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -52,6 +55,14 @@ import org.junit.Test;
                           propagated = APPLICATION, cleared = ALL_REMAINING)
 @ContextServiceDefinition(name = "java:global/concurrent/without-app-context",
                           cleared = APPLICATION, propagated = ALL_REMAINING)
+@ManagedExecutorDefinition(name = "java:global/concurrent/executor-with-app-context",
+                           context = "java:global/concurrent/with-app-context")
+@ManagedExecutorDefinition(name = "java:global/concurrent/executor-without-app-context",
+                           context = "java:global/concurrent/without-app-context")
+@ManagedScheduledExecutorDefinition(name = "java:global/concurrent/scheduled-executor-with-app-context",
+                                    context = "java:global/concurrent/with-app-context")
+@ManagedScheduledExecutorDefinition(name = "java:global/concurrent/scheduled-executor-without-app-context",
+                                    context = "java:global/concurrent/without-app-context")
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class ConcurrentCDIServlet extends HttpServlet {
@@ -69,6 +80,22 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
     @Inject
     ManagedScheduledExecutorService defaultManagedScheduledExecutor;
+
+    @Inject
+    @Named("java:global/concurrent/executor-with-app-context")
+    ManagedExecutorService executorWithAppContext;
+
+    @Inject
+    @Named("java:global/concurrent/executor-without-app-context")
+    ManagedExecutorService executorWithoutAppContext;
+
+    @Inject
+    @Named("java:global/concurrent/scheduled-executor-with-app-context")
+    ManagedScheduledExecutorService scheduledExecutorWithAppContext;
+
+    @Inject
+    @Named("java:global/concurrent/scheduled-executor-without-app-context")
+    ManagedScheduledExecutorService scheduledExecutorWithoutAppContext;
 
     @Inject
     @Named("java:global/concurrent/with-app-context")
@@ -195,6 +222,34 @@ public class ConcurrentCDIServlet extends HttpServlet {
     }
 
     /**
+     * Inject qualified instances of ManagedExecutorService and verify that the behavior of each
+     * matches the configuration that the qualifier points to.
+     */
+    @Test
+    public void testInjectManagedExecutorServiceQualified() throws Exception {
+        Callable<?> task = () -> InitialContext.doLookup("java:comp/env/entry2");
+
+        assertNotNull(executorWithAppContext);
+
+        Future<?> future1 = executorWithoutAppContext.submit(task);
+        try {
+            Object result1 = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("Application context should be cleared, preventing java:comp lookup. Instead found " + result1);
+        } catch (ExecutionException x) {
+            if (x.getCause() instanceof NamingException)
+                ; // expected
+            else
+                throw x;
+        }
+
+        assertNotNull(executorWithoutAppContext);
+
+        Future<?> future2 = executorWithAppContext.submit(task);
+        Object result2 = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("value2", result2);
+    }
+
+    /**
      * Inject default instance of ManagedScheduledExecutorService and use it.
      */
     @Test
@@ -213,5 +268,33 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
         assertEquals(true, future1.cancel(false));
         assertEquals(0, executionCount.get());
+    }
+
+    /**
+     * Inject qualified instances of ManagedScheduledExecutorService and verify that the behavior of each
+     * matches the configuration that the qualifier points to.
+     */
+    @Test
+    public void testInjectManagedScheduledExecutorServiceQualified() throws Exception {
+        Callable<?> task = () -> InitialContext.doLookup("java:comp/env/entry2");
+
+        assertNotNull(scheduledExecutorWithAppContext);
+        assertNotNull(scheduledExecutorWithoutAppContext);
+
+        Future<?> future1 = scheduledExecutorWithoutAppContext.schedule(task, 111, TimeUnit.MILLISECONDS);
+        Future<?> future2 = scheduledExecutorWithAppContext.schedule(task, 112, TimeUnit.MILLISECONDS);
+
+        try {
+            Object result1 = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("Application context should be cleared, preventing java:comp lookup. Instead found " + result1);
+        } catch (ExecutionException x) {
+            if (x.getCause() instanceof NamingException)
+                ; // expected
+            else
+                throw x;
+        }
+
+        Object result2 = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("value2", result2);
     }
 }
