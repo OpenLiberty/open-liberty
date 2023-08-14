@@ -25,7 +25,6 @@ import org.omg.CORBA.LocalObject;
 import com.ibm.ws.threading.RunnableWithContext;
 import com.ibm.wsspi.threading.WorkContext;
 import com.ibm.ws.transport.iiop.internal.IIOPWorkContext;
-// import com.ibm.ws.transport.iiop.workcontext;
 import com.ibm.ws.transport.iiop.workcontext.IIOPWorkContextInterceptor;
 
 /**
@@ -42,52 +41,14 @@ public class ExecutorDispatchStrategy extends LocalObject implements DispatchStr
     public ExecutorDispatchStrategy(Executor executor) {
         this.executor = executor;
     }
-    // Lh set the thread local, parms to map to place on thread local
- /*   public static void setIiopWorkContext() {
-
-    }
-
-    */
-
-    // ** LH Test block'''
-    //LH static ?
- /*   private static final ThreadLocal<Map<String, Serializable>> workInfoMap = new ThreadLocal<Map<String, Serializable>> (){
-
-	// LH Why is this concurrent, isn't it accessed by single thread ?
-        @Override
-        protected Map<String, Serializable> initialValue() {
-            return new ConcurrentHashMap<>();
-
-        }
-    };
- */
-    // LH move to ExecutorDispatchStrategy since accessed by both bundles ?
-/*    public static Map<String, Serializable> getWorkInfoMap(){
-       return workInfoMap.get();
-
-    }
-    // ** LH End block '''
-
-    */
 
     /** {@inheritDoc} */
 	@Override
     public void dispatch(final DispatchRequest req) {
 
-        //executor.execute(new RunnableWithContext() {
-		// Extract threadlocal info ( operation ) from the iiop.workcontext and set wc
-		// and remove from the iiop threadlocal.
-		// Retrieving info in ReceiveRequest WorkContext
-
-		// Merge Map from rec request into wc.
-		// ..putAll()
-		// wc.putAll(IIOPWorkContextInterceptor.getWorkInfoMap());
-
-		// Mike Nov 2 using executor
-		//wc.putAll(((ExecutorServiceImpl)executor).getWorkContext());
 		// empty then skip
 		if ( IIOPWorkContextInterceptor.getWorkInfoMap().isEmpty()) {
-
+			System.out.println("ExecutorDispatchStrategy-Infomap empty " + "\n");
 			executor.execute(new Runnable() {
 
                 @Override
@@ -99,17 +60,16 @@ public class ExecutorDispatchStrategy extends LocalObject implements DispatchStr
 		}
 		else
 		{
+			System.out.println("ExecutorDispatchStrategy - dispatch Map update for WorkType: " + wc.getWorkType() + "\n");
 
 		wc.putAll(IIOPWorkContextInterceptor.getWorkInfoMap());
-		    //wc.putAll(workInfoMap.get());
 
-
-		//System.out.println("Request_Id: " + workInfoMap.get().IIOP_REQUEST_ID + "\n");
+		//Test purposes
 		System.out.println("ExecutorDispatchStrategy-requestId: " + wc.get(WorkContext.IIOP_REQUEST_ID) + "\n");
 		System.out.println("ExecutorDispatchStrategy-operation: " + wc.get(WorkContext.IIOP_OPERATION_NAME) + "\n");
-		System.out.println("ExecutorDispatchStrategy-targetId: " + wc.get(WorkContext.IIOP_TARGET_NAME) + "\n");
+		System.out.println("ExecutorDispatchStrategy-targetId : " + wc.get(WorkContext.IIOP_TARGET_NAME) + "\n");
 
-
+		System.out.println("ExecutorDispatchStrategy-dispatch execute RunnableWithContext" + "\n");
 		executor.execute(new RunnableWithContext() {
 
             @Override
@@ -119,6 +79,13 @@ public class ExecutorDispatchStrategy extends LocalObject implements DispatchStr
 
             @Override
             public WorkContext getWorkContext() {
+		System.out.println("ExecutorDispatchStrategy - dispatch Map update in getWorkContext ");
+		// possible fix
+		wc.putAll(IIOPWorkContextInterceptor.getWorkInfoMap());
+		System.out.println("ExecutorDispatchStrategy-getWorkContext- requestId: " + wc.get(WorkContext.IIOP_REQUEST_ID) + "\n");
+		System.out.println("ExecutorDispatchStrategy-getWorkContext- operation: " + wc.get(WorkContext.IIOP_OPERATION_NAME) + "\n");
+		System.out.println("ExecutorDispatchStrategy-getWorkContext- targetId : " + wc.get(WorkContext.IIOP_TARGET_NAME) + "\n");
+
                 return wc;
             }
 
