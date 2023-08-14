@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,11 +27,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletContext;
 
-
 @WebServlet("/")
 public class HoldingServlet extends HttpServlet {
     public static final String CLASS_NAME = "HoldingServlet";
-
 
     public HoldingServlet() {
         super();
@@ -41,76 +39,106 @@ public class HoldingServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException{
         
-            String methodName = "doPost";
+        String methodName = "doPost";
 
-            PrintWriter responseWriter = response.getWriter();
-            responseWriter.println(String.format("%s.%s: Enter",CLASS_NAME, methodName));
+        try ( PrintWriter responseWriter = response.getWriter(); ) {
+            responseWriter.println(CLASS_NAME + "." + methodName + ": Enter");
             responseWriter.flush();
-            responseWriter.close();
+        }
     }
 
-    //sccl.loadClass("CLASSNAME"); => work area cache increase WEB-INF/lib/TestJar.jar
-    //sccl.getResource("testfile.txt") => does nothing
-    //sc.getResourceAsStream("WEB-INF/lib/TestJar.jar"); => opens apps/*.war
-    //testFile.openStream(); => opens work area cache
+    //
+    
+    protected URL fileResource;
+    protected InputStream fileInputStream;
 
+    protected InputStream jarInputStream;
+    
+    protected void openResources(ServletContext sc) throws IOException {
+        fileResource = sc.getClassLoader().getResource("testfile.txt"); // throws IOException
+        fileInputStream = fileResource.openStream(); // throws IOException        
 
+        jarInputStream = sc.getResourceAsStream("WEB-INF/lib/TestJar.jar"); // throws IOException
+    }
+
+    protected void closeResources() throws IOException {
+        IOException firstException = null;
+
+        if ( fileResource != null ) {
+            if ( fileInputStream != null ) {
+                try {
+                    fileInputStream.close(); // throws IOException
+                } catch ( IOException e ) {
+                    firstException = e;
+                }
+                fileInputStream = null;
+            }
+            fileResource = null;
+        }
+        
+        if ( jarInputStream != null ) {
+            try {
+                jarInputStream.close(); // throws IOException
+            } catch ( IOException e ) {
+                if ( firstException == null ) {
+                    firstException = e;
+                } else {
+                    e.printStackTrace();
+                }
+            }
+            jarInputStream = null;
+        }
+        
+        if ( firstException != null ) {
+            throw firstException;
+        }
+    }
+    
+    /**
+     * Servlet API: Main test method: Acquire or release web module
+     * resources.
+     *
+     * Acquiring web module resources means obtaining and opening
+     * a file resource, and opening an archive resource.  Opening
+     * the resources causes activity in the zip cache.  Holding
+     * the resources open keeps entries in the zip cache in an
+     * open state.
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
-        String methodName = "doGet";
-        ServletContext sc = request.getServletContext();
-        ClassLoader sccl = sc.getClassLoader();
-        PrintWriter responseWriter = response.getWriter();
-        String responseValue;
 
-        URL testFile;
-        InputStream in;
-        InputStream in2;
-        try{
-            testFile = sccl.getResource("testfile.txt");
-            in = sc.getResourceAsStream("WEB-INF/lib/TestJar.jar");
-            in2 = testFile.openStream();
-        }catch(Exception e){
-            testFile = null;
-            in = null;
-            in2 = null;
-        }
-
-        String query = request.getQueryString();
-        int waitMillis = -1;
-        //if a hold has been requested
-        if(query.contains("hold")){
-            try{
-                waitMillis = 1000 * Integer.parseInt(query.split("=")[1]);
-                Thread.sleep(waitMillis);
-                responseValue = "Waited for " + waitMillis + " ms";
-            }catch(Exception e){
-                responseValue = "Failed to wait for " + waitMillis + " ms";
+        try ( PrintWriter responseWriter = response.getWriter(); ) {                
+            String query = request.getQueryString();
+            if ( query.contains("hold") ) {
+                try {
+                    openResources( request.getServletContext() );
+                    responseWriter.println("hold: Success");
+                } catch ( IOException e ) {
+                    responseWriter.println("hold: Failed");
+                    e.printStackTrace(responseWriter);
+                }
+            } else if ( query.contains("release") ) {
+                try {
+                    closeResources();
+                    responseWriter.println("release: Success");
+                } catch ( IOException e ) {
+                    responseWriter.println("release: Failure");
+                    e.printStackTrace(responseWriter);                
+                }
+            } else {
+                responseWriter.println("Unknown [ " + query + " ]");
             }
-        }
-        else{
-            responseValue = "No hold specified";
-        }
-        
-        if(in != null){
-            in.close();
-        }
-        if(in2 != null){
-            in2.close();
-        }
-        /*
-        responseWriter.println(testClass);
-        responseWriter.println(testFile);
-        responseWriter.println(in);
-        responseWriter.println(in2);
-        responseWriter.println("-----------------------");
-        responseWriter.println(request.getQueryString());
-        */
-        responseWriter.println(responseValue);
-        responseWriter.flush();
-        responseWriter.close();
 
-        
+            responseWriter.flush();
+        }
+    }
+    
+    public void destroy() {
+        try {
+            closeResources();
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
     }
 }
