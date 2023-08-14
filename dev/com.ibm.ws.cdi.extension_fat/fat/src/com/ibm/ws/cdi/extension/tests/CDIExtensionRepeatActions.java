@@ -15,9 +15,7 @@ package com.ibm.ws.cdi.extension.tests;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.ibm.websphere.simplicity.LocalFile;
 
@@ -115,12 +113,11 @@ public class CDIExtensionRepeatActions {
                                                                    .build(EE10_PLUS_ID);
 
     //All CDI FeatureSets - must be descending order
-    private static final FeatureSet[] ALL_SETS_ARRAY = { EE10_PLUS, EE9_PLUS, EE8_PLUS, EE10_PLUS };
-    public static final List<FeatureSet> ALL_SETS_LIST = Collections.unmodifiableList(Arrays.asList(ALL_SETS_ARRAY));
-    public static final Set<FeatureSet> ALL = Collections.unmodifiableSet(new HashSet<>(ALL_SETS_LIST));
+    private static final FeatureSet[] ALL_SETS_ARRAY = { EE10_PLUS, EE9_PLUS, EE8_PLUS, EE7_PLUS };
+    public static final List<FeatureSet> ALL = Collections.unmodifiableList(Arrays.asList(ALL_SETS_ARRAY));
 
     public static RepeatTests repeat(String server, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
-        return RepeatActions.repeat(server, TestMode.FULL, ALL_SETS_LIST, firstFeatureSet, otherFeatureSets);
+        return RepeatActions.repeat(server, TestMode.FULL, ALL, firstFeatureSet, otherFeatureSets);
     }
 
     public static boolean isJakartaActive() {

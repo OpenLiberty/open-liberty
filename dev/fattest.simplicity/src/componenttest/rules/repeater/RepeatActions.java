@@ -14,7 +14,6 @@ package componenttest.rules.repeater;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -122,7 +121,7 @@ public class RepeatActions {
      * @param  testMode       The test mode to run the FeatureSet
      * @return                A FeatureReplacementAction instance
      */
-    public static FeatureReplacementAction forFeatureSet(Collection<FeatureSet> allFeatureSets, FeatureSet featureSet, String server, TestMode testMode) {
+    public static FeatureReplacementAction forFeatureSet(List<FeatureSet> allFeatureSets, FeatureSet featureSet, String server, TestMode testMode) {
         //First create a base FeatureReplacementAction
         //Need to use a FeatureReplacementAction which is specific to the EE version because it also contains the transformation code
         FeatureReplacementAction action = null;
