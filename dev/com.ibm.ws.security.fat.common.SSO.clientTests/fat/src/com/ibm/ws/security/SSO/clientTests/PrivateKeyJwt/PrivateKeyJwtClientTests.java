@@ -545,7 +545,7 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
      * the keystore is a different cert.
      * We should not have access to the protected app.
      */
-    @AllowedFFDC({ "io.openliberty.security.oidcclientcore.http.BadPostRequestException", "sun.security.validator.ValidatorException", "javax.net.ssl.SSLHandshakeException" })
+    @AllowedFFDC({ "io.openliberty.security.oidcclientcore.http.BadPostRequestException", "sun.security.validator.ValidatorException", "javax.net.ssl.SSLHandshakeException", "java.security.cert.CertPathValidatorException" })
     @Test
     public void PrivateKeyJwtClientTests_accessTokenUsesRS256_privateKeyJwtUsesRS256_sameAliasDiffCert() throws Exception {
 
