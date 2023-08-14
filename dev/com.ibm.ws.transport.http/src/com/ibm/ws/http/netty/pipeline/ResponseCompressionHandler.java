@@ -101,7 +101,7 @@ public class ResponseCompressionHandler {
                 //Body has already been marked as compressed above the channel, do not attempt to compress
                 doCompression = false;
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Response already contains Content-Encoding: [" + headers.get(HttpHeaderKeys.HDR_CONTENT_ENCODING.asString()) + "]");
+                    Tr.debug(tc, "Response already contains Content-Encoding: [" + headers.get(HttpHeaderKeys.HDR_CONTENT_ENCODING.toString()) + "]");
                 }
 
             }
@@ -111,18 +111,18 @@ public class ResponseCompressionHandler {
                 doCompression = Boolean.TRUE;
             }
 
-            else if (doCompression) {
-                preferredEncoding = outgoingMsgEncoding.getName();
-                if (!this.isSupportedEncoding() || !isCompressionAllowed()) {
-
-                    doCompression = false;
-                }
-            }
+//            else if (doCompression) {
+//                preferredEncoding = outgoingMsgEncoding.getName();
+//                if (!this.isSupportedEncoding() || !isCompressionAllowed()) {
+//
+//                    doCompression = false;
+//                }
+//            }
 
             else {
 
                 // check private compression header
-                preferredEncoding = msg.getHeader(HttpHeaderKeys.HDR_$WSZIP).asString();
+                preferredEncoding = headers.get(HttpHeaderKeys.HDR_$WSZIP.getName());
                 if (null != preferredEncoding) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Header requests compression: [" + preferredEncoding + "]");
@@ -147,10 +147,10 @@ public class ResponseCompressionHandler {
                     //algorithm, check that the client accepts it and the server supports it.
                     //If so, set this to be the compression algorithm.
                     if (!"none".equalsIgnoreCase(serverPreferredEncoding) &&
-                        (acceptableEncodings.containsKey(serverPreferredEncoding) || (bStarEncodingParsed && !this.unacceptableEncodings.contains(serverPreferredEncoding)))) {
+                        (acceptableEncodings.containsKey(serverPreferredEncoding) || (starEncodingParsed && !this.unacceptableEncodings.contains(serverPreferredEncoding)))) {
 
                         this.preferredEncoding = serverPreferredEncoding;
-                        if (this.isSupportedEncoding() && isCompressionAllowed()) {
+                        if (this.isEncodingSupported(preferredEncoding) && isCompressionAllowed()) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "Setting server preferred encoding");
                             }
@@ -215,16 +215,16 @@ public class ResponseCompressionHandler {
             }
 
             if (!doCompression) {
-
-                setOutgoingMsgEncoding(ContentEncodingValues.IDENTITY);
+                preferredEncoding = ContentEncodingValues.IDENTITY.getName();
+                // setOutgoingMsgEncoding(ContentEncodingValues.IDENTITY);
             }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.exit(tc, "Outgoing Encoding: [" + +"]");
+            Tr.exit(tc, "Outgoing Encoding: [" + this.preferredEncoding + "]");
         }
 
-        return shouldAutoCompress;
+        return doCompression;
     }
 
     private boolean isCompressionAllowed() {
@@ -266,7 +266,7 @@ public class ResponseCompressionHandler {
             //The special symbol "*" in an Accept-Encoding field matches any available
             //content-coding not explicitly listed in the header field.
 
-            rc = this.bStarEncodingParsed;
+            isAllowed = this.starEncodingParsed;
 
         }
 
