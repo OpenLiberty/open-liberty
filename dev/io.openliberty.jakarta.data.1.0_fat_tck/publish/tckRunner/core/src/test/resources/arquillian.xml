@@ -24,9 +24,9 @@
 			<property name="appDeployTimeout">${tck_appDeployTimeout}</property>
 			<property name="appUndeployTimeout">${tck_appUndeployTimeout}</property>
 			
-			<!-- Custom properties needed for tests to run without using a servlet -->
-			<property name="allowConnectingToRunningServer">true</property>
+			<!-- Specific to core profiles -->
 			<property name="testProtocol">rest</property>
+			<property name="allowConnectingToRunningServer">true</property>
 		</configuration>
 	</container>
 </arquillian> 

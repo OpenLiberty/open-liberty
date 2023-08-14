@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -212,7 +212,7 @@ public class LocalTranCurrentImpl {
         // the thread; it dies a horrible death.
         if (ltc != null && _coord != null) {
             // We don't output a message here as manipulation of LTCs is only ever
-            // done by system level code - there's nothing a user can do to 
+            // done by system level code - there's nothing a user can do to
             // prevent this problem from occurring
             final IllegalStateException ise = new IllegalStateException();
             if (tc.isEntryEnabled())
@@ -408,9 +408,6 @@ public class LocalTranCurrentImpl {
                 Tr.exit(tc, "end", ise);
             throw ise;
         }
-
-        // LTC is gonna get taken off the thread as part of end processing so save a reference here
-        final UOWCoordinator endingLTC = _coord;
 
         try {
             _coord.end(endMode);

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -28,7 +28,7 @@ import com.ibm.websphere.ras.TraceComponent;
  * a corresponding resume call has not been made within the alloted time for that suspend
  * token, then the RLSSuspendTokenManager listens for any timeout events and as a result
  * can trigger the resumption of the RecoveryLogService
- * 
+ *
  */
 class RLSSuspendTokenManager implements AlarmListener {
 
@@ -198,7 +198,7 @@ class RLSSuspendTokenManager implements AlarmListener {
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "isResumable", new Boolean(isResumable));
+            Tr.exit(tc, "isResumable", isResumable);
 
         return isResumable;
     }

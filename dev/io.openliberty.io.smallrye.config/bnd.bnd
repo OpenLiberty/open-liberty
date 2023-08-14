@@ -48,9 +48,9 @@ Export-Package: \
 
 -buildpath: \
   io.openliberty.io.smallrye.common;version=latest, \
-  io.smallrye.config:smallrye-config;version=latest, \
-  io.smallrye.config:smallrye-config-common;version=latest, \
-  io.smallrye.config:smallrye-config-core;version=latest, \
+  io.smallrye.config:smallrye-config;version=2.5.1;strategy=exact, \
+  io.smallrye.config:smallrye-config-common;version=2.5.1;strategy=exact, \
+  io.smallrye.config:smallrye-config-core;version=2.5.1;strategy=exact, \
   com.ibm.websphere.javaee.cdi.2.0;version=latest, \
   com.ibm.websphere.javaee.annotation.1.3;version=latest, \
   io.openliberty.org.eclipse.microprofile.config.2.0;version=latest, \

@@ -563,8 +563,8 @@ public class FeatureList {
 
                 APIType apiType = APIType.getAPIType(fr);
                 Map<String,String> attrs = new HashMap<String,String>(1);
-                if (fr.getRequireJava() != null)
-                    attrs.put("require-java", fr.getRequireJava().toString());
+                if (fr.getJavaRange() != null)
+                    attrs.put("require-java", fr.getJavaRange().toString());
                 if (apiType == APIType.API) {
                     if (apiJars != null) {
                         apiJars.put(f, attrs);

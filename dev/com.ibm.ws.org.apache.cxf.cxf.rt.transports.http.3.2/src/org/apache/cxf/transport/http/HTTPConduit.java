@@ -32,6 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -91,6 +92,7 @@ import org.apache.cxf.workqueue.AutomaticWorkQueue;
 import org.apache.cxf.workqueue.WorkQueueManager;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
+// Liberty Change Start - Imports
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cxf.jaxrs21.client.component.AsyncClientRunnableWrapperManager;
@@ -98,7 +100,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 
 import com.ibm.websphere.ras.annotation.Trivial;
-
+// Liberty Change End
 /*
  * HTTP Conduit implementation.
  * <p>
@@ -154,7 +156,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
  * instance is governed by policies either explicitly set or by
  * configuration.
  */
-@Trivial
+@Trivial // Liberty Change
 @NoJSR250Annotations
 public abstract class HTTPConduit
     extends AbstractConduit
@@ -173,13 +175,27 @@ public abstract class HTTPConduit
 
     public static final String PROCESS_FAULT_ON_HTTP_400 = "org.apache.cxf.transport.process_fault_on_http_400";
     public static final String NO_IO_EXCEPTIONS = "org.apache.cxf.transport.no_io_exceptions";
+
+    /** 
+     * The HTTP status codes as contextual property (comma-separated integers as String) 
+     * on the outgoing {@link Message} which lead to setting {@code org.apache.cxf.transport.service_not_available} 
+     * for all responses with those status codes. This is used e.g. by the 
+     * {@code org.apache.cxf.clustering.FailoverTargetSelector} to determine if it should do the fail-over.
+     * Default: {@code 404,429,503} as per {@code DEFAULT_SERVICE_NOT_AVAILABLE_ON_HTTP_STATUS_CODES}
+     */
+    public static final String SERVICE_NOT_AVAILABLE_ON_HTTP_STATUS_CODES = 
+        "org.apache.cxf.transport.service_not_available_on_http_status_codes";
+
     /**
      * The Logger for this class.
      */
     protected static final Logger LOG = LogUtils.getL7dLogger(HTTPConduit.class);
 
+    private static final Collection<Integer> DEFAULT_SERVICE_NOT_AVAILABLE_ON_HTTP_STATUS_CODES = 
+            Arrays.asList(404, 429, 503);
+
     private static boolean hasLoggedAsyncWarning;
-    private static final TraceComponent tc = Tr.register(HTTPConduit.class);
+    private static final TraceComponent tc = Tr.register(HTTPConduit.class); // Liberty Change
 
     /**
      * This constant holds the suffix ".http-conduit" that is appended to the
@@ -196,6 +212,9 @@ public abstract class HTTPConduit
     private static final String HTTP_GET_METHOD = "GET";
     private static final Set<String> KNOWN_HTTP_VERBS_WITH_NO_CONTENT =
         new HashSet<>(Arrays.asList(new String[]{"GET", "HEAD", "OPTIONS", "TRACE"}));
+
+    private static final String AUTHORIZED_REDIRECTED_HTTP_VERBS = "http.redirect.allowed.verbs";
+
     /**
      * This constant is the Message(Map) key for a list of visited URLs that
      * is used in redirect loop protection.
@@ -360,7 +379,7 @@ public abstract class HTTPConduit
     /**
      * This method returns the registered Logger for this conduit.
      */
-    @Override
+    @Override // Liberty Change
     protected Logger getLogger() {
         return LOG;
     }
@@ -498,8 +517,8 @@ public abstract class HTTPConduit
      *
      * @param message The message to be sent.
      */
-    @FFDCIgnore(URISyntaxException.class)
-    @Override
+    @FFDCIgnore(URISyntaxException.class) // Liberty Change
+    @Override // Liberty Change
     public void prepare(Message message) throws IOException {
         // This call can possibly change the conduit endpoint address and
         // protocol from the default set in EndpointInfo that is associated
@@ -667,7 +686,7 @@ public abstract class HTTPConduit
         return (int)ctimeout;
     }
 
-    @Override
+    @Override // Liberty Change
     public void close(Message msg) throws IOException {
         InputStream in = msg.getContent(InputStream.class);
         try {
@@ -684,6 +703,7 @@ public abstract class HTTPConduit
                 }
             }
         } finally {
+			// Liberty Change Start
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Finished servicing http request on conduit. ");
             }
@@ -693,7 +713,7 @@ public abstract class HTTPConduit
                 //clean up address within threadlocal of EndPointInfo
                 endpointInfo.resetAddress();  //Liberty #3669
             }
-
+			// Liberty Change End
         }
     }
 
@@ -748,8 +768,9 @@ public abstract class HTTPConduit
     /**
      * Close the conduit
      */
-    @Override
+    @Override // Liberty Change
     public void close() {
+	    // Liberty Change Start
         try {
             if (clientSidePolicy != null) {
                 clientSidePolicy.removePropertyChangeListener(this);
@@ -762,7 +783,7 @@ public abstract class HTTPConduit
             //clean up address within threadlocal of EndPointInfo
             endpointInfo.resetAddress();    //Liberty #3669
         }
-
+		// Liberty Change End
     }
 
     /**
@@ -859,7 +880,7 @@ public abstract class HTTPConduit
      * configuration from spring injection.
      */
     // REVISIT:What happens when the endpoint/bean name is null?
-    @Override
+    @Override // Liberty Change 
     public String getBeanName() {
         if (endpointInfo.getName() != null) {
             return endpointInfo.getName().toString() + ".http-conduit";
@@ -1076,8 +1097,8 @@ public abstract class HTTPConduit
          *
          * @param inMessage
          */
-        @Override
-        @FFDCIgnore(IOException.class)
+        @Override // Liberty Change 
+        @FFDCIgnore(IOException.class) // Liberty Change 
         public void onMessage(Message inMessage) {
             // disposable exchange, swapped with real Exchange on correlation
             inMessage.setExchange(new ExchangeImpl());
@@ -1114,18 +1135,18 @@ public abstract class HTTPConduit
         LOG.warning(sw.toString());
     }
 
-    @Override
+    @Override // Liberty Change 
     public void assertMessage(Message message) {
         PolicyDataEngine policyDataEngine = bus.getExtension(PolicyDataEngine.class);
         policyDataEngine.assertMessage(message, getClient(), new ClientPolicyCalculator());
     }
 
-    @Override
+    @Override // Liberty Change 
     public boolean canAssert(QName type) {
         return type.equals(new QName("http://cxf.apache.org/transports/http/configuration", "client"));
     }
 
-    @Override
+    @Override // Liberty Change 
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getSource() == clientSidePolicy
             && "decoupledEndpoint".equals(evt.getPropertyName())) {
@@ -1140,7 +1161,7 @@ public abstract class HTTPConduit
      * Wrapper output stream responsible for flushing headers and handling
      * the incoming HTTP-level response (not necessarily the MEP response).
      */
-    @Trivial
+    @Trivial // Liberty Change 
     protected abstract class WrappedOutputStream extends AbstractThresholdOutputStream {
         /**
          * This boolean is true if the request must be cached.
@@ -1228,7 +1249,7 @@ public abstract class HTTPConduit
         }
 
 
-        @FFDCIgnore(RejectedExecutionException.class)
+        @FFDCIgnore(RejectedExecutionException.class) // Liberty Change Start
         protected void handleResponseOnWorkqueue(boolean allowCurrentThread, boolean forceWQ) throws IOException {
             Runnable runnable = AsyncClientRunnableWrapperManager.wrap(outMessage, new Runnable() {
                 @Override
@@ -1287,6 +1308,7 @@ public abstract class HTTPConduit
                         if (LOG.isLoggable(Level.FINEST)) {
                             LOG.log(Level.FINEST, "Executing with " + ex);
                         }
+						// Liberty Change End
                         ex.execute(runnable);
                     }
                 } catch (RejectedExecutionException rex) {
@@ -1349,7 +1371,7 @@ public abstract class HTTPConduit
          * reset output stream ... etc.)
          */
         @Override
-        @FFDCIgnore(IOException.class)
+        @FFDCIgnore(IOException.class) // Liberty Change 
         protected void onFirstWrite() throws IOException {
             try {
                 handleHeadersTrustCaching();
@@ -1398,8 +1420,8 @@ public abstract class HTTPConduit
         /**
          * Perform any actions required on stream closure (handle response etc.)
          */
-        @Override
-        @FFDCIgnore(value = {HttpRetryException.class, IOException.class, RuntimeException.class})
+        @Override // Liberty Change 
+        @FFDCIgnore(value = {HttpRetryException.class, IOException.class, RuntimeException.class}) // Liberty Change 
         public void close() throws IOException {
             try {
                 if (buffer != null && buffer.size() > 0) {
@@ -1434,6 +1456,7 @@ public abstract class HTTPConduit
                 if (origMessage != null && origMessage.contains(url.toString())) {
                     throw e;
                 }
+				// Liberty Change - Trace statement
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     // tracing here because this exception can get lost in async scenarios
                     Tr.debug(tc, "Caught IOException while closing HTTPConduit", e);
@@ -1450,10 +1473,10 @@ public abstract class HTTPConduit
             }
         }
 
-        @FFDCIgnore(Throwable.class)
+        @FFDCIgnore(Throwable.class) // Liberty Change 
         private <T extends Exception> T mapException(String msg,
                                                      T ex, Class<T> cls) {
-            T ex2 = ex;
+            T ex2 = ex; // Liberty Change 
             try {
                 ex2 = cls.cast(ex.getClass().getConstructor(String.class).newInstance(msg));
                 ex2.initCause(ex);
@@ -1471,9 +1494,13 @@ public abstract class HTTPConduit
          * @throws IOException
          */
         protected void handleRetransmits() throws IOException {
+
+            Set<String> allowedVerbsSet = MessageUtils.getContextualStrings(outMessage,
+                    AUTHORIZED_REDIRECTED_HTTP_VERBS, KNOWN_HTTP_VERBS_WITH_NO_CONTENT);
+
             // If we have a cachedStream, we are caching the request.
             if (cachedStream != null
-                || getClient().isAutoRedirect() && KNOWN_HTTP_VERBS_WITH_NO_CONTENT.contains(getMethod())
+                || getClient().isAutoRedirect() && allowedVerbsSet.contains(getMethod())
                 || authSupplier != null && authSupplier.requiresRequestCaching()) {
 
                 if (LOG.isLoggable(Level.FINE) && cachedStream != null) {
@@ -1524,7 +1551,7 @@ public abstract class HTTPConduit
             return false;
         }
 
-        @FFDCIgnore(value = {IOException.class, URISyntaxException.class})
+        @FFDCIgnore(value = {IOException.class, URISyntaxException.class}) // Liberty Change
         protected boolean redirectRetransmit() throws IOException {
             // If we are not redirecting by policy, then we don't.
             if (!getClient(outMessage).isAutoRedirect()) {
@@ -1573,7 +1600,7 @@ public abstract class HTTPConduit
          * @return true if there was a retransmit
          * @throws IOException
          */
-        @FFDCIgnore(Throwable.class)
+        @FFDCIgnore(Throwable.class) // Liberty Change
         protected boolean authorizationRetransmit() throws IOException {
             Message m = new MessageImpl();
             updateResponseHeaders(m);
@@ -1662,7 +1689,10 @@ public abstract class HTTPConduit
             }
             if (exchange != null) {
                 exchange.put(Message.RESPONSE_CODE, rc);
-                if (rc == 404 || rc == 503 || rc == 429) {
+                final Collection<Integer> serviceNotAvailableOnHttpStatusCodes = MessageUtils
+                    .getContextualIntegers(outMessage, SERVICE_NOT_AVAILABLE_ON_HTTP_STATUS_CODES, 
+                        DEFAULT_SERVICE_NOT_AVAILABLE_ON_HTTP_STATUS_CODES);
+                if (serviceNotAvailableOnHttpStatusCodes.contains(rc)) {
                     exchange.put("org.apache.cxf.transport.service_not_available", true);
                 }
             }
@@ -1722,8 +1752,13 @@ public abstract class HTTPConduit
                         }
                     }
                     exchange.put("IN_CHAIN_COMPLETE", Boolean.TRUE);
-                    
+
                     exchange.setInMessage(inMessage);
+                    if (MessageUtils.getContextualBoolean(outMessage, 
+                            Message.PROPAGATE_202_RESPONSE_ONEWAY_OR_PARTIAL, false)) {
+                        incomingObserver.onMessage(inMessage);
+                    }
+
                     return;
                 }
             } else {
@@ -1829,7 +1864,7 @@ public abstract class HTTPConduit
          *                     established by the configured MessageTrustDecider.
          * @see MessageTrustDecider
          */
-        @FFDCIgnore(UntrustedURLConnectionIOException.class)
+        @FFDCIgnore(UntrustedURLConnectionIOException.class) // Liberty Change 
         protected void makeTrustDecision() throws IOException {
 
             MessageTrustDecider decider2 = outMessage.get(MessageTrustDecider.class);
@@ -1903,7 +1938,7 @@ public abstract class HTTPConduit
                     || !newUri.getHost().equals(lastUri.getHost())) {
                     String msg = "Different HTTP Scheme or Host Redirect detected on Conduit '"
                         + conduitName + "' on '" + newURL + "'";
-                    LOG.log(Level.FINEST, msg);
+                    LOG.log(Level.FINEST, msg); // Liberty Change 
                     throw new IOException(msg);
                 }
             }
@@ -1911,7 +1946,7 @@ public abstract class HTTPConduit
             String allowedRedirectURI = (String)message.getContextualProperty(AUTO_REDIRECT_ALLOWED_URI);
             if (allowedRedirectURI != null && !newURL.startsWith(allowedRedirectURI)) {
                 String msg = "Forbidden Redirect URI " + newURL + "detected on Conduit '" + conduitName;
-                LOG.log(Level.FINEST, msg);
+                LOG.log(Level.FINEST, msg); // Liberty Change 
                 throw new IOException(msg);
             }
 

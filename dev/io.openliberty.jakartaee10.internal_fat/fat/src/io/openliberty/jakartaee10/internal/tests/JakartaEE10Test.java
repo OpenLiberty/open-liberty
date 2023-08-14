@@ -53,6 +53,12 @@ public class JakartaEE10Test extends FATServletClient {
         compatFeatures.remove("passwordUtilities-1.1");
         compatFeatures.remove("persistenceContainer-3.1");
 
+        //remove MP 6.0 features which would conflict with MP 6.1 features
+        compatFeatures.remove("microProfile-6.0");
+        compatFeatures.remove("mpConfig-3.0");
+        compatFeatures.remove("mpTelemetry-1.0");
+        compatFeatures.remove("mpMetrics-5.0");
+
         // remove client features
         compatFeatures.remove("jakartaeeClient-10.0");
         compatFeatures.remove("appSecurityClient-1.0");
@@ -66,10 +72,14 @@ public class JakartaEE10Test extends FATServletClient {
         compatFeatures.remove("noShip-1.0");
         compatFeatures.remove("scim-2.0");
 
+        // noship, still in development
+        compatFeatures.remove("mpReactiveStreams-3.0");
+        compatFeatures.remove("mpReactiveMessaging-3.0");
+
         // remove logAnalysis-1.0.  It depends on hpel being configured
         compatFeatures.remove("logAnalysis-1.0");
 
-        // springBoot-3.0, data-1.0 and nosql-1.0 requires Java 17 so if we are currently not using Java 17 or later, remove it from the list of features.
+        // springBoot-3.0, data-1.0 and nosql-1.0 require Java 17 so if we are currently not using Java 17 or later, remove it from the list of features.
         if (JavaInfo.JAVA_VERSION < 17) {
             compatFeatures.remove("springBoot-3.0");
             compatFeatures.remove("data-1.0");
@@ -161,7 +171,8 @@ public class JakartaEE10Test extends FATServletClient {
                                                  "CWWKG0033W", // related to missing config for collectives
                                                  "CWSJY0035E", // wmqJmsClient.rar.location variable not in the server.xml
                                                  "CWWKE0701E", // wmqJmsClient.rar.location variable not in the server.xml
-                                                 "TRAS4352W" // Only happens when running with WebSphere Liberty image due to an auto feature
+                                                 "TRAS4352W", // Only happens when running with WebSphere Liberty image due to an auto feature
+                                                 "CWWKB0758E" // zosAutomaticRestartManager-1.0 error due to missing SAF configuration
             };
         } else {
             toleratedWarnErrors = new String[] { "SRVE0280E" };// TODO: SRVE0280E tracked by OpenLiberty issue #4857

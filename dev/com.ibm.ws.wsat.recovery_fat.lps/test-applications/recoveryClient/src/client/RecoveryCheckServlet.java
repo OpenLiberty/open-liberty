@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.tx.jta.ut.util.TxTestUtils;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 
 @WebServlet({ "/RecoveryCheckServlet" })
@@ -30,6 +31,7 @@ public class RecoveryCheckServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {		
+		TxTestUtils.setTestResourcesFile();
 		int number = Integer.parseInt(request.getParameter("number").trim());
 		System.out.println("==============RecoveryCheckServlet Test Number: " + number
 				+ "================");
@@ -71,7 +73,7 @@ public class RecoveryCheckServlet extends HttpServlet {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
 						+ " resources!=2";
 			}
-			if (!XAResourceImpl.getXAResourceImpl(1).inState(XAResourceImpl.ROLLEDBACK)) {
+			if (!XAResourceImpl.getXAResourceImpl("one").inState(XAResourceImpl.ROLLEDBACK)) {
 				output = "Rec" + number + " failed: XAResourceImpl 1 is not ROLLEDBACK";
 			}
 			break;
@@ -80,7 +82,7 @@ public class RecoveryCheckServlet extends HttpServlet {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
 						+ " resources!=3";
 			}
-			if (!XAResourceImpl.getXAResourceImpl(2).inState(XAResourceImpl.ROLLEDBACK)) {
+			if (!XAResourceImpl.getXAResourceImpl("two").inState(XAResourceImpl.ROLLEDBACK)) {
 				output = "Rec" + number + " failed: XAResourceImpl 2 is not ROLLEDBACK";
 			}
 			break;
@@ -89,7 +91,7 @@ public class RecoveryCheckServlet extends HttpServlet {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
 						+ " resources!=3";
 			}
-			if (!XAResourceImpl.getXAResourceImpl(1).inState(XAResourceImpl.ROLLEDBACK)) {
+			if (!XAResourceImpl.getXAResourceImpl("one").inState(XAResourceImpl.ROLLEDBACK)) {
 				output = "Rec" + number + " failed: XAResourceImpl 1 is not ROLLEDBACK";
 			}
 			break;
@@ -107,7 +109,7 @@ public class RecoveryCheckServlet extends HttpServlet {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
 						+ " resources!=2";
 			}
-			if (!XAResourceImpl.getXAResourceImpl(1).inState(XAResourceImpl.COMMITTED)) {
+			if (!XAResourceImpl.getXAResourceImpl("one").inState(XAResourceImpl.COMMITTED)) {
 				output = "Rec" + number + " failed: XAResourceImpl 1 is not COMMITTED";
 			}
 			break;
@@ -116,7 +118,7 @@ public class RecoveryCheckServlet extends HttpServlet {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
 						+ " resources!=2";
 			}
-			if (!XAResourceImpl.getXAResourceImpl(0).inState(XAResourceImpl.COMMITTED)) {
+			if (!XAResourceImpl.getXAResourceImpl("zero").inState(XAResourceImpl.COMMITTED)) {
 				output = "Rec" + number + " failed: XAResourceImpl 0 is not COMMITTED";
 			}
 			break;
@@ -125,7 +127,7 @@ public class RecoveryCheckServlet extends HttpServlet {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
 						+ " resources!=2";
 			}
-			if (!XAResourceImpl.getXAResourceImpl(0).inState(XAResourceImpl.ROLLEDBACK)) {
+			if (!XAResourceImpl.getXAResourceImpl("zero").inState(XAResourceImpl.ROLLEDBACK)) {
 				output = "Rec" + number + " failed: XAResourceImpl 0 is not ROLLEDBACK";
 			}
 			break;
@@ -137,10 +139,10 @@ public class RecoveryCheckServlet extends HttpServlet {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
 						+ " resources!=2";
 			}
-			if (!XAResourceImpl.getXAResourceImpl(0).inState(XAResourceImpl.COMMITTED)) {
+			if (!XAResourceImpl.getXAResourceImpl("zero").inState(XAResourceImpl.COMMITTED)) {
 				output = "Rec" + number + " failed: XAResourceImpl 0 is not COMMITTED";
 			}
-			if (!XAResourceImpl.getXAResourceImpl(1).inState(XAResourceImpl.FORGOTTEN)) {
+			if (!XAResourceImpl.getXAResourceImpl("one").inState(XAResourceImpl.FORGOTTEN)) {
 				output = "Rec" + number + " failed: XAResourceImpl 1 is not FORGOTTEN";
 			}
 			break;
@@ -152,10 +154,10 @@ public class RecoveryCheckServlet extends HttpServlet {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
 						+ " resources!=3";
 			}
-			if (!XAResourceImpl.getXAResourceImpl(1).inState(XAResourceImpl.ROLLEDBACK)) {
+			if (!XAResourceImpl.getXAResourceImpl("one").inState(XAResourceImpl.ROLLEDBACK)) {
 				output = "Rec" + number + " failed: XAResourceImpl 1 is not ROLLEDBACK";
 			}
-			if (!XAResourceImpl.getXAResourceImpl(2).inState(XAResourceImpl.FORGOTTEN)) {
+			if (!XAResourceImpl.getXAResourceImpl("two").inState(XAResourceImpl.FORGOTTEN)) {
 				output = "Rec" + number + " failed: XAResourceImpl 2 is not FORGOTTEN";
 			}
 			break;
@@ -177,10 +179,14 @@ public class RecoveryCheckServlet extends HttpServlet {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
 						+ " resources!=3";
 			}
-			for (int resource = 1; resource < 2; resource++) {
-				if (!XAResourceImpl.getXAResourceImpl(resource).inState(XAResourceImpl.ROLLEDBACK)) {
-					output = "Rec" + number + " failed: XAResourceImpl " + resource + " is not ROLLEDBACK";
-				}
+			//???????????????????
+//			for (int resource = 1; resource < 2; resource++) {
+//				if (!XAResourceImpl.getXAResourceImpl(resource).inState(XAResourceImpl.ROLLEDBACK)) {
+//					output = "Rec" + number + " failed: XAResourceImpl " + resource + " is not ROLLEDBACK";
+//				}
+//			}
+			if (!XAResourceImpl.getXAResourceImpl("one").inState(XAResourceImpl.ROLLEDBACK)) {
+				output = "Rec" + number + " failed: XAResourceImpl one is not ROLLEDBACK";
 			}
 			break;
 		case 43:
@@ -188,10 +194,17 @@ public class RecoveryCheckServlet extends HttpServlet {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
 						+ " resources!=4";
 			}
-			for (int resource = 1; resource < 3; resource++) {
-				if (!XAResourceImpl.getXAResourceImpl(resource).inState(XAResourceImpl.ROLLEDBACK)) {
-					output = "Rec" + number + " failed: XAResourceImpl " + resource + " is not ROLLEDBACK";
-				}
+			//???????????????????
+//			for (int resource = 1; resource < 3; resource++) {
+//				if (!XAResourceImpl.getXAResourceImpl(resource).inState(XAResourceImpl.ROLLEDBACK)) {
+//					output = "Rec" + number + " failed: XAResourceImpl " + resource + " is not ROLLEDBACK";
+//				}
+//			}
+			if (!XAResourceImpl.getXAResourceImpl("one").inState(XAResourceImpl.ROLLEDBACK)) {
+				output = "Rec" + number + " failed: XAResourceImpl one is not ROLLEDBACK";
+			}
+			if (!XAResourceImpl.getXAResourceImpl("two").inState(XAResourceImpl.ROLLEDBACK)) {
+				output = "Rec" + number + " failed: XAResourceImpl two is not ROLLEDBACK";
 			}
 			break;
 		case 44:
@@ -217,10 +230,38 @@ public class RecoveryCheckServlet extends HttpServlet {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
 						+ " resources!=10";
 			}
-			for (int resource = 1; resource < 10; resource++) {
-				if (!XAResourceImpl.getXAResourceImpl(resource).inState(XAResourceImpl.ROLLEDBACK)) {
-					output = "Rec" + number + " failed: XAResourceImpl " + resource + " is not ROLLEDBACK";
-				}
+			//???????????????????
+//			for (int resource = 1; resource < 10; resource++) {
+//				if (!XAResourceImpl.getXAResourceImpl(resource).inState(XAResourceImpl.ROLLEDBACK)) {
+//					output = "Rec" + number + " failed: XAResourceImpl " + resource + " is not ROLLEDBACK";
+//				}
+//			}
+			if (!XAResourceImpl.getXAResourceImpl("one").inState(XAResourceImpl.ROLLEDBACK)) {
+				output = "Rec" + number + " failed: XAResourceImpl one is not ROLLEDBACK";
+			}
+			if (!XAResourceImpl.getXAResourceImpl("two").inState(XAResourceImpl.ROLLEDBACK)) {
+				output = "Rec" + number + " failed: XAResourceImpl two is not ROLLEDBACK";
+			}
+			if (!XAResourceImpl.getXAResourceImpl("three").inState(XAResourceImpl.ROLLEDBACK)) {
+				output = "Rec" + number + " failed: XAResourceImpl three is not ROLLEDBACK";
+			}
+			if (!XAResourceImpl.getXAResourceImpl("four").inState(XAResourceImpl.ROLLEDBACK)) {
+				output = "Rec" + number + " failed: XAResourceImpl four is not ROLLEDBACK";
+			}
+			if (!XAResourceImpl.getXAResourceImpl("five").inState(XAResourceImpl.ROLLEDBACK)) {
+				output = "Rec" + number + " failed: XAResourceImpl five is not ROLLEDBACK";
+			}
+			if (!XAResourceImpl.getXAResourceImpl("six").inState(XAResourceImpl.ROLLEDBACK)) {
+				output = "Rec" + number + " failed: XAResourceImpl six is not ROLLEDBACK";
+			}
+			if (!XAResourceImpl.getXAResourceImpl("seven").inState(XAResourceImpl.ROLLEDBACK)) {
+				output = "Rec" + number + " failed: XAResourceImpl seven is not ROLLEDBACK";
+			}
+			if (!XAResourceImpl.getXAResourceImpl("eight").inState(XAResourceImpl.ROLLEDBACK)) {
+				output = "Rec" + number + " failed: XAResourceImpl eight is not ROLLEDBACK";
+			}
+			if (!XAResourceImpl.getXAResourceImpl("nine").inState(XAResourceImpl.ROLLEDBACK)) {
+				output = "Rec" + number + " failed: XAResourceImpl nine is not ROLLEDBACK";
 			}
 			break;			
 		case 47:
@@ -237,10 +278,14 @@ public class RecoveryCheckServlet extends HttpServlet {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
 						+ " resources!=3";
 			}
-			for (int resource = 1; resource < 2; resource++) {
-				if (!XAResourceImpl.getXAResourceImpl(resource).inState(XAResourceImpl.ROLLEDBACK)) {
-					output = "Rec" + number + " failed: XAResourceImpl " + resource + " is not ROLLEDBACK";
-				}
+			//???????????????????
+//			for (int resource = 1; resource < 2; resource++) {
+//				if (!XAResourceImpl.getXAResourceImpl(resource).inState(XAResourceImpl.ROLLEDBACK)) {
+//					output = "Rec" + number + " failed: XAResourceImpl " + resource + " is not ROLLEDBACK";
+//				}
+//			}
+			if (!XAResourceImpl.getXAResourceImpl("one").inState(XAResourceImpl.ROLLEDBACK)) {
+				output = "Rec" + number + " failed: XAResourceImpl one is not ROLLEDBACK";
 			}
 			break;
 		}

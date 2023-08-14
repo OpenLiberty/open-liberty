@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -44,8 +44,6 @@ public class MP6EE10CompatibleTest {
 
     /**
      * microProfile-6.0 plus jakartaee-10.0
-     * At the moment, not all of the MP 6.0 features work with EE10 ... but they should before GA
-     * The server.xml has been modified to only include those features which currently work
      *
      * @throws Exception
      */

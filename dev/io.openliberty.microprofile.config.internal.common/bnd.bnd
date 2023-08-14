@@ -41,7 +41,6 @@ WS-TraceGroup: APPCONFIG
 	com.ibm.websphere.org.osgi.service.component;version=latest, \
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
 	com.ibm.ws.kernel.service;version=latest, \
-	com.ibm.websphere.javaee.annotation.1.2;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\

@@ -74,8 +74,8 @@ def appBuildDir = "${buildDir}/test-application"
  ******************************************************************
  ******************************************************************/
 task JASPIBase_JAR(type: Jar, dependsOn: classes) { 
-  destinationDir file("${appBuildDir}")
-  archiveName "JASPIBase.jar"
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "JASPIBase.jar"
 
   from ('build/classes/java/main') { 
     include 'web/FlexibleBaseServlet*.class'
@@ -90,8 +90,8 @@ task JASPIBase_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task JASPIBasicAuthServlet_WAR(type: War, dependsOn: JASPIBase_JAR) {
-  destinationDir file("${appBuildDir}")
-  archiveName "JASPIBasicAuthServlet.war"
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "JASPIBasicAuthServlet.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/JASPIBasicAuthServlet.war/resources') { 

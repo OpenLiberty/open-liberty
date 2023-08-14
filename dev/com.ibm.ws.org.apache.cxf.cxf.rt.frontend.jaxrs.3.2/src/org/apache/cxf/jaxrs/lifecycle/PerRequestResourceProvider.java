@@ -31,7 +31,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 
-import org.apache.cxf.Bus;
+import org.apache.cxf.Bus; // Liberty Change
 import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.jaxrs.model.ProviderInfo;
 import org.apache.cxf.jaxrs.utils.ExceptionUtils;
@@ -40,17 +40,19 @@ import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.jaxrs.utils.ResourceUtils;
 import org.apache.cxf.message.Message;
 
-import com.ibm.ws.jaxrs20.api.JaxRsFactoryBeanCustomizer;
-import com.ibm.ws.jaxrs20.injection.InjectionRuntimeContextHelper;
+import com.ibm.ws.jaxrs20.api.JaxRsFactoryBeanCustomizer; // Liberty Change
+import com.ibm.ws.jaxrs20.injection.InjectionRuntimeContextHelper; // Liberty Change
 
 /**
  * The default per-request resource provider which creates
  * a new resource instance per every request
  */
 public class PerRequestResourceProvider implements ResourceProvider {
+    // Liberty Change Start
     private final Constructor<?> c;
     private final Method postConstructMethod;
     private final Method preDestroyMethod;
+	// Liberty Change End
     private final Class<?>[] params;
     private final Annotation[][] anns;
     private final Type[] genericTypes;
@@ -71,7 +73,7 @@ public class PerRequestResourceProvider implements ResourceProvider {
     /**
      * {@inheritDoc}
      */
-    @Override
+    @Override // Liberty Change
     public boolean isSingleton() {
         return false;
     }
@@ -79,7 +81,7 @@ public class PerRequestResourceProvider implements ResourceProvider {
     /**
      * {@inheritDoc}
      */
-    @Override
+    @Override // Liberty Change
     public Object getInstance(Message m) {
         return createInstance(m);
     }
@@ -92,10 +94,10 @@ public class PerRequestResourceProvider implements ResourceProvider {
         Object[] values = ResourceUtils.createConstructorArguments(c, m, true, mapValues, params, anns, genericTypes);
         try {
             Object instance = values.length > 0 ? c.newInstance(values) : c.newInstance(new Object[] {});
-//Liberty Change for CXF Begin
-            //do not call postConstruct here as no context injection happens
-//            InjectionUtils.invokeLifeCycleMethod(instance, postConstructMethod);
-//Liberty Change for CXF End
+            // Liberty Change Start
+            // do not call postConstruct here as no context injection happens
+            // InjectionUtils.invokeLifeCycleMethod(instance, postConstructMethod);
+            // Liberty Change End
             return instance;
         } catch (InstantiationException ex) {
             String msg = "Resource class " + c.getDeclaringClass().getName() + " can not be instantiated";
@@ -111,8 +113,8 @@ public class PerRequestResourceProvider implements ResourceProvider {
                 throw new WebApplicationException();
             }
             String msg = "Resource class "
-                         + c.getDeclaringClass().getName() + " can not be instantiated"
-                         + " due to InvocationTargetException";
+                + c.getDeclaringClass().getName() + " can not be instantiated"
+                + " due to InvocationTargetException";
             throw ExceptionUtils.toInternalServerErrorException(null, serverError(msg));
         }
 
@@ -125,11 +127,9 @@ public class PerRequestResourceProvider implements ResourceProvider {
     /**
      * {@inheritDoc}
      */
-    @Override
+    @Override // Liberty Change Start - @Override and if not managed by CDI or EJB, 
+	// then call preDestory by ourself, otherwise, perDestory has already been called by CDI/EJB
     public void releaseInstance(Message m, Object o) {
-//Liberty Change for CXF Begain
-        //if not managed by CDI or EJB, then call preDestory by ourself.
-        //otherwise, perDestory has already been called by CDI/EJB
         JaxRsFactoryBeanCustomizer beanCustomizer = null;
         if (o != null)
         {
@@ -140,13 +140,13 @@ public class PerRequestResourceProvider implements ResourceProvider {
         {
             InjectionUtils.invokeLifeCycleMethod(o, preDestroyMethod);
         }
-//Liberty Change for CXF End
+        // Liberty Change End
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
+    @Override // Liberty Change  - @Override
     public Class<?> getResourceClass() {
         return c.getDeclaringClass();
     }

@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.token;
 
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,12 +24,9 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
-import io.openliberty.security.oidcclientcore.exceptions.PrivateKeyJwtAuthException;
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
 import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
-import io.openliberty.security.oidcclientcore.token.auth.PrivateKeyJwtAuthMethod;
 
 public class TokenRequestor {
 
@@ -52,13 +48,9 @@ public class TokenRequestor {
     private final List<NameValuePair> params;
     private final HashMap<String, String> customParams;
     private final boolean useSystemPropertiesForHttpClientConnections;
-    private final String clientAssertionSigningAlgorithm;
-    @Sensitive
-    private final Key clientAssertionSigningKey;
+    private final String originHeaderValue;
 
     OidcClientHttpUtil oidcClientHttpUtil = OidcClientHttpUtil.getInstance();
-
-    private static boolean issuedBetaMessage = false;
 
     private TokenRequestor(Builder builder) throws TokenRequestException {
         this.tokenEndpoint = builder.tokenEndpoint;
@@ -74,8 +66,7 @@ public class TokenRequestor {
         this.resources = builder.resources;
         this.customParams = builder.customParams;
         this.useSystemPropertiesForHttpClientConnections = builder.useSystemPropertiesForHttpClientConnections;
-        this.clientAssertionSigningAlgorithm = builder.clientAssertionSigningAlgorithm;
-        this.clientAssertionSigningKey = builder.clientAssertionSigningKey;
+        this.originHeaderValue = builder.originHeaderValue;
 
         List<NameValuePair> params = getBasicParams();
         mergeCustomParams(params, customParams);
@@ -101,41 +92,8 @@ public class TokenRequestor {
         if (authMethod.equals(TokenConstants.METHOD_POST) || authMethod.equals(TokenConstants.METHOD_CLIENT_SECRET_POST)) {
             params.add(new BasicNameValuePair(TokenConstants.CLIENT_ID, clientId));
             params.add(new BasicNameValuePair(TokenConstants.CLIENT_SECRET, clientSecret));
-        } else if (authMethod.equals(TokenConstants.METHOD_PRIVATE_KEY_JWT)) {
-            addPrivateKeyJwtParameters(params);
         }
         return params;
-    }
-
-    void addPrivateKeyJwtParameters(List<NameValuePair> params) throws TokenRequestException {
-        if (!isRunningBetaMode()) {
-            return;
-        }
-        params.add(new BasicNameValuePair(TokenConstants.CLIENT_ASSERTION_TYPE, TokenConstants.CLIENT_ASSERTION_TYPE_JWT_BEARER));
-        String clientAssertionJwt = buildClientAssertionJwt();
-        params.add(new BasicNameValuePair(TokenConstants.CLIENT_ASSERTION, clientAssertionJwt));
-    }
-
-    boolean isRunningBetaMode() {
-        if (!ProductInfo.getBetaEdition()) {
-            return false;
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for this class
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-            return true;
-        }
-    }
-
-    private String buildClientAssertionJwt() throws TokenRequestException {
-        PrivateKeyJwtAuthMethod pkjAuthMethod = new PrivateKeyJwtAuthMethod(clientId, tokenEndpoint, clientAssertionSigningAlgorithm, clientAssertionSigningKey);
-        try {
-            return pkjAuthMethod.createPrivateKeyJwt();
-        } catch (PrivateKeyJwtAuthException e) {
-            throw new TokenRequestException(clientId, e.getMessage(), e);
-        }
     }
 
     private void mergeCustomParams(@Sensitive List<NameValuePair> params, HashMap<String, String> customParams) {
@@ -158,6 +116,12 @@ public class TokenRequestor {
     }
 
     private Map<String, Object> postToTokenEndpoint() throws Exception {
+        if (originHeaderValue != null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Will add Origin HTTP header with value: [" + originHeaderValue + "]");
+            }
+            OidcClientHttpUtil.commonHeaders.add(new BasicNameValuePair("Origin", originHeaderValue));
+        }
         return oidcClientHttpUtil.postToEndpoint(tokenEndpoint,
                                                  params,
                                                  clientId,
@@ -187,9 +151,7 @@ public class TokenRequestor {
         private String resources = null;
         private HashMap<String, String> customParams = null;
         private boolean useSystemPropertiesForHttpClientConnections = false;
-        private String clientAssertionSigningAlgorithm = "RS256";
-        @Sensitive
-        private Key clientAssertionSigningKey = null;
+        private String originHeaderValue;
 
         public Builder(String tokenEndpoint, String clientId, @Sensitive String clientSecret, String redirectUri, String code) {
             this.tokenEndpoint = tokenEndpoint;
@@ -229,8 +191,12 @@ public class TokenRequestor {
             return this;
         }
 
-        public Builder customParams(HashMap<String, String> customParams) {
-            this.customParams = customParams;
+        public Builder customParams(@Sensitive HashMap<String, String> customParams) {
+            if (customParams != null && this.customParams != null) {
+                this.customParams.putAll(customParams);
+            } else {
+                this.customParams = customParams;
+            }
             return this;
         }
 
@@ -239,13 +205,8 @@ public class TokenRequestor {
             return this;
         }
 
-        public Builder clientAssertionSigningAlgorithm(String clientAssertionSigningAlgorithm) {
-            this.clientAssertionSigningAlgorithm = clientAssertionSigningAlgorithm;
-            return this;
-        }
-
-        public Builder clientAssertionSigningKey(@Sensitive Key clientAssertionSigningKey) {
-            this.clientAssertionSigningKey = clientAssertionSigningKey;
+        public Builder originHeaderValue(String originHeaderValue) {
+            this.originHeaderValue = originHeaderValue;
             return this;
         }
 

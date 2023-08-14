@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2021 IBM Corporation and others.
+# Copyright (c) 2018, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -98,3 +98,35 @@ OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.useraction=Zkontrolujte text chyby, identi
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W=CWWKO1667W: Konfigura\u010dn\u00ed vlastnost {0} zahrnuje "{1}", ale neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9 naimplementovan\u00e9 aplikaci nebo webov\u00e9mu modulu.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.explanation=Server je nakonfigurov\u00e1n tak, aby vytvo\u0159il dokumentaci OpenAPI pro n\u00e1zev aplikace nebo modulu, ale nebyla naimplementov\u00e1na \u017e\u00e1dn\u00e1 aplikace nebo webov\u00fd modul s t\u00edmto n\u00e1zvem.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.useraction=Zkontrolujte, zda se v\u0161echny aplikace spustily spr\u00e1vn\u011b a zda jsou spr\u00e1vn\u011b zad\u00e1ny n\u00e1zvy v konfigura\u010dn\u00ed vlastnosti.
+
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I=CWWKO1668I: Cesta k u\u017eivatelsk\u00e9mu rozhran\u00ed OpenAPI je nastavena na {0}.
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I.explanation=Cesta k u\u017eivatelsk\u00e9mu rozhran\u00ed OpenAPI je nastavena na hodnotu, kter\u00e1 nen\u00ed v\u00fdchoz\u00ed hodnotou.
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I=CWWKO1669I: Cesta k dokumentu OpenAPI je nastavena na {0}.
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.explanation=Cesta k dokumentu OpenAPI je nastavena na hodnotu, kter\u00e1 nen\u00ed v\u00fdchoz\u00ed hodnotou.
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E=CWWKO1670E: Cesta k u\u017eivatelsk\u00e9mu rozhran\u00ed OpenAPI je neplatn\u00e1. Bude pou\u017eita v\u00fdchoz\u00ed hodnota. Zkontrolujte p\u0159edchoz\u00ed varov\u00e1n\u00ed a zjist\u011bte p\u0159\u00ed\u010dinu selh\u00e1n\u00ed ov\u011b\u0159en\u00ed.
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.explanation=Cesta k u\u017eivatelsk\u00e9mu rozhran\u00ed OpenAPI je neplatn\u00e1. Bude pou\u017eita v\u00fdchoz\u00ed hodnota.
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.useraction=Zkontrolujte p\u0159edchoz\u00ed chybov\u00e9 zpr\u00e1vy a zjist\u011bte p\u0159\u00ed\u010dinu selh\u00e1n\u00ed ov\u011b\u0159en\u00ed.
+
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E=CWWKO1671E: Cesta k dokumentu OpenAPI je neplatn\u00e1. Bude pou\u017eita v\u00fdchoz\u00ed hodnota. Zkontrolujte p\u0159edchoz\u00ed varov\u00e1n\u00ed a zjist\u011bte p\u0159\u00ed\u010dinu selh\u00e1n\u00ed ov\u011b\u0159en\u00ed.
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.explanation=Cesta k dokumentu OpenAPI je neplatn\u00e1. Bude pou\u017eita v\u00fdchoz\u00ed hodnota.
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.useraction=Zkontrolujte p\u0159edchoz\u00ed chybov\u00e9 zpr\u00e1vy a zjist\u011bte p\u0159\u00ed\u010dinu selh\u00e1n\u00ed ov\u011b\u0159en\u00ed.
+
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E=CWWKO1672E: Cesta k u\u017eivatelsk\u00e9mu rozhran\u00ed OpenAPI nem\u016f\u017ee b\u00fdt nastavena na {0}. Tato cesta se pou\u017e\u00edv\u00e1 k na\u010dten\u00ed dokument\u016f OpenAPI.
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.explanation=Cesty k dokumentu OpenAPI a k u\u017eivatelsk\u00e9mu rozhran\u00ed OpenAPI nemohou b\u00fdt stejn\u00e9.
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.useraction=Uve\u010fte jedine\u010dnou cestu pro u\u017eivatelsk\u00e9 rozhran\u00ed OpenAPI.
+
+OPEN_API_UI_PATH_INVALID_CWWKO1675E=CWWKO1675E: Cesta k u\u017eivatelsk\u00e9mu rozhran\u00ed OpenAPI je neplatn\u00e1, nebo obsahuje neplatn\u00e9 znaky. Adresa URL mus\u00ed b\u00fdt konstruov\u00e1na pomoc\u00ed alfanumerick\u00fdch znak\u016f Unicode A-Za-z0-9, podtr\u017e\u00edtka (_), poml\u010dky (-), dop\u0159edn\u00e9ho lom\u00edtka (/) nebo te\u010dky (.).
+OPEN_API_UI_PATH_INVALID_CWWKO1675E.explanation=Cesta k u\u017eivatelsk\u00e9mu rozhran\u00ed OpenAPI nem\u016f\u017ee b\u00fdt nastavena na hodnotu, kter\u00e1 obsahuje neplatn\u00e9 znaky.
+OPEN_API_UI_PATH_INVALID_CWWKO1675E.useraction=Ujist\u011bte se, \u017ee cesta k OpenAPI obsahuje pouze znaky A-Za-z0-9, _, -, ., /.
+
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E=CWWKO1676E: Cesta k dokumentu OpenAPI je neplatn\u00e1, nebo obsahuje neplatn\u00e9 znaky. Adresa URL mus\u00ed b\u00fdt konstruov\u00e1na pomoc\u00ed alfanumerick\u00fdch znak\u016f Unicode A-Za-z0-9, podtr\u017e\u00edtka (_), poml\u010dky (-), dop\u0159edn\u00e9ho lom\u00edtka (/) nebo te\u010dky (.).
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E.explanation=Cesta k dokumentu OpenAPI nem\u016f\u017ee b\u00fdt nastavena na hodnotu, kter\u00e1 obsahuje neplatn\u00e9 znaky.
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E.useraction=Ujist\u011bte se, \u017ee cesta k OpenAPI obsahuje pouze znaky A-Za-z0-9, _, -, ., /.
+
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E=CWWKO1677E: Segment cesty "/." nebo "/.." je neplatn\u00fd pro koncov\u00e9 body OpenAPI.
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.explanation=Segment cesty k OpenAPI "/." nebo "/.." je neplatn\u00fd.
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.useraction=Odeberte jak\u00fdkoli segment cesty "/." nebo "/.." z cesty.

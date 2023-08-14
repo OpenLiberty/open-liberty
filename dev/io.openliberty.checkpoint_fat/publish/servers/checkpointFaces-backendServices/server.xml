@@ -33,5 +33,27 @@
     <properties.derby.embedded databaseName="EventDB" createDatabase="create" />
   </dataSource>
   <!-- end::data-source[] -->
- 
+
+  <!-- Override at restore to force transaction config update -->
+  <variable name="TX_RETRY_INT" defaultValue="10"/>
+
+  <!-- Log transactions to RDB -->
+  <transaction
+      dataSourceRef="tranlogDataSource"
+      recoverOnStartup="true"
+      waitForRecovery="false"
+      heuristicRetryInterval="${TX_RETRY_INT}"
+  />
+
+  <dataSource
+      id="tranlogDataSource"
+      jndiName="jdbc/tranlogDataSource"
+      transactional="false">
+    <jdbcDriver libraryRef="derbyJDBCLib" />
+    <properties
+        databaseName="${shared.resource.dir}/data/tranlogdb"
+        createDatabase="create"
+    />
+  </dataSource>
+
 </server>

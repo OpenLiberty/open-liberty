@@ -38,7 +38,6 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.structures.Cache;
-import com.ibm.ws.security.openidconnect.clients.common.token.auth.PrivateKeyJwtAuthMethod;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.SocialLoginService;
 import com.ibm.ws.security.social.SslRefInfo;
@@ -51,6 +50,8 @@ import com.ibm.ws.security.social.internal.utils.SocialHashUtils;
 import com.ibm.ws.security.social.tai.SocialLoginTAI;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
+
+import io.openliberty.security.oidcclientcore.token.auth.PrivateKeyJwtAuthMethod;
 
 @Component(name = "com.ibm.ws.security.social.oauth2login", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = SocialLoginConfig.class, property = { "service.vendor=IBM", "type=oauth2Login" })
 public class Oauth2LoginConfigImpl implements SocialLoginConfig {

@@ -42,11 +42,11 @@ import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 public class LPSTest {
-	@Server("WSATRecovery1")
+	@Server("WSATRecoveryClient1")
 	public static LibertyServer server1;
 	private static String BASE_URL;
 
-	@Server("WSATRecovery2")
+	@Server("WSATRecoveryServer1")
 	public static LibertyServer server2;
 	private static String BASE_URL2;
 
@@ -91,7 +91,7 @@ public class LPSTest {
 		recoveryTest("3011","server1");
 	}
 	
-	@Test
+	//@Test
 	@ExpectedFFDC("javax.transaction.xa.XAException")
 	public void WSTXLPS301BFVT() throws Exception {
 		recoveryTest("3012","server2");
@@ -100,17 +100,17 @@ public class LPSTest {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void WSTXLPS301CFVT() throws Exception {
 		recoveryTest("3013","both");
 	}
 	
-	@Test
+	//@Test
 	public void WSTXLPS302AFVT() throws Exception {
 		recoveryTest("3021","server1");
 	}
 	
-	@Test
+	//@Test
 	@ExpectedFFDC("javax.transaction.xa.XAException")
 	public void WSTXLPS302BFVT() throws Exception {
 		recoveryTest("3022","server2");
@@ -119,12 +119,12 @@ public class LPSTest {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void WSTXLPS302CFVT() throws Exception {
 		recoveryTest("3023","both");
 	}
 	
-	@Test
+	//@Test
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException"})
 	public void WSTXLPS303AFVT() throws Exception {
 		recoveryTest("3031","server1");

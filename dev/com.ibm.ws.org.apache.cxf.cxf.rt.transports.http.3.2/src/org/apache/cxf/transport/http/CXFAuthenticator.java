@@ -29,7 +29,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.security.PrivilegedExceptionAction;
+import java.security.PrivilegedExceptionAction; // Liberty Change
 
 import org.apache.cxf.common.util.ReflectionUtil;
 import org.apache.cxf.helpers.IOUtils;
@@ -39,7 +39,7 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.transport.Conduit;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore; // Liberty Change
 
 /**
  *
@@ -51,7 +51,7 @@ public class CXFAuthenticator extends Authenticator {
     public CXFAuthenticator() {
     }
 
-    @FFDCIgnore({Exception.class, Exception.class, InvocationTargetException.class, Throwable.class, Throwable.class})
+    @FFDCIgnore({Exception.class, Exception.class, InvocationTargetException.class, Throwable.class, Throwable.class}) // Liberty Change
     public static synchronized void addAuthenticator() {
         if (instance == null) {
             instance = new CXFAuthenticator();
@@ -59,10 +59,11 @@ public class CXFAuthenticator extends Authenticator {
             if (JavaUtils.isJava9Compatible()) {
                 try {
                     Method m = ReflectionUtil.getMethod(Authenticator.class, "getDefault");
-                    // Liberty change added doPriv (should be in next CXF release)
+                    // Liberty Change Start - added doPriv 
                     wrapped = AccessController.doPrivileged((PrivilegedExceptionAction<Authenticator>) () -> {
                         return (Authenticator)m.invoke(null);
                         });
+				// Liberty Change End
                 } catch (Exception e) {
                     // ignore
                 }
@@ -89,7 +90,7 @@ public class CXFAuthenticator extends Authenticator {
             }
 
             try {
-                Class<?> cls = null;
+                Class<?> cls;
                 InputStream ins = ReferencingAuthenticator.class
                     .getResourceAsStream("ReferencingAuthenticator.class");
                 byte[] b = IOUtils.readBytesFromStream(ins);

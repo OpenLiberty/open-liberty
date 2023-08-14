@@ -60,7 +60,10 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 /**
  * Converts <code>String</code>s into <code>Node</code>s and visa versa using CXF's StaxUtils
  */
-//No Liberty Change, but needed to recompile due to Liberty change in MessageImpl.
+// Liberty Change; This class has no Liberty specific changes other than the Sensitive annotation 
+// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
+// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
+// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
 public class StaxSerializer extends AbstractSerializer {
     private XMLInputFactory factory;
     private boolean validFactory;
@@ -210,19 +213,27 @@ public class StaxSerializer extends AbstractSerializer {
      * @throws XMLEncryptionException
      */
     private Node deserialize(Node ctx, InputSource inputSource) throws XMLEncryptionException {
-        XMLStreamReader reader = StaxUtils.createXMLStreamReader(inputSource);
-        return deserialize(ctx, reader, true);
+        XMLStreamReader reader = null;
+        try {
+            reader = StaxUtils.createXMLStreamReader(inputSource);
+            return deserialize(ctx, reader, true);
+        } finally {
+            try {
+                StaxUtils.close(reader);
+            } catch (final XMLStreamException ex) {
+                throw new XMLEncryptionException(ex);
+            }
+        }
     }
 
     private Node deserialize(Node ctx, XMLStreamReader reader, boolean wrapped) throws XMLEncryptionException {
-        Document contextDocument = null;
+        final Document contextDocument;
         if (Node.DOCUMENT_NODE == ctx.getNodeType()) {
             contextDocument = (Document)ctx;
         } else {
             contextDocument = ctx.getOwnerDocument();
         }
 
-        XMLStreamWriter writer = null;
         try {
             if (ctx instanceof SOAPElement) {
                 SOAPElement el = (SOAPElement)ctx;
@@ -232,19 +243,19 @@ public class StaxSerializer extends AbstractSerializer {
                 //cannot load into fragment due to a ClassCastException within SAAJ addChildElement
                 //which only checks for Document as parent, not DocumentFragment
                 Element element = ctx.getOwnerDocument().createElementNS("dummy", "dummy");
-                writer = new SAAJStreamWriter((SOAPEnvelope)el, element);
+                XMLStreamWriter writer = new SAAJStreamWriter((SOAPEnvelope)el, element);
                 return appendNewChild(reader, wrapped, contextDocument, writer, element);
             }
             if (DOMUtils.isJava9SAAJ()) {
                 //cannot load into fragment due to a ClassCastException within SAAJ addChildElement
                 //which only checks for Document as parent, not DocumentFragment
                 Element element = ctx.getOwnerDocument().createElementNS("dummy", "dummy");
-                writer = new OverlayW3CDOMStreamWriter(ctx.getOwnerDocument(), element);
+                XMLStreamWriter writer = new OverlayW3CDOMStreamWriter(ctx.getOwnerDocument(), element);
                 return appendNewChild(reader, wrapped, contextDocument, writer, element);
             }
             // Import to a dummy fragment
             DocumentFragment dummyFragment = contextDocument.createDocumentFragment();
-            writer = StaxUtils.createXMLStreamWriter(new DOMResult(dummyFragment));
+            XMLStreamWriter writer = StaxUtils.createXMLStreamWriter(new DOMResult(dummyFragment));
             StaxUtils.copy(reader, writer);
 
             // Remove the "dummy" wrapper

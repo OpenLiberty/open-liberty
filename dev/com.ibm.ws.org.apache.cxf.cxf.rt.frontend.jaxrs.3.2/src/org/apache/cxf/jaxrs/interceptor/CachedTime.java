@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-// Liberty Change for CXF Begin
+// Liberty Change for CXF Begin - (Unique to Liberty's version of CXF)
 package org.apache.cxf.jaxrs.interceptor;
 
 import java.time.Instant;

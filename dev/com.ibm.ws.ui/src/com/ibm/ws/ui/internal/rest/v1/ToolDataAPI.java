@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,8 +16,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.xml.ws.Response;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -116,10 +114,10 @@ public class ToolDataAPI extends CommonRESTHandler implements V1Constants {
             toolDataService.promoteIfPossible(request.getUserPrincipal().getName(), child);
             Object object = toolDataService.getToolData(request.getUserPrincipal().getName(), child);
             if (object != null) {
-                if(!Utils.isValidJsonString(object.toString())) {
+                if (!Utils.isValidJsonString(object.toString())) {
                     throw new RESTException(HTTP_INTERNAL_ERROR);
                 }
-                
+
                 String md5 = Utils.getMD5String(object.toString());
                 response.setResponseHeader(HTTP_HEADER_ETAG, md5);
                 return object;
@@ -160,7 +158,7 @@ public class ToolDataAPI extends CommonRESTHandler implements V1Constants {
 
                 String tooldata = getReaderContents(request.getInputStream(), POST_MAX_PLAIN_TEXT_SIZE);
 
-                if(!Utils.isValidJsonString(tooldata)) {
+                if (!Utils.isValidJsonString(tooldata)) {
                     throw new RESTException(HTTP_INTERNAL_ERROR);
                 }
 
@@ -251,7 +249,7 @@ public class ToolDataAPI extends CommonRESTHandler implements V1Constants {
                 }
                 String originalData = toolDataService.getToolData(request.getUserPrincipal().getName(), child);
 
-                if(!Utils.isValidJsonString(originalData.toString())) {
+                if (!Utils.isValidJsonString(originalData.toString())) {
                     throw new RESTException(HTTP_INTERNAL_ERROR);
                 }
 
@@ -265,7 +263,7 @@ public class ToolDataAPI extends CommonRESTHandler implements V1Constants {
 
                 String tooldata = getReaderContents(request.getInputStream(), POST_MAX_PLAIN_TEXT_SIZE);
                 // validate user input data
-                if(!Utils.isValidJsonString(tooldata)) {
+                if (!Utils.isValidJsonString(tooldata)) {
                     throw new RESTException(HTTP_INTERNAL_ERROR);
                 }
 

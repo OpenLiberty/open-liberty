@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static io.openliberty.checkpoint.fat.util.FATUtils.LOG_SEARCH_TIMEOUT;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -29,6 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.Transaction;
 import com.ibm.websphere.simplicity.config.Variable;
@@ -37,6 +40,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -49,7 +53,7 @@ public class MockServletTest extends FATServletClient {
     static final String SERVER_NAME = "checkpointTransactionMockServlet";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification();
+    public static RepeatTests r = RepeatTests.with(new EE8FeatureReplacementAction().forServers(SERVER_NAME));
 
     static final String APP_NAME = "transactionservlet";
     static final String SERVLET_NAME = APP_NAME + "/SimpleServlet";
@@ -63,9 +67,9 @@ public class MockServletTest extends FATServletClient {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        server.removeAllInstalledAppsForValidation();
+        ShrinkHelper.cleanAllExportedArchives();
 
-        ShrinkHelper.defaultApp(server, APP_NAME, "servlets.simple.*"); // Assemble, deploy to apps
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
 
         // When checkpoint-restore uses stubbed criu operation, server.env vars  will
         // override config vars at checkpoint, only. To override config vars at restore,
@@ -80,9 +84,8 @@ public class MockServletTest extends FATServletClient {
         } catch (FileNotFoundException e) {
             throw new UncheckedIOException(e);
         }
-
         setMockCheckpoint(CheckpointPhase.AFTER_APP_START);
-        server.setServerStartTimeout(300000);
+        server.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
         server.startServer();
     }
 

@@ -26,11 +26,6 @@ private static final long serialVersionUID = 0L;
     return new DeleteRequest();
   }
 
-  @java.lang.Override
-  public final com.google.protobuf.UnknownFieldSet
-  getUnknownFields() {
-    return this.unknownFields;
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return com.ibm.test.g3store.grpc.AppProducerProto.internal_static_test_g3store_grpc_DeleteRequest_descriptor;
@@ -45,7 +40,8 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int APPNAME_FIELD_NUMBER = 1;
-  private volatile java.lang.Object appName_;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object appName_ = "";
   /**
    * <code>string appName = 1;</code>
    * @return The appName.
@@ -190,11 +186,13 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
+
   public static com.ibm.test.g3store.grpc.DeleteRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
+
   public static com.ibm.test.g3store.grpc.DeleteRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -269,8 +267,8 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      bitField0_ = 0;
       appName_ = "";
-
       return this;
     }
 
@@ -297,9 +295,16 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.ibm.test.g3store.grpc.DeleteRequest buildPartial() {
       com.ibm.test.g3store.grpc.DeleteRequest result = new com.ibm.test.g3store.grpc.DeleteRequest(this);
-      result.appName_ = appName_;
+      if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
+    }
+
+    private void buildPartial0(com.ibm.test.g3store.grpc.DeleteRequest result) {
+      int from_bitField0_ = bitField0_;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.appName_ = appName_;
+      }
     }
 
     @java.lang.Override
@@ -348,6 +353,7 @@ private static final long serialVersionUID = 0L;
       if (other == com.ibm.test.g3store.grpc.DeleteRequest.getDefaultInstance()) return this;
       if (!other.getAppName().isEmpty()) {
         appName_ = other.appName_;
+        bitField0_ |= 0x00000001;
         onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -378,7 +384,7 @@ private static final long serialVersionUID = 0L;
               break;
             case 10: {
               appName_ = input.readStringRequireUtf8();
-
+              bitField0_ |= 0x00000001;
               break;
             } // case 10
             default: {
@@ -396,6 +402,7 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int bitField0_;
 
     private java.lang.Object appName_ = "";
     /**
@@ -438,11 +445,9 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setAppName(
         java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
+      if (value == null) { throw new NullPointerException(); }
       appName_ = value;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -451,8 +456,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearAppName() {
-      
       appName_ = getDefaultInstance().getAppName();
+      bitField0_ = (bitField0_ & ~0x00000001);
       onChanged();
       return this;
     }
@@ -463,12 +468,10 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setAppNameBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
       appName_ = value;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }

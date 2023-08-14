@@ -21,6 +21,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.jpa.tests.container.checkpoint.tests.AbstractFATSuite;
 import com.ibm.ws.jpa.tests.container.checkpoint.tests.JPADataSourceCheckpointTest_EJB;
 import com.ibm.ws.jpa.tests.container.checkpoint.tests.JPADataSourceCheckpointTest_Web;
+import com.ibm.ws.jpa.tests.container.checkpoint.tests.JPADiagnosticsCheckpointTest;
 
 import componenttest.rules.repeater.RepeatTests;
 
@@ -28,6 +29,7 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 JPADataSourceCheckpointTest_EJB.class,
                 JPADataSourceCheckpointTest_Web.class,
+                JPADiagnosticsCheckpointTest.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite extends AbstractFATSuite {

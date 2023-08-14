@@ -21,8 +21,12 @@ import com.ibm.websphere.channelfw.EndPointInfo;
 import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.sip.stack.transport.sip.SipInboundChannel;
+import com.ibm.ws.sip.stack.transport.*;
+import com.ibm.ws.sip.stack.transport.GenericChainBase.Type;
+import com.ibm.ws.sip.stack.transport.sip.chfw.SipInboundChannel;
 import com.ibm.wsspi.channelfw.ChainEventListener;
+
+import jain.protocol.ip.sip.ListeningPoint;
 
 /**
  * Encapsulation of steps for starting/stopping an http chain in a controlled/predictable
@@ -180,4 +184,15 @@ public class GenericTCPChain extends GenericChain implements ChainEventListener 
         eventProps.put(GenericServiceConstants.ENDPOINT_IS_TLS, isTLS);
     }
 
+
+    @Override
+    public Type getType() {
+        return isTLS ? Type.TLS : Type.TCP;
+    }
+
+
+    @Override
+    public String getTransport() {
+        return ListeningPoint.TRANSPORT_TCP;
+    }
 }

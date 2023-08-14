@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -39,7 +39,7 @@ public class Constants {
     // Our context ID format
     public static final String CTX_ID_PREFIX = "com.ibm.ws.wsat:";
 
-    // WS-AT protocol 
+    // WS-AT protocol
     public static final String WS_AT_NS = "http://docs.oasis-open.org/ws-tx/wsat/2006/06";
     public static final String WS_AT_PROTOCOL = WS_AT_NS + "/Durable2PC";
     public static final String COORDINATION_REGISTRATION_ENDPOINT = "RegistrationService";
@@ -52,8 +52,10 @@ public class Constants {
     public static final String WS_WSAT_EXT_NS = "http://com.ibm.ws.wsat/extension";
     public static final String WS_WSAT_CTX_ID = "GlobalID";
     public static final String WS_WSAT_PART_ID = "ParticipantID";
+    public static final String WS_WSAT_REC_ID = "RecoveryID";
     public static final QName WS_WSAT_CTX_REF = new QName(Constants.WS_WSAT_EXT_NS, Constants.WS_WSAT_CTX_ID);
     public static final QName WS_WSAT_PART_REF = new QName(Constants.WS_WSAT_EXT_NS, Constants.WS_WSAT_PART_ID);
+    public static final QName WS_WSAT_REC_REF = new QName(Constants.WS_WSAT_EXT_NS, Constants.WS_WSAT_REC_ID);
 
     // OSGI factory filters
     public static final String WS_FACTORY_PART = "type=com.ibm.ws.wsat.Participant";

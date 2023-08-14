@@ -57,12 +57,15 @@ public class ServerStartTest {
     @Before
     public void before() throws Exception {
         server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+        Log.info(c, "before", "server hash code: " + server.hashCode());
     }
 
     @After
     public void after() throws Exception {
+        displayDirectoryContents("after", new File(server.getLogsRoot()));
         if (server.isStarted()) {
             server.stopServer();
+            displayDirectoryContents("after", new File(server.getLogsRoot()));
         }
     }
 
@@ -103,6 +106,29 @@ public class ServerStartTest {
         assertTrue("the server should have been started", server.isStarted());
 
         Log.exiting(c, METHOD_NAME);
+    }
+
+    /**
+     * @param methodName
+     * @param folder
+     */
+    public static void displayDirectoryContents(final String methodName, File folder) {
+
+        File[] listOfFiles = folder.listFiles();
+        StringBuffer sb = new StringBuffer();
+        sb.append("Server 'logs' directory contents: \n[\n");
+
+        if (listOfFiles != null) {
+            for (int i = 0; i < listOfFiles.length; i++) {
+                if (listOfFiles[i].isFile()) {
+                    sb.append("File: " + listOfFiles[i].getName() + "\n");
+                } else if (listOfFiles[i].isDirectory()) {
+                    sb.append("Directory: " + listOfFiles[i].getName() + "\n");
+                }
+            }
+        }
+        sb.append("]\n");
+        Log.info(c, methodName, sb.toString());
     }
 
     @Test
@@ -506,16 +532,6 @@ public class ServerStartTest {
         assertTrue("The heap file did not exist at location = " + dumpFile.getAbsolutePath(), dumpFile.exists());
         Log.info(c, METHOD_NAME, "Removing file = " + dumpFile.getAbsolutePath());
         dumpFile.delete();
-
-        // Stop the server
-        parms[0] = "stop";
-        parms[1] = SERVER_NAME;
-
-        po = server.getMachine().execute(command, parms, executionDir, envVars);
-        Log.info(c, METHOD_NAME, "server stop stdout = " + po.getStdout());
-        Log.info(c, METHOD_NAME, "server stop stderr = " + po.getStderr());
-
-        server.waitForStringInLog("CWWKE0036I");
 
         Log.exiting(c, METHOD_NAME);
     }

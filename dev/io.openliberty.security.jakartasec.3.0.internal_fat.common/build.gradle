@@ -16,8 +16,8 @@ def appBuildDir = "${buildDir}/test-application"
 
 task testmarker(type: War, dependsOn: classes) {
   def appName = "testmarker"
-  destinationDir file("${appBuildDir}")
-  archiveName "${appName}.war"
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "${appName}.war"
 
  println "In testmarker"
   from("test-applications/${appName}/resources") {
@@ -31,8 +31,8 @@ task testmarker(type: War, dependsOn: classes) {
 
 task tokenEndpoint(type: War, dependsOn: classes) {
   def appName = "TestTokenEndpoint"
-  destinationDir file("${appBuildDir}")
-  archiveName "${appName}.war"
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "${appName}.war"
 
  println "In tokenEndpoint"
   from("test-applications/${appName}/resources") {

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,10 +13,12 @@
 
 package com.ibm.ws.recoverylog.custom.jdbc.impl;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.FailureScope;
 import com.ibm.ws.recoverylog.spi.FailureScopeManager;
@@ -93,12 +95,6 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
     private final SQLMultiScopeRecoveryLog _recLog;
 
     /**
-     * The deflated form of the failure scope that this
-     * recoverable unit belongs to.
-     */
-    private final byte[] _deflatedFailureScope;
-
-    /**
      * The failure scope that this recoverable unit belongs
      * to.
      */
@@ -163,10 +159,9 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
      */
     public SQLRecoverableUnitImpl(SQLMultiScopeRecoveryLog recLog, long identity, FailureScope failureScope, boolean recovered) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "SQLRecoverableUnitImpl", new java.lang.Object[] { recLog, new Long(identity), failureScope, new Boolean(recovered) });
+            Tr.entry(tc, "SQLRecoverableUnitImpl", recLog, identity, failureScope, recovered);
 
-        // Cache the supplied information
-        _deflatedFailureScope = FailureScopeManager.toByteArray(failureScope);
+        FailureScopeManager.toByteArray(failureScope);
         _failureScope = failureScope;
         _identity = identity;
         _recLog = recLog;
@@ -202,7 +197,7 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
         this(recLog, identity, failureScope, false);
 
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "SQLRecoverableUnitImpl", new Object[] { recLog, new Long(identity), failureScope });
+            Tr.entry(tc, "SQLRecoverableUnitImpl", recLog, identity, failureScope);
         if (tc.isEntryEnabled())
             Tr.exit(tc, "SQLRecoverableUnitImpl", this);
     }
@@ -230,7 +225,7 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
     @Override
     public RecoverableUnitSection createSection(int identity, boolean singleData) throws RecoverableUnitSectionExistsException, InternalLogException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "createSection", new java.lang.Object[] { this, new Integer(identity), new Boolean(singleData) });
+            Tr.entry(tc, "createSection", this, identity, singleData);
 
         // If the parent recovery log instance has experienced a serious internal error then prevent
         // this operation from executing.
@@ -241,7 +236,7 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
         }
 
         // Construct a new Integer to wrap the 'id' value in order to use this in the _recoverableUnitSections map.
-        Integer sectionId = new Integer(identity);
+        Integer sectionId = identity;
 
         SQLRecoverableUnitSectionImpl recoverableUnitSection = null;
 
@@ -303,7 +298,7 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
     @Override
     public void removeSection(int identity) throws InvalidRecoverableUnitSectionException, InternalLogException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "removeSection", new java.lang.Object[] { this, new Integer(identity) });
+            Tr.entry(tc, "removeSection", this, identity);
 
         // REQD: Implementation not yet provided. No users of the RLS currently require this operation.
 
@@ -327,9 +322,9 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
     @Override
     public RecoverableUnitSection lookupSection(int identity) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "lookupSection", new java.lang.Object[] { this, new Integer(identity) });
+            Tr.entry(tc, "lookupSection", this, identity);
 
-        SQLRecoverableUnitSectionImpl recoverableUnitSection = _recoverableUnitSections.get(new Integer(identity));
+        SQLRecoverableUnitSectionImpl recoverableUnitSection = _recoverableUnitSections.get(identity);
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "lookupSection", recoverableUnitSection);
@@ -437,7 +432,7 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
      */
     void writeSections(boolean rewriteRequired) throws InternalLogException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "writeSections", new java.lang.Object[] { this, new Boolean(rewriteRequired) });
+            Tr.entry(tc, "writeSections", this, rewriteRequired);
 
         // If the parent recovery log instance has experienced a serious internal error then prevent
         // this operation from executing.
@@ -548,7 +543,7 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
      */
     void forceSections(boolean rewriteRequired) throws InternalLogException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "forceSections", new java.lang.Object[] { this, new Boolean(rewriteRequired) });
+            Tr.entry(tc, "forceSections", this, rewriteRequired);
 
         // If the parent recovery log instance has experienced a serious internal error then prevent
         // this operation from executing.
@@ -621,7 +616,7 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "sections", this);
 
-        java.util.Collection recoverableUnitSectionsValues = _recoverableUnitSections.values();
+        Collection<SQLRecoverableUnitSectionImpl> recoverableUnitSectionsValues = _recoverableUnitSections.values();
 
         LogCursorImpl cursor = new LogCursorImpl(null, recoverableUnitSectionsValues, false, null);
 
@@ -640,11 +635,10 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
      * @return The identity of this recoverable unit.
      */
     @Override
+    @Trivial
     public long identity() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "identity", this);
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "identity", new Long(_identity));
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "identity {0} {1}", this, _identity);
         return _identity;
     }
 

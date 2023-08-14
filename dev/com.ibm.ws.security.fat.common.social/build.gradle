@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,8 +25,8 @@ def appBuildDir = "${buildDir}/test-application"
 task formlogin(type: War, dependsOn: classes) {
   def appName = "formlogin"
   def appSuffix = ".social"
-  destinationDir file("${appBuildDir}")
-  archiveName "${appName}.war"
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "${appName}.war"
 
   from ("../com.ibm.ws.security.fat.common/build/classes/java/main") {
     include "com/ibm/ws/security/fat/common/apps/${appName}/*.class"

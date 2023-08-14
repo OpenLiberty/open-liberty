@@ -310,18 +310,6 @@ ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS1553E: O cliente OpenID Connect {0} enc
 ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=Podem estar ausentes as informa\u00e7\u00f5es na configura\u00e7\u00e3o do cliente OpenID Connect, ou o cliente encontrou um erro ao se comunicar com o provedor OpenID Connect.
 ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Veja o erro na mensagem para obter mais informa\u00e7\u00f5es.
 
-TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR=CWWKS1554E: O cliente [{0}] OpenID Connect encontrou um erro ao configurar a autentica\u00e7\u00e3o de cliente para o terminal do token para o m\u00e9todo de autentica\u00e7\u00e3o [{1}]. {2}
-TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.explanation=O terminal do token do OpenID Connect requer autentica\u00e7\u00e3o de cliente, mas o cliente OpenID Connect pode ter informa\u00e7\u00f5es ausentes ou o cliente encontrou outro erro ao configurar os dados de autentica\u00e7\u00e3o.
-TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.useraction=Veja o erro na mensagem para obter mais informa\u00e7\u00f5es.
-
-PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME=CWWKS1555E: O cliente [{0}] OpenID Connect n\u00e3o tem um nome de alias de chave configurado, portanto, o cliente n\u00e3o pode localizar a chave a ser usada para assinar o JSON Web Token para autentica\u00e7\u00e3o de cliente.
-PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.explanation=O cliente OpenID Connect deve configurar um nome de alias de chave para definir a chave a ser usada para assinar o JWT.
-PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.useraction=Verifique se o cliente OpenID Connect tem um nome de alias de chave configurado.
-
-PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF=CWWKS1556E: O cliente [{0}] OpenID Connect n\u00e3o tem uma refer\u00eancia de keystore configurada, portanto, o cliente n\u00e3o pode localizar a chave a ser usada para assinar o JSON Web Token para autentica\u00e7\u00e3o de cliente.
-PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.explanation=O cliente OpenID Connect deve configurar uma refer\u00eancia de keystore para definir onde localizar a chave a ser usada para assinar o JWT.
-PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.useraction=Verifique se o cliente OpenID Connect tem uma refer\u00eancia de keystore configurada.
-
 #CWWKS1557 used in client bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

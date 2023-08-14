@@ -31,18 +31,15 @@ import componenttest.rules.repeater.RepeatTests;
 })
 public class FATSuite {
     public static final String MPRS10_ID = MicroProfileActions.MP21_ID + "_" + "MPRS10";
-    public static final String MPRS30_MP50_ID = MicroProfileActions.MP50_ID + "_" + "MPRS30";
     public static final String MPRS30_MP60_ID = MicroProfileActions.MP60_ID + "_" + "MPRS30";
 
     public static final FeatureSet MPRS10 = MicroProfileActions.MP21.addFeature("mpReactiveStreams-1.0").build(MPRS10_ID);
-    public static final FeatureSet MPRS30_MP50 = MicroProfileActions.MP50.addFeature("mpReactiveStreams-3.0").build(MPRS30_MP50_ID);
     public static final FeatureSet MPRS30_MP60 = MicroProfileActions.MP60.addFeature("mpReactiveStreams-3.0").build(MPRS30_MP60_ID);
 
     public static final Set<FeatureSet> ALL;
     static {
         ALL = new HashSet<>(MicroProfileActions.ALL);
         ALL.add(MPRS10);
-        ALL.add(MPRS30_MP50);
         ALL.add(MPRS30_MP60);
     }
 

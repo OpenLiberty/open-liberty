@@ -70,7 +70,8 @@ installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
 installServerFeatures.option-desc.--from=\tUtilizzare questa opzione per specificare il percorso file\n \tdi un repository di risorse utente Maven come origine per l'installazione degli asset da parte di featureUtility.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--verify=\ \ \ \ --verify=[enforce|skip|all|warn]
-installServerFeatures.option-desc.--verify=\tUtilizzare questa opzione per specificare il modo in cui vengono verificate le funzioni. L'opzione      \npredefinita \u00e8 "enforce," che verifica le firme di tutte le funzioni Liberty    \nad eccezione delle funzioni utente. L'opzione "skip" ignora la verifica e non scarica\n alcuna firma della funzione. L'opzione "all" verifica \n sia le funzioni Liberty che le funzioni utente. L'opzione "warn" \u00e8 uguale a \n"all", ma non termina l'installazione se la verifica non riesce.                                
+installServerFeatures.option-desc.--verify=\tUtilizzare questa opzione per specificare il modo in cui vengono verificate le funzioni. L'opzione      \npredefinita \u00e8 "enforce," che verifica le firme di tutte le funzioni Liberty    \nad eccezione delle funzioni utente. L'opzione "skip" ignora la verifica \n 
+\tand non scarica alcuna firma di funzione. L'opzione "all" verifica \n sia le funzioni Liberty che le funzioni utente. L'opzione "warn" \u00e8 uguale a \n"all", ma non termina l'installazione se la verifica non riesce.                                
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
 installServerFeatures.option-desc.--verbose=\tVisualizza ulteriori informazioni di debug mentre viene eseguita l'azione.

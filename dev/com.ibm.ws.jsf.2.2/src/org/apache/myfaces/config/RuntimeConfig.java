@@ -45,6 +45,7 @@ import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.ResourceBundle;
 import org.apache.myfaces.config.element.ViewPoolMapping;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
+import org.apache.myfaces.util.Purgeable;
 
 /**
  * Holds all configuration information (from the faces-config xml files) that is needed later during runtime. The config
@@ -55,7 +56,7 @@ import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
  * @version $Revision: 1645094 $ $Date: 2014-12-12 23:37:31 +0000 (Fri, 12 Dec 2014) $
  */
 @SuppressWarnings("deprecation")
-public class RuntimeConfig
+public class RuntimeConfig implements Purgeable
 {
     //private static final Log log = LogFactory.getLog(RuntimeConfig.class);
     private static final Logger log = Logger.getLogger(RuntimeConfig.class.getName());
@@ -134,6 +135,7 @@ public class RuntimeConfig
         return runtimeConfig;
     }
 
+    @Override
     public void purge()
     {
         _navigationRules.clear();

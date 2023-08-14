@@ -55,6 +55,8 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.Version;
+import org.osgi.framework.VersionRange;
 import org.osgi.framework.namespace.ExecutionEnvironmentNamespace;
 import org.osgi.framework.startlevel.FrameworkStartLevel;
 import org.osgi.framework.wiring.BundleCapability;
@@ -168,6 +170,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     final static String FEATURE_PRODUCT_EXTENSIONS_FILE_EXTENSION = ".properties";
     final static String PRODUCT_INFO_STRING_OPEN_LIBERTY = "Open Liberty";
     final static FeatureResolver featureResolver = new FeatureResolverImpl();
+
+    private static Version JAVA_MAJOR_VERSION =  new Version(JavaInfo.majorVersion(), 0, 0);
 
     final static Collection<String> ALLOWED_ON_ALL_FEATURES = Arrays.asList("com.ibm.websphere.appserver.timedexit-1.0", "com.ibm.websphere.appserver.osgiConsole-1.0");
     final static Collection<String> ALL_ALLOWED_ON_CLIENT_FEATURES;
@@ -2491,9 +2495,9 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         refreshFeatures();
     }
 
-    boolean missingRequiredJava(FeatureResource fr) {
-        Integer requiredJava = fr.getRequireJava();
-        return requiredJava == null ? false : JavaInfo.majorVersion() < requiredJava;
+    boolean withinJavaRange(FeatureResource fr) {
+        VersionRange range =  fr.getJavaRange();
+        return range == null ? true :  range.includes(JAVA_MAJOR_VERSION);
     }
 
 }

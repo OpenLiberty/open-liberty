@@ -37,17 +37,48 @@ warning.could.not.thin.application=CWWKC0251W: Impossibile convertire l''applica
 warning.could.not.thin.application.explanation=L'applicazione non pu\u00f2 essere convertita in un'applicazione thin. L'applicazione continuer\u00e0 a funzionare dal JAR originale. 
 warning.could.not.thin.application.useraction=Tentare di risolvere il problema nel messaggio di eccezione e riavviare il server o aggiornare l'applicazione. 
 
-error.need.springboot.version.15=CWWKC0252E: L'applicazione non si \u00e8 avviata poich\u00e9 la funzione springBoot-2.0 \u00e8 configurata nel file server.xml. L'applicazione richiede che sia configurata la funzione springBoot-1.5.
-error.need.springboot.version.15.explanation=L'applicazione richiede la funzione springBoot-1.5. Controllare la versione della funzione Spring Boot attualmente configurata nel file server.xml.  
-error.need.springboot.version.15.useraction=Configurare la funzione springBoot-1.5 nel file server.xml. Rimuovere ogni altra funzione Spring Boot.
+#UPDATED for SpringBoot 3.0:
+# error.need.springboot.version.15=CWWKC0252E: The application failed to start because the springBoot-2.0 feature is configured in the server.xml file. The application requires the springBoot-1.5 feature to be configured.
+#error.need.springboot.version.15.explanation=The application requires the springBoot-1.5 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.  
+#error.need.springboot.version.15.useraction=Configure the springBoot-1.5 feature in the server.xml file. Remove any other Spring Boot features.
 
-error.need.springboot.version.20=CWWKC0253E: L'applicazione non si \u00e8 avviata poich\u00e9 la funzione springBoot-1.5 \u00e8 configurata nel file server.xml. L'applicazione richiede che sia configurata la funzione springBoot-2.0.
-error.need.springboot.version.20.explanation=L'applicazione richiede la funzione springBoot-2.0. Controllare la versione della funzione Spring Boot attualmente configurata nel file server.xml.  
-error.need.springboot.version.20.useraction=Configurare la funzione springBoot-2.0 nel file server.xml. Rimuovere ogni altra funzione Spring Boot.
+#0: The required spring feature.
+#1: The current spring feature.
+#2: The version of spring content found in the application.
+error.spring.required.15=CWWKC0252E: La funzione {0} deve essere configurata nel file server.xml. La funzione {1} \u00e8 configurata e l''applicazione ha un contenuto Spring {2}.
+error.spring.required.15.explanation=La funzione Spring Boot attualmente configurata non \u00e8 compatibile con il contenuto dell'applicazione.
+error.spring.required.15.useraction=Configurare una versione della funzione Spring Boot che sia compatibile con il contenuto dell'applicazione.
 
-error.missing.servlet=CWWKC0254E: L'applicazione non si \u00e8 avviata poich\u00e9 richiede che una funzione servlet sia configurata nel file server.xml.
-error.missing.servlet.explanation=L'applicazione \u00e8 un'applicazione Web e richiede che una funzione servlet sia configurata nel file server.xml.
-error.missing.servlet.useraction=Configurare la funzione servlet nel file server.xml.
+#UPDATED for SpringBoot 3.0:
+#error.need.springboot.version.20=CWWKC0253E: The application failed to start because the springBoot-1.5 feature is configured in the server.xml file. The application requires the springBoot-2.0 feature to be configured.
+#error.need.springboot.version.20.explanation=The application requires the springBoot-2.0 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.
+#error.need.springboot.version.20.useraction=Configure the springBoot-2.0 feature in the server.xml file. Remove any other Spring Boot features.
+
+#0: The required spring feature.
+#1: The current spring feature.
+#2: The version of spring content found in the application.
+error.spring.required.20=CWWKC0253E: La funzione {0} deve essere configurata nel file server.xml. La funzione {1} \u00e8 configurata e l''applicazione ha un contenuto Spring {2}.
+error.spring.required.20.explanation=La funzione Spring Boot attualmente configurata non \u00e8 compatibile con il contenuto dell'applicazione.
+error.spring.required.20.useraction=Configurare una versione della funzione Spring Boot che sia compatibile con il contenuto dell'applicazione.
+
+#ADDED for SpringBoot 3.0:
+error.spring3.required=CWWKC0273E: \u00c8 necessario configurare la funzione springBoot-3.0. La funzione springBoot-1.5 o springBoot-2.0 \u00e8 configurata e l'applicazione ha un contenuto Spring 3.0.
+error.spring3.required.explanation=La funzione Spring Boot attualmente configurata non \u00e8 compatibile con il contenuto dell'applicazione.
+error.spring3.required.useraction=Configurare una versione della funzione Spring Boot che sia compatibile con il contenuto dell'applicazione.
+
+#UPDATED for SpringBoot 3.0:
+#error.missing.servlet=CWWKC0254E: The application failed to start because it requires a Servlet feature to be configured in the server.xml file.
+#error.missing.servlet.explanation=The application is a web application, and it requires a Servlet feature to be configured in the server.xml file.
+#error.missing.servlet.useraction=Configure a Servlet feature in the server.xml file.
+
+error.spring2.requires.servlet31.application=CWWKC0254E: \u00c8 necessario configurare la funzione servlet-3.1 o servlet-4.0. La funzione springBoot-1.5 o springBoot-2.0 \u00e8 configurata e l'applicazione utilizza i servlet.
+error.spring2.requires.servlet31.application.explanation=L'applicazione utilizza i servlet, ma non \u00e8 stata configurata alcuna funzione Servlet.
+error.spring2.requires.servlet31.application.useraction=Configurare una delle funzioni Servlet specificate.
+
+#ADDED for SpringBoot 3.0:
+error.spring3.requires.servlet6.application=CWWKC0274E: La funzione servlet-6.0 deve essere configurata. La funzione springBoot-3.0 \u00e8 configurata e l'applicazione utilizza i servlet.
+error.spring3.requires.servlet6.application.explanation=L'applicazione utilizza i servlet ma non \u00e8 stata configurata alcuna funzione Servlet.
+error.spring3.requires.servlet6.application.useraction=Configurare la funzione Servlet specificata.
 
 error.multiple.applications.not.allowed=CWWKC0255E: Impossibile avviare l''applicazione Spring Boot {0} perch\u00e9 l''applicazione {1} \u00e8 gi\u00e0 attiva. Non \u00e8 possibile configurare pi\u00f9 applicazioni Spring Boot nella stessa configurazione del server.
 error.multiple.applications.not.allowed.explanation=La configurazione di pi\u00f9 applicazioni Spring Boot nella stessa configurazione server non \u00e8 supportata.
@@ -65,9 +96,19 @@ error.missing.ssl=CWWKC0258E: L'applicazione non si \u00e8 avviata poich\u00e9 r
 error.missing.ssl.explanation=L'applicazione \u00e8 un'applicazione sicura e richiede che una funzione SSL sia configurata nel file server.xml.
 error.missing.ssl.useraction=Configurare la funzione transportSecurity-1.0 nel file server.xml.
 
-error.missing.websocket=CWWKC0259E: L'applicazione non si \u00e8 avviata poich\u00e9 richiede che una funzione websocket sia configurata nel file server.xml.
-error.missing.websocket.explanation=L'applicazione \u00e8 un'applicazione websocket e richiede che una funzione websocket sia configurata nel file server.xml.
-error.missing.websocket.useraction=Configurare una funzione websocket nel file server.xml.
+#UPDATED for SpringBoot 3.0:
+#error.missing.websocket=CWWKC0259E: The application failed to start because it requires a websocket feature to be configured in the server.xml file.
+#error.missing.websocket.explanation=The application is a Web Socket application, and it requires a Web Socket feature to be configured in the server.xml file.
+#error.missing.websocket.useraction=Configure a websocket feature in the server.xml file.
+
+error.spring2.requires.websocket1.application=CWWKC0259E: La funzione websocket-1.0 o websocket-1.1 deve essere configurata: la funzione springBoot-1.5 o springBoot-2.0 \u00e8 configurata e l'applicazione utilizza i socket web.
+error.spring2.requires.websocket1.application.explanation=L'applicazione utilizza i socket web, ma non \u00e8 configurata alcuna funzione Socket web.
+error.spring2.requires.websocket1.application.useraction=Configurare una delle funzioni Socket web specificate.
+
+#ADDED for SpringBoot 3.0:
+error.spring3.requires.websocket2.application=CWWKC0275E: La funzione websocket-2.0 deve essere configurata: la funzione springBoot-3.0 \u00e8 configurata e l'applicazione utilizza i socket web.
+error.spring3.requires.websocket2.application.explanation=L'applicazione utilizza i socket web, ma non \u00e8 configurata alcuna funzione Socket web.
+error.spring3.requires.websocket2.application.useraction=Configurare la funzione Socket web specificata.
 
 # CWWKC0260E: GOT REMOVED
 
@@ -87,9 +128,17 @@ warning.application.started.event.timeout=CWWKC0264W: L''applicazione {0} non ha
 warning.application.started.event.timeout.explanation=L'applicazione non ha emesso l'evento di avvio nel tempo previsto. Il server potrebbe essere sovraccarico o l'applicazione potrebbe avere dimensioni elevate. Se l'applicazione \u00e8 in fase di avvio come parte dell'avvio del server, tale avvio pu\u00f2 essere completato senza attendere l'avvio dell'applicazione.
 warning.application.started.event.timeout.useraction=Se infine l'applicazione viene avviata, non \u00e8 richiesta alcuna azione. Se l'applicazione non viene avviata, esaminare i log del server per individuare altri messaggi che indicano una causa.
 
-warning.java.version.not.supported=CWWKC0265W: La versione Java corrente {0} non \u00e8 supportata dalla versione Spring Boot {1}. Eseguire l''aggiornamento della versione Spring Boot dell''applicazione a 2.0.x o successive.
-warning.java.version.not.supported.explanation=Le versioni Java superiori a 1.8 non sono supportate dalle versioni Spring Boot 1.5.x e inferiori.
-warning.java.version.not.supported.useraction=Eseguire l'aggiornamento della versione Spring Boot dell'applicazione a 2.0.x o successive.
+#UPDATED for SpringBoot 3.0
+#warning.java.version.not.supported=CWWKC0265W: The current Java version {0} is not supported by the Spring Boot version {1}. Upgrade the Spring Boot version of the application to 2.0.x or later.
+#warning.java.version.not.supported.explanation=Java versions higher than 1.8 are not supported by the Spring Boot versions 1.5.x and below.
+#warning.java.version.not.supported.useraction=Upgrade the Spring Boot version of the application to 2.0.x or later.
+
+#0: The current Java version
+#1: The configured Spring Boot version.
+#2: The Java version required for the configured Spring Boot version
+warning.unsupported.spring.java.version=CWWKC0265W: La versione Java corrente {0} non supporta Spring Boot versione {1}: \u00e8 richiesta la versione Java {2}.
+warning.unsupported.spring.java.version.explanation=Spring Boot ha requisiti specifici di versione Java.  La versione Java corrente non supporta la versione Spring Boot dell'applicazione.
+warning.unsupported.spring.java.version.useraction=Modificare la versione Java in una versione richiesta oppure ricreare l'applicazione utilizzando una versione Spring Boot diversa.
 
 error.invalid.packaged.liberty.jar=CWWKC0265E: L'avvio dell'applicazione non \u00e8 riuscito perch\u00e9 il file JAR di Liberty Server compresso non \u00e8 valido.
 error.invalid.packaged.liberty.jar.explanation=Nel file JAR di Liberty Server compresso mancano un'intestazione manifest Server-Name, le voci per la root del server o le voci per la directory lib.index.cache.
@@ -98,9 +147,3 @@ error.invalid.packaged.liberty.jar.useraction=Configurare un file JAR Liberty Se
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: L'avvio dell'applicazione non \u00e8 riuscito perch\u00e9 l'applicazione Spring Boot non \u00e8 stata trovata all'interno del file JAR di Liberty Server compresso.
 error.application.not.found.inside.packaged.liberty.jar.explanation=Il file JAR di Liberty Server compresso deve contenere un'applicazione Spring Boot configurata.
 error.application.not.found.inside.packaged.liberty.jar.useraction=Configurare un file JAR Liberty Server compresso valido.
-
-#SB3
-
-error.need.springboot.version.30=CWWKC0267E: L'avvio dell'applicazione non \u00e8 riuscito perch\u00e9 nel file server.xml \u00e8 configurata la funzione springBoot-1.5 o springBoot-2.0. L'applicazione richiede la configurazione della funzione springBoot-3.0.
-error.need.springboot.version.30.explanation=L'applicazione richiede la funzione springBoot-3.0. Controllare la versione della funzione Spring Boot attualmente configurata nel file server.xml.  
-error.need.springboot.version.30.useraction=Configurare la funzione springBoot-3.0 nel file server.xml. Rimuovere ogni altra funzione Spring Boot.

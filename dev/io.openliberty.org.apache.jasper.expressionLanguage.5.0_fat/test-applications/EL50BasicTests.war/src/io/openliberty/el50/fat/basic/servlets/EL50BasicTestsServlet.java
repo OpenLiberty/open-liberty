@@ -4,21 +4,16 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.el50.fat.basic.servlets;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import java.util.Arrays;
 
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
@@ -34,7 +29,6 @@ import jakarta.el.StandardELContext;
 import jakarta.el.StaticFieldELResolver;
 import jakarta.el.ValueExpression;
 import jakarta.servlet.annotation.WebServlet;
-
 
 /**
  * Servlet for testing basic changes in Expression Language 5.0
@@ -54,7 +48,7 @@ public class EL50BasicTestsServlet extends FATServlet {
     }
 
     /**
-     * 
+     *
      * Expression Language 5.0 in Jakarta EE10 added generics to methods in multiple classes https://github.com/jakartaee/expression-language/issues/157
      * Classes with changes we tests are ELProcessor, ExpressionFactory, ELContext, ValueExpression, ELResolver (returns null)
      * Classes with changes we don't test TypeConverter(returns null)
@@ -94,17 +88,19 @@ public class EL50BasicTestsServlet extends FATServlet {
         assertNull("The result was expected to be null for ELResolver but was not: " + result, result);
     }
 
-
     /**
-     * 
-     * Expression Language 5.0 in Jakarta EE10 switched ELResolver getFeatureDescriptors to return a default value of null and deprecated it to be remove in Expression Language 6.0.
+     *
+     * Expression Language 5.0 in Jakarta EE10 switched ELResolver getFeatureDescriptors to return a default value of null and deprecated it to be remove in Expression Language
+     * 6.0.
      * https://github.com/jakartaee/expression-language/issues/167
+     *
      * @throws Exception
      */
     @Test
     public void testGetFeatureDescriptors_returnsNull() throws Exception {
         ELResolver resolver = new CustomELResolver();
-        assertNull("The result was expected to be null for ELResolver getFeatureDescriptors but was not.",resolver.getFeatureDescriptors(new StandardELContext(ELManager.getExpressionFactory()),new Object()));
+        assertNull("The result was expected to be null for ELResolver getFeatureDescriptors but was not.",
+                   resolver.getFeatureDescriptors(new StandardELContext(ELManager.getExpressionFactory()), new Object()));
     }
 
     /**
@@ -112,6 +108,7 @@ public class EL50BasicTestsServlet extends FATServlet {
      * Expression Language 5.0 in Jakarta EE10 clarified and documented getType must return null if property is read-only
      * and switched implementation of StaticFieldELResolver getType to match this behavior as it was inconsistent before Expression Language 5.0.
      * https://github.com/jakartaee/expression-language/issues/168
+     *
      * @throws Exception
      */
     @Test
@@ -126,7 +123,7 @@ public class EL50BasicTestsServlet extends FATServlet {
         assertTrue("When calling getType for StaticFieldELResolver, the property was not resolved!", context.isPropertyResolved());
         assertNull("When calling getType for StaticFieldELResolver, the returned value was not null and instead was: " + type, type);
 
-        BeanELResolver  beanResolver = new BeanELResolver();
+        BeanELResolver beanResolver = new BeanELResolver();
         elm.addELResolver(beanResolver);
         context.setPropertyResolved(false);
         type = beanResolver.getType(context, new SimpleBean(), "simpleProperty");
@@ -135,11 +132,11 @@ public class EL50BasicTestsServlet extends FATServlet {
     }
 
     /*
-    * (non-Javadoc)
-    *
-    * Used to test getFeatureDescriptors already returning null in super class ELResolver for https://github.com/openliberty/open-liberty/issues/20455
-    */
-    public class CustomELResolver extends ELResolver{
+     * (non-Javadoc)
+     *
+     * Used to test getFeatureDescriptors already returning null in super class ELResolver for https://github.com/openliberty/open-liberty/issues/20455
+     */
+    public class CustomELResolver extends ELResolver {
 
         @Override
         public Object getValue(ELContext context, Object base, Object property) {
@@ -147,40 +144,40 @@ public class EL50BasicTestsServlet extends FATServlet {
         }
 
         /*
-        * (non-Javadoc)
-        *
-        * @see javax.el.ELResolver#getType(javax.el.ELContext, java.lang.Object, java.lang.Object)
-        */
+         * (non-Javadoc)
+         *
+         * @see javax.el.ELResolver#getType(javax.el.ELContext, java.lang.Object, java.lang.Object)
+         */
         @Override
         public Class<?> getType(ELContext context, Object base, Object property) {
             return String.class;
         }
 
         /*
-        * (non-Javadoc)
-        *
-        * @see javax.el.ELResolver#setValue(javax.el.ELContext, java.lang.Object, java.lang.Object, java.lang.Object)
-        */
+         * (non-Javadoc)
+         *
+         * @see javax.el.ELResolver#setValue(javax.el.ELContext, java.lang.Object, java.lang.Object, java.lang.Object)
+         */
         @Override
         public void setValue(ELContext context, Object base, Object property, Object value) {
             System.out.println("CustomELResolver:setValue: " + property.getClass());
         }
 
         /*
-        * (non-Javadoc)
-        *
-        * @see javax.el.ELResolver#isReadOnly(javax.el.ELContext, java.lang.Object, java.lang.Object)
-        */
+         * (non-Javadoc)
+         *
+         * @see javax.el.ELResolver#isReadOnly(javax.el.ELContext, java.lang.Object, java.lang.Object)
+         */
         @Override
         public boolean isReadOnly(ELContext context, Object base, Object property) {
             return false;
         }
 
         /*
-        * (non-Javadoc)
-        *
-        * @see javax.el.ELResolver#getCommonPropertyType(javax.el.ELContext, java.lang.Object)
-        */
+         * (non-Javadoc)
+         *
+         * @see javax.el.ELResolver#getCommonPropertyType(javax.el.ELContext, java.lang.Object)
+         */
         @Override
         public Class<?> getCommonPropertyType(ELContext context, Object base) {
             return null;

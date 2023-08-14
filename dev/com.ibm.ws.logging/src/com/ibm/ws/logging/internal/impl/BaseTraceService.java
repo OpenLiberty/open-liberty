@@ -253,7 +253,7 @@ public class BaseTraceService implements TrService {
     protected volatile BufferManagerImpl logConduit;
     protected volatile BufferManagerImpl traceConduit;
     protected volatile CollectorManagerPipelineUtils collectorMgrPipelineUtils = null;
-    protected volatile Timer earlyMessageTraceKiller_Timer = new Timer();
+    protected volatile Timer earlyMessageTraceKiller_Timer = new Timer(true);
 
     private volatile Timer timedLogRollover_Timer = new Timer(true);
 

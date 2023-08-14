@@ -1,0 +1,66 @@
+#*******************************************************************************
+# Copyright (c) 2020, 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+
+Bundle-SymbolicName: io.openliberty.io.smallrye.config3; singleton:=true
+
+bVersion=1.0
+
+WS-TraceGroup: APPCONFIG
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
+src: src
+
+-dsannotations-inherit: true
+-dsannotations: io.openliberty.microprofile.config.internal.extension.OLSmallRyeConfigProviderResolver, \
+  io.openliberty.microprofile.config.internal.extension.OLSmallRyeConfigExtension
+
+Service-Component: \
+ com.ibm.ws.microprofile.config.smallrye.deserializationClassProvider;\
+    implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    properties:="service.vendor=IBM,\
+      packages=io.smallrye.config\
+        |io.smallrye.config.inject\
+        |io.smallrye.config.common\
+        |io.smallrye.config.common.utils\
+        |io.smallrye.config.core"
+
+Include-Resource: \
+  META-INF=resources/META-INF
+
+Private-Package: io.openliberty.microprofile.config.internal.extension,io.openliberty.io.smallrye.config.resources.*
+
+Export-Package: \
+        io.smallrye.config.*;version="3.3.0"
+
+
+-buildpath: \
+  io.openliberty.io.smallrye.common.2.1;version=latest, \
+  io.smallrye.config:smallrye-config;version=3.3.0;strategy=exact, \
+  io.smallrye.config:smallrye-config-common;version=3.3.0;strategy=exact, \
+  io.smallrye.config:smallrye-config-core;version=3.3.0;strategy=exact, \
+  io.openliberty.jakarta.cdi.4.0;version=latest, \
+  io.openliberty.jakarta.annotation.2.1;version=latest, \
+  io.openliberty.org.eclipse.microprofile.config.3.1;version=latest, \
+  io.openliberty.microprofile.config.internal.common;version=latest, \
+  io.openliberty.microprofile.config.internal.serverxml;version=latest, \
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.cdi.interfaces;version=latest,\
+  com.ibm.websphere.org.osgi.service.component;version=latest,\
+  com.ibm.ws.org.jboss.logging;version=latest,\
+  com.ibm.ws.logging;version=latest,\
+  com.ibm.ws.container.service;version=latest,\
+  com.ibm.ws.kernel.boot.common;version=latest

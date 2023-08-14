@@ -24,8 +24,8 @@ def appBuildDir = "${buildDir}/test-application"
 
 task formlogin(type: War, dependsOn: classes) {
   def appName = "formlogin"
-  destinationDir file("${appBuildDir}")
-  archiveName "${appName}.war"
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "${appName}.war"
 
   from("test-applications/${appName}/resources") {
     include "**/*"
@@ -38,8 +38,8 @@ task formlogin(type: War, dependsOn: classes) {
 
 task testmarker(type: War, dependsOn: classes) {
   def appName = "testmarker"
-  destinationDir file("${appBuildDir}")
-  archiveName "${appName}.war"
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "${appName}.war"
 
   from("test-applications/${appName}/resources") {
     include "**/*"

@@ -82,13 +82,13 @@ public class WSSec {
         } catch (XMLSecurityException | JAXBException
                         | SAXException | URISyntaxException e) {
 
-            //Liberty code change start
-            //TODO: investigate why we are not finding this provider
+            // Liberty Change Start
+            // TODO: investigate why we are not finding this provider
             ClassLoader jaxbimplcl = null;
             try {
                 jaxbimplcl = org.glassfish.jaxb.runtime.v2.JAXBContextFactory.class.getClassLoader();
             } catch (Throwable t) {
-                //ncdfe
+                // ncdfe
             }
             if (jaxbimplcl != null) {
                 if (LOG.isDebugEnabled()) {
@@ -117,14 +117,14 @@ public class WSSec {
                 } catch (XMLSecurityException | JAXBException
                                 | SAXException | URISyntaxException e2) {
                     throw new RuntimeException(e2.getMessage(), e2);
-                } finally { //Liberty code change start
+                } finally {
                     if (cl != null) {
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("setting back the original class loader!");
                         }
                         Thread.currentThread().setContextClassLoader(cl);
                     }
-                } //Liberty code change end
+                } // Liberty Change End
             }
 
         }

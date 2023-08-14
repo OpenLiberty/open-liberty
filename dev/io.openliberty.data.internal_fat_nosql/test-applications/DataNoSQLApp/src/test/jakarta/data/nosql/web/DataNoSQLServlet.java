@@ -12,7 +12,12 @@
  *******************************************************************************/
 package test.jakarta.data.nosql.web;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
+import java.util.Comparator;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
@@ -30,7 +35,7 @@ public class DataNoSQLServlet extends FATServlet {
     Employees employees;
 
     /**
-     * Verify that implementation of a repository class can be injected. It won't be usable yet.
+     * Verify that implementation of a repository class can be injected.
      */
     @Test
     public void testInjectRepository() {
@@ -50,16 +55,27 @@ public class DataNoSQLServlet extends FATServlet {
     }
 
     /**
-     * TODO refactor to a more useful test
+     * Basic test for using jNoSQL as a Jakarta Data implementation.
+     * Creates three entities, saves them, and tests a query method.
      *
      * @throws Exception
      */
-    //TODO enable when able to save entities
-    //@Test
-    public void testBasicNoSql() throws Exception {
-        Employee e = new Employee(10L, "Irene", "BasicTest", "Engineer", "Rochester", 2010, 35, 60L);
+    @Test
+    public void testBasicQuery() throws Exception {
+        Employee mark = new Employee(10L, "Mark", "BasicTest", "Engineer", "Rochester", 2010, 35, 60f);
+        Employee dan = new Employee(11L, "Dan", "BasicTest", "Engineer", "Rochester", 2010, 35, 50f);
+        Employee scott = new Employee(12L, "Scott", "BasicTest", "Engineer", "Rochester", 2010, 35, 80f);
 
-        employees.save(e);
+        employees.save(mark);
+        employees.save(dan);
+        employees.save(scott);
 
+        assertEquals(Stream.of("Mark", "Dan")
+                        .sorted(Comparator.naturalOrder())
+                        .collect(Collectors.toList()),
+                     employees.findByWageLessThanEqual(70f)
+                                     .map(c -> c.firstName)
+                                     .sorted(Comparator.naturalOrder())
+                                     .collect(Collectors.toList()));
     }
 }

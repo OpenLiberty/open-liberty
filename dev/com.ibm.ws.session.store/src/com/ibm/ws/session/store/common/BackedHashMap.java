@@ -960,9 +960,10 @@ public abstract class BackedHashMap extends LRUHashMap {
                                 if (cachedSession.deferWriteUntilNextTick > 5) {
                                     if (isTraceOn && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                                         LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[DO_TIME_BASED_WRITES],
-                                                                            "Failed to write on 5 tries. Force the write to database!! " + " " + id);
+                                                                            "Failed to write on 5 tries. Force the write to persistent store!! " + " " + id);
                                     }
-                                    cachedSession.setLastWriteTime(now);
+                                    // lastWriteTime will be updated by the next WriteInterval after service method is completed.
+                                    // cachedSession.setLastWriteTime(now);
                                     // cachedSession.sync();
                                     cachedSession.flush();
                                     cachedSession.deferWriteUntilNextTick = 0;

@@ -285,6 +285,9 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "openapi")
     private OpenAPIElement openAPIElement;
 
+    @XmlElement(name = "mpOpenAPI")
+    private MpOpenAPIElement mpOpenAPIElement;
+
     @XmlElement(name = "federatedRepository")
     private FederatedRepository federatedRepository;
 
@@ -789,6 +792,14 @@ public class ServerConfiguration implements Cloneable {
         }
 
         return this.openAPIElement;
+    }
+
+    public MpOpenAPIElement getMpOpenAPIElement() {
+        if (this.mpOpenAPIElement == null) {
+            this.mpOpenAPIElement = new MpOpenAPIElement();
+        }
+
+        return this.mpOpenAPIElement;
     }
 
     public MPMetricsElement getMPMetricsElement() {

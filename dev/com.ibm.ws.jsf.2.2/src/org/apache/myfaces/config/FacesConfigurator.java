@@ -21,8 +21,6 @@ package org.apache.myfaces.config;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -150,6 +148,7 @@ import org.apache.myfaces.spi.ResourceLibraryContractsProviderFactory;
 import org.apache.myfaces.util.ContainerUtils;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.util.NavigationUtils;
+import org.apache.myfaces.util.Purgeable;
 import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
 import org.apache.myfaces.view.facelets.el.ELText;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
@@ -463,6 +462,7 @@ public class FacesConfigurator
         return lastModified;
     }
 
+
     public void update()
     {
         //Google App Engine does not allow to get last modified time of a file; 
@@ -473,40 +473,17 @@ public class FacesConfigurator
             return;
         }
         long refreshPeriod = (MyfacesConfig.getCurrentInstance(_externalContext).getConfigRefreshPeriod()) * 1000;
-
         if (refreshPeriod > 0)
         {
             long ttl = lastUpdate + refreshPeriod;
             if ((System.currentTimeMillis() > ttl) && (getLastModifiedTime() > ttl))
             {
-                boolean purged = false;
                 try
                 {
-                    purged = purgeConfiguration();
-                }
-                catch (NoSuchMethodException e)
-                {
-                    log.severe("Configuration objects do not support clean-up. Update aborted");
-
-                    // We still want to update the timestamp to avoid running purge on every subsequent
-                    // request after this one.
-                    //
-                    lastUpdate = System.currentTimeMillis();
-
-                    return;
-                }
-                catch (IllegalAccessException e)
-                {
-                    log.severe("Error during configuration clean-up" + e.getMessage());
-                }
-                catch (InvocationTargetException e)
-                {
-                    log.severe("Error during configuration clean-up" + e.getMessage());
-                }
-                if (purged)
-                {
+                    purgeConfiguration();
+  
                     configure();
-                    
+
                     // JSF 2.0 Publish PostConstructApplicationEvent after all configuration resources
                     // has been parsed and processed
                     FacesContext facesContext = getFacesContext();
@@ -515,82 +492,61 @@ public class FacesConfigurator
                     application.publishEvent(facesContext, PostConstructApplicationEvent.class,
                             Application.class, application);
                 }
+                catch (Exception e)
+                {
+                    log.severe("Error during configuration clean-up" + e.getMessage());
+
+                    // We still want to update the timestamp to avoid running purge on every subsequent
+                    // request after this one.
+                    //
+                    lastUpdate = System.currentTimeMillis();
+                }
             }
         }
     }
 
-    private boolean purgeConfiguration() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException
+    private void purgeConfiguration()
     {
-
-        Method appFactoryPurgeMethod;
-        Method renderKitPurgeMethod;
-        Method lifecyclePurgeMethod;
-        Method facesContextPurgeMethod;
-
         // Check that we have access to all of the necessary purge methods before purging anything
-        //
+
         ApplicationFactory applicationFactory
                 = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-        //appFactoryPurgeMethod = applicationFactory.getClass().getMethod("purgeApplication", NO_PARAMETER_TYPES);
-        appFactoryPurgeMethod = getPurgeMethod(applicationFactory, "purgeApplication", NO_PARAMETER_TYPES);
+        purge(applicationFactory);
 
         RenderKitFactory renderKitFactory
                 = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
-        //renderKitPurgeMethod = renderKitFactory.getClass().getMethod("purgeRenderKit", NO_PARAMETER_TYPES);
-        renderKitPurgeMethod = getPurgeMethod(renderKitFactory, "purgeRenderKit", NO_PARAMETER_TYPES);
+        purge(renderKitFactory);
+
+        RuntimeConfig.getCurrentInstance(_externalContext).purge();
 
         LifecycleFactory lifecycleFactory
                 = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        //lifecyclePurgeMethod = lifecycleFactory.getClass().getMethod("purgeLifecycle", NO_PARAMETER_TYPES);
-        lifecyclePurgeMethod = getPurgeMethod(lifecycleFactory, "purgeLifecycle", NO_PARAMETER_TYPES);
+        purge(lifecycleFactory);
 
         FacesContext facesContext = getFacesContext();
-        facesContextPurgeMethod = getPurgeMethod(facesContext, "purgeFacesContext", NO_PARAMETER_TYPES);
-        
-        // If there was no exception so far, now we can purge
-        //
-        if (appFactoryPurgeMethod != null && renderKitPurgeMethod != null && lifecyclePurgeMethod != null && 
-            facesContextPurgeMethod != null)
-        {
-            appFactoryPurgeMethod.invoke(applicationFactory, NO_PARAMETERS);
-            renderKitPurgeMethod.invoke(renderKitFactory, NO_PARAMETERS);
-            RuntimeConfig.getCurrentInstance(_externalContext).purge();
-            lifecyclePurgeMethod.invoke(lifecycleFactory, NO_PARAMETERS);
-            facesContextPurgeMethod.invoke(facesContext, NO_PARAMETERS);
+        purge(facesContext);
 
-            // factories and serial factory need not be purged...
-
-            // Remove first request processed so we can initialize it again
-            _externalContext.getApplicationMap().remove(LifecycleImpl.FIRST_REQUEST_PROCESSED_PARAM);
-            return true;
-        }
-        return false;
+        _externalContext.getApplicationMap().remove(LifecycleImpl.FIRST_REQUEST_PROCESSED_PARAM);
     }
     
-    private Method getPurgeMethod(Object instance, String methodName, Class<?>[] parameters)
-    {
+    <T> void purge(T instance)
+    {        
         while (instance != null)
         {
-            Method purgeMethod = null;
-            try
+            if (instance instanceof Purgeable)
             {
-                purgeMethod = instance.getClass().getMethod(methodName, parameters);
+                ((Purgeable) instance).purge();
             }
-            catch (NoSuchMethodException e)
-            {
-                // No op, it is expected to found this case, so in that case
-                // look for the parent to do the purge
-            }
-            if (purgeMethod != null)
-            {
-                return purgeMethod;
-            }
+
             if (instance instanceof FacesWrapper)
             {
-                instance = ((FacesWrapper)instance).getWrapped();
+                instance = ((FacesWrapper<T>) instance).getWrapped();
+            }
+            else
+            {
+                return;
             }
         }
-        return null;
     }
 
     public void configure() throws FacesException

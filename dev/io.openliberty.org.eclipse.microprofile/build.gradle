@@ -17,9 +17,13 @@ configurations {
   config30 {
     canBeResolved = true
   }
+  config31 {
+    canBeResolved = true
+  }
 }
 
 artifacts {
   config20(file('build/libs/io.openliberty.org.eclipse.microprofile.config.2.0.jar'))
   config30(file('build/libs/io.openliberty.org.eclipse.microprofile.config.3.0.jar'))
+  config31(file('build/libs/io.openliberty.org.eclipse.microprofile.config.3.1.jar'))
 }

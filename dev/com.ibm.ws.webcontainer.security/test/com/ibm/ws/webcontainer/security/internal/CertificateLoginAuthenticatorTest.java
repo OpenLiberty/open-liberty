@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -79,8 +79,7 @@ public class CertificateLoginAuthenticatorTest {
                 will(returnValue(certChain));
             }
         });
-        certLoginAuthenticator =
-                        new CertificateLoginAuthenticator(authnService, ssoCookieHelper);
+        certLoginAuthenticator = new CertificateLoginAuthenticator(authnService, ssoCookieHelper);
     }
 
     @Factory
@@ -99,7 +98,7 @@ public class CertificateLoginAuthenticatorTest {
                 allowing(authnService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)), with(matchingAuthenticationData(authData)),
                                                     with(equal((Subject) null)));
                 will(returnValue(authSubject));
-                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp);
+                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp, null);
             }
         });
         AuthenticationResult authResult = certLoginAuthenticator.authenticate(webRequest);

@@ -90,7 +90,10 @@ import org.apache.wss4j.policy.model.X509Token;
 /**
  *
  */
-//No Liberty Change, but needed to recompile due to Liberty change in MessageImpl.
+// Liberty Change; This class has no Liberty specific changes other than the Sensitive annotation 
+// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
+// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
+// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
 public class TransportBindingHandler extends AbstractBindingBuilder {
     TransportBinding tbinding;
 
@@ -578,7 +581,7 @@ public class TransportBindingHandler extends AbstractBindingBuilder {
                 sig.setCustomTokenValueType(tokenType);
             }
         }
-        Crypto crypto = null;
+        Crypto crypto;
         if (secTok.getSecret() == null) {
             sig.setX509Certificate(secTok.getX509Certificate());
 

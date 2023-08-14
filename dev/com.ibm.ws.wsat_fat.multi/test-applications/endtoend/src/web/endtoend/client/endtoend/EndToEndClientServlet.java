@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -32,6 +33,7 @@ import javax.xml.ws.BindingProvider;
 import com.ibm.tx.jta.ExtendedTransactionManager;
 import com.ibm.tx.jta.TransactionManagerFactory;
 import com.ibm.tx.jta.XAResourceNotAvailableException;
+import com.ibm.tx.jta.ut.util.TxTestUtils;
 import com.ibm.tx.jta.ut.util.XAResourceFactoryImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
@@ -86,12 +88,14 @@ public class EndToEndClientServlet extends HttpServlet {
 					wsdlLocation);
 			HelloImplTwoway proxy = service.getHelloImplTwowayPort();
 			BindingProvider bind = (BindingProvider) proxy;
-			bind.getRequestContext().put(
+			Map<String, Object> requestContext = bind.getRequestContext();
+			requestContext.put(
 					"javax.xml.ws.service.endpoint.address",
 					BASE_URL + "/endtoend/HelloImplTwowayService");
+			TxTestUtils.setTimeouts(requestContext, 300000);
 			if (type.equals("testTwoServerCommit") || type.equals("testFeatureDynamic")) {
 				userTransaction.begin();
-				boolean result = enlistXAResourse("commit", XAResourceImpl.DIRECTION_COMMIT);
+				boolean result = enlistXAResource("commit", XAResourceImpl.DIRECTION_COMMIT);
 				if (result == true) {
 					System.out.println("Reply from server: "
 							+ proxy.sayHello("commitclear", XAResourceImpl.DIRECTION_COMMIT));
@@ -104,7 +108,7 @@ public class EndToEndClientServlet extends HttpServlet {
 			}else if (type.equals("testTwoServerCommitClientVotingRollback")) {
 				try {
 					userTransaction.begin();
-					boolean result = enlistXAResourse("rollback",
+					boolean result = enlistXAResource("rollback",
 							XAResourceImpl.DIRECTION_ROLLBACK);
 					if (result == true) {
 						System.out.println("Reply from server: "
@@ -122,7 +126,7 @@ public class EndToEndClientServlet extends HttpServlet {
 			} else if (type.equals("testTwoServerCommitProviderVotingRollback")) {
 				try {
 					userTransaction.begin();
-					boolean result = enlistXAResourse("commit",
+					boolean result = enlistXAResource("commit",
 							XAResourceImpl.DIRECTION_ROLLBACK);
 					if (result == true) {
 						System.out.println("Reply from server: "
@@ -138,7 +142,7 @@ public class EndToEndClientServlet extends HttpServlet {
 				}
 			}else if (type.equals("testTwoServerRollback")) {
 				userTransaction.begin();
-				boolean result = enlistXAResourse("commit", XAResourceImpl.DIRECTION_ROLLBACK);
+				boolean result = enlistXAResource("commit", XAResourceImpl.DIRECTION_ROLLBACK);
 				if (result == true) {
 					System.out.println("Reply from server: "
 							+ proxy.sayHello("commit", XAResourceImpl.DIRECTION_ROLLBACK));
@@ -150,7 +154,7 @@ public class EndToEndClientServlet extends HttpServlet {
 				}
 			}else if (type.equals("testTwoServerTwoCallCommit")) {
 				userTransaction.begin();
-				boolean result = enlistXAResourse("commit", XAResourceImpl.DIRECTION_COMMIT);
+				boolean result = enlistXAResource("commit", XAResourceImpl.DIRECTION_COMMIT);
 				if (result == true) {
 					finalOutput = proxy.callAnother(BASE_URL2,"commit","commit",XAResourceImpl.DIRECTION_COMMIT);
 					System.out.println("Reply from server: "
@@ -162,7 +166,7 @@ public class EndToEndClientServlet extends HttpServlet {
 				}
 			}else if (type.equals("testThreeServerTwoCallCommit")) {
 				userTransaction.begin();
-				boolean result = enlistXAResourse("commit", XAResourceImpl.DIRECTION_COMMIT);
+				boolean result = enlistXAResource("commit", XAResourceImpl.DIRECTION_COMMIT);
 				if (result == true) {
 					finalOutput = proxy.callAnother(BASE_URL2,"commit","commitclear",XAResourceImpl.DIRECTION_COMMIT);
 					System.out.println("Reply from server: "
@@ -176,7 +180,7 @@ public class EndToEndClientServlet extends HttpServlet {
 				try {
 					userTransaction.begin();
 					System.out.println("userTransaction.begin()");
-					boolean result = enlistXAResourse("rollback",
+					boolean result = enlistXAResource("rollback",
 							XAResourceImpl.DIRECTION_ROLLBACK);
 					System.out.println("enlistXAResourse(rollback, XAResourceImpl.DIRECTION_ROLLBACK): " + result);
 					if (result == true) {
@@ -199,7 +203,7 @@ public class EndToEndClientServlet extends HttpServlet {
 				try {
 					userTransaction.begin();
 					System.out.println("userTransaction.begin()");
-					boolean result = enlistXAResourse("rollback",
+					boolean result = enlistXAResource("rollback",
 							XAResourceImpl.DIRECTION_ROLLBACK);
 					System.out.println("enlistXAResourse(rollback, XAResourceImpl.DIRECTION_ROLLBACK): " + result);
 					if (result == true) {
@@ -221,7 +225,7 @@ public class EndToEndClientServlet extends HttpServlet {
 			}else if (type.equals("testTwoServerTwoCallParticipant1VotingRollback")) {
 				try {
 					userTransaction.begin();
-					boolean result = enlistXAResourse("commit",
+					boolean result = enlistXAResource("commit",
 							XAResourceImpl.DIRECTION_ROLLBACK);
 					if (result == true) {
 						finalOutput = proxy.callAnother(BASE_URL2, "rollback",
@@ -240,7 +244,7 @@ public class EndToEndClientServlet extends HttpServlet {
 			}else if (type.equals("testThreeServerTwoCallParticipant1VotingRollback")) {
 				try {
 					userTransaction.begin();
-					boolean result = enlistXAResourse("commit",
+					boolean result = enlistXAResource("commit",
 							XAResourceImpl.DIRECTION_ROLLBACK);
 					if (result == true) {
 						finalOutput = proxy.callAnother(BASE_URL2, "rollback",
@@ -259,7 +263,7 @@ public class EndToEndClientServlet extends HttpServlet {
 			}else if (type.equals("testTwoServerTwoCallParticipant2VotingRollback")) {
 				try {
 					userTransaction.begin();
-					boolean result = enlistXAResourse("commit",
+					boolean result = enlistXAResource("commit",
 							XAResourceImpl.DIRECTION_ROLLBACK);
 					if (result == true) {
 						finalOutput = proxy.callAnother(BASE_URL2, "commit",
@@ -278,7 +282,7 @@ public class EndToEndClientServlet extends HttpServlet {
 			}else if (type.equals("testThreeServerTwoCallParticipant2VotingRollback")) {
 				try {
 					userTransaction.begin();
-					boolean result = enlistXAResourse("commit",
+					boolean result = enlistXAResource("commit",
 							XAResourceImpl.DIRECTION_ROLLBACK);
 					if (result == true) {
 						finalOutput = proxy.callAnother(BASE_URL2, "commit",
@@ -296,7 +300,7 @@ public class EndToEndClientServlet extends HttpServlet {
 				}
 			}else if (type.equals("testTwoServerTwoCallRollback")) {
 				userTransaction.begin();
-				boolean result = enlistXAResourse("commit", XAResourceImpl.DIRECTION_ROLLBACK);
+				boolean result = enlistXAResource("commit", XAResourceImpl.DIRECTION_ROLLBACK);
 				if (result == true) {
 					finalOutput = proxy.callAnother(BASE_URL2,"commit","commit",XAResourceImpl.DIRECTION_ROLLBACK);
 					System.out.println("Reply from server: "
@@ -308,7 +312,7 @@ public class EndToEndClientServlet extends HttpServlet {
 				}
 			}else if (type.equals("testThreeServerTwoCallRollback")) {
 				userTransaction.begin();
-				boolean result = enlistXAResourse("commit", XAResourceImpl.DIRECTION_ROLLBACK);
+				boolean result = enlistXAResource("commit", XAResourceImpl.DIRECTION_ROLLBACK);
 				if (result == true) {
 					finalOutput = proxy.callAnother(BASE_URL2,"commit","commitclear",XAResourceImpl.DIRECTION_ROLLBACK);
 					System.out.println("Reply from server: "
@@ -333,7 +337,7 @@ public class EndToEndClientServlet extends HttpServlet {
 						+ "<body>" + finalOutput + "</body></html>";
 	}
 
-	private boolean enlistXAResourse(String vote, int expectedDirection){
+	private boolean enlistXAResource(String vote, int expectedDirection){
 		boolean result = false;
 		try {
 			XAResourceImpl.clear();
@@ -350,7 +354,7 @@ public class EndToEndClientServlet extends HttpServlet {
 				xaRes = XAResourceFactoryImpl.instance().getXAResourceImpl(
 						xaResInfo);
 			}
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
 			xaRes.setExpectedDirection(expectedDirection);
 			result = TM.enlist(xaRes, recoveryId);

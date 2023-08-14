@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,6 +19,7 @@ import java.util.NoSuchElementException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 
 //------------------------------------------------------------------------------
@@ -60,20 +61,20 @@ public class LogCursorImpl implements LogCursor {
      * A single LogCursorImpl instance can cycle through up to two internal
      * iterators in series. This is the first of those iterators.
      */
-    private Iterator _iterator1;
+    private Iterator<?> _iterator1;
 
     /**
      * A single LogCursorImpl instance can cycle through up to two internal
      * iterators in series. This is the second of those iterators.
      */
-    private Iterator _iterator2;
+    private Iterator<?> _iterator2;
 
     /**
      * The iterator (if any) from which the last element was returned by
      * the LogCursorImpl.next() method. The LogCursorImpl.remove method will
      * invoke the remove() method on this iterator.
      */
-    private Iterator _removeIterator;
+    private Iterator<?> _removeIterator;
 
     /**
      * The object (if any) that was last returned on the last call
@@ -171,7 +172,7 @@ public class LogCursorImpl implements LogCursor {
      *                            occurs (may be null if no extra logic required in
      *                            this case)
      */
-    public LogCursorImpl(Lock controlLock, Collection collection, boolean removeSupported, LogCursorCallback callback) {
+    public LogCursorImpl(Lock controlLock, Collection<?> collection, boolean removeSupported, LogCursorCallback callback) {
         this(controlLock, collection, null, removeSupported, callback);
 
         if (tc.isDebugEnabled())
@@ -207,7 +208,7 @@ public class LogCursorImpl implements LogCursor {
      *                            this flag is set to true the underlying collections
      *                            must be able to support element removal.
      */
-    public LogCursorImpl(Lock controlLock, Collection collection1, Collection collection2, boolean removeSupported, LogCursorCallback callback) {
+    public LogCursorImpl(Lock controlLock, Collection<?> collection1, Collection<?> collection2, boolean removeSupported, LogCursorCallback callback) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "LogCursorImpl", controlLock, collection1, collection2, removeSupported, callback);
 
@@ -332,9 +333,8 @@ public class LogCursorImpl implements LogCursor {
      *         return.
      */
     @Override
+    @Trivial
     public boolean hasNext() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "hasNext", this);
 
         boolean hasNext = false;
 
@@ -344,8 +344,6 @@ public class LogCursorImpl implements LogCursor {
             hasNext = true;
         }
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "hasNext", new Boolean(hasNext));
         return hasNext;
     }
 
@@ -402,11 +400,10 @@ public class LogCursorImpl implements LogCursor {
      * @return int The initial size of the LogCursorImpl.
      */
     @Override
+    @Trivial
     public int initialSize() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "initialSize", this);
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "initialSize", new Integer(_initialSize));
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "initialSize {0} {1}", this, _initialSize);
         return _initialSize;
     }
 

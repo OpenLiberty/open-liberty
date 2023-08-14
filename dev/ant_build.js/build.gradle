@@ -53,9 +53,9 @@ configurations {
 }
 
 dependencies {
-    library "com.fasterxml.jackson.core:jackson-annotations:2.13.4"
-    library "com.fasterxml.jackson.core:jackson-core:2.13.4"
-    library "com.fasterxml.jackson.core:jackson-databind:2.13.4"
+    library "com.fasterxml.jackson.core:jackson-annotations:2.15.2"
+    library "com.fasterxml.jackson.core:jackson-core:2.15.2"
+    library "com.fasterxml.jackson.core:jackson-databind:2.15.2"
     library "com.google.javascript:closure-compiler:v20160315"
     library "com.jcraft:jsch:0.1.54"
     library "com.sun.xml.bind:jaxb-core:2.3.0.1"
@@ -110,9 +110,9 @@ dependencies {
 
 def dependencyToPath = [
   "com.ibm.ws.componenttest:infra.buildtasks-core:7.0.2": "lib/buildtasks/infra.buildtasks-core_7.0.2.jar",
-  "com.fasterxml.jackson.core:jackson-annotations:2.13.4": "lib/buildtasks/jackson-annotations-2.13.4.jar",
-  "com.fasterxml.jackson.core:jackson-core:2.13.4": "lib/buildtasks/jackson-core-2.13.4.jar",
-  "com.fasterxml.jackson.core:jackson-databind:2.13.4": "lib/buildtasks/jackson-databind-2.13.4.jar",
+  "com.fasterxml.jackson.core:jackson-annotations:2.15.2": "lib/buildtasks/jackson-annotations-2.15.2.jar",
+  "com.fasterxml.jackson.core:jackson-core:2.15.2": "lib/buildtasks/jackson-core-2.15.2.jar",
+  "com.fasterxml.jackson.core:jackson-databind:2.15.2": "lib/buildtasks/jackson-databind-2.15.2.jar",
   "com.jcraft:jsch:0.1.54": "lib/buildtasks/jsch-0.1.54.jar",
   "com.sun.xml.bind:jaxb-core:2.3.0.1": "lib/buildtasks/jaxb-core-2.3.0.1.jar",
   "com.sun.xml.bind:jaxb-impl:2.3.0.1": "lib/buildtasks/jaxb-impl-2.3.0.1.jar",

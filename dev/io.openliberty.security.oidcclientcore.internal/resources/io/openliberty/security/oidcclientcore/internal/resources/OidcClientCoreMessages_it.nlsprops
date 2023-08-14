@@ -146,3 +146,23 @@ PRIVATE_KEY_JWT_AUTH_ERROR.useraction=Per ulteriori informazioni, consultare l'e
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY=CWWKS2431E: Il client [{0}] OpenID Connect \u00e8 privo della chiave necessaria per firmare il token per l''autenticazione client.
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.explanation=Alla configurazione del client OpenID Connect mancano dei dati oppure non \u00e8 possibile trovare una chiave con il nome alias della chiave nella configurazione SSL per il client OpenID Connect.
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.useraction=Verificare che nel client OpenID Connect siano configurati un nome alias chiave e un riferimento SSL. Verificare che il keystore a cui fa riferimento la configurazione SSL contenga una chiave il cui alias corrisponda al nome alias della chiave nella configurazione del client OpenID Connect.
+
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR=CWWKS2432E: Il client [{0}] OpenID Connect ha rilevato un errore durante l''impostazione dell''autenticazione client per l''endpoint del token per il metodo di autenticazione [{1}]. {2}
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.explanation=L'endpoint del token OpenID Connect richiede l'autenticazione client, ma il client OpenID Connect potrebbe essere privo di informazioni oppure il client ha riscontrato un altro errore durante l'impostazione dei dati di autenticazione.
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio.
+
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME=CWWKS2433E: Il client [{0}] OpenID Connect non dispone di un nome alias chiave configurato, quindi il client non pu\u00f2 individuare le chiavi necessarie per creare il JWT (JSON Web Token) per l''autenticazione client.
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.explanation=Il client OpenID Connect deve configurare un nome alias chiave per definire la chiave da utilizzare per firmare il JWT. Lo stesso alias chiave deve essere utilizzato sia per la chiave privata utilizzata per firmare il JWT che per la chiave pubblica corrispondente.
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.useraction=Verificare che per il client OpenID Connect sia configurato un nome alias chiave.
+
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF=CWWKS2434E: Nel client [{0}] OpenID Connect non \u00e8 configurato un riferimento keystore, quindi, il client non pu\u00f2 individuare la chiave da utilizzare per firmare il JWT (JSON Web Token) per l''autenticazione client.
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.explanation=Per il client OpenID Connect \u00e8 necessario configurare un riferimento keystore per definire dove trovare la chiave da utilizzare per firmare il JWT.
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.useraction=Verificare che per il client OpenID Connect sia configurato un riferimento keystore.
+
+PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY=CWWKS2435E: Il client non pu\u00f2 richiamare la chiave privata [{0}] dal keystore [{1}] per firmare il JWT (JSON Web Token). {2}
+PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY.explanation=Il client OpenID Connect deve utilizzare una chiave privata per firmare il JWT (JSON Web Token) per l'autenticazione client. Il client ha rilevato un errore durante il richiamo della chiave privata.
+PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio.
+
+PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY=CWWKS2436E: Il client non \u00e8 in grado di richiamare la chiave pubblica [{0}] dal keystore [{1}] per calcolare l''intestazione x5t per il JWT (JSON Web Token). {2}
+PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY.explanation=L'intestazione x5t \u00e8 l'impronta digitale del certificato della chiave pubblica che corrisponde alla chiave privata utilizzata per firmare il JWT (JSON Web Token). L'intestazione x5t consente ai provider OpenID Connect di identificare il certificato da utilizzare per verificare la firma del JWT. Il client ha riscontrato un errore durante il richiamo della chiave pubblica.
+PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio.

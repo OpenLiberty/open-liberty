@@ -21,11 +21,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -54,6 +56,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
     public static final String SERVLET_NAME = APP_NAME + "/SimpleFS2PCCloudServlet";
     private static final String APP_PATH = "../com.ibm.ws.transaction.cloud_fat.base/";
     protected static final int FScloud2ServerPort = 9992;
+    private static final String v1Length = "v1Length";
 
     @Server("FSCLOUD001")
     public static LibertyServer server1;
@@ -229,7 +232,90 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
             assertNotNull(server2.getServerName() + " did not recover for " + server1.getServerName(),
                           server2.waitForStringInTrace("Performed recovery for " + server1.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
         } finally {
-            FATUtils.stopServers(server2);
+            FATUtils.stopServers(server2, longLeaseLengthFSServer1);
+        }
+    }
+
+    // Check that we can now:
+    // 1. Tolerate a v1 log on startup
+    // 2. Tolerate a peer with a v1 log
+    @Test
+    public void testBackwardCompatibility() throws Exception {
+        final String method = "testBackwardCompatibility";
+
+        final String defaultBackendURL = "\nhttp://localhost:9080";
+
+        // Ensure servers are stopped
+        FATUtils.stopServers(server1, server2);
+
+        // Edit the lease files
+        setupV1LeaseLogs(server1, server2);
+
+        String s1Length = server1.getEnvVar(v1Length);
+        String s2Length = server2.getEnvVar(v1Length);
+
+        // Start Server1
+        FATUtils.startServers(server1);
+        server1.clearLogMarks();
+        // Check whether the peer lease has been updated with the owner/backendURL combo.
+        assertNotNull("Artificial lease not set up",
+                      server1.waitForStringInLogUsingMark("Originally " + server1.getServerName() + " lease file length " + s1Length,
+                                                          FATUtils.LOG_SEARCH_TIMEOUT));
+        int newLength = Integer.parseInt(s1Length) + defaultBackendURL.length();
+        assertNotNull("Artificial lease not updated",
+                      server1.waitForStringInLogUsingMark("On writing " + server1.getServerName() + " lease file length " + newLength, FATUtils.LOG_SEARCH_TIMEOUT));
+        // Check for key string to see whether the home lease has been updated with the owner/backendURL combo.
+        assertNotNull("Home lease not set up",
+                      server1.waitForStringInLogUsingMark("On reading " + server2.getServerName() + " lease file length " + s2Length,
+                                                          FATUtils.LOG_SEARCH_TIMEOUT));
+        newLength = Integer.parseInt(s2Length) + defaultBackendURL.length();
+        // Check for key string to see whether the peer lease has been updated with the owner/backendURL combo.
+        assertNotNull("Peer lease not updated",
+                      server1.waitForStringInLogUsingMark("On writing " + server2.getServerName() + " lease file length " + newLength, FATUtils.LOG_SEARCH_TIMEOUT));
+
+        FATUtils.stopServers(server1);
+    }
+
+    private void setupV1LeaseLogs(LibertyServer... servers) throws Exception {
+        final String method = "setupV1LeaseLogs";
+        for (LibertyServer s : servers) {
+            final File groupDir = new File(s.getInstallRoot() +
+                                           File.separator + "usr" +
+                                           File.separator + "shared" +
+                                           File.separator + "leases" +
+                                           File.separator + "defaultGroup");
+
+            final File leaseFile = new File(groupDir, s.getServerName()); // Have arranged for recoveryIdentity to be server name
+
+            if (leaseFile.exists()) {
+                Log.info(getClass(), "method", (leaseFile.delete() ? "Deleted" : "Failed to delete") + " lease file: " + leaseFile);
+            }
+
+            if (!groupDir.exists()) {
+                Log.info(getClass(), method, (groupDir.mkdirs() ? "Created" : "Failed to create") + " lease directory: " + groupDir);
+            }
+
+            Log.info(getClass(), method, (leaseFile.createNewFile() ? "Created" : "Failed to create") + " lease file: " + leaseFile);
+
+            final String logdir = s.getInstallRoot() +
+                                  File.separator + "usr" +
+                                  File.separator + "servers" +
+                                  File.separator + s.getServerName() +
+                                  File.separator + "tranlog";
+
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                @Override
+                public Void run() throws IOException {
+                    try (RandomAccessFile randomAccessFile = new RandomAccessFile(leaseFile, "rw");
+                                    FileChannel fileChannel = randomAccessFile.getChannel()) {
+                        final ByteBuffer bb = ByteBuffer.wrap(logdir.getBytes());
+                        fileChannel.write(bb);
+                        s.addEnvVar(v1Length, Integer.toString(logdir.length()));
+                        fileChannel.force(false);
+                    }
+                    return null;
+                }
+            });
         }
     }
 

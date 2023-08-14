@@ -14,7 +14,6 @@ import java.security.AccessController;
 import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.security.KeyStoreException;
-import java.security.PrivateKey;
 import java.security.PrivilegedExceptionAction;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
@@ -73,7 +72,6 @@ import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcCommonClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
-import com.ibm.ws.security.openidconnect.clients.common.token.auth.PrivateKeyJwtAuthMethod;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -177,6 +175,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_ACCESS_TOKEN_CACHE_ENABLED = "accessTokenCacheEnabled";
     public static final String CFG_KEY_ACCESS_TOKEN_CACHE_TIMEOUT = "accessTokenCacheTimeout";
     public static final String CFG_KEY_PKCE_CODE_CHALLENGE_METHOD = "pkceCodeChallengeMethod";
+    public static final String CFG_KEY_TOKEN_REQUEST_ORIGIN_HEADER = "tokenRequestOriginHeader";
 
     public static final String OPDISCOVERY_AUTHZ_EP_URL = "authorization_endpoint";
     public static final String OPDISCOVERY_TOKEN_EP_URL = "token_endpoint";
@@ -275,6 +274,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private boolean accessTokenCacheEnabled = true;
     private long accessTokenCacheTimeout = 1000 * 60 * 5;
     private String pkceCodeChallengeMethod = null;
+    private String tokenRequestOriginHeader = null;
 
     private String oidcClientCookieName;
     private boolean authnSessionDisabled;
@@ -556,6 +556,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         accessTokenCacheEnabled = configUtils.getBooleanConfigAttribute(props, CFG_KEY_ACCESS_TOKEN_CACHE_ENABLED, accessTokenCacheEnabled);
         accessTokenCacheTimeout = configUtils.getLongConfigAttribute(props, CFG_KEY_ACCESS_TOKEN_CACHE_TIMEOUT, accessTokenCacheTimeout);
         pkceCodeChallengeMethod = configUtils.getConfigAttribute(props, CFG_KEY_PKCE_CODE_CHALLENGE_METHOD);
+        tokenRequestOriginHeader = configUtils.getConfigAttribute(props, CFG_KEY_TOKEN_REQUEST_ORIGIN_HEADER);
         // TODO - 3Q16: Check the validationEndpointUrl to make sure it is valid
         // before continuing to process this config
         // checkValidationEndpointUrl();
@@ -635,6 +636,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             Tr.debug(tc, "accessTokenCacheEnabled:" + accessTokenCacheEnabled);
             Tr.debug(tc, "accessTokenCacheTimeout:" + accessTokenCacheTimeout);
             Tr.debug(tc, "pkceCodeChallengeMethod:" + pkceCodeChallengeMethod);
+            Tr.debug(tc, "tokenRequestOriginHeader:" + tokenRequestOriginHeader);
         }
     }
 
@@ -1935,10 +1937,9 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         return pkceCodeChallengeMethod;
     }
 
-    @Sensitive
     @Override
-    public PrivateKey getPrivateKeyForClientAuthentication() throws Exception {
-        return PrivateKeyJwtAuthMethod.getPrivateKeyForClientAuthentication(clientId, keyAliasName, getKeyStoreRef(), keyStoreServiceRef.getService());
+    public String getTokenRequestOriginHeader() {
+        return tokenRequestOriginHeader;
     }
 
 }

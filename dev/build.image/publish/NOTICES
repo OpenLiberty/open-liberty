@@ -6,16 +6,17 @@ The Open Liberty @LIBERTY_VERSION@ Project (https://openliberty.io/).
 
 TABLE OF CONTENTS
 
-APACHE V1.1
 APACHE V2
 BSD
 BSD-2-CLAUSE  
-BSD-3-CLAUSE  
+BSD-3-CLAUSE
+BSD-EQUIVALENT  
 CDDL V1  
 CDDL V1.1
 CPL  
 EPL  
-EPL V2  
+EPL V2
+GPL-2.0-WITH-CLASSPATH-EXCEPTION  
 ISC  
 JDOM
 MIT  
@@ -27,71 +28,6 @@ W3C
 OTHER KNOWN LICENSE  
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-APACHE SOFTWARE LICENSE 1.1
-
-The Program includes some or all of the following that IBM obtained
-under the Apache License Version 1.1:
-
-BCPG-JDK15ON
-
-
-Apache Software License
-Version 1.1
-
-Copyright (c) 2000 The Apache Software Foundation.  All rights reserved.
- 
-Redistribution and use in source and binary forms, with or without 
-modification, are permitted provided that the following conditions are 
-met:
- 
-1. Redistributions of source code must retain the above copyright 
-notice, this list of conditions and the following disclaimer.
- 
-2. Redistributions in binary form must reproduce the above copyright 
-notice, this list of conditions and the following disclaimer in the 
-documentation and/or other materials provided with the distribution.
-
-3. The end-user documentation included with the redistribution,
-if any, must include the following acknowledgment:
-"This product includes software developed by the
-Apache Software Foundation (http://www.apache.org/)."
-Alternately, this acknowledgment may appear in the software itself,
-if and wherever such third-party acknowledgments normally appear.
-
-4. The names "Apache" and "Apache Software Foundation" must 
-not be used to endorse or promote products derived from this
-software without prior written permission. For written
-permission, please contact apache@apache.org.
-
-5. Products derived from this software may not be called "Apache",
-nor may "Apache" appear in their name, without prior written
-permission of the Apache Software Foundation.
-
-THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
-WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
-ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON 
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-=================================================================
-
-This software consists of voluntary contributions made by many
-individuals on behalf of the Apache Software Foundation.  For more
-information on the Apache Software Foundation, please see
-<http://www.apache.org/>.
-
-Portions of this software are based upon public domain software
-originally written at the National Center for Supercomputing 
-Applications, University of Illinois, Urbana-Champaign.
-
-END OF APACHE SOFTWARE LICENSE 1.1 NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 APACHE SOFTWARE LICENSE 2.0
 
 The Program includes some or all of the following that IBM obtained
@@ -359,7 +295,6 @@ Corportation), FIREBUG-LITE [Lodash] (Copyright (c) 2007, Parakey Inc.
 All rights reserved.)
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
 BSD-2-CLAUSE
 The Program includes some or all of the following packages that IBM 
 obtained under the BSD-2-Clause License:
@@ -528,6 +463,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END OF BSD-4-CLAUSE LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+BSD-EQUIVALENT
+
+The Program includes some or all of the following that IBM obtained
+under a BSD-EQUIVALENT license:
+
+BCPG-JDK15ON (Copyright (c) 2000 - 2023 The Legion of the Bouncy Castle Inc.)
+BCPKIX-JDK15ON (Copyright (c) 2000 - 2023 The Legion of the Bouncy Castle Inc.)
+BCPROV-JDK15ON (Copyright (c) 2000 - 2023 The Legion of the Bouncy Castle Inc.)
+BCUTIL-JDK15ON (Copyright (c) 2000 - 2023 The Legion of the Bouncy Castle Inc.)
+
+Copyright (c) 2000 - 2023 The Legion of the Bouncy Castle Inc. (https://www.bouncycastle.org)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
+to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+
+
+END OF BSD-EQUIVALENT NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1
 
 The Program includes some or all of the following that IBM obtained
@@ -581,6 +543,9 @@ JAVAX.TRANSACTION-API
 
 JAVAX.JMS
 (https://github.com/javaee/jms-spec/tree/master/jms2.0)
+
+JAXB-IMPL 
+(https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api/2.2.1)
 
 
 END OF COMMON DEVELOPMENT AND DISTRIBUTION V1.1 LICENSE NOTICES AND INFORMATION
@@ -717,11 +682,31 @@ https://mvnrepository.com/artifact/org.eclipse.platform/org.eclipse.osgi/3.18.30
 ORG.ECLIPSE.PERSISTENCE.JPA
 (https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.jpa/4.0.1)
 ORG.ECLIPSE.PERSISTENCE.JPA.JPQL
-(https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.jpa.jpql/4.0.1)
+(https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.jpa.jpql/4.0.1),
+JBOSS-ANNOTATIONS-API
+(https://mvnrepository.com/artifact/org.jboss.spec.javax.annotation/jboss-annotations-api_1.3_spec/2.0.1.Final)
 
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+GPL-2.0-WITH-CLASSPATH-EXCEPTION
+
+The Program includes some or all of the following that IBM obtained
+under a GPL-2.0-with-classpath-exception license:
+
+
+JBOSS-ANNOTATIONS-API_SPEC | Copyright (c) Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+
+The Program includes some or all of the following available
+under the GNU General Public License. For copies of the source
+code for this software, send an email to identifying the IBM
+product and the GPL-licensed program for which you are
+requesting the source code.
+
+END OF GPL-2.0-WITH-CLASSPATH-EXCEPTION NON-IBM-LICENSE INFORMATION
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 ISC LICENSE
 
@@ -859,6 +844,7 @@ to <mbroz@us.ibm.com> identifying the IBM Program and the Modifiable Third
 Party Code for which you are requesting the source code. 
 
 RESTEASYPROVIDERFACTORYDELEGATE [JBoss RESTEasy] (No Copyright)
+JBOSS-RMI-API_1.0_SPEC Copyright (C) 1991, 1999 Free Software Foundation, Inc.
 
                   GNU LESSER GENERAL PUBLIC LICENSE
                        Version 2.1, February 1999

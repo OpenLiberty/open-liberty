@@ -14,6 +14,7 @@
 package io.openliberty.checkpoint.fat;
 
 import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
+import static io.openliberty.checkpoint.fat.util.FATUtils.LOG_SEARCH_TIMEOUT;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
@@ -29,12 +30,13 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
@@ -60,7 +62,7 @@ public class ServletTest extends FATServletClient {
     static final String SERVER_NAME = "checkpointTransactionServlet";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
+    public static RepeatTests r = RepeatTests.with(new EE8FeatureReplacementAction().forServers(SERVER_NAME))
                     .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly())
                     .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
 
@@ -77,7 +79,9 @@ public class ServletTest extends FATServletClient {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "servlets.simple.*");
+        ShrinkHelper.cleanAllExportedArchives();
+
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
 
         Consumer<LibertyServer> preRestoreLogic = checkpointServer -> {
             // Env vars that override the application datasource and transaction
@@ -96,7 +100,7 @@ public class ServletTest extends FATServletClient {
                           checkpointServer.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
         };
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic);
-        server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        server.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
         server.startServer();
         server.checkpointRestore();
     }
@@ -104,7 +108,6 @@ public class ServletTest extends FATServletClient {
     @AfterClass
     public static void tearDownClass() throws Exception {
         stopServer(server, "WTRN0017W"); // Unable to begin nested tran; nested trans not supported
-        ShrinkHelper.cleanAllExportedArchives();
     }
 
 }

@@ -34,16 +34,17 @@ IBM-API-Package: \
     org.eclipse.microprofile.openapi.models.servers; type="stable",\
     org.eclipse.microprofile.openapi.models.tags; type="stable",\
     org.eclipse.microprofile.openapi.spi; type="stable"
--features=io.openliberty.mpConfig-3.0, \
+-features=io.openliberty.mpConfig-3.0; ibm.tolerates:="3.1", \
   io.openliberty.webBundle.internal-1.0,\
   io.openliberty.restfulWS-3.1, \
-  io.openliberty.mpCompatible-6.0, \
+  io.openliberty.mpCompatible-6.0; ibm.tolerates:="6.1", \
   io.openliberty.org.eclipse.microprofile.openapi-3.1,\
   io.openliberty.jandex.internal-3.0
 -bundles=\
     io.openliberty.io.smallrye.openapi3.core, \
     io.openliberty.io.smallrye.openapi3.jaxrs, \
     io.openliberty.microprofile.openapi.2.0.internal.jakarta, \
+    io.openliberty.microprofile.openapi.2.0.internal.servlet.jakarta, \
     io.openliberty.microprofile.openapi.3.1.internal.services, \
     com.ibm.ws.microprofile.openapi.ui, \
     io.openliberty.microprofile.openapi.internal.common,\

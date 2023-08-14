@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2021 IBM Corporation and others.
+ * Copyright (c) 2003, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,13 +14,13 @@
 package com.ibm.ws.recoverylog.spi;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import com.ibm.tx.TranConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 
 //------------------------------------------------------------------------------
@@ -384,7 +384,7 @@ public class RecoverableUnitImpl implements RecoverableUnit {
         if (_recLog.failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "createSection", this);
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log has already failed");
         }
 
         // Construct a new Integer to wrap the 'id' value in order to use this in the _recoverableUnitSections map.
@@ -497,15 +497,9 @@ public class RecoverableUnitImpl implements RecoverableUnit {
      *         identity.
      */
     @Override
+    @Trivial
     public RecoverableUnitSection lookupSection(int identity) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "lookupSection", this, identity);
-
-        RecoverableUnitSection recoverableUnitSection = _recoverableUnitSections.get(identity);
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "lookupSection", recoverableUnitSection);
-        return recoverableUnitSection;
+        return _recoverableUnitSections.get(identity);
     }
 
     //------------------------------------------------------------------------------
@@ -549,6 +543,7 @@ public class RecoverableUnitImpl implements RecoverableUnit {
      * @exception InternalLogException An unexpected error has occured.
      */
     @Override
+    @Trivial
     public void writeSections() throws InternalLogException {
         // Lack of trace or ffdc is deliberate. This method is the external interface
         // for the real writeSections call and as such we don't want to see two entries for the
@@ -616,14 +611,14 @@ public class RecoverableUnitImpl implements RecoverableUnit {
         if (_recLog.failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "writeSections", "InternalLogException");
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log has already failed");
         }
 
         // If the log was not open then throw an exception
         if (_logHandle == null) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "writeSections", "InternalLogException");
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log was not open");
         }
 
         _controlLock.getSharedLock(LOCK_REQUEST_ID_RUI_WRITESECTIONS);
@@ -798,14 +793,14 @@ public class RecoverableUnitImpl implements RecoverableUnit {
         if (_recLog.failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "writeSection", this);
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log has already failed");
         }
 
         // If the log was not open then throw an exception
         if (_logHandle == null) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "writeSection", "InternalLogException");
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log was not open");
         }
 
         _controlLock.getSharedLock(LOCK_REQUEST_ID_RUI_WRITESECTION);
@@ -946,6 +941,7 @@ public class RecoverableUnitImpl implements RecoverableUnit {
      * @exception InternalLogException An unexpected error has occured.
      */
     @Override
+    @Trivial
     public void forceSections() throws InternalLogException {
         // Lack of trace or exception handling is deliberate. This method is the external interface
         // for the real forceSections call and as such we don't want to see two entries for the
@@ -1006,7 +1002,7 @@ public class RecoverableUnitImpl implements RecoverableUnit {
         if (_recLog.failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "forceSections", this);
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log has already failed");
         }
 
         try {
@@ -1087,18 +1083,9 @@ public class RecoverableUnitImpl implements RecoverableUnit {
      *         sections
      */
     @Override
+    @Trivial
     public LogCursor sections() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "sections", this);
-
-        Collection<RecoverableUnitSection> recoverableUnitSectionsValues = _recoverableUnitSections.values();
-
-        LogCursorImpl cursor = new LogCursorImpl(null, recoverableUnitSectionsValues, false, null);
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "sections", cursor);
-
-        return cursor;
+        return new LogCursorImpl(null, _recoverableUnitSections.values(), false, null);
     }
 
     //------------------------------------------------------------------------------
@@ -1110,11 +1097,10 @@ public class RecoverableUnitImpl implements RecoverableUnit {
      * @return The identity of this recoverable unit.
      */
     @Override
+    @Trivial
     public long identity() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "identity", this);
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "identity", _identity);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "identity {0} {1}", this, _identity);
         return _identity;
     }
 
@@ -1158,7 +1144,7 @@ public class RecoverableUnitImpl implements RecoverableUnit {
         if (_recLog.failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "recover", this);
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log has already failed");
         }
 
         try {
@@ -1361,7 +1347,7 @@ public class RecoverableUnitImpl implements RecoverableUnit {
         if (_recLog.failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "remove", this);
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log has already failed");
         }
 
         if (_storedOnDisk) {
@@ -1754,9 +1740,10 @@ public class RecoverableUnitImpl implements RecoverableUnit {
             Tr.exit(tc, "writeRecordHeader");
     }
 
+    @Trivial
     protected FailureScope failureScope() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "failureScope", this, _failureScope);
+            Tr.debug(tc, "failureScope {0} {1}", this, _failureScope);
         return _failureScope;
     }
 

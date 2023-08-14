@@ -102,8 +102,8 @@ public class FATSuite {
                         .removeFeature("microProfile-5.0").addFeature("microProfile-6.0"));
         } else {
             r = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                             .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").addFeature("mpMetrics-5.0")
-                             .addFeature("microProfile-6.0"));
+                             .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").removeFeature("mpMetrics-2.3").removeFeature("microProfile-1.3").addFeature("mpMetrics-5.0")
+                                      .addFeature("microProfile-6.0"));
         }
     }
 }

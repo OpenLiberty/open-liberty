@@ -43,6 +43,7 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.jaxrs-2.0; ibm.tolerates:="2.1"
 -bundles=\
  com.ibm.ws.microprofile.openapi,\
+ com.ibm.ws.microprofile.openapi.servlet,\
  com.ibm.ws.microprofile.openapi.ui,\
  com.ibm.ws.microprofile.openapi.1.1.model,\
  io.openliberty.microprofile.openapi.internal.common,\

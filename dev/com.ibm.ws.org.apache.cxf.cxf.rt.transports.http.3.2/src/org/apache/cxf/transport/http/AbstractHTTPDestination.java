@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger; // Liberty code change
+import java.util.logging.Logger; // Liberty Change
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -41,7 +41,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.attachment.AttachmentDataSource;
-import org.apache.cxf.common.logging.LogUtils; // Liberty code change
+import org.apache.cxf.common.logging.LogUtils; // Liberty Change
 import org.apache.cxf.common.util.Base64Exception;
 import org.apache.cxf.common.util.Base64Utility;
 import org.apache.cxf.common.util.PropertyUtils;
@@ -80,11 +80,11 @@ import org.apache.cxf.ws.addressing.ContextUtils;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
 
-import com.ibm.websphere.ras.annotation.Trivial; // Liberty code change
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.cxf.exceptions.InvalidCharsetException;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.websphere.ras.annotation.Trivial; // Liberty Change
+import com.ibm.websphere.ras.Tr;  // Liberty Change
+import com.ibm.websphere.ras.TraceComponent;  // Liberty Change
+import com.ibm.ws.cxf.exceptions.InvalidCharsetException;  // Liberty Change
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;  // Liberty Change
 
 /**
  * Common base for HTTP Destination implementations.
@@ -113,7 +113,7 @@ public abstract class AbstractHTTPDestination
 
     private static final String DECODE_BASIC_AUTH_WITH_ISO8859 = "decode.basicauth.with.iso8859";
     private static final Logger LOG = LogUtils.getL7dLogger(AbstractHTTPDestination.class); // Liberty code change
-    private static final TraceComponent tc = Tr.register(AbstractHTTPDestination.class);
+    private static final TraceComponent tc = Tr.register(AbstractHTTPDestination.class);  // Liberty Change
 
     protected final Bus bus;
     protected DestinationRegistry registry;
@@ -181,7 +181,7 @@ public abstract class AbstractHTTPDestination
                     ? new String(authBytes, StandardCharsets.ISO_8859_1) : new String(authBytes);
 
                 int idx = authDecoded.indexOf(':');
-                String username = null;
+                final String username;
                 String password = null;
                 if (idx == -1) {
                     username = authDecoded;
@@ -241,18 +241,19 @@ public abstract class AbstractHTTPDestination
         return MessageUtils.isOneWay(message);
     }
 
-    @FFDCIgnore({ SuspendedInvocationException.class, Fault.class, RuntimeException.class })
+    @FFDCIgnore({ SuspendedInvocationException.class, Fault.class, RuntimeException.class })  // Liberty Change
     public void invoke(final ServletConfig config,
                        final ServletContext context,
                        final HttpServletRequest req,
                        final HttpServletResponse resp) throws IOException {
         Message inMessage = retrieveFromContinuation(req);
         if (inMessage == null) {
+		     // Liberty Change
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Create a new message for processing");
             }
-            //Liberty perf change - avoid resize and set init size to 32 and factor 1
-            inMessage = new MessageImpl(32, 1);
+            
+            inMessage = new MessageImpl(32, 1); // Liberty Change - perf change - avoid resize and set init size to 32 and factor 1
             ExchangeImpl exchange = new ExchangeImpl();
             exchange.setInMessage(inMessage);
             setupMessage(inMessage,
@@ -264,8 +265,8 @@ public abstract class AbstractHTTPDestination
             exchange.setSession(new HTTPSession(req));
             ((MessageImpl) inMessage).setDestination(this);
         } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Get the message from the request for processing");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) { // Liberty Change
+                Tr.debug(tc, "Get the message from the request for processing"); // Liberty Change
             }
         }
 
@@ -290,11 +291,12 @@ public abstract class AbstractHTTPDestination
         } catch (RuntimeException ex) {
             throw ex;
         } finally {
+		    // Liberty Change Start
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Finished servicing http request on thread: " + Thread.currentThread());
             }
             //clean up address within threadlocal of EndPointInfo   Liberty#3669
-            endpointInfo.resetAddress();
+            endpointInfo.resetAddress(); // Liberty Change End
         }
     }
 
@@ -323,7 +325,7 @@ public abstract class AbstractHTTPDestination
 
         final Exchange exchange = inMessage.getExchange();
         DelegatingInputStream in = new DelegatingInputStream(req.getInputStream()) {
-            @Override
+            @Override  // Liberty Change
             public void cacheInput() {
                 if (!cached && (exchange.isOneWay() || isWSAddressingReplyToSpecified(exchange))) {
                     //For one-ways and WS-Addressing invocations with ReplyTo address,
@@ -353,6 +355,11 @@ public abstract class AbstractHTTPDestination
         inMessage.put(Message.HTTP_REQUEST_METHOD, req.getMethod());
         String requestURI = req.getRequestURI();
         inMessage.put(Message.REQUEST_URI, requestURI);
+        try {
+            req.setAttribute("org.springframework.web.servlet.HandlerMapping.bestMatchingPattern", requestURI);
+        } catch (RuntimeException rex) {
+            //ignore, not using Spring so the property is irrelevant
+        }
         String requestURL = req.getRequestURL().toString();
         inMessage.put(Message.REQUEST_URL, requestURL);
         String contextPath = req.getContextPath();
@@ -402,12 +409,12 @@ public abstract class AbstractHTTPDestination
         inMessage.put(Message.ASYNC_POST_RESPONSE_DISPATCH, Boolean.TRUE);
 
         SecurityContext httpSecurityContext = new SecurityContext() {
-            @Override
+            @Override  // Liberty Change
             public Principal getUserPrincipal() {
                 return req.getUserPrincipal();
             }
 
-            @Override
+            @Override  // Liberty Change
             public boolean isUserInRole(String role) {
                 return req.isUserInRole(role);
             }
@@ -480,7 +487,7 @@ public abstract class AbstractHTTPDestination
     }
 
     protected Message retrieveFromContinuation(HttpServletRequest req) {
-        //Liberty change - removing refs to isServlet3
+        // Liberty Change - removing refs to isServlet3
         return retrieveFromServlet3Async(req);
     }
 
@@ -497,7 +504,7 @@ public abstract class AbstractHTTPDestination
                                      final HttpServletRequest req,
                                      final HttpServletResponse resp) {
         try {
-            if (/* Liberty change - removing refs to isServlet3 */req.isAsyncSupported()) {
+            if (/* Liberty Change - removing refs to isServlet3 */req.isAsyncSupported()) {
                 inMessage.put(ContinuationProvider.class.getName(),
                               new Servlet3ContinuationProvider(req, resp, inMessage));
             } else if (cproviderFactory != null) {
@@ -550,8 +557,7 @@ public abstract class AbstractHTTPDestination
      * @param inMessage the incoming message
      * @return the inbuilt backchannel
      */
-    @Override
-    // Liberty code change
+    @Override // Liberty Change Start 
     @Trivial
     protected Conduit getInbuiltBackChannel(Message inMessage) {
         LOG.entering("AbstractHTTPDestination", "getInbuiltBackChannel");
@@ -583,7 +589,7 @@ public abstract class AbstractHTTPDestination
         return sp;
     }
 
-    // Liberty code change start
+    // Liberty Change Start
     @Trivial
     private HTTPServerPolicy calcServerPolicy(Message m) {
         LOG.entering("AbstractHTTPDestination", "calcServerPolicy");
@@ -594,7 +600,7 @@ public abstract class AbstractHTTPDestination
         LOG.exiting("AbstractHTTPDestination", "calcServerPolicy");
         return sp;
     }
-    // Liberty code change end
+    // Liberty Change End
 
     /**
      * On first write, we need to make sure any attachments and such that are still on the incoming stream
@@ -651,14 +657,14 @@ public abstract class AbstractHTTPDestination
         }
 
         cacheInput(outMessage);
-        //Liberty code change start
+        // Liberty Change Start
         Headers headers = null;
         HTTPServerPolicy sp = calcServerPolicy(outMessage);
         if (sp != null) {
             headers = new Headers(outMessage);
             headers.setFromServerPolicy(sp);
         }
-        //Liberty code change end
+        // Liberty Change End
 
         OutputStream responseStream = null;
         boolean oneWay = isOneWay(outMessage);
@@ -673,7 +679,7 @@ public abstract class AbstractHTTPDestination
                 return null;
             }
         }
-        //Liberty code change start
+        // Liberty Change Start
         if (!response.isCommitted()) {
             response.setStatus(responseCode); //Original CXF line
             if (headers == null) {
@@ -681,7 +687,7 @@ public abstract class AbstractHTTPDestination
             }
             headers.copyToResponse(response);
         }
-        //Liberty code change end
+        // Liberty Change End
 
         outMessage.put(RESPONSE_HEADERS_COPIED, "true");
 
@@ -701,7 +707,7 @@ public abstract class AbstractHTTPDestination
         return responseStream;
     }
 
-    @FFDCIgnore(IllegalStateException.class)
+    @FFDCIgnore(IllegalStateException.class) // Liberty Change
     private void closeResponseOutputStream(HttpServletResponse response) throws IOException {
         try {
             response.getOutputStream().close();
@@ -716,6 +722,7 @@ public abstract class AbstractHTTPDestination
         if (responseObj instanceof HttpServletResponse) {
             return (HttpServletResponse) responseObj;
         } else if (null != responseObj) {
+		    // Liberty Change Start
             String m = (new org.apache.cxf.common.i18n.Message("UNEXPECTED_RESPONSE_TYPE_MSG", tc.getLogger(), responseObj.getClass())).toString();
             Tr.warning(tc, m);
             throw new IOException(m);
@@ -723,6 +730,7 @@ public abstract class AbstractHTTPDestination
             String m = (new org.apache.cxf.common.i18n.Message("NULL_RESPONSE_MSG", tc.getLogger())).toString();
             //LOG.log(Level.WARNING, m);
             Tr.warning(tc, m);
+			// Liberty Change End
             throw new IOException(m);
         }
     }
@@ -751,7 +759,7 @@ public abstract class AbstractHTTPDestination
          *
          * @param message the message to be sent.
          */
-        @Override
+        @Override // Liberty Change
         public void prepare(Message message) throws IOException {
             message.put(HTTP_RESPONSE, response);
             OutputStream os = message.getContent(OutputStream.class);
@@ -789,7 +797,7 @@ public abstract class AbstractHTTPDestination
      */
     private class WrappedOutputStream extends AbstractWrappedOutputStream implements CopyingOutputStream {
 
-        private final Message outMessage;
+        private final Message outMessage; 
 
         WrappedOutputStream(Message m) {
             super();
@@ -875,9 +883,9 @@ public abstract class AbstractHTTPDestination
      *
      * @see org.apache.cxf.transport.AbstractMultiplexDestination#getAddressWithId(java.lang.String)
      */
-    @Override
+    @Override // Liberty Change
     public EndpointReferenceType getAddressWithId(String id) {
-        EndpointReferenceType ref = null;
+        final EndpointReferenceType ref;
 
         if (isMultiplexWithAddress()) {
             String address = EndpointReferenceUtils.getAddress(reference);
@@ -955,8 +963,9 @@ public abstract class AbstractHTTPDestination
         }
     }
 
+
+    // Liberty Change Start
     @Override
-    // Liberty code change start
     @Trivial
     public void assertMessage(Message message) {
         LOG.entering("AbstractHTTPDestination", "assertMessage");
@@ -964,9 +973,9 @@ public abstract class AbstractHTTPDestination
         pde.assertMessage(message, calcServerPolicy(message), new ServerPolicyCalculator());
         LOG.entering("AbstractHTTPDestination", "assertMessage");
     }
-    // Liberty code change end
+    // Liberty Change End
 
-    @Override
+    @Override // Liberty Change
     public boolean canAssert(QName type) {
         return new ServerPolicyCalculator().getDataClassName().equals(type);
     }

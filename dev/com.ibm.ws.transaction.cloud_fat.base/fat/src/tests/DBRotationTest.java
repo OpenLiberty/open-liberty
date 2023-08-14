@@ -266,19 +266,12 @@ public class DBRotationTest extends FATServletClient {
      * @throws Exception
      */
     @Test
-//    FIXME re-enable once SQLServer issue is fixed.
 //    @ExpectedFFDC(value = { "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.tx.jta.XAResourceNotAvailableException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException",
                            "java.lang.IllegalStateException" })
     // defect 227411, if cloud002 starts slowly, then access to cloud001's indoubt tx
     // XAResources may need to be retried (tx recovery is, in such cases, working as designed.
     public void testDBRecoveryCompeteForLog() throws Exception {
-
-        //FIXME - when switching from generic to specific datasource properties
-        //this test started to fail for SQLServer on line 314.
-        if (DatabaseContainerType.valueOf(TxTestContainerSuite.testContainer) == DatabaseContainerType.SQLServer) {
-            return;
-        }
 
         final String method = "testDBRecoveryCompeteForLog";
         String id = "001";
@@ -407,6 +400,29 @@ public class DBRotationTest extends FATServletClient {
             }
         }
         Log.info(c, method, "test complete");
+    }
+
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
+    public void testBackwardCompatibility() throws Exception {
+        final String method = "testBackwardCompatibility";
+
+
+        serversToCleanup = new LibertyServer[] { server1 };
+
+        FATUtils.startServers(runner, server1);
+
+        runTest(server1, SERVLET_NAME, "setupV1LeaseLog");
+
+        // Check for key string to see whether the lease has been updated with the owner/backendURL combo. Set the trace mark so that
+        // we pickup the trace from the next home server lease update where the V1 data will be replaced by V2 and from the claim for
+        // cloud0022's logs.
+        server1.setTraceMarkToEndOfDefaultTrace();
+        assertNotNull("Lease Owner column not updated", server1.waitForStringInTrace("Lease_owner column contained cloud0011,http", LOG_SEARCH_TIMEOUT));
+        assertNotNull("Lease Owner column not inserted", server1.waitForStringInTrace("Insert combined string cloud0011,http", LOG_SEARCH_TIMEOUT));
+
+        // Now tidy up after test
+        runTest(server1, SERVLET_NAME, "tidyupV1LeaseLog");
     }
 
     // Returns false if the server is alive, throws Exception otherwise

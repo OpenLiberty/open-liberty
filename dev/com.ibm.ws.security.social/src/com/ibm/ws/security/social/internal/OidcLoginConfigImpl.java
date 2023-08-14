@@ -42,11 +42,12 @@ import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.InMemoryOidcSessionCache;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
-import com.ibm.ws.security.openidconnect.clients.common.token.auth.PrivateKeyJwtAuthMethod;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.SocialLoginService;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
+
+import io.openliberty.security.oidcclientcore.token.auth.PrivateKeyJwtAuthMethod;
 
 /**
  * This class was derived from GoogleLoginConfigImpl, it's purpose is to provide common superclass
@@ -139,6 +140,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     private String pkceCodeChallengeMethod = null;
     public static final String CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM = "tokenEndpointAuthSigningAlgorithm";
     private String tokenEndpointAuthSigningAlgorithm = null;
+    public static final String CFG_KEY_TOKEN_REQUEST_ORIGIN_HEADER = "tokenRequestOriginHeader";
+    private String tokenRequestOriginHeader = null;
 
     HttpUtils httputils = new HttpUtils();
     ConfigUtils oidcConfigUtils = new ConfigUtils(null);
@@ -221,6 +224,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         forwardLoginParameter = oidcConfigUtils.readAndSanitizeForwardLoginParameter(props, uniqueId, CFG_KEY_FORWARD_LOGIN_PARAMETER);
         keyManagementKeyAlias = configUtils.getConfigAttribute(props, CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS);
         pkceCodeChallengeMethod = configUtils.getConfigAttribute(props, CFG_KEY_PKCE_CODE_CHALLENGE_METHOD);
+        tokenRequestOriginHeader = configUtils.getConfigAttribute(props, CFG_KEY_TOKEN_REQUEST_ORIGIN_HEADER);
 
         if (discovery) {
             String OIDC_CLIENT_DISCOVERY_COMPLETE = "CWWKS6110I: The client [{" + getId() + "}] configuration has been established with the information from the discovery endpoint URL [{" + discoveryEndpointUrl + "}]. This information enables the client to interact with the OpenID Connect provider to process the requests such as authorization and token.";
@@ -973,10 +977,9 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         return pkceCodeChallengeMethod;
     }
 
-    @Sensitive
     @Override
-    public PrivateKey getPrivateKeyForClientAuthentication() throws Exception {
-        return PrivateKeyJwtAuthMethod.getPrivateKeyForClientAuthentication(clientId, keyAliasName, getKeyStoreRef(), JwtUtils.getKeyStoreService());
+    public String getTokenRequestOriginHeader() {
+        return tokenRequestOriginHeader;
     }
 
 }

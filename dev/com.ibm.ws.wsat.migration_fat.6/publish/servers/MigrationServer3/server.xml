@@ -1,0 +1,52 @@
+<server>
+    <transaction
+	  backendURL="http://localhost:${bvt.prop.HTTP_tertiary}"
+      dataSourceRef="tranlogDataSource"
+      recoverOnStartup="true"
+      waitForRecovery="false"
+      heuristicRetryInterval="10"
+      recoveryIdentity="Server3"
+      recoveryGroup="defaultGroup"
+      leaseLength="20"
+      leaseCheckInterval="25"
+    />
+
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>jdbc-4.2</feature>
+        <feature>jndi-1.0</feature>
+        <feature>cdi-2.0</feature>
+        <feature>txtest-1.0</feature>
+        <feature>timedexit-1.0</feature>
+	    <feature>wsAtomicTransaction-1.2</feature>
+    </featureManager>
+
+	<include location="../fatTestCommon.xml" />
+
+	<httpEndpoint id="defaultHttpEndpoint"
+                host="*"
+                httpPort="${bvt.prop.HTTP_tertiary}"
+                httpsPort="${bvt.prop.HTTP_tertiary.secure}"/>
+
+	<tcpOptions id="defaultTCPOptions" portOpenRetries="60"/>
+
+	<httpOptions
+		readTimeout="150s"
+		writeTimeout="150s"
+		persistTimeout="150s"
+	/>
+
+    <!-- Anonymously named jar used to prevent JDBCDriver auto-detection -->
+    <library id="AnonymousJDBCLib">
+        <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
+    </library>
+  
+    <dataSource id="tranlogDataSource" jndiName="jdbc/tranlogDataSource" transactional="false" fat.modify="true">
+      <jdbcDriver libraryRef="AnonymousJDBCLib" />
+      <!-- Properties modified by fat for database rotation -->
+      <properties.derby.embedded  createDatabase="create" databaseName="${shared.resource.dir}/data/tranlogdb" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
+
+  <javaPermission name="*" actions="*" className="java.security.AllPermission"/>
+</server>

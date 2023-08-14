@@ -13,10 +13,8 @@
 package com.ibm.ws.recoverylog.spi;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.TreeMap;
 
 import com.ibm.websphere.ras.Tr;
@@ -328,21 +326,8 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
             final int clientIdentifier = recoveryAgent.clientIdentifier();
             final String clientName = recoveryAgent.clientName();
 
-            // Extract the 'values' collection from the _registeredRecoveryAgents map and create an iterator
-            // from it. This iterator will return ArrayList objects each containing a set of RecoveryAgent
-            // objects. Each ArrayList corrisponds to a different sequence priority value.
-            final Collection registeredRecoveryAgentsValues = _registeredRecoveryAgents.values();
-            final Iterator registeredRecoveryAgentsValuesIterator = registeredRecoveryAgentsValues.iterator();
-
-            while (registeredRecoveryAgentsValuesIterator.hasNext()) {
-                // Extract the next ArrayList and create an iterator from it. This iterator will return RecoveryAgent
-                // objects that are registered at the same sequence priority value.
-                final ArrayList registeredRecoveryAgentsArray = (java.util.ArrayList) registeredRecoveryAgentsValuesIterator.next();
-                final Iterator registeredRecoveryAgentsArrayIterator = registeredRecoveryAgentsArray.iterator();
-
-                while (registeredRecoveryAgentsArrayIterator.hasNext()) {
-                    // Extract the next RecoveryAgent object
-                    final RecoveryAgent registeredRecoveryAgent = (RecoveryAgent) registeredRecoveryAgentsArrayIterator.next();
+            for (ArrayList<RecoveryAgent> recoveryAgentArrayList : _registeredRecoveryAgents.values()) {
+                for (RecoveryAgent registeredRecoveryAgent : recoveryAgentArrayList) {
 
                     if ((registeredRecoveryAgent.clientIdentifier() == clientIdentifier) ||
                         (registeredRecoveryAgent.clientName().equals(clientName))) {
@@ -359,12 +344,11 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
             }
 
             // This is a valid registration. Store the RecoveryAgent, keyed from the supplied sequence value.
-            final Integer sequenceI = new Integer(sequence);
-            ArrayList<RecoveryAgent> sequenceArray = _registeredRecoveryAgents.get(sequenceI);
+            ArrayList<RecoveryAgent> sequenceArray = _registeredRecoveryAgents.get(sequence);
 
             if (sequenceArray == null) {
-                sequenceArray = new java.util.ArrayList<RecoveryAgent>();
-                _registeredRecoveryAgents.put(sequenceI, sequenceArray);
+                sequenceArray = new ArrayList<RecoveryAgent>();
+                _registeredRecoveryAgents.put(sequence, sequenceArray);
             }
 
             sequenceArray.add(recoveryAgent);
@@ -379,7 +363,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
             // query of its recovery log directory in support of the exclusive locking model. Once
             // the HA framework provides more support for Network Paritioning, we can remove this logic.
             if (clientIdentifier == ClientId.RLCI_TRANSACTIONSERVICE) {
-                Configuration.txRecoveryAgent(recoveryAgent);
+                Configuration.setTxRecoveryAgent(recoveryAgent);
             }
         }
 
@@ -544,32 +528,19 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
             _registrationAllowed = false;
         }
 
-        if (currentFailureScope.equals(failureScope)) /* @LI1578-22C */
-        {
+        boolean localRecovery = currentFailureScope.equals(failureScope);
+        if (localRecovery) {
             Tr.info(tc, "CWRLS0010_PERFORM_LOCAL_RECOVERY", failureScope.serverName());
         } else {
             Tr.info(tc, "CWRLS0011_PERFORM_PEER_RECOVERY", failureScope.serverName());
         }
 
-        // Extract the 'values' collection from the _registeredRecoveryAgents map and create an iterator
-        // from it. This iterator will return ArrayList objects each containing a set of RecoveryAgent
-        // objects. Each ArrayList corrisponds to a different sequence priority value.
-        final Collection registeredRecoveryAgentsValues = _registeredRecoveryAgents.values();
-
-        Iterator registeredRecoveryAgentsValuesIterator = registeredRecoveryAgentsValues.iterator();
-        while (registeredRecoveryAgentsValuesIterator.hasNext()) {
-            // Extract the next ArrayList and create an iterator from it. This iterator will return RecoveryAgent
-            // objects that are registered at the same sequence priority value.
-            final ArrayList registeredRecoveryAgentsArray = (java.util.ArrayList) registeredRecoveryAgentsValuesIterator.next();
-            final Iterator registeredRecoveryAgentsArrayIterator = registeredRecoveryAgentsArray.iterator();
-
-            while (registeredRecoveryAgentsArrayIterator.hasNext()) {
-                // Extract the next RecoveryAgent object
-                final RecoveryAgent recoveryAgent = (RecoveryAgent) registeredRecoveryAgentsArrayIterator.next();
+        for (ArrayList<RecoveryAgent> recoveryAgentArrayList : _registeredRecoveryAgents.values()) {
+            for (RecoveryAgent registeredRecoveryAgent : recoveryAgentArrayList) {
 
                 // Prepare the maps for the recovery event.
-                addInitializationRecord(recoveryAgent, failureScope);
-                addRecoveryRecord(recoveryAgent, failureScope);
+                addInitializationRecord(registeredRecoveryAgent, failureScope);
+                addRecoveryRecord(registeredRecoveryAgent, failureScope);
             }
         }
 
@@ -588,18 +559,8 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
             driveCallBacks(CALLBACK_RECOVERYSTARTED, failureScope);
         }
 
-        // Re-set the iterator.
-        registeredRecoveryAgentsValuesIterator = registeredRecoveryAgentsValues.iterator();
-
-        while (registeredRecoveryAgentsValuesIterator.hasNext()) {
-            // Extract the next ArrayList and create an iterator from it. This iterator will return RecoveryAgent
-            // objects that are registered at the same sequence priority value.
-            final ArrayList registeredRecoveryAgentsArray = (java.util.ArrayList) registeredRecoveryAgentsValuesIterator.next();
-            final Iterator registeredRecoveryAgentsArrayIterator = registeredRecoveryAgentsArray.iterator();
-
-            while (registeredRecoveryAgentsArrayIterator.hasNext()) {
-                // Extract the next RecoveryAgent object
-                final RecoveryAgent recoveryAgent = (RecoveryAgent) registeredRecoveryAgentsArrayIterator.next();
+        for (ArrayList<RecoveryAgent> recoveryAgentArrayList : _registeredRecoveryAgents.values()) {
+            for (RecoveryAgent recoveryAgent : recoveryAgentArrayList) {
 
                 // Direct the RecoveryAgent instance to process this failure scope.
                 try {
@@ -673,8 +634,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
             }
         }
 
-        if (currentFailureScope.equals(failureScope)) /* @LI1578-22C */
-        {
+        if (localRecovery) {
             Tr.info(tc, "CWRLS0012_DIRECT_LOCAL_RECOVERY", failureScope.serverName());
         } else {
             Tr.info(tc, "CWRLS0013_DIRECT_PEER_RECOVERY", failureScope.serverName());
@@ -709,21 +669,8 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
             Configuration.getRecoveryLogComponent().leaveCluster(failureScope);
         }
 
-        // Extract the 'values' collection from the _registeredRecoveryAgents map and create an iterator
-        // from it. This iterator will return ArrayList objects each containing a set of RecoveryAgent
-        // objects. Each ArrayList corrisponds to a different sequence priority value.
-        final Collection registeredRecoveryAgentsValues = _registeredRecoveryAgents.values();
-        final Iterator registeredRecoveryAgentsValuesIterator = registeredRecoveryAgentsValues.iterator();
-
-        while (registeredRecoveryAgentsValuesIterator.hasNext()) {
-            // Extract the next ArrayList and create an iterator from it. This iterator will return RecoveryAgent
-            // objects that are registered at the same sequence priority value.
-            final ArrayList registeredRecoveryAgentsArray = (java.util.ArrayList) registeredRecoveryAgentsValuesIterator.next();
-            final Iterator registeredRecoveryAgentsArrayIterator = registeredRecoveryAgentsArray.iterator();
-
-            while (registeredRecoveryAgentsArrayIterator.hasNext()) {
-                // Extract the next RecoveryAgent object
-                final RecoveryAgent recoveryAgent = (RecoveryAgent) registeredRecoveryAgentsArrayIterator.next();
+        for (ArrayList<RecoveryAgent> recoveryAgentArrayList : _registeredRecoveryAgents.values()) {
+            for (RecoveryAgent recoveryAgent : recoveryAgentArrayList) {
 
                 // Record the fact that we have an outstanding termination request for the RecoveryAgent.
                 addTerminationRecord(recoveryAgent, failureScope);
@@ -911,7 +858,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
         synchronized (_outstandingInitializationRecords) {
             // Extract the set of failure scopes that the corrisponding client service is currently
             // processing.
-            final HashSet failureScopeSet = _outstandingInitializationRecords.get(recoveryAgent);
+            final HashSet<FailureScope> failureScopeSet = _outstandingInitializationRecords.get(recoveryAgent);
 
             // Since this method should only be called in response to a request to handle the recovery
             // of a failure scope, then this set should never be null. To avoid a null pointer exception
@@ -961,7 +908,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
         synchronized (_outstandingTerminationRecords) {
             // Extract the set of failure scopes that the corrisponding client service is currently
             // processing.
-            final HashSet failureScopeSet = _outstandingTerminationRecords.get(recoveryAgent);
+            final HashSet<FailureScope> failureScopeSet = _outstandingTerminationRecords.get(recoveryAgent);
 
             // Since this method should only be called in response to a request to handle the recovery
             // of a failure scope, then this set should never be null. To avoid a null pointer exception
@@ -1022,7 +969,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
         synchronized (_outstandingInitializationRecords) {
             // Extract the set of failure scopes that the corrisponding client service is currently
             // processing.
-            final HashSet failureScopeSet = _outstandingInitializationRecords.get(recoveryAgent);
+            final HashSet<FailureScope> failureScopeSet = _outstandingInitializationRecords.get(recoveryAgent);
 
             // If there are some then determine if the set contains the given FailureScope.
             if (failureScopeSet != null) {
@@ -1056,7 +1003,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
         synchronized (_outstandingTerminationRecords) {
             // Extract the set of failure scopes that the corrisponding client service is currently
             // processing.
-            final HashSet failureScopeSet = _outstandingTerminationRecords.get(recoveryAgent);
+            final HashSet<FailureScope> failureScopeSet = _outstandingTerminationRecords.get(recoveryAgent);
 
             // If there are some then determine if the set contains the given FailureScope.
             if (failureScopeSet != null) {
@@ -1194,7 +1141,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
         boolean found = false;
 
         synchronized (_outstandingRecoveryRecords) {
-            final HashSet recoveryAgentSet = _outstandingRecoveryRecords.get(failureScope);
+            final HashSet<RecoveryAgent> recoveryAgentSet = _outstandingRecoveryRecords.get(failureScope);
 
             if (recoveryAgentSet != null) {
                 found = recoveryAgentSet.remove(recoveryAgent);
@@ -1244,7 +1191,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
         boolean outstanding = false;
 
         synchronized (_outstandingRecoveryRecords) {
-            final HashSet recoveryAgentSet = _outstandingRecoveryRecords.get(failureScope);
+            final HashSet<RecoveryAgent> recoveryAgentSet = _outstandingRecoveryRecords.get(failureScope);
 
             // If there are some then determine if the set contains the given FailureScope.
             if (recoveryAgentSet != null && recoveryAgentSet.size() > 0) {
@@ -1440,21 +1387,8 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
             // Tell other services about this failure so they can take any required action.
             final int failedClientId = recoveryAgent.clientIdentifier();
 
-            // Extract the 'values' collection from the _registeredRecoveryAgents map and create an iterator
-            // from it. This iterator will return ArrayList objects each containing a set of RecoveryAgent
-            // objects. Each ArrayList corrisponds to a different sequence priority value.
-            final Collection registeredRecoveryAgentsValues = _registeredRecoveryAgents.values();
-            final Iterator registeredRecoveryAgentsValuesIterator = registeredRecoveryAgentsValues.iterator();
-
-            while (registeredRecoveryAgentsValuesIterator.hasNext()) {
-                // Extract the next ArrayList and create an iterator from it. This iterator will return RecoveryAgent
-                // objects that are registered at the same sequence priority value.
-                final ArrayList registeredRecoveryAgentsArray = (java.util.ArrayList) registeredRecoveryAgentsValuesIterator.next();
-                final Iterator registeredRecoveryAgentsArrayIterator = registeredRecoveryAgentsArray.iterator();
-
-                while (registeredRecoveryAgentsArrayIterator.hasNext()) {
-                    // Extract the next RecoveryAgent object
-                    final RecoveryAgent informRecoveryAgent = (RecoveryAgent) registeredRecoveryAgentsArrayIterator.next();
+            for (ArrayList<RecoveryAgent> recoveryAgentArrayList : _registeredRecoveryAgents.values()) {
+                for (RecoveryAgent informRecoveryAgent : recoveryAgentArrayList) {
 
                     if (informRecoveryAgent.clientIdentifier() != failedClientId) {
                         informRecoveryAgent.agentReportedFailure(failedClientId, failureScope);
@@ -1519,31 +1453,28 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
         if (tc.isEntryEnabled()) {
             switch (stage) {
                 case CALLBACK_RECOVERYSTARTED:
-                    Tr.entry(tc, "driveCallBacks", new Object[] { "CALLBACK_RECOVERYSTARTED", failureScope });
+                    Tr.entry(tc, "driveCallBacks", "CALLBACK_RECOVERYSTARTED", failureScope);
                     break;
                 case CALLBACK_RECOVERYCOMPLETE:
-                    Tr.entry(tc, "driveCallBacks", new Object[] { "CALLBACK_RECOVERYCOMPLETE", failureScope });
+                    Tr.entry(tc, "driveCallBacks", "CALLBACK_RECOVERYCOMPLETE", failureScope);
                     break;
                 case CALLBACK_TERMINATIONSTARTED:
-                    Tr.entry(tc, "driveCallBacks", new Object[] { "CALLBACK_TERMINATIONSTARTED", failureScope });
+                    Tr.entry(tc, "driveCallBacks", "CALLBACK_TERMINATIONSTARTED", failureScope);
                     break;
                 case CALLBACK_TERMINATIONCOMPLETE:
-                    Tr.entry(tc, "driveCallBacks", new Object[] { "CALLBACK_TERMINATIONCOMPLETE", failureScope });
+                    Tr.entry(tc, "driveCallBacks", "CALLBACK_TERMINATIONCOMPLETE", failureScope);
                     break;
                 case CALLBACK_RECOVERYFAILED:
-                    Tr.entry(tc, "driveCallBacks", new Object[] { "CALLBACK_RECOVERYFAILED", failureScope });
+                    Tr.entry(tc, "driveCallBacks", "CALLBACK_RECOVERYFAILED", failureScope);
                     break;
                 default:
-                    Tr.entry(tc, "driveCallBacks", new Object[] { new Integer(stage), failureScope });
+                    Tr.entry(tc, "driveCallBacks", stage, failureScope);
                     break;
             }
         }
 
         if (_registeredCallbacks != null) {
-            final Iterator registeredCallbacksIterator = _registeredCallbacks.iterator();
-
-            while (registeredCallbacksIterator.hasNext()) {
-                final RecoveryLogCallBack callBack = (RecoveryLogCallBack) registeredCallbacksIterator.next();
+            for (RecoveryLogCallBack callBack : _registeredCallbacks) {
 
                 switch (stage) {
                     case CALLBACK_RECOVERYSTARTED:
@@ -1682,24 +1613,8 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                      localFailureScope.serverName() + " checking to see if any peers need recovering");
         ArrayList<String> peersToRecover = null;
 
-        // Extract the 'values' collection from the _registeredRecoveryAgents map and create an iterator
-        // from it. This iterator will return ArrayList objects each containing a set of RecoveryAgent
-        // objects. Each ArrayList corrisponds to a different sequence priority value.
-        final Collection registeredRecoveryAgentsValues = _registeredRecoveryAgents.values();
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "work with RA values: " + registeredRecoveryAgentsValues + ", collection size: " + registeredRecoveryAgentsValues.size(), this);
-        Iterator registeredRecoveryAgentsValuesIterator = registeredRecoveryAgentsValues.iterator();
-        while (registeredRecoveryAgentsValuesIterator.hasNext()) {
-            // Extract the next ArrayList and create an iterator from it. This iterator will return RecoveryAgent
-            // objects that are registered at the same sequence priority value.
-            final ArrayList registeredRecoveryAgentsArray = (java.util.ArrayList) registeredRecoveryAgentsValuesIterator.next();
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "work with Agents array: " + registeredRecoveryAgentsArray + ", of size: " + registeredRecoveryAgentsArray.size(), this);
-            final Iterator registeredRecoveryAgentsArrayIterator = registeredRecoveryAgentsArray.iterator();
-
-            while (registeredRecoveryAgentsArrayIterator.hasNext()) {
-                // Extract the next RecoveryAgent object
-                final RecoveryAgent recoveryAgent = (RecoveryAgent) registeredRecoveryAgentsArrayIterator.next();
+        for (ArrayList<RecoveryAgent> recoveryAgentArrayList : _registeredRecoveryAgents.values()) {
+            for (RecoveryAgent recoveryAgent : recoveryAgentArrayList) {
 
                 //TODO: This is a bit hokey. Can we safely assume that there is just the one RecoveryAgent in a Liberty environment?
                 libertyRecoveryAgent = recoveryAgent;

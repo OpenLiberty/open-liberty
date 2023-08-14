@@ -20,13 +20,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.containers.TestContainerSuite;
+
 @RunWith(Suite.class)
 @SuiteClasses({
 
 	InstallFeatureTest.class, InstallServerTest.class, HelpActionTest.class
 
 })
-public class FATSuite {
+public class FATSuite extends TestContainerSuite {
 
     /**
      * Start of FAT suite processing.

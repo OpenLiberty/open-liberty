@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,6 +18,7 @@ import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 
 /**
@@ -36,7 +37,7 @@ public class TMRecoveryService {
 
     protected void activate(BundleContext ctxt) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "activate  context " + ctxt);
+            Tr.debug(tc, "activate {0}", ctxt);
         final ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
 
         //This needs tidying a little.
@@ -44,13 +45,12 @@ public class TMRecoveryService {
             if (cp instanceof JTMConfigurationProvider) {
                 JTMConfigurationProvider jtmCP = (JTMConfigurationProvider) cp;
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "its a jtmconfigurationprovider ");
+                    Tr.debug(tc, "it's a jtmconfigurationprovider ");
 
                 // Set a reference to this TMRecoveryService into the JTMConfigurationProvider.
                 // If other resources are in place this method will also start recovery by calling
                 // doStart()
                 jtmCP.setTMRecoveryService(this);
-
             }
         }
     }
@@ -60,9 +60,10 @@ public class TMRecoveryService {
      *
      * @param tm
      */
+    @Trivial
     public void setTransactionManager(EmbeddableWebSphereTransactionManager tm) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "setTransactionManagerService " + tm);
+            Tr.debug(tc, "setTransactionManager {0}", tm);
     }
 
     /**
@@ -70,8 +71,9 @@ public class TMRecoveryService {
      *
      * @param tm
      */
+    @Trivial
     protected void unsetTransactionManager(EmbeddableWebSphereTransactionManager tm) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "unsetTransactionManagerService, tms " + tm);
+            Tr.debug(tc, "unsetTransactionManager {0}", tm);
     }
 }

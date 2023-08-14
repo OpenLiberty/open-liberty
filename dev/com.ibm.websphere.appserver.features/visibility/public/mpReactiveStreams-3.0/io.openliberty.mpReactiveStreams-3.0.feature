@@ -11,7 +11,7 @@ IBM-API-Package: \
   org.eclipse.microprofile.reactive.streams.operators.spi; type="stable", \
   org.eclipse.microprofile.reactive.streams.operators.core; type="stable", \
   org.reactivestreams; type="stable";
--features=io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0", \
+-features=io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0,6.1", \
   io.openliberty.jakarta.cdi-3.0; ibm.tolerates:="4.0", \
   io.openliberty.org.eclipse.microprofile.reactive.streams.operators-3.0, \
   io.openliberty.concurrent-2.0; ibm.tolerates:="3.0"
@@ -19,7 +19,8 @@ IBM-API-Package: \
   io.openliberty.microprofile.reactive.streams.operators30.internal, \
   io.openliberty.io.smallrye.reactive.streams-operators-jakarta, \
   io.openliberty.io.smallrye.reactive.mutiny,\
-  io.openliberty.io.smallrye.common.2.1
+  io.openliberty.io.smallrye.common.2.1, \
+  io.openliberty.org.jboss.logging35
 kind=noship
 edition=full
 WLP-Activation-Type: parallel

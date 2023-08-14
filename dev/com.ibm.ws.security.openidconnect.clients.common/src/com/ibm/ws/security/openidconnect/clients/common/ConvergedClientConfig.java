@@ -10,7 +10,6 @@
 package com.ibm.ws.security.openidconnect.clients.common;
 
 import java.security.Key;
-import java.security.PrivateKey;
 import java.util.HashMap;
 import java.util.List;
 
@@ -141,7 +140,6 @@ public interface ConvergedClientConfig extends JwtConsumerConfig {
 
     public String getPkceCodeChallengeMethod();
 
-    @Sensitive
-    public PrivateKey getPrivateKeyForClientAuthentication() throws Exception;
+    public String getTokenRequestOriginHeader();
 
 }

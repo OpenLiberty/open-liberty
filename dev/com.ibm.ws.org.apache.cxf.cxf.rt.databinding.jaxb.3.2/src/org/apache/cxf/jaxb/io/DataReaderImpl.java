@@ -88,6 +88,7 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
     public void setProperty(String prop, Object value) {
         if (prop.equals(JAXBDataBinding.UNWRAP_JAXB_ELEMENT)) {
             unwrapJAXBElement = Boolean.TRUE.equals(value);
+            LOG.fine("UnwrapJAXBElement is set to: " + unwrapJAXBElement + " trough property"); // Liberty change
         } else if (prop.equals(org.apache.cxf.message.Message.class.getName())) {
             org.apache.cxf.message.Message m = (org.apache.cxf.message.Message)value;
             veventHandler = getValidationEventHandler(m, JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER);
@@ -96,13 +97,14 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
             }
             setEventHandler = MessageUtils.getContextualBoolean(m,
                     JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, true);
-
+            LOG.fine("SetEventHandler is set to: " + setEventHandler); // Liberty change
             Object unwrapProperty = m.get(JAXBDataBinding.UNWRAP_JAXB_ELEMENT);
             if (unwrapProperty == null) {
                 unwrapProperty = m.getExchange().get(JAXBDataBinding.UNWRAP_JAXB_ELEMENT);
             }
             if (unwrapProperty != null) {
                 unwrapJAXBElement = Boolean.TRUE.equals(unwrapProperty);
+                LOG.fine("UnwrapJAXBElement is set to: " + unwrapJAXBElement); // Liberty change
             }
         }
     }

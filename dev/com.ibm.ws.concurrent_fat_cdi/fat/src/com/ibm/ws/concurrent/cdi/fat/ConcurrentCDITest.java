@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,26 +21,40 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import concurrent.cdi.web.ConcurrentCDIServlet;
+import concurrent.cdi4.web.ConcurrentCDI4Servlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 11)
+@MinimumJavaLevel(javaLevel = 17)
 public class ConcurrentCDITest extends FATServletClient {
 
     public static final String APP_NAME = "concurrentCDIApp";
+    public static final String APP_NAME_EE10 = "concurrentCDI4App";
 
     @Server("concurrent_fat_cdi")
-    @TestServlet(servlet = ConcurrentCDIServlet.class, contextRoot = APP_NAME)
+    @TestServlets({
+                    @TestServlet(servlet = ConcurrentCDIServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = ConcurrentCDI4Servlet.class, contextRoot = APP_NAME_EE10)
+    })
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "concurrent.cdi.web");
+        // TODO remove "concurrent.cu3.web" below to reproduce the following error:
+        // [7/21/23, 9:03:05:599 CDT] 00000037 SystemOut                                                    O
+        //  Added jakarta.enterprise.concurrent.ManagedExecutorService with qualifiers [@jakarta.enterprise.inject.Default()]
+        // ...
+        // DeploymentException: WELD-001408: Unsatisfied dependencies for type ManagedExecutorService with qualifiers @Default
+        //                  at injection point [BackedAnnotatedField] @Inject private concurrent.cdi4.web.ConcurrentCDI4Servlet.injectedExec
+        //                  at concurrent.cdi4.web.ConcurrentCDI4Servlet.injectedExec(ConcurrentCDI4Servlet.java:0)
+        ShrinkHelper.defaultDropinApp(server, APP_NAME_EE10, "concurrent.cdi4.web", "concurrent.cu3.web");
         server.startServer();
-        runTest(server, APP_NAME + '/' + ConcurrentCDIServlet.class.getSimpleName(), "initTransactionService");
+        runTest(server, APP_NAME_EE10 + '/' + ConcurrentCDI4Servlet.class.getSimpleName(), "initTransactionService");
     }
 
     @AfterClass

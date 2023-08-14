@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.internal.utils;
 
@@ -18,10 +15,13 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -261,7 +261,7 @@ public class OpenShiftUserApiUtils {
         JsonObject jsonResponse = readResponseAsJsonObject(response);
         JsonObject userMetadata = getJsonObjectValueFromJson(jsonResponse, "metadata");
         JsonObject result = modifyUsername(userMetadata);
-        result = addProjectNameAsGroup(result);
+        result = addGroupInfoToResult(result, jsonResponse);
         return result.toString();
     }
 
@@ -328,31 +328,68 @@ public class OpenShiftUserApiUtils {
         return result;
     }
 
-    JsonObject addProjectNameAsGroup(JsonObject metadataEntry) throws SocialLoginException {
-        JsonObject result = metadataEntry;
+    JsonObject addGroupInfoToResult(JsonObject result, JsonObject originalJsonResponse) throws SocialLoginException {
+        String groupNameAttribute = config.getGroupNameAttribute();
+        if (groupNameAttribute == null) {
+            return result;
+        }
+        JsonArray groups = populateGroups(result, originalJsonResponse, groupNameAttribute);
+        if (!groups.isEmpty()) {
+            JsonObjectBuilder resultBuilder = copyJsonObject(result);
+            resultBuilder.add(groupNameAttribute, groups);
+            result = resultBuilder.build();
+        }
+        return result;
+    }
+
+    JsonArray populateGroups(JsonObject result, JsonObject originalJsonResponse, String groupNameAttribute) throws SocialLoginException {
+        JsonArrayBuilder groupsBuilder = builderFactory.createArrayBuilder();
+
+        groupsBuilder = addGroupsFromOriginalApiResponse(groupsBuilder, originalJsonResponse, groupNameAttribute);
+
+        String projectName = getProjectName(result);
+        if (projectName != null && !projectName.isEmpty()) {
+            groupsBuilder.add(projectName);
+        }
+
+        return groupsBuilder.build();
+    }
+
+    JsonArrayBuilder addGroupsFromOriginalApiResponse(JsonArrayBuilder groupsBuilder, JsonObject originalJsonResponse, String groupNameAttribute) {
+        JsonValue groups = originalJsonResponse.get(groupNameAttribute);
+        if (groups != null) {
+            if (groups.getValueType() == ValueType.ARRAY) {
+                groupsBuilder = copyJsonArray((JsonArray) groups);
+            } else {
+                groupsBuilder.add(groups);
+            }
+        }
+        return groupsBuilder;
+    }
+
+    String getProjectName(JsonObject metadataEntry) throws SocialLoginException {
         String userNameAttribute = config.getUserNameAttribute();
         String username = getStringValueFromJson(metadataEntry, userNameAttribute);
         int index = username.indexOf(":");
         if (index >= 0) {
-            String group = null;
-            group = username.substring(0, index);
-            if (group != null && !group.isEmpty()) {
-                String groupNameAttribute = config.getGroupNameAttribute();
-                if (groupNameAttribute != null) {
-                    JsonObjectBuilder resultBuilder = copyJsonObject(metadataEntry);
-                    resultBuilder.add(groupNameAttribute, group);
-                    result = resultBuilder.build();
-                }
-            }
+            return username.substring(0, index);
         }
-
-        return result;
+        return null;
     }
 
     private JsonObjectBuilder copyJsonObject(JsonObject original) {
         JsonObjectBuilder result = builderFactory.createObjectBuilder();
         for (Entry<String, JsonValue> entry : original.entrySet()) {
             result.add(entry.getKey(), entry.getValue());
+        }
+        return result;
+    }
+
+    private JsonArrayBuilder copyJsonArray(JsonArray original) {
+        JsonArrayBuilder result = builderFactory.createArrayBuilder();
+        Iterator<JsonValue> iter = original.iterator();
+        while (iter.hasNext()) {
+            result.add(iter.next());
         }
         return result;
     }

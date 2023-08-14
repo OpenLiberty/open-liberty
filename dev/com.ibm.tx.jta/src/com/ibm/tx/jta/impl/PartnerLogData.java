@@ -173,7 +173,7 @@ public abstract class PartnerLogData {
                     { // PM04949
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "logData", "RecoverableUnit returned from createRecoverableUnit was null - throwing InternalLogException"); // PM04949
-                        throw new InternalLogException(null); // PM04949
+                        throw new InternalLogException("RecoverableUnit returned from createRecoverableUnit was null"); // PM04949
                     } // PM04949
                       // Can set this now we have a log record
                     _recoveryId = ru.identity();
@@ -183,7 +183,7 @@ public abstract class PartnerLogData {
                     { // PM04949
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "logData", "RecoverableUnit returned from lookupRecoverableUnit for " + _recoveryId + " was null - throwing InternalLogException"); // PM04949
-                        throw new InternalLogException(null); // PM04949
+                        throw new InternalLogException("RecoverableUnit returned from lookupRecoverableUnit for " + _recoveryId + " was null"); // PM04949
                     } // PM04949
                 }
 

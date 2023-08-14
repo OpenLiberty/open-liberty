@@ -13,6 +13,7 @@
 package io.openliberty.checkpoint.fat;
 
 import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
+import static io.openliberty.checkpoint.fat.util.FATUtils.LOG_SEARCH_TIMEOUT;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
@@ -26,6 +27,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.function.Consumer;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
@@ -37,6 +39,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -44,8 +47,7 @@ import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-//import componenttest.custom.junit.runner.Mode;
-//import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
@@ -54,7 +56,6 @@ import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
-//@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
 public class TransactionScopedBeanTest extends FATServletClient {
@@ -62,7 +63,7 @@ public class TransactionScopedBeanTest extends FATServletClient {
     static final String SERVER_NAME = "checkpointTransactionScopedBean";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
+    public static RepeatTests r = RepeatTests.with(new EE8FeatureReplacementAction().forServers(SERVER_NAME))
                     .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly())
                     .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
 
@@ -78,42 +79,44 @@ public class TransactionScopedBeanTest extends FATServletClient {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "transactionscopedtest.*");
+        ShrinkHelper.cleanAllExportedArchives();
+        server.removeAllInstalledAppsForValidation();
+
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "transactionscopedtest.*");
 
         // Default app uses the app name to find resource files; manually deploy the resource for this duplicate app.
         WebArchive appTwo = ShrinkWrap.create(WebArchive.class, SECOND_APP_NAME + ".war")
                         .addPackage("transactionscopedtest")
                         .add(new FileAsset(new File("test-applications/transactionscopedbean/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
 
-        ShrinkHelper.exportAppToServer(server, appTwo);
+        ShrinkHelper.exportAppToServer(server, appTwo, new DeployOptions[] { DeployOptions.OVERWRITE });
         server.addInstalledAppForValidation(SECOND_APP_NAME);
 
-        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true,
-                             checkpointServer -> {
-                                 // Env var change that triggers transaction config update at restore
-                                 File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
-                                 try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
-                                     serverEnvWriter.println("TX_RETRY_INT=" + TX_RETRY_INT);
-                                 } catch (FileNotFoundException e) {
-                                     throw new UncheckedIOException(e);
-                                 }
-                                 assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log before rerstore",
-                                               checkpointServer.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));
-                                 assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
-                                               checkpointServer.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
-                             });
-        server.setServerStartTimeout(300000);
+        Consumer<LibertyServer> preRestoreLogic = checkpointServer -> {
+            // Env var change that triggers transaction config update at restore
+            File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
+            try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
+                serverEnvWriter.println("TX_RETRY_INT=" + TX_RETRY_INT);
+            } catch (FileNotFoundException e) {
+                throw new UncheckedIOException(e);
+            }
+            assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log before rerstore",
+                          checkpointServer.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));
+            assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
+                          checkpointServer.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
+        };
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, preRestoreLogic);
+        server.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
         server.startServer();
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
         stopServer(server);
-        ShrinkHelper.cleanAllExportedArchives();
     }
 
     // The test app is installed twice.
-    // Invoke tests are here rather than @TestServlet so they don't run twice.
+    // Invoke tests here rather than @TestServlet so they don't run twice.
 
     @Test
     public void testTransactionScopedBean001() throws Exception {

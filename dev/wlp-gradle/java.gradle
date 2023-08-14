@@ -131,10 +131,14 @@ subprojects {
 task testReport(type: TestReport) {
   // Run after all `test` tasks, so no test results are missing
   mustRunAfter subprojects*.test
-  destinationDir = cnf.file('generated/testReports/allUnitTests')
+  destinationDirectory = cnf.file('generated/testReports/allUnitTests')
 
   // Include the results from the `test` task in all subprojects
-  reportOn subprojects*.test
+  Test[] tests = subprojects*.test
+  ConfigurableFileCollection results = getTestResults()
+  for (Test test : tests) {
+    results.from(test.getBinaryResultsDirectory())
+  }
 
   doLast {
     // Save test count properties to a file, so they can be loaded by subsequent builds

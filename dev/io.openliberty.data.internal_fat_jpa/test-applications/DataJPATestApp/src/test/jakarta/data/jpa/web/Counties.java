@@ -63,7 +63,7 @@ public interface Counties {
 
     boolean remove(County c);
 
-    void save(County... c);
+    Stream<County> save(County... c);
 
     boolean updateByNameSetZipCodes(String name, int... zipcodes);
 }

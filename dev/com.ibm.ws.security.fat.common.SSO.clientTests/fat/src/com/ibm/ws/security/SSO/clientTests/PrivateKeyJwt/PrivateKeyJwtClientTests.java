@@ -14,12 +14,17 @@ package com.ibm.ws.security.SSO.clientTests.PrivateKeyJwt;
 
 import java.util.List;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.SSO.clientTests.commonTools.PKCEPrivateKeyJwtCommonTooling;
 import com.ibm.ws.security.fat.common.social.SocialConstants;
+import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
+import com.ibm.ws.security.fat.common.utils.MySkipRule;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
@@ -46,6 +51,22 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 @RunWith(FATRunner.class)
 public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
 
+    protected static boolean usingSocialClient = false;
+
+    @Rule
+    public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
+
+    public static class SkipIfSocialClient extends MySkipRule {
+
+        @Override
+        public Boolean callSpecificCheck() {
+
+            Log.info(thisClass, "callSpecificCheck", Boolean.toString(usingSocialClient));
+            return usingSocialClient;
+
+        }
+    }
+
     public static Class<?> thisClass = PrivateKeyJwtClientTests.class;
 
     /**
@@ -58,7 +79,7 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
      * @throws Exception
      */
     public void positiveTestWithPrivateKey(TestSettings updatedTestSettings) throws Exception {
-        positiveTestWithPrivateKey(updatedTestSettings, AuthMethod.PRIVATE_KEY_JWT);
+        positiveTest(updatedTestSettings, AuthMethod.PRIVATE_KEY_JWT, null);
     }
 
     /**
@@ -70,7 +91,7 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
      *            - the auth method used by the client
      * @throws Exception
      */
-    public void positiveTestWithPrivateKey(TestSettings updatedTestSettings, AuthMethod authMethod) throws Exception {
+    public void positiveTest(TestSettings updatedTestSettings, AuthMethod authMethod, String originHeader) throws Exception {
 
         WebClient webClient = getAndSaveWebClient(true);
 
@@ -78,7 +99,7 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
 
         genericRP(_testName, webClient, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
 
-        validateTokenRequest(updatedTestSettings, authMethod);
+        validateTokenRequest(updatedTestSettings, authMethod, originHeader);
     }
 
     /**
@@ -301,14 +322,14 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
      * tokenEndpointAuthSigningAlgorithm="RS256"
      * keyAliasName="badKeyAlias"
      */
-    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.token.auth.TokenEndpointAuthMethodSettingsException", "java.security.cert.CertificateException" })
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException", "java.security.cert.CertificateException" })
     @Test
     public void PrivateKeyJwtClientTests_badKeyAliasName() throws Exception {
 
         TestSettings updatedTestSettings = updateTestCaseSettings("client_RS256", Constants.SIGALG_RS256, "client_RS256_badKeyAlias");
 
         List<validationData> expectations = setPrivateKeyJwtCommonExpectations();
-        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the token endpoint did not return an id_token.", MessageConstants.CWWKS1554E_PRIVATE_KEY_JWT_MISSING_ALIAS);
+        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the token endpoint did not return an id_token.", MessageConstants.CWWKS1708E_CLIENT_FAILED_TO_CONTACT_PROVIDER + ".*" + MessageConstants.CWWKS2432E_TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR + ".*" + MessageConstants.CWWKS2430E_FAILED_TO_BUILD_TOKEN_FOR_CLIENT_AUTH + ".*" + MessageConstants.CWWKS2435E_PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY);
 
         negativeTestWithPrivateKey(updatedTestSettings, expectations);
 
@@ -320,7 +341,7 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
      * tokenEndpointAuthMethod="private_key_jwt"
      * tokenEndpointAuthSigningAlgorithm="RS256"
      */
-    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.token.auth.TokenEndpointAuthMethodSettingsException", "java.lang.Exception" })
+    @AllowedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException" })
     @Mode(TestMode.LITE)
     @Test
     public void PrivateKeyJwtClientTests_ommittedKeyAliasName() throws Exception {
@@ -328,7 +349,7 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
         TestSettings updatedTestSettings = updateTestCaseSettings("client_RS256", Constants.SIGALG_RS256, "client_RS256_omittedKeyAlias");
 
         List<validationData> expectations = setPrivateKeyJwtCommonExpectations();
-        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the token endpoint did not return an id_token.", MessageConstants.CWWKS1554E_PRIVATE_KEY_JWT_MISSING_ALIAS);
+        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the token endpoint did not return an id_token.", MessageConstants.CWWKS1708E_CLIENT_FAILED_TO_CONTACT_PROVIDER + ".*" + MessageConstants.CWWKS2432E_TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR + ".+" + MessageConstants.CWWKS2433E_PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME);
 
         negativeTestWithPrivateKey(updatedTestSettings, expectations);
 
@@ -400,15 +421,14 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
      * tokenEndpointAuthSigningAlgorithm="RS256"
      * keyAliasName="es384"
      */
-    @ExpectedFFDC({ "org.jose4j.lang.InvalidKeyException", "io.openliberty.security.oidcclientcore.exceptions.PrivateKeyJwtAuthException", "io.openliberty.security.oidcclientcore.exceptions.TokenRequestException" })
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException" })
     @Test
     public void PrivateKeyJwtClientTests_sigAlgMistmatchKeyAlias_RsVsEsTypes() throws Exception {
 
         TestSettings updatedTestSettings = updateTestCaseSettings("client_RS256", Constants.SIGALG_RS256, "client_private_key_mismatch1");
 
         List<validationData> expectations = setPrivateKeyJwtCommonExpectations();
-        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the JWT could not be build for client authentication.", MessageConstants.CWWKS2430E_FAILED_TO_BUILD_TOKEN_FOR_CLIENT_AUTH);
-        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that there was a problem reaching the token endpoint.", MessageConstants.CWWKS2416E_TOKEN_REQUEST_ERROR);
+        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the JWT could not be build for client authentication.", MessageConstants.CWWKS1708E_CLIENT_FAILED_TO_CONTACT_PROVIDER + ".*" + MessageConstants.CWWKS2432E_TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR + ".+" + MessageConstants.CWWKS2430E_FAILED_TO_BUILD_TOKEN_FOR_CLIENT_AUTH);
 
         negativeTestWithPrivateKey(updatedTestSettings, expectations);
 
@@ -431,19 +451,13 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
         List<validationData> expectations = setPrivateKeyJwtCommonExpectations(Constants.BAD_REQUEST_STATUS);
         expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_MESSAGE, Constants.STRING_CONTAINS, "The response message did not contain " + Constants.BAD_REQUEST, null, Constants.BAD_REQUEST);
         expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "The response id not get a message about an invalid request", null, MessageConstants.CWWKS1406E_INTROSPECT_INVALID_CREDENTIAL);
-        // TODO - once the "Response already committed" is resolved, we may get this message (or something similar) in the response
+
         if (testSettings.getFlowType().equals(SocialConstants.SOCIAL)) {
             expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "The response id not get a message about an invalid request", null, MessageConstants.CWWKS5489E_AUTH_ERROR);
         }
 
         expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the token request had an invalid client credential.", MessageConstants.CWWKS1406E_INTROSPECT_INVALID_CREDENTIAL);
         expectations = validationTools.addMessageExpectation(testOPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the required parm client_id was missing.", MessageConstants.CWOAU0033E_REQ_RUNTIME_PARAM_MISSING);
-
-        // TODO - remove the expectations for the "Response already committed" messages once the runtime is updated
-        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating the header can't be set - Response already committed.", MessageConstants.SRVE8094W_CANNOT_SET_HEADER_RESPONSE_COMMITTED);
-        if (testSettings.getFlowType().equals(Constants.RP_FLOW)) {
-            expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating the header can't be set - Response already committed.", MessageConstants.SRVE8115W_CANNOT_SET_HEADER_RESPONSE_COMMITTED);
-        }
 
         negativeTestWithPrivateKey(updatedTestSettings, expectations);
 
@@ -457,21 +471,139 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
      * tokenEndpointAuthSigningAlgorithm="RS256"
      * keyAliasName="rs256"
      */
-    @AllowedFFDC({ "java.lang.Exception", "com.ibm.ws.security.openidconnect.clients.common.token.auth.TokenEndpointAuthMethodSettingsException", "java.io.IOException" })
+    @AllowedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException", "java.io.IOException" })
     @Test
     public void PrivateKeyJwtClientTests_noClientSSLRef() throws Exception {
 
         TestSettings updatedTestSettings = updateTestCaseSettings("client_RS256", Constants.SIGALG_RS256, "client_noClientSSLRef");
 
-        if (testSettings.getFlowType().equals(Constants.RP_FLOW)) {
-            List<validationData> expectations = setPrivateKeyJwtCommonExpectations();
-            expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that there was no keystore in the config.", MessageConstants.CWWKS1556E_KEYSTORE_MISSING_IN_CONFIG);
-            expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the token endpoint did not return an id_token.", MessageConstants.CWWKS1554E_PRIVATE_KEY_JWT_MISSING_ALIAS);
+        List<validationData> expectations = setPrivateKeyJwtCommonExpectations();
+        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that there was no keystore in the config.", MessageConstants.CWWKS1708E_CLIENT_FAILED_TO_CONTACT_PROVIDER + ".*" + MessageConstants.CWWKS2432E_TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR + ".+" + MessageConstants.CWWKS2430E_FAILED_TO_BUILD_TOKEN_FOR_CLIENT_AUTH + ".+" + MessageConstants.CWWKS2434E_PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF);
 
-            negativeTestWithPrivateKey(updatedTestSettings, expectations);
+        negativeTestWithPrivateKey(updatedTestSettings, expectations);
+
+    }
+
+    /**
+     * Test with the client config using the signature algorithm of RS256, and a private key jwt configured with RS256
+     * tokenEndpointAuthMethod="private_key_jwt"
+     * tokenEndpointAuthSigningAlgorithm="RS256"
+     * keyAliasName="altrs256"
+     * The certificate's alias name used is coming from the keystore specified by the sslRef.
+     * The trustStoreRef specified does NOT contain a cert with that same alias, but the truststore that is
+     * specified in the sslRef does and that is where we'll find the cert to verify the content.
+     * The Overall request will fail because the Liberty OP doesn't support private key jwt.
+     */
+    /*
+     * Skip this test when using a social client - it does not have a trustStoreRef, so, all cases use the sslRef
+     */
+    @AllowedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException", "java.security.cert.CertificateException", "io.openliberty.security.oidcclientcore.http.BadPostRequestException" })
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfSocialClient.class)
+    @Test
+    public void PrivateKeyJwtClientTests_accessTokenUsesRS256_privateKeyJwtUsesRS256_mismatchedKeyAliasNames_trustRefSslRefMatch() throws Exception {
+
+        TestSettings updatedTestSettings = updateTestCaseSettings("client_RS256", Constants.SIGALG_RS256, "client_alt_RS256_RS256_match");
+
+        List<validationData> expectations = setPrivateKeyJwtCommonExpectations(Constants.BAD_REQUEST_STATUS);
+        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "The response id not get a message about an invalid request", null, MessageConstants.CWWKS1406E_INTROSPECT_INVALID_CREDENTIAL);
+        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the token request had an invalid client credential.", MessageConstants.CWWKS1708E_CLIENT_FAILED_TO_CONTACT_PROVIDER + ".*" + MessageConstants.CWWKS1406E_INTROSPECT_INVALID_CREDENTIAL);
+        expectations = validationTools.addMessageExpectation(testOPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the required parm client_id was missing.", MessageConstants.CWOAU0033E_REQ_RUNTIME_PARAM_MISSING);
+
+        negativeTestWithPrivateKey(updatedTestSettings, expectations);
+
+    }
+
+    /**
+     * Test with the client config using the signature algorithm of RS256, and a private key jwt configured with RS256
+     * tokenEndpointAuthMethod="private_key_jwt"
+     * tokenEndpointAuthSigningAlgorithm="RS256"
+     * keyAliasName="altrs256"
+     * The client's alias name used with the keystore is different than the alias in the trust store
+     * The sslRef specified uses the key and trust store that contain the alias used to create the private key - we should fail to
+     * get access to the app because the trustStoreRef should override the trust store from the sslRef and the trustStoreRef
+     * points to a trust store that uses a different alias name
+     */
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException", "java.security.cert.CertificateException" })
+    @Test
+    public void PrivateKeyJwtClientTests_accessTokenUsesRS256_privateKeyJwtUsesRS256_mismatchedKeyAliasNames_trustRefSslRefMisMatch() throws Exception {
+
+        TestSettings updatedTestSettings = updateTestCaseSettings("client_RS256", Constants.SIGALG_RS256, "client_alt_RS256_RS256_mismatch");
+
+        List<validationData> expectations = setPrivateKeyJwtCommonExpectations();
+        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the corresponding alias could not be found in the trust store.", MessageConstants.CWWKS1708E_CLIENT_FAILED_TO_CONTACT_PROVIDER + ".*" + MessageConstants.CWWKS2432E_TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR + ".+" + MessageConstants.CWWKS2430E_FAILED_TO_BUILD_TOKEN_FOR_CLIENT_AUTH + ".+" + MessageConstants.CWWKS2436E_CANNOT_RETRIEVE_PUBLIC_KEY_FROM_TRUSTSTORE);
+
+        negativeTestWithPrivateKey(updatedTestSettings, expectations);
+
+    }
+
+    /**
+     * Test with the client config using the signature algorithm of RS256, and a private key jwt configured with RS256
+     * tokenEndpointAuthMethod="private_key_jwt"
+     * tokenEndpointAuthSigningAlgorithm="RS256"
+     * keyAliasName="altrs256"
+     * The client's alias name used with the keystore is the same at that in the trust store. The cert using that alias name in
+     * the keystore is a different cert.
+     * We should not have access to the protected app.
+     */
+    @AllowedFFDC({ "io.openliberty.security.oidcclientcore.http.BadPostRequestException", "sun.security.validator.ValidatorException", "javax.net.ssl.SSLHandshakeException" })
+    @Test
+    public void PrivateKeyJwtClientTests_accessTokenUsesRS256_privateKeyJwtUsesRS256_sameAliasDiffCert() throws Exception {
+
+        TestSettings updatedTestSettings = updateTestCaseSettings("client_RS256", Constants.SIGALG_RS256, "client_alt_RS256_RS256_diffTrust");
+
+        List<validationData> expectations = null;
+        if (testSettings.getFlowType().equals(SocialConstants.SOCIAL)) {
+            expectations = setPrivateKeyJwtCommonExpectations(Constants.UNAUTHORIZED_STATUS);
+            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_MESSAGE, Constants.STRING_CONTAINS, "The response message did not contain " + Constants.UNAUTHORIZED_MESSAGE, null, Constants.UNAUTHORIZED_MESSAGE);
+            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "The response id not get a message about an invalid request", null, MessageConstants.CWWKS5489E_AUTH_ERROR);
+            expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "The response id not get a message about a SSL Handshake exception", MessageConstants.CWPKI0823E_SSL_HANDSHAKE_FAILURE);
+            expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "The response id not get a message stating that the client was unable to contact the provider", MessageConstants.CWWKS1708E_CLIENT_FAILED_TO_CONTACT_PROVIDER);
         } else {
-            positiveTestWithPrivateKey(updatedTestSettings);
+            expectations = setPrivateKeyJwtCommonExpectations(Constants.BAD_REQUEST_STATUS);
+            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_MESSAGE, Constants.STRING_CONTAINS, "The response message did not contain " + Constants.BAD_REQUEST, null, Constants.BAD_REQUEST);
+            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "The response id not get a message about an invalid request", null, MessageConstants.CWWKS1406E_INTROSPECT_INVALID_CREDENTIAL);
+            expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the token request had an invalid client credential.", MessageConstants.CWWKS1406E_INTROSPECT_INVALID_CREDENTIAL);
+            expectations = validationTools.addMessageExpectation(testOPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the required parm client_id was missing.", MessageConstants.CWOAU0033E_REQ_RUNTIME_PARAM_MISSING);
         }
+
+        negativeTestWithPrivateKey(updatedTestSettings, expectations);
+
+    }
+
+    @ExpectedFFDC({ "java.io.IOException" })
+    @Test
+    public void PrivateKeyJwtClientTests_tokenRequestOriginHeader_private_key_jwt() throws Exception {
+
+        TestSettings updatedTestSettings = updateTestCaseSettings("client_RS256", Constants.SIGALG_RS256, "client_originHeader_valid");
+
+        positiveTest(updatedTestSettings, AuthMethod.PRIVATE_KEY_JWT, clientServer.getHttpString());
+
+    }
+
+    @ExpectedFFDC({ "java.io.IOException" })
+    @Test
+    public void PrivateKeyJwtClientTests_tokenRequestOriginHeader_post() throws Exception {
+
+        TestSettings updatedTestSettings = updateTestCaseSettings("client_RS256", Constants.SIGALG_RS256, "client_post_originHeader_valid");
+
+        positiveTest(updatedTestSettings, AuthMethod.CLIENT_SECRET_POST, clientServer.getHttpString());
+
+    }
+
+    @Test
+    public void PrivateKeyJwtClientTests_tokenRequestOriginHeader_post_endToEnd() throws Exception {
+
+        // Most of the tests use a fake/test token endpoint that logs the headers/params - using that prevents us from going end
+        // to end (getting access to the test app) This test uses the real token endpoint and shows that with the origin header included we can still access the protected app
+        TestSettings updatedTestSettings = updateTestCaseSettings("client_RS256", Constants.SIGALG_RS256, "client_post_noStubs_originHeader_valid");
+
+        WebClient webClient = getAndSaveWebClient(true);
+
+        List<validationData> expectations = vData.addSuccessStatusCodes();
+
+        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Should have gotten to the protected app", "", "Servlet");
+
+        genericRP(_testName, webClient, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
 
     }
 
