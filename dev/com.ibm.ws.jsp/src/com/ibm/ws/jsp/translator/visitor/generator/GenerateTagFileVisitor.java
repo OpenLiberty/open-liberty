@@ -360,6 +360,10 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
             GeneratorUtils.generate_tagCleanUp_methods(writer, !jspOptions.isDisableResourceInjection()); // PH49514
         }
 
+        if(!jspOptions.isDisableResourceInjection()){
+            GeneratorUtils.generate_tagPostConstruct_method(writer);
+        }
+
         if (ti.hasDynamicAttributes()) {
             writer.println("private java.util.HashMap _jspx_dynamic_attrs = new java.util.HashMap();");
         }

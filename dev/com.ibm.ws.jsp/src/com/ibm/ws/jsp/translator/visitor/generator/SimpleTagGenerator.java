@@ -78,17 +78,9 @@ public class SimpleTagGenerator extends BaseTagGenerator {
 
             if (genTagInMethod) {
                 tagStartWriter.println("try {");
-            } else {
-                 tagStartWriter.println ("_jspTagList.add("+ tagHandlerVar + ");");
-            }
+            } 
 
-            tagStartWriter.print("_jspx_iaHelper.doPostConstruct(");
-            tagStartWriter.print(tagHandlerVar);
-            tagStartWriter.println(");");
-
-            tagStartWriter.print("_jspx_iaHelper.addTagHandlerToCdiMap(");
-            tagStartWriter.print(tagHandlerVar + ", " + tagHandlerVar + "_mo");
-            tagStartWriter.println(");");
+            tagStartWriter.print("_jsp_tagPostConstruct(" +tagHandlerVar+ ", " + (!genTagInMethod ? "_jspTagList, " : "null, ") + tagHandlerVar + "_mo" + ");");
 
         } else {
             // not using CDI
