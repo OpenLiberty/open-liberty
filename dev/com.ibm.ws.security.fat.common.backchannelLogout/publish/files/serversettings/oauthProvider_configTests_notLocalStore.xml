@@ -12,34 +12,20 @@
  -->
 <server>
 
-	<variable name="bclRoot" value="notSet"/>
-
-	<openidConnectProvider
-		id="OidcConfigSample_mainPath"
-		signatureAlgorithm="RS256"
-		keyAliasName="rs256"
-		keyStoreRef="key_allSigAlg"
-		tokenEndpointAuthMethodsSupported="client_secret_post, client_secret_basic, none"
-		allowPublicClients="true"
-		oauthProviderRef="OAuthConfigSample_mainPath" />
-
 	<oauthProvider
 		id="OAuthConfigSample_mainPath"
 		tokenFormat="${oidcTokenFormat}"
 		autoAuthorize="true"
 	>
-		<customStore storeId="mongoDbStore" />
 		<autoAuthorizeClient>bcl_mainPath_confClient</autoAuthorizeClient>
 		<autoAuthorizeClient>bcl_mainPath_publicClient_withSecret</autoAuthorizeClient>
 		<autoAuthorizeClient>bcl_mainPath_publicClient_withoutSecret</autoAuthorizeClient>
 		<autoAuthorizeClient>variableIntrospectValidationEndpoint</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_mainPath_accessTokenCacheEnabled_false_confClient</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_mainPath_accessTokenInLtpaCookie_true_confClient</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_mainPath_introspectFalse_confClient</autoAuthorizeClient>
 		
 	</oauthProvider>
-
-	<openidConnectProvider
-		id="OidcConfigSample_defaultBCLTimeout"
-		signatureAlgorithm="HS256"
-		oauthProviderRef="OAuthConfigSample_defaultBCLTimeout" />
 
 	<oauthProvider
 		id="OAuthConfigSample_defaultBCLTimeout"
@@ -52,12 +38,6 @@
 		
 	</oauthProvider>
 
-	<openidConnectProvider
-		id="OidcConfigSample_shortBCLTimeout"
-		signatureAlgorithm="HS256"
-		oauthProviderRef="OAuthConfigSample_shortBCLTimeout"
-		backchannelLogoutRequestTimeout="5s" />
-
 	<oauthProvider
 		id="OAuthConfigSample_shortBCLTimeout"
 		tokenFormat="${oidcTokenFormat}"
@@ -68,11 +48,6 @@
 		<autoAuthorizeClient>bcl_otherShortBCLTimeout</autoAuthorizeClient>
 		
 	</oauthProvider>
-
-	<openidConnectProvider
-		id="OidcConfigSample_invalidBCL"
-		signatureAlgorithm="HS256"
-		oauthProviderRef="OAuthConfigSample_invalidBCL" />
 
 	<oauthProvider
 		id="OAuthConfigSample_invalidBCL"
@@ -88,11 +63,6 @@
 		
 	</oauthProvider>
 
-	<openidConnectProvider
-		id="OidcConfigSample_logger1"
-		signatureAlgorithm="HS256"
-		oauthProviderRef="OAuthConfigSample_logger1" />
-
 	<oauthProvider
 		id="OAuthConfigSample_logger1"
 		tokenFormat="${oidcTokenFormat}"
@@ -105,11 +75,6 @@
 		<autoAuthorizeClient>loggerClient1-4</autoAuthorizeClient>
 		
 	</oauthProvider>	
-
-	<openidConnectProvider
-		id="OidcConfigSample_logger2"
-		signatureAlgorithm="HS256"
-		oauthProviderRef="OAuthConfigSample_logger2" />
 
 	<oauthProvider
 		id="OAuthConfigSample_logger2"
@@ -124,11 +89,6 @@
 		
 	</oauthProvider>
 		
-	<openidConnectProvider
-		id="OidcConfigSample_logger3"
-		signatureAlgorithm="HS256"
-		oauthProviderRef="OAuthConfigSample_logger3" />
-
 	<oauthProvider
 		id="OAuthConfigSample_logger3"
 		tokenFormat="${oidcTokenFormat}"
@@ -139,11 +99,6 @@
 		
 	</oauthProvider>		
 	
-	<openidConnectProvider
-		id="OidcConfigSample_logger4"
-		signatureAlgorithm="HS256"
-		oauthProviderRef="OAuthConfigSample_logger4" />
-
 	<oauthProvider
 		id="OAuthConfigSample_logger4"
 		tokenFormat="${oidcTokenFormat}"
@@ -154,11 +109,6 @@
 		
 	</oauthProvider>		
 	
-	<openidConnectProvider
-		id="OidcConfigSample_useLogoutTokenForAccess"
-		signatureAlgorithm="HS256"
-		oauthProviderRef="OAuthConfigSample_useLogoutTokenForAccess" />
-
 	<oauthProvider
 		id="OAuthConfigSample_useLogoutTokenForAccess"
 		tokenFormat="${oidcTokenFormat}"
@@ -169,11 +119,6 @@
 		
 	</oauthProvider>		
 	
-	<openidConnectProvider
-		id="OidcConfigSample_multiClientWithAndWithoutBCL"
-		signatureAlgorithm="HS256"
-		oauthProviderRef="OAuthConfigSample_multiClientWithAndWithoutBCL" />
-
 	<oauthProvider
 		id="OAuthConfigSample_multiClientWithAndWithoutBCL"
 		tokenFormat="${oidcTokenFormat}"
@@ -186,11 +131,6 @@
 		
 	</oauthProvider>
 
-	<openidConnectProvider
-		id="OidcConfigSample_checkDuplicateBCLCalls"
-		signatureAlgorithm="HS256"
-		oauthProviderRef="OAuthConfigSample_checkDuplicateBCLCalls" />
-
 	<oauthProvider
 		id="OAuthConfigSample_checkDuplicateBCLCalls"
 		tokenFormat="${oidcTokenFormat}"
@@ -202,15 +142,6 @@
 		
 	</oauthProvider>
 	
-	<openidConnectProvider
-		id="OidcConfigSample_http_httpsRequired_true"
-		signatureAlgorithm="RS256"
-		keyAliasName="rs256"
-		keyStoreRef="key_allSigAlg"
-		tokenEndpointAuthMethodsSupported="client_secret_post, client_secret_basic, none"
-		allowPublicClients="true"
-		oauthProviderRef="OAuthConfigSample_http_httpsRequired_true" />
-
 	<oauthProvider
 		id="OAuthConfigSample_http_httpsRequired_true"
 		tokenFormat="${oidcTokenFormat}"
@@ -223,15 +154,6 @@
 		
 	</oauthProvider>
 		
-	<openidConnectProvider
-		id="OidcConfigSample_http_httpsRequired_false"
-		signatureAlgorithm="RS256"
-		keyAliasName="rs256"
-		keyStoreRef="key_allSigAlg"
-		tokenEndpointAuthMethodsSupported="client_secret_post, client_secret_basic, none"
-		allowPublicClients="true"
-		oauthProviderRef="OAuthConfigSample_http_httpsRequired_false" />
-
 	<oauthProvider
 		id="OAuthConfigSample_http_httpsRequired_false"
 		tokenFormat="${oidcTokenFormat}"
@@ -245,13 +167,6 @@
 		
 	</oauthProvider>
 		
-		
-	<openidConnectProvider
-		id="OidcConfigSample_idTokenCacheEnabledFalse"
-		signatureAlgorithm="HS256"
-		idTokenCacheEnabled="false"
-		oauthProviderRef="OAuthConfigSample_idTokenCacheEnabledFalse" />
-
 	<oauthProvider
 		id="OAuthConfigSample_idTokenCacheEnabledFalse"
 		tokenFormat="${oidcTokenFormat}"
@@ -264,11 +179,6 @@
 		
 	</oauthProvider>	
 	
-	<openidConnectProvider
-		id="OidcConfigSample_accessTokenCacheEnabledFalse"
-		signatureAlgorithm="HS256"
-		oauthProviderRef="OAuthConfigSample_accessTokenCacheEnabledFalse" />
-
 	<oauthProvider
 		id="OAuthConfigSample_accessTokenCacheEnabledFalse"
 		tokenFormat="${oidcTokenFormat}"
@@ -282,13 +192,6 @@
 		
 	</oauthProvider>			
 			
-	<openidConnectProvider
-		id="OidcConfigSample_userClientTokenLimit"
-		signatureAlgorithm="RS256"
-		keyAliasName="rs256"
-		keyStoreRef="key_allSigAlg"
-		oauthProviderRef="OAuthConfigSample_userClientTokenLimit" />
-
 	<oauthProvider
 		id="OAuthConfigSample_userClientTokenLimit"
 		tokenFormat="${oidcTokenFormat}"
@@ -299,14 +202,6 @@
 		<autoAuthorizeClient>bcl_userClientTokenLimit_Client</autoAuthorizeClient>
 		
 	</oauthProvider>			
-
-	<openidConnectProvider
-		id="OidcConfigSample_appPasswords"
-		signatureAlgorithm="RS256"
-		keyAliasName="rs256"
-		keyStoreRef="key_allSigAlg"
-		tokenEndpointAuthMethodsSupported="client_secret_post, client_secret_basic, none"
-		oauthProviderRef="OAuthConfigSample_appPasswords" />
 
 	<oauthProvider
 		id="OAuthConfigSample_appPasswords"
@@ -319,14 +214,6 @@
 		<autoAuthorizeClient>bcl_appPasswordsClient2</autoAuthorizeClient>
 	
 	</oauthProvider>			
-
-	<openidConnectProvider
-		id="OidcConfigSample_appTokens"
-		signatureAlgorithm="RS256"
-		keyAliasName="rs256"
-		keyStoreRef="key_allSigAlg"
-		tokenEndpointAuthMethodsSupported="client_secret_post, client_secret_basic, none"
-		oauthProviderRef="OAuthConfigSample_appTokens" />
 
 	<oauthProvider
 		id="OAuthConfigSample_appTokens"

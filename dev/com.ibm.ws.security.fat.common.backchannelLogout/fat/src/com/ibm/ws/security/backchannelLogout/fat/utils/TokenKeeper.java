@@ -155,7 +155,7 @@ public class TokenKeeper {
 
     }
 
-    private String getIdTokenFromResponse(Object response, String flowType) throws Exception {
+    public String getIdTokenFromResponse(Object response, String flowType) throws Exception {
 
         String idTokenKey = Constants.ID_TOKEN_KEY;
 

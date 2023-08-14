@@ -71,6 +71,64 @@
 	</openidConnectClient>
 	
 	<openidConnectClient
+		id="bcl_mainPath_accessTokenCacheEnabled_false_confClient"
+		scope="openid profile"
+		clientId="bcl_mainPath_accessTokenCacheEnabled_false_confClient"
+		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		inboundPropagation="supported"
+		jwtAccessTokenRemoteValidation="require"
+		httpsRequired="false"
+		redirectToRPHostAndPort="https://localhost:${client2Port}"
+		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_mainPath/authorize"
+		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_mainPath/token"
+		authFilterRef="bcl_mainPath_accessTokenCacheEnabled_false_confClient_filter"
+		validationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_mainPath/introspect"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="bcl_mainPath_accessTokenInLtpaCookie_true_confClient"
+		scope="openid profile"
+		clientId="bcl_mainPath_accessTokenInLtpaCookie_true_confClient"
+		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		inboundPropagation="supported"
+		jwtAccessTokenRemoteValidation="require"
+		httpsRequired="false"
+		redirectToRPHostAndPort="https://localhost:${client2Port}"
+		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_mainPath/authorize"
+		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_mainPath/token"
+		authFilterRef="bcl_mainPath_accessTokenInLtpaCookie_true_confClient_filter"
+		validationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_mainPath/introspect"
+		accessTokenInLtpaCookie="true"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="bcl_mainPath_introspectFalse_confClient"
+		scope="openid profile"
+		clientId="bcl_mainPath_introspectFalse_confClient"
+		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		inboundPropagation="supported"
+		jwtAccessTokenRemoteValidation="require"
+		httpsRequired="false"
+		redirectToRPHostAndPort="https://localhost:${client2Port}"
+		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_mainPath/authorize"
+		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_mainPath/token"
+		authFilterRef="bcl_mainPath_introspectFalse_confClient_filter"
+		validationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_mainPath/introspect"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
 		id="bcl_defaultBCLTimeout"
 		scope="openid profile"
 		clientId="bcl_defaultBCLTimeout"

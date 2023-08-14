@@ -13,6 +13,7 @@
 package com.ibm.ws.security.backchannelLogout.fat.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.gargoylesoftware.htmlunit.Page;
@@ -195,6 +196,18 @@ public class BackChannelLogout_RegisterClients {
 
     }
 
+    public void registerClientWithDefaultBclAndExtraConfig(String provider, String clientId, String postRedirect, HashMap<String, String> extraConfig) throws Exception {
+
+        String bcl = clientServer.getServerHttpsCanonicalString() + "/oidcclient/backchannel_logout/" + clientId;
+        JSONObject prefix = setRegistrationBody(clientId, bcl, postRedirect, null, false, false, true);
+        for (String i : extraConfig.keySet()) {
+            prefix.put(i, extraConfig.get(i));
+        }
+
+        registerClient(provider, prefix, vData.addResponseStatusExpectation(null, Constants.INVOKE_REGISTRATION_ENDPOINT, Constants.CREATED_STATUS));
+
+    }
+
     public void registerClientWithDefaultBcl(String provider, String clientId, String postRedirect) throws Exception {
 
         String bcl = clientServer.getServerHttpsCanonicalString() + "/oidcclient/backchannel_logout/" + clientId;
@@ -215,7 +228,30 @@ public class BackChannelLogout_RegisterClients {
 
     }
 
-    public void registerClient(String provider, String clientId, String bcl, String postRedirect, String[] redirectOverride, boolean appPasswordAllowed, boolean appTokenAllowed, boolean introspectTokens, List<validationData> expectations) throws Exception {
+    public JSONObject registerClient(String provider, String clientId, String bcl, String postRedirect, String[] redirectOverride, boolean appPasswordAllowed, boolean appTokenAllowed, boolean introspectTokens, List<validationData> expectations) throws Exception {
+
+        //        String thisMethod = "registerClient";
+        //        msgUtils.printMethodName(thisMethod);
+        //
+        //        WebClient webClient = TestHelpers.getWebClient(true);
+        //
+        //        List<endpointSettings> headers = setRequestHeaders();
+        //
+        // build a default, standard registrationBody
+        JSONObject prefix = setRegistrationBody(clientId, bcl, postRedirect, redirectOverride, appPasswordAllowed, appTokenAllowed, introspectTokens);
+        registerClient(provider, prefix, expectations);
+        return prefix;
+        //
+        //        String registrationEndpoint = testOPServer.getServerHttpsString() + "/oidc/endpoint/" + provider + "/registration";
+        //        Log.info(thisClass, "registerClient", "registrationEndpoint: " + registrationEndpoint);
+        //        Log.info(thisClass, "registerClient", "Client registration body values: " + prefix.toString());
+        //
+        //        waitTillMongoDbReady(provider);
+        //
+        //        helpers.invokeEndpointWithBody("testSetup", webClient, registrationEndpoint, Constants.POSTMETHOD, Constants.INVOKE_REGISTRATION_ENDPOINT, null, headers, expectations, prefix.toString());
+    }
+
+    public void registerClient(String provider, JSONObject prefix, List<validationData> expectations) throws Exception {
 
         String thisMethod = "registerClient";
         msgUtils.printMethodName(thisMethod);
@@ -224,8 +260,6 @@ public class BackChannelLogout_RegisterClients {
 
         List<endpointSettings> headers = setRequestHeaders();
 
-        JSONObject prefix = setRegistrationBody(clientId, bcl, postRedirect, redirectOverride, appPasswordAllowed, appTokenAllowed, introspectTokens);
-
         String registrationEndpoint = testOPServer.getServerHttpsString() + "/oidc/endpoint/" + provider + "/registration";
         Log.info(thisClass, "registerClient", "registrationEndpoint: " + registrationEndpoint);
         Log.info(thisClass, "registerClient", "Client registration body values: " + prefix.toString());
@@ -233,6 +267,7 @@ public class BackChannelLogout_RegisterClients {
         waitTillMongoDbReady(provider);
 
         helpers.invokeEndpointWithBody("testSetup", webClient, registrationEndpoint, Constants.POSTMETHOD, Constants.INVOKE_REGISTRATION_ENDPOINT, null, headers, expectations, prefix.toString());
+
     }
 
     class Looper {
@@ -315,6 +350,12 @@ public class BackChannelLogout_RegisterClients {
         registerClientWithDefaultBcl("OidcConfigSample_mainPath", "bcl_mainPath_publicClient_withoutSecret", null);
         registerClientWithDefaultBcl("OidcConfigSample_mainPath", "variableIntrospectValidationEndpoint", null);
         registerClientWithDefaultBcl("OidcConfigSample_userClientTokenLimit", "bcl_userClientTokenLimit_Client", null);
+
+        HashMap<String, String> extraConfig = new HashMap<String, String>();
+        extraConfig.put("accessTokenCacheEnabled", "false");
+        registerClientWithDefaultBclAndExtraConfig("OidcConfigSample_mainPath", "bcl_mainPath_accessTokenCacheEnabled_false_confClient", null, extraConfig);
+
+        registerClientWithDefaultBcl("OidcConfigSample_mainPath", "bcl_mainPath_accessTokenInLtpaCookie_true_confClient", null);
 
         registerClient("OidcConfigSample_defaultBCLTimeout", "bcl_defaultBCLTimeout", clientHttpsRoot + "/backchannelLogoutTestApp/backChannelLogoutSleep", jSessionPostRedirect);
         registerClient("OidcConfigSample_defaultBCLTimeout", "bcl_otherDefaultBCLTimeout", clientHttpsRoot + "/backchannelLogoutTestApp/backChannelLogoutSleep", jSessionPostRedirect);

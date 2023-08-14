@@ -25,9 +25,9 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        //        AlwaysPassesTest.class,
-        //        HttpMethodsTests.class,
-        //        LogoutTokenValidationTests.class,
+        AlwaysPassesTest.class,
+        HttpMethodsTests.class,
+        LogoutTokenValidationTests.class,
         BasicBCLTests.class,
         MultiServerBCLTests.class
 

@@ -119,13 +119,13 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
         RepeatTests rTests = null;
         if (callingProject.equals(Constants.OIDC)) {
             if (TestModeFilter.shouldRun(TestMode.FULL)) {
-                if (!theOS.equals(OperatingSystem.ISERIES)) {
-                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + Constants.MONGODB));
-                }
+                //                if (!theOS.equals(OperatingSystem.ISERIES)) {
+                //                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + Constants.MONGODB));
+                //                }
                 rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + localStore));
-                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.LOGOUT_ENDPOINT + "_" + localStore));
-                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
-                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
+                //                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.LOGOUT_ENDPOINT + "_" + localStore));
+                //                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
+                //                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
             } else {
                 // LITE mode only run one instance
                 rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + localStore));
@@ -140,8 +140,18 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
                     rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
                 }
             } else {
-                // saml runtime isn't implemented yet - the tests can get an access_token, but bcl function is not called, so we won't hit our bcl test apps, or clear the proper cookies, ...
-                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.LOGOUT_ENDPOINT));
+                if (TestModeFilter.shouldRun(TestMode.FULL)) {
+                    //                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML_IDP_INITIATED_LOGOUT));
+                    //                    //                                        rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.logout)); sp logout
+                    //                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.LOGOUT_ENDPOINT));
+                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.END_SESSION));
+                    //                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
+                    //                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
+                } else {
+                    // LITE mode only run one instance
+                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.END_SESSION));
+                }
+
             }
         }
 
@@ -191,6 +201,7 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
         // we can re-use the basic OP config
         if (currentRepeatAction.contains(Constants.SAML)) {
             Log.info(thisClass, "setUp", "pickAnIDP: " + pickAnIDP);
+            // IDP server uses ports bvt.prop.security_3_HTTP_default*
             testIDPServer = commonSetUp("com.ibm.ws.security.saml.sso-2.0_fat.shibboleth", "server_orig.xml", Constants.IDP_SERVER_TYPE, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.SKIP_CHECK_FOR_SECURITY_STARTED, true);
             pickAnIDP = true; // tells commonSetup to update the OP server files with current/this instance IDP server info
             testIDPServer.setRestoreServerBetweenTests(false);
@@ -305,7 +316,8 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
         clientServer2.setRestoreServerBetweenTests(false);
         genericTestServer.setRestoreServerBetweenTests(false);
         SecurityFatHttpUtils.saveServerPorts(clientServer.getServer(), Constants.BVT_SERVER_2_PORT_NAME_ROOT);
-        SecurityFatHttpUtils.saveServerPorts(clientServer2.getServer(), Constants.BVT_SERVER_3_PORT_NAME_ROOT);
+        SecurityFatHttpUtils.saveServerPorts(clientServer2.getServer(), Constants.BVT_SERVER_5_PORT_NAME_ROOT);
+        SecurityFatHttpUtils.saveServerPorts(genericTestServer.getServer(), Constants.BVT_SERVER_4_PORT_NAME_ROOT);
 
         clientServer.addIgnoredServerExceptions(MessageConstants.CWWKS1541E_BACK_CHANNEL_LOGOUT_ERROR, MessageConstants.CWWKS1543E_BACK_CHANNEL_LOGOUT_REQUEST_VALIDATION_ERROR);
 
@@ -345,6 +357,7 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
 
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
 
+        Log.info(thisClass, "updateTestSettingProviderAndClient", server.getServer().getServerName());
         updatedTestSettings.setProvider(provider);
         updatedTestSettings.setTestURL(server.getHttpsString() + "/formlogin/simple/" + client);
         updatedTestSettings.setProtectedResource(server.getHttpsString() + "/formlogin/simple/" + client);
@@ -362,6 +375,8 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
         updatedTestSettings.setClientSecret("mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"); // all of the clients are using the same secret
         updatedTestSettings.setUserName(user);
         updatedTestSettings.setUserPassword(passwd);
+        updatedTestSettings.setAdminUser(user);
+        updatedTestSettings.setAdminPswd(passwd);
         updatedTestSettings.setScope("openid profile");
         if (usePostLogout) {
             updatedTestSettings.setPostLogoutRedirect(server.getHttpString() + Constants.postLogoutJSessionIdApp);
@@ -404,13 +419,15 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
      *            Flag indicating if the logout request passed the id_token_hint
      * @param sidFromIdToken
      *            The original sid from the id_token
-     *            // TODO bclEndpoint
+     * @param bclEndpoint
+     *            The bcl endpoint that should have been invoked
      * @return returns the sid from the logout_token
      * @throws Exception
      */
     protected String validateCorrectBCLUrisCalled(TestServer server, TestSettings settings, boolean idTokenHintIncluded, String sidFromIdToken, String bclEndpoint) throws Exception {
 
-        String logout_token = getLogoutTokenFromMessagesLog(server, "Will invoke " + bclEndpoint + ".* with the passed in logout_token:");
+        String this_method = "validateCorrectBCLUrisCalled";
+        String logout_token = getLogoutTokenFromMessagesLog(server, "For sid: " + sidFromIdToken + " - Will invoke " + bclEndpoint + ".* with the passed in logout_token:");
         Log.info(thisClass, _testName, "logout_token: " + logout_token);
 
         if (idTokenHintIncluded) {
@@ -418,16 +435,16 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
 
             List<String> audience = logoutToken.getAudience();
             if (audience.contains(settings.getClientID())) {
-                Log.info(thisClass, _testName, "Back Channel Logout was called for: " + settings.getClientID());
+                Log.info(thisClass, this_method, "Back Channel Logout was called for: " + settings.getClientID());
             } else {
                 fail("Back Channel Logout was not called for audience: " + settings.getClientID());
             }
 
             if (sidFromIdToken == null) {
-                Log.info(thisClass, _testName, "Skipping sid check");
+                Log.info(thisClass, this_method, "Skipping sid check");
             } else {
                 if (logoutToken.getSessionId().contains(sidFromIdToken)) {
-                    Log.info(thisClass, _testName, "Back Channel Logout was called for: " + sidFromIdToken);
+                    Log.info(thisClass, this_method, "Back Channel Logout was called for: " + sidFromIdToken);
                 } else {
                     fail("Back Channel Logout was not called for sid: " + sidFromIdToken);
                 }
@@ -436,7 +453,7 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
         } else {
             if (logout_token == null) {
                 addToAllowableTimeoutCount(1); // the search for the logout_token will result in a "timed out" message that we need to account for
-                Log.info(thisClass, _testName, "Back Channel Logout was NOT called for: " + sidFromIdToken);
+                Log.info(thisClass, this_method, "Back Channel Logout was NOT called for: " + sidFromIdToken);
             } else {
                 // TODO - need to update this for this class instance
                 fail("Back Channel Logout was not called for sid: " + sidFromIdToken + " and should have been");
@@ -460,50 +477,50 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
         return null;
     }
 
-    /**
-     * Invoke either end_session or the test "simpleLogout" app - and if invoking "simpleLogout" have the app invoke
-     * either the logout endpoint in the OP, or end_session
-     *
-     * @param webClient
-     *            the client to get the context from
-     * @param settings
-     *            the current test settings (used to get the end_session endpoint)
-     * @param logoutExpectations
-     *            the expectations to validate
-     * @param previousResponse
-     *            in the case of end_session, the prevous response to get the id_token from (to use as the hint)
-     * @return the http reponse for further validation
-     * @throws Exception
-     */
-    public Object invokeLogout(WebClient webClient, TestSettings settings, List<validationData> logoutExpectations, String id_token) throws Exception {
-
-        String opLogoutEndpoint = null;
-
-        switch (logoutMethodTested) {
-        case Constants.SAML:
-            return genericOP(_testName, webClient, settings, Constants.IDP_INITIATED_LOGOUT, logoutExpectations, null, id_token);
-        case Constants.END_SESSION:
-        case Constants.LOGOUT_ENDPOINT:
-            // invoke end_session on the op - test controls if the id_token is passed as the id_token_hint by either passing or not passing the previous response
-            Object response = genericOP(_testName, webClient, settings, Constants.LOGOUT_ONLY_ACTIONS, logoutExpectations, null, id_token);
-            return response;
-        case Constants.HTTP_SESSION:
-            if (sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT)) {
-                opLogoutEndpoint = testOPServer.getHttpsString() + "/oidc/endpoint/" + settings.getProvider() + "/" + Constants.LOGOUT_ENDPOINT;
-            } else {
-                opLogoutEndpoint = settings.getEndSession();
-            }
-            List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "opLogoutUri", opLogoutEndpoint);
-            if (id_token != null) {
-                parms = eSettings.addEndpointSettingsIfNotNull(parms, "id_token_hint", id_token);
-            }
-            return genericInvokeEndpoint(_testName, webClient, null, logoutApp, Constants.POSTMETHOD, Constants.LOGOUT, parms, null, logoutExpectations, testSettings);
-        default:
-            fail("Logout method wasn't specified");
-            return null;
-        }
-
-    }
+    //        /**
+    //         * Invoke either end_session or the test "simpleLogout" app - and if invoking "simpleLogout" have the app invoke
+    //         * either the logout endpoint in the OP, or end_session
+    //         *
+    //         * @param webClient
+    //         *            the client to get the context from
+    //         * @param settings
+    //         *            the current test settings (used to get the end_session endpoint)
+    //         * @param logoutExpectations
+    //         *            the expectations to validate
+    //         * @param previousResponse
+    //         *            in the case of end_session, the prevous response to get the id_token from (to use as the hint)
+    //         * @return the http reponse for further validation
+    //         * @throws Exception
+    //         */
+    //        public Object invokeLogout(WebClient webClient, TestSettings settings, List<validationData> logoutExpectations, String id_token) throws Exception {
+    //
+    //            String opLogoutEndpoint = null;
+    //
+    //            switch (logoutMethodTested) {
+    //            case Constants.SAML:
+    //                return genericOP(_testName, webClient, settings, Constants.IDP_INITIATED_LOGOUT, logoutExpectations, null, id_token);
+    //            case Constants.END_SESSION:
+    //            case Constants.LOGOUT_ENDPOINT:
+    //                // invoke end_session on the op - test controls if the id_token is passed as the id_token_hint by either passing or not passing the previous response
+    //                Object response = genericOP(_testName, webClient, settings, Constants.LOGOUT_ONLY_ACTIONS, logoutExpectations, null, id_token);
+    //                return response;
+    //            case Constants.HTTP_SESSION:
+    //                if (sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT)) {
+    //                    opLogoutEndpoint = testOPServer.getHttpsString() + "/oidc/endpoint/" + settings.getProvider() + "/" + Constants.LOGOUT_ENDPOINT;
+    //                } else {
+    //                    opLogoutEndpoint = settings.getEndSession();
+    //                }
+    //                List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "opLogoutUri", opLogoutEndpoint);
+    //                if (id_token != null) {
+    //                    parms = eSettings.addEndpointSettingsIfNotNull(parms, "id_token_hint", id_token);
+    //                }
+    //                return genericInvokeEndpoint(_testName, webClient, null, logoutApp, Constants.POSTMETHOD, Constants.LOGOUT, parms, null, logoutExpectations, testSettings);
+    //            default:
+    //                fail("Logout method wasn't specified");
+    //                return null;
+    //            }
+    //
+    //        }
 
     public TokenKeeper invokeAndSave(TestSettings settings, String bclEndpoint) throws Exception {
 
@@ -543,6 +560,8 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
     public void complexTest(boolean reuseWebClientForLogout, boolean passHint) throws Exception {
         // clean up any stored sids/bcl endpoints from prevous tests
         resetMultiServerLogout();
+
+        clientServer.getServer().initializeAnyExistingMarks();
 
         boolean usingLogoutEndpoint = currentRepeatAction.contains(Constants.LOGOUT_ENDPOINT);
         boolean shouldWeReallyLogout = reuseWebClientForLogout || (passHint && !usingLogoutEndpoint);
@@ -595,8 +614,11 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
         // access each protected app, save all of the tokens and cookies, store the session id and real bcl endpoint to use for that session in the logout test application request and
         // keep a copy of the full response so we can get the
         // Provider 1
+        Log.info(thisClass, "CHC - Debug", "testUrl: " + updatedTestSettings1_1_testuser.getTestURL());
         TokenKeeper keeper1_1_testuser = invokeAndSave(updatedTestSettings1_1_testuser, bclEndpoint1_1);
+        Log.info(thisClass, "CHC - Debug", "testUrl: " + updatedTestSettings1_2_testuser.getTestURL());
         TokenKeeper keeper1_2_testuser = invokeAndSave(updatedTestSettings1_2_testuser, bclEndpoint1_2);
+        Log.info(thisClass, "CHC - Debug", "testUrl: " + updatedTestSettings1_2_user1.getTestURL() + " User: " + updatedTestSettings1_2_user1.getAdminUser());
         TokenKeeper keeper1_2_user1 = invokeAndSave(updatedTestSettings1_2_user1, bclEndpoint1_2);
         TokenKeeper keeper1_3_testuser = invokeAndSave(updatedTestSettings1_3_testuser, bclEndpoint1_3);
         TokenKeeper keeper1_3_user1 = invokeAndSave(updatedTestSettings1_3_user1, bclEndpoint1_3);
@@ -619,7 +641,7 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
         saveInstanceForMultiServerLogout(getStringValue(new JwtTokenForTest(keeper2_1.getIdToken()).getMapPayload(), Constants.IDTOK_SESSION_ID), bclEndpoint2_5);
 
         // logout expectations
-        List<validationData> logoutExpectations = initLogoutExpectations(finalAppWithoutPostRedirect);
+        List<validationData> logoutExpectations = initLogoutExpectations(finalAppWithoutPostRedirect, reuseWebClientForLogout);
         // check for error messages when the logout test app tries to invoke bcl for the instance on the RS server - there should be nothing to clean up for a propagated access
         if (shouldWeReallyLogout) {
             logoutExpectations = validationTools.addMessageExpectation(genericTestServer, logoutExpectations, Constants.LOGOUT, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Message log did not contain message indicating that a there was a problem invoking the back channel logout.", MessageConstants.CWWKS1541E_BACK_CHANNEL_LOGOUT_ERROR + ".*bcl_multiServer_client1-1.*");
@@ -642,11 +664,13 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
         }
         // Logout
         if (passHint) {
-            invokeLogout(webClientForLogout, updatedTestSettings1_1_testuser, logoutExpectations, keeper1_1_testuser.getIdToken());
+            invokeLogout(webClientForLogout, updatedTestSettings1_1_testuser, logoutExpectations, keeper1_1_testuser.getIdToken(), reuseWebClientForLogout);
         } else {
-            invokeLogout(webClientForLogout, updatedTestSettings1_1_testuser, logoutExpectations, null);
+            invokeLogout(webClientForLogout, updatedTestSettings1_1_testuser, logoutExpectations, null, reuseWebClientForLogout);
 
         }
+
+        clientServer.getServer().resetLogMarks();
 
         // make sure that the backChannelLogoutUri has been called for each client that we logged in (using the user testuser) (within the provider that we're logging out)
         // make sure that the backChannelLogoutUri has NOT been called for each client that we logged in (using a user other than testuser)

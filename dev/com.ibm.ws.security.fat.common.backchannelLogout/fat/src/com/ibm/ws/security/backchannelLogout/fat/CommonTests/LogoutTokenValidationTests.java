@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -711,7 +711,7 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
     public void LogoutTokenValidationTests_include_optional_sub_omit_sid() throws Exception {
 
         JWTTokenBuilder builder = loginAndReturnIdTokenData(defaultClient);
-        // remvoe sid
+        // remove sid
         builder.unsetClaim(Constants.PAYLOAD_SESSION_ID);
 
         String logutOutEndpoint = buildBackchannelLogoutUri(defaultClient);
@@ -843,7 +843,7 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
     //     *
     //     * @throws Exception
     //     */
-    //    // TODO backchannelLogoutSessionRequired is not supporte/used in the RP config, so, we'll always allow sid, but never require it as far as the RP is concerned
+    //    // TODO backchannelLogoutSessionRequired is not supported/used in the RP config, so, we'll always allow sid, but never require it as far as the RP is concerned
     //    //@Test
     //    public void LogoutTokenValidationTests_omit_sid_when_config_requires_it() throws Exception {
     //

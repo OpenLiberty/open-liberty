@@ -29,7 +29,8 @@
 
 	<include location="${server.config.dir}/imports/oauthRoles_1.xml" />
 
-	<include location="${server.config.dir}/imports/oidcProvider_multiServerTests_notLocalStore.xml" />
+	<include location="${server.config.dir}/imports/oidcProvider_multiServerTests.xml" />
+	<include location="${server.config.dir}/imports/oauthProvider_multiServerTests_notLocalStore.xml" />
 
 	<include location="${server.config.dir}/imports/op_fatTestPorts.xml" />
 	

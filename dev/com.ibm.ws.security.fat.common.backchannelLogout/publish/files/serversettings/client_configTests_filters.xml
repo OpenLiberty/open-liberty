@@ -30,6 +30,24 @@
 			urlPattern="/simple/bcl_mainPath_publicClient_withoutSecret" />
 	</authFilter>
 
+	<authFilter id="bcl_mainPath_accessTokenCacheEnabled_false_confClient_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_mainPath_accessTokenCacheEnabled_false_confClient" />
+	</authFilter>
+
+	<authFilter id="bcl_mainPath_accessTokenInLtpaCookie_true_confClient_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_mainPath_accessTokenInLtpaCookie_true_confClient" />
+	</authFilter>
+
+	<authFilter id="bcl_mainPath_introspectFalse_confClient_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_mainPath_introspectFalse_confClient" />
+	</authFilter>
+
 	<authFilter id="bcl_defaultBCLTimeout_filter">
 		<requestUrl
 			matchType="contains" 
