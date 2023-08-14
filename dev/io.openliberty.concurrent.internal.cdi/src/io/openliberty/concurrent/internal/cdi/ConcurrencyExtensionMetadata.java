@@ -22,18 +22,37 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
+import jakarta.enterprise.concurrent.ContextService;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.inject.spi.Extension;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = CDIExtensionMetadata.class)
-public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata {
+public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIExtensionMetadataInternal {
+    private static final Set<Class<?>> beanClasses = Set.of(ContextService.class,
+                                                            ManagedExecutorService.class,
+                                                            ManagedScheduledExecutorService.class // TODO ManagedThreadFactory.class ?
+    );
+
     /**
      * Jakarta EE version.
      */
     public static Version eeVersion;
+
+    @Override
+    public boolean applicationBeansVisible() {
+        return true;
+    }
+
+    @Override
+    public Set<Class<?>> getBeanClasses() {
+        return beanClasses;
+    }
 
     @Override
     public Set<Class<? extends Extension>> getExtensions() {

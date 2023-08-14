@@ -14,16 +14,18 @@ package io.openliberty.concurrent.internal.cdi;
 
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 
 import com.ibm.ws.cdi.CDIServiceUtils;
 
 import io.openliberty.concurrent.internal.cdi.interceptor.AsyncInterceptor;
 import jakarta.enterprise.concurrent.Asynchronous;
+import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
@@ -40,9 +42,19 @@ public class ConcurrencyExtension implements Extension {
     private static final Set<Annotation> DEFAULT_QUALIFIER = Set.of(Default.Literal.INSTANCE);
 
     /**
-     * Set of qualifier lists found on injection points.
+     * Set of qualifier lists found on ContextService injection points.
+     */
+    private final Set<Set<Annotation>> contextServiceQualifiers = new HashSet<>();
+
+    /**
+     * Set of qualifier lists found on ManagedExecutorService injection points.
      */
     private final Set<Set<Annotation>> executorQualifiers = new HashSet<>();
+
+    /**
+     * Set of qualifier lists found on ManagedScheduledExecutorService injection points.
+     */
+    private final Set<Set<Annotation>> scheduledExecutorQualifiers = new HashSet<>();
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
         // register the interceptor binding and the interceptor
@@ -55,39 +67,106 @@ public class ConcurrencyExtension implements Extension {
     /**
      * Invoked for each matching injection point:
      *
-     * @Inject @Qualifier1 @Qualifier2 ...
-     *         ManagedExecutorService executor;
+     * @Inject {@Qualifier1 @Qualifier2 ...} ManagedExecutorService executor;
      *
-     * @param <T>         bean class that has the injection point
-     * @param event       event
-     * @param beanManager bean manager
+     * @param <T>   bean class that has the injection point
+     * @param event event
      */
-    public <T> void processExecutorInjectionPoint(@Observes ProcessInjectionPoint<T, ManagedExecutorService> event, BeanManager beanManager) {
+    public <T> void processContextServiceInjectionPoint(@Observes ProcessInjectionPoint<T, ContextService> event) {
         if (ConcurrencyExtensionMetadata.eeVersion.getMajor() >= 11) {
-            // TODO check if producer already exists for the injection point and skip
+            InjectionPoint injectionPoint = event.getInjectionPoint();
+            Set<Annotation> qualifiers = injectionPoint.getQualifiers();
+            contextServiceQualifiers.add(qualifiers);
+        }
+    }
+
+    /**
+     * Invoked for each matching injection point:
+     *
+     * @Inject {@Qualifier1 @Qualifier2 ...} ManagedExecutorService executor;
+     *
+     * @param <T>   bean class that has the injection point
+     * @param event event
+     */
+    public <T> void processExecutorInjectionPoint(@Observes ProcessInjectionPoint<T, ManagedExecutorService> event) {
+        if (ConcurrencyExtensionMetadata.eeVersion.getMajor() >= 11) {
             InjectionPoint injectionPoint = event.getInjectionPoint();
             Set<Annotation> qualifiers = injectionPoint.getQualifiers();
             executorQualifiers.add(qualifiers);
         }
     }
 
-    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event) {
+    /**
+     * Invoked for each matching injection point:
+     *
+     * @Inject {@Qualifier1 @Qualifier2 ...} ManagedScheduledExecutorService scheduledExecutor;
+     *
+     * @param <T>   bean class that has the injection point
+     * @param event event
+     */
+    public <T> void processScheduledExecutorInjectionPoint(@Observes ProcessInjectionPoint<T, ManagedScheduledExecutorService> event) {
         if (ConcurrencyExtensionMetadata.eeVersion.getMajor() >= 11) {
-            for (Iterator<Set<Annotation>> it = executorQualifiers.iterator(); it.hasNext();) {
-                Set<Annotation> qualifiers = it.next();
-                it.remove();
-                if (CDI.current().select(ManagedExecutorService.class, qualifiers.toArray(new Annotation[qualifiers.size()])).isUnsatisfied()) {
+            InjectionPoint injectionPoint = event.getInjectionPoint();
+            Set<Annotation> qualifiers = injectionPoint.getQualifiers();
+            scheduledExecutorQualifiers.add(qualifiers);
+        }
+    }
+
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
+        if (ConcurrencyExtensionMetadata.eeVersion.getMajor() >= 11) {
+            CDI<Object> cdi = CDI.current();
+
+            for (Set<Annotation> qualifiers : contextServiceQualifiers) {
+                if (cdi.select(ContextService.class, qualifiers.toArray(new Annotation[qualifiers.size()])).isResolvable()) {
+                    System.out.println("ContextService with qualifiers " + qualifiers + " already exists.");
+                } else {
+                    // It doesn't already exist, so try to add it:
+                    if (DEFAULT_QUALIFIER.equals(qualifiers)) {
+                        Bean<ContextService> bean = new ConcurrencyResourceBean<>(ContextService.class, //
+                                        "(id=DefaultContextService)", //
+                                        Set.of(ContextService.class), //
+                                        qualifiers);
+                        event.addBean(bean);
+                        System.out.println("Added ContextService with qualifiers " + qualifiers);
+                    } // TODO else configured ContextService instances with qualifiers
+                      // TODO if the same qualifiers list is used for both MES and MSES, create as MSES instead?
+                }
+            }
+            contextServiceQualifiers.clear();
+
+            for (Set<Annotation> qualifiers : executorQualifiers) {
+                if (cdi.select(ManagedExecutorService.class, qualifiers.toArray(new Annotation[qualifiers.size()])).isResolvable()) {
+                    System.out.println("ManagedExecutorService with qualifiers " + qualifiers + " already exists.");
+                } else {
                     // It doesn't already exist, so try to add it:
                     if (DEFAULT_QUALIFIER.equals(qualifiers)) {
                         Bean<ManagedExecutorService> bean = new ConcurrencyResourceBean<>(ManagedExecutorService.class, //
                                         "(id=DefaultManagedExecutorService)", //
-                                        Set.of(ManagedExecutorService.class, ExecutorService.class, Executor.class), //
-                                        qualifiers);
+                                        Set.of(ManagedExecutorService.class, ExecutorService.class, Executor.class), qualifiers);
+                        // TODO should ExecutorService.class, Executor.class be removed? If not, must avoid collisions with application's producers
                         event.addBean(bean);
-                        System.out.println("Added " + bean.getBeanClass().getName() + " with qualifiers " + qualifiers);
+                        System.out.println("Added ManagedExecutorService with qualifiers " + qualifiers);
                     } // TODO else configured ManagedExecutorService instances with qualifiers
                 }
             }
+            executorQualifiers.clear();
+
+            for (Set<Annotation> qualifiers : scheduledExecutorQualifiers) {
+                if (cdi.select(ManagedScheduledExecutorService.class, qualifiers.toArray(new Annotation[qualifiers.size()])).isResolvable()) {
+                    System.out.println("ManagedScheduledExecutorService with qualifiers " + qualifiers + " already exists.");
+                } else {
+                    // It doesn't already exist, so try to add it:
+                    if (DEFAULT_QUALIFIER.equals(qualifiers)) {
+                        Bean<ManagedScheduledExecutorService> bean = new ConcurrencyResourceBean<>(ManagedScheduledExecutorService.class, //
+                                        "(id=DefaultManagedScheduledExecutorService)", //
+                                        Set.of(ManagedScheduledExecutorService.class, ScheduledExecutorService.class), qualifiers);
+                        // TODO should ScheduledExecutorService.class be removed? If not, must avoid collisions with application's producers
+                        event.addBean(bean);
+                        System.out.println("Added ManagedScheduledExecutorService with qualifiers " + qualifiers);
+                    } // TODO else configured ManagedScheduledExecutorService instances with qualifiers
+                }
+            }
+            scheduledExecutorQualifiers.clear();
         }
     }
 }

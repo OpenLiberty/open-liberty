@@ -12,19 +12,33 @@
  *******************************************************************************/
 package concurrent.cdi.web;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import jakarta.enterprise.concurrent.ContextService;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import javax.naming.InitialContext;
 
 import org.junit.Test;
 
@@ -37,12 +51,25 @@ public class ConcurrentCDIServlet extends HttpServlet {
      */
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
+    @Inject
+    ContextService defaultContextSvc;
+
+    @Inject
+    ManagedExecutorService defaultManagedExecutor;
+
+    @Inject
+    ManagedScheduledExecutorService defaultManagedScheduledExecutor;
+
+    private ExecutorService unmanagedThreads;
+
     @Override
     public void destroy() {
+        unmanagedThreads.shutdownNow();
     }
 
     @Override
     public void init(ServletConfig config) throws ServletException {
+        unmanagedThreads = Executors.newFixedThreadPool(5); // TODO switch to virtual threads?
     }
 
     @Override
@@ -92,9 +119,54 @@ public class ConcurrentCDIServlet extends HttpServlet {
     }
 
     /**
-     * TODO Inject default instance of ContextService.
+     * Inject default instance of ContextService and use it.
      */
     @Test
-    public void testInjectContextServiceDefaultInstance() {
+    public void testInjectContextServiceDefaultInstance() throws Exception {
+        assertNotNull(defaultContextSvc);
+
+        // Use the ContextService to contextualize a task that require the application's context (to look up a java:comp name)
+        Callable<?> task = defaultContextSvc.contextualCallable(() -> InitialContext.doLookup("java:comp/env/entry2"));
+
+        Future<?> future = unmanagedThreads.submit(task);
+
+        Object found = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("value2", found);
+    }
+
+    /**
+     * Inject default instance of ManagedExecutorService and use it.
+     */
+    @Test
+    public void testInjectManagedExecutorServiceDefaultInstance() throws Exception {
+        assertNotNull(defaultManagedExecutor);
+
+        // Requires the application's context (to look up a java:comp name)
+        Callable<?> task = () -> InitialContext.doLookup("java:comp/env/entry2");
+        Future<?> future = defaultManagedExecutor.submit(task);
+
+        Object result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("value2", result);
+    }
+
+    /**
+     * Inject default instance of ManagedScheduledExecutorService and use it.
+     */
+    @Test
+    public void testInjectManagedScheduledExecutorServiceDefaultInstance() throws Exception {
+        assertNotNull(defaultManagedScheduledExecutor);
+
+        final AtomicInteger executionCount = new AtomicInteger();
+        Future<?> future1 = defaultManagedScheduledExecutor.schedule(() -> executionCount.incrementAndGet(), 30, TimeUnit.MINUTES);
+
+        // Requires the application's context (to look up a java:comp name)
+        Callable<?> task2 = () -> InitialContext.doLookup("java:comp/env/entry2");
+        Future<?> future2 = defaultManagedScheduledExecutor.schedule(task2, 122, TimeUnit.MILLISECONDS);
+
+        Object result = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("value2", result);
+
+        assertEquals(true, future1.cancel(false));
+        assertEquals(0, executionCount.get());
     }
 }
