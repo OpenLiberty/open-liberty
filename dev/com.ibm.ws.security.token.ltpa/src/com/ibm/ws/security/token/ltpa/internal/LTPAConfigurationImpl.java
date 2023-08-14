@@ -169,7 +169,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "primaryKeyImportFile: " + primaryKeyImportFile);
-            Tr.debug(tc, "primaryKeyPassword: " + primaryKeyPassword);
+            //Tr.debug(tc, "primaryKeyPassword: " + primaryKeyPassword);
             Tr.debug(tc, "keyTokenExpiration: " + keyTokenExpiration);
             Tr.debug(tc, "monitorInterval: " + monitorInterval);
             Tr.debug(tc, "authFilterRef: " + authFilterRef);
@@ -338,7 +338,8 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     }
 
     @Override
-    public void performFileBasedAction(Collection<File> modifiedFiles) {}
+    public void performFileBasedAction(Collection<File> modifiedFiles) {
+    }
 
     /**
      * Action is needed if a file is modified or if it is recreated after it was deleted
@@ -668,6 +669,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         return monitorDirectory;
     }
 
+    @Sensitive
     @Override
     public List<Properties> getValidationKeys() {
         return validationKeys;
