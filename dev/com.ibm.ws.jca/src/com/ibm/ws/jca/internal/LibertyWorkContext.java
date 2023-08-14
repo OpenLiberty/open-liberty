@@ -19,6 +19,8 @@ import com.ibm.wsspi.threading.WorkContext;
 //This is not the same as javax.resource.spi.work.WorkContext, it helps interceptors in Liberty get context
 public class LibertyWorkContext extends HashMap<String, Serializable> implements WorkContext {
 
+    private static final long serialVersionUID = 1L;
+
     LibertyWorkContext() {
         super();
     }

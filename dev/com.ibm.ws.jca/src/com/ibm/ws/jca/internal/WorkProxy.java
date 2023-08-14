@@ -105,6 +105,9 @@ public class WorkProxy implements CallableWithContext<Void>, RunnableWithContext
         boolean isWorkContextProvider = work instanceof WorkContextProvider;
         workContexts = isWorkContextProvider ? ((WorkContextProvider) work).getWorkContexts() : null;
 
+        System.out.println(" -- debug Enter WorkProxy --  ");
+        System.out.println("WorkProxy Thread " + Thread.currentThread().toString());
+
         // RA must not submit a Work that implements WorkContextProvider along
         // with a valid, not null, ExecutionContext -- 11.5 p.3
         if (isWorkContextProvider && executionContext != null) {
@@ -115,10 +118,26 @@ public class WorkProxy implements CallableWithContext<Void>, RunnableWithContext
             throw wrex;
         }
 
+        // Yep, it was null, try other test to test complete flow
+        System.out.println(" **-- debug Check below for workContext Null -->  ");
+
+        // debug Test condition and remove
+        if (workContexts != null) {
+            System.out.println(" **-- workContents is NOT null --**  ");
+        }
+
+        // end test
+
         String workName = null;
         if (workContexts != null)
+            //System.out.println("Not null workContexts:" + workContexts);
+
             for (WorkContext workContext : workContexts)
+                //System.out.println(" -- debug loop list workContexts --  ");
+
                 if (workContext instanceof HintsContext) {
+                    System.out.println(" -- debug Is HintsContext valid ?  ");
+
                     // JCA 11.6
                     // The WorkManager must reject the establishment of the HintsContext if the values
                     // provided for the hints are not valid.
@@ -127,11 +146,25 @@ public class WorkProxy implements CallableWithContext<Void>, RunnableWithContext
                     // JCA 11.6.1.1 Work Name Hint
                     // The value for the hint must be a valid java.lang.String.
                     Serializable value = hints.get(HintsContext.NAME_HINT);
+
                     if (value == null || value instanceof String) {
                         workName = (String) value;
+
+                        System.out.println(" -- debug JCA NAME_HINT-- workName  " + workName);
+
                     } else
                         hintsContextSetupFailure = new ClassCastException(Tr.formatMessage(TC, "J2CA8687.hint.datatype.invalid", "HintsContext.NAME_HINT", String.class.getName(),
                                                                                            bootstrapContext.resourceAdapterID, value, value.getClass().getName()));
+                    // test
+                    value = hints.get("first hint");
+                    if (value instanceof Boolean)
+                        System.out.println(" first hint found ");
+                    else
+                        System.out.println(" first hint not found ");
+
+                    System.out.println("RA name - ID: " + bootstrapContext.resourceAdapterID);
+
+                    // end test
 
                     // JCA 11.6.1.2 Long-running Work instance Hint
                     // The value of the hint must be a valid boolean value (true or false).
@@ -144,8 +177,28 @@ public class WorkProxy implements CallableWithContext<Void>, RunnableWithContext
                                                                                            Boolean.class.getName(),
                                                                                            bootstrapContext.resourceAdapterID, value, value.getClass().getName()));
 
+                    System.out.println(" -- debug JCA HINTs update --  ");
+
                     // This is not the same as javax.resource.spi.work.WorkContext, it helps interceptors in Liberty get context
                     wc.putAll(hints);
+                    // Testing only
+                    //wc.put(com.ibm.wsspi.threading.WorkContext.NAME_HINT, hints.get(HintsContext.NAME_HINT));
+                    //wc.put(com.ibm.wsspi.threading.WorkContext.LONGRUNNING_HINT, hints.get(HintsContext.LONGRUNNING_HINT));
+                    //wc.put(com.ibm.wsspi.threading.WorkContext.WORK_NAME, workName);
+                    // keep this one
+                    wc.put(com.ibm.wsspi.threading.WorkContext.RA_NAME, bootstrapContext.resourceAdapterID);
+
+                    // test here for type internal
+                    //System.out.println(" WorkProxy -> update hints for  Type:" + wc.getWorkType());
+
+                    //System.out.println(" WorkProxy -> update hints for  Type:" + wc.
+                    //wc.put(getWorkContext().RA_NAME, value.toString());
+                    //System.out.println(" WorkProxy -> NAME_HINT: " + wc.get(hints.get(HintsContext.NAME_HINT)));
+                    //System.out.println(" WorkProxy -> NAME_HINT1: " + (com.ibm.wsspi.threading.WorkContext.NAME_HINT));
+                    //System.out.println(" WorkProxy -> RA name - ID: " + bootstrapContext.resourceAdapterID);
+                    //System.out.println(" WorkProxy ->  update hintsx: " + getWorkContext().RA_NAME);
+                    //System.out.println(" WorkProxy -> update hints: " + getWorkContext().toString();
+
                 }
         String identityNameKey = bootstrapContext.eeVersion < 9 ? "javax.enterprise.concurrent.IDENTITY_NAME" : "jakarta.enterprise.concurrent.IDENTITY_NAME";
         executionProperties.put(identityNameKey, workName == null ? work == null ? null : work.getClass().getName() : workName);
@@ -182,6 +235,7 @@ public class WorkProxy implements CallableWithContext<Void>, RunnableWithContext
         // call to run() is as small as possible.   Otherwise we may get more work
         // rejections due to small start time out values than we should
         timeAccepted = System.currentTimeMillis();
+
     }
 
     /**
@@ -215,6 +269,8 @@ public class WorkProxy implements CallableWithContext<Void>, RunnableWithContext
                         if (!inflowContext.add(workContextProviderName))
                             throw contextSetupFailure(workContext, WorkContextErrorCodes.DUPLICATE_CONTEXTS, null);
                         merged.set(workContextProviderName, context);
+                        // LH
+                        System.out.println("-- debug WorkProxy getJCAContextProviderName debug-- " + workContextProviderName);
                     }
                 }
 
@@ -247,6 +303,8 @@ public class WorkProxy implements CallableWithContext<Void>, RunnableWithContext
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && TC.isEntryEnabled())
             Tr.entry(this, TC, "call", work, lsnr);
+
+        System.out.println(" -- debug WorkProxy call " + "\n");
 
         // 1. Capture the current time before run does anything else
         long currentTime = System.currentTimeMillis();
@@ -296,6 +354,9 @@ public class WorkProxy implements CallableWithContext<Void>, RunnableWithContext
                 Tr.debug(this, TC, "Actual call to work.run");
 
             contextualWork.run();
+            // test here for type internal
+            //System.out.println(" -- debug WorkProxy contextualWork - WorkType is: " + wc.getWorkType() + "\n");
+
         } catch (Throwable ex) {
             // Catch exception from the run method and wrap it in a
             // WorkCompletedException with the message sent to UNDEFINED
@@ -363,6 +424,10 @@ public class WorkProxy implements CallableWithContext<Void>, RunnableWithContext
     @Override
     public void run() {
         JCASecurityContext ctx = bootstrapContext.getJCASecurityContext();
+
+        // LH
+        System.out.println(" -- debug WorkProxy work is running with context on the thread --  ");
+
         if (ctx != null)
             ctx.runInInboundSecurityContext(work);
         else
@@ -469,8 +534,8 @@ public class WorkProxy implements CallableWithContext<Void>, RunnableWithContext
     // This is not the same as javax.resource.spi.work.WorkContext, it helps interceptors in Liberty get context
     @Override
     public com.ibm.wsspi.threading.WorkContext getWorkContext() {
-        //test here
-        System.out.println("For JCA runnable & hintsContext - WorkType: " + wc.getWorkType() + "\n");
+        //test here for type internal
+        System.out.println("*WorkProxy -> Call for JCA getWorkContext if runnable with context: " + "\n");
         return this.wc;
     }
 }

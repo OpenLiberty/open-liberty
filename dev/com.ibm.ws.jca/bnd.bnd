@@ -138,11 +138,12 @@ Service-Component: \
     tranInflowManager='com.ibm.tx.jta.TransactionInflowManager';\
     tranSyncRegistry='javax.transaction.TransactionSynchronizationRegistry';\
     jcaSecurityContextService=com.ibm.ws.jca.security.JCASecurityContext;\
+    interceptor='com.ibm.wsspi.threading.ExecutorServiceTaskInterceptor';\
     configuration-policy:=require;\
     dynamic:='eEVersion';\
     greedy:='beanValidationService,contextProvider,eEVersion,jcaSecurityContextService';\
     multiple:='contextProvider,requiredContextProvider';\
-    optional:='beanValidationService,contextProvider,eEVersion,requiredContextProvider,jcaSecurityContextService';\
+    optional:='interceptor,beanValidationService,contextProvider,eEVersion,requiredContextProvider,jcaSecurityContextService';\
     properties:="contextService.target=(id=unbound),executorService.target=(id=unbound),requiredContextProvider.target=(id=unbound),resourceAdapterService.target=(id=unbound)",\
   com.ibm.ws.jca.sslHelper;\
     implementation:=com.ibm.ws.jca.internal.SSLHelperImpl;\
