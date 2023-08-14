@@ -65,7 +65,6 @@ import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.metadata.MetaDataSlotService;
 import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
-import com.ibm.ws.container.service.state.ApplicationStateListenerConstants;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.ws.resource.ResourceRefConfigFactory;
@@ -87,7 +86,9 @@ import io.openliberty.cdi.spi.CDIExtensionMetadata;
 /**
  * This class is to get hold all necessary services.
  */
-@Component(name = "com.ibm.ws.cdi.liberty.CDIRuntimeImpl", service = { ApplicationStateListener.class, CDIService.class, CDIProvider.class }, property = { "service.vendor=IBM",  "service.ranking:Integer="+ApplicationStateListenerConstants.CDI_SERVICE_RANK })
+@Component(name = "com.ibm.ws.cdi.liberty.CDIRuntimeImpl", service = { ApplicationStateListener.class, CDIService.class, CDIProvider.class }, 
+    property = { "service.vendor=IBM",  "service.ranking:Integer=100" }) //CDI must shut down before EJB as EJBs can have a cdi application scope and according to the CDI spec "jakarta.enterprise.event.Shutdown is not after @BeforeDestroyed(ApplicationScoped.class)"
+                                                                         //CDI must also start up after injection engine, as CDI can trigger JNDI lookups in app code as part of starting up and that code can do JNDI lookups
 public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationStateListener, CDIService, CDILibertyRuntime, CDIProvider {
     private static final TraceComponent tc = Tr.register(CDIRuntimeImpl.class);
 
