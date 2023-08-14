@@ -25,6 +25,7 @@ src: \
   test-applications/helloHolder/src,\
   test-applications/helloServer/src,\
   test-applications/httpConduitProperties/src,\
+  test-applications/libertyCXFProperties/src,\
   test-applications/pureCXF/src,\
   test-applications/pureCXFWSDLFirst/src,\
   test-applications/soapEnvelopePrefix/src,\
