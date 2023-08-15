@@ -24,5 +24,6 @@ public class NettyHttpConstants {
     public static final AttributeKey<Long> REQUEST_START_TIME = AttributeKey.valueOf("requestStartTime");
     public static final AttributeKey<Long> RESPONSE_BYTES_WRITTEN = AttributeKey.valueOf("bytesWritten");
     public static final AttributeKey<Boolean> IS_SECURE = AttributeKey.valueOf("isSecure");
+    public static final AttributeKey<String> ACCEPT_ENCODING = AttributeKey.valueOf("acceptEncoding");
 
 }
