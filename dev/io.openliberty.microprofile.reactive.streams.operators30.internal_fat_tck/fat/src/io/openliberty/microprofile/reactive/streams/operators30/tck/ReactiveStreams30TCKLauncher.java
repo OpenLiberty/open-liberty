@@ -42,6 +42,7 @@ public class ReactiveStreams30TCKLauncher {
         //Set timeout for the tests.
         props.put("DEFAULT_TIMEOUT_MILLIS", "10000");//Increase timeout before tests fail.
         props.put("DEFAULT_NO_SIGNALS_TIMEOUT_MILLIS", "100"); //By default NO_SIGNALS_TIMEOUT == DEFAULT_TIMEOUT_MILLIS. Every test will sleep for NO_SIGNALS_TIMEOUT so set this back to the original default to prevent the tests taking hours.
+        props.put("DEFAULT_POLL_TIMEOUT_MILLIS", "20");
         server.setAdditionalSystemProperties(props);
         server.startServer();
     }
@@ -52,7 +53,7 @@ public class ReactiveStreams30TCKLauncher {
     }
 
     @Test
-    @Mode(TestMode.EXPERIMENTAL) //This version of the TCK is currently taking over an hour to run. This should be set to full mode after the performance issues have been resolved.
+    @Mode(TestMode.FULL) //The TCK takes around 15mins and is difficult to break up so running in FULL mode
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchReactiveStreams30Tck() throws Exception {
         String bucketName = "io.openliberty.microprofile.reactive.streams.operators30.internal_fat_tck";

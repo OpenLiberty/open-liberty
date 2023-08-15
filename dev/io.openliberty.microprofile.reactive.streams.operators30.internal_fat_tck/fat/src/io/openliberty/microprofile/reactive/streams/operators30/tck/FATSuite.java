@@ -20,7 +20,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class, //ReactiveStreams30TCKLauncher is set to EXPERIMENTAL mode. This will prevent a build failure from zero tests running.
+                AlwaysPassesTest.class, //ReactiveStreams30TCKLauncher is set to FULL mode. This will prevent a build failure from zero tests running.
                 ReactiveStreams30TCKLauncher.class
 })
 
