@@ -23,7 +23,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.SSO.clientTests.PrivateKeyJwt.PrivateKeyJwtClientTests;
 import com.ibm.ws.security.fat.common.social.SocialConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.RSCommonTestTools;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 
@@ -81,7 +80,7 @@ public class LibertyOP_Social_PrivateKeyJwtTests extends PrivateKeyJwtClientTest
         testSettings.setFlowType(SocialConstants.SOCIAL);
         testSettings.setTokenEndpt(clientServer.getHttpsString() + "/PrivateKeyJwtTokenEndpoint/token");
 
-        clientServer.addIgnoredServerExceptions(MessageConstants.SRVE8094W_CANNOT_SET_HEADER_RESPONSE_COMMITTED, MessageConstants.SRVE8115W_CANNOT_SET_HEADER_RESPONSE_COMMITTED);
+        allowPrivateKeyJwtErrorMessages();
 
         usingSocialClient = true;
     }
