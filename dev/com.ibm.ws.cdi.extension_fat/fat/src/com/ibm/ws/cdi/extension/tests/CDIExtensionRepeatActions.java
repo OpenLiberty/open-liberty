@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,8 +15,9 @@ package com.ibm.ws.cdi.extension.tests;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+
+import com.ibm.websphere.simplicity.LocalFile;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
@@ -30,8 +31,6 @@ import componenttest.rules.repeater.RepeatActions;
 import componenttest.rules.repeater.RepeatActions.EEVersion;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-
-import com.ibm.websphere.simplicity.LocalFile;
 
 public class CDIExtensionRepeatActions {
 
@@ -113,11 +112,9 @@ public class CDIExtensionRepeatActions {
                                                                    .addFeature(getFeatureName(CDI_INTERNALS_BUNDLE_ID, EEVersion.EE10))
                                                                    .build(EE10_PLUS_ID);
 
-    private static final FeatureSet[] ALL_SETS_ARRAY = { EE7_PLUS,
-                                                         EE8_PLUS,
-                                                         EE9_PLUS,
-                                                         EE10_PLUS };
-    private static final Set<FeatureSet> ALL = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(ALL_SETS_ARRAY)));
+    //All CDI FeatureSets - must be descending order
+    private static final FeatureSet[] ALL_SETS_ARRAY = { EE10_PLUS, EE9_PLUS, EE8_PLUS, EE7_PLUS };
+    public static final List<FeatureSet> ALL = Collections.unmodifiableList(Arrays.asList(ALL_SETS_ARRAY));
 
     public static RepeatTests repeat(String server, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
         return RepeatActions.repeat(server, TestMode.FULL, ALL, firstFeatureSet, otherFeatureSets);
@@ -185,8 +182,8 @@ public class CDIExtensionRepeatActions {
     public static void uninstallUserBundle(LibertyServer server, String bundleID) throws Exception {
         String bundleName = getBundleName(bundleID, isJakartaActive());
         server.uninstallUserBundle(bundleName);
-        if(isJakartaActive()) {
-            //Destroy the old file the transformer created to prevent a collision when the next transformation happens. 
+        if (isJakartaActive()) {
+            //Destroy the old file the transformer created to prevent a collision when the next transformation happens.
             //This may or may not fix https://wasrtc.hursley.ibm.com:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/290609
             LocalFile bundleFile = new LocalFile(getBundlePath(bundleName));
             bundleFile.delete();

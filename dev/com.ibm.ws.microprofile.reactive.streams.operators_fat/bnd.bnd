@@ -46,6 +46,7 @@ tested.features: mpReactiveStreams-1.0, \
                  mprestclient-3.0,\
                  transportsecurity-1.0,\
                  mpconfig-3.0,\
+                 mpconfig-3.1,\
                  concurrent-2.0,\
                  concurrent-3.0,\
                  jsonb-1.0,\

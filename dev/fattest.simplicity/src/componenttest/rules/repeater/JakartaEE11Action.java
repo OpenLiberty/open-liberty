@@ -24,6 +24,7 @@ import com.ibm.ws.fat.util.SharedServer;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.RepeatActions.SEVersion;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FileUtils;
@@ -124,7 +125,7 @@ public class JakartaEE11Action extends FeatureReplacementAction {
         removeFeatures(JakartaEE9Action.EE9_FEATURE_SET);
         removeFeatures(JakartaEE10Action.EE10_FEATURE_SET);
         forceAddFeatures(false);
-        withMinJavaLevel(17);
+        withMinJavaLevel(SEVersion.JAVA17);
         withID(ID);
     }
 
@@ -176,7 +177,7 @@ public class JakartaEE11Action extends FeatureReplacementAction {
     }
 
     @Override
-    public JakartaEE11Action withMinJavaLevel(int javaLevel) {
+    public JakartaEE11Action withMinJavaLevel(SEVersion javaLevel) {
         return (JakartaEE11Action) super.withMinJavaLevel(javaLevel);
     }
 

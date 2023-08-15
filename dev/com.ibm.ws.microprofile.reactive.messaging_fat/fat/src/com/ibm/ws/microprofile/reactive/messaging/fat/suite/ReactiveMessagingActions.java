@@ -10,34 +10,31 @@
 package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.FeatureSet;
 import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatActions;
+import componenttest.rules.repeater.RepeatActions.SEVersion;
 import componenttest.rules.repeater.RepeatTests;
 
 public class ReactiveMessagingActions {
-    public static final String MP20_ID = MicroProfileActions.MP20_ID + "_MPRM10";
-    public static final String MP41_ID = MicroProfileActions.MP41_ID + "_MPRM10";
-    public static final String MP50_ID = MicroProfileActions.MP50_ID + "_MPRM30";
-    public static final String MP60_ID = MicroProfileActions.MP60_ID + "_MPRM30";
-    public static final String MP61_ID = MicroProfileActions.MP61_ID + "_MPRM30";
-    public static final FeatureSet MP20 = MicroProfileActions.MP20.addFeature("mpReactiveMessaging-1.0").build(MP20_ID);
-    public static final FeatureSet MP41 = MicroProfileActions.MP41.addFeature("mpReactiveMessaging-1.0").build(MP41_ID);
-    public static final FeatureSet MP50 = MicroProfileActions.MP50.addFeature("mpReactiveMessaging-3.0").build(MP50_ID);
-    public static final FeatureSet MP60 = MicroProfileActions.MP60.addFeature("mpReactiveMessaging-3.0").build(MP60_ID);
-    public static final FeatureSet MP61 = MicroProfileActions.MP61.addFeature("mpReactiveMessaging-3.0").build(MP61_ID);
+    public static final String MP20_RM10_ID = MicroProfileActions.MP20_ID + "_RM10";
+    public static final String MP41_RM10_ID = MicroProfileActions.MP41_ID + "_RM10";
+    public static final String MP50_RM30_ID = MicroProfileActions.MP50_ID + "_RM30";
+    public static final String MP60_RM30_ID = MicroProfileActions.MP60_ID + "_RM30";
+    public static final String MP61_RM30_ID = MicroProfileActions.MP61_ID + "_RM30";
+    public static final FeatureSet MP20_RM10 = MicroProfileActions.MP20.addFeature("mpReactiveMessaging-1.0").build(MP20_RM10_ID);
+    public static final FeatureSet MP41_RM10 = MicroProfileActions.MP41.addFeature("mpReactiveMessaging-1.0").build(MP41_RM10_ID);
+    //MP50 runs on Java 8 but RM30 will only run on Java11 or higher
+    public static final FeatureSet MP50_RM30 = MicroProfileActions.MP50.addFeature("mpReactiveMessaging-3.0").setMinJavaLevel(SEVersion.JAVA11).build(MP50_RM30_ID);
+    public static final FeatureSet MP60_RM30 = MicroProfileActions.MP60.addFeature("mpReactiveMessaging-3.0").build(MP60_RM30_ID);
+    public static final FeatureSet MP61_RM30 = MicroProfileActions.MP61.addFeature("mpReactiveMessaging-3.0").build(MP61_RM30_ID);
 
-    public static final Set<FeatureSet> ALL = new HashSet<>(MicroProfileActions.ALL);
-    static {
-        ALL.add(MP20);
-        ALL.add(MP41);
-        ALL.add(MP50);
-        ALL.add(MP60);
-        ALL.add(MP61);
-    }
+    //All MicroProfile ReactiveMessaging FeatureSets - must be descending order
+    private static final FeatureSet[] ALL_RM_SETS_ARRAY = { MP61_RM30, MP60_RM30, MP50_RM30, MP41_RM10, MP20_RM10 };
+    private static final List<FeatureSet> ALL_RM_SETS_LIST = Arrays.asList(ALL_RM_SETS_ARRAY);
 
     /**
      * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will be run in LITE mode. The others will be run in FULL.
@@ -51,7 +48,17 @@ public class ReactiveMessagingActions {
         return repeat(server, TestMode.FULL, firstFeatureSet, otherFeatureSets);
     }
 
+    /**
+     * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will be run in LITE mode. The others will be run in the mode specified.
+     *
+     * @param server The server to repeat on
+     * @param otherFeatureSetsTestMode The mode to run the other FeatureSets
+     * @param firstFeatureSet The first FeatureSet
+     * @param otherFeatureSets The other FeatureSets
+     * @return a RepeatTests instance
+     */
     public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
-        return MicroProfileActions.repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, Arrays.asList(otherFeatureSets));
+        return RepeatActions.repeat(server, otherFeatureSetsTestMode, ALL_RM_SETS_LIST, firstFeatureSet, Arrays.asList(otherFeatureSets));
     }
+
 }
