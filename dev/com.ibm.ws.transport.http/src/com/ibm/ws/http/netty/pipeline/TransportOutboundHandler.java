@@ -13,12 +13,14 @@ import java.util.Objects;
 
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.netty.MSP;
+import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.pipeline.outbound.HeaderHandler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpUtil;
 
 /**
  *
@@ -41,7 +43,7 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
             HttpResponse response = (HttpResponse) msg;
             HeaderHandler headerHandler = new HeaderHandler(config, response);
             headerHandler.complianceCheck();
-
+            ctx.channel().attr(NettyHttpConstants.CHUNCKED_ENCODING).set(!HttpUtil.isContentLengthSet(response));
         }
 
         ctx.writeAndFlush(msg);

@@ -772,7 +772,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             setPartialBody(true);
         }
 
-        sendOutgoing(body, getResponseImpl());
+        if (Objects.nonNull(nettyContext)) {
+            sendOutgoing(body);
+        } else {
+            sendOutgoing(body, getResponseImpl());
+        }
     }
 
     /**

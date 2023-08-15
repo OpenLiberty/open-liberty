@@ -82,6 +82,8 @@ public class NettyHttpResponseImpl extends HttpResponseImpl implements HttpRespo
             nettyResponse.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), streamId);
         }
         ((HttpInboundServiceContextImpl) isc).setNettyResponse(nettyResponse);
+        System.out.println("Getting response headers!");
+        nettyResponse.headers().forEach(header -> System.out.println(header));
         System.out.println("Init netty response complete");
     }
 

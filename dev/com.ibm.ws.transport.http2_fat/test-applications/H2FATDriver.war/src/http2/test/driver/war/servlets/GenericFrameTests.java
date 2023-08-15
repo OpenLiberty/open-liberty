@@ -105,8 +105,10 @@ public class GenericFrameTests extends H2FATDriverServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         // add the GOAWAY / error code that the server should emit following an illegal stream ID order
-        byte[] debugData = "Did not receive the expected continuation frame".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        // byte[] debugData = "Did not receive the expected continuation frame".getBytes();
+        byte[] debugData = "Received frame of type 1 while processing headers on stream 3.".getBytes();
+        // FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 2147483647, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);

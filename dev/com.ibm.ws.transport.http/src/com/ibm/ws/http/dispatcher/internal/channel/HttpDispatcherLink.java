@@ -69,6 +69,7 @@ import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http2.HttpConversionUtil;
 
 /**
  * Connection link object that the HTTP dispatcher provides to CHFW
@@ -184,12 +185,21 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         nettyRequest = request;
         this.request = new NettyHttpRequestImpl(HttpDispatcher.useEE7Streams());
-        ((NettyHttpRequestImpl) this.request).init(request, context.channel(), isc);
+        ((NettyHttpRequestImpl) this.request).init(request, context, isc);
 
         this.response = new NettyHttpResponseImpl(this);
         this.isc.setNettyRequest(request);
         this.usingNetty = true;
 
+    }
+
+    static class StreamEventTriggered {
+
+        private int streamId = 0;
+
+        StreamEventTriggered(int streamId) {
+            this.streamId = streamId;
+        }
     }
 
     /*
@@ -203,6 +213,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         if (usingNetty) {
+            // If using http2 just need the codec to handle closing streams etc
+            if (nettyRequest.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Doing nothing on close since Netty request is HTTP2 enabled. Codec will handle shutdown");
+                }
+                return;
+            }
             ChannelFuture closeFuture = this.nettyContext.channel().close();
             try {
                 closeFuture.sync();
@@ -410,7 +427,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
         System.out.println("MSP: 1");
         // Make sure to initialize the response in case of an early-return-error message
-        ((NettyHttpRequestImpl) this.request).init(this.nettyRequest, this.nettyContext.channel(), this.isc);
+        ((NettyHttpRequestImpl) this.request).init(this.nettyRequest, this.nettyContext, this.isc);
         this.response.init(this.isc);
         linkIsReady = true;
 

@@ -47,8 +47,10 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         // add the GOAWAY we expect after sending a continuation incorrectly
-        byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        // byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
+        byte[] debugData = "Received 9 frame but not currently processing headers.".getBytes();
+        // FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 2147483647, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);
@@ -85,8 +87,10 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         // add the GOAWAY we expect after sending a continuation incorrectly
-        byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        // byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
+        byte[] debugData = "Received 9 frame but not currently processing headers.".getBytes();
+        // FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 2147483647, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);
@@ -130,8 +134,10 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         // add the GOAWAY we expect after sending a continuation incorrectly
-        byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        // byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
+        byte[] debugData = "Received 9 frame but not currently processing headers.".getBytes();
+        // FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 2147483647, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);

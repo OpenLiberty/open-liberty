@@ -45,6 +45,10 @@ Export-Package: \
   com.ibm.ws.http.dispatcher.internal, \
   com.ibm.ws.http.dispatcher.internal.channel, \
   com.ibm.ws.http.internal, \
+  com.ibm.ws.http.netty, \
+  com.ibm.ws.http.netty.message, \
+  com.ibm.ws.http.netty.pipeline, \
+  com.ibm.ws.http.netty.pipeline.outbound, \
   com.ibm.ws.http.logging.internal
   
 Import-Package: \
@@ -59,10 +63,16 @@ Import-Package: \
 -dsannotations: com.ibm.ws.http2.test.CFWManager
 
 -buildpath: \
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-    com.ibm.websphere.org.osgi.core;version=latest,\
-    com.ibm.websphere.org.osgi.service.component;version=latest,\
-    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-    com.ibm.ws.transport.http;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.transport.http;version=latest,\
 	com.ibm.ws.channelfw;version=latest,\
-	com.ibm.ws.kernel.service;version=latest
+	com.ibm.ws.kernel.service;version=latest,\
+	io.openliberty.io.netty,\
+	io.openliberty.io.netty,\
+	io.netty.buffer,\
+	io.openliberty.io.netty,\
+	io.openliberty.io.netty,\
+	io.openliberty.io.netty

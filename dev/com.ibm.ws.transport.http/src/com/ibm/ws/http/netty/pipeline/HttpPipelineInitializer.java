@@ -15,6 +15,7 @@ import java.util.Objects;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.http.channel.h2internal.Constants;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
@@ -39,11 +40,16 @@ import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent;
 import io.netty.handler.codec.http2.DefaultHttp2Connection;
 import io.netty.handler.codec.http2.Http2CodecUtil;
+import io.netty.handler.codec.http2.Http2Connection;
+import io.netty.handler.codec.http2.Http2Error;
+import io.netty.handler.codec.http2.Http2Exception;
 import io.netty.handler.codec.http2.Http2FrameLogger;
 import io.netty.handler.codec.http2.Http2ServerUpgradeCodec;
+import io.netty.handler.codec.http2.Http2Settings;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandlerBuilder;
+import io.netty.handler.codec.http2.InboundHttp2ToHttpAdapter;
 import io.netty.handler.codec.http2.InboundHttp2ToHttpAdapterBuilder;
 import io.netty.handler.ssl.ApplicationProtocolNames;
 import io.netty.handler.ssl.ApplicationProtocolNegotiationHandler;
@@ -201,7 +207,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     private void addH2CCodecHandlers(ChannelPipeline pipeline) {
         HttpServerCodec sourceCodec = new HttpServerCodec();
         final HttpServerUpgradeHandler upgradeHandler = new HttpServerUpgradeHandler(sourceCodec, upgradeCodecFactory);
-        final CleartextHttp2ServerUpgradeHandler cleartextHttp2ServerUpgradeHandler = new CleartextHttp2ServerUpgradeHandler(sourceCodec, upgradeHandler, buildHttp2ConnectionHandler());
+        HttpToHttp2ConnectionHandler handler = buildHttp2ConnectionHandler();
+        final CleartextHttp2ServerUpgradeHandler cleartextHttp2ServerUpgradeHandler = new CleartextHttp2ServerUpgradeHandler(sourceCodec, upgradeHandler, handler);
 
         pipeline.addLast(cleartextHttp2ServerUpgradeHandler);
         // TODO: Remove this, temp to see how upgrades are going
@@ -215,6 +222,20 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 ctx.fireUserEventTriggered(evt.retain());
             }
         });
+
+        // Handler to decide if an upgrade occurred or not and to add HTTP1 handlers on top
+//        pipeline.addLast("settingsHandler", new SimpleChannelInboundHandler<Http2Settings>() {
+//            @Override
+//            protected void channelRead0(ChannelHandlerContext ctx, Http2Settings msg) throws Exception {
+//                // If this handler is hit then no upgrade has been attempted and the client is just talking HTTP 1.1.
+//                // TODO Check if we need to add common handlers here
+//                System.out.println("Got some settings! Flushing them down!" + msg);
+//                msg.forEach((setting, value) -> System.out.println("Setting: " + setting + " Value: " + value));
+////                handler.encoder().writeSettingsAck(ctx, null);
+//                ctx.flush();
+//            }
+//        });
+
         pipeline.addLast("Prior Knowledge Upgrade Detector", new SimpleUserEventChannelHandler<PriorKnowledgeUpgradeEvent>() {
 
             @Override
@@ -222,6 +243,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Got priorKnowledge upgrade event for channel " + ctx.channel(), evt);
                 }
+                ctx.pipeline().remove(NO_UPGRADE_OCURRED_HANDLER_NAME);
                 ctx.fireUserEventTriggered(evt);
             }
         });
@@ -315,8 +337,14 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         if (maxContentlength > 0)
             builder.maxContentLength(maxContentlength);
         System.out.println("Found length to be: " + maxContentlength);
+        Http2Settings initialSettings = new Http2Settings().maxConcurrentStreams(httpConfig.getH2MaxConcurrentStreams()).maxFrameSize(httpConfig.getH2MaxFrameSize());
+        if (httpConfig.getH2SettingsInitialWindowSize() != Constants.SPEC_INITIAL_WINDOW_SIZE)
+            initialSettings.initialWindowSize(httpConfig.getH2SettingsInitialWindowSize());
         builder = new InboundHttp2ToHttpAdapterBuilder(connection).propagateSettings(false).maxContentLength(64 * 1024).validateHttpHeaders(false);
-        return new HttpToHttp2ConnectionHandlerBuilder().frameListener(builder.build()).frameLogger(LOGGER).connection(connection).build();
+//        return new HttpToHttp2ConnectionHandlerBuilder().frameListener(builder.build()).frameLogger(LOGGER).connection(connection).initialSettings(initialSettings).build();
+        return new HttpToHttp2ConnectionHandlerBuilder().frameListener(new ExtendedInboundHttp2ToHttpHandler(connection, 64
+                                                                                                                         * 1024, false, false)).frameLogger(LOGGER).connection(connection).initialSettings(initialSettings).build();
+
     }
 
     protected static final Http2FrameLogger LOGGER = new Http2FrameLogger(io.netty.handler.logging.LogLevel.TRACE, HttpToHttp2ConnectionHandler.class);
@@ -331,7 +359,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Valid h2c protocol, setting up http2 clear text " + protocol);
                 }
-                return new Http2ServerUpgradeCodec(buildHttp2ConnectionHandler()) {
+                HttpToHttp2ConnectionHandler handler = buildHttp2ConnectionHandler();
+                return new Http2ServerUpgradeCodec(handler) {
                     @Override
                     public void upgradeTo(ChannelHandlerContext ctx, io.netty.handler.codec.http.FullHttpRequest request) {
                         // Remove http1 handler adder
@@ -340,6 +369,13 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                         super.upgradeTo(ctx, request);
                         // Set as stream 1 as defined in RFC
                         request.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), 1);
+                        if (Constants.SPEC_INITIAL_WINDOW_SIZE != httpConfig.getH2ConnectionWindowSize()) {
+                            // window update sets the difference between what the client has (default) and the new value.
+
+                            int updateSize = httpConfig.getH2ConnectionWindowSize() - Constants.SPEC_INITIAL_WINDOW_SIZE;
+                            // Would probably fail
+                            handler.encoder().writeWindowUpdate(ctx, 1, updateSize, null);
+                        }
                         // Forward request to dispatcher
                         ctx.fireChannelRead(ReferenceCountUtil.retain(request));
                     };
@@ -353,6 +389,38 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             }
         }
     };
+
+    private class ExtendedInboundHttp2ToHttpHandler extends InboundHttp2ToHttpAdapter {
+
+        /**
+         * @param connection
+         * @param maxContentLength
+         * @param validateHttpHeaders
+         * @param propagateSettings
+         */
+        protected ExtendedInboundHttp2ToHttpHandler(Http2Connection connection, int maxContentLength, boolean validateHttpHeaders, boolean propagateSettings) {
+            super(connection, maxContentLength, validateHttpHeaders, propagateSettings);
+            // TODO Auto-generated constructor stub
+        }
+
+        @Override
+        protected io.netty.handler.codec.http.FullHttpMessage processHeadersBegin(ChannelHandlerContext ctx, io.netty.handler.codec.http2.Http2Stream stream,
+                                                                                  io.netty.handler.codec.http2.Http2Headers headers, boolean endOfStream, boolean allowAppend,
+                                                                                  boolean appendToTrailer) throws io.netty.handler.codec.http2.Http2Exception {
+            try {
+                System.out.println("Here go the headers begin!");
+                return super.processHeadersBegin(ctx, stream, headers, endOfStream, allowAppend, appendToTrailer);
+            } catch (NullPointerException e) {
+//               ctx.pipeline().get(HttpToHttp2ConnectionHandler.class).resetStream(ctx, stream.id(), io.netty.handler.codec.http2.Http2Error.PROTOCOL_ERROR.code(), new VoidChannelPromise(ctx.channel(), false));
+                throw new Http2Exception.StreamException(stream.id(), Http2Error.PROTOCOL_ERROR, "Bad headers");
+            } catch (Exception e2) {
+                System.out.println("Uncatched Issue with processing headers");
+                e2.printStackTrace();
+                throw e2;
+            }
+        };
+
+    }
 
     public static class HttpPipelineBuilder {
 

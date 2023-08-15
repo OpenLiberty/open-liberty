@@ -1921,8 +1921,10 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "Cannot start a stream from the client with an even numbered ID. stream-id: 2".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        // byte[] debugData = "Cannot start a stream from the client with an even numbered ID. stream-id: 2".getBytes();
+        byte[] debugData = "Request stream 2 is not correct for client connection".getBytes();
+        // FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 2147483647, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -4762,7 +4764,9 @@ public class H2FATDriverServlet extends FATServlet {
      * @return the default Http2Client
      */
     Http2Client getDefaultH2Client(HttpServletRequest request, HttpServletResponse response, CountDownLatch blockUntilConnectionIsDone) {
-        return new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, defaultTimeoutToSendFrame);
+        Http2Client client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, defaultTimeoutToSendFrame);
+        client.doNotWaitForAck();
+        return client;
     }
 
     /**
@@ -4851,7 +4855,8 @@ public class H2FATDriverServlet extends FATServlet {
         firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
         // cannot assume language of test machine
         firstHeadersReceived.add(new H2HeaderField("content-language", ".*"));
-        FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
+        // FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
+        FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 15, false, true, false, true, false, false);
         frameHeaders.setHeaderFields(firstHeadersReceived);
         return frameHeaders;
     }
@@ -4869,7 +4874,8 @@ public class H2FATDriverServlet extends FATServlet {
         secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
         // cannot assume language of test machine
         secondHeadersReceived.add(new H2HeaderField("content-language", ".*"));
-        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
+        // FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
+        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 15, false, true, false, true, false, false);
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         client.addExpectedFrame(secondFrameHeaders);
         return secondFrameHeaders;

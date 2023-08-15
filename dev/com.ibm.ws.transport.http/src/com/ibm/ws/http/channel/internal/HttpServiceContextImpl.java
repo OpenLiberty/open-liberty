@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -54,6 +55,7 @@ import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants.LiteralIndexType;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http.netty.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
@@ -96,11 +98,21 @@ import com.ibm.wsspi.tcpchannel.TCPRequestContext;
 import com.ibm.wsspi.tcpchannel.TCPWriteCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.VoidChannelPromise;
+import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.DefaultHttpContent;
+import io.netty.handler.codec.http.DefaultLastHttpContent;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http2.DefaultHttp2Headers;
+import io.netty.handler.codec.http2.Http2Connection;
+import io.netty.handler.codec.http2.Http2Headers;
+import io.netty.handler.codec.http2.HttpConversionUtil;
+import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 
 /**
  * Common code shared between both the Inbound and Outbound HTTP service
@@ -432,6 +444,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      *
      */
     final protected void setHeadersSent() {
+        System.out.println("Setting headers sent!!!");
         this.msgSentState = STATE_FULL_HEADERS;
     }
 
@@ -2832,6 +2845,143 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
     }
 
     /**
+     * Send a full message out. If headers have not already been sent, they will
+     * be queued in front of the given body buffers, plus the "zero chunk" will
+     * be tacked on the end if this is chunked encoding.
+     *
+     * @param wsbb
+     * @param msg
+     * @throws IOException
+     */
+    final protected void sendOutgoing(WsByteBuffer[] wsbb) throws IOException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Preparing to send message");
+        }
+
+        System.out.println("MSP sendOutgoing. Content length should be set to: " + GenericUtils.sizeOf(wsbb));
+        System.out.println("MSP set netty CL");
+        HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(wsbb));
+//        setMessageSent();
+//        MSP.log("set message");
+//        synchWrite();
+//        MSP.log("wrote");
+//        MSP.log("sync write");
+        // See if HTTP2 and if push promise and handle accordingly
+        // Can send push promise with writePushPromise(ChannelHandlerContext ctx, int streamId, int promisedStreamId, Http2Headers headers, int padding, ChannelPromise promise)
+        // streamId from netty request
+        // promisedStreamId Maybe use lastStreamCreated from the local Endpoint in the connection?
+        // headers need to create them for default
+        // not sure about padding maybe 0?
+
+        if (!headersSent()) {
+            this.nettyContext.channel().writeAndFlush(this.nettyResponse);
+            setHeadersSent();
+            if (nettyResponse.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+                System.out.println("Found http2, checking for push");
+                for (Entry<String, String> header : nettyResponse.headers()) {
+                    if (header.getKey().equalsIgnoreCase("link") &&
+                        header.getValue().toLowerCase().contains("rel=preload") &&
+                        !header.getValue().toLowerCase().contains("nopush")) {
+                        handleNettyPreload(header.getValue().substring(header.getValue().indexOf('<') + 1, header.getValue().indexOf('>')));
+                    }
+                }
+            }
+        }
+
+//            if (header.getName().equalsIgnoreCase("link") &&
+//                header.asString().toLowerCase().contains("rel=preload") &&
+//                !header.asString().toLowerCase().contains("nopush")) {
+//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                    Tr.debug(tc, "prepareOutgoing: Link header rel=preload found, push_promise will be sent");
+//                }
+//                handleH2LinkPreload(header, link);
+//            }
+
+//        this.nettyContext.channel().write(this.nettyResponse);
+        if (Objects.nonNull(wsbb)) {
+            for (WsByteBuffer buffer : wsbb) {
+                if (Objects.nonNull(buffer)) // Write buffer
+                    this.nettyContext.channel().write(buffer);
+                else
+                    System.out.println("This is weird!!! Sending a null buffer?!?!?!");
+//                else // Write last http content
+//                    this.nettyContext.channel().write(new DefaultLastHttpContent());
+            }
+            this.nettyContext.channel().flush();
+        }
+
+    }
+
+    private void handleNettyPreload(String uri) {
+        System.out.println("Found push for http2, sending data for " + uri);
+        HttpToHttp2ConnectionHandler handler = this.nettyContext.pipeline().get(HttpToHttp2ConnectionHandler.class);
+        Http2Connection connection = handler.connection();
+
+        int nextPromisedStreamId = connection.local().incrementAndGetNextStreamId();
+        int currentStreamId = nettyRequest.headers().getInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), 0);
+
+        Http2Headers headers = new DefaultHttp2Headers().clear();
+//        String scheme = new String("https");
+//        if (!this.isSecure()) {
+//            scheme = new String("http");
+//        }
+        String scheme = new String("http");
+        headers.method("GET").scheme(scheme).path(uri);
+
+        String auth = getLocalAddr().getHostName();
+        if (null != auth) {
+            if (0 <= getLocalPort()) {
+                auth = auth + ":" + Integer.toString(getLocalPort());
+            }
+            headers.authority(auth);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.debug(tc, "handleH2LinkPreload(): Method is GET, authority is " + auth + ", scheme is " + scheme);
+        }
+
+        System.out.println("Sending push promise frame for currentStream " + currentStreamId + " on promisedStream " + nextPromisedStreamId + " with headers " + headers);
+
+        ChannelFuture promise = handler.encoder().writePushPromise(nettyContext, currentStreamId, nextPromisedStreamId, headers, 0,
+                                                                   new VoidChannelPromise(this.nettyContext.channel(), true));
+
+        promise.addListener(future -> {
+            if (future.isSuccess())
+                System.out.println("Successful promise write!");
+            else {
+                System.out.println("No promise write: " + future.cause());
+                future.cause().printStackTrace();
+            }
+        });
+
+        try {
+            DefaultFullHttpRequest newRequest = new DefaultFullHttpRequest(nettyRequest.protocolVersion(), HttpMethod.GET, uri);
+            System.out.println("Sending new request to dispatcher " + newRequest);
+            newRequest.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), nextPromisedStreamId);
+            HttpUtil.setContentLength(newRequest, 0);
+            this.nettyContext.executor().execute(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        nettyContext.pipeline().get(HttpDispatcherHandler.class).channelRead(nettyContext, newRequest);
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+                        System.out.println("Error fowarding push request");
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Prepares the outgoing buffers and possibly the headers and writes
      * them out on the connection asynchronously, using the given callback. If
      * the write can be done immediately, the VirtualConnection will be returned
@@ -2958,22 +3108,46 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             Tr.debug(tc, "sendFullOutgoing : " + isOutgoingBodyValid() + ", " + wsbb + ", " + this);
         }
 
-        setMessageSent();
-        MSP.log("set message");
-        synchWrite();
-        MSP.log("wrote");
-        MSP.log("sync write");
-        this.nettyContext.channel().write(this.nettyResponse);
+        if (!headersSent()) {
+            System.out.println("Headers have NOT been sent!");
+            this.nettyContext.channel().writeAndFlush(this.nettyResponse);
+            setHeadersSent();
+            System.out.println("Printing headers");
+            this.nettyResponse.headers().forEach(header -> System.out.println(header));
+            if (nettyResponse.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+                System.out.println("Found http2, checking for push");
+                for (Entry<String, String> header : nettyResponse.headers()) {
+                    System.out.println(header.getKey());
+                    System.out.println(header.getValue());
+                    if (header.getKey().equalsIgnoreCase("link") &&
+                        header.getValue().toLowerCase().contains("rel=preload") &&
+                        !header.getValue().toLowerCase().contains("nopush")) {
+                        handleNettyPreload(header.getValue().substring(header.getValue().indexOf('<') + 1, header.getValue().indexOf('>')));
+                    }
+                }
+            }
+        } else {
+            System.out.println("Headers have been sent!");
+        }
+
         DefaultHttpContent content;
         if (Objects.nonNull(wsbb)) {
             for (WsByteBuffer buffer : wsbb) {
-
-                this.nettyContext.channel().write(buffer);
-                //content = new DefaultHttpContent(Unpooled.wrappedBuffer(buffer.getWrappedByteBuffer()));
-
+                if (Objects.nonNull(buffer)) // Write buffer
+                    this.nettyContext.channel().write(buffer);
+                else // Write last http content
+                    this.nettyContext.channel().write(new DefaultLastHttpContent());
             }
-            this.nettyContext.channel().flush();
-        }
+
+        } else
+            this.nettyContext.channel().write(new DefaultLastHttpContent());
+        this.nettyContext.channel().flush();
+
+        setMessageSent();
+        MSP.log("set message");
+//        synchWrite();
+//        MSP.log("wrote");
+//        MSP.log("sync write");
 
     }
 

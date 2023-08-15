@@ -51,8 +51,10 @@ public class DataFrameTests extends H2FATDriverServlet {
         String testName = "testDataOnIdleStream";
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "DATA Frame Received in the wrong state of: IDLE".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        // byte[] debugData = "DATA Frame Received in the wrong state of: IDLE".getBytes();
+        byte[] debugData = "Stream 3 does not exist".getBytes();
+        // FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 2147483647, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);

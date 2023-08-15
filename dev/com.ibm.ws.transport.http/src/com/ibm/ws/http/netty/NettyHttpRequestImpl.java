@@ -18,9 +18,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpRequestImpl;
+import com.ibm.wsspi.genericbnf.HeaderStorage;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
@@ -29,13 +33,23 @@ import com.ibm.wsspi.http.ee8.Http2PushBuilder;
 import com.ibm.wsspi.http.ee8.Http2Request;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.VoidChannelPromise;
+import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
+import io.netty.handler.codec.http2.DefaultHttp2Headers;
+import io.netty.handler.codec.http2.Http2Connection;
+import io.netty.handler.codec.http2.Http2Headers;
+import io.netty.handler.codec.http2.HttpConversionUtil;
+import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.openliberty.http.ext.HttpRequestExt;
 
 /**
@@ -45,12 +59,16 @@ import io.openliberty.http.ext.HttpRequestExt;
 @Trivial
 public class NettyHttpRequestImpl extends HttpRequestImpl implements Http2Request, HttpRequestExt {
 
+    private static final TraceComponent tc = Tr.register(NettyHttpRequestImpl.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
+
     private HttpInputStreamImpl body = null;
     private boolean useEE7Streams = false;
     private FullHttpRequest nettyRequest = null;
     private Channel nettyChannel = null;
     private QueryStringDecoder nettyDecoder = null;
     private Set<Cookie> nettyCookies;
+
+    private ChannelHandlerContext nettyContext;
 
     /**
      * Constructor.
@@ -71,9 +89,10 @@ public class NettyHttpRequestImpl extends HttpRequestImpl implements Http2Reques
      *
      * @param context
      */
-    public void init(FullHttpRequest request, Channel channel, HttpInboundServiceContext context) {
+    public void init(FullHttpRequest request, ChannelHandlerContext ctx, HttpInboundServiceContext context) {
         this.nettyRequest = request;
-        this.nettyChannel = channel;
+        this.nettyContext = ctx;
+        this.nettyChannel = ctx.channel();
         this.nettyDecoder = new QueryStringDecoder(nettyRequest.uri());
 
         if (this.useEE7Streams) {
@@ -286,7 +305,7 @@ public class NettyHttpRequestImpl extends HttpRequestImpl implements Http2Reques
         int portNum = ((InetSocketAddress) this.nettyChannel.localAddress()).getPort();
         if (port == null) {
             port = this.nettyRequest.headers().get(HttpHeaderKeys.HDR_HOST.getName());
-            if (port != null & port.contains(":")) {
+            if (port != null && port.contains(":")) {
                 port = port.substring(port.indexOf(':'));
                 try {
                     portNum = Integer.parseInt(port);
@@ -314,6 +333,132 @@ public class NettyHttpRequestImpl extends HttpRequestImpl implements Http2Reques
     @Override
     public void pushNewRequest(Http2PushBuilder pushBuilder) {
         //TODO: H2
+        System.out.println("Hit the pushNewRequest!!!");
+        // path is equal to uri + queryString
+        String pbPath = null;
+        if (pushBuilder.getPathQueryString() != null) {
+            pbPath = pushBuilder.getURI() + pushBuilder.getPathQueryString();
+        } else {
+            pbPath = pushBuilder.getURI();
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "HTTPRequestMessageImpl pbPath = " + pbPath);
+        }
+        HttpToHttp2ConnectionHandler handler = this.nettyChannel.pipeline().get(HttpToHttp2ConnectionHandler.class);
+        Http2Connection connection = handler.connection();
+
+        int nextPromisedStreamId = connection.local().incrementAndGetNextStreamId();
+        int currentStreamId = nettyRequest.headers().getInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), 0);
+
+        Http2Headers headers = new DefaultHttp2Headers().clear();
+//        String scheme = new String("https");
+//        if (!this.isSecure()) {
+//            scheme = new String("http");
+//        }
+        String scheme = new String("http");
+        headers.method(pushBuilder.getMethod()).scheme(scheme).path(pbPath);
+
+        // Encode authority
+        // If the :authority header was sent in the request, get the information from there
+        // If it was not, use getTargetHost and and getTargetPort to create it
+        // If it's still null, we have to bail, since it's a required header in a push_promise frame
+        String auth = getTargetHost();
+        if (null != auth) {
+            if (0 <= getTargetPort()) {
+                auth = auth + ":" + Integer.toString(getTargetPort());
+            }
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.exit(tc, "HTTPRequestMessageImpl: Cannot find hostname for required :authority pseudo header");
+            }
+            return;
+        }
+        headers.authority(auth);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.debug(tc, "handleH2LinkPreload(): Method is GET, authority is " + auth + ", scheme is " + scheme);
+        }
+
+        System.out.println("Sending push promise frame for currentStream " + currentStreamId + " on promisedStream " + nextPromisedStreamId + " with headers " + headers);
+
+        ChannelFuture promise = handler.encoder().writePushPromise(nettyContext, currentStreamId, nextPromisedStreamId, headers, 0,
+                                                                   new VoidChannelPromise(this.nettyChannel, true));
+
+        promise.addListener(future -> {
+            if (future.isSuccess())
+                System.out.println("Successful promise write!");
+            else {
+                System.out.println("No promise write: " + future.cause());
+                future.cause().printStackTrace();
+            }
+        });
+
+        try {
+            DefaultFullHttpRequest newRequest = new DefaultFullHttpRequest(nettyRequest.protocolVersion(), HttpMethod.GET, pbPath);
+            System.out.println("Sending new request to dispatcher " + newRequest);
+            newRequest.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), nextPromisedStreamId);
+            HttpUtil.setContentLength(newRequest, 0);
+            this.nettyContext.executor().execute(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        nettyContext.pipeline().get(HttpDispatcherHandler.class).channelRead(nettyContext, newRequest);
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+                        System.out.println("Error fowarding push request");
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Find the target host of the request. This checks the VirtualHost data but
+     * falls back on the socket layer target if need be.
+     *
+     * @return String
+     */
+    private String getTargetHost() {
+        String host = getVirtualHost();
+        if (null == host) {
+            InetSocketAddress local = (InetSocketAddress) this.nettyChannel.localAddress();
+            InetSocketAddress remote = (InetSocketAddress) this.nettyChannel.remoteAddress();
+            host = (isIncoming()) ? local.getAddress().getCanonicalHostName() : remote.getAddress().getCanonicalHostName();
+        }
+        return host;
+    }
+
+    /**
+     * @return
+     */
+    private boolean isIncoming() {
+        // TODO Complete this method properly
+        return true;
+    }
+
+    /**
+     * Find the target port of the request. This checks the VirtualPort data and
+     * falls back on the socket port information if need be.
+     *
+     * @return int
+     */
+    private int getTargetPort() {
+        int port = getVirtualPort();
+        if (HeaderStorage.NOTSET == port) {
+            InetSocketAddress local = (InetSocketAddress) this.nettyChannel.localAddress();
+            InetSocketAddress remote = (InetSocketAddress) this.nettyChannel.remoteAddress();
+            port = (isIncoming()) ? local.getPort() : remote.getPort();
+        }
+        return port;
     }
 
     /*
@@ -374,6 +519,9 @@ public class NettyHttpRequestImpl extends HttpRequestImpl implements Http2Reques
     @Override
     public boolean isPushSupported() {
         // TODO is H2 enabled?
-        return false;
+        System.out.println("Checking if push is supported!!!");
+        boolean canPush = this.nettyChannel.pipeline().get(HttpToHttp2ConnectionHandler.class).connection().remote().allowPushTo();
+        System.out.println("Can I push? " + canPush);
+        return canPush;
     }
 }
