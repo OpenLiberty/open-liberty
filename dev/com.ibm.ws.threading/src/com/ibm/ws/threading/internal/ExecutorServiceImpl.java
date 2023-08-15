@@ -112,6 +112,8 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
     @Reference(cardinality = ReferenceCardinality.MULTIPLE,
                policy = ReferencePolicy.DYNAMIC)
     protected synchronized void setInterceptor(ExecutorServiceTaskInterceptor interceptor) {
+
+        System.out.println("-- ExecutorServiceImpl setInterceptor  " + interceptor.getClass().getName());
         interceptors.add(interceptor);
         interceptorsActive = true;
     }
@@ -358,6 +360,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
     @Override
     public <T> Future<T> submit(Callable<T> task) {
         threadPoolController.resumeIfPaused();
+        System.out.println("-- ExecutorServiceImpl submit1 createWrappedCallable -- ");
         return threadPool.submit(createWrappedCallable(task));
     }
 
@@ -365,6 +368,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
     @Override
     public Future<?> submit(Runnable task) {
         threadPoolController.resumeIfPaused();
+        System.out.println("-- ExecutorServiceImpl submit1 createWrappedRunnable -- ");
         return threadPool.submit(createWrappedRunnable(task));
     }
 
@@ -372,6 +376,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
     @Override
     public <T> Future<T> submit(Runnable task, T result) {
         threadPoolController.resumeIfPaused();
+        System.out.println("-- ExecutorServiceImpl submit2 createWrappedRunnable -- ");
         return threadPool.submit(createWrappedRunnable(task), result);
     }
 
@@ -476,7 +481,10 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
     }
 
     private Runnable createWrappedRunnable(Runnable in) {
+        System.out.println("-- ExecutorServiceImpl createWrappedRunnable before wrap ");
         Runnable r = interceptorsActive ? wrap(in) : in;
+        System.out.println("-- ExecutorServiceImpl createWrappedRunnable after wrap ");
+
         if (serverStopping)
             return r;
 
@@ -484,15 +492,27 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
     }
 
     Runnable wrap(Runnable r) {
+
         try {
             Iterator<ExecutorServiceTaskInterceptor> i = interceptors.iterator();
             if (i.hasNext() && r instanceof RunnableWithContext) {
                 workThreadLocal.set(((RunnableWithContext) r).getWorkContext());
+                System.out.println("-- ExecutorServiceImpl Runnable wrap set: WorkType " + ((RunnableWithContext) r).getWorkContext().getWorkType());
+                System.out.println("-- ExecutorServiceImpl Runnable wrap Current Thread -- " + Thread.currentThread().toString());
             }
 
+            System.out.println("-- ExecutorServiceImpl before loop call iterator's Runnable wrap " + r.getClass().getName());
             while (i.hasNext()) {
+                // Will cause CWWKE0701E: FrameworkEvent ERROR java.util.NoSuchElementException
+                //System.out.println("-- ExecutorServiceImpl in loop call iterator's Runnable wrap " + i.next().toString());
+                //System.out.println("-- ExecutorServiceImpl in loop call iterator's Runnable wrap " + i.next().getClass().getName());
+                System.out.println("-- ExecutorServiceImpl in loop call iterator's Runnable wrap ");
+
                 r = i.next().wrap(r);
             }
+
+            System.out.println("-- ExecutorServiceImpl Runnable wrap return Current Thread -- " + Thread.currentThread().toString());
+            System.out.println("-- ExecutorServiceImpl after loop call iterator's Runnable wrap " + r.getClass().getName());
 
             return r;
         } finally {
@@ -502,7 +522,9 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
 
     private <T> Callable<T> createWrappedCallable(Callable<T> in) {
 
+        System.out.println("-- ExecutorServiceImpl createWrappedCallable before wrap ");
         Callable<T> c = interceptorsActive ? wrap(in) : in;
+        System.out.println("-- ExecutorServiceImpl createWrappedCallable after wrap ");
         if (serverStopping)
             return c;
         return new CallableWrapper<T>(c);
@@ -513,11 +535,18 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
             Iterator<ExecutorServiceTaskInterceptor> i = interceptors.iterator();
             if (i.hasNext() && c instanceof CallableWithContext) {
                 workThreadLocal.set(((CallableWithContext<T>) c).getWorkContext());
+                System.out.println("-- ExecutorServiceImpl Callable wrap set: WorkType " + ((CallableWithContext<T>) c).getWorkContext().getWorkType());
+                System.out.println("-- ExecutorServiceImpl Callable wrap Current Thread " + Thread.currentThread().toString());
             }
+            System.out.println("-- ExecutorServiceImpl before loop call iterator's Callable wrap " + c.getClass().getName());
             while (i.hasNext()) {
+                //System.out.println("-- ExecutorServiceImpl in loop call iterator's Callable wrap " + i.next().toString());
+                System.out.println("-- ExecutorServiceImpl in loop call iterator's Callable wrap ");
                 c = i.next().wrap(c);
             }
 
+            System.out.println("-- ExecutorServiceImpl Callable wrap return Current Thread -- " + Thread.currentThread().toString());
+            System.out.println("-- ExecutorServiceImpl after loop call iterator's Callable wrap " + c.getClass().getName());
             return c;
         } finally {
             workThreadLocal.remove();
@@ -528,6 +557,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
     private <T> Collection<? extends Callable<T>> wrap(Collection<? extends Callable<T>> tasks) {
         List<Callable<T>> wrappedTasks = new ArrayList<Callable<T>>();
         Iterator<? extends Callable<T>> i = tasks.iterator();
+        System.out.println("-- ExecutorServiceImpl Collection returns wrappedTask -- ");
         while (i.hasNext()) {
             Callable<T> c = wrap(i.next());
             if (serverStopping)
@@ -591,6 +621,8 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
 
     @Override
     public WorkContext getWorkContext() {
+        System.out.println("-- ExecutorServiceImpl getWorkContext on thread " + Thread.currentThread().toString());
+
         return workThreadLocal.get();
     }
 }

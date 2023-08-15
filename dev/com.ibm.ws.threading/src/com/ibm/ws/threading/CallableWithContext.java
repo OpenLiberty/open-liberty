@@ -19,4 +19,5 @@ import com.ibm.wsspi.threading.WorkContext;
  */
 public interface CallableWithContext<T> extends Callable<T> {
     public WorkContext getWorkContext();
+
 }
