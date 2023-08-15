@@ -59,13 +59,11 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class LibertyCXFPositivePropertiesTest {
 
-    private static final String APP_NAME = "libertyCXFProperty";
+    public static final String APP_NAME = "libertyCXFProperty";
 
     @Server("LibertyCXFPositivePropertiesTestServer")
     @TestServlet(servlet = LibertyCXFPositivePropertiesTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
-
-    private final static Class<?> c = LibertyCXFPositivePropertiesTest.class;
 
     @BeforeClass
     public static void setUp() throws Exception {
