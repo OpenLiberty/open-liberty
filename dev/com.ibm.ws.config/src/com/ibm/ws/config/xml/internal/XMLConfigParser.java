@@ -16,6 +16,8 @@ package com.ibm.ws.config.xml.internal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -400,8 +402,13 @@ public class XMLConfigParser {
                 } else if (includeResource.exists() &&
                            ((includeResource.isType(WsResource.Type.DIRECTORY)))) {
                     Iterator<String> children = includeResource.getChildren();
+                    ArrayList<String> alphabeticalChildren = new ArrayList<String>();
                     while (children.hasNext()) {
-                        parseIncludeDir(parser, docLocation, children.next(), includes, configuration);
+                        alphabeticalChildren.add(children.next());
+                    }
+                    Collections.sort(alphabeticalChildren);
+                    for(String child : alphabeticalChildren){
+                        parseIncludeDir(parser, docLocation, child, includes, configuration);
                     }
 
                 } else {
