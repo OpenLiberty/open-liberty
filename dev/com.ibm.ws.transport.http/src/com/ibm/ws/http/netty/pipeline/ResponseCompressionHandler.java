@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -23,6 +24,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyHeaderUtils;
 import com.ibm.wsspi.http.channel.HttpConstants;
 import com.ibm.wsspi.http.channel.values.ContentEncodingValues;
@@ -49,7 +51,6 @@ public class ResponseCompressionHandler {
     private Map<String, Float> acceptableEncodings;
     private final Set<String> unacceptableEncodings;
     private String preferredEncoding;
-    private String outgoingEncoding;
 
     private boolean starEncodingParsed = Boolean.FALSE;
 
@@ -75,6 +76,20 @@ public class ResponseCompressionHandler {
 
     public void process() {
 
+        MSP.log("processing auto compression");
+
+        MSP.log("Content encoding header: " + headers.get(HttpHeaderKeys.HDR_CONTENT_ENCODING.getName()));
+
+        if (isAutoCompression()) {
+            MSP.log("auto compression was true");
+            headers.set(HttpHeaderKeys.HDR_CONTENT_ENCODING.getName(), preferredEncoding);
+
+            //if (!ContentEncodingValues.IDENTITY.getName().equalsIgnoreCase(preferredEncoding)) {
+
+            headers.remove(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName());
+
+        }
+
     }
 
     /**
@@ -88,27 +103,29 @@ public class ResponseCompressionHandler {
 
         boolean doCompression = Boolean.FALSE;
 
+        MSP.debug("isAutoCompression");
         if (config.useAutoCompression()) {
             //set the Vary header
-            NettyHeaderUtils.setVary(headers, HttpHeaderKeys.HDR_ACCEPT.toString());
-
+            NettyHeaderUtils.setVary(headers, HttpHeaderKeys.HDR_ACCEPT_ENCODING.getName());
+            MSP.debug("isAutoCompression");
             //check and set highest priority compression encoding if set
             //on the Accept-Encoding header
             parseAcceptEncodingHeader();
-
+            MSP.debug("isAutoCompression");
             if (headers.contains(HttpHeaderKeys.HDR_CONTENT_ENCODING.getName())
                 && !ContentEncodingValues.IDENTITY.getName().equalsIgnoreCase(headers.get(HttpHeaderKeys.HDR_CONTENT_ENCODING.toString()))) {
                 //Body has already been marked as compressed above the channel, do not attempt to compress
-                doCompression = false;
+                doCompression = Boolean.FALSE;
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Response already contains Content-Encoding: [" + headers.get(HttpHeaderKeys.HDR_CONTENT_ENCODING.toString()) + "]");
                 }
-
+                MSP.debug("isAutoCompressionA");
             }
 
             //Check if the message has the appropriate type and size before attempting compression
-            else if (isCompressionCompliant()) {
-                doCompression = Boolean.TRUE;
+            else if (!isCompressionCompliant()) {
+                doCompression = Boolean.FALSE;
+                MSP.debug("isAutoCompressionB");
             }
 
 //            else if (doCompression) {
@@ -120,10 +137,10 @@ public class ResponseCompressionHandler {
 //            }
 
             else {
-
+                MSP.debug("isAutoCompressionC");
                 // check private compression header
                 preferredEncoding = headers.get(HttpHeaderKeys.HDR_$WSZIP.getName());
-                if (null != preferredEncoding) {
+                if (Objects.nonNull(preferredEncoding)) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Header requests compression: [" + preferredEncoding + "]");
                     }
@@ -142,7 +159,7 @@ public class ResponseCompressionHandler {
                 if (config.useAutoCompression() && !doCompression) {
 
                     String serverPreferredEncoding = config.getPreferredCompressionAlgorithm().toLowerCase(Locale.ENGLISH);
-
+                    MSP.log("Should be config value: " + serverPreferredEncoding);
                     //if the compression element has a configured preferred compression
                     //algorithm, check that the client accepts it and the server supports it.
                     //If so, set this to be the compression algorithm.
@@ -158,7 +175,7 @@ public class ResponseCompressionHandler {
                         }
 
                     }
-
+                    MSP.log("Should be going in here. do compression should be false: " + doCompression);
                     //At this point, find the compression algorithm by finding the first
                     //algorithm that is both supported by the client and server by iterating
                     //through the sorted list of compression algorithms specified by the
@@ -177,10 +194,13 @@ public class ResponseCompressionHandler {
                         }
 
                         for (String encoding : acceptableEncodings.keySet()) {
+
+                            MSP.log("looping, checking encoding: " + encoding);
                             //if gzip has the same qv and we have yet to evaluate gzip,
                             //prioritize gzip over any other encoding.
                             if (acceptableEncodings.get(encoding) == gZipQV && !checkedGZipCompliance) {
                                 preferredEncoding = ContentEncodingValues.GZIP.getName();
+                                MSP.log("Encoding should be set to gzip");
                                 checkedGZipCompliance = true;
                                 if (this.isEncodingSupported(preferredEncoding) && isCompressionAllowed()) {
                                     doCompression = Boolean.TRUE;
@@ -190,6 +210,7 @@ public class ResponseCompressionHandler {
 
                             preferredEncoding = encoding;
                             if (this.isEncodingSupported(preferredEncoding) && isCompressionAllowed()) {
+                                MSP.log("setting allowed encoding: " + preferredEncoding);
                                 doCompression = true;
                                 break;
                             }
@@ -199,6 +220,7 @@ public class ResponseCompressionHandler {
                         //to gzip encoding. If not allowed, try deflate. If neither are allowed,
                         //disable further attempts.
                         if (starEncodingParsed) {
+                            MSP.log("Star logic");
                             if (!this.unacceptableEncodings.contains(HttpConstants.GZIP)) {
                                 preferredEncoding = ContentEncodingValues.GZIP.getName();
                                 doCompression = Boolean.TRUE;
@@ -216,6 +238,7 @@ public class ResponseCompressionHandler {
 
             if (!doCompression) {
                 preferredEncoding = ContentEncodingValues.IDENTITY.getName();
+                MSP.log("set identity, compression not allowed");
                 // setOutgoingMsgEncoding(ContentEncodingValues.IDENTITY);
             }
         }
@@ -417,9 +440,11 @@ public class ResponseCompressionHandler {
      */
     private Map<String, Float> sortAcceptableEncodings(Map<String, Float> encodings) {
 
-        final Map<String, Float> sortedEncodings = encodings.entrySet().stream().sorted(Map.Entry.comparingByValue()).collect(Collectors.toMap(Map.Entry::getKey,
-                                                                                                                                               Map.Entry::getValue, (e1, e2) -> e1,
-                                                                                                                                               LinkedHashMap::new));
+        final Map<String, Float> sortedEncodings = encodings.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).collect(Collectors.toMap(Map.Entry::getKey,
+                                                                                                                                                                        Map.Entry::getValue,
+                                                                                                                                                                        (e1,
+                                                                                                                                                                         e2) -> e1,
+                                                                                                                                                                        LinkedHashMap::new));
 
         return sortedEncodings;
     }

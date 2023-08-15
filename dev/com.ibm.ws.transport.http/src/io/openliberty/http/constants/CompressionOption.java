@@ -34,7 +34,7 @@ public enum CompressionOption implements HttpEndpointOption {
 
     @Override
     public Object value() {
-        return value;
+        return defaultValue;
     }
 
 }
