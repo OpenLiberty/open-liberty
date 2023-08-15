@@ -28,7 +28,7 @@ import io.netty.util.AttributeKey;
 public class NettyWsocClientHandler extends SimpleChannelInboundHandler<WsByteBuffer> {
 
     /** Trace */
-    private static final TraceComponent tc = Tr.register(NettyHttpRequestorWsoc10.class);
+    private static final TraceComponent tc = Tr.register(NettyWsocClientHandler.class);
 
     protected final static AttributeKey<String> CHAIN_ATTR_KEY = AttributeKey.valueOf("CHAIN_NAME");
 

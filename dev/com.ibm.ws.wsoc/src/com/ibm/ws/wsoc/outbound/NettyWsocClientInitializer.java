@@ -9,8 +9,6 @@
  *******************************************************************************/
 package com.ibm.ws.wsoc.outbound;
 
-
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
@@ -23,7 +21,7 @@ import io.openliberty.netty.internal.ChannelInitializerWrapper;
  */
 public class NettyWsocClientInitializer extends ChannelInitializerWrapper {
 
-    private static final TraceComponent tc = Tr.register(NettyHttpRequestorWsoc10.class);
+    private static final TraceComponent tc = Tr.register(NettyWsocClientInitializer.class);
 
     public static final String SSL_HANDLER_KEY = "sslHandler";
     public static final String DECODER_HANDLER_KEY = "decoder";

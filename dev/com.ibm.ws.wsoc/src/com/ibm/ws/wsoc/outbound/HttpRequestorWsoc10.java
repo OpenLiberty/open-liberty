@@ -75,6 +75,7 @@ public class HttpRequestorWsoc10 implements HttpRequestor {
     private final ParametersOfInterest things;
 
     public HttpRequestorWsoc10(WsocAddress endpointAddress, ClientEndpointConfig config, ParametersOfInterest things) {
+        Tr.debug(tc, "HttpRequestorWsoc10 entry");
         this.endpointAddress = endpointAddress;
         this.config = config;
         this.things = things;

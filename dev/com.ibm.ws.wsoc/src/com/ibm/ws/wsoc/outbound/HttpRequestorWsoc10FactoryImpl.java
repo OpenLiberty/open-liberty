@@ -17,6 +17,7 @@ import javax.websocket.ClientEndpointConfig;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.wsoc.ParametersOfInterest;
+import com.ibm.ws.wsoc.WebSocketVersionServiceManager;
 
 public class HttpRequestorWsoc10FactoryImpl implements HttpRequestorFactory {
     private static final TraceComponent tc = Tr.register(HttpRequestorWsoc10FactoryImpl.class);
@@ -24,13 +25,13 @@ public class HttpRequestorWsoc10FactoryImpl implements HttpRequestorFactory {
     public HttpRequestor getHttpRequestor(WsocAddress endpointAddress, ClientEndpointConfig config, ParametersOfInterest things) {
         // TODO LLA
         //if (!WebSocketVersionServiceManager.useNetty()) {
-//
-//            return new HttpRequestorWsoc10(endpointAddress, config, things);
-//        } else {
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Using netty");
-        }
-        return new NettyHttpRequestorWsoc10(endpointAddress, config, things);
-        //       }
+
+        //    return new HttpRequestorWsoc10(endpointAddress, config, things);
+        //} else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Using netty");
+            }
+             return new NettyHttpRequestorWsoc10(endpointAddress, config, things);
+        //}
     }
 }

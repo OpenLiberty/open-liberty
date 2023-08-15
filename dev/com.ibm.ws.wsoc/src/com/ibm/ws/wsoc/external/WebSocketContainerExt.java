@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -39,9 +39,9 @@ public class WebSocketContainerExt implements WebSocketContainer {
     private static final TraceComponent tc = Tr.register(WebSocketContainerExt.class);
 
     // config parameters that are owned at the Container level
-    long defaultAsyncSendTimeout = 0; // don't timeout async sends unless told to do so by the user/app    
+    long defaultAsyncSendTimeout = 0; // don't timeout async sends unless told to do so by the user/app
     long defaultMaxSessionIdleTimeout = -1; // default is no session timeout
-    int defaultMaxBinaryMessageBufferSize = (int) Constants.DEFAULT_MAX_MSG_SIZE; // the max message size if not overridden by the annotated endpoint annotation 
+    int defaultMaxBinaryMessageBufferSize = (int) Constants.DEFAULT_MAX_MSG_SIZE; // the max message size if not overridden by the annotated endpoint annotation
     int defaultMaxTextMessageBufferSize = (int) Constants.DEFAULT_MAX_MSG_SIZE; // the max message size if not overridden by the annotated endpoint annotation
 
     @Override
@@ -86,11 +86,12 @@ public class WebSocketContainerExt implements WebSocketContainer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.websocket.WebSocketContainer#connectToServer(java.lang.Object, java.net.URI)
      */
     @Override
     public Session connectToServer(Object clazz, URI path) throws DeploymentException, IOException {
+        Tr.debug(tc, "connectToServer 1");
 
         if (clazz == null || path == null) {
             throw new IllegalArgumentException();
@@ -101,12 +102,12 @@ public class WebSocketContainerExt implements WebSocketContainer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.websocket.WebSocketContainer#connectToServer(java.lang.Class, java.net.URI)
      */
     @Override
     public Session connectToServer(Class<?> clazz, URI path) throws DeploymentException, IOException {
-
+        Tr.debug(tc, "connectToServer 2");
         if (clazz == null || path == null) {
             throw new IllegalArgumentException();
         }
@@ -126,12 +127,12 @@ public class WebSocketContainerExt implements WebSocketContainer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.websocket.WebSocketContainer#connectToServer(javax.websocket.Endpoint, javax.websocket.ClientEndpointConfig, java.net.URI)
      */
     @Override
     public Session connectToServer(Endpoint endpoint, ClientEndpointConfig endpointConfig, URI path) throws DeploymentException, IOException {
-
+        Tr.debug(tc, "connectToServer 3");
         if (endpoint == null || path == null) {
             throw new IllegalArgumentException();
         }
@@ -141,12 +142,12 @@ public class WebSocketContainerExt implements WebSocketContainer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.websocket.WebSocketContainer#connectToServer(java.lang.Class, javax.websocket.ClientEndpointConfig, java.net.URI)
      */
     @Override
     public Session connectToServer(Class<? extends Endpoint> endpointClass, ClientEndpointConfig endpointConfig, URI path) throws DeploymentException, IOException {
-
+        Tr.debug(tc, "connectToServer 4");
         Object theObject = null;
 
         if (endpointClass == null || path == null) {
@@ -175,7 +176,7 @@ public class WebSocketContainerExt implements WebSocketContainer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.websocket.WebSocketContainer#getInstalledExtensions()
      */
     @Override

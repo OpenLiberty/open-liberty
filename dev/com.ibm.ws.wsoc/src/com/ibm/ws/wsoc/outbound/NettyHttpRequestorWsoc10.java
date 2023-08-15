@@ -13,6 +13,7 @@
 package com.ibm.ws.wsoc.outbound;
 
 import java.io.IOException;
+
 import java.nio.channels.Channel;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import java.util.TreeMap;
 import javax.websocket.ClientEndpointConfig;
 import javax.websocket.Extension;
 import javax.websocket.Extension.Parameter;
+
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -96,21 +98,22 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
     private final Wsoc10Address target = null;
 
     public NettyHttpRequestorWsoc10(WsocAddress endpointAddress, ClientEndpointConfig config, ParametersOfInterest things) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "<init>");
+        Tr.debug(this, tc, "<init>");
 
         this.endpointAddress = endpointAddress;
         this.config = config;
         this.things = things;
         Map<String, Object> options = new HashMap<String, Object>(tcpOptions);
         try {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.entry(this, tc, "Calling createBootstrap()");
+            }
             bootstrap = nettyBundle.createTCPBootstrapOutbound(options);
             bootstrap.attr(AttributeKey.valueOf("CHAIN_NAME"), chainName);
         } catch (NettyException e) {
             Tr.error(tc, "Failure initializing Netty Bootstrap", e);
         }
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "<init>");
+        Tr.debug(tc, "<init>");
 
     }
 

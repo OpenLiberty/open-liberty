@@ -16,12 +16,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.websocket.ClientEndpoint; 
+import javax.websocket.ClientEndpoint;
 import javax.websocket.ClientEndpointConfig;
 import javax.websocket.ClientEndpointConfig.Builder;
-import javax.websocket.Decoder;
 import javax.websocket.DeploymentException;
+import javax.websocket.Decoder;
 import javax.websocket.Encoder;
 import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
@@ -43,12 +45,44 @@ import com.ibm.ws.wsoc.util.Utils;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.exception.InvalidChainNameException;
 
+import io.openliberty.netty.internal.BootstrapExtended;
+import io.openliberty.netty.internal.ConfigConstants;
+import io.openliberty.netty.internal.NettyFramework;
+import io.openliberty.netty.internal.exception.NettyException;
+import io.netty.util.AttributeKey;
+
 /**
  *
  */
 public class ClientConnector {
 
     private static final TraceComponent tc = Tr.register(ClientConnector.class);
+    private BootstrapExtended bootstrap;
+    private NettyFramework nettyBundle;
+    
+    protected final static AttributeKey<String> CHAIN_ATTR_KEY = AttributeKey.valueOf("CHAIN_NAME");
+
+    public void ClientConnector() {
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "In clientConnector instantiator");
+        }
+        nettyBundle = WebSocketVersionServiceManager.getNettyBundle();
+        //Map<String, Object> options = new HashMap<String, Object>(tcpOptions);
+        Map<String, Object> options = new HashMap<String, Object>(null);
+
+        options.put(ConfigConstants.EXTERNAL_NAME, "CHAIN-defaultHttpEndpoint".toString());
+        try {
+            bootstrap = nettyBundle.createTCPBootstrapOutbound(options);
+            //bootstrap.attr("CHAIN_NAME", chainName);
+            bootstrap.attr(CHAIN_ATTR_KEY, "CHAIN-defaultHttpEndpoint".toString());
+
+        } catch (NettyException e) {
+            Tr.error(tc, "<init>: Failure initializing Netty Bootstrap", e);
+        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "<init>");
+
+    }
 
     public Session connectAnnotatedClass(Object annotatedClass, URI path, WebSocketContainer wsc) throws DeploymentException, IOException {
 
@@ -60,11 +94,19 @@ public class ClientConnector {
         aep.initialize(annotatedClass.getClass(), endpointConfig, false);
 
         aep.setAppInstance(annotatedClass);
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "about to call connectClass");
+        }
+
         return connectClass(aep, path, (ClientEndpointConfig) endpointConfig, wsc);
 
     }
 
     public Session connectClass(Object clazz, URI path, ClientEndpointConfig config, WebSocketContainer wsc) throws DeploymentException, IOException {
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "entered connectClass");
+        }
 
         WsocAddress endpointAddress;
 
@@ -83,15 +125,31 @@ public class ClientConnector {
             things.setUserProperties(config.getUserProperties());
         }
 
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "about to call getHttpRequestor");
+        }
         HttpRequestor requestor = (HttpRequestor) (WebSocketVersionServiceManager.getHttpRequestorFactory().getHttpRequestor(endpointAddress, config, things));
-
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "returned from getHttpRequestor");
+        }
         WsByteBuffer remainingBuf = null;
 
         try {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "calling Requestor.connect");
+            }
             requestor.connect();
-
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "returned from Requestor.connect");
+            }
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "calling Requestor.sendRequest");
+            }
             // PH10279 - pass things to get populated with request parameters
             requestor.sendRequest(things);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "returned from Requestor.sendRequest");
+            }
 
         } catch (InvalidChainNameException ice) {
             String msg = Tr.formatMessage(tc, "client.connection.nossl", endpointAddress.toString(), ice);
@@ -109,7 +167,13 @@ public class ClientConnector {
         }
 
         try {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "calling Requestor.completeResponse");
+            }
             remainingBuf = requestor.completeResponse();
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "reutrning from Requestor.completeResponse");
+            }
         } catch (IOException up) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "requestor.completeResponse threw IOException of: " + up);

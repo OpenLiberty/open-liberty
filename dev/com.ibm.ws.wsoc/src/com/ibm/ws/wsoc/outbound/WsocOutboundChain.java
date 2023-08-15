@@ -67,18 +67,21 @@ public class WsocOutboundChain {
     public static final String WSS_CHAIN_NAME = "WsocOutboundHttpSecure";
 
     private final boolean isNetty = true;
+
     /** Required, static Netty framework reference */
     private static NettyFramework nettyBundle = null;
 
     public WsocOutboundChain() {
         if (!isNetty) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "Creating cfw chains");
 
             wsocChain = new WsocChain(this, false);
             wsocSecureChain = new WsocChain(this, true);
 
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc, "Creating Netty chains");
+                Tr.debug(this, tc, "Creating netty chains");
             wsocChain = new WsocChain(this, false, true);
             wsocSecureChain = new WsocChain(this, true, true);
         }
@@ -108,7 +111,7 @@ public class WsocOutboundChain {
                     Tr.debug(this, tc, "Creating Netty bundle TCP Bootstrap Outbound");
                 nettyBundle.createTCPBootstrapOutbound(null);
             } catch (NettyException e) {
-                Tr.error(tc, "<init>: Failure initializing Netty Bootstrap", e);
+                Tr.error(tc, "<init>: Failure initializing Netty Bootstrap", e.toString());
             }
         }
 
@@ -267,9 +270,9 @@ public class WsocOutboundChain {
     public static NettyFramework getNetty() {
         Tr.entry(tc, "getNetty()");
 
-        //if (null == nettyBundle) {
-        //    return getNetty();
-        //}
+        if (null == nettyBundle) {
+            return getNetty();
+        }
         Tr.exit(tc, "getNetty()");
 
         return nettyBundle;

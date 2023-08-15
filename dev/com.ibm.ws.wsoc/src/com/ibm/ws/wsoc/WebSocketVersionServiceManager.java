@@ -98,6 +98,7 @@ public class WebSocketVersionServiceManager {
      * @param service
      */
     protected void setChfwBundle(ServiceReference<CHFWBundle> service) {
+        Tr.debug(tc, "setChfwBundle");
         cfwBundleRef.setReference(service);
     }
 
@@ -114,12 +115,13 @@ public class WebSocketVersionServiceManager {
      * @return ChannelFramework associated with the CHFWBundle service.
      */
     public static ChannelFramework getCfw() {
+        Tr.debug(tc, "getChfw");
+
         return cfwBundleRef.getServiceWithException().getFramework();
     }
 
     protected void setNettyBundle(ServiceReference<NettyFramework> ref) {
         Tr.debug(tc, "setNettyBundle");
-
         nettyRef.setReference(ref);
     }
 
@@ -129,7 +131,8 @@ public class WebSocketVersionServiceManager {
 
     public static NettyFramework getNettyBundle() {
         Tr.debug(tc, "getNettyBundle");
-        return nettyRef.getService();
+        return nettyRef.getServiceWithException();
+
     }
 
     /**
