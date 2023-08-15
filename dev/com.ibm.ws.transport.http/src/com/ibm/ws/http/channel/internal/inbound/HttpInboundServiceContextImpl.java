@@ -757,31 +757,37 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             Tr.debug(tc, "sendResponseBody(body)");
         }
 
-        if (!getHttpConfig().useNetty() && !headersParsed()) {
-            // request message must have the headers parsed prior to sending
-            // any data out (this is a completely invalid state in the channel
-            // above)
-            IOException ioe = new IOException("Request not read yet");
-            FFDCFilter.processException(ioe, CLASS_NAME + ".sendResponseBody", "684");
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Attempt to send response without a request msg");
+        if (getHttpConfig().useNetty()) {
+            sendOutgoing(body, null);
+
+        } else {
+
+            if (!headersParsed()) {
+                // request message must have the headers parsed prior to sending
+                // any data out (this is a completely invalid state in the channel
+                // above)
+                IOException ioe = new IOException("Request not read yet");
+                FFDCFilter.processException(ioe, CLASS_NAME + ".sendResponseBody", "684");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Attempt to send response without a request msg");
+                }
+                throw ioe;
             }
-            throw ioe;
-        }
 
-        if (isMessageSent()) {
-            throw new MessageSentException("Message already sent");
-        }
-
-        // if headers haven't been sent, then set for partial body transfer
-        if (!headersSent()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "sendBody() setting partial body true");
+            if (isMessageSent()) {
+                throw new MessageSentException("Message already sent");
             }
-            setPartialBody(true);
-        }
 
-        sendOutgoing(body, getResponseImpl());
+            // if headers haven't been sent, then set for partial body transfer
+            if (!headersSent()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "sendBody() setting partial body true");
+                }
+                setPartialBody(true);
+            }
+
+            sendOutgoing(body, getResponseImpl());
+        }
     }
 
     /**

@@ -22,7 +22,8 @@
                   host="*"
                   httpPort="${bvt.prop.HTTP_default}"
                   httpsPort="${bvt.prop.HTTP_default.secure}"
-                  compressionRef="myCompressionID">
+                  compressionRef="myCompressionID"
+                  useNettyTransport="true">
     </httpEndpoint>
 
     <application location="EndpointInformation.war" />

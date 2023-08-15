@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.http.netty;
+package com.ibm.ws.http.netty.pipeline.inbound;
 
 import java.util.Objects;
 
