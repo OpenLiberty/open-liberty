@@ -40,6 +40,9 @@ public class ThreadFactoryImpl implements ThreadFactory {
                 thread.setDaemon(true);
                 thread.setPriority(Thread.NORM_PRIORITY);
                 thread.setContextClassLoader(contextClassLoader);
+
+                System.out.println("-- debug ThreadFactory newThread run -- " + Thread.currentThread().toString());
+
                 return thread;
             }
         });

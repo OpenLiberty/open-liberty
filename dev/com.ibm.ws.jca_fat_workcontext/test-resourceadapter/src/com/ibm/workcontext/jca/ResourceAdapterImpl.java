@@ -21,6 +21,7 @@ import jakarta.resource.spi.Connector;
 import jakarta.resource.spi.ResourceAdapter;
 import jakarta.resource.spi.ResourceAdapterInternalException;
 import jakarta.resource.spi.endpoint.MessageEndpointFactory;
+import jakarta.resource.spi.work.WorkManager;
 
 /**
  * Example resource adapter.
@@ -28,6 +29,9 @@ import jakarta.resource.spi.endpoint.MessageEndpointFactory;
 @Connector
 public class ResourceAdapterImpl implements ResourceAdapter {
     final ConcurrentHashMap<ActivationSpecImpl, MessageEndpointFactory> endpointFactories = new ConcurrentHashMap<ActivationSpecImpl, MessageEndpointFactory>();
+    // LH 05-10-23 make public
+    //public BootstrapContext bootstrapContext;
+    public WorkManager wmInstance;
 
     @Override
     public void endpointActivation(MessageEndpointFactory endpointFactory, ActivationSpec activationSpec) throws ResourceException {
@@ -46,6 +50,15 @@ public class ResourceAdapterImpl implements ResourceAdapter {
 
     @Override
     public void start(BootstrapContext bootstrapContext) throws ResourceAdapterInternalException {
+        // 07/17/23
+        System.out.println(" -- debug RA impl start -- ");
+        wmInstance = bootstrapContext.getWorkManager();
+    }
+
+    // - 07/17/23
+    public WorkManager getWmInstance() {
+        System.out.println(" -- debug RA impl getWmInstance -- ");
+        return wmInstance;
     }
 
     @Override

@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -28,10 +30,15 @@ import jakarta.resource.cci.ResourceWarning;
 import jakarta.resource.spi.endpoint.MessageEndpoint;
 import jakarta.resource.spi.endpoint.MessageEndpointFactory;
 
+import jakarta.resource.spi.work.WorkManager;
+
+
 /**
  * Example interaction.
  */
 public class InteractionImpl implements Interaction {
+
+    private WorkManager wmInstance;
     private ConnectionImpl con;
 
     InteractionImpl(ConnectionImpl con) {
@@ -52,6 +59,10 @@ public class InteractionImpl implements Interaction {
     @Override
     public Record execute(InteractionSpec ispec, Record input) throws ResourceException {
         Record output = con.cf.createMappedRecord("output");
+
+        wmInstance = con.cf.mcf.adapter.getWmInstance();
+        WorkContextMsgWork theWork1 = new WorkContextMsgWork("JCA");
+        wmInstance.scheduleWork(theWork1);
         execute(ispec, input, output);
         return output;
     }
@@ -70,6 +81,10 @@ public class InteractionImpl implements Interaction {
         @SuppressWarnings("unchecked")
         List<String> outputMap = (List<String>) output;
 
+        wmInstance = con.cf.mcf.adapter.getWmInstance();
+        WorkContextMsgWork theWork1 = new WorkContextMsgWork("JCA");
+        wmInstance.scheduleWork(theWork1);
+
         String function = ((InteractionSpecImpl) ispec).getFunctionName();
         if ("ADD".equalsIgnoreCase(function)) {
             if (readOnly)
@@ -78,6 +93,7 @@ public class InteractionImpl implements Interaction {
             for (String key : inputMap.keySet()) {
                 outputMap.add(key + "=" + inputMap.get(key));
             }
+
             onMessage(function, output);
             return true;
         } else if ("FIND".equalsIgnoreCase(function)) {

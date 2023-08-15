@@ -15,6 +15,8 @@ import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
+//import com.ibm.workcontext.jca.ResourceAdapterImpl;
+
 import jakarta.annotation.Resource;
 import jakarta.resource.cci.Connection;
 import jakarta.resource.cci.ConnectionFactory;
@@ -32,6 +34,9 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/*")
 public class RAExampleServlet extends HttpServlet {
     private static final long serialVersionUID = 7709282314904580334L;
+
+    // LH 5/31
+    //private transient ResourceAdapterImpl adapter;
 
     @Resource(lookup = "eis/conFactory")
     private ConnectionFactory conFactory;
@@ -72,12 +77,15 @@ public class RAExampleServlet extends HttpServlet {
                 Interaction interaction = con.createInteraction();
                 message = interaction.execute(ispec, input,
                                               output) ? ("Successfully performed " + function + " with output: " + output) : ("Did not " + function + " any entries.");
+
                 interaction.close();
             } finally {
                 con.close();
             }
-
             out.println(message);
+            // LH 5/31
+            //adapter.bootstrapContext.getWorkManager().scheduleWork(new WorkContextMsgWork(message));
+
             System.out.println("Exiting servlet. " + message);
         } catch (Throwable x) {
             while (x instanceof InvocationTargetException)

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -13,32 +13,30 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0.0
 
-# *** Testing 03/13/2023 not sure if this is valid.........
 # For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
 
-Bundle-Name: JCA Test Interceptor Bundle
+Bundle-Name: ThreadingTestBundle
 Bundle-SymbolicName: test.bundle.threading; singleton:=true
-Bundle-Description: This bundle provides some interceptors to use in testing JCA; version=${bVersion}
+Bundle-Description: Bundle that provides executor overrides for ThreadFactory and TaskInterceptor; version=${bVersion}
 
-# Force the package import versions for all ORB API packages
-Import-Package: javax.rmi*;version="[2.4,3)", \
-                org.omg.*;version="[2.4,3)", \
-                *
+Export-Package: test.bundle.threading;version=1.0.76
 
-#
-Export-Package: test.bundle.threading;version=1.0.0
+Import-Package: com.ibm.wsspi.threading
 
-# specify any non-exported packages that need to be bundled
-#Private-Package: test.bundle.threading
+Private-Package: com.ibm.ws.threading.internal.*
+Private-Package: test.bundle.threading.*
 
-IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+-dependson: \
+    build.changeDetector
+    
+Service-Component:\
+    test.bundle.threading.ThreadFactoryImpl;\
+        implementation:=test.bundle.threading.ThreadFactoryImpl;\
+        provide:=java.util.concurrent.ThreadFactory;\
+        properties:="com.ibm.ws.threading.defaultExecutorThreadFactory=true",\
+    test.bundle.threading.TaskInterceptorImpl;\
+        implementation:=test.bundle.threading.TaskInterceptorImpl;\
+        provide:=com.ibm.wsspi.threading.ExecutorServiceTaskInterceptor;\
+        workContextService=com.ibm.wsspi.threading.WorkContextService;\
+        properties:="service.vendor=IBM"
 
-#
-Include-Resource: OSGI-INF=resources/OSGI-INF
-
--dsannotations: test.bundle.threading.ThreadFactoryImpl
-
-#
-Include-Resource:\
-OSGI-INF/metatype/metatype.xml=test-bundles/threadingtestbundle/resources/OSGI-INF/metatype/metatype.xml,\
-OSGI-INF/wlp/defaultInstances.xml=test-bundles/threadingtestbundle/resources/OSGI-INF/wlp/defaultInstances.xml

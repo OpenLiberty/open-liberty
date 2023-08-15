@@ -26,15 +26,12 @@ import javax.resource.spi.work.WorkListener;
 import javax.resource.spi.work.WorkManager;
 import javax.resource.spi.work.WorkRejectedException;
 
-import org.osgi.service.component.annotations.Reference;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 // 04/05/23
 // import com.ibm.wsspi.threading.ExecutorServiceTaskInterceptor;
 import com.ibm.ws.threading.CallableWithContext;
-import com.ibm.wsspi.threading.ExecutorServiceTaskInterceptor;
 
 /**
  * Implementation of J2C WorkManager for WebSphere Application Server
@@ -67,18 +64,6 @@ public final class WorkManagerImpl implements WorkManager {
      * Indicates if this work manager is stopped.
      */
     private volatile boolean stopped;
-
-    // LH 04/05/2023 Interceptor to Activate
-    @Reference
-    protected synchronized void setInterceptor(ExecutorServiceTaskInterceptor interceptor) {
-        System.out.println(" WorkManagerImlp setInterceptor ");
-
-    }
-
-    protected synchronized void unsetInterceptor(ExecutorServiceTaskInterceptor interceptor) {
-        System.out.println(" WorkManagerImlp unsetInterceptor ");
-
-    }
 
     /**
      * Constructs the implementation of WorkManager.
