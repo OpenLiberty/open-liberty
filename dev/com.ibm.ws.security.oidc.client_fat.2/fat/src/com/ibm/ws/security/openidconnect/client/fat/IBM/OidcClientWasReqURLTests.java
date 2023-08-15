@@ -804,6 +804,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
                     "Did not receive error message " + MessageConstants.CWOAU0073E_FRONT_END_ERROR + " in the response", null,
                     MessageConstants.CWOAU0073E_FRONT_END_ERROR);
             expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS,
+                    "Server log did not contain an error message about an invalid hostname in the WASReqURLOidc cookie.",
+                    MessageConstants.CWWKS1554E_PRIVATE_KEY_JWT_MISSING_ALIAS + ".*" + updatedHost + ".*");
+            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS,
                     "Server log did not contain an error message about the missing WASReqURLOidc cookie.",
                     MessageConstants.CWWKS1532E_MALFORMED_URL_IN_COOKIE + ".*" + updatedHost + ".*");
 
