@@ -184,7 +184,7 @@ io.smallrye:smallrye-graphql-schema-builder:1.0.26
 io.smallrye:smallrye-graphql-schema-model:1.0.26
 io.smallrye:smallrye-graphql-servlet:1.0.26
 io.smallrye:smallrye-graphql:1.0.26
-io.smallrye:smallrye-metrics:5.0.0
+io.smallrye:smallrye-metrics:5.0.1
 io.smallrye:smallrye-open-api-core:3.1.1
 io.smallrye:smallrye-open-api-jaxrs:3.1.1
 io.zipkin.reporter2:zipkin-reporter:2.16.3

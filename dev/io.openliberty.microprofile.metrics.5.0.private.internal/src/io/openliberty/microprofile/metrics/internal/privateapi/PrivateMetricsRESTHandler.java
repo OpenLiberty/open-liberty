@@ -49,6 +49,9 @@ public class PrivateMetricsRESTHandler extends MetricRESTHandler {
         for (String registry : Constants.REGISTRY_NAMES_LIST) {
             sharedMetricRegistry.getOrCreate(registry);
         }
+        
+        sharedMetricRegistry.setAppNameResolver();
+        
         Util.SHARED_METRIC_REGISTRIES = sharedMetricRegistry;
 
     }
