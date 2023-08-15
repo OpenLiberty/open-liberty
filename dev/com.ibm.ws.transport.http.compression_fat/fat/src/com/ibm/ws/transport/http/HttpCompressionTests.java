@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -304,7 +304,6 @@ public class HttpCompressionTests {
         assertNotCompressed(httpResponse);
 
     }
-
 
     /**
      * Test that the server will favor compression of gzip over other
@@ -1104,8 +1103,11 @@ public class HttpCompressionTests {
     private void assertNotCompressed(HttpResponse httpResponse) throws IOException {
         //Since it is not encoded, there should not be a Content-Encoding header
         Header contentEncodingHeader = getContentEncodingHeader(httpResponse);
-
-        assertTrue("Response contained a Content-Encoding", contentEncodingHeader == null);
+        if (contentEncodingHeader != null) {
+            assertTrue("Response contained a Content-Encoding that was not Identity", "identity".equalsIgnoreCase(contentEncodingHeader.getValue()));
+        } else {
+            assertTrue("Response contained a Content-Encoding", contentEncodingHeader == null);
+        }
 
         //This also means that we should be able to see the plain text default response
         //body provided by the application

@@ -18,11 +18,12 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
-import com.ibm.ws.http.netty.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig.NettyConfigBuilder;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
+import com.ibm.ws.http.netty.pipeline.inbound.TransportInboundHandler;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -30,6 +31,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.HttpContentCompressor;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 
 /**
@@ -107,22 +109,20 @@ public class HttpPipelineInitializer extends ChannelInitializer<Channel> {
         if (httpConfig.isAccessLoggingEnabled()) {
             pipeline.addLast(new AccessLoggerHandler(httpConfig));
         }
-
         pipeline.addLast(new HttpServerCodec());
-        pipeline.addLast(new ChunkedWriteHandler());
+        pipeline.addLast("httpKeepAlive", new HttpServerKeepAliveHandler());
 
         pipeline.addLast(new HttpObjectAggregator(64 * 1024));
+        pipeline.addLast(new ChunkedWriteHandler());
         if (httpConfig.useAutoCompression()) {
             pipeline.addLast(new HttpContentCompressor());
         }
         pipeline.addLast(new ByteBufferCodec());
-
+        pipeline.addLast(new TransportInboundHandler(httpConfig));
         if (httpConfig.useForwardingHeaders()) {
             pipeline.addLast(new RemoteIpHandler(httpConfig));
         }
-
         pipeline.addLast(new TransportOutboundHandler(httpConfig));
-
         pipeline.addLast(new HttpDispatcherHandler(httpConfig));
 
         Tr.exit(tc, "initChannel");
