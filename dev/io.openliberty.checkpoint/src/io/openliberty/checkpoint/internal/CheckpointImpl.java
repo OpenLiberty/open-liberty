@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -157,6 +158,56 @@ public class CheckpointImpl implements ServerReadyStatus {
             return hook.toString() + ": " + hookRef.toString();
         }
     }
+
+    static class AppRequestedCheckpoint {
+        private final AtomicBoolean firstRequest = new AtomicBoolean(true);
+        private final AtomicReference<CheckpointFailedException> appRequestedCheckpointFailed = new AtomicReference<>();
+
+        void doCheckpoint() {
+            CheckpointImpl current = INSTANCE;
+            debug(tc, () -> "Initiating checkpoint from appRequested: " + current);
+            if (!ProductInfo.getBetaEdition()) {
+                // Extra safe-guard for beta.  This should only be called from the crac feature
+                return;
+            }
+            if (!firstRequest.compareAndSet(true, false)) {
+                // TODO create translatable message - for now this is only possible from a no-ship feature (crac)
+                throw new CheckpointFailedException(Type.LIBERTY_PREPARE_FAILED, "CWWKC0462E: PLACEHOLDER MESSAGE - The application attempted to checkpoint more than once.", null);
+            }
+            if (current == null || CheckpointPhase.getPhase() != CheckpointPhase.APP_REQUESTED) {
+                // TODO create translatable message - for now this is only possible from a no-ship feature (crac)
+                throw recordFailure(new CheckpointFailedException(Type.LIBERTY_PREPARE_FAILED, "CWWKC0461E: PLACEHOLDER MESSAGE - The application requested a checkpoint without the --at=appRequested option.", null));
+            } else {
+                current.checkpointOrExitOnFailure(CheckpointPhase.APP_REQUESTED);
+            }
+        }
+
+        CheckpointFailedException recordFailure(CheckpointFailedException e) {
+            if (e.isRestore() || !CheckpointPhase.getPhase().restored()) {
+                // Only record the exception if it is a restore exception or if the process has not restored yet.
+                // This allows the exception to be thrown later at checkRequestState call.
+                appRequestedCheckpointFailed.set(e);
+            }
+            return e;
+        }
+
+        void checkRequestState(CheckpointPhase triggerPhase, CheckpointPhase checkpointAt) {
+            if (triggerPhase == CheckpointPhase.AFTER_APP_START) {
+                if (checkpointAt == CheckpointPhase.APP_REQUESTED && firstRequest.get()) {
+                    // If we got here then the server has started all configured applications
+                    // (or timed out) and we never got a request from an application to checkpoint yet.
+                    // This is considered a failure case and we fail checkpoint here.
+                    // TODO must translatable message - for now this is only possible from a no-ship feature (crac)
+                    throw new CheckpointFailedException(Type.LIBERTY_PREPARE_FAILED, "CWWKC0460E: PLACEHOLDER MESSAGE - The '--at=appRequested' option expects the application to request a checkpoint during application start.", null);
+                }
+            }
+            if (appRequestedCheckpointFailed.get() != null) {
+                throw appRequestedCheckpointFailed.get();
+            }
+        }
+    }
+
+    static final AppRequestedCheckpoint appRequestedCheckpointState = new AppRequestedCheckpoint();
 
     @Activate
     public CheckpointImpl(ComponentContext cc, @Reference WsLocationAdmin locAdmin,
@@ -294,34 +345,43 @@ public class CheckpointImpl implements ServerReadyStatus {
         // This catch all is necessary because it is possible that "beforeAppStart"
         // triggers may not fire for certain applications/configuration.  For example,
         // if while starting an application no application classes are initialized.
-        checkpointOrExitOnFailure();
+        checkpointOrExitOnFailure(CheckpointPhase.AFTER_APP_START);
     }
 
     @FFDCIgnore(CheckpointFailedException.class)
-    void checkpointOrExitOnFailure() {
+    void checkpointOrExitOnFailure(CheckpointPhase triggerPhase) {
         try {
-            checkpoint();
+            checkpoint(triggerPhase);
         } catch (CheckpointFailedException e) {
-            // FFDC here to capture the causing exception (if any)
-            FFDCFilter.processException(e, getClass().getName(), "checkpointOrExitOnFailure", this);
-            if (e.isRestore()) {
-                // create restore failed marker with return code
-                createRestoreFailedMarker(e);
+            if (triggerPhase == CheckpointPhase.APP_REQUESTED) {
+                // For application requested checkpoint we want to propagate the exception.
+                // But first record the exception so we can use it to fail when we hit the afterAppStart trigger.
+                throw appRequestedCheckpointState.recordFailure(e);
+            } else {
+                // FFDC here to capture the causing exception (if any)
+                FFDCFilter.processException(e, getClass().getName(), "checkpointOrExitOnFailure", this);
+                if (e.isRestore()) {
+                    // create restore failed marker with return code
+                    createRestoreFailedMarker(e);
+                }
+                Tr.error(tc, e.getErrorMsgKey(), e.getMessage());
+                /*
+                 * The extra thread is needed to avoid blocking the current thread while the shutdown hooks are run
+                 * (which starts a server shutdown and quiesce).
+                 * The issue is that if we block the event thread then there is a deadlock that prevents the server
+                 * shutdown from happening until a 30 second timeout is reached.
+                 */
+                new Thread(() -> System.exit(e.getErrorCode()), e.isRestore() ? "Restore failed, exiting..." : "Checkpoint failed, exiting...").start();
             }
-            Tr.error(tc, e.getErrorMsgKey(), e.getMessage());
-            /*
-             * The extra thread is needed to avoid blocking the current thread while the shutdown hooks are run
-             * (which starts a server shutdown and quiesce).
-             * The issue is that if we block the event thread then there is a deadlock that prevents the server
-             * shutdown from happening until a 30 second timeout is reached.
-             */
-            new Thread(() -> System.exit(e.getErrorCode()), e.isRestore() ? "Restore failed, exiting..." : "Checkpoint failed, exiting...").start();
         }
     }
 
     @FFDCIgnore({ IllegalStateException.class, Throwable.class, CheckpointFailedException.class })
-    void checkpoint() throws CheckpointFailedException {
+    void checkpoint(CheckpointPhase triggerPhase) throws CheckpointFailedException {
         debug(tc, () -> "Checkpoint for : " + checkpointAt);
+
+        // check if an APP_REQUESTED trigger happened
+        appRequestedCheckpointState.checkRequestState(triggerPhase, checkpointAt);
 
         // Checkpoint can only be called once
         if (checkpointCalledAlready()) {
@@ -369,6 +429,9 @@ public class CheckpointImpl implements ServerReadyStatus {
                 break;
             case BEFORE_APP_START:
                 phaseName = "beforeAppStart";
+                break;
+            case APP_REQUESTED:
+                phaseName = "appRequested";
                 break;
             default:
                 phaseName = checkpointAt.name();
@@ -631,8 +694,12 @@ public class CheckpointImpl implements ServerReadyStatus {
         CheckpointImpl current = INSTANCE;
         debug(tc, () -> "Initiating checkpoint from beforeAppStart: " + current);
         if (current != null && current.checkpointAt == CheckpointPhase.BEFORE_APP_START) {
-            current.checkpointOrExitOnFailure();
+            current.checkpointOrExitOnFailure(CheckpointPhase.BEFORE_APP_START);
         }
+    }
+
+    public static void appRequestedCheckpoint() {
+        appRequestedCheckpointState.doCheckpoint();
     }
 
     @Trivial
