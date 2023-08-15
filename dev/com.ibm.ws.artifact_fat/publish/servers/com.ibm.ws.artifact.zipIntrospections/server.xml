@@ -1,13 +1,13 @@
-<server description="Test server to verify zip reaper functionality and history">
+<server description="Test server: Verify zip file introspection">
 
   <featureManager>
     <feature>servlet-3.1</feature>
   </featureManager>
 
-<logging traceSpecification="com.ibm.ws.artifact.zip*=all" />
+  <logging traceSpecification="com.ibm.ws.artifact*=all" maxFileSize="20" maxFiles="10"/>
 
-<include location="../fatTestPorts.xml"/>
+  <include location="../fatTestPorts.xml"/>
 
-<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read" />
+  <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read" />
 
 </server>
