@@ -24,6 +24,7 @@ import com.ibm.websphere.security.auth.TokenCreationFailedException;
 import com.ibm.websphere.security.auth.TokenExpiredException;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPublicKey;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.token.ltpa.LTPAValidationKeysInfo;
 import com.ibm.wsspi.security.ltpa.Token;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
@@ -77,6 +78,7 @@ public class LTPAToken2Factory implements TokenFactory {
     }
 
     /** {@inheritDoc} */
+    @FFDCIgnore(Exception.class)
     @Override
     public Token validateTokenBytes(byte[] tokenBytes, String... removeAttributes) throws InvalidTokenException, TokenExpiredException {
         Token validatedToken = null;
