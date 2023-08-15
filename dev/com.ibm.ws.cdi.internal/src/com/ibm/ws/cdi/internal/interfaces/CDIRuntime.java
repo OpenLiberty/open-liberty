@@ -14,7 +14,6 @@ package com.ibm.ws.cdi.internal.interfaces;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
@@ -201,6 +200,11 @@ public interface CDIRuntime extends CDIService {
      * @return all registered ExtensionArchiveProviders
      */
     public Collection<ExtensionArchiveProvider> getExtensionArchiveProviders();
+
+    /**
+     * @return all registered ExtensionArchiveFactories
+     */
+    public Collection<ExtensionArchiveFactory> getExtensionArchiveFactories();
 
     /**
      * @return the BuildCompatibleExtensionFinder, or {@code null} if there is not one

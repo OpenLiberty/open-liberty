@@ -43,7 +43,4 @@ public interface ExtensionArchive extends CDIArchive {
      * @return a set of suppliers of extension objects
      */
     Set<Supplier<Extension>> getSPIExtensionSuppliers();
-
-    default void addLiteExtensionTranslator(Extension liteExtensionTranslator, Set<String> buildCompatibleExtensionClassNames) {};
-
 }

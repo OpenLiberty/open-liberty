@@ -56,6 +56,7 @@ import com.ibm.ws.cdi.internal.interfaces.CDIContainerEventManager;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.EjbEndpointService;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
+import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveFactory;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveProvider;
 import com.ibm.ws.cdi.internal.interfaces.TransactionService;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
@@ -134,6 +135,9 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
     @Reference(policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     private volatile List<ExtensionArchiveProvider> extensionArchiveProviders;
+
+    @Reference(policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    private volatile List<ExtensionArchiveFactory> extensionArchiveFactories;
 
     private MetaDataSlot applicationSlot;
     private boolean isClientProcess;
@@ -697,6 +701,12 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     @Override
     public Collection<ExtensionArchiveProvider> getExtensionArchiveProviders() {
         return extensionArchiveProviders;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Collection<ExtensionArchiveFactory> getExtensionArchiveFactories() {
+        return extensionArchiveFactories;
     }
 
     /** {@inheritDoc} */

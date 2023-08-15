@@ -18,7 +18,7 @@ import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
-import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveProvider;
+import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveFactory;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.framework.ServiceReference;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE)
-public class CDI12ExtensionSPIProvider implements ExtensionArchiveProvider {
+public class CDI12ExtensionSPIProvider implements ExtensionArchiveFactory {
 
     @Override
     public ExtensionArchive newSPIExtensionArchive(CDIRuntime cdiRuntime, ServiceReference<CDIExtensionMetadata> sr,

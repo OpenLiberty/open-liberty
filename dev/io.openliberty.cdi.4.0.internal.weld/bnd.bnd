@@ -25,15 +25,14 @@ Bundle-Description:cdi 4.0 weld impl, version ${bVersion}
 
 -dsannotations: io.openliberty.cdi40.internal.weld.CDI40BeansXmlParserImpl,\
                 io.openliberty.cdi40.internal.weld.DefaultCDI40SecurityService,\
-                io.openliberty.cdi40.internal.weld.LiteExtensionProvider,\
+                io.openliberty.cdi40.internal.weld.CDI40ExtensionSPIProvider,\
                 io.openliberty.cdi40.internal.weld.CDI40AggregatedConfigurationImpl, \
                 io.openliberty.cdi40.internal.weld.CDI40BceFinder,\
                 io.openliberty.cdi40.internal.weld.CDI40ContainerEventManagerImpl
 
 Export-Package: com.ibm.ws.cdi.executor, \
                 com.ibm.ws.cdi.utils, \
-                com.ibm.ws.cdi.proxy, \
-                io.openliberty.cdi40.internal.archive.liberty
+                com.ibm.ws.cdi.proxy
 
 Import-Package: com.ibm.ws.cdi.internal.resources, \
                 *

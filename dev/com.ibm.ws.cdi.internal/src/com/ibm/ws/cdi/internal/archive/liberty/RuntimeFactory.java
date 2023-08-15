@@ -13,7 +13,6 @@
 package com.ibm.ws.cdi.internal.archive.liberty;
 
 import java.io.File;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 

@@ -57,6 +57,7 @@ import com.ibm.ws.cdi.internal.interfaces.CDIContainerEventManager;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
+import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveFactory;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveProvider;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
@@ -654,12 +655,11 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         }
 
         // There should only be one of these, which one depends on the EE level.
-        if (cdiRuntime.getExtensionArchiveProviders().size() != 1) {
-            throw new IllegalStateException("found " + cdiRuntime.getExtensionArchiveProviders().size() + "extension archive providers");
+        if (cdiRuntime.getExtensionArchiveFactories().size() != 1) {
+            throw new IllegalStateException("found " + cdiRuntime.getExtensionArchiveFactories().size() + " extension archive factories");
         }
-
-        for (ExtensionArchiveProvider provider : cdiRuntime.getExtensionArchiveProviders()) {
-
+        
+        for (ExtensionArchiveFactory factory : cdiRuntime.getExtensionArchiveFactories()) {
             //First iterate through the implementations of CDIExtensionMetadata and ask the providers for an archive for every implementation 
             Iterator<ServiceAndServiceReferencePair<CDIExtensionMetadata>> spiExtensions = cdiRuntime.getSPIExtensionServices();
             while (spiExtensions.hasNext()) {
@@ -672,16 +672,18 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                         extensionArchive = runtimeExtensionMap.get(serviceID);
 
                         if (extensionArchive == null) {
-                            extensionArchive = provider.newSPIExtensionArchive(cdiRuntime, sr, extensionMetaData.getService(), applicationContext);
+                            extensionArchive = factory.newSPIExtensionArchive(cdiRuntime, sr, extensionMetaData.getService(), applicationContext);
                         }
                         runtimeExtensionMap.put(serviceID, extensionArchive);
                         extensionSet.add(extensionArchive);
                     }
                 }
             }
+        }
 
-            //Now ask the provider for any ExtensionArchives that are not coming from an SPI impl. These do not go in runtimeExtensionMap but do go in the extensionSet
-            extensionSet.addAll(provider.getDiscoveredArchives(cdiRuntime, applicationContext));
+        //Now ask any providers for any ExtensionArchives that are not coming from an SPI impl. These do not go in runtimeExtensionMap but do go in the extensionSet
+        for (ExtensionArchiveProvider provider : cdiRuntime.getExtensionArchiveProviders()) {
+            extensionSet.addAll(provider.getArchives(cdiRuntime, applicationContext));
         }
 
         WeldDevelopmentMode devMode = this.cdiRuntime.getWeldDevelopmentMode();

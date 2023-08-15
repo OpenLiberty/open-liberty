@@ -12,7 +12,6 @@
  *******************************************************************************/
 package io.openliberty.cdi40.internal.weld;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -50,10 +49,6 @@ public class LiteExtensionArchive extends AbstractCDIArchive implements Extensio
         super(LiteExtensionTranslator.class.getName(), cdiRuntime);
         this.bceClassLoader = bceClassLoader;
         this.buildCompatibleExtensions = buildCompatibleExtensions;
-    }
-
-    public LiteExtensionArchive(CDIRuntime cdiRuntime, ClassLoader bceClassLoader, Set<Class<? extends BuildCompatibleExtension>> buildCompatibleExtensions) {
-        this(cdiRuntime, bceClassLoader, new ArrayList<Class<? extends BuildCompatibleExtension>>(buildCompatibleExtensions));
     }
 
     /** {@inheritDoc} */

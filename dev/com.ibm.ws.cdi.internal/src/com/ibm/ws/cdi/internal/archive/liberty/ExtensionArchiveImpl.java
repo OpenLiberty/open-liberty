@@ -35,7 +35,7 @@ public class ExtensionArchiveImpl extends CDIArchiveImpl implements ExtensionArc
     private Set<String> spiExtensions = null;
 
     //Store these seperately so we don't try to make regular extensions out of them.
-    private Set<String> spiBuildCompatibleExtensions = new HashSet<String>();
+    private Set<String> preConstructedExtensionNames = new HashSet<String>();
     
     //Extensions we cannot store as classnames for some reason.
     //Currently should only ever contain a org.jboss.weld.lite.extension.translator.LiteExtensionTranslator
@@ -78,7 +78,6 @@ public class ExtensionArchiveImpl extends CDIArchiveImpl implements ExtensionArc
     public Set<String> getExtensionClasses() {
         Set<String> extensionClasses = super.getExtensionClasses();
         extensionClasses.addAll(spiExtensions);
-        extensionClasses.addAll(spiBuildCompatibleExtensions);
         return extensionClasses;
     }
 
@@ -112,9 +111,10 @@ public class ExtensionArchiveImpl extends CDIArchiveImpl implements ExtensionArc
         return result;
     }
 
-    @Override
-    public void addLiteExtensionTranslator(Extension liteExtensionTranslator, Set<String> buildCompatibleExtensionClassNames) {
-        extraSPIExtensionSuppliers.add(() -> {return liteExtensionTranslator;});
-        spiBuildCompatibleExtensions.addAll(buildCompatibleExtensionClassNames);
+    //Add an extension that has to be constructed early rather than at the last moment. 
+    //Currently only used for LiteExtensionTranslator
+    public void addConstructedExtension(Extension preConstructedExtension) {
+        extraSPIExtensionSuppliers.add(() -> {return preConstructedExtension;});
+        preConstructedExtensionNames.add(preConstructedExtension.getClass().getCanonicalName());
     }
 }
