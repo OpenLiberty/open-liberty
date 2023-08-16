@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.net.ssl.SSLEngine;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
@@ -32,6 +34,8 @@ import io.netty.handler.codec.http.HttpContentCompressor;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 
 /**
@@ -101,6 +105,16 @@ public class HttpPipelineInitializer extends ChannelInitializer<Channel> {
         if (chain.isHttps()) {
             // SSLEngine engine = channel.newEngine(channel.alloc());
             // pipeline.addFirst("ssl", new SslHandler(engine, false));
+            
+            SslContext context = chain.getOwner().getNettyTlsProvider().getInboundSSLContext(chain.getOwner().getSslOptions(), chain.getActiveHost(), Integer.toString(chain.getActivePort()));
+            if(context == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.entry(this, tc, "initChannel","Error adding TLS Support");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.exit(this, tc, "initChannel");
+                channel.close();
+                return;
+            }
+            SSLEngine engine = context.newEngine(channel.alloc());
+            pipeline.addFirst("SSL_HANDLER", new SslHandler(engine, false));
             channel.attr(NettyHttpConstants.IS_SECURE).set(Boolean.TRUE);
         } else {
             channel.attr(NettyHttpConstants.IS_SECURE).set(Boolean.FALSE);
