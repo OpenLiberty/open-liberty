@@ -426,19 +426,19 @@ public class HttpChain implements ChainEventListener {
                     if (compressionOptions.get("id").equals("defaultCompression")) {
                         //Put the internal compression set to false since the element was not configured to be used
                         chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION, "false");
-                        chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES, null);
-                        chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM, null);
+                        chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES_INTERNAL, null);
+                        chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM_INTERNAL, null);
                     }
 
                     else {
                         chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION, "true");
                         //Check if the compression is configured to use content-type filter
                         if (compressionOptions.containsKey("types")) {
-                            chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES, compressionOptions.get("types"));
+                            chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES_INTERNAL, compressionOptions.get("types"));
 
                         }
                         if (compressionOptions.containsKey("serverPreferredAlgorithm")) {
-                            chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM, compressionOptions.get("serverPreferredAlgorithm"));
+                            chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM_INTERNAL, compressionOptions.get("serverPreferredAlgorithm"));
                         }
                     }
 

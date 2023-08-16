@@ -139,15 +139,12 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         parseAttemptPurgeData(options.get(HttpConfigConstants.PROPNAME_PURGE_DATA_DURING_CLOSE));
         parseAutoDecompression(options.get(HttpConfigConstants.PROPNAME_AUTODECOMPRESSION));
         parseBufferType(options.get(HttpConfigConstants.PROPNAME_DIRECT_BUFF));
-        parseByteCacheSize(options.get(HttpConfigConstants.PROPNAME_BYTE_CACHE_SIZE));
         parseCookieUpdate(options.get(HttpConfigConstants.PROPNAME_NO_CACHE_COOKIES_CONTROL), options.get(HttpConfigConstants.PROPNAME_COOKIES_CONFIGURE_NOCACHE));
         parseDateHeaderRange(options.get(HttpConfigConstants.PROPNAME_DATE_HEADER_RANGE));
         parseDecompressionRatioLimit(options.get(HttpConfigConstants.PROPNAME_DECOMPRESSION_RATIO_LIMIT));
         parseDecompressionTolerance(options.get(HttpConfigConstants.PROPNAME_DECOMPRESSION_TOLERANCE));
-        parseDelayedExtract(options.get(HttpConfigConstants.PROPNAME_EXTRACT_VALUE));
+
         parseDoNotAllowDuplicateSetCookies(options.get(HttpConfigConstants.PROPNAME_DO_NOT_ALLOW_DUPLICATE_SET_COOKIES));
-        parseHeaderChangeLimit(options.get(HttpConfigConstants.PROPNAME_HEADER_CHANGE_LIMIT));
-        parseHeaderValidation(options.get(HttpConfigConstants.PROPNAME_HEADER_VALIDATION));
         parseIncomingBodyBufferSize(options.get(HttpConfigConstants.PROPNAME_INCOMING_BODY_BUFFSIZE));
         parseIncomingHdrBufferSize(options.get(HttpConfigConstants.PROPNAME_INCOMING_HDR_BUFFSIZE));
         parseLimitFieldSize(options.get(HttpConfigConstants.PROPNAME_LIMIT_FIELDSIZE));
@@ -158,11 +155,9 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         parseOutgoingVersion(options.get(HttpConfigConstants.PROPNAME_OUTGOING_VERSION));
         parsePersistTimeout(options.get(HttpConfigConstants.PROPNAME_PERSIST_TIMEOUT));
         parsePersistence(options.get(HttpConfigConstants.PROPNAME_KEEPALIVE_ENABLED), options.get(HttpConfigConstants.PROPNAME_MAX_PERSIST));
-        parsePreventResponseSplit(options.get(HttpConfigConstants.PROPNAME_PREVENT_RESPONSE_SPLIT));
-        parseProtocolVersion(options.get(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION));
+
         parsePurgeRemainingResponseBody();
         parseReadTimeout(options.get(HttpConfigConstants.PROPNAME_READ_TIMEOUT));
-        parseRemoveCLHeaderInTempStatusRespRFC7230compat(options.get(HttpConfigConstants.REMOVE_CLHEADER_IN_TEMP_STATUS_RFC7230_COMPAT));
         parseRequestSmugglingProtection(options.get(HttpConfigConstants.PROPNAME_ENABLE_SMUGGLING_PROTECTION));
         parseServerHeader(options.get(HttpConfigConstants.PROPNAME_REMOVE_SERVER_HEADER), options.get(HttpConfigConstants.PROPNAME_SERVER_HEADER_VALUE));
         parseSkipCookiePathQuotes(options.get(HttpConfigConstants.PROPNAME_SKIP_PATH_QUOTE));
@@ -172,6 +167,13 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
 
         //TODO -> Netty not needed
         //parseBinaryTransport(options.get(HttpConfigConstants.PROPNAME_BINARY_TRANSPORT));
+        //parseByteCacheSize(options.get(HttpConfigConstants.PROPNAME_BYTE_CACHE_SIZE));
+        //parseDelayedExtract(options.get(HttpConfigConstants.PROPNAME_EXTRACT_VALUE));
+        //parseHeaderChangeLimit(options.get(HttpConfigConstants.PROPNAME_HEADER_CHANGE_LIMIT));
+        // parseHeaderValidation(options.get(HttpConfigConstants.PROPNAME_HEADER_VALIDATION));
+
+        //parsePreventResponseSplit(options.get(HttpConfigConstants.PROPNAME_PREVENT_RESPONSE_SPLIT))
+        //parseRemoveCLHeaderInTempStatusRespRFC7230compat(options.get(HttpConfigConstants.REMOVE_CLHEADER_IN_TEMP_STATUS_RFC7230_COMPAT));
         //parseStrictURLFormat(options.get(HttpConfigConstants.PROPNAME_STRICT_URL_FORMAT));
         //parseThrowIOEForInboundConnections(options.get(HttpConfigConstants.PROPNAME_THROW_IOE_FOR_INBOUND_CONNECTIONS));
         //parseWaitForEndOfMessage(options.get(HttpConfigConstants.PROPNAME_WAIT_FOR_END_OF_MESSAGE));
@@ -184,6 +186,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         parseH2LimitWindowUpdateFrames(options.get(HttpConfigConstants.PROPNAME_H2_LIMIT_WINDOW_UPDATE_FRAMES));
         parseH2MaxConcurrentStreams(options.get(HttpConfigConstants.PROPNAME_H2_MAX_CONCURRENT_STREAMS));
         parseH2MaxFrameSize(options.get(HttpConfigConstants.PROPNAME_H2_MAX_FRAME_SIZE));
+        parseProtocolVersion(options.get(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION));
         parseH2SettingsInitialWindowSize(options.get(HttpConfigConstants.PROPNAME_H2_SETTINGS_INITIAL_WINDOW_SIZE));
 
     }
