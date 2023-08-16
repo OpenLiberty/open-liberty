@@ -82,13 +82,23 @@ public class ResponseCompressionHandler {
 
         MSP.log("CL is set to: " + headers.get(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName()));
 
-        if (!isAutoCompression()) {
-            MSP.log("auto compression was false");
+        if (isAutoCompression()) {
 
-            preferredEncoding = null;
+            if ("zlib".equals(preferredEncoding)) {
+                preferredEncoding = "deflate";
+            }
+
+            if (!"identity".equals(preferredEncoding)) {
+                headers.set(HttpHeaderKeys.HDR_CONTENT_ENCODING.getName(), preferredEncoding);
+                headers.remove(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName());
+            } else {
+                headers.remove(HttpHeaderKeys.HDR_CONTENT_ENCODING.getName());
+                preferredEncoding = null;
+            }
+
         } else {
-            headers.set(HttpHeaderKeys.HDR_CONTENT_ENCODING.getName(), preferredEncoding);
-            headers.remove(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName());
+            preferredEncoding = null;
+
         }
 
     }
