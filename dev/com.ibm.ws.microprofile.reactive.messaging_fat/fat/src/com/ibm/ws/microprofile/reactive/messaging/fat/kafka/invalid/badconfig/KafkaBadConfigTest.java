@@ -65,7 +65,7 @@ public class KafkaBadConfigTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20, ReactiveMessagingActions.MP50, ReactiveMessagingActions.MP60, ReactiveMessagingActions.MP61);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -108,7 +108,7 @@ public class KafkaBadConfigTest {
 
         // Check that the bad config error was emitted
         List<String> configErrorLines = server.findStringsInLogsUsingMark("CWMRX1007E:", server.getDefaultLogFile());
-        //Due to logging changes older versions of OL emit the expected code less frequently
+        //Due to changes in CDI, older versions emit the expected code less frequently
         if(server.getServerConfiguration().getFeatureManager().getFeatures().contains("mpReactiveMessaging-1.0")){
             assertThat(configErrorLines, hasSize(1));
         } else {
@@ -149,7 +149,7 @@ public class KafkaBadConfigTest {
 
         // Check that the bad config error was emitted
         List<String> configErrorLines = server.findStringsInLogsUsingMark("CWMRX1007E:", server.getDefaultLogFile());
-        //Due to logging changes older versions of OL emit the expected code less frequently
+        //Due to changes in CDI, older versions emit the expected code less frequently
         if(server.getServerConfiguration().getFeatureManager().getFeatures().contains("mpReactiveMessaging-1.0")){
             assertThat(configErrorLines, hasSize(1));
         } else {
@@ -194,7 +194,7 @@ public class KafkaBadConfigTest {
 
         // Check that the bad config error was emitted
         List<String> configErrorLines = server.findStringsInLogsUsingMark("CWMRX1008E:", server.getDefaultLogFile());
-        //Due to logging changes older versions of OL emit the expected code less frequently
+        //Due to changes in CDI, older versions emit the expected code less frequently
         if(server.getServerConfiguration().getFeatureManager().getFeatures().contains("mpReactiveMessaging-1.0")){
             assertThat(configErrorLines, hasSize(1));
         } else {

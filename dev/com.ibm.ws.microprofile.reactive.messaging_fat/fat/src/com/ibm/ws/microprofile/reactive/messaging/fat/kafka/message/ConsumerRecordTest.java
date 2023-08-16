@@ -63,7 +63,7 @@ public class ConsumerRecordTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20_RM10);//, ReactiveMessagingActions.MP61);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -104,7 +104,7 @@ public class ConsumerRecordTest {
 
     @AfterClass
     public static void teardownKafka() throws Exception{
-        KafkaUtils.deleteKafkaTopics(PlaintextTests.kafkaContainer);
+        KafkaUtils.deleteKafkaTopics(PlaintextTests.getAdminClient());
     }
 
 }

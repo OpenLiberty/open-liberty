@@ -56,12 +56,12 @@ public class KafkaAutoAckTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20_RM10);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
 
-        Map<String, String> connectionProps = PlaintextTests.connectionProperties();
+        Map<String, Object> connectionProps = PlaintextTests.connectionProperties();
 
         ConnectorProperties incomingConnection = ConnectorProperties.simpleIncomingChannel(connectionProps, KafkaAutoAckReceptionBean.CHANNEL_IN,
                                                                                            KafkaAutoAckTestServlet.APP_GROUPID);

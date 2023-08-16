@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.liberty_login.invalid;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties.simpleIncomingChannel;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties.simpleOutgoingChannel;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaClientLibs;
@@ -63,7 +65,7 @@ public class LibertyLoginModuleInvalidTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20, ReactiveMessagingActions.MP50, ReactiveMessagingActions.MP60, ReactiveMessagingActions.MP61);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -108,8 +110,7 @@ public class LibertyLoginModuleInvalidTest {
 
         // Now deploy the app and check that it fails to start
         server.setMarkToEndOfLog();
-        ShrinkHelper.exportArtifact(war, "tmp/apps");
-        server.copyFileToLibertyServerRoot("tmp/apps", "dropins", war.getName());
+        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY, DISABLE_VALIDATION);
 
         try {
             String logLine = server.waitForStringInLogUsingMark(APP_START_CODE + "|" + APP_FAIL_CODE + "|" + INVALID_CIPHER_CODE);

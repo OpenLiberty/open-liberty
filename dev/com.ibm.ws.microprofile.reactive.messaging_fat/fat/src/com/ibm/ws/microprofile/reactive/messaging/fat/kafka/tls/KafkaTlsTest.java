@@ -61,7 +61,7 @@ public class KafkaTlsTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20, ReactiveMessagingActions.MP50, ReactiveMessagingActions.MP60, ReactiveMessagingActions.MP61);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -101,7 +101,7 @@ public class KafkaTlsTest {
 
     @AfterClass
     public static void teardownKafka() throws IOException, ExecutionException, InterruptedException {
-        KafkaUtils.deleteKafkaTopics(TlsTests.kafkaContainer);
+        KafkaUtils.deleteKafkaTopics(TlsTests.getAdminClient());
     }
 
 }

@@ -16,6 +16,7 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
 
+import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -67,7 +68,12 @@ public class PlaintextTests extends TestContainerSuite {
                     .withStartupAttempts(3)
                     .withLogConsumer(new SimpleLogConsumer(PlaintextTests.class, "kafka"));
 
-    public static Map<String, String> connectionProperties() {
+    public static Map<String, Object> connectionProperties() {
         return Collections.singletonMap(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
+    }
+
+    public static AdminClient getAdminClient(){
+        Map<String, Object> adminClientProps = connectionProperties();
+        return AdminClient.create(adminClientProps);
     }
 }

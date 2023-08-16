@@ -64,7 +64,7 @@ public class LibertyLoginModuleXorTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20, ReactiveMessagingActions.MP50, ReactiveMessagingActions.MP60, ReactiveMessagingActions.MP61);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -110,7 +110,7 @@ public class LibertyLoginModuleXorTest {
 
     @AfterClass
     public static void teardownKafka() throws ExecutionException, InterruptedException, IOException {
-        KafkaUtils.deleteKafkaTopics(SaslPlainTests.kafkaContainer);
+        KafkaUtils.deleteKafkaTopics(SaslPlainTests.getAdminClient());
     }
 
 }

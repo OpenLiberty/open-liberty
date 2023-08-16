@@ -19,8 +19,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
@@ -28,10 +26,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.ExtendedK
 
 import componenttest.topology.impl.LibertyServer;
 import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.ListTopicsResult;
-import org.apache.kafka.common.config.SaslConfigs;
-import org.apache.kafka.common.config.SslConfigs;
 
 /**
  *
@@ -68,7 +63,7 @@ public class KafkaUtils {
     }
 
     /**
-     * Attempt to delete all the topics in the provided container*
+     * Attempt to delete all the topics in the container that the adminclient has been created for
      *
      * Due to the async and seemingly unreliable nature of kafka topic deletion this operation is done on a
      * best effort basis and may leave topics in a `Marked for deletion` state
@@ -76,35 +71,11 @@ public class KafkaUtils {
      * If a test is susceptible to ending up in this state which is typically due to have >1 partition for a topic
      * then using unique topic names per repeat is the recommended workaround
      *
-     * @param container
-     * @throws IOException
+     * @param adminClient
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public static void deleteKafkaTopics(ExtendedKafkaContainer container) throws IOException, ExecutionException, InterruptedException {
-        Map<String, Object> adminClientProps = new HashMap<>();
-        adminClientProps.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, container.getBootstrapServers());
-
-        //Configure additional settings for SSL and SASL_SSL connections
-        if(!container.getListenerScheme().equals("PLAINTEXT")){
-            KafkaUtils.copyTrustStoreToTest(container);
-            adminClientProps.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, TRUSTSTORE_FILENAME);
-            adminClientProps.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, container.getKeystorePassword());
-            if(container.getListenerScheme().equals("SASL_SSL")){
-                adminClientProps.put("security.protocol", "SASL_SSL");
-                adminClientProps.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
-                //Admin Credentials are required for use with the Admin Client, otherwise a SSL error is thrown
-                adminClientProps.put(SaslConfigs.SASL_JAAS_CONFIG,
-                        "org.apache.kafka.common.security.plain.PlainLoginModule required "
-                                + "username=\"" + SaslPlainTests.ADMIN_USER + "\" "
-                                + "password=\"" + SaslPlainTests.ADMIN_SECRET + "\";");
-            } else if(container.getListenerScheme().equals("SSL")) {
-                adminClientProps.put("security.protocol", "SSL");
-            }
-        }
-
-        AdminClient adminClient = AdminClient.create(adminClientProps);
-
+    public static void deleteKafkaTopics(AdminClient adminClient) throws ExecutionException, InterruptedException {
         ListTopicsResult topics = adminClient.listTopics();
         // `.get()` returns when the Future completes with a result.
         Set<String> topicNames = topics.names().get();

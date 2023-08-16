@@ -60,7 +60,7 @@ public class KafkaCustomSerializerTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20_RM10);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -94,7 +94,7 @@ public class KafkaCustomSerializerTest {
 
     @AfterClass
     public static void teardownKafka() throws ExecutionException, InterruptedException, IOException {
-        KafkaUtils.deleteKafkaTopics(PlaintextTests.kafkaContainer);
+        KafkaUtils.deleteKafkaTopics(PlaintextTests.getAdminClient());
     }
 
 }

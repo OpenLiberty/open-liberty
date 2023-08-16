@@ -39,7 +39,7 @@ public class JsonbTest extends FATServletClient {
     public static final String SERVER_NAME = "SimpleRxMessagingServer";
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20, ReactiveMessagingActions.MP50, ReactiveMessagingActions.MP60, ReactiveMessagingActions.MP61);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10);
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = JsonbServlet.class, contextRoot = APP_NAME)
