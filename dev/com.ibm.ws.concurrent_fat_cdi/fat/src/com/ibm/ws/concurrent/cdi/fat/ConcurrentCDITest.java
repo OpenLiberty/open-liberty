@@ -55,6 +55,7 @@ public class ConcurrentCDITest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer(
+                          "CWWKC1101E.*scheduled-executor-without-app-context", // tests lack of context from scheduled executor thread
                           "CWWKE1205E" // test case intentionally causes startTimeout to be exceeded
         );
     }
