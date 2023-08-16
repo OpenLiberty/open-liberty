@@ -138,7 +138,6 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         parseAllowRetries(options.get(HttpConfigConstants.PROPNAME_ALLOW_RETRIES));
         parseAttemptPurgeData(options.get(HttpConfigConstants.PROPNAME_PURGE_DATA_DURING_CLOSE));
         parseAutoDecompression(options.get(HttpConfigConstants.PROPNAME_AUTODECOMPRESSION));
-        parseBinaryTransport(options.get(HttpConfigConstants.PROPNAME_BINARY_TRANSPORT));
         parseBufferType(options.get(HttpConfigConstants.PROPNAME_DIRECT_BUFF));
         parseByteCacheSize(options.get(HttpConfigConstants.PROPNAME_BYTE_CACHE_SIZE));
         parseCookieUpdate(options.get(HttpConfigConstants.PROPNAME_NO_CACHE_COOKIES_CONTROL), options.get(HttpConfigConstants.PROPNAME_COOKIES_CONFIGURE_NOCACHE));
@@ -172,7 +171,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         parsev0CookieDateRFC1123compat(options.get(HttpConfigConstants.PROPNAME_V0_COOKIE_RFC1123_COMPAT));
 
         //TODO -> Netty not needed
-
+        //parseBinaryTransport(options.get(HttpConfigConstants.PROPNAME_BINARY_TRANSPORT));
         //parseStrictURLFormat(options.get(HttpConfigConstants.PROPNAME_STRICT_URL_FORMAT));
         //parseThrowIOEForInboundConnections(options.get(HttpConfigConstants.PROPNAME_THROW_IOE_FOR_INBOUND_CONNECTIONS));
         //parseWaitForEndOfMessage(options.get(HttpConfigConstants.PROPNAME_WAIT_FOR_END_OF_MESSAGE));

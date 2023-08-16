@@ -1103,11 +1103,11 @@ public class HttpCompressionTests {
     private void assertNotCompressed(HttpResponse httpResponse) throws IOException {
         //Since it is not encoded, there should not be a Content-Encoding header
         Header contentEncodingHeader = getContentEncodingHeader(httpResponse);
-        if (contentEncodingHeader != null) {
-            assertTrue("Response contained a Content-Encoding that was not Identity", "identity".equalsIgnoreCase(contentEncodingHeader.getValue()));
-        } else {
-            assertTrue("Response contained a Content-Encoding", contentEncodingHeader == null);
-        }
+//        if (contentEncodingHeader != null) {
+//            assertTrue("Response contained a Content-Encoding that was not Identity", "identity".equalsIgnoreCase(contentEncodingHeader.getValue()));
+//        } else {
+        assertTrue("Response contained a Content-Encoding", contentEncodingHeader == null);
+        //       }
 
         //This also means that we should be able to see the plain text default response
         //body provided by the application

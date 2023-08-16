@@ -5237,7 +5237,12 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                     this.compressHandler = new GzipOutputHandler(Boolean.TRUE, bufferSize);
                     break;
                 case ("deflate"):
+                case ("zlib"):
                     this.compressHandler = new DeflateOutputHandler(GenericUtils.getBytes(nettyRequest.headers().get(HttpHeaderKeys.HDR_USER_AGENT.getName())), bufferSize);
+                    break;
+                case ("identity"):
+                    nettyResponse.headers().remove(HttpHeaderKeys.HDR_CONTENT_ENCODING.getName());
+
             }
 
         }
