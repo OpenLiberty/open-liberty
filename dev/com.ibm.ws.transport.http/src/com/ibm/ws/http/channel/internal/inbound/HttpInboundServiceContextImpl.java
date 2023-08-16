@@ -21,6 +21,7 @@ import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.genericbnf.internal.GenericUtils;
 import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
 import com.ibm.ws.http.channel.internal.CallbackIDs;
 import com.ibm.ws.http.channel.internal.HttpBaseMessageImpl;
@@ -124,6 +125,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         super.init(context);
 
         boolean isSecure = context.channel().attr(NettyHttpConstants.IS_SECURE).get();
+        this.setHeadersParsed();
 
         if (isSecure) {
             // getRequest().setScheme(SchemeValues.HTTPS);
@@ -753,39 +755,41 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      */
     @Override
     public void sendResponseBody(WsByteBuffer[] body) throws IOException, MessageSentException {
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "sendResponseBody(body)");
         }
 
+        if (!headersParsed()) {
+            // request message must have the headers parsed prior to sending
+            // any data out (this is a completely invalid state in the channel
+            // above)
+            IOException ioe = new IOException("Request not read yet");
+            FFDCFilter.processException(ioe, CLASS_NAME + ".sendResponseBody", "684");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Attempt to send response without a request msg");
+            }
+            throw ioe;
+        }
+
+        if (isMessageSent()) {
+            throw new MessageSentException("Message already sent");
+        }
+
+        // if headers haven't been sent, then set for partial body transfer
+        if (!headersSent()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "sendBody() setting partial body true");
+            }
+            setPartialBody(true);
+        }
+
+        MSP.log("sendResponseBody buffer size: " + GenericUtils.sizeOf(body));
+
         if (getHttpConfig().useNetty()) {
-            sendOutgoing(body, null);
+            sendOutgoing(body);
 
         } else {
-
-            if (!headersParsed()) {
-                // request message must have the headers parsed prior to sending
-                // any data out (this is a completely invalid state in the channel
-                // above)
-                IOException ioe = new IOException("Request not read yet");
-                FFDCFilter.processException(ioe, CLASS_NAME + ".sendResponseBody", "684");
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Attempt to send response without a request msg");
-                }
-                throw ioe;
-            }
-
-            if (isMessageSent()) {
-                throw new MessageSentException("Message already sent");
-            }
-
-            // if headers haven't been sent, then set for partial body transfer
-            if (!headersSent()) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "sendBody() setting partial body true");
-                }
-                setPartialBody(true);
-            }
-
             sendOutgoing(body, getResponseImpl());
         }
     }
@@ -1035,6 +1039,8 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                     Tr.debug(tc, "finishMessage() setting partial body false");
                 }
                 setPartialBody(false);
+                MSP.log("Bytes to write: " + GenericUtils.sizeOf(body));
+                HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(body));
             }
 
         }

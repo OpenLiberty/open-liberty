@@ -80,14 +80,15 @@ public class ResponseCompressionHandler {
 
         MSP.log("Content encoding header: " + headers.get(HttpHeaderKeys.HDR_CONTENT_ENCODING.getName()));
 
-        if (isAutoCompression()) {
-            MSP.log("auto compression was true");
+        MSP.log("CL is set to: " + headers.get(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName()));
+
+        if (!isAutoCompression()) {
+            MSP.log("auto compression was false");
+
+            preferredEncoding = null;
+        } else {
             headers.set(HttpHeaderKeys.HDR_CONTENT_ENCODING.getName(), preferredEncoding);
-
-            //if (!ContentEncodingValues.IDENTITY.getName().equalsIgnoreCase(preferredEncoding)) {
-
             headers.remove(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName());
-
         }
 
     }
@@ -525,6 +526,13 @@ public class ResponseCompressionHandler {
 
         }
         return isCompliant;
+    }
+
+    /**
+     * @return
+     */
+    public String getEncoding() {
+        return this.preferredEncoding;
     }
 
 }
