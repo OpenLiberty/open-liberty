@@ -14,6 +14,6 @@ package com.ibm.ws.sib.jfapchannel.impl;
 
 import java.util.Map;
 
-public interface OutboundSecureFacet {
-    public Map<Object, Object> copyConfig();
+interface OutboundSecureFacet {
+    Map<Object, Object> copyConfig();
 }

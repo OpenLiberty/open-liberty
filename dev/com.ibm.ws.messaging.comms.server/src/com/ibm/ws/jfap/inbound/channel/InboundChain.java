@@ -11,10 +11,10 @@ package com.ibm.ws.jfap.inbound.channel;
 
 public interface InboundChain {
 	
-	public void enable(boolean enabled);
+	void enable(boolean enabled);
 
-	public void stop();
+	void stop();
 
-	public void update();
+	void update();
 
 }

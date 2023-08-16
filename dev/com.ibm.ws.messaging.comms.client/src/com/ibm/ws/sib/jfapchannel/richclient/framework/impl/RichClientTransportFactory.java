@@ -96,9 +96,9 @@ public class RichClientTransportFactory implements NetworkTransportFactory
         			// in com.ibm.ws.messaging.open_comms_fat because SSL chain failed to init properly due to no SSL Options
         			// Check what to do here appropriately see https://github.com/OpenLiberty/open-liberty/issues/24823
         			boolean usingSSL = chain.isSecureChain();
-        			if(usingSSL && chain.getSecureFacet() == null)
+        			if(usingSSL && chain.getSslOptions() == null)
         				throw new InvalidChainNameException("Chain configuration not found in framework, " + chainName);
-        			connFactory = new NettyNetworkConnectionFactory(chainName, chain.getTcpOptions(), usingSSL?chain.getSecureFacet().copyConfig():null, usingSSL?chain.getNettyTlsProvider():null);
+                    connFactory = new NettyNetworkConnectionFactory(chainName, chain.getTcpOptions(), usingSSL ? chain.getSslOptions() : null, usingSSL ? chain.getNettyTlsProvider() : null);
         		}else {
         			VirtualConnectionFactory vcFactory = requireService(CommsClientServiceFacade.class).getChannelFramework().getOutboundVCFactory(chainName);
         			connFactory = new CFWNetworkConnectionFactory(vcFactory);

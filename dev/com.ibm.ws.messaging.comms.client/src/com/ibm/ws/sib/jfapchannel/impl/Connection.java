@@ -110,7 +110,7 @@ public abstract class Connection implements ConnectionInterface
     protected ConversationTable conversationTable = null;
 
     // Callbacks notified when a read or write completes for this connection
-    private BaseConnectionWriteCallback writeCompletedCallback = null;
+    private final BaseConnectionWriteCallback writeCompletedCallback;
 
     private BaseConnectionReadCallback readCompletedCallback = null;
 

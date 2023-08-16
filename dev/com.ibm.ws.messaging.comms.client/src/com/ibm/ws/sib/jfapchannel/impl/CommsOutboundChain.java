@@ -168,19 +168,6 @@ public class CommsOutboundChain implements ApplicationPrereq {
         return tcpProps;
     }
 
-    // @Reference(name = "nettyTlsProvider", cardinality = OPTIONAL, policyOption = GREEDY, unbind = "unbindTlsProviderService")
-    // void bindNettyTlsProviderService(NettyTlsProvider tlsProvider) {
-    //     if (isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.entry(this, tc, "bindTlsProviderService", tlsProvider);
-    //     this.nettyTlsProvider = tlsProvider;
-    //     if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "bindTlsProviderService");
-    // }
-
-    // void unbindTlsProviderService(NettyTlsProvider oldService) {
-    //     if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "unbindTlsProviderService", oldService);
-    //     // TODO: Figure out if there's something to be done here
-    //     if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "unbindTlsProviderService");
-    // }
-
     public NettyTlsProvider getNettyTlsProvider() {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.entry(this, tc, "getNettyTlsProvider");
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "getNettyTlsProvider", nettyTlsProvider);
@@ -407,13 +394,15 @@ public class CommsOutboundChain implements ApplicationPrereq {
 	public boolean isSecureChain() {
 	    return isSecureChain;
 	}
-	
-	/**
+
+    /**
 	 * Get the SSL Options for this Chain
-	 * @return the OutboundSecureFacet wrapper of SSL Options for the chain
+	 * @return the Map<Object, Object> of SSL Options for the chain
 	 */
-	public OutboundSecureFacet getSecureFacet() {
-	    return secureFacet;
+	public Map<Object, Object> getSslOptions() {
+        if(secureFacet == null)
+            return null;
+	    return secureFacet.copyConfig();
 	}
 
 }

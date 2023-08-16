@@ -100,7 +100,7 @@ public class NettyInboundChain implements InboundChain{
         _isSecureChain = isSecureChain;
     }
 
-	public void init(String endpointName, NettyFramework netty) {
+	public InboundChain init(String endpointName, NettyFramework netty) {
 		_nettyFramework = netty;
         _endpointMgr = netty.getEndpointManager();
         _endpointName = endpointName;
@@ -115,6 +115,7 @@ public class NettyInboundChain implements InboundChain{
             _tcpName = _endpointName;
             _jfapName = "JFAP-" + _endpointName;
         }
+        return this;
 	}
 
 	@Override

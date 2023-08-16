@@ -111,7 +111,7 @@ public class CommsInboundChain implements InboundChain, ChainEventListener {
 
     }
 
-    public void init(String endpointName, CHFWBundle cfBundle) {
+    public InboundChain init(String endpointName, CHFWBundle cfBundle) {
         _cfw = cfBundle.getFramework();
         _endpointMgr = cfBundle.getEndpointManager();
         _endpointName = endpointName;
@@ -126,6 +126,7 @@ public class CommsInboundChain implements InboundChain, ChainEventListener {
             _tcpName = _endpointName;
             _jfapName = "JFAP-" + _endpointName;
         }
+        return this;
     }
 
     public void enable(boolean enbaled) {

@@ -72,8 +72,8 @@ public class CommsServerServiceFacade implements Singleton {
     private static final TraceComponent tc = register(CommsServerServiceFacade.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
     private String endpointName = null;
     
-    private InboundChain inboundBasicChain;
-    private InboundChain inboundSecureChain;
+    private final InboundChain inboundBasicChain;
+    private final InboundChain inboundSecureChain;
 
     private int basicPort;
     private int securePort;
@@ -138,15 +138,11 @@ public class CommsServerServiceFacade implements Singleton {
         chfw.getFramework().registerFactory("JFAPChannel", JFAPServerInboundChannelFactory.class);
         
         if(useNetty()) {
-        	inboundBasicChain = new NettyInboundChain(this, false);
-        	inboundSecureChain = new NettyInboundChain(this, true);
-        	((NettyInboundChain)inboundBasicChain).init(endpointName, this.nettyBundle);
-        	((NettyInboundChain)inboundSecureChain).init(endpointName + "-ssl", this.nettyBundle);
+        	inboundBasicChain = new NettyInboundChain(this, false).init(endpointName, this.nettyBundle);
+        	inboundSecureChain = new NettyInboundChain(this, true).init(endpointName + "-ssl", this.nettyBundle);
         }else {
-        	inboundBasicChain = new CommsInboundChain(this, false);
-        	inboundSecureChain = new CommsInboundChain(this, true);
-        	((CommsInboundChain)inboundBasicChain).init(endpointName, this.chfw);
-        	((CommsInboundChain)inboundSecureChain).init(endpointName + "-ssl", this.chfw);
+        	inboundBasicChain = new CommsInboundChain(this, false).init(endpointName, this.chfw);
+        	inboundSecureChain = new CommsInboundChain(this, true).init(endpointName + "-ssl", this.chfw);
         }
 
         this.iswasJmsEndpointEnabled = parseBoolean(CONFIG_ALIAS, "enabled", properties.get("enabled"), true);
@@ -172,25 +168,6 @@ public class CommsServerServiceFacade implements Singleton {
         factotum.stopBasicChain(true);
     }
     
-    // @Reference(name = "nettyTlsProvider", cardinality = OPTIONAL, policyOption = GREEDY, unbind = "unbindTlsProviderService")
-    // void bindNettyTlsProvider(NettyTlsProvider tlsProvider) {
-    //     if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "bindTlsProviderService", tlsProvider);
-    //     this.nettyTlsProvider = tlsProvider;
-    //     if(awaitingTlsProvider.getAndSet(false)) {
-    //     	if (securePort >= 0 && secureFacetRef.get().areSecureSocketsEnabled()) inboundSecureChain.enable(true);
-    //         synchronized (factotum) {
-    //             factotum.updateSecureChain();
-    //         }
-    //     }
-    //     if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "bindTlsProviderService");
-    // }
-    
-    // void unbindTlsProviderService(NettyTlsProvider oldService) {
-    //     if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "unbindTlsProviderService", oldService);
-    //     // TODO: Figure out if there's something else to be done here
-    //     if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "unbindTlsProviderService");
-    // }
-    
     public NettyTlsProvider getNettyTlsProvider() {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "getNettyTlsProvider");
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "getNettyTlsProvider", nettyTlsProvider);
@@ -200,16 +177,10 @@ public class CommsServerServiceFacade implements Singleton {
     @Reference(name = "secureFacet", cardinality = OPTIONAL, policy = DYNAMIC, policyOption = GREEDY, unbind = "unbindSecureFacet")
     void bindSecureFacet(InboundSecureFacet facet) {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "bindSecureFacet", facet);
-        if(useNetty() && nettyTlsProvider == null) {
-        	if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "bindSecureFacet: got SSL Options with No Netty TLS Provider yet set.");
-        	this.secureFacetRef.set(facet);
-        	awaitingTlsProvider.set(true);
-        }else {
-        	if (securePort >= 0 && facet.areSecureSocketsEnabled()) inboundSecureChain.enable(true);
-            synchronized (factotum) {
-            	this.secureFacetRef.set(facet);
-                factotum.updateSecureChain();
-            }
+        if (securePort >= 0 && facet.areSecureSocketsEnabled()) inboundSecureChain.enable(true);
+        synchronized (factotum) {
+            this.secureFacetRef.set(facet);
+            factotum.updateSecureChain();
         }
     }
     
