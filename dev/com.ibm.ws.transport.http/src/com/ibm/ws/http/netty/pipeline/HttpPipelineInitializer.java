@@ -28,7 +28,6 @@ import com.ibm.ws.http.netty.pipeline.inbound.TransportInboundHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
-import io.netty.handler.codec.http.HttpContentCompressor;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
@@ -114,9 +113,9 @@ public class HttpPipelineInitializer extends ChannelInitializer<Channel> {
 
         pipeline.addLast(new HttpObjectAggregator(64 * 1024));
         pipeline.addLast(new ChunkedWriteHandler());
-        if (httpConfig.useAutoCompression()) {
-            pipeline.addLast(new HttpContentCompressor());
-        }
+        // if (httpConfig.useAutoCompression()) {
+        //   pipeline.addLast(new NettyHttpContentCompressor());
+        //}
         pipeline.addLast(new ByteBufferCodec());
         pipeline.addLast(new TransportInboundHandler(httpConfig));
         if (httpConfig.useForwardingHeaders()) {
