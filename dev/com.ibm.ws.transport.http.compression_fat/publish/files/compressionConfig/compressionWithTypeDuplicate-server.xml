@@ -21,8 +21,7 @@
     <httpEndpoint id="defaultHttpEndpoint"
                   host="*"
                   httpPort="${bvt.prop.HTTP_default}"
-                  httpsPort="${bvt.prop.HTTP_default.secure}"
-                  useNettyTransport="true">
+                  httpsPort="${bvt.prop.HTTP_default.secure}">
     		<compression types="+text/*"/>
     </httpEndpoint>
 

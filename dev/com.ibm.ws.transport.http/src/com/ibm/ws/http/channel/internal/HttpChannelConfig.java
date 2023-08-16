@@ -495,12 +495,12 @@ public class HttpChannelConfig {
                 props.put(HttpConfigConstants.PROPNAME_COMPRESSION, value);
             }
 
-            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES)) {
-                props.put(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES, value);
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES_INTERNAL)) {
+                props.put(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES_INTERNAL, value);
             }
 
-            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM)) {
-                props.put(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM, value);
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM_INTERNAL)) {
+                props.put(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM_INTERNAL, value);
             }
             if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_DECOMPRESSION_RATIO_LIMIT)) {
                 props.put(HttpConfigConstants.PROPNAME_DECOMPRESSION_RATIO_LIMIT, value);

@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.http.netty;
+package io.openliberty.http.constants;
 
 /**
  *
