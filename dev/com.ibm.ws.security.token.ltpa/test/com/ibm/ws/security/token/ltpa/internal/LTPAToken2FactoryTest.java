@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,9 +25,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.UTLocationHelper;
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.security.auth.TokenCreationFailedException;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey;
@@ -35,6 +32,9 @@ import com.ibm.ws.crypto.ltpakeyutil.LTPAPublicKey;
 import com.ibm.ws.security.token.ltpa.LTPAKeyInfoManager;
 import com.ibm.wsspi.security.ltpa.Token;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
+
+import test.UTLocationHelper;
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -70,7 +70,7 @@ public class LTPAToken2FactoryTest {
         LTPAKeyInfoManager keyInfoManager = new LTPAKeyInfoManager();
         keyInfoManager.prepareLTPAKeyInfo(UTLocationHelper.getLocationManager(),
                                           KEYIMPORTFILE_CORRECT,
-                                          KEYPASSWORD_CORRECT);
+                                          KEYPASSWORD_CORRECT, null);
         ltpaPrivateKey = new LTPAPrivateKey(keyInfoManager.getPrivateKey(KEYIMPORTFILE_CORRECT));
         ltpaPublicKey = new LTPAPublicKey(keyInfoManager.getPublicKey(KEYIMPORTFILE_CORRECT));
     }
@@ -80,9 +80,9 @@ public class LTPAToken2FactoryTest {
         long expDiffAllowed = 0;
         Map<String, Object> tokenFactoryMap = new HashMap<String, Object>();
         tokenFactoryMap.put("expiration", expectedExpirationLimit);
-        tokenFactoryMap.put("ltpa_shared_key", encodedSharedKey.getBytes());
-        tokenFactoryMap.put("ltpa_public_key", ltpaPublicKey);
-        tokenFactoryMap.put("ltpa_private_key", ltpaPrivateKey);
+        tokenFactoryMap.put("primary_ltpa_shared_key", encodedSharedKey.getBytes());
+        tokenFactoryMap.put("primary_ltpa_public_key", ltpaPublicKey);
+        tokenFactoryMap.put("primary_ltpa_private_key", ltpaPrivateKey);
         tokenFactoryMap.put("expirationDifferenceAllowed", expDiffAllowed);
 
         return tokenFactoryMap;
@@ -112,8 +112,8 @@ public class LTPAToken2FactoryTest {
 
     @Test
     public void testInitializeSetsSharedKey() throws Exception {
-        byte[] expectedSharedKey = (byte[]) tokenFactoryMap.get("ltpa_shared_key");
-        Field sharedKeyField = LTPAToken2Factory.class.getDeclaredField("sharedKey");
+        byte[] expectedSharedKey = (byte[]) tokenFactoryMap.get("primary_ltpa_shared_key");
+        Field sharedKeyField = LTPAToken2Factory.class.getDeclaredField("primarySharedKey");
         sharedKeyField.setAccessible(true);
         byte[] actualSharedKey = (byte[]) sharedKeyField.get(tokenFactory);
 
@@ -122,8 +122,8 @@ public class LTPAToken2FactoryTest {
 
     @Test
     public void testInitializeSetsPublicKey() throws Exception {
-        LTPAPublicKey expectedPublicKey = (LTPAPublicKey) tokenFactoryMap.get("ltpa_public_key");
-        Field publicKeyField = LTPAToken2Factory.class.getDeclaredField("publicKey");
+        LTPAPublicKey expectedPublicKey = (LTPAPublicKey) tokenFactoryMap.get("primary_ltpa_public_key");
+        Field publicKeyField = LTPAToken2Factory.class.getDeclaredField("primaryPublicKey");
         publicKeyField.setAccessible(true);
         LTPAPublicKey actualPublicKey = (LTPAPublicKey) publicKeyField.get(tokenFactory);
 
@@ -132,10 +132,10 @@ public class LTPAToken2FactoryTest {
 
     @Test
     public void testInitializeSetsPrivateKey() throws Exception {
-        LTPAPrivateKey expectedPrivateKey = (LTPAPrivateKey) tokenFactoryMap.get("ltpa_private_key");
-        Field publicKeyField = LTPAToken2Factory.class.getDeclaredField("privateKey");
-        publicKeyField.setAccessible(true);
-        LTPAPrivateKey actualPrivateKey = (LTPAPrivateKey) publicKeyField.get(tokenFactory);
+        LTPAPrivateKey expectedPrivateKey = (LTPAPrivateKey) tokenFactoryMap.get("primary_ltpa_private_key");
+        Field privateKeyField = LTPAToken2Factory.class.getDeclaredField("primaryPrivateKey");
+        privateKeyField.setAccessible(true);
+        LTPAPrivateKey actualPrivateKey = (LTPAPrivateKey) privateKeyField.get(tokenFactory);
 
         assertEquals("The private key must be equals to the expected private key.", expectedPrivateKey, actualPrivateKey);
     }
