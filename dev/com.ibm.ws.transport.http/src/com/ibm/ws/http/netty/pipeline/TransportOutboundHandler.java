@@ -13,7 +13,6 @@ import java.util.Objects;
 
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.netty.MSP;
-import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.pipeline.outbound.HeaderHandler;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -43,11 +42,15 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
             HeaderHandler headerHandler = new HeaderHandler(config, response);
             headerHandler.complianceCheck();
 
-            if (ctx.channel().hasAttr(NettyHttpConstants.ACCEPT_ENCODING)) {
-                String acceptEncoding = ctx.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).get();
-                ResponseCompressionHandler compressionHandler = new ResponseCompressionHandler(config, response, acceptEncoding);
-                compressionHandler.process();
-            }
+//            if (ctx.channel().hasAttr(NettyHttpConstants.ACCEPT_ENCODING)) {
+//                String acceptEncoding = ctx.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).get();
+//                ResponseCompressionHandler compressionHandler = new ResponseCompressionHandler(config, response, acceptEncoding);
+//                compressionHandler.process();
+//                if (compressionHandler.getEncoding() != null) {
+//                    MSP.log("setting compression attribute -> " + compressionHandler.getEncoding());
+//                    ctx.channel().attr(NettyHttpConstants.COMPRESSION_ENCODING).set(compressionHandler.getEncoding());
+//                }
+//            }
 
         }
 

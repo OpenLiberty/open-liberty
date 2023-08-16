@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -56,6 +57,7 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.pipeline.ResponseCompressionHandler;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
@@ -102,6 +104,7 @@ import io.netty.handler.codec.http.DefaultHttpContent;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http2.HttpConversionUtil;
 
 /**
  * Common code shared between both the Inbound and Outbound HTTP service
@@ -1980,7 +1983,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      */
     private void formatBody(WsByteBuffer[] wsbb, HttpBaseMessageImpl msg) {
 
-        if (null == wsbb || null == msg) {
+        if (null == wsbb || (null == msg && Objects.isNull(nettyContext))) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Leaving formatBody, wsbb: " + wsbb + " msg: " + msg);
             }
@@ -2033,7 +2036,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
         }
 
-        boolean doChunkWork = !isRawBody() && msg.isChunkedEncodingSet();
+        boolean doChunkWork = Objects.nonNull(nettyContext) ? Boolean.FALSE : !isRawBody() && msg.isChunkedEncodingSet();
+
         if (doChunkWork) {
             // prepend "chunk length CRLF" before their data
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -2234,6 +2238,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
         this.nettyContext.channel().write(this.nettyResponse);
         this.setHeadersSent();
+        //setupCompressionHandler();
 
     }
 
@@ -2722,6 +2727,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
         WsByteBuffer[] buffers = wsbb;
         this.writingHeaders = false;
+
         if (!getHttpConfig().useNetty()) {
             // if a valid body is outgoing, check the encoding flags to see if we
             // need to automatically change the buffers
@@ -2745,77 +2751,147 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                     buffers = null;
                 }
             }
-        }
 
-        if (!headersSent() && !getHttpConfig().useNetty()) {
-            // header compliance is checked by formatHeaders so check for either
-            // the partial body flag or explicit chunked encoding here
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "prepareOutgoing: partial: " + isPartialBody() + " chunked: " + msg.isChunkedEncodingSet() + " cl: " + msg.getContentLength());
-            }
+            if (!headersSent()) {
+                // header compliance is checked by formatHeaders so check for either
+                // the partial body flag or explicit chunked encoding here
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "prepareOutgoing: partial: " + isPartialBody() + " chunked: " + msg.isChunkedEncodingSet() + " cl: " + msg.getContentLength());
+                }
 
-            boolean complete = false;
+                boolean complete = false;
 
-            // if a finishMessage started this write, then always set the
-            // Content-Length header to the input size... removes chunked
-            // encoding if only one chunk and also can correct malformed
-            // Content-Length values by caller
-            // PK48697 - only update these if the message allows it
-            if (!isPartialBody() && msg.shouldUpdateBodyHeaders()) {
-                complete = true;
-                if (!myChannelConfig.useNetty()) {
+                // if a finishMessage started this write, then always set the
+                // Content-Length header to the input size... removes chunked
+                // encoding if only one chunk and also can correct malformed
+                // Content-Length values by caller
+                // PK48697 - only update these if the message allows it
+                if (!isPartialBody() && msg.shouldUpdateBodyHeaders()) {
+                    complete = true;
                     msg.setContentLength(GenericUtils.sizeOf(buffers));
                     if (msg.isChunkedEncodingSet()) {
                         msg.removeTransferEncoding(TransferEncodingValues.CHUNKED);
                         msg.commitTransferEncoding();
                     }
                 }
-            }
 
-            // H2 push_promise
-            // If we have a link header with rel=preload, start push_promise sequence
-            // If this is an HTTP2 connection
-            // If the client accepts HTTP2 push_promise frames
+                // H2 push_promise
+                // If we have a link header with rel=preload, start push_promise sequence
+                // If this is an HTTP2 connection
+                // If the client accepts HTTP2 push_promise frames
 
-            HttpInboundLink link = ((HttpInboundServiceContextImpl) this).getLink();
+                HttpInboundLink link = ((HttpInboundServiceContextImpl) this).getLink();
 
-            if ((link instanceof H2HttpInboundLinkWrap) &&
-                (((H2HttpInboundLinkWrap) link).muxLink != null) &&
-                (((H2HttpInboundLinkWrap) link).muxLink.getRemoteConnectionSettings() != null) &&
-                (((H2HttpInboundLinkWrap) link).muxLink.getRemoteConnectionSettings().getEnablePush() == 1)) {
+                if ((link instanceof H2HttpInboundLinkWrap) &&
+                    (((H2HttpInboundLinkWrap) link).muxLink != null) &&
+                    (((H2HttpInboundLinkWrap) link).muxLink.getRemoteConnectionSettings() != null) &&
+                    (((H2HttpInboundLinkWrap) link).muxLink.getRemoteConnectionSettings().getEnablePush() == 1)) {
 
-                // Loop through the headers in this message, check for
-                // link header
-                // rel=preload
-                // and not nopush
-                List<HeaderField> headers = msg.getAllHeaders();
-                for (HeaderField header : headers) {
-                    if (header.getName().equalsIgnoreCase("link") &&
-                        header.asString().toLowerCase().contains("rel=preload") &&
-                        !header.asString().toLowerCase().contains("nopush")) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "prepareOutgoing: Link header rel=preload found, push_promise will be sent");
+                    // Loop through the headers in this message, check for
+                    // link header
+                    // rel=preload
+                    // and not nopush
+                    List<HeaderField> headers = msg.getAllHeaders();
+                    for (HeaderField header : headers) {
+                        if (header.getName().equalsIgnoreCase("link") &&
+                            header.asString().toLowerCase().contains("rel=preload") &&
+                            !header.asString().toLowerCase().contains("nopush")) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "prepareOutgoing: Link header rel=preload found, push_promise will be sent");
+                            }
+                            handleH2LinkPreload(header, link);
                         }
-                        handleH2LinkPreload(header, link);
                     }
                 }
+                formatHeaders(msg, complete);
             }
-            formatHeaders(msg, complete);
-        } else {
-            System.out.println("MSP set netty CL");
-            HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
         }
 
         // if it is valid to send a body, then format it and queue it up,
         // otherwise ignore the body buffers
         if (null != buffers) {
             if (isOutgoingBodyValid()) {
+
                 formatBody(buffers, msg);
+
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Ignoring " + buffers.length + " body buffers");
                 }
             }
+        }
+    }
+
+    final protected void sendOutgoing(WsByteBuffer[] wsbb) throws IOException {
+        WsByteBuffer[] buffers = wsbb;
+        if (!headersSent() && Objects.nonNull(buffers)) {
+
+            HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(wsbb));
+            setPartialBody(false);
+
+            if (nettyContext.channel().hasAttr(NettyHttpConstants.ACCEPT_ENCODING)) {
+                String acceptEncoding = nettyContext.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).get();
+                ResponseCompressionHandler compressionHandler = new ResponseCompressionHandler(getHttpConfig(), nettyResponse, acceptEncoding);
+                compressionHandler.process();
+                if (compressionHandler.getEncoding() != null) {
+                    MSP.log("setting compression attribute -> " + compressionHandler.getEncoding());
+                    setupCompressionHandler(compressionHandler.getEncoding());
+                    // check whether we need to pass data through the compression handler
+                    if (null != this.compressHandler) {
+
+                        List<WsByteBuffer> list = this.compressHandler.compress(buffers);
+                        if (this.isFinalWrite) {
+                            list.addAll(this.compressHandler.finish());
+                        }
+
+                        // put any created buffers onto the release list
+                        if (0 < list.size()) {
+                            buffers = new WsByteBuffer[list.size()];
+                            list.toArray(buffers);
+                            storeAllocatedBuffers(buffers);
+                        } else {
+                            buffers = null;
+                        }
+
+                    }
+                }
+                if (Objects.nonNull(buffers)) {
+                    MSP.log("setting new compressed content length of: " + GenericUtils.sizeOf(buffers));
+                    HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
+                }
+            }
+
+        }
+        this.nettyContext.channel().write(this.nettyResponse);
+
+        setHeadersSent();
+        if (nettyResponse.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+            System.out.println("Found http2, checking for push");
+            for (Entry<String, String> header : nettyResponse.headers()) {
+                if (header.getKey().equalsIgnoreCase("link") &&
+                    header.getValue().toLowerCase().contains("rel=preload") &&
+                    !header.getValue().toLowerCase().contains("nopush")) {
+                    //  handleNettyPreload(header.getValue().substring(header.getValue().indexOf('<') + 1, header.getValue().indexOf('>')));
+                }
+            }
+        }
+
+        if (Objects.nonNull(buffers)) {
+
+            MSP.log("sendOutgoing are buffers good? " + GenericUtils.sizeOf(buffers));
+
+            for (
+
+            WsByteBuffer buffer : buffers) {
+                if (Objects.nonNull(buffer)) { // Write buffer
+                    this.nettyContext.channel().write(buffer);
+                } else {
+                    MSP.log("This is weird!!! Sending a null buffer?!?!?!");
+                }
+//                else // Write last http content
+//                    this.nettyContext.channel().write(new DefaultLastHttpContent());
+            }
+            this.nettyContext.channel().flush();
         }
     }
 
@@ -2962,7 +3038,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         setMessageSent();
         this.addBytesWritten(GenericUtils.sizeOf(wsbb));
         this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_BYTES_WRITTEN).set(numBytesWritten);
-        this.nettyContext.channel().write(this.nettyResponse);
+        if (!headersSent()) {
+            this.nettyContext.channel().write(this.nettyResponse);
+        }
         DefaultHttpContent content;
         if (Objects.nonNull(wsbb)) {
             for (WsByteBuffer buffer : wsbb) {
@@ -3265,41 +3343,43 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 // 457369 - disconnect write buffers in TCP when done
                 getTSC().getWriteInterface().setBuffers(null);
             }
-        }
 
-        if (this.isH2Connection && !framesToWrite.isEmpty()) {
+            if (this.isH2Connection && !framesToWrite.isEmpty()) {
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Writing out H2 Frames");
-            }
-            HttpInboundServiceContextImpl context = (HttpInboundServiceContextImpl) this;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Writing out H2 Frames");
+                }
+                HttpInboundServiceContextImpl context = (HttpInboundServiceContextImpl) this;
 
-            if (context.getLink() instanceof H2HttpInboundLinkWrap) {
-                H2HttpInboundLinkWrap link = (H2HttpInboundLinkWrap) context.getLink();
+                if (context.getLink() instanceof H2HttpInboundLinkWrap) {
+                    H2HttpInboundLinkWrap link = (H2HttpInboundLinkWrap) context.getLink();
 
-                try {
-                    link.writeFramesSync(framesToWrite);
-                } catch (IOException ioe) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "IOException during HTTP/2 write: " + ioe.getMessage());
+                    try {
+                        link.writeFramesSync(framesToWrite);
+                    } catch (IOException ioe) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "IOException during HTTP/2 write: " + ioe.getMessage());
+                        }
+                        if (isInboundConnection() && !(getHttpConfig().throwIOEForInboundConnections())) {
+                            // This is a server response and the request originator (the remote client) is no longer reachable.
+                            // Swallow this exception: nothing useful can be done on the server and no further work can come in.
+                            return;
+                        }
+                        //throw back IOException so http channel can deal correctly with the app/servlet facing output stream
+                        throw ioe;
+                    } finally {
+                        framesToWrite.clear();
                     }
-                    if (isInboundConnection() && !(getHttpConfig().throwIOEForInboundConnections())) {
-                        // This is a server response and the request originator (the remote client) is no longer reachable.
-                        // Swallow this exception: nothing useful can be done on the server and no further work can come in.
-                        return;
-                    }
-                    //throw back IOException so http channel can deal correctly with the app/servlet facing output stream
-                    throw ioe;
-                } finally {
-                    framesToWrite.clear();
                 }
             }
+        }
 
-        } else {
+        else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Sync write has no data to send.");
             }
         }
+
     }
 
     /**
@@ -5140,6 +5220,31 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (null != this.compressHandler && msg.shouldUpdateBodyHeaders()) {
             // remove Content-Length header as we are going to be changing data
             msg.removeHeader(HttpHeaderKeys.HDR_CONTENT_LENGTH);
+        }
+    }
+
+    private void setupCompressionHandler(String encoding) {
+        MSP.log("setting up compression handler");
+        if (Objects.nonNull(nettyContext)) {
+
+            Integer bufferSize = 32768;
+
+            switch (encoding) {
+                case ("gzip"):
+                    this.compressHandler = new GzipOutputHandler(Boolean.FALSE, bufferSize);
+                    break;
+                case ("x-gzip"):
+                    this.compressHandler = new GzipOutputHandler(Boolean.TRUE, bufferSize);
+                    break;
+                case ("deflate"):
+                    this.compressHandler = new DeflateOutputHandler(GenericUtils.getBytes(nettyRequest.headers().get(HttpHeaderKeys.HDR_USER_AGENT.getName())), bufferSize);
+            }
+
+        }
+
+        if (Objects.nonNull(compressHandler)) {
+            MSP.log("set compress handler, removing content length");
+            nettyResponse.headers().remove(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName());
         }
     }
 
