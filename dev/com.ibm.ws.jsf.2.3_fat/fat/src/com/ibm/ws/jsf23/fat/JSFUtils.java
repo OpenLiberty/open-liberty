@@ -60,6 +60,21 @@ public class JSFUtils {
         return sb.toString();
     }
 
+    public static String createSeleniumURLString(LibertyServer server, String contextRoot, String path) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("http://")
+                        .append("host.testcontainers.internal")
+                        .append(":")
+                        .append(server.getHttpDefaultPort())
+                        .append("/")
+                        .append(contextRoot)
+                        .append("/")
+                        .append(path);
+
+        return sb.toString();
+    }
+
     /**
      * Create a custom wait mechanism that waits for any background JavaScript to finish
      * and verifies a message in the page response.

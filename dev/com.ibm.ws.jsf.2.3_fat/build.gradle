@@ -10,7 +10,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
 dependencies {
+    requiredLibs 'org.seleniumhq.selenium:selenium-java:4.8.3'
+    requiredLibs 'com.google.guava:guava:32.0.1-jre'
     requiredLibs 'net.sourceforge.cssparser:cssparser:0.9.23'
     requiredLibs 'net.sourceforge.htmlunit:htmlunit:2.20'
     requiredLibs 'net.sourceforge.htmlunit:htmlunit-core-js:2.17'
@@ -70,3 +75,4 @@ dependencies {
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer
+addRequiredLibraries.dependsOn copyTestContainers
