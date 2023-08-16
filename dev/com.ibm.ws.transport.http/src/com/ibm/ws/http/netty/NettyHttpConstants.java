@@ -25,5 +25,7 @@ public class NettyHttpConstants {
     public static final AttributeKey<Long> RESPONSE_BYTES_WRITTEN = AttributeKey.valueOf("bytesWritten");
     public static final AttributeKey<Boolean> IS_SECURE = AttributeKey.valueOf("isSecure");
     public static final AttributeKey<String> ACCEPT_ENCODING = AttributeKey.valueOf("acceptEncoding");
+    public static final AttributeKey<Boolean> CHUNCKED_ENCODING = AttributeKey.valueOf("chunkedEncodingSet");
+    public static final AttributeKey<String> COMPRESSION_ENCODING = AttributeKey.valueOf("compressionEncoding");
 
 }
