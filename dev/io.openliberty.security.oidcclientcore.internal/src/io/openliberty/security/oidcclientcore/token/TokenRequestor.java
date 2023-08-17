@@ -18,6 +18,7 @@ import java.util.Map.Entry;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.ibm.json.java.JSONObject;
@@ -116,20 +117,17 @@ public class TokenRequestor {
     }
 
     private Map<String, Object> postToTokenEndpoint() throws Exception {
+        HttpPost httpPost = oidcClientHttpUtil.setupPost(tokenEndpoint, params, clientId, clientSecret, null, authMethod);
         if (originHeaderValue != null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Will add Origin HTTP header with value: [" + originHeaderValue + "]");
             }
-            OidcClientHttpUtil.commonHeaders.add(new BasicNameValuePair("Origin", originHeaderValue));
+            httpPost.addHeader("Origin", originHeaderValue);
         }
         return oidcClientHttpUtil.postToEndpoint(tokenEndpoint,
-                                                 params,
-                                                 clientId,
-                                                 clientSecret,
-                                                 null,
+                                                 httpPost,
                                                  sslSocketFactory,
                                                  isHostnameVerification,
-                                                 authMethod,
                                                  useSystemPropertiesForHttpClientConnections);
     }
 
