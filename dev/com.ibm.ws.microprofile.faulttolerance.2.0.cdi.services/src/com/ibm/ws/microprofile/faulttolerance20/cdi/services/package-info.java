@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,9 @@
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * Components for Fault Tolerance 2.1
+ * Components for Fault Tolerance 2.0
  */
 @TraceOptions(traceGroup = "FAULTTOLERANCE")
-package com.ibm.ws.micrprofile.faulttolerance21.cdi.services;
+package com.ibm.ws.microprofile.faulttolerance20.cdi.services;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

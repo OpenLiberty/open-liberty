@@ -10,13 +10,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.micrprofile.faulttolerance20.cdi.services;
+package com.ibm.ws.microprofile.faulttolerance20.cdi.services;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
-import com.ibm.ws.microprofile.faulttolerance.cdi.FTEnablementConfig;
-import com.ibm.ws.microprofile.faulttolerance.cdi.config.impl.FTEnablementConfig11Impl;
+import com.ibm.ws.microprofile.faulttolerance.cdi.config.AnnotationConfigFactory;
+import com.ibm.ws.microprofile.faulttolerance.cdi.config.impl.AnnotationConfigFactoryImpl20;
 
-@Component(service = FTEnablementConfig.class, configurationPolicy = ConfigurationPolicy.IGNORE)
-public class FTEnablementConfigComponent extends FTEnablementConfig11Impl {}
+@Component(service = AnnotationConfigFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE)
+public class AnnotationConfigFactoryComponent extends AnnotationConfigFactoryImpl20 {}
