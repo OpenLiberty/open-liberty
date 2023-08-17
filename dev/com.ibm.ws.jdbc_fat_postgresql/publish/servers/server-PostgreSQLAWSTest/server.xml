@@ -1,0 +1,49 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>jdbc-4.2</feature>
+        <feature>jndi-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+
+    <library id="aws-library">
+    	<fileset dir="${shared.resource.dir}/aws" includes="*.jar"/>
+    </library>
+    
+    <application location="postgresqlaws.war">
+        <classloader commonLibraryRef="aws-library"/>
+    </application>
+    
+    <dataSource id="common-ds" jndiName="jdbc/common-ds" type="javax.sql.DataSource" >
+    	<jdbcDriver libraryRef="aws-library" javax.sql.DataSource="software.amazon.jdbc.ds.AwsWrapperDataSource"/>
+    	<!-- 
+    		NOTE - password is provided in targetDataSourceProperties to force wrapper to propagate password to underlying datasource
+    		From what I can tell the AwsWrapperDataSource cannot be configured to use the plugins provided 
+    		by the advanced driver and thus cannot be used for authentication using IAM or Managed Secrets
+    		See: https://github.com/awslabs/aws-advanced-jdbc-wrapper/issues/604
+    	-->
+    	<properties jdbcUrl="${env.PG_URL}" user="${env.PG_USER}"
+    				targetDataSourceProperties="password=${env.PG_PASSWORD}"/>
+    </dataSource>
+    
+    <dataSource id="driver-ds" jndiName="jdbc/driver-ds" type="java.sql.Driver" >
+    	<jdbcDriver libraryRef="aws-library"/>
+    	<properties url="${env.PG_URL}" user="${env.PG_USER}" password="${env.PG_PASSWORD}"
+    				wrapperPlugins="driverMetaData" wrapperDriverName="PostgreSQL JDBC Driver" />
+    </dataSource>
+
+</server>
