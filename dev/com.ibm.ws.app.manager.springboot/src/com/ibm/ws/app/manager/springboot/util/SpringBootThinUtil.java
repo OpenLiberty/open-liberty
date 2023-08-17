@@ -308,7 +308,8 @@ public class SpringBootThinUtil implements Closeable {
 
     protected String hash(JarFile jf, ZipEntry entry) throws IOException, NoSuchAlgorithmException {
         InputStream eis = jf.getInputStream(entry);
-        MessageDigest digest = MessageDigest.getInstance("sha-256");
+        // sha-1 is used temporarily while doing checkpoint/restore for Spring Boot applications until sha-256 is made available by JVM.
+        MessageDigest digest = getDigest("sha-256", "sha-1");
         byte[] buffer = new byte[4096];
         int read = -1;
 
@@ -317,6 +318,17 @@ public class SpringBootThinUtil implements Closeable {
         }
         byte[] digested = digest.digest();
         return convertToHexString(digested);
+    }
+    
+    private static MessageDigest getDigest(String... algorithms) throws NoSuchAlgorithmException{
+        for (String algorithm : algorithms) {
+            try {
+                return MessageDigest.getInstance(algorithm);
+            } catch (NoSuchAlgorithmException ignored) {
+                // Algorithm not available, try the next one. Allow auto FFDC here to capture the causing exception (if any).
+            }
+        }
+        throw new NoSuchAlgorithmException("No suitable hash algorithm found.");
     }
 
     private static String convertToHexString(byte[] digested) {
