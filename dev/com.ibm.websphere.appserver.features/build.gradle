@@ -156,7 +156,7 @@ task createFeatureResources {
   dependsOn parent.subprojects.minus(project).assemble
 
   def featureFiles = fileTree(dir: project.projectDir, include: 'visibility/**/*.feature')
-  inputs.files(featureFiles).skipWhenEmpty()
+  inputs.files(featureFiles).ignoreEmptyDirectories().skipWhenEmpty()
   outputs.dir buildImage.file('wlp/lib/features')
   doFirst {
     buildImage.mkdir('wlp/lib/features')
@@ -232,7 +232,7 @@ task publishFeatureResources {
   dependsOn parent.subprojects.assemble
 
   def featureFiles = fileTree(dir: project.projectDir, include: 'visibility/**/*.feature')
-  inputs.files(featureFiles).skipWhenEmpty()
+  inputs.files(featureFiles).ignoreEmptyDirectories().skipWhenEmpty()
   outputs.dir buildImage.file('wlp/lib/features')
   outputs.dir new File(project.buildDir, 'repo')
   doFirst {

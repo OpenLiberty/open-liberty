@@ -27,7 +27,7 @@ task copySource(type: Copy) {
     into downloadSrcDir
 }
 
-assemble {
+jar {
     dependsOn copySource
 }
 

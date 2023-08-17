@@ -671,7 +671,7 @@ task ejbinwarservletX01_WAR(type: War, dependsOn: SecurityEJBJarInWAR_JAR) {
  **
  ******************************************************************
  ******************************************************************/
-task ejbinwarservletM01_WAR(type: War, dependsOn: classes) {
+task ejbinwarservletM01_WAR(type: War, dependsOn: SecurityEJBJarInWAR_JAR) {
   description 'WAR to be used for ejb-jar M01 test'
   destinationDirectory = file(appBuildDir)
   archiveFileName = "ejbinwarservletM01.war"
@@ -733,7 +733,7 @@ task ejbinwarservletMC06_WAR(type: War, dependsOn: SecurityEJBJarMCInWAR_JAR) {
  **
  ******************************************************************
  ******************************************************************/
-task ejbinwarservletM07_WAR(type: War, dependsOn: classes) {
+task ejbinwarservletM07_WAR(type: War, dependsOn: SecurityEJBJarInWAR_JAR) {
   description 'WAR to be used for ejb-jar M07 test'
   destinationDirectory = file(appBuildDir)
   archiveFileName = "ejbinwarservletM07.war"
