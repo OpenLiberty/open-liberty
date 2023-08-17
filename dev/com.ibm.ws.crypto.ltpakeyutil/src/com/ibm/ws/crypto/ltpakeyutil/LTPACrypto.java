@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.crypto.ltpakeyutil;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -43,6 +45,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 final class LTPACrypto {
 
+	private static final TraceComponent tc = Tr.register(LTPACrypto.class);
 	private static final String SIGNATURE_ALGORITHM = "SHA1withRSA";
 	private static final String CRYPTO_ALGORITHM = "RSA";
 	private static final String ENCRYPT_ALGORITHM = "DESede";
@@ -1062,6 +1065,13 @@ final class LTPACrypto {
 		} else if(LTPAKeyUtil.isZOSandRunningJava11orHigher() && LTPAKeyUtil.isOpenJCEPlusAvailable()){
 			provider = OPENJCEPLUS_NAME;
 		}
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+		if (provider == null){
+			Tr.debug(tc, "getProvider" + " Provider configured by JDK" );
+		}
+		else{
+			Tr.debug(tc, "getProvider" + " Provider configured is "+ provider );
+		}}
 		return provider;
 	}
 }
