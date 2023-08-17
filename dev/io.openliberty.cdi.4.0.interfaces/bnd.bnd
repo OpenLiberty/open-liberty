@@ -11,9 +11,14 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-
 bVersion=1.0
-	com.ibm.ws.cdi.extension
+
+Bundle-Name: io.openliberty.cdi.4.0.interfaces
+Bundle-SymbolicName: io.openliberty.cdi.4.0.interfaces
+Bundle-Description:CDI 4.0 Liberty Interfaces, version ${bVersion}
+
+javac.source: 11
+javac.target: 11
 
 Import-Package: *
 
