@@ -29,7 +29,7 @@ import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
 
 public class ExtensionArchiveImpl extends CDIArchiveImpl implements ExtensionArchive {
 
-    protected static final TraceComponent tc = Tr.register(ExtensionArchiveImpl.class);
+    private static final TraceComponent tc = Tr.register(ExtensionArchiveImpl.class);
 
     private final ExtensionContainerInfo extensionContainerInfo;
     private Set<String> spiExtensions = null;
@@ -78,6 +78,7 @@ public class ExtensionArchiveImpl extends CDIArchiveImpl implements ExtensionArc
     public Set<String> getExtensionClasses() {
         Set<String> extensionClasses = super.getExtensionClasses();
         extensionClasses.addAll(spiExtensions);
+        extensionClasses.addAll(preConstructedExtensionNames);
         return extensionClasses;
     }
 

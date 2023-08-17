@@ -44,7 +44,7 @@ import componenttest.topology.utils.FATServletClient;
  * Rather than enable access to internals for everything I split the test so we can test with and without that access.
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.LITE)
+@Mode(TestMode.FULL)
 public class CDI40ExtensionSPITest extends FATServletClient {
 
     public static final String APP_NAME = "SPI40Extension";
@@ -66,7 +66,6 @@ public class CDI40ExtensionSPITest extends FATServletClient {
         System.out.println("Install the user feature bundle... cdi.internals");
         CDIExtensionRepeatActions.installSystemFeature(server, CDIExtensionRepeatActions.CDI_INTERNALS_BUNDLE_ID);
         CDIExtensionRepeatActions.installUserExtension(server, CDIExtensionRepeatActions.CDI_SPI_EXTENSION_BUNDLE_WITH_INTERNALS_ID);
-        CDIExtensionRepeatActions.installUserExtension(server, CDIExtensionRepeatActions.CDI_SPI_WITH_NO_EXTENSION_BUNDLE_ID);
         CDIExtensionRepeatActions.installUserBundle(server, CDIExtensionRepeatActions.CDI_SPI_MISPLACED_BUNDLE_ID);
 
         WebArchive classSPIExtension = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
@@ -79,15 +78,17 @@ public class CDI40ExtensionSPITest extends FATServletClient {
 
     @AfterClass
     public static void cleanup() throws Exception {
-        final String METHOD_NAME = "cleanup";
-        Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Stopping the server.");
-        if (server.isStarted()) {
-            server.stopServer();
+        try {
+            final String METHOD_NAME = "cleanup";
+            Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Stopping the server.");
+            if (server.isStarted()) {
+                server.stopServer();
+            }
+            Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Removing cdi extension test user feature files.");
+        } finally {
+            CDIExtensionRepeatActions.uninstallUserExtension(server, CDIExtensionRepeatActions.CDI_SPI_EXTENSION_BUNDLE_ID);
+            CDIExtensionRepeatActions.uninstallUserBundle(server, CDIExtensionRepeatActions.CDI_SPI_MISPLACED_BUNDLE_ID);
+            CDIExtensionRepeatActions.uninstallSystemFeature(server, CDIExtensionRepeatActions.CDI_SPI_EXTENSION_BUNDLE_WITH_INTERNALS_ID);
         }
-        Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Removing cdi extension test user feature files.");
-        CDIExtensionRepeatActions.uninstallUserExtension(server, CDIExtensionRepeatActions.CDI_SPI_EXTENSION_BUNDLE_ID);
-        CDIExtensionRepeatActions.uninstallUserBundle(server, CDIExtensionRepeatActions.CDI_SPI_MISPLACED_BUNDLE_ID);
-        CDIExtensionRepeatActions.uninstallSystemFeature(server, CDIExtensionRepeatActions.CDI_SPI_EXTENSION_BUNDLE_WITH_INTERNALS_ID);
-        CDIExtensionRepeatActions.uninstallSystemFeature(server, CDIExtensionRepeatActions.CDI_SPI_WITH_NO_EXTENSION_BUNDLE_ID);
     }
 }

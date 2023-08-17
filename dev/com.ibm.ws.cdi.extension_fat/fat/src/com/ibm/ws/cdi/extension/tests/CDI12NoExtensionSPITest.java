@@ -70,12 +70,15 @@ public class CDI12NoExtensionSPITest extends FATServletClient {
 
     @AfterClass
     public static void cleanup() throws Exception {
-        final String METHOD_NAME = "cleanup";
-        Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Stopping the server.");
-        if (server.isStarted()) {
-            server.stopServer();
+        try {
+            final String METHOD_NAME = "cleanup";
+           Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Stopping the server.");
+            if (server.isStarted()) {
+                server.stopServer();
+            }
+            Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Removing spi extension test user feature files.");
+        } finally {
+            CDIExtensionRepeatActions.uninstallUserExtension(server, CDIExtensionRepeatActions.CDI_SPI_WITH_NO_EXTENSION_BUNDLE_ID);
         }
-        Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Removing spi extension test user feature files.");
-        CDIExtensionRepeatActions.uninstallUserExtension(server, CDIExtensionRepeatActions.CDI_SPI_WITH_NO_EXTENSION_BUNDLE_ID);
     }
 }

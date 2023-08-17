@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import javax.servlet.annotation.WebServlet;
 import org.junit.Test;
 
 import com.ibm.ws.cdi.extension.spi.test.bundle.UnregisteredBean;
-import com.ibm.ws.cdi.extension.spi.test.bundle.buildcompatible.BCExtraBean;
 import com.ibm.ws.cdi.extension.spi.test.bundle.extension.MyExtensionString;
 import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.beaninjection.MyBeanInjectionString;
 import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.producer.MyProducedString;
@@ -34,19 +33,19 @@ import componenttest.app.FATServlet;
 public class SPIExtensionServlet extends FATServlet {
 
     @Inject
-    MyExtensionString extensionString;
+    private MyExtensionString extensionString;
 
     @Inject
-    MyProducedString classString;
+    private MyProducedString classString;
 
     @Inject
-    MyBeanInjectionString beanInjectedString;
+    private MyBeanInjectionString beanInjectedString;
 
     @Inject
-    AppBean appBean;
+    private AppBean appBean;
 
     @Inject
-    CustomBDABean customBDABean;
+    private CustomBDABean customBDABean;
 
     private static final long serialVersionUID = 1L;
 
@@ -83,7 +82,7 @@ public class SPIExtensionServlet extends FATServlet {
     }
 
     @Test
-    public void testSPIInterceptorNormal() {
+    public void testSPIProducerNormal() {
         assertEquals("Produced injection", classString.toString());
     }
 

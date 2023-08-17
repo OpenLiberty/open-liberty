@@ -32,16 +32,16 @@ import componenttest.app.FATServlet;
 public class SPIExtensionServlet extends FATServlet {
 
     @Inject
-    MyProducedString classString;
+    private MyProducedString classString;
 
     @Inject
-    MyBeanInjectionString beanInjectedString;
+    private MyBeanInjectionString beanInjectedString;
 
     @Inject
-    AppBean appBean;
+    private AppBean appBean;
 
     @Inject
-    CustomBDABean customBDABean;
+    private CustomBDABean customBDABean;
 
     private static final long serialVersionUID = 1L;
 
@@ -73,7 +73,7 @@ public class SPIExtensionServlet extends FATServlet {
     }
 
     @Test
-    public void testSPIInterceptorNormal() {
+    public void testSPIProducerNormal() {
         assertEquals("Produced injection", classString.toString());
     }
 

@@ -54,13 +54,13 @@ import org.osgi.framework.ServiceReference;
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.spi.Extension;
 
-/**
- * Provides the weld-lite-extension-translator extension when the deployed application has build compatible extensions
- */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class CDI40ExtensionSPIProvider implements ExtensionArchiveProvider, ExtensionArchiveFactory {
     private static final TraceComponent tc = Tr.register(CDI40ExtensionSPIProvider.class);
 
+    /**
+     * Provides the weld-lite-extension-translator extension when the deployed application has build compatible extensions
+     */
     @Override
     public Collection<ExtensionArchive> getArchives(CDIRuntime cdiRuntime, WebSphereCDIDeployment deployment) throws CDIException {
 
