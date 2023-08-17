@@ -12,13 +12,19 @@
  *******************************************************************************/
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
+// Use a variable for the aws sdk version so that we can test customer issues easily
+ext.awsSDKVerion = '2.20.127'
+
 configurations {
   aws
   postgres
 }
 
 dependencies {
-  aws      'software.amazon.jdbc:aws-advanced-jdbc-wrapper:2.2.3'
+  aws      "software.amazon.jdbc:aws-advanced-jdbc-wrapper:2.2.3",
+           "software.amazon.awssdk:secretsmanager:${awsSDKVerion}", // Used for Secrets Manager
+           "software.amazon.awssdk:rds:${awsSDKVerion}", // Used for Identity and Access Management
+           project(':io.openliberty.com.fasterxml.jackson')
   postgres 'org.postgresql:postgresql:42.4.2'
 }
 

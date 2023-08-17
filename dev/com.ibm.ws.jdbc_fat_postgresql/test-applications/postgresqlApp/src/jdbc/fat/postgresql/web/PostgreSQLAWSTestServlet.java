@@ -16,9 +16,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.Driver;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.annotation.Resource;
@@ -27,6 +29,7 @@ import javax.sql.DataSource;
 
 import org.junit.Test;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -35,6 +38,12 @@ public class PostgreSQLAWSTestServlet extends FATServlet {
 
     @Resource(lookup = "jdbc/common-ds")
     private DataSource common_ds;
+
+    @Resource(lookup = "jdbc/common-ds-sm")
+    private DataSource common_sm;
+
+    @Resource(lookup = "jdbc/common-ds-iam")
+    private DataSource common_iam;
 
     @Resource(lookup = "jdbc/driver-ds")
     private DataSource driver_ds;
@@ -52,6 +61,30 @@ public class PostgreSQLAWSTestServlet extends FATServlet {
             assertTrue(con.getMetaData().getURL().contains("jdbc:postgresql:"));
 
             stmt.executeQuery("SELECT 1");
+        }
+    }
+
+    // Verify wrapped DataSource using AWS Secrets Manager fails to contact the service (TODO)
+    @Test
+    @ExpectedFFDC({ "javax.resource.spi.ResourceAllocationException",
+                    "software.amazon.awssdk.core.exception.SdkClientException" })
+    public void testCommonDataSourceSM() {
+        try (Connection con = common_sm.getConnection()) {
+            fail("Should not have been able to create connection");
+        } catch (SQLException e) {
+            assertTrue(e.getMessage().startsWith("Unable to load credentials from any of the providers in the chain AwsCredentialsProviderChain"));
+        }
+    }
+
+    // Verify wrapped DataSource using AWS Identity and Access Management fails to contact the service (TODO)
+    @Test
+    @ExpectedFFDC({ "javax.resource.spi.ResourceAllocationException",
+                    "software.amazon.awssdk.core.exception.SdkClientException" })
+    public void testCommonDataSourceIAM() {
+        try (Connection con = common_iam.getConnection()) {
+            fail("Should not have been able to create connection");
+        } catch (SQLException e) {
+            assertTrue(e.getMessage().startsWith("Unable to load credentials from any of the providers in the chain AwsCredentialsProviderChain"));
         }
     }
 

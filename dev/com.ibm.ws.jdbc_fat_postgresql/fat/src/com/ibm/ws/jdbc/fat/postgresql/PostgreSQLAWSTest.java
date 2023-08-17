@@ -68,7 +68,9 @@ public class PostgreSQLAWSTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server.isStarted()) {
-            server.stopServer();
+            server.stopServer(
+                              "J2CA0046E" //ResourceAllocationException
+            );
         }
     }
 }
