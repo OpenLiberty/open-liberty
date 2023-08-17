@@ -25,6 +25,7 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 UnsupportedConfigWarningTest30.class,
                 ConfigDropinRootTests30.class,
                 ConfigSpringBootApplicationTagTests30.class,
+                ConfigSpringBootApplicationTagWarTests30.class,
                 ConfigSpringBootApplicationClassloaderTests30.class,
                 ConfigSpringBootApplicationWithArgsTests30.class,
                 ConfigServerXMLOverrideTests30.class,
