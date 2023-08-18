@@ -1,0 +1,21 @@
+<server description="Server for testing Telemetry10">
+
+    <include location="../fatTestPorts.xml" />
+
+    <featureManager>
+        <feature>servlet-6.0</feature>
+        <feature>mpTelemetry-1.0</feature>
+        <feature>componentTest-2.0</feature>
+        <feature>restfulWS-3.1</feature>
+        <feature>mpRestClient-3.0</feature>
+    </featureManager>
+
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+
+    <application id="clientNoCDI" name="clientNoCDI" type="war" location="clientNoCDI.war">
+        <classloader apiTypeVisibility="+third-party"/>
+    </application>
+
+    <logging traceSpecification="TELEMETRY=all"/>
+
+</server>
