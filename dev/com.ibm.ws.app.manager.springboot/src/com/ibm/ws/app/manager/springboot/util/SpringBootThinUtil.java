@@ -53,6 +53,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.app.manager.springboot.container.ApplicationError;
 import com.ibm.ws.app.manager.springboot.container.ApplicationTr.Type;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * A utility class for thinning an uber jar by separating application code in a separate jar
@@ -320,15 +321,23 @@ public class SpringBootThinUtil implements Closeable {
         return convertToHexString(digested);
     }
     
-    private static MessageDigest getDigest(String... algorithms) throws NoSuchAlgorithmException{
+    @FFDCIgnore(NoSuchAlgorithmException.class)
+    private static MessageDigest getDigest(String... algorithms) throws NoSuchAlgorithmException {
+        NoSuchAlgorithmException error = null;
         for (String algorithm : algorithms) {
             try {
                 return MessageDigest.getInstance(algorithm);
-            } catch (NoSuchAlgorithmException ignored) {
-                // Algorithm not available, try the next one. Allow auto FFDC here to capture the causing exception (if any).
+            } catch (NoSuchAlgorithmException suppressed) {
+                // Algorithm not available, save the error and try the next one.
+                if (error != null) {
+                    error.addSuppressed(suppressed);
+                } else {
+                    error = suppressed;
+                }
+
             }
         }
-        throw new NoSuchAlgorithmException("No suitable hash algorithm found.");
+        throw error;
     }
 
     private static String convertToHexString(byte[] digested) {
