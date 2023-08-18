@@ -27,8 +27,12 @@ Import-Package: \
  org.apache.xml.utils*;resolution:=optional,\
  org.apache.xpath*;resolution:=optional, \
  org.apache.xml.security.*;version=${santuarioVersion}, \
- javax.xml.bind.*;resolution:=optional,\
+ javax.xml.bind.*;resolution:=optional,\,\
+ com.ctc.wstx.*;resolution:=optional,\
+ org.codehaus.stax2.*;resolution:=optional,\
  *
 
 DynamicImport-Package: \
- org.glassfish.jaxb.runtime.v2.*
+ org.glassfish.jaxb.runtime.v2.*, \
+ com.ctc.wstx.*, \
+ org.codehaus.stax2.*
