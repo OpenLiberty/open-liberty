@@ -126,7 +126,7 @@ public class UIOauthTest {
         server.addEnvVar(UI_PATH_PROPERTY, UI_PATH_VALUE);
 
         server.startServer();
-
+        server.waitForStringInLog("CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl", 60000);
         OAuthTest(UI_PATH_VALUE);
 
     }
@@ -142,6 +142,9 @@ public class UIOauthTest {
         server.addEnvVar(UI_PATH_PROPERTY, CUSTOM_UI_PATH_VALUE);
 
         server.startServer();
+        //Reduce possibility that Server is not listening on its HTTPS Port
+        //Especially for Windows if certificates are slow to create
+        server.waitForStringInLog("CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl", 60000);
 
         OAuthTest(CUSTOM_UI_PATH_VALUE);
     }
