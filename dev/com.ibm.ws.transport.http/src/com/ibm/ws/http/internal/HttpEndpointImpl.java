@@ -74,6 +74,7 @@ import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.impl.NettyConstants;
+import io.openliberty.netty.internal.tls.NettyTlsProvider;
 
 @Component(configurationPid = "com.ibm.ws.http",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
@@ -110,6 +111,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     private CHFWBundle chfw = null;
     /** Required, static Netty framework reference */
     private NettyFramework netty = null;
+    
+    private NettyTlsProvider nettyTlsProvider = null;
 
     /** Required, dynamic tcpOptions: unmodifiable map */
     private volatile ChannelConfiguration tcpOptions = null;
@@ -277,8 +280,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             httpChain = new NettyChain(this, false);
             httpSecureChain = new NettyChain(this, true);
             
-            ((NettyChain) httpChain).initNettyChain(pid, config, netty);
-            ((NettyChain) httpSecureChain).initNettyChain(pid, config, netty);
+            ((NettyChain) httpChain).initNettyChain(name, config, netty);
+            ((NettyChain) httpSecureChain).initNettyChain(name, config, netty);
            
             
         } else {
@@ -900,6 +903,20 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     
     protected NettyFramework getNettyBundle() {
         return netty;
+    }
+    
+    @Reference(name = "nettyTlsProvider", cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY, unbind = "unbindTlsProviderService")
+    protected void bindNettyTlsProvider(NettyTlsProvider tlsProvider) {
+        System.out.println("Setting Netty TLS provider");
+        this.nettyTlsProvider = tlsProvider;
+    }
+
+    protected void unbindTlsProviderService(NettyTlsProvider bundle) {
+        this.nettyTlsProvider = null;
+    }
+
+    public NettyTlsProvider getNettyTlsProvider() {
+        return this.nettyTlsProvider;
     }
 
     /**
