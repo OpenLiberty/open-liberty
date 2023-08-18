@@ -1,0 +1,87 @@
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at 	
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.${libertyBundleMicroVersion}
+
+Bundle-Name: MicroProfile Metrics 5.1
+Bundle-SymbolicName: io.openliberty.microprofile.metrics.5.1.internal
+Bundle-Description: MicroProfile Metrics Common, version ${bVersion}
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+IBM-Authorization-Roles: com.ibm.ws.management
+IBM-Web-Extension-Processing-Disabled: true
+
+Import-Package: \
+	jakarta.enterprise.inject; version="[4.0,5)",\
+	jakarta.enterprise.util; version="[4.0,5)",\
+	jakarta.annotation; version="[2.1,3)",\
+	jakarta.interceptor; version="[2.1,3)",\
+	jakarta.enterprise.context.spi; version="[4.0,5)",\
+	org.eclipse.microprofile.config; version="[3.0,4)",\
+	*
+
+Private-Package: \
+	com.ibm.ws.microprofile.metrics.resources,\
+	io.openliberty.microprofile.metrics50.internal,\
+	com.ibm.ws.microprofile.metrics.exceptions
+
+Export-Package: \
+	io.openliberty.microprofile.metrics50,\
+	io.openliberty.microprofile.metrics50.rest,\
+	io.openliberty.microprofile.metrics50.helper,\
+	io.openliberty.smallrye.metrics.adapters,\
+	io.openliberty.smallrye.metrics.cdi.adapters,\
+	io.openliberty.smallrye.metrics.cdi.adapters51
+
+-dsannotations-inherit: true
+-dsannotations: \
+	io.openliberty.microprofile.metrics50.internal.MetricsConfig,\
+	io.openliberty.microprofile.metrics50.SharedMetricRegistries,\
+	io.openliberty.microprofile.metrics50.internal.SmallryeMetricsCDIMetadata,\
+	io.openliberty.microprofile.metrics50.internal.ApplicationListener50
+
+WS-TraceGroup: METRICS
+
+-buildpath: \
+    org.eclipse.osgi;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.ws.app.manager.wab.jakarta;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.rest.handler.jakarta;version=latest,\
+	com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.webcontainer.jakarta;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.container.service.compat;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.wsspi.org.osgi.service.event;version=latest,\
+	io.openliberty.org.eclipse.microprofile.metrics.5.1;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.appserver.spi.httptransport;version=latest,\
+	io.openliberty.jakarta.servlet.6.0;version=latest,\
+	io.openliberty.microprofile.metrics.5.0.internal,\
+	com.ibm.websphere.appserver.spi.ssl;version=latest,\
+	io.openliberty.jakarta.cdi.4.0;version=latest, \
+	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
+	com.ibm.websphere.rest.handler;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.microprofile.metrics.common;version=latest,\
+	com.ibm.ws.microprofile.metrics;version=latest

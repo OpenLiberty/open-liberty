@@ -10,12 +10,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.smallrye.metrics.cdi.adapters;
+package io.openliberty.smallrye.metrics.cdi.adapters51;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.annotation.RegistryScope;
 import org.eclipse.microprofile.metrics.annotation.RegistryType;
 
 import com.ibm.websphere.ras.Tr;
@@ -66,7 +67,7 @@ public class MetricRegistryProducerAdapter {
     }
 
     @Produces
-    // @RegistryScope
+    @RegistryScope
     @Default
     public MetricRegistry getMetricRegistry(InjectionPoint ip) {
         if (srMetricsProducerObj == null)

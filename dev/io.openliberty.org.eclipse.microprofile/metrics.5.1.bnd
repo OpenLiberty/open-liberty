@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2023 IBM Corporation and others.
+# Copyright (c) 2019, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -10,29 +10,26 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/bundle.props
-bVersion=1.0.${libertyBundleMicroVersion}
+-include ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
 
 javac.source: 11
 javac.target: 11
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+Bundle-SymbolicName: io.openliberty.org.eclipse.microprofile.metrics.5.1; singleton:=true
 
-Bundle-Name: io.openliberty.io.smallrye.metrics
-Bundle-SymbolicName: io.openliberty.io.smallrye.metrics
-Bundle-Description: SmallRye Metrics, version ${bVersion}
+Import-Package: \
+  *
 
 Export-Package: \
-  !io.smallrye.metrics.jaxrs.*,\
-  io.smallrye.metrics.*;version=1.0
-#  org.jboss.logging.annotations.*, \
-#  org.jboss.logging.processor
+  org.eclipse.microprofile.metrics;version=5.1, \
+  org.eclipse.microprofile.metrics.annotation;version=5.1
+
+Include-Resource: \
+  @${repo;org.eclipse.microprofile.metrics:microprofile-metrics-api;5.1.0.RC1;EXACT}
+
+-maven-dependencies: \
+   dep1;groupId=org.eclipse.microprofile.metrics;artifactId=microprofile-metrics-api;version=5.1.0-RC1;scope=runtime
 
 WS-TraceGroup: METRICS
-
-publish.wlp.jar.suffix: lib
-
--buildpath: \
-    io.smallrye:smallrye-metrics;version=5.1.0.RC1
-	
-instrument.disabled: true
