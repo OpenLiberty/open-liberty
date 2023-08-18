@@ -385,6 +385,7 @@ org.apache.johnzon:johnzon-jsonb:1.2.18
 org.apache.johnzon:johnzon-mapper:1.1.5
 org.apache.johnzon:johnzon-mapper:1.1.8
 org.apache.johnzon:johnzon-mapper:1.2.18
+org.apache.kafka:kafka-clients:3.5.1
 org.apache.maven.indexer:indexer-core:6.2.2
 org.apache.maven:maven-artifact:3.6.3
 org.apache.maven:maven-model:3.5.0
