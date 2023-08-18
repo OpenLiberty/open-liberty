@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,14 +16,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.websocket.ClientEndpoint;
 import javax.websocket.ClientEndpointConfig;
 import javax.websocket.ClientEndpointConfig.Builder;
-import javax.websocket.DeploymentException;
 import javax.websocket.Decoder;
+import javax.websocket.DeploymentException;
 import javax.websocket.Encoder;
 import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
@@ -45,44 +43,12 @@ import com.ibm.ws.wsoc.util.Utils;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.exception.InvalidChainNameException;
 
-import io.openliberty.netty.internal.BootstrapExtended;
-import io.openliberty.netty.internal.ConfigConstants;
-import io.openliberty.netty.internal.NettyFramework;
-import io.openliberty.netty.internal.exception.NettyException;
-import io.netty.util.AttributeKey;
-
 /**
  *
  */
 public class ClientConnector {
 
     private static final TraceComponent tc = Tr.register(ClientConnector.class);
-    private BootstrapExtended bootstrap;
-    private NettyFramework nettyBundle;
-    
-    protected final static AttributeKey<String> CHAIN_ATTR_KEY = AttributeKey.valueOf("CHAIN_NAME");
-
-    public void ClientConnector() {
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "In clientConnector instantiator");
-        }
-        nettyBundle = WebSocketVersionServiceManager.getNettyBundle();
-        //Map<String, Object> options = new HashMap<String, Object>(tcpOptions);
-        Map<String, Object> options = new HashMap<String, Object>(null);
-
-        options.put(ConfigConstants.EXTERNAL_NAME, "CHAIN-defaultHttpEndpoint".toString());
-        try {
-            bootstrap = nettyBundle.createTCPBootstrapOutbound(options);
-            //bootstrap.attr("CHAIN_NAME", chainName);
-            bootstrap.attr(CHAIN_ATTR_KEY, "CHAIN-defaultHttpEndpoint".toString());
-
-        } catch (NettyException e) {
-            Tr.error(tc, "<init>: Failure initializing Netty Bootstrap", e);
-        }
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "<init>");
-
-    }
 
     public Session connectAnnotatedClass(Object annotatedClass, URI path, WebSocketContainer wsc) throws DeploymentException, IOException {
 
@@ -128,7 +94,7 @@ public class ClientConnector {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "about to call getHttpRequestor");
         }
-        HttpRequestor requestor = (HttpRequestor) (WebSocketVersionServiceManager.getHttpRequestorFactory().getHttpRequestor(endpointAddress, config, things));
+        HttpRequestor requestor = (WebSocketVersionServiceManager.getHttpRequestorFactory().getHttpRequestor(endpointAddress, config, things));
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "returned from getHttpRequestor");
         }

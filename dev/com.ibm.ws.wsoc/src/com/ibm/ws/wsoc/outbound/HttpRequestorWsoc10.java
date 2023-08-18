@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,7 +34,6 @@ import com.ibm.ws.wsoc.Constants;
 import com.ibm.ws.wsoc.HandshakeProcessor;
 import com.ibm.ws.wsoc.ParametersOfInterest;
 import com.ibm.ws.wsoc.WebSocketContainerManager;
-import com.ibm.ws.wsoc.WebSocketVersionServiceManager;
 import com.ibm.ws.wsoc.external.HandshakeResponseExt;
 import com.ibm.ws.wsoc.util.Utils;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
@@ -81,26 +80,30 @@ public class HttpRequestorWsoc10 implements HttpRequestor {
         this.things = things;
     }
 
+    @Override
     public ClientTransportAccess getClientTransportAccess() {
         return access;
     }
 
+    @Override
     public void connect() throws Exception {
 
         access = new ClientTransportAccess();
 
-        vc = (OutboundVirtualConnection) WsocOutboundChain.getVCFactory(endpointAddress);;
+        vc = (OutboundVirtualConnection) WsocOutboundChain.getVCFactory(endpointAddress);
         access.setVirtualConnection(vc);
         vc.connect(endpointAddress);
 
     }
 
+    @Override
     public void sendRequest() throws IOException, MessageSentException {
         sendRequest(null);
     }
 
     private final Map<String, List<String>> parameterMap = new HashMap<String, List<String>>();
 
+    @Override
     public void sendRequest(ParametersOfInterest poi) throws IOException, MessageSentException {
 
         httpOutboundSC = (HttpOutboundServiceContext) vc.getChannelAccessor();
@@ -217,6 +220,7 @@ public class HttpRequestorWsoc10 implements HttpRequestor {
         }
     }
 
+    @Override
     public WsByteBuffer completeResponse() throws IOException {
         HttpResponseMessage hrm = httpOutboundSC.getResponse();
 

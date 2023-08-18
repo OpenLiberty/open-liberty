@@ -136,7 +136,9 @@ public class WebSocketContainerExt implements WebSocketContainer {
         if (endpoint == null || path == null) {
             throw new IllegalArgumentException();
         }
+        Tr.debug(tc, "Calling clientconnector instantiator");
         ClientConnector x = new ClientConnector();
+        Tr.debug(tc, "calling connectclass");
         return x.connectClass(endpoint, path, endpointConfig, this);
     }
 
@@ -160,9 +162,7 @@ public class WebSocketContainerExt implements WebSocketContainer {
             Tr.error(tc, "client.invalid.endpointclass", endpointClass.toString(), e.getMessage());
             throw new DeploymentException(msg, e);
         }
-
         ClientConnector x = new ClientConnector();
-
         try {
             theObject = getEndpointInstance(endpointClass);
         } catch (DeploymentException e) {

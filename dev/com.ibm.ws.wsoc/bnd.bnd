@@ -32,11 +32,11 @@ Export-Package: \
   com.ibm.ws.wsoc.configurator.*;thread-context=true
 
 Import-Package: \
+  io.openliberty.netty.internal*, \
   !*.internal.*, \
   !com.ibm.ws.kernel.boot.cmdline, \
   io.openliberty.wsoc.speclevel, \
   io.openliberty.wsoc.ssl, \
-  io.openliberty.netty.internal*, \
   *
 
 Private-Package: \

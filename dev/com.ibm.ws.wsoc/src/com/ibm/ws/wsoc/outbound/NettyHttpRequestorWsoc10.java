@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@
 package com.ibm.ws.wsoc.outbound;
 
 import java.io.IOException;
-
 import java.nio.channels.Channel;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -29,7 +28,6 @@ import java.util.TreeMap;
 import javax.websocket.ClientEndpointConfig;
 import javax.websocket.Extension;
 import javax.websocket.Extension.Parameter;
-
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -51,10 +49,8 @@ import com.ibm.wsspi.http.channel.values.MethodValues;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 
-import io.netty.util.AttributeKey;
 import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.NettyFramework;
-import io.openliberty.netty.internal.exception.NettyException;
 import io.openliberty.netty.internal.tls.NettyTlsProvider;
 
 /**
@@ -103,18 +99,6 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
         this.endpointAddress = endpointAddress;
         this.config = config;
         this.things = things;
-        Map<String, Object> options = new HashMap<String, Object>(tcpOptions);
-        try {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.entry(this, tc, "Calling createBootstrap()");
-            }
-            bootstrap = nettyBundle.createTCPBootstrapOutbound(options);
-            bootstrap.attr(AttributeKey.valueOf("CHAIN_NAME"), chainName);
-        } catch (NettyException e) {
-            Tr.error(tc, "Failure initializing Netty Bootstrap", e);
-        }
-        Tr.debug(tc, "<init>");
-
     }
 
     @Override
@@ -138,32 +122,41 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
         //    listener.connectRequestFailedNotification(new IllegalStateException("Framework stopped"));
 
         //} else {
-        try {
 
-            bootstrap.handler(new NettyWsocClientInitializer(bootstrap.getBaseInitializer(), target)); //, listener));
+        access = new ClientTransportAccess();
+
+        vc = (OutboundVirtualConnection) WsocOutboundChain.getVCFactory(endpointAddress);;
+        access.setVirtualConnection(vc);
+        //vc.connect(endpointAddress);
+
+        try {
+            nettyBundle = WsocOutboundChain.getNetty();
+
+            bootstrap = WsocOutboundChain.getOutboundBootstrap();
 
             NettyHttpRequestorWsoc10 parent = this;
+            Tr.debug(this, tc, "Netty connecting to " + endpointAddress.getRemoteAddress().getAddress().getHostAddress() + ":" + endpointAddress.getRemoteAddress().getPort());
 
-            // LLA TODO fix the address and port
+            nettyBundle.startOutbound(this.bootstrap,
+                                      endpointAddress.getRemoteAddress().getAddress().getHostAddress(),
+                                      endpointAddress.getRemoteAddress().getPort(), f -> {
+                                          if (f.isCancelled() || !f.isSuccess()) {
+                                              Tr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());
+                                              if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                                                  Tr.entry(parent, tc, "destroy", f.cause());
+                                              //listener.connectRequestFailedNotification((Exception) f.cause());
+                                              if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                                                  Tr.exit(parent, tc, "destroy");
+                                          } else {
+                                              if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                                                  Tr.entry(parent, tc, "ready", f);
+                                              //parent.chan = f.channel();
+                                              //listener.connectRequestSucceededNotification(readyConnection);
+                                              if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                                                  Tr.exit(parent, tc, "ready");
+                                          }
 
-            nettyBundle.startOutbound(this.bootstrap, "127.0.0.1", 9080, f -> {
-                if (f.isCancelled() || !f.isSuccess()) {
-                    Tr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                        Tr.entry(parent, tc, "destroy", f.cause());
-                    //listener.connectRequestFailedNotification((Exception) f.cause());
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                        Tr.exit(parent, tc, "destroy");
-                } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                        Tr.entry(parent, tc, "ready", f);
-                    //parent.chan = f.channel();
-                    //listener.connectRequestSucceededNotification(readyConnection);
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                        Tr.exit(parent, tc, "ready");
-                }
-
-            });
+                                      });
 
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -171,17 +164,10 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
             //listener.connectRequestFailedNotification(e);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                 Tr.exit(this, tc, "destroy");
-
         }
-        //}
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(this, tc, "connect");
-        //}
-
-        //access=new ClientTransportAccess();
-
-        //vc=(OutboundVirtualConnection)NettyWsocOutboundChain.getVCFactory(endpointAddress);;access.setVirtualConnection(vc);vc.connect(endpointAddress);
 
     }
 

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.wsoc.outbound;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.osgi.framework.ServiceReference;
@@ -33,6 +34,7 @@ import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
+import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.exception.NettyException;
 
@@ -66,10 +68,11 @@ public class WsocOutboundChain {
     public static final String WS_CHAIN_NAME = "WsocOutboundHttp";
     public static final String WSS_CHAIN_NAME = "WsocOutboundHttpSecure";
 
-    private final boolean isNetty = true;
-
     /** Required, static Netty framework reference */
-    private static NettyFramework nettyBundle = null;
+    private static NettyFramework nettyBundle;
+    private static BootstrapExtended bootstrap;
+    private final boolean isNetty = true;
+    private boolean useNettyTransport;
 
     public WsocOutboundChain() {
         if (!isNetty) {
@@ -109,7 +112,8 @@ public class WsocOutboundChain {
             try {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "Creating Netty bundle TCP Bootstrap Outbound");
-                nettyBundle.createTCPBootstrapOutbound(null);
+                Map<String, Object> options = new HashMap<String, Object>(tcpOptions.getConfiguration());
+                bootstrap = nettyBundle.createTCPBootstrapOutbound(options);
             } catch (NettyException e) {
                 Tr.error(tc, "<init>: Failure initializing Netty Bootstrap", e.toString());
             }
@@ -219,6 +223,8 @@ public class WsocOutboundChain {
      */
     @Reference(name = "chfwBundle")
     protected void setChfwBundle(CHFWBundle bundle) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, " Setting cfwBundle " + bundle.toString());
         chfw = bundle;
     }
 
@@ -243,7 +249,7 @@ public class WsocOutboundChain {
     @Reference(name = "nettyBundle")
     protected void setNettyBundle(NettyFramework bundle) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "Setting nettyBundle" + bundle.toString());
+            Tr.debug(this, tc, "Setting nettyBundle " + bundle.toString());
 
         nettyBundle = bundle;
     }
@@ -280,6 +286,16 @@ public class WsocOutboundChain {
     }
 
     /**
+     * @return NettyFramework associated with the NettyBundle service.
+     */
+    public static BootstrapExtended getOutboundBootstrap() {
+        Tr.entry(tc, "getOutboundBootstrap");
+
+        return bootstrap;
+
+    }
+
+    /**
      * @return ChannelFramework associated with the CHFWBundle service.
      */
     public static ChannelFramework getCfw() {
@@ -288,6 +304,15 @@ public class WsocOutboundChain {
         }
         return chfw.getFramework();
 
+    }
+
+    /**
+     * Query if Netty has been enabled for this endpoint
+     *
+     * @return true if Netty should be used for this endpoint
+     */
+    public boolean useNetty() {
+        return useNettyTransport;
     }
 
     private void performAction(Runnable action) {

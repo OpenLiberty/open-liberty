@@ -18,8 +18,8 @@ Subsystem-Name: Java WebSocket 1.1
  com.ibm.ws.wsoc.1.1,\
  io.openliberty.wsoc.ssl.internal, \
  io.openliberty.io.netty, \
- io.openliberty.netty.internal, \
  io.openliberty.io.netty.ssl, \
+ io.openliberty.netty.internal, \
  io.openliberty.netty.internal.impl
 -jars=com.ibm.websphere.appserver.api.wsoc; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.wsoc_1.0-javadoc.zip

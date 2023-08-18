@@ -17,8 +17,8 @@ Subsystem-Name: Jakarta WebSocket 2.0
  com.ibm.ws.wsoc.2.0.jakarta, \
  io.openliberty.wsoc.ssl.internal, \
  io.openliberty.io.netty, \
- io.openliberty.netty.internal, \
  io.openliberty.io.netty.ssl, \
+ io.openliberty.netty.internal, \
  io.openliberty.netty.internal.impl
 -jars=io.openliberty.wsoc; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/io.openliberty.wsoc_1.0-javadoc.zip
