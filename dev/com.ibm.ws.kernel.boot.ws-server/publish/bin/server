@@ -829,12 +829,25 @@ readServerEnv()
               fi
            fi ;;
       *=*)
-        # Only accept alphanumeric variable names to avoid eval complexities.
-        if var=`safeEcho "$line" | sed -e 's/^\([_[:alnum:]][_[:alnum:]]*\)=.*/\1/'`; then
-           case $var in
-           *=*)
-               SERVER_ENV_SETUP_FAILURE="${var} ${SERVER_ENV_SETUP_FAILURE}" ;;
-           *)
+          # The sed commands extracts the variable from the line but only if it contains alpha-numeric
+          # characters. Only accept alphanumeric variable names to avoid eval complexities.
+          if [ "`uname -s`" != "SunOS" ]; then
+
+            # This is the preferred pattern, because it handles characters 
+            # from multiple languages, but it doesn't work on Solaris.
+            var=$(safeEcho "$line" | sed -n -e 's/^\([_[:alpha:]][_[:alnum:]]*\)=.*/\1/p')
+
+          else
+            # On Solaris we cannot use alpha or alnum
+            var=$(safeEcho "$line" | sed -n -e 's/^\([a-zA-Z_][a-zA-Z0-9_]*\)=.*/\1/p')
+          fi
+
+          if [ -n "$var" ]; then
+
+            case $var in
+            *=*)
+              SERVER_ENV_SETUP_FAILURE="${var} ${SERVER_ENV_SETUP_FAILURE}" ;;
+            *)
               # if variable expansion is enabled, then we have already "sourced" the entire file.  As a result
               # all of the variables in server.env have already been defined as shell variables.  To make them
               # accessible to child processes, they need to be exported.
@@ -848,8 +861,8 @@ readServerEnv()
                  extractValueAndEscapeForEval "${line}"
                  eval "${var}=${escapeForEvalResult}; export ${var}"
               fi
-           esac
-        fi ;;
+            esac
+          fi ;;
       esac
     done
     IFS=$saveIFS
