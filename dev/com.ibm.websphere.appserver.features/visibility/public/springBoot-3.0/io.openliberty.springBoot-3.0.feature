@@ -11,3 +11,6 @@ Subsystem-Name: Spring Boot Support 3.0
 -bundles=io.openliberty.java17.internal
 kind=beta
 edition=core
+# The directive type:=beta indicates this feature works with InstantOn in the beta.
+# This is independent of the overall feature beta status.
+WLP-InstantOn-Enabled: true; type:=beta

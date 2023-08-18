@@ -59,7 +59,8 @@ Provide-Capability: spring.boot.support; jars:List<String>=springBoot30Server.ja
   io.openliberty.jakarta.servlet.6.0, \
   com.ibm.ws.logging.core;version=latest, \
   com.ibm.ws.ras.instrument;version=latest, \
-  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+  com.ibm.ws.kernel.boot.common;version=latest
 
 -dsannotations: io.openliberty.springboot.support.web.server.version30.osgi.SpringBoot30Support
 -dsannotations-inherit: true

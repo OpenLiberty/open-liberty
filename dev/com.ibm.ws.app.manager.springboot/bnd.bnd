@@ -63,7 +63,8 @@ instrument.classesExcludes: com/ibm/ws/app/manager/springboot/internal/resources
 	com.ibm.ws.org.osgi.annotation.versioning,\
 	com.ibm.ws.dynamic.bundle,\
 	com.ibm.websphere.org.osgi.service.cm,\
-	com.ibm.ws.kernel.boot.nested
+	com.ibm.ws.kernel.boot.nested,\
+	com.ibm.ws.kernel.boot.common
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
