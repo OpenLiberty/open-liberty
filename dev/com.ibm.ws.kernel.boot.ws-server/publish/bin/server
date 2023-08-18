@@ -874,15 +874,23 @@ readServerEnv()
 criuEnvDefaults() {
   if [ -z "$GLIBC_TUNABLES" ]
   then
-    GLIBC_TUNABLES=glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load:glibc.pthread.rseq=0
+    GLIBC_TUNABLES=glibc.cpu.hwcaps=z14,arch_2_07,-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load:glibc.pthread.rseq=0
   else
-    GLIBC_TUNABLES=${GLIBC_TUNABLES}:glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load:glibc.pthread.rseq=0
+    GLIBC_TUNABLES=${GLIBC_TUNABLES}:glibc.cpu.hwcaps=z14,arch_2_07,-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load:glibc.pthread.rseq=0
   fi
   export GLIBC_TUNABLES
   export LD_BIND_NOT=on
+
   # Disable CRIU's use of HW breakpoints on restore.
   # HW breakpoints are slower in some environments.
   export CRIU_FAULT=130 # 130=FI_NO_BREAKPOINTS
+
+  # for z/OS arch s390x we need to set DFLTCC=0 to disable
+  # hardware-accelerated compression for checkpoint
+  CHECK_ARCH=`arch`
+  if [ "$CHECK_ARCH" = "s390x" ]; then
+    export DFLTCC=0
+  fi
 }
 
 ##
@@ -1003,7 +1011,8 @@ javaCmd()
     fi
 
     # IgnoreUnrecognizedVMOptions is used so that other JVMs don't fail on these args
-    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+IgnoreUnrecognizedVMOptions -XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode $X_WLP_IMMUTABLE_VARS"
+    # IgnoreUnrecognizedRestoreOptions to avoid failing to restore if unsupported options are specified to restore
+    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+IgnoreUnrecognizedVMOptions -XX:+IgnoreUnrecognizedRestoreOptions -XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode $X_WLP_IMMUTABLE_VARS"
 
 
     checkCriuUnprivileged
