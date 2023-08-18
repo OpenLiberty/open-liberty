@@ -38,6 +38,8 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
  */
 public class XMLSecurityConstants {
 
+    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(XMLSecurityConstants.class);
+
     public static final DatatypeFactory datatypeFactory;
     public static final XMLOutputFactory xmlOutputFactory;
     public static final XMLOutputFactory xmlOutputFactoryNonRepairingNs;
@@ -58,12 +60,49 @@ public class XMLSecurityConstants {
         } catch (DatatypeConfigurationException e) {
             throw new RuntimeException(e);
         }
+        // Liberty Change Start: Borrowing what we did in WSSec when trying to find the
+        // Glassfish version of the JAXBImpl. This class loader can't find the WstxOutputFactory,
+        // so adding a work around to change classloaders in order to find it.
+        // TODO: investigate why we are not finding this provider
+        ClassLoader cl = null;
+        ClassLoader staximplcl = null;
+        try {
+            staximplcl = com.ctc.wstx.stax.WstxOutputFactory.class.getClassLoader();
+        } catch (Throwable t) {
+            LOG.debug("WsTxOutputFactory's classloader is not found!");
+        }
+        if (staximplcl != null) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("setting up the Woodstox classloader!");
+            }
+            cl = Thread.currentThread().getContextClassLoader();
+            Thread.currentThread().setContextClassLoader(staximplcl);
+            try {
 
-        xmlOutputFactory = XMLOutputFactory.newInstance();
-        xmlOutputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
+                xmlOutputFactory = XMLOutputFactory.newInstance();
+                xmlOutputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
 
-        xmlOutputFactoryNonRepairingNs = XMLOutputFactory.newInstance();
-        xmlOutputFactoryNonRepairingNs.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, false);
+                xmlOutputFactoryNonRepairingNs = XMLOutputFactory.newInstance();
+                xmlOutputFactoryNonRepairingNs.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, false);
+
+            } catch (Exception e2) {
+                throw new RuntimeException(e2.getMessage(), e2);
+            } finally {
+                if (cl != null) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("setting back the original class loader!");
+                    }
+                    Thread.currentThread().setContextClassLoader(cl);
+                }
+            }
+        } else {
+            xmlOutputFactory = XMLOutputFactory.newInstance();
+            xmlOutputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
+
+            xmlOutputFactoryNonRepairingNs = XMLOutputFactory.newInstance();
+            xmlOutputFactoryNonRepairingNs.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, false);
+        }
+        // Liberty Change End
     }
 
     protected XMLSecurityConstants() {
@@ -123,7 +162,7 @@ public class XMLSecurityConstants {
     public static final String NS_XMLENC = "http://www.w3.org/2001/04/xmlenc#";
     public static final String NS_XMLENC11 = "http://www.w3.org/2009/xmlenc11#";
     public static final String NS_DSIG = "http://www.w3.org/2000/09/xmldsig#";
-    public static final String NS_DSIG_MORE ="http://www.w3.org/2001/04/xmldsig-more#";
+    public static final String NS_DSIG_MORE = "http://www.w3.org/2001/04/xmldsig-more#";
     public static final String NS_DSIG_MORE_2007_05 = "http://www.w3.org/2007/05/xmldsig-more#";
     public static final String NS_DSIG11 = "http://www.w3.org/2009/xmldsig11#";
     public static final String NS_WSSE11 = "http://docs.oasis-open.org/wss/oasis-wss-wssecurity-secext-1.1.xsd";
