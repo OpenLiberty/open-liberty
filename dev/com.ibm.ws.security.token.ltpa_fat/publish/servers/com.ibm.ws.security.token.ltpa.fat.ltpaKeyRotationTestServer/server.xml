@@ -104,7 +104,7 @@
 
     <authentication id="Basic" cacheEnabled="false" />
 
-    <ltpa keysFileName="${server.config.dir}/resources/security/ltpa.keys" monitorInterval = "5" monitorDirectory="true" keysPassword="{xor}Lz4sLCgwLTs=">
+    <ltpa monitorInterval = "5" monitorDirectory="true">
         <!--
         <validationKeys fileName="validation1.keys" password="{xor}Lz4sLCgwLTs="/>
         -->

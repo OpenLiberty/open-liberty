@@ -21,6 +21,7 @@ public class LTPA extends ConfigElement {
 
     @XmlAttribute
     public String monitorDirectory;
+    @XmlAttribute
     public String monitorInterval;
 
     @Override

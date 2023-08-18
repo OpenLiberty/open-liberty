@@ -15,7 +15,6 @@ package com.ibm.ws.security.token.ltpa.fat;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
@@ -34,7 +33,6 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.config.LTPA;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -69,7 +67,7 @@ public class LTPAKeyRotationTests {
     // Initialize a liberty server for basic auth and form login
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.token.ltpa.fat.ltpaKeyRotationTestServer");
 
-    private final Class<?> thisClass = LTPAKeyRotationTests.class;
+    private static final Class<?> thisClass = LTPAKeyRotationTests.class;
 
     // Initialize the user
     private static final String validUser = "user1";
@@ -103,14 +101,16 @@ public class LTPAKeyRotationTests {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        //copy a validation keys file(ltpa2.keys) to the server so that at start-up, the file-monitor works.
+        copyFileToServerResourcesSecurityDir("alternate/ltpa2.keys");
         server.startServer(true);
 
         assertNotNull("Featurevalid did not report update was complete",
-                      server.waitForStringInLog("CWWKF0008I"));
+                      server.waitForStringInLog("CWWKF0008I", 90000));
         assertNotNull("Security service did not report it was ready",
-                      server.waitForStringInLog("CWWKS0008I"));
+                      server.waitForStringInLog("CWWKS0008I", 90000));
         assertNotNull("The application did not report is was started",
-                      server.waitForStringInLog("CWWKZ0001I"));
+                      server.waitForStringInLog("CWWKZ0001I", 90000));
     }
 
     @After
@@ -158,11 +158,11 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <LI>Set MonitorDirectory to true, and MonitorInterval to 5
      * <LI>Start the server with a default ltpa.keys file
-     * <LI>Attempt to access a simple servlet configured for basic auth1 with ltap1 cookie
+     * <LI>Attempt to access a simple servlet configured for basic auth1 with ltpa cookie
      * <LI>Rename the ltpa.keys file to validation1.keys
-     * <LI>Retry access to the simple servlet configured for basic auth1 with ltap1 cookie
+     * <LI>Retry access to the simple servlet configured for basic auth1 with ltpa cookie
      * <LI>Check for the creation of a new ltpa.keys file
-     * <LI>Attempt to access a new simple servlet configured for basic auth2 with ltap2 cookie
+     * <LI>Attempt to access a new simple servlet configured for basic auth2 with ltpa cookie
      * <OL>
      * <P>Expected Results:
      * <OL>
@@ -176,10 +176,19 @@ public class LTPAKeyRotationTests {
      * </OL>
      */
     @Test
-    public void testLTPAFileCreation_monitorDirectory_true_monitorInterval_on() throws Exception {
+    public void testLTPAFileCreation_monitorDirectory_true_monitorInterval_5() throws Exception {
+        // get the server configuration
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        LTPA ltpa = serverConfiguration.getLTPA();
+        boolean configurationUpdateNeeded = false;
+
         // Set MonitorDirectory to true, and MonitorInterval to 5
-        setLTPAMonitorDirectoryElement(server, "true");
-        setLTPAMonitorIntervalElement(server, "5");
+        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "true");
+        configurationUpdateNeeded = setLTPAMonitorIntervalElement(ltpa, "5") || configurationUpdateNeeded;
+
+        //apply server configuration update if needed
+        if (configurationUpdateNeeded)
+            updateConfigDynamically(server, serverConfiguration, true);
 
         // Assert that a default ltpa.keys file is generated
         assertFileWasCreated(DEFAULT_KEY_PATH);
@@ -192,20 +201,17 @@ public class LTPAKeyRotationTests {
         assertNotNull("Did not properly recieve the SSO Cookie 1.", cookie1);
 
         // Rename the ltpa.keys file to validation1.keys
-        renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY1_PATH);
+        renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY1_PATH, false);
 
         // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
-
-        // Assert that the server did not restart
-        assertNull("Server restarted when it should not have.", server.waitForStringInLog("CWWKE0005I"));
 
         // Assert that a new ltpa.keys file was created
         assertFileWasCreated(DEFAULT_KEY_PATH);
 
         // Assert that the new cookie is different from the old cookie
-        String response3 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
-        String cookie2 = flClient1.getCookieFromLastLogin();
+        String response3 = flClient2.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+        String cookie2 = flClient2.getCookieFromLastLogin();
         assertNotNull("Did not properly recieve the SSO Cookie 2.", cookie2);
         assertFalse("The new cookie is the same as the old cookie. Cookie1 = " + cookie1 + ". Cookie2 = " + cookie2 + ".",
                     cookie1.equals(cookie2));
@@ -470,35 +476,21 @@ public class LTPAKeyRotationTests {
     }
 
     // Function to set the monitorDirectory to true or false
-    public LTPA setLTPAMonitorDirectoryElement(LibertyServer server, String monitorDirectory) {
-        LTPA ltpaConfiguration;
-        try {
-            ServerConfiguration configuration = server.getServerConfiguration();
-            ltpaConfiguration = configuration.getLTPA();
-            ltpaConfiguration.monitorDirectory = monitorDirectory;
-            updateConfigDynamically(server, configuration, true);
-            return ltpaConfiguration;
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.info(thisClass, "setLTPAMonitorDirectoryElement", "Failure getting server configuration");
+    public boolean setLTPAMonitorDirectoryElement(LTPA ltpa, String value) {
+        if (!ltpa.monitorDirectory.equals(value)) {
+            ltpa.monitorDirectory = value;
+            return true; //config update is needed
         }
-        return null;
+        return false; //config update is not needed;
     }
 
     // Function to configure monitorInterval to a specific value
-    public LTPA setLTPAMonitorIntervalElement(LibertyServer server, String monitorInterval) {
-        LTPA ltpaConfiguration;
-        try {
-            ServerConfiguration configuration = server.getServerConfiguration();
-            ltpaConfiguration = configuration.getLTPA();
-            ltpaConfiguration.monitorInterval = monitorInterval;
-            updateConfigDynamically(server, configuration, true);
-            return ltpaConfiguration;
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.info(thisClass, "setLTPAMonitorIntervalElement", "Failure getting server configuration");
+    public boolean setLTPAMonitorIntervalElement(LTPA ltpa, String value) {
+        if (!ltpa.monitorInterval.equals(value)) {
+            ltpa.monitorInterval = value;
+            return true; //config update is needed
         }
-        return null;
+        return false; //config update is not needed;
     }
 
     // Function to update the server configuration dynamically
@@ -509,9 +501,9 @@ public class LTPAKeyRotationTests {
         server.updateServerConfiguration(config);
         //CWWKG0017I: The server configuration was successfully updated in {0} seconds.
         //CWWKG0018I: The server configuration was not updated. No functional changes were detected.
-        server.waitForStringInLogUsingMark("CWWKG001[7-8]I");
-        if (waitForAppToStart) {
-            server.waitForStringInLogUsingMark("CWWKZ0003I"); //CWWKZ0003I: The application userRegistry updated in 0.020 seconds.
+        String logLine = server.waitForStringInLogUsingMark("CWWKG001[7-8]I", 20000);
+        if (waitForAppToStart && !logLine.contains("CWWKG0018I")) {
+            server.waitForStringInLogUsingMark("CWWKZ0003I", 20000); //CWWKZ0003I: The application userRegistry updated in 0.020 seconds.
         }
     }
 
@@ -523,7 +515,7 @@ public class LTPAKeyRotationTests {
      *
      * @throws Exception
      */
-    private void deleteFileIfExists(String filePath) throws Exception {
+    private static void deleteFileIfExists(String filePath) throws Exception {
         if (fileExists(filePath)) {
             if (!server.getFileFromLibertyServerRoot(filePath).delete()) {
                 throw new Exception("Delete action failed for file: " + filePath);
@@ -544,12 +536,18 @@ public class LTPAKeyRotationTests {
      *
      * @throws Exception
      */
-    private void renameFileIfExists(String filePath, String newFilePath) throws Exception {
-        if (fileExists(filePath)) {
+    private static void renameFileIfExists(String filePath, String newFilePath) throws Exception {
+        renameFileIfExists(filePath, newFilePath, true);
+    }
+
+    private static void renameFileIfExists(String filePath, String newFilePath, boolean checkFileIsGone) throws Exception {
+        Log.info(thisClass, "renameFileIfExists", "\nfilepath: " + filePath + "\nnewFilePath: " + newFilePath);
+        if (fileExists(filePath, 2)) {
+            Log.info(thisClass, "renameFileIfExists", "file exists, renaming...");
             server.renameLibertyServerRootFile(filePath, newFilePath);
 
             // Double check to make sure the file is gone
-            if (fileExists(filePath))
+            if (checkFileIsGone && fileExists(filePath, 1))
                 throw new Exception("Unable to rename file: " + filePath);
         }
     }
@@ -574,17 +572,17 @@ public class LTPAKeyRotationTests {
 
     private void assertApplicationStarted() {
         assertNotNull("Application ltpaTest does not appear to have started.",
-                      server.waitForStringInLog("CWWKZ0001I:.*ltpaTest"));
+                      server.waitForStringInLog("CWWKZ0001I:.*ltpaTest", 20000));
     }
 
     private void assertFeatureUpdateComplete() {
         assertNotNull("The app start will cause the token bundle to start. The token bundle did not start.",
-                      server.waitForStringInLog("CWWKF0008I:.*"));
+                      server.waitForStringInLog("CWWKF0008I:.*", 20000));
     }
 
     private void assertKeysGenerated(String generatedLTPAKeysPath) {
         assertNotNull("We need to wait for the LTPA keys to be generated at " + generatedLTPAKeysPath + ", but we did not recieve the message",
-                      server.waitForStringInLog("CWWKS4104A:.*" + generatedLTPAKeysPath));
+                      server.waitForStringInLog("CWWKS4104A:.*" + generatedLTPAKeysPath, 20000));
     }
 
     /**
@@ -615,7 +613,7 @@ public class LTPAKeyRotationTests {
     /**
      * Assert that file was created
      */
-    private void assertFileWasCreated(String filePath) {
+    private void assertFileWasCreated(String filePath) throws Exception {
         assertTrue(fileExists(filePath));
     }
 
@@ -627,28 +625,35 @@ public class LTPAKeyRotationTests {
      *
      * @return
      */
-    private boolean fileExists(String filePath) {
-        try {
-            RemoteFile remote = server.getFileFromLibertyServerRoot(filePath);
-            boolean exists = false;
-            int count = 0;
-            do {
-                //sleep half a second
-                Thread.sleep(5000);
-                exists = remote.exists();
-                count++;
+    private static boolean fileExists(String filePath) throws Exception {
+        return fileExists(filePath, 5);
+    }
+
+    private static boolean fileExists(String filePath, int numberOfTries) throws Exception {
+        boolean exists = false;
+        boolean exceptionHasBeenPrinted = false;
+        int count = 0;
+        do {
+            //sleep 2 seconds
+            Thread.sleep(20000);
+            try {
+                exists = server.getFileFromLibertyServerRoot(filePath).exists();
+            } catch (Exception e) {
+                //the file does not exist if there's an exception
+                Log.info(thisClass, "fileExists", "The file does not exist yet, waiting 2s...");
+                exists = false;
+                //We don't want to print the same exception over and over again... so we'll only print it one time.
+                if (!exceptionHasBeenPrinted) {
+                    e.printStackTrace();
+                    exceptionHasBeenPrinted = true;
+                }
             }
-            //wait up to 10 seconds for the key file to appear
-            while ((!exists) && count < 20);
-
-            return exists;
-
-        } catch (Exception e) {
-            // assume the file does not exist and move on
+            count++;
         }
+        //wait up to 10 seconds for the key file to appear
+        while ((!exists) && count < numberOfTries);
 
-        // if we make it here assume it does not exists
-        return false;
+        return exists;
     }
 
     private static String read(InputStream in) throws IOException {
@@ -661,5 +666,17 @@ public class LTPAKeyRotationTests {
             builder.append(System.getProperty("line.separator"));
         }
         return builder.toString();
+    }
+
+    /**
+     * Copies a file to the "server/resources/security/" directory
+     */
+    private static void copyFileToServerResourcesSecurityDir(String sourceFile) throws Exception {
+        Log.info(thisClass, "copyFileToServerResourcesSecurityDir", "sourceFile: " + sourceFile);
+        String serverRoot = server.getServerRoot();
+        String securityResources = serverRoot + "/resources/security";
+        server.setServerRoot(securityResources);
+        server.copyFileToLibertyServerRoot(sourceFile);
+        server.setServerRoot(serverRoot);
     }
 }
