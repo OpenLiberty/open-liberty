@@ -7,8 +7,6 @@
 # 
 # SPDX-License-Identifier: EPL-2.0
 #
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=4.2
@@ -21,4 +19,4 @@ Export-Package: \
   org.codehaus.stax2.*;version=${bVersion}
   
 -includeresource: \
-  @${repo;org.codehaus.woodstox:stax2-api;${bVersion};EXACT}!/!(*/)?module-info.class
+  @${repo;org.codehaus.woodstox:stax2-api;${bVersion};EXACT}!/!module-info.class

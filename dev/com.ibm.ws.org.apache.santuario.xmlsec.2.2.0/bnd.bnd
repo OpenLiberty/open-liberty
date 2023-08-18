@@ -16,6 +16,8 @@
 
 santuarioVersion=2.3.0
 
+instrument.classesExcludes: org/apache/xml/security/stax/ext/*.class
+
 -includeresource: \
   @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/META-INF/**, \

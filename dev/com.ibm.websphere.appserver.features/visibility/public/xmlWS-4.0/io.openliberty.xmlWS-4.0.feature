@@ -18,9 +18,7 @@ IBM-API-Package: \
  com.ibm.ws.jaxws.webcontainer.jakarta, \
  com.ibm.ws.jaxws.web.jakarta, \
  com.ibm.ws.jaxws.wsat, \
- com.ibm.ws.webservices.javaee.common.jakarta, \
- io.openliberty.org.codehaus.woodstox.stax2.api, \
- io.openliberty.com.fasterxml.woodstox.core
+ com.ibm.ws.webservices.javaee.common.jakarta
 -files=\
  bin/xmlWS/wsgen; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/xmlWS/wsimport; ibm.executable:=true; ibm.file.encoding:=ebcdic, \

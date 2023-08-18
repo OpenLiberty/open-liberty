@@ -18,7 +18,7 @@ com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.15.2
 com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.15.2
 com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.15.2
 com.fasterxml.jackson.module:jackson-module-parameter-names:2.15.2
-com.fasterxml.woodstox:woodstox-core:6.2.4
+com.fasterxml.woodstox:woodstox-core:6.5.1
 com.github.docker-java:docker-java-api:3.3.1
 com.github.docker-java:docker-java-transport-zerodep:3.3.1
 com.github.docker-java:docker-java-transport:3.3.1

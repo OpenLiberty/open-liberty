@@ -26,6 +26,7 @@ import com.ibm.ws.properties.test.servlet.LibertyCXFNegativePropertiesTestServle
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 
 /*
@@ -84,6 +85,13 @@ public class LibertyCXFNegativePropertiesTest {
         // @Test = testCxfAttachmentOutputProperty()
         assertNotNull("Since cxf.multipart.attachment is not enabled, ",
                       server.waitForStringInTraceUsingMark("--uuid:"));
+
+        if (JakartaEE10Action.isActive()) {
+            // Woodstox StAX provider is enabled for these tests, assert provider is found.
+            assertNotNull("The Woodstox StAX Provider was not enabled, despite the `org.apache.cxf.stax.allowInsecureParser` property being set to false",
+                          server.waitForStringInTraceUsingMark("Jakarta EE 10 found, using Woodstox's StAX provider"));
+
+        }
 
         if (server != null && server.isStarted()) {
             // Ignore different SSL connection errors for negative test cases

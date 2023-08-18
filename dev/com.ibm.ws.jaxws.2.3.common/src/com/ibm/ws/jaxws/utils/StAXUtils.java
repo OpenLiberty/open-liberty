@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,15 +21,18 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 public class StAXUtils {
 
     private static final TraceComponent tc = Tr.register(StAXUtils.class);
+    private static final EELevel eeLevel = checkEELevel();
 
-    // The JAXB Validator API was dropped in EE10, so we can check that API to know if we're on EE10 or above
-    private static Boolean isEE10 = false;
+    // The JAXB Validator API was dropped in EE10, so we can check that API to know if we're on EE10 or above.
+    // Then if we check for Jakarta EE 9 version of the Validator API, we can just skip trying to load XLXP.
     private static final String JAVA_EE_JAXB_VALIDATOR = "javax.xml.bind.Validator";
-    private static final String JAKARTA_EE9_JAXB_VALIDATOR = "jakarta.xml.bind.Validator";
 
-    // Since we are already checking for the Jakarta EE 9 version of the Validator API, we should just skip trying to load XLXP.
-    private static Boolean isEE9 = false;
-    private static Boolean isEE8 = false;
+    // Enum used to track which EE Level we're on.
+    private static enum EELevel {
+        EE8,
+        EE9,
+        EE10;
+    }
 
     // XLXP's StAX implementation
     public static final String IBM_XLXP2_XML_EVENT_FACTORY = "com.ibm.xml.xlxp2.api.stax.XMLEventFactoryImpl";
@@ -41,96 +44,96 @@ public class StAXUtils {
     public static final String WOODSTOX_XML_INPUT_FACTORY = "com.ctc.wstx.stax.WstxInputFactory";
     public static final String WOODSTOX_XML_OUTPUT_FACTORY = "com.ctc.wstx.stax.WstxOutputFactory";
 
-    @FFDCIgnore(ClassNotFoundException.class)
+    /*
+     * This method finds and returns the classloader for a given StAX provider. The specific provider changes based on which EE Level we are on:
+     *
+     * EE10 - Woodstox StAX Provider, defaults to JRE StAX Provider if Woodstox is disabled via configuration
+     * EE9 - Default JRE StAX Provider
+     * EE8 - When running on Java 8 and WLP returns XLXP StAX provider, otherwise defaults to JRE's StAX Provider
+     *
+     */
     public static ClassLoader getStAXProviderClassLoader() {
-        // Only need to check EE level once, so skip EE level check if all values are still false.
-        if (isEE10 == false && isEE9 == false && isEE8 == false) {
-            // Need to know if we're running on EE 10 so we can use Woodstox StAX impl if true
-            checkForEELevel();
+        ClassLoader cl;
+        // We don't use XLXP with EE9 so just use the JRE's StAX provider
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "EELevel is " + eeLevel + ", loading related StAX Provider");
         }
-        if (isEE10) {
-            if (StaxUtils.ALLOW_INSECURE_PARSER_VAL) {
-                // Honor the CXF Property that disables the Woodstox StAX Provider from being picked up.
+        switch (eeLevel) {
+            case EE9:
+                // We don't use XLXP with EE9 so just use the JRE's StAX provider
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "The System Property `org.apache.cxf.stax.allowInsecureParser` is set, using JRE's StAX Provider");
+                    Tr.debug(tc, "Jakarta EE 9 found, using the JRE's StAX provider");
                 }
-                return ClassLoader.getSystemClassLoader();
-            } else {
+                cl = ClassLoader.getSystemClassLoader();
+                break;
+            case EE10:
+                if (StaxUtils.ALLOW_INSECURE_PARSER_VAL) {
+                    // Honor the CXF Property that disables the Woodstox StAX Provider from being picked up.
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "The System Property `org.apache.cxf.stax.allowInsecureParser` is set, using JRE's StAX Provider");
+                    }
+                    cl = ClassLoader.getSystemClassLoader();
+                } else {
+                    try {
+                        // Use Woodstox StAX providers on EE10
+                        Class.forName(WOODSTOX_XML_OUTPUT_FACTORY);
+                        Class.forName(WOODSTOX_XML_INPUT_FACTORY);
+                        Class<?> eventFactoryClass = Class.forName(WOODSTOX_XML_EVENT_FACTORY);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Jakarta EE 10 found, using Woodstox's StAX provider");
+                        }
+                        cl = eventFactoryClass.getClassLoader();
+                    } catch (ClassNotFoundException e) {
+                        // If the Woodstox StAX providers aren't found for some reason, should just fall back on JRE's StAX provider.
+                        // Throw a warning though, since APIs should always be available.
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Unable to load Woodstox StAX provider " + e.getMessage() + ", StAX from JRE is used");
+                        }
+                        cl = ClassLoader.getSystemClassLoader();
+                    }
+
+                }
+                break;
+            default:
+                // We're on EE8 - we need to try to load XLXP's StAX provider
+                // (XLXP is only present when running on JAVA 8 and WLP)
+                // If not found, use the default StAX provider
                 try {
-                    // Use Woodstox StAX providers on EE10
-                    Class.forName(WOODSTOX_XML_OUTPUT_FACTORY);
-                    Class.forName(WOODSTOX_XML_INPUT_FACTORY);
-                    Class<?> eventFactoryClass = Class.forName(WOODSTOX_XML_EVENT_FACTORY);
+
+                    Class.forName(IBM_XLXP2_XML_OUTPUT_FACTORY);
+                    Class.forName(IBM_XLXP2_XML_INPUT_FACTORY);
+                    Class<?> eventFactoryClass = Class.forName(IBM_XLXP2_XML_EVENT_FACTORY);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Jakarta EE 10 found, using Woodstox's StAX provider");
+                        Tr.debug(tc, "Java EE and XLXP found, using XLXP's StAX provider");
                     }
-                    return eventFactoryClass.getClassLoader();
+                    cl = eventFactoryClass.getClassLoader();
                 } catch (ClassNotFoundException e) {
-                    // If the Woodstox StAX providers aren't found for some reason, should just fall back on JRE's StAX provider.
-                    // Throw a warning though, since APIs should always be available. 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Unable to load Woodstox StAX provider " + e.getMessage() + ", StAX from JRE is used");
+                        Tr.debug(tc, "Unable to load IBM STAX XLXP2 Provider " + e.getMessage() + ", StAX from JRE is used");
                     }
-                    return ClassLoader.getSystemClassLoader();
+                    cl = ClassLoader.getSystemClassLoader();
                 }
-
-            }
-
-        } else if (isEE9) {
-            // We don't use XLXP with EE9 so just use the JRE's StAX provider
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Jakarta EE 9 found, using the JRE's StAX provider");
-            }
-            return ClassLoader.getSystemClassLoader();
-        } else {
-            // We're not on a Jakarta EE platform, so we need to try to load XLXP's StAX provider
-            try {
-
-                Class.forName(IBM_XLXP2_XML_OUTPUT_FACTORY);
-                Class.forName(IBM_XLXP2_XML_INPUT_FACTORY);
-                Class<?> eventFactoryClass = Class.forName(IBM_XLXP2_XML_EVENT_FACTORY);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Java EE and XLXP found, using XLXP's StAX provider");
-                }
-                return eventFactoryClass.getClassLoader();
-            } catch (ClassNotFoundException e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Unable to load IBM STAX XLXP2 Provider " + e.getMessage() + ", StAX from JRE is used");
-                }
-                return ClassLoader.getSystemClassLoader();
-            }
         }
+        return cl;
     }
 
-    /**
-     * @return
+    /*
+     * This method checks the EE Level by leveraging the transformation tool. If the javax.xml.bind.Validator API is present but
+     * contains jakarta, we know it's EE 9, if hasn't been transformed we know we are on EE 8. If the class isn't found at all
+     * we know we are on EE 10, because this API was removed in xmlBinding-4.0. Since we expect EE 10 to throw a CNFE, this method ignores
+     * the corresponding FFDC.
      */
     @FFDCIgnore(ClassNotFoundException.class)
-    private static void checkForEELevel() {
+    private static EELevel checkEELevel() {
         try {
-            Class.forName(JAKARTA_EE9_JAXB_VALIDATOR);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Jakarta EE 9 version of JAXB's Validator API found, isEE9 = true");
+            if (Class.forName(JAVA_EE_JAXB_VALIDATOR).getName().contains("jakarta")) {
+                return EELevel.EE9;
+            } else {
+                return EELevel.EE8;
             }
-            isEE9 = true;
+
         } catch (ClassNotFoundException e1) {
-
-            try {
-                // Check for JAVA EE version of JAXB's Validator API
-                Class.forName(JAVA_EE_JAXB_VALIDATOR);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Java EE version of JAXB's Validator API found, isEE8 = true");
-                }
-                isEE8 = true;
-            } catch (ClassNotFoundException e) {
-                // Wasn't Jakarta EE 9, so we know it's EE10 and above. 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "No JAXB Validator API found, isEE10 = true");
-                }
-                isEE10 = true;
-            }
-
+            return EELevel.EE10;
         }
-
     }
 }

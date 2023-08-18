@@ -114,7 +114,7 @@
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
-      <version>6.2.4</version>
+      <version>6.5.1</version>
     </dependency>
     <dependency>
       <groupId>com.github.docker-java</groupId>

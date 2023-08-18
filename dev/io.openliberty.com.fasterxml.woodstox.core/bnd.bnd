@@ -7,8 +7,6 @@
 # 
 # SPDX-License-Identifier: EPL-2.0
 #
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -17,8 +15,6 @@ Bundle-Name: FasterXML Woodstox Processor
 Bundle-SymbolicName: io.openliberty.com.fasterxml.woodstox.core
 Bundle-Description: Provides Woodstox Processor as a bundle
 
-# The SPI definition under META-INF/services
-# Do not publish RI javax.xml.bind.JAXBContext
 app-resources= \
   META-INF/services/javax.xml.stream.XMLEventFactory | \
   META-INF/services/javax.xml.stream.XMLInputFactory | \
@@ -29,42 +25,29 @@ Service-Component: \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=ignore; \
-    properties:= "resources=${app-resources}", \
-  com.ctc.wstx.stax.WstxOutputFactory; \
-    implementation:=com.ctc.wstx.stax.WstxOutputFactory; \
-    provide:=javax.xml.stream.XMLOutputFactory; \
-    configuration-policy:=ignore, \
-  com.ctc.wstx.stax.WstxInputFactory; \
-    implementation:=com.ctc.wstx.stax.WstxInputFactory; \
-    provide:=javax.xml.stream.XMLInputFactory; \
-    configuration-policy:=ignore, \
-  com.ctc.wstx.stax.WstxEventFactory; \
-    implementation:=com.ctc.wstx.stax.WstxEventFactory; \
-    provide:=javax.xml.stream.XMLEventFactory; \
-    configuration-policy:=ignore
+    properties:= "resources=${app-resources}"
 
 Export-Package: \
-  com.ctc.wstx.api.*;version=6.2.4, \
-  com.ctc.wstx.cfg.*;version=6.2.4, \
-  com.ctc.wstx.compat.*;version=6.2.4, \
-  com.ctc.wstx.dom.*;version=6.2.4, \
-  com.ctc.wstx.dtd.*;version=6.2.4, \
-  com.ctc.wstx.ent.*;version=6.2.4, \
-  com.ctc.wstx.exc.*;version=6.2.4, \
-  com.ctc.wstx.evt.*;version=6.2.4, \
-  com.ctc.wstx.io.*;version=6.2.4, \
-  com.ctc.wstx.msv.*;version=6.2.4, \
-  com.ctc.wstx.osgi.*;version=6.2.4, \
-  com.ctc.wstx.sax.*;version=6.2.4, \
-  com.ctc.wstx.shaded.*;version=6.2.4, \
-  com.ctc.wstx.sr.*;version=6.2.4, \
-  com.ctc.wstx.stax.*;thread-context=true;version=6.2.4, \
-  com.ctc.wstx.sw.*;version=6.2.4, \
-  com.ctc.wstx.util.*;version=6.2.4
+  com.ctc.wstx.api.*;version=6.5.1, \
+  com.ctc.wstx.cfg.*;version=6.5.1, \
+  com.ctc.wstx.compat.*;version=6.5.1, \
+  com.ctc.wstx.dom.*;version=6.5.1, \
+  com.ctc.wstx.dtd.*;version=6.5.1, \
+  com.ctc.wstx.ent.*;version=6.5.1, \
+  com.ctc.wstx.exc.*;version=6.5.1, \
+  com.ctc.wstx.evt.*;version=6.5.1, \
+  com.ctc.wstx.io.*;version=6.5.1, \
+  com.ctc.wstx.msv.*;version=6.5.1, \
+  com.ctc.wstx.osgi.*;version=6.5.1, \
+  com.ctc.wstx.sax.*;version=6.5.1, \
+  com.ctc.wstx.shaded.*;version=6.5.1, \
+  com.ctc.wstx.sr.*;version=6.5.1, \
+  com.ctc.wstx.stax.*;thread-context=true;version=6.5.1, \
+  com.ctc.wstx.sw.*;version=6.5.1, \
+  com.ctc.wstx.util.*;version=6.5.1
 
 Import-Package: \
  *
 
 -includeresource: \
-  @${repo;com.fasterxml.woodstox:woodstox-core;6.2.4;EXACT}!/!(*/)?module-info.class, \
-  META-INF=resources/META-INF
+  @${repo;com.fasterxml.woodstox:woodstox-core;6.5.1;EXACT}!/!module-info.class
