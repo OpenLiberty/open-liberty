@@ -36,6 +36,7 @@ import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -45,8 +46,10 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpsRequest;
@@ -55,6 +58,12 @@ import componenttest.topology.utils.HttpsRequest;
 public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     private static final String APP_NAME = "AppDefResourcesApp";
     private static final String DerbyVersion = "10.11.1.1";
+
+    @ClassRule
+    public static RepeatTests r = EERepeatActions.repeat("com.ibm.ws.rest.handler.config.appdef.fat",
+                                                         EERepeatActions.EE10, // EE10
+                                                         EERepeatActions.EE9, // EE9
+                                                         EERepeatActions.EE8); // EE8
 
     @Server("com.ibm.ws.rest.handler.config.appdef.fat")
     public static LibertyServer server;

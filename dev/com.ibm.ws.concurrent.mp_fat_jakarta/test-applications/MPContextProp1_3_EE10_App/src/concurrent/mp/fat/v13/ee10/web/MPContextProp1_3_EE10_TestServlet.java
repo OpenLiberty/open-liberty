@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -50,6 +50,7 @@ import javax.naming.NamingException;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.context.ThreadContext;
+import org.junit.Test;
 
 import componenttest.app.FATServlet;
 
@@ -111,6 +112,7 @@ public class MPContextProp1_3_EE10_TestServlet extends FATServlet {
     /**
      * Verify that Asynchronous is not allowed at the class level.
      */
+    @Test
     public void testAsynchronousNotAllowedOnClass() throws Exception {
         try {
             CompletableFuture<Object> stage = acBean.asyncLookup("java:comp/eeExecutor");
@@ -127,6 +129,7 @@ public class MPContextProp1_3_EE10_TestServlet extends FATServlet {
      * Invoke an asynchronous method that relies on a Jakarta EE ManagedExecutorService
      * while MicroProfile Context Propagation is enabled.
      */
+    @Test
     public void testAsyncMethodUsesJakartaEEManagedExecutorService() throws Exception {
         CompletableFuture<Object> result = appBean.eeAsyncLookup("java:comp/eeExecutor");
         assertNotNull(result.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
@@ -136,6 +139,7 @@ public class MPContextProp1_3_EE10_TestServlet extends FATServlet {
      * Invoke an asynchronous method that uses a resource reference to the
      * default managed executor as a MicroProfile ManagedExecutor.
      */
+    @Test
     public void testAsyncMethodUsesResourceRefToManagedExecutor() throws Exception {
         CompletableFuture<Object> result = appBean.mpAsyncLookup("java:module/env/defaultExecutorRef");
         assertNotNull(result.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
@@ -145,6 +149,7 @@ public class MPContextProp1_3_EE10_TestServlet extends FATServlet {
      * Use ExecutorService.close to shut down a MicroProfile ManagedExecutor and await completion of running tasks, if on Java 19 or above.
      * Otherwise, use shutdown and awaitCompletion.
      */
+    @Test
     public void testClose() throws Exception {
         ManagedExecutor executor = ManagedExecutor.builder()
                         .maxAsync(2)
@@ -202,6 +207,7 @@ public class MPContextProp1_3_EE10_TestServlet extends FATServlet {
      * that lacks context propagation to create a copied stage that uses the
      * managed executor to propagate thread context.
      */
+    @Test
     public void testCopy() throws Exception {
         CompletableFuture<StringBuilder> unmanagedStage = CompletableFuture.supplyAsync(() -> new StringBuilder());
 
@@ -222,6 +228,7 @@ public class MPContextProp1_3_EE10_TestServlet extends FATServlet {
     /**
      * Verify that custom thread context types are not propagated by the default ManagedExecutorService.
      */
+    @Test
     public void testCustomContextIsNotPropagatedByDefault() throws Exception {
         int defaultPriority = Thread.currentThread().getPriority();
         Thread.currentThread().setPriority(defaultPriority - 1);
@@ -237,6 +244,7 @@ public class MPContextProp1_3_EE10_TestServlet extends FATServlet {
     /**
      * Verify that custom thread context types are propagated if configured on the ContextServiceDefinition.
      */
+    @Test
     public void testCustomEEContextIsPropagatedWhenConfigured() throws Exception {
         CompletableFuture<String> initialStage = eeExecutor.newIncompleteFuture();
         CompletableFuture<String> executorThreadPriorities;
@@ -261,6 +269,7 @@ public class MPContextProp1_3_EE10_TestServlet extends FATServlet {
     /**
      * Verify that custom thread context types are propagated if configured on the builder.
      */
+    @Test
     public void testCustomMPContextIsPropagatedWhenConfigured() throws Exception {
         CompletableFuture<String> initialStage = mpExecutor.newIncompleteFuture();
         CompletableFuture<String> executorThreadPriorities;
@@ -286,6 +295,7 @@ public class MPContextProp1_3_EE10_TestServlet extends FATServlet {
      * java:comp/DefaultManagedExecutorService can be used interchangeably as a MicroProfile ManagedExecutor
      * or as a Jakarta EE ManagedExecutorService.
      */
+    @Test
     public void testDefaultManagedExecutorService() throws Exception {
         assertTrue(defaultExecutor.toString(), defaultExecutor instanceof ManagedExecutorService);
 
@@ -299,6 +309,7 @@ public class MPContextProp1_3_EE10_TestServlet extends FATServlet {
      * Jakarta EE Concurrency should not interfere with MicroProfile FaultTolerance Asynchronous
      * when only the MicroProfile annotation is present.
      */
+    @Test
     public void testFaultToleranceAsyncMethod() throws Exception {
         CompletionStage<Object> result = ftBean.ftAsyncLookup("java:comp/eeExecutor");
         assertNotNull(result.toCompletableFuture().get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
@@ -308,6 +319,7 @@ public class MPContextProp1_3_EE10_TestServlet extends FATServlet {
      * A method that is annotated with Jakarta EE Concurrency's Asynchronous must fail
      * if the class is annotated with MicroProfile Fault Tolerance Asynchronous.
      */
+    @Test
     public void testFaultToleranceClassLevelAsynchronousCollidesWithMethod() throws Exception {
         CompletionStage<String> stage = ftBean.doublyAsync();
         try {
@@ -324,6 +336,7 @@ public class MPContextProp1_3_EE10_TestServlet extends FATServlet {
      * A method that is annotated with Jakarta EE Concurrency's Asynchronous must fail
      * if the method is also annotated with MicroProfile Fault Tolerance Asynchronous.
      */
+    @Test
     public void testFaultToleranceCollidesOnSameAsyncMethod() throws Exception {
         CompletionStage<String> stage = appBean.doublyAsync();
         try {
@@ -342,6 +355,7 @@ public class MPContextProp1_3_EE10_TestServlet extends FATServlet {
      * ensuring that each dependent stage runs with the configured context propagation
      * of the managed executor of the stage that creates the dependent stage.
      */
+    @Test
     public void testIntermixMicroProfileAndJakartaEECompletionStages() throws Exception {
         CompletableFuture<String> eeStage1 = eeExecutor.supplyAsync(() -> {
             try {

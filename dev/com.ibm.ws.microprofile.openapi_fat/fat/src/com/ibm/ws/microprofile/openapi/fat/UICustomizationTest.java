@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -28,7 +28,6 @@ import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -54,12 +53,7 @@ public class UICustomizationTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-        MicroProfileActions.MP60, // mpOpenAPI-3.1, LITE
-        MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
-        MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
-        MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL
-        MicroProfileActions.MP22);// mpOpenAPI-1.0, FULL
+    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
 
     private final static int TIMEOUT = 10000; // in ms
     private final static int START_TIMEOUT = 60000; // in ms

@@ -83,7 +83,7 @@ public class ClientTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({MP50_ID, MP60_ID}) // EE9's Response#readEntity behaves differently when there is no entity - see test below
+    @SkipForRepeat({MP50_ID, MP60_ID, MP61_ID}) // EE9's Response#readEntity behaves differently when there is no entity - see test below
     public void testEmpty202Response(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
         Response r = builder.build(HandleResponsesClient.class).batchWidget(new Widget("Markers", 150, 0.2));

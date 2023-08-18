@@ -53,7 +53,9 @@ tested.features:\
 	mpMetrics-5.0,\
 	mpJwt-2.1,\
 	pages-3.1,\
-	jsonb-3.0
+	jsonb-3.0,\
+	mpconfig-3.1,\
+	mpmetrics-5.1
 
 -buildpath: \
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\

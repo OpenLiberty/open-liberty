@@ -8,9 +8,10 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.ws.microprofile.openapi.fat.FATSuite;
+
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -34,12 +35,7 @@ public class OpenAPIValidationTestFive {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-        MicroProfileActions.MP60, // mpOpenAPI-3.1, LITE
-        MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
-        MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
-        MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL
-        MicroProfileActions.MP22);// mpOpenAPI-1.0, FULL
+    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
 
     private static final String OPENAPI_VALIDATION_YAML = "Validation";
 

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,7 +15,6 @@ package com.ibm.ws.microprofile.rest.client.fat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-import java.util.Locale;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -23,11 +22,11 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -39,36 +38,12 @@ import mpRestClient11.async.AsyncTestServlet;
  */
 @RunWith(FATRunner.class)
 public class AsyncMethodTest extends FATServletClient {
-    
-    private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
-
 
     final static String SERVER_NAME = "mpRestClient11.async";
 
-    // To avoid bogus timeout build-breaks on slow Windows hardware only run a few versions on 
-    // Windows.
     @ClassRule
-    public static RepeatTests r;
-    static {
-        if (!(isWindows) || FATRunner.FAT_TEST_LOCALRUN) {
-            r = MicroProfileActions.repeat(SERVER_NAME, 
-                                           MicroProfileActions.MP20, //mpRestClient-1.1
-                                           MicroProfileActions.MP22, // 1.2
-                                           MicroProfileActions.MP30, // 1.3
-                                           MicroProfileActions.MP33, // 1.4
-                                           MicroProfileActions.MP40, // 2.0
-                                           MicroProfileActions.MP50, // 3.0
-                                           MicroProfileActions.MP60);// 3.0+EE10
+    public static RepeatTests r = FATSuite.repeatMP20Up(SERVER_NAME);
 
-        } else {
-            r = MicroProfileActions.repeat(SERVER_NAME, 
-                                           MicroProfileActions.MP20,//mpRestClient-1.1 
-                                           MicroProfileActions.MP60);// 3.0+EE10
-
-        }
-    }
-    
- 
     private static final String appName = "asyncApp";
 
     @Server(SERVER_NAME)
@@ -77,7 +52,7 @@ public class AsyncMethodTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, appName, "mpRestClient11.async");
+        ShrinkHelper.defaultApp(server, appName, new DeployOptions[] { DeployOptions.SERVER_ONLY }, "mpRestClient11.async");
         server.startServer();
     }
 
@@ -86,7 +61,7 @@ public class AsyncMethodTest extends FATServletClient {
         try {
             // check for error that occurs if cannot handle CompletionStage<?> generic type in JsonBProvider
             List<String> jsonbProviderErrors = server.findStringsInLogs("E Problem with reading the data.*CompletionStage");
-            assertTrue("Found JsonBProvider errors in log file", 
+            assertTrue("Found JsonBProvider errors in log file",
                        jsonbProviderErrors == null || jsonbProviderErrors.isEmpty());
         } finally {
             server.stopServer("CWWKE1102W",  //ignore server quiesce timeouts due to slow test machines

@@ -16,6 +16,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.microprofile.openapi20.fat.cache.CacheTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.DeploymentTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeConfigTest;
@@ -33,4 +35,11 @@ import io.openliberty.microprofile.openapi20.fat.shutdown.ShutdownTest;
     MergeWithServletTest.class,
     ShutdownTest.class
 })
-public class FATSuite {}
+public class FATSuite {
+    public static RepeatTests repeatDefault(String serverName) {
+        return MicroProfileActions.repeat(serverName,
+                                          MicroProfileActions.MP61, // mpOpenAPI-3.1, LITE
+                                          MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
+                                          MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
+    }
+}

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -32,6 +32,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,8 +43,11 @@ import com.ibm.ws.rest.handler.validator.loginmodule.TestLoginModule;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpsRequest;
@@ -55,6 +59,13 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
 
     @Server("validator-customLoginModule-Server")
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r1 = EERepeatActions.repeat(FeatureReplacementAction.ALL_SERVERS,
+                                                          EERepeatActions.EE10,
+                                                          EERepeatActions.EE9,
+                                                          EERepeatActions.EE8,
+                                                          EERepeatActions.EE7);
 
     private static String VERSION_REGEX = "[0-9]+\\.[0-9]+.*";
 

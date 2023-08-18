@@ -3,7 +3,6 @@
     <include location="../fatTestPorts.xml" />
 
     <featureManager>
-        <!-- This should never work -->
         <feature>microProfile-6.1</feature>
         <feature>jakartaee-10.0</feature>
     </featureManager>

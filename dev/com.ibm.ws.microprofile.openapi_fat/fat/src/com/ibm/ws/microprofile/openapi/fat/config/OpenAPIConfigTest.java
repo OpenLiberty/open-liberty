@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.ws.microprofile.openapi.fat.FATSuite;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
 
 import componenttest.annotation.AllowedFFDC;
@@ -37,7 +38,6 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
@@ -58,12 +58,7 @@ public class OpenAPIConfigTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-        MicroProfileActions.MP60, // mpOpenAPI-3.1, LITE
-        MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
-        MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
-        MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL
-        MicroProfileActions.MP22);// mpOpenAPI-1.0, FULL
+    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
 
     @Before
     public void setup() throws Exception {
@@ -143,7 +138,8 @@ public class OpenAPIConfigTest {
         // check conflict with default Doc Path
         assertWebAppStarts(DEFAULT_DOC_PATH);
         assertNotNull("UI Web Appplication is not available at /openapi/",
-            server.waitForStringInLog("CWWKO1672E")); // check that error indicating that Doc endpoint conflict is thrown
+            server.waitForStringInLog("CWWKO1672E")); // check that error indicating that Doc endpoint conflict is
+                                                      // thrown
         assertWebAppStarts(DEFAULT_UI_PATH);
 
         assertDocumentPath(DEFAULT_DOC_PATH);

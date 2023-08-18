@@ -43,6 +43,7 @@ public class TimeoutTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+                                                             MicroProfileActions.MP61, // 3.0 + EE10
                                                              MicroProfileActions.MP22, // 1.2
                                                              MicroProfileActions.MP30, // 1.3
                                                              MicroProfileActions.MP33, // 1.4
