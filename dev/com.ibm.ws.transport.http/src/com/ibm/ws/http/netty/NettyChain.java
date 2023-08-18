@@ -31,6 +31,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.tcp.TCPUtils;
@@ -49,9 +50,6 @@ public class NettyChain extends HttpChain {
     ServerBootstrapExtended bootstrap = new ServerBootstrapExtended();
     private Channel serverChannel;
 
-    private final EventLoopGroup parent;
-    private final EventLoopGroup child;
-
     /**
      * Netty Http Chain constructor
      *
@@ -60,12 +58,6 @@ public class NettyChain extends HttpChain {
      */
     public NettyChain(HttpEndpointImpl owner, boolean isHttps) {
         super(owner, isHttps);
-
-        parent = new NioEventLoopGroup();
-        child = new NioEventLoopGroup();
-
-        bootstrap.group(parent, child);
-        bootstrap.channel(NioServerSocketChannel.class);
 
     }
 
@@ -188,169 +180,7 @@ public class NettyChain extends HttpChain {
             } catch (Exception e) {
 
             }
-        }
-
-//            else {
-//                Map<Object, Object> chanProps;
-//
-//                try {
-//                    boolean sameConfig = newConfig.unchanged(oldConfig);
-//                    if (validOldConfig) {
-//                        if (sameConfig) {
-//                            int state = chainState.get();
-//                            if (state == ChainState.STARTED.val) {
-//                                // If configurations are identical, see if the listening port is also the same
-//                                // which would indicate that the chain is running with the unchanged configuration
-//                                // toggle start/stop of chain if we are somehow active on a different port..
-//                                sameConfig = oldConfig.validateActivePort();
-//                                if (sameConfig) {
-//                                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                                        Tr.debug(this, tc, "Configuration is unchanged, and chain is already started: " + oldConfig);
-//                                    }
-//                                    // EARLY EXIT: we have nothing else to do here: "new configuration" not saved
-//                                    return;
-//                                } else {
-//                                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                                        Tr.debug(this, tc, "Configuration is unchanged, but chain is running with a mismatched configuration: " + oldConfig);
-//                                    }
-//                                }
-//                            } else if (state == ChainState.QUIESCED.val) {
-//                                // Chain is in the process of stopping.. we need to wait for it
-//                                // to finish stopping before we start it again
-//                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                                    Tr.debug(this, tc, "Configuration is unchanged, chain is quiescing, wait for stop: " + newConfig);
-//                                }
-//                                stopWait.waitForStop(nettyFramework.getDefaultChainQuiesceTimeout(), this); // BLOCK
-//                            } else {
-//                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                                    Tr.debug(this, tc, "Configuration is unchanged, chain must be started: " + newConfig);
-//                                }
-//                            }
-//                        }
-//                    }
-//
-//                    if (!sameConfig) {
-//                        // Note that one path in the above block can change the value of sameConfig:
-//                        // if the started chain is actually running on a different port than we expect,
-//                        // something strange happened, and the whole thing should be stopped and restarted.
-//                        // We come through this block for the stop/teardown...
-//
-//                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                            Tr.debug(this, tc, "New/changed chain configuration " + newConfig);
-//                        }
-//
-//
-//
-//                        // We've been through channel configuration before...
-//                        // We have to destroy/rebuild the chains because the channels don't
-//                        // really support dynamic updates.
-//                        ChainData cd = cfw.getChain(chainName);
-//                        if (cd != null) {
-//                            cfw.stopChain(cd, cfw.getDefaultChainQuiesceTimeout());
-//                            stopWait.waitForStop(cfw.getDefaultChainQuiesceTimeout(), this); // BLOCK
-//                            cfw.destroyChain(cd);
-//                            cfw.removeChain(cd);
-//                        }
-//                        // Remove any channels that have to be rebuilt..
-//                        if (newConfig.tcpChanged(oldConfig))
-//                            removeChannel(tcpName);
-//
-//                        if (newConfig.sslChanged(oldConfig))
-//                            removeChannel(sslName);
-//
-//                        if (newConfig.httpChanged(oldConfig))
-//                            removeChannel(httpName);
-//
-//                        if (newConfig.endpointChanged(oldConfig))
-//                            removeChannel(dispatcherName);
-//                    }
-//
-//                    // save the new/changed configuration before we start setting up the new chain
-//                    currentConfig = newConfig;
-//
-//                    // Define and register an EndPoint to represent this chain
-//                    EndPointInfo ep = endpointMgr.defineEndPoint(endpointName, newConfig.configHost, newConfig.configPort);
-//
-//                    // TCP Channel
-////                    ChannelData tcpChannel = cfw.getChannel(tcpName);
-////                    if (tcpChannel == null) {
-////                        String typeName = (String) tcpOptions.get("type");
-////                        chanProps = new HashMap<Object, Object>(tcpOptions);
-////                        chanProps.put("endPointName", endpointName);
-////                        chanProps.put("hostname", ep.getHost());
-////                        chanProps.put("port", String.valueOf(ep.getPort()));
-//
-//                    //    tcpChannel = cfw.addChannel(tcpName, cfw.lookupFactory(typeName), chanProps);
-//                    }
-//
-////                    // SSL Channel
-////                    if (isHttps) {
-////                        ChannelData sslChannel = cfw.getChannel(sslName);
-////                        if (sslChannel == null) {
-////                            chanProps = new HashMap<Object, Object>(sslOptions);
-////                            // Put the protocol version, which allows the http channel to dynamically
-////                            // know what http version it will use.
-////                            if (owner.getProtocolVersion() != null) {
-////                                chanProps.put(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION, owner.getProtocolVersion());
-////                            }
-////                            sslChannel = cfw.addChannel(sslName, cfw.lookupFactory("SSLChannel"), chanProps);
-////                        }
-////                    }
-//
-
-//
-//                    // HTTPDispatcher Channel
-//
-//                        chanProps = new HashMap<Object, Object>();
-//                        chanProps.put(HttpDispatcherConfig.PROP_ENDPOINT, owner.getPid());
-//                    }
-//
-//                    // Add chain
-//                    ChainData cd = cfw.getChain(chainName);
-//                    if (null == cd) {
-//                        final String[] chanList;
-//                        if (isHttps)
-//                            chanList = new String[] { tcpName, sslName, httpName, dispatcherName };
-//                        else
-//                            chanList = new String[] { tcpName, httpName, dispatcherName };
-//
-//                        cd = cfw.addChain(chainName, FlowType.INBOUND, chanList);
-//                        cd.setEnabled(enabled);
-//                        cfw.addChainEventListener(this, chainName);
-//
-//                        // initialize the chain: this will find/create the channels in the chain,
-//                        // initialize each channel, and create the chain. If there are issues with any
-//                        // channel properties, they will surface here
-//                        // THIS INCLUDES ATTEMPTING TO BIND TO THE PORT
-//                        cfw.initChain(chainName);
-//                    }
-//
-//                    // We configured the chain successfully
-//                    newConfig.validConfiguration = true;
-//                } catch (ChannelException e) {
-//                    handleStartupError(e, newConfig); // FFDCIgnore: CFW will have logged and FFDCd already
-//                } catch (ChainException e) {
-//                    handleStartupError(e, newConfig); // FFDCIgnore: CFW will have logged and FFDCd already
-//                } catch (Exception e) {
-//                    // The exception stack for this is all internals and does not belong in messages.log.
-//                    Tr.error(tc, "config.httpChain.error", tcpName, e.toString());
-//                    handleStartupError(e, newConfig);
-//                }
-//
-//                if (newConfig.validConfiguration) {
-//                    try {
-//                        // Start the chain: follow along to chainStarted method (CFW callback)
-//                        cfw.startChain(chainName);
-//                    } catch (ChannelException e) {
-//                        handleStartupError(e, newConfig); // FFDCIgnore: CFW will have logged and FFDCd already
-//                    } catch (ChainException e) {
-//                        handleStartupError(e, newConfig); // FFDCIgnore: CFW will have logged and FFDCd already
-//                    } catch (Exception e) {
-//                        // The exception stack for this is all internals and does not belong in messages.log.
-//                        Tr.error(tc, "start.httpChain.error", tcpName, e.toString());
-//                        handleStartupError(e, newConfig);
-//                    }chanProps.put(HttpConfigConstants.PROPNAME_ACCESSLOG_ID, owner.getName());
-//                }
+        }           
         this.startNettyChannel();
     }
 
@@ -378,6 +208,9 @@ public class NettyChain extends HttpChain {
         info = this.endpointMgr.defineEndPoint(this.endpointName, currentConfig.configHost, currentConfig.configPort);
 
         try {
+            Map<String, Object> tcpOptions = new HashMap<String, Object>();
+            this.getOwner().getTcpOptions().forEach(tcpOptions::putIfAbsent);
+            tcpOptions.put(ConfigConstants.EXTERNAL_NAME, endpointName);
             this.bootstrap = nettyFramework.createTCPBootstrap(this.owner.getTcpOptions());
 
             HttpPipelineInitializer httpPipeline = new HttpPipelineInitializer.HttpPipelineBuilder(this).with(ConfigElement.COMPRESSION,
@@ -387,15 +220,14 @@ public class NettyChain extends HttpChain {
                                                                                                                                                                                                             this.owner.getRemoteIpConfig()).with(ConfigElement.SAMESITE,
                                                                                                                                                                                                                                                  this.owner.getSamesiteConfig()).build();
 
-            if (isHttps) {
-
-            }
-
             bootstrap.childHandler(httpPipeline);
             NettyChain parent = this;
 
             nettyFramework.start(bootstrap, info.getHost(), info.getPort(), f -> {
                 if (f.isCancelled() || !f.isSuccess()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Problem in future for starting the chain " + f.cause());
+                    }
 
                 } else {
                     parent.serverChannel = f.channel();
@@ -412,6 +244,10 @@ public class NettyChain extends HttpChain {
     @Override
     public int getActivePort() {
         return (currentConfig != null) ? currentConfig.configPort : -1;
+    }
+    
+    public String getActiveHost() {
+        return (currentConfig != null) ? currentConfig.configHost : null;
     }
 
     public VirtualConnection processNewConnection() {
