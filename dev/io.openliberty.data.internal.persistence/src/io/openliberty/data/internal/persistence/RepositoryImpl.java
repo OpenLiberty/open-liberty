@@ -15,6 +15,7 @@ package io.openliberty.data.internal.persistence;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
@@ -156,7 +157,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 || method.isDefault()) // skip default methods
                 continue;
 
-            Class<?> returnArrayType = null;
+            Class<?> returnArrayComponentType = null;
             List<Class<?>> returnTypeAtDepth = new ArrayList<>(5);
             Type type = method.getGenericReturnType();
             for (int depth = 0; depth < 5 && type != null; depth++) {
@@ -176,12 +177,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     } else if (DoubleStream.class.equals(type)) {
                         returnTypeAtDepth.add(double.class);
                         depth++;
-                    } else if (returnArrayType == null) {
-                        returnArrayType = c.getComponentType();
-                        if (returnArrayType != null) {
-                            returnTypeAtDepth.add(returnArrayType);
+                    } else if (returnArrayComponentType == null) {
+                        returnArrayComponentType = c.getComponentType();
+                        if (returnArrayComponentType != null) {
+                            returnTypeAtDepth.add(returnArrayComponentType);
                             depth++;
                         }
+                    }
+                    type = null;
+                } else if (type instanceof GenericArrayType) {
+                    // TODO cover the possibility that the generic type could be for something other than the entity, such as the primary key?
+                    Class<?> arrayComponentType = recordClass == null ? defaultEntityClass : recordClass;
+                    returnTypeAtDepth.add(arrayComponentType.arrayType());
+                    if (returnArrayComponentType == null) {
+                        returnTypeAtDepth.add(returnArrayComponentType = arrayComponentType);
+                        depth++;
                     }
                     type = null;
                 } else {
@@ -199,7 +209,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             ? defaultEntityInfoFuture //
                             : definer.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
 
-            queries.put(method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(new QueryInfo(method, returnArrayType, returnTypeAtDepth)),
+            QueryInfo queryInfo = new QueryInfo(method, returnArrayComponentType, returnTypeAtDepth);
+            queries.put(method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(queryInfo),
                                                              this::completeQueryInfo));
         }
     }
