@@ -32,8 +32,8 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                //ContextRootCookiePathTests.class,
-                //FATTest.class,
+                ContextRootCookiePathTests.class,
+                FATTest.class,
                 LTPAKeyRotationTests.class,
 })
 /**

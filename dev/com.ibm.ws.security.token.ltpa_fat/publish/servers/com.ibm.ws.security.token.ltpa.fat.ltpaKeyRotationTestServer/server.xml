@@ -100,7 +100,7 @@
 
     <webAppSecurity useContextRootForSSOCookiePath="false" />
 
-    <httpSession securityIntegrationEnabled="false"/>
+    <httpSession invalidateOnUnauthorizedSessionRequestException="true"/>
 
     <authentication id="Basic" cacheEnabled="false" />
 
