@@ -23,7 +23,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.SSO.clientTests.PrivateKeyJwt.PrivateKeyJwtClientTests;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.RSCommonTestTools;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 
@@ -81,7 +80,7 @@ public class OidcClientPrivateKeyJwtTests extends PrivateKeyJwtClientTests {
         testSettings.setFlowType(Constants.RP_FLOW);
         testSettings.setTokenEndpt(clientServer.getHttpString() + "/PrivateKeyJwtTokenEndpoint/token");
 
-        clientServer.addIgnoredServerExceptions(MessageConstants.SRVE8094W_CANNOT_SET_HEADER_RESPONSE_COMMITTED, MessageConstants.SRVE8115W_CANNOT_SET_HEADER_RESPONSE_COMMITTED);
+        allowPrivateKeyJwtErrorMessages();
 
         usingSocialClient = false;
     }

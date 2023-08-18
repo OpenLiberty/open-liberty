@@ -53,6 +53,16 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
 
     protected static boolean usingSocialClient = false;
 
+    private static boolean usingJava8() {
+        boolean usingJava8 = false;
+        if (System.getProperty("java.specification.version").matches("1\\.[789]")) {
+            usingJava8 = true;
+        }
+        Log.info(thisClass, "usingJava8", "Skip for Java 8: " + Boolean.toString(usingJava8));
+        return usingJava8;
+
+    }
+
     @Rule
     public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
 
@@ -67,7 +77,35 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
         }
     }
 
+    public static class SkipIfJava8 extends MySkipRule {
+
+        @Override
+        public Boolean callSpecificCheck() {
+
+            boolean skipIt = usingJava8();
+            Log.info(thisClass, "callSpecificCheck", "Skip for Java 8: " + Boolean.toString(skipIt));
+            return skipIt;
+
+        }
+    }
+
+    public static class SkipIfJava8OrSocial extends MySkipRule {
+
+        @Override
+        public Boolean callSpecificCheck() {
+
+            boolean skipIt = usingJava8() || usingSocialClient;
+            Log.info(thisClass, "callSpecificCheck", "Skip for Java 8 or Social Client: " + Boolean.toString(skipIt));
+            return skipIt;
+
+        }
+    }
+
     public static Class<?> thisClass = PrivateKeyJwtClientTests.class;
+
+    public static void allowPrivateKeyJwtErrorMessages() throws Exception {
+        clientServer.addIgnoredServerExceptions(MessageConstants.SRVE8094W_CANNOT_SET_HEADER_RESPONSE_COMMITTED, MessageConstants.SRVE8115W_CANNOT_SET_HEADER_RESPONSE_COMMITTED, MessageConstants.CWPKI0033E_KEYSTORE_DOES_NOT_EXIST, MessageConstants.CWPKI0809W_FAILURE_LOADING_KEYSTORE);
+    }
 
     /**
      * Process a positive test case flow when a private key should be included
@@ -498,7 +536,7 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
      * Skip this test when using a social client - it does not have a trustStoreRef, so, all cases use the sslRef
      */
     @AllowedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException", "java.security.cert.CertificateException", "io.openliberty.security.oidcclientcore.http.BadPostRequestException" })
-    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfSocialClient.class)
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfJava8OrSocial.class)
     @Test
     public void PrivateKeyJwtClientTests_accessTokenUsesRS256_privateKeyJwtUsesRS256_mismatchedKeyAliasNames_trustRefSslRefMatch() throws Exception {
 
@@ -524,6 +562,7 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
      * points to a trust store that uses a different alias name
      */
     @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException", "java.security.cert.CertificateException" })
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfJava8.class) // Java 8 has trouble with the trust store we're using.
     @Test
     public void PrivateKeyJwtClientTests_accessTokenUsesRS256_privateKeyJwtUsesRS256_mismatchedKeyAliasNames_trustRefSslRefMisMatch() throws Exception {
 
