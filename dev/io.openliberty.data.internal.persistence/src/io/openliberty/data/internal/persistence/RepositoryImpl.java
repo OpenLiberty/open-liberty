@@ -56,6 +56,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
@@ -83,6 +84,7 @@ import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
+import jakarta.data.repository.RepositoryAssist;
 import jakarta.data.repository.Slice;
 import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
@@ -124,6 +126,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private static final Set<Compare> SUPPORTS_COLLECTIONS = Set.of //
     (Compare.Equal, Compare.Contains, Compare.Empty, Compare.Not, Compare.NotContains, Compare.NotEmpty);
 
+    private static final ThreadLocal<List<EntityManager>> defaultMethodResources = new ThreadLocal<>();
+
+    private final CompletableFuture<EntityInfo> defaultEntityInfoFuture;
     private final AtomicBoolean isDisposed = new AtomicBoolean();
     private final DataExtensionProvider provider;
     final Map<Method, CompletableFuture<QueryInfo>> queries = new HashMap<>();
@@ -144,10 +149,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 throw new MappingException("Unable to load generated entity class for record " + recordClass, x); // TODO NLS
             }
 
-        CompletableFuture<EntityInfo> defaultEntityInfoFuture = definer.entityInfoMap.computeIfAbsent(defaultEntityClass, EntityInfo::newFuture);
+        defaultEntityInfoFuture = definer.entityInfoMap.computeIfAbsent(defaultEntityClass, EntityInfo::newFuture);
 
         for (Method method : repositoryInterface.getMethods()) {
-            if (method.isDefault()) // skip default methods
+            if (RepositoryAssist.class.equals(method.getDeclaringClass()) // skip mix-in interface
+                || method.isDefault()) // skip default methods
                 continue;
 
             Class<?> returnArrayType = null;
@@ -1740,6 +1746,26 @@ public class RepositoryImpl<R> implements InvocationHandler {
         return q.append(')');
     }
 
+    /**
+     * Implementation of RepositoryAssist.getResource for the specified resource type.
+     *
+     * @param type resource type.
+     * @return optional populated with the resource or the empty optional.
+     */
+    private <T> Optional<T> getResource(Class<T> type) {
+        List<EntityManager> resources = defaultMethodResources.get();
+        if (resources == null)
+            throw new IllegalStateException("The " + type.getName() + " resource cannot be obtained outside the scope of a repository default method."); // TODO NLS
+        if (EntityManager.class.equals(type)) {
+            EntityManager em = defaultEntityInfoFuture.join().persister.createEntityManager();
+            resources.add(em);
+            @SuppressWarnings("unchecked")
+            T t = (T) em;
+            return Optional.of(t);
+        }
+        return Optional.empty();
+    }
+
     @FFDCIgnore(Throwable.class)
     @Override
     @Trivial
@@ -1748,7 +1774,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
         boolean isDefaultMethod = false;
 
         if (queryInfoFuture == null)
-            if (method.isDefault()) {
+            if (RepositoryAssist.class.equals(method.getDeclaringClass())) {
+                String methodName = method.getName();
+                if ("getResource".equals(methodName))
+                    return getResource((Class<?>) args[0]);
+                else
+                    throw new UnsupportedOperationException(method.toString());
+            } else if (method.isDefault()) {
                 isDefaultMethod = true;
             } else {
                 String methodName = method.getName();
@@ -1773,14 +1805,29 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                 "(Proxy)@" + Integer.toHexString(System.identityHashCode(proxy)) +
                                                 " is no longer in scope."); // TODO
 
-            if (isDefaultMethod) {
-                // TODO invoke directly once compiling against Java 17+
-                Object returnValue = InvocationHandler.class.getMethod("invokeDefault", Object.class, Method.class, Object[].class) //
-                                .invoke(null, proxy, method, args);
-                if (trace && tc.isEntryEnabled())
-                    Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), returnValue);
-                return returnValue;
-            }
+            if (isDefaultMethod)
+                try {
+                    defaultMethodResources.set(new ArrayList<>());
+                    Object returnValue = InvocationHandler.invokeDefault(proxy, method, args);
+                    if (trace && tc.isEntryEnabled())
+                        Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), returnValue);
+                    return returnValue;
+                } finally {
+                    List<EntityManager> resources = defaultMethodResources.get();
+                    // TODO allow nested default methods where the innermost doesn't close the resources of the outer default methods?
+                    if (resources != null) {
+                        defaultMethodResources.remove();
+                        for (EntityManager em : resources)
+                            if (em.isOpen())
+                                try {
+                                    if (trace && tc.isDebugEnabled())
+                                        Tr.debug(this, tc, "close " + em);
+                                    em.close();
+                                } catch (Throwable x) {
+                                    FFDCFilter.processException(x, getClass().getName(), "1827", this);
+                                }
+                    }
+                }
 
             QueryInfo queryInfo = queryInfoFuture.join();
             EntityInfo entityInfo = queryInfo.entityInfo;
@@ -2203,7 +2250,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), returnValue);
             return returnValue;
         } catch (Throwable x) {
-            if (x instanceof Exception)
+            if (!isDefaultMethod && x instanceof Exception)
                 x = failure((Exception) x);
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), x);

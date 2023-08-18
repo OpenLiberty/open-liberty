@@ -54,6 +54,8 @@ import jakarta.data.repository.Pageable.Cursor;
 import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -212,6 +214,59 @@ public class DataJPATestServlet extends FATServlet {
         assertNotNull(found);
         assertEquals("Found " + found.toString(), 1, found.size());
         assertEquals("IBM", found.get(0).name);
+    }
+
+    /**
+     * Verify that an EntityManager can be obtained for a repository and used to perform database operations.
+     */
+    @Test
+    public void testEntityManager() throws Exception {
+        counties.deleteByNameIn(List.of("Houston"));
+
+        int[] houstonZipCodes = new int[] { 55919, 55921, 55931, 55941, 55943, 55947, 55971, 55974 };
+
+        County houston = new County("Houston", "Minnesota", 18843, houstonZipCodes, "Caledonia", "Brownsville", "Eitzen", "Hokah", "Houston", "La Crescent", "Spring Grove");
+
+        counties.insert(houston);
+
+        // Unlike save, which uses em.merge, the custom insert method uses em.persist and raises an error if the entity already exists,
+        try {
+            counties.insert(houston);
+        } catch (PersistenceException x) {
+            // expected
+        }
+
+        County c = counties.findByName("Houston").orElseThrow();
+
+        assertEquals("Houston", c.name);
+        assertEquals(18843, c.population);
+        assertEquals(Arrays.toString(houstonZipCodes), Arrays.toString(c.zipcodes));
+
+        assertEquals(1, counties.deleteByNameIn(List.of("Houston")));
+    }
+
+    /**
+     * Verify that an EntityManager is automatically closed when it goes out of scope of the default method
+     * where it was obtained.
+     */
+    @Test
+    public void testEntityManagerAutomaticallyClosed() {
+        EntityManager em = counties.getAutoClosedEntityManager();
+        assertEquals(false, em.isOpen());
+    }
+
+    /**
+     * Verify that the getResource method does not permit the EntityManager to be obtained outside the
+     * scope of a default method.
+     */
+    @Test
+    public void testEntityManagerDisallowedWithoutDefaultMethod() {
+        try {
+            EntityManager em = counties.getResource(EntityManager.class).orElseThrow();
+            fail("Should not be able to obtain EntityManager from outside the scope of a default method.");
+        } catch (IllegalStateException x) {
+            // expected
+        }
     }
 
     /**

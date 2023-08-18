@@ -21,12 +21,18 @@ import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.RepositoryAssist;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Status;
+import jakarta.transaction.UserTransaction;
+
+import javax.naming.InitialContext;
 
 /**
  * Repository for the County entity.
  */
 @Repository
-public interface Counties {
+public interface Counties extends RepositoryAssist {
 
     boolean deleteByNameAndLastUpdated(String name, Timestamp version);
 
@@ -60,6 +66,24 @@ public interface Counties {
 
     @OrderBy("population")
     Optional<Iterator<int[]>> findZipCodesByPopulationLessThanEqual(int maxPopulation);
+
+    default EntityManager getAutoClosedEntityManager() {
+        return getResource(EntityManager.class).orElseThrow();
+    }
+
+    default void insert(County c) throws Exception {
+        UserTransaction tx = InitialContext.doLookup("java:comp/UserTransaction");
+        tx.begin();
+        try (EntityManager em = getResource(EntityManager.class).orElseThrow()) {
+            em.persist(c);
+            em.flush();
+        } finally {
+            if (tx.getStatus() == Status.STATUS_MARKED_ROLLBACK)
+                tx.rollback();
+            else
+                tx.commit();
+        }
+    }
 
     boolean remove(County c);
 
