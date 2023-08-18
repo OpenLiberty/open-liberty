@@ -18,6 +18,7 @@ import componenttest.annotation.MinimumJavaLevel;
 @RunWith(Suite.class)
 @MinimumJavaLevel(javaLevel = 11)
 @SuiteClasses({
+//                ClientWithNoCdi.class, This test was written to reproduce a known bug, enable it when issue 25986 is resolved
                 JaxRsIntegration.class,
                 JaxRsIntegrationWithConcurrency.class,
                 Telemetry10.class,
