@@ -25,6 +25,7 @@ import com.ibm.websphere.channelfw.osgi.ChannelFactoryProvider;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.channelfw.ChannelConfiguration;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
@@ -33,6 +34,7 @@ import com.ibm.wsspi.channelfw.exception.ChainException;
 import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
+import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 
 import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.NettyFramework;
@@ -75,6 +77,8 @@ public class WsocOutboundChain {
     private boolean useNettyTransport;
 
     public WsocOutboundChain() {
+
+        // LLA TODO fix this
         if (!isNetty) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "Creating cfw chains");
@@ -108,7 +112,12 @@ public class WsocOutboundChain {
      *                       populated/provided by config admin
      */
     protected void activate(Map<String, Object> properties, ComponentContext context) {
-        if (isNetty) {
+
+        useNettyTransport = ProductInfo.getBetaEdition() && MetatypeUtils.parseBoolean(WS_CHAIN_NAME, "useNettyTransport", properties.get("useNettyTransport"), true);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "useNettyTransport is " + useNettyTransport);
+        if (useNetty()) {
             try {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "Creating Netty bundle TCP Bootstrap Outbound");
@@ -312,7 +321,8 @@ public class WsocOutboundChain {
      * @return true if Netty should be used for this endpoint
      */
     public boolean useNetty() {
-        return useNettyTransport;
+        // LLA TODO
+        return true;
     }
 
     private void performAction(Runnable action) {
