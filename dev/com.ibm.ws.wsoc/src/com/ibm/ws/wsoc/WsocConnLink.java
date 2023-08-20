@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -806,15 +806,16 @@ public class WsocConnLink {
                         readNotifyTriggered = false;
                         linkRead.cancelRead();
 
-                        // PH42468 Add a timeout to the wait, in case notifyAll() isn't called
-                        if (tc.isDebugEnabled()) {
-                            Tr.debug(tc, "linkSync.wait(WAIT_ON_READ_TO_CLOSE).  waiting on Read to clear");
-                        }
-                        linkSync.wait(WAIT_ON_READ_TO_CLOSE);
-
+                        // PH56266 Check notify before wait
                         if (readNotifyTriggered == false) {
                             if (tc.isDebugEnabled()) {
-                                Tr.debug(tc, "linkSync.wait() timed out, continue closing");
+                                Tr.debug(tc, "linkSync.wait(WAIT_ON_READ_TO_CLOSE).  waiting on Read to clear");
+                            }
+
+                            // PH42468 Add a timeout to the wait, in case notifyAll() isn't called
+                            linkSync.wait(WAIT_ON_READ_TO_CLOSE);
+                            if (tc.isDebugEnabled()) {
+                                Tr.debug(tc, "linkSync.wait(WAIT_ON_READ_TO_CLOSE) cleared, continue closing");
                             }
                         }
 
