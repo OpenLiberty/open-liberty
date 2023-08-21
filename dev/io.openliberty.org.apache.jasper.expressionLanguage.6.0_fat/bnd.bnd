@@ -12,7 +12,7 @@ bVersion=1.0
 
 src: \
     fat/src,\
-    test-applications/EL60SimpleTest.war/src
+    test-applications/EL60ArrayLengthTest.war/src
 
 fat.project: true
 

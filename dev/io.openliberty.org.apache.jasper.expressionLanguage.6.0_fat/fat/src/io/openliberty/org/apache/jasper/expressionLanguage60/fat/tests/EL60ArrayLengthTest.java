@@ -20,26 +20,23 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.el60.fat.simpletest.servlets.SimpleTestServlet;
+import io.openliberty.el60.fat.arraylengthtest.servlets.EL60ArrayLengthTestServlet;
 
 /**
- * This class doesn't actually test new Expression Language 6.0 function but rather is just
- * a single test to ensure that we run at least one test for this FAT bucket.
- *
- * This test class can be removed once we add more Expression Language 6.0 tests.
+ * Test the Expression Language 6.0 Array length property.
  */
 @RunWith(FATRunner.class)
-public class SimpleTest extends FATServletClient {
+public class EL60ArrayLengthTest extends FATServletClient {
 
-    @Server("expressionLanguage60_simpleTestServer")
-    @TestServlet(servlet = SimpleTestServlet.class, contextRoot = "EL60SimpleTest")
+    @Server("expressionLanguage60_arrayLengthTestServer")
+    @TestServlet(servlet = EL60ArrayLengthTestServlet.class, contextRoot = "EL60ArrayLengthTest")
     public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, "EL60SimpleTest.war", "io.openliberty.el60.fat.simpletest.servlets");
+        ShrinkHelper.defaultDropinApp(server, "EL60ArrayLengthTest.war", "io.openliberty.el60.fat.arraylengthtest.servlets");
 
-        server.startServer(SimpleTest.class.getSimpleName() + ".log");
+        server.startServer(EL60ArrayLengthTest.class.getSimpleName() + ".log");
     }
 
     @AfterClass
