@@ -66,7 +66,6 @@ public class MetricRegistryProducerAdapter {
     }
 
     @Produces
-    // @RegistryScope
     @Default
     public MetricRegistry getMetricRegistry(InjectionPoint ip) {
         if (srMetricsProducerObj == null)
