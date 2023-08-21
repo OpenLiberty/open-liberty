@@ -11,30 +11,17 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-def appDefs =
-  [ [ 'io.openliberty.checkpoint.springboot.crac.app', '.jar' ] ]
-
-appDefs.each { appDef ->
-  autoFVT.dependsOn ':' + appDef[0] + ':build'
+dependencies {
+  requiredLibs 'io.openliberty.springboot.test:io.openliberty.checkpoint.springboot.fat30.app:1.0.0'
 }
 
 autoFVT.doLast {
+  
   def server = 'checkpointSpringBoot'
   def appsDir = new File(autoFvtDir, 'publish/servers/' + server + '/apps')
 
-  println 'Auto FVT directory [ ' + autoFvtDir + ' ]'
-  println 'FAT server [ ' + server + ' ]'
-  println 'Auto FVT applications [ ' + appsDir + ' ]'
-
-  appDefs.each { appDef ->
-    def appName = appDef[0]
-    def appExt = appDef[1]
-
-    println 'FAT application [ ' + appName + ' ] [ ' + appExt + ' ]'
-
-    copy {
-      from new File( '../' + appDef[0] + '/build/libs/' + appDef[0] + '-0.0.1-SNAPSHOT' + appDef[1] )
-      into appsDir
-    }
+  copy {
+    from new File(autoFvtDir, 'lib/io.openliberty.checkpoint.springboot.fat30.app-1.0.0.jar')
+    into appsDir
   }
 }

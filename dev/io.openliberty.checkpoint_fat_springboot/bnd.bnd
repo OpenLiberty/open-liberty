@@ -26,5 +26,4 @@ fat.project: true
   io.openliberty.org.apache.commons.codec;version=latest,\
   io.openliberty.jakarta.servlet.6.0;version=latest, \
   com.ibm.ws.org.apache.httpcomponents;version=latest, \
-  io.openliberty.checkpoint.springboot.crac.app;version=latest, \
   com.ibm.ws.kernel.boot
