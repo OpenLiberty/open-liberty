@@ -14,6 +14,6 @@
  * Components for Fault Tolerance 1.1
  */
 @TraceOptions(traceGroup = "FAULTTOLERANCE")
-package com.ibm.ws.micrprofile.faulttolerance11.cdi.services;
+package com.ibm.ws.microprofile.faulttolerance11.cdi.services;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

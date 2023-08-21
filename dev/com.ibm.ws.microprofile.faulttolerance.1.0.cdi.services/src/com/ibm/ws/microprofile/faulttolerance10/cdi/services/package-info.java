@@ -10,13 +10,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.micrprofile.faulttolerance20.cdi.services;
+/**
+ * Components for Fault Tolerance 1.0
+ */
+@TraceOptions(traceGroup = "FAULTTOLERANCE")
+package com.ibm.ws.microprofile.faulttolerance10.cdi.services;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-
-import com.ibm.ws.microprofile.faulttolerance.cdi.config.AnnotationConfigFactory;
-import com.ibm.ws.microprofile.faulttolerance.cdi.config.impl.AnnotationConfigFactoryImpl20;
-
-@Component(service = AnnotationConfigFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE)
-public class AnnotationConfigFactoryComponent extends AnnotationConfigFactoryImpl20 {}
+import com.ibm.websphere.ras.annotation.TraceOptions;
