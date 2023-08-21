@@ -366,13 +366,19 @@ public class RESTHelper {
         }
         JSONConverter converter = JSONConverter.getConverter();
         String decodedURI = RESTHelper.URLDecoder(request.getURI(), converter);
-        String regexPattern = "\\Q" + objectName.replaceAll("/", "\\\\E/+\\\\Q") + "\\E";
+        String regexPattern = "/*" + "\\Q" + objectName.replaceAll("/", "\\\\E/+\\\\Q") + "\\E";
         Pattern pattern = Pattern.compile(regexPattern);
         Matcher matcher = pattern.matcher(decodedURI);
         boolean matchFound = matcher.find();
         if (matchFound) {
-            // The group is in fact what we want, it is the new version of objectName
-            return matcher.group();
+            // The group is what we want, it is the version of objectName from the original URI
+            // without the collapsed slashes. 
+            // May need to might trim off an initial '/' as the URI path separator '/' is matched by the regex
+            String newName = matcher.group();
+            if (newName.charAt(0) == '/') {
+                return newName.substring(1);
+            }
+            return newName;
         } 
         // This shouldn't happen. The regex should at least match the original object
         // name in the URI. It's unsafe to continue as there is no obvious way to
