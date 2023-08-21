@@ -89,5 +89,12 @@ public interface Counties extends RepositoryAssist {
 
     Stream<County> save(County... c);
 
+    default Object[] topLevelDefaultMethod() {
+        EntityManager emOuter1 = getResource(EntityManager.class).orElseThrow();
+        EntityManager emInner = getAutoClosedEntityManager();
+        EntityManager emOuter2 = getResource(EntityManager.class).orElseThrow();
+        return new Object[] { emOuter1, emOuter2, emOuter1.isOpen(), emOuter2.isOpen(), emInner.isOpen() };
+    }
+
     boolean updateByNameSetZipCodes(String name, int... zipcodes);
 }
