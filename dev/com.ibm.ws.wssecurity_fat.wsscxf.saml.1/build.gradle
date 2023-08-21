@@ -158,7 +158,7 @@ assemble {
   dependsOn samlwsstemplatesclient_WAR
 }
 
-addRequiredLibraries.dependsOn copyShibbolethIdpConfig, copyShibbolethServer
+addRequiredLibraries.dependsOn copyApache, copyShibbolethIdpConfig, copyShibbolethServer
 
 autoFVT.doLast {
 
