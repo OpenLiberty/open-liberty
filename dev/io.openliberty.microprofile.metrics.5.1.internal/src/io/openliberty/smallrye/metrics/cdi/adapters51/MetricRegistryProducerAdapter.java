@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.smallrye.metrics.cdi.adapters;
+package io.openliberty.smallrye.metrics.cdi.adapters51;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.annotation.RegistryScope;
 import org.eclipse.microprofile.metrics.annotation.RegistryType;
 
 import com.ibm.websphere.ras.Tr;
@@ -66,6 +67,7 @@ public class MetricRegistryProducerAdapter {
     }
 
     @Produces
+    @RegistryScope
     @Default
     public MetricRegistry getMetricRegistry(InjectionPoint ip) {
         if (srMetricsProducerObj == null)

@@ -944,7 +944,7 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-metrics</artifactId>
-      <version>5.0.1</version>
+      <version>5.1.0-RC1</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
@@ -2655,6 +2655,11 @@
       <groupId>org.eclipse.microprofile.metrics</groupId>
       <artifactId>microprofile-metrics-api</artifactId>
       <version>5.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.microprofile.metrics</groupId>
+      <artifactId>microprofile-metrics-api</artifactId>
+      <version>5.1.0-RC1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.openapi</groupId>
