@@ -16,8 +16,6 @@
         <feature>crac-1.3</feature>
     </featureManager>
 
-    <webApplication location="testApp.war">
-        <classloader apiTypeVisibility="+third-party"/>
-    </webApplication>
+    <webApplication location="testApp.war"/>
     <include location="../fatTestPorts.xml"/>
 </server>

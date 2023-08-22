@@ -51,7 +51,8 @@ import componenttest.topology.impl.LibertyServer;
                 CRaCResourceFailCheckpointTest.class,
                 CRaCResourceFailRestoreTest.class,
                 CRaCResourceRequestPhaseAfterAppStartTest.class,
-                CRaCResourceRequestPhaseBeforeAppStartTest.class
+                CRaCResourceRequestPhaseBeforeAppStartTest.class,
+                CRaCResourceMultiAppTest.class
 })
 
 public class FATSuite {
