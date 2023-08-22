@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -97,6 +98,7 @@ public class EL50BasicTestsServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE11_FEATURES) // Expression Language 6.0 removed the getFeatureDescriptors method.
     public void testGetFeatureDescriptors_returnsNull() throws Exception {
         ELResolver resolver = new CustomELResolver();
         assertNull("The result was expected to be null for ELResolver getFeatureDescriptors but was not.",

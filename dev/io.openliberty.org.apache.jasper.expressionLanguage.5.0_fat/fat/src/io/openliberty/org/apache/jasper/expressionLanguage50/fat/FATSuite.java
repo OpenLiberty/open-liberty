@@ -10,12 +10,17 @@
 package io.openliberty.org.apache.jasper.expressionLanguage50.fat;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
 
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.JavaInfo;
 import io.openliberty.org.apache.jasper.expressionLanguage50.fat.tests.EL50ArrayCoercionTest;
 import io.openliberty.org.apache.jasper.expressionLanguage50.fat.tests.EL50BasicTests;
 import io.openliberty.org.apache.jasper.expressionLanguage50.fat.tests.EL50DefaultMethodsTest;
@@ -54,5 +59,20 @@ public class FATSuite {
     @BeforeClass
     public static void generateHelpFile() {
         FatLogHandler.generateHelpFile();
+    }
+
+    @ClassRule
+    public static RepeatTests repeat;
+
+    static {
+        // EE11 requires Java 17 (Update to Java 21 when available).
+        // If we only specify EE11 for lite mode it will cause no tests to run which causes an error.
+        // If we are running on Java 11 have EE10 be the lite mode test to run.
+        if (JavaInfo.JAVA_VERSION >= 17) {
+            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                                .andWith(FeatureReplacementAction.EE11_FEATURES());
+        } else {
+            repeat = RepeatTests.with(new EmptyAction());
+        }
     }
 }
