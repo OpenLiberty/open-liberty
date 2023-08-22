@@ -38,7 +38,12 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
 
     /*
-     * Run EE10 tests in LITE mode and run all tests in FULL mode.
+     * On Windows, always run the default/empty/EE7/EE8 tests.
+     * On other Platforms:
+     * - if Java 8, run default/empty/EE7/EE8 tests.
+     * - All other Java versions
+     * -- If LITE mode, run EE9
+     * -- If FULL mode, run EE10
      */
     @ClassRule
     public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10Repeats();
