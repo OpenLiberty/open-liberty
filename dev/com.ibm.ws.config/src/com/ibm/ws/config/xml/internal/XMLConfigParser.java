@@ -453,10 +453,7 @@ public class XMLConfigParser {
             }
             if (includeResource != null) {
                 if (!includeResource.exists()){
-                    if (optionalImport) {
-                        Tr.warning(tc, "warn.cannot.resolve.optional.include", resolvePath(location));
-                        configuration = null;
-                    } else {
+                    if (!optionalImport) {
                         logError("error.cannot.read.location", resolvePath(location));
                         throw new ConfigParserTolerableException();
                     }
