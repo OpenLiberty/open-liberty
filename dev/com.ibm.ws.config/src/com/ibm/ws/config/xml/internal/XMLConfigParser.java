@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2020 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -383,38 +383,34 @@ public class XMLConfigParser {
                 // We're going to handle this after the null check below, so we don't need to handle it immediately.
             }
             if (includeResource != null) {
-                // Don't add directory to includes, just it's contents
-                if (!includeResource.isType(WsResource.Type.DIRECTORY)) {
-                    includes.add(includeResource);
-                }
-                if (includeResource.exists() &&
-                    ((includeResource.isType(WsResource.Type.FILE) || (includeResource.isType(WsResource.Type.REMOTE))))) {
-
-                    if (includeResource.isType(WsResource.Type.FILE)) {
-                        Tr.audit(tc, "audit.include.being.processed", includeResource.asFile());
-                    } else {
-                        Tr.audit(tc, "audit.include.being.processed", includeResource.toExternalURI());
-                    }
-
-                    parseIncludeConfiguration(includeResource, configuration, mergeBehavior);
-                    return;
-
-                } else if (includeResource.exists() &&
-                           ((includeResource.isType(WsResource.Type.DIRECTORY)))) {
-                    Iterator<String> children = includeResource.getChildren();
-                    ArrayList<String> alphabeticalChildren = new ArrayList<String>();
-                    while (children.hasNext()) {
-                        alphabeticalChildren.add(children.next());
-                    }
-                    Collections.sort(alphabeticalChildren);
-                    for(String child : alphabeticalChildren){
-                        parseIncludeDir(parser, docLocation, child, includes, configuration);
-                    }
-
-                } else {
+                if (!includeResource.exists()){
                     if (!optionalImport) {
                         logError("error.cannot.read.location", resolvePath(location));
                         throw new ConfigParserTolerableException();
+                    }
+                }
+                else {
+                    if ((includeResource.isType(WsResource.Type.FILE) || (includeResource.isType(WsResource.Type.REMOTE)))) {
+                        includes.add(includeResource);
+                        if (includeResource.isType(WsResource.Type.FILE)) {
+                            Tr.audit(tc, "audit.include.being.processed", includeResource.asFile());
+                        } else {
+                            Tr.audit(tc, "audit.include.being.processed", includeResource.toExternalURI());
+                        }
+
+                        parseIncludeConfiguration(includeResource, configuration, mergeBehavior);
+
+                    } else if ((includeResource.isType(WsResource.Type.DIRECTORY))) {
+                        Iterator<String> children = includeResource.getChildren();
+                        ArrayList<String> alphabeticalChildren = new ArrayList<String>();
+                        while (children.hasNext()) {
+                            alphabeticalChildren.add(children.next());
+                        }
+                        Collections.sort(alphabeticalChildren);
+                        for(String child : alphabeticalChildren){
+                            parseIncludeDir(parser, docLocation, child, includes, configuration);
+                        }
+
                     }
                 }
             } else {
@@ -456,23 +452,26 @@ public class XMLConfigParser {
                 // We're going to handle this after the null check below, so we don't need to handle it immediately.
             }
             if (includeResource != null) {
-                includes.add(includeResource);
-                if (includeResource.exists() &&
-                    ((includeResource.isType(WsResource.Type.FILE) || (includeResource.isType(WsResource.Type.REMOTE))))) {
-
-                    if (includeResource.isType(WsResource.Type.FILE)) {
-                        Tr.audit(tc, "audit.include.being.processed", includeResource.asFile());
+                if (!includeResource.exists()){
+                    if (optionalImport) {
+                        Tr.warning(tc, "warn.cannot.resolve.optional.include", resolvePath(location));
+                        configuration = null;
                     } else {
-                        Tr.audit(tc, "audit.include.being.processed", includeResource.toExternalURI());
-                    }
-
-                    parseIncludeConfiguration(includeResource, configuration, mergeBehavior);
-                    return;
-
-                } else {
-                    if (!optionalImport) {
                         logError("error.cannot.read.location", resolvePath(location));
                         throw new ConfigParserTolerableException();
+                    }
+                }
+                else{
+                    if ((includeResource.isType(WsResource.Type.FILE) || (includeResource.isType(WsResource.Type.REMOTE)))) {
+                        includes.add(includeResource);
+                        if (includeResource.isType(WsResource.Type.FILE)) {
+                            Tr.audit(tc, "audit.include.being.processed", includeResource.asFile());
+                        } else {
+                            Tr.audit(tc, "audit.include.being.processed", includeResource.toExternalURI());
+                        }
+
+                        parseIncludeConfiguration(includeResource, configuration, mergeBehavior);
+
                     }
                 }
             } else {
