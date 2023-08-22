@@ -2,9 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-bundles/cdi.spi.extension/src"/>
+	<classpathentry kind="src" path="test-bundles/cdi.spi.extension.with.internals/src"/>
 	<classpathentry kind="src" path="test-bundles/cdi.spi.constructor.fail.extension/src"/>
 	<classpathentry kind="src" path="test-bundles/cdi.helloworld.extension/src"/>
 	<classpathentry kind="src" path="test-bundles/cdi.spi.misplaced/src"/>
+	<classpathentry kind="src" path="test-bundles/cdi.spi.with.no.extension/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>

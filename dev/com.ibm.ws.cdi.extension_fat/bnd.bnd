@@ -22,6 +22,8 @@ src: \
 	test-bundles/cdi.helloworld.extension/src, \
 	test-bundles/cdi.spi.misplaced/src, \
 	test-bundles/cdi.spi.extension/src, \
+	test-bundles/cdi.spi.with.no.extension/src, \
+	test-bundles/cdi.spi.extension.with.internals/src, \
 	test-bundles/cdi.spi.constructor.fail.extension/src
 	
 tested.features:\
@@ -42,7 +44,8 @@ tested.features:\
 	pages-3.1,\
 	cdi-4.0,\
 	servlet-6.0,\
-	faces-4.0
+	faces-4.0,\
+        cdi.internals-4.0
 	
 fat.project: true
 
@@ -67,4 +70,6 @@ fat.project: true
 	com.ibm.websphere.javaee.jsp.2.3;version=latest,\
 	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\
-	com.ibm.ws.cdi.internal;version=latest
+        io.openliberty.cdi.4.0.interfaces;version=latest,\
+	com.ibm.ws.cdi.internal;version=latest,\
+	io.openliberty.jakarta.cdi.4.0

@@ -21,7 +21,8 @@ bVersion=1.0
 -dsannotations: com.ibm.ws.cdi.impl.DefaultCDI20SecurityService,\
                 com.ibm.ws.cdi.impl.CDI20BeansXmlParserImpl,\
                 com.ibm.ws.cdi.impl.CDI20AggregatedConfigurationImpl,\
-                com.ibm.ws.cdi.impl.CDI20WeldDevelopmentModeImpl
+                com.ibm.ws.cdi.impl.CDI20WeldDevelopmentModeImpl,\
+                com.ibm.ws.cdi.impl.CDI20ExtensionSPIProvider
 
 Export-Package: com.ibm.ws.cdi.executor, \
                 com.ibm.ws.cdi.utils, \

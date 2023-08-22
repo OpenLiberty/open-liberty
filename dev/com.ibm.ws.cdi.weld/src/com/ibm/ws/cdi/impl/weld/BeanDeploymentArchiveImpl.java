@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -77,8 +77,6 @@ import com.ibm.wsspi.injectionengine.ReferenceContext;
 /**
  * The implementation of Weld spi BeanDeploymentArchive to represent a CDI bean
  * archive.
- *
- *
  */
 public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive {
 
@@ -147,7 +145,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                               CDIArchive archive,
                               CDIRuntime cdiRuntime,
                               Set<String> archiveClassNames, //the classes directly in this archive
-                              Set<String> additionalClasses, //additional classes not actually in this archive
+                              Set<String> additionalClasses, //additional classes. These can be classes not actually in this archive or classes explicitly marked to be beans via the extension SPI
                               Set<String> additionalBeanDefiningAnnotations,
                               boolean extensionCanSeeApplicationBDAs,
                               Set<String> extensionClassNames,
@@ -241,6 +239,10 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                 beanDiscoveryMode = beansXml.getBeanDiscoveryMode();
             } else if ((cdiRuntime.isImplicitBeanArchivesScanningDisabled(this.archive) || isExtension())) {
                 // If the server.xml has the configuration of enableImplicitBeanArchives sets to false, we will not scan the implicit bean archives
+                beanDiscoveryMode = BeanDiscoveryMode.NONE;
+            } else if (archive.getType() == ArchiveType.RUNTIME_EXTENSION) {
+                // Runtime extensions default to none as they are extension archives (and this means that only classes explicitly returned by getBeans() will be a bean. 
+                // But if another component has added a beans.xml we will honour their request.
                 beanDiscoveryMode = BeanDiscoveryMode.NONE;
             }
         }

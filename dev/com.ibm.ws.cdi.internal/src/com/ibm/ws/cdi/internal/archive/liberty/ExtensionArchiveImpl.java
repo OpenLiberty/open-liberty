@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,14 @@ public class ExtensionArchiveImpl extends CDIArchiveImpl implements ExtensionArc
 
     private final ExtensionContainerInfo extensionContainerInfo;
     private Set<String> spiExtensions = null;
+
+    //Store these seperately so we don't try to make regular extensions out of them.
+    private Set<String> preConstructedExtensionNames = new HashSet<String>();
+    
+    //Extensions we cannot store as classnames for some reason.
+    //Currently should only ever contain a org.jboss.weld.lite.extension.translator.LiteExtensionTranslator
+    //Because LiteExtensionTranslator contain vital state in the object (namely the BCEs it translates) that is not part of the class itself.
+    private Set<Supplier<Extension>> extraSPIExtensionSuppliers = new HashSet<Supplier<Extension>>();
 
     public ExtensionArchiveImpl(ExtensionContainerInfo extensionContainerInfo,
                                 RuntimeFactory factory, Set<String> spiExtensions) throws CDIException {
@@ -70,6 +78,7 @@ public class ExtensionArchiveImpl extends CDIArchiveImpl implements ExtensionArc
     public Set<String> getExtensionClasses() {
         Set<String> extensionClasses = super.getExtensionClasses();
         extensionClasses.addAll(spiExtensions);
+        extensionClasses.addAll(preConstructedExtensionNames);
         return extensionClasses;
     }
 
@@ -97,6 +106,16 @@ public class ExtensionArchiveImpl extends CDIArchiveImpl implements ExtensionArc
                 }
             });
         }
+
+        result.addAll(extraSPIExtensionSuppliers);
+
         return result;
+    }
+
+    //Add an extension that has to be constructed early rather than at the last moment. 
+    //Currently only used for LiteExtensionTranslator
+    public void addConstructedExtension(Extension preConstructedExtension) {
+        extraSPIExtensionSuppliers.add(() -> {return preConstructedExtension;});
+        preConstructedExtensionNames.add(preConstructedExtension.getClass().getCanonicalName());
     }
 }
