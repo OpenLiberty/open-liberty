@@ -23,7 +23,7 @@
     />
 
     <logging
-      traceSpecification="Transaction=all=enabled"
+      traceSpecification="Transaction=all=enabled:JCDI=all:com.ibm.ws.webbeans*=all:org.apache.webbeans*=all:org.jboss.weld*=all:com.ibm.ws.cdi*=all"
       traceFileName="trace.log"
       maxFileSize="2000"
       maxFiles="20"
