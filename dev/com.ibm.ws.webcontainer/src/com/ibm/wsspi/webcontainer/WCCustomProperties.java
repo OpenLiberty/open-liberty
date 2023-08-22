@@ -335,7 +335,7 @@ public class WCCustomProperties {
     //23.0.0.6
     public static boolean DO_NOT_CLOSE_OUTPUT_ON_FORWARD_EXCEPTION;
     
-    //23.0.0.8 This is an old property which was not exposed in this class; moving it here
+    //23.0.0.9 This is an old property which was not exposed in this class; moving it here
     public static boolean SET_400_SC_ON_TOO_MANY_PARENT_DIRS; 
 
     static {
@@ -831,7 +831,7 @@ public class WCCustomProperties {
         //23.0.0.6
         DO_NOT_CLOSE_OUTPUT_ON_FORWARD_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.donotcloseoutputonforwardforservleterror", "false")).booleanValue();
 
-        //23.0.0.8
+        //23.0.0.9
         SET_400_SC_ON_TOO_MANY_PARENT_DIRS = (Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.set400scontoomanyparentdirs"))).booleanValue();
 
         //Default for Servlet 5.0 +
