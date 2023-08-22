@@ -270,6 +270,22 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Verify that an EntityManager remains open when a default method invokes another default method,
+     * and is closed after the outer default method ends.
+     */
+    @Test
+    public void testEntityManagerRemainsOpenAfterNestedDefaultMethod() {
+        Object[] isOpenFromTopLevelDefaultMethod = counties.topLevelDefaultMethod();
+        EntityManager emOuter1 = (EntityManager) isOpenFromTopLevelDefaultMethod[0];
+        EntityManager emOuter2 = (EntityManager) isOpenFromTopLevelDefaultMethod[1];
+        assertEquals(false, emOuter1.isOpen()); // must be closed after default method ends
+        assertEquals(false, emOuter2.isOpen()); // must be closed after default method ends
+        assertEquals(Boolean.TRUE, isOpenFromTopLevelDefaultMethod[2]); // outer1
+        assertEquals(Boolean.TRUE, isOpenFromTopLevelDefaultMethod[3]); // outer2
+        assertEquals(Boolean.FALSE, isOpenFromTopLevelDefaultMethod[4]); // inner
+    }
+
+    /**
      * Query-by-method name repository operation to remove and return one or more entities
      * where the entity has an IdClass.
      */

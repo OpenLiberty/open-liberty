@@ -35,10 +35,12 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -127,7 +129,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private static final Set<Compare> SUPPORTS_COLLECTIONS = Set.of //
     (Compare.Equal, Compare.Contains, Compare.Empty, Compare.Not, Compare.NotContains, Compare.NotEmpty);
 
-    private static final ThreadLocal<List<EntityManager>> defaultMethodResources = new ThreadLocal<>();
+    private static final ThreadLocal<Deque<EntityManager>> defaultMethodResources = new ThreadLocal<>();
 
     private final CompletableFuture<EntityInfo> defaultEntityInfoFuture;
     private final AtomicBoolean isDisposed = new AtomicBoolean();
@@ -1764,7 +1766,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @return optional populated with the resource or the empty optional.
      */
     private <T> Optional<T> getResource(Class<T> type) {
-        List<EntityManager> resources = defaultMethodResources.get();
+        Deque<EntityManager> resources = defaultMethodResources.get();
         if (resources == null)
             throw new IllegalStateException("The " + type.getName() + " resource cannot be obtained outside the scope of a repository default method."); // TODO NLS
         if (EntityManager.class.equals(type)) {
@@ -1816,29 +1818,32 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                 "(Proxy)@" + Integer.toHexString(System.identityHashCode(proxy)) +
                                                 " is no longer in scope."); // TODO
 
-            if (isDefaultMethod)
+            if (isDefaultMethod) {
+                Deque<EntityManager> resourceStack = defaultMethodResources.get();
+                boolean added;
+                if (added = (resourceStack == null))
+                    defaultMethodResources.set(resourceStack = new LinkedList<>());
+                else
+                    resourceStack.add(null); // indicator of nested default method
                 try {
-                    defaultMethodResources.set(new ArrayList<>());
                     Object returnValue = InvocationHandler.invokeDefault(proxy, method, args);
                     if (trace && tc.isEntryEnabled())
                         Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), returnValue);
                     return returnValue;
                 } finally {
-                    List<EntityManager> resources = defaultMethodResources.get();
-                    // TODO allow nested default methods where the innermost doesn't close the resources of the outer default methods?
-                    if (resources != null) {
+                    for (EntityManager em; (em = resourceStack.pollLast()) != null;)
+                        if (em.isOpen())
+                            try {
+                                if (trace && tc.isDebugEnabled())
+                                    Tr.debug(this, tc, "close " + em);
+                                em.close();
+                            } catch (Throwable x) {
+                                FFDCFilter.processException(x, getClass().getName(), "1827", this);
+                            }
+                    if (added)
                         defaultMethodResources.remove();
-                        for (EntityManager em : resources)
-                            if (em.isOpen())
-                                try {
-                                    if (trace && tc.isDebugEnabled())
-                                        Tr.debug(this, tc, "close " + em);
-                                    em.close();
-                                } catch (Throwable x) {
-                                    FFDCFilter.processException(x, getClass().getName(), "1827", this);
-                                }
-                    }
                 }
+            }
 
             QueryInfo queryInfo = queryInfoFuture.join();
             EntityInfo entityInfo = queryInfo.entityInfo;
