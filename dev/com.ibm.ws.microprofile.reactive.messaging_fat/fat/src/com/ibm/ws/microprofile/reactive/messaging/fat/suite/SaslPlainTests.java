@@ -12,10 +12,13 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.config.SslConfigs;
@@ -69,6 +72,17 @@ public class SaslPlainTests extends TestContainerSuite {
 
     public static String generateSecret(String prefix) {
         return prefix + "-" + Base58.randomString(6);
+    }
+    
+    public static AdminClient getAdminClient() throws IOException {
+        KafkaUtils.copyTrustStoreToTest(kafkaContainer);
+        Map<String, Object> adminClientProps = connectionProperties();
+        adminClientProps.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
+        adminClientProps.replace(SaslConfigs.SASL_JAAS_CONFIG,
+                "org.apache.kafka.common.security.plain.PlainLoginModule required "
+                        + "username=\"" + ADMIN_USER + "\" "
+                        + "password=\"" + ADMIN_SECRET + "\";");
+        return AdminClient.create(adminClientProps);
     }
 
     public static Map<String, Object> connectionProperties() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -56,12 +56,12 @@ public class KafkaAutoAckTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20_RM10);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
 
-        Map<String, String> connectionProps = PlaintextTests.connectionProperties();
+        Map<String, Object> connectionProps = PlaintextTests.connectionProperties();
 
         ConnectorProperties incomingConnection = ConnectorProperties.simpleIncomingChannel(connectionProps, KafkaAutoAckReceptionBean.CHANNEL_IN,
                                                                                            KafkaAutoAckTestServlet.APP_GROUPID);

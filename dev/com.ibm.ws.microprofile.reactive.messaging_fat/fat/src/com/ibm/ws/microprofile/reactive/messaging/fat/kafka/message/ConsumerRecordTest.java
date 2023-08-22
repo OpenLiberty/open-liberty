@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -37,6 +38,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestCons
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
+import com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
 
@@ -61,23 +63,25 @@ public class ConsumerRecordTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20_RM10);//, ReactiveMessagingActions.MP61);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
+
+        String topicName = ConsumerRecordBean.CHANNEL_IN + RepeatTestFilter.getRepeatActionsAsString();
 
         // Create a topic with 10 partitions
         Map<String, Object> adminClientProps = new HashMap<>();
         adminClientProps.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, PlaintextTests.kafkaContainer.getBootstrapServers());
         AdminClient adminClient = AdminClient.create(adminClientProps);
 
-        NewTopic newTopic = new NewTopic(ConsumerRecordBean.CHANNEL_IN, 10, (short) 1);
+        NewTopic newTopic = new NewTopic(topicName, 10, (short) 1);
         adminClient.createTopics(Collections.singleton(newTopic)).all().get(KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
 
         PropertiesAsset appConfig = new PropertiesAsset()
                         .addProperty(AbstractKafkaTestServlet.KAFKA_BOOTSTRAP_PROPERTY, PlaintextTests.kafkaContainer.getBootstrapServers())
-                        .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.connectionProperties(), ConsumerRecordBean.CHANNEL_IN,
-                                                                           ConsumerRecordBean.GROUP_ID))
+                        .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.connectionProperties(), ConnectorProperties.DEFAULT_CONNECTOR_ID, ConsumerRecordBean.CHANNEL_IN,
+                                                                           ConsumerRecordBean.GROUP_ID, topicName))
                         .include(ConnectorProperties.simpleOutgoingChannel(PlaintextTests.connectionProperties(), ConsumerRecordBean.CHANNEL_OUT));
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
@@ -95,6 +99,12 @@ public class ConsumerRecordTest {
     @AfterClass
     public static void teardown() throws Exception {
         server.stopServer();
+
+    }
+
+    @AfterClass
+    public static void teardownKafka() throws Exception{
+        KafkaUtils.deleteKafkaTopics(PlaintextTests.getAdminClient());
     }
 
 }

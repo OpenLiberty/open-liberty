@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -72,7 +73,7 @@ public class KafkaMessagingTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20_RM10);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
 
     private static KafkaConsumer<String, String> kafkaConsumer;
     private static KafkaProducer<String, String> kafkaProducer;
@@ -157,13 +158,18 @@ public class KafkaMessagingTest {
     }
 
     @AfterClass
-    public static void testdownProducer() {
+    public static void teardownProducer() {
         kafkaProducer.close();
     }
 
     @AfterClass
     public static void teardownTest() throws Exception {
         server.stopServer();
+    }
+
+    @AfterClass
+    public static void teardownKafka() throws ExecutionException, InterruptedException, IOException {
+        KafkaUtils.deleteKafkaTopics(PlaintextTests.getAdminClient());
     }
 
 }

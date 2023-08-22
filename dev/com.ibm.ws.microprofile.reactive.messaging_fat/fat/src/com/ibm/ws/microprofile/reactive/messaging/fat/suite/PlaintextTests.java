@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
 
+import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -57,7 +58,7 @@ import componenttest.containers.TestContainerSuite;
                 MissingGroupIDTest.class,
                 ReactiveStreamsTckTest.class,
                 UseConfiguredTopicTest.class,
-                UseProducerRecordTopicTest.class,
+                UseProducerRecordTopicTest.class
 })
 public class PlaintextTests extends TestContainerSuite {
 
@@ -67,7 +68,12 @@ public class PlaintextTests extends TestContainerSuite {
                     .withStartupAttempts(3)
                     .withLogConsumer(new SimpleLogConsumer(PlaintextTests.class, "kafka"));
 
-    public static Map<String, String> connectionProperties() {
+    public static Map<String, Object> connectionProperties() {
         return Collections.singletonMap(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
+    }
+
+    public static AdminClient getAdminClient(){
+        Map<String, Object> adminClientProps = connectionProperties();
+        return AdminClient.create(adminClientProps);
     }
 }
