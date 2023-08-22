@@ -76,12 +76,6 @@ public class ResponseCompressionHandler {
 
     public void process() {
 
-        MSP.log("processing auto compression");
-
-        MSP.log("Content encoding header: " + headers.get(HttpHeaderKeys.HDR_CONTENT_ENCODING.getName()));
-
-        MSP.log("CL is set to: " + headers.get(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName()));
-
         if (isAutoCompression()) {
 
             if ("zlib".equals(preferredEncoding)) {
