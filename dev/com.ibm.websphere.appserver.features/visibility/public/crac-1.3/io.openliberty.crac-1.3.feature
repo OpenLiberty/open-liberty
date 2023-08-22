@@ -7,7 +7,7 @@ IBM-Process-Types: server
 IBM-API-Package: org.crac;type="stable"
 Subsystem-Name: org.crac API 1.3
 -bundles=io.openliberty.org.crac
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
