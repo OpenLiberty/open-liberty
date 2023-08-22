@@ -58,7 +58,8 @@ import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
  * Retrieves the application and modules names during application deployments
  */
 @Component(service = { AppTracker.class,
-                       ApplicationStateListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
+                       ApplicationStateListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM", "service.ranking:Integer=300" }) 
+                      //This must be higher than CDI. We are still investigating why ApplicationStateHealthCheckTest.testFailsToStartApplicationHealthCheckTest fails if not.
 public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
 
     private static final TraceComponent tc = Tr.register(AppTrackerImpl.class);
