@@ -2967,7 +2967,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                     hisc = (HttpInboundServiceContextImpl) this;
                 }
             }
-            System.out.println("MSP send full outgoing 2");
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && hisc != null && hisc.getLink() != null) {
                 Tr.debug(tc, "sendFullOutgoing : " + hisc + ", " + hisc.getLink().toString());
@@ -2998,7 +2997,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
 
             } else if (msg.isChunkedEncodingSet()) {
-                System.out.println("MSP send full outgoing 3");
                 HttpInboundServiceContextImpl localHisc = null;
                 if (this instanceof HttpInboundServiceContextImpl) {
                     localHisc = (HttpInboundServiceContextImpl) this;
@@ -3013,11 +3011,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
             }
         }
-        System.out.println("MSP send full outgoing 4");
         setMessageSent();
-        MSP.log("set message");
         synchWrite();
-        MSP.log("wrote");
     }
 
     /**
@@ -3040,6 +3035,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_BYTES_WRITTEN).set(numBytesWritten);
         if (!headersSent()) {
             this.nettyContext.channel().write(this.nettyResponse);
+            setHeadersSent();
         }
         DefaultHttpContent content;
         if (Objects.nonNull(wsbb)) {
