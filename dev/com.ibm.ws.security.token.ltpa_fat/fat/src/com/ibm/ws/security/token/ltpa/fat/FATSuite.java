@@ -34,6 +34,7 @@ import componenttest.rules.repeater.RepeatTests;
                 AlwaysPassesTest.class,
                 ContextRootCookiePathTests.class,
                 FATTest.class,
+                LTPAKeyRotationTests.class,
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.

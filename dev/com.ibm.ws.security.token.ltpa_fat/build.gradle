@@ -66,7 +66,8 @@ autoFVT.doLast {
    */
   def servers = [
     'com.ibm.ws.security.token.ltpa.fat',
-    'com.ibm.ws.security.token.ltpa.fat.contextRootCookiePathTestServer'
+    'com.ibm.ws.security.token.ltpa.fat.contextRootCookiePathTestServer',
+    'com.ibm.ws.security.token.ltpa.fat.ltpaKeyRotationTestServer'
   ]
   servers.each { server ->
     copy { 
@@ -92,6 +93,11 @@ autoFVT.doLast {
       from new File(projectDir, 'publish/servers/com.ibm.ws.security.token.ltpa.fat.contextRootCookiePathTestServer/server.xml')
       into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
       rename 'server.xml', 'contextRootCookiePathTestServer.server.orig.xml'
+    }
+    copy { 
+      from new File(projectDir, 'publish/servers/com.ibm.ws.security.token.ltpa.fat.ltpaKeyRotationTestServer/server.xml')
+      into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+      rename 'server.xml', 'ltpaKeyRotationTestServer.server.orig.xml'
     }
     copy { 
       from new File(projectDir, 'publish/files/server.xml')
