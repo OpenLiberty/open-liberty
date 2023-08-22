@@ -1,18 +1,21 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.el.fat;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
+import java.util.Properties;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -23,9 +26,9 @@ public class ELUtils {
     /**
      * Construct a URL for a test case so a request can be made.
      *
-     * @param server - The server that is under test, this is used to get the port and host name.
+     * @param server      - The server that is under test, this is used to get the port and host name.
      * @param contextRoot - The context root of the application
-     * @param path - Additional path information for the request.
+     * @param path        - Additional path information for the request.
      * @return - A fully formed URL.
      * @throws Exception
      */
@@ -36,9 +39,9 @@ public class ELUtils {
     /**
      * Construct a URL for a test case so a request can be made.
      *
-     * @param server - The server that is under test, this is used to get the port and host name.
+     * @param server      - The server that is under test, this is used to get the port and host name.
      * @param contextRoot - The context root of the application
-     * @param path - Additional path information for the request.
+     * @param path        - Additional path information for the request.
      * @return - A fully formed URL string.
      * @throws Exception
      */
@@ -55,5 +58,23 @@ public class ELUtils {
                         .append(path);
 
         return sb.toString();
+    }
+
+    /**
+     * Set websphere.java.security.exempt to true in the provided server's bootstrap.properties file.
+     *
+     * @param server
+     * @throws Exception
+     */
+    public static void setServerJavaSecurityExempt(LibertyServer server) throws Exception {
+        File bootstrapPropertiesFile = new File(server.getFileFromLibertyServerRoot("bootstrap.properties").getAbsolutePath());
+        Properties props = new Properties();
+        try (InputStream in = new FileInputStream(bootstrapPropertiesFile)) {
+            props.load(in);
+        }
+        props.put("websphere.java.security.exempt", "true");
+        try (OutputStream out = new FileOutputStream(bootstrapPropertiesFile)) {
+            props.store(out, "Updated to include \"websphere.java.security.exempt=true\"");
+        }
     }
 }
