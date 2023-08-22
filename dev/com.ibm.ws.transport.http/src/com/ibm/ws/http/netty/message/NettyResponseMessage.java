@@ -25,6 +25,7 @@ import com.ibm.ws.http.channel.internal.HttpTrailersImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.MSP;
+import com.ibm.ws.http.netty.cookie.CookieEncoder;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedProtocolVersionException;
@@ -637,26 +638,42 @@ public class NettyResponseMessage implements HttpResponseMessage {
 
     @Override
     public boolean setCookie(HttpCookie cookie, HttpHeaderKeys cookieHeader) {
-        // TODO Auto-generated method stub
-        return false;
+
+        boolean result = Boolean.FALSE;
+
+        if (Objects.nonNull(cookie) || Objects.nonNull(cookieHeader)) {
+            if (1 < cookie.getVersion()) {
+                throw new IllegalArgumentException("Cookie version is invalid: " + cookie.getVersion());
+            }
+
+            if (isCommitted) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Not adding cookie to committed message: " + cookie.getName() + " " + cookieHeader.getName());
+                }
+            } else if (cookieHeader.equals(HttpHeaderKeys.HDR_SET_COOKIE) || cookieHeader.equals(HttpHeaderKeys.HDR_SET_COOKIE2)) {
+                this.processCookie(cookie, cookieHeader);
+                result = Boolean.TRUE;
+            }
+        }
+
+        return result;
     }
 
     @Override
     public boolean setCookie(String name, String value, HttpHeaderKeys cookieHeader) {
-        // TODO Auto-generated method stub
-        return false;
+        return setCookie(new HttpCookie(name, value), cookieHeader);
+
     }
 
     @Override
     public boolean removeCookie(String name, HttpHeaderKeys cookieHeader) {
-        // TODO Auto-generated method stub
-        return false;
+        throw new UnsupportedOperationException("removeCookie leveraged to Netty codec");
     }
 
     @Override
     public boolean containsCookie(String name, HttpHeaderKeys cookieHeader) {
-        // TODO Auto-generated method stub
-        return false;
+
+        throw new UnsupportedOperationException("containsCookie leveraged to Netty codec");
     }
 
     @Override
@@ -718,6 +735,24 @@ public class NettyResponseMessage implements HttpResponseMessage {
      */
     public HttpServiceContext getServiceContext() {
         return this.context;
+    }
+
+    protected void processCookie(HttpCookie cookie, HeaderKeys header) {
+        String result = null;
+        if (Objects.nonNull(cookie) && Objects.nonNull(header)) {
+            result = CookieEncoder.INSTANCE.encode(cookie, header, config);
+
+            if (Objects.nonNull(result)) {
+                if (config.doNotAllowDuplicateSetCookies() && header.equals(HttpHeaderKeys.HDR_SET_COOKIE)) {
+                    if (this.headers.contains(HttpHeaderKeys.HDR_SET_COOKIE.getName())) {
+                        headers.set(header.getName(), result);
+                    }
+                } else {
+                    headers.add(header.getName(), result);
+                }
+            }
+        }
+
     }
 
 }
