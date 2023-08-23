@@ -20,6 +20,8 @@ Bundle-Description:CDI 4.0 Liberty Interfaces, version ${bVersion}
 javac.source: 11
 javac.target: 11
 
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
 Import-Package: *
 
 Export-Package: com.ibm.ws.cdi40.extension
