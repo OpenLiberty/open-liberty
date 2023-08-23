@@ -9,7 +9,7 @@ Subsystem-Name: Spring Boot Support 3.0
 -features=io.openliberty.springBootHandler-3.0, \
   com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0"
 -bundles=io.openliberty.java17.internal
-kind=beta
+kind=ga
 edition=core
 # The directive type:=beta indicates this feature works with InstantOn in the beta.
 # This is independent of the overall feature beta status.
