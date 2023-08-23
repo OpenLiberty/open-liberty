@@ -26,6 +26,8 @@ public enum CookieEncoder {
 
     INSTANCE;
 
+    private final String SAMESITE = "samesite";
+
 //    public String encode(String name, String Value, HttpChannelConfig config) {
 //
 //        String cookie = null;
@@ -66,7 +68,7 @@ public enum CookieEncoder {
             }
 
             if (Objects.nonNull(sameSiteAttributeValue)) {
-                cookie.setAttribute("samesite", sameSiteAttributeValue);
+                cookie.setAttribute(SAMESITE, sameSiteAttributeValue);
 
                 if (!!!cookie.isSecure() && sameSiteAttributeValue.equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName())) {
                     cookie.setSecure(Boolean.TRUE);

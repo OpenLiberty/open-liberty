@@ -57,6 +57,7 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.message.NettyResponseMessage;
 import com.ibm.ws.http.netty.pipeline.ResponseCompressionHandler;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
@@ -2236,6 +2237,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             Tr.event(tc, "Invalid call to sendHeaders after already sent");
             return;
         }
+
+        if (getResponse() instanceof NettyResponseMessage) {
+            ((NettyResponseMessage) getResponse()).processCookies();
+        }
         this.nettyContext.channel().write(this.nettyResponse);
         this.setHeadersSent();
         //setupCompressionHandler();
@@ -2862,6 +2867,11 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
 
         }
+
+        if (getResponse() instanceof NettyResponseMessage) {
+            ((NettyResponseMessage) getResponse()).processCookies();
+        }
+
         this.nettyContext.channel().write(this.nettyResponse);
 
         setHeadersSent();
