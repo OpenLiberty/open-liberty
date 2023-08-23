@@ -51,7 +51,7 @@ import io.netty.handler.codec.http.HttpVersion;
 /**
  *
  */
-public class NettyResponseMessage implements HttpResponseMessage {
+public class NettyResponseMessage extends NettyBaseMessage implements HttpResponseMessage {
 
     /** RAS trace variable */
     private static final TraceComponent tc = Tr.register(NettyResponseMessage.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
@@ -60,9 +60,6 @@ public class NettyResponseMessage implements HttpResponseMessage {
     HttpHeaders headers;
     HttpInboundServiceContext context;
     HttpChannelConfig config;
-
-    private boolean isIncoming = Boolean.FALSE;
-    private boolean isCommitted = Boolean.FALSE;
 
     public NettyResponseMessage(HttpResponse response, HttpInboundServiceContext isc) {
         Objects.requireNonNull(isc);
@@ -73,37 +70,39 @@ public class NettyResponseMessage implements HttpResponseMessage {
         this.headers = nettyResponse.headers();
 
         if (isc instanceof HttpInboundServiceContextImpl) {
-            this.isIncoming = ((HttpInboundServiceContextImpl) isc).isInboundConnection();
-            this.config = config;
+            incoming(((HttpInboundServiceContextImpl) isc).isInboundConnection());
+            this.config = ((HttpInboundServiceContextImpl) isc).getHttpConfig();
         }
 
-    }
-
-    @Override
-    public boolean isIncoming() {
-        return this.isIncoming;
-    }
-
-    @Override
-    public boolean isCommitted() {
-        return this.isCommitted;
-    }
-
-    @Override
-    public void setCommitted() {
-        this.isCommitted = Boolean.TRUE;
+        super.init(response, config);
 
     }
+
+//    @Override
+//    public boolean isIncoming() {
+//        return this.isIncoming;
+//    }
+//
+//    @Override
+//    public boolean isCommitted() {
+//        return this.isCommitted;
+//    }
+//
+//    @Override
+//    public void setCommitted() {
+//        this.isCommitted = Boolean.TRUE;
+//
+//    }
 
     @Override
     public void clear() {
-        // TODO Auto-generated method stub
+        super.clear();
 
     }
 
     @Override
     public void destroy() {
-        // TODO Auto-generated method stub
+        super.destroy();
 
     }
 
@@ -641,18 +640,20 @@ public class NettyResponseMessage implements HttpResponseMessage {
 
         boolean result = Boolean.FALSE;
 
-        if (Objects.nonNull(cookie) || Objects.nonNull(cookieHeader)) {
+        if (Objects.nonNull(cookie) && Objects.nonNull(cookieHeader)) {
             if (1 < cookie.getVersion()) {
                 throw new IllegalArgumentException("Cookie version is invalid: " + cookie.getVersion());
             }
 
-            if (isCommitted) {
+            if (isCommitted()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Not adding cookie to committed message: " + cookie.getName() + " " + cookieHeader.getName());
                 }
             } else if (cookieHeader.equals(HttpHeaderKeys.HDR_SET_COOKIE) || cookieHeader.equals(HttpHeaderKeys.HDR_SET_COOKIE2)) {
-                this.processCookie(cookie, cookieHeader);
-                result = Boolean.TRUE;
+                // this.processCookie(cookie, cookieHeader);
+                // result = Boolean.TRUE;
+                result = super.setCookie(cookie, cookieHeader);
+
             }
         }
 
