@@ -40,6 +40,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatActions.SEVersion;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -71,7 +72,11 @@ public class DB2Test extends FATServletClient {
     @ClassRule
     public static RepeatTests rt = RepeatTests.with(new FeatureReplacementAction().removeFeatures(Collections.singleton("jdbc-*")).addFeature("jdbc-4.1").withID("JDBC4.1"))
                     .andWith(new FeatureReplacementAction().removeFeatures(Collections.singleton("jdbc-*")).addFeature("jdbc-4.2").withID("JDBC4.2").fullFATOnly())
-                    .andWith(new FeatureReplacementAction().removeFeatures(Collections.singleton("jdbc-*")).addFeature("jdbc-4.3").withID("JDBC4.3").fullFATOnly());
+                    .andWith(new FeatureReplacementAction().removeFeatures(Collections.singleton("jdbc-*"))
+                                    .addFeature("jdbc-4.3")
+                                    .withID("JDBC4.3")
+                                    .withMinJavaLevel(SEVersion.JAVA11)
+                                    .fullFATOnly());
 
     public static final String APP_NAME = "db2fat";
     public static final String SERVLET_NAME = "DB2TestServlet";
