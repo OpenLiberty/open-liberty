@@ -20,6 +20,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig.NettyConfigBuilder;
@@ -201,7 +202,10 @@ public class HttpPipelineInitializer extends ChannelInitializer<Channel> {
                     break;
                 }
                 case SAMESITE: {
+
                     useSameSite = HttpConfigConstants.DEFAULT_SAMESITE.equalsIgnoreCase(String.valueOf(options.get(HttpConfigConstants.ID))) ? Boolean.FALSE : Boolean.TRUE;
+
+                    MSP.log("Pipeline Samesite enabled: " + useSameSite);
                     this.samesite = options;
                     break;
                 }
@@ -238,6 +242,7 @@ public class HttpPipelineInitializer extends ChannelInitializer<Channel> {
 
             if (useSameSite) {
                 builder.with(ConfigElement.SAMESITE, samesite);
+                MSP.log("Building config with samesite");
             }
             Tr.exit(tc, "generateHttpOptions");
 
