@@ -13,6 +13,7 @@
 package test.jakarta.data.validation.web;
 
 import jakarta.data.repository.Repository;
+import jakarta.validation.Valid;
 
 /**
  * Repository for a record with bean validation annotations.
@@ -21,7 +22,7 @@ import jakarta.data.repository.Repository;
 public interface Rectangles {
     int findWidthById(String id);
 
-    void save(Rectangle r);
+    void save(@Valid Rectangle r);
 
-    void saveAll(Rectangle... rectangles);
+    void saveAll(@Valid Rectangle... rectangles);
 }
