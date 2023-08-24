@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -70,11 +70,15 @@ public class CommonWebFluxTests extends CommonWebServerTests {
         con.setRequestMethod("POST");
         con.setConnectTimeout(30 * 1000); // 30s
         con.connect();
-
         OutputStream out = con.getOutputStream();
-        for (int i = 0; i < numIterations; i++) {
-            Thread.sleep(sleep);
-            out.write(data);
+        try {
+            for (int i = 0; i < numIterations; i++) {
+                Thread.sleep(sleep);
+                out.write(data);
+            }
+        } finally {
+            out.flush();
+            out.close();
         }
 
         byte[] response = getResponse(con, size);
@@ -84,12 +88,17 @@ public class CommonWebFluxTests extends CommonWebServerTests {
 
     private static byte[] getResponse(HttpURLConnection con, int size) throws IOException, InterruptedException {
         ByteArrayOutputStream response = new ByteArrayOutputStream();
-        InputStream in = con.getInputStream();
-        byte[] buf = new byte[size];
-        int cnt;
-        while ((cnt = in.read(buf)) > 0) {
-            response.write(buf, 0, cnt);
-            Thread.sleep(sleep);
+        try {
+            InputStream in = con.getInputStream();
+            byte[] buf = new byte[size];
+            int cnt;
+            while ((cnt = in.read(buf)) > 0) {
+                response.write(buf, 0, cnt);
+                Thread.sleep(sleep);
+            }
+        } finally {
+            response.flush();
+            response.close();
         }
         return response.toByteArray();
     }
