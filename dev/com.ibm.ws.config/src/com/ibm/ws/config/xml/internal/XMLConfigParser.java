@@ -383,34 +383,38 @@ public class XMLConfigParser {
                 // We're going to handle this after the null check below, so we don't need to handle it immediately.
             }
             if (includeResource != null) {
-                if (!includeResource.exists()){
+                // Don't add directory to includes, just it's contents
+                if (!includeResource.isType(WsResource.Type.DIRECTORY)) {
+                    includes.add(includeResource);
+                }
+                if (includeResource.exists() &&
+                    ((includeResource.isType(WsResource.Type.FILE) || (includeResource.isType(WsResource.Type.REMOTE))))) {
+
+                    if (includeResource.isType(WsResource.Type.FILE)) {
+                        Tr.audit(tc, "audit.include.being.processed", includeResource.asFile());
+                    } else {
+                        Tr.audit(tc, "audit.include.being.processed", includeResource.toExternalURI());
+                    }
+
+                    parseIncludeConfiguration(includeResource, configuration, mergeBehavior);
+                    return;
+
+                } else if (includeResource.exists() &&
+                           ((includeResource.isType(WsResource.Type.DIRECTORY)))) {
+                    Iterator<String> children = includeResource.getChildren();
+                    ArrayList<String> alphabeticalChildren = new ArrayList<String>();
+                    while (children.hasNext()) {
+                        alphabeticalChildren.add(children.next());
+                    }
+                    Collections.sort(alphabeticalChildren);
+                    for(String child : alphabeticalChildren){
+                        parseIncludeDir(parser, docLocation, child, includes, configuration);
+                    }
+
+                } else {
                     if (!optionalImport) {
                         logError("error.cannot.read.location", resolvePath(location));
                         throw new ConfigParserTolerableException();
-                    }
-                }
-                else {
-                    if ((includeResource.isType(WsResource.Type.FILE) || (includeResource.isType(WsResource.Type.REMOTE)))) {
-                        includes.add(includeResource);
-                        if (includeResource.isType(WsResource.Type.FILE)) {
-                            Tr.audit(tc, "audit.include.being.processed", includeResource.asFile());
-                        } else {
-                            Tr.audit(tc, "audit.include.being.processed", includeResource.toExternalURI());
-                        }
-
-                        parseIncludeConfiguration(includeResource, configuration, mergeBehavior);
-
-                    } else if ((includeResource.isType(WsResource.Type.DIRECTORY))) {
-                        Iterator<String> children = includeResource.getChildren();
-                        ArrayList<String> alphabeticalChildren = new ArrayList<String>();
-                        while (children.hasNext()) {
-                            alphabeticalChildren.add(children.next());
-                        }
-                        Collections.sort(alphabeticalChildren);
-                        for(String child : alphabeticalChildren){
-                            parseIncludeDir(parser, docLocation, child, includes, configuration);
-                        }
-
                     }
                 }
             } else {
@@ -452,23 +456,23 @@ public class XMLConfigParser {
                 // We're going to handle this after the null check below, so we don't need to handle it immediately.
             }
             if (includeResource != null) {
-                if (!includeResource.exists()){
+                includes.add(includeResource);
+                if (includeResource.exists() &&
+                    ((includeResource.isType(WsResource.Type.FILE) || (includeResource.isType(WsResource.Type.REMOTE))))) {
+
+                    if (includeResource.isType(WsResource.Type.FILE)) {
+                        Tr.audit(tc, "audit.include.being.processed", includeResource.asFile());
+                    } else {
+                        Tr.audit(tc, "audit.include.being.processed", includeResource.toExternalURI());
+                    }
+
+                    parseIncludeConfiguration(includeResource, configuration, mergeBehavior);
+                    return;
+
+                } else {
                     if (!optionalImport) {
                         logError("error.cannot.read.location", resolvePath(location));
                         throw new ConfigParserTolerableException();
-                    }
-                }
-                else{
-                    if ((includeResource.isType(WsResource.Type.FILE) || (includeResource.isType(WsResource.Type.REMOTE)))) {
-                        includes.add(includeResource);
-                        if (includeResource.isType(WsResource.Type.FILE)) {
-                            Tr.audit(tc, "audit.include.being.processed", includeResource.asFile());
-                        } else {
-                            Tr.audit(tc, "audit.include.being.processed", includeResource.toExternalURI());
-                        }
-
-                        parseIncludeConfiguration(includeResource, configuration, mergeBehavior);
-
                     }
                 }
             } else {
