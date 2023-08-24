@@ -55,6 +55,8 @@ Import-Package: \
    org.apache.cxf.*;version="[3.2,4)", \
    javax.annotation;version=!, \
    javax.xml.soap;version=!, \
+   com.ctc.wstx.*;resolution:=optional, \
+   org.codehaus.stax2.*;resolution:=optional, \
    *
 
 Private-Package:\
@@ -65,6 +67,8 @@ Private-Package:\
 # with that, we could work without ResourceProvider Hook
 DynamicImport-Package: com.sun.xml.bind.v2, \
    org.glassfish.jaxb.runtime.v2.*, \
+   com.ctc.wstx.*, \
+   org.codehaus.stax2.*, \
    com.ibm.xml.xlxp2.jaxb, \
    com.ibm.xml.xlxp2.api.stax, \
    com.ibm.xml.xlxp2.api.wssec

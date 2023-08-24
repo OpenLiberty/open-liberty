@@ -16,14 +16,19 @@
 
 santuarioVersion=2.3.0
 
--includeresource: \
-   @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/!META-INF/maven/*,\
-   @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/META-INF/**, \
-   @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/templates/**, \
-   @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/schemas/**, \
-   @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/*xml, \
-   org/apache/xml/security/resource/xmlsecurity_en.nlsprops=resources/org/apache/xml/security/resource/xmlsecurity_en.nlsprops
+instrument.classesExcludes: org/apache/xml/security/stax/ext/*.class
 
--buildpath: org.apache.santuario:xmlsec;strategy=exact;version=${santuarioVersion}
+-includeresource: \
+  @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/META-INF/**, \
+  @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/templates/**, \
+  @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/schemas/**, \
+  @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/*xml, \
+  org/apache/xml/security=${bin}/org/apache/xml/security, \
+  org/apache/xml/security/resource/xmlsecurity_en.nlsprops=resources/org/apache/xml/security/resource/xmlsecurity_en.nlsprops
+
+-buildpath: org.apache.santuario:xmlsec;strategy=exact;version=${santuarioVersion}, \
+  com.ibm.ws.org.slf4j.api;version=latest,\
+  io.openliberty.com.fasterxml.woodstox.core;version=latest
 
 globalize: false
