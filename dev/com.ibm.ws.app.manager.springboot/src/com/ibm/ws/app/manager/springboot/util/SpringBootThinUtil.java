@@ -1310,8 +1310,6 @@ public class SpringBootThinUtil implements Closeable {
             return startersToDependentArtifactIdsMap;
         }
 
-        public static boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
-
         private static final Map<String, Set<String>> startersToDependentArtifactIdsMap;
 
         static {
@@ -1325,8 +1323,7 @@ public class SpringBootThinUtil implements Closeable {
             theMap.put(starterJarNamePrefix(TOMCAT, "2.5"), loadStarterMvnDeps(mvnSpringBoot25TomcatStarterDeps));
             theMap.put(starterJarNamePrefix(TOMCAT, "2.6"), loadStarterMvnDeps(mvnSpringBoot26TomcatStarterDeps));
             theMap.put(starterJarNamePrefix(TOMCAT, "2.7"), loadStarterMvnDeps(mvnSpringBoot27TomcatStarterDeps));
-            if (isBeta)
-                theMap.put(starterJarNamePrefix(TOMCAT, "3.0"), loadStarterMvnDeps(mvnSpringBoot30TomcatStarterDeps));
+            theMap.put(starterJarNamePrefix(TOMCAT, "3.0"), loadStarterMvnDeps(mvnSpringBoot30TomcatStarterDeps));
 
             theMap.put(starterJarNamePrefix(JETTY, "1.5"), loadStarterMvnDeps(mvnSpringBoot15JettyStarterDeps));
             theMap.put(starterJarNamePrefix(JETTY, "2.0"), loadStarterMvnDeps(mvnSpringBoot20JettyStarterDeps));
@@ -1337,10 +1334,8 @@ public class SpringBootThinUtil implements Closeable {
             theMap.put(starterJarNamePrefix(JETTY, "2.5"), loadStarterMvnDeps(mvnSpringBoot25JettyStarterDeps));
             theMap.put(starterJarNamePrefix(JETTY, "2.6"), loadStarterMvnDeps(mvnSpringBoot26JettyStarterDeps));
             theMap.put(starterJarNamePrefix(JETTY, "2.7"), loadStarterMvnDeps(mvnSpringBoot27JettyStarterDeps));
-            if (isBeta) {
-                theMap.put(starterJarNamePrefix(JETTY, "3.0"), loadStarterMvnDeps(mvnSpringBoot30JettyStarterDeps));
-                theMap.put(starterJarNamePrefix(JETTY, "3.1"), loadStarterMvnDeps(mvnSpringBoot31JettyStarterDeps));
-            }
+            theMap.put(starterJarNamePrefix(JETTY, "3.0"), loadStarterMvnDeps(mvnSpringBoot30JettyStarterDeps));
+            theMap.put(starterJarNamePrefix(JETTY, "3.1"), loadStarterMvnDeps(mvnSpringBoot31JettyStarterDeps));
 
             theMap.put(starterJarNamePrefix(UNDERTOW, "1.5"), loadStarterMvnDeps(mvnSpringBoot15UndertowStarterDeps));
             theMap.put(starterJarNamePrefix(UNDERTOW, "2.0"), loadStarterMvnDeps(mvnSpringBoot20UndertowStarterDeps));
@@ -1351,8 +1346,7 @@ public class SpringBootThinUtil implements Closeable {
             theMap.put(starterJarNamePrefix(UNDERTOW, "2.5"), loadStarterMvnDeps(mvnSpringBoot25UndertowStarterDeps));
             theMap.put(starterJarNamePrefix(UNDERTOW, "2.6"), loadStarterMvnDeps(mvnSpringBoot26UndertowStarterDeps));
             theMap.put(starterJarNamePrefix(UNDERTOW, "2.7"), loadStarterMvnDeps(mvnSpringBoot27UndertowStarterDeps));
-            if (isBeta)
-                theMap.put(starterJarNamePrefix(UNDERTOW, "3.0"), loadStarterMvnDeps(mvnSpringBoot30UndertowStarterDeps));
+            theMap.put(starterJarNamePrefix(UNDERTOW, "3.0"), loadStarterMvnDeps(mvnSpringBoot30UndertowStarterDeps));
 
             theMap.put(starterJarNamePrefix(NETTY, "2.0"), loadStarterMvnDeps(mvnSpringBoot20NettyStarterDeps));
             theMap.put(starterJarNamePrefix(NETTY, "2.1"), loadStarterMvnDeps(mvnSpringBoot21NettyStarterDeps));
@@ -1362,8 +1356,7 @@ public class SpringBootThinUtil implements Closeable {
             theMap.put(starterJarNamePrefix(NETTY, "2.5"), loadStarterMvnDeps(mvnSpringBoot25NettyStarterDeps));
             theMap.put(starterJarNamePrefix(NETTY, "2.6"), loadStarterMvnDeps(mvnSpringBoot26NettyStarterDeps));
             theMap.put(starterJarNamePrefix(NETTY, "2.7"), loadStarterMvnDeps(mvnSpringBoot27NettyStarterDeps));
-            if (isBeta)
-                theMap.put(starterJarNamePrefix(NETTY, "3.0"), loadStarterMvnDeps(mvnSpringBoot30NettyStarterDeps));
+            theMap.put(starterJarNamePrefix(NETTY, "3.0"), loadStarterMvnDeps(mvnSpringBoot30NettyStarterDeps));
 
             startersToDependentArtifactIdsMap = Collections.unmodifiableMap(theMap);
         }
