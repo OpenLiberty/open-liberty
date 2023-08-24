@@ -62,7 +62,6 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -72,6 +71,7 @@ import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.InMemoryMappingFile;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
+import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
@@ -90,7 +90,6 @@ import jakarta.persistence.metamodel.Type;
  */
 public class EntityDefiner implements Runnable {
     private static final String EOLN = String.format("%n");
-    private static final String JAKARTA_DATA_DIR = File.separator + "jakarta" + File.separator + "data" + File.separator;
     private static final TraceComponent tc = Tr.register(EntityDefiner.class);
 
     private final ClassDefiner classDefiner = new ClassDefiner();
@@ -98,8 +97,10 @@ public class EntityDefiner implements Runnable {
     private final List<Class<?>> entities = new ArrayList<>();
     final ConcurrentHashMap<Class<?>, CompletableFuture<EntityInfo>> entityInfoMap = new ConcurrentHashMap<>();
     private final ClassLoader loader;
+    private final DataExtensionProvider provider;
 
-    public EntityDefiner(String databaseId, ClassLoader loader) {
+    public EntityDefiner(DataExtensionProvider provider, String databaseId, ClassLoader loader) {
+        this.provider = provider;
         this.databaseId = databaseId;
         this.loader = loader;
     }
@@ -273,7 +274,7 @@ public class EntityDefiner implements Runnable {
 
         if (trace && tc.isEntryEnabled()) {
             if (tc.isDebugEnabled())
-                writeToClassFile(entityClassName, classBytes);
+                writeToClassFile(internal_entityClassName, classBytes);
 
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "generateClassBytes: " + classBytes.length + " bytes");
@@ -734,8 +735,9 @@ public class EntityDefiner implements Runnable {
      *                              with '/' as the separator.
      * @param classBytes        bytearray of the class bytecodes.
      */
-    private static void writeToClassFile(final String internalClassName,
-                                         final byte[] classBytes) {
+    @SuppressWarnings("deprecation")
+    private void writeToClassFile(final String internalClassName,
+                                  final byte[] classBytes) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "writeToClassFile (" + internalClassName + ", " +
                          ((classBytes == null) ? "null" : (classBytes.length + " bytes")) + ")");
@@ -743,15 +745,12 @@ public class EntityDefiner implements Runnable {
             AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
                 @Override
                 public Void run() throws Exception {
-                    // TODO use a location in workarea?
-                    String fileName = TrConfigurator.getLogLocation() + JAKARTA_DATA_DIR + internalClassName + ".class";
-                    File file = new File(fileName);
-                    File directory = file.getParentFile();
+                    File output = new File(provider.getEntityClassCache(), internalClassName + ".class");
+                    File directory = new File(output.getParent());
                     directory.mkdirs();
-                    FileOutputStream classFile = new FileOutputStream(file);
-                    classFile.write(classBytes);
-                    classFile.flush();
-                    classFile.close();
+                    try (FileOutputStream classFile = new FileOutputStream(output)) {
+                        classFile.write(classBytes);
+                    }
                     return null;
                 }
             });

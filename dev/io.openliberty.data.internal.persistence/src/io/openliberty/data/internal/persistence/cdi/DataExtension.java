@@ -162,7 +162,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                 EntityGroupKey entityGroupKey = new EntityGroupKey(databaseStoreId, loader);
                 EntityDefiner entityDefiner = entityGroups.get(entityGroupKey);
                 if (entityDefiner == null)
-                    entityGroups.put(entityGroupKey, entityDefiner = new EntityDefiner(entityGroupKey.databaseId, loader));
+                    entityGroups.put(entityGroupKey, entityDefiner = new EntityDefiner(provider, entityGroupKey.databaseId, loader));
 
                 entityDefiner.add(entityClass);
 
