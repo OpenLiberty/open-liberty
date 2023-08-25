@@ -593,7 +593,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         }
 
         if (firstCall) {
-            oidcClient.logoutIfSessionInvalidated(req);
+            oidcClient.logoutIfSessionInvalidated(req, webAppSecurityConfig);
 
             // let's check if any oidcClient need to be called beforeSso. If not, return
             if (!oidcClient.anyClientIsBeforeSso()) {

@@ -62,6 +62,7 @@ import com.ibm.ws.webcontainer.security.PostParameterHelper;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.UnprotectedResourceService;
+import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcClient;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
@@ -438,7 +439,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
     }
 
     @Override
-    public void logoutIfSessionInvalidated(HttpServletRequest req) {
+    public void logoutIfSessionInvalidated(HttpServletRequest req, WebAppSecurityConfig webAppSecurityConfig) {
         if (!isRunningBetaMode()) {
             return;
         }
@@ -453,14 +454,8 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
 
         OidcClientConfig oidcClientConfig = oidcClientConfigRef.getService(provider);
         OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(req, oidcClientConfig);
-        if (sessionInfo == null) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Session info could not be retrieved from client cookies.");
-            }
-            return;
-        }
 
-        OidcSessionUtils.logoutIfSessionInvalidated(req, sessionInfo, oidcClientConfig);
+        OidcSessionUtils.logoutIfSessionInvalidated(req, sessionInfo, oidcClientConfig, webAppSecurityConfig);
     }
 
     boolean isRunningBetaMode() {
