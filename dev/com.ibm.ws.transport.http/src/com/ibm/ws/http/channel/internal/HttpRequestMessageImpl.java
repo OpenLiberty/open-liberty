@@ -2204,4 +2204,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         }
         return true;
     }
+    
+    @Override
+    public long getEndTime() { return 0; }
 }
