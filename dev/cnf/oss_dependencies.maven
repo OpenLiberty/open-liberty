@@ -398,10 +398,10 @@ org.apache.neethi:neethi:3.1.1
 org.apache.openjpa:openjpa:3.1.2
 org.apache.santuario:xmlsec:2.2.3
 org.apache.sshd:sshd-common:2.5.1
-org.apache.sshd:sshd-core:2.5.1
-org.apache.sshd:sshd-scp:2.5.1
 org.apache.sshd:sshd-common:2.9.2
+org.apache.sshd:sshd-core:2.5.1
 org.apache.sshd:sshd-core:2.9.2
+org.apache.sshd:sshd-scp:2.5.1
 org.apache.sshd:sshd-scp:2.9.2
 org.apache.thrift:libthrift:0.13.0
 org.apache.thrift:libthrift:0.14.1
