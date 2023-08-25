@@ -443,3 +443,7 @@ assemble {
     into "${buildDir}/collectedJars"
   }
 }
+
+test {
+   jvmArgs = ["--add-opens", "java.base/java.lang=ALL-UNNAMED"]
+}
