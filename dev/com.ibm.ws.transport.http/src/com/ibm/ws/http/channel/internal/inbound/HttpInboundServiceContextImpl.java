@@ -2312,6 +2312,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         return this.forwardedRemotePort;
     }
 
+    @Override
     public String getForwardedRemoteAddress() {
         if (!forwardedHeaderInitialized)
             initForwardedValues();
@@ -2319,6 +2320,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         return this.forwardedRemoteAddress;
     }
 
+    @Override
     public String getForwardedRemoteProto() {
         if (!forwardedHeaderInitialized)
             initForwardedValues();
@@ -2326,6 +2328,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         return this.forwardedProto;
     }
 
+    @Override
     public String getForwardedRemoteHost() {
         if (!forwardedHeaderInitialized)
             initForwardedValues();
@@ -2337,6 +2340,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         return getHttpConfig().useForwardingHeaders();
     }
 
+    @Override
     public boolean useForwardedHeadersInAccessLog() {
         return getHttpConfig().useForwardingHeadersInAccessLog();
     }

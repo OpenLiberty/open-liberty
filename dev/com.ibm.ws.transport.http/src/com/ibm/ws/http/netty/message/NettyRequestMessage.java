@@ -19,7 +19,9 @@ import java.util.Set;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.genericbnf.internal.GenericUtils;
+import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
 import com.ibm.ws.http.channel.internal.HttpTrailersImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.wsspi.genericbnf.HeaderField;
@@ -51,13 +53,14 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 /**
  *
  */
-public class NettyRequestMessage implements HttpRequestMessage {
+public class NettyRequestMessage extends NettyBaseMessage implements HttpRequestMessage {
 
     private static final TraceComponent tc = Tr.register(NettyRequestMessage.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     private final FullHttpRequest request;
     private final HttpHeaders headers;
     private final HttpInboundServiceContext context;
+    private HttpChannelConfig config;
 
     private boolean isIncoming = Boolean.FALSE;
     private boolean isCommitted = Boolean.FALSE;
@@ -76,6 +79,7 @@ public class NettyRequestMessage implements HttpRequestMessage {
         this.headers = request.headers();
 
         if (isc instanceof HttpInboundServiceContextImpl) {
+            this.config = ((HttpInboundServiceContextImpl) isc).getHttpConfig();
             this.isIncoming = ((HttpInboundServiceContextImpl) isc).isInboundConnection();
         }
 
@@ -893,6 +897,7 @@ public class NettyRequestMessage implements HttpRequestMessage {
      *
      * @return request start time with nanosecond precision (relative to the JVM instance as opposed to the time since epoch)
      */
+    @Override
     public long getStartTime() {
         return context.getStartNanoTime();
     }
@@ -903,6 +908,7 @@ public class NettyRequestMessage implements HttpRequestMessage {
      *
      * @return
      */
+    @Override
     public String getRemoteUser() {
 
         String remoteUser = null;
@@ -911,6 +917,20 @@ public class NettyRequestMessage implements HttpRequestMessage {
             remoteUser = ((HttpInboundServiceContextImpl) context).getRemoteUser();
         }
         return Objects.nonNull(remoteUser) ? remoteUser : HttpConstants.EMPTY_STRING;
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public HttpServiceContextImpl getServiceContext() {
+
+        return (this.context instanceof HttpServiceContextImpl) ? (HttpServiceContextImpl) context : null;
+    }
+
+    @Override
+    public long getEndTime() {
+        return System.nanoTime();
     }
 
 }

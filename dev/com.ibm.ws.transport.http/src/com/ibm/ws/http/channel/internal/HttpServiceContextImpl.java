@@ -3050,10 +3050,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         DefaultHttpContent content;
         if (Objects.nonNull(wsbb)) {
             for (WsByteBuffer buffer : wsbb) {
-
-                this.nettyContext.channel().write(buffer);
-                //content = new DefaultHttpContent(Unpooled.wrappedBuffer(buffer.getWrappedByteBuffer()));
-
+                if (Objects.nonNull(buffer)) {
+                    this.nettyContext.channel().write(buffer);
+                    //content = new DefaultHttpContent(Unpooled.wrappedBuffer(buffer.getWrappedByteBuffer()));
+                }
             }
             this.nettyContext.channel().flush();
         }

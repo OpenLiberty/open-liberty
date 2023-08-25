@@ -35,6 +35,7 @@ import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedProtocolVersionException;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.HttpBaseMessage;
+import com.ibm.wsspi.http.channel.HttpServiceContext;
 import com.ibm.wsspi.http.channel.HttpTrailers;
 import com.ibm.wsspi.http.channel.values.ConnectionValues;
 import com.ibm.wsspi.http.channel.values.ContentEncodingValues;
@@ -64,6 +65,9 @@ public class NettyBaseMessage implements HttpBaseMessage {
     protected HttpHeaders headers;
     boolean initialized = Boolean.FALSE;
 
+    protected long startTime = 0;
+    protected long endTime = 0;
+
     /** Cookie Caches */
     protected transient CookieCacheData cookieCache;
     protected transient CookieCacheData cookie2Cache;
@@ -71,26 +75,26 @@ public class NettyBaseMessage implements HttpBaseMessage {
     protected transient CookieCacheData setCookie2Cache;
     /** Reference to the cookie parser */
     private transient CookieHeaderByteParser cookieParser;
-    // protected transient Map cookieCache;
-    // protected transient Map setCookieCache;
+
+    /** Reference to the service context */
+    private HttpServiceContext serviceContext;
 
     private int limitOfTokenSize;
 
     public NettyBaseMessage() {
     }
 
-    protected void init(HttpMessage message, HttpChannelConfig config) {
+    protected void init(HttpMessage message, HttpServiceContext serviceContext, HttpChannelConfig config) {
         if (!initialized) {
 
             initialized = Boolean.TRUE;
             this.message = message;
             this.headers = message.headers();
             this.config = config;
+            this.serviceContext = serviceContext;
 
             this.limitOnNumberOfHeaders = config.getLimitOnNumberOfHeaders();
             this.limitOfTokenSize = config.getLimitOfFieldSize();
-//            cookieCache = new HashMap<String, List<String>>();
-//            setCookieCache = new HashMap<String, List<String>>();
 
         }
     }
@@ -843,6 +847,9 @@ public class NettyBaseMessage implements HttpBaseMessage {
     }
 
     public void processCookies() {
+
+        setCookie("chocolate", "chip", HttpHeaderKeys.HDR_SET_COOKIE);
+
         marshallCookieCache(this.cookieCache);
         marshallCookieCache(this.cookie2Cache);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -975,5 +982,20 @@ public class NettyBaseMessage implements HttpBaseMessage {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "marshallCookies");
         }
+    }
+
+    @Override
+    public long getStartTime() {
+        return this.startTime;
+    }
+
+    @Override
+    public long getEndTime() {
+        return this.endTime;
+    }
+
+    @Override
+    public HttpServiceContext getServiceContext() {
+        return this.serviceContext;
     }
 }

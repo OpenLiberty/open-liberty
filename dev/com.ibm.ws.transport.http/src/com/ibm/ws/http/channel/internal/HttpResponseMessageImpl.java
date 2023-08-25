@@ -1144,5 +1144,15 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
         output.writeShort(getStatusCodeAsInt());
         writeByteArray(output, this.myReasonBytes);
     }
+    
+    @Override
+    public long getBytesWritten() {
+        return this.getServiceContext().getNumBytesWritten();
+    }
+    
+    @Override
+    public long getEndTime() {
+       return 0; 
+    }
 
 }
