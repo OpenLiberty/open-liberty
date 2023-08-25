@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,10 +12,11 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.values;
 
-import com.ibm.ws.http.channel.internal.HttpRequestMessageImpl;
-import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
+import java.util.Objects;
+
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
+import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
 
 public class AccessLogRequestProtocol extends AccessLogData {
 
@@ -26,23 +27,18 @@ public class AccessLogRequestProtocol extends AccessLogData {
     @Override
     public boolean set(StringBuilder accessLogEntry,
                        HttpResponseMessage response, HttpRequestMessage request, Object data) {
+
         String protocol = null;
-        HttpRequestMessageImpl requestMessageImpl = null;
-        if (request != null) {
 
-            requestMessageImpl = (HttpRequestMessageImpl) request;
-        }
+        if (Objects.nonNull(request)) {
 
-        if (requestMessageImpl != null) {
+            HttpInboundServiceContext serviceContext = (request.getServiceContext() instanceof HttpInboundServiceContext) ? (HttpInboundServiceContext) request.getServiceContext() : null;
 
-            if (requestMessageImpl.getServiceContext() instanceof HttpInboundServiceContextImpl) {
-                HttpInboundServiceContextImpl serviceContext = (HttpInboundServiceContextImpl) requestMessageImpl.getServiceContext();
-                if (serviceContext.useForwardedHeadersInAccessLog()) {
-                    protocol = serviceContext.getForwardedRemoteProto();
-                }
+            if (Objects.nonNull(serviceContext)) {
+                protocol = serviceContext.useForwardedHeadersInAccessLog() ? serviceContext.getForwardedRemoteProto() : null;
             }
 
-            if (protocol == null) {
+            if (Objects.isNull(protocol)) {
                 protocol = request.getVersion();
             }
 
@@ -50,7 +46,7 @@ public class AccessLogRequestProtocol extends AccessLogData {
 
         logSafe(accessLogEntry, protocol);
 
-        return true;
+        return Boolean.TRUE;
     }
 
 }

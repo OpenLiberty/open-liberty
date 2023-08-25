@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.values;
 
-import com.ibm.ws.http.channel.internal.HttpRequestMessageImpl;
+import java.util.Objects;
+
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
 
@@ -34,20 +35,17 @@ public class AccessLogLocalIP extends AccessLogData {
         } else {
             accessLogEntry.append("-");
         }
-        return true;
+        return Boolean.TRUE;
     }
 
     public static String getLocalIP(HttpResponseMessage response, HttpRequestMessage request, Object data) {
-        HttpRequestMessageImpl requestMessageImpl = null;
-        String localIPAddress = null;
-        if (request != null) {
-            requestMessageImpl = (HttpRequestMessageImpl) request;
-        }
 
-        if (requestMessageImpl != null) {
-            localIPAddress = requestMessageImpl.getServiceContext().getLocalAddr().toString();
+        String localIPAddress = null;
+        if (Objects.nonNull(request) && Objects.nonNull(request.getServiceContext())) {
+            localIPAddress = request.getServiceContext().getLocalAddr().toString();
             localIPAddress = localIPAddress.substring(localIPAddress.indexOf('/') + 1);
         }
+
         return localIPAddress;
     }
 

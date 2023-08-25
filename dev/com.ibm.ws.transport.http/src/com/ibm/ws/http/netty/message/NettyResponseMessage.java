@@ -74,25 +74,9 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
             this.config = ((HttpInboundServiceContextImpl) isc).getHttpConfig();
         }
 
-        super.init(response, config);
+        super.init(response, context, config);
 
     }
-
-//    @Override
-//    public boolean isIncoming() {
-//        return this.isIncoming;
-//    }
-//
-//    @Override
-//    public boolean isCommitted() {
-//        return this.isCommitted;
-//    }
-//
-//    @Override
-//    public void setCommitted() {
-//        this.isCommitted = Boolean.TRUE;
-//
-//    }
 
     @Override
     public void clear() {
@@ -734,6 +718,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     /**
      * @return
      */
+    @Override
     public HttpServiceContext getServiceContext() {
         return this.context;
     }
@@ -754,6 +739,11 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
             }
         }
 
+    }
+
+    @Override
+    public long getBytesWritten() {
+        return this.getServiceContext().getNumBytesWritten();
     }
 
 }
