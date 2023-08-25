@@ -20,14 +20,15 @@
 package org.apache.cxf.jaxrs.impl;
 
 import java.net.URI;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+//import java.util.regex.Matcher; // Liberty change
+//import java.util.regex.Pattern; // Liberty change
 
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.jaxrs.utils.HttpUtils;
 
 final class Rfc3986UriValidator {
-    private static final String SCHEME = "(?i)(http|https):";
+    // Liberty change start
+    /*private static final String SCHEME = "(?i)(http|https):";
 
     private static final String USERINFO = "([^@\\[/?#]*)";
 
@@ -41,7 +42,8 @@ final class Rfc3986UriValidator {
 
     private static final Pattern HTTP_URL = Pattern.compile("^" + SCHEME 
         + "(//(" + USERINFO + "@)?" + HOST  + ")?" + PATH
-        + "(\\?" + QUERY + ")?" + "(" + LAST + ")?");
+        + "(\\?" + QUERY + ")?" + "(" + LAST + ")?");*/
+    // Liberty change end
 
     private Rfc3986UriValidator() {
     }
@@ -53,15 +55,10 @@ final class Rfc3986UriValidator {
      */
     public static boolean validate(final URI uri) {
         // Only validate the HTTP(s) URIs
-        if (HttpUtils.isHttpScheme(uri.getScheme())) { 
-            final Matcher matcher = HTTP_URL.matcher(uri.toString());
-            if (matcher.matches()) {
-                final String host = matcher.group(5);
-                // There is no host component in the HTTP URI, it is required
-                return !(StringUtils.isEmpty(host));
-            } else {
-                return false;
-            }
+        if (HttpUtils.isHttpScheme(uri.getScheme())) {
+            final String host = uri.getHost(); // Liberty change
+            // There is no host component in the HTTP URI, it is required
+            return !(StringUtils.isEmpty(host));
         } else {
             // not HTTP URI, skipping
             return true;
