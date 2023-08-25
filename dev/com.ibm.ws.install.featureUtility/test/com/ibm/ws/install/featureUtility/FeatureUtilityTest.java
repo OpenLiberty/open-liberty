@@ -20,6 +20,7 @@ public class FeatureUtilityTest {
     @Before
     public void beforeTest() {
 	// enable beta
+	System.setProperty("enable.verify", "true");
     }
 
     @Test
