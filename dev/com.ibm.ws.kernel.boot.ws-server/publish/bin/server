@@ -831,7 +831,7 @@ readServerEnv()
       *=*)
           # The sed commands extracts the variable from the line but only if it contains alpha-numeric
           # characters. Only accept alphanumeric variable names to avoid eval complexities.
-          if [ "`uname -s`" != "SunOS" ]; then
+          if [ "$uname" != "SunOS" ]; then
 
             # This is the preferred pattern, because it handles characters 
             # from multiple languages, but it doesn't work on Solaris.
