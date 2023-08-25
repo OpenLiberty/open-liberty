@@ -27,6 +27,7 @@ import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.LTPA;
+import com.ibm.websphere.simplicity.config.ValidationKeys;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.webcontainer.security.test.servlets.FormLoginClient;
@@ -212,11 +213,12 @@ public class LTPAKeyRotationTests {
         // Get the server configuration
         ServerConfiguration serverConfiguration = server.getServerConfiguration();
         LTPA ltpa = serverConfiguration.getLTPA();
+
+        // Check if the configuration needs to be updated
         boolean configurationUpdateNeeded = false;
 
         // Set MonitorDirectory to true, and MonitorInterval to 5
-        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "true");
-        configurationUpdateNeeded = setLTPAMonitorIntervalElement(ltpa, "5") || configurationUpdateNeeded;
+        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "true") | setLTPAMonitorIntervalElement(ltpa, "5");
 
         // Apply server configuration update if needed
         if (configurationUpdateNeeded)
@@ -225,7 +227,7 @@ public class LTPAKeyRotationTests {
         // Assert that a default ltpa.keys file is generated
         assertFileWasCreated(DEFAULT_KEY_PATH);
 
-        // Initial login to simple servlet for form login1 and form login2
+        // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
 
         // Get the SSO cookies back from each login
@@ -276,11 +278,12 @@ public class LTPAKeyRotationTests {
         // Get the server configuration
         ServerConfiguration serverConfiguration = server.getServerConfiguration();
         LTPA ltpa = serverConfiguration.getLTPA();
+
+        // Check if the configuration needs to be updated
         boolean configurationUpdateNeeded = false;
 
         // Set MonitorDirectory to true, and MonitorInterval to 5
-        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "true");
-        configurationUpdateNeeded = setLTPAMonitorIntervalElement(ltpa, "5") || configurationUpdateNeeded;
+        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "true") | setLTPAMonitorIntervalElement(ltpa, "5");
 
         // Apply server configuration update if needed
         if (configurationUpdateNeeded)
@@ -289,7 +292,7 @@ public class LTPAKeyRotationTests {
         // Assert that a default ltpa.keys file is generated
         assertFileWasCreated(DEFAULT_KEY_PATH);
 
-        // Initial login to simple servlet for form login1 and form login2
+        // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
 
         // Get the SSO cookies back from each login
@@ -339,11 +342,12 @@ public class LTPAKeyRotationTests {
         // Get the server configuration
         ServerConfiguration serverConfiguration = server.getServerConfiguration();
         LTPA ltpa = serverConfiguration.getLTPA();
+
+        // Check if the configuration needs to be updated
         boolean configurationUpdateNeeded = false;
 
-        // Set MonitorDirectory to false, and MonitorInterval to 0
-        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "false");
-        configurationUpdateNeeded = setLTPAMonitorIntervalElement(ltpa, "0") || configurationUpdateNeeded;
+        // Set MonitorDirectory to true, and MonitorInterval to 5
+        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "false") | setLTPAMonitorIntervalElement(ltpa, "0");
 
         // Apply server configuration update if needed
         if (configurationUpdateNeeded)
@@ -352,7 +356,7 @@ public class LTPAKeyRotationTests {
         // Assert that a default ltpa.keys file is generated
         assertFileWasCreated(DEFAULT_KEY_PATH);
 
-        // Initial login to simple servlet for form login1 and form login2
+        // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
 
         // Get the SSO cookies back from each login
@@ -367,6 +371,325 @@ public class LTPAKeyRotationTests {
 
         // Assert that a new ltpa.keys file was not created
         assertFileWasNotCreated(DEFAULT_KEY_PATH);
+
+        // New login to simple servlet for form login2
+        String response3 = flClient2.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+        String cookie2 = flClient2.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 2 is missing.", cookie2);
+
+        // Place the ltpa.keys file back to the default location
+        renameFileIfExists(VALIDATION_KEY1_PATH, DEFAULT_KEY_PATH, false);
+        assertFileWasCreated(DEFAULT_KEY_PATH);
+
+        // // Stop the server
+        // server.stopServer(serverShutdownMessages);
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI>Set MonitorDirectory to false, and MonitorInterval to 0.
+     * <LI>Start the server with a default ltpa.keys file.
+     * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
+     * <LI>Replace the primary key with a different valid key.
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <LI>Attempt to access a new simple servlet configured for form login2 with valid credentials.
+     * <OL>
+     * <P>Expected Results:
+     * <OL>
+     * <LI>MonitorDirectory is set to false, and MonitorInterval to 0.
+     * <LI>Server starts successfully, and a default ltpa.keys file is automatically generated.
+     * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
+     * <LI>The ltpa.keys file is replaced with a different key.
+     * <LI>Successful authentication to simple servlet, since the server still uses the old key without file monitoring.
+     * <LI>Successful authentication to simple servlet with new ltpa cookie2 created.
+     * </OL>
+     */
+    @Test
+    public void testLTPAFileReplacement_newValidKey_monitorDirectory_false_monitorInterval_0() throws Exception {
+        // Get the server configuration
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        LTPA ltpa = serverConfiguration.getLTPA();
+
+        // Check if the configuration needs to be updated
+        boolean configurationUpdateNeeded = false;
+
+        // Set MonitorDirectory to true, and MonitorInterval to 5
+        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "false") | setLTPAMonitorIntervalElement(ltpa, "0");
+
+        // Apply server configuration update if needed
+        if (configurationUpdateNeeded)
+            updateConfigDynamically(server, serverConfiguration, true);
+
+        // Assert that a default ltpa.keys file is generated
+        assertFileWasCreated(DEFAULT_KEY_PATH);
+
+        // Initial login to simple servlet for form login1
+        String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+
+        // Get the SSO cookies back from each login
+        String cookie1 = flClient1.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
+
+        // Replace the primary key with a different valid key
+        renameFileIfExists(VALIDATION_KEY2_PATH, DEFAULT_KEY_PATH, true);
+
+        // Attempt to access the simple servlet again with the same cookie and assert it works
+        String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
+
+        // New login to simple servlet for form login2
+        String response3 = flClient2.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+        String cookie2 = flClient2.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 2 is missing.", cookie2);
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI>Set MonitorDirectory to false, and MonitorInterval to 5.
+     * <LI>Start the server with a default ltpa.keys file.
+     * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
+     * <LI>Rename the ltpa.keys file to validation1.keys.
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <LI>Check for the creation of a new ltpa.keys file.
+     * <LI>Attempt to access a new simple servlet configured for form login2 with valid credentials.
+     * <OL>
+     * <P>Expected Results:
+     * <OL>
+     * <LI>MonitorDirectory is set to false, and MonitorInterval to 5.
+     * <LI>Server starts successfully, and a default ltpa.keys file is automatically generated.
+     * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
+     * <LI>The ltpa.keys file is renamed to validation1.keys.
+     * <LI>Continued authentication to simple servlet; server is not restarted and does not need to login again.
+     * <LI>A new ltpa.keys file is created.
+     * <LI>Successful authentication to simple servlet with new ltpa cookie2 created and ltpa cookie2 is different from ltpa cookie1.
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    @AllowedFFDC({ "java.lang.IllegalArgumentException" })
+    public void testLTPAFileCreationDeletion_monitorDirectory_false_monitorInterval_5() throws Exception {
+        // Get the server configuration
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        LTPA ltpa = serverConfiguration.getLTPA();
+
+        // Check if the configuration needs to be updated
+        boolean configurationUpdateNeeded = false;
+
+        // Set MonitorDirectory to true, and MonitorInterval to 5
+        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "false") | setLTPAMonitorIntervalElement(ltpa, "5");
+
+        // Apply server configuration update if needed
+        if (configurationUpdateNeeded)
+            updateConfigDynamically(server, serverConfiguration, true);
+
+        // Assert that a default ltpa.keys file is generated
+        assertFileWasCreated(DEFAULT_KEY_PATH);
+
+        // Initial login to simple servlet for form login1
+        String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+
+        // Get the SSO cookies back from each login
+        String cookie1 = flClient1.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
+
+        // Rename the ltpa.keys file to validation1.keys
+        renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY1_PATH, false);
+
+        // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
+        String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
+
+        // Assert that a new ltpa.keys file was created otherwise add a final message saying it's intermittent
+        assertFileWasCreated(DEFAULT_KEY_PATH);
+
+        // New login to simple servlet for form login2
+        String response3 = flClient2.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+        String cookie2 = flClient2.getCookieFromLastLogin();
+
+        // Assert that the new cookie is different from the old cookie
+        assertNotNull("Expected SSO Cookie 2 is missing.", cookie2);
+        assertFalse("The new cookie is the same as the old cookie. Cookie1 = " + cookie1 + ". Cookie2 = " + cookie2 + ".",
+                    cookie1.equals(cookie2));
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI>Set MonitorDirectory to false, and MonitorInterval to 5.
+     * <LI>Start the server with a default ltpa.keys file.
+     * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
+     * <LI>Replace the primary key with a different valid key.
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <LI>Attempt to access a new simple servlet configured for form login2 with valid credentials.
+     * <OL>
+     * <P>Expected Results:
+     * <OL>
+     * <LI>MonitorDirectory is set to false, and MonitorInterval to 5.
+     * <LI>Server starts successfully, and a default ltpa.keys file is automatically generated.
+     * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
+     * <LI>The ltpa.keys file is replaced with a different key.
+     * <LI>Successful authentication to simple servlet, since the server still uses the old key without monitor directory.
+     * <LI>Successful authentication to simple servlet with new ltpa cookie2 created.
+     * </OL>
+     */
+    @Test
+    public void testLTPAFileReplacement_newValidKey_monitorDirectory_false_monitorInterval_5() throws Exception {
+        // Get the server configuration
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        LTPA ltpa = serverConfiguration.getLTPA();
+
+        // Check if the configuration needs to be updated
+        boolean configurationUpdateNeeded = false;
+
+        // Set MonitorDirectory to true, and MonitorInterval to 5
+        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "false") | setLTPAMonitorIntervalElement(ltpa, "5");
+
+        // Apply server configuration update if needed
+        if (configurationUpdateNeeded)
+            updateConfigDynamically(server, serverConfiguration, true);
+
+        // Assert that a default ltpa.keys file is generated
+        assertFileWasCreated(DEFAULT_KEY_PATH);
+
+        // Initial login to simple servlet for form login1
+        String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+
+        // Get the SSO cookies back from each login
+        String cookie1 = flClient1.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
+
+        // Replace the primary key with a different valid key
+        renameFileIfExists(VALIDATION_KEY2_PATH, DEFAULT_KEY_PATH, true);
+
+        // Attempt to access the simple servlet again with the same cookie and assert it works
+        String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
+
+        // New login to simple servlet for form login2
+        String response3 = flClient2.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+        String cookie2 = flClient2.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 2 is missing.", cookie2);
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI>Set MonitorDirectory to true, and MonitorInterval to 0.
+     * <LI>Start the server with a default ltpa.keys file.
+     * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
+     * <LI>Rename the ltpa.keys file to validation1.keys.
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <LI>Check for the creation of a new ltpa.keys file.
+     * <LI>Attempt to access a new simple servlet configured for form login2 with valid credentials.
+     * <OL>
+     * <P>Expected Results:
+     * <OL>
+     * <LI>MonitorDirectory is set to true, and MonitorInterval to 0.
+     * <LI>Server starts successfully, and a default ltpa.keys file is automatically generated.
+     * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
+     * <LI>The ltpa.keys file is renamed to validation1.keys.
+     * <LI>Continued authentication to simple servlet; server is not restarted and does not need to login again.
+     * <LI>A new ltpa.keys file is not created.
+     * <LI>Successful authentication to simple servlet with new ltpa cookie2 created.
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    @AllowedFFDC({ "java.lang.IllegalArgumentException" })
+    public void testLTPAFileCreationDeletion_monitorDirectory_true_monitorInterval_0() throws Exception {
+        // Get the server configuration
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        LTPA ltpa = serverConfiguration.getLTPA();
+
+        // Check if the configuration needs to be updated
+        boolean configurationUpdateNeeded = false;
+
+        // Set MonitorDirectory to true, and MonitorInterval to 0
+        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "true") | setLTPAMonitorIntervalElement(ltpa, "0");
+
+        // Apply server configuration update if needed
+        if (configurationUpdateNeeded)
+            updateConfigDynamically(server, serverConfiguration, true);
+
+        // Assert that a default ltpa.keys file is generated
+        assertFileWasCreated(DEFAULT_KEY_PATH);
+
+        // Initial login to simple servlet for form login1
+        String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+
+        // Get the SSO cookies back from each login
+        String cookie1 = flClient1.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
+
+        // Rename the ltpa.keys file to validation1.keys
+        renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY1_PATH, false);
+
+        // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
+        String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
+
+        // Assert that a new ltpa.keys file was not created
+        assertFileWasNotCreated(DEFAULT_KEY_PATH);
+
+        // New login to simple servlet for form login2
+        String response3 = flClient2.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+        String cookie2 = flClient2.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 2 is missing.", cookie2);
+
+        // Place the ltpa.keys file back to the default location
+        renameFileIfExists(VALIDATION_KEY1_PATH, DEFAULT_KEY_PATH, false);
+        assertFileWasCreated(DEFAULT_KEY_PATH);
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI>Set MonitorDirectory to true, and MonitorInterval to 0.
+     * <LI>Start the server with a default ltpa.keys file.
+     * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
+     * <LI>Replace the primary key with a different valid key.
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <LI>Attempt to access a new simple servlet configured for form login2 with valid credentials.
+     * <OL>
+     * <P>Expected Results:
+     * <OL>
+     * <LI>MonitorDirectory is set to true, and MonitorInterval to 0.
+     * <LI>Server starts successfully, and a default ltpa.keys file is automatically generated.
+     * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
+     * <LI>The ltpa.keys file is replaced with a different key.
+     * <LI>Successful authentication to simple servlet, since the server still uses the old key without file monitoring.
+     * <LI>Successful authentication to simple servlet with new ltpa cookie2 created.
+     * </OL>
+     */
+    @Test
+    public void testLTPAFileReplacement_newValidKey_monitorDirectory_true_monitorInterval_0() throws Exception {
+        // Get the server configuration
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        LTPA ltpa = serverConfiguration.getLTPA();
+
+        // Check if the configuration needs to be updated
+        boolean configurationUpdateNeeded = false;
+
+        // Set MonitorDirectory to true, and MonitorInterval to 0
+        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "true") | setLTPAMonitorIntervalElement(ltpa, "0");
+
+        // Apply server configuration update if needed
+        if (configurationUpdateNeeded)
+            updateConfigDynamically(server, serverConfiguration, true);
+
+        // Assert that a default ltpa.keys file is generated
+        assertFileWasCreated(DEFAULT_KEY_PATH);
+
+        // Initial login to simple servlet for form login1
+        String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+
+        // Get the SSO cookies back from each login
+        String cookie1 = flClient1.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
+
+        // Replace the primary key with a different valid key
+        renameFileIfExists(VALIDATION_KEY2_PATH, DEFAULT_KEY_PATH, true);
+
+        // Attempt to access the simple servlet again with the same cookie and assert it works
+        String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
 
         // New login to simple servlet for form login2
         String response3 = flClient2.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
