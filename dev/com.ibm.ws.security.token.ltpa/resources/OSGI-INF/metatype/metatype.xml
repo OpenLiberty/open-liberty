@@ -32,6 +32,8 @@
             name="%monitorDirectory" 
             description="%monitorDirectory.desc" 
             required="false" type="Boolean" default="false" />
+        <AD id="validationKeys" name="%validationKeys" description="%validationKeys.desc" 
+             ibm:type="pid" ibm:reference="com.ibm.ws.security.token.ltpa.validationKeys" required="false" type="String" ibm:flat="true" cardinality="2147483647" />
         <AD id="validationKeysRef" name="%validationKeysRef" description="%validationKeysRef.desc" 
              ibm:type="pid" ibm:reference="com.ibm.ws.security.token.ltpa.validationKeys" required="false" type="String" ibm:flat="true" cardinality="2147483647" />
             
