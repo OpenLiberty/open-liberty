@@ -32,15 +32,18 @@
             name="%monitorDirectory" 
             description="%monitorDirectory.desc" 
             required="false" type="Boolean" default="false" />
-        <AD id="validationKeysRef" name="%validationKeysRef" description="%validationKeysRef.desc" 
-             ibm:type="pid" ibm:reference="com.ibm.ws.security.token.ltpa.validationKeys" required="false" type="String" ibm:flat="true" cardinality="2147483647" />
-            
+        
         <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" 
             ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />
         <AD id="authenticationFilter.target" name="internal" description="internal use only"
             required="false" type="String"  default="(service.pid=${authFilterRef})" />
+        
         <AD id="expirationDifferenceAllowed" name="internal" description="internal use only"
-            required="false" type="String" ibm:type="duration(ms)" default="3000ms" />         
+            required="false" type="String" ibm:type="duration(ms)" default="3000ms" /> 
+	
+        <AD id="validationKeys" ibm:type="pid" ibm:reference="com.ibm.ws.security.token.ltpa.validationKeys" 
+           	required="false" type="String" ibm:flat="true" cardinality="2147483647" />        
+
     </OCD>
     
 
