@@ -528,7 +528,7 @@ goto:eof
   )
 
   @REM Unset these variables to prevent collisions with nested process invocations
-  @REM set LOG_DIR=
+  set LOG_DIR=
   set LOG_FILE=
 
   if NOT defined JAVA_HOME (
