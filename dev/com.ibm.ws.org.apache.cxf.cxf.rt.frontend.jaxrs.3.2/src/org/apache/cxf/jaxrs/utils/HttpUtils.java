@@ -102,8 +102,17 @@ public final class HttpUtils {
         new HashSet<>(Arrays.asList(new String[]{"GET", "HEAD", "OPTIONS", "TRACE"}));
     private static final Set<String> KNOWN_HTTP_VERBS_WITH_NO_RESPONSE_CONTENT =
         new HashSet<>(Arrays.asList(new String[]{"HEAD", "OPTIONS"}));
-    
-    private static final Pattern HTTP_SCHEME_PATTERN = Pattern.compile("^(?i)(http|https)$");
+
+    // Liberty change start
+    // private static final Pattern HTTP_SCHEME_PATTERN = Pattern.compile("^(?i)(http|https)$");
+
+    private static final HashSet<String> HTTP_SCHEMES = new HashSet<>();
+
+    static {
+        HTTP_SCHEMES.add("http");
+        HTTP_SCHEMES.add("https");
+    }
+    // Liberty change end
 
     private HttpUtils() {
     }
@@ -834,6 +843,6 @@ public final class HttpUtils {
     }
     
     public static boolean isHttpScheme(final String scheme) {
-        return scheme != null && HTTP_SCHEME_PATTERN.matcher(scheme).matches();
+        return scheme != null && HTTP_SCHEMES.contains(scheme.toLowerCase()); // Liberty change
     }
 }
