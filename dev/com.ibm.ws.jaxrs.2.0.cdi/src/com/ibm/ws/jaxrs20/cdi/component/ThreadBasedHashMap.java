@@ -12,11 +12,19 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.cdi.component;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.ibm.ws.managedobject.ManagedObject;
+import com.ibm.ws.managedobject.ManagedObjectContext;
+import com.ibm.ws.managedobject.ManagedObjectException;
+import com.ibm.wsspi.injectionengine.InjectionTarget;
+import com.ibm.wsspi.injectionengine.InjectionTargetContext;
+import com.ibm.wsspi.injectionengine.ReferenceContext;
 
 /**
  *
@@ -24,6 +32,50 @@ import com.ibm.ws.managedobject.ManagedObject;
 public class ThreadBasedHashMap extends ConcurrentHashMap<Class<?>, ManagedObject<?>> {
 
     private static final long serialVersionUID = 3759994379932861970L;
+
+    private static final ManagedObject<?> NULL_MANAGED_OBJECT = new ManagedObject<Void>() {
+
+        @Override
+        public Void getObject() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public ManagedObjectContext getContext() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Void getContextData(Class klass) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void release() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isLifecycleManaged() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getBeanScope() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Void inject(ReferenceContext referenceContext) throws ManagedObjectException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Void inject(InjectionTarget[] targets, InjectionTargetContext injectionContext) throws ManagedObjectException {
+            throw new UnsupportedOperationException();
+        }
+    };
+
     ThreadLocal<Map<Class<?>, ManagedObject<?>>> tlMap = new ThreadLocal<Map<Class<?>, ManagedObject<?>>>() {
         @Override
         protected Map<Class<?>, ManagedObject<?>> initialValue() {
@@ -38,16 +90,25 @@ public class ThreadBasedHashMap extends ConcurrentHashMap<Class<?>, ManagedObjec
 
     @Override
     public boolean containsKey(Object key) {
-        return (tlMap.get().containsKey(key) || super.containsKey(key));
+        // In a ConcurrentHashMap containsKey will return false for an entry with a null value, so we will call get() instead.
+        return (tlMap.get().containsKey(key) || (super.get(key) != null));
     }
 
 
     @Override
     public ManagedObject<?> get(Object key) {
+        ManagedObject<?> returnObj;
         if (tlMap.get().containsKey(key)) {
-            return tlMap.get().get(key);
+            returnObj = tlMap.get().get(key);
+        } else {
+            returnObj = super.get(key);
+            if (returnObj == NULL_MANAGED_OBJECT) {
+                returnObj = null;
+            }
+
         }
-        return super.get(key);
+        return returnObj;
+
     }
 
     @Override
@@ -55,10 +116,14 @@ public class ThreadBasedHashMap extends ConcurrentHashMap<Class<?>, ManagedObjec
         ManagedObject<?> prevValue;
         if (tlMap.get().containsKey(key)) {
             prevValue = tlMap.get().put(key, value);
-            super.put(key, value);
+            super.put(key, value == null ? NULL_MANAGED_OBJECT : value);
         } else {
             tlMap.get().put(key, value);
-            prevValue = super.put(key, value);
+            prevValue = super.put(key, value == null ? NULL_MANAGED_OBJECT : value);
+            if (prevValue == NULL_MANAGED_OBJECT) {
+                prevValue = null;
+            }
+
         }
         return prevValue;
     }
@@ -71,8 +136,26 @@ public class ThreadBasedHashMap extends ConcurrentHashMap<Class<?>, ManagedObjec
             super.remove(key);
         } else {
             prevValue = super.remove(key);
+            if (prevValue == NULL_MANAGED_OBJECT) {
+                prevValue = null;
+            }
         }
         return prevValue;
+    }
+
+    @Override
+    public Collection<ManagedObject<?>> values() {
+        Collection<ManagedObject<?>> origValues = super.values();
+        Collection<ManagedObject<?>> returnValues = new ArrayList<>(origValues.size());
+        Iterator<ManagedObject<?>> i = origValues.iterator();
+        while (i.hasNext()) {
+            ManagedObject<?> value = i.next();
+            if (value == NULL_MANAGED_OBJECT) {
+                value = null;
+            }
+            returnValues.add(value);
+        }
+        return returnValues;
     }
 
     @Override
