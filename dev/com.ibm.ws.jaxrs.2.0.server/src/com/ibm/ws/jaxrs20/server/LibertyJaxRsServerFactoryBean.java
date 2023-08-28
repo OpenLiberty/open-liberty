@@ -23,10 +23,11 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -71,8 +72,8 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
 
     private final static TraceComponent tc = Tr.register(LibertyJaxRsServerFactoryBean.class);
 
-    private final List<JaxRsFactoryBeanCustomizer> beanCustomizers = new LinkedList<JaxRsFactoryBeanCustomizer>();
-    private Map<String, Object> beanCustomizerContexts;
+    private final CopyOnWriteArrayList<JaxRsFactoryBeanCustomizer> beanCustomizers = new CopyOnWriteArrayList<JaxRsFactoryBeanCustomizer>();
+    private ConcurrentHashMap<String, Object> beanCustomizerContexts;
     private final EndpointInfo endpointInfo;
     private final JaxRsModuleMetaData moduleMetadata;
     private ServletConfig servletConfig;
@@ -100,9 +101,9 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
         this.setBus(serverBus);
 
         //Get the beanCustomizerContexts from the bus or create a new map
-        this.beanCustomizerContexts = (Map<String, Object>) serverBus.getProperty(JaxRsConstants.ENDPOINT_BEANCUSTOMIZER_CONTEXTOBJ);
+        this.beanCustomizerContexts = (ConcurrentHashMap<String, Object>) serverBus.getProperty(JaxRsConstants.ENDPOINT_BEANCUSTOMIZER_CONTEXTOBJ);
         if (this.beanCustomizerContexts == null) {
-            this.beanCustomizerContexts = new HashMap<String, Object>();
+            this.beanCustomizerContexts = new ConcurrentHashMap<String, Object>();
         }
 
         beanCustomizers.addAll(originalBeanCustomizers);
