@@ -52,6 +52,7 @@ public class StAXUtils {
      * EE8 - When running on Java 8 and WLP returns XLXP StAX provider, otherwise defaults to JRE's StAX Provider
      *
      */
+    @FFDCIgnore(ClassNotFoundException.class)
     public static ClassLoader getStAXProviderClassLoader() {
         ClassLoader cl;
         // We don't use XLXP with EE9 so just use the JRE's StAX provider
