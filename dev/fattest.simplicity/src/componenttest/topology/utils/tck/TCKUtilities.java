@@ -88,26 +88,28 @@ public class TCKUtilities {
         return sha256;
     }
 
-    static String generateSHA1(File file) {
-        String sha1 = null;
-        try (FileInputStream fis = new FileInputStream(file)) {
-            sha1 = generateSHA1(fis);
-        } catch (IOException e) {
-            Log.error(c, "generateSHA1", e, "Could not read file: " + file);
-            sha1 = "UNKNOWN";
-        } catch (NoSuchAlgorithmException e) {
-            Log.error(c, "generateSHA1", e, "Could not generate SHA-1 for: " + file);
-            sha1 = "UNKNOWN";
-        }
+    //issue 25138
+    // static String generateSHA1(File file) {
+    //     String sha1 = null;
+    //     try (FileInputStream fis = new FileInputStream(file)) {
+    //         sha1 = generateSHA1(fis);
+    //     } catch (IOException e) {
+    //         Log.error(c, "generateSHA1", e, "Could not read file: " + file);
+    //         sha1 = "UNKNOWN";
+    //     } catch (NoSuchAlgorithmException e) {
+    //         Log.error(c, "generateSHA1", e, "Could not generate SHA-1 for: " + file);
+    //         sha1 = "UNKNOWN";
+    //     }
 
-        return sha1;
-    }
+    //     return sha1;
+    // }
 
-    static String generateSHA1(InputStream inputStream) throws NoSuchAlgorithmException, IOException {
-        MessageDigest md = MessageDigest.getInstance("SHA-1");
-        String sha1 = getFileChecksum(md, inputStream);
-        return sha1;
-    }
+    //issue 25138
+    //static String generateSHA1(InputStream inputStream) throws NoSuchAlgorithmException, IOException {
+    //    MessageDigest md = MessageDigest.getInstance("SHA-1");
+    //    String sha1 = getFileChecksum(md, inputStream);
+    //    return sha1;
+    //}
 
     static String generateSHA256(InputStream inputStream) throws NoSuchAlgorithmException, IOException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -190,7 +192,8 @@ public class TCKUtilities {
 
         if (tckJar != null) {
             File tckFile = new File(tckJar.jarPath);
-            tckJar.sha1 = TCKUtilities.generateSHA1(tckFile);
+            //issue 25138
+            //tckJar.sha1 = TCKUtilities.generateSHA1(tckFile);
             tckJar.sha256 = TCKUtilities.generateSHA256(tckFile);
         }
 

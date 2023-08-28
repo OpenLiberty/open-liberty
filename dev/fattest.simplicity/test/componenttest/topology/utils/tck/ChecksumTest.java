@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,19 +20,18 @@ import java.security.NoSuchAlgorithmException;
 
 import org.junit.Test;
 
-import componenttest.topology.utils.tck.TCKUtilities;
-
 /**
  *
  */
 public class ChecksumTest {
 
-    @Test
-    public void testSHA1() throws NoSuchAlgorithmException, IOException {
-        InputStream is = ChecksumTest.class.getResourceAsStream("dependency.txt");
-        String sha1 = TCKUtilities.generateSHA1(is);
-        assertEquals("1799590f9c3039a6d243a8e72ee84e65c4e0fa44", sha1);
-    }
+    //issue 25138
+    //@Test
+    //public void testSHA1() throws NoSuchAlgorithmException, IOException {
+    //    InputStream is = ChecksumTest.class.getResourceAsStream("dependency.txt");
+    //    String sha1 = TCKUtilities.generateSHA1(is);
+    //    assertEquals("1799590f9c3039a6d243a8e72ee84e65c4e0fa44", sha1);
+    //}
 
     @Test
     public void testSHA256() throws NoSuchAlgorithmException, IOException {

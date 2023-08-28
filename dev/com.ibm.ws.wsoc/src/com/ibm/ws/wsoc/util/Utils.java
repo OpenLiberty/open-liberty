@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -467,6 +467,8 @@ public class Utils {
 
         String inputKey = key + Constants.GUID;
 
+        //issue 25138
+        //MessageDigest md = MessageDigest.getInstance("SHA-1");
         MessageDigest md = MessageDigest.getInstance("SHA-1");
         byte[] arrayKey = inputKey.getBytes(StandardCharsets.ISO_8859_1);
         // Question: should it be:  "utf-8" above?
