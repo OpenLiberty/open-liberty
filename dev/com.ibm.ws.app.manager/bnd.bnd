@@ -58,7 +58,8 @@ instrument.classesExcludes: com/ibm/ws/app/manager/internal/resources/*.class
 	com.ibm.ws.classloading;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.kernel.boot.common;version=latest
+	com.ibm.ws.kernel.boot.common;version=latest,\
+	com.ibm.ws.kernel.feature.core;version=latest
 
 -testpath: \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
