@@ -24,6 +24,7 @@ import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
 import com.ibm.ws.http.channel.internal.HttpTrailersImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
+import com.ibm.ws.http.netty.MSP;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedMethodException;
@@ -71,6 +72,10 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     private QueryStringDecoder query;
 
     public NettyRequestMessage(FullHttpRequest request, HttpInboundServiceContext isc) {
+
+        MSP.log("NettyRequestMessage request null:" + Objects.isNull(request));
+        MSP.log("NettyRequestMessage isc null: " + Objects.isNull(isc));
+
         Objects.requireNonNull(request);
         Objects.requireNonNull(isc);
 
@@ -82,6 +87,8 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             this.config = ((HttpInboundServiceContextImpl) isc).getHttpConfig();
             this.isIncoming = ((HttpInboundServiceContextImpl) isc).isInboundConnection();
         }
+
+        super.init(request, isc, config);
 
     }
 
@@ -301,8 +308,8 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public VersionValues getVersionValue() {
-        // TODO Auto-generated method stub
-        return null;
+        return VersionValues.find(request.protocolVersion().text());
+
     }
 
     @Override
