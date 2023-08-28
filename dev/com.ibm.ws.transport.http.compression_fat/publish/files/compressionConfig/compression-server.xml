@@ -21,10 +21,14 @@
     <httpEndpoint id="defaultHttpEndpoint"
                   host="*"
                   httpPort="${bvt.prop.HTTP_default}"
-                  httpsPort="${bvt.prop.HTTP_default.secure}">
+                  httpsPort="${bvt.prop.HTTP_default.secure}"
+                  useNettyTransport="true">
     		<compression/>
     </httpEndpoint>
 
+<logging traceSpecification="HTTPChannel=all:HTTPDispatcher=all:Netty=all" traceFileName="trace.log" maxFileSize="100" maxFiles="10" traceFormat="BASIC" />
+
+   
     <application location="EndpointInformation.war" />
 
 </server>

@@ -80,7 +80,11 @@
             
         <!-- NO DEFAULT PROTOCOL VERSION VALUE: SPECIFICATION IS OPTIONAL -->
         <AD name="%endpoint.protocolVersion" description="%endpoint.protocolVersion.desc"
-            id="protocolVersion" required="false" type="String"/>    
+            id="protocolVersion" required="false" type="String"/> 
+            
+        <!-- NO DEFAULT NETTY ENABLEMENT VALUE: SPECIFICATION IS OPTIONAL -->
+        <AD name="internal" description="internal use only"
+        	id="useNettyTransport" required="false" type="Boolean" default="true"/>
 
         <!--  What should happen if there is a configuration error or the port is already bound? -->    
         <AD id="onError" ibm:variable="onError" name="%onError.name" description="%onError.desc" type="String" ibm:type="onError" default="WARN"> 

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,11 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.values;
 
+import java.util.Objects;
+
 import com.ibm.ws.http.channel.internal.HttpResponseMessageImpl;
+import com.ibm.ws.http.netty.MSP;
+import com.ibm.ws.http.netty.message.NettyResponseMessage;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
 
@@ -31,7 +35,7 @@ public class AccessLogResponseSize extends AccessLogData {
 
         long responseSize = getResponseSize(response, request, data);
 
-        if (responseSize > 0) {
+        if (responseSize != -999) {
             accessLogEntry.append(responseSize);
         } else {
             accessLogEntry.append("-");
@@ -42,16 +46,21 @@ public class AccessLogResponseSize extends AccessLogData {
 
     public static long getResponseSize(HttpResponseMessage response, HttpRequestMessage request, Object data) {
         long responseSize = -999;
-        HttpResponseMessageImpl responseMessageImpl = null;
-        if (response != null) {
-            responseMessageImpl = (HttpResponseMessageImpl) response;
+        if (Objects.nonNull(response)) {
+
+            if (response instanceof NettyResponseMessage) {
+                NettyResponseMessage nettyResponseMessage = (NettyResponseMessage) response;
+                responseSize = Objects.nonNull(nettyResponseMessage) ? nettyResponseMessage.getServiceContext().getNumBytesWritten() : -999;
+            }
+
+            else if (response instanceof HttpResponseMessageImpl) {
+                HttpResponseMessageImpl legacyResponseMessage = (HttpResponseMessageImpl) response;
+
+                responseSize = Objects.nonNull(legacyResponseMessage) ? legacyResponseMessage.getServiceContext().getNumBytesWritten() : -999;
+            }
+
         }
-
-        if (responseMessageImpl != null) {
-
-            responseSize = responseMessageImpl.getServiceContext().getNumBytesWritten();
-
-        }
+        MSP.log("%b access log directive set to: " + responseSize);
         return responseSize;
     }
 }

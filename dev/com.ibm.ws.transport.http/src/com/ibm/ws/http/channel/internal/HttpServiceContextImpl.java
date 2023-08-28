@@ -15,6 +15,7 @@ package com.ibm.ws.http.channel.internal;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
@@ -52,6 +54,8 @@ import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants.LiteralIndexType;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http.netty.MSP;
+import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
@@ -92,6 +96,12 @@ import com.ibm.wsspi.tcpchannel.TCPReadCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPRequestContext;
 import com.ibm.wsspi.tcpchannel.TCPWriteCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
+
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.DefaultHttpContent;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpUtil;
 
 /**
  * Common code shared between both the Inbound and Outbound HTTP service
@@ -275,6 +285,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
     private final CopyOnWriteArrayList<Frame> framesToWrite = new CopyOnWriteArrayList<Frame>();
 
+    private ChannelHandlerContext nettyContext;
+    private FullHttpRequest nettyRequest;
+    private io.netty.handler.codec.http.HttpResponse nettyResponse;
+
     /**
      * Constructor for this base service context class.
      */
@@ -283,6 +297,18 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         // override this flag explicitly)
         this.bIsJITRead = true;
         this.allocatedBuffers = new LinkedList<WsByteBuffer>();
+    }
+
+    public void setNettyContext(ChannelHandlerContext ctx) {
+        this.nettyContext = ctx;
+    }
+
+    public void setNettyRequest(FullHttpRequest request) {
+        this.nettyRequest = request;
+    }
+
+    public void setNettyResponse(io.netty.handler.codec.http.HttpResponse response) {
+        this.nettyResponse = response;
     }
 
     // ********************************************************
@@ -962,6 +988,21 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "init");
         }
+    }
+
+    public void init(ChannelHandlerContext context) {
+        this.setNettyContext(context);
+        InetSocketAddress local = (InetSocketAddress) context.channel().localAddress();
+        InetSocketAddress remote = (InetSocketAddress) context.channel().remoteAddress();
+
+        setLocalPort(local.getPort());
+        setRemotePort(remote.getPort());
+        setLocalAddr(local.getAddress());
+        setRemoteAddr(remote.getAddress());
+
+        this.myReadTimeout = getHttpConfig().getReadTimeout();
+        this.myWriteTimeout = getHttpConfig().getWriteTimeout();
+
     }
 
     public void reinit(TCPConnectionContext tcc) {
@@ -2048,11 +2089,12 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 msg.appendContentEncoding(ce);
             }
         }
-
-        // when formatting headers, update the "persistence" flag for the
-        // connection so that it reads the header information in the outgoing
-        // message
-        updatePersistence(msg);
+        if (!getHttpConfig().useNetty()) {
+            // when formatting headers, update the "persistence" flag for the
+            // connection so that it reads the header information in the outgoing
+            // message
+            updatePersistence(msg);
+        }
 
         // once headers are in place, we can run the checks to find
         // out if a body is valid to send out with the message
@@ -2073,7 +2115,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
 
                 headerBuffers = msg.encodeH2Message();
-            } else {
+            } else if (!getHttpConfig().useNetty()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "formatHeaders: On an non-HTTP/2.0 connection, marshalling the headers");
                 }
@@ -2183,6 +2225,16 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         setupCompressionHandler(msg);
         formatHeaders(msg, false);
         synchWrite();
+    }
+
+    final protected void sendHeaders(HttpResponse response) {
+        if (headersSent()) {
+            Tr.event(tc, "Invalid call to sendHeaders after already sent");
+            return;
+        }
+        this.nettyContext.channel().write(this.nettyResponse);
+        this.setHeadersSent();
+
     }
 
     /**
@@ -2666,32 +2718,36 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             Tr.debug(tc, "Preparing to send message");
         }
 
+        System.out.println("MSP prepareOutgoing. Content length should be set to: " + GenericUtils.sizeOf(wsbb));
+
         WsByteBuffer[] buffers = wsbb;
         this.writingHeaders = false;
-        // if a valid body is outgoing, check the encoding flags to see if we
-        // need to automatically change the buffers
-        if (!isRawBody() && !headersSent()) {
-            setupCompressionHandler(msg);
-        }
-        // check whether we need to pass data through the compression handler
-        if (null != this.compressHandler) {
-
-            List<WsByteBuffer> list = this.compressHandler.compress(buffers);
-            if (this.isFinalWrite) {
-                list.addAll(this.compressHandler.finish());
+        if (!getHttpConfig().useNetty()) {
+            // if a valid body is outgoing, check the encoding flags to see if we
+            // need to automatically change the buffers
+            if (!isRawBody() && !headersSent()) {
+                setupCompressionHandler(msg);
             }
+            // check whether we need to pass data through the compression handler
+            if (null != this.compressHandler) {
 
-            // put any created buffers onto the release list
-            if (0 < list.size()) {
-                buffers = new WsByteBuffer[list.size()];
-                list.toArray(buffers);
-                storeAllocatedBuffers(buffers);
-            } else {
-                buffers = null;
+                List<WsByteBuffer> list = this.compressHandler.compress(buffers);
+                if (this.isFinalWrite) {
+                    list.addAll(this.compressHandler.finish());
+                }
+
+                // put any created buffers onto the release list
+                if (0 < list.size()) {
+                    buffers = new WsByteBuffer[list.size()];
+                    list.toArray(buffers);
+                    storeAllocatedBuffers(buffers);
+                } else {
+                    buffers = null;
+                }
             }
         }
 
-        if (!headersSent()) {
+        if (!headersSent() && !getHttpConfig().useNetty()) {
             // header compliance is checked by formatHeaders so check for either
             // the partial body flag or explicit chunked encoding here
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -2707,10 +2763,12 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             // PK48697 - only update these if the message allows it
             if (!isPartialBody() && msg.shouldUpdateBodyHeaders()) {
                 complete = true;
-                msg.setContentLength(GenericUtils.sizeOf(buffers));
-                if (msg.isChunkedEncodingSet()) {
-                    msg.removeTransferEncoding(TransferEncodingValues.CHUNKED);
-                    msg.commitTransferEncoding();
+                if (!myChannelConfig.useNetty()) {
+                    msg.setContentLength(GenericUtils.sizeOf(buffers));
+                    if (msg.isChunkedEncodingSet()) {
+                        msg.removeTransferEncoding(TransferEncodingValues.CHUNKED);
+                        msg.commitTransferEncoding();
+                    }
                 }
             }
 
@@ -2743,6 +2801,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
             }
             formatHeaders(msg, complete);
+        } else {
+            System.out.println("MSP set netty CL");
+            HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
         }
 
         // if it is valid to send a body, then format it and queue it up,
@@ -2809,6 +2870,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             Tr.debug(tc, "sendFullOutgoing : " + isOutgoingBodyValid() + ", " + wsbb + ", " + this);
         }
         if (isOutgoingBodyValid()) {
+
+            System.out.println("MSP send full outgoing 1");
             HttpInboundServiceContextImpl hisc = null;
             boolean needH2EOS = true;
             HttpInboundLink link = ((HttpInboundServiceContextImpl) this).getLink();
@@ -2828,6 +2891,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                     hisc = (HttpInboundServiceContextImpl) this;
                 }
             }
+            System.out.println("MSP send full outgoing 2");
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && hisc != null && hisc.getLink() != null) {
                 Tr.debug(tc, "sendFullOutgoing : " + hisc + ", " + hisc.getLink().toString());
@@ -2858,6 +2922,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
 
             } else if (msg.isChunkedEncodingSet()) {
+                System.out.println("MSP send full outgoing 3");
                 HttpInboundServiceContextImpl localHisc = null;
                 if (this instanceof HttpInboundServiceContextImpl) {
                     localHisc = (HttpInboundServiceContextImpl) this;
@@ -2872,8 +2937,43 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
             }
         }
+        System.out.println("MSP send full outgoing 4");
         setMessageSent();
+        MSP.log("set message");
         synchWrite();
+        MSP.log("wrote");
+    }
+
+    /**
+     * Send a full message out. If headers have not already been sent, they will
+     * be queued in front of the given body buffers, plus the "zero chunk" will
+     * be tacked on the end if this is chunked encoding.
+     *
+     * @param wsbb
+     * @param msg
+     * @throws IOException
+     */
+    final protected void sendFullOutgoing(WsByteBuffer[] wsbb) throws IOException {
+        this.isFinalWrite = true;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "sendFullOutgoing : " + isOutgoingBodyValid() + ", " + wsbb + ", " + this);
+        }
+
+        setMessageSent();
+        this.addBytesWritten(GenericUtils.sizeOf(wsbb));
+        this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_BYTES_WRITTEN).set(numBytesWritten);
+        this.nettyContext.channel().write(this.nettyResponse);
+        DefaultHttpContent content;
+        if (Objects.nonNull(wsbb)) {
+            for (WsByteBuffer buffer : wsbb) {
+
+                this.nettyContext.channel().write(buffer);
+                //content = new DefaultHttpContent(Unpooled.wrappedBuffer(buffer.getWrappedByteBuffer()));
+
+            }
+            this.nettyContext.channel().flush();
+        }
+
     }
 
     /**
@@ -3133,11 +3233,15 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      */
     private void synchWrite() throws IOException {
 
+        MSP.log("getting buff list");
         WsByteBuffer[] writeBuffers = getBuffList();
+        MSP.log("is buff list null: " + Objects.isNull(writeBuffers));
+
         if (null != writeBuffers) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Writing (sync) " + writeBuffers.length + " buffers.");
             }
+
             getTSC().getWriteInterface().setBuffers(writeBuffers);
             try {
                 getTSC().getWriteInterface().write(TCPWriteRequestContext.WRITE_ALL_DATA, getWriteTimeout());
@@ -3161,7 +3265,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 // 457369 - disconnect write buffers in TCP when done
                 getTSC().getWriteInterface().setBuffers(null);
             }
-        } else if (this.isH2Connection && !framesToWrite.isEmpty()) {
+        }
+
+        if (this.isH2Connection && !framesToWrite.isEmpty()) {
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Writing out H2 Frames");
             }
@@ -3495,6 +3602,11 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @return HttpChannelConfig
      */
     final public HttpChannelConfig getHttpConfig() {
+        System.out.println("Null? " + this.myChannelConfig == null);
+        if (this.myChannelConfig == null) {
+            this.myChannelConfig = new HttpChannelConfig();
+        }
+
         return this.myChannelConfig;
     }
 
