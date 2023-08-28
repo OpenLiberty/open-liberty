@@ -10,11 +10,14 @@
 package com.ibm.ws.transport.http;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -22,6 +25,9 @@ import com.ibm.ws.fat.util.FatLogHandler;
                 HttpSetCookieTests.class
 })
 public class FATSuite {
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.BETA_OPTION());
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}
