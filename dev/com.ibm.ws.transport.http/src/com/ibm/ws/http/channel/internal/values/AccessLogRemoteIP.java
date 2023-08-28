@@ -14,6 +14,7 @@ package com.ibm.ws.http.channel.internal.values;
 
 import java.util.Objects;
 
+import com.ibm.ws.http.netty.MSP;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
@@ -46,10 +47,15 @@ public class AccessLogRemoteIP extends AccessLogData {
 
         if (Objects.nonNull(request)) {
 
+            MSP.log("access log parsing %a");
+
             HttpInboundServiceContext serviceContext = request.getServiceContext() instanceof HttpInboundServiceContext ? (HttpInboundServiceContext) request.getServiceContext() : null;
 
             if (Objects.nonNull(serviceContext)) {
                 hostIPAddress = serviceContext.useForwardedHeadersInAccessLog() ? serviceContext.getForwardedRemoteAddress() : null;
+
+                MSP.log("Using forwarded " + serviceContext.useForwardedHeadersInAccessLog());
+                MSP.log("Set host to : " + hostIPAddress);
 
                 if (Objects.isNull(hostIPAddress)) {
                     hostIPAddress = serviceContext.getRemoteAddr().toString();

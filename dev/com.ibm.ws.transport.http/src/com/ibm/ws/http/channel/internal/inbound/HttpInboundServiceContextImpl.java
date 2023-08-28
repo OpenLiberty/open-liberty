@@ -36,6 +36,7 @@ import com.ibm.ws.http.channel.internal.values.ReturnCodes;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.message.NettyRequestMessage;
 import com.ibm.ws.http.netty.message.NettyResponseMessage;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ConnectionLink;
@@ -103,6 +104,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private ChannelHandlerContext nettyContext;
     private FullHttpRequest nettyRequest;
     private io.netty.handler.codec.http.HttpResponse nettyResponse;
+    private NettyRequestMessage requestMessage;
     private HttpResponseMessage response;
 
     /**
@@ -175,6 +177,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     public void setNettyRequest(FullHttpRequest request) {
         this.nettyRequest = request;
         super.setNettyRequest(request);
+        this.requestMessage = new NettyRequestMessage(nettyRequest, this);
     }
 
     @Override
@@ -505,6 +508,10 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      */
     @Override
     public HttpRequestMessage getRequest() {
+        if (Objects.nonNull(nettyContext)) {
+            return this.requestMessage;
+        }
+
         return getRequestImpl();
     }
 
@@ -517,8 +524,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         if (null == getMyRequest()) {
             if (getHttpConfig().useNetty()) {
 
-                setMyRequest(new HttpRequestMessageImpl());
-                getMyRequest().init(this);
+                this.requestMessage = new NettyRequestMessage(nettyRequest, this);
 
             } else {
                 setMyRequest(getObjectFactory().getRequest(this));

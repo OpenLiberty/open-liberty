@@ -291,9 +291,9 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
             value.forEach(this::processXForwardedBy);
         }
 
-        this.forwardedProto = NettyHeaderUtils.getLast(headers, HttpHeaderKeys.HDR_X_FORWARDED_PROTO.toString());
-        this.forwardedHost = NettyHeaderUtils.getLast(headers, HttpHeaderKeys.HDR_X_FORWARDED_HOST.toString());
-        this.forwardedPort = NettyHeaderUtils.getLast(headers, HttpHeaderKeys.HDR_X_FORWARDED_PORT.toString());
+        this.forwardedProto = NettyHeaderUtils.getLast(headers, HttpHeaderKeys.HDR_X_FORWARDED_PROTO.getName());
+        this.forwardedHost = NettyHeaderUtils.getLast(headers, HttpHeaderKeys.HDR_X_FORWARDED_HOST.getName());
+        this.forwardedPort = NettyHeaderUtils.getLast(headers, HttpHeaderKeys.HDR_X_FORWARDED_PORT.getName());
         validateValues();
     }
 
