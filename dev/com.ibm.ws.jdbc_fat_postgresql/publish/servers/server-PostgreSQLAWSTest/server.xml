@@ -63,4 +63,6 @@
     				wrapperPlugins="driverMetaData" wrapperDriverName="PostgreSQL JDBC Driver" />
     </dataSource>
 
+    <javaPermission codeBase="${shared.resource.dir}/aws/*" className="java.security.AllPermission"/>
+
 </server>
