@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2013, 2022 IBM Corporation and others.
+# Copyright (c) 2013, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/clients/common/resources/OidcClientMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -309,6 +306,11 @@ NO_RECENT_SESSIONS_WITH_CLAIMS.useraction=Upewnij si\u0119, \u017ce roszczenia o
 ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS1553E: Klient OpenID Connect o nazwie {0} napotka\u0142 b\u0142\u0105d podczas wysy\u0142ania \u017c\u0105dania autoryzacji do dostawcy OpenID Connect. {1}
 ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=Konfiguracja klienta OpenID Connect mo\u017ce nie zawiera\u0107 potrzebnych informacji lub klient napotka\u0142 b\u0142\u0105d podczas komunikowania si\u0119 z dostawc\u0105 OpenID Connect.
 ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d w komunikacie.
+
+# do not translate hostname, wasReqURLRedirectDomainNames, and webAppSecurity
+MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE=CWWKS1554E: \u017b\u0105danie skierowane do [{0}] jest niepoprawne. Wymagany plik cookie o nazwie rozpoczynaj\u0105cej si\u0119 od [{1}] ma niepoprawn\u0105 warto\u015b\u0107. Nazwa hosta [{2}] u\u017cyta w pliku cookie nie jest zgodna z nazw\u0105 hosta \u017c\u0105dania. Ponadto nazwa hosta w pliku cookie nie jest jedn\u0105 z dozwolonych nazw domen.
+MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.explanation=\u017b\u0105danie zawiera zniekszta\u0142cony plik cookie. Nazwa hosta w pliku cookie musi by\u0107 zgodna z bie\u017c\u0105cym \u017c\u0105daniem lub z jedn\u0105 z dozwolonych nazw domen. Plik cookie mo\u017cna modyfikowa\u0107 z poziomu agenta u\u017cytkownika.
+MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.useraction=Sprawd\u017a konfiguracje dostawcy i klienta OpenID Connect. Je\u015bli oczekiwana jest nazwa hosta, dodaj j\u0105 do atrybutu wasReqURLRedirectDomainNames elementu webAppSecurity w konfiguracji serwera.
 
 #CWWKS1557 used in client bundle, do not use here.
 
