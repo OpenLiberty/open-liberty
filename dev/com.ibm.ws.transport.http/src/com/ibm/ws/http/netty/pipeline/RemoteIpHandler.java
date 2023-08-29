@@ -151,7 +151,7 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
             for (String split : nodes) {
                 //Note that HTTP list allows white spaces between the identifiers, as such,
                 //trim the string before evaluating. Normalize it to lowercase as well
-                node = split.toLowerCase().trim();
+                node = split.toLowerCase().replaceAll("\\s", "");;
 
                 try {
                     nodeName = node.substring(0, node.indexOf("="));
@@ -300,8 +300,8 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
     private void validateValues() {
         Tr.entry(tc, "validateValues");
 
-        this.isValidHost(forwardedHost);
-        this.isValidProto(forwardedProto);
+        this.forwardedProto = this.isValidProto(forwardedProto) ? this.forwardedProto : null;
+        this.forwardedHost = this.isValidHost(forwardedHost) ? this.forwardedHost : null;
 
         Tr.exit(tc, "validateValues");
     }

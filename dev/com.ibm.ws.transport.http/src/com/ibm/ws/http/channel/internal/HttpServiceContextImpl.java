@@ -2831,7 +2831,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         WsByteBuffer[] buffers = wsbb;
         if (!headersSent() && Objects.nonNull(buffers)) {
 
-            HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(wsbb));
+            //HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(wsbb));
             setPartialBody(false);
 
             if (nettyContext.channel().hasAttr(NettyHttpConstants.ACCEPT_ENCODING)) {
@@ -2886,6 +2886,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
         }
 
+        addBytesWritten(GenericUtils.sizeOf(buffers));
+
         if (Objects.nonNull(buffers)) {
 
             MSP.log("sendOutgoing are buffers good? " + GenericUtils.sizeOf(buffers));
@@ -2901,7 +2903,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 //                else // Write last http content
 //                    this.nettyContext.channel().write(new DefaultLastHttpContent());
             }
-            this.nettyContext.channel().flush();
+            // this.nettyContext.channel().flush();
         }
     }
 
