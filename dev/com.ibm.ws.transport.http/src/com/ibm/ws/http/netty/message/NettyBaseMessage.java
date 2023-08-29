@@ -30,6 +30,7 @@ import com.ibm.ws.http.channel.internal.HttpTrailersImpl;
 import com.ibm.ws.http.channel.internal.cookies.CookieCacheData;
 import com.ibm.ws.http.channel.internal.cookies.CookieHeaderByteParser;
 import com.ibm.ws.http.channel.internal.cookies.CookieUtils;
+import com.ibm.ws.http.netty.MSP;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedProtocolVersionException;
@@ -217,6 +218,11 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public int getNumberOfHeaderInstances(String header) {
+
+        for (String name : headers.names()) {
+            MSP.log("Request Header name: " + name);
+        }
+
         return headers.getAll(header).size();
     }
 
@@ -802,8 +808,7 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public String getVersion() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.message.protocolVersion().text();
     }
 
     @Override
@@ -847,8 +852,6 @@ public class NettyBaseMessage implements HttpBaseMessage {
     }
 
     public void processCookies() {
-
-        setCookie("chocolate", "chip", HttpHeaderKeys.HDR_SET_COOKIE);
 
         marshallCookieCache(this.cookieCache);
         marshallCookieCache(this.cookie2Cache);

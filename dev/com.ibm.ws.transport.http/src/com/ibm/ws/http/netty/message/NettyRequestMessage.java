@@ -9,12 +9,10 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.message;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -22,26 +20,15 @@ import com.ibm.ws.genericbnf.internal.GenericUtils;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
-import com.ibm.ws.http.channel.internal.HttpTrailersImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.netty.MSP;
-import com.ibm.wsspi.genericbnf.HeaderField;
-import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedMethodException;
-import com.ibm.wsspi.genericbnf.exception.UnsupportedProtocolVersionException;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedSchemeException;
-import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.HttpConstants;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
-import com.ibm.wsspi.http.channel.HttpTrailers;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
-import com.ibm.wsspi.http.channel.values.ConnectionValues;
-import com.ibm.wsspi.http.channel.values.ContentEncodingValues;
-import com.ibm.wsspi.http.channel.values.ExpectValues;
-import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.MethodValues;
 import com.ibm.wsspi.http.channel.values.SchemeValues;
-import com.ibm.wsspi.http.channel.values.TransferEncodingValues;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 import com.ibm.wsspi.http.ee8.Http2PushBuilder;
 
@@ -64,7 +51,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     private HttpChannelConfig config;
 
     private boolean isIncoming = Boolean.FALSE;
-    private boolean isCommitted = Boolean.FALSE;
+    private final boolean isCommitted = Boolean.FALSE;
 
     private MethodValues method;
     private SchemeValues scheme;
@@ -89,22 +76,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         }
 
         super.init(request, isc, config);
-
-    }
-
-    @Override
-    public boolean isIncoming() {
-        return this.isIncoming;
-    }
-
-    @Override
-    public boolean isCommitted() {
-        return this.isCommitted;
-    }
-
-    @Override
-    public void setCommitted() {
-        this.isCommitted = Boolean.TRUE;
 
     }
 
@@ -163,519 +134,15 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     }
 
     @Override
-    public boolean isBodyAllowed() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void setContentLength(long length) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public long getContentLength() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public void setConnection(ConnectionValues value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setConnection(ConnectionValues[] values) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public ConnectionValues[] getConnection() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean isKeepAliveSet() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean isConnectionSet() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void setContentEncoding(ContentEncodingValues value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setContentEncoding(ContentEncodingValues[] values) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public ContentEncodingValues[] getContentEncoding() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setTransferEncoding(TransferEncodingValues value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setTransferEncoding(TransferEncodingValues[] values) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public TransferEncodingValues[] getTransferEncoding() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean isChunkedEncodingSet() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void setCurrentDate() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setExpect(ExpectValues value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public byte[] getExpect() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean isExpect100Continue() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public String getMIMEType() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setMIMEType(String type) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public Charset getCharset() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setCharset(Charset set) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public HttpTrailers getTrailers() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public VersionValues getVersionValue() {
         return VersionValues.find(request.protocolVersion().text());
 
     }
 
     @Override
-    public String getVersion() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setVersion(VersionValues version) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setVersion(String version) throws UnsupportedProtocolVersionException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setVersion(byte[] version) throws UnsupportedProtocolVersionException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public HttpTrailersImpl createTrailers() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setDebugContext(Object o) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public HeaderField getHeader(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public HeaderField getHeader(byte[] name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public HeaderField getHeader(HeaderKeys name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<HeaderField> getHeaders(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<HeaderField> getHeaders(byte[] name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<HeaderField> getHeaders(HeaderKeys name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<HeaderField> getAllHeaders() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<String> getAllHeaderNames() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Set<String> getAllHeaderNamesSet() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void appendHeader(byte[] header, byte[] value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void appendHeader(byte[] header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void appendHeader(byte[] header, String value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void appendHeader(HeaderKeys header, byte[] value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void appendHeader(HeaderKeys header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void appendHeader(HeaderKeys header, String value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void appendHeader(String header, byte[] value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void appendHeader(String header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void appendHeader(String header, String value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public int getNumberOfHeaderInstances(String header) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public boolean containsHeader(byte[] header) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean containsHeader(HeaderKeys header) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean containsHeader(String header) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public int getNumberOfHeaderInstances(byte[] header) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public int getNumberOfHeaderInstances(HeaderKeys header) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public void removeHeader(byte[] header) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void removeHeader(byte[] header, int instance) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void removeHeader(HeaderKeys header) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void removeHeader(HeaderKeys header, int instance) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void removeHeader(String header) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void removeHeader(String header, int instance) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void removeAllHeaders() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setHeader(byte[] header, byte[] value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setHeader(byte[] header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setHeader(byte[] header, String value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setHeader(HeaderKeys header, byte[] value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setHeader(HeaderKeys header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setHeader(HeaderKeys header, String value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public HeaderField setHeaderIfAbsent(HeaderKeys header, String value) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setHeader(String header, byte[] value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setHeader(String header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setHeader(String header, String value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setLimitOnNumberOfHeaders(int number) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public int getLimitOnNumberOfHeaders() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public void setLimitOfTokenSize(int size) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public int getLimitOfTokenSize() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public byte[] getCookieValue(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<String> getAllCookieValues(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public HttpCookie getCookie(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<HttpCookie> getAllCookies() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<HttpCookie> getAllCookies(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean setCookie(HttpCookie cookie, HttpHeaderKeys cookieHeader) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean setCookie(String name, String value, HttpHeaderKeys cookieHeader) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean removeCookie(String name, HttpHeaderKeys cookieHeader) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean containsCookie(String name, HttpHeaderKeys cookieHeader) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
     public String getMethod() {
         if (Objects.isNull(method)) {
-            method = MethodValues.UNDEF;
+            method = MethodValues.find(request.method().name());
 
         }
 
@@ -686,7 +153,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     public MethodValues getMethodValue() {
 
         if (Objects.isNull(method)) {
-            method = MethodValues.UNDEF;
+            method = MethodValues.find(request.method().name());
         }
 
         return method;
@@ -694,27 +161,27 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public void setMethod(String method) throws UnsupportedMethodException {
-
+        this.method = MethodValues.find(method);
         request.setMethod(HttpMethod.valueOf(method));
 
     }
 
     @Override
     public void setMethod(byte[] method) throws UnsupportedMethodException {
-        // TODO Auto-generated method stub
+        setMethod(new String(method, StandardCharsets.UTF_8));
 
     }
 
     @Override
     public void setMethod(MethodValues method) {
-        Objects.requireNonNull(method);
+        this.method = method;
+        request.setMethod(HttpMethod.valueOf(method.getName()));
 
     }
 
     @Override
     public String getRequestURI() {
-        // TODO Auto-generated method stub
-        return null;
+        return request.uri();
     }
 
     @Override
@@ -725,14 +192,18 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public StringBuffer getRequestURL() {
-        // TODO Auto-generated method stub
-        return null;
+        if (Objects.isNull(query)) {
+            query = new QueryStringDecoder(request.uri());
+        }
+        return new StringBuffer().append(query.path());
     }
 
     @Override
     public String getRequestURLAsString() {
-        // TODO Auto-generated method stub
-        return null;
+        if (Objects.isNull(query)) {
+            query = new QueryStringDecoder(request.uri());
+        }
+        return query.path();
     }
 
     @Override
@@ -743,8 +214,10 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public String getQueryString() {
-        // TODO Auto-generated method stub
-        return null;
+        if (Objects.isNull(query)) {
+            query = new QueryStringDecoder(request.uri());
+        }
+        return query.path();
     }
 
     @Override

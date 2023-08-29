@@ -23,7 +23,6 @@
                   host="*"
                   httpPort="${bvt.prop.HTTP_default}"
                   httpsPort="${bvt.prop.HTTP_default.secure}">
-        <!-- samesite lax="*"/ -->
         
         <httpOptions DoNotAllowDuplicateSetCookies="false"/>
     </httpEndpoint>    

@@ -164,7 +164,7 @@ public class HttpChannelConfig {
     /** Identifies if the channel has been configured to use X-Forwarded-* and Forwarded headers */
     protected boolean useRemoteIpOptions = false;
     /** Regex to be used to verify that proxies in forwarded headers are known to user */
-    private final String proxiesRegex = HttpConfigConstants.DEFAULT_PROXIES_REGEX;
+    private String proxiesRegex = HttpConfigConstants.DEFAULT_PROXIES_REGEX;
     private Pattern proxiesPattern = null;
     /** Describes the maximum inflation ratio allowed for a request's body when decompressing */
     private int decompressionRatioLimit = 200;
@@ -1586,11 +1586,11 @@ public class HttpChannelConfig {
     protected void parseRemoteIpProxies(Object option) {
 
         if (Objects.nonNull(option) && this.useRemoteIpOptions) {
-            String value = String.valueOf(option);
+            proxiesRegex = String.valueOf(option);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "RemoteIp Config: proxies regex set to: " + value);
+                Tr.event(tc, "RemoteIp Config: proxies regex set to: " + proxiesRegex);
             }
-            this.proxiesPattern = Pattern.compile(this.proxiesRegex);
+            this.proxiesPattern = Pattern.compile(proxiesRegex);
         }
     }
 
