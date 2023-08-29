@@ -104,8 +104,8 @@
 
     <authentication id="Basic" cacheEnabled="false" />
 
-    <ltpa monitorInterval = "5" monitorDirectory="true">
-        <validationKeys fileName="validation1.keys"/>
+    <ltpa monitorInterval = "5" monitorDirectory="true" keysPassword="{xor}Lz4sLCgwLTs=">
+        <validationKeys fileName="validation1.keys" password="{xor}Lz4sLCgwLTs=" notUseAfterDate="2099-01-01T00:00:00Z"/>
     </ltpa>
 
     <include location="../fatTestPorts.xml" />
