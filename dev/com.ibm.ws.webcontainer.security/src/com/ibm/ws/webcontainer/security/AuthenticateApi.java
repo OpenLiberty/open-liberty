@@ -340,6 +340,29 @@ public class AuthenticateApi {
     }
 
     /**
+     * Perform logout an user by doing the following:
+     * 1) Invalidate the session
+     * 2) Remove cookie if SSO is enabled
+     * 3) Clear out the client subject
+     *
+     * @param req
+     * @param res
+     */
+    public void simpleLogoutForInvalidToken(HttpServletRequest req, HttpServletResponse res) {
+        AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, subjectManager.getCallerSubject());
+        authResult.setAuditCredType(req.getAuthType());
+        authResult.setAuditOutcome(AuditEvent.OUTCOME_SUCCESS);
+        Audit.audit(Audit.EventID.SECURITY_API_AUTHN_TERMINATE_01, req, authResult, Integer.valueOf(res.getStatus()));
+
+        removeEntryFromAuthCacheForUser(req, res);
+        invalidateSession(req);
+        ssoCookieHelper.removeSSOCookieFromResponse(res);
+        ssoCookieHelper.createLogoutCookies(req, res);
+        subjectManager.clearSubjects();
+
+    }
+
+    /**
      * Add the ltpa token string to the logged out token distributed map.
      *
      * @param tokenString
