@@ -4528,7 +4528,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
                 //Note that HTTP list allows white spaces between the identifiers, as such,
                 //trim the string before evaluating.
-                node = value.trim();
+                node = value.replaceAll("\\s", "");;
                 try {
                     nodeExtract = node.substring(node.indexOf("=") + 1);
                 } catch (IndexOutOfBoundsException e) {
