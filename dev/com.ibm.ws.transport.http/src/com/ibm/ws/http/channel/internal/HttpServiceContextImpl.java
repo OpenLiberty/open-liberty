@@ -2239,6 +2239,11 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
 
         if (getResponse() instanceof NettyResponseMessage) {
+
+            if (HttpUtil.isContentLengthSet(response)) {
+                this.nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(HttpUtil.getContentLength(response));
+            }
+
             ((NettyResponseMessage) getResponse()).processCookies();
         }
         this.nettyContext.channel().write(this.nettyResponse);
@@ -2868,13 +2873,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
         }
 
-        if (getResponse() instanceof NettyResponseMessage) {
-            ((NettyResponseMessage) getResponse()).processCookies();
-        }
-
-        this.nettyContext.channel().write(this.nettyResponse);
-
-        setHeadersSent();
         if (nettyResponse.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
             System.out.println("Found http2, checking for push");
             for (Entry<String, String> header : nettyResponse.headers()) {
@@ -2884,6 +2882,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                     //  handleNettyPreload(header.getValue().substring(header.getValue().indexOf('<') + 1, header.getValue().indexOf('>')));
                 }
             }
+        }
+
+        if (!headersSent()) {
+            sendHeaders(nettyResponse);
         }
 
         addBytesWritten(GenericUtils.sizeOf(buffers));
@@ -3046,8 +3048,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         this.addBytesWritten(GenericUtils.sizeOf(wsbb));
         this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_BYTES_WRITTEN).set(numBytesWritten);
         if (!headersSent()) {
-            this.nettyContext.channel().write(this.nettyResponse);
-            setHeadersSent();
+            this.sendHeaders(nettyResponse);
         }
         DefaultHttpContent content;
         if (Objects.nonNull(wsbb)) {
