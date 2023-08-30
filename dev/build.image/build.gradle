@@ -131,19 +131,20 @@ task publishTemplates (type:Copy) {
     into project.file('wlp/templates')
 }
 
-task publishManifest(type: Copy) {
+task publishExtract {
     dependsOn ':wlp.lib.extract:jar'
-    from(zipTree(new File(project(':wlp.lib.extract').buildDir, 'wlp.lib.extract.jar')))
-    include 'META-INF/MANIFEST.MF'
-    into project.file('wlp/lib/extract')
-}
-
-task publishExtract(type: Copy) {
-    dependsOn ':wlp.lib.extract:jar'
-    dependsOn publishManifest
-    from(zipTree(new File(project(':wlp.lib.extract').buildDir, 'wlp.lib.extract.jar')))
-    exclude 'META-INF/'
-    into project.projectDir
+    doLast {
+        copy {
+            from(zipTree(new File(project(':wlp.lib.extract').buildDir, 'wlp.lib.extract.jar')))
+            exclude 'META-INF/'
+            into project.projectDir
+        }
+        copy {
+            from(zipTree(new File(project(':wlp.lib.extract').buildDir, 'wlp.lib.extract.jar')))
+            include 'META-INF/MANIFEST.MF'
+            into project.file('wlp/lib/extract')
+        }
+    }
 }
 
 jar {
