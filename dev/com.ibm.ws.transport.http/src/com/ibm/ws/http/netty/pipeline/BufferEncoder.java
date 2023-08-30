@@ -25,13 +25,28 @@ import io.netty.handler.codec.http.DefaultLastHttpContent;
  */
 public class BufferEncoder extends MessageToMessageEncoder<WsByteBuffer> {
 
+    private long bytesWritten = 0;
+
     @Override
     public void encode(ChannelHandlerContext context, WsByteBuffer message, List<Object> out) throws Exception {
         //out.writeBytes(message.getWrappedByteBuffer());
-        if (context.channel().hasAttr(NettyHttpConstants.CHUNCKED_ENCODING) && context.channel().attr(NettyHttpConstants.CHUNCKED_ENCODING).get()) {
-            // Do Chunked Input
-            // Checked adding counter for bytes written when in Chunked encoding
+
+        boolean doLastHttpContent = Boolean.FALSE;
+
+        if (context.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
+
+            bytesWritten += message.remaining();
+
+            doLastHttpContent = context.channel().attr(NettyHttpConstants.CONTENT_LENGTH).get() == bytesWritten;
+
+        }
+
+        //if (context.channel().hasAttr(NettyHttpConstants.CHUNCKED_ENCODING) && context.channel().attr(NettyHttpConstants.CHUNCKED_ENCODING).get()
+        //              || !doLastHttpContent) {
+        // Do Chunked Input
+        // Checked adding counter for bytes written when in Chunked encoding
 //            out.add(new HttpChunkedInput(message.getWrappedByteBuffer()));
+        if (!doLastHttpContent) {
             System.out.println("Sending chunked input");
             out.add(new DefaultHttpContent(Unpooled.wrappedBuffer(message.getWrappedByteBuffer())));
         } else {
