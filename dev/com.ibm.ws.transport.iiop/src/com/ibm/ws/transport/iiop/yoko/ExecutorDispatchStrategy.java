@@ -48,7 +48,7 @@ public class ExecutorDispatchStrategy extends LocalObject implements DispatchStr
 
 		// empty then skip
 		if ( IIOPWorkContextInterceptor.getWorkInfoMap().isEmpty()) {
-			System.out.println("ExecutorDispatchStrategy-Infomap empty " + "\n");
+			
 			executor.execute(new Runnable() {
 
                 @Override
@@ -60,16 +60,9 @@ public class ExecutorDispatchStrategy extends LocalObject implements DispatchStr
 		}
 		else
 		{
-			System.out.println("ExecutorDispatchStrategy - dispatch Map update for WorkType: " + wc.getWorkType() + "\n");
-
+		
 		wc.putAll(IIOPWorkContextInterceptor.getWorkInfoMap());
 
-		//Test purposes
-		System.out.println("ExecutorDispatchStrategy-requestId: " + wc.get(WorkContext.IIOP_REQUEST_ID) + "\n");
-		System.out.println("ExecutorDispatchStrategy-operation: " + wc.get(WorkContext.IIOP_OPERATION_NAME) + "\n");
-		System.out.println("ExecutorDispatchStrategy-targetId : " + wc.get(WorkContext.IIOP_TARGET_NAME) + "\n");
-
-		System.out.println("ExecutorDispatchStrategy-dispatch execute RunnableWithContext" + "\n");
 		executor.execute(new RunnableWithContext() {
 
             @Override
@@ -79,13 +72,6 @@ public class ExecutorDispatchStrategy extends LocalObject implements DispatchStr
 
             @Override
             public WorkContext getWorkContext() {
-		System.out.println("ExecutorDispatchStrategy - dispatch Map update in getWorkContext ");
-		// possible fix
-		wc.putAll(IIOPWorkContextInterceptor.getWorkInfoMap());
-		System.out.println("ExecutorDispatchStrategy-getWorkContext- requestId: " + wc.get(WorkContext.IIOP_REQUEST_ID) + "\n");
-		System.out.println("ExecutorDispatchStrategy-getWorkContext- operation: " + wc.get(WorkContext.IIOP_OPERATION_NAME) + "\n");
-		System.out.println("ExecutorDispatchStrategy-getWorkContext- targetId : " + wc.get(WorkContext.IIOP_TARGET_NAME) + "\n");
-
                 return wc;
             }
 

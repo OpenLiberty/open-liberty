@@ -10,13 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.transport.iiop.workcontext;
 
-//import java.util.Map;
-
 import org.apache.yoko.osgi.locator.LocalFactory;
 import org.apache.yoko.osgi.locator.Register;
 import org.apache.yoko.osgi.locator.ServiceProvider;
-//import org.omg.CORBA.ORB;
-//import org.omg.CORBA.Policy;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -28,7 +24,7 @@ import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 import com.ibm.wsspi.threading.ExecutorServiceTaskInterceptor;
 
 @Component(service = SubsystemFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.ranking:Integer=2" })
-public class IIOPWorkContextSubsystemFactory extends SubsystemFactory {
+public class IIOPWorkContextSubsystemFactory implements SubsystemFactory {
     private static enum MyLocalFactory implements LocalFactory {
         INSTANCE;
         public Class<?> forName(String name) throws ClassNotFoundException {
@@ -65,7 +61,6 @@ public class IIOPWorkContextSubsystemFactory extends SubsystemFactory {
     protected void activate(BundleContext bundleContext) {
         workcontextInitializerClass = new ServiceProvider(MyLocalFactory.INSTANCE, IIOPWorkContextInitializer.class);
         providerRegistry.registerProvider(workcontextInitializerClass);
-        System.out.println(" leon Factory Activate ") ;
     }
 
     @Deactivate
