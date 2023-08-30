@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -16,18 +18,19 @@ import java.util.Map;
 /**
  * to do: Description from UFO for javadoc
  */
+
+/**
+ * WorkContext types
+ */
 public interface WorkContext extends Map<String, Serializable> {
     static final String WORK_TYPE_IIOP = "IIOP";
-    static final String WORK_TYPE_EJB_TIMER = "EJBTimer";
-    static final String WORK_TYPE_EJB_ASYNC = "EJBAsync";
     static final String WORK_TYPE_HTTP = "HTTP";
     static final String WORK_TYPE_JCA = "JCA";
     static final String WORK_TYPE_UNKNOWN = "Unknown";
 
     /**
-     * All WorkContext objects will contain a value for this key.
+     * WorkContext objects can contain a value for this key.
      */
-
     static final String APPLICATION_NAME = "com.ibm.wsspi.threading.work.applicationName";
     static final String MODULE_NAME = "com.ibm.wsspi.threading.work.moduleName";
     static final String BEAN_NAME = "com.ibm.wsspi.threading.work.beanName";
@@ -41,13 +44,6 @@ public interface WorkContext extends Map<String, Serializable> {
     static final String INBOUND_PORT = "com.ibm.wsspi.threading.work.inboundPort";
     static final String IIOP_OPERATION_NAME = "com.ibm.wsspi.threading.work.operationName";
     static final String IIOP_REQUEST_ID = "com.ibm.wsspi.threading.work.requestId";
-    static final String IIOP_TARGET_NAME = "com.ibm.wsspi.threading.work.targetId";
-
-    /**
-     * WorkContext objects with WORK_TYPE_IIOP_EJB will contain a value of either "local" or
-     * "remote" for this key.
-     */
-    static final String EJB_SOURCE = "com.ibm.wsspi.threading.work.ejbSource";
     static final String URI = "com.ibm.wsspi.threading.work.uri";
 
     public String getWorkType();
