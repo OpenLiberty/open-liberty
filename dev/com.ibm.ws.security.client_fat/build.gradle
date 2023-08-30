@@ -17,12 +17,15 @@ apply plugin: 'war'
 war { enabled false }
 
 dependencies {
-  requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
-               'org.apache.httpcomponents:httpcore:4.1.2',
-               project(':io.openliberty.org.apache.commons.codec'),
-               project(':io.openliberty.org.apache.commons.logging'),
-               project(':com.ibm.websphere.javaee.servlet.3.0'),
-               project(':com.ibm.ws.security.audit_fat.common.tooling')
+ requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
+        'org.apache.httpcomponents:httpcore:4.1.2',
+        project(':com.ibm.ws.security.fat.common'),
+        project(':io.openliberty.org.apache.commons.codec'),
+        project(':io.openliberty.org.apache.commons.logging'),
+        project(':com.ibm.websphere.javaee.servlet.3.0'),
+        project(':com.ibm.ws.security.audit_fat.common.tooling'),
+        'jtidy:jtidy:4aug2000r7-dev',
+        'rhino:js:1.6R5' 
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer
