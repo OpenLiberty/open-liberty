@@ -52,6 +52,8 @@ public class NettyHttpRequestImpl extends HttpRequestImpl implements Http2Reques
     private QueryStringDecoder nettyDecoder = null;
     private Set<Cookie> nettyCookies;
 
+    private HttpInboundServiceContext context;
+
     /**
      * Constructor.
      */
@@ -75,6 +77,7 @@ public class NettyHttpRequestImpl extends HttpRequestImpl implements Http2Reques
         this.nettyRequest = request;
         this.nettyChannel = channel;
         this.nettyDecoder = new QueryStringDecoder(nettyRequest.uri());
+        this.context = context;
 
         if (this.useEE7Streams) {
             this.body = new HttpInputStreamEE7(context, request);
@@ -240,7 +243,9 @@ public class NettyHttpRequestImpl extends HttpRequestImpl implements Http2Reques
      */
     @Override
     public String getURI() {
+        MSP.log("NettyRequest URI - " + nettyRequest.uri());
         return this.nettyDecoder.path();
+//        return this.nettyRequest.uri();
     }
 
     /*
@@ -248,8 +253,8 @@ public class NettyHttpRequestImpl extends HttpRequestImpl implements Http2Reques
      */
     @Override
     public String getURL() {
-        String host = ((InetSocketAddress) this.nettyChannel.remoteAddress()).getHostString();
-        String port = Integer.toString(((InetSocketAddress) this.nettyChannel.localAddress()).getPort());
+        String host = context.getLocalAddr().getCanonicalHostName();
+        int port = context.getLocalPort();
 
         return getScheme() + "://" + host + ":" + port + "/" + getURI();
     }
@@ -282,20 +287,23 @@ public class NettyHttpRequestImpl extends HttpRequestImpl implements Http2Reques
      */
     @Override
     public int getVirtualPort() {
-        String port = null;
-        int portNum = ((InetSocketAddress) this.nettyChannel.localAddress()).getPort();
-        if (port == null) {
-            port = this.nettyRequest.headers().get(HttpHeaderKeys.HDR_HOST.getName());
-            if (port != null & port.contains(":")) {
-                port = port.substring(port.indexOf(':'));
-                try {
-                    portNum = Integer.parseInt(port);
-                } catch (NumberFormatException exception) {
-                    portNum = -1;
-                }
-            }
-        }
+        MSP.log("Virtual port is being gathered ");
 
+        String port = null;
+        int portNum = context.getLocalPort();
+//        if (port == null) {
+//            port = this.nettyRequest.headers().get(HttpHeaderKeys.HDR_HOST.getName());
+//            if (port != null & port.contains(":")) {
+//                port = port.substring(port.indexOf(':'));
+//                try {
+//                    portNum = Integer.parseInt(port);
+//                } catch (NumberFormatException exception) {
+//                    portNum = -1;
+//                }
+//            }
+//        }
+
+        MSP.log("Virtual port is  set to " + portNum);
         return portNum;
 
     }
