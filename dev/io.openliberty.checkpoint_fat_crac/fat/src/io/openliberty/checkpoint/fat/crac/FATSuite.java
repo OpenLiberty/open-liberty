@@ -50,6 +50,7 @@ import componenttest.topology.impl.LibertyServer;
                 CRaCResourceOrderTest.class,
                 CRaCResourceFailCheckpointTest.class,
                 CRaCResourceFailRestoreTest.class,
+                CRaCResourceRequestNotSupportedTest.class,
                 CRaCResourceRequestPhaseAfterAppStartTest.class,
                 CRaCResourceRequestPhaseBeforeAppStartTest.class,
                 CRaCResourceMultiAppTest.class

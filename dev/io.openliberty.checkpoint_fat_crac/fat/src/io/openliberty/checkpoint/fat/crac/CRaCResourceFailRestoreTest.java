@@ -87,6 +87,7 @@ public class CRaCResourceFailRestoreTest {
         ProgramOutput output = server.checkpointRestore();
         int retureCode = output.getReturnCode();
         assertEquals("Wrong return code for failed restore.", 82, retureCode);
+        assertNotNull("Application did not get CheckpointException", server.waitForStringInLogUsingMark("CWWKC0552E:", 0));
     }
 
     @After

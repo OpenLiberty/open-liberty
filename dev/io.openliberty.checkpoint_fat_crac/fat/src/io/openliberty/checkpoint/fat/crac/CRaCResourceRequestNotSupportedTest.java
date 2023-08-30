@@ -65,7 +65,7 @@ public class CRaCResourceRequestNotSupportedTest {
     @Test
     public void testRequestCheckpointInactivePhase() throws Exception {
         server.startServer(getTestMethodNameOnly(testName) + ".log");
-        assertNotNull("Application did not get UnsupportedOperationException", server.waitForStringInLogUsingMark("TESTING - got UnsupportedOperationException:"));
+        assertNotNull("Application did not get UnsupportedOperationException", server.waitForStringInLogUsingMark("TESTING - got UnsupportedOperationException: CWWKC0553E"));
     }
 
     @After
