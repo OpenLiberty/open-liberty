@@ -29,8 +29,6 @@ import javax.resource.spi.work.WorkRejectedException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-// 04/05/23
-// import com.ibm.wsspi.threading.ExecutorServiceTaskInterceptor;
 import com.ibm.ws.threading.CallableWithContext;
 
 /**
@@ -215,7 +213,6 @@ public final class WorkManagerImpl implements WorkManager {
     @Override
     @Trivial
     public void scheduleWork(Work work) throws WorkException {
-        System.out.println(" -- debug1 Enter WorkManagerImpl scheduleWork --  ");
         scheduleWork(work, WorkManager.INDEFINITE, null, null);
     }
 
@@ -248,16 +245,9 @@ public final class WorkManagerImpl implements WorkManager {
         try {
             beforeRunCheck(work, workListener, startTimeout);
 
-            System.out.println(" -- debug2 Enter WorkManagerImpl scheduleWork --  ");
-
             WorkProxy workProxy = new WorkProxy(work, startTimeout, execContext, workListener, bootstrapContext, runningWork, true);
-            System.out.println(" -- WorkManagerImpl scheduleWork  type:  " + workProxy.getWorkContext().getWorkType());
 
             Future<Void> f = bootstrapContext.execSvc.submit((CallableWithContext<Void>) workProxy);
-            // Test: Future<Void> f = bootstrapContext.execSvc.submit((RunnableWithContext)) workProxy);
-            //FutureTask<Void> f = new FutureTask<Void>(workProxy);
-            //bootstrapContext.execSvc.executeGlobal(f);
-            System.out.println("-- WorkManagerImpl scheduleWork Thread  " + Thread.currentThread().toString());
 
             if (futures.add(f) && futures.size() % FUTURE_PURGE_INTERVAL == 0)
                 purgeFutures();
