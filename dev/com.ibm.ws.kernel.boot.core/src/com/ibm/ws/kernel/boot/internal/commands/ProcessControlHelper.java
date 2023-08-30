@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.text.MessageFormat;
 import java.util.EnumMap;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,6 +49,8 @@ public class ProcessControlHelper {
 
     public static final String INTERNAL_PID = "pid";
     public static final String INTERNAL_PID_FILE = "pid-file";
+
+    private static final boolean WINDOWS = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("windows");
 
     final String serverName;
     final String serverConfigDir;
@@ -126,7 +129,9 @@ public class ProcessControlHelper {
 
         if (stopRc == ReturnCode.OK) {
             String pid = getPID();
-            if (pid != null) {
+            // On Windows, the pid seems to be always null.
+            // On other operating systems, optimistically assume the process is no longer running.
+            if (pid != null || WINDOWS) {
                 stopRc = waitForProcessStop(pid, timeout);
             }
         }
@@ -145,7 +150,8 @@ public class ProcessControlHelper {
     }
 
     private ReturnCode waitForProcessStop(String pid, int timeout) {
-        ProcessStatus ps = new PSProcessStatusImpl(pid);
+
+        ProcessStatus ps = pid == null ? new FileShareLockProcessStatusImpl(consoleLogFile) : new PSProcessStatusImpl(pid);
 
         final long timeoutMillis = timeout * 1000;
         final long startTime = System.currentTimeMillis();
