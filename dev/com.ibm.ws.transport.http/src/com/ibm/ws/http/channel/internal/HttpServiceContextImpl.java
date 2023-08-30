@@ -999,6 +999,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         InetSocketAddress local = (InetSocketAddress) context.channel().localAddress();
         InetSocketAddress remote = (InetSocketAddress) context.channel().remoteAddress();
 
+        MSP.log(local.getHostName() + "hostname, " + local.getHostString() + " hoststring " + local.getPort() + " port, " + local.getAddress().getCanonicalHostName());
+
         setLocalPort(local.getPort());
         setRemotePort(remote.getPort());
         setLocalAddr(local.getAddress());
