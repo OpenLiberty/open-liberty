@@ -44,7 +44,7 @@ IBM-API-Package: \
   io.openliberty.io.opentelemetry.1.1,\
   io.openliberty.microprofile.telemetry.common
 -jars=io.openliberty.mpTelemetry.1.1.thirdparty; location:="dev/api/third-party/,lib/"
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel 
 WLP-InstantOn-Enabled: true

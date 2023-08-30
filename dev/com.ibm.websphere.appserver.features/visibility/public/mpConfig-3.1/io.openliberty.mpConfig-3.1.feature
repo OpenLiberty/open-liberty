@@ -23,7 +23,7 @@ Subsystem-Name: MicroProfile Config 3.1
  com.ibm.ws.org.apache.commons.lang3, \
  com.ibm.ws.cdi.interfaces.jakarta, \
  io.openliberty.org.jboss.logging35
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
