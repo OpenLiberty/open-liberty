@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import componenttest.custom.junit.runner.RepeatTestFilter;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -45,6 +44,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingAct
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
@@ -63,7 +63,8 @@ public class ConsumerRecordTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10,
+                                                                  ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -80,7 +81,8 @@ public class ConsumerRecordTest {
 
         PropertiesAsset appConfig = new PropertiesAsset()
                         .addProperty(AbstractKafkaTestServlet.KAFKA_BOOTSTRAP_PROPERTY, PlaintextTests.kafkaContainer.getBootstrapServers())
-                        .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.connectionProperties(), ConnectorProperties.DEFAULT_CONNECTOR_ID, ConsumerRecordBean.CHANNEL_IN,
+                        .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.connectionProperties(), ConnectorProperties.DEFAULT_CONNECTOR_ID,
+                                                                           ConsumerRecordBean.CHANNEL_IN,
                                                                            ConsumerRecordBean.GROUP_ID, topicName))
                         .include(ConnectorProperties.simpleOutgoingChannel(PlaintextTests.connectionProperties(), ConsumerRecordBean.CHANNEL_OUT));
 
@@ -98,13 +100,11 @@ public class ConsumerRecordTest {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
-
-    }
-
-    @AfterClass
-    public static void teardownKafka() throws Exception{
-        KafkaUtils.deleteKafkaTopics(PlaintextTests.getAdminClient());
+        try {
+            server.stopServer();
+        } finally {
+            KafkaUtils.deleteKafkaTopics(PlaintextTests.getAdminClient());
+        }
     }
 
 }
