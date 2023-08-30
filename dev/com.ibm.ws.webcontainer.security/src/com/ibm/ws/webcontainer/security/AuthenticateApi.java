@@ -324,19 +324,7 @@ public class AuthenticateApi {
      * @param res
      */
     public void simpleLogout(HttpServletRequest req, HttpServletResponse res) {
-        createSubjectAndPushItOnThreadAsNeeded(req, res);
-
-        AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, subjectManager.getCallerSubject());
-        authResult.setAuditCredType(req.getAuthType());
-        authResult.setAuditOutcome(AuditEvent.OUTCOME_SUCCESS);
-        Audit.audit(Audit.EventID.SECURITY_API_AUTHN_TERMINATE_01, req, authResult, Integer.valueOf(res.getStatus()));
-
-        removeEntryFromAuthCacheForUser(req, res);
-        invalidateSession(req);
-        ssoCookieHelper.removeSSOCookieFromResponse(res);
-        ssoCookieHelper.createLogoutCookies(req, res);
-        subjectManager.clearSubjects();
-
+        simpleLogout(req, res, true);
     }
 
     /**
@@ -347,8 +335,12 @@ public class AuthenticateApi {
      *
      * @param req
      * @param res
+     * @param createSubjectAndPushItOnThread
      */
-    public void simpleLogoutForInvalidToken(HttpServletRequest req, HttpServletResponse res) {
+    public void simpleLogout(HttpServletRequest req, HttpServletResponse res, boolean createSubjectAndPushItOnThread) {
+        if (createSubjectAndPushItOnThread)
+            createSubjectAndPushItOnThreadAsNeeded(req, res);
+
         AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, subjectManager.getCallerSubject());
         authResult.setAuditCredType(req.getAuthType());
         authResult.setAuditOutcome(AuditEvent.OUTCOME_SUCCESS);
@@ -359,7 +351,6 @@ public class AuthenticateApi {
         ssoCookieHelper.removeSSOCookieFromResponse(res);
         ssoCookieHelper.createLogoutCookies(req, res);
         subjectManager.clearSubjects();
-
     }
 
     /**

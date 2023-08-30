@@ -160,9 +160,11 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
         if (monitorDirectory) {
             if (monitorInterval <= 0) {
-                Tr.warning(tc, "LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLEDONFIG_DIRECTORY", monitorInterval);
+                Tr.warning(tc, "LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED", monitorInterval);
             }
             unConfigValidationKeys = getUnConfigValidationKeys();
+        } else {
+            unConfigValidationKeys = null;
         }
 
         combineValidationKeys();
@@ -338,8 +340,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     }
 
     @Override
-    public void performFileBasedAction(Collection<File> modifiedFiles) {
-    }
+    public void performFileBasedAction(Collection<File> modifiedFiles) {}
 
     /**
      * Action is needed if a file is modified or if it is recreated after it was deleted

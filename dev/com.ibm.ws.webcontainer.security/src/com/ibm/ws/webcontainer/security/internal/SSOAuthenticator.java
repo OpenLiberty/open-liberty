@@ -18,7 +18,6 @@ import javax.security.auth.Subject;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -193,7 +192,8 @@ public class SSOAuthenticator implements WebAuthenticator {
                         // Perform logout steps
                         // If the ltpa.keys are changed, and an existing LTPA token cookie is no longer valid.
                         // we will logout the user, so they are properly redirected to the login page to login again and get a new LTPA token
-                        logoutWhenTokenIsInvalid(req, res);
+                        //TODO - Only do this if the key rotation feature is enabled to
+                        new AuthenticateApi(ssoCookieHelper, authenticationService).simpleLogout(req, res, false);
 
                         //TODO - Remove authentication cache.
                     }
@@ -251,14 +251,6 @@ public class SSOAuthenticator implements WebAuthenticator {
     private void cleanupLoggedOutToken(HttpServletRequest req, HttpServletResponse res) {
         AuthenticateApi aa = new AuthenticateApi(ssoCookieHelper, authenticationService);
         aa.simpleLogout(req, res);
-    }
-
-    /*
-     * simple logout needed to clean up session and sso cookie
-     */
-    private void logoutWhenTokenIsInvalid(HttpServletRequest req, HttpServletResponse res) {
-        AuthenticateApi aa = new AuthenticateApi(ssoCookieHelper, authenticationService);
-        aa.simpleLogoutForInvalidToken(req, res);
     }
 
     /**
@@ -371,23 +363,6 @@ public class SSOAuthenticator implements WebAuthenticator {
         }
         //If no authFilterRef or SSO authFilter service, we will process all request
         return true;
-    }
-
-    /**
-     * Invalidates the session associated with the request.
-     *
-     * @param req
-     */
-    private void invalidateSession(HttpServletRequest req) {
-        HttpSession session = req.getSession(false);
-        if (session != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "invalidating existing HTTP Session");
-            session.invalidate();
-        } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Existing HTTP Session does not exist, nothing to invalidate");
-        }
     }
 
 }

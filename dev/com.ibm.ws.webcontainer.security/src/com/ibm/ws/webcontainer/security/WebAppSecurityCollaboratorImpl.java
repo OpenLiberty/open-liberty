@@ -898,7 +898,9 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             WSCredential credential = it.next();
             try {
                 extraAuditData.put("REALM", credential.getRealmName());
-            } catch (CredentialExpiredException e) {} catch (CredentialDestroyedException e) {}
+            } catch (CredentialExpiredException e) {
+            } catch (CredentialDestroyedException e) {
+            }
         }
 
         ArrayList<String> delUsers = new ArrayList<String>();
