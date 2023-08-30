@@ -213,14 +213,22 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         if (usingNetty) {
-            ChannelFuture closeFuture = this.nettyContext.channel().close();
+
+            ChannelFuture closeFuture;
+//            if (response.isPersistent()) {
+//                response.setHeader(HttpHeaderKeys.HDR_CONNECTION.getName(), "keep-alive");
+//                nettyContext.channel().read();
+//            }
+
             try {
+                closeFuture = this.nettyContext.channel().close();
                 closeFuture.sync();
             } catch (InterruptedException exception) {
                 exception.printStackTrace();
             } finally {
                 return;
             }
+
         } else {
             if (this.vc == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1234,10 +1242,22 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             Tr.event(tc, "Finishing conn; " + finalSc + " error=" + e);
         }
 
-        if (vc != null) { // This is added for Upgrade Servlet3.1 WebConnection
-            String webconn = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
-            if (webconn != null && webconn.equalsIgnoreCase("CLOSED_NON_UPGRADED_STREAMS")) {
-                vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "null");
+        if (!usingNetty) {
+
+            if (vc != null) { // This is added for Upgrade Servlet3.1 WebConnection
+                String webconn = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
+                if (webconn != null && webconn.equalsIgnoreCase("CLOSED_NON_UPGRADED_STREAMS")) {
+                    vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "null");
+                } else {
+                    WebConnCanCloseSync.lock();
+                    try {
+                        if (WebConnCanClose) {
+                            error = closeStreams();
+                        }
+                    } finally {
+                        WebConnCanCloseSync.unlock();
+                    }
+                }
             } else {
                 WebConnCanCloseSync.lock();
                 try {
@@ -1247,15 +1267,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 } finally {
                     WebConnCanCloseSync.unlock();
                 }
-            }
-        } else {
-            WebConnCanCloseSync.lock();
-            try {
-                if (WebConnCanClose) {
-                    error = closeStreams();
-                }
-            } finally {
-                WebConnCanCloseSync.unlock();
             }
         }
 

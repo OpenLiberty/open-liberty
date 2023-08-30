@@ -110,6 +110,11 @@ public class HeaderHandler {
             }
 
         }
+
+//        if (HttpUtil.isKeepAlive(response) && config.isKeepAliveEnabled()) {
+//            headers.remove(HttpHeaderKeys.HDR_CONNECTION.getName());
+//        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, method);
         }
