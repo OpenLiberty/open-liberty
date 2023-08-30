@@ -100,10 +100,10 @@ public class UIBasicTest {
     }
 
     @Test
-    public void testHttpsUI(){
+    public void testHttpsUI() throws Exception{
         //Reduce possibility that Server is not listening on its HTTPS Port
         //Especially for Windows if certificates are slow to create
-        server.waitForStringInLog("CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl", 60000);
+        server.waitForSSLStart();
 
         driver.get("https://host.testcontainers.internal:" + server.getHttpDefaultSecurePort() + "/openapi/ui");
         testUI();

@@ -62,13 +62,18 @@ public class UIOauthTest {
     public static final String BASIC_AUTH_PASSWORD_PROPERTY = "testPassword";
     public static final String BASIC_AUTH_PASSWORD = "testpassword";
     public static final String HOST = "host.testcontainers.internal";
+    public static final String HOST_HTTPS_PORT_PROPERTY = "httpsPort";
+
     /** Wait for "long" tasks like initial page load or making a test request to the server */
     private static final Duration LONG_WAIT = Duration.ofSeconds(30);
+
     @Server("openapi-ui-custom-oauth-test")
     public static LibertyServer server;
 
+    private static ServerConfiguration baseConfig;
+
     /**
-     * During updates to view recordings regardless of state replace
+     * During updates to view recordings regardless of result replace
      * BrowserWebDriverContainer.VncRecordingMode.RECORD_FAILING
      * with
      * BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL
@@ -97,7 +102,7 @@ public class UIOauthTest {
     }
 
     @Before
-    public void setupTest() {
+    public void setupTest() throws Exception {
         //EnvVars are lost if defined in BeforeClass on the second test despite the fact they don't actually change so reset for every test
 
         //configure authentication
@@ -108,6 +113,10 @@ public class UIOauthTest {
         server.addEnvVar(OAUTH_CLIENT_NAME_PROPERTY, OAUTH_CLIENT_NAME);
         server.addEnvVar(OAUTH_CLIENT_SECRET_PROPERTY, OAUTH_CLIENT_SECRET);
         server.addEnvVar(OAUTH_REDIRECT_HOST_PROPERTY, HOST);
+        server.addEnvVar(HOST_HTTPS_PORT_PROPERTY, Integer.toString(server.getHttpDefaultSecurePort()));
+
+        //store copy of base config for restoration when running individual tests to stop any potential bleeding
+        baseConfig = server.getServerConfiguration();
 
         // make sure we have a clean driver between tests that can handle self-signed certs
         driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true));
@@ -117,7 +126,12 @@ public class UIOauthTest {
     public void teardownTest() throws Exception {
         //close the browser before stopping the server to reduce changes of open connections
         driver.quit();
-        server.stopServer();
+        try {
+            server.stopServer();
+        } finally {
+            // Restore Config to original after test to prevent potential config bleeding between tests
+            server.updateServerConfiguration(baseConfig);
+        }
     }
 
     @Test
@@ -144,7 +158,7 @@ public class UIOauthTest {
         server.startServer();
         //Reduce possibility that Server is not listening on its HTTPS Port
         //Especially for Windows if certificates are slow to create
-        server.waitForStringInLog("CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl", 60000);
+        server.waitForSSLStart();;
 
         OAuthTest(CUSTOM_UI_PATH_VALUE);
     }
@@ -197,7 +211,7 @@ public class UIOauthTest {
         authBtn.click();
 
         //Switch to new tab
-        new WebDriverWait(driver, Duration.ofSeconds(3)).until(driver -> driver.getWindowHandles().size() == 2);
+        new WebDriverWait(driver, Duration.ofSeconds(3)).until(d -> driver.getWindowHandles().size() == 2);
         for (String windowId : driver.getWindowHandles()) {
             //as we already have the first tab's handle we go to the other one
             if (!windowId.equals(originalWindow)) {
@@ -218,11 +232,14 @@ public class UIOauthTest {
         allowOnceBtn.click();
 
         // should now have a single tab which is the original openapi page
-        new WebDriverWait(driver, Duration.ofSeconds(3)).until(driver -> driver.getWindowHandles().size() == 1);
+        new WebDriverWait(driver, Duration.ofSeconds(3)).until(d -> driver.getWindowHandles().size() == 1);
         // Switch back to original window
         driver.switchTo().window(originalWindow);
 
-        //check button text has changed to Logout
+        //The javascript may not have completed the update on the auth button from `Authorize` to `Logout`, so we wait for an element that should be a logout button
+        waitForElement(authContainer, By.xpath("//button[text()='Logout']"));
+
+        //check Auth button text is what has changed to `Logout` knowing that there is a Logout button
         assertThat("Auth button text should now state logout", authBtn.getText().equals("Logout"));
 
         //close Authorization modal
