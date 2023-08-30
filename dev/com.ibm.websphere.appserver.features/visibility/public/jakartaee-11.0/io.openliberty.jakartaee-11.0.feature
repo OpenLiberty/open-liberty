@@ -13,6 +13,7 @@ Subsystem-Name: Jakarta EE Platform 11.0
   com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
   io.openliberty.persistence-3.2, \
   io.openliberty.batch-2.1, \
+  io.openliberty.cdi-4.1, \
   io.openliberty.webProfile-11.0, \
   io.openliberty.xmlBinding-4.0, \
   io.openliberty.messagingSecurity-3.0, \
