@@ -23,9 +23,9 @@ Subsystem-Name: Java XML Bindings 2.2
   com.ibm.websphere.javaee.jaxb.2.2; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.xml.bind:jaxb-api:2.2.12", \
   com.ibm.websphere.javaee.activation.1.1; location:="dev/api/spec/,lib/"; require-java:="9"; mavenCoordinates="javax.activation:activation:1.1", \
   com.ibm.ws.org.apache.geronimo.osgi.registry.1.1, \
-  com.ibm.ws.jaxb.tools.2.2.10
+  com.ibm.ws.jaxb.tools
 -jars=\
-  com.ibm.ws.jaxb.tools.2.2.10; location:=lib/
+  com.ibm.ws.jaxb.tools; location:=lib/
 -files=\
   bin/jaxb/xjc.bat, \
   bin/jaxb/tools/ws-schemagen.jar, \
