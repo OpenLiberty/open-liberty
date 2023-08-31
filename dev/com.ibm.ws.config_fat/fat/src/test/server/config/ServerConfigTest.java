@@ -259,9 +259,9 @@ public class ServerConfigTest {
 
         try {
             // check all files listed in log
-            assertStringsPresentInLog(server, new String[] { "common/a.xml" });
-            assertStringsPresentInLog(server, new String[] { "common/b.xml" });
-            assertStringsPresentInLog(server, new String[] { "common/c.xml" });
+            assertStringsPresentInLog(server, new String[] { "a.xml" });
+            assertStringsPresentInLog(server, new String[] { "b.xml" });
+            assertStringsPresentInLog(server, new String[] { "c.xml" });
             test(server, "/restart/restart?testName=includeDir");
         } finally {
             server.stopServer();
