@@ -129,12 +129,15 @@ public class TelemetryServletFilter implements Filter {
         System.out.println("FW isAsyncStarted=" + request.isAsyncStarted());
 
         System.out.println("FW instrumenter=" + instrumenter);
+
+        Scope scope = null;
+
         if (instrumenter != null) {
             Context parentContext = Context.current();
             if (instrumenter.shouldStart(parentContext, request)) {
                 System.out.println("FW TelemetryServletFilter doFilter start span");
                 Context spanContext = instrumenter.start(parentContext, request);
-                Scope scope = spanContext.makeCurrent();
+                scope = spanContext.makeCurrent();
                 request.setAttribute(SPAN_CONTEXT, spanContext);
                 request.setAttribute(SPAN_PARENT_CONTEXT, parentContext);
                 request.setAttribute(SPAN_SCOPE, scope);
@@ -149,6 +152,7 @@ public class TelemetryServletFilter implements Filter {
         System.out.println("FW isAsyncStarted=" + request.isAsyncStarted());
 
         if (request.isAsyncStarted()) {
+
             AsyncContext asyncContext = request.getAsyncContext();
             asyncContext.addListener(new AsyncListener() {
                 @Override
@@ -172,6 +176,10 @@ public class TelemetryServletFilter implements Filter {
             });
         } else {
             endSpan(request, response, null);
+        }
+
+        if (scope != null) {
+            scope.close();
         }
     }
 
