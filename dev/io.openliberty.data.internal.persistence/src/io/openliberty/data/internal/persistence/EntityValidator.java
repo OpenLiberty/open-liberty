@@ -13,6 +13,7 @@
 package io.openliberty.data.internal.persistence;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Abstraction for a Jakarta Validation Validator.
@@ -66,4 +67,24 @@ public interface EntityValidator {
      * @throws ConstraintValidationException if any of the constraints are violated for an entity.
      */
     void validate(Object entityArray, int length);
+
+    /**
+     * Validates method parameters where the method or its class is annotated with ValidateOnExecution.
+     *
+     * @param object instance that has the method with parameters to validate.
+     * @param method the method.
+     * @param args   the method parameters.
+     * @throws ConstraintValidationException if any of the constraints are violated.
+     */
+    public <T> void validateParameters(T object, Method method, Object[] args);
+
+    /**
+     * Validates the return value where the method or its class is annotated with ValidateOnExecution.
+     *
+     * @param object      instance that has the method with the return value to validate.
+     * @param method      the method.
+     * @param returnValue the return value of the method.
+     * @throws ConstraintValidationException if any of the constraints are violated.
+     */
+    public <T> void validateReturnValue(T object, Method method, Object returnValue);
 }

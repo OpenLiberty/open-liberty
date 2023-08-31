@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -513,5 +514,51 @@ public class DataValidationTestServlet extends FATServlet {
                 throw x;
         }
         assertEquals(Collections.EMPTY_SET, violations);
+    }
+
+    /**
+     * Verify that a repository method parameter that is annotated with a constraint is validated.
+     */
+    @Test
+    public void testValidateMethodParameters() {
+        // valid parameter
+        rectangles.findByWidth(10);
+
+        // invalid parameter
+        try {
+            List<Rectangle> found = rectangles.findByWidth(-20);
+            fail("Did not detect violated constraint. Instead found: " + found);
+        } catch (ConstraintViolationException x) {
+            Set<?> violations = x.getConstraintViolations();
+            if (violations.isEmpty())
+                throw x;
+        }
+    }
+
+    /**
+     * Verify that a repository method return type that is annotated with a constraint is validated.
+     */
+    @Test
+    public void testValidateReturnType() {
+        // invalid empty return value
+        try {
+            Rectangle[] found = rectangles.findByIdStartsWith("R8");
+            fail("Did not detect violated constraint. Instead found: " + Arrays.toString(found));
+        } catch (ConstraintViolationException x) {
+            Set<?> violations = x.getConstraintViolations();
+            if (violations.isEmpty())
+                throw x;
+        }
+
+        rectangles.save(new Rectangle("R8", 800L, 880L, 18, 80));
+
+        // valid non-null return value
+        Rectangle[] r = rectangles.findByIdStartsWith("R8");
+        assertEquals(1, r.length);
+        assertEquals("R8", r[0].id());
+        assertEquals(800L, r[0].x());
+        assertEquals(Long.valueOf(880L), r[0].y());
+        assertEquals(18, r[0].width());
+        assertEquals(Integer.valueOf(80), r[0].height());
     }
 }

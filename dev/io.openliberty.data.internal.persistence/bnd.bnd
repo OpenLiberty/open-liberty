@@ -26,12 +26,14 @@ WS-TraceGroup: data
 
 DynamicImport-Package: \
   com.ibm.ws.beanvalidation.service, \
-  jakarta.validation
+  jakarta.validation, \
+  jakarta.validation.executable
 
 Import-Package: \
   !*.internal.*, \
   !com.ibm.ws.beanvalidation.service, \
   !jakarta.validation, \
+  !jakarta.validation.executable, \
   *
 
 Private-Package: \
