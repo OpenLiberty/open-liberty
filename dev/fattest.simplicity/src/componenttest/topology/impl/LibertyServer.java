@@ -1570,26 +1570,21 @@ public class LibertyServer implements LogMonitorClient {
         // Debug for a highly intermittent problem on IBM JVMs.
         // Unfortunately, this problem does not seem to happen when we enable this dump trace. We also can't proceed without getting
         // a system dump, so our only option is to enable this and hope the timing eventually works out.
-        //if (info.VENDOR == Vendor.IBM) {
-        //    JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#ServiceFactoryUse.<init>*\"";
-        //    JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#org/eclipse/osgi/internal/serviceregistry/ServiceFactoryUse.<init>*\"";
-        //}
+        if (info.VENDOR == Vendor.IBM) {
+            JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#ServiceFactoryUse.<init>*\"";
+            JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#org/eclipse/osgi/internal/serviceregistry/ServiceFactoryUse.<init>*\"";
+        }
 
         // Add JaCoCo java agent to generate code coverage for FAT test run
         if (DO_COVERAGE) {
             JVM_ARGS += " " + JAVA_AGENT_FOR_JACOCO;
         }
 
-        //if we are on Mac then use the value of the perm gen arg that has been       //
+        //if we are on Mac then use the value of the perm gen arg that has been
         //passed in via the system property
         if (MAC_RUN != null && !!!MAC_RUN.equalsIgnoreCase(Boolean.toString(false))) {
             JVM_ARGS += " " + MAC_RUN;
         }
-
-           JVM_ARGS += " -Xenablefips140-3";
-           JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
-           JVM_ARGS += " -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS";
-           JVM_ARGS += " -Djavax.net.debug=all";
 
         // if we have java 2 security enabled, add java.security.manager and java.security.policy
         if (isJava2SecurityEnabled()) {
@@ -7089,7 +7084,6 @@ public class LibertyServer implements LogMonitorClient {
         Log.info(c, "isJava2SecurityEnabled", "Is server " + getServerName() + " Java 2 Security exempt?  " + isJava2SecExempt);
         return !isJava2SecExempt;
     }
-
 
     /**
      * No longer using bootstrap properties to update server config for database rotation.
