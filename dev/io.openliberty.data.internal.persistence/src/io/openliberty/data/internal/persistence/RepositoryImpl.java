@@ -23,6 +23,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.security.AccessController;
@@ -1349,9 +1350,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             first = false;
                         }
                     else {
-                        //for (RecordComponent component : recordClass.getRecordComponents()) {
-                        //    String name = component.getName();
-                        for (String name : List.of("purchaseId", "customer", "total")) { // TODO replace with above once compiling against Java 17
+                        for (RecordComponent component : entityInfo.recordClass.getRecordComponents()) {
+                            String name = component.getName();
                             generateSelectExpression(q, first, function, distinct, o, name);
                             first = false;
                         }
