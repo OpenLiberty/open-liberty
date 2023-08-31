@@ -46,6 +46,15 @@ public class OidcSessionInfo {
         this.sessionId = createSessionId(clientConfig);
     }
 
+    public OidcSessionInfo(String configId, String iss, String sub, String sid, String exp, String sessionId) {
+        this.configId = configId != null ? configId : "";
+        this.iss = iss != null ? iss : "";
+        this.sub = sub != null ? sub : "";
+        this.sid = sid != null ? sid : "";
+        this.exp = exp != null ? exp : "";
+        this.sessionId = sessionId != null ? sessionId : "";
+    }
+
     /**
      * Gets the base64 encoded session id from the request cookies
      * and returns an OidcSessionInfo object which contains

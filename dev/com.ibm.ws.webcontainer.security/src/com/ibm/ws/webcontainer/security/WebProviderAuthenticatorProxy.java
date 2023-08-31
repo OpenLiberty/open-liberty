@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.security.auth.Subject;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -660,7 +661,9 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                     if (includeAccessTokenInLtpa) {
                         addAccessTokenToTheCookie(authResult, ssoCh);
                     }
-                    ssoCh.addSSOCookiesToResponse(authResult.getSubject(), req, res, null);
+                    List<Cookie> ssoCookies = ssoCh.addSSOCookiesToResponse(authResult.getSubject(), req, res, null);
+
+                    oidcClient.addSessionToOidcSessionCache(req, ssoCookies);
                 }
             }
         }

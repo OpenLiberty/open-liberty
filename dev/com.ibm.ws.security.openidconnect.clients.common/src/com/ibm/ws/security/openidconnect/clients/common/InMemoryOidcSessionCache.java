@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,13 +14,14 @@ package com.ibm.ws.security.openidconnect.clients.common;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import com.ibm.ws.security.authentication.cache.AuthCacheService;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
  * Local in-memory cache used to keep track of oidc sessions based on the sub, sid, and the oidc session id.
@@ -31,7 +32,11 @@ import java.util.TimerTask;
  */
 public class InMemoryOidcSessionCache implements OidcSessionCache {
 
-    private final Set<OidcSessionInfo> invalidatedSessions;
+    static final String KEY_AUTH_CACHE_SERVICE = "authCacheService";
+    static final AtomicServiceReference<AuthCacheService> authCacheServiceRef = new AtomicServiceReference<AuthCacheService>(KEY_AUTH_CACHE_SERVICE);
+
+    //    private final Set<OidcSessionInfo> invalidatedSessions;
+    private final Map<String, OidcSessionInfo> invalidatedSessions;
     private final Map<String, OidcSessionsStore> subToOidcSessionsMap;
 
     private Timer timer;
@@ -42,7 +47,7 @@ public class InMemoryOidcSessionCache implements OidcSessionCache {
     }
 
     public InMemoryOidcSessionCache(long timeoutInMilliSeconds) {
-        invalidatedSessions = Collections.synchronizedSet(new HashSet<>());
+        invalidatedSessions = Collections.synchronizedMap(new HashMap<>());
         subToOidcSessionsMap = Collections.synchronizedMap(new HashMap<>());
 
         if (timeoutInMilliSeconds > 0) {
@@ -98,8 +103,8 @@ public class InMemoryOidcSessionCache implements OidcSessionCache {
         }
 
         httpSessionsStore.removeSession(sid);
-
-        return invalidatedSessions.add(sessionToInvalidate);
+        invalidatedSessions.put(sessionToInvalidate.getSessionId(), sessionToInvalidate);
+        return true;
     }
 
     @Override
@@ -118,7 +123,8 @@ public class InMemoryOidcSessionCache implements OidcSessionCache {
             return false;
         }
 
-        return invalidatedSessions.add(sessionAssociatedWithSessionId);
+        invalidatedSessions.put(sessionAssociatedWithSessionId.getSessionId(), sessionAssociatedWithSessionId);
+        return true;
     }
 
     @Override
@@ -139,17 +145,24 @@ public class InMemoryOidcSessionCache implements OidcSessionCache {
 
         httpSessionsStore.removeSessions();
 
-        return invalidatedSessions.addAll(sessionsToInvalidate);
+        for (OidcSessionInfo sessionToInvalidate : sessionsToInvalidate) {
+            invalidatedSessions.put(sessionToInvalidate.getSessionId(), sessionToInvalidate);
+        }
+        return true;
     }
 
     @Override
-    public boolean removeInvalidatedSession(OidcSessionInfo sessionInfo) {
-        return invalidatedSessions.remove(sessionInfo);
+    public boolean removeInvalidatedSession(String sessionId) {
+        if (invalidatedSessions.containsKey(sessionId)) {
+            return false;
+        }
+        invalidatedSessions.remove(sessionId);
+        return true;
     }
 
     @Override
-    public boolean isSessionInvalidated(OidcSessionInfo sessionInfo) {
-        return invalidatedSessions.contains(sessionInfo);
+    public boolean isSessionInvalidated(String sessionId) {
+        return invalidatedSessions.containsKey(sessionId);
     }
 
     private class EvictionTask extends TimerTask {
@@ -167,15 +180,15 @@ public class InMemoryOidcSessionCache implements OidcSessionCache {
     }
 
     private void removeExpiredSessionsFromInvalidatedSessions() {
-        Iterator<OidcSessionInfo> sessions = invalidatedSessions.iterator();
-        while (sessions.hasNext()) {
-            OidcSessionInfo session = sessions.next();
-            long currentTimeInMillis = System.currentTimeMillis();
-            long expInMillis = new Long(session.getExp());
-            if (currentTimeInMillis > expInMillis) {
-                invalidatedSessions.remove(session);
-            }
-        }
+        //        Iterator<OidcSessionInfo> sessions = invalidatedSessions.iterator();
+        //        while (sessions.hasNext()) {
+        //            OidcSessionInfo session = sessions.next();
+        //            long currentTimeInMillis = System.currentTimeMillis();
+        //            long expInMillis = new Long(session.getExp());
+        //            if (currentTimeInMillis > expInMillis) {
+        //                invalidatedSessions.remove(session);
+        //            }
+        //        }
     }
 
     private void removeExpiredSessionsFromSubToOidcSessionsMap() {

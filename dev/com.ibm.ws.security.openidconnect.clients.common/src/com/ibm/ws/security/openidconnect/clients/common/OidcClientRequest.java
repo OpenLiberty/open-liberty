@@ -23,6 +23,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.security.common.crypto.HashUtils;
+import com.ibm.ws.security.openidconnect.client.jose4j.util.OidcTokenImplBase;
 import com.ibm.ws.security.openidconnect.token.IDTokenValidationFailedException;
 import com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
@@ -91,7 +92,7 @@ public class OidcClientRequest extends OidcCommonClientRequest {
     /**
      * @param resp
      */
-    public void createOidcClientCookieIfAnyAndDisableLtpa() {
+    public void createOidcClientCookieIfAnyAndDisableLtpa(OidcTokenImplBase idToken) {
         if (oidcClientConfig.isDisableLtpaCookie()) {
             Boolean booleanAuthenticatedByPropagationToken = (Boolean) request.getAttribute(PROPAGATION_TOKEN_AUTHENTICATED);
             boolean bAuthenticatedByPropagationToken = booleanAuthenticatedByPropagationToken == null ? false : booleanAuthenticatedByPropagationToken.booleanValue();
@@ -108,6 +109,17 @@ public class OidcClientRequest extends OidcCommonClientRequest {
                             response,
                             oidcClientCookieName,
                             oidcClientPreCookieValue);
+
+                    if (idToken != null) {
+                        OidcSessionCache sessionCache = oidcClientConfig.getOidcSessionCache();
+                        String configId = oidcClientConfig.getClientId();
+                        String iss = (String) idToken.getClaim("iss");
+                        String sub = (String) idToken.getClaim("sub");
+                        String sid = (String) idToken.getClaim("sid");
+                        Long exp = (Long) idToken.getClaim("exp");
+                        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, exp.toString(), oidcClientPreCookieValue);
+                        sessionCache.insertSession(sessionInfo);
+                    }
                 }
             }
         }

@@ -12,6 +12,9 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.security.openidconnect;
 
+import java.util.List;
+
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -57,4 +60,6 @@ public interface OidcClient {
     boolean anyClientIsBeforeSso();
 
     void logoutIfSessionInvalidated(HttpServletRequest req, WebAppSecurityConfig webAppSecurityConfig);
+
+    void addSessionToOidcSessionCache(HttpServletRequest req, List<Cookie> ssoCookies);
 }

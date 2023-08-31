@@ -572,17 +572,19 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      * [; path=<some_path>][; secure][; httponly]
      **/
     @Override
-    public void addSSOCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp, String contextRoot) {
+    public List<Cookie> addSSOCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp, String contextRoot) {
+        List<Cookie> ssoCookies = new ArrayList<>();
         if (!allowToAddCookieToResponse(req))
-            return;
+            return ssoCookies;
         addJwtSsoCookiesToResponse(subject, req, resp, contextRoot);
 
         if (!JwtSSOTokenHelper.shouldAlsoIncludeLtpaCookie()) {
-            return;
+            return ssoCookies;
         }
 
         if (!isDisableLtpaCookie(subject)) {
-            addLtpaSsoCookiesToResponse(subject, req, resp, contextRoot);
+            Cookie ltpaSsoCookie = addLtpaSsoCookiesToResponse(subject, req, resp, contextRoot);
+            ssoCookies.add(ltpaSsoCookie);
         }
 
         if (oidcServerRef != null && oidcServerRef.getService() != null) {
@@ -591,7 +593,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
                 removeBrowserStateCookie(req, resp);
             }
         }
-
+        return ssoCookies;
     }
 
     private boolean isDisableLtpaCookie(Subject subject) {
@@ -609,7 +611,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      * @param resp
      * @param contextRoot
      */
-    private void addLtpaSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp, String contextRoot) {
+    private Cookie addLtpaSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp, String contextRoot) {
         SingleSignonToken ssoToken = getDefaultSSOTokenFromSubject(subject);
         if (ssoToken != null) {
             byte[] ssoTokenBytes = ssoToken.getBytes();
@@ -623,8 +625,10 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
 
                 Cookie ssoCookie = createCookie(req, cookieByteString, contextRoot);
                 resp.addCookie(ssoCookie);
+                return ssoCookie;
             }
         }
+        return null;
     }
 
     /** {@inheritDoc} */

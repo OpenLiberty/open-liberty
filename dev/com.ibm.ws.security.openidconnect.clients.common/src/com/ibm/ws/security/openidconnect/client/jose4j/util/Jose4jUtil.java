@@ -156,9 +156,6 @@ public class Jose4jUtil {
                     props.put(Constants.ID_TOKEN_OBJECT, idToken);
                 }
                 oidcResult = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK, null, null, props, null);
-                if (isRunningBetaMode()) {
-                    createWASOidcSession(oidcClientRequest, jwtClaims, clientConfig);
-                }
                 return oidcResult;
             }
 
@@ -187,6 +184,7 @@ public class Jose4jUtil {
             }
             if (idToken != null) {
                 customProperties.put(Constants.ID_TOKEN_OBJECT, idToken); // pass back to authenticator
+                oidcClientRequest.getRequest().setAttribute("backchannellogout", idToken);
             }
 
             //addJWTTokenToSubject(customProperties, idToken, clientConfig);
@@ -194,9 +192,6 @@ public class Jose4jUtil {
             //doIdAssertion(customProperties, payload, clientConfig);
             oidcResult = attributeToSubject.doMapping(customProperties, subject);
             //oidcResult = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK, username, subject, customProperties, null);
-            if (oidcResult.getStatus() == AuthResult.SUCCESS && isRunningBetaMode()) {
-                createWASOidcSession(oidcClientRequest, jwtClaims, clientConfig);
-            }
         } catch (Exception e) {
             Tr.error(tc, "OIDC_CLIENT_IDTOKEN_VERIFY_ERR", new Object[] { e.getLocalizedMessage(), clientId });
             oidcResult = new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);

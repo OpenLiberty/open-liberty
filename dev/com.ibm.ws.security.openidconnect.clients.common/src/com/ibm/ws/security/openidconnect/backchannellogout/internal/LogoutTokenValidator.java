@@ -28,7 +28,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutException;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
@@ -224,7 +223,7 @@ public class LogoutTokenValidator {
      * session of this RP with the OP. Also verifies that the iss Logout Token Claim matches the iss Claim in the same session.
      */
     void verifySubAndSidClaimsMatchRecentSession(JwtClaims claims, OidcSessionCache oidcSessionCache) throws MalformedClaimException, BackchannelLogoutException {
-        String sub = HashUtils.digest(claims.getSubject());
+        String sub = claims.getSubject();
         Map<String, OidcSessionsStore> subToSessionsMap = oidcSessionCache.getSubMap();
         if (!subToSessionsMap.containsKey(sub)) {
             String errorMsg = Tr.formatMessage(tc, "NO_RECENT_SESSIONS_WITH_CLAIMS", config.getId(), claims.getIssuer(), claims.getSubject(), claims.getStringClaimValue("sid"));
@@ -232,8 +231,8 @@ public class LogoutTokenValidator {
         }
         OidcSessionsStore sessionDataForSub = subToSessionsMap.get(sub);
 
-        String iss = HashUtils.digest(claims.getIssuer());
-        String sid = HashUtils.digest(claims.getStringClaimValue("sid"));
+        String iss = claims.getIssuer();
+        String sid = claims.getStringClaimValue("sid");
         OidcSessionInfo matchingSession = findSessionMatchingIssAndSid(sessionDataForSub, iss, sid);
         if (matchingSession == null) {
             String errorMsg = Tr.formatMessage(tc, "NO_RECENT_SESSIONS_WITH_CLAIMS", config.getId(), claims.getIssuer(), claims.getSubject(), claims.getStringClaimValue("sid"));
@@ -279,13 +278,13 @@ public class LogoutTokenValidator {
      * session of this RP with the OP. Also verifies that the iss Logout Token Claim matches the iss Claim in the same session.
      */
     void verifySidClaimMatchesRecentSession(JwtClaims claims, OidcSessionCache oidcSessionCache) throws MalformedClaimException, BackchannelLogoutException {
-        String sid = HashUtils.digest(claims.getStringClaimValue("sid"));
+        String sid = claims.getStringClaimValue("sid");
         if (sid == null) {
             // Token is not required to contain a sid claim
             return;
         }
         OidcSessionInfo matchingSession = null;
-        String iss = HashUtils.digest(claims.getIssuer());
+        String iss = claims.getIssuer();
         Map<String, OidcSessionsStore> subToSessionsMap = oidcSessionCache.getSubMap();
         for (Entry<String, OidcSessionsStore> entry : subToSessionsMap.entrySet()) {
             OidcSessionsStore sessionsStore = entry.getValue();

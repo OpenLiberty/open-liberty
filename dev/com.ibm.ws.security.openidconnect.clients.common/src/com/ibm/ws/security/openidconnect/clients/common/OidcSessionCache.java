@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@
 package com.ibm.ws.security.openidconnect.clients.common;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Interface for cache used to keep track of oidc sessions based on the sub, sid, and the oidc session id.
@@ -75,6 +74,6 @@ public interface OidcSessionCache {
      * @param oidcSessionId The id of the oidc session.
      * @return Whether or not the oidc session has been invalidated.
      */
-    public boolean isSessionInvalidated(OidcSessionInfo sessionInfo);
+    public boolean isSessionInvalidated(String sessionId);
 
 }

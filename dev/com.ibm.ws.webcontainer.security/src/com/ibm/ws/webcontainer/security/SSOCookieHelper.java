@@ -15,6 +15,7 @@ package com.ibm.ws.webcontainer.security;
 import java.util.List;
 
 import javax.security.auth.Subject;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,7 +26,7 @@ import com.ibm.wsspi.security.token.SingleSignonToken;
  */
 public interface SSOCookieHelper {
 
-    void addSSOCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp, String contextRoot);
+    List<Cookie> addSSOCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp, String contextRoot);
 
     boolean addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp, String contextRoot);
 

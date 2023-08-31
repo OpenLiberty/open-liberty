@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,10 +51,12 @@ import com.ibm.ws.security.common.structures.BoundedHashMap;
 import com.ibm.ws.security.common.web.WebUtils;
 import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.security.oauth20.util.OAuth20ProviderUtils;
+import com.ibm.ws.security.openidconnect.client.jose4j.util.OidcTokenImplBase;
 import com.ibm.ws.security.openidconnect.client.web.OidcRedirectServlet;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionInfo;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionUtils;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
@@ -362,7 +365,8 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
                     result = this.authenticate(req, res, provider, oidcClientRequest);
                     if (result.getStatus() == AuthResult.SUCCESS) {
                         // The customCacheKey must be valid
-                        oidcClientRequest.createOidcClientCookieIfAnyAndDisableLtpa();
+                        OidcTokenImplBase idToken = (OidcTokenImplBase) oidcClientRequest.getRequest().getAttribute("backchannellogout");
+                        oidcClientRequest.createOidcClientCookieIfAnyAndDisableLtpa(idToken);
                     }
                 }
             } else {
@@ -453,9 +457,42 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         }
 
         OidcClientConfig oidcClientConfig = oidcClientConfigRef.getService(provider);
-        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(req, oidcClientConfig);
+        //        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(req, oidcClientConfig);
 
-        OidcSessionUtils.logoutIfSessionInvalidated(req, sessionInfo, oidcClientConfig, webAppSecurityConfig);
+        OidcSessionUtils.logoutIfSessionInvalidated(req, oidcClientConfig, webAppSecurityConfig);
+    }
+
+    @Override
+    public void addSessionToOidcSessionCache(HttpServletRequest req, List<Cookie> ssoCookies) {
+        if (!isRunningBetaMode()) {
+            return;
+        }
+
+        String provider = getOidcProvider(req);
+        if (provider == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Could not get oidc provider.");
+            }
+            return;
+        }
+
+        OidcClientConfig clientConfig = oidcClientConfigRef.getService(provider);
+
+        OidcTokenImplBase idToken = (OidcTokenImplBase) req.getAttribute("backchannellogout");
+
+        OidcSessionCache sessionCache = clientConfig.getOidcSessionCache();
+
+        if (ssoCookies.size() > 0) {
+            String configId = clientConfig.getClientId();
+            String iss = (String) idToken.getClaim("iss");
+            String sub = (String) idToken.getClaim("sub");
+            String sid = (String) idToken.getClaim("sid");
+            Long exp = (Long) idToken.getClaim("exp");
+            Cookie ssoCookie = ssoCookies.get(0);
+            OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, exp.toString(), ssoCookie.getValue());
+
+            sessionCache.insertSession(sessionInfo);
+        }
     }
 
     boolean isRunningBetaMode() {
