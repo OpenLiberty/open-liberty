@@ -19,10 +19,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
 
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -44,11 +47,15 @@ import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.resources.ResourceBuilder;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.semconv.resource.attributes.ResourceAttributes;
+
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 
+@ApplicationScoped
 public class OpenTelemetryProducer {
 
     private static final TraceComponent tc = Tr.register(OpenTelemetryProducer.class);
@@ -63,17 +70,70 @@ public class OpenTelemetryProducer {
     private static final String SERVICE_NAME_PROPERTY = "otel.service.name";
 
     @Inject
-    private Config config;
+    private Config config = null;
 
-    //See https://github.com/open-telemetry/opentelemetry-java-docs/blob/main/otlp/src/main/java/io/opentelemetry/example/otlp/ExampleConfiguration.java
-    @ApplicationScoped
-    @Produces
-    public OpenTelemetryInfo getOpenTelemetryInfo() {
+    private Config getConfig() {
+        if (config == null) {
+            config = ConfigProvider.getConfig();
+        }
+        return config;
+    }
+
+    private boolean hasPostConstructed = false;
+    private J2EEName j2EEName = null;
+
+    @PostConstruct
+    public synchronized void postConstruct() {
+        if (! hasPostConstructed) {
+            ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+            j2EEName = cData.getJ2EEName();
+            hasPostConstructed = true;
+        }
+    }
+
+    private static final Map<J2EEName, OpenTelemetryProducer> appToInfo = new ConcurrentHashMap<J2EEName, OpenTelemetryProducer>();
+
+    private static OpenTelemetryProducer getOpenTelemetryProducer() {
+        ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        J2EEName j2EEName = cData.getJ2EEName();
+        OpenTelemetryProducer producer = appToInfo.get(j2EEName);
+
+        if (producer != null) {
+            return producer;
+        }
+
+        try {
+            producer = CDI.current().select(OpenTelemetryProducer.class).get();
+            /*
+             * Weld will create an instance of OpenTelemetryProducer whether or not we've already created one some other way.
+             * So if we can go through Weld we do. 
+             *
+             * For performence reasons we only do this once.
+             */
+        } catch (IllegalStateException e) { //Could not find deployment exception. TODO FFDC ignore.
+            producer = new OpenTelemetryProducer();
+            producer.postConstruct();
+        }
+
+        //Ensure no other thread has beaten us to the punch.
+        appToInfo.putIfAbsent(j2EEName, producer);
+        producer = appToInfo.get(j2EEName); //These lines ensure another thread hasn't got there first.
+        return producer;
+    }
+
+    private OpenTelemetryInfo openTelemetryInfo = null;
+
+    private synchronized OpenTelemetryInfo createOpenTelemetryInfo() {
+        if (openTelemetryInfo != null) {
+            return openTelemetryInfo;
+        }
+
         try {
             if (AgentDetection.isAgentActive()) {
                 // If we're using the agent, it will have set GlobalOpenTelemetry and we must use its instance
                 // all config is handled by the agent in this case
-                return new OpenTelemetryInfo(true, GlobalOpenTelemetry.get());
+                openTelemetryInfo = new OpenTelemetryInfo(true, GlobalOpenTelemetry.get());
+                return openTelemetryInfo;
             }
 
             HashMap<String, String> telemetryProperties = getTelemetryProperties();
@@ -92,7 +152,8 @@ public class OpenTelemetryProducer {
                 });
 
                 if (openTelemetry != null) {
-                    return new OpenTelemetryInfo(true, openTelemetry);
+                    openTelemetryInfo = new OpenTelemetryInfo(true, openTelemetry);
+                    return openTelemetryInfo;
                 }
             }
             //By default, MicroProfile Telemetry tracing is off.
@@ -102,11 +163,32 @@ public class OpenTelemetryProducer {
             String applicationName = cData.getJ2EEName().getApplication();
             Tr.info(tc, "CWMOT5100.tracing.is.disabled", applicationName);
 
-            return new OpenTelemetryInfo(false, OpenTelemetry.noop());
+            openTelemetryInfo = new OpenTelemetryInfo(false, OpenTelemetry.noop());
+            return openTelemetryInfo;
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
-            return new OpenTelemetryInfo(false, OpenTelemetry.noop());
+            openTelemetryInfo = new OpenTelemetryInfo(false, OpenTelemetry.noop());
+            return openTelemetryInfo;
         }
+    }
+
+
+    private OpenTelemetryInfo getOpenTelemetryInfoInternal() {
+        if (openTelemetryInfo != null) {
+            return openTelemetryInfo; //Duplicate the check at the start of createOpenTelemetryInfoInternal to avoid going into a synchronized method if we can.
+        }
+        return createOpenTelemetryInfo();
+    }
+
+    //See https://github.com/open-telemetry/opentelemetry-java-docs/blob/main/otlp/src/main/java/io/opentelemetry/example/otlp/ExampleConfiguration.java
+    @ApplicationScoped
+    @Produces
+    public OpenTelemetryInfo getOpenTelemetryInfoWithCDI() {
+        return getOpenTelemetryInfoInternal();
+    }
+
+    public static OpenTelemetryInfo getOpenTelemetryInfo() {
+        return getOpenTelemetryProducer().getOpenTelemetryInfoInternal();
     }
 
     //Uses application name if the user has not given configured service.name resource attribute
@@ -175,7 +257,7 @@ public class OpenTelemetryProducer {
             HashMap<String, String> telemetryProperties = new HashMap<>();
             for (String propertyName : config.getPropertyNames()) {
                 if (propertyName.startsWith("otel.")) {
-                    config.getOptionalValue(propertyName, String.class).ifPresent(
+                    getConfig().getOptionalValue(propertyName, String.class).ifPresent(
                                                                                   value -> telemetryProperties.put(propertyName, value));
                 }
             }
@@ -192,7 +274,7 @@ public class OpenTelemetryProducer {
     }
 
     @Produces
-    public Tracer getTracer(OpenTelemetry openTelemetry) {
+    public Tracer getTracerWithCDI(OpenTelemetry openTelemetry) {
         try {
             return openTelemetry.getTracer(INSTRUMENTATION_NAME);
         } catch (Exception e) {
