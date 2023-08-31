@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -82,7 +82,8 @@ public class PkixSAMLTests extends SAMLCommonTest {
      * The jks file does not have the self-signed certificates from the tfim IdP.
      * So, the test fails
      */
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException" })
+    // a version of Java 8 thows an NPE - test should allow for that
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException", "java.lang.NullPointerException" })
     @Mode(TestMode.LITE)
     @Test
     public void pkixSAMLTests_badTrustAnchorTest() throws Exception {
