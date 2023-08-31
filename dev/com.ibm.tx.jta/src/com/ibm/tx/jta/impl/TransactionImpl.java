@@ -2340,7 +2340,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         }
 
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getStatus (SPI)", Util.printStatus(state));
+            Tr.debug(tc, "getStatus (SPI): {0}", Util.printStatus(state));
         return state;
     }
 
