@@ -29,11 +29,13 @@ import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.request.timing.RequestTimingStatsMXBean;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.request.timing.app.RequestTimingServlet;
 
@@ -42,6 +44,9 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -95,6 +100,12 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class RequestTimingEventTest {
 
+    @ClassRule
+    public static RepeatTests r = EERepeatActions.repeat(FeatureReplacementAction.ALL_SERVERS,
+                                                         EERepeatActions.EE10,
+                                                         EERepeatActions.EE9,
+                                                         EERepeatActions.EE7);
+
     private static final Class<RequestTimingEventTest> c = RequestTimingEventTest.class;
 
     // private static JMXConnector jmxConnector;
@@ -119,7 +130,7 @@ public class RequestTimingEventTest {
     @BeforeClass
     public static void setUp() throws Exception {
         totalRequestCount.set(0);
-        ShrinkHelper.defaultApp(server, "RequestTimingWebApp", "com.ibm.ws.request.timing.app");
+        ShrinkHelper.defaultApp(server, "RequestTimingWebApp", new DeployOptions[] { DeployOptions.SERVER_ONLY }, "com.ibm.ws.request.timing.app");
 
         server.startServer();
         setupTables();
@@ -404,7 +415,7 @@ public class RequestTimingEventTest {
      * allow a test to finish
      *
      * @param countToWaitFor
-     *                           Value looked for in CountDownLatch
+     *            Value looked for in CountDownLatch
      * @throws Exception
      */
     private void waitInServletForCountDownLatch(int countToWaitFor) throws Exception {
@@ -474,9 +485,9 @@ public class RequestTimingEventTest {
      * test
      *
      * @param th
-     *                    -- array of threads
+     *            -- array of threads
      * @param numReqs
-     *                    -- number of requests is the number of threads needed
+     *            -- number of requests is the number of threads needed
      */
     private void createRequestThreads(Thread[] th, int numReqs, String method) {
         // Send N servlet requests to server, last request used to terminate
