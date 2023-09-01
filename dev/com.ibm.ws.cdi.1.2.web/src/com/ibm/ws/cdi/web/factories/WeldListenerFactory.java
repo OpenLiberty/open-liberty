@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,7 +22,6 @@ import org.jboss.weld.el.WeldELContextListener;
 import org.jboss.weld.el.WeldExpressionFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.servlet.ConversationFilter;
-import org.jboss.weld.servlet.WeldInitialListener;
 import org.jboss.weld.servlet.WeldTerminalListener;
 
 /**
@@ -35,7 +34,7 @@ public class WeldListenerFactory {
     }
 
     public static EventListener newWeldInitialListener(BeanManagerImpl beanManagerImpl) {
-        return new WeldInitialListener(beanManagerImpl);
+        return new Weld24InitialListener(beanManagerImpl);
     }
 
     public static ExpressionFactory newWeldExpressionFactory(ExpressionFactory expressionFactory) {
