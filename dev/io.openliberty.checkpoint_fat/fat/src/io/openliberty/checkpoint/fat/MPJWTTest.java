@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -53,8 +53,6 @@ import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -79,10 +77,7 @@ public class MPJWTTest extends FATServletClient {
     private static WebArchive mpjwtApp;
 
     @ClassRule
-    public static RepeatTests repeatTest = MicroProfileActions.repeat("checkpointMPJWT", TestMode.FULL, //
-                                                                      MicroProfileActions.MP41, // first test in LITE mode
-                                                                      // rest are FULL mode
-                                                                      MicroProfileActions.MP50, MicroProfileActions.MP60);
+    public static RepeatTests repeatTest = FATSuite.defaultMPRepeat("checkpointMPJWT");
 
     @BeforeClass
     public static void createAppAndExportToServer() throws Exception {

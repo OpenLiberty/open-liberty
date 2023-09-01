@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -32,8 +32,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -51,23 +49,7 @@ public class FacesBeanTest extends FATServletClient {
     public TestName testName = new TestName();
 
     @ClassRule
-    public static RepeatTests repeatTests = MicroProfileActions.repeat(FACES_BEAN_SERVER_NAME, TestMode.LITE,
-                                                                       MicroProfileActions.MP41, MicroProfileActions.MP50 /* , MicroProfileActions.MP60 */);
-
-//    @ClassRule
-//    public static RepeatTests repeatTests;
-//    static {
-//        // EE10 requires Java 11. If we only specify EE10 for lite mode it will cause no tests to run which causes an error.
-//        // If we are running on Java 8 have EE9 be the lite mode test to run.
-//        if (JavaInfo.JAVA_VERSION >= 11) {
-//            repeatTests = RepeatTests.with(new EmptyAction().fullFATOnly())
-//                              .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
-//                              .andWith(FeatureReplacementAction.EE10_FEATURES());
-//        } else {
-//            repeatTests = RepeatTests.with(new EmptyAction().fullFATOnly())
-//                              .andWith(FeatureReplacementAction.EE9_FEATURES());
-//        }
-//    }
+    public static RepeatTests repeatTests = FATSuite.defaultMPRepeat(FACES_BEAN_SERVER_NAME);
 
     @Server(FACES_BEAN_SERVER_NAME)
     public static LibertyServer facesBeanServer;
