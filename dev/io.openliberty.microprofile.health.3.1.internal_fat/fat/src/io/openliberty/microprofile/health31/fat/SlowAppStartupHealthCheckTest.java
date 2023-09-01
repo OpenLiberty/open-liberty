@@ -70,7 +70,7 @@ public class SlowAppStartupHealthCheckTest {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-                                                             MicroProfileActions.MP60, // mpHealth-4.0 LITE
+                                                             MicroProfileActions.MP61, // mpHealth-4.0 LITE
                                                              MicroProfileActions.MP41); // mpHealth-3.0 FULL
 
     public void setupClass(LibertyServer server, String testName) throws Exception {
