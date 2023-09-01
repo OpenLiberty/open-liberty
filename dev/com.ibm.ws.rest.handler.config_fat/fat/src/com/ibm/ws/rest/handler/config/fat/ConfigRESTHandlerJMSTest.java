@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,6 +29,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,14 +37,23 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(FATRunner.class)
 public class ConfigRESTHandlerJMSTest extends FATServletClient {
+
+    @ClassRule
+    public static RepeatTests r = EERepeatActions.repeat("com.ibm.ws.rest.handler.config.jms.fat",
+                                                         EERepeatActions.EE10, // EE10
+                                                         EERepeatActions.EE9, // EE9
+                                                         EERepeatActions.EE8); // EE8
+
     @Server("com.ibm.ws.rest.handler.config.jms.fat")
     public static LibertyServer server;
 
