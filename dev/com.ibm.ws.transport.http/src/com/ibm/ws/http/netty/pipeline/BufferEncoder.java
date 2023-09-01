@@ -11,6 +11,7 @@ package com.ibm.ws.http.netty.pipeline;
 
 import java.util.List;
 
+import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
@@ -32,6 +33,8 @@ public class BufferEncoder extends MessageToMessageEncoder<WsByteBuffer> {
         //out.writeBytes(message.getWrappedByteBuffer());
 
         boolean doLastHttpContent = Boolean.FALSE;
+
+        MSP.log("Encode: bytes written: " + bytesWritten + ", bytes to write: " + message.remaining());
 
         if (context.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
 

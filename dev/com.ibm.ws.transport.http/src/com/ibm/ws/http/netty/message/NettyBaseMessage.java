@@ -48,6 +48,7 @@ import com.ibm.wsspi.http.channel.values.VersionValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpUtil;
+import io.openliberty.http.constants.HttpGenerics;
 
 /**
  *
@@ -676,7 +677,9 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public long getContentLength() {
-        return HttpUtil.getContentLength(message);
+
+        return HttpUtil.isContentLengthSet(message) ? HttpUtil.getContentLength(message) : HttpGenerics.NOT_SET;
+
     }
 
     @Override
