@@ -26,6 +26,9 @@ import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestSix;
 import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestThree;
 import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestTwo;
 
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
+
 @RunWith(Suite.class)
 @SuiteClasses({
     AnnotationProcessingTest.class,
@@ -45,5 +48,12 @@ import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestTwo;
     UICustomizationTest.class
 })
 public class FATSuite {
-
+    public static RepeatTests defaultRepeat(String serverName) {
+        return MicroProfileActions.repeat(serverName,
+            MicroProfileActions.MP61, // mpOpenAPI-3.1, LITE
+            MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
+            MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
+            MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL
+            MicroProfileActions.MP22);// mpOpenAPI-1.0, FULL
+    }
 }
