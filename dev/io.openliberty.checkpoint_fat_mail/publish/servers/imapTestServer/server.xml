@@ -1,0 +1,37 @@
+<server>
+  <featureManager>
+    <feature>componentTest-1.0</feature>
+    <feature>servlet-4.0</feature>
+    <feature>javaMail-1.6</feature>
+  </featureManager>
+
+  <mailSession>
+    <mailSessionID>testIMAPMailSession</mailSessionID>
+    <jndiName>IMAPTestingApp/IMAPMailSessionServlet/testIMAPMailSession</jndiName>
+    <description>mailSession for testing IMAP protocol</description>
+    <storeProtocol>imap</storeProtocol>
+    <host>localhost</host>
+    <user>imap@testserver.com</user>
+    <password>${imap_password}</password>
+    <from>smtp@testserver.com</from>
+    <property name="mail.imap.host" value="localhost" />
+    <property name="mail.imap.port" value="${bvt.prop.imap_port}" />
+  </mailSession>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application id="IMAPTestingApp" name="IMAPTestingApp" type="war" location="IMAPTestingApp.war">
+    <classloader apiTypeVisibility="+third-party"/>
+  </application>
+  
+  <variable name="imap_password" defaultValue="wrong_password" />
+
+  <!-- Needed due to missing doPriv in javax.mail.Session.getService() -->
+  <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+  <!-- Needed due to missing doPriv in javax.mail.Service.connect() -->
+  <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+  <!-- Needed due to missing doPriv in com.sun.mail.util.PropUtil.getBooleanSystemProperty() -->
+  <javaPermission className="java.util.PropertyPermission" name="*" actions="read,write"/>
+  <!-- Needed due to missing doPriv in javax.mail.Session.loadFile(), and we have no idea of the actual base paths -->
+  <javaPermission className="java.io.FilePermission" name="/-" actions="read"/>
+</server>

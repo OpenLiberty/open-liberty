@@ -33,3 +33,4 @@ IBM-API-Package: \
 -jars=io.openliberty.mail.2.0.thirdparty; location:=dev/api/third-party/; mavenCoordinates="com.sun.mail:jakarta.mail:2.0.0"
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true
