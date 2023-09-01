@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -50,7 +50,8 @@ public class TestMultiModuleClassLoading extends FATServletClient {
 
     //run against EE10, EE9, EE8 and EE7 features
     @ClassRule
-    public static RepeatTests r = RepeatFaultTolerance.repeat(SERVER_NAME, TestMode.FULL, MicroProfileActions.MP60,
+    public static RepeatTests r = RepeatFaultTolerance.repeat(SERVER_NAME, TestMode.FULL,
+                                                              MicroProfileActions.MP61,
                                                               MicroProfileActions.MP13,
                                                               RepeatFaultTolerance.MP21_METRICS20,
                                                               MicroProfileActions.MP50);
