@@ -1071,8 +1071,10 @@ javaCmd()
     #On some shells (bash) the shell will issue an ugly message to STDERR when criu kills the process.
     # We direct STDERR to /dev/null to avoid that noise.
     {
+      # JAVA_CHECKPOINT_PREFIX_CMD is used externally to allow prefixing commands before the
+      # java invocation.  For example, to make calls to ld.so to fine tune glibc behavior.
       #  Launch with stdin set to /dev/null to avoid file-handle complications on criu restore
-      "${JAVA_CMD}" "$@" >> "${CHECKPOINT_CONSOLE_LOG}" 2>&1 < /dev/null
+      ${JAVA_CHECKPOINT_PREFIX_CMD}"${JAVA_CMD}" "$@" >> "${CHECKPOINT_CONSOLE_LOG}" 2>&1 < /dev/null
     } 2> /dev/null
     rc=$?
     if [ $rc -eq 20 ]; then
