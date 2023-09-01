@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,14 +17,17 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.test.mp.context.priority.PriorityContextProvider;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import concurrent.mp.fat.v13.ee9.web.MPContextProp1_3_EE9_TestServlet;
@@ -38,6 +41,9 @@ public class MPContextProp1_3_EE9_Test extends FATServletClient {
     @TestServlet(servlet = MPContextProp1_3_EE9_TestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests r = FATSuite.repeat("com.ibm.ws.concurrent.mp.fat.1.3.ee9", FATSuite.MP61_CTX13, FATSuite.MP50_CTX13);
+
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "concurrent.mp.fat.v13.ee9.web");
@@ -45,7 +51,7 @@ public class MPContextProp1_3_EE9_Test extends FATServletClient {
         JavaArchive customContextProviders = ShrinkWrap.create(JavaArchive.class, "customContextProviders.jar")
                         .addPackage("org.test.mp.context.priority")
                         .addAsServiceProvider(ThreadContextProvider.class, PriorityContextProvider.class);
-        ShrinkHelper.exportToServer(server, "lib", customContextProviders);
+        ShrinkHelper.exportToServer(server, "lib", customContextProviders, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }
