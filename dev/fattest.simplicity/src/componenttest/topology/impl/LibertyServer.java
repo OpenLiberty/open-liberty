@@ -763,7 +763,6 @@ public class LibertyServer implements LogMonitorClient {
 
         // TODO: Verify the micro version matches the files under 'installRoot/lib'.
 
-
         // Allow user directory name to be provided in bootstrap properties.
         // It is optional and if it is not set, setup() will set it.
         userDir = b.getValue("libertyUserDir");
@@ -6150,7 +6149,7 @@ public class LibertyServer implements LogMonitorClient {
      * @param  outputFile file to check
      * @return            line that matched the regexp
      */
-    protected String waitForStringInLogUsingMark(String regexp, long intendedTimeout, RemoteFile outputFile) {
+    public String waitForStringInLogUsingMark(String regexp, long intendedTimeout, RemoteFile outputFile) {
         return waitForStringInLogUsingMark(regexp, intendedTimeout, 2 * intendedTimeout, outputFile);
     }
 

@@ -57,6 +57,8 @@ public class PKCEPrivateKeyJwtCommonTooling extends CommonTest {
     protected static final String S256 = "S256";
     protected static final String PLAIN = "plain";
     protected static final String DISABLED = "disabled";
+    // for searches that are run after a command completes, and where we don't expect to find a message, set a short timeout
+    protected static final int SHORT_NOT_FOUND_LOG_SEARCH_TIMEOUT = 12 * 1000;
 
     public enum AuthMethod {
         CLIENT_SECRET_BASIC, CLIENT_SECRET_POST, PRIVATE_KEY_JWT
@@ -283,7 +285,7 @@ public class PKCEPrivateKeyJwtCommonTooling extends CommonTest {
         msgUtils.printMethodName(thisMethod);
         Log.info(thisClass, thisMethod, " Searching for key:  " + keyName);
 
-        String searchResult = server.getServer().waitForStringInLogUsingMark(keyName, server.getServer().getMatchingLogFile(Constants.MESSAGES_LOG));
+        String searchResult = server.getServer().waitForStringInLogUsingMark(keyName, SHORT_NOT_FOUND_LOG_SEARCH_TIMEOUT, server.getServer().getMatchingLogFile(Constants.MESSAGES_LOG));
         Log.info(thisClass, thisMethod, "DEBUG: ********************************************************************");
         Log.info(thisClass, thisMethod, searchResult);
         Log.info(thisClass, thisMethod, "DEBUG: ********************************************************************");
