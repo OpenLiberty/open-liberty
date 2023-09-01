@@ -21,12 +21,15 @@ fat.project: true
 
 tested.features: mpConfig-2.0,\
                  mpconfig-3.0,\
+                 mpconfig-3.1,\
                  cdi-1.2,\
                  cdi-2.0,\
                  cdi-3.0,\
+                 cdi-4.0,\
                  servlet-3.1,\
                  servlet-4.0, \
                  servlet-5.0, \
+                 servlet-6.0,\
                  localconnector-1.0
 
 -buildpath: \
