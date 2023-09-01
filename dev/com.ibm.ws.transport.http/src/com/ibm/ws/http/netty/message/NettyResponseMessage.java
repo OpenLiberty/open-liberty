@@ -126,17 +126,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     }
 
     @Override
-    public void setContentLength(long length) {
-        HttpUtil.setContentLength(nettyResponse, length);
-
-    }
-
-    @Override
-    public long getContentLength() {
-        return HttpUtil.getContentLength(nettyResponse);
-    }
-
-    @Override
     public void setConnection(ConnectionValues value) {
         //TODO Netty already sets this, no op?
         MSP.log("Attempt to set connection to: " + value);

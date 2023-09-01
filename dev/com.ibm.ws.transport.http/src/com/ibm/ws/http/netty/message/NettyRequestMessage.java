@@ -27,6 +27,7 @@ import com.ibm.wsspi.genericbnf.exception.UnsupportedSchemeException;
 import com.ibm.wsspi.http.channel.HttpConstants;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.MethodValues;
 import com.ibm.wsspi.http.channel.values.SchemeValues;
 import com.ibm.wsspi.http.channel.values.VersionValues;
@@ -74,6 +75,8 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             this.config = ((HttpInboundServiceContextImpl) isc).getHttpConfig();
             this.isIncoming = ((HttpInboundServiceContextImpl) isc).isInboundConnection();
         }
+
+        query = new QueryStringDecoder(request.uri());
 
         super.init(request, isc, config);
 
@@ -181,7 +184,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public String getRequestURI() {
-        return request.uri();
+        return query.path();
     }
 
     @Override
@@ -192,17 +195,12 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public StringBuffer getRequestURL() {
-        if (Objects.isNull(query)) {
-            query = new QueryStringDecoder(request.uri());
-        }
+
         return new StringBuffer().append(query.path());
     }
 
     @Override
     public String getRequestURLAsString() {
-        if (Objects.isNull(query)) {
-            query = new QueryStringDecoder(request.uri());
-        }
         return query.path();
     }
 
@@ -276,28 +274,32 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public String getURLHost() {
-        // TODO Auto-generated method stub
-        return null;
+        return context.getLocalAddr().getHostName();
     }
 
     @Override
     public int getURLPort() {
-        // TODO Auto-generated method stub
-        return 0;
+        return context.getLocalPort();
     }
 
     @Override
     public String getVirtualHost() {
-        // TODO Auto-generated method stub
-        return null;
+
+        String host = headers.get(HttpHeaderKeys.HDR_HOST.getName());
+        if (Objects.nonNull(host) && host.contains(":")) {
+            host = host.substring(0, host.indexOf(":"));
+
+        }
+
+        host = getURLHost();
+
+        return host;
     }
 
     @Override
     public int getVirtualPort() {
-        if (Objects.isNull(query)) {
 
-        }
-        return 0;
+        return context.getLocalPort();
     }
 
     @Override

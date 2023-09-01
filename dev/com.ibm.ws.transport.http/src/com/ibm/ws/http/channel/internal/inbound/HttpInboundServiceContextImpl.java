@@ -177,7 +177,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     public void setNettyRequest(FullHttpRequest request) {
         this.nettyRequest = request;
         super.setNettyRequest(request);
-        this.requestMessage = new NettyRequestMessage(nettyRequest, this);
     }
 
     @Override
@@ -509,6 +508,9 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     @Override
     public HttpRequestMessage getRequest() {
         if (Objects.nonNull(nettyContext)) {
+            if (Objects.isNull(requestMessage)) {
+                this.requestMessage = new NettyRequestMessage(nettyRequest, this);
+            }
             return this.requestMessage;
         }
 
@@ -553,11 +555,12 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      */
     @Override
     public HttpResponseMessage getResponse() {
+        MSP.log("ISC - getResponse() - response: " + Objects.isNull(response) + ", context: " + Objects.nonNull(nettyContext));
         if (Objects.isNull(this.response) && Objects.nonNull(this.nettyContext)) {
-            this.response = new NettyResponseMessage(this.nettyResponse, this);
+            this.response = new NettyResponseMessage(nettyResponse, this);
         }
 
-        return Objects.nonNull(this.nettyContext) ? this.response : getResponseImpl();
+        return Objects.nonNull(nettyContext) ? this.response : getResponseImpl();
     }
 
     /**
@@ -1045,8 +1048,8 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                     Tr.debug(tc, "finishMessage() setting partial body false");
                 }
                 setPartialBody(false);
-                MSP.log("Bytes to write: " + GenericUtils.sizeOf(body));
-                HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(body));
+                // MSP.log("Bytes to write: " + GenericUtils.sizeOf(body));
+                //HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(body));
             }
 
         }
