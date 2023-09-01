@@ -104,3 +104,7 @@ enableImplicitBeanArchives.conflict.CWOWB1017W.useraction=Update your server.xml
 unversioned.beansXML.warning.CWOWB1018W=CWOWB1018W: Using an unversioned CDI beans.xml file might lead to unexpected behaviour when using CDI 4.0 or later: {0}
 unversioned.beansXML.warning.CWOWB1018W.explanation=Prior to CDI 4.0, a non-empty but unversioned beans.xml file meant that the archive was treated as an explicit bean archive (all classes are eligible to be beans). In CDI 4.0 or later, the archive is taken to be an implicit bean archive (only annotated classes are eligible be beans).
 unversioned.beansXML.warning.CWOWB1018W.useraction=Update the beans.xml file within your application to use a newer version of the schema and ensure that the version and bean-discovery-mode attributes are properly set.
+
+MODULE_NOT_OPENED.CWOWB1019E=CWOWB1019E: Running on Java 17+ without exposing the modules needed for CDI to create proxies.
+MODULE_NOT_OPENED.CWOWB1019E.explanation=Unlike previous versions of Java, Java 17 does not allow calling setAccessible(true) on a field or method of an encapsulated class. This is necessary for CDI to create its proxies.
+MODULE_NOT_OPENED.CWOWB1019E.useraction=Set the JAVA_HOME environment variable to the path of a Java SDK, and then try the command again. If this is insufficient, add the following JVM argument: --add-opens=java.base/java.lang=ALL-UNNAMED

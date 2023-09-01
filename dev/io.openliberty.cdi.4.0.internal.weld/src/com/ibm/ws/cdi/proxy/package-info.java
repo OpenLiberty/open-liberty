@@ -14,4 +14,5 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
+@com.ibm.websphere.ras.annotation.TraceOptions(traceGroup = "JCDI", messageBundle = "com.ibm.ws.cdi.internal.resources.CDI")
 package com.ibm.ws.cdi.proxy;

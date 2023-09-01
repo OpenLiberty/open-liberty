@@ -36,11 +36,16 @@ import org.osgi.framework.wiring.BundleWiring;
 import com.ibm.ws.cdi.CDIRuntimeException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 /**
  * This service is used to load proxy classes. We need a special classloader so that
  * we can load both weld classes and app classes.
  */
 public class ProxyServicesImpl implements ProxyServices {
+
+    private static final TraceComponent tc = Tr.register(ProxyServicesImpl.class);
 
     private static final ReflectPermission SUPPRESS_ACCESS_CHECKS_PERMISSION = new ReflectPermission("suppressAccessChecks");
     private static final RuntimePermission DECLARED_MEMBERS_PERMISSION = new RuntimePermission("accessDeclaredMembers");
@@ -148,6 +153,16 @@ public class ProxyServicesImpl implements ProxyServices {
         Object classLoaderLock = null;
         try {
             classLoaderLock = ClassLoaderMethods.getClassLoadingLock.invoke(loader, className);
+        } catch (ExceptionInInitializerError e) {
+            Throwable cause = e;
+            while (cause != null ) {
+                if (cause.toString().contains("module java.base does not \"opens java.lang\" to unnamed module")){
+                    Tr.error(tc, "MODULE_NOT_OPENED.CWOWB1019E");
+                    break;
+                }
+                cause = cause.getCause();
+            }
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
