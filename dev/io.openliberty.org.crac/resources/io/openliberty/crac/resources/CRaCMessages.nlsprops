@@ -23,14 +23,14 @@
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
 
-CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551=CWWKC0551E: The server checkpoint request failed because one or more resources threw an exception while being notified for the checkpoint request.
-CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.explanation=One or more resource implementations registered threw an exception while being notified for a checkpoint request.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551=CWWKC0551E: The server checkpoint request failed because one or more resources threw an exception when they were notified for the checkpoint request.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.explanation=One or more registered resource implementations threw an exception when they were notified for a checkpoint request.
 CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.useraction=Inspect the logs for the exception that caused the checkpoint request to fail.
 
-CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552=CWWKC0552E: The server failed to restore because one or more resources threw an exception while being notified for the server restore from checkpoint.
-CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.explanation=One or more resource implementations registered threw an exception while being notified for a server restore from checkpoint.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552=CWWKC0552E: The server failed to restore because one or more resources threw an exception when they were notified for the server restore from checkpoint.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.explanation=One or more registered resource implementations threw an exception when they were notified for a server restore from checkpoint.
 CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.useraction=Inspect the logs for the exception that caused the server restore from checkpoint to fail.
 
 CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553=CWWKC0553E: Requests for checkpoint are not supported on the Liberty server.
-CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.explanation=Requests for checkpoint using the "org.crac" APIs are not supported by Liberty. 
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.explanation=Requests for checkpoint that use the org.crac APIs are not supported by Liberty. 
 CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.useraction=Check the documentation for details of the checkpoint and restore operations for Liberty InstantOn.
