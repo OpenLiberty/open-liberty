@@ -49,9 +49,9 @@ public class RestClientTckPackageTest {
     public static final String SERVER_NAME = "FATServer";
     
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, 
-                                                             MicroProfileActions.MP50, // 3.0
-                                                             MicroProfileActions.MP60);// 3.0+EE10
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+                                                             MicroProfileActions.MP61,// 3.0+EE10
+                                                             MicroProfileActions.MP50); // 3.0+EE9
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

@@ -14,6 +14,7 @@ package mpRestClientFT.timeout;
 
 import static componenttest.rules.repeater.MicroProfileActions.MP50_ID;
 import static componenttest.rules.repeater.MicroProfileActions.MP60_ID;
+import static componenttest.rules.repeater.MicroProfileActions.MP61_ID;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.Callable;
@@ -55,9 +56,12 @@ public class TimeoutTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({MP50_ID, MP60_ID})  // this is proper behavior - @Timeout not expected to stop blocking I/O operations
-                                        // note that this works with previous MP Rest Client versions because we set the http
-                                        // connect and read timeouts based on the value of the @Timeout annotation.
+    @SkipForRepeat({
+        MP50_ID,
+        MP60_ID, 
+        MP61_ID})  // this is proper behavior - @Timeout not expected to stop blocking I/O operations
+                   // note that this works with previous MP Rest Client versions because we set the http
+                   // connect and read timeouts based on the value of the @Timeout annotation.
     public void testTimeoutOnSyncMethod(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         testTimeout(() -> {return client.sync(WAIT_TIME);}, WAIT_TIME);
     }
