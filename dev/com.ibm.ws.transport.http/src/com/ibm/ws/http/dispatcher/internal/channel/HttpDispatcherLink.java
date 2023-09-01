@@ -44,8 +44,6 @@ import com.ibm.ws.http.internal.VirtualHostImpl;
 import com.ibm.ws.http.internal.VirtualHostMap;
 import com.ibm.ws.http.internal.VirtualHostMap.RequestHelper;
 import com.ibm.ws.http.netty.MSP;
-import com.ibm.ws.http.netty.NettyHttpRequestImpl;
-import com.ibm.ws.http.netty.NettyHttpResponseImpl;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.channelfw.ConnectionLink;
@@ -70,7 +68,9 @@ import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpResponseStatus;
 
 /**
  * Connection link object that the HTTP dispatcher provides to CHFW
@@ -190,15 +190,20 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         MSP.debug(probe);
 
         nettyRequest = request;
-        MSP.debug(probe);
-        this.request = new NettyHttpRequestImpl(HttpDispatcher.useEE7Streams());
-        MSP.debug(probe);
-        ((NettyHttpRequestImpl) this.request).init(request, context.channel(), isc);
-        MSP.debug(probe);
-        this.response = new NettyHttpResponseImpl(this);
-        MSP.debug(probe);
-        this.isc.setNettyRequest(request);
+        this.isc.setNettyRequest(request);;
         this.usingNetty = true;
+
+        this.request = new HttpRequestImpl(HttpDispatcher.useEE7Streams());
+        this.response = new HttpResponseImpl(this);
+        isc.setNettyResponse(new DefaultHttpResponse(nettyRequest.protocolVersion(), HttpResponseStatus.OK));
+        MSP.log("Netty response completed");
+//        MSP.debug(probe);
+//        this.request = new NettyHttpRequestImpl(HttpDispatcher.useEE7Streams());
+//        MSP.debug(probe);
+//        ((NettyHttpRequestImpl) this.request).init(request, context.channel(), isc);
+//        MSP.debug(probe);
+//        this.response = new NettyHttpResponseImpl(this);
+//        MSP.debug(probe);
 
     }
 
@@ -431,10 +436,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
         System.out.println("MSP: 1");
         // Make sure to initialize the response in case of an early-return-error message
-        ((NettyHttpRequestImpl) this.request).init(this.nettyRequest, this.nettyContext.channel(), this.isc);
-        this.response.init(this.isc);
+        //((NettyHttpRequestImpl) this.request).init(this.nettyRequest, this.nettyContext.channel(), this.isc);
+        MSP.log("Init Request");
+        this.request.init(isc);
+        MSP.log("Init Response");
+        this.response.init(isc);
         linkIsReady = true;
-
+        MSP.log("Req/Response done");
         ExecutorService executorService = HttpDispatcher.getExecutorService();
         if (null == executorService) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
