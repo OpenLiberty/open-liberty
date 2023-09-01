@@ -982,9 +982,14 @@ if (isAutomatedBuild && !isIFIXBuild) {
 
             def rpms = file("./packaging/rpmbuild/RPMS/noarch/openliberty-" + bnd.get('libertyServiceVersion') + "-1.noarch.rpm")
             def debs = file("./packaging/debuild/openliberty_" + bnd.get('libertyServiceVersion') + "-1ubuntu1_all.deb")
-            def packageDate = new Date()
-            def formattedRPMDate = packageDate.format("E MMM d y")
-            def formattedDEBDate = packageDate.format("E, d MMM y hh:mm:ss Z")
+
+            ZonedDateTime packageDate = ZonedDateTime.now();
+            def formatter = java.time.format.DateTimeFormatter.ofPattern("E MMM d y", Locale.ENGLISH);
+            def formattedRPMDate = packageDate.format(formatter)
+
+            formatter = java.time.format.DateTimeFormatter.ofPattern("E, d MMM y hh:mm:ss Z", Locale.ENGLISH);
+            def formattedDEBDate = packageDate.format(formatter);
+	    
 
             inputs.dir('packaging/tempPackagingDir')
             outputs.file(rpms)
