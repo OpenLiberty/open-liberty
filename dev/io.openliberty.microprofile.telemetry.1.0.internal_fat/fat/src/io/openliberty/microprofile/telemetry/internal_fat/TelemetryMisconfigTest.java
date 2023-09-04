@@ -18,6 +18,7 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -32,6 +33,10 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrsmisconfig.JaxRsMisConfigEndpoints;
+
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 
 //Tests behaviour when placing an invalid value into the OpenTelemetry configuration options
 @Mode(TestMode.FULL)
@@ -57,6 +62,9 @@ public class TelemetryMisconfigTest extends FATServletClient {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61);
+    
     @BeforeClass
     public static void setUp() throws Exception {
         //Invalid exporter name (Should allow Jaeger, Zipkin, OTLP, Logging)
@@ -179,20 +187,31 @@ public class TelemetryMisconfigTest extends FATServletClient {
                         .expectCode(200)
                         .run(String.class);
 
-        assertFalse(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message:.*" + INVALID_JAEGER_ENDPOINT.toLowerCase())
-                        .isEmpty());
+        if(RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID)){
+            assertFalse(server.waitForStringInLogUsingMark("Failed to export spans. Server responded with gRPC status code 2. Error message: " + INVALID_JAEGER_ENDPOINT.toLowerCase())
+            .isEmpty());
+        }
+        else{
+            assertFalse(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message:.*" + INVALID_JAEGER_ENDPOINT.toLowerCase())
+            .isEmpty());
+        }
     }
 
     @Test
     public void testDoesNotExistEndpoint() throws Exception {
         server.setMarkToEndOfLog();
-
         new HttpRequest(server, "/" + DOES_NOT_EXIST_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
                         .expectCode(200)
                         .run(String.class);
 
-        assertFalse(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message: Failed to connect to.*" + ":10000")
-                        .isEmpty());
+        if(RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID)){
+            assertFalse(server.waitForStringInLogUsingMark("Failed to export spans. Server responded with gRPC status code 2. Error message: Failed to connect to.*" + ":10000")
+            .isEmpty());
+        }
+        else{
+            assertFalse(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message: Failed to connect to.*" + ":10000")
+            .isEmpty());
+        }
     }
 
     @Test
@@ -212,6 +231,7 @@ public class TelemetryMisconfigTest extends FATServletClient {
         server.stopServer("SRVE0777E", // Exception thrown by application class
                           "SRVE0315E: .*INVALID_EXPORTER", // An exception occurred: ... Unrecognized value for otel.traces.exporter: INVALID_EXPORTER
                           "SRVE0315E: .*INVALID_TIMEOUT", // An exception occurred: ... Invalid duration property otel.exporter.jaeger.timeout: INVALID_TIMEOUT
-                          "SRVE0315E: .*ENDPOINT"); //An exception occurred: ... Endpoint must be a valid URL: INVALID_ENDPOINT
+                          "SRVE0315E: .*ENDPOINT", //An exception occurred: ... Endpoint must be a valid URL: INVALID_ENDPOINT
+                          "SRVE0315E: .*configuration error"); //An exception occurred: ... Unexpected configuration error
     }
 }

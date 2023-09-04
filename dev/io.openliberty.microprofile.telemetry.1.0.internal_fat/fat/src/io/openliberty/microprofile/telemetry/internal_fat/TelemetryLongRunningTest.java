@@ -21,6 +21,7 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -37,6 +38,8 @@ import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.In
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporterProvider;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
 
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class TelemetryLongRunningTest extends FATServletClient {
@@ -44,10 +47,13 @@ public class TelemetryLongRunningTest extends FATServletClient {
     public static final String SERVER_NAME = "Telemetry10LongRunning";
     public static final String APP_NAME = "LongRunningApp";
     public static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(120); // 120 seconds
-
+    
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61);
+    
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")

@@ -16,6 +16,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -31,6 +32,8 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.api.CommonSDKServ
 import io.openliberty.microprofile.telemetry.internal_fat.apps.api.ContextAPIServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.api.TraceAPIServlet;
 
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 /**
  * Test use of the Open Telemetry APIs:
  *
@@ -45,6 +48,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.api.TraceAPIServl
 public class TelemetryAPITest extends FATServletClient {
 
     public static final String API_TEST_APP_NAME = "apiTest";
+    public static final String SERVER_NAME = "Telemetry10Api";
 
     @TestServlets({
                     @TestServlet(contextRoot = API_TEST_APP_NAME, servlet = TraceAPIServlet.class),
@@ -53,9 +57,12 @@ public class TelemetryAPITest extends FATServletClient {
                     @TestServlet(contextRoot = API_TEST_APP_NAME, servlet = CommonSDKServlet.class)
 
     })
-    @Server("Telemetry10Api")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61);
+    
     @BeforeClass
     public static void setup() throws Exception {
 

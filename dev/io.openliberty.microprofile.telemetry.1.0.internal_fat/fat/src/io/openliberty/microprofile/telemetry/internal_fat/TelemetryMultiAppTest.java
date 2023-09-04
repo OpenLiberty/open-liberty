@@ -20,6 +20,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PropertiesAsset;
@@ -39,6 +40,8 @@ import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.In
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporterProvider;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
 
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 /**
  * Test use of the multiple apps
  */
@@ -47,14 +50,18 @@ public class TelemetryMultiAppTest extends FATServletClient {
 
     public static final String APP1_NAME = "multiapp1";
     public static final String APP2_NAME = "multiapp2";
+    public static final String SERVER_NAME = "Telemetry10MultiApp";
 
     @TestServlets({
                     @TestServlet(contextRoot = APP1_NAME, servlet = MultiApp1TestServlet.class),
                     @TestServlet(contextRoot = APP2_NAME, servlet = MultiApp2TestServlet.class),
     })
-    @Server("Telemetry10MultiApp")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61);
+    
     @BeforeClass
     public static void setup() throws Exception {
         // InMemorySpanExporter shared library
