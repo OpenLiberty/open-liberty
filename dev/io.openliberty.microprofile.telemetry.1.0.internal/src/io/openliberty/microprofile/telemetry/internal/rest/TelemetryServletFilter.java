@@ -94,8 +94,9 @@ public class TelemetryServletFilter implements Filter {
     @Override
     public void init(FilterConfig config) {
         if (instrumenter == null) {
-//            OpenTelemetryInfo otelInfo = CDI.current().select(OpenTelemetryInfo.class).get();
-            OpenTelemetryInfo otelInfo = getOpenTelemetryInfo();
+            OpenTelemetryInfo otelInfo = io.openliberty.microprofile.telemetry.internal.cdi.OpenTelemetryProducer.getOpenTelemetryInfo();
+           // OpenTelemetryInfo otelInfo = jakarta.enterprise.inject.spi.CDI.current().select(OpenTelemetryInfo.class).get();
+ //           OpenTelemetryInfo otelInfo = getOpenTelemetryInfo();
             System.out.println("FW TelemetryServletFilter init instance=" + System.identityHashCode(this));
             System.out.println("FW TelemetryServletFilter init otelInfo=" + otelInfo);
             System.out.println("FW TelemetryServletFilter init otelInfo.getEnabled()=" + otelInfo.getEnabled());

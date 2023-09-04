@@ -28,6 +28,7 @@ import org.eclipse.microprofile.config.ConfigProvider;
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
@@ -69,8 +70,15 @@ public class OpenTelemetryProducer {
     private static final String CONFIG_LOGS_EXPORTER_PROPERTY = "otel.logs.exporter";
     private static final String SERVICE_NAME_PROPERTY = "otel.service.name";
 
+    private static final Map<J2EEName, OpenTelemetryProducer> appToInfo = new ConcurrentHashMap<J2EEName, OpenTelemetryProducer>();
+
     @Inject
     private Config config = null;
+
+    private OpenTelemetryInfo openTelemetryInfo = null;
+    private boolean hasPostConstructed = false;
+    private J2EEName j2EEName = null;
+
 
     private Config getConfig() {
         if (config == null) {
@@ -78,9 +86,6 @@ public class OpenTelemetryProducer {
         }
         return config;
     }
-
-    private boolean hasPostConstructed = false;
-    private J2EEName j2EEName = null;
 
     @PostConstruct
     public synchronized void postConstruct() {
@@ -91,8 +96,7 @@ public class OpenTelemetryProducer {
         }
     }
 
-    private static final Map<J2EEName, OpenTelemetryProducer> appToInfo = new ConcurrentHashMap<J2EEName, OpenTelemetryProducer>();
-
+    @FFDCIgnore(value = { IllegalStateException.class })
     private static OpenTelemetryProducer getOpenTelemetryProducer() {
         ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         J2EEName j2EEName = cData.getJ2EEName();
@@ -102,82 +106,81 @@ public class OpenTelemetryProducer {
             return producer;
         }
 
-        try {
-            producer = CDI.current().select(OpenTelemetryProducer.class).get();
-            /*
-             * Weld will create an instance of OpenTelemetryProducer whether or not we've already created one some other way.
-             * So if we can go through Weld we do. 
-             *
-             * For performence reasons we only do this once.
-             */
-        } catch (IllegalStateException e) { //Could not find deployment exception. TODO FFDC ignore.
-            producer = new OpenTelemetryProducer();
-            producer.postConstruct();
-        }
+        synchronized (j2EEName) {
 
-        //Ensure no other thread has beaten us to the punch.
-        appToInfo.putIfAbsent(j2EEName, producer);
-        producer = appToInfo.get(j2EEName); //These lines ensure another thread hasn't got there first.
-        return producer;
-    }
-
-    private OpenTelemetryInfo openTelemetryInfo = null;
-
-    private synchronized OpenTelemetryInfo createOpenTelemetryInfo() {
-        if (openTelemetryInfo != null) {
-            return openTelemetryInfo;
-        }
-
-        try {
-            if (AgentDetection.isAgentActive()) {
-                // If we're using the agent, it will have set GlobalOpenTelemetry and we must use its instance
-                // all config is handled by the agent in this case
-                openTelemetryInfo = new OpenTelemetryInfo(true, GlobalOpenTelemetry.get());
-                return openTelemetryInfo;
+            producer = appToInfo.get(j2EEName);
+            if (producer != null) {
+                return producer;
             }
 
-            HashMap<String, String> telemetryProperties = getTelemetryProperties();
-
-            //Builds tracer provider if user has enabled tracing aspects with config properties
-            if (!checkDisabled(telemetryProperties)) {
-                OpenTelemetry openTelemetry = AccessController.doPrivileged((PrivilegedAction<OpenTelemetry>) () -> {
-                    return AutoConfiguredOpenTelemetrySdk.builder()
-                                    .addPropertiesCustomizer(x -> telemetryProperties) //Overrides OpenTelemetry's property order
-                                    .addResourceCustomizer(this::customizeResource)//Defaults service name to application name
-                                    .setServiceClassLoader(Thread.currentThread().getContextClassLoader())
-                                    .setResultAsGlobal(false)
-                                    .registerShutdownHook(false)
-                                    .build()
-                                    .getOpenTelemetrySdk();
-                });
-
-                if (openTelemetry != null) {
-                    openTelemetryInfo = new OpenTelemetryInfo(true, openTelemetry);
-                    return openTelemetryInfo;
-                }
+            try {
+                producer = CDI.current().select(OpenTelemetryProducer.class).get();
+                /*
+                 * Weld does not know about any OpenTelemetryProducer we create via new OpenTelemetryProducer and will not check maps in this class.
+                 * Therefore to avoid duplicates, if CDI is enabled we always get the producer from weld.
+                 *
+                 * For performence reasons we cache the result.
+                 */
+            } catch (IllegalStateException e) { //CDI.current throws an IllegalStateException if CDI is disabled.
+                producer = new OpenTelemetryProducer();
+                producer.postConstruct();
             }
-            //By default, MicroProfile Telemetry tracing is off.
-            //The absence of an installed SDK is a “no-op” API
-            //Operations on a Tracer, or on Spans have no side effects and do nothing
-            ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-            String applicationName = cData.getJ2EEName().getApplication();
-            Tr.info(tc, "CWMOT5100.tracing.is.disabled", applicationName);
 
-            openTelemetryInfo = new OpenTelemetryInfo(false, OpenTelemetry.noop());
-            return openTelemetryInfo;
-        } catch (Exception e) {
-            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
-            openTelemetryInfo = new OpenTelemetryInfo(false, OpenTelemetry.noop());
-            return openTelemetryInfo;
+            appToInfo.put(j2EEName, producer);
+            return producer;
         }
     }
-
 
     private OpenTelemetryInfo getOpenTelemetryInfoInternal() {
         if (openTelemetryInfo != null) {
-            return openTelemetryInfo; //Duplicate the check at the start of createOpenTelemetryInfoInternal to avoid going into a synchronized method if we can.
+            return openTelemetryInfo;
         }
-        return createOpenTelemetryInfo();
+
+        synchronized (this) {
+            try {
+                if (AgentDetection.isAgentActive()) {
+                    // If we're using the agent, it will have set GlobalOpenTelemetry and we must use its instance
+                    // all config is handled by the agent in this case
+                    openTelemetryInfo = new OpenTelemetryInfo(true, GlobalOpenTelemetry.get());
+                    return openTelemetryInfo;
+                }
+
+                HashMap<String, String> telemetryProperties = getTelemetryProperties();
+
+                //Builds tracer provider if user has enabled tracing aspects with config properties
+                if (!checkDisabled(telemetryProperties)) {
+                    OpenTelemetry openTelemetry = AccessController.doPrivileged((PrivilegedAction<OpenTelemetry>) () -> {
+                        return AutoConfiguredOpenTelemetrySdk.builder()
+                                        .addPropertiesCustomizer(x -> telemetryProperties) //Overrides OpenTelemetry's property order
+                                        .addResourceCustomizer(this::customizeResource)//Defaults service name to application name
+                                        .setServiceClassLoader(Thread.currentThread().getContextClassLoader())
+                                        .setResultAsGlobal(false)
+                                        .registerShutdownHook(false)
+                                        .build()
+                                        .getOpenTelemetrySdk();
+                    });
+
+                    if (openTelemetry != null) {
+                        openTelemetryInfo = new OpenTelemetryInfo(true, openTelemetry);
+                        return openTelemetryInfo;
+                    }
+                }
+
+                //By default, MicroProfile Telemetry tracing is off.
+                //The absence of an installed SDK is a “no-op” API
+                //Operations on a Tracer, or on Spans have no side effects and do nothing
+                ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+                String applicationName = cData.getJ2EEName().getApplication();
+                Tr.info(tc, "CWMOT5100.tracing.is.disabled", applicationName);
+
+                openTelemetryInfo = new OpenTelemetryInfo(false, OpenTelemetry.noop());
+                return openTelemetryInfo;
+            } catch (Exception e) {
+                Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+                openTelemetryInfo = new OpenTelemetryInfo(false, OpenTelemetry.noop());
+                return openTelemetryInfo;
+            }
+        }
     }
 
     //See https://github.com/open-telemetry/opentelemetry-java-docs/blob/main/otlp/src/main/java/io/opentelemetry/example/otlp/ExampleConfiguration.java
@@ -255,7 +258,7 @@ public class OpenTelemetryProducer {
     private HashMap<String, String> getTelemetryProperties() {
         try {
             HashMap<String, String> telemetryProperties = new HashMap<>();
-            for (String propertyName : config.getPropertyNames()) {
+            for (String propertyName : getConfig().getPropertyNames()) {
                 if (propertyName.startsWith("otel.")) {
                     getConfig().getOptionalValue(propertyName, String.class).ifPresent(
                                                                                   value -> telemetryProperties.put(propertyName, value));
@@ -274,7 +277,7 @@ public class OpenTelemetryProducer {
     }
 
     @Produces
-    public Tracer getTracerWithCDI(OpenTelemetry openTelemetry) {
+    public Tracer getTracer(OpenTelemetry openTelemetry) {
         try {
             return openTelemetry.getTracer(INSTRUMENTATION_NAME);
         } catch (Exception e) {
