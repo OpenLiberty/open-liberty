@@ -38,6 +38,7 @@ Import-Package: \
   *
 
 Private-Package: \
+	io.smallrye.reactive.messaging.providers.connectors;-split-package:=merge-first,\
 	io.smallrye.reactive.messaging.*,\
 	io.openliberty.microprofile.reactive.messaging30.internal
 
