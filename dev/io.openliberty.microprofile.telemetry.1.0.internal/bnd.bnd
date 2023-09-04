@@ -50,11 +50,9 @@ Service-Component: \
 # Need an explicit import for api.common because it gets used by weld proxies
 # created for other API classes
 Import-Package: \
-  com.ibm.websphere.ras,\
-  com.ibm.websphere.ras.annotation,\
-  io.opentelemetry.api.common,\
-  io.openliberty.microprofile.telemetry.internal.common.resources,\
-  *
+	io.opentelemetry.api.common,\
+	io.openliberty.microprofile.telemetry.common.resources,\
+	*
 
 Export-Package: \
 	io.openliberty.microprofile.telemetry10.internal.cdi;version='1.0',\

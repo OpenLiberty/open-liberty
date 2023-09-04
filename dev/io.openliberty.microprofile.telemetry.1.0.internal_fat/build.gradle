@@ -28,4 +28,5 @@ task addShimLibs(type: Copy) {
 
 addRequiredLibraries {
   dependsOn addShimLibs
+  dependsOn addJakartaTransformer
 }

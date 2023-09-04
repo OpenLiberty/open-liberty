@@ -49,7 +49,6 @@ import io.opentelemetry.sdk.autoconfigure.spi.ConfigurablePropagatorProvider;
 import io.opentelemetry.sdk.autoconfigure.spi.ResourceProvider;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSamplerProvider;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
-
 /**
  * Test use of the Open Telemetry Autoconfigure Trace SPIs: https://www.javadoc.io/doc/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/latest/index.html
  */
@@ -61,6 +60,7 @@ public class TelemetrySpiTest extends FATServletClient {
     public static final String RESOURCE_APP_NAME = "resourceTest";
     public static final String PROPAGATOR_APP_NAME = "propagatorTest";
     public static final String CUSTOMIZER_APP_NAME = "customizerTest";
+    public static final String SERVER_NAME = "Telemetry10Spi";
 
     @TestServlets({
                     @TestServlet(contextRoot = EXPORTER_APP_NAME, servlet = ExporterTestServlet.class),
@@ -69,7 +69,7 @@ public class TelemetrySpiTest extends FATServletClient {
                     @TestServlet(contextRoot = PROPAGATOR_APP_NAME, servlet = PropagatorTestServlet.class),
                     @TestServlet(contextRoot = CUSTOMIZER_APP_NAME, servlet = CustomizerTestServlet.class),
     })
-    @Server("Telemetry10Spi")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass

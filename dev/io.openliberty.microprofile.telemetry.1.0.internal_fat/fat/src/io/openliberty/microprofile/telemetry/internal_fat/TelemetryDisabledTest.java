@@ -21,6 +21,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,16 +35,21 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.tracingdisabled.TracingDisabledServlet;
 
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
+
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class TelemetryDisabledTest extends FATServletClient {
 
     public static final String SERVER_NAME = "Telemetry10DisabledTracing";
     public static final String APP_NAME = "TelemetryDisabledTracingApp";
+@Server(SERVER_NAME)
+public static LibertyServer server;
 
-    @Server(SERVER_NAME)
-    public static LibertyServer server;
-
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61);
+    
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
@@ -56,7 +62,7 @@ public class TelemetryDisabledTest extends FATServletClient {
 
     //A warning should only be shown once
     @Test
-    public void testGetGlobalOpenTelemetry() throws Exception {
+    public void testDisabledOpenTelemetry() throws Exception {
         server.setMarkToEndOfLog();
         runTest(server, APP_NAME + "/TracingDisabledServlet", "testTelemetryDisabled");
         assertNotNull(server.waitForStringInLogUsingMark("CWMOT5100I: The MicroProfile Telemetry Tracing feature is enabled but not configured to generate traces for the "

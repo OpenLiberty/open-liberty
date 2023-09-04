@@ -20,6 +20,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PropertiesAsset;
@@ -34,6 +35,8 @@ import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.shim.OpenTracingShimServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.shim.TracedBean;
 
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 /**
  * Test use of the Open Telemetry Autoconfigure Trace SPIs: https://www.javadoc.io/doc/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/latest/index.html
  */
@@ -41,13 +44,17 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.shim.TracedBean;
 public class TelemetryShimTest extends FATServletClient {
 
     public static final String SHIM_APP_NAME = "shimTest";
+    public static final String SERVER_NAME = "Telemetry10Shim";
 
     @TestServlets({
                     @TestServlet(contextRoot = SHIM_APP_NAME, servlet = OpenTracingShimServlet.class),
     })
-    @Server("Telemetry10Shim")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61);
+    
     @BeforeClass
     public static void setup() throws Exception {
         WebArchive exporterTestWar = ShrinkWrap.create(WebArchive.class, SHIM_APP_NAME + ".war")
