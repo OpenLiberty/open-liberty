@@ -19,8 +19,13 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
 
-import io.openliberty.microprofile.telemetry.internal.cdi.OpenTelemetryInfo;
-import io.openliberty.microprofile.telemetry.internal.helper.AgentDetection;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
+import io.openliberty.microprofile.telemetry.common.internal.cdi.OpenTelemetryInfo;
+import io.openliberty.microprofile.telemetry.common.internal.helper.AgentDetection;
+import io.openliberty.microprofile.telemetry.common.internal.rest.AbstractTelemetryContainerFilter;
+import io.openliberty.microprofile.telemetry.common.rest.RestRouteCache;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.propagation.TextMapGetter;
@@ -32,7 +37,6 @@ import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanNameExtrac
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanStatusExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.net.NetServerAttributesExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.net.NetServerAttributesGetter;
-import io.openliberty.microprofile.telemetry.common.rest.RestRouteCache;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
@@ -45,11 +49,8 @@ import jakarta.ws.rs.container.ResourceInfo;
 import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.ext.Provider;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-
 @Provider
-public class TelemetryContainerFilter implements ContainerRequestFilter, ContainerResponseFilter {
+public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
     private static final TraceComponent tc = Tr.register(TelemetryContainerFilter.class);
 
@@ -60,7 +61,6 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
     private static final String SPAN_CONTEXT = "otel.span.server.context";
     private static final String SPAN_PARENT_CONTEXT = "otel.span.server.parentContext";
-    static final String SPAN_SCOPE = "otel.span.server.scope";
 
     private static final HttpServerAttributesGetterImpl HTTP_SERVER_ATTRIBUTES_GETTER = new HttpServerAttributesGetterImpl();
     private static final NetServerAttributesGetterImpl NET_SERVER_ATTRIBUTES_GETTER = new NetServerAttributesGetterImpl();
@@ -81,19 +81,19 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
         try {
             if (openTelemetry.getEnabled() && !AgentDetection.isAgentActive()) {
                 InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
-                                                                                                                  openTelemetry.getOpenTelemetry(),
-                                                                                                                  INSTRUMENTATION_NAME,
-                                                                                                                  HttpSpanNameExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER));
+                                                                                                                      openTelemetry.getOpenTelemetry(),
+                                                                                                                      INSTRUMENTATION_NAME,
+                                                                                                                      HttpSpanNameExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER));
 
                 this.instrumenter = builder
-                            .setSpanStatusExtractor(HttpSpanStatusExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
-                            .addAttributesExtractor(HttpServerAttributesExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
-                            .addAttributesExtractor(NetServerAttributesExtractor.create(NET_SERVER_ATTRIBUTES_GETTER))
-                            .buildServerInstrumenter(new ContainerRequestContextTextMapGetter());
+                                .setSpanStatusExtractor(HttpSpanStatusExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
+                                .addAttributesExtractor(HttpServerAttributesExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
+                                .addAttributesExtractor(NetServerAttributesExtractor.create(NET_SERVER_ATTRIBUTES_GETTER))
+                                .buildServerInstrumenter(new ContainerRequestContextTextMapGetter());
 
-           } else {
-               this.instrumenter = null;
-           }
+            } else {
+                this.instrumenter = null;
+            }
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
             this.instrumenter = null;

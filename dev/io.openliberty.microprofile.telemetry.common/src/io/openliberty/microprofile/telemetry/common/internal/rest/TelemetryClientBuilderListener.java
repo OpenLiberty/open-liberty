@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal.rest;
+package io.openliberty.microprofile.telemetry.common.internal.rest;
 
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
@@ -26,7 +26,7 @@ public class TelemetryClientBuilderListener implements ClientBuilderListener {
 
     @Override
     public void building(ClientBuilder clientBuilder) {
-        TelemetryClientFilter currentFilter = TelemetryClientFilter.getCurrent();
+        AbstractTelemetryClientFilter currentFilter = AbstractTelemetryClientFilter.getCurrent();
         if (currentFilter.isEnabled()) {
             clientBuilder.register(currentFilter);
         }

@@ -19,8 +19,12 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
 
-import io.openliberty.microprofile.telemetry.internal.cdi.OpenTelemetryInfo;
-import io.openliberty.microprofile.telemetry.internal.helper.AgentDetection;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
+import io.openliberty.microprofile.telemetry.common.internal.cdi.OpenTelemetryInfo;
+import io.openliberty.microprofile.telemetry.common.internal.helper.AgentDetection;
+import io.openliberty.microprofile.telemetry.common.internal.rest.AbstractTelemetryClientFilter;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;
@@ -33,7 +37,6 @@ import io.opentelemetry.instrumentation.api.instrumenter.net.NetClientAttributes
 import io.opentelemetry.instrumentation.api.instrumenter.net.NetClientAttributesGetter;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 import jakarta.annotation.Nullable;
-import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
@@ -41,11 +44,8 @@ import jakarta.ws.rs.client.ClientResponseContext;
 import jakarta.ws.rs.client.ClientResponseFilter;
 import jakarta.ws.rs.ext.Provider;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-
 @Provider
-public class TelemetryClientFilter implements ClientRequestFilter, ClientResponseFilter {
+public class TelemetryClientFilter extends AbstractTelemetryClientFilter implements ClientRequestFilter, ClientResponseFilter {
 
     private static final TraceComponent tc = Tr.register(TelemetryClientFilter.class);
 
@@ -56,34 +56,20 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
     private static final NetClientAttributesGetterImpl NET_CLIENT_ATTRIBUTES_GETTER = new NetClientAttributesGetterImpl();
     private static final HttpClientAttributesGetterImpl HTTP_CLIENT_ATTRIBUTES_GETTER = new HttpClientAttributesGetterImpl();
 
-    /**
-     * Retrieve the TelemetryClientFilter for the current application using CDI
-     * <p>
-     * Implementation note: It's important that there's a class which is registered as a CDI bean on the stack from this bundle when {@code CDI.current()} is called so that CDI
-     * finds the correct BDA and bean manager.
-     * <p>
-     * Calling it from this static method ensures that {@code TelemetryClientFilter} is the first thing on the stack and CDI will find the right BDA.
-     *
-     * @return the TelemetryClientFilter for the current application
-     */
-    public static TelemetryClientFilter getCurrent() {
-        return CDI.current().select(TelemetryClientFilter.class).get();
-    }
-
     @Inject
     TelemetryClientFilter(OpenTelemetryInfo openTelemetryInfo) {
         Instrumenter<ClientRequestContext, ClientResponseContext> instrumenter = null;
         try {
             if (openTelemetryInfo.getEnabled() && !AgentDetection.isAgentActive()) {
                 InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(openTelemetryInfo.getOpenTelemetry(),
-                                                                                                            "Client filter",
-                                                                                                            HttpSpanNameExtractor.create(HTTP_CLIENT_ATTRIBUTES_GETTER));
+                                                                                                                "Client filter",
+                                                                                                                HttpSpanNameExtractor.create(HTTP_CLIENT_ATTRIBUTES_GETTER));
 
                 instrumenter = builder
-                            .setSpanStatusExtractor(HttpSpanStatusExtractor.create(HTTP_CLIENT_ATTRIBUTES_GETTER))
-                            .addAttributesExtractor(HttpClientAttributesExtractor.create(HTTP_CLIENT_ATTRIBUTES_GETTER))
-                            .addAttributesExtractor(NetClientAttributesExtractor.create(NET_CLIENT_ATTRIBUTES_GETTER))
-                            .buildClientInstrumenter(new ClientRequestContextTextMapSetter());
+                                .setSpanStatusExtractor(HttpSpanStatusExtractor.create(HTTP_CLIENT_ATTRIBUTES_GETTER))
+                                .addAttributesExtractor(HttpClientAttributesExtractor.create(HTTP_CLIENT_ATTRIBUTES_GETTER))
+                                .addAttributesExtractor(NetClientAttributesExtractor.create(NET_CLIENT_ATTRIBUTES_GETTER))
+                                .buildClientInstrumenter(new ClientRequestContextTextMapSetter());
             } else {
                 instrumenter = null;
             }
@@ -152,7 +138,7 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
 
     /**
      * @return false if OpenTelemetry is disabled
-     * Indicated by instrumenter being set to null
+     *         Indicated by instrumenter being set to null
      */
     public boolean isEnabled() {
         return instrumenter != null;

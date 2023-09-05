@@ -19,8 +19,9 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
 
-import io.openliberty.microprofile.telemetry.internal.cdi.OpenTelemetryInfo;
-import io.openliberty.microprofile.telemetry.internal.helper.AgentDetection;
+import io.openliberty.microprofile.telemetry.common.internal.cdi.OpenTelemetryInfo;
+import io.openliberty.microprofile.telemetry.common.internal.helper.AgentDetection;
+import io.openliberty.microprofile.telemetry.common.internal.rest.AbstractTelemetryClientFilter;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;
@@ -41,27 +42,13 @@ import jakarta.ws.rs.client.ClientResponseFilter;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
-public class TelemetryClientFilter implements ClientRequestFilter, ClientResponseFilter {
+public class TelemetryClientFilter extends AbstractTelemetryClientFilter implements ClientRequestFilter, ClientResponseFilter {
 
     private final Instrumenter<ClientRequestContext, ClientResponseContext> instrumenter;
 
     private final String configString = "otel.span.client.";
 
     private static final HttpClientAttributesGetterImpl HTTP_CLIENT_ATTRIBUTES_GETTER = new HttpClientAttributesGetterImpl();
-
-    /**
-     * Retrieve the TelemetryClientFilter for the current application using CDI
-     * <p>
-     * Implementation note: It's important that there's a class which is registered as a CDI bean on the stack from this bundle when {@code CDI.current()} is called so that CDI
-     * finds the correct BDA and bean manager.
-     * <p>
-     * Calling it from this static method ensures that {@code TelemetryClientFilter} is the first thing on the stack and CDI will find the right BDA.
-     *
-     * @return the TelemetryClientFilter for the current application
-     */
-    public static TelemetryClientFilter getCurrent() {
-        return CDI.current().select(TelemetryClientFilter.class).get();
-    }
 
     @Inject
     TelemetryClientFilter(OpenTelemetryInfo openTelemetryInfo) {

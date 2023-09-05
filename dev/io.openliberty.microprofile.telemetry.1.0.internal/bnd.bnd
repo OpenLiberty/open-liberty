@@ -34,6 +34,8 @@ src: src, resources
 
 -dsannotations-inherit: true
 
+-includeresource: resources
+
 app-resources= \
   META-INF/services/jakarta.ws.rs.ext.Providers | \
   META-INF/services/org.eclipse.microprofile.rest.client.spi.RestClientBuilderListener
@@ -51,17 +53,20 @@ Service-Component: \
 # Need an explicit import for api.common because it gets used by weld proxies
 # created for other API classes
 Import-Package: \
-	io.opentelemetry.api.common,\
-	io.openliberty.microprofile.telemetry.common.*,\
-	*
+  com.ibm.websphere.ras,\
+  com.ibm.websphere.ras.annotation,\
+  io.opentelemetry.api.common,\
+  io.openliberty.microprofile.telemetry.common.*,\
+  *
 
 Export-Package: \
-  io.openliberty.microprofile.telemetry.internal.rest;version=1.0;thread-context=true
+	io.openliberty.microprofile.telemetry.internal.cdi;version='1.0',\
+	io.openliberty.microprofile.telemetry.resources;version='1.0',\
+	io.openliberty.microprofile.telemetry.rest;version='1.0',\
+	io.openliberty.microprofile.telemetry.internal.rest;version='1.0';thread-context=true
 
 Private-Package: \
-  io.openliberty.microprofile.telemetry.internal.cdi,\
-  io.openliberty.microprofile.telemetry.internal.helper,\
-  io.openliberty.microprofile.telemetry.internal.resources
+	io.openliberty.microprofile.telemetry.internal.helper
 
 -buildpath: \
     io.openliberty.jakarta.restfulWS.3.1;version=latest,\

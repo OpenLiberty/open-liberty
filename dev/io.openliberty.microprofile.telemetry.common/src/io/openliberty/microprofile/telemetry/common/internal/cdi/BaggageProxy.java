@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal.cdi;
+package io.openliberty.microprofile.telemetry.common.internal.cdi;
 
 import java.util.Collections;
 import java.util.Map;

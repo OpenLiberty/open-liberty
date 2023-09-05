@@ -54,11 +54,13 @@ Import-Package: \
   *
 
 Export-Package: \
-  io.openliberty.microprofile.telemetry.internal.rest;version=1.1;thread-context=true
-
+	io.openliberty.microprofile.telemetry.internal.cdi;version='1.0',\
+	io.openliberty.microprofile.telemetry.resources;version='1.0',\
+	io.openliberty.microprofile.telemetry.rest;version='1.0',\
+	io.openliberty.microprofile.telemetry.internal.rest;version='1.0';thread-context=true
+	
 Private-Package: \
-  io.openliberty.microprofile.telemetry.internal.cdi,\
-  io.openliberty.microprofile.telemetry.internal.helper
+	io.openliberty.microprofile.telemetry.internal.helper
 
 -buildpath: \
     io.openliberty.jakarta.restfulWS.3.1;version=latest,\

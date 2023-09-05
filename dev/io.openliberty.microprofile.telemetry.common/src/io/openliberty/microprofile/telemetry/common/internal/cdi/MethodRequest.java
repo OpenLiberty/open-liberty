@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,7 @@
 /*https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/instrumentation/opentelemetry-annotations-1.0/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/otelannotations/MethodRequest.java
 Provides method name and arguments for the tracer*/
 
-package io.openliberty.microprofile.telemetry.internal.cdi;
+package io.openliberty.microprofile.telemetry.common.internal.cdi;
 
 import java.lang.reflect.Method;
 

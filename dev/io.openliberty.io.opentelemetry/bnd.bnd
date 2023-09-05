@@ -91,7 +91,6 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 	com.ibm.ws.classloading;version=latest,\
 	org.eclipse.osgi;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	io.openliberty.microprofile.telemetry.common;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 WS-TraceGroup: TELEMETRY

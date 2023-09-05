@@ -19,8 +19,9 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
 
-import io.openliberty.microprofile.telemetry.internal.cdi.OpenTelemetryInfo;
-import io.openliberty.microprofile.telemetry.internal.helper.AgentDetection;
+import io.openliberty.microprofile.telemetry.common.internal.cdi.OpenTelemetryInfo;
+import io.openliberty.microprofile.telemetry.common.internal.helper.AgentDetection;
+import io.openliberty.microprofile.telemetry.common.internal.rest.AbstractTelemetryContainerFilter;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.propagation.TextMapGetter;
@@ -45,7 +46,7 @@ import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
-public class TelemetryContainerFilter implements ContainerRequestFilter, ContainerResponseFilter {
+public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
     private static final String INSTRUMENTATION_NAME = "io.openliberty.microprofile.telemetry";
 
@@ -54,7 +55,6 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
     private static final String SPAN_CONTEXT = "otel.span.server.context";
     private static final String SPAN_PARENT_CONTEXT = "otel.span.server.parentContext";
-    static final String SPAN_SCOPE = "otel.span.server.scope";
 
     private static final HttpServerAttributesGetterImpl HTTP_SERVER_ATTRIBUTES_GETTER = new HttpServerAttributesGetterImpl();
 
@@ -108,7 +108,7 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
     @Override
     public void filter(final ContainerRequestContext request, final ContainerResponseContext response) {
-        // Note: for async resource methods, this may not run on the same thread as the other filter method
+        // Note: for async resource methods, this may not run on 	the same thread as the other filter method
         // Scope is ended in TelemetryServletRequestListener to ensure it does run on the original request thread
 
         if (instrumenter == null) {

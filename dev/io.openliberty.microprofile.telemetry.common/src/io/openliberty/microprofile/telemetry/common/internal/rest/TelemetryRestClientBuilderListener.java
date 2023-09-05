@@ -7,22 +7,31 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal.rest;
+package io.openliberty.microprofile.telemetry.common.internal.rest;
 
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.spi.RestClientBuilderListener;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 /**
  * Add our client filter when a new Rest Client is created.
  */
 public class TelemetryRestClientBuilderListener implements RestClientBuilderListener {
 
+    private static final TraceComponent tc = Tr.register(TelemetryRestClientBuilderListener.class);
+
     /** {@inheritDoc} */
     @Override
     public void onNewBuilder(RestClientBuilder builder) {
-        TelemetryClientFilter currentFilter = TelemetryClientFilter.getCurrent();
-        if (currentFilter.isEnabled()) {
-            builder.register(currentFilter);
+        try {
+            AbstractTelemetryClientFilter currentFilter = AbstractTelemetryClientFilter.getCurrent();
+            if (currentFilter.isEnabled()) {
+                builder.register(currentFilter);
+            }
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
         }
     }
 

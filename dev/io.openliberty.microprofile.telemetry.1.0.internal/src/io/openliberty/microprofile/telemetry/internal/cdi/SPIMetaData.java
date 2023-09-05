@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
-import io.openliberty.microprofile.telemetry.internal.helper.AgentDetection;
+import io.openliberty.microprofile.telemetry.common.internal.helper.AgentDetection;
 import io.openliberty.microprofile.telemetry.internal.rest.TelemetryClientFilter;
 import io.openliberty.microprofile.telemetry.internal.rest.TelemetryContainerFilter;
 

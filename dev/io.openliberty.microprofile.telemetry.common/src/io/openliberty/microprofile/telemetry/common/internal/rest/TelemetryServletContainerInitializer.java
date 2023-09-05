@@ -7,28 +7,28 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal.rest;
+package io.openliberty.microprofile.telemetry.common.internal.rest;
 
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
+import java.util.Set;
+
 import org.osgi.service.component.annotations.Component;
 
-import io.openliberty.restfulWS.client.ClientBuilderListener;
-import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.servlet.ServletContainerInitializer;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
 
 /**
- * Adds the Telemetry client filter when a rest client is built.
- * <p>
- * This gets called for both JAX-RS Client and MP Rest Client.
+ * Registers our ServletRequestListener
  */
 @Component(configurationPolicy = IGNORE)
-public class TelemetryClientBuilderListener implements ClientBuilderListener {
+public class TelemetryServletContainerInitializer implements ServletContainerInitializer {
 
+    /** {@inheritDoc} */
     @Override
-    public void building(ClientBuilder clientBuilder) {
-        TelemetryClientFilter currentFilter = TelemetryClientFilter.getCurrent();
-        if (currentFilter.isEnabled()) {
-            clientBuilder.register(currentFilter);
-        }
+    public void onStartup(Set<Class<?>> c, ServletContext sc) throws ServletException {
+        sc.addListener(TelemetryServletRequestListener.class);
     }
+
 }

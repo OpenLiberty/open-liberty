@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal.cdi;
+package io.openliberty.microprofile.telemetry.common.internal.cdi;
 
 import io.opentelemetry.api.OpenTelemetry;
 /**
@@ -34,7 +34,7 @@ public class OpenTelemetryInfo {
     /**
      * No-args constructor for CDI
      */
-    OpenTelemetryInfo() {
+    public OpenTelemetryInfo() {
         this.enabled = false;
         this.openTelemetry = null;
     }

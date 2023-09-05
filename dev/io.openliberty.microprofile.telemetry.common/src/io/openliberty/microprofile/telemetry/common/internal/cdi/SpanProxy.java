@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal.cdi;
+package io.openliberty.microprofile.telemetry.common.internal.cdi;
 
 import java.util.concurrent.TimeUnit;
 

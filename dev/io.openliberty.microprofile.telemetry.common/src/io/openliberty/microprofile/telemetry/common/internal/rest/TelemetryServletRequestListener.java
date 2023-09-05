@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal.rest;
+package io.openliberty.microprofile.telemetry.common.internal.rest;
 
 import io.opentelemetry.context.Scope;
 import jakarta.servlet.ServletRequestEvent;
@@ -33,10 +33,10 @@ public class TelemetryServletRequestListener implements ServletRequestListener {
     public void requestDestroyed(ServletRequestEvent sre) {
         try {
             // End the span scope (if present)
-            Scope scope = (Scope) sre.getServletRequest().getAttribute(TelemetryContainerFilter.SPAN_SCOPE);
+            Scope scope = (Scope) sre.getServletRequest().getAttribute(AbstractTelemetryContainerFilter.SPAN_SCOPE);
             if (scope != null) {
                 scope.close();
-                sre.getServletRequest().removeAttribute(TelemetryContainerFilter.SPAN_SCOPE);
+                sre.getServletRequest().removeAttribute(AbstractTelemetryContainerFilter.SPAN_SCOPE);
             }
         } catch (Exception e) {
            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
