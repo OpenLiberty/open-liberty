@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/jsonbcontainertestapp/src,\
+	test-applications/yassontranslationtestapp/src,\
 	test-applications/jsonbtestapp/src,\
 	test-providers/fake-json-b/src
 
@@ -33,4 +34,5 @@ fat.project: true
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	io.openliberty.jakarta.jsonb.3.0;version=latest,\
 	io.openliberty.jakarta.jsonp.2.1;version=latest,\
-	io.openliberty.jakarta.servlet.5.0;version=latest
+	io.openliberty.jakarta.servlet.5.0;version=latest,\
+	io.openliberty.org.eclipse.yasson.3.0;version=latest

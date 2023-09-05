@@ -17,7 +17,7 @@ instrument.disabled: true
 -includeresource: \
    @${repo;org.eclipse:yasson;2.0.4;EXACT}!/org/eclipse/yasson/*,\
    @${repo;org.eclipse:yasson;2.0.4;EXACT}!/META-INF/services/jakarta.json.bind.spi.JsonbProvider,\
-   yasson-messages.properties=resources/yasson-messages.properties
+   =resources/
 
 -buildpath: \
     io.openliberty.jakarta.jsonb.2.0;version=latest,\

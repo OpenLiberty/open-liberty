@@ -1,0 +1,31 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+      <feature>componenttest-2.0</feature>
+      <feature>jsonb-3.0</feature>
+      <feature>servlet-6.0</feature>
+    </featureManager>
+
+	<include location="../fatTestPorts.xml"/>
+	
+	<library id="yasson">
+        <fileset dir="${wlp.install.dir}/lib" includes="io.openliberty.org.eclipse.yasson.3.0*jar"/>
+    </library>
+    
+	<application location="yassontranslationtestapp.war">
+		<classloader commonLibraryRef="yasson" />
+	</application>
+
+    <variable name="onError" value="FAIL"/>
+</server>
