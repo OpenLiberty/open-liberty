@@ -176,7 +176,7 @@ public class SSOAuthenticator implements WebAuthenticator {
                     boolean checkLoggedOutToken = webAppSecurityConfig != null && (webAppSecurityConfig.isTrackLoggedOutSSOCookiesEnabled()
                                                                                    || LoggedOutTokenCacheImpl.getInstance().shouldTrackTokens());
                     if (checkLoggedOutToken && isTokenLoggedOut(ltpa64)) {
-                        cleanupLoggedOutToken(req, res);
+                        cleanupLoggedOutToken(req, res, true);
                         return authResult;
                     }
 
@@ -193,7 +193,7 @@ public class SSOAuthenticator implements WebAuthenticator {
                         // If the ltpa.keys are changed, and an existing LTPA token cookie is no longer valid.
                         // we will logout the user, so they are properly redirected to the login page to login again and get a new LTPA token
                         //TODO - Only do this if the key rotation feature is enabled to
-                        new AuthenticateApi(ssoCookieHelper, authenticationService).simpleLogout(req, res, false);
+                        cleanupLoggedOutToken(req, res, false);
 
                         //TODO - Remove authentication cache.
                     }
@@ -248,9 +248,9 @@ public class SSOAuthenticator implements WebAuthenticator {
     /*
      * simple logout needed to clean up session and sso cookie
      */
-    private void cleanupLoggedOutToken(HttpServletRequest req, HttpServletResponse res) {
+    private void cleanupLoggedOutToken(HttpServletRequest req, HttpServletResponse res, boolean createSubjectAndPushItOnThread) {
         AuthenticateApi aa = new AuthenticateApi(ssoCookieHelper, authenticationService);
-        aa.simpleLogout(req, res);
+        aa.simpleLogout(req, res, webAppSecurityConfig, createSubjectAndPushItOnThread);
     }
 
     /**
