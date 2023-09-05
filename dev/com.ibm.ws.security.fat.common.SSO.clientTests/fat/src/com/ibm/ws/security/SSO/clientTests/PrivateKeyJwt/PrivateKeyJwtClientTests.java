@@ -561,7 +561,7 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
      * get access to the app because the trustStoreRef should override the trust store from the sslRef and the trustStoreRef
      * points to a trust store that uses a different alias name
      */
-    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException", "java.security.cert.CertificateException" })
+    @AllowedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException", "java.security.cert.CertificateException" })
     @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfJava8.class) // Java 8 has trouble with the trust store we're using.
     @Test
     public void PrivateKeyJwtClientTests_accessTokenUsesRS256_privateKeyJwtUsesRS256_mismatchedKeyAliasNames_trustRefSslRefMisMatch() throws Exception {
