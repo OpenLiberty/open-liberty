@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2007 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsp.translator.visitor.generator;
 
@@ -44,7 +41,7 @@ import com.ibm.wsspi.jsp.context.JspCoreContext;
 public class CustomTagGenerator extends CodeGeneratorBase {
     private int nestingLevel = 0;
     private int methodNesting = 0;
-    
+
     private boolean methodReturnBoolean = false;
     private boolean hasBody = false;
     private boolean hasJspBody = false;
@@ -52,67 +49,65 @@ public class CustomTagGenerator extends CodeGeneratorBase {
     private boolean existingTag = false;
     private boolean genTagInMethod = false;
     private boolean reuseTag = false;
-    
+
     private String prefix = null;
     private String shortName = null;
     private String namespaceURI = null;
-    
+
     private String baseVar = null;
     private String tagEvalVar = null;
     private String tagHandlerVar = null;
     private String tagPushBodyCountVar = null;
-    
+
     private String pushBodyCountVar = null;
     private String savePushBodyCountVar = null;
     private String saveFragmentPushBodyCountVar = null; //PK38681 - saved value for pushbodycountvar so we can set it back after processing.  Only used for Fragments.
     private String parentTagName = null;
-    
+
     private TagLibraryInfo tli = null;
     private TagInfo ti = null;
     private ValidateResult.CollectedTagData collectedTagData = null;
     private TagClassInfo tagClassInfo = null;
     private TagLibraryCache tagLibraryCache = null;
     private Stack tagInstanceInfoStack = null;
-    
+
     private MethodWriter tagStartWriter = null;
     private MethodWriter tagMiddleWriter = null;
     private MethodWriter tagEndWriter = null;
-    
+
     private List setterWriterList = null;
-    
+
     private TagGenerator tagGenerator = null;
     private OptimizedTag optTag = null;
-    
-    private String pushBodyCountVarDeclOrig = null;  //PK60565
-    
-    protected JspConfiguration tagConfig=null;
-    
+
+    private String pushBodyCountVarDeclOrig = null; //PK60565
+
+    protected JspConfiguration tagConfig = null;
+
     public void init(JspCoreContext ctxt,
-                     Element element, 
+                     Element element,
                      ValidateResult validatorResult,
                      JspVisitorInputMap inputMap,
                      ArrayList methodWriterList,
-                     FragmentHelperClassWriter fragmentHelperClassWriter, 
+                     FragmentHelperClassWriter fragmentHelperClassWriter,
                      HashMap persistentData,
                      JspConfiguration jspConfiguration,
-                     JspOptions jspOptions) 
-        throws JspCoreException {
+                     JspOptions jspOptions) throws JspCoreException {
         tagConfig = jspConfiguration.createClonedJspConfiguration();
         super.init(ctxt, element, validatorResult, inputMap, methodWriterList, fragmentHelperClassWriter, persistentData, tagConfig, jspOptions);
-        tagLibraryCache = (TagLibraryCache)inputMap.get("TagLibraryCache");
+        tagLibraryCache = (TagLibraryCache) inputMap.get("TagLibraryCache");
         prefix = element.getPrefix();
         if (prefix == null) // 245645.1
             prefix = ""; // 245645.1
         shortName = element.getLocalName();
         namespaceURI = element.getNamespaceURI();
         if (namespaceURI.startsWith("urn:jsptld:")) {
-            namespaceURI = namespaceURI.substring(namespaceURI.indexOf("urn:jsptld:")+11);
+            namespaceURI = namespaceURI.substring(namespaceURI.indexOf("urn:jsptld:") + 11);
+        } else if (namespaceURI.startsWith("urn:jsptagdir:")) {
+            namespaceURI = namespaceURI.substring(namespaceURI.indexOf("urn:jsptagdir:") + 14);
         }
-        else if (namespaceURI.startsWith("urn:jsptagdir:")) {
-            namespaceURI = namespaceURI.substring(namespaceURI.indexOf("urn:jsptagdir:")+14);                        
-        }
-        tli = (TagLibraryInfo)validatorResult.getTagLibMap().get(namespaceURI);
-        if (tli.getRequiredVersion()!=null) {
+        tli = (TagLibraryInfo) validatorResult.getTagLibMap().get(namespaceURI);
+        if (tli.getRequiredVersion() != null) {
             tagConfig.setJspVersion(tli.getRequiredVersion());
         }
         ti = tli.getTag(shortName);
@@ -122,32 +117,32 @@ public class CustomTagGenerator extends CodeGeneratorBase {
         }
         tagClassInfo = tagLibraryCache.getTagClassInfo(ti);
         Node parentNode = element.getParentNode();
-        
+
         while (parentNode != null) {
             if (parentNode instanceof Element) {
-                Element parentElement = (Element)parentNode;
-                if (parentElement.getTagName().equals(element.getTagName())){
-                    nestingLevel++; 
+                Element parentElement = (Element) parentNode;
+                if (parentElement.getTagName().equals(element.getTagName())) {
+                    nestingLevel++;
                 }
             }
-            parentNode = parentNode.getParentNode();    
+            parentNode = parentNode.getParentNode();
         }
-        
+
         hasBody = JspTranslatorUtil.hasBody(element);
         hasJspBody = JspTranslatorUtil.hasJspBody(element);
         hasJspAttributes = hasChildJspElement(Constants.JSP_ATTRIBUTE_TYPE);
-        
+
         collectedTagData = validatorResult.getCollectedTagData(element);
-        tagInstanceInfoStack = (Stack)persistentData.get("tagInstanceInfoStack");
+        tagInstanceInfoStack = (Stack) persistentData.get("tagInstanceInfoStack");
         if (tagInstanceInfoStack == null) {
             tagInstanceInfoStack = new Stack();
             persistentData.put("tagInstanceInfoStack", tagInstanceInfoStack);
         }
-        
+
         if (persistentData.get("methodNesting") == null) {
             persistentData.put("methodNesting", new Integer(0));
         }
-        
+
         if (collectedTagData.isScriptless() && !collectedTagData.hasScriptingVars()) {
             genTagInMethod = true;
         }
@@ -155,33 +150,30 @@ public class CustomTagGenerator extends CodeGeneratorBase {
         if (tagClassInfo.implementsSimpleTag() == false) {
             if (jspOptions.isUsePageTagPool()) {
                 reuseTag = true;
-            }
-            else if (jspOptions.isUseThreadTagPool()) {
+            } else if (jspOptions.isUseThreadTagPool()) {
                 if (isTagFile == false) {
                     reuseTag = true;
                 }
             }
         }
-        
+
         if (reuseTag) {
-            HashMap existTagMap = (HashMap)persistentData.get("existTagMap");
+            HashMap existTagMap = (HashMap) persistentData.get("existTagMap");
             if (existTagMap == null) {
                 existTagMap = new HashMap();
                 persistentData.put("existTagMap", existTagMap);
             }
-            String existingVarName = (String)existTagMap.get(shortName+collectedTagData.getVarNameSuffix());
+            String existingVarName = (String) existTagMap.get(shortName + collectedTagData.getVarNameSuffix());
             if (existingVarName != null) {
                 if (isExistingTagInStack("_jspx_th_" + existingVarName) == false) {
                     baseVar = existingVarName;
-                    existingTag = true;    
-                }
-                else {
+                    existingTag = true;
+                } else {
                     baseVar = createTagVarName(ti.getTagName(), prefix, shortName);
                 }
-            }
-            else {
+            } else {
                 baseVar = createTagVarName(ti.getTagName(), prefix, shortName);
-                existTagMap.put(shortName+collectedTagData.getVarNameSuffix(), baseVar);
+                existTagMap.put(shortName + collectedTagData.getVarNameSuffix(), baseVar);
             }
             //247815 Start
             if (persistentData.get("InitTaglibLookupWriter") == null) {
@@ -195,149 +187,90 @@ public class CustomTagGenerator extends CodeGeneratorBase {
                 methodWriterList.add(cleanupTaglibLookupWriter);
             }
             //247815 End
-        }
-        else {        
+        } else {
             baseVar = createTagVarName(ti.getTagName(), prefix, shortName);
         }
-        
+
         tagEvalVar = "_jspx_eval_" + baseVar;
         tagHandlerVar = "_jspx_th_" + baseVar;
         tagPushBodyCountVar = "_jspx_push_body_count_" + baseVar;
-        
+
     }
 
     private void createTagGenerator() {
         if (jspOptions.isUseOptimizedTags()) {
-            optTag = tagLibraryCache.getOptimizedTag(namespaceURI, ((TagLibraryInfoImpl)tli).getTlibversion(), shortName);
+            optTag = tagLibraryCache.getOptimizedTag(namespaceURI, ((TagLibraryInfoImpl) tli).getTlibversion(), shortName);
             if (optTag != null) {
-                tagGenerator = new OptimizedTagGenerator(optTag,
-                                                         tagPushBodyCountVar,      
-                                                         nestingLevel,
-                                                         isTagFile,
-                                                         hasBody,
-                                                         hasJspBody,
-                                                         tagHandlerVar,
-                                                         element,
-                                                         tagLibraryCache,
-                                                         tagConfig,
-                                                         ctxt,
-                                                         tagClassInfo,
-                                                         ti,
-                                                         persistentData,
-                                                         collectedTagData,
-                                                         fragmentHelperClassWriter,
-                                                         jspOptions);
-                                                         
+                tagGenerator = new OptimizedTagGenerator(optTag, tagPushBodyCountVar, nestingLevel, isTagFile, genTagInMethod, hasBody, hasJspBody, tagHandlerVar, element, tagLibraryCache, tagConfig, ctxt, tagClassInfo, ti, persistentData, collectedTagData, fragmentHelperClassWriter, jspOptions);
+
                 if (tagInstanceInfoStack.size() > 0) {
-                    TagInstanceInfo tagInstanceInfo = (TagInstanceInfo)tagInstanceInfoStack.peek();
+                    TagInstanceInfo tagInstanceInfo = (TagInstanceInfo) tagInstanceInfoStack.peek();
                     parentTagName = tagInstanceInfo.getTagHandlerVar();
                     tagGenerator.setParentTagInstanceInfo(tagInstanceInfo);
                 }
-            
-                if (((OptimizedTagGenerator)tagGenerator).optimizePossible()) {
+
+                if (((OptimizedTagGenerator) tagGenerator).optimizePossible()) {
                     if (genTagInMethod)
-                        genTagInMethod = optTag.canGenTagInMethod((OptimizedTagGenerator)tagGenerator);
-                    
+                        genTagInMethod = optTag.canGenTagInMethod((OptimizedTagGenerator) tagGenerator);
+
                     if (existingTag) {
-                        existingTag = false;                            
+                        existingTag = false;
                         baseVar = createTagVarName(ti.getTagName(), prefix, shortName);
                         tagEvalVar = "_jspx_eval_" + baseVar;
                         tagHandlerVar = "_jspx_th_" + baseVar;
                         tagPushBodyCountVar = "_jspx_push_body_count_" + baseVar;
-                        ((OptimizedTagGenerator)tagGenerator).tagHandlerVar = tagHandlerVar;
-                        ((OptimizedTagGenerator)tagGenerator).tagPushBodyCountVar = tagPushBodyCountVar; 
+                        ((OptimizedTagGenerator) tagGenerator).tagHandlerVar = tagHandlerVar;
+                        ((OptimizedTagGenerator) tagGenerator).tagPushBodyCountVar = tagPushBodyCountVar;
                     }
-                }
-                else {
+                } else {
                     tagGenerator = null;
                 }
             }
         }
-        
+
         if (tagGenerator == null) {
             if (tagClassInfo.implementsSimpleTag()) {
-                tagGenerator =
-                    new SimpleTagGenerator(
-                        nestingLevel,
-                        isTagFile,
-                        hasBody,
-                        hasJspBody,
-                        tagHandlerVar,
-                        element,
-                        tagLibraryCache,
-                        tagConfig,
-                        ctxt,
-                        tagClassInfo,
-                        ti,
-                        persistentData,
-                        collectedTagData,
-                        fragmentHelperClassWriter,
-                        jspOptions,
-                        inputMap);
+                tagGenerator = new SimpleTagGenerator(nestingLevel, isTagFile, genTagInMethod, hasBody, hasJspBody, tagHandlerVar, element, tagLibraryCache, tagConfig, ctxt, tagClassInfo, ti, persistentData, collectedTagData, fragmentHelperClassWriter, jspOptions, inputMap);
+            } else {
+                tagGenerator = new ClassicTagGenerator(reuseTag, genTagInMethod, existingTag, baseVar, tagEvalVar, tagPushBodyCountVar, nestingLevel, isTagFile, hasBody, hasJspBody, tagHandlerVar, element, tagLibraryCache, tagConfig, ctxt, tagClassInfo, ti, persistentData, collectedTagData, fragmentHelperClassWriter, jspOptions, inputMap);// jsp2.1work
             }
-            else {
-                tagGenerator =
-                    new ClassicTagGenerator(
-                        reuseTag,
-                        genTagInMethod,
-                        existingTag,
-                        baseVar,
-                        tagEvalVar,
-                        tagPushBodyCountVar,
-                        nestingLevel,
-                        isTagFile,
-                        hasBody,
-                        hasJspBody,
-                        tagHandlerVar,
-                        element,
-                        tagLibraryCache,
-                        tagConfig,
-                        ctxt,
-                        tagClassInfo,
-                        ti,
-                        persistentData,
-                        collectedTagData,
-                        fragmentHelperClassWriter,
-                        jspOptions,
-                        inputMap);// jsp2.1work
-            }
-            
+
             if (tagInstanceInfoStack.size() > 0) {
-                TagInstanceInfo tagInstanceInfo = (TagInstanceInfo)tagInstanceInfoStack.peek();
+                TagInstanceInfo tagInstanceInfo = (TagInstanceInfo) tagInstanceInfoStack.peek();
                 parentTagName = tagInstanceInfo.getTagHandlerVar();
                 tagGenerator.setParentTagInstanceInfo(tagInstanceInfo);
             }
         }
     }
-    
+
     public void startGeneration(int section, JavaCodeWriter writer) throws JspCoreException {
         if (tagGenerator == null) {
             createTagGenerator();
         }
-                
+
         TagInstanceInfo tagInstanceInfo = new TagInstanceInfo(tagHandlerVar, ti, optTag);
         tagInstanceInfoStack.push(tagInstanceInfo);
-        
-        methodNesting =  ((Integer)persistentData.get("methodNesting")).intValue();
-        
+
+        methodNesting = ((Integer) persistentData.get("methodNesting")).intValue();
+
         if (writer instanceof FragmentHelperClassWriter.FragmentWriter) {
             //PK38681
             //Since the Fragment will use the pushBodyCountVar of _jspx_push_body_count, we need to set this in the persistentData so nested tags will use this if needed.
             //If there is no previous value set in persistentData, do not set anything as it should be null.
-            saveFragmentPushBodyCountVar = (String)persistentData.get("pushBodyCountVar");
-            if (saveFragmentPushBodyCountVar!=null) {
+            saveFragmentPushBodyCountVar = (String) persistentData.get("pushBodyCountVar");
+            if (saveFragmentPushBodyCountVar != null) {
                 persistentData.put("pushBodyCountVar", "_jspx_push_body_count");
             }
             //PK38681
             //PK60565 start 
             //Since the FragmentWriter is generated in a new method in the compiled code, we are saving pushBodyCountVarDeclaration and pushing null.  We will restore pushBodyCountVarDeclaration later.
-            pushBodyCountVarDeclOrig = (String)persistentData.get("pushBodyCountVarDeclaration");
+            pushBodyCountVarDeclOrig = (String) persistentData.get("pushBodyCountVarDeclaration");
             persistentData.put("pushBodyCountVarDeclaration", null);
             //PK60565 end
 
             tagGenerator.setIsInFragment(true);
         }
-        
+
         switch (section) {
             case CodeGenerationPhase.IMPORT_SECTION: {
                 tagGenerator.generateImports(writer);
@@ -348,45 +281,44 @@ public class CustomTagGenerator extends CodeGeneratorBase {
                 tagGenerator.generateDeclarations(writer);
                 break;
             }
-            
+
             case CodeGenerationPhase.METHOD_INIT_SECTION: {
                 generateTempScriptingVars(writer);
                 tagGenerator.generateInitialization(writer);
                 break;
             }
-                
+
             case CodeGenerationPhase.METHOD_SECTION: {
                 if (genTagInMethod) {
-                    if (methodNesting > 0) 
+                    if (methodNesting > 0)
                         methodReturnBoolean = true;
                     persistentData.put("methodNesting", new Integer(++methodNesting));
                 }
-                
-                pushBodyCountVar = (String)persistentData.get("pushBodyCountVar");
-                
+
+                pushBodyCountVar = (String) persistentData.get("pushBodyCountVar");
+
                 tagStartWriter = tagGenerator.generateTagStart();
                 setterWriterList = tagGenerator.generateSetters();
-              
+
                 // defect 363508 begin
-                persistentData.put("pushBodyCountVarArgument"+tagGenerator.hashCode(),null);
+                persistentData.put("pushBodyCountVarArgument" + tagGenerator.hashCode(), null);
                 if (pushBodyCountVar != null) {
                     if (genTagInMethod) {
-	                    persistentData.put("pushBodyCountVarArgument"+tagGenerator.hashCode(),pushBodyCountVar);
-	                }
+                        persistentData.put("pushBodyCountVarArgument" + tagGenerator.hashCode(), pushBodyCountVar);
+                    }
                 }
                 // defect 363508 end
                 //PK60565 
                 //We already did this if this is a FragmentHelper, so don't do again.
                 //If it's a TryCatchFinally, we want to be able to restore the original value later.
                 if (tagClassInfo.implementsTryCatchFinally() && !(writer instanceof FragmentHelperClassWriter.FragmentWriter)) {
-                    pushBodyCountVarDeclOrig = (String)persistentData.get("pushBodyCountVarDeclaration");               
+                    pushBodyCountVarDeclOrig = (String) persistentData.get("pushBodyCountVarDeclaration");
                     persistentData.put("pushBodyCountVarDeclaration", null);
                 } //PK60565 end
-                
+
                 tagMiddleWriter = tagGenerator.generateTagMiddle();
-                persistentData.put("pushBodyCountVarArgument"+tagGenerator.hashCode(),null); // defect 363508
-                
-                
+                persistentData.put("pushBodyCountVarArgument" + tagGenerator.hashCode(), null); // defect 363508
+
                 if (tagClassInfo.implementsTryCatchFinally()) {
                     savePushBodyCountVar = pushBodyCountVar;
                     pushBodyCountVar = tagPushBodyCountVar;
@@ -394,30 +326,30 @@ public class CustomTagGenerator extends CodeGeneratorBase {
                 }
                 break;
             }
-                
+
             case CodeGenerationPhase.FINALLY_SECTION: {
                 tagGenerator.generateFinally(writer);
                 break;
             }
         }
     }
-    
-    public void endGeneration(int section, JavaCodeWriter writer)  throws JspCoreException {
-        methodNesting =  ((Integer)persistentData.get("methodNesting")).intValue();
+
+    public void endGeneration(int section, JavaCodeWriter writer) throws JspCoreException {
+        methodNesting = ((Integer) persistentData.get("methodNesting")).intValue();
         if (writer instanceof FragmentHelperClassWriter.FragmentWriter) {
             tagGenerator.setIsInFragment(true);
         }
-        
+
         switch (section) {
             case CodeGenerationPhase.METHOD_SECTION: {
                 if (tagClassInfo.implementsTryCatchFinally()) {
                     pushBodyCountVar = savePushBodyCountVar;
                     persistentData.put("pushBodyCountVar", pushBodyCountVar);
-                }                
-                
+                }
+
                 tagEndWriter = tagGenerator.generateTagEnd();
-                
-                assembleTagFromWriters(writer);                    
+
+                assembleTagFromWriters(writer);
                 break;
             }
         }
@@ -437,28 +369,28 @@ public class CustomTagGenerator extends CodeGeneratorBase {
 
         //PK38681
     }
-    
+
     public JavaCodeWriter getWriterForChild(int section, Node childElement) throws JspCoreException {
         JavaCodeWriter writerForChild = tagGenerator.getWriterForChild(section, childElement);
         return (writerForChild);
     }
-    
+
     public boolean isTagDependent() {
         boolean tagDependent = false;
-        
-        if (ti.getBodyContent() != null && 
+
+        if (ti.getBodyContent() != null &&
             ti.getBodyContent().equalsIgnoreCase(TagInfo.BODY_CONTENT_TAG_DEPENDENT)) {
             tagDependent = true;
         }
         return (tagDependent);
     }
-    
+
     private void assembleTagFromWriters(JavaCodeWriter writer) throws JspCoreException {
         JavaCodeWriter tagWriter = writer;
         tagWriter.println();
 
         MethodWriter methodWriter = null;
-        
+
         //PK65013 - start
         String pageContextVar = Constants.JSP_PAGE_CONTEXT_ORIG;
         if (isTagFile && jspOptions.isModifyPageContextVariable()) {
@@ -469,25 +401,24 @@ public class CustomTagGenerator extends CodeGeneratorBase {
         if (genTagInMethod) {
             methodWriter = new MethodWriter();
             String tagMethod = null;
-            
+
             if (reuseTag) {
                 tagMethod = createMethodName(ti.getTagName(), prefix, shortName);
-            }
-            else {
+            } else {
                 tagMethod = "_jspx_meth_" + baseVar;
             }
-            
+
             //232818
             tagWriter.println("/* ElementId[" + element.hashCode() + "] ctmb */");
 
             tagWriter.print("if (");
             tagWriter.print(tagMethod);
             tagWriter.print("(");
-            
+
             if (jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool()) {
                 tagWriter.print("_jspx_TagLookup, ");
             }
-            
+
             if (parentTagName != null) {
                 tagWriter.print(parentTagName);
                 tagWriter.print(", ");
@@ -499,8 +430,7 @@ public class CustomTagGenerator extends CodeGeneratorBase {
                 tagWriter.print(", ");
                 if (tagWriter instanceof FragmentHelperClassWriter.FragmentWriter) {
                     tagWriter.print("_jspx_push_body_count");
-                }
-                else {
+                } else {
                     tagWriter.print(pushBodyCountVar);
                 }
             }
@@ -510,48 +440,47 @@ public class CustomTagGenerator extends CodeGeneratorBase {
 
             //232818
             tagWriter.println("/* ElementId[" + element.hashCode() + "] ctme */");
-            
+
             methodWriter.println();
             methodWriter.print("private boolean ");
             methodWriter.print(tagMethod);
             methodWriter.print("(");
-            
+
             if (jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool()) {
                 methodWriter.print("java.util.HashMap _jspx_TagLookup, ");
             }
-            
+
             if (parentTagName != null) {
                 methodWriter.print("javax.servlet.jsp.tagext.JspTag ");
                 methodWriter.print(parentTagName);
                 methodWriter.print(", ");
             }
-            
+
             //PK65013 change pageContext variable to customizable one.
-            methodWriter.print("PageContext "+pageContextVar+"");
-            persistentData.put("pushBodyCountVarArgument"+tagGenerator.hashCode(),null); // defect 363508
+            methodWriter.print("PageContext " + pageContextVar + "");
+            persistentData.put("pushBodyCountVarArgument" + tagGenerator.hashCode(), null); // defect 363508
             if (pushBodyCountVar != null) {
                 methodWriter.print(", int[] ");
                 methodWriter.print(pushBodyCountVar);
-                persistentData.put("pushBodyCountVarArgument"+tagGenerator.hashCode(),pushBodyCountVar); // defect 363508
+                persistentData.put("pushBodyCountVarArgument" + tagGenerator.hashCode(), pushBodyCountVar); // defect 363508
             }
             methodWriter.print(")");
             methodWriter.println();
-            
+
             methodWriter.println("   throws Throwable {");
 
             writeDebugStartBegin(methodWriter);
             //PK65013 change pageContext variable to customizable one.
-            methodWriter.println("JspWriter out = "+pageContextVar+".getOut();");
+            methodWriter.println("JspWriter out = " + pageContextVar + ".getOut();");
             GeneratorUtils.generateLocalVariables(methodWriter, element, pageContextVar);
             tagWriter = methodWriter;
-        }
-        else {
+        } else {
             writeDebugStartBegin(tagWriter);
         }
-        
+
         tagWriter.printMultiLn(tagStartWriter.toString());
         for (Iterator itr = setterWriterList.iterator(); itr.hasNext();) {
-            JavaCodeWriter setterWriter = (JavaCodeWriter)itr.next();
+            JavaCodeWriter setterWriter = (JavaCodeWriter) itr.next();
             tagWriter.printMultiLn(setterWriter.toString());
         }
         tagWriter.printMultiLn(tagMiddleWriter.toString());
@@ -560,45 +489,51 @@ public class CustomTagGenerator extends CodeGeneratorBase {
         if (tagGenerator.fragmentWriterUsed() == false) {
             String body = tagGenerator.getBodyWriter().toString(); //232818
             if (body.length() > 0) { //232818
-            	writeDebugStartEnd(tagWriter);
+                writeDebugStartEnd(tagWriter);
                 debugEnd = true; //232818
             }
             tagWriter.printMultiLn(body); //232818
             if (debugEnd) //232818
-            	writeDebugEndBegin(tagWriter);
+                writeDebugEndBegin(tagWriter);
         }
         tagWriter.printMultiLn(tagEndWriter.toString());
 
         if (genTagInMethod) {
             if (methodNesting > 0) {
                 methodWriter.println("return false;");
+
+                if ((reuseTag == false) && !(tagGenerator instanceof SimpleTagGenerator)) {
+                    methodWriter.println("} finally {");
+                    methodWriter.println("_jsp_cleanUpTag(" + tagHandlerVar + ", null);");
+                    methodWriter.println("}");
+                }
             }
-            if (tagGenerator.fragmentWriterUsed() == false) 
+
+            if (tagGenerator.fragmentWriterUsed() == false)
                 if (debugEnd) //232818
-                	writeDebugEndEnd(methodWriter); //232818
+                    writeDebugEndEnd(methodWriter); //232818
                 else
                     writeDebugStartEnd(methodWriter); //232818
-            else 
+            else
                 writeDebugStartEnd(methodWriter);
             methodWriter.println("}");
             persistentData.put("methodNesting", new Integer(--methodNesting));
-    
+
             methodWriterList.add(methodWriter);
-        }
-        else {
+        } else {
             if (tagGenerator.fragmentWriterUsed() == false)
                 if (debugEnd) //232818 
-                	writeDebugEndEnd(tagWriter); //232818
+                    writeDebugEndEnd(tagWriter); //232818
                 else
                     writeDebugStartEnd(tagWriter); //232818
-            else 
+            else
                 writeDebugStartEnd(tagWriter);
         }
         tagWriter.println();
     }
-    
+
     private void generateTempScriptingVars(JavaCodeWriter writer) {
-        ArrayList vars = (ArrayList)persistentData.get("tempScriptingVars");
+        ArrayList vars = (ArrayList) persistentData.get("tempScriptingVars");
         if (vars == null) {
             vars = new ArrayList();
             persistentData.put("tempScriptingVars", vars);
@@ -609,7 +544,7 @@ public class CustomTagGenerator extends CodeGeneratorBase {
 
             if (varInfos == null)
                 varInfos = new VariableInfo[0];
-                
+
             if (varInfos.length > 0) {
                 for (int i = 0; i < varInfos.length; i++) {
                     String varName = varInfos[i].getVarName();
@@ -624,14 +559,12 @@ public class CustomTagGenerator extends CodeGeneratorBase {
                         writer.println(";");
                     }
                 }
-            }
-            else {
+            } else {
                 for (int i = 0; i < tagVarInfos.length; i++) {
                     String varName = tagVarInfos[i].getNameGiven();
                     if (varName == null) {
                         varName = collectedTagData.getTagData().getAttributeString(tagVarInfos[i].getNameFromAttribute());
-                    }
-                    else if (tagVarInfos[i].getNameFromAttribute() != null) {
+                    } else if (tagVarInfos[i].getNameFromAttribute() != null) {
                         // alias
                         continue;
                     }
@@ -649,15 +582,14 @@ public class CustomTagGenerator extends CodeGeneratorBase {
             }
         }
     }
-    
-        
+
     private String createTagVarName(String fullName, String prefix, String shortName) {
-        HashMap tagVarNumbers = (HashMap)persistentData.get("tagVarNumbers");
+        HashMap tagVarNumbers = (HashMap) persistentData.get("tagVarNumbers");
         if (tagVarNumbers == null) {
             tagVarNumbers = new HashMap();
             persistentData.put("tagVarNumbers", tagVarNumbers);
         }
-        
+
         if (prefix.indexOf('-') >= 0)
             prefix = GeneratorUtils.replace(prefix, '-', "$1");
         if (prefix.indexOf('.') >= 0)
@@ -676,20 +608,19 @@ public class CustomTagGenerator extends CodeGeneratorBase {
             varName = varName + i.intValue();
             tagVarNumbers.put(fullName, new Integer(i.intValue() + 1));
             return varName;
-        }
-        else {
+        } else {
             tagVarNumbers.put(fullName, new Integer(1));
             return varName + "0";
         }
     }
-    
+
     private String createMethodName(String fullName, String prefix, String shortName) {
-        HashMap methodNumbers = (HashMap)persistentData.get("methodNumbers");
+        HashMap methodNumbers = (HashMap) persistentData.get("methodNumbers");
         if (methodNumbers == null) {
             methodNumbers = new HashMap();
             persistentData.put("methodNumbers", methodNumbers);
         }
-        
+
         if (prefix.indexOf('-') >= 0)
             prefix = GeneratorUtils.replace(prefix, '-', "$1");
         if (prefix.indexOf('.') >= 0)
@@ -708,21 +639,20 @@ public class CustomTagGenerator extends CodeGeneratorBase {
             methodName = methodName + i.intValue();
             methodNumbers.put(fullName, new Integer(i.intValue() + 1));
             return methodName;
-        }
-        else {
+        } else {
             methodNumbers.put(fullName, new Integer(1));
             return methodName + "0";
         }
     }
-    
+
     private boolean hasChildJspElement(String elementName) {
         boolean hasElement = false;
-        
+
         NodeList children = element.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
             if (child instanceof Element) {
-                Element childElement = (Element)child;
+                Element childElement = (Element) child;
                 if (childElement.getNamespaceURI() != null && childElement.getNamespaceURI().equals(Constants.JSP_NAMESPACE) &&
                     childElement.getLocalName().equals(elementName)) {
                     hasElement = true;
@@ -730,14 +660,14 @@ public class CustomTagGenerator extends CodeGeneratorBase {
                 }
             }
         }
-        
+
         return (hasElement);
     }
-    
+
     private boolean isExistingTagInStack(String existingTagName) {
         boolean exists = false;
         for (Iterator itr = tagInstanceInfoStack.iterator(); itr.hasNext();) {
-            TagInstanceInfo tagInstanceInfo = (TagInstanceInfo)itr.next();
+            TagInstanceInfo tagInstanceInfo = (TagInstanceInfo) itr.next();
             if (tagInstanceInfo.getTagHandlerVar().equals(existingTagName)) {
                 exists = true;
                 break;
@@ -745,12 +675,12 @@ public class CustomTagGenerator extends CodeGeneratorBase {
         }
         return exists;
     }
-    
+
     class TagInstanceInfo {
         private String tagHandlerVar = null;
         private TagInfo ti = null;
         private OptimizedTag optTag = null;
-        
+
         public TagInstanceInfo(String tagHandlerVar, TagInfo ti, OptimizedTag optTag) {
             this.tagHandlerVar = tagHandlerVar;
             this.ti = ti;

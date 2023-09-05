@@ -16,7 +16,8 @@ bVersion=1.0
 src: \
     fat/src,\
     test-applications/TestInjection.war/src,\
-    test-applications/TestEL.war/src
+    test-applications/TestEL.war/src,\
+    test-applications/TestPreDestroy.war/src
 
 fat.project: true
 

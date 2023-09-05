@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,8 @@ import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -44,6 +46,7 @@ import componenttest.topology.impl.LibertyServer;
 public class JSPCdiTest {
     private static final Logger LOG = Logger.getLogger(JSPCdiTest.class.getName());
     private static final String TESTINJECTION_APP_NAME = "TestInjection";
+    private static final String TestPreDestroy_APP_NAME = "TestPreDestroy";
 
     @Server("jspCdiServer")
     public static LibertyServer server;
@@ -58,13 +61,17 @@ public class JSPCdiTest {
                                       "com.ibm.ws.jsp23.fat.testinjection.servlets",
                                       "com.ibm.ws.jsp23.fat.testinjection.tagHandler");
 
+        ShrinkHelper.defaultDropinApp(server, TestPreDestroy_APP_NAME + ".war", "com.ibm.ws.jsp23.fat.predestroy");
+
         server.startServer(JSPCdiTest.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            //  SRVE0777E: Exception thrown by application class 'org.apache.jasper.runtime.PageContextImpl.handlePageException:732'
+            //  Caused by: jakarta.servlet.jsp.JspTagException: Purposefully thrown Exception (Occurs in testPreDestroyCalled)
+            server.stopServer("SRVE0777E");
         }
     }
 
@@ -302,6 +309,32 @@ public class JSPCdiTest {
         for (String expectedResponse : expectedInResponse) {
             assertTrue("The response did not contain: " + expectedResponse, content.contains(expectedResponse));
         }
+    }
+
+    /*
+     * Verifies predestroy is called which in turn verifies that the cdi object
+     * is deleted (which caused memory leaks in WAS 9 -- see PH49514)
+     * 
+     * See Open Liberty Issue: https://github.com/OpenLiberty/open-liberty/issues/11453
+     * PR: https://github.com/OpenLiberty/open-liberty/pull/22478 
+     */
+    @Mode(TestMode.FULL)
+    @Test
+    public void testPreDestroyCalled() throws Exception {
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+
+        WebRequest request = new GetMethodWebRequest(JSPUtils.createHttpUrlString(server, TestPreDestroy_APP_NAME, "index.jsp"));
+        WebResponse response = wc.getResponse(request);
+
+        LOG.info("Response: " + response.getText());
+
+        assertEquals("Expected " + 500 + " status code was not returned!",
+                     500, response.getResponseCode());
+
+        String expected = "DESTROY CALLED for com.ibm.ws.jsp23.fat.predestroy.SampleTag";
+
+        assertTrue("Did not find expected string in logs: " + expected, server.findStringsInLogs(expected).size() > 0);
     }
 
     private void verifyStringsInResponse(String contextRoot, String path, String[] expectedResponseStrings) throws Exception {
