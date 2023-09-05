@@ -26,6 +26,7 @@ import com.ibm.ws.cdi.extension.spi.test.bundle.annotations.NewBDA;
 import com.ibm.ws.cdi.extension.spi.test.bundle.annotations.NewBDATwo;
 import com.ibm.ws.cdi.extension.spi.test.bundle.extension.MyExtension;
 import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.beaninjection.MyBeanInjectionString;
+import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.beaninjection.MyStringSubClass;
 import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.interceptor.ClassSPIInterceptor;
 import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.producer.ClassSPIRegisteredProducer;
 
@@ -45,6 +46,9 @@ public class SPIMetaData implements CDIExtensionMetadata {
 
         //This will register an intercepter that can be applied to other beans.
         beans.add(ClassSPIInterceptor.class);
+
+        //This will register a class that extends an abstract class in another bundle
+        beans.add(MyStringSubClass.class);
 
         //Now repeat the whole thing with duplicate classes from another bundle.
         beans.add(com.ibm.ws.cdi.misplaced.spi.test.bundle.getclass.producer.ClassSPIRegisteredProducer.class);

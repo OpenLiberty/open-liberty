@@ -15,8 +15,13 @@ package com.ibm.ws.cdi.extension.apps.spi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import com.ibm.ws.cdi.extension.tests.CDIExtensionRepeatActions;
+
+import componenttest.annotation.SkipForRepeat;
+
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.CDI;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 
@@ -26,6 +31,7 @@ import com.ibm.ws.cdi.extension.spi.test.bundle.UnregisteredBean;
 import com.ibm.ws.cdi.extension.spi.test.bundle.extension.MyExtensionString;
 import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.beaninjection.MyBeanInjectionString;
 import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.producer.MyProducedString;
+import com.ibm.ws.cdi.misplaced.spi.test.bundle.getclass.beaninjection.AbstractString;
 
 import componenttest.app.FATServlet;
 
@@ -47,6 +53,12 @@ public class SPIExtensionServlet extends FATServlet {
     @Inject
     private CustomBDABean customBDABean;
 
+    @Inject
+    AbstractString abstractString;
+
+    @Inject
+    Instance<AbstractString> abstractStringInstance;
+
     private static final long serialVersionUID = 1L;
 
     @Test
@@ -58,6 +70,22 @@ public class SPIExtensionServlet extends FATServlet {
             //expected
         }
 
+    }
+
+    //I created this test to see what happens if we have an abstract class in common code and the impl in a version specific java project
+    //It works fine, but only if you use the SPI to register the impl and not the abstract.
+    @Test
+    public void testCrossBundleClassInheritance() {
+        assertEquals("This string comes from an abstract class where the subclass was registered via getbeans", abstractString.getMsgFromAbstract());
+        assertEquals("This message comes from a class that extends an abstract class in another bundle", abstractString.getAbstractMethodString());
+        assertEquals("And its BDA is on the abstract class, but it is registered via the SPI", abstractString.getOverriddenMsgFromSubclass());
+    }
+
+    @SkipForRepeat({ CDIExtensionRepeatActions.EE8_PLUS_ID, CDIExtensionRepeatActions.EE9_PLUS_ID, CDIExtensionRepeatActions.EE7_PLUS_ID })
+    @Test
+    public void testCrossBundleClassInheritancePropagatesBDA() {
+        jakarta.enterprise.inject.Instance jInstance = (jakarta.enterprise.inject.Instance) abstractStringInstance;
+        assertEquals(jakarta.enterprise.context.RequestScoped.class, jInstance.getHandle().getBean().getScope());
     }
 
     @Test
