@@ -10,7 +10,10 @@
 package com.ibm.ws.http.netty.message;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -49,15 +52,15 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     private final FullHttpRequest request;
     private final HttpHeaders headers;
     private final HttpInboundServiceContext context;
-    private HttpChannelConfig config;
 
-    private boolean isIncoming = Boolean.FALSE;
-    private final boolean isCommitted = Boolean.FALSE;
+    private String url;
 
     private MethodValues method;
     private SchemeValues scheme;
 
     private QueryStringDecoder query;
+
+    private final Map<String, String[]> parameters;
 
     public NettyRequestMessage(FullHttpRequest request, HttpInboundServiceContext isc) {
 
@@ -71,12 +74,10 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         this.request = request;
         this.headers = request.headers();
 
-        if (isc instanceof HttpInboundServiceContextImpl) {
-            this.config = ((HttpInboundServiceContextImpl) isc).getHttpConfig();
-            this.isIncoming = ((HttpInboundServiceContextImpl) isc).isInboundConnection();
-        }
+        parameters = new HashMap<String, String[]>();
+        processQuery();
 
-        query = new QueryStringDecoder(request.uri());
+        HttpChannelConfig config = isc instanceof HttpInboundServiceContextImpl ? ((HttpInboundServiceContextImpl) isc).getHttpConfig() : null;
 
         super.init(request, isc, config);
 
@@ -184,73 +185,81 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public String getRequestURI() {
-        return query.path();
+        MSP.log("getRequestURI: " + request.uri());
+
+        return request.uri();
     }
 
     @Override
     public byte[] getRequestURIAsByteArray() {
         // TODO Auto-generated method stub
-        return null;
+        return GenericUtils.getBytes(getRequestURI());
     }
 
     @Override
     public StringBuffer getRequestURL() {
 
-        return new StringBuffer().append(query.path());
+        String host = context.getLocalAddr().getCanonicalHostName();
+        int port = context.getLocalPort();
+
+        return new StringBuffer(getScheme() + "://" + host + ":" + port + "/" + getRequestURI());
+
     }
 
     @Override
     public String getRequestURLAsString() {
-        return query.path();
+        if (Objects.isNull(url)) {
+            url = getRequestURL().toString();
+        }
+        return url;
     }
 
     @Override
     public byte[] getRequestURLAsByteArray() {
         // TODO Auto-generated method stub
-        return null;
+        return GenericUtils.getBytes(getRequestURLAsString());
     }
 
     @Override
     public String getQueryString() {
-        if (Objects.isNull(query)) {
-            query = new QueryStringDecoder(request.uri());
-        }
-        return query.path();
+
+        return Objects.isNull(parameters) || parameters.isEmpty() ? null : query.path();
+
     }
 
     @Override
     public byte[] getQueryStringAsByteArray() {
         // TODO Auto-generated method stub
-        return null;
+        return Objects.isNull(parameters) || parameters.isEmpty() ? null : GenericUtils.getBytes(getQueryString());
     }
 
     @Override
     public String getParameter(String name) {
-        // TODO Auto-generated method stub
-        return null;
+        MSP.log("getParameter(name): " + name + " -> " + (parameters.containsKey(name) ? parameters.get(name)[0] : null));
+
+        return parameters.containsKey(name) ? parameters.get(name)[0] : null;
+
     }
 
     @Override
     public Map<String, String[]> getParameterMap() {
-        // TODO Auto-generated method stub
-        return null;
+        return parameters;
     }
 
     @Override
     public Enumeration<String> getParameterNames() {
-        // TODO Auto-generated method stub
-        return null;
+        return Collections.enumeration(parameters.keySet());
     }
 
     @Override
     public String[] getParameterValues(String name) {
-        // TODO Auto-generated method stub
-        return null;
+        MSP.log("getParamValues name:" + name);
+        return parameters.containsKey(name) ? parameters.get(name) : null;
     }
 
     @Override
     public void setRequestURL(String url) {
-        // TODO Auto-generated method stub
+        //TODO
 
     }
 
@@ -291,9 +300,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
         }
 
-        host = getURLHost();
-
-        return host;
+        return Objects.isNull(host) ? getURLHost() : host;
     }
 
     @Override
@@ -304,7 +311,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public void setQueryString(String query) {
-        this.query = new QueryStringDecoder(query);
+        throw new UnsupportedOperationException("Set query delegated to http codec");
 
     }
 
@@ -327,7 +334,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public void setScheme(SchemeValues scheme) {
-        Objects.requireNonNull(scheme);
         this.scheme = scheme;
         //TODO: first line changed needed?
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -337,7 +343,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public void setScheme(String scheme) throws UnsupportedSchemeException {
-        Objects.requireNonNull(scheme);
         SchemeValues value = SchemeValues.match(scheme, 0, scheme.length());
 
         if (Objects.isNull(value)) {
@@ -413,6 +418,23 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     @Override
     public long getEndTime() {
         return System.nanoTime();
+    }
+
+    private void processQuery() {
+        if (Objects.isNull(query)) {
+            MSP.log("Processing query with URI: " + request.uri());
+            query = new QueryStringDecoder(request.uri());
+
+            for (Map.Entry<String, List<String>> entry : query.parameters().entrySet()) {
+
+                List<String> value = entry.getValue();
+                this.parameters.put(entry.getKey(), value.toArray(new String[value.size()]));
+                MSP.log("Processed parameter: " + entry.getKey() + " Value: " + value.toString());
+            }
+
+            MSP.log("Total parameters: " + parameters.size());
+
+        }
     }
 
 }

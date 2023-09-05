@@ -59,6 +59,7 @@ import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
 import com.ibm.wsspi.http.channel.values.ContentEncodingValues;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.MethodValues;
+import com.ibm.wsspi.http.channel.values.SchemeValues;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.http.channel.values.TransferEncodingValues;
 import com.ibm.wsspi.http.channel.values.VersionValues;
@@ -126,14 +127,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
         super.init(context);
 
-        boolean isSecure = context.channel().attr(NettyHttpConstants.IS_SECURE).get();
         this.setHeadersParsed();
-
-        if (isSecure) {
-            // getRequest().setScheme(SchemeValues.HTTPS);
-        } else {
-            // getRequest().setScheme(SchemeValues.HTTP);
-        }
 
     }
 
@@ -177,6 +171,17 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     public void setNettyRequest(FullHttpRequest request) {
         this.nettyRequest = request;
         super.setNettyRequest(request);
+
+        boolean isSecure = nettyContext.channel().hasAttr(NettyHttpConstants.IS_SECURE);
+        MSP.log("Setting scheme, secure: " + isSecure);
+        if (isSecure) {
+            getRequest().setScheme(SchemeValues.HTTPS);
+        } else {
+            MSP.log("Scheme should be set to http");
+            getRequest().setScheme(SchemeValues.HTTP);
+        }
+        MSP.log("Scheme set, exit isc init");
+
     }
 
     @Override
@@ -524,9 +529,9 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      */
     protected HttpRequestMessageImpl getRequestImpl() {
         if (null == getMyRequest()) {
-            if (getHttpConfig().useNetty()) {
+            if (Objects.nonNull(nettyContext)) {
 
-                this.requestMessage = new NettyRequestMessage(nettyRequest, this);
+                getRequest();
 
             } else {
                 setMyRequest(getObjectFactory().getRequest(this));
