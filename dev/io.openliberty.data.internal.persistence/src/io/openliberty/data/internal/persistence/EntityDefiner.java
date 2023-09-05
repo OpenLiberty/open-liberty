@@ -25,17 +25,12 @@ import static org.objectweb.asm.Opcodes.V17;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.RecordComponent;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -64,14 +59,12 @@ import org.osgi.framework.ServiceReference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.InMemoryMappingFile;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
-import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
@@ -97,10 +90,8 @@ public class EntityDefiner implements Runnable {
     private final List<Class<?>> entities = new ArrayList<>();
     final ConcurrentHashMap<Class<?>, CompletableFuture<EntityInfo>> entityInfoMap = new ConcurrentHashMap<>();
     private final ClassLoader loader;
-    private final DataExtensionProvider provider;
 
-    public EntityDefiner(DataExtensionProvider provider, String databaseId, ClassLoader loader) {
-        this.provider = provider;
+    public EntityDefiner(String databaseId, ClassLoader loader) {
         this.databaseId = databaseId;
         this.loader = loader;
     }
@@ -273,12 +264,19 @@ public class EntityDefiner implements Runnable {
         byte[] classBytes = cw.toByteArray();
 
         if (trace && tc.isEntryEnabled()) {
-            if (tc.isDebugEnabled())
-                writeToClassFile(internal_entityClassName, classBytes);
 
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "generateClassBytes: " + classBytes.length + " bytes");
+            // Get class bytes as a string for debugging
+            String classByteString = "";
+            for (int i = 0; i < classBytes.length; i++) {
+                classByteString += i % 8 == 0 ? "\t" : ""; // Separate 8 bytes by tab
+                classByteString += i % 32 == 0 ? System.lineSeparator() : ""; // Separate 16 bytes by line
+                classByteString += String.format("%02X", classBytes[i]) + " "; // Separate each byte by space
+            }
+
+            Tr.exit(tc, "generateClassBytes: " + classBytes.length + " bytes" +
+                        classByteString);
         }
+
         return classBytes;
     }
 
@@ -719,52 +717,4 @@ public class EntityDefiner implements Runnable {
         xml.append("  </attributes>").append(EOLN);
     }
 
-    /**
-     * Initially copied from @nmittles pull #25248
-     *
-     * Writes the in memory bytecode bytearray for a generated class
-     * out to a .class file with the correct class name and in the
-     * correct package directory structure. <p>
-     *
-     * This method is useful for debug, to determine if classes
-     * are being generated properly, and may also be useful
-     * when it is required to make the classes available on a
-     * client without using the Remote ByteCode Server. <p>
-     *
-     * @param internalClassName fully qualified name of the class
-     *                              with '/' as the separator.
-     * @param classBytes        bytearray of the class bytecodes.
-     */
-    @SuppressWarnings("deprecation")
-    private void writeToClassFile(final String internalClassName,
-                                  final byte[] classBytes) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "writeToClassFile (" + internalClassName + ", " +
-                         ((classBytes == null) ? "null" : (classBytes.length + " bytes")) + ")");
-        try {
-            AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
-                @Override
-                public Void run() throws Exception {
-                    File output = new File(provider.getEntityClassCache(), internalClassName + ".class");
-                    File directory = new File(output.getParent());
-                    directory.mkdirs();
-                    try (FileOutputStream classFile = new FileOutputStream(output)) {
-                        classFile.write(classBytes);
-                    }
-                    return null;
-                }
-            });
-
-        } catch (PrivilegedActionException paex) {
-            FFDCFilter.processException(paex.getCause(), EntityDefiner.class.getName() + ".writeToClassFile", "674");
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "writeToClassFile failed for class " + internalClassName +
-                             " : " + paex.getCause().getMessage());
-        } catch (Throwable ex) {
-            FFDCFilter.processException(ex, EntityDefiner.class.getName() + ".writeToClassFile", "463");
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "writeToClassFile failed for class " + internalClassName +
-                             " : " + ex.getMessage());
-        }
-    }
 }

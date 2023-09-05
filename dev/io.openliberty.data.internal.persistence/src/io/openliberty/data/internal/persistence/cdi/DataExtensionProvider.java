@@ -12,7 +12,6 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence.cdi;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
@@ -22,12 +21,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
@@ -93,11 +90,6 @@ public class DataExtensionProvider implements CDIExtensionMetadata, ApplicationM
      */
     private transient EntityValidator validator;
 
-    /**
-     * Work area location for generated class files
-     */
-    private File entityClassCache;
-
     @Override
     @Trivial
     public void applicationMetaDataCreated(MetaDataEvent<ApplicationMetaData> event) throws MetaDataException {
@@ -121,24 +113,6 @@ public class DataExtensionProvider implements CDIExtensionMetadata, ApplicationM
         if (registrations != null)
             for (ServiceRegistration<ResourceFactory> reg; (reg = registrations.poll()) != null;)
                 reg.unregister();
-    }
-
-    @Activate
-    protected void activate(BundleContext bundleContext) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.entry(tc, "activate", bundleContext);
-
-        try {
-            entityClassCache = bundleContext.getDataFile("cacheClass");
-            if (entityClassCache == null)
-                throw new IOException("OSGi Platform does not have file system support"); //TODO NLS
-
-        } catch (IOException ioe) {
-            //Logged to FFDC
-        } finally {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.exit(tc, "activate", entityClassCache);
-        }
     }
 
     @Deactivate
@@ -192,13 +166,5 @@ public class DataExtensionProvider implements CDIExtensionMetadata, ApplicationM
      */
     public EntityValidator validator() {
         return validator;
-    }
-
-    /**
-     * @return File - a directory in /server/workarea/org.eclipse.osgi reserved for this bundle to cache
-     *         entity classes that are generated from Records
-     */
-    public File getEntityClassCache() {
-        return entityClassCache;
     }
 }
