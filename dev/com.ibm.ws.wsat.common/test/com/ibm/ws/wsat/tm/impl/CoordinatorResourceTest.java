@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,7 @@ package com.ibm.ws.wsat.tm.impl;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
+import org.junit.Test;
 
 import com.ibm.ws.wsat.common.impl.WSATCoordinator;
 import com.ibm.ws.wsat.common.impl.WSATTransaction;
@@ -41,7 +42,7 @@ public class CoordinatorResourceTest {
         coordinator = new WSATCoordinator(tran.getGlobalId(), null);
     }
 
-//    @Test
+    @Test
     public void testReplayCompletion() {
         new MockClient() {
             @Override

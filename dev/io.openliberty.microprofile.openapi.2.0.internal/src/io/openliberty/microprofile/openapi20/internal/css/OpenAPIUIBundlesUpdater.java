@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -66,9 +66,6 @@ public class OpenAPIUIBundlesUpdater {
 
         //Retrieve all OpenAPI-UI Bundles from the BundleContext
         final Set<Bundle> allOpenAPIUIBundles = getOpenAPIUIBundles();
-        if(allOpenAPIUIBundles.isEmpty()){
-            return;
-        }
 
         //this will block until all bundles have started
         boolean result = waitForBundlesToStart(allOpenAPIUIBundles);
@@ -298,14 +295,7 @@ public class OpenAPIUIBundlesUpdater {
 
     private static boolean waitForBundlesToStart(Set<Bundle> openAPIUIBundles) {
         try {
-            BundleContext bundleContext = FrameworkUtil.getBundle(OpenAPIUIBundlesUpdater.class).getBundleContext();
-            // If the bundle context null, then the bundle is in a STOPPED state and we should not be waiting for other
-            // bundles if this is STOPPED. Returning false, means we stop any unnecessary processing
-            if(bundleContext != null){
-                new OpenAPIUIBundlesListener(openAPIUIBundles, bundleContext).await();
-            } else {
-                return false;
-            }
+            new OpenAPIUIBundlesListener(openAPIUIBundles).await();
         } catch (Exception e) {
             if (LoggingUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Failed waiting for OpenAPI bundles before update failed with :", e.getMessage());

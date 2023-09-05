@@ -29,7 +29,6 @@ WS-TraceGroup: REACTIVEMESSAGE
 Export-Package: com.ibm.ws.microprofile.reactive.messaging.kafka.adapter
 
 Import-Package: com.ibm.ws.microprofile.reactive.messaging.kafka.resources,\
-                org.eclipse.microprofile.reactive.messaging;version="[1.0,3)",\
                 *
 
 

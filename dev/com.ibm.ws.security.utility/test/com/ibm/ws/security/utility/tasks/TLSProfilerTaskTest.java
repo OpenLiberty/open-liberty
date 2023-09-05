@@ -73,7 +73,7 @@ public class TLSProfilerTaskTest {
      * {@link com.ibm.ws.security.utility.tasks.TLSProfiler#handleTask(com.ibm.ws.security.utility.utils.ConsoleWrapper, java.io.PrintStream, java.io.PrintStream, java.lang.String[])}
      * .
      */
-    //@Test
+    @Test
     public void handleTask_HostAndPortArgs() {
         mock.checking(new Expectations() {
             {

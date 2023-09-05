@@ -113,42 +113,6 @@ public class SoapEnvelopePrefixTestServlet extends FATServlet {
     }
 
     /*
-     * A positive test where the default namespace is set to the SOAP 1.1 Envelope NS, and the header then sets attributes that
-     * inherit the default namespace
-     *
-     * Default Envelope Namespace: SOAP 1.1 NS - http://schemas.xmlsoap.org/soap/envelope/
-     *
-     * Valid Element QNames:
-     *
-     * Envelope QName: {http://schemas.xmlsoap.org/soap/envelope/}Envelope
-     * Body QName: {http://schemas.xmlsoap.org/soap/envelope/}Body
-     * hello QName: {http://server.wsr.test.jaxws.ws.ibm.com}hello
-     * arg0 QName: {}arg0
-     */
-    @Test
-    public void testSoap11DefaultAttributePrefixInHeaderValidXML() throws Exception {
-
-        String msgString = "<Envelope xmlns=\"http://schemas.xmlsoap.org/soap/envelope/\">\n"
-                           + "<Header boo=\"1\"/>"
-                           + "  <Body>\n"
-                           + "    <ser:hello xmlns=\"\" xmlns:ser=\"http://server.wsr.test.jaxws.ws.ibm.com\">\n"
-                           + "       <arg0>from dispatch World</arg0>\n"
-                           + "    </ser:hello>\n"
-                           + "  </Body>\n"
-                           + "</Envelope>";
-
-        if (dispatch == null) {
-            throw new RuntimeException("dispatch  is null!");
-        }
-
-        StreamSource response = dispatch.invoke(new StreamSource(new StringReader(msgString)));
-        String parsedResponse = parseSourceResponse(response);
-        assertTrue("Expected parsed string to contain: " + EXPECTED_PASSING_RESPONSE + " but was actually: " + parsedResponse,
-                   parsedResponse.contains(EXPECTED_PASSING_RESPONSE));
-        //assertNull(notFoundString + " is expected to be in generated schema: " + schemaString, notFoundString);
-    }
-
-    /*
      * A positive test where an additional optional eleement is added to the request, to ensure that service will ignore it and process the request successfully.
      * Additionally this test sends multiple requests that a unmarshaller obtained from the poll can also process the optional element in the second request.
      *

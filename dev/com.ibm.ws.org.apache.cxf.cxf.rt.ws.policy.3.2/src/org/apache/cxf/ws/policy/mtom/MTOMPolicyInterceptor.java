@@ -29,19 +29,14 @@ import org.apache.cxf.phase.Phase;
 import org.apache.cxf.ws.policy.AssertionInfo;
 import org.apache.cxf.ws.policy.AssertionInfoMap;
 
-import com.ibm.websphere.ras.annotation.Sensitive; // Liberty Change
+import com.ibm.websphere.ras.annotation.Sensitive;
 
-
-// Liberty Change; This class has no Liberty specific changes other than the Sensitive annotation 
-// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
-// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
-// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
 public class MTOMPolicyInterceptor extends AbstractPhaseInterceptor<Message> {
     public MTOMPolicyInterceptor() {
         super(Phase.POST_LOGICAL);
     }
 
-    public void handleMessage(@Sensitive Message message) throws Fault { // Liberty Change
+    public void handleMessage(@Sensitive Message message) throws Fault {
         AssertionInfoMap aim = message.get(AssertionInfoMap.class);
 
         // extract Assertion information

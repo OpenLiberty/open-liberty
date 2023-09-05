@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -58,7 +58,14 @@ public class JwtFatActions extends TestActions {
      * Accesses the protected resource and logs in successfully, ensuring that an LTPA cookie is included in the result.
      */
     public Cookie logInAndObtainLtpaCookie(String testName, String protectedUrl, String username, String password) throws Exception {
-        return logInAndObtainLtpaCookie(testName, new WebClient(), protectedUrl, username, password);
+        WebClient webClient = new WebClient();
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE));
+        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithLtpaCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, webClient, protectedUrl,
+                                                                                                           username));
+        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, JwtFatConstants.JWT_COOKIE_NAME));
+
+        return logInAndObtainCookie(testName, webClient, protectedUrl, username, password, JwtFatConstants.LTPA_COOKIE_NAME, expectations);
     }
 
     /**
@@ -80,28 +87,10 @@ public class JwtFatActions extends TestActions {
         return response;
     }
 
-    public Page doFormLoginAndValidateResponse(Page loginPage, String username, String password, Expectations expectations) throws Exception {
+    private Page doFormLoginAndValidateResponse(Page loginPage, String username, String password, Expectations expectations) throws Exception {
         Page response = doFormLogin(loginPage, username, password);
         validationUtils.validateResult(response, TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, expectations);
         return response;
-    }
-
-    /**
-     * @param _testName
-     * @param webClient
-     * @param protectedUrl
-     * @param defaultUser
-     * @param defaultPassword
-     * @return
-     * @throws Exception 
-     */
-    public Cookie logInAndObtainLtpaCookie(String _testName, WebClient webClient, String protectedUrl, String defaultUser, String defaultPassword) throws Exception {
-        Expectations expectations = new Expectations();
-        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE));
-        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithLtpaCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, webClient, protectedUrl,
-                                                                                                           defaultUser));
-        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, JwtFatConstants.JWT_COOKIE_NAME));
-        return logInAndObtainCookie(_testName, webClient, protectedUrl, defaultUser, defaultPassword, JwtFatConstants.LTPA_COOKIE_NAME, expectations);
     }
 
 }

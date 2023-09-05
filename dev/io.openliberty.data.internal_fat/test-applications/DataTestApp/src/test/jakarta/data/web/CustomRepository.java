@@ -12,8 +12,6 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import jakarta.data.repository.OrderBy;
-
 /**
  * Custom repository interface that provides entity and key type parameters.
  */
@@ -21,10 +19,6 @@ public interface CustomRepository<T, K> {
     long countByIdBetween(K minId, K maxId);
 
     long deleteByIdBetween(K minId, K maxId);
-
-    @OrderBy("firstName")
-    @OrderBy("id")
-    T[] findByLastName(String lastName);
 
     void save(Iterable<T> entities);
 }

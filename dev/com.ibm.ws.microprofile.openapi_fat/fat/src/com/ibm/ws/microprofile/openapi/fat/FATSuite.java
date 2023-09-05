@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,7 +17,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.microprofile.openapi.fat.annotations.AnnotationProcessingTest;
-import com.ibm.ws.microprofile.openapi.fat.config.OpenAPIConfigTest;
 import com.ibm.ws.microprofile.openapi.fat.filter.FilterConfigTest;
 import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestFive;
 import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestFour;
@@ -32,7 +31,6 @@ import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestTwo;
     ApplicationProcessorServletTest.class,
     ApplicationProcessorTest.class,
     ContentTypeTest.class,
-    OpenAPIConfigTest.class,
     OpenAPIValidationTestOne.class,
     OpenAPIValidationTestTwo.class,
     OpenAPIValidationTestThree.class,

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,8 +53,8 @@ def appBuildDir = "${buildDir}/test-application"
  ******************************************************************
  ******************************************************************/
 task samlcallerclient_WAR(type: War, dependsOn: classes) {
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "samlcallerclient.war"
+  destinationDir file(appBuildDir)
+  archiveName "samlcallerclient.war"
   
   manifest {
     attributes("Class-Path": "")
@@ -78,8 +78,8 @@ task samlcallerclient_WAR(type: War, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task samlcallertoken_WAR(type: War, dependsOn: classes) {
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "samlcallertoken.war"
+  destinationDir file(appBuildDir)
+  archiveName "samlcallertoken.war"
   
   manifest {
     attributes("Class-Path": "")
@@ -103,8 +103,8 @@ task samlcallertoken_WAR(type: War, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task samltoken_WAR(type: War, dependsOn: classes) {
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "samltoken.war"
+  destinationDir file(appBuildDir)
+  archiveName "samltoken.war"
   
   manifest {
     attributes("Class-Path": "")

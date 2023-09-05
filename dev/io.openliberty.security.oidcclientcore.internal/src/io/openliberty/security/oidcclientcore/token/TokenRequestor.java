@@ -18,7 +18,6 @@ import java.util.Map.Entry;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.ibm.json.java.JSONObject;
@@ -49,7 +48,6 @@ public class TokenRequestor {
     private final List<NameValuePair> params;
     private final HashMap<String, String> customParams;
     private final boolean useSystemPropertiesForHttpClientConnections;
-    private final String originHeaderValue;
 
     OidcClientHttpUtil oidcClientHttpUtil = OidcClientHttpUtil.getInstance();
 
@@ -67,7 +65,6 @@ public class TokenRequestor {
         this.resources = builder.resources;
         this.customParams = builder.customParams;
         this.useSystemPropertiesForHttpClientConnections = builder.useSystemPropertiesForHttpClientConnections;
-        this.originHeaderValue = builder.originHeaderValue;
 
         List<NameValuePair> params = getBasicParams();
         mergeCustomParams(params, customParams);
@@ -117,17 +114,14 @@ public class TokenRequestor {
     }
 
     private Map<String, Object> postToTokenEndpoint() throws Exception {
-        HttpPost httpPost = oidcClientHttpUtil.setupPost(tokenEndpoint, params, clientId, clientSecret, null, authMethod);
-        if (originHeaderValue != null) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Will add Origin HTTP header with value: [" + originHeaderValue + "]");
-            }
-            httpPost.addHeader("Origin", originHeaderValue);
-        }
         return oidcClientHttpUtil.postToEndpoint(tokenEndpoint,
-                                                 httpPost,
+                                                 params,
+                                                 clientId,
+                                                 clientSecret,
+                                                 null,
                                                  sslSocketFactory,
                                                  isHostnameVerification,
+                                                 authMethod,
                                                  useSystemPropertiesForHttpClientConnections);
     }
 
@@ -149,7 +143,6 @@ public class TokenRequestor {
         private String resources = null;
         private HashMap<String, String> customParams = null;
         private boolean useSystemPropertiesForHttpClientConnections = false;
-        private String originHeaderValue;
 
         public Builder(String tokenEndpoint, String clientId, @Sensitive String clientSecret, String redirectUri, String code) {
             this.tokenEndpoint = tokenEndpoint;
@@ -200,11 +193,6 @@ public class TokenRequestor {
 
         public Builder useSystemPropertiesForHttpClientConnections(boolean useSystemPropertiesForHttpClientConnections) {
             this.useSystemPropertiesForHttpClientConnections = useSystemPropertiesForHttpClientConnections;
-            return this;
-        }
-
-        public Builder originHeaderValue(String originHeaderValue) {
-            this.originHeaderValue = originHeaderValue;
             return this;
         }
 

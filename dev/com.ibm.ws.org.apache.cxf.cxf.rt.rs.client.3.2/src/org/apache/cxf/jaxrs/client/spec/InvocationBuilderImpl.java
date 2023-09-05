@@ -50,20 +50,16 @@ import org.apache.cxf.jaxrs.client.AbstractClient;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.jaxrs.utils.HttpUtils;
 
-// Liberty Change Start - Imports
 import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.jaxrs21.clientconfig.JAXRSClientConstants;
-// Liberty Change End - Imports
 
 public class InvocationBuilderImpl implements Invocation.Builder {
     private static final String PROPERTY_KEY = "jaxrs.filter.properties";
 
-    // Liberty Change Start - final modifer
     private final WebClient webClient;
     private final SyncInvoker sync;
     private final Configuration config;
-	// Liberty Change Start - final modifer
 
     public InvocationBuilderImpl(WebClient webClient,
                                  Configuration config) {
@@ -288,7 +284,7 @@ public class InvocationBuilderImpl implements Invocation.Builder {
     }
 
     @Override
-    public Builder property(String name, @Sensitive Object value) { // Liberty Change - @Sensitive
+    public Builder property(String name, @Sensitive Object value) {
         Map<String, Object> contextProps = WebClient.getConfig(webClient).getRequestContext();
         Map<String, Object> filterProps = CastUtils.cast((Map<?, ?>) contextProps.get(PROPERTY_KEY));
         if (filterProps == null) {
@@ -345,11 +341,9 @@ public class InvocationBuilderImpl implements Invocation.Builder {
 
     private class InvocationImpl implements Invocation {
 
-        // Liberty Change Start - final modifer
         private final Invocation.Builder invBuilder;
         private final String httpMethod;
         private final Entity<?> entity;
-		// Liberty Change End
 
         InvocationImpl(String httpMethod) {
             this(httpMethod, null);

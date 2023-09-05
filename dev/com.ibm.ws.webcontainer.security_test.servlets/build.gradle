@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,8 +34,8 @@ def appBuildDir = "${buildDir}/test-application"
  ******************************************************************/
  
 task staticAnnotationMixed_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "staticAnnotationMixed.jar"
+  destinationDir file("${appBuildDir}")
+  archiveName "staticAnnotationMixed.jar"
 
   from ('test-applications/staticAnnotationMixed/resources/') { 
   	include 'META-INF/*'
@@ -46,8 +46,8 @@ task staticAnnotationMixed_JAR(type: Jar, dependsOn: classes) {
 }
 
 task staticAnnotationMixed_WAR(type: War, dependsOn: staticAnnotationMixed_JAR) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "staticAnnotationMixed.war"
+  destinationDir file("${appBuildDir}")
+  archiveName "staticAnnotationMixed.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/staticAnnotationMixed/resources') { 
@@ -69,8 +69,8 @@ task staticAnnotationMixed_WAR(type: War, dependsOn: staticAnnotationMixed_JAR) 
 }
 
 task staticAnnotationMixed_ZIP(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "staticAnnotationMixed.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "staticAnnotationMixed.zip"
   
   from('test-applications/basicauth/resources') {
     include '**/*'
@@ -97,8 +97,8 @@ task staticAnnotationMixed {
  ******************************************************************/
  
 task dynamicAnnotationConflict_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "dynamicAnnotationConflict.jar"
+  destinationDir file("${appBuildDir}")
+  archiveName "dynamicAnnotationConflict.jar"
 
   from ('test-applications/dynamicAnnotationConflict/resources/') { 
   	include 'META-INF/*'
@@ -114,8 +114,8 @@ task dynamicAnnotationConflict_JAR(type: Jar, dependsOn: classes) {
 }
 
 task dynamicAnnotationConflict_WAR(type: War, dependsOn: dynamicAnnotationConflict_JAR) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "dynamicAnnotationConflict.war"
+  destinationDir file("${appBuildDir}")
+  archiveName "dynamicAnnotationConflict.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/dynamicAnnotationConflict/resources') { 
@@ -138,8 +138,8 @@ task dynamicAnnotationConflict_WAR(type: War, dependsOn: dynamicAnnotationConfli
 }
 
 task dynamicAnnotationConflict_ZIP(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "dynamicAnnotationConflict.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "dynamicAnnotationConflict.zip"
   
   from('test-applications/basicauth/resources') {
     include '**/*'
@@ -166,8 +166,8 @@ task dynamicAnnotationConflict {
  ******************************************************************/
  
 task metadataCompleteTrueWebXML_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "metadataCompleteTrueWebXML.jar"
+  destinationDir file("${appBuildDir}")
+  archiveName "metadataCompleteTrueWebXML.jar"
 
   from ('test-applications/metadataCompleteTrueWebXML/resources/') { 
   	include 'META-INF/*'
@@ -178,8 +178,8 @@ task metadataCompleteTrueWebXML_JAR(type: Jar, dependsOn: classes) {
 }
 
 task metadataCompleteTrueWebXML_WAR(type: War, dependsOn: metadataCompleteTrueWebXML_JAR) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "metadataCompleteTrueWebXML.war"
+  destinationDir file("${appBuildDir}")
+  archiveName "metadataCompleteTrueWebXML.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/metadataCompleteTrueWebXML/resources') { 
@@ -201,8 +201,8 @@ task metadataCompleteTrueWebXML_WAR(type: War, dependsOn: metadataCompleteTrueWe
 }
 
 task metadataCompleteTrueWebXML_ZIP(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "metadataCompleteTrueWebXML.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "metadataCompleteTrueWebXML.zip"
   
   from('test-applications/basicauth/resources') {
     include '**/*'
@@ -229,8 +229,8 @@ task metadataCompleteTrueWebXML {
  ******************************************************************/
  
 task metadataCompleteTrueWebFragment_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "metadataCompleteTrueWebFragment.jar"
+  destinationDir file("${appBuildDir}")
+  archiveName "metadataCompleteTrueWebFragment.jar"
 
   from ('test-applications/metadataCompleteTrueWebFragment/resources/') { 
   	include 'META-INF/*'
@@ -241,8 +241,8 @@ task metadataCompleteTrueWebFragment_JAR(type: Jar, dependsOn: classes) {
 }
 
 task metadataCompleteTrueWebFragment_WAR(type: War, dependsOn: metadataCompleteTrueWebFragment_JAR) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "metadataCompleteTrueWebFragment.war"
+  destinationDir file("${appBuildDir}")
+  archiveName "metadataCompleteTrueWebFragment.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/metadataCompleteTrueWebFragment/resources') { 
@@ -264,8 +264,8 @@ task metadataCompleteTrueWebFragment_WAR(type: War, dependsOn: metadataCompleteT
 }
 
 task metadataCompleteTrueWebFragment_ZIP(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "metadataCompleteTrueWebFragment.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "metadataCompleteTrueWebFragment.zip"
   
   from('test-applications/basicauth/resources') {
     include '**/*'
@@ -293,8 +293,8 @@ task metadataCompleteTrueWebFragment {
  ******************************************************************/
  
 task webFragmentDeploymentFailureForRunAs_JAR_1(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "webFragmentDeploymentFailureForRunAs1.jar"
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForRunAs1.jar"
 
   from ('test-applications/webFragmentDeploymentFailureForRunAs/resources/META-INF1') { 
   	include '*'
@@ -306,8 +306,8 @@ task webFragmentDeploymentFailureForRunAs_JAR_1(type: Jar, dependsOn: classes) {
 }
 
 task webFragmentDeploymentFailureForRunAs_JAR_2(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "webFragmentDeploymentFailureForRunAs2.jar"
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForRunAs2.jar"
 
   from ('test-applications/webFragmentDeploymentFailureForRunAs/resources/META-INF2') { 
   	include '*'
@@ -319,8 +319,8 @@ task webFragmentDeploymentFailureForRunAs_JAR_2(type: Jar, dependsOn: classes) {
 }
 
 task webFragmentDeploymentFailureForRunAs_WAR(type: War, dependsOn: [webFragmentDeploymentFailureForRunAs_JAR_1, webFragmentDeploymentFailureForRunAs_JAR_2]) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "webFragmentDeploymentFailureForRunAs.war"
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForRunAs.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/webFragmentDeploymentFailureForRunAs/resources') { 
@@ -338,8 +338,8 @@ task webFragmentDeploymentFailureForRunAs_WAR(type: War, dependsOn: [webFragment
 }
 
 task webFragmentDeploymentFailureForRunAs_ZIP(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "webFragmentDeploymentFailureForRunAs.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForRunAs.zip"
   
   from('test-applications/basicauth/resources') {
     include '**/*'
@@ -367,8 +367,8 @@ task webFragmentDeploymentFailureForRunAs {
  ******************************************************************/
  
 task webFragmentDeploymentFailureForAuthConstraint_JAR_1(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "webFragmentDeploymentFailureForAuthConstraint1.jar"
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForAuthConstraint1.jar"
 
   from ('test-applications/webFragmentDeploymentFailureForAuthConstraint/resources/META-INF1') { 
   	include '*'
@@ -380,8 +380,8 @@ task webFragmentDeploymentFailureForAuthConstraint_JAR_1(type: Jar, dependsOn: c
 }
 
 task webFragmentDeploymentFailureForAuthConstraint_JAR_2(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "webFragmentDeploymentFailureForAuthConstraint2.jar"
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForAuthConstraint2.jar"
 
   from ('test-applications/webFragmentDeploymentFailureForAuthConstraint/resources/META-INF2') { 
   	include '*'
@@ -393,8 +393,8 @@ task webFragmentDeploymentFailureForAuthConstraint_JAR_2(type: Jar, dependsOn: c
 }
 
 task webFragmentDeploymentFailureForAuthConstraint_WAR(type: War, dependsOn: [webFragmentDeploymentFailureForAuthConstraint_JAR_1, webFragmentDeploymentFailureForAuthConstraint_JAR_2]) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "webFragmentDeploymentFailureForAuthConstraint.war"
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForAuthConstraint.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/webFragmentDeploymentFailureForAuthConstraint/resources') { 
@@ -412,8 +412,8 @@ task webFragmentDeploymentFailureForAuthConstraint_WAR(type: War, dependsOn: [we
 }
 
 task webFragmentDeploymentFailureForAuthConstraint_ZIP(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "webFragmentDeploymentFailureForAuthConstraint.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForAuthConstraint.zip"
   
   from('test-applications/basicauth/resources') {
     include '**/*'
@@ -441,8 +441,8 @@ task webFragmentDeploymentFailureForAuthConstraint {
  ******************************************************************/
  
 task webFragmentDeploymentFailureForUserDataConstraint_JAR_1(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "webFragmentDeploymentFailureForUserDataConstraint1.jar"
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForUserDataConstraint1.jar"
 
   from ('test-applications/webFragmentDeploymentFailureForUserDataConstraint/resources/META-INF1') { 
   	include '*'
@@ -454,8 +454,8 @@ task webFragmentDeploymentFailureForUserDataConstraint_JAR_1(type: Jar, dependsO
 }
 
 task webFragmentDeploymentFailureForUserDataConstraint_JAR_2(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "webFragmentDeploymentFailureForUserDataConstraint2.jar"
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForUserDataConstraint2.jar"
 
   from ('test-applications/webFragmentDeploymentFailureForUserDataConstraint/resources/META-INF2') { 
   	include '*'
@@ -467,8 +467,8 @@ task webFragmentDeploymentFailureForUserDataConstraint_JAR_2(type: Jar, dependsO
 }
 
 task webFragmentDeploymentFailureForUserDataConstraint_WAR(type: War, dependsOn: [webFragmentDeploymentFailureForUserDataConstraint_JAR_1, webFragmentDeploymentFailureForUserDataConstraint_JAR_2]) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "webFragmentDeploymentFailureForUserDataConstraint.war"
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForUserDataConstraint.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/webFragmentDeploymentFailureForUserDataConstraint/resources') { 
@@ -486,8 +486,8 @@ task webFragmentDeploymentFailureForUserDataConstraint_WAR(type: War, dependsOn:
 }
 
 task webFragmentDeploymentFailureForUserDataConstraint_ZIP(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "webFragmentDeploymentFailureForUserDataConstraint.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForUserDataConstraint.zip"
   
   from('test-applications/basicauth/resources') {
     include '**/*'
@@ -511,8 +511,8 @@ task webFragmentDeploymentFailureForUserDataConstraint {
  ******************************************************************
  ******************************************************************/
 task basicauth(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "basicauth.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "basicauth.zip"
   
   from('test-applications/basicauth/resources') {
     include '**/*'
@@ -532,8 +532,8 @@ task basicauth(type: Zip, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task basicauthdeny(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "basicauthdeny.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "basicauthdeny.zip"
   
   from('test-applications/basicauthdeny/resources') {
     include '**/*'
@@ -553,8 +553,8 @@ task basicauthdeny(type: Zip, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task clientcert(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "clientcert.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "clientcert.zip"
   
   from('test-applications/clientcert/resources') {
     include '**/*'
@@ -574,8 +574,8 @@ task clientcert(type: Zip, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task delegation(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "delegation.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "delegation.zip"
   
   from('test-applications/delegation/resources') {
     include '**/*'
@@ -595,8 +595,8 @@ task delegation(type: Zip, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task dynamicAnnotationPure(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "dynamicAnnotationPure.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "dynamicAnnotationPure.zip"
   
   from('test-applications/dynamicAnnotationPure/resources') {
     include '**/*'
@@ -616,8 +616,8 @@ task dynamicAnnotationPure(type: Zip, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task formlogin(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "formlogin.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "formlogin.zip"
   
   from('test-applications/formlogin/resources') {
     include '**/*'
@@ -637,8 +637,8 @@ task formlogin(type: Zip, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task formloginPageSessionFalse(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "formloginPageSessionFalse.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "formloginPageSessionFalse.zip"
   
   from('test-applications/formloginPageSessionFalse/resources') {
     include '**/*'
@@ -658,8 +658,8 @@ task formloginPageSessionFalse(type: Zip, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task inheritance(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "inheritance.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "inheritance.zip"
   
   from('test-applications/inheritance/resources') {
     include '**/*'
@@ -679,8 +679,8 @@ task inheritance(type: Zip, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task loginConfigInvalid(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "loginConfigInvalid.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "loginConfigInvalid.zip"
   
   from('test-applications/loginConfigInvalid/resources') {
     include '**/*'
@@ -700,8 +700,8 @@ task loginConfigInvalid(type: Zip, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task loginConfigNone(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "loginConfigNone.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "loginConfigNone.zip"
   
   from('test-applications/loginConfigNone/resources') {
     include '**/*'
@@ -721,8 +721,8 @@ task loginConfigNone(type: Zip, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task loginConfigNoRealmName(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "loginConfigNoRealmName.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "loginConfigNoRealmName.zip"
   
   from('test-applications/loginConfigNoRealmName/resources') {
     include '**/*'
@@ -742,8 +742,8 @@ task loginConfigNoRealmName(type: Zip, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task postParams(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "postParams.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "postParams.zip"
   
   from('test-applications/postParams/resources') {
     include '**/*'
@@ -763,8 +763,8 @@ task postParams(type: Zip, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task staticAnnotationPure(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "staticAnnotationPure.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "staticAnnotationPure.zip"
   
   from('test-applications/staticAnnotationPure/resources') {
     include '**/*'
@@ -784,8 +784,8 @@ task staticAnnotationPure(type: Zip, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task staticAnnotationWebXML(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "staticAnnotationWebXML.zip"
+  destinationDir file("${appBuildDir}")
+  archiveName "staticAnnotationWebXML.zip"
   
   from('test-applications/staticAnnotationWebXML/resources') {
     include '**/*'

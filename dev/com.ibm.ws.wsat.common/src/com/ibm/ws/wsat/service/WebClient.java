@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,7 +29,7 @@ import com.ibm.ws.wsat.service.impl.WebClientImpl;
  */
 public abstract class WebClient {
 
-    private static WebClient testClient;
+    private static WebClient testClient = null;
 
     public static final String ASYNC_TIMEOUT = "com.ibm.ws.wsat.asyncResponseTimeout";
     public static final String DEFAULT_ASYNC_TIMEOUT = "30000";
@@ -41,7 +41,14 @@ public abstract class WebClient {
         }
     });
 
+    /*
+     * Factory to return WebClient instances. This allows us to consider caching the clients
+     * (if that makes sense) and allows for overriding for unit tests.
+     */
     public static WebClient getWebClient(WSATEndpoint toEpr, WSATEndpoint fromEpr) {
+        if (testClient != null) {
+            return testClient;
+        }
         return new WebClientImpl(toEpr, fromEpr);
     }
 
@@ -76,5 +83,4 @@ public abstract class WebClient {
 
     public abstract void committed() throws WSATException;
 
-    public abstract void setMisrouting(boolean b);
 }

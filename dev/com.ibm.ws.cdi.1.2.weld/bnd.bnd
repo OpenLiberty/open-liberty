@@ -21,8 +21,7 @@ Bundle-Description:CDI 1.2 Weld Integration, version ${bVersion}
 -dsannotations: com.ibm.ws.cdi.impl.DefaultSecurityService,\
                 com.ibm.ws.cdi.impl.CDI12BeansXmlParserImpl,\
                 com.ibm.ws.cdi.impl.CDI12AggregatedConfigurationImpl,\
-                com.ibm.ws.cdi.impl.CDI12WeldDevelopmentModeImpl,\
-                com.ibm.ws.cdi.impl.CDI12ExtensionSPIProvider
+                com.ibm.ws.cdi.impl.CDI12WeldDevelopmentModeImpl
 
 Export-Package: com.ibm.ws.cdi.executor, \
                 com.ibm.ws.cdi.utils, \

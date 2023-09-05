@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2023 IBM Corporation and others.
+ * Copyright (c) 2004, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,11 +35,8 @@ import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionFactory;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkTransportFactory;
 import com.ibm.ws.sib.jfapchannel.impl.JFapAddress;
 import com.ibm.ws.sib.jfapchannel.impl.OutboundConnection;
-import com.ibm.ws.sib.jfapchannel.netty.NettyNetworkConnection;
 import com.ibm.ws.sib.utils.Semaphore;
 import com.ibm.ws.sib.utils.ras.SibTr;
-
-import io.openliberty.netty.internal.exception.NettyException;
 
 /**
  * Groups together connection data objects by remote host. Groups are used by the
@@ -703,18 +700,6 @@ public class ConnectionDataGroup
 
                         NetworkConnection vc = connectOverNetwork(jfapAddressHolder, ncfHolder);
                         connectionDataToUse = createnewConnectionData(vc);
-                        if(connectionDataToUse.getConnection().isUsingNetty()) {
-                        	if(vc instanceof NettyNetworkConnection) {
-                        		try {
-									((NettyNetworkConnection) vc).linkOutboundConnection(connectionDataToUse.getConnection());
-								} catch (NettyException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-									throw new JFapConnectFailedException(e.getMessage());
-								}
-                        	}else
-                        		throw new JFapConnectFailedException("Couldn't link outbound channel appropriately");
-                        }
                         isNewConnectionData = true;
                     } catch (FrameworkException frameworkException)
                     {

@@ -6,10 +6,10 @@ configurations {
 }
 
 dependencies {
-    kafkaClient 'org.apache.kafka:kafka-clients:3.5.1'
+    kafkaClient 'org.apache.kafka:kafka-clients:3.1.0'
     kafkaClient 'org.lz4:lz4-java:1.8.0'
-    kafkaClient 'com.github.luben:zstd-jni:1.5.5-1'
-    kafkaClient 'org.xerial.snappy:snappy-java:1.1.10.1'
+    kafkaClient 'com.github.luben:zstd-jni:1.5.0-4'
+    kafkaClient 'org.xerial.snappy:snappy-java:1.1.8.4'
     kafkaClient project(':com.ibm.ws.org.slf4j.api')
     kafkaClient project(':com.ibm.ws.org.slf4j.jdk14')
     requiredLibs 'org.testng:testng:7.5.1'
@@ -30,4 +30,3 @@ task addKafkaClientLibs (type: Copy) {
 
 zipAutoFVT.dependsOn addKafkaClientLibs
 addRequiredLibraries.dependsOn copyTestContainers
-addRequiredLibraries.dependsOn addJakartaTransformer

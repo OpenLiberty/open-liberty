@@ -80,7 +80,7 @@ public class AppPrereqTest extends AbstractAppManagerTest {
         changeServerConfig(ServerXml.PREREQ_CONFIG_BUT_NO_INSTANCES);
         assertSnoopStopped();
         changeServerConfig(ServerXml.NO_PREREQ_CONFIG_AND_NO_PREREQ_FEATURE);
-        assertSnoopUpdated();
+        assertSnoopStarted();
     }
 
     @Test
@@ -101,7 +101,7 @@ public class AppPrereqTest extends AbstractAppManagerTest {
         ServerXml(boolean appStartExpected) {
             this.appStartExpected = appStartExpected;
         }
- 
+
         final boolean appStartExpected;
         final String path = "/appPrereq/" + this + ".xml";
     }
@@ -123,12 +123,7 @@ public class AppPrereqTest extends AbstractAppManagerTest {
 
     private void assertSnoopStarted() {
         // After config processing has completed, the Snoop app should start.
-        assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0001I:.* snoop"));
-    }
-
-    private void assertSnoopUpdated() {
-        // After first start and stop are completed, the snoop app will be updated.
-        assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0003I:.* snoop"));
+        assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0018I:.* snoop"));
     }
 
     private void assertSnoopStopped() {

@@ -251,14 +251,14 @@ public class FailureScopeController {
                     }
 
                 }
-
-                if ((_tranLog != null && _tranLog.failed()) || (_xaLog != null && _xaLog.failed())) {
-                    Tr.audit(tc, "WTRN0153_INVALID_LOG_AT_SHUTDOWN");
-                }
             } else {
                 // Cleanup remaining transactions and close the logs
                 if (_recoveryManager != null)
                     _recoveryManager.cleanupRemoteFailureScope();
+            }
+
+            if ((_tranLog != null && _tranLog.failed()) || (_xaLog != null && _xaLog.failed())) {
+                Tr.audit(tc, "WTRN0153_INVALID_LOG_AT_SHUTDOWN");
             }
 
             // Now that recovery processing has stopped, clear out all the fields to guarentee what

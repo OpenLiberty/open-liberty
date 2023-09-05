@@ -39,7 +39,7 @@ task validateNLS {
     javaexec {
       sourceSets.main.java.srcDirs = ['src/com/ibm/ws/i18n/conversion/tools']
       classpath = files(jar.archivePath, sourceSets.main.runtimeClasspath)
-      mainClass = "com.ibm.ws.i18n.conversion.tools.ConvertRBtoNLSProps"
+      main = "com.ibm.ws.i18n.conversion.tools.ConvertRBtoNLSProps"
 
       args = [jar.archivePath, newResourcesDir, "org/eclipse/persistence/internal/localization/i18n/.*class", "org/eclipse/persistence/exceptions/i18n/.*class"]
     }

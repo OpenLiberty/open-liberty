@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2023 IBM Corporation and others.
+ * Copyright (c) 2002, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,7 +13,6 @@
 package com.ibm.ws.recoverylog.spi;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
@@ -27,7 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 
 //------------------------------------------------------------------------------
@@ -529,22 +527,17 @@ class LogFileHandle {
      *
      * @return boolean true if the file currently exists.
      */
-    @Trivial
     protected boolean fileExists() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "fileExists", this);
 
         boolean fileAlreadyExists = true;
 
         File file = new File(_logDirectory, _fileName);
         fileAlreadyExists = (file.exists() && (file.length() > 0));
 
-        if (tc.isDebugEnabled()) {
-            try {
-                String name = file.getCanonicalPath();
-                Tr.debug(tc, "fileExists {0} {1}", name, fileAlreadyExists);
-            } catch (IOException e) {
-                Tr.debug(tc, "fileExists", e);
-            }
-        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "fileExists", fileAlreadyExists);
         return fileAlreadyExists;
     }
 
@@ -696,7 +689,7 @@ class LogFileHandle {
             Tr.entry(tc, "writeFileStatus", this, maintainPosition);
 
         if (_logFileHeader.status() == LogFileHeader.STATUS_INVALID) {
-            final InternalLogException ile = new InternalLogException("LogFileHeaderStatus is INVALID");
+            final InternalLogException ile = new InternalLogException(null);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "writeFileStatus", ile);
             throw ile;
@@ -826,7 +819,6 @@ class LogFileHandle {
      * @return LogFileHeader The log file header object associated with this LogFileHandle
      *         instance.
      */
-    @Trivial
     protected LogFileHeader logFileHeader() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "logFileHeader", this, _logFileHeader);
@@ -866,8 +858,9 @@ class LogFileHandle {
      *
      * @return long The number of free bytes remaining.
      */
-    @Trivial
     public int freeBytes() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "freeBytes", this);
 
         int freeBytes = 0;
 
@@ -885,8 +878,8 @@ class LogFileHandle {
             freeBytes = 0;
         }
 
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "freeBytes {0}", freeBytes);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "freeBytes", freeBytes);
 
         return freeBytes;
     }
@@ -921,10 +914,10 @@ class LogFileHandle {
      *
      * @return String The name of the file associated with this LogFileHandle instance
      */
-    @Trivial
     public String fileName() {
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "fileName {0} {1}", _fileName, this);
+        if (tc.isEntryEnabled()) {
+            Tr.entry(tc, "fileName", this);
+            Tr.exit(tc, "fileName", _fileName);
         }
         return _fileName;
     }
@@ -1078,6 +1071,8 @@ class LogFileHandle {
                 // remains in its current position.
                 int originalPosition = _fileBuffer.position();
 
+                // TODO
+                //        Tr.uncondEvent(tc, "Expanding log file to size of " + newFileSize + " bytes.");
                 Tr.event(tc, "Expanding log file to size of " + newFileSize + " bytes.");
 
                 if (_isMapped) {
@@ -1130,23 +1125,43 @@ class LogFileHandle {
         try {
             if (_isMapped) {
                 // Note: on Win2K we can get an IOException from this even though it is not declared
-                // Can also get UncheckedIOException on AIX apparently
                 ((MappedByteBuffer) _fileBuffer).force();
             } else {
                 // Write the "pending" WritableLogRecords.
                 writePendingToFile();
                 _fileChannel.force(false);
             }
-        } catch (Exception e) {
-            FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.LogFileHandle.force", "1049", this);
+        } catch (java.io.IOException ioe) {
+            FFDCFilter.processException(ioe, "com.ibm.ws.recoverylog.spi.LogFileHandle.force", "1049", this);
             _exceptionInForce = true;
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Unable to force file {0} due to {1}", _fileName, e.getMessage());
-            throw new InternalLogException(e);
-        } finally {
+            if (tc.isEventEnabled())
+                Tr.event(tc, "Unable to force file " + _fileName);
+
+            // d453958: moved terminateserver code to MultiScopeRecoveryLog.markFailed method.
+
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "force");
+                Tr.exit(tc, "force", "InternalLogException");
+            throw new InternalLogException(ioe);
+        } catch (InternalLogException exc) {
+            FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.force", "1056", this);
+            _exceptionInForce = true;
+            if (tc.isEventEnabled())
+                Tr.event(tc, "Unable to force file " + _fileName);
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "force", "InternalLogException");
+            throw exc;
+        } catch (LogIncompatibleException exc) {
+            FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.force", "1096", this);
+            _exceptionInForce = true;
+            if (tc.isEventEnabled())
+                Tr.event(tc, "Unable to force file " + _fileName);
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "force", "InternalLogException");
+            throw new InternalLogException(exc);
         }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "force");
     }
 
     //------------------------------------------------------------------------------

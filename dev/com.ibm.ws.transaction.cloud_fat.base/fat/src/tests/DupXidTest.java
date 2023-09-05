@@ -65,9 +65,6 @@ public class DupXidTest extends FATServletClient {
         server1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         server2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
 
-        // Remove tranlog DB
-        server1.deleteDirectoryFromLibertyInstallRoot("/usr/shared/resources/data");
-
         FATUtils.startServers(server1);
     }
 
@@ -86,14 +83,19 @@ public class DupXidTest extends FATServletClient {
     @Test
     @AllowedFFDC(value = { "java.sql.SQLSyntaxErrorException" })
     public void testDupXid() throws Exception {
+        // Clean up any existing database resources. This includes the XAResources table together with the Tran log and partner log table that may
+        // contain unresolved trans from a previous run of the test. We assume (hope!) that the resources associated with server1 are in a consistent
+        // state!
+        runTest(server1, SERVLET_NAME, "cleanDatabase");
+
         final String method = "TestDupXid";
         StringBuilder sb = null;
         try {
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server1, SERVLET_NAME, "setupDupXid");
+            sb = runTestWithResponse(server1, SERVLET_NAME, "setupDupXid001");
         } catch (Throwable e) {
         }
-        Log.info(this.getClass(), method, "setupDupXid returned: " + sb);
+        Log.info(this.getClass(), method, "setupDupXid001 returned: " + sb);
 
         assertNotNull(server1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
 
@@ -124,10 +126,10 @@ public class DupXidTest extends FATServletClient {
         // Server appears to have started ok. So lets crash it!!
         try {
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server2, SERVLET_NAME, "setupDupXid");
+            sb = runTestWithResponse(server2, SERVLET_NAME, "setupDupXid002");
         } catch (Throwable e) {
         }
-        Log.info(this.getClass(), method, "setupDupXid returned: " + sb);
+        Log.info(this.getClass(), method, "setupDupXid002 returned: " + sb);
 
         assertNotNull(server2.waitForStringInLog(XAResourceImpl.DUMP_STATE));
 

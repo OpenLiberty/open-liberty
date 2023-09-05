@@ -20,42 +20,37 @@
 package org.apache.cxf.jaxrs.provider;
 
 import java.lang.annotation.Annotation;
-import java.lang.ref.ReferenceQueue; // Liberty Change 
-import java.lang.ref.WeakReference; // Liberty Change 
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
-import java.security.AccessController; // Liberty Change 
-import java.security.PrivilegedAction; // Liberty Change 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
-import java.util.Arrays; // Liberty Change 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.IdentityHashMap; // Liberty Change 
-import java.util.Iterator; // Liberty Change 
+import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
-// Liberty Change Start - Imports
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.json.bind.spi.JsonbProvider;
 import javax.json.spi.JsonProvider;
 import javax.ws.rs.Produces;
-import javax.ws.rs.RuntimeType;
-import javax.ws.rs.ConstrainedTo;
 import javax.ws.rs.container.DynamicFeature;
-// Liberty Change End
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.MediaType;
@@ -92,7 +87,6 @@ import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.jaxrs.utils.ResourceUtils;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
-// Liberty Change Start - Imports
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -108,10 +102,9 @@ import com.ibm.ws.jaxrs20.providers.multipart.IBMMultipartProvider;
 import com.ibm.ws.jaxrs20.utils.CustomizerUtils;
 import com.ibm.ws.jaxrs21.providers.json.JsonBProvider;
 import com.ibm.ws.jaxrs21.providers.json.JsonPProvider;
-// Liberty Change End
 
 public abstract class ProviderFactory {
-    private static final TraceComponent tc = Tr.register(ProviderFactory.class); // Liberty Change 
+    private static final TraceComponent tc = Tr.register(ProviderFactory.class);
     public static final String DEFAULT_FILTER_NAME_BINDING = "org.apache.cxf.filter.binding";
     public static final String PROVIDER_SELECTION_PROPERTY_CHANGED = "provider.selection.property.changed";
     public static final String ACTIVE_JAXRS_PROVIDER_KEY = "active.jaxrs.provider";
@@ -120,7 +113,7 @@ public abstract class ProviderFactory {
     protected static final String CLIENT_FACTORY_NAME = "org.apache.cxf.jaxrs.client.ClientProviderFactory";
     protected static final String IGNORE_TYPE_VARIABLES = "org.apache.cxf.jaxrs.providers.ignore.typevars";
 
-    //private static final Logger LOG = LogUtils.getL7dLogger(ProviderFactory.class); // Liberty Change 
+    //private static final Logger LOG = LogUtils.getL7dLogger(ProviderFactory.class);
 
     private static final String JAXB_PROVIDER_NAME = "org.apache.cxf.jaxrs.provider.JAXBElementProvider";
     private static final String JSON_PROVIDER_NAME = "org.apache.cxf.jaxrs.provider.json.JSONProvider";
@@ -128,7 +121,7 @@ public abstract class ProviderFactory {
     private static final String PROVIDER_CACHE_ALLOWED = "org.apache.cxf.jaxrs.provider.cache.allowed";
     private static final String PROVIDER_CACHE_CHECK_ALL = "org.apache.cxf.jaxrs.provider.cache.checkAllCandidates";
 
-    // Liberty Change Start:  The following code was added with CXF 3.4.3 but causes potential issues for Liberty and
+    // Liberty start:  The following code was added with CXF 3.4.3 but causes potential issues for Liberty and
     // is therefore commented out.
  /*   static class LazyProviderClass {
         // class to Lazily call the ClassLoaderUtil.loadClass, but do it once
@@ -196,13 +189,13 @@ public abstract class ProviderFactory {
     private static final LazyProviderClass MULTIPART_PROVIDER_CLASS =
         new LazyProviderClass("org.apache.cxf.jaxrs.provider.MultipartProvider");
 */
-    // Liberty End
+    //Liberty end
     protected Map<NameKey, ProviderInfo<ReaderInterceptor>> readerInterceptors =
         new NameKeyMap<>(true);
     protected Map<NameKey, ProviderInfo<WriterInterceptor>> writerInterceptors =
         new NameKeyMap<>(true);
 
-    // Liberty Change Start
+    //Liberty code change start
     private final AtomicReferenceProviderList<MessageBodyReader<?>> messageReaders =
         new AtomicReferenceProviderList<>();
     private final AtomicReferenceProviderList<MessageBodyWriter<?>> messageWriters =
@@ -213,7 +206,7 @@ public abstract class ProviderFactory {
         new AtomicReferenceProviderList<>();
     private final AtomicReferenceProviderList<ParamConverterProvider> paramConverters =
                     new AtomicReferenceProviderList<>();
-    // Liberty Change End
+    //Liberty code change end
 
 
     private boolean paramConverterContextsAvailable;
@@ -226,11 +219,13 @@ public abstract class ProviderFactory {
     private Comparator<?> providerComparator;
 
     private ProviderCache providerCache;
-    // Liberty Change Start - Defect 178126
-    // A cache for getGenericInterfaces
+    //Liberty code change start
+    //defect 178126
+    //A cache for getGenericInterfaces
     private static final ConcurrentHashMap<ClassesKey, Type[]> genericInterfacesCache = new ConcurrentHashMap<>();
     private static final Type[] emptyType = new Type[] {};
-    // Liberty Change End
+
+    //Liberty code change end
     protected ProviderFactory(Bus bus) {
         this.bus = bus;
         providerCache = initCache(bus);
@@ -245,7 +240,7 @@ public abstract class ProviderFactory {
         if (!allowed) {
             return null;
         }
-        //Liberty Change Sart - CXF does not check system properties, Liberty does
+        //Liberty change start - CXF does not check system properties, Liberty does
         boolean checkAll = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
 
             @Override
@@ -257,7 +252,7 @@ public abstract class ProviderFactory {
                 return PropertyUtils.isTrue(o);
             }
         });
-        // Liberty Change End
+        // Liberty change end
         return new ProviderCache(checkAll);
     }
 
@@ -282,13 +277,13 @@ public abstract class ProviderFactory {
                      //MULTIPART_PROVIDER_CLASS.tryCreateInstance(factory.getBus()));
                      new MultipartProvider());// Liberty change - tryCreateInstance changes behavior
         
-        // Liberty Change Begin
+        // Liberty change begin
         // Liberty sets JSON providers above and does not ship the CXF JSONProvider
         /*Object prop = factory.getBus().getProperty("skip.default.json.provider.registration");
         if (!PropertyUtils.isTrue(prop)) {
             factory.setProviders(false, false, createProvider(JSON_PROVIDER_NAME, factory.getBus()));
         }*/
-        // Liberty Change End
+        // Liberty change end
     }
 
     @FFDCIgnore(value = { Throwable.class }) // Liberty Change
@@ -309,14 +304,14 @@ public abstract class ProviderFactory {
             } else {
                 message += ", exception class : " + ex.getClass().getName();
             }
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) { // Liberty Change 
-                Tr.debug(tc, message); // Liberty Change 
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, message);
             }
         }
         return null;
     }
 
-    // Liberty Change Begin
+    // Liberty Change for CXF Begin
     public static Object createJsonpProvider() {
         JsonProvider jsonProvider = AccessController.doPrivileged(new PrivilegedAction<JsonProvider>(){
 
@@ -337,6 +332,8 @@ public abstract class ProviderFactory {
 
         return new JsonPProvider(jsonProvider);
     }
+    // Liberty Change for CXF End
+
 
     @FFDCIgnore(value = { ClassNotFoundException.class })
     public static Class<?> loadClass(ClassLoader cl, String className) {
@@ -374,7 +371,7 @@ public abstract class ProviderFactory {
         return new JsonBProvider(jsonbProvider, contextResolvers);
     }
 
-    // Liberty Change End
+    // Liberty Change for CXF End
     public abstract Configuration getConfiguration(Message message);
 
     public <T> ContextResolver<T> createContextResolver(Type contextType,
@@ -385,7 +382,7 @@ public abstract class ProviderFactory {
 
         Message responseMessage = isRequestor ? m.getExchange().getInMessage()
                                               : m.getExchange().getOutMessage();
-        final Object ctProperty;
+        Object ctProperty = null;
         if (responseMessage != null) {
             ctProperty = responseMessage.get(Message.CONTENT_TYPE);
         } else {
@@ -483,9 +480,6 @@ public abstract class ProviderFactory {
 
         return null;
     }
-	
-	
-    // Liberty Change Start
 
     /**
      * _PERF_
@@ -538,9 +532,8 @@ public abstract class ProviderFactory {
         }
 
         return false;
-	}
-    // Liberty Change End
-	
+    }
+
     protected <T> boolean handleMapper(ProviderInfo<T> em,
                                        Class<?> expectedType,
                                        Message m,
@@ -555,14 +548,13 @@ public abstract class ProviderFactory {
                                        Class<?> providerClass,
                                        Class<?> commonBaseClass,
                                        boolean injectContext) {
-		// Liberty Change Begin
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "handleMapper", new Object[]{em, expectedType, m, providerClass, commonBaseClass, injectContext});
         }
-        
+        // Liberty Change for CXF Begin
         Class<?> mapperClass = ClassHelper.getRealClass(bus, em.getOldProvider());
-        // Liberty Change End
-        Type[] types;
+        // Liberty Change for CXF End
+        Type[] types = null;
         if (m != null && MessageUtils.getContextualBoolean(m, IGNORE_TYPE_VARIABLES)) {
             types = new Type[]{mapperClass};
         } else {
@@ -590,8 +582,8 @@ public abstract class ProviderFactory {
                         if (injectContext) {
                             injectContextValues(em, m);
                         }
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) { // Liberty Change
-                            Tr.debug(tc, "handleMapper return true"); // Liberty Change
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "handleMapper return true");
                         }
                         return true;
                     }
@@ -606,8 +598,8 @@ public abstract class ProviderFactory {
                         if (injectContext) {
                             injectContextValues(em, m);
                         }
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) { // Liberty Change
-                            Tr.debug(tc, "handleMapper return true"); // Liberty Change
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "handleMapper return true");
                         }
                         return true;
                     }
@@ -616,8 +608,8 @@ public abstract class ProviderFactory {
                 if (injectContext) {
                     injectContextValues(em, m);
                 }
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) { // Liberty Change
-                    Tr.debug(tc, "handleMapper return true"); // Liberty Change
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "handleMapper return true");
                 }
                 return true;
             }
@@ -642,7 +634,7 @@ public abstract class ProviderFactory {
         if (mr != null || size > 0) {
             ReaderInterceptor mbrReader = new ReaderInterceptorMBR(mr, getResponseMessage(m));
 
-            final List<ReaderInterceptor> interceptors;
+            List<ReaderInterceptor> interceptors = null;
             if (size > 0) {
                 interceptors = new ArrayList<>(size + 1);
                 List<ProviderInfo<ReaderInterceptor>> readers =
@@ -680,7 +672,7 @@ public abstract class ProviderFactory {
             })
             WriterInterceptor mbwWriter = new WriterInterceptorMBW((MessageBodyWriter)mw, m);
 
-            final List<WriterInterceptor> interceptors;
+            List<WriterInterceptor> interceptors = null;
             if (size > 0) {
                 interceptors = new ArrayList<>(size + 1);
                 List<ProviderInfo<WriterInterceptor>> writers =
@@ -755,8 +747,8 @@ public abstract class ProviderFactory {
                                                             MediaType mediaType,
                                                             Message m) {
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) { // Liberty Change
-            Tr.debug(tc, "createMessageBodyWriter ",  new Object[]{type, genericType, annotations, mediaType, m}); // Liberty Change
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "createMessageBodyWriter ",  new Object[]{type, genericType, annotations, mediaType, m});
         }
 
         // Step1: check the cache.
@@ -833,14 +825,14 @@ public abstract class ProviderFactory {
     protected abstract void setProviders(boolean custom, boolean busGlobal, Object... providers);
 
     @SuppressWarnings("unchecked")
-    protected void setCommonProviders(List<ProviderInfo<? extends Object>> theProviders, RuntimeType type) {
-        //Liberty Change Start
+    protected void setCommonProviders(List<ProviderInfo<? extends Object>> theProviders) {
+        //Liberty code change start
         List<ProviderInfo<MessageBodyReader<?>>> newReaders = new ArrayList<>();
         List<ProviderInfo<MessageBodyWriter<?>>> newWriters = new ArrayList<>();
         List<ProviderInfo<ContextResolver<?>>> newResolvers = new ArrayList<>();
         List<ProviderInfo<ContextProvider<?>>> newContextProviders = new ArrayList<>();
         List<ProviderInfo<ParamConverterProvider>> newParamConverters = new ArrayList<>();
-        //Liberty Change End
+        //Liberty code change end
 
         List<ProviderInfo<ReaderInterceptor>> readInts =
             new LinkedList<>();
@@ -849,25 +841,28 @@ public abstract class ProviderFactory {
         for (ProviderInfo<? extends Object> provider : theProviders) {
             Class<?> providerCls = ClassHelper.getRealClass(bus, provider.getProvider());
 
-            // Check if provider is constrained to runtime type
-            if (!constrainedTo(providerCls, type)) {
-                continue;
-            }
-
             if (filterContractSupported(provider, providerCls, MessageBodyReader.class)) {
-                addProviderToList(newReaders, provider); // Liberty Change 
+                //Liberty code change start
+                addProviderToList(newReaders, provider);
+                //Liberty code change end
             }
 
             if (filterContractSupported(provider, providerCls, MessageBodyWriter.class)) {
-                addProviderToList(newWriters, provider); // Liberty Change 
+                //Liberty code change start
+                addProviderToList(newWriters, provider);
+                //Liberty code change end
             }
 
             if (filterContractSupported(provider, providerCls, ContextResolver.class)) {
-                addProviderToList(newResolvers, provider); // Liberty Change 
+                //Liberty code change start
+                addProviderToList(newResolvers, provider);
+                //Liberty code change end
             }
 
             if (ContextProvider.class.isAssignableFrom(providerCls)) {
-                addProviderToList(newContextProviders, provider); // Liberty Change 
+                //Liberty code change start
+                addProviderToList(newContextProviders, provider);
+                //Liberty code change end
             }
 
             if (filterContractSupported(provider, providerCls, ReaderInterceptor.class)) {
@@ -879,10 +874,12 @@ public abstract class ProviderFactory {
             }
 
             if (filterContractSupported(provider, providerCls, ParamConverterProvider.class)) {
-                addProviderToList(newParamConverters, provider); // Liberty Change
+                //Liberty code change start
+                addProviderToList(newParamConverters, provider);
+                //Liberty code change end
             }
         }
-        // Liberty Change Start
+        //Liberty code change start
         if (newReaders.size() > 0) {
             addAndSortReaders(newReaders, false);
         }
@@ -898,25 +895,17 @@ public abstract class ProviderFactory {
         if (newParamConverters.size() > 0) {
             addAndSortParamConverters(newParamConverters, false);
         }
-        // Liberty Change End
+        //Liberty code change end
 
         mapInterceptorFilters(readerInterceptors, readInts, ReaderInterceptor.class, true);
         mapInterceptorFilters(writerInterceptors, writeInts, WriterInterceptor.class, true);
-        injectContextProxies(messageReaders.get(), messageWriters.get(), contextResolvers.get(), paramConverters.get(), // Liberty Change
+
+        //Liberty code change start
+        injectContextProxies(messageReaders.get(), messageWriters.get(), contextResolvers.get(), paramConverters.get(),
+        //Liberty code change end
             readerInterceptors.values(), writerInterceptors.values());
         checkParamConverterContexts();
     }
-    
-    // Liberty Change Start: 
-    // Because jaxrs-2.0 and jaxrs-2.1 are compatible with both mpRestClient-1.0 and 
-    // mpRestClient-1.1, the MicroProfileClietProviderFactory class in the com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2
-    // must remain compatibile with the jaxrs-2.0 and jaxrs-2.1 version of CXF. Because the setCommonProviders method signature
-    // has changed to include a RuntimeType type, we must over ride this method to provide backwards compatibility with the older
-    // versions of MP Rest Client when running with jaxrs-2.1
-    protected void setCommonProviders(List<ProviderInfo<? extends Object>> theProviders) {
-        setCommonProviders(theProviders, RuntimeType.CLIENT);
-    }
-    // Liberty Change End
 
     private void checkParamConverterContexts() {
         for (ProviderInfo<ParamConverterProvider> pi : paramConverters) {
@@ -969,7 +958,7 @@ public abstract class ProviderFactory {
         }
     }
 
-    // Liberty Change Start
+    //Liberty code change start
     private void addAndSortReaders(List<ProviderInfo<MessageBodyReader<?>>> newReaders, boolean forceSort) {
         Comparator<ProviderInfo<MessageBodyReader<?>>> comparator = null;
         if (!customComparatorAvailable(MessageBodyReader.class)) {
@@ -1087,7 +1076,7 @@ public abstract class ProviderFactory {
 
         paramConverters.addAndSortProviders(newParamConverters, comparator, forceSort);
     }
-    // Liberty code change end
+    //Liberty code change end
 
     private boolean customComparatorAvailable(Class<?> providerClass) {
         if (providerComparator != null) {
@@ -1125,8 +1114,7 @@ public abstract class ProviderFactory {
         theProviders.sort(theComparator);
     }
 
-    // Liberty Change Start
-    private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = new IdentityHashMap<>(); 
+private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = new IdentityHashMap<>();
 
 
 
@@ -1148,7 +1136,6 @@ public abstract class ProviderFactory {
         }
         return mediaTypes;
     }
-	// Liberty Change End
 
     private <T> boolean matchesReaderMediaTypes(ProviderInfo<MessageBodyReader<?>> pi,
                                                 MediaType mediaType) {
@@ -1167,12 +1154,12 @@ public abstract class ProviderFactory {
         MessageBodyReader<?> ep = pi.getProvider();
         if (m.get(ACTIVE_JAXRS_PROVIDER_KEY) != ep) {
             injectContextValues(pi, m);
-            ep = pi.getProvider(); // Liberty Change - now that CDI or EJB may have changed the provider impl //Liberty change
+            ep = pi.getProvider(); // now that CDI or EJB may have changed the provider impl //Liberty change
         }
         return ep.isReadable(type, genericType, annotations, mediaType);
     }
 
-    //Liberty Change Start
+    //Liberty change start
     private final Map<MessageBodyWriter<?>, List<MediaType>> writerMediaTypesMap = new IdentityHashMap<>();
 
     /**
@@ -1193,12 +1180,12 @@ public abstract class ProviderFactory {
         }
         return mediaTypes;
     }
-    // Liberty Change End
+    //Liberty change end
 
     private <T> boolean matchesWriterMediaTypes(ProviderInfo<MessageBodyWriter<?>> pi,
                                                 MediaType mediaType) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) { // Liberty Change
-            Tr.debug(tc, "matchesWriterMediaTypes ",  new Object[]{pi, mediaType}); // Liberty Change
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "matchesWriterMediaTypes ",  new Object[]{pi, mediaType});
         }
         MessageBodyWriter<?> ep = pi.getProvider();
         List<MediaType> supportedMediaTypes = JAXRSUtils.getProviderProduceTypes(ep);
@@ -1215,28 +1202,34 @@ public abstract class ProviderFactory {
         MessageBodyWriter<?> ep = pi.getProvider();
         if (m.get(ACTIVE_JAXRS_PROVIDER_KEY) != ep) {
             injectContextValues(pi, m);
-            ep = pi.getProvider(); // // Liberty Change - now that CDI or EJB may have changed the provider impl
+            ep = pi.getProvider(); // now that CDI or EJB may have changed the provider impl - Liberty change
         }
         return ep.isWriteable(type, genericType, annotations, mediaType);
     }
 
     List<ProviderInfo<MessageBodyReader<?>>> getMessageReaders() {
-        return Collections.unmodifiableList(messageReaders.get()); // Liberty Change
+        //Liberty code change start
+        return Collections.unmodifiableList(messageReaders.get());
+        //Liberty code change end
     }
 
     List<ProviderInfo<MessageBodyWriter<?>>> getMessageWriters() {
-        return Collections.unmodifiableList(messageWriters.get()); // Liberty Change
+        //Liberty code change start
+        return Collections.unmodifiableList(messageWriters.get());
+        //Liberty code change end
     }
 
     public List<ProviderInfo<ContextResolver<?>>> getContextResolvers() {
-        return Collections.unmodifiableList(contextResolvers.get()); // Liberty Change 
+        //Liberty code change start
+        return Collections.unmodifiableList(contextResolvers.get());
+        //Liberty code change end
     }
 
-    // Liberty Change Start
+    //Liberty change start
     public Iterable<ProviderInfo<ContextResolver<?>>> getContextResolversActual() {
         return contextResolvers;
     }
-    // Liberty Change End
+    //Liberty change end
 
 
     public void registerUserProvider(Object provider) {
@@ -1253,7 +1246,6 @@ public abstract class ProviderFactory {
     }
 
     //https://issues.apache.org/jira/browse/CXF-6380
-	// Liberty Change Start
     private static class MessageBodyReaderComparator implements Comparator<ProviderInfo<MessageBodyReader<?>>> {
 
         private final Map<MessageBodyReader<?>, List<MediaType>> cache;
@@ -1262,16 +1254,16 @@ public abstract class ProviderFactory {
             this.cache = cache;
         }
 
-        @Override // Liberty Change End
+        @Override
         public int compare(ProviderInfo<MessageBodyReader<?>> p1,
                            ProviderInfo<MessageBodyReader<?>> p2) {
             MessageBodyReader<?> e1 = p1.getOldProvider();
             MessageBodyReader<?> e2 = p2.getOldProvider();
 
-            //Liberty Change Start
+            //Liberty code change start
             List<MediaType> types1 = getSortedProviderConsumeTypes(e1, cache);
             List<MediaType> types2 = getSortedProviderConsumeTypes(e2, cache);
-            // Liberty Change End
+            //Liberty code change end
 
             int result = JAXRSUtils.compareSortedMediaTypes(types1, types2, null);
             if (result != 0) {
@@ -1289,8 +1281,6 @@ public abstract class ProviderFactory {
         }
     }
 
-
-    // Liberty Change Start
     private static class MessageBodyWriterComparator implements Comparator<ProviderInfo<MessageBodyWriter<?>>> {
 
         private final Map<MessageBodyWriter<?>, List<MediaType>> cache;
@@ -1309,9 +1299,10 @@ public abstract class ProviderFactory {
             if (result != 0) {
                 return result;
             }
+            //Liberty code change start
             List<MediaType> types1 = getSortedProviderProduceTypes(e1, cache);
             List<MediaType> types2 = getSortedProviderProduceTypes(e2, cache);
-            // Liberty Change End
+            //Liberty code change end
 
             result = JAXRSUtils.compareSortedMediaTypes(types1, types2, JAXRSUtils.MEDIA_TYPE_QS_PARAM);
             if (result != 0) {
@@ -1328,8 +1319,6 @@ public abstract class ProviderFactory {
     private static class ParamConverterProviderComparator implements Comparator<ProviderInfo<ParamConverterProvider>> {
 
 
-
-		// Liberty Change Start
         @Override
         public int compare(ProviderInfo<ParamConverterProvider> p1,
                            ProviderInfo<ParamConverterProvider> p2) {
@@ -1343,10 +1332,9 @@ public abstract class ProviderFactory {
 
             return comparePriorityStatus(p1.getProvider().getClass(), p2.getProvider().getClass());
         }
-		// Liberty Change End
     }
 
-    public static int compareCustomStatus(ProviderInfo<?> p1, ProviderInfo<?> p2) { // Liberty Change
+    public static int compareCustomStatus(ProviderInfo<?> p1, ProviderInfo<?> p2) {
         boolean custom1 = p1.isCustom();
         int result = Boolean.compare(p2.isCustom(), custom1);
         if (result == 0 && custom1) {
@@ -1362,11 +1350,11 @@ public abstract class ProviderFactory {
 
     private static class ContextResolverComparator
         implements Comparator<ProviderInfo<ContextResolver<?>>> {
-        @Override // Liberty Change
+        @Override
         public int compare(ProviderInfo<ContextResolver<?>> p1,
                            ProviderInfo<ContextResolver<?>> p2) {
-            ContextResolver<?> e1 = p1.getOldProvider(); // Liberty Change
-            ContextResolver<?> e2 = p2.getOldProvider(); // Liberty Change
+            ContextResolver<?> e1 = p1.getOldProvider();
+            ContextResolver<?> e2 = p2.getOldProvider();
 
             List<MediaType> types1 =
                 JAXRSUtils.sortMediaTypes(JAXRSUtils.getProduceTypes(
@@ -1477,10 +1465,10 @@ public abstract class ProviderFactory {
 
     Set<Object> getReadersWriters() {
         Set<Object> set = new HashSet<>();
-        //Liberty Change Start
+        //Liberty code change start
         set.addAll(messageReaders.get());
         set.addAll(messageWriters.get());
-        //Liberty Change End
+        //Liberty code change end
         return set;
     }
 
@@ -1493,15 +1481,15 @@ public abstract class ProviderFactory {
             this.expectedCls = expectedCls;
         }
 
-        @Override // Liberty Change 
+        @Override
         public int compare(Object em1, Object em2) {
             return compareClasses(expectedCls, em1, em2);
         }
     }
 
     public static class ProviderInfoClassComparator implements Comparator<ProviderInfo<?>> {
-        Comparator<Object> comp; // Liberty Change
-        boolean defaultComp; // Liberty Change
+        Comparator<Object> comp;
+        boolean defaultComp;
         public ProviderInfoClassComparator(Class<?> expectedCls) {
             this.comp = new ClassComparator(expectedCls);
             this.defaultComp = true;
@@ -1537,6 +1525,7 @@ public abstract class ProviderFactory {
         }
     }
 
+
     public static ProviderFactory getInstance(Message m) {
         Endpoint e = m.getExchange().getEndpoint();
 
@@ -1546,9 +1535,11 @@ public abstract class ProviderFactory {
 
         return (ProviderFactory)e.get(name);
     }
+
     protected static int compareClasses(Object o1, Object o2) {
         return compareClasses(null, o1, o2);
     }
+
     protected static int compareClasses(Class<?> expectedCls, Object o1, Object o2) {
         Class<?> cl1 = ClassHelper.getRealClass(o1);
         Class<?> cl2 = ClassHelper.getRealClass(o2);
@@ -1580,13 +1571,13 @@ public abstract class ProviderFactory {
     private static Type[] getGenericInterfaces(Class<?> cls, Class<?> expectedClass) {
         return getGenericInterfaces(cls, expectedClass, Object.class);
     }
-    // Liberty Change Start
-    // defect 178126
-    // Add the result to cache before return
+    //Liberty code change start
+    //defect 178126
+    //Add the result to cache before return
     private static Type[] getGenericInterfaces(Class<?> cls, Class<?> expectedClass,
                                                Class<?> commonBaseCls) {
         if (Object.class == cls) {
-            return emptyType; 
+            return emptyType;
         }
         Type[] cachedTypes = getTypes(cls, expectedClass, commonBaseCls);
         if (cachedTypes != null)
@@ -1617,7 +1608,8 @@ public abstract class ProviderFactory {
         putTypes(cls, expectedClass, commonBaseCls, superGenericTypes);
         return superGenericTypes;
     }
-    // Liberty Change End
+
+    //Liberty code change end
 
     protected static class AbstractPriorityComparator {
 
@@ -1634,7 +1626,7 @@ public abstract class ProviderFactory {
 
     }
 
-    // Liberty Change Start
+    //Liberty code change start
     protected static class BindingPriorityComparator<T> extends AbstractPriorityComparator
         implements Comparator<ProviderInfo<T>> {
         private final Class<T> providerCls;
@@ -1651,7 +1643,7 @@ public abstract class ProviderFactory {
         }
 
     }
-    // Liberty Change End
+    //Liberty code change end
 
     static class ContextResolverProxy<T> implements ContextResolver<T> {
         private List<ContextResolver<T>> candidates;
@@ -1659,7 +1651,7 @@ public abstract class ProviderFactory {
             this.candidates = candidates;
         }
 
-        @Override // Liberty Change
+        @Override
         public T getContext(Class<?> cls) {
             for (ContextResolver<T> resolver : candidates) {
                 T context = resolver.getContext(cls);
@@ -1697,7 +1689,7 @@ public abstract class ProviderFactory {
                 }
             }
         }
-        final Object instance;
+        Object instance = null;
         try {
             instance = c.newInstance(cArgs);
         } catch (Throwable ex) {
@@ -1765,7 +1757,7 @@ public abstract class ProviderFactory {
             return providerInfo;
         }
 
-        @Override // Liberty Change 
+        @Override
         public boolean equals(Object o) {
             if (!(o instanceof NameKey)) {
                 return false;
@@ -1775,12 +1767,12 @@ public abstract class ProviderFactory {
                 && providerCls == other.providerCls;
         }
 
-        @Override // Liberty Change 
+        @Override
         public int hashCode() {
             return super.hashCode();
         }
 
-        @Override // Liberty Change 
+        @Override
         public String toString() {
             return name + ":" + priority;
         }
@@ -1812,7 +1804,8 @@ public abstract class ProviderFactory {
 
     }
     protected static Set<String> getFilterNameBindings(Bus bus, Object provider) {
-        Set<String> names = AnnotationUtils.getInstanceNameBindings(bus, provider);
+        Class<?> pClass = ClassHelper.getRealClass(bus, provider);
+        Set<String> names = AnnotationUtils.getNameBindings(pClass.getAnnotations());
         if (names.isEmpty()) {
             names = Collections.singleton(DEFAULT_FILTER_NAME_BINDING);
         }
@@ -1893,7 +1886,7 @@ public abstract class ProviderFactory {
         return result;
     }
 
-    // Liberty Change Start
+    // Liberty Change for CXF Begin
     protected List<ProviderInfo<? extends Object>> prepareProviders(boolean custom,
                                                                     boolean busGlobal,
                                                                     Object[] providers,
@@ -1951,7 +1944,7 @@ public abstract class ProviderFactory {
         return theProviders;
     }
 
-    // Liberty Change End
+    // Liberty Change for CXF End
     public MessageBodyWriter<?> getDefaultJaxbWriter() {
         for (ProviderInfo<MessageBodyWriter<?>> pi : this.messageWriters) {
             Class<?> cls = pi.getProvider().getClass();
@@ -1969,14 +1962,15 @@ public abstract class ProviderFactory {
     @SuppressWarnings("unchecked")
     public void setProviderComparator(Comparator<?> providerComparator) {
         this.providerComparator = providerComparator;
-        // Liberty Change Start
+        //Liberty code change start
         addAndSortReaders(null, true);
         addAndSortWriters(null, true);
         addAndSortParamConverters(null, true);
-        // Liberty Change End
+        //Liberty code change end
     }
 
-    // Liberty Change Start - Defect 178126
+    //Liberty code change start
+    //defect 178126
     private static final ReferenceQueue<Class<?>> referenceQueue = new ReferenceQueue<>();
 
     private static void poll() {
@@ -2100,31 +2094,5 @@ public abstract class ProviderFactory {
             return new StringBuilder("ClassWeakReference: ").append(referent == null ? null : referent.getName()).toString();
         }
     }
-    // Liberty Change End
-
-    /**
-     * Checks the presence of {@link ConstrainedTo} annotation and, if present, applicability to 
-     * the runtime type.
-     * @param providerCls provider class
-     * @param type runtime type
-     * @return "true" if provider could be used with runtime type, "false" otherwise
-     */
-    protected static boolean constrainedTo(Class<?> providerCls, RuntimeType type) {
-        final ConstrainedTo constrained = AnnotationUtils.getClassAnnotation(providerCls, ConstrainedTo.class);
-        return constrained == null || constrained.value() == type;
-    }
-
-    /**
-     * @param providerCls
-     */
-    // Liberty Change Start: 
-    // Because jaxrs-2.0 and jaxrs-2.1 are compatible with both mpRestClient-1.0 and 
-    // mpRestClient-1.1, the MicroProfileClietProviderFactory class in the com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2
-    // must remain compatibile with the jaxrs-2.0 and jaxrs-2.1 version of CXF. Because the constrainedTo method signature
-    // has changed to include a RuntimeType type, we must over ride this method to provide backwards compatibility with the older
-    // versions of MP Rest Client when running with jaxrs-2.1
-    protected static void constrainedTo(Class<?> providerCls) {
-        constrainedTo(providerCls, RuntimeType.CLIENT);
-    }
-    // Liberty Change End
+    //Liberty code change end
 }

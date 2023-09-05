@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ public class XAResourceImpl implements XAResource, Serializable {
     // Set when dumped. If a operation occurs which changes the state after this has happened
     protected static boolean dumped;
 
-    protected static ConcurrentHashMap<String, XAResourceData> _resources = new ConcurrentHashMap<String, XAResourceData>();
+    protected static ConcurrentHashMap<Integer, XAResourceData> _resources = new ConcurrentHashMap<Integer, XAResourceData>();
 
     protected static StateKeeper stateKeeper;
 
@@ -58,23 +58,40 @@ public class XAResourceImpl implements XAResource, Serializable {
         @Override
         public void dumpState(boolean quietly) {
         	dumped = !quietly; // For some tests (e.g. XAFlow) we need to continue after dumping state.
-            System.out.println("Dumping state to " + STATE_FILE);
-
             printState();
+            FileOutputStream fos = null;
+            ObjectOutputStream oos = null;
+            try {
+                System.out.println("Dumping state to " + STATE_FILE);
+                fos = new FileOutputStream(STATE_FILE);
+                if (DEBUG_OUTPUT)
+                    System.out.println("Dumping state to: "
+                                       + System.getProperty("user.dir"));
+                oos = new ObjectOutputStream(fos);
 
-            try (FileOutputStream fos = new FileOutputStream(STATE_FILE);ObjectOutputStream oos = new ObjectOutputStream(fos);) {
-        		_resources.entrySet().stream().forEach(e -> {
-					try {
-						XAResourceData xares = e.getValue();
-	                    System.out.println("Dump Object:\n" + xares);
-						oos.writeObject(xares);
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-				});
-            } catch (IOException e2) {
-				e2.printStackTrace();
-			}
+                for (XAResourceData xares : _resources.values()) {
+                    if (DEBUG_OUTPUT)
+                        System.out.println("Dump Object: " + xares + ", with key: "
+                                           + xares.key + ", with xid: " + xares.getXid());
+                    oos.writeObject(xares);
+                }
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (oos != null) {
+                        oos.flush();
+                        oos.close();
+                    }
+                    if (fos != null)
+                        fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         /*
@@ -88,7 +105,7 @@ public class XAResourceImpl implements XAResource, Serializable {
             int resourceCount = 0;
             _commitSequence.set(0);
             ObjectInputStream ois = null;
-            String resKey = "!!!!!!!!";
+            int resKey = 0;
             FileInputStream fos = null;
 
             try {
@@ -100,6 +117,9 @@ public class XAResourceImpl implements XAResource, Serializable {
                     final XAResourceData xares = (XAResourceData) ois.readObject();
                     resKey = xares.key;
                     _resources.put(resKey, xares);
+                    if (resKey >= _nextKey.get()) {
+                        _nextKey.set(resKey + 1);
+                    }
                     resourceCount++;
                 }
             } catch (EOFException e) {
@@ -129,9 +149,11 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     private static List<XAEvent> _XAEvents = Collections.synchronizedList(new ArrayList<XAEvent>());
 
-    protected String _key;
+    protected Integer _key;
 
     private static AtomicInteger _commitSequence = new AtomicInteger(0);
+
+    public static AtomicInteger _nextKey = new AtomicInteger(0);
 
     public static final int RUNTIME_EXCEPTION = -1000;
     public static final int DIE = -2000;
@@ -150,7 +172,7 @@ public class XAResourceImpl implements XAResource, Serializable {
     public static final int RECOVERED = 128;
     public static final int COMMITTED_ONE_PHASE = 256;
 
-    protected static File STATE_FILE = new File("XAResourceData.dat");
+    protected static String STATE_FILE = "XAResourceData.dat";
     public static final String DUMP_STATE = "Dump State: ";
 
     // This variable may be set to true to allow more chatty output.
@@ -170,12 +192,8 @@ public class XAResourceImpl implements XAResource, Serializable {
         return this;
     }
 
-    public static synchronized void setStateFile(File path) {
-        try {
-			System.out.println("setStateFile: " + path.getCanonicalPath());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+    public static synchronized void setStateFile(String path) {
+        System.out.println("setStateFile: " + path);
         STATE_FILE = path;
     }
 
@@ -226,7 +244,7 @@ public class XAResourceImpl implements XAResource, Serializable {
     public class XAResourceData implements Serializable {
         private static final long serialVersionUID = -253646295143893358L;
 
-        public final String key;
+        public final int key;
         private UUID RM;
         private int prepareAction = XAResource.XA_OK;
         private int rollbackAction = XAResource.XA_OK;
@@ -322,8 +340,8 @@ public class XAResourceImpl implements XAResource, Serializable {
             _state |= state;
         }
 
-        public XAResourceData(String _key) {
-            key = _key;
+        public XAResourceData(int i) {
+            key = i;
             RM = UUID.randomUUID();
         }
 
@@ -511,8 +529,7 @@ public class XAResourceImpl implements XAResource, Serializable {
         @Override
         public String toString() {
             StringBuffer sb = new StringBuffer("Resource: " + key + "\n");
-            sb.append("RM: " + RM);
-            sb.append("\nState: " + stateFormatter(_state));
+            sb.append("State: " + stateFormatter(_state));
             sb.append("\nXid: " + _xid);
             sb.append("\nCommit order: " + _commitOrder);
             sb.append("\nRecover action: " + actionFormatter(recoverAction));
@@ -621,29 +638,28 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     public XAResourceImpl() {
         synchronized (_resources) {
-            _key = UUID.randomUUID().toString();
+            _key = _nextKey.getAndIncrement();
             System.out.println("Constructing XAResourceImpl: " + _key);
             _resources.put(_key, new XAResourceData(_key));
         }
     }
 
     public XAResourceImpl(int i) {
-    	this(Integer.toString(i));
-    }
-
-    public XAResourceImpl(String key) {
         synchronized (_resources) {
-            _key = key;
-            if (!_resources.containsKey(key)) {
+            _key = i;
+            if (!_resources.containsKey(i)) {
                 System.out.println("Constructing XAResourceImpl: " + _key);
                 _resources.put(_key, new XAResourceData(_key));
+                if (i >= _nextKey.get()) {
+                    _nextKey.set(i + 1);
+                }
             } else {
                 System.out.println("XAResourceImpl exists already: " + _key);
             }
         }
     }
 
-    public static XAResourceImpl getXAResourceImpl(String key) {
+    public static XAResourceImpl getXAResourceImpl(int key) {
         return new XAResourceImpl(key);
     }
 
@@ -899,11 +915,12 @@ public class XAResourceImpl implements XAResource, Serializable {
 
         if (self() == null) {
             if (DEBUG_OUTPUT)
-                System.out.println("No XARecoveryData - returning null xid array");
+                System.out
+                                .println("No XARecoveryData - returning null xid array");
             return null;
         }
         
-        System.out.println("XAResource state in recover():\n"+self());
+        System.out.println("XAResource state in recover(): "+self());
 
         _XAEvents.add(new XAEvent(XAEventCode.RECOVER, _key));
 
@@ -1286,9 +1303,10 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     public static void printState() {
 
-        StringBuffer sb = new StringBuffer();
-        sb.append("Resources:\n");
-		_resources.entrySet().stream().forEach(e -> sb.append(e.getValue()).append("\n"));
+        StringBuffer sb = new StringBuffer("Resources:\n");
+        for (int i = 0; i < _resources.size(); i++) {
+            sb.append(_resources.get(i)).append("\n");
+        }
 
         sb.append("XA History: ");
 
@@ -1314,23 +1332,16 @@ public class XAResourceImpl implements XAResource, Serializable {
         int rolledback = 0;
         int numResources = 0;
 
-        StringBuffer sb = new StringBuffer();
-//        _resources.entrySet().stream().forEach(e -> sb.append(e.getValue()).append("\n"));
-
         for (XAResourceData res : _resources.values()) {
         	if (null != res.getXid()) {
         		numResources++;
         		if (res.inState(COMMITTED)) {
-        			sb.append("Committed: ").append(res.key).append(" ");
         			committed++;
         		} else if (res.inState(ROLLEDBACK)) {
-        			sb.append("RolledBack: ").append(res.key).append(" ");
         			rolledback++;
         		} else if (res.inState(PREPARED)) {
-        			sb.append("Prepared: ").append(res.key).append(" ");
         			prepared++;
         		} else {
-        			sb.append(res.getState()).append(": ").append(res.key).append(" ");
         			rolledback++;
         		}
         	} else {
@@ -1340,25 +1351,25 @@ public class XAResourceImpl implements XAResource, Serializable {
 
         if (committed > 0) {
             if (committed != numResources) {
-                return "Unatomic ("+numResources+") ("+sb.toString()+")";
+                return "Unatomic";
             }
 
-            return "allCommitted ("+numResources+") ("+sb.toString()+")";
+            return "allCommitted";
         }
 
         if (rolledback > 0) {
             if (rolledback != numResources) {
-                return "Unatomic ("+numResources+") ("+sb.toString()+")";
+                return "Unatomic";
             }
 
-            return "allRollback ("+numResources+") ("+sb.toString()+")";
+            return "allRollback";
         }
 
         if (prepared > 0) {
-            return "Unatomic ("+numResources+") ("+sb.toString()+")";
+            return "Unatomic";
         }
 
-        return "allRollback ("+numResources+") ("+sb.toString()+")";
+        return "allRollback";
     }
 
     public static boolean checkForgotten() {
@@ -1385,9 +1396,9 @@ public class XAResourceImpl implements XAResource, Serializable {
         final XAResourceData xard = _resources.get(_key);
 
         if (xard == null) {
-            System.out.println("self() is about to return null: >" + _key + "<");
-            for (String key : _resources.keySet()) {
-                System.out.println("Key: >" + _key + "<");
+            System.out.println("self() is about to return null: " + _key);
+            for (Integer key : _resources.keySet()) {
+                System.out.println("Key: " + _key);
                 System.out.println("Value: " + _resources.get(key));
             }
         }
@@ -1403,17 +1414,19 @@ public class XAResourceImpl implements XAResource, Serializable {
     }
 
     public static synchronized boolean clear() {
-		System.out.println("XAResourceImpl.clear(): Deleting state file: " + STATE_FILE.getAbsolutePath());
+		final File f = new File(STATE_FILE);
+		System.out.println("XAResourceImpl.clear(): Deleting state file: " + f.getAbsolutePath());
 
 		_XAEvents.clear();
         _resources.clear();
+        _nextKey.set(0);
 
         return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
 
 			@Override
 			public Boolean run() {
-				if (STATE_FILE.exists()) {
-					boolean result = STATE_FILE.delete();
+				if (f.exists()) {
+					boolean result = f.delete();
 					System.out.println("Deletion " + (result ? "succeeded" : "failed"));
 					return result;
 				} else {
@@ -1458,15 +1471,15 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     public class XAEvent {
         private final XAEventCode _event;
-        private final String _key;
+        private final int _key;
 
-        public XAEvent(XAEventCode event, String _key2) {
+        public XAEvent(XAEventCode event, int key) {
             _event = event;
-            _key = _key2;
+            _key = key;
         }
 
         public boolean isSameAs(XAEventCode event, int key) {
-            return event == _event && _key.equals(key);
+            return event == _event && key == _key;
         }
 
         @Override
@@ -1566,7 +1579,7 @@ public class XAResourceImpl implements XAResource, Serializable {
     /**
      * @param stateFile
      */
-    public static synchronized void loadState(File stateFile) {
+    public static synchronized void loadState(String stateFile) {
         setStateFile(stateFile);
         loadState();
     }

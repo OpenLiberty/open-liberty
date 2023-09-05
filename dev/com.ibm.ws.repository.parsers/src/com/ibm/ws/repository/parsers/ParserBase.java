@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -131,8 +131,7 @@ public abstract class ParserBase {
     /**
      * The constructor used for any Parser ... a RepositoryConnection is not needed
      */
-    public ParserBase() {
-    }
+    public ParserBase() {}
 
     /**
      * Enum declaring the productEdition component of appliesTo
@@ -215,21 +214,21 @@ public abstract class ParserBase {
      * deleted when the jvm exits.
      *
      * @param fileName
-     *                     The name of the archive file to extract the file from
+     *            The name of the archive file to extract the file from
      * @param regex
-     *                     A regular expression, that is used to match the file to be
-     *                     extracted from the archive. If more than one file matches the
-     *                     regular expression only the first file is extracted
+     *            A regular expression, that is used to match the file to be
+     *            extracted from the archive. If more than one file matches the
+     *            regular expression only the first file is extracted
      * @return A file object representing the temporary file where the file in
      *         the jar was extracted to.
      * @throws MassiveArchiveException
-     *                                                     if the archive could not be read or the file could not be
-     *                                                     extracted to disk
+     *             if the archive could not be read or the file could not be
+     *             extracted to disk
      * @throws RepositoryArchiveException
      * @throws RepositoryArchiveIOException
      * @throws RepositoryArchiveEntryNotFoundException
-     *                                                     If no file matching the supplied regular expression could be
-     *                                                     found
+     *             If no file matching the supplied regular expression could be
+     *             found
      */
     protected ExtractedFileInformation extractFileFromArchive(String fileName,
                                                               String regex) throws RepositoryArchiveException, RepositoryArchiveEntryNotFoundException, RepositoryArchiveIOException {
@@ -426,9 +425,9 @@ public abstract class ParserBase {
      * and the metadata file may not be co-located e.g. when pulling them out
      * of different parts of the build.
      *
-     * @param archiveFile  - the .jar or .esa file to look for a sibling zip for
+     * @param archiveFile - the .jar or .esa file to look for a sibling zip for
      * @param metadataFile - the *.metadata.zip file or null to use one
-     *                         co-located with the archiveFile
+     *            co-located with the archiveFile
      * @return The artifact metadata from the sibling zip or <code>null</code>
      *         if none was found
      * @throws IOException
@@ -587,7 +586,7 @@ public abstract class ParserBase {
             }
         }
 
-        try (FileSystem archiveFS = FileSystems.newFileSystem(archive.toPath(), (ClassLoader) null)) {
+        try (FileSystem archiveFS = FileSystems.newFileSystem(archive.toPath(), null)) {
             // Somewhere to put the unpacked license files.
             Path tempDir = Files.createTempDirectory("unpackedEsa");
             tempDir.toFile().deleteOnExit();
@@ -796,9 +795,9 @@ public abstract class ParserBase {
      * Process icons from the properties file
      *
      * @param amd
-     *                Metadata
+     *            Metadata
      * @param res
-     *                Resource to add icons to
+     *            Resource to add icons to
      * @throws RepositoryException
      */
     protected void processIcons(ArtifactMetadata amd, RepositoryResourceWritable res) throws RepositoryException {
@@ -878,7 +877,7 @@ public abstract class ParserBase {
     /**
      * Returns <code>true</code> if the supplied <code>file</code> is a valid zip and contains at least one entry of each of the supplied <code>fileTypes</code>.
      *
-     * @param file      The zip file to check
+     * @param file The zip file to check
      * @param fileTypes The types of files to look for
      * @return <code>true</code> if file types found
      */

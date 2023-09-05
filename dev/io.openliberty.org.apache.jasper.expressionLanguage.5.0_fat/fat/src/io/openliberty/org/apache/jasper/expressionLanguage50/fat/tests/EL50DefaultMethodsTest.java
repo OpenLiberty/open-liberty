@@ -4,8 +4,11 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.org.apache.jasper.expressionLanguage50.fat.tests;
 
@@ -14,16 +17,16 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import io.openliberty.el50.fat.servlets.EL50DefaultMethodsServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.el50.fat.defaultmethods.servlet.EL50DefaultMethodsServlet;
 
 /**
- * Tests to ensure default methods are resolved by BeanELResolver in expressionLanguage-5.0.
+ * Tests to ensure default methods are resolved by BeanELResolver in expressionLanguage-5.0. 
  * https://github.com/jakartaee/expression-language/issues/43
  */
 @RunWith(FATRunner.class)
@@ -35,7 +38,7 @@ public class EL50DefaultMethodsTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(elServer, "EL50DefaultMethodBeanELResolverTest.war", "io.openliberty.el50.fat.defaultmethods.servlet");
+        ShrinkHelper.defaultDropinApp(elServer, "EL50DefaultMethodBeanELResolverTest.war", "io.openliberty.el50.fat.servlets");
 
         elServer.startServer(EL50DefaultMethodsTest.class.getSimpleName() + ".log");
     }

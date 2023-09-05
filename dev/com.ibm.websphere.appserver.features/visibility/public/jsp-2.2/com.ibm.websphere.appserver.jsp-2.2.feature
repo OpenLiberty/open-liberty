@@ -39,10 +39,7 @@ Subsystem-Name: JavaServer Pages 2.2
   io.openliberty.servlet.internal-3.0; ibm.tolerates:="3.1", \
   com.ibm.websphere.appserver.eeCompatible-6.0, \
   com.ibm.websphere.appserver.javax.el-2.2
--bundles=\
- com.ibm.ws.org.eclipse.jdt.core; require-java:="[8,11)", \
- io.openliberty.org.eclipse.jdt.core.java11; require-java:="[11,17)", \
- io.openliberty.org.eclipse.jdt.core.java17; require-java:=17, \
+-bundles=com.ibm.ws.org.eclipse.jdt.core, \
  com.ibm.ws.jsp.factories, \
  com.ibm.websphere.javaee.jstl.1.2; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.servlet:jstl:1.2", \
  com.ibm.ws.jsp.jasper, \

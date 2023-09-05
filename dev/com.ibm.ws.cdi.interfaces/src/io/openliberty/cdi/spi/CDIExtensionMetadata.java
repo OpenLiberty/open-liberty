@@ -68,8 +68,6 @@ public interface CDIExtensionMetadata {
      * All classes returned by this method will be will be found by CDI during type discovery
      * so that they can then be used as beans (or interceptors etc. if annotated as such) by the application.
      * All classes must be in the same archive as your CDIExtensionMetadata.
-     * <p>
-     * If a bean registered via this does not have a bean defining annotation it will default to a scope of {@code @Dependent}
      */
     default public Set<Class<?>> getBeanClasses() {
         return Collections.emptySet();

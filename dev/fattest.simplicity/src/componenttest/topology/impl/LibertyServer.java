@@ -365,24 +365,6 @@ public class LibertyServer implements LogMonitorClient {
      */
     public String getMicroVersion() {
         return RELEASE_MICRO_VERSION;
-
-        // The micro version is set by by 'cnf\build.gradle':
-        //   inputs.file('resources/bnd/liberty-release.props')
-        // And by 'wlp-gradle/subprojects/fat.gradle':
-        //   bndProps.setProperty('micro.version', bnd.get('libertyBundleMicroVersion'))
-        //
-        // The micro version is used as a suffix to the base name of
-        // library jars, for example:
-        //
-        // libertyBundleMicroVersion=78
-        //
-        // -rw-rw-rw-  1 874973897 874973897  348465 06-12 22:12 com.ibm.ws.kernel.boot.archive_1.0.78.jar
-        // -rw-rw-rw-  1 874973897 874973897  829676 06-13 16:11 com.ibm.ws.kernel.boot_1.0.78.jar
-        // -rw-rw-rw-  1 874973897 874973897  829671 06-28 12:07 com.ibm.ws.kernel.boot_1.0.78.jar
-        //
-        // Errors can occur if the micro version does not match the names under 'wlp/lib'.
-        // This occurs rarely during official builds, possibly because of the splicing of
-        // a newer WAS liberty build with an older open liberty build.
     }
 
     public String getMicroSuffix() {
@@ -760,9 +742,6 @@ public class LibertyServer implements LogMonitorClient {
         if (installRoot == null) {
             throw new IllegalArgumentException("No installRoot was set in " + b);
         }
-
-        // TODO: Verify the micro version matches the files under 'installRoot/lib'.
-
 
         // Allow user directory name to be provided in bootstrap properties.
         // It is optional and if it is not set, setup() will set it.
@@ -1975,23 +1954,17 @@ public class LibertyServer implements LogMonitorClient {
                 throw fail;
             }
             assertCheckpointDirAsExpected(true);
-            try {
-                checkLogsForErrorsAndWarnings(checkpointInfo.checkpointRegexIgnoreMessages.toArray(new String[checkpointInfo.checkpointRegexIgnoreMessages.size()]));
-            } catch (Exception exc) {
-                Log.error(c, "Server logs should not contain unexpected errors after a checkpoint operation", exc);
-                throw exc;
-            }
+            checkLogsForErrorsAndWarnings(checkpointInfo.checkpointRegexIgnoreMessages.toArray(new String[checkpointInfo.checkpointRegexIgnoreMessages.size()]));
             assertNotNull("'CWWKC0451I: A server checkpoint was requested...' message not found in log.",
                           waitForStringInLogUsingMark("CWWKC0451I:", 0));
-        } catch (AssertionError | Exception err) {
-            final String errInfo = (err instanceof AssertionError) ? "AssertionError" : "Exception";
-            Log.info(c, method, "errInfo: " + err);
+        } catch (AssertionError er) {
+            Log.info(c, method, "AssertionError: " + er);
             if (isStarted) {
-                Log.info(c, method, "Stop running server after checkpointValidate " + errInfo);
+                Log.info(c, method, "Stop running server after checkpointValidate AssertionError");
                 stopServer(false);
             }
             postStopServerArchive();
-            throw err;
+            throw er;
         }
         Log.exiting(c, method);
     }
@@ -7284,13 +7257,5 @@ public class LibertyServer implements LogMonitorClient {
             this.openLibertyVersion = (String) getOpenLibertyProperties().get(COM_IBM_WEBSPHERE_PRODUCTVERSION_KEY);
         }
         return this.openLibertyVersion;
-    }
-
-    /**
-     * @param  var
-     * @return
-     */
-    public String getEnvVar(String var) {
-        return envVars.get(var);
     }
 }

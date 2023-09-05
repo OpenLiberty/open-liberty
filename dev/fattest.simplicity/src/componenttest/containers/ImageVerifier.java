@@ -13,8 +13,7 @@
 package componenttest.containers;
 
 import java.util.Arrays;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashSet;
 
 import org.testcontainers.utility.DockerImageName;
 
@@ -29,9 +28,8 @@ import componenttest.topology.database.container.DatabaseContainerType;
 public final class ImageVerifier {
     static final Class<?> c = ImageVerifier.class;
 
-    static final Set<String> forgottenImages = ConcurrentHashMap.newKeySet();
-    static final Set<String> knownImages = ConcurrentHashMap.newKeySet();
-
+    static final HashSet<String> forgottenImages = new HashSet<>();
+    static final HashSet<String> knownImages = new HashSet<>();
     static final String imageProperty = "fat.test.container.images";
 
     static {
@@ -46,7 +44,7 @@ public final class ImageVerifier {
         knownImages.addAll(DatabaseContainerType.images());
 
         //Add images from the testcontainers project
-        knownImages.addAll(Arrays.asList("testcontainers/ryuk:0.5.1", "testcontainers/sshd:1.1.0", "testcontainers/vnc-recorder:1.3.0"));
+        knownImages.addAll(Arrays.asList("testcontainers/ryuk:0.3.4", "testcontainers/sshd:1.1.0", "testcontainers/vnc-recorder:1.2.0"));
     }
 
     public static DockerImageName collectImage(DockerImageName image) {

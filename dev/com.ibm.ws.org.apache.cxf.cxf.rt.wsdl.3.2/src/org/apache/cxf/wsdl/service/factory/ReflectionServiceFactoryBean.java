@@ -434,11 +434,9 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
             throw new ServiceConstructionException(new Message("NO_WSDL_PROVIDED", LOG,
                                                                getServiceClass().getName()));
         }
-        // Liberty Change Start
         if (LOG.isLoggable(Level.FINE)) {
             LOG.fine("Creating Service " + getServiceQName() + " from class " + getServiceClass().getName());
         }
-        //Liberty Change End
         populateFromClass = true;
 
         if (Proxy.isProxyClass(this.getServiceClass())) {

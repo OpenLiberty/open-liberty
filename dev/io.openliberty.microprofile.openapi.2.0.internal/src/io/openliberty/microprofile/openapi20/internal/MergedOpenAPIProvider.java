@@ -17,8 +17,6 @@ import java.util.List;
 
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 
-import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
-
 /**
  * An OpenAPIProvider for a model created by merging models from multiple modules
  */

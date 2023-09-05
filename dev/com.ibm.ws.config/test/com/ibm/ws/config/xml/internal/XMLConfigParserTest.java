@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2010, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -604,29 +604,6 @@ public class XMLConfigParserTest {
         assertEquals(description, serverConfig.getDescription());
     }
 
-    @Test
-    public void testIncludesWithDir() throws Exception {
-        boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
-        if(isBeta){
-            changeLocationSettings("directory.include");
-
-            String base;
-            base = CONFIG_ROOT;
-            WsResource resource = wsLocation.resolveResource(CONFIG_ROOT);
-            configParser = new XMLConfigParser(wsLocation, variableRegistry);
-            ServerConfiguration serverConfig = configParser.parseServerConfiguration(resource);
-
-            //check both files from shared.config.dir are within server's includes as specified in the server.xml
-            WsResource baseConfigXML = configParser.resolveInclude("${shared.config.dir}/baseConfig.xml", base, wsLocation);
-            WsResource includeXML = configParser.resolveInclude("${shared.config.dir}/include.xml", base, wsLocation);
-
-            assertTrue(serverConfig.getIncludes().contains(baseConfigXML));
-            assertTrue(serverConfig.getIncludes().contains(includeXML));
-
-            assertEquals(2, serverConfig.getIncludes().size());
-        }
-    }
-
     private static final boolean isWindows = System.getProperty("os.name", "unknown").toUpperCase(Locale.ENGLISH).contains("WINDOWS");
 
     @Test
@@ -637,8 +614,8 @@ public class XMLConfigParserTest {
         base = CONFIG_ROOT;
 
         // Just checking that the include process isn't doing anything crazy with the path
-
-        resource = configParser.resolveInclude("${wlp.user.dir}/server.xml", base, wsLocation);
+        XMLConfigParser parser = new XMLConfigParser(wsLocation, variableRegistry);
+        resource = parser.resolveInclude("${wlp.user.dir}/server.xml", base, wsLocation);
         String expected = "file:" + variableRegistry.resolveString("${wlp.user.dir}/server.xml");
         assertEquals(new URI(expected), resource.toExternalURI());
 
@@ -647,7 +624,7 @@ public class XMLConfigParserTest {
             // Only run on windows because unix platforms will mangle `c:\` style paths
             SymbolRegistry.getRegistry().addStringSymbol("myHome", "C:\\users\\fernando");
 
-            resource = configParser.resolveInclude("${myHome}/server.xml", base, wsLocation);
+            resource = parser.resolveInclude("${myHome}/server.xml", base, wsLocation);
             expected = "file:" + variableRegistry.resolveString("${myHome}/server.xml");
             assertEquals(new URI(expected), resource.toExternalURI());
         }

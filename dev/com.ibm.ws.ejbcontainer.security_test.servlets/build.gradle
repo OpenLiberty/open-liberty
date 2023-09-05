@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,8 +32,8 @@ def appBuildDir = "${buildDir}/test-application"
  ******************************************************************
  ******************************************************************/
 task packageClient_JAR(type: Jar, dependsOn: classes) {
-  destinationDirectory = file(buildDir)
-  archiveFileName = "com.ibm.ws.security.registry.test.servlet.client.jar"
+  destinationDir file(buildDir)
+  archiveName "com.ibm.ws.security.registry.test.servlet.client.jar"
   
   from ('build/classes/java/main') {
     include 'com/**'
@@ -49,8 +49,8 @@ task packageClient_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task securityejb_WAR(type: War, dependsOn: classes) {
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "securityejb.war"
+  destinationDir file(appBuildDir)
+  archiveName "securityejb.war"
   classpath = classpath.filter{ false }
   manifest { from ('test-applications/securityejb/resources/META-INF/MANIFEST.MF') }
   
@@ -73,8 +73,8 @@ task securityejb_WAR(type: War, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecurityEJB_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecurityEJB.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJB.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBA0*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
@@ -94,8 +94,8 @@ task SecurityEJB_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecurityEJBX01_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecurityEJBX01.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBX01.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBX01*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
@@ -115,8 +115,8 @@ task SecurityEJBX01_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecurityEJBX02_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecurityEJBX02.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBX02.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBX02*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
@@ -136,8 +136,8 @@ task SecurityEJBX02_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecurityEJBX03_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecurityEJBX03.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBX03.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBX03*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
@@ -157,8 +157,8 @@ task SecurityEJBX03_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecurityEJBM01_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecurityEJBM01.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBM01.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBM01*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
@@ -178,8 +178,8 @@ task SecurityEJBM01_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecurityEJBM02_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecurityEJBM02.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBM02.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBM02*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
@@ -199,8 +199,8 @@ task SecurityEJBM02_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecurityEJBM03_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecurityEJBM03.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBM03.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBM03*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
@@ -220,8 +220,8 @@ task SecurityEJBM03_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecurityEJBM04_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecurityEJBM04.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBM04.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBM04*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
@@ -241,8 +241,8 @@ task SecurityEJBM04_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecurityEJBM05_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecurityEJBM05.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBM05.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBM05*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
@@ -262,8 +262,8 @@ task SecurityEJBM05_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecurityEJBMC06_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecurityEJBMC06.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBMC06.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBMC06*', '**/*EJBMCRunAs*', '**/*BeanBase*', '**/*Interface*'
@@ -283,8 +283,8 @@ task SecurityEJBMC06_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecurityEJBM07_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecurityEJBM07.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBM07.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBM07*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
@@ -304,8 +304,8 @@ task SecurityEJBM07_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecurityEJBM08_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecurityEJBM08.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBM08.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBM08*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
@@ -325,8 +325,8 @@ task SecurityEJBM08_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecurityEJBM09_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecurityEJBM09.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBM09.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBM09*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
@@ -346,8 +346,8 @@ task SecurityEJBM09_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecurityEJBM10_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecurityEJBM10.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBM10.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBM10*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
@@ -367,8 +367,8 @@ task SecurityEJBM10_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecuritySAEJB_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecuritySAEJB.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecuritySAEJB.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBA0*', '**/*EJBRunAs*', '**/*BeanBase*'
@@ -388,8 +388,8 @@ task SecuritySAEJB_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecuritySAEJBX01_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecuritySAEJBX01.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecuritySAEJBX01.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBX01*', '**/*EJBRunAs*', '**/*BeanBase*'
@@ -409,8 +409,8 @@ task SecuritySAEJBX01_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecuritySAEJBX02_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecuritySAEJBX02.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecuritySAEJBX02.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBX02*', '**/*EJBRunAs*', '**/*BeanBase*'
@@ -430,8 +430,8 @@ task SecuritySAEJBX02_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecuritySAEJBM01_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecuritySAEJBM01.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecuritySAEJBM01.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBM01*', '**/*EJBRunAs*', '**/*BeanBase*'
@@ -451,8 +451,8 @@ task SecuritySAEJBM01_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecuritySAEJBM02_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecuritySAEJBM02.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecuritySAEJBM02.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBM02*', '**/*EJBRunAs*', '**/*BeanBase*'
@@ -472,8 +472,8 @@ task SecuritySAEJBM02_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecuritySAEJBMC06_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecuritySAEJBMC06.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecuritySAEJBMC06.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBMC06*', '**/*EJBMCRunAs*', '**/*BeanBase*'
@@ -493,8 +493,8 @@ task SecuritySAEJBMC06_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecuritySAEJBM07_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecuritySAEJBM07.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecuritySAEJBM07.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBM07*', '**/*EJBRunAs*', '**/*BeanBase*'
@@ -514,8 +514,8 @@ task SecuritySAEJBM07_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecuritySAEJBM08_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecuritySAEJBM08.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecuritySAEJBM08.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBM08*', '**/*EJBRunAs*', '**/*BeanBase*'
@@ -535,8 +535,8 @@ task SecuritySAEJBM08_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecurityIntf_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecurityIntf.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecurityIntf.jar"
    
   from ('build/classes/java/main') { 
     include '**/*Interface*'
@@ -554,8 +554,8 @@ task SecurityIntf_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************/
 task SecurityEJBinWAR_JAR(type: Jar, dependsOn: classes) { 
   description 'Build SecurityEJBinWAR.jar file for pure annotation tests packaging in EAR.'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecurityEJBinWAR.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBinWAR.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBA0*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
@@ -573,8 +573,8 @@ task SecurityEJBinWAR_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************/
 task SecurityEJBJarInWAR_JAR(type: Jar, dependsOn: classes) {
   description 'Build SecurityEJBJarInWAR.jar file for ejb-jar.xml tests for packaging in EAR.'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecurityEJBJarInWAR.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBJarInWAR.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBX0*', '**/*EJBM0*', '**/*EJBM1*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
@@ -592,8 +592,8 @@ task SecurityEJBJarInWAR_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************/
 task SecurityEJBJarMCInWAR_JAR(type: Jar, dependsOn: classes) {
   description 'Build SecurityEJBJarMCInWAR.jar files for ejb-jar.xml tests for packaging in EAR.'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "SecurityEJBJarMCInWAR.jar"
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBJarMCInWAR.jar"
    
   from ('build/classes/java/main') { 
     include '**/*EJBMC06*', '**/*EJBMCRunAs*', '**/*BeanBase*', '**/*Interface*'
@@ -611,8 +611,8 @@ task SecurityEJBJarMCInWAR_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************/
 task ejbinwarservlet_WAR(type: War, dependsOn: SecurityEJBinWAR_JAR) {
   description 'WAR to be used for Pure Annotations tests'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "ejbinwarservlet.war"
+  destinationDir file(appBuildDir)
+  archiveName "ejbinwarservlet.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/securityejb/resources') {
@@ -642,8 +642,8 @@ task ejbinwarservlet_WAR(type: War, dependsOn: SecurityEJBinWAR_JAR) {
  ******************************************************************/
 task ejbinwarservletX01_WAR(type: War, dependsOn: SecurityEJBJarInWAR_JAR) {
   description 'WAR to be used for ejb-jar X01 test'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "ejbinwarservletX01.war"
+  destinationDir file(appBuildDir)
+  archiveName "ejbinwarservletX01.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/securityejb/resources') {
@@ -671,10 +671,10 @@ task ejbinwarservletX01_WAR(type: War, dependsOn: SecurityEJBJarInWAR_JAR) {
  **
  ******************************************************************
  ******************************************************************/
-task ejbinwarservletM01_WAR(type: War, dependsOn: SecurityEJBJarInWAR_JAR) {
+task ejbinwarservletM01_WAR(type: War, dependsOn: classes) {
   description 'WAR to be used for ejb-jar M01 test'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "ejbinwarservletM01.war"
+  destinationDir file(appBuildDir)
+  archiveName "ejbinwarservletM01.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/securityejb/resources') {
@@ -704,8 +704,8 @@ task ejbinwarservletM01_WAR(type: War, dependsOn: SecurityEJBJarInWAR_JAR) {
  ******************************************************************/
 task ejbinwarservletMC06_WAR(type: War, dependsOn: SecurityEJBJarMCInWAR_JAR) {
   description 'WAR to be used for ejb-jar MC06 metadata-complete test'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "ejbinwarservletMC06.war"
+  destinationDir file(appBuildDir)
+  archiveName "ejbinwarservletMC06.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/securityejb/resources') {
@@ -733,10 +733,10 @@ task ejbinwarservletMC06_WAR(type: War, dependsOn: SecurityEJBJarMCInWAR_JAR) {
  **
  ******************************************************************
  ******************************************************************/
-task ejbinwarservletM07_WAR(type: War, dependsOn: SecurityEJBJarInWAR_JAR) {
+task ejbinwarservletM07_WAR(type: War, dependsOn: classes) {
   description 'WAR to be used for ejb-jar M07 test'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "ejbinwarservletM07.war"
+  destinationDir file(appBuildDir)
+  archiveName "ejbinwarservletM07.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/securityejb/resources') {
@@ -766,8 +766,8 @@ task ejbinwarservletM07_WAR(type: War, dependsOn: SecurityEJBJarInWAR_JAR) {
  ******************************************************************/
 task ejbinstandalone_WAR(type: War, dependsOn: classes) {
   description 'Build  WAR for EJB in WAR pure annotations tests'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "ejbinstandalone.war"
+  destinationDir file(appBuildDir)
+  archiveName "ejbinstandalone.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/securityejb/resources') {
@@ -797,8 +797,8 @@ task ejbinstandalone_WAR(type: War, dependsOn: classes) {
  ******************************************************************/
 task ejbjarinstandaloneX02_WAR(type: War, dependsOn: classes) {
   description 'Build  WAR for EJB in WAR ejb-jar X02 test'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "ejbjarinstandaloneX02.war"
+  destinationDir file(appBuildDir)
+  archiveName "ejbjarinstandaloneX02.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/securityejb/resources') {
@@ -828,8 +828,8 @@ task ejbjarinstandaloneX02_WAR(type: War, dependsOn: classes) {
  ******************************************************************/
 task ejbjarinstandaloneM02_WAR(type: War, dependsOn: classes) {
   description 'Build  WAR for EJB in WAR ejb-jar M02 test'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "ejbjarinstandaloneM02.war"
+  destinationDir file(appBuildDir)
+  archiveName "ejbjarinstandaloneM02.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/securityejb/resources') {
@@ -859,8 +859,8 @@ task ejbjarinstandaloneM02_WAR(type: War, dependsOn: classes) {
  ******************************************************************/
 task ejbjarinstandaloneMC06_WAR(type: War, dependsOn: classes) {
   description 'Build  WAR for EJB in WAR ejb-jar MC06 test'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "ejbjarinstandaloneMC06.war"
+  destinationDir file(appBuildDir)
+  archiveName "ejbjarinstandaloneMC06.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/securityejb/resources') {
@@ -890,8 +890,8 @@ task ejbjarinstandaloneMC06_WAR(type: War, dependsOn: classes) {
  ******************************************************************/
 task ejbjarinstandaloneM08_WAR(type: War, dependsOn: classes) {
   description 'Build  WAR for EJB in WAR ejb-jar M08 test'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "ejbjarinstandaloneM08.war"
+  destinationDir file(appBuildDir)
+  archiveName "ejbjarinstandaloneM08.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/securityejb/resources') {

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,12 +15,7 @@ package com.ibm.ws.repository.transport.model.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -30,13 +25,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -71,31 +64,24 @@ import com.ibm.ws.repository.transport.model.WlpInformation;
  */
 public class AssetTest {
 
-    /**  */
-    private static final String MODEL_PACKAGE = "com.ibm.ws.repository.transport.model";
-
     @Test
     public void testAssetInformationEquals() throws Throwable {
         checkEqualsOnClass(new AssetInformation(), new AssetInformation());
-        checkCopyConstructorOnClass(AssetInformation.class);
     }
 
     @Test
     public void testAttachmentEquals() throws Throwable {
         checkEqualsOnClass(new Attachment(), new Attachment());
-        checkCopyConstructorOnClass(Attachment.class);
     }
 
     @Test
     public void testFeedbackEquals() throws Throwable {
         checkEqualsOnClass(new Feedback(), new Feedback());
-        checkCopyConstructorOnClass(Feedback.class);
     }
 
     @Test
     public void testReviewedEquals() throws Throwable {
         checkEqualsOnClass(new Reviewed(), new Reviewed());
-        checkCopyConstructorOnClass(Reviewed.class);
     }
 
     @Test
@@ -111,49 +97,41 @@ public class AssetTest {
     @Test
     public void testUserEquals() throws Throwable {
         checkEqualsOnClass(new User(), new User());
-        checkCopyConstructorOnClass(User.class);
     }
 
     @Test
     public void testWlpInformationEquals() throws Throwable {
         checkEqualsOnClass(new WlpInformation(), new WlpInformation());
-        checkCopyConstructorOnClass(WlpInformation.class);
     }
 
     @Test
     public void testLinkEquals() throws Throwable {
         checkEqualsOnClass(new Link(), new Link());
-        checkCopyConstructorOnClass(Link.class);
     }
 
     @Test
     public void testAssetEquals() throws Throwable {
         checkEqualsOnClass(new Asset(), new Asset());
-        checkCopyConstructorOnClass(Asset.class);
     }
 
     @Test
     public void testAppliesToFilterInfoEquals() throws Throwable {
         checkEqualsOnClass(new AppliesToFilterInfo(), new AppliesToFilterInfo());
-        checkCopyConstructorOnClass(AppliesToFilterInfo.class);
     }
 
     @Test
     public void testFilterVersionEquals() throws Throwable {
         checkEqualsOnClass(new FilterVersion(), new FilterVersion());
-        checkCopyConstructorOnClass(FilterVersion.class);
     }
 
     @Test
     public void testAttachmentInfoEquals() throws Throwable {
         checkEqualsOnClass(new AttachmentInfo(), new AttachmentInfo());
-        checkCopyConstructorOnClass(AttachmentInfo.class);
     }
 
     @Test
     public void testRequireFeatureWithTolerates() throws Throwable {
         checkEqualsOnClass(new RequireFeatureWithTolerates(), new RequireFeatureWithTolerates());
-        checkCopyConstructorOnClass(RequireFeatureWithTolerates.class);
     }
 
     /**
@@ -255,7 +233,7 @@ public class AssetTest {
      * Reflectively finds the fields in the class and sets these fields to values then performs
      * equals checks on the object.
      *
-     * @param left  First object used in equals
+     * @param left First object used in equals
      * @param right Second object used in equals
      * @throws Throwable
      */
@@ -288,8 +266,8 @@ public class AssetTest {
      * Checks the specified field. It first determines the java type the field is then
      * calls the check method associated with that field
      *
-     * @param fld   The field to check
-     * @param left  First object used in equals
+     * @param fld The field to check
+     * @param left First object used in equals
      * @param right Second object used in equals
      * @return
      * @throws Throwable
@@ -615,184 +593,6 @@ public class AssetTest {
         assertNotEquals(left, right);
         setter.invoke(right, leftDate);
         assertEquals(left, right);
-    }
-
-    /**
-     * Check that the given class has a copy constructor and that it does a deep copy of the object
-     */
-    private <T> void checkCopyConstructorOnClass(Class<T> clazz) throws Throwable {
-        // Check copy constructor on empty object
-        T empty = createEmptyObject(clazz);
-        T emptyCopy = callCopyConstructor(empty, clazz);
-        checkObjectCopied(empty, emptyCopy, clazz);
-
-        // Check copy constructor on populated object
-        T original = createPopulatedObject(clazz);
-        T copy = callCopyConstructor(original, clazz);
-        checkObjectCopied(original, copy, clazz);
-    }
-
-    /**
-     * Check that b is a copy of a
-     * <p>
-     * Asserts different copy semantics depending on whether clazz is immutable, primitive, or a model object
-     */
-    private <T> void checkObjectCopied(Object a, Object b, Class<T> clazz) throws IllegalArgumentException, IllegalAccessException {
-        if (a == null) {
-            assertNull(b);
-        } else if (clazz == String.class || clazz.isEnum() || clazz == Locale.class) {
-            // Immutable objects should not be copied
-            assertEquals(a, b);
-            assertSame(a, b);
-        } else if (clazz.isPrimitive()) {
-            // Primitives don't distinguish between equality and instance
-            assertEquals(a, b);
-        } else if (Collection.class.isAssignableFrom(clazz)) {
-            // Use checkCollectionCopied instead
-            fail("Collection passed to checkObjectCopied");
-        } else if (clazz.getPackage().getName().startsWith(MODEL_PACKAGE)) {
-            // Check model object fields are copied using reflection
-            checkFieldsCopied(clazz.cast(a), clazz.cast(b), clazz);
-            assertNotSame(a, b);
-            assertEquals(a, b);
-        } else {
-            // Other objects should be copied
-            assertNotSame(a, b);
-            assertEquals(a, b);
-        }
-    }
-
-    /**
-     * Reflectively check that each of the fields in a have been copied to b
-     */
-    private <T> void checkFieldsCopied(T a, T b, Class<T> clazz) throws IllegalArgumentException, IllegalAccessException {
-        for (Field f : clazz.getDeclaredFields()) {
-            f.setAccessible(true);
-            Class<?> fClazz = f.getType();
-            Object aObj = f.get(a);
-            Object bObj = f.get(b);
-            if (Collection.class.isAssignableFrom(fClazz)) {
-                checkCollectionCopied((Collection<?>) aObj, (Collection<?>) bObj, f.getGenericType());
-            } else {
-                checkObjectCopied(aObj, bObj, fClazz);
-            }
-        }
-    }
-
-    /**
-     * Check that collection b is a deep copy of a
-     */
-    private <T> void checkCollectionCopied(Collection<?> a, Collection<?> b, Type collectionType) throws IllegalArgumentException, IllegalAccessException {
-        if (a == null) {
-            assertNull(b);
-            return;
-        }
-
-        assertNotNull("Null collection for type " + collectionType, b);
-        assertEquals("Collections are different sizes", a.size(), b.size());
-        Iterator<?> ia = a.iterator();
-        Iterator<?> ib = b.iterator();
-
-        ParameterizedType pType = (ParameterizedType) collectionType;
-        Class<?> elementType = (Class<?>) pType.getActualTypeArguments()[0];
-
-        while (ia.hasNext()) {
-            Object oa = ia.next();
-            Object ob = ib.next();
-            checkObjectCopied(oa, ob, elementType);
-        }
-    }
-
-    private <T> T callCopyConstructor(T o,
-                                      Class<T> clazz) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        Constructor<T> c = clazz.getConstructor(clazz);
-        return c.newInstance(o);
-    }
-
-    private <T> T createEmptyObject(Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-        return clazz.getConstructor().newInstance();
-    }
-
-    /**
-     * Create an instance of {@code clazz} with all its fields populated
-     * <p>
-     * A value is picked for each type which is not the default
-     */
-    @SuppressWarnings("unchecked")
-    private <T> T createPopulatedObject(Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-
-        if (clazz.isEnum()) {
-            return clazz.getEnumConstants()[0]; // First enum entry
-        }
-        if (clazz == int.class) {
-            return (T) Integer.valueOf(1);
-        }
-        if (clazz == long.class) {
-            return (T) Long.valueOf(1L);
-        }
-        if (clazz == boolean.class) {
-            return (T) Boolean.TRUE;
-        }
-        if (clazz == float.class) {
-            return (T) Float.valueOf("1.5");
-        }
-        if (clazz == Date.class) {
-            return (T) new Date(300L);
-        }
-        if (clazz == Calendar.class) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(500L);
-            return (T) cal;
-        }
-        if (clazz == String.class) {
-            return (T) "foo";
-        }
-        if (clazz == Locale.class) {
-            return (T) Locale.FRENCH;
-        }
-        if (Collection.class.isAssignableFrom(clazz)) {
-            fail("Collection passed to createPopulatedObject");
-        }
-        if (clazz.getPackage().getName().startsWith(MODEL_PACKAGE)) {
-            return createPopulatedModelObject(clazz);
-        }
-        throw new AssertionError("Unhandled class found when creating populated object: " + clazz);
-    }
-
-    /**
-     * Create an instance of {@code clazz} with all its fields populated
-     */
-    private <T> T createPopulatedModelObject(Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-        T obj = createEmptyObject(clazz);
-        for (Field f : clazz.getDeclaredFields()) {
-            if (Modifier.isStatic(f.getModifiers())) {
-                continue;
-            }
-            f.setAccessible(true);
-            Class<?> fieldClazz = f.getType();
-            if (Collection.class.isAssignableFrom(fieldClazz)) {
-                f.set(obj, createPopulatedCollection(f.getGenericType()));
-            } else {
-                f.set(obj, createPopulatedObject(fieldClazz));
-            }
-        }
-        return obj;
-    }
-
-    /**
-     * Create a collection with one item, created using {@link #createPopulatedObject(Class)}
-     */
-    private Object createPopulatedCollection(Type genericType) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-        ParameterizedType pType = (ParameterizedType) genericType;
-        Type elementType = pType.getActualTypeArguments()[0];
-        if (!(elementType instanceof Class)) {
-            fail("Collection of generic types");
-        }
-        Class<?> elementClass = (Class<?>) elementType;
-
-        ArrayList<Object> list = new ArrayList<>();
-        list.add(createPopulatedObject(elementClass));
-        return list;
     }
 
     private void assertNotEquals(Object left, Object right) {

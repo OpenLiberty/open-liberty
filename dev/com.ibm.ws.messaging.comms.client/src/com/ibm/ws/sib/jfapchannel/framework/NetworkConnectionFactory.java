@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2023 IBM Corporation and others.
+ * Copyright (c) 2003, 2006 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.framework;
+
+import com.ibm.wsspi.channelfw.VirtualConnectionFactory;
 
 /**
  * A factory for implementations of the NetworkConnection interface.
@@ -40,11 +42,10 @@ public interface NetworkConnectionFactory
      * @throws FrameworkException if the connection cannot be created.
      */
     NetworkConnection createConnection() throws FrameworkException;
-    
+
     /**
-     * Destroys objects related to starting connections.
-     * @throws FrameworkException if objects were NOT successfully destroyed
+     * 
+     * @return an VirtualConnectionFactory
      */
-    void destroy() throws FrameworkException;
-    
+    VirtualConnectionFactory getOutboundVirtualConFactory();
 }

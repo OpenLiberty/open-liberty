@@ -39,7 +39,6 @@ Service-Component: \
     cdiJSFInitializerService=com.ibm.ws.jsf.shared.cdi.CDIJSFInitializer; \
     greedy:="cdiJSFInitializerService"; \
     optional:="cdiJSFInitializerService"; \
-    dynamic:="cdiJSFInitializerService"; \
     properties:="service.vendor=IBM", \
   com.ibm.ws.jsf_2_2.taglib; \
     implementation:=com.ibm.ws.jsf.extprocessor.JSFGlobalTagLibConfig; \

@@ -27,11 +27,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.decorator.Decorator;
 import javax.enterprise.context.ApplicationScoped;
@@ -56,18 +54,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.CDIRuntimeException;
-import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
-import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.util.ThreadContextAccessor;
-
-import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
-import com.ibm.wsspi.kernel.service.utils.ServiceReferenceUtils;
-
-import io.openliberty.cdi.spi.CDIExtensionMetadata;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.ServiceReference;
 
 /**
  * Common constants and utility methods
@@ -421,52 +409,5 @@ public class CDIUtils {
         } else {
             throw new IllegalArgumentException("InvocationContext was not an instance of WeldInvocationContext");
         }
-    }
-
-    /**
-     * Creates a CDI extension archive from an implimentation of CDIExtensionMetadata, the class may also implement CDIExtensionMetadataInternal to add options
-     * only available to components of Liberty
-     *
-     * @return An ExtensionArchive with all the contents defined in CDIExtensionMetadata
-     */
-    public static ExtensionArchive newSPIExtensionArchive(CDIRuntime cdiRuntime, ServiceReference<CDIExtensionMetadata> sr,
-                                                    CDIExtensionMetadata webSphereCDIExtensionMetaData, WebSphereCDIDeployment applicationContext) throws CDIException {
-        Bundle bundle = sr.getBundle();
-
-        Set<Class<? extends Extension>> extensionClasses = webSphereCDIExtensionMetaData.getExtensions();
-        Set<Class<?>> beanClasses = webSphereCDIExtensionMetaData.getBeanClasses();
-        Set<Class<? extends Annotation>> beanDefiningAnnotationClasses = webSphereCDIExtensionMetaData.getBeanDefiningAnnotationClasses();
-
-        Set<String> extensionClassNames = extensionClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
-
-        Set<String> extra_classes = beanClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
-        Set<String> extraAnnotations = beanDefiningAnnotationClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
-        boolean applicationBDAsVisible = false;
-
-        //The SPI does not offer this property.
-        boolean extClassesOnly = false;
-
-        if (webSphereCDIExtensionMetaData instanceof CDIExtensionMetadataInternal) {
-            CDIExtensionMetadataInternal internalExtension = (CDIExtensionMetadataInternal) webSphereCDIExtensionMetaData;
-            applicationBDAsVisible = internalExtension.applicationBeansVisible();
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "newSPIExtensionArchive", "***We are creating a new CDI Extension Archive***");
-            Tr.debug(tc, "newSPIExtensionArchive", "The following classes will be registered as beans: " + String.join(", ", extra_classes));
-            Tr.debug(tc, "newSPIExtensionArchive", "The following classes will be registered as extensions: " + String.join(", ", extensionClassNames));
-            Tr.debug(tc, "newSPIExtensionArchive", "The following annotations will be registered as bean defining annotations: " + String.join(", ", extraAnnotations));
-            if (applicationBDAsVisible) {
-                Tr.debug(tc, "newSPIExtensionArchive", "The extension will be able to see and inject beans provided by the application and other extensions");
-            } else {
-                Tr.debug(tc, "newSPIExtensionArchive", "The extension will **NOT** be able to see and inject beans provided by the application and other extensions");
-            }
-        }
-
-        ExtensionArchive extensionArchive = cdiRuntime.getExtensionArchiveForBundle(bundle, extra_classes, extraAnnotations,
-                                                                                    applicationBDAsVisible,
-                                                                                    extClassesOnly, extensionClassNames);
-
-        return extensionArchive;
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -36,8 +36,8 @@ def downloadDir= "${projectDir}/build/downloads"
  ******************************************************************
  ******************************************************************/
 task jaxrsclient_WAR(type: War, dependsOn: classes) {
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "jaxrsclient.war"
+  destinationDir file(appBuildDir)
+  archiveName "jaxrsclient.war"
   classpath = classpath.filter{ false }
   
   manifest {
@@ -73,8 +73,8 @@ task jaxrsclient_WAR(type: War, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task helloworld_WAR(type: War, dependsOn: classes) {
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "helloworld.war"
+  destinationDir file(appBuildDir)
+  archiveName "helloworld.war"
   classpath = classpath.filter{ false }
   
   manifest {

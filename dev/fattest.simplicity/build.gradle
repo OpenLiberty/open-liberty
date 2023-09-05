@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2023 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,11 @@ task assembleBinaryDependencies() {
     }
 }
 
+jar {
+    dependsOn assembleBootstrap
+    dependsOn assembleBinaryDependencies
+}
+
 configurations {
     arquillianFeature
     arquillianJakartaFeature21
@@ -76,13 +81,6 @@ task extractArquillianSupportJakartaFeature21(type:Sync) {
         file('build/arquillian-jakarta-feature-extract-2.1/extension/lib/features/arquillian-liberty-support-jakarta-2.1.mf')
             .append('IBM-Test-Feature: true\n')
     }
-}
-
-jar {
-    dependsOn assembleBootstrap
-    dependsOn assembleBinaryDependencies
-    dependsOn extractArquillianSupportFeature
-    dependsOn extractArquillianSupportJakartaFeature21
 }
 
 task publishArquillianSupportFeature(type:Copy) {

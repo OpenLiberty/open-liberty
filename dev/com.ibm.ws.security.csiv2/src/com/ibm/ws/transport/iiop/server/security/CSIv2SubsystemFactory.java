@@ -1,20 +1,16 @@
-/*
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+/*******************************************************************************
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- */
+ *******************************************************************************/
 package com.ibm.ws.transport.iiop.server.security;
-
-import static com.ibm.ws.security.csiv2.server.TraceConstants.TRACE_GROUP;
-import static java.util.stream.Collectors.toCollection;
-import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +28,7 @@ import org.omg.CORBA.ORB;
 import org.omg.CORBA.Policy;
 import org.omg.CSIIOP.TransportAddress;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
@@ -59,9 +56,10 @@ import com.ibm.ws.transport.iiop.spi.IIOPEndpoint;
 import com.ibm.ws.transport.iiop.spi.ReadyListener;
 import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 
-@Component(configurationPolicy = IGNORE, property = { "service.vendor=IBM", "service.ranking:Integer=3" })
-@TraceOptions(traceGroup = TRACE_GROUP, messageBundle = TraceConstants.MESSAGE_BUNDLE)
-public class CSIv2SubsystemFactory extends AbstractCsiv2SubsystemFactory implements SubsystemFactory {
+@Component(service = SubsystemFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "service.ranking:Integer=3" })
+@TraceOptions(traceGroup = TraceConstants.TRACE_GROUP, messageBundle = TraceConstants.MESSAGE_BUNDLE)
+public class CSIv2SubsystemFactory extends AbstractCsiv2SubsystemFactory {
+
     private static final TraceComponent tc = Tr.register(CSIv2SubsystemFactory.class);
     private static final String ADDR_KEY = CSIv2SubsystemFactory.class.getName();
 
@@ -95,6 +93,7 @@ public class CSIv2SubsystemFactory extends AbstractCsiv2SubsystemFactory impleme
         updateRegistered();
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void timeoutMessage(Set<String> requiredSslRefs, ReadyListener listener) {
         if (!super.check(requiredSslRefs)) {
@@ -105,6 +104,7 @@ public class CSIv2SubsystemFactory extends AbstractCsiv2SubsystemFactory impleme
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected boolean check(Collection<String> requiredSslRefs) {
         return !userRegistries.isEmpty() && super.check(requiredSslRefs);
@@ -142,6 +142,7 @@ public class CSIv2SubsystemFactory extends AbstractCsiv2SubsystemFactory impleme
         return securityPolicy;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Policy getClientPolicy(ORB orb, Map<String, Object> properties) throws Exception {
         // TODO: Determine if system.RMI_OUTBOUND should be created and used for outbound.
@@ -163,6 +164,7 @@ public class CSIv2SubsystemFactory extends AbstractCsiv2SubsystemFactory impleme
 
     private static final String ENDPOINT_KEY = "yoko.orb.oa.endpoint";
 
+    /** {@inheritDoc} */
     @Override
     public void addTargetORBInitProperties(Properties initProperties, Map<String, Object> configProps, List<IIOPEndpoint> endpoints, Map<String, Object> extraProperties) {
         StringBuilder sb = new StringBuilder();
@@ -172,6 +174,13 @@ public class CSIv2SubsystemFactory extends AbstractCsiv2SubsystemFactory impleme
         initProperties.put(ENDPOINT_KEY, sb.toString());
     }
 
+    /**
+     * @param host
+     * @param port
+     * @param sslAliasName
+     * @param soReuseAddr
+     * @param sb
+     */
     private static void bindOptions(String host, int port, String sslAliasName, Boolean soReuseAddr, StringBuilder sb) {
         sb.append("iiop --bind ").append(host).append(" --host ").append(host);
         if (port > 0) {
@@ -215,23 +224,28 @@ public class CSIv2SubsystemFactory extends AbstractCsiv2SubsystemFactory impleme
         return mapOfAddr;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void addTargetORBInitArgs(Map<String, Object> targetProperties, List<String> args) {
         args.add("-IIOPconnectionHelper");
         args.add(SocketFactory.class.getName());
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Set<String> extractSslRefs(Map<String, Object> properties, List<IIOPEndpoint> endpoints) {
-        // add all the sslRef aliases (and defaultAlias if they are null)
-        Set<String> result = endpoints.stream()
-                .map(IIOPEndpoint::getIiopsOptions)
-                .flatMap(List::stream)
-                .map(map -> (String) map.get("sslRef"))
-                .map(alias -> null == alias ? defaultAlias : alias)
-                .collect(toCollection(HashSet::new));
+        Set<String> result = new HashSet<String>();
+        for (IIOPEndpoint endpoint : endpoints) {
+            for (Map<String, Object> iiopsOptions : endpoint.getIiopsOptions()) {
+                String sslAliasName = (String) iiopsOptions.get("sslRef");
+                if (sslAliasName == null)
+                    sslAliasName = defaultAlias;
+                result.add(sslAliasName);
+            }
+        }
         result.addAll(new ClientConfigHelper(null, null, defaultAlias).extractSslRefs(properties));
         result.addAll(new ServerConfigHelper(null, null, null, null, defaultAlias).extractSslRefs(properties));
         return result;
     }
+
 }

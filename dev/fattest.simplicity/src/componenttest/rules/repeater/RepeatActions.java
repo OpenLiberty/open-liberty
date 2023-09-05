@@ -12,41 +12,25 @@
  *******************************************************************************/
 package componenttest.rules.repeater;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.JavaInfo;
 
 public class RepeatActions {
 
-    public static enum SEVersion {
-        JAVA8(8), JAVA11(11), JAVA17(17), JAVA21(21);
-
-        private SEVersion(int majorVersion) {
-            this.majorVersion = majorVersion;
-        }
-
-        private final int majorVersion;
-
-        //minor and micro versions could be added in future
-        public int majorVersion() {
-            return majorVersion;
-        }
-    }
-
     public static enum EEVersion {
-        EE6(SEVersion.JAVA8), EE7(SEVersion.JAVA8), EE8(SEVersion.JAVA8), EE9(SEVersion.JAVA8), EE10(SEVersion.JAVA11), EE11(SEVersion.JAVA17);
+        EE6(8), EE7(8), EE8(8), EE9(8), EE10(11), EE11(17);
 
-        private EEVersion(SEVersion minJavaLevel) {
+        private EEVersion(int minJavaLevel) {
             this.minJavaLevel = minJavaLevel;
         }
 
-        private final SEVersion minJavaLevel;
+        private final int minJavaLevel;
 
-        SEVersion getMinJavaLevel() {
+        public int getMinJavaLevel() {
             return minJavaLevel;
         }
     }
@@ -57,56 +41,31 @@ public class RepeatActions {
      *
      * @param  server                   The server to repeat on
      * @param  otherFeatureSetsTestMode The test mode to run the otherFeatureSets
-     * @param  allFeatureSets           An ORDERED list of all the FeatureSets which may apply to this test. Newest FeatureSet should be first. Oldest last.
+     * @param  allFeatureSets           All known FeatureSets. The features not in the current FeatureSet are removed from the repeat
      * @param  firstFeatureSet          The first FeatureSet to repeat with. This is run in LITE mode.
      * @param  otherFeatureSets         The other FeatureSets to repeat with. These are in the mode specified by otherFeatureSetsTestMode
      * @return                          A RepeatTests instance
      */
-    public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, List<FeatureSet> allFeatureSets, FeatureSet firstFeatureSet,
-                                     FeatureSet... otherFeatureSets) {
-        return repeat(server, otherFeatureSetsTestMode, allFeatureSets, firstFeatureSet, Arrays.asList(otherFeatureSets));
+    public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, Set<FeatureSet> allFeatureSets, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
+        Set<FeatureSet> others = new HashSet<>(Arrays.asList(otherFeatureSets));
+        return repeat(server, otherFeatureSetsTestMode, allFeatureSets, firstFeatureSet, others);
     }
 
     /**
-     * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will be run in LITE mode.
-     * The others will be run in the mode specified by otherFeatureSetsTestMode.
-     *
-     * If {@code firstFeatureSet} isn't compatible with the current Java version, we try to
-     * replace it with the newest set from {@code otherFeatureSets} that is compatible.
+     * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will be run in LITE mode. The others will be run in the mode specified by
+     * otherFeatureSetsTestMode.
      *
      * @param  server                   The server to repeat on
      * @param  otherFeatureSetsTestMode The test mode to run the otherFeatureSets
-     * @param  allFeatureSets           An ORDERED list of all the FeatureSets which may apply to this test. Newest FeatureSet should be first. Oldest last.
+     * @param  allFeatureSets           All known FeatureSets. The features not in the current FeatureSet are removed from the repeat
      * @param  firstFeatureSet          The first FeatureSet to repeat with. This is run in LITE mode.
      * @param  otherFeatureSets         The other FeatureSets to repeat with. These are in the mode specified by otherFeatureSetsTestMode
      * @return                          A RepeatTests instance
      */
-    public static RepeatTests repeat(String server,
-                                     TestMode otherFeatureSetsTestMode,
-                                     List<FeatureSet> allFeatureSets,
-                                     FeatureSet firstFeatureSet,
-                                     List<FeatureSet> otherFeatureSets) {
-
-        FeatureSet actualFirstFeatureSet = firstFeatureSet;
-        List<FeatureSet> actualOtherFeatureSets = new ArrayList<>(otherFeatureSets);
-
-        // If the firstFeatureSet requires a Java level higher than the one we're running, try to find a suitable replacement so we don't end up not running the test at all in LITE mode
-        int currentJavaLevel = JavaInfo.forCurrentVM().majorVersion();
-        if (currentJavaLevel < firstFeatureSet.getMinJavaLevel().majorVersion()) {
-
-            // Find the newest feature set that's in otherFeatureSets and is compatible with the current java version
-            Optional<FeatureSet> newestSupportedSet = allFeatureSets.stream()
-                            .filter(s -> actualOtherFeatureSets.contains(s))
-                            .filter(s -> s.getMinJavaLevel().majorVersion() <= currentJavaLevel)
-                            .findFirst();
-
-            if (newestSupportedSet.isPresent()) {
-                actualFirstFeatureSet = newestSupportedSet.get();
-                actualOtherFeatureSets.remove(actualFirstFeatureSet);
-            }
-        }
-        RepeatTests r = RepeatTests.with(forFeatureSet(allFeatureSets, actualFirstFeatureSet, server, TestMode.LITE));
-        for (FeatureSet other : actualOtherFeatureSets) {
+    public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, Set<FeatureSet> allFeatureSets, FeatureSet firstFeatureSet,
+                                     Collection<FeatureSet> otherFeatureSets) {
+        RepeatTests r = RepeatTests.with(forFeatureSet(allFeatureSets, firstFeatureSet, server, TestMode.LITE));
+        for (FeatureSet other : otherFeatureSets) {
             r = r.andWith(forFeatureSet(allFeatureSets, other, server, otherFeatureSetsTestMode));
         }
         return r;
@@ -121,7 +80,7 @@ public class RepeatActions {
      * @param  testMode       The test mode to run the FeatureSet
      * @return                A FeatureReplacementAction instance
      */
-    public static FeatureReplacementAction forFeatureSet(List<FeatureSet> allFeatureSets, FeatureSet featureSet, String server, TestMode testMode) {
+    public static FeatureReplacementAction forFeatureSet(Set<FeatureSet> allFeatureSets, FeatureSet featureSet, String server, TestMode testMode) {
         //First create a base FeatureReplacementAction
         //Need to use a FeatureReplacementAction which is specific to the EE version because it also contains the transformation code
         FeatureReplacementAction action = null;
@@ -141,7 +100,6 @@ public class RepeatActions {
         } else {
             action = new FeatureReplacementAction();
         }
-        action.withMinJavaLevel(featureSet.getMinJavaLevel());
 
         //add all the features from the primary FeatureSet
         action.addFeatures(featureSet.getFeatures());

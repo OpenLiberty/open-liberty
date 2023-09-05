@@ -599,7 +599,6 @@ public abstract class ServletClientImpl implements ServletClient {
                 }
             }
         }
-        this.cookiePath = null;
         return cookieValue;
     }
 

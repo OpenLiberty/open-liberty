@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2023 IBM Corporation and others.
+ * Copyright (c) 2004, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -128,13 +128,14 @@ public class LTPAToken2 implements Token, Serializable {
         this.cipher = AES_CBC_CIPHER;
         this.expirationDifferenceAllowed = expDiffAllowed;
         decrypt();
-        if (attributes != null && attributes.length > 0) {
-            //Reset signature, encryptedBytes and remove attributes
-            this.signature = null;
-            this.encryptedBytes = null;
-            userData.removeAttributes(attributes);
-            isValid();
-        }
+
+        isValid();
+
+        //Reset signature, encryptedBytes and remove attributes
+        this.signature = null;
+        this.encryptedBytes = null;
+        userData.removeAttributes(attributes);
+
     }
 
     /**
@@ -249,9 +250,9 @@ public class LTPAToken2 implements Token, Serializable {
                 if (fields.length == 3 && expirationDifferenceAllowed >= 0 && (Math.abs(expirationInMilliseconds - Long.parseLong(fields[1])) > expirationDifferenceAllowed)) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "Token validation failed due to the expiration fields having a difference greater than: "
-                                           + expirationDifferenceAllowed + " milliseconds\n"
-                                           + "first field expiration: " + expirationInMilliseconds + " milliseconds\n"
-                                           + "second field expiration: " + fields[1] + " milliseconds");
+                                 + expirationDifferenceAllowed + " milliseconds\n"
+                                 + "first field expiration: " + expirationInMilliseconds + " milliseconds\n"
+                                 + "second field expiration: " + fields[1] + " milliseconds");
                     }
                     throw new InvalidTokenException("Token Validation Failed");
                 }
@@ -260,7 +261,7 @@ public class LTPAToken2 implements Token, Serializable {
                 expirationInMilliseconds = Long.parseLong(fields[1]);
             }
             // the signature will always be the last field, but the fields array length may be 2 or 3.
-            byte[] signature = Base64Coder.base64Decode(Base64Coder.getBytes(fields[fields.length - 1]));
+            byte[] signature = Base64Coder.base64Decode(Base64Coder.getBytes(fields[fields.length-1]));
             setSignature(signature);
         } catch (BadPaddingException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {

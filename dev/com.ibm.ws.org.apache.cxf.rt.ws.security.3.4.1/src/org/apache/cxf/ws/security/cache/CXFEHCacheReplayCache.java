@@ -20,7 +20,7 @@
 package org.apache.cxf.ws.security.cache;
 
 import java.nio.file.Path;
-import java.util.HashMap; // Liberty Change
+import java.util.HashMap;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.buslifecycle.BusLifeCycleListener;
@@ -38,7 +38,6 @@ public class CXFEHCacheReplayCache extends EHCacheReplayCache implements BusLife
 
     public CXFEHCacheReplayCache(String key, Bus bus, Path diskstorePath) throws WSSecurityException {
         super(key, diskstorePath);
-		// Liberty Change Start
         this.bus = bus;
         if (bus != null) {
             bus.getExtension(BusLifeCycleManager.class).registerLifeCycleListener(this);
@@ -50,10 +49,9 @@ public class CXFEHCacheReplayCache extends EHCacheReplayCache implements BusLife
      * @throws WSSecurityException 
      * 
      */
-    // Liberty Change Begin
+    //Liberty Change
     public CXFEHCacheReplayCache(String key, Bus bus, Path diskstorePath, HashMap oldconfig) throws WSSecurityException {
         super(key, diskstorePath, oldconfig);
-        // Liberty Change End
         this.bus = bus;
         if (bus != null) {
             bus.getExtension(BusLifeCycleManager.class).registerLifeCycleListener(this);

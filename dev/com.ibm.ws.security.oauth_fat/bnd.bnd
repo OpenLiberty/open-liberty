@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2023 IBM Corporation and others.
+# Copyright (c) 2020, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -46,7 +46,7 @@ fat.project: true
     com.ibm.ws.security.oauth_test.servlets;version=latest, \
     net.sf.jtidy:jtidy;version=9.3.8, \
     com.ibm.ws.com.meterware.httpunit.1.6.2;version=latest,\
-    de.flapdoodle.embed:de.flapdoodle.embed.mongo;version='3.0.0',\
-	de.flapdoodle.embed:de.flapdoodle.embed.process;version='3.0.1',\
+    de.flapdoodle.embed.mongo;version='3.0.0',\
+	de.flapdoodle.embed.process;version='3.0.1',\
 	com.ibm.ws.org.slf4j.api;version=latest,\
 	com.ibm.ws.org.slf4j.jdk14;version=latest

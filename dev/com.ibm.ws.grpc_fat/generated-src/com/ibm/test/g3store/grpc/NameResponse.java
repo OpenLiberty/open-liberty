@@ -16,8 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private NameResponse() {
-    names_ =
-        com.google.protobuf.LazyStringArrayList.emptyList();
+    names_ = com.google.protobuf.LazyStringArrayList.EMPTY;
   }
 
   @java.lang.Override
@@ -27,6 +26,11 @@ private static final long serialVersionUID = 0L;
     return new NameResponse();
   }
 
+  @java.lang.Override
+  public final com.google.protobuf.UnknownFieldSet
+  getUnknownFields() {
+    return this.unknownFields;
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return com.ibm.test.g3store.grpc.AppConsumerProto.internal_static_test_g3store_grpc_NameResponse_descriptor;
@@ -41,9 +45,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int NAMES_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private com.google.protobuf.LazyStringArrayList names_ =
-      com.google.protobuf.LazyStringArrayList.emptyList();
+  private com.google.protobuf.LazyStringList names_;
   /**
    * <code>repeated string names = 1;</code>
    * @return A list containing the names.
@@ -192,13 +194,11 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-
   public static com.ibm.test.g3store.grpc.NameResponse parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-
   public static com.ibm.test.g3store.grpc.NameResponse parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -273,9 +273,8 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      bitField0_ = 0;
-      names_ =
-          com.google.protobuf.LazyStringArrayList.emptyList();
+      names_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      bitField0_ = (bitField0_ & ~0x00000001);
       return this;
     }
 
@@ -302,17 +301,14 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.ibm.test.g3store.grpc.NameResponse buildPartial() {
       com.ibm.test.g3store.grpc.NameResponse result = new com.ibm.test.g3store.grpc.NameResponse(this);
-      if (bitField0_ != 0) { buildPartial0(result); }
+      int from_bitField0_ = bitField0_;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        names_ = names_.getUnmodifiableView();
+        bitField0_ = (bitField0_ & ~0x00000001);
+      }
+      result.names_ = names_;
       onBuilt();
       return result;
-    }
-
-    private void buildPartial0(com.ibm.test.g3store.grpc.NameResponse result) {
-      int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        names_.makeImmutable();
-        result.names_ = names_;
-      }
     }
 
     @java.lang.Override
@@ -362,7 +358,7 @@ private static final long serialVersionUID = 0L;
       if (!other.names_.isEmpty()) {
         if (names_.isEmpty()) {
           names_ = other.names_;
-          bitField0_ |= 0x00000001;
+          bitField0_ = (bitField0_ & ~0x00000001);
         } else {
           ensureNamesIsMutable();
           names_.addAll(other.names_);
@@ -418,13 +414,12 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private com.google.protobuf.LazyStringArrayList names_ =
-        com.google.protobuf.LazyStringArrayList.emptyList();
+    private com.google.protobuf.LazyStringList names_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     private void ensureNamesIsMutable() {
-      if (!names_.isModifiable()) {
+      if (!((bitField0_ & 0x00000001) != 0)) {
         names_ = new com.google.protobuf.LazyStringArrayList(names_);
-      }
-      bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000001;
+       }
     }
     /**
      * <code>repeated string names = 1;</code>
@@ -432,8 +427,7 @@ private static final long serialVersionUID = 0L;
      */
     public com.google.protobuf.ProtocolStringList
         getNamesList() {
-      names_.makeImmutable();
-      return names_;
+      return names_.getUnmodifiableView();
     }
     /**
      * <code>repeated string names = 1;</code>
@@ -467,10 +461,11 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setNames(
         int index, java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      ensureNamesIsMutable();
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureNamesIsMutable();
       names_.set(index, value);
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -481,10 +476,11 @@ private static final long serialVersionUID = 0L;
      */
     public Builder addNames(
         java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      ensureNamesIsMutable();
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureNamesIsMutable();
       names_.add(value);
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -498,7 +494,6 @@ private static final long serialVersionUID = 0L;
       ensureNamesIsMutable();
       com.google.protobuf.AbstractMessageLite.Builder.addAll(
           values, names_);
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -507,9 +502,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearNames() {
-      names_ =
-        com.google.protobuf.LazyStringArrayList.emptyList();
-      bitField0_ = (bitField0_ & ~0x00000001);;
+      names_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      bitField0_ = (bitField0_ & ~0x00000001);
       onChanged();
       return this;
     }
@@ -520,11 +514,12 @@ private static final long serialVersionUID = 0L;
      */
     public Builder addNamesBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
       ensureNamesIsMutable();
       names_.add(value);
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }

@@ -81,12 +81,12 @@ public class OidcClientHttpUtil {
         return EntityUtils.toString(entity);
     }
 
-    public HttpPost setupPost(String url,
-                              @Sensitive List<NameValuePair> params,
-                              String baUsername,
-                              @Sensitive String baPassword,
-                              String accessToken,
-                              String authMethod) throws Exception {
+    HttpPost setupPost(String url,
+                       @Sensitive List<NameValuePair> params,
+                       String baUsername,
+                       @Sensitive String baPassword,
+                       String accessToken,
+                       String authMethod) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "OIDC _SSO RP POST TO URL [" + WebUtils.stripSecretFromUrl(url, "client_secret") + "]");
             httpUtils.debugPostToEndPoint(url, params, baUsername, baPassword, accessToken, commonHeaders);
@@ -139,15 +139,6 @@ public class OidcClientHttpUtil {
                                               String authMethod, boolean useSystemPropertiesForHttpClientConnections) throws Exception {
 
         HttpPost postMethod = setupPost(url, params, baUsername, baPassword, accessToken, authMethod);
-        return postToEndpoint(url, postMethod, sslSocketFactory, isHostnameVerification, useSystemPropertiesForHttpClientConnections);
-    }
-
-    public Map<String, Object> postToEndpoint(String url,
-                                              HttpPost postMethod,
-                                              SSLSocketFactory sslSocketFactory,
-                                              boolean isHostnameVerification,
-                                              boolean useSystemPropertiesForHttpClientConnections) throws Exception {
-
         HttpResponse response = setupResponse(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections, postMethod);
 
         // Check the response from the endpoint to see if there was an error

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,8 +12,6 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.OVERWRITE;
-import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -34,13 +32,11 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
@@ -58,82 +54,16 @@ public class FacesTest {
     //public static RepeatTests repeatTest = MicroProfileActions.repeat(FRONTEND_SERVER_NAME, TestMode.LITE,
     //                                                                  MicroProfileActions.MP41, MicroProfileActions.MP50);
 
-    @Server(FRONTEND_SERVER_NAME)
     public static LibertyServer frontendUI;
-
-    @Server(BACKEND_SERVER_NAME)
     public static LibertyServer backendServices;
-
-    TestMethod testMethod;
-
-    static WebArchive frontendUIWar;
-    static WebArchive backendServicesWar;
 
     /**
      * Deploy the applications
      */
     @BeforeClass
     public static void setUpClass() throws Exception {
-        frontendUI.saveServerConfiguration();
-        backendServices.saveServerConfiguration();
 
-        frontendUIWar = assembleFrontendWar();
-        backendServicesWar = assembleBackendServicesWar();
-
-        // Use derby provided in ${shared.resources.dir}
-        //backendServices.copyFileToLibertyServerRoot("publish/shared/resources/derby", "derbyLib", "derby.jar");
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        cleanupSharedResources();
-        ShrinkHelper.cleanAllExportedArchives();
-
-        testMethod = getTestMethod(TestMethod.class, testName);
-        try {
-            Log.info(getClass(), testName.getMethodName(), "Configuring: " + testMethod);
-            switch (testMethod) {
-                case testFacesRestore:
-                    ShrinkHelper.exportAppToServer(frontendUI, frontendUIWar, new DeployOptions[] { OVERWRITE });
-                    ShrinkHelper.exportAppToServer(backendServices, backendServicesWar, new DeployOptions[] { OVERWRITE });
-                    frontendUI.setCheckpoint(CheckpointPhase.AFTER_APP_START, true,
-                                             server -> {
-                                                 assertNotNull("'SRVE0169I: Loading Web Module: frontendUI' message not found in log before restore",
-                                                               server.waitForStringInLogUsingMark("SRVE0169I: Loading Web Module: frontendUI", 0));
-                                                 assertNotNull("'CWWKZ0001I: Application frontendUI started' message not found in log.",
-                                                               server.waitForStringInLogUsingMark("CWWKZ0001I: Application frontendUI started", 0));
-                                             });
-                    // Checkpoint and restore
-                    frontendUI.startServer(getTestMethodNameOnly(testName) + ".log");
-                    break;
-                case testPersistenceRestore:
-                    ShrinkHelper.exportAppToServer(frontendUI, frontendUIWar, new DeployOptions[] { OVERWRITE });
-                    ShrinkHelper.exportAppToServer(backendServices, backendServicesWar, new DeployOptions[] { OVERWRITE });
-                    backendServices.setCheckpoint(CheckpointPhase.AFTER_APP_START, true,
-                                                  server -> {
-                                                      assertNotNull("'SRVE0169I: Loading Web Module: backendServices' message not found in log before restore",
-                                                                    server.waitForStringInLogUsingMark("SRVE0169I: Loading Web Module: backendServices", 0));
-                                                      assertNotNull("'CWWKZ0001I: Application backendServices started' message not found in log.",
-                                                                    server.waitForStringInLogUsingMark("CWWKZ0001I: Application backendServices started", 0));
-                                                  });
-                    // Checkpoint and restore
-                    // At least one server.env var must trigger transaction config update at restore
-                    backendServices.startServer(getTestMethodNameOnly(testName) + ".log");
-                    break;
-                default:
-                    Log.info(getClass(), testName.getMethodName(), "No configuration required: " + testMethod);
-                    break;
-            }
-        } catch (Exception e) {
-            throw new AssertionError("Unexpected error during setupTest.", e);
-        }
-    }
-
-    void cleanupSharedResources() throws Exception {
-        backendServices.deleteDirectoryFromLibertyInstallRoot("/usr/shared/resources/data");
-    }
-
-    static WebArchive assembleFrontendWar() throws Exception {
+        frontendUI = LibertyServerFactory.getLibertyServer(FRONTEND_SERVER_NAME);
         WebArchive frontendUIWar = ShrinkWrap.create(WebArchive.class, "frontendUI.war")
                         .addPackages(true, "io.openliberty.guides.event.client")
                         .addPackages(true, "io.openliberty.guides.event.ui")
@@ -161,10 +91,9 @@ public class FacesTest {
                              "/WEB-INF/faces-config.xml")
                         .add(new FileAsset(new File("test-applications/eventMgr/frontendUI/resources/WEB-INF/web.xml")),
                              "/WEB-INF/web.xml");
-        return frontendUIWar;
-    }
+        ShrinkHelper.exportAppToServer(frontendUI, frontendUIWar);
 
-    static WebArchive assembleBackendServicesWar() throws Exception {
+        backendServices = LibertyServerFactory.getLibertyServer(BACKEND_SERVER_NAME);
         WebArchive backendServicesWar = ShrinkWrap.create(WebArchive.class, "backendServices.war")
                         .addPackages(true, "io.openliberty.guides.event.dao")
                         .addPackages(true, "io.openliberty.guides.event.models")
@@ -173,32 +102,26 @@ public class FacesTest {
                              "/WEB-INF/classes/META-INF/persistence.xml")
                         .add(new FileAsset(new File("test-applications/eventMgr/backendServices/resources/META-INF/MANIFEST.MF")),
                              "/META-INF/MANIFEST.MF");
-        return backendServicesWar;
+        ShrinkHelper.exportAppToServer(backendServices, backendServicesWar);
+        // Skip this. Use derby provided in ${shared.resources.dir}
+        //backendServices.copyFileToLibertyServerRoot("publish/shared/resources/derby", "derbyLib", "derby.jar");
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        frontendUI.setCheckpoint(CheckpointPhase.AFTER_APP_START, true,
+                                 server -> {
+                                     assertNotNull("'SRVE0169I: Loading Web Module: frontendUI' message not found in log before restore",
+                                                   server.waitForStringInLogUsingMark("SRVE0169I: Loading Web Module: frontendUI", 0));
+                                     assertNotNull("'CWWKZ0001I: Application frontendUI started' message not found in log.",
+                                                   server.waitForStringInLogUsingMark("CWWKZ0001I: Application frontendUI started", 0));
+                                 });
+        frontendUI.startServer(getTestMethodNameOnly(testName) + ".log");
     }
 
     @After
     public void tearDown() throws Exception {
-        TestMethod testMethod = getTestMethod(TestMethod.class, testName);
-        try {
-            Log.info(getClass(), testName.getMethodName(), "Tearing down: " + testMethod);
-            switch (testMethod) {
-                case testFacesRestore:
-                    if (frontendUI.isStarted()) {
-                        frontendUI.stopServer();
-                    }
-                    break;
-                case testPersistenceRestore:
-                    if (backendServices.isStarted()) {
-                        backendServices.stopServer();
-                    }
-                    break;
-                default:
-                    Log.info(getClass(), testName.getMethodName(), "No tear down required: " + testMethod);
-                    break;
-            }
-        } catch (Exception e) {
-            throw new AssertionError("Unexpected error during teardownTest.", e);
-        }
+        frontendUI.stopServer();
     }
 
     @Test
@@ -218,32 +141,9 @@ public class FacesTest {
         }
     }
 
-    @Test
-    public void testPersistenceRestore() throws Exception {
-        try {
-            frontendUI.startServer();
-
-            // Hit the event mgr app at http://localhost:8030/eventmanager.jsf
-            URL url = createURL(frontendUI, "eventmanager.jsf");
-            String response = HttpUtils.getHttpResponseAsString(url);
-            assertNotNull(response);
-            assertTrue(response.contains("Event Manager"));
-        } finally {
-            if (frontendUI.isStarted()) {
-                frontendUI.stopServer();
-            }
-        }
-    }
-
     public static URL createURL(LibertyServer server, String path) throws MalformedURLException {
         if (!path.startsWith("/"))
             path = "/" + path;
         return new URL("http://" + server.getHostname() + ":" + server.getHttpSecondaryPort() + path);
-    }
-
-    static enum TestMethod {
-        testFacesRestore,
-        testPersistenceRestore,
-        unknown;
     }
 }

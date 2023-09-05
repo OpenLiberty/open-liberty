@@ -49,7 +49,6 @@ import com.ibm.wsspi.classloading.ClassLoadingService;
 import io.openliberty.microprofile.openapi20.internal.cache.CacheEntry;
 import io.openliberty.microprofile.openapi20.internal.cache.ConfigSerializer;
 import io.openliberty.microprofile.openapi20.internal.services.ConfigFieldProvider;
-import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
 import io.openliberty.microprofile.openapi20.internal.utils.IndexUtils;
 import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;

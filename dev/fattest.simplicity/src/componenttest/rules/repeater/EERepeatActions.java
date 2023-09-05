@@ -14,11 +14,16 @@ package componenttest.rules.repeater;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatActions.EEVersion;
+import componenttest.topology.impl.JavaInfo;
 
 public class EERepeatActions {
 
@@ -41,9 +46,9 @@ public class EERepeatActions {
     //The FeatureSet for the latest EE version
     public static final FeatureSet LATEST = EE10;
 
-    //All EE FeatureSets - must be descending order
-    private static final FeatureSet[] ALL_SETS_ARRAY = { EE10, EE9, EE8, EE7, EE6 };
-    private static final List<FeatureSet> ALL = Collections.unmodifiableList(Arrays.asList(ALL_SETS_ARRAY));
+    //All EE FeatureSets
+    private static final FeatureSet[] ALL_SETS_ARRAY = { EE6, EE7, EE8, EE9, EE10 };
+    public static final Set<FeatureSet> ALL = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(ALL_SETS_ARRAY)));
 
     /**
      * Get a RepeatTests instance for all EE versions. The LATEST will be run in LITE mode. The others will be run in FULL.
@@ -52,9 +57,9 @@ public class EERepeatActions {
      * @return        a RepeatTests instance
      */
     public static RepeatTests repeatAll(String server) {
-        List<FeatureSet> otherFeatureSets = new ArrayList<>(ALL);
-        otherFeatureSets.remove(LATEST);
-        return RepeatActions.repeat(server, TestMode.FULL, ALL, LATEST, otherFeatureSets);
+        Set<FeatureSet> others = new HashSet<>(ALL);
+        others.remove(LATEST);
+        return repeat(server, TestMode.FULL, ALL, LATEST, others);
     }
 
     /**
@@ -65,8 +70,8 @@ public class EERepeatActions {
      * @param  otherFeatureSets The other FeatureSets
      * @return                  a RepeatTests instance
      */
-    public static RepeatTests repeat(String server, FeatureSet firstFeatureSet, List<FeatureSet> otherFeatureSets) {
-        return RepeatActions.repeat(server, TestMode.FULL, ALL, firstFeatureSet, otherFeatureSets);
+    public static RepeatTests repeat(String server, FeatureSet firstFeatureSet, Set<FeatureSet> otherFeatureSets) {
+        return repeat(server, TestMode.FULL, ALL, firstFeatureSet, otherFeatureSets);
     }
 
     /**
@@ -108,7 +113,44 @@ public class EERepeatActions {
      * @return                          A RepeatTests instance
      */
     public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
-        return RepeatActions.repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, Arrays.asList(otherFeatureSets));
+        return repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, Arrays.asList(otherFeatureSets));
     }
 
+    /**
+     * As {@link RepeatActions#repeat(String, TestMode, Set, FeatureSet, Set)} except that if {@code firstFeatureSet} isn't compatible with the current Java version, we try to
+     * replace it with the newest set from {@code otherFeatureSets} that is compatible.
+     *
+     * @param  server                   The server to repeat on
+     * @param  otherFeatureSetsTestMode The test mode to run the otherFeatureSets
+     * @param  allFeatureSets           All known FeatureSets. The features not in the current FeatureSet are removed from the repeat
+     * @param  firstFeatureSet          The first FeatureSet to repeat with. This is run in LITE mode.
+     * @param  otherFeatureSets         The other FeatureSets to repeat with. These are in the mode specified by otherFeatureSetsTestMode
+     * @return                          A RepeatTests instance
+     */
+    private static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, Set<FeatureSet> allFeatureSets, FeatureSet firstFeatureSet,
+                                      Collection<FeatureSet> otherFeatureSets) {
+
+        // If the firstFeatureSet requires a Java level higher than the one we're running, try to find a suitable replacement so we don't end up not running the test at all in LITE mode
+        int currentJavaLevel = JavaInfo.forCurrentVM().majorVersion();
+        if (currentJavaLevel < firstFeatureSet.getEEVersion().getMinJavaLevel()) {
+
+            List<FeatureSet> allSetsList = new ArrayList<>(Arrays.asList(ALL_SETS_ARRAY));
+            Collections.reverse(allSetsList); // Reverse list so newest EE version is first in list
+
+            Collection<FeatureSet> candidateFeatureSets = otherFeatureSets;
+
+            // Find the newest EE feature set that's in otherFeatureSets and is compatible with the current java version
+            Optional<FeatureSet> newestSupportedSet = allSetsList.stream()
+                            .filter(s -> candidateFeatureSets.contains(s))
+                            .filter(s -> s.getEEVersion().getMinJavaLevel() <= currentJavaLevel)
+                            .findFirst();
+
+            if (newestSupportedSet.isPresent()) {
+                firstFeatureSet = newestSupportedSet.get();
+                otherFeatureSets = new ArrayList<>(otherFeatureSets);
+                otherFeatureSets.remove(newestSupportedSet.get());
+            }
+        }
+        return RepeatActions.repeat(server, otherFeatureSetsTestMode, allFeatureSets, firstFeatureSet, otherFeatureSets);
+    }
 }

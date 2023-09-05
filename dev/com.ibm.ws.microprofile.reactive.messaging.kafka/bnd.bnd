@@ -17,9 +17,10 @@ bVersion=1.0
 
 testsrc: test/src
 
--sub: *.bnd
+Bundle-Name: com.ibm.ws.microprofile.reactive.messaging.kafka
+Bundle-SymbolicName: com.ibm.ws.microprofile.reactive.messaging.kafka
 
-
+Bundle-Description:MicroProfile Reactive Messaging Kafka Connector, version ${bVersion}
 
 WS-TraceGroup: REACTIVEMESSAGE
 

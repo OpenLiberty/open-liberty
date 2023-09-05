@@ -4,29 +4,27 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.wss4j:wss4j-ws-security-stax;2.4.1}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.wss4j:wss4j-ws-security-stax;2.3.0}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -sub: *.bnd
 
-wss4jVersion=2.4.1
 
 -includeresource: \
-  @${repo;org.apache.wss4j:wss4j-ws-security-stax;${wss4jVersion}}!/!META-INF/MANIFEST.MF|!META-INF/maven/*, \
+  @${repo;org.apache.wss4j:wss4j-ws-security-stax;2.3.0}!/!META-INF/MANIFEST.MF|!META-INF/maven/*, \
   org/apache/wss4j=${bin}/org/apache/wss4j
-
+  
 instrument.classesExcludes: org/apache/wss4j/stax/setup/*.class
 -buildpath: \
-	org.apache.wss4j:wss4j-ws-security-stax;version=${wss4jVersion},\
+	org.apache.wss4j:wss4j-ws-security-stax;version=2.3.0,\
 	com.ibm.ws.org.apache.wss4j.ws.security.common;version=latest,\
 	com.ibm.ws.org.slf4j.api;version=latest,\
 	com.ibm.ws.org.apache.wss4j.bindings;version=latest,\
 	com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
-	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	io.openliberty.xmlBinding.3.0.internal.tools, \
 	com.ibm.ws.org.joda.time.2.9.9;version=latest

@@ -63,12 +63,6 @@
 							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_withRealTokenEndpoint,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_withRealTokenEndpoint,
 							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_noClientSSLRef,
-							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_alt_RS256_RS256_match,
-							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_alt_RS256_RS256_mismatch,
-							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_alt_RS256_RS256_diffTrust,
-							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_originHeader_valid,
-							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_post_originHeader_valid,
-							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_post_noStubs_originHeader_valid,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_noClientSSLRef,
 							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_RS256_RS256,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_RS256_RS256,
@@ -97,13 +91,7 @@
 							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_withRealTokenEndpoint,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_withRealTokenEndpoint,
 							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_noClientSSLRef,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_noClientSSLRef,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_alt_RS256_RS256_match,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_alt_RS256_RS256_mismatch,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_alt_RS256_RS256_diffTrust,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_originHeader_valid,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_post_originHeader_valid,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_post_noStubs_originHeader_valid"
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_noClientSSLRef"
 				scope="ALL_SCOPES"
 				enabled="true" />
 				

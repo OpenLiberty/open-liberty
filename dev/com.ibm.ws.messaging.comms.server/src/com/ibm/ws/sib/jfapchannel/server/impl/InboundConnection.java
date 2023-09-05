@@ -1,11 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2023 IBM Corporation and others.
+ * Copyright (c) 2003, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.server.impl;
 
@@ -61,9 +64,8 @@ public class InboundConnection extends Connection {
                              NetworkConnection vc,
                              AcceptListener al,
                              int heartbeatInterval,
-                             int heartbeatTimeout,
-                             boolean useNetty) throws FrameworkException {
-        super(channel, vc, heartbeatInterval, heartbeatTimeout, useNetty);
+                             int heartbeatTimeout) throws FrameworkException {
+        super(channel, vc, heartbeatInterval, heartbeatTimeout);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "<init>",
@@ -226,8 +228,6 @@ public class InboundConnection extends Connection {
         buf.append(getHeartbeatTimeoutForToString());
         buf.append(", Heartbeat Interval: ");
         buf.append(getHeartbeatIntervalForToString());
-        buf.append(", Using Netty Framework: ");
-        buf.append(isUsingNetty());
         buf.append("}\nEvents follow:\n");
         buf.append(getDiagnostics(false));
 

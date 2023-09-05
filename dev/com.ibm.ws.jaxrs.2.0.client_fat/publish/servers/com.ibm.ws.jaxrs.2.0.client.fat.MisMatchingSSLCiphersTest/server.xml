@@ -18,5 +18,4 @@
 
     <include location="../fatTestPorts.xml"/>
     <javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_default.secure" actions="read"/>
-    <javaPermission className="java.util.PropertyPermission" name="com.ibm.ws.jaxrs.client.useHttpsURLConnectionDefaultSslSocketFactory" actions="write"/>
 </server>

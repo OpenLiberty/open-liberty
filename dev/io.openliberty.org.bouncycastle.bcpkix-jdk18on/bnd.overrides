@@ -1,7 +1,0 @@
--include= ~../cnf/resources/bnd/rejar.props
-bVersion=1.75
-
-Bundle-SymbolicName: io.openliberty.org.bouncycastle.bcpkix-jdk18on
-
-Include-Resource: \
-   @${repo;org.bouncycastle:bcpkix-jdk18on;1.75;EXACT}!/!META-INF/versions/9/module-info.class

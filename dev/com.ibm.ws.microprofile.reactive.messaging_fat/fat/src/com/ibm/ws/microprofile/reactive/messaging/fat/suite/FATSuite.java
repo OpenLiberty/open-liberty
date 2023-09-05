@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,13 +16,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.containers.TestContainerSuite;
+
 import com.ibm.ws.microprofile.reactive.messaging.fat.jsonb.JsonbTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.tests.KafkaTestClientProviderTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.invalid.badconfig.KafkaBadConfigTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.invalid.nolib.KafkaNoLibTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.loginModuleClassloading.LoginModuleClassloadingTest;
-
-import componenttest.containers.TestContainerSuite;
 
 @RunWith(Suite.class)
 @SuiteClasses({

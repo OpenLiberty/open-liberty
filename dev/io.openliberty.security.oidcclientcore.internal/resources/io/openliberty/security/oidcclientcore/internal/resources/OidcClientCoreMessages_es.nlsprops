@@ -146,23 +146,3 @@ PRIVATE_KEY_JWT_AUTH_ERROR.useraction=Para obtener m\u00e1s informaci\u00f3n, co
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY=CWWKS2431E: Al cliente de [{0}] OpenID Connect le falta la clave necesaria para firmar la se\u00f1al para la autenticaci\u00f3n de cliente.
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.explanation=Faltan datos en la configuraci\u00f3n del cliente de OpenID Connect, o no se puede encontrar una clave con el nombre de alias de clave en la configuraci\u00f3n SSL para el cliente de OpenID Connect.
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.useraction=Aseg\u00farese de que el cliente de OpenID Connect tenga configurado un nombre de alias de clave y una referencia SSL. Verifique que el almac\u00e9n de claves al que hace referencia la configuraci\u00f3n SSL contiene una clave cuyo alias coincide con el nombre de alias de clave en la configuraci\u00f3n del cliente de OpenID Connect.
-
-TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR=CWWKS2432E: El cliente de [{0}] OpenID Connect ha encontrado un error al configurar la autenticaci\u00f3n de cliente para el punto final de se\u00f1al para el m\u00e9todo de autenticaci\u00f3n [{1}]. {2}
-TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.explanation=El punto final de se\u00f1al de OpenID Connect requiere autenticaci\u00f3n de cliente, pero es posible que al cliente de OpenID Connect le falte informaci\u00f3n, o que el cliente haya encontrado otro error al configurar los datos de autenticaci\u00f3n.
-TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n.
-
-PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME=CWWKS2433E: El cliente de [{0}] OpenID Connect no tiene configurado un nombre de alias de clave, por lo que el cliente no puede localizar las claves necesarias para crear la se\u00f1al web JSON para la autenticaci\u00f3n de cliente.
-PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.explanation=El cliente de OpenID Connect debe configurar un nombre de alias de clave para definir la clave que se utilizar\u00e1 para firmar el JWT. Se debe utilizar el mismo alias de clave para la clave privada que se utiliza para firmar el JWT y la clave p\u00fablica correspondiente.
-PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.useraction=Verifique que el cliente de OpenID Connect tiene configurado un nombre de alias de clave.
-
-PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF=CWWKS2434E: El cliente de [{0}] OpenID Connect no tiene una referencia de almac\u00e9n de claves configurada, por lo que el cliente no puede localizar la clave que se debe utilizar para firmar la se\u00f1al web JSON para la autenticaci\u00f3n de cliente.
-PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.explanation=El cliente de OpenID Connect debe configurar una referencia de almac\u00e9n de claves para definir d\u00f3nde buscar la clave que se debe utilizar para firmar el JWT.
-PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.useraction=Verifique que el cliente de OpenID Connect tiene una referencia de almac\u00e9n de claves configurada.
-
-PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY=CWWKS2435E: El cliente no puede recuperar la clave privada [{0}] del almac\u00e9n de claves [{1}] para firmar la se\u00f1al web JSON. {2}
-PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY.explanation=El cliente de OpenID Connect debe utilizar una clave privada para firmar la se\u00f1al web JSON para la autenticaci\u00f3n de cliente. El cliente ha encontrado un error al recuperar la clave privada.
-PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n.
-
-PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY=CWWKS2436E: El cliente no puede recuperar la clave p\u00fablica [{0}] del almac\u00e9n de claves [{1}] para calcular la cabecera x5t para la se\u00f1al web JSON. {2}
-PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY.explanation=La cabecera x5t es la huella de certificado de la clave p\u00fablica que corresponde a la clave privada que se utiliza para firmar la se\u00f1al web JSON. La cabecera x5t ayuda a los proveedores de OpenID Connect a identificar qu\u00e9 certificado utilizar para verificar la firma del JWT. El cliente ha encontrado un error al recuperar la clave p\u00fablica.
-PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n.

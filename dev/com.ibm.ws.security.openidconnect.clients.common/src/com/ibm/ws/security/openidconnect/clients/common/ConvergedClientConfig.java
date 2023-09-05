@@ -140,6 +140,4 @@ public interface ConvergedClientConfig extends JwtConsumerConfig {
 
     public String getPkceCodeChallengeMethod();
 
-    public String getTokenRequestOriginHeader();
-
 }

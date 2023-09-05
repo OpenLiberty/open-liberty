@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -673,9 +673,6 @@ class ResolveDirector extends AbstractDirector {
         return installResourcesCollection;
     }
 
-    /*
-     * No need to call anymore. OLGH21992 - Calling resolve() or resolveAsSet() api should return required autoFeatures.
-     */
     static void resolveAutoFeatures(Collection<List<RepositoryResource>> installResources,
                                     RepositoryResolver resolver) throws RepositoryResolutionException {
         if (installResources.isEmpty()) {

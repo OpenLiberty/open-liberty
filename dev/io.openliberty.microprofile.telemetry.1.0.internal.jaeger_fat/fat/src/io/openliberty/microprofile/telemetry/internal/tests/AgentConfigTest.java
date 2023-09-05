@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -43,7 +43,6 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
-import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
@@ -65,7 +64,6 @@ import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryCl
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-@MaximumJavaLevel(javaLevel = 20)
 public class AgentConfigTest {
 
     @Server("TelemetryAgentConfig")

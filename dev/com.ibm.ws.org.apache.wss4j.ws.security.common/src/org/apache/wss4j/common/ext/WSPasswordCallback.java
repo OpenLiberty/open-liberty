@@ -58,7 +58,7 @@ import javax.security.auth.callback.Callback;
  * </ul>
  */
 
-public class WSPasswordCallback implements org.apache.ws.security.WSPasswordCallback, Callback { // Liberty Change
+public class WSPasswordCallback implements org.apache.ws.security.WSPasswordCallback, Callback {
 
     /**
      * An unknown usage. Never used by the WSS4J implementation and should be treated

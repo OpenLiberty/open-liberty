@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -37,6 +37,9 @@ import componenttest.app.FATServlet;
 @WebServlet("/TimeoutServlet")
 public class TimeoutServlet extends FATServlet {
 
+    /**  */
+    private static final String filter = "(testfilter=jon)";
+
     @Test
     @AllowedFFDC(value = { "javax.transaction.RollbackException" })
     public void testTransactionTimeoutWithNonAbortableResource(HttpServletRequest request,
@@ -68,13 +71,13 @@ public class TimeoutServlet extends FATServlet {
             final XAResourceImpl xaRes1 = XAResourceFactoryImpl.instance()
                             .getXAResourceImpl(xaResInfo1);
 
-            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResourceImpl xaRes2 = XAResourceFactoryImpl.instance()
                             .getXAResourceImpl(xaResInfo2);
 
-            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             // We'll now sit in a long running query for 10 seconds. The query locks up xaRes1 but in the meantime, the
@@ -131,13 +134,13 @@ public class TimeoutServlet extends FATServlet {
             final AbortableXAResourceImpl xaRes1 = XAResourceFactoryImpl.instance()
                             .getAbortableXAResourceImpl(xaResInfo1);
 
-            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResourceImpl xaRes2 = XAResourceFactoryImpl.instance()
                             .getXAResourceImpl(xaResInfo2);
 
-            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             // We'll now sit in a long running query for 10 seconds. The query locks up xaRes1 but in the meantime, the

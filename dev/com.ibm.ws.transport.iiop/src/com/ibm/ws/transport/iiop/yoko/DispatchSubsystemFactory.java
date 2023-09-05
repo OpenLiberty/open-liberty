@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2015,2023 IBM Corporation and others.
+/*******************************************************************************
+ * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,12 +9,11 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- */
+ *******************************************************************************/
 package com.ibm.ws.transport.iiop.yoko;
 
 import static com.ibm.wsspi.kernel.service.location.WsLocationConstants.LOC_PROCESS_TYPE;
 import static com.ibm.wsspi.kernel.service.location.WsLocationConstants.LOC_PROCESS_TYPE_SERVER;
-import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -29,8 +28,10 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 
-@Component(configurationPolicy = IGNORE, property = { "service.vendor=IBM", "service.ranking:Integer=1" })
-public class DispatchSubsystemFactory implements SubsystemFactory {
+@Component(service = SubsystemFactory.class,
+                configurationPolicy = ConfigurationPolicy.IGNORE,
+                property = { "service.vendor=IBM", "service.ranking:Integer=1" })
+public class DispatchSubsystemFactory extends SubsystemFactory {
     private ExecutorDispatchPolicy dispatcherPolicy;
 
     @Reference

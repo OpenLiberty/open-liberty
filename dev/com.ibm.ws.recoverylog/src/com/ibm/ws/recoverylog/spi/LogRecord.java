@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,7 +19,6 @@ import java.nio.ByteBuffer;
 import com.ibm.tx.TranConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 
 //------------------------------------------------------------------------------
 // Class: LogRecord
@@ -134,14 +133,15 @@ public abstract class LogRecord {
      *                   that this log records byte cursor is isolated from other
      *                   log records.
      */
-    @Trivial
     protected LogRecord(Buffer buffer, int absolutePosition) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "LogRecord", buffer, absolutePosition);
 
         _buffer = (ByteBuffer) buffer;
         _absolutePosition = absolutePosition;
 
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "LogRecord {0} {1} {2}", this, buffer, absolutePosition);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "LogRecord", this);
     }
 
     //------------------------------------------------------------------------------
@@ -152,13 +152,14 @@ public abstract class LogRecord {
      *
      * @return The byte cursor position.
      */
-    @Trivial
     protected int position() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "position", this);
 
         int position = _absolutePosition + _buffer.position();
 
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "position {0} {1}", position, this);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "position", position);
         return position;
     }
 
@@ -188,10 +189,11 @@ public abstract class LogRecord {
      * Retrieves the absolute position (in the log ByteBuffer) of the beginning
      * of this LogRecord's view buffer.
      */
-    @Trivial
     protected int absolutePosition() {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "absolutePosition {0} {1}", _absolutePosition, this);
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "absolutePosition", this);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "absolutePosition", _absolutePosition);
         return _absolutePosition;
     }
 
@@ -227,13 +229,16 @@ public abstract class LogRecord {
      *
      * @param bytes The target byte array into which the bytes will be read.
      */
-    @Trivial
     protected void get(byte[] bytes) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "get", this, bytes.length);
 
         _buffer.get(bytes);
 
         if (tc.isDebugEnabled())
             Tr.debug(tc, RLSUtils.toHexString(bytes, RLSUtils.MAX_DISPLAY_BYTES));
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "get");
     }
 
     //------------------------------------------------------------------------------
@@ -246,13 +251,14 @@ public abstract class LogRecord {
      *
      * @return The int value read from the mapped byte buffer.
      */
-    @Trivial
     protected int getInt() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "getInt", this);
 
         int data = _buffer.getInt();
 
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "getInt {0} {1}", data, this);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "getInt", data);
         return data;
     }
 
@@ -265,13 +271,14 @@ public abstract class LogRecord {
      *
      * @return The long value read from the mapped byte buffer.
      */
-    @Trivial
     protected long getLong() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "getLong", this);
 
         long data = _buffer.getLong();
 
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "getLong {0} {1}", data, this);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "getLong", data);
         return data;
     }
 
@@ -284,13 +291,14 @@ public abstract class LogRecord {
      *
      * @return The short value read from the mapped byte buffer.
      */
-    @Trivial
     protected short getShort() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "getShort", this);
 
         short data = _buffer.getShort();
 
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "getShort {0} {1}", data, this);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "getShort", data);
         return data;
     }
 
@@ -303,14 +311,15 @@ public abstract class LogRecord {
      *
      * @return The boolean value read from the mapped byte buffer.
      */
-    @Trivial
     protected boolean getBoolean() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "getBoolean", this);
 
         byte dataByte = _buffer.get();
         boolean data = (dataByte == TRUE);
 
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "getBoolean {0} {1}", data, this);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "getBoolean", data);
         return data;
     }
 }

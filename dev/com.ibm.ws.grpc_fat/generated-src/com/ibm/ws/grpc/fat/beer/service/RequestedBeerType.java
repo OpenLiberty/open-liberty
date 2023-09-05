@@ -30,6 +30,11 @@ private static final long serialVersionUID = 0L;
     return new RequestedBeerType();
   }
 
+  @java.lang.Override
+  public final com.google.protobuf.UnknownFieldSet
+  getUnknownFields() {
+    return this.unknownFields;
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return com.ibm.ws.grpc.fat.beer.service.BeerProto.internal_static_beer_RequestedBeerType_descriptor;
@@ -44,7 +49,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int BEERTYPE_FIELD_NUMBER = 1;
-  private int beerType_ = 0;
+  private int beerType_;
   /**
    * <code>.beer.BeerType beerType = 1;</code>
    * @return The enum numeric value on the wire for beerType.
@@ -57,7 +62,8 @@ private static final long serialVersionUID = 0L;
    * @return The beerType.
    */
   @java.lang.Override public com.ibm.ws.grpc.fat.beer.service.BeerType getBeerType() {
-    com.ibm.ws.grpc.fat.beer.service.BeerType result = com.ibm.ws.grpc.fat.beer.service.BeerType.forNumber(beerType_);
+    @SuppressWarnings("deprecation")
+    com.ibm.ws.grpc.fat.beer.service.BeerType result = com.ibm.ws.grpc.fat.beer.service.BeerType.valueOf(beerType_);
     return result == null ? com.ibm.ws.grpc.fat.beer.service.BeerType.UNRECOGNIZED : result;
   }
 
@@ -169,13 +175,11 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-
   public static com.ibm.ws.grpc.fat.beer.service.RequestedBeerType parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-
   public static com.ibm.ws.grpc.fat.beer.service.RequestedBeerType parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -254,8 +258,8 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      bitField0_ = 0;
       beerType_ = 0;
+
       return this;
     }
 
@@ -282,16 +286,9 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.ibm.ws.grpc.fat.beer.service.RequestedBeerType buildPartial() {
       com.ibm.ws.grpc.fat.beer.service.RequestedBeerType result = new com.ibm.ws.grpc.fat.beer.service.RequestedBeerType(this);
-      if (bitField0_ != 0) { buildPartial0(result); }
+      result.beerType_ = beerType_;
       onBuilt();
       return result;
-    }
-
-    private void buildPartial0(com.ibm.ws.grpc.fat.beer.service.RequestedBeerType result) {
-      int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.beerType_ = beerType_;
-      }
     }
 
     @java.lang.Override
@@ -369,7 +366,7 @@ private static final long serialVersionUID = 0L;
               break;
             case 8: {
               beerType_ = input.readEnum();
-              bitField0_ |= 0x00000001;
+
               break;
             } // case 8
             default: {
@@ -387,7 +384,6 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
-    private int bitField0_;
 
     private int beerType_ = 0;
     /**
@@ -403,8 +399,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setBeerTypeValue(int value) {
+      
       beerType_ = value;
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -414,7 +410,8 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public com.ibm.ws.grpc.fat.beer.service.BeerType getBeerType() {
-      com.ibm.ws.grpc.fat.beer.service.BeerType result = com.ibm.ws.grpc.fat.beer.service.BeerType.forNumber(beerType_);
+      @SuppressWarnings("deprecation")
+      com.ibm.ws.grpc.fat.beer.service.BeerType result = com.ibm.ws.grpc.fat.beer.service.BeerType.valueOf(beerType_);
       return result == null ? com.ibm.ws.grpc.fat.beer.service.BeerType.UNRECOGNIZED : result;
     }
     /**
@@ -426,7 +423,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      bitField0_ |= 0x00000001;
+      
       beerType_ = value.getNumber();
       onChanged();
       return this;
@@ -436,7 +433,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearBeerType() {
-      bitField0_ = (bitField0_ & ~0x00000001);
+      
       beerType_ = 0;
       onChanged();
       return this;

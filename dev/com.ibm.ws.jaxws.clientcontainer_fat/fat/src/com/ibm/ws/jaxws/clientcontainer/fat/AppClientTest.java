@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,7 +29,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyServer;
@@ -165,27 +164,12 @@ public class AppClientTest {
         CommonApi.createClientWithArgs(testName, testName, response, packages, testName, "helloClient/src/" + testName, getServerInfo());
     }
 
-    // This test does a simple check in the messages.log for the instance type of XMLEventFactory in EE10, it should be the WoodStox StAX implementation - WstxEventFactory
-    // TODO: Add test for the disabling the Woodstox provider in CXF, won't be possible until we can read from the client/logs/trace.log file.
-    @Test
-    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE9_FEATURES })
-    public void testClientWoodstoxEnabled() throws Exception {
-        String testName = "ClientHandler";
-        List<String> response = new ArrayList<String>();
-        // Since there is no real way to get the framework to check the trace.log, need to check the messages.log for the class name.
-        response.add("WstxEventFactory");
-        List<String> packages = Arrays.asList("com.ibm.ws.jaxws.test.wsr.client", "com.ibm.ws.jaxws.test.wsr.server.stub", "com.ibm.ws.jaxws.test.wsr.clienthandler");
-        CommonApi.createClientWithArgs(testName, testName, response, packages, testName, "helloClient/src/" + testName, getServerInfo());
-
-    }
-
     private List<String> getServerInfo() {
         return serverInfo;
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-
         if (server.isStarted()) {
             Log.info(c, "tearDown", "Server was not stopped at the end of the test suite, stopping: " + server.getServerName());
             server.stopServer();

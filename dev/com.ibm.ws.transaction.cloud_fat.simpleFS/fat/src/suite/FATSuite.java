@@ -12,6 +12,7 @@
  *******************************************************************************/
 package suite;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -24,7 +25,7 @@ import componenttest.rules.repeater.RepeatTests;
                 SimpleFS2PCCloudTest.class,
 })
 public class FATSuite {
-//    @ClassRule
+    @ClassRule
     public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
                     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(SimpleFS2PCCloudTest.serverNames))
                     .andWith(FeatureReplacementAction.EE9_FEATURES()

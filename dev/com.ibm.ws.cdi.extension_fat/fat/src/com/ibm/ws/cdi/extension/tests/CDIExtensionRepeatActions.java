@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,9 +15,8 @@ package com.ibm.ws.cdi.extension.tests;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-
-import com.ibm.websphere.simplicity.LocalFile;
+import java.util.HashSet;
+import java.util.Set;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
@@ -32,6 +31,8 @@ import componenttest.rules.repeater.RepeatActions.EEVersion;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
+import com.ibm.websphere.simplicity.LocalFile;
+
 public class CDIExtensionRepeatActions {
 
     public static final String BUNDLE_PATH = "publish/bundles/";
@@ -39,8 +40,6 @@ public class CDIExtensionRepeatActions {
     public static final String SPI_XTOR_FAIL_EXTENSION_BUNDLE_ID = "cdi.spi.constructor.fail.extension";
     public static final String HELLOWORLD_EXTENSION_BUNDLE_ID = "cdi.helloworld.extension";
     public static final String CDI_SPI_EXTENSION_BUNDLE_ID = "cdi.spi.extension";
-    public static final String CDI_SPI_WITH_NO_EXTENSION_BUNDLE_ID = "cdi.spi.with.no.extension";
-    public static final String CDI_SPI_EXTENSION_BUNDLE_WITH_INTERNALS_ID = "cdi.spi.extension.with.internals";
     public static final String CDI_INTERNALS_BUNDLE_ID = "cdi.internals";
     public static final String CDI_SPI_MISPLACED_BUNDLE_ID = "cdi.spi.misplaced";
 
@@ -83,7 +82,7 @@ public class CDIExtensionRepeatActions {
         } else if (eeVersion == EEVersion.EE9) {
             name = bundleID + "-3.0";
         } else if (eeVersion == EEVersion.EE10) {
-            name = bundleID + "-4.0";
+            name = bundleID + "-3.0";
         } else {
             throw new RuntimeException("Unknown EE version: " + eeVersion);
         }
@@ -93,35 +92,32 @@ public class CDIExtensionRepeatActions {
     public static final FeatureSet EE7_PLUS = EERepeatActions.EE7.addFeature("usr:" + getFeatureName(SPI_XTOR_FAIL_EXTENSION_BUNDLE_ID, EEVersion.EE7))
                                                                  .addFeature("usr:" + getFeatureName(HELLOWORLD_EXTENSION_BUNDLE_ID, EEVersion.EE7))
                                                                  .addFeature("usr:" + getFeatureName(CDI_SPI_EXTENSION_BUNDLE_ID, EEVersion.EE7))
-                                                                   .addFeature("usr:" + getFeatureName(CDI_SPI_WITH_NO_EXTENSION_BUNDLE_ID, EEVersion.EE7))
                                                                  .addFeature(getFeatureName(CDI_INTERNALS_BUNDLE_ID, EEVersion.EE7))
                                                                  .build(EE7_PLUS_ID);
 
     public static final FeatureSet EE8_PLUS = EERepeatActions.EE8.addFeature("usr:" + getFeatureName(SPI_XTOR_FAIL_EXTENSION_BUNDLE_ID, EEVersion.EE8))
                                                                  .addFeature("usr:" + getFeatureName(HELLOWORLD_EXTENSION_BUNDLE_ID, EEVersion.EE8))
                                                                  .addFeature("usr:" + getFeatureName(CDI_SPI_EXTENSION_BUNDLE_ID, EEVersion.EE8))
-                                                                   .addFeature("usr:" + getFeatureName(CDI_SPI_WITH_NO_EXTENSION_BUNDLE_ID, EEVersion.EE8))
                                                                  .addFeature(getFeatureName(CDI_INTERNALS_BUNDLE_ID, EEVersion.EE8))
                                                                  .build(EE8_PLUS_ID);
 
     public static final FeatureSet EE9_PLUS = EERepeatActions.EE9.addFeature("usr:" + getFeatureName(SPI_XTOR_FAIL_EXTENSION_BUNDLE_ID, EEVersion.EE9))
                                                                  .addFeature("usr:" + getFeatureName(HELLOWORLD_EXTENSION_BUNDLE_ID, EEVersion.EE9))
                                                                  .addFeature("usr:" + getFeatureName(CDI_SPI_EXTENSION_BUNDLE_ID, EEVersion.EE9))
-                                                                   .addFeature("usr:" + getFeatureName(CDI_SPI_WITH_NO_EXTENSION_BUNDLE_ID, EEVersion.EE9))
                                                                  .addFeature(getFeatureName(CDI_INTERNALS_BUNDLE_ID, EEVersion.EE9))
                                                                  .build(EE9_PLUS_ID);
 
     public static final FeatureSet EE10_PLUS = EERepeatActions.EE10.addFeature("usr:" + getFeatureName(SPI_XTOR_FAIL_EXTENSION_BUNDLE_ID, EEVersion.EE10))
                                                                    .addFeature("usr:" + getFeatureName(HELLOWORLD_EXTENSION_BUNDLE_ID, EEVersion.EE10))
                                                                    .addFeature("usr:" + getFeatureName(CDI_SPI_EXTENSION_BUNDLE_ID, EEVersion.EE10))
-                                                                   .addFeature("usr:" + getFeatureName(CDI_SPI_WITH_NO_EXTENSION_BUNDLE_ID, EEVersion.EE10))
-                                                                   .addFeature("usr:" + getFeatureName(CDI_SPI_EXTENSION_BUNDLE_WITH_INTERNALS_ID, EEVersion.EE10))
                                                                    .addFeature(getFeatureName(CDI_INTERNALS_BUNDLE_ID, EEVersion.EE10))
                                                                    .build(EE10_PLUS_ID);
 
-    //All CDI FeatureSets - must be descending order
-    private static final FeatureSet[] ALL_SETS_ARRAY = { EE10_PLUS, EE9_PLUS, EE8_PLUS, EE7_PLUS };
-    public static final List<FeatureSet> ALL = Collections.unmodifiableList(Arrays.asList(ALL_SETS_ARRAY));
+    private static final FeatureSet[] ALL_SETS_ARRAY = { EE7_PLUS,
+                                                         EE8_PLUS,
+                                                         EE9_PLUS,
+                                                         EE10_PLUS };
+    private static final Set<FeatureSet> ALL = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(ALL_SETS_ARRAY)));
 
     public static RepeatTests repeat(String server, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
         return RepeatActions.repeat(server, TestMode.FULL, ALL, firstFeatureSet, otherFeatureSets);
@@ -189,8 +185,8 @@ public class CDIExtensionRepeatActions {
     public static void uninstallUserBundle(LibertyServer server, String bundleID) throws Exception {
         String bundleName = getBundleName(bundleID, isJakartaActive());
         server.uninstallUserBundle(bundleName);
-        if (isJakartaActive()) {
-            //Destroy the old file the transformer created to prevent a collision when the next transformation happens.
+        if(isJakartaActive()) {
+            //Destroy the old file the transformer created to prevent a collision when the next transformation happens. 
             //This may or may not fix https://wasrtc.hursley.ibm.com:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/290609
             LocalFile bundleFile = new LocalFile(getBundlePath(bundleName));
             bundleFile.delete();

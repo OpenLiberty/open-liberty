@@ -19,7 +19,6 @@
 
 package org.apache.cxf.jaxrs.utils;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -44,14 +43,11 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.function.Supplier;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.json.bind.JsonbException;
@@ -90,11 +86,8 @@ import javax.ws.rs.ext.ReaderInterceptorContext;
 import javax.ws.rs.ext.WriterInterceptor;
 import javax.ws.rs.ext.WriterInterceptorContext;
 import javax.xml.namespace.QName;
-import javax.xml.transform.Source;
 
-import org.apache.cxf.common.classloader.ClassLoaderUtils;
 import org.apache.cxf.common.i18n.BundleUtils;
-import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.util.PackageUtils;
 import org.apache.cxf.common.util.PropertyUtils;
 import org.apache.cxf.common.util.ReflectionUtil;
@@ -164,7 +157,6 @@ import com.ibm.ws.jaxrs20.multipart.impl.AttachmentImpl;
 
 public final class JAXRSUtils {
 
-    private static final Logger LOG = LogUtils.getL7dLogger(JAXRSUtils.class);
     public static final MediaType ALL_TYPES = new MediaType();
     public static final String ROOT_RESOURCE_CLASS = "root.resource.class";
     public static final String IGNORE_MESSAGE_WRITERS = "ignore.message.writers";
@@ -179,12 +171,10 @@ public final class JAXRSUtils {
     private static final String MEDIA_TYPE_DISTANCE_PARAM = "d";
     private static final String DEFAULT_CONTENT_TYPE = "default.content.type";
     private static final String KEEP_SUBRESOURCE_CANDIDATES = "keep.subresource.candidates";
-	// Liberty Change Start
     // using IBM RAS Tr for injected entry/exit with faster trace guards,
     // but using java.util.logging.Logger for translated messages from CXF.
-    private static final TraceComponent tc = Tr.register(JAXRSUtils.class); 
-    // private static final Logger LOG = LogUtils.getL7dLogger(JAXRSUtils.class);
-	// Liberty Change End
+    private static final TraceComponent tc = Tr.register(JAXRSUtils.class);
+    //private static final Logger LOG = LogUtils.getL7dLogger(JAXRSUtils.class);
     private static final ResourceBundle BUNDLE = BundleUtils.getBundle(JAXRSUtils.class);
     private static final String PATH_SEGMENT_SEP = "/";
     private static final String REPORT_FAULT_MESSAGE_PROPERTY = "org.apache.cxf.jaxrs.report-fault-message";
@@ -193,186 +183,37 @@ public final class JAXRSUtils {
     private static final Annotation[] EMPTY_ANNOTATIONS = new Annotation[0];
     private static final Set<Class<?>> STREAMING_OUT_TYPES = new HashSet<>(
         Arrays.asList(InputStream.class, Reader.class, StreamingOutput.class));
-    private static final Set<String> STREAMING_LIKE_OUT_TYPES = new HashSet<>(
-        Arrays.asList(
-            "org.apache.cxf.jaxrs.ext.xml.XMLSource", 
-            "org.apache.cxf.jaxrs.ext.multipart.InputStreamDataSource", 
-            "org.apache.cxf.jaxrs.ext.multipart.MultipartBody", 
-            "org.apache.cxf.jaxrs.ext.multipart.Attachment"
-        ));
-    private static final Set<String> REACTIVE_OUT_TYPES = new HashSet<>(
-        Arrays.asList(
-            // Reactive Streams
-            "org.reactivestreams.Publisher",
-            // Project Reactor
-            "reactor.core.publisher.Mono",
-            "reactor.core.publisher.Flux",
-            // RxJava
-            "rx.Observable",
-            // RxJava2
-            "io.reactivex.Flowable",
-            "io.reactivex.Maybe",
-            "io.reactivex.Observable",
-            "io.reactivex.Single",
-            // RxJava3
-            "io.reactivex.rxjava3.core.Flowable",
-            "io.reactivex.rxjava3.core.Maybe",
-            "io.reactivex.rxjava3.core.Observable",
-            "io.reactivex.rxjava3.core.Single",
-            // JDK
-            "java.util.concurrent.CompletableFuture",
-            "java.util.concurrent.CompletionStage"
-        ));
-    private static final LazyLoadedClass DATA_SOURCE_CLASS = new LazyLoadedClass("javax.activation.DataSource");
 
-    // Class to lazily call the ClassLoaderUtil.loadClass, but do it once
-    // and cache the result.  Then use the class to create instances as needed.
-    // This avoids calling loadClass every time as calling loadClass is super expensive, 
-    // particularly if the class cannot be found and particularly in OSGi where the 
-    // search is very complex. This would record that the class is not found and prevent 
-    // future searches.
-    private static class LazyLoadedClass {
-        private final String className;
-        private volatile boolean initialized;
-        private Class<?> cls;
+    private JAXRSUtils() {}
 
-        LazyLoadedClass(String cn) {
-            className = cn;
-        }
-
-        synchronized Optional<Class<?>> load() {
-            if (!initialized) {
-                try {
-                    cls = ClassLoaderUtils.loadClass(className, ProviderFactory.class);
-                } catch (final Throwable ex) {
-                    LOG.fine(className + " not available, skipping");
-                }
-                initialized = true;
-            }
-
-            return Optional.ofNullable(cls);
-        }
-
-        boolean isAssignableFrom(Class<?> another) {
-            return load().map(c -> c.isAssignableFrom(another)).orElse(false);
-        }
-    }
-
-    private JAXRSUtils() {
-    }
-
-    /**
-     * Consider additional types as stream-like and returns if the class and corresponding type
-     * refer to one of those. 
-     * @param cls class to check
-     * @param type type to check
-     * @return "true" is the class and corresponding type could be considered streaming-like, 
-     * "false" otherwise.
-     */
-    public static boolean isStreamingLikeOutType(Class<?> cls, Type type) {
-        if (cls != null && (isStreamingOutType(cls) 
-                || STREAMING_LIKE_OUT_TYPES.contains(cls.getName()) 
-                || REACTIVE_OUT_TYPES.contains(cls.getName()))) {
-            return true;
-        }
-
-        if (type instanceof ParameterizedType) {
-            final ParameterizedType parameterizedType = (ParameterizedType)type;
-            for (Type arg: parameterizedType.getActualTypeArguments()) {
-                if (isStreamingLikeOutType(null, arg)) {
-                    return true;
-                }
-            }
-        }
-        
-        if (type instanceof Class) {
-            final Class<?> typeCls = (Class<?>)type;
-            return isStreamingOutType(typeCls) || STREAMING_LIKE_OUT_TYPES.contains(typeCls.getName());
-        }
-        
-        return false;
-    }
-    
     public static boolean isStreamingOutType(Class<?> type) {
-        return STREAMING_OUT_TYPES.contains(type) 
-            || Closeable.class.isAssignableFrom(type)
-            || Source.class.isAssignableFrom(type)
-            || DATA_SOURCE_CLASS.isAssignableFrom(type);
+        return STREAMING_OUT_TYPES.contains(type);
     }
 
     public static List<PathSegment> getPathSegments(String thePath, boolean decode) {
         return getPathSegments(thePath, decode, true);
     }
 
-    /**
-     * Parses path segments taking into account the URI templates and template regexes. Per RFC-3986, 
-     * "A path consists of a sequence of path segments separated by a slash ("/") character.", however
-     * it is possible to include slash ("/") inside template regex, for example "/my/path/{a:b/c}", see 
-     * please {@link URITemplate}. In this case, the whole template definition is extracted as a path 
-     * segment, without breaking it.
-     * @param thePath path
-     * @param decode should the path segments be decoded or not
-     * @param ignoreLastSlash should the last slash be ignored or not
-     * @return
-     */
     public static List<PathSegment> getPathSegments(String thePath, boolean decode,
                                                     boolean ignoreLastSlash) {
+        List<PathSegment> theList = 
+            Arrays.asList(thePath.split("/")).stream()
+            .filter(StringUtils.notEmpty())
+            .map(p -> new PathSegmentImpl(p, decode))
+            .collect(Collectors.toList());
         
-        final List<PathSegment> segments = new ArrayList<>();
-        int templateDepth = 0;
-        int start = 0;
-        for (int i = 0; i < thePath.length(); ++i) {
-            if (thePath.charAt(i) == '/') {
-                // The '/' is in template (possibly, with arbitrary regex) definition
-                if (templateDepth != 0) {
-                    continue;
-                } else if (start != i) {
-                    final String segment = thePath.substring(start, i);
-                    segments.add(new PathSegmentImpl(segment, decode));
-                }
-                
-                // advance the positions, empty path segments
-                start = i + 1;
-            } else if (thePath.charAt(i) == '{') {
-                ++templateDepth;
-            } else if (thePath.charAt(i) == '}') {
-                --templateDepth; // could go negative, since the template could be unbalanced
-            }
+        int len = thePath.length();
+        if (len > 0 && thePath.charAt(len - 1) == '/') {
+            String value = ignoreLastSlash ? "" : "/";
+            theList.add(new PathSegmentImpl(value, false));
         }
-        
-        // the URI has unbalanced curly braces, backtrack to the last seen position of the path
-        // segment separator and just split segments as-is from there
-        if (templateDepth != 0) {
-            segments.addAll(
-                Arrays
-                    .stream(thePath.substring(start).split("/"))
-                    .filter(StringUtils.notEmpty())
-                    .map(p -> new PathSegmentImpl(p, decode))
-                    .collect(Collectors.toList()));
-
-            int len = thePath.length();
-            if (len > 0 && thePath.charAt(len - 1) == '/') {
-                String value = ignoreLastSlash ? "" : "/";
-                segments.add(new PathSegmentImpl(value, false));
-            }
-        } else {
-            // the last symbol is slash
-            if (start == thePath.length() && start > 0 && thePath.charAt(start - 1) == '/') {
-                String value = ignoreLastSlash ? "" : "/";
-                segments.add(new PathSegmentImpl(value, false));
-            } else if (!thePath.isEmpty()) {
-                final String segment = thePath.substring(start);
-                segments.add(new PathSegmentImpl(segment, decode));
-            }
-        }
-        
-        return segments;
+        return theList;
     }
 
     private static String[] getUserMediaTypes(Object provider, boolean consumes) {
         String[] values = null;
         if (AbstractConfigurableProvider.class.isAssignableFrom(provider.getClass())) {
-            final List<String> types;
+            List<String> types = null;
             if (consumes) {
                 types = ((AbstractConfigurableProvider) provider).getConsumeMediaTypes();
             } else {
@@ -395,7 +236,6 @@ public final class JAXRSUtils {
     }
 
     public static List<MediaType> getProviderProduceTypes(MessageBodyWriter<?> provider) {
-	    // Liberty Change Start
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "getProviderProduceTypes", provider);
         }
@@ -428,7 +268,6 @@ public final class JAXRSUtils {
         }
         return produceTypes;
     }
-	// Liberty Change End
 
     public static List<MediaType> getMediaTypes(String[] values) {
         List<MediaType> supportedMimeTypes = new ArrayList<>(values.length);
@@ -452,8 +291,8 @@ public final class JAXRSUtils {
 
         if (bri.isSingleton()
             && (!bri.getParameterMethods().isEmpty() || !bri.getParameterFields().isEmpty())) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) { // Liberty Change
-                Tr.debug(tc, "Injecting request parameters into singleton resource is not thread-safe"); // Liberty Change
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Injecting request parameters into singleton resource is not thread-safe");
             }
         }
         // Param methods
@@ -480,7 +319,7 @@ public final class JAXRSUtils {
         for (Field f : bri.getParameterFields()) {
             Parameter p = ResourceUtils.getParameter(0, f.getAnnotations(),
                                                      f.getType());
-            final Object o;
+            Object o = null;
 
             if (p.getType() == ParameterType.BEAN) {
                 o = createBeanParamValue(message, f.getType(), ori);
@@ -500,7 +339,6 @@ public final class JAXRSUtils {
     public static Map<ClassResourceInfo, MultivaluedMap<String, String>> selectResourceClass(
                                                                                              List<ClassResourceInfo> resources, String path, Message message) {
 
-		// Liberty Change Start
         final boolean isFineLevelLoggable = TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
         if (isFineLevelLoggable) {
             StringBuilder stringBuilder = new StringBuilder();
@@ -550,7 +388,6 @@ public final class JAXRSUtils {
                 if (isFineLevelLoggable) {
                     Tr.debug(tc, new org.apache.cxf.common.i18n.Message("CRI_SELECTED", BUNDLE, cri.getServiceClass().getName(), path, cri.getURITemplate().getValue()).toString());
                 }
-				// Liberty CHange End
             }
             return cris;
         }
@@ -569,7 +406,7 @@ public final class JAXRSUtils {
                                 requestContentType, acceptContentTypes, true, true);
     }
 
-    @FFDCIgnore(IllegalArgumentException.class) // Liberty Change
+    @FFDCIgnore(IllegalArgumentException.class)
     public static OperationResourceInfo findTargetMethod(
                                                          Map<ClassResourceInfo, MultivaluedMap<String, String>> matchedResources,
                                                          Message message,
@@ -580,7 +417,7 @@ public final class JAXRSUtils {
                                                          boolean throwException,
                                                          boolean recordMatchedUri) {
 
-        final boolean isFineLevelLoggable = TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled(); // Liberty Change
+        final boolean isFineLevelLoggable = TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
         final boolean getMethod = HttpMethod.GET.equals(httpMethod);
 
         MediaType requestType;
@@ -599,7 +436,7 @@ public final class JAXRSUtils {
         int methodMatched = 0;
         int consumeMatched = 0;
 
-        boolean resourceMethodsAdded = false; // Liberty Change
+        boolean resourceMethodsAdded = false;
         List<OperationResourceInfo> finalPathSubresources = null;
         for (Map.Entry<ClassResourceInfo, MultivaluedMap<String, String>> rEntry : matchedResources.entrySet()) {
             ClassResourceInfo resource = rEntry.getKey();
@@ -641,7 +478,7 @@ public final class JAXRSUtils {
                                     if (matchProduceTypes(acceptType, ori)) {
                                         candidateList.put(ori, map);
                                         added = true;
-                                        resourceMethodsAdded = true; // Liberty Change
+                                        resourceMethodsAdded = true;
                                         break;
                                     }
                                 }
@@ -659,12 +496,7 @@ public final class JAXRSUtils {
                 }
             }
         }
-        
-        // We may get several matching candidates with different HTTP methods which match subresources
-        // and resources. Before excluding subresources, let us make sure we have at least one matching
-        // HTTP method candidate.
-        // boolean isOptions = HttpMethod.OPTIONS.equalsIgnoreCase(httpMethod); // Liberty Change 
-        if (finalPathSubresources != null && resourceMethodsAdded // Liberty Change
+        if (finalPathSubresources != null && resourceMethodsAdded
             && !MessageUtils.getContextualBoolean(message, KEEP_SUBRESOURCE_CANDIDATES, false)) {
             for (OperationResourceInfo key : finalPathSubresources) {
                 candidateList.remove(key);
@@ -683,7 +515,6 @@ public final class JAXRSUtils {
                 Tr.debug(tc,
                          new org.apache.cxf.common.i18n.Message("OPER_SELECTED", BUNDLE, ori.getMethodToInvoke().getName(), ori.getClassResourceInfo().getServiceClass().getName()).toString());
             }
-			// Liberty Change End
             if (!ori.isSubResourceLocator()) {
                 MediaType responseMediaType = intersectSortMediaTypes(acceptContentTypes,
                                                                       ori.getProduceTypes(),
@@ -722,16 +553,15 @@ public final class JAXRSUtils {
         org.apache.cxf.common.i18n.Message errorMsg = new org.apache.cxf.common.i18n.Message(name, BUNDLE, message.get(Message.REQUEST_URI), getCurrentPath(firstCri.getValue()), httpMethod, mediaTypeToString(requestType), convertTypesToString(acceptContentTypes));
         if (!"OPTIONS".equalsIgnoreCase(httpMethod)) {
             Level logLevel = getExceptionLogLevel(message, ClientErrorException.class);
-			// Liberty Change Start
             if (logLevel != null && logLevel.intValue() >= Level.WARNING.intValue()) {
                 Tr.warning(tc, errorMsg.toString());
             } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, errorMsg.toString());
             }
-			// Liberty Change End
         }
         Response response = createResponse(getRootResources(message), message, errorMsg.toString(), status, methodMatched == 0);
         throw ExceptionUtils.toHttpException(null, response);
+
     }
 
     public static Level getExceptionLogLevel(Message message, Class<? extends WebApplicationException> exClass) {
@@ -758,7 +588,7 @@ public final class JAXRSUtils {
         if (all.size() > 1) {
             all.sort(new Comparator<MediaType>() {
 
-                @Override // Liberty Change
+                @Override
                 public int compare(MediaType mt1, MediaType mt2) {
                     int result = compareMediaTypes(mt1, mt2, null);
                     if (result == 0) {
@@ -799,13 +629,12 @@ public final class JAXRSUtils {
         return exResponse != null && exResponse.getStatus() == 405
                && "OPTIONS".equalsIgnoreCase(httpMethod);
     }
-    // Liberty Change Start
+
     private static void logNoMatchMessage(OperationResourceInfo ori,
                                           String path, String httpMethod, MediaType requestType, List<MediaType> acceptContentTypes) {
         org.apache.cxf.common.i18n.Message errorMsg = new org.apache.cxf.common.i18n.Message("OPER_NO_MATCH", BUNDLE, ori.getMethodToInvoke().getName(), path, ori.getURITemplate().getValue(), httpMethod, ori.getHttpMethod(), requestType.toString(), convertTypesToString(ori.getConsumeTypes()), convertTypesToString(acceptContentTypes), convertTypesToString(ori.getProduceTypes()));
         Tr.debug(tc, errorMsg.toString());
     }
-	// Liberty Change End
 
     public static Response createResponse(List<ClassResourceInfo> cris, Message msg,
                                           String responseMessage, int status, boolean addAllow) {
@@ -1284,16 +1113,15 @@ public final class JAXRSUtils {
         @SuppressWarnings("unchecked")
         MultivaluedMap<String, String> params = (MultivaluedMap<String, String>) m.get(FormUtils.FORM_PARAM_MAP);
 
-        String enc = HttpUtils.getEncoding(mt, StandardCharsets.UTF_8.name());
         if (params == null) {
             params = new MetadataMap<>();
             m.put(FormUtils.FORM_PARAM_MAP, params);
 
             if (mt == null || mt.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
                 InputStream entityStream = copyAndGetEntityStream(m);
+                String enc = HttpUtils.getEncoding(mt, StandardCharsets.UTF_8.name());  //Liberty CXF-7996
                 String body = FormUtils.readBody(entityStream, enc);
-                // Do not decode unless the key is empty value, fe @FormParam("")
-                FormUtils.populateMapFromStringOrHttpRequest(params, m, body, enc, StringUtils.isEmpty(key) && decode);
+                FormUtils.populateMapFromStringOrHttpRequest(params, m, body, enc, false); //Liberty CXF-7996
             } else {
                 if ("multipart".equalsIgnoreCase(mt.getType())
                     && MediaType.MULTIPART_FORM_DATA_TYPE.isCompatible(mt)) {
@@ -1310,7 +1138,7 @@ public final class JAXRSUtils {
                     FormUtils.populateMapFromMultipart(params, body, m, decode);
                 } else {
                     org.apache.cxf.common.i18n.Message errorMsg = new org.apache.cxf.common.i18n.Message("WRONG_FORM_MEDIA_TYPE", BUNDLE, mt.toString());
-                    Tr.warning(tc, errorMsg.toString()); // Liberty Change
+                    Tr.warning(tc, errorMsg.toString());
                     throw ExceptionUtils.toNotSupportedException(null, null);
                 }
             }
@@ -1401,7 +1229,7 @@ public final class JAXRSUtils {
             // we could've started introspecting now but the fact no bean info
             // is available indicates that the one created at start up has been
             // lost and hence it is 500
-            Tr.warning(tc, "Bean parameter info is not available"); // Liberty Change
+            Tr.warning(tc, "Bean parameter info is not available");
             throw ExceptionUtils.toInternalServerErrorException(null, null);
         }
         Object instance;
@@ -1585,7 +1413,7 @@ public final class JAXRSUtils {
         if (!StringUtils.isEmpty(query)) {
             for (String part : query.split(sep)) { // fastpath expected
                 int index = part.indexOf('=');
-                final String name;
+                String name = null;
                 String value = null;
                 if (index == -1) {
                     name = part;
@@ -1629,7 +1457,7 @@ public final class JAXRSUtils {
         }    
     }
 
-    @FFDCIgnore({ IOException.class, WebApplicationException.class, Exception.class }) // Liberty Change
+    @FFDCIgnore({ IOException.class, WebApplicationException.class, Exception.class })
     private static Object readFromMessageBody(Class<?> targetTypeClass,
                                               Type parameterType,
                                               Annotation[] parameterAnnotations,
@@ -1677,10 +1505,9 @@ public final class JAXRSUtils {
     }
 
     @SuppressWarnings("unchecked")
-    @FFDCIgnore({ PrivilegedActionException.class, JsonbException.class }) // Liberty Change
+    @FFDCIgnore({ PrivilegedActionException.class, JsonbException.class })
     public static Object readFromMessageBodyReader(List<ReaderInterceptor> readers,
                                                    Class<?> targetTypeClass,
-												   // Liberty Change Set final modifiers
                                                    final Type parameterType,
                                                    final Annotation[] parameterAnnotations,
                                                    final InputStream is,
@@ -1693,11 +1520,10 @@ public final class JAXRSUtils {
             ReaderInterceptorContext context = new ReaderInterceptorContextImpl(targetTypeClass, parameterType, parameterAnnotations, is, m, readers);
             return first.aroundReadFrom(context);
         }
-		
-        // Liberty change start
         final MessageBodyReader<?> provider = ((ReaderInterceptorMBR) readers.get(0)).getMBR();
         @SuppressWarnings("rawtypes")
         final Class cls = targetTypeClass;
+        // Liberty change start
         Message prevM = currentMessage.get();
         try {
             currentMessage.set(m);
@@ -1726,9 +1552,8 @@ public final class JAXRSUtils {
     }
 
     //CHECKSTYLE:OFF
-    @FFDCIgnore(PrivilegedActionException.class) // Liberty Change 
+    @FFDCIgnore(PrivilegedActionException.class)
     public static void writeMessageBody(List<WriterInterceptor> writers,
-										// Liberty Change Set final modifiers
                                         final Object entity,
                                         final Class<?> type, final Type genericType,
                                         final Annotation[] annotations,
@@ -1748,7 +1573,7 @@ public final class JAXRSUtils {
 
             first.aroundWriteTo(context);
         } else {
-            final MessageBodyWriter<Object> writer = ((WriterInterceptorMBW) writers.get(0)).getMBW(); // Liberty Change
+            final MessageBodyWriter<Object> writer = ((WriterInterceptorMBW) writers.get(0)).getMBW();
             if (type == byte[].class) {
                 long size = writer.getSize(entity, type, genericType, annotations, mediaType);
                 if (size != -1) {
@@ -1989,7 +1814,7 @@ public final class JAXRSUtils {
         if (types.size() > 1) {
             Collections.sort(types, new Comparator<MediaType>() {
 
-                @Override // Liberty Change
+                @Override
                 public int compare(MediaType mt1, MediaType mt2) {
                     return JAXRSUtils.compareMediaTypes(mt1, mt2, qs);
                 }
@@ -2087,7 +1912,7 @@ public final class JAXRSUtils {
                                                      Message m,
                                                      boolean preMatch,
                                                      Set<String> names) {
-        // Liberty Change Start - Defect 170924: Check @NameBinding on Application first
+        //Liberty Defect 170924: Check @NameBinding on Application first
         Set<String> appNameBindings = AnnotationUtils.getNameBindings(pf.getApplicationProvider().getResourceClass().getAnnotations());
         if (names != null) {
             names.addAll(appNameBindings);
@@ -2105,7 +1930,6 @@ public final class JAXRSUtils {
                 } catch (IOException ex) {
                     throw ExceptionUtils.toInternalServerErrorException(ex, null);
                 }
-				// Liberty Change End
                 Response response = m.getExchange().get(Response.class);
                 if (response != null) {
                     setMessageContentType(m, response);
@@ -2121,7 +1945,7 @@ public final class JAXRSUtils {
                                                    Message m,
                                                    OperationResourceInfo ori,
                                                    Method invoked) throws IOException, Throwable {
-        // Liberty Change Start -  Defect 170924: Check @NameBinding on Application first
+        //Libert Defect 170924: Check @NameBinding on Application first
         Set<String> names = ori == null ? null : ori.getNameBindings();
         Set<String> appNameBindings = AnnotationUtils.getNameBindings(pf.getApplicationProvider().getResourceClass().getAnnotations());
         if (names != null) {
@@ -2129,7 +1953,7 @@ public final class JAXRSUtils {
         } else {
             names = appNameBindings;
         }
-        // Liberty Change End
+
         List<ProviderInfo<ContainerResponseFilter>> containerFilters = pf.getContainerResponseFilters(names);
         if (!containerFilters.isEmpty()) {
             ContainerRequestContext requestContext = new ContainerRequestContextImpl(m.getExchange().getInMessage(), false, true);
@@ -2199,7 +2023,7 @@ public final class JAXRSUtils {
                         Annotation[] fieldAnnotations = ReflectionUtil.accessDeclaredField(f, response, Annotation[].class);
                         ((ResponseImpl) r).setEntityAnnotations(fieldAnnotations);
                     } catch (Throwable ex) {
-                        Tr.warning(tc, "Custom annotations if any can not be copied"); // Liberty Change
+                        Tr.warning(tc, "Custom annotations if any can not be copied");
                     }
                     break;
                 }
@@ -2230,8 +2054,7 @@ public final class JAXRSUtils {
             msg.put(OperationResourceInfoStack.class, stack);
         }
 
-
-        final List<String> values;
+        List<String> values = null;
         if (params.size() <= 1) {
             values = Collections.emptyList();
         } else {
@@ -2259,7 +2082,7 @@ public final class JAXRSUtils {
     public static String logMessageHandlerProblem(String name, Class<?> cls, MediaType ct) {
         org.apache.cxf.common.i18n.Message errorMsg = new org.apache.cxf.common.i18n.Message(name, BUNDLE, cls.getName(), mediaTypeToString(ct));
         String errorMessage = errorMsg.toString();
-        Tr.error(tc, errorMessage); // Libery Change
+        Tr.error(tc, errorMessage);
         return errorMessage;
     }
 

@@ -11,7 +11,7 @@ visibility=private
  bin/tools/ws-springbootutil.jar, \
  bin/springBootUtility; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/springBootUtility.bat
-kind=ga
+kind=beta
 edition=core
 singleton=true
 IBM-API-Package: \

@@ -18,8 +18,6 @@ src: \
 
 fat.project: true
 
-fat.test.container.images: jiwoo/simple-keyserver:1.0
-
 # Define additional tested features that are NOT present in any XML files in this bucket.
 # In this case, servlet-4.0 is added programmatically at runtime by the RepeatTests rule.
 #tested.features:\
@@ -41,7 +39,7 @@ fat.test.container.images: jiwoo/simple-keyserver:1.0
 	com.ibm.ws.install.featureUtility.featureutil;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.feature.cmdline;version=latest,\
-	com.ibm.ws.install.map;version=latest,\
+	com.ibm.ws.install.map;version=latest, \
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.feature;version=latest,\
 	com.ibm.ws.product.utility;version=latest,\
@@ -52,8 +50,6 @@ fat.test.container.images: jiwoo/simple-keyserver:1.0
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.kernel.feature.cmdline;version=latest,\
 	com.ibm.ws.kernel.feature.core;version=latest,\
-	io.openliberty.org.testcontainers;version=latest,\
-	com.ibm.ws.org.slf4j.jdk14;version=latest,\
 	wlp.lib.extract;version=latest
 
 -testpath: \

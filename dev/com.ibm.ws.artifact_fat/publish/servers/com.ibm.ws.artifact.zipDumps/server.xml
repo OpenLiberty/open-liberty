@@ -1,17 +1,17 @@
-<server description="Test server: Verify server dump and zip file instrospection">
+<server description="Test server to verify dumping server works and contains introspections for com.ibm.ws.artifact.zip">
 
   <featureManager>
     <feature>servlet-3.1</feature>
   </featureManager>
 
-  <logging traceSpecification="com.ibm.ws.artifact*=all" maxFileSize="20" maxFiles="10"/>
+<logging traceSpecification="com.ibm.ws.artifact.zip*=all" />
 
-  <include location="../fatTestPorts.xml"/>
+<include location="../fatTestPorts.xml"/>
 
-  <application location="jarneeder.war"/>
-  <application location="testServlet1.war" />
-  <application location="testServlet2.war" />
+<application location="jarneeder.war"/>
+<application location="testServlet1.war" />
+<application location="testServlet2.war" />
 
-  <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read" />
+<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read" />
 
 </server>

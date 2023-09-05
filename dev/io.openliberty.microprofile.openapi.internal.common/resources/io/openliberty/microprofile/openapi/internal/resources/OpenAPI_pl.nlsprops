@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2023 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -71,13 +71,9 @@ OPENAPI_MERGE_PROBLEMS_CWWKO1662W=CWWKO1662W: Podczas scalania dokument\u00f3w O
 OPENAPI_MERGE_PROBLEMS_CWWKO1662W.explanation=Nie mo\u017cna pomy\u015blnie scali\u0107 dokumentacji OpenAPI z wi\u0119cej ni\u017c jednego modu\u0142u WWW. Punkty ko\u0144cowe zg\u0142oszonych modu\u0142\u00f3w nie s\u0105 uwzgl\u0119dnione w wygenerowanym dokumencie OpenAPI.
 OPENAPI_MERGE_PROBLEMS_CWWKO1662W.useraction=Przejrzyj informacje o problemach ze scalaniem, aby ustali\u0107, dlaczego nie mo\u017cna scali\u0107 wygenerowanych dokument\u00f3w OpenAPI.
 
-OPENAPI_MERGE_PROBLEM_PATH_CLASH=\u015acie\u017cka {0} z modu\u0142u {1} koliduje ze \u015bcie\u017ck\u0105 z modu\u0142u {2}. Nie mo\u017cna scali\u0107 modu\u0142u {1}.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH=\u015acie\u017cka {0} z modu\u0142u {1} koliduje ze \u015bcie\u017ck\u0105 z modu\u0142u {2}. Modu\u0142 {1} nie zostanie scalony.
 OPENAPI_MERGE_PROBLEM_PATH_CLASH.explanation=\u015acie\u017cka dotyczy dw\u00f3ch modu\u0142\u00f3w. Obie instancje \u015bcie\u017cki nie mog\u0105 by\u0107 uwzgl\u0119dnione w tym samym dokumencie OpenAPI. Ten komunikat jest zwracany jako cz\u0119\u015b\u0107 CWWKO1662.
-OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=Zmie\u0144 jeden z modu\u0142\u00f3w powoduj\u0105cych konflikt lub skonfiguruj sk\u0142adnik mpOpenApi-2.0 tak, aby wykluczy\u0107 jeden z modu\u0142\u00f3w. Ten problem mo\u017ce wyst\u0105pi\u0107, je\u015bli serwery znajduj\u0105 si\u0119 w dokumencie OpenAPI, a adres URL serwera nie ko\u0144czy si\u0119 kontekstowym katalogiem g\u0142\u00f3wnym aplikacji. Na przyk\u0142ad w sytuacji, gdy dost\u0119p do aplikacji jest uzyskiwany pod innym adresem URL za po\u015brednictwem odwrotnego proxy.
-
-OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH=Klucz rozszerzenia {0} z modu\u0142u {1} powoduje konflikt z tym samym kluczem rozszerzenia z modu\u0142u {2}. Nie mo\u017cna scali\u0107 modu\u0142u {1}.
-OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH.explanation=Dwa modu\u0142y deklaruj\u0105 to samo rozszerzenie z r\u00f3\u017cnymi warto\u015bciami na najwy\u017cszym poziomie dokumentu OpenAPI. Obie instancje rozszerzenia nie mog\u0105 by\u0107 uwzgl\u0119dnione w tym samym dokumencie OpenAPI. Ten komunikat jest zwracany jako cz\u0119\u015b\u0107 CWWKO1662.
-OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH.useraction=Zmie\u0144 jeden z modu\u0142\u00f3w powoduj\u0105cych konflikt w celu usuni\u0119cia rozszerzenia albo skonfiguruj sk\u0142adnik mpOpenApi-2.0 w taki spos\u00f3b, aby wykluczy\u0107 jeden z modu\u0142\u00f3w.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=Zmie\u0144 jeden z koliduj\u0105cych modu\u0142\u00f3w albo skonfiguruj sk\u0142adnik mpOpenApi-2.0 w celu wykluczenia jednego z nich. Ten problem mo\u017ce wyst\u0105pi\u0107, je\u015bli w dokumencie OpenAPI s\u0105 uwzgl\u0119dnione serwery, a adres URL serwera nie ko\u0144czy si\u0119 kontekstowym katalogiem g\u0142\u00f3wnym aplikacji (na przyk\u0142ad dlatego, \u017ce dost\u0119p do aplikacji odbywa si\u0119 pod innym adresem URL przez odwrotne proxy).
 
 OPENAPI_MERGE_DISABLED_CWWKO1663I=CWWKO1663I: \u0141\u0105czenie dokumentacji OpenAPI z wi\u0119cej ni\u017c jednego modu\u0142u jest wy\u0142\u0105czone. Do wygenerowania dokumentacji OpenAPI zostanie u\u017cyty tylko modu\u0142 {0}. Aby umo\u017cliwi\u0107 scalanie dokumentacji OpenAPI ze wszystkich modu\u0142\u00f3w, ustaw w\u0142a\u015bciwo\u015b\u0107 konfiguracji mp.openapi.extensions.liberty.merged.include = all.
 OPENAPI_MERGE_DISABLED_CWWKO1663I.explanation=Je\u015bli scalanie dokumentacji OpenAPI nie jest w\u0142\u0105czone, dokumentacja OpenAPI jest generowana tylko dla pierwszego wdro\u017conego modu\u0142u OpenAPI.
@@ -98,35 +94,3 @@ OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.useraction=Zapoznaj si\u0119 z tekstem kom
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W=CWWKO1667W: W\u0142a\u015bciwo\u015b\u0107 konfiguracji {0} zawiera warto\u015b\u0107 "{1}", kt\u00f3ra nie pasuje do \u017cadnej z wdro\u017conych aplikacji ani \u017cadnego z wdro\u017conych modu\u0142\u00f3w WWW.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.explanation=Serwer jest skonfigurowany tak, by tworzy\u0142 dokumentacj\u0119 OpenAPI z aplikacji lub modu\u0142u o podanej nazwie, ale nie wdro\u017cono aplikacji ani modu\u0142u WWW o podanej nazwie.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.useraction=Upewnij si\u0119, \u017ce wszystkie aplikacje uruchomi\u0142y si\u0119 poprawnie, a nazwy we w\u0142a\u015bciwo\u015bci konfiguracji s\u0105 podane prawid\u0142owo.
-
-OPEN_API_UI_PATH_UPDATE_CWWKO1668I=CWWKO1668I: \u015acie\u017cka interfejsu u\u017cytkownika OpenAPI jest ustawiona na warto\u015b\u0107 {0}.
-OPEN_API_UI_PATH_UPDATE_CWWKO1668I.explanation=\u015acie\u017cka interfejsu u\u017cytkownika OpenAPI jest ustawiona na warto\u015b\u0107 r\u00f3\u017cni\u0105c\u0105 si\u0119 od warto\u015bci domy\u015blnej.
-OPEN_API_UI_PATH_UPDATE_CWWKO1668I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
-
-OPEN_API_DOC_PATH_UPDATE_CWWKO1669I=CWWKO1669I: \u015acie\u017cka dokumentu OpenAPI jest ustawiona na warto\u015b\u0107 {0}.
-OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.explanation=\u015acie\u017cka dokumentu OpenAPI jest ustawiona na warto\u015b\u0107 warto\u015b\u0107 r\u00f3\u017cni\u0105c\u0105 si\u0119 od warto\u015bci domy\u015blnej.
-OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
-
-OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E=CWWKO1670E: \u015acie\u017cka interfejsu u\u017cytkownika OpenAPI jest niepoprawna. Zamiast niej zostanie u\u017cyta warto\u015b\u0107 domy\u015blna. Przeczytaj poprzednie ostrze\u017cenia w celu ustalenia przyczyny niepowodzenia sprawdzania poprawno\u015bci.
-OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.explanation=\u015acie\u017cka interfejsu u\u017cytkownika OpenAPI jest niepoprawna. Zamiast niej zostanie u\u017cyta warto\u015b\u0107 domy\u015blna.
-OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.useraction=Przeczytaj wcze\u015bniejsze komunikaty o b\u0142\u0119dach w celu ustalenia przyczyny niepowodzenia sprawdzania poprawno\u015bci.
-
-OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E=CWWKO1671E: \u015acie\u017cka dokumentu OpenAPI jest niepoprawna. Zamiast niej zostanie u\u017cyta warto\u015b\u0107 domy\u015blna. Przeczytaj poprzednie ostrze\u017cenia w celu ustalenia przyczyny niepowodzenia sprawdzania poprawno\u015bci.
-OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.explanation=\u015acie\u017cka dokumentu OpenAPI jest niepoprawna. Zamiast niej zostanie u\u017cyta warto\u015b\u0107 domy\u015blna.
-OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.useraction=Przeczytaj wcze\u015bniejsze komunikaty o b\u0142\u0119dach w celu ustalenia przyczyny niepowodzenia sprawdzania poprawno\u015bci.
-
-OPEN_API_UI_PATH_CONFLICT_CWWKO1672E=CWWKO1672E: \u015acie\u017cka interfejsu u\u017cytkownika OpenAPI nie mo\u017ce by\u0107 ustawiona na warto\u015b\u0107 {0}. Ta \u015bcie\u017cka s\u0142u\u017cy do pobierania dokument\u00f3w OpenAPI.
-OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.explanation=\u015acie\u017cka dokumentu OpenAPI i \u015bcie\u017cka interfejsu u\u017cytkownika OpenAPI nie mog\u0105 by\u0107 takie same.
-OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.useraction=Podaj unikaln\u0105 \u015bcie\u017ck\u0119 dla interfejsu u\u017cytkownika OpenAPI.
-
-OPEN_API_UI_PATH_INVALID_CWWKO1675E=CWWKO1675E: \u015acie\u017cka interfejsu u\u017cytkownika OpenAPI jest niepoprawna lub zawiera niedozwolone znaki. Adres URL mo\u017ce zawiera\u0107 wy\u0142\u0105cznie znaki alfanumeryczne Unicode A-Z, a-z, 0-9, podkre\u015blenie (_), dywiz (-), uko\u015bnik (/) i kropk\u0119 (.).
-OPEN_API_UI_PATH_INVALID_CWWKO1675E.explanation=\u015acie\u017cka interfejsu u\u017cytkownika OpenAPI nie mo\u017ce by\u0107 ustawiona na warto\u015b\u0107 zawieraj\u0105c\u0105 niedozwolone znaki.
-OPEN_API_UI_PATH_INVALID_CWWKO1675E.useraction=Upewnij si\u0119, \u017ce \u015bcie\u017cka OpenAPI nie zawiera znak\u00f3w innych ni\u017c A-Z, a-z, 0-9, _,-,.,/.
-
-OPEN_API_DOC_PATH_INVALID_CWWKO1676E=CWWKO1676E: \u015acie\u017cka dokumentu OpenAPI jest niepoprawna lub zawiera niedozwolone znaki. Adres URL mo\u017ce zawiera\u0107 wy\u0142\u0105cznie znaki alfanumeryczne Unicode A-Z, a-z, 0-9, podkre\u015blenie (_), dywiz (-), uko\u015bnik (/) i kropk\u0119 (.).
-OPEN_API_DOC_PATH_INVALID_CWWKO1676E.explanation=\u015acie\u017cka dokumentu OpenAPI nie mo\u017ce by\u0107 ustawiona na warto\u015b\u0107 zawieraj\u0105c\u0105 niedozwolone znaki.
-OPEN_API_DOC_PATH_INVALID_CWWKO1676E.useraction=Upewnij si\u0119, \u017ce \u015bcie\u017cka OpenAPI nie zawiera znak\u00f3w innych ni\u017c A-Z, a-z, 0-9, _,-,.,/.
-
-OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E=CWWKO1677E: Segment \u015bcie\u017cki "/." oraz "/.." jest niedozwolony dla punkt\u00f3w ko\u0144cowych OpenAPI .
-OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.explanation=Segment \u015bcie\u017cki OpenAPI "/." oraz "/.." jest niedozwolony.
-OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.useraction=Usu\u0144 wszystkie segmenty "/." oraz "/.." ze \u015bcie\u017cki.

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,7 +17,6 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.soap.Name;
-import javax.xml.soap.Node;
 import javax.xml.soap.SOAPElement;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPHeader;
@@ -61,11 +60,11 @@ public class HelloClientReplyToHandler implements SOAPHandler<SOAPMessageContext
                 QName replyToQn = new QName("http://www.w3.org/2005/08/addressing", "ReplyTo");
 
                 SOAPElement replyTo = null;
-                Iterator<Node> elements = header.getChildElements();
+                Iterator<SOAPElement> elements = header.getChildElements();
                 if (elements != null) {
                     while (elements.hasNext()) {
 
-                        SOAPElement element = (SOAPElement) elements.next();
+                        SOAPElement element = elements.next();
 
                         Name name = element.getElementName();
 

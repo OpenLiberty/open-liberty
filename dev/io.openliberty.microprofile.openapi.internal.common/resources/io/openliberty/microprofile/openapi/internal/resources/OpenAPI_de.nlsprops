@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2023 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -98,35 +98,3 @@ OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.useraction=\u00dcberpr\u00fcfen Sie den Fe
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W=CWWKO1667W: Die Konfigurationseigenschaft {0} enth\u00e4lt "{1}", aber das stimmt nicht mit einer implementierten Anwendung oder einem Webmodul \u00fcberein.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.explanation=Der Server ist so konfiguriert, dass die OpenAPI-Dokumentation f\u00fcr den Anwendungs-oder Modulnamen erstellt wird, aber es wurde keine Anwendung oder kein Webmodul mit diesem Namen implementiert.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.useraction=Stellen Sie sicher, dass alle Anwendungen ordnungsgem\u00e4\u00df gestartet wurden und dass die Namen in der Konfigurationseigenschaft korrekt angegeben wurden.
-
-OPEN_API_UI_PATH_UPDATE_CWWKO1668I=CWWKO1668I: Der Pfad der OpenAPI-Benutzerschnittstelle ist auf {0} gesetzt.
-OPEN_API_UI_PATH_UPDATE_CWWKO1668I.explanation=Der Pfad der OpenAPI-Benutzerschnittstelle ist auf einen anderen Wert als den Standardwert festgelegt.
-OPEN_API_UI_PATH_UPDATE_CWWKO1668I.useraction=Es ist keine Aktion erforderlich.
-
-OPEN_API_DOC_PATH_UPDATE_CWWKO1669I=CWWKO1669I: Der OpenAPI-Dokumentpfad ist auf {0} gesetzt.
-OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.explanation=Der OpenAPI-Dokumentpfad ist auf einen anderen Wert als den Standardwert festgelegt.
-OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.useraction=Es ist keine Aktion erforderlich.
-
-OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E=CWWKO1670E: Der Pfad f\u00fcr die OpenAPI-Benutzerschnittstelle ist ung\u00fcltig. Es wird stattdessen der Standardwert verwendet. Suchen Sie in vorherigen Warnungen nach der Ursache f\u00fcr den Validierungsfehler.
-OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.explanation=Der Pfad f\u00fcr die OpenAPI-Benutzerschnittstelle ist ung\u00fcltig. Es wird stattdessen der Standardwert verwendet.
-OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.useraction=Suchen Sie in fr\u00fcheren Fehlernachrichten nach der Ursache f\u00fcr den Validierungsfehler.
-
-OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E=CWWKO1671E: Der OpenAPI-Dokumentpfad ist ung\u00fcltig. Es wird stattdessen der Standardwert verwendet. Suchen Sie in vorherigen Warnungen nach der Ursache f\u00fcr den Validierungsfehler.
-OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.explanation=Der OpenAPI-Dokumentpfad ist ung\u00fcltig. Es wird stattdessen der Standardwert verwendet.
-OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.useraction=Suchen Sie in fr\u00fcheren Fehlernachrichten nach der Ursache f\u00fcr den Validierungsfehler.
-
-OPEN_API_UI_PATH_CONFLICT_CWWKO1672E=CWWKO1672E: Der Pfad der OpenAPI-Benutzerschnittstelle darf nicht auf {0} gesetzt werden. Dieser Pfad wird zum Abrufen von OpenAPI-Dokumenten verwendet.
-OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.explanation=Die Pfade zum OpenAPI-Dokument und zur OpenAPI-Benutzerschnittstelle d\u00fcrfen nicht identisch sein.
-OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.useraction=Geben Sie einen eindeutigen Pfad f\u00fcr die OpenAPI-Benutzerschnittstelle an.
-
-OPEN_API_UI_PATH_INVALID_CWWKO1675E=CWWKO1675E: Der Pfad zur OpenAPI-Benutzerschnittstelle ist ung\u00fcltig oder enth\u00e4lt ung\u00fcltige Zeichen. Die URL muss mit alphanumerischen Unicode-Zeichen A-Za-z0-9, Unterstrich (_), Gedankenstrich (-), Schr\u00e4gstrich (/) oder Punkt (.) erstellt werden.
-OPEN_API_UI_PATH_INVALID_CWWKO1675E.explanation=Der Pfad der OpenAPI-Benutzerschnittstelle darf nicht auf einen Wert gesetzt werden, der ung\u00fcltige Zeichen enth\u00e4lt.
-OPEN_API_UI_PATH_INVALID_CWWKO1675E.useraction=Stellen Sie sicher, dass der OpenAPI-Pfad nur A-Za-z0-9, _,-,.,/ enth\u00e4lt.
-
-OPEN_API_DOC_PATH_INVALID_CWWKO1676E=CWWKO1676E: Der Pfad zum OpenAPI-Dokument ist ung\u00fcltig oder enth\u00e4lt ung\u00fcltige Zeichen. Die URL muss mit alphanumerischen Unicode-Zeichen A-Za-z0-9, Unterstrich (_), Gedankenstrich (-), Schr\u00e4gstrich (/) oder Punkt (.) erstellt werden.
-OPEN_API_DOC_PATH_INVALID_CWWKO1676E.explanation=Der Pfad zum OpenAPI-Dokument darf nicht auf einen Wert gesetzt werden, der ung\u00fcltige Zeichen enth\u00e4lt.
-OPEN_API_DOC_PATH_INVALID_CWWKO1676E.useraction=Stellen Sie sicher, dass der OpenAPI-Pfad nur A-Za-z0-9, _,-,.,/ enth\u00e4lt.
-
-OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E=CWWKO1677E: Pfadsegment "/." oder "/.." ist f\u00fcr OpenAPI-Endpunkte ung\u00fcltig.
-OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.explanation=OpenAPI-Pfadsegment "/." oder "/.." ist ung\u00fcltig.
-OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.useraction=Entfernen Sie jedes Pfadsegment mit "/." oder "/.." aus dem Pfad.

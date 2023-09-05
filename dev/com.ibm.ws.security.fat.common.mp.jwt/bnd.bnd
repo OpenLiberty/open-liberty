@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2018,2023 IBM Corporation and others.
+# Copyright (c) 2018,2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -86,6 +86,7 @@ com.ibm.ws.security;version=latest,\
 com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 fattest.simplicity;version=latest,\
 javax.j2ee.jcdi;version=latest,\
+javax.servlet-api,\
 javax.ws.rs:javax.ws.rs-api;version=2.0,\
 net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
 net.sourceforge.htmlunit:htmlunit;version=2.44.0,\

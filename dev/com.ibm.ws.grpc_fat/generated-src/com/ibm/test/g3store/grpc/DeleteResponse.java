@@ -26,6 +26,11 @@ private static final long serialVersionUID = 0L;
     return new DeleteResponse();
   }
 
+  @java.lang.Override
+  public final com.google.protobuf.UnknownFieldSet
+  getUnknownFields() {
+    return this.unknownFields;
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return com.ibm.test.g3store.grpc.AppProducerProto.internal_static_test_g3store_grpc_DeleteResponse_descriptor;
@@ -40,8 +45,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int RESULT_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object result_ = "";
+  private volatile java.lang.Object result_;
   /**
    * <code>string result = 1;</code>
    * @return The result.
@@ -186,13 +190,11 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-
   public static com.ibm.test.g3store.grpc.DeleteResponse parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-
   public static com.ibm.test.g3store.grpc.DeleteResponse parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -267,8 +269,8 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      bitField0_ = 0;
       result_ = "";
+
       return this;
     }
 
@@ -295,16 +297,9 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.ibm.test.g3store.grpc.DeleteResponse buildPartial() {
       com.ibm.test.g3store.grpc.DeleteResponse result = new com.ibm.test.g3store.grpc.DeleteResponse(this);
-      if (bitField0_ != 0) { buildPartial0(result); }
+      result.result_ = result_;
       onBuilt();
       return result;
-    }
-
-    private void buildPartial0(com.ibm.test.g3store.grpc.DeleteResponse result) {
-      int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.result_ = result_;
-      }
     }
 
     @java.lang.Override
@@ -353,7 +348,6 @@ private static final long serialVersionUID = 0L;
       if (other == com.ibm.test.g3store.grpc.DeleteResponse.getDefaultInstance()) return this;
       if (!other.getResult().isEmpty()) {
         result_ = other.result_;
-        bitField0_ |= 0x00000001;
         onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -384,7 +378,7 @@ private static final long serialVersionUID = 0L;
               break;
             case 10: {
               result_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000001;
+
               break;
             } // case 10
             default: {
@@ -402,7 +396,6 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
-    private int bitField0_;
 
     private java.lang.Object result_ = "";
     /**
@@ -445,9 +438,11 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setResult(
         java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
       result_ = value;
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -456,8 +451,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearResult() {
+      
       result_ = getDefaultInstance().getResult();
-      bitField0_ = (bitField0_ & ~0x00000001);
       onChanged();
       return this;
     }
@@ -468,10 +463,12 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setResultBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
       result_ = value;
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }

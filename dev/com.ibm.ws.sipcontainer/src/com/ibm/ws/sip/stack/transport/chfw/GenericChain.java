@@ -28,7 +28,6 @@ import com.ibm.websphere.channelfw.FlowType;
 import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.sip.stack.transport.*;
 import com.ibm.wsspi.channelfw.ChainEventListener;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.exception.ChainException;
@@ -40,7 +39,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
  * Encapsulation of steps for starting/stopping an SIP chain in a controlled/predictable
  * manner with a minimum of synchronization.
  */
-abstract public class GenericChain extends GenericChainBase implements ChainEventListener {
+abstract public class GenericChain implements ChainEventListener {
     
 	/**
      * Class Logger. 
@@ -160,7 +159,8 @@ abstract public class GenericChain extends GenericChainBase implements ChainEven
     public GenericChain(GenericEndpointImpl owner) {
         this.owner = owner;
     }
-
+    
+    
     /**
      * Return current configuration
      * @return

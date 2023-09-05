@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,8 +18,8 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
+import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
@@ -37,7 +37,9 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 
-import com.ibm.ws.security.filemonitor.LTPAFileMonitor;
+import test.common.SharedOutputManager;
+
+import com.ibm.ws.security.filemonitor.SecurityFileMonitor;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.ws.security.token.ltpa.LTPAKeyInfoManager;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
@@ -45,8 +47,6 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
-
-import test.common.SharedOutputManager;
 
 /**
  *
@@ -58,15 +58,12 @@ public class LTPAConfigurationImplTest {
 
     private static final String PATH_TO_FILE = "/path/to/file";
     private static final String PATH_TO_ANOTHER_FILE = "/path/to/another/file";
-    private static final String DEFAULT_CONFIG_LOCATION_DIR = "${server.config.dir}/resources/security/";
     private static final String DEFAULT_CONFIG_LOCATION = "${server.config.dir}/resources/security/ltpa.keys";
     private static final String DEFAULT_OUTPUT_LOCATION = "${server.output.dir}/resources/security/ltpa.keys";
     private static final String RESOLVED_DEFAULT_CONFIG_LOCATION = "testServerName/resources/security/ltpa.keys";
-    private static final String RESOLVED_DEFAULT_CONFIG_LOCATION_DIR = "testServerName/resources/security/";
     private static final String RESOLVED_DEFAULT_OUTPUT_LOCATION = "testServerName/resources/security/ltpa.keys";
     private static final String PWD = "pwd";
     private static final String ANOTHER_PWD = "anotherPwd";
-    private static final boolean DEFAULT_MONITOR_DIR_VALUE = false;
 
     private final Mockery mock = new JUnit4Mockery() {
         {
@@ -84,12 +81,6 @@ public class LTPAConfigurationImplTest {
     private final TokenFactory tokenFactory = mock.mock(TokenFactory.class);
     private final ServiceReference<LTPAKeysChangeNotifier> ltpaKeysChangeNotifierRef = mock.mock(ServiceReference.class, "ltpaKeysChangeNotifierRef");
     private final LTPAKeysChangeNotifier ltpaKeysChangeNotifier = mock.mock(LTPAKeysChangeNotifier.class);
-
-    //private final LocalFileResource keysFileInServerConfig2 = mock.mock(LocalFileResource.class);
-    private final WsResource keysFileInServerConfig = mock.mock(WsResource.class, "keysFileInServerConfig");
-    private final WsResource parentResource = mock.mock(WsResource.class, "parentResource");
-    //keysFileInDirectory
-
     private LTPAConfigurationImplTestDouble ltpaConfig;
     private Map<String, Object> props;
 
@@ -101,7 +92,7 @@ public class LTPAConfigurationImplTest {
 
     @Before
     public void setUp() {
-        props = createProps(DEFAULT_CONFIG_LOCATION, PWD, 120L, 0L, DEFAULT_MONITOR_DIR_VALUE, 0L);
+        props = createProps(PATH_TO_FILE, PWD, 120L, 0L, 0L);
 
         mock.checking(new Expectations() {
             {
@@ -118,18 +109,16 @@ public class LTPAConfigurationImplTest {
 
         setupExecutorServiceExpectations(1);
         setupLocationServiceExpectations(1);
-        //setupFileMonitorRegistrationsExpectations(1);
 
         ltpaConfig = createActivatedLTPAConfigurationImpl();
     }
 
-    private Map<String, Object> createProps(String filePath, String password, long expiration, long monitorInterval, boolean monitorDirectory, long expDiffAllowed) {
+    private Map<String, Object> createProps(String filePath, String password, long expiration, long monitorInterval, long expDiffAllowed) {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, filePath);
         props.put(LTPAConfiguration.CFG_KEY_PASSWORD, new SerializableProtectedString(password.toCharArray()));
         props.put(LTPAConfiguration.CFG_KEY_TOKEN_EXPIRATION, expiration);
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, monitorInterval);
-        props.put(LTPAConfiguration.CFG_KEY_MONITOR_DIRECTORY, monitorDirectory);
         props.put(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED, expDiffAllowed);
         return props;
     }
@@ -137,49 +126,8 @@ public class LTPAConfigurationImplTest {
     private void setupLocationServiceExpectations(final int numberOfInvocations) {
         mock.checking(new Expectations() {
             {
-                exactly(numberOfInvocations).of(locateService).resolveResource(DEFAULT_CONFIG_LOCATION);
-                will(returnValue(keysFileInServerConfig));
-
-                exactly(numberOfInvocations).of(keysFileInServerConfig).getParent();
-                will(returnValue(parentResource));
-
-                exactly(numberOfInvocations).of(parentResource).toRepositoryPath();
-                will(returnValue(DEFAULT_CONFIG_LOCATION_DIR));
-
-                exactly(numberOfInvocations).of(locateService).resolveString(DEFAULT_CONFIG_LOCATION_DIR);
-                will(returnValue(RESOLVED_DEFAULT_CONFIG_LOCATION_DIR));
-
-                exactly(numberOfInvocations).of(keysFileInServerConfig).getName();
-                will(returnValue("ltpa.keys"));
-
-                //exactly(numberOfInvocations).of(locateService).resolveString(DEFAULT_OUTPUT_LOCATION);
-                //will(returnValue(RESOLVED_DEFAULT_OUTPUT_LOCATION));
-
-            }
-        });
-    }
-
-    private void setupLocationServiceExpectationsNew(final int numberOfInvocations) {
-        mock.checking(new Expectations() {
-            {
-                exactly(numberOfInvocations).of(locateService).resolveResource(DEFAULT_CONFIG_LOCATION);
-                will(returnValue(keysFileInServerConfig));
-
-                exactly(numberOfInvocations).of(keysFileInServerConfig).getParent();
-                will(returnValue(parentResource));
-
-                exactly(numberOfInvocations).of(parentResource).toRepositoryPath();
-                will(returnValue(DEFAULT_CONFIG_LOCATION_DIR));
-
-                exactly(numberOfInvocations).of(locateService).resolveString(DEFAULT_CONFIG_LOCATION_DIR);
-                will(returnValue(RESOLVED_DEFAULT_CONFIG_LOCATION_DIR));
-
-                exactly(numberOfInvocations).of(keysFileInServerConfig).getName();
-                will(returnValue("ltpa.keys"));
-
-                if (DEFAULT_MONITOR_DIR_VALUE)
-                    exactly(numberOfInvocations).of(locateService).resolveResource(RESOLVED_DEFAULT_CONFIG_LOCATION_DIR);
-                //wsLocationAdmin.resolveResource("testServerName/resources/security/")
+                exactly(numberOfInvocations).of(locateService).resolveString(DEFAULT_OUTPUT_LOCATION);
+                will(returnValue(RESOLVED_DEFAULT_OUTPUT_LOCATION));
             }
         });
     }
@@ -233,27 +181,6 @@ public class LTPAConfigurationImplTest {
         outputMgr.restoreStreams();
     }
 
-    protected void addPathToAnotherFileExpectations() {
-        mock.checking(new Expectations() {
-            {
-                one(locateService).resolveResource(PATH_TO_ANOTHER_FILE);
-                will(returnValue(keysFileInServerConfig));
-
-                one(keysFileInServerConfig).getParent();
-                will(returnValue(parentResource));
-
-                one(parentResource).toRepositoryPath();
-                will(returnValue(PATH_TO_ANOTHER_FILE));
-
-                one(locateService).resolveString(PATH_TO_ANOTHER_FILE);
-                will(returnValue(PATH_TO_ANOTHER_FILE));
-
-                one(keysFileInServerConfig).getName();
-                will(returnValue(""));
-            }
-        });
-    }
-
     @Test
     public void deactivateUnregister() {
         mock.checking(new Expectations() {
@@ -289,12 +216,12 @@ public class LTPAConfigurationImplTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl#getPrimaryKeyFile()}.
+     * Test method for {@link com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl#getKeyFile()}.
      */
     @Test
     public void getKeyFile() {
         assertEquals("Key file value was not the expected value",
-                     RESOLVED_DEFAULT_CONFIG_LOCATION, ltpaConfig.getPrimaryKeyFile());
+                     PATH_TO_FILE, ltpaConfig.getKeyFile());
     }
 
     /**
@@ -316,8 +243,8 @@ public class LTPAConfigurationImplTest {
     private void setupFileMonitorRegistrationsExpectations(final int numberOfInvocations) {
         mock.checking(new Expectations() {
             {
-                exactly(numberOfInvocations).of(bundleContext).registerService(with(FileMonitor.class), with(any(LTPAFileMonitor.class)),
-                                                                               (Hashtable<String, Object>) with(any(Hashtable.class)));
+                exactly(numberOfInvocations).of(bundleContext).registerService(with(FileMonitor.class), (SecurityFileMonitor) with(a(SecurityFileMonitor.class)),
+                                                                               (Dictionary<String, Object>) with(a(Dictionary.class)));
             }
         });
     }
@@ -331,12 +258,12 @@ public class LTPAConfigurationImplTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl#getPrimaryKeyPassword()}.
+     * Test method for {@link com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl#getKeyPassword()}.
      */
     @Test
     public void getKeyPassword() {
         assertEquals("Key file value was not the expected value",
-                     PWD, ltpaConfig.getPrimaryKeyPassword());
+                     PWD, ltpaConfig.getKeyPassword());
     }
 
     /**
@@ -351,9 +278,7 @@ public class LTPAConfigurationImplTest {
     @Test
     public void modified() {
         setupExecutorServiceExpectations(1);
-        //setupLocationServiceExpectations(1);
-
-        addPathToAnotherFileExpectations();
+        setupLocationServiceExpectations(1);
 
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, PATH_TO_ANOTHER_FILE);
         ltpaConfig.modified(props);
@@ -372,13 +297,11 @@ public class LTPAConfigurationImplTest {
     @Test
     public void modified_monitorIntervalSame_fileChanged_unregistersListenerAndCreatesKeys() throws Exception {
         setupExecutorServiceExpectations(2);
-        setupLocationServiceExpectations(1);
+        setupLocationServiceExpectations(2);
         setupFileMonitorRegistrationsExpectations(2);
 
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, 5L);
         LTPAConfigurationImplTestDouble ltpaConfig = createActivatedLTPAConfigurationImpl();
-
-        addPathToAnotherFileExpectations();
 
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, PATH_TO_ANOTHER_FILE);
         ltpaConfig.modified(props);
@@ -390,13 +313,11 @@ public class LTPAConfigurationImplTest {
     @Test
     public void modified_fileAndMonitorIntervalChanged_unregistersListenerAndCreatesKeys() throws Exception {
         setupExecutorServiceExpectations(2);
-        setupLocationServiceExpectations(1);
+        setupLocationServiceExpectations(2);
         setupFileMonitorRegistrationsExpectations(2);
 
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, 5L);
         LTPAConfigurationImplTestDouble ltpaConfig = createActivatedLTPAConfigurationImpl();
-
-        addPathToAnotherFileExpectations();
 
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, PATH_TO_ANOTHER_FILE);
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, 10L);
@@ -409,13 +330,11 @@ public class LTPAConfigurationImplTest {
     @Test
     public void modified_fileChanged_monitorIntervalSetToZero_unregistersListenerAndCreatesKeys() throws Exception {
         setupExecutorServiceExpectations(2);
-        setupLocationServiceExpectations(1);
+        setupLocationServiceExpectations(2);
         setupFileMonitorRegistrationsExpectations(1);
 
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, 5L);
         LTPAConfigurationImplTestDouble ltpaConfig = createActivatedLTPAConfigurationImpl();
-
-        addPathToAnotherFileExpectations();
 
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, PATH_TO_ANOTHER_FILE);
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, 0L);
@@ -473,58 +392,40 @@ public class LTPAConfigurationImplTest {
     @Test
     public void keyFileFromConfigDirWhenDefaultLocationNotOverridden() {
         setupExecutorServiceExpectations(1);
+        setupLocationServiceExpectations(1);
+        final WsResource keysFileInServerConfig = mock.mock(WsResource.class);
         mock.checking(new Expectations() {
             {
-                one(locateService).resolveResource(RESOLVED_DEFAULT_OUTPUT_LOCATION);
+                one(locateService).resolveResource(DEFAULT_CONFIG_LOCATION);
                 will(returnValue(keysFileInServerConfig));
-
-                one(keysFileInServerConfig).getParent();
-                will(returnValue(parentResource));
-
-                one(parentResource).toRepositoryPath();
-                will(returnValue(DEFAULT_CONFIG_LOCATION_DIR));
-
-                one(locateService).resolveString(DEFAULT_CONFIG_LOCATION_DIR);
-                will(returnValue(RESOLVED_DEFAULT_CONFIG_LOCATION_DIR));
-
-                one(keysFileInServerConfig).getName();
-                will(returnValue("ltpa.keys"));
+                one(locateService).resolveString(DEFAULT_CONFIG_LOCATION);
+                will(returnValue(RESOLVED_DEFAULT_CONFIG_LOCATION));
+                one(keysFileInServerConfig).exists();
+                will(returnValue(true));
             }
         });
 
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, RESOLVED_DEFAULT_OUTPUT_LOCATION);
         LTPAConfigurationImplTestDouble ltpaConfig = createActivatedLTPAConfigurationImpl();
         assertEquals("Key file value was not the expected value",
-                     RESOLVED_DEFAULT_CONFIG_LOCATION, ltpaConfig.getPrimaryKeyFile());
-        //Key file value was not the expected value expected:<[testServerName/resources/security/ltpa.keys]> but was:<[]>
+                     RESOLVED_DEFAULT_CONFIG_LOCATION, ltpaConfig.getKeyFile());
     }
 
     @Test
     public void keyFileFromOutputDirWhenDefaultLocationNotOverriddenAndKeysFileNotInConfigDir() {
         setupExecutorServiceExpectations(1);
+        setupLocationServiceExpectations(1);
         mock.checking(new Expectations() {
             {
-                one(locateService).resolveResource(RESOLVED_DEFAULT_OUTPUT_LOCATION);
-                will(returnValue(keysFileInServerConfig));
-
-                one(keysFileInServerConfig).getParent();
-                will(returnValue(parentResource));
-
-                one(parentResource).toRepositoryPath();
-                will(returnValue(RESOLVED_DEFAULT_CONFIG_LOCATION_DIR));
-
-                one(locateService).resolveString(RESOLVED_DEFAULT_CONFIG_LOCATION_DIR);
-                will(returnValue(RESOLVED_DEFAULT_CONFIG_LOCATION_DIR));
-
-                one(keysFileInServerConfig).getName();
-                will(returnValue("ltpa.keys"));
+                one(locateService).resolveResource(DEFAULT_CONFIG_LOCATION);
+                will(returnValue(null));
             }
         });
 
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, RESOLVED_DEFAULT_OUTPUT_LOCATION);
         LTPAConfigurationImplTestDouble ltpaConfig = createActivatedLTPAConfigurationImpl();
         assertEquals("Key file value was not the expected value",
-                     RESOLVED_DEFAULT_OUTPUT_LOCATION, ltpaConfig.getPrimaryKeyFile());
+                     RESOLVED_DEFAULT_OUTPUT_LOCATION, ltpaConfig.getKeyFile());
     }
 
 }

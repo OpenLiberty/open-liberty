@@ -60,20 +60,20 @@ public class TCKUtilities {
 
     private static final Class<TCKUtilities> c = TCKUtilities.class;
 
-    static final String FAT_TEST_PREFIX = "fat.test.";
-    static final String ARTIFACTORY_FORCE_EXTERNAL_KEY = "artifactory.force.external.repo";
-    static final String ARTIFACTORY_SERVER_KEY = "artifactory.download.server";
-    static final String ARTIFACTORY_USER_KEY = "artifactory.download.user";
-    static final String ARTIFACTORY_TOKEN_KEY = "artifactory.download.token";
-    static final String MVN_DISTRIBUTION_URL_KEY = "distributionUrl";
-    static final String MVN_DISTRIBUTION_SHA_KEY = "distributionSha256Sum";
-    static final String MVN_WRAPPER_URL_KEY = "wrapperUrl";
-    static final String MVN_WRAPPER_SHA_KEY = "wrapperSha256Sum";
+    public static final String FAT_TEST_PREFIX = "fat.test.";
+    public static final String ARTIFACTORY_FORCE_EXTERNAL_KEY = "artifactory.force.external.repo";
+    public static final String ARTIFACTORY_SERVER_KEY = "artifactory.download.server";
+    public static final String ARTIFACTORY_USER_KEY = "artifactory.download.user";
+    public static final String ARTIFACTORY_TOKEN_KEY = "artifactory.download.token";
+    public static final String MVN_DISTRIBUTION_URL_KEY = "distributionUrl";
+    public static final String MVN_DISTRIBUTION_SHA_KEY = "distributionSha256Sum";
+    public static final String MVN_WRAPPER_URL_KEY = "wrapperUrl";
+    public static final String MVN_WRAPPER_SHA_KEY = "wrapperSha256Sum";
     /** The public repo containing the maven wrapper artifacts. Must match maven-wrapper.properties. */
-    static final String MVN_WRAPPER_REPO = "https://repo.maven.apache.org/maven2/";
-    static final String BUILD_CACHE_DIR_PROPERTY = "fat.test.build.cache.dir";
+    private static final String MVN_WRAPPER_REPO = "https://repo.maven.apache.org/maven2/";
+    private static final String BUILD_CACHE_DIR_PROPERTY = "fat.test.build.cache.dir";
 
-    static String generateSHA256(File file) {
+    public static String generateSHA256(File file) {
         String sha256 = null;
         try (FileInputStream fis = new FileInputStream(file)) {
             sha256 = generateSHA256(fis);
@@ -88,7 +88,8 @@ public class TCKUtilities {
         return sha256;
     }
 
-    static String generateSHA1(File file) {
+    public static String generateSHA1(File file) {
+
         String sha1 = null;
         try (FileInputStream fis = new FileInputStream(file)) {
             sha1 = generateSHA1(fis);
@@ -103,19 +104,19 @@ public class TCKUtilities {
         return sha1;
     }
 
-    static String generateSHA1(InputStream inputStream) throws NoSuchAlgorithmException, IOException {
+    public static String generateSHA1(InputStream inputStream) throws NoSuchAlgorithmException, IOException {
         MessageDigest md = MessageDigest.getInstance("SHA-1");
         String sha1 = getFileChecksum(md, inputStream);
         return sha1;
     }
 
-    static String generateSHA256(InputStream inputStream) throws NoSuchAlgorithmException, IOException {
+    public static String generateSHA256(InputStream inputStream) throws NoSuchAlgorithmException, IOException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         String sha256 = getFileChecksum(md, inputStream);
         return sha256;
     }
 
-    static String getFileChecksum(MessageDigest digest, InputStream fileInputStream) throws IOException {
+    public static String getFileChecksum(MessageDigest digest, InputStream fileInputStream) throws IOException {
         byte[] byteArray = new byte[1024];
         int bytesCount = 0;
 
@@ -139,7 +140,7 @@ public class TCKUtilities {
      *
      * @param msg
      */
-    static void printStdOutAndScreenIfLocal(String msg) {
+    public static void printStdOutAndScreenIfLocal(String msg) {
         // If running locally print to screen and stdout if different else print to 'stdout' only
         if (Boolean.valueOf(System.getProperty("fat.test.localrun"))) {
             // Developers laptop FAT
@@ -173,10 +174,10 @@ public class TCKUtilities {
     private static final String jakartaRegex = "(?<group>" + jakartaGroupRegEx + "):(?<artifact>" + artifactRegEx + "):(?<type>" + typeRegEx + "):(?<version>"
                                                + versionRegEx + "):(?<scope>" + scopeRegEx + "):(?<path>" + pathRegEx + ")";
 
-    static final Pattern MP_TCK_PATTERN = Pattern.compile(mpRegex, Pattern.DOTALL);
-    static final Pattern JAKARTA_TCK_PATTERN = Pattern.compile(jakartaRegex, Pattern.DOTALL);
+    public static final Pattern MP_TCK_PATTERN = Pattern.compile(mpRegex, Pattern.DOTALL);
+    public static final Pattern JAKARTA_TCK_PATTERN = Pattern.compile(jakartaRegex, Pattern.DOTALL);
 
-    static Pattern getTCKPatternMatcher(Type type) {
+    public static Pattern getTCKPatternMatcher(Type type) {
         if (type == Type.MICROPROFILE) {
             return MP_TCK_PATTERN;
         } else if (type == Type.JAKARTA) {
@@ -185,7 +186,7 @@ public class TCKUtilities {
         throw new IllegalArgumentException("Unknown type: " + type);
     }
 
-    static TCKJarInfo getTCKJarInfo(Type type, List<String> dependencyOutput) {
+    public static TCKJarInfo getTCKJarInfo(Type type, List<String> dependencyOutput) {
         TCKJarInfo tckJar = parseTCKDependencies(type, dependencyOutput);
 
         if (tckJar != null) {
@@ -197,7 +198,7 @@ public class TCKUtilities {
         return tckJar;
     }
 
-    static TCKJarInfo parseTCKDependencies(Type type, List<String> dependencyOutput) {
+    public static TCKJarInfo parseTCKDependencies(Type type, List<String> dependencyOutput) {
         Pattern tckPattern = getTCKPatternMatcher(type);
         TCKJarInfo tckJar = null;
         for (String sCurrentLine : dependencyOutput) {
@@ -226,7 +227,7 @@ public class TCKUtilities {
      *
      * @param file
      */
-    static void zosTagASCII(File file) {
+    public static void zosTagASCII(File file) {
         try {
             String command = "chtag";
             List<String> params = Arrays.asList("-tcISO8859-1", file.getCanonicalPath());
@@ -248,11 +249,11 @@ public class TCKUtilities {
         }
     }
 
-    static boolean isWindows() {
+    public static boolean isWindows() {
         return System.getProperty("os.name").toLowerCase().contains("windows");
     }
 
-    static boolean isZos() {
+    public static boolean isZos() {
         return System.getProperty("os.name").toLowerCase().contains("z/os");
     }
 
@@ -415,7 +416,7 @@ public class TCKUtilities {
      * @return              the File of the exported file (or the existing one)
      * @throws IOException  If there is a problem exporting the resource
      */
-    static File exportResource(File targetFolder, String fileName) throws IOException {
+    public static File exportResource(File targetFolder, String fileName) throws IOException {
         try {
             requireDirectory(targetFolder);
             File targetFile = new File(targetFolder, fileName);
@@ -462,7 +463,7 @@ public class TCKUtilities {
      * @param  auth          The authenticator to use
      * @throws IOException
      */
-    static void downloadMavenDistro(String distroURL, String distroHash, File mavenUserHome, Authenticator auth) throws IOException {
+    public static void downloadMavenDistro(String distroURL, String distroHash, File mavenUserHome, Authenticator auth) throws IOException {
         // Example:
         // URL:    https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.0/apache-maven-3.9.0-bin.zip
         // Target: ${mavenUserHome}/wrapper/dists/apache-maven-3.9.0-bin/b0cac456/apache-maven-3.9.0-bin.zip
@@ -488,7 +489,7 @@ public class TCKUtilities {
      * @return               {@code targetFile}
      * @throws IOException   if there is an error downloading the file
      */
-    static File downloadFile(String url, File targetFile, Authenticator authenticator, String sha256) throws IOException {
+    public static File downloadFile(String url, File targetFile, Authenticator authenticator, String sha256) throws IOException {
         try {
             Objects.requireNonNull(sha256, "sha256 hash");
             // If target exists, check whether it's correct
@@ -588,7 +589,7 @@ public class TCKUtilities {
         TCKUtilities.downloadFile(wrapperURL, new File(targetFolder, "maven-wrapper.jar"), authenticator, wrapperHash);
     }
 
-    static void assertSHA256(File file, String expectedSha256) {
+    public static void assertSHA256(File file, String expectedSha256) {
         String actualSha256 = generateSHA256(file);
         assertEquals(expectedSha256, actualSha256);
     }
@@ -664,35 +665,20 @@ public class TCKUtilities {
      *
      * @return {@code true} if we are configured to use artifactory, {@code false} if not
      */
-    static boolean useArtifactory() {
-        boolean forceExternal = isArtifactoryForceExternal();
-        String artifactoryServer = getArtifactoryServer();
+    public static boolean useArtifactory() {
+        String forceExternalString = System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_FORCE_EXTERNAL_KEY);
+        boolean forceExternal = Boolean.parseBoolean(forceExternalString);
 
-        boolean useArtifactory = Objects.nonNull(artifactoryServer) && !forceExternal;
+        String artifactoryServer = getArtifactoryServer();
+        boolean haveArtifactoryServer = (artifactoryServer != null && !artifactoryServer.isEmpty());
+
+        boolean useArtifactory = haveArtifactoryServer && !forceExternal;
 
         Log.info(c, "useArtifactory", "Use artifactory = " + useArtifactory + " ("
                                       + ARTIFACTORY_SERVER_KEY + "=" + artifactoryServer + ", "
-                                      + ARTIFACTORY_FORCE_EXTERNAL_KEY + "=" + forceExternal
+                                      + ARTIFACTORY_FORCE_EXTERNAL_KEY + "=" + forceExternalString
                                       + ")");
         return useArtifactory;
-    }
-
-    /**
-     * Get the flag for forcing artfiactory usage
-     *
-     * @return true if flag was true, false otherwise
-     */
-    static boolean isArtifactoryForceExternal() {
-        return Boolean.parseBoolean(getArtifactoryForceExternal());
-    }
-
-    /**
-     * Get the flag for forcing artfiactory usage
-     *
-     * @return true if flag was true, false otherwise
-     */
-    static String getArtifactoryForceExternal() {
-        return normalizeStringProperty(System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_FORCE_EXTERNAL_KEY));
     }
 
     /**
@@ -700,8 +686,8 @@ public class TCKUtilities {
      *
      * @return the artifactory server or {@code null} if none is configured
      */
-    static String getArtifactoryServer() {
-        return normalizeStringProperty(System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_SERVER_KEY));
+    public static String getArtifactoryServer() {
+        return System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_SERVER_KEY);
     }
 
     /**
@@ -709,8 +695,8 @@ public class TCKUtilities {
      *
      * @return the username, or {@code null} if none is configured
      */
-    static String getArtifactoryUser() {
-        return normalizeStringProperty(System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_USER_KEY));
+    public static String getArtifactoryUser() {
+        return System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_USER_KEY);
     }
 
     /**
@@ -718,32 +704,8 @@ public class TCKUtilities {
      *
      * @return the token, or {@code null} if none is configured
      */
-    static String getArtifactoryToken() {
-        return normalizeStringProperty(System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_TOKEN_KEY));
-    }
-
-    /**
-     * This validates the result string from using System.getProperty().
-     * See launch.xml line 322 we first check if a property was set via a command line property
-     * If not we assume the property was set as an environment property.
-     *
-     * Which mean fat.test.artifactory.download.server could equal "${env.artifactory.download.server}"
-     *
-     * @param  result the string to validate
-     * @return        null if the string was invalid, itself otherwise.
-     */
-    static String normalizeStringProperty(String result) {
-        if (result == null)
-            return result;
-
-        if (result.isEmpty()) {
-            return null;
-        }
-
-        if (result.startsWith("${"))
-            return null;
-
-        return result;
+    public static String getArtifactoryToken() {
+        return System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_TOKEN_KEY);
     }
 
     /**
@@ -770,7 +732,7 @@ public class TCKUtilities {
      * @return             the build cache directory
      * @throws IOException
      */
-    static File getBuildCacheDir() throws IOException {
+    public static File getBuildCacheDir() throws IOException {
         String buildCacheDirPath = System.getProperty(BUILD_CACHE_DIR_PROPERTY);
 
         File cacheDir;
@@ -844,7 +806,7 @@ public class TCKUtilities {
      * @param  file        the file to check
      * @throws IOException if the file does not exist
      */
-    static void requireExists(File file) throws IOException {
+    public static void requireExists(File file) throws IOException {
         if (!file.exists()) {
             throw new IOException(file + " does not exist");
         }

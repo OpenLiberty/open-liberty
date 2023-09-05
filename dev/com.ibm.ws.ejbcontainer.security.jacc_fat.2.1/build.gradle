@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -63,8 +63,8 @@ task securityejbinwar_EAR(type: Zip) {
   dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build EJB in WAR (pure ann) ear file (securityejbinwar.ear) with role mapping in server.xml'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "securityejbinwar.ear"
+  destinationDir file(appBuildDir)
+  archiveName "securityejbinwar.ear"
   
   
   from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
@@ -87,8 +87,8 @@ task securityejbXML_EAR(type: Zip) {
   dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build ear file for tests with role mapping in ibm-application-bnd.xml only'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "securityejbXML.ear"
+  destinationDir file(appBuildDir)
+  archiveName "securityejbXML.ear"
   
   
   from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
@@ -111,8 +111,8 @@ task securityejbInWarEarXML_EAR(type: Zip) {
   dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build EJB in WAR ear file (securityejbInWarEarXML) for pure ann tests with role mapping in ibm-application-bnd.xml only'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "securityejbInWarEarXML.ear"
+  destinationDir file(appBuildDir)
+  archiveName "securityejbInWarEarXML.ear"
   
   
   from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
@@ -135,8 +135,8 @@ task securityejbXMLmerge_EAR(type: Zip) {
   dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build ear file (securityejbXMLmerge.ear) for pure ann tests with role mapping in mix of server.xml and ibm-application-bnd.xml'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "securityejbXMLmerge.ear"
+  destinationDir file(appBuildDir)
+  archiveName "securityejbXMLmerge.ear"
   
   
   from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
@@ -159,8 +159,8 @@ task securityejbInWarEarXMLMerge_EAR(type: Zip) {
   dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build EJB in WAR ear file (securityejbInWarEarXMLMerge) for pure ann tests with role mapping in mix of server.xml and ibm-application-bnd.xml'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "securityejbInWarEarXMLMerge.ear"
+  destinationDir file(appBuildDir)
+  archiveName "securityejbInWarEarXMLMerge.ear"
   
   
   from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
@@ -183,8 +183,8 @@ task securityejbjar_EAR(type: Zip) {
   dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build ear file (securityejbjar.ear) for tests with ejb-jar.xml testing with role mapping in server.xml'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "securityejbjar.ear"
+  destinationDir file(appBuildDir)
+  archiveName "securityejbjar.ear"
   
   
   from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
@@ -211,8 +211,8 @@ task securityejbjarXMLmerge_EAR(type: Zip) {
   dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build ear file (securityejbjarXMLmerge.ear) for tests with ejb-jar.xml testing with role mapping in server.xml and ibm-application-bnd.xml'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "securityejbjarXMLmerge.ear"
+  destinationDir file(appBuildDir)
+  archiveName "securityejbjarXMLmerge.ear"
   
   
   from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
@@ -239,8 +239,8 @@ task securityejbjarMC_EAR(type: Zip) {
   dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build EJB in WAR ear file (securityejbInWarEarXML) for pure ann tests with role mapping in ibm-application-bnd.xml only'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName ="securityejbjarMC.ear"
+  destinationDir file(appBuildDir)
+  archiveName "securityejbjarMC.ear"
   
   
   from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
@@ -263,8 +263,8 @@ task securityejbjarInWarEarX01_EAR(type: Zip) {
   dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build EJB in WAR ear file (securityejbjarInWarEarX01) for tests with ejb-jar.xml only'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "securityejbjarInWarEarX01.ear"
+  destinationDir file(appBuildDir)
+  archiveName "securityejbjarInWarEarX01.ear"
   
   
   from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
@@ -287,8 +287,8 @@ task securityejbjarInWarEarM01_EAR(type: Zip) {
   dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build EJB in WAR ear file (securityejbjarInWarEarM01) for tests with ejb-jar.xml and mixed annotations'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "securityejbjarInWarEarM01.ear"
+  destinationDir file(appBuildDir)
+  archiveName "securityejbjarInWarEarM01.ear"
   
   
   from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
@@ -311,8 +311,8 @@ task securityejbjarInWarEarMC06_EAR(type: Zip) {
   dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build EJB in WAR ear file (securityejbInWarEarXML) for pure ann tests with role mapping in ibm-application-bnd.xml only'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "securityejbjarInWarEarMC06.ear"
+  destinationDir file(appBuildDir)
+  archiveName "securityejbjarInWarEarMC06.ear"
   
   
   from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
@@ -335,8 +335,8 @@ task securityejbjarInWarEarM07_EAR(type: Zip) {
   dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build EJB in WAR ear file (securityejbjarInWarEarM07) for tests with ejb-jar.xml and mixed annotations and run-as extension file'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "securityejbjarInWarEarM07.ear"
+  destinationDir file(appBuildDir)
+  archiveName "securityejbjarInWarEarM07.ear"
   
   
   from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
@@ -359,8 +359,8 @@ task securityejbjarInWarEarM07XMLmerge_EAR(type: Zip) {
   dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build EJB in WAR ear file (securityejbjarInWarEarM07XMLmerge) for tests with ejb-jar.xml and mixed annotations and run-as extension file with bindings in server.xml and ibm-application-bnd'
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "securityejbjarInWarEarM07XMLmerge.ear"
+  destinationDir file(appBuildDir)
+  archiveName "securityejbjarInWarEarM07XMLmerge.ear"
   
   
   from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {

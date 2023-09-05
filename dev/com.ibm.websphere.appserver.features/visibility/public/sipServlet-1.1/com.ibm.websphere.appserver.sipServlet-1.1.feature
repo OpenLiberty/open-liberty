@@ -24,12 +24,7 @@ Subsystem-Name: SIP Servlet 1.1
   com.ibm.websphere.javaee.jaxb.2.2; apiJar=false; require-java:="9"; location:="dev/api/spec/,lib/",\
   com.ibm.websphere.javaee.jaxws.2.2; apiJar=false; require-java:="9"; location:="dev/api/spec/,lib/",\
   com.ibm.ws.sipcontainer, \
-  com.ibm.ws.app.manager.sar, \
-  io.openliberty.endpoint, \
-  io.openliberty.netty.internal, \
-  io.openliberty.netty.internal.impl, \
-  io.openliberty.io.netty, \
-  io.openliberty.io.netty.ssl
+  com.ibm.ws.app.manager.sar
 -jars=com.ibm.websphere.appserver.api.sipServlet.1.1; location:="dev/api/ibm/,lib/", \
  com.ibm.websphere.javaee.servlet.sip.1.1; location:="dev/api/spec/,lib/"; mavenCoordinates="com.ibm.ws.java:com.ibm.ws.java.sipServlet.1.1:1.0.14"
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.sipServlet.1.1_1.0-javadoc.zip

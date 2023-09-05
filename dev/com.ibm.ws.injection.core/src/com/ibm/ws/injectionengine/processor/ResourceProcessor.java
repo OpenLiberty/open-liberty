@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2023 IBM Corporation and others.
+ * Copyright (c) 2006, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,13 +14,13 @@ package com.ibm.ws.injectionengine.processor;
 
 import static com.ibm.wsspi.injectionengine.InjectionConfigConstants.EE5Compatibility;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.annotation.ManagedBean;
 import javax.annotation.Resource;
 import javax.annotation.Resource.AuthenticationType;
 import javax.annotation.Resources;
@@ -68,17 +68,6 @@ import com.ibm.wsspi.injectionengine.factory.ResourceInfoRefAddr;
 public class ResourceProcessor extends InjectionProcessor<Resource, Resources> {
     private static final String CLASS_NAME = ResourceProcessor.class.getName();
     private static final TraceComponent tc = Tr.register(ResourceProcessor.class, InjectionConfigConstants.traceString, InjectionConfigConstants.messageFile);
-    private static final Class<? extends Annotation> MANAGED_BEAN_CLASS;
-
-    static {
-        Class<? extends Annotation> mbClass = null;
-        try {
-            mbClass = (Class<? extends Annotation>) Class.forName("javax.annotation.ManagedBean");
-        } catch (ClassNotFoundException e) {
-            // ManagedBean may be removed from the specification
-        }
-        MANAGED_BEAN_CLASS = mbClass;
-    }
 
     private ResourceRefConfigList ivResRefList; // F48603.7
 
@@ -958,10 +947,8 @@ public class ResourceProcessor extends InjectionProcessor<Resource, Resources> {
 
         boolean result;
 
-        if (MANAGED_BEAN_CLASS == null) {
-            result = false;
-        } else if (injectType != null && injectType != Object.class) {
-            result = injectType.isAnnotationPresent(MANAGED_BEAN_CLASS);
+        if (injectType != null && injectType != Object.class) {
+            result = injectType.isAnnotationPresent(ManagedBean.class);
         } else {
             Set<String> mbClassNames = ivNameSpaceConfig.getManagedBeanClassNames();
             result = mbClassNames != null && mbClassNames.contains(injectTypeName);

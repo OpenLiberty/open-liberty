@@ -499,7 +499,7 @@ public class TransportCommLayerMgr
 		int lpPort = lp.getPort();
 		int viaPort = via.getPort();
 		if (viaPort == -1) {
-			viaPort = viaTransport.equalsIgnoreCase(SipStackUtil.TLS_TRANSPORT)
+			viaPort = viaTransport.equalsIgnoreCase(ListeningPointImpl.TRANSPORT_TLS)
 				? 5061
 				: 5060;
 		}
@@ -532,7 +532,7 @@ public class TransportCommLayerMgr
 		int lpPort = lp.getPort();
 		int viaPort = via.getPort();
 		if (viaPort == -1) {
-			viaPort = viaTransport.equalsIgnoreCase(SipStackUtil.TLS_TRANSPORT)
+			viaPort = viaTransport.equalsIgnoreCase(ListeningPointImpl.TRANSPORT_TLS)
 				? 5061
 				: 5060;
 		}

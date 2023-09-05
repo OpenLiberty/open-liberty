@@ -42,8 +42,8 @@ import com.ibm.ws.kernel.feature.internal.FeatureResolverImpl;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureRepository;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
-import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Chain;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Chain;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 
 import componenttest.annotation.Server;
@@ -130,8 +130,6 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         compatibleFeatures.remove("springBoot-2.0");
         compatibleFeatures.remove("springBoot-3.0"); // springBoot 3.0 only supports EE 10
 
-        compatibleFeatures.remove("mpReactiveMessaging-3.0"); //still in development
-
         if (!openLibertyOnly) {
             // stabilized features
             compatibleFeatures.remove("apiDiscovery-1.0");
@@ -172,8 +170,6 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         // Logically, incompatible features are all those that aren't compatible...
         incompatibleFeatures.addAll(allFeatures);
         incompatibleFeatures.removeAll(compatibleFeatures);
-
-        incompatibleFeatures.remove("mpReactiveMessaging-3.0"); //still in development
 
         // Test features may or may not be compatible, we don't want to assert either way
         incompatibleFeatures.removeAll(FeatureUtilities.allTestFeatures());

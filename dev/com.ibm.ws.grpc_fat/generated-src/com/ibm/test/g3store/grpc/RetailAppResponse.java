@@ -25,6 +25,11 @@ private static final long serialVersionUID = 0L;
     return new RetailAppResponse();
   }
 
+  @java.lang.Override
+  public final com.google.protobuf.UnknownFieldSet
+  getUnknownFields() {
+    return this.unknownFields;
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return com.ibm.test.g3store.grpc.AppConsumerProto.internal_static_test_g3store_grpc_RetailAppResponse_descriptor;
@@ -61,7 +66,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public com.ibm.test.g3store.grpc.RetailAppOrBuilder getRetailAppOrBuilder() {
-    return retailApp_ == null ? com.ibm.test.g3store.grpc.RetailApp.getDefaultInstance() : retailApp_;
+    return getRetailApp();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -178,13 +183,11 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-
   public static com.ibm.test.g3store.grpc.RetailAppResponse parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-
   public static com.ibm.test.g3store.grpc.RetailAppResponse parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -259,10 +262,10 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      bitField0_ = 0;
-      retailApp_ = null;
-      if (retailAppBuilder_ != null) {
-        retailAppBuilder_.dispose();
+      if (retailAppBuilder_ == null) {
+        retailApp_ = null;
+      } else {
+        retailApp_ = null;
         retailAppBuilder_ = null;
       }
       return this;
@@ -291,18 +294,13 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.ibm.test.g3store.grpc.RetailAppResponse buildPartial() {
       com.ibm.test.g3store.grpc.RetailAppResponse result = new com.ibm.test.g3store.grpc.RetailAppResponse(this);
-      if (bitField0_ != 0) { buildPartial0(result); }
+      if (retailAppBuilder_ == null) {
+        result.retailApp_ = retailApp_;
+      } else {
+        result.retailApp_ = retailAppBuilder_.build();
+      }
       onBuilt();
       return result;
-    }
-
-    private void buildPartial0(com.ibm.test.g3store.grpc.RetailAppResponse result) {
-      int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.retailApp_ = retailAppBuilder_ == null
-            ? retailApp_
-            : retailAppBuilder_.build();
-      }
     }
 
     @java.lang.Override
@@ -382,7 +380,7 @@ private static final long serialVersionUID = 0L;
               input.readMessage(
                   getRetailAppFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000001;
+
               break;
             } // case 10
             default: {
@@ -400,7 +398,6 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
-    private int bitField0_;
 
     private com.ibm.test.g3store.grpc.RetailApp retailApp_;
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -410,7 +407,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the retailApp field is set.
      */
     public boolean hasRetailApp() {
-      return ((bitField0_ & 0x00000001) != 0);
+      return retailAppBuilder_ != null || retailApp_ != null;
     }
     /**
      * <code>.RetailApp retailApp = 1;</code>
@@ -432,11 +429,11 @@ private static final long serialVersionUID = 0L;
           throw new NullPointerException();
         }
         retailApp_ = value;
+        onChanged();
       } else {
         retailAppBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000001;
-      onChanged();
+
       return this;
     }
     /**
@@ -446,11 +443,11 @@ private static final long serialVersionUID = 0L;
         com.ibm.test.g3store.grpc.RetailApp.Builder builderForValue) {
       if (retailAppBuilder_ == null) {
         retailApp_ = builderForValue.build();
+        onChanged();
       } else {
         retailAppBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000001;
-      onChanged();
+
       return this;
     }
     /**
@@ -458,38 +455,38 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeRetailApp(com.ibm.test.g3store.grpc.RetailApp value) {
       if (retailAppBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0) &&
-          retailApp_ != null &&
-          retailApp_ != com.ibm.test.g3store.grpc.RetailApp.getDefaultInstance()) {
-          getRetailAppBuilder().mergeFrom(value);
+        if (retailApp_ != null) {
+          retailApp_ =
+            com.ibm.test.g3store.grpc.RetailApp.newBuilder(retailApp_).mergeFrom(value).buildPartial();
         } else {
           retailApp_ = value;
         }
+        onChanged();
       } else {
         retailAppBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000001;
-      onChanged();
+
       return this;
     }
     /**
      * <code>.RetailApp retailApp = 1;</code>
      */
     public Builder clearRetailApp() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      retailApp_ = null;
-      if (retailAppBuilder_ != null) {
-        retailAppBuilder_.dispose();
+      if (retailAppBuilder_ == null) {
+        retailApp_ = null;
+        onChanged();
+      } else {
+        retailApp_ = null;
         retailAppBuilder_ = null;
       }
-      onChanged();
+
       return this;
     }
     /**
      * <code>.RetailApp retailApp = 1;</code>
      */
     public com.ibm.test.g3store.grpc.RetailApp.Builder getRetailAppBuilder() {
-      bitField0_ |= 0x00000001;
+      
       onChanged();
       return getRetailAppFieldBuilder().getBuilder();
     }

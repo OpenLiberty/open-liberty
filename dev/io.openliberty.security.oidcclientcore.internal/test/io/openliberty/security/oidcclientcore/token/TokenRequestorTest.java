@@ -1,11 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.token;
 
@@ -20,7 +23,6 @@ import java.util.Map;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.jmock.Expectations;
 import org.junit.After;
@@ -79,7 +81,6 @@ public class TokenRequestorTest extends CommonTestClass {
 
     private final OidcClientHttpUtil oidcClientHttpUtil = mockery.mock(OidcClientHttpUtil.class);
     private final SSLSocketFactory sslSocketFactory = mockery.mock(SSLSocketFactory.class);
-    private final HttpPost httpPost = mockery.mock(HttpPost.class);
 
     private List<NameValuePair> params;
     private List<NameValuePair> refreshParams;
@@ -124,9 +125,7 @@ public class TokenRequestorTest extends CommonTestClass {
 
         mockery.checking(new Expectations() {
             {
-                one(oidcClientHttpUtil).setupPost(tokenEndpoint, params, clientId, clientSecret, null, TokenConstants.METHOD_POST);
-                will(returnValue(httpPost));
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, false, false);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, params, clientId, clientSecret, null, null, false, TokenConstants.METHOD_POST, false);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -148,9 +147,8 @@ public class TokenRequestorTest extends CommonTestClass {
 
         mockery.checking(new Expectations() {
             {
-                one(oidcClientHttpUtil).setupPost(tokenEndpointSecure, params, clientId, clientSecret, null, TokenConstants.METHOD_POST);
-                will(returnValue(httpPost));
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpointSecure, httpPost, sslSocketFactory, false, false);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpointSecure, params, clientId, clientSecret, null, sslSocketFactory, false,
+                                                       TokenConstants.METHOD_POST, false);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -171,9 +169,7 @@ public class TokenRequestorTest extends CommonTestClass {
 
         mockery.checking(new Expectations() {
             {
-                one(oidcClientHttpUtil).setupPost(tokenEndpoint, params, clientId, clientSecret, null, TokenConstants.METHOD_POST);
-                will(returnValue(httpPost));
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, true, false);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, params, clientId, clientSecret, null, null, true, TokenConstants.METHOD_POST, false);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -197,9 +193,7 @@ public class TokenRequestorTest extends CommonTestClass {
 
         mockery.checking(new Expectations() {
             {
-                one(oidcClientHttpUtil).setupPost(tokenEndpoint, params, clientId, clientSecret, null, TokenConstants.METHOD_BASIC);
-                will(returnValue(httpPost));
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, false, false);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, params, clientId, clientSecret, null, null, false, TokenConstants.METHOD_BASIC, false);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -220,9 +214,7 @@ public class TokenRequestorTest extends CommonTestClass {
 
         mockery.checking(new Expectations() {
             {
-                one(oidcClientHttpUtil).setupPost(tokenEndpoint, params, clientId, clientSecret, null, TokenConstants.METHOD_CLIENT_SECRET_POST);
-                will(returnValue(httpPost));
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, false, false);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, params, clientId, clientSecret, null, null, false, TokenConstants.METHOD_CLIENT_SECRET_POST, false);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -250,9 +242,7 @@ public class TokenRequestorTest extends CommonTestClass {
 
         mockery.checking(new Expectations() {
             {
-                one(oidcClientHttpUtil).setupPost(tokenEndpoint, params, clientId, clientSecret, null, TokenConstants.METHOD_POST);
-                will(returnValue(httpPost));
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, false, false);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, params, clientId, clientSecret, null, null, false, TokenConstants.METHOD_POST, false);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -274,9 +264,7 @@ public class TokenRequestorTest extends CommonTestClass {
 
         mockery.checking(new Expectations() {
             {
-                one(oidcClientHttpUtil).setupPost(tokenEndpoint, params, clientId, clientSecret, null, TokenConstants.METHOD_POST);
-                will(returnValue(httpPost));
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, false, true);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, params, clientId, clientSecret, null, null, false, TokenConstants.METHOD_POST, true);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -298,9 +286,7 @@ public class TokenRequestorTest extends CommonTestClass {
 
         mockery.checking(new Expectations() {
             {
-                one(oidcClientHttpUtil).setupPost(tokenEndpointSecure, params, clientId, clientSecret, null, TokenConstants.METHOD_POST);
-                will(returnValue(httpPost));
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpointSecure, httpPost, sslSocketFactory, true, true);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpointSecure, params, clientId, clientSecret, null, sslSocketFactory, true, TokenConstants.METHOD_POST, true);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -321,9 +307,7 @@ public class TokenRequestorTest extends CommonTestClass {
 
         mockery.checking(new Expectations() {
             {
-                one(oidcClientHttpUtil).setupPost(tokenEndpoint, refreshParams, clientId, clientSecret, null, TokenConstants.METHOD_POST);
-                will(returnValue(httpPost));
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, false, false);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, refreshParams, clientId, clientSecret, null, null, false, TokenConstants.METHOD_POST, false);
                 will(returnValue(postRefreshResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postRefreshResponseMap);
                 will(returnValue(tokenRefreshResponseEntity));

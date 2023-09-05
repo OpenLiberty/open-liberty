@@ -15,7 +15,8 @@ Subsystem-Name: Jakarta EE Web Profile 11.0
   io.openliberty.websocket-2.2, \
   com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
   io.openliberty.persistence-3.2, \
-  io.openliberty.beanValidation-3.1, \
+  io.openliberty.beanValidation-3.0, \
+  io.openliberty.managedBeans-2.0, \
   io.openliberty.restfulWS-4.0, \
   io.openliberty.concurrent-3.1, \
   com.ibm.websphere.appserver.eeCompatible-11.0, \

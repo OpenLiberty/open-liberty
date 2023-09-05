@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -127,6 +127,7 @@ public interface CDIRuntime extends CDIService {
                                                          boolean applicationBDAsVisible,
                                                          boolean extClassesOnly,
                                                          Set<String> extraExtensionClasses) throws CDIException;
+
     /**
      * @return
      */
@@ -200,11 +201,6 @@ public interface CDIRuntime extends CDIService {
      * @return all registered ExtensionArchiveProviders
      */
     public Collection<ExtensionArchiveProvider> getExtensionArchiveProviders();
-
-    /**
-     * @return all registered ExtensionArchiveFactories
-     */
-    public Collection<ExtensionArchiveFactory> getExtensionArchiveFactories();
 
     /**
      * @return the BuildCompatibleExtensionFinder, or {@code null} if there is not one

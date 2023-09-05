@@ -14,80 +14,56 @@ package com.ibm.ws.jaxws.fat;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 import com.ibm.ws.jaxws.fat.util.TestUtils;
-import com.ibm.ws.properties.test.servlet.LibertyCXFPositivePropertiesTestServlet;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpUtils;
 
 /*
  * Positive tests checking behavior changes after 2 property settings
  * Details are on top of test methods
  *
  * Usage of waitForStringInTraceUsingMark cut the runtime significantly
- *
- * Due to consistent timeouts between the test harness and the Liberty server,
- * the test methods have been moved to LibertyCXFPositivePropertiesTestServlet
- *
- * Since the assertions need the logs though, the asserts are checked at test tear down.
- * There are three test cases, and each test generates different messages in the trace.
- *
- * The individual tests are in the LibertyCXFPositivePropertiesTestServlet class.
- * The properties tested are set in the LibertyCXFPositivePropertiesTestServer/bootstrap.property file
- *
- * The tests use these Web Services:
- *
- * com.ibm.ws.properties.test.service.ImageService
- * com.ibm.ws.properties.test.service.ImageServiceTwo
- *
- * The tests also use these client stubs:
- *
- * com.ibm.ws.test.client.stub
- *
- * Properties checked by this Test Suite:
- *
- * cxf.multipart.attachment
- * cxf.ignore.unsupported.policy
  */
 @RunWith(FATRunner.class)
 public class LibertyCXFPositivePropertiesTest {
 
-    public static final String APP_NAME = "libertyCXFProperty";
-
     @Server("LibertyCXFPositivePropertiesTestServer")
-    @TestServlet(servlet = LibertyCXFPositivePropertiesTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
+
+    private final static Class<?> c = LibertyCXFPositivePropertiesTest.class;
+    private static final int CONN_TIMEOUT = 300;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ExplodedShrinkHelper.explodedApp(server, APP_NAME, "com.ibm.ws.properties.test.client.stub",
-                                         "com.ibm.ws.properties.test.service",
-                                         "com.ibm.ws.properties.test.servlet");
+        ExplodedShrinkHelper.explodedApp(server, "webServiceRefFeatures", "com.ibm.ws.test.client.stub",
+                                         "com.ibm.ws.test.wsfeatures.client",
+                                         "com.ibm.ws.test.wsfeatures.client.handler",
+                                         "com.ibm.ws.test.wsfeatures.handler",
+                                         "com.ibm.ws.test.wsfeatures.service");
 
         TestUtils.publishFileToServer(server,
-                                      "LibertyCXFPropertiesTest", "service-image.wsdl",
-                                      "apps/libertyCXFProperty.war/WEB-INF/wsdl", "service-image.wsdl");
+                                      "WebServiceRefFeaturesTestServer", "image-property.wsdl",
+                                      "apps/webServiceRefFeatures.war/WEB-INF/wsdl", "image.wsdl");
 
         TestUtils.publishFileToServer(server,
-                                      "LibertyCXFPropertiesTest", "client-image.wsdl",
-                                      "apps/libertyCXFProperty.war/WEB-INF/wsdl", "image.wsdl");
+                                      "WebServiceRefFeaturesTestServer/client", "image.wsdl",
+                                      "", "image.wsdl");
 
-        // For EE10, we test all the properties tested in the other repeats plus the additional Woodstox configuration property
-        if (JakartaEE10Action.isActive()) {
-            TestUtils.publishFileToServer(server,
-                                          "LibertyCXFPropertiesTest", "woodstox-true-bootstrap.properties",
-                                          "", "bootstrap.properties");
-        }
-
-        server.startServer("LibertyCXFPropertiesTest.log");
+        server.startServer("LibertyCXFPositivePropertiesTest.log");
 
         server.waitForStringInLog("CWWKF0011I");
 
@@ -96,29 +72,66 @@ public class LibertyCXFPositivePropertiesTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-
-        // @Test = testCxfPropertyAttachmentOutputPolicy()
-        assertNotNull("The test testCxfPropertyAttachmentOutputPolicy() failed, and 'cxf.multipart.attachment' was not configured",
-                      server.waitForStringInTraceUsingMark("skipAttachmentOutput: getAttachments returned"));
-
-        // @Test = testCxfPropertyUnsupportedPolicy()
-        assertNotNull("The test testCxfPropertyUnsupportedPolicy() failed, and 'cxf.ignore.unsupported.policy' was not configured",
-                      server.waitForStringInTraceUsingMark("WARNING: checkEffectivePolicy will not be called"));
-
-        // @Test = testCxfPropertyUsedAlternativePolicy()
-        assertNotNull("The test testCxfPropertyUsedAlternativePolicy failed, and 'cxf.ignore.unsupported.policy' was not configured",
-                      server.waitForStringInTraceUsingMark("WARNING: Unsupported policy assertions will be ignored"));
-
-        if (JakartaEE10Action.isActive()) {
-            // Woodstox StAX provider is disabled for these tests, assert disabling it is shown in logs.
-            assertNotNull("The org.apache.cxf.stax.allowInsecureParser property failed to disable the Woodstox StAX Provider",
-                          server.waitForStringInTraceUsingMark("The System Property `org.apache.cxf.stax.allowInsecureParser` is set, using JRE's StAX Provider"));
-
-        }
-
         if (server != null && server.isStarted()) {
             server.stopServer("CWWKO0801E");
         }
     }
 
+    @Test
+    public void testCxfPropertyAttachmentOutputPolicy() throws Exception {
+
+        connect("ImageServiceImplService");
+
+        /*
+         * Testing cxf.multipart.attachment property is used to skip or not the attachment output
+         * If cxf.add.attachments is set to true for Inbound or Outbound messages
+         * or cxf.multipart.attachment is set to false, SwAOutInterceptor setup AttachmentOutput
+         * If not SwAOutInterceptor skip AttachmentOutput
+         */
+        assertNotNull("Property cxf.multipart.attachment is failed to be enabled",
+                      server.waitForStringInTraceUsingMark("skipAttachmentOutput: getAttachments returned"));
+
+    }
+
+    /*
+     * Testing cxf.ignore.unsupported.policy for used alternative policies
+     * When this property is set to true, it prevents addition of used policies
+     * into ws-policy.validated.alternatives in PolicyVerificationInInterceptor
+     */
+    @Test
+    public void testCxfPropertyUsedAlternativePolicy() throws Exception {
+
+        connect("ImageServiceImplService");
+
+        assertNotNull("Property cxf.ignore.unsupported.policy is failed to be enabled to skip checking used alternative policies",
+                      server.waitForStringInTraceUsingMark("WARNING: checkEffectivePolicy will not be called"));
+    }
+
+    /*
+     * Testing cxf.ignore.unsupported.policy for not supported alternative policies.
+     * Setting this property to true make alternative policies to be potentially supported
+     */
+    @Test
+    public void testCxfPropertyUnsupportedPolicy() throws Exception {
+
+        connect("ImageServiceImplServiceTwo");
+
+        assertNotNull("Property cxf.ignore.unsupported.policy is failed to be enabled to skip checking not supported alternative policies ",
+                      server.waitForStringInTraceUsingMark("WARNING: Unsupported policy assertions will be ignored"));
+    }
+
+    /*
+     * Calls WSAPropertyTestServlet with parameter defining which Image Service Implementation to call
+     */
+    private void connect(String methodName) throws Exception {
+        //Server URL is constructed to pass to servlet since getting this info from HttpServletRequest is not providing the correct one each time
+        String serverURL = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort();
+        URL url = new URL(serverURL + "/webServiceRefFeatures/wsapolicyskip?impl=" + methodName + "&serverurl=" + serverURL);
+        Log.info(c, "LibertyCXFPositivePropertiesTest",
+                 "Calling Application with URL=" + url.toString());
+        HttpUtils.trustAllCertificates();
+        HttpUtils.trustAllHostnames();
+        HttpsURLConnection con = (HttpsURLConnection) HttpUtils.getHttpConnection(url, HttpsURLConnection.HTTP_OK, CONN_TIMEOUT);
+        con.disconnect();
+    }
 }

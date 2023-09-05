@@ -39,7 +39,7 @@ import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
-@Trivial // Liberty Change
+@Trivial
 public final class URITemplate {
 
     public static final String TEMPLATE_PARAMETERS = "jaxrs.template.parameters";
@@ -52,9 +52,8 @@ public final class URITemplate {
     private static final String CHARACTERS_TO_ESCAPE = ".*+$()";
     private static final String SLASH = "/";
     private static final String SLASH_QUOTE = "/;";
-    private static final int MAX_URI_TEMPLATE_CACHE_SIZE = 
-        SystemPropertyAction.getInteger("org.apache.cxf.jaxrs.max_uri_template_cache_size", 2000);
-    private static final Map<String, URITemplate> URI_TEMPLATE_CACHE = new ConcurrentHashMap<>();
+    private static final int MAX_URI_TEMPLATE_CACHE_SIZE = SystemPropertyAction.getInteger("org.apache.cxf.jaxrs.max_uri_template_cache_size", 2000);
+    private static final Map<String, URITemplate> URI_TEMPLATE_CACHE = new ConcurrentHashMap<String, URITemplate>();
 
     private final String template;
     private final List<String> variables = new ArrayList<>();
@@ -64,10 +63,10 @@ public final class URITemplate {
     private final List<UriChunk> uriChunks;
 
     public URITemplate(String theTemplate) {
-        this(theTemplate, Collections.<Parameter> emptyList()); // Liberty Change
+        this(theTemplate, Collections.<Parameter> emptyList());
     }
 
-    public URITemplate(String theTemplate, List<Parameter> params) { // Liberty Change
+    public URITemplate(String theTemplate, List<Parameter> params) {
         template = theTemplate;
         StringBuilder literalChars = new StringBuilder();
         StringBuilder patternBuilder = new StringBuilder();
@@ -75,7 +74,7 @@ public final class URITemplate {
         uriChunks = new ArrayList<>();
         while (tok.hasNext()) {
             String templatePart = tok.next();
-            UriChunk chunk = UriChunk.createUriChunk(templatePart, params); // Liberty Change
+            UriChunk chunk = UriChunk.createUriChunk(templatePart, params);
             uriChunks.add(chunk);
             if (chunk instanceof Literal) {
                 String encodedValue = HttpUtils.encodePartiallyEncoded(chunk.getValue(), false);
@@ -92,7 +91,7 @@ public final class URITemplate {
                     // however do not add them if they already exist since that will cause the Matcher
                     // to create extraneous values.  Parens identify a group so multiple parens would
                     // indicate multiple groups.
-                    if (pattern.startsWith("(") && pattern.endsWith(")") && !pattern.startsWith("(?")) {
+                    if (pattern.startsWith("(") && pattern.endsWith(")")) {
                         patternBuilder.append(pattern);
                     } else {
                         patternBuilder.append('(');
@@ -205,19 +204,19 @@ public final class URITemplate {
                 List<PathSegment> uList = JAXRSUtils.getPathSegments(uri, false);
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < uList.size(); i++) {
-                    final String segment;
+                    String segment = null;
                     if (pList.size() > i && pList.get(i).getPath().indexOf('{') == -1) {
                         segment = uList.get(i).getPath();
                     } else {
                         segment = HttpUtils.fromPathSegment(uList.get(i));
                     }
-                    if (!segment.isEmpty()) {
+                    if (segment.length() > 0) {
                         sb.append(SLASH);
                     }
                     sb.append(segment);
                 }
                 uri = sb.toString();
-                if (uri.isEmpty()) {
+                if (uri.length() == 0) {
                     uri = SLASH;
                 }
                 m = templateRegexPattern.matcher(uri);
@@ -471,7 +470,7 @@ public final class URITemplate {
          * @return If param has variable form then {@link Variable} instance is created, otherwise chunk is
          *         treated as {@link Literal}.
          */
-        public static UriChunk createUriChunk(String uriChunk, List<Parameter> params) { // Liberty Change
+        public static UriChunk createUriChunk(String uriChunk, List<Parameter> params) {
             if (uriChunk == null || "".equals(uriChunk)) {
                 throw new IllegalArgumentException("uriChunk is empty");
             }
@@ -619,7 +618,7 @@ public final class URITemplate {
      */
     static class CurlyBraceTokenizer {
 
-        private final List<String> tokens = new ArrayList<>(); // Liberty Change
+        private final List<String> tokens = new ArrayList<>();
         private int tokenIdx;
 
         CurlyBraceTokenizer(String string) {
@@ -627,12 +626,12 @@ public final class URITemplate {
             int level = 0;
             int lastIdx = 0;
             int idx;
-            // Liberty Change Start
+            // Liberty change start
             int length = string.length();
             for (idx = 0; idx < length; idx++) {
                 char c = string.charAt(idx);
                 if (c == '{') {
-                    // Liberty Change End
+                    // Liberty change end
                     if (outside) {
                         if (lastIdx < idx) {
                             tokens.add(string.substring(lastIdx, idx));
@@ -642,16 +641,16 @@ public final class URITemplate {
                     } else {
                         level++;
                     }
-                // Liberty Change Start
+                // Liberty change start
                 } else if (c == '}' && !outside) {
-                // Liberty Change End
+                // Liberty change end
                     if (level > 0) {
                         level--;
                     } else {
                         if (lastIdx < idx) {
-                            // Liberty Change Start
+                            // Liberty change start
                             tokens.add(lastIdx == 0 && idx + 1 == length ? string : string.substring(lastIdx, idx + 1));
-                            // Liberty Change End
+                            // Liberty change end
                         }
                         lastIdx = idx + 1;
                         outside = true;
@@ -659,9 +658,9 @@ public final class URITemplate {
                 }
             }
             if (lastIdx < idx) {
-                // Liberty Change Start
+                // Liberty change start
                 tokens.add(lastIdx == 0 ? string : string.substring(lastIdx, idx));
-                // Liberty Change End
+                // Liberty change end
             }
         }
 

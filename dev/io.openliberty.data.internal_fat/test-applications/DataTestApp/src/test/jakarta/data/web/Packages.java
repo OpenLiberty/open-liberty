@@ -12,14 +12,11 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
-import jakarta.data.repository.Limit;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.PageableRepository;
@@ -40,23 +37,9 @@ import io.openliberty.data.repository.Update;
  */
 @Repository
 public interface Packages extends PageableRepository<Package, Integer> {
-    Object[] delete(Limit limit, Sort sort);
-
     Optional<Package> deleteByDescription(String description);
 
     Package[] deleteByDescriptionEndsWith(String ending, Sort... sorts);
-
-    Optional<Integer> deleteFirst(Sort sort);
-
-    int[] deleteFirst2(Sort... sorts);
-
-    LinkedList<?> deleteFirst2ByHeightLessThan(float maxHeight, Sort... sorts);
-
-    long[] deleteFirst3(Sort sort); // invalid return type is not the entity or id
-
-    List<String> deleteFirst4(Sort sort); // invalid return type is not the entity or id
-
-    Collection<Number> deleteFirst5(Sort sort); // invalid return type is not the entity or id
 
     List<Package> findByHeightBetween(float minHeight, float maxHeight);
 

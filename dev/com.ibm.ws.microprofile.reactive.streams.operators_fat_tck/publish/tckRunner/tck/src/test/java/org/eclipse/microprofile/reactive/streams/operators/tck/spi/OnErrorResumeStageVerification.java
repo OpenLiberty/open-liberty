@@ -16,8 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-//Based on https://github.com/eclipse/microprofile-reactive-streams-operators/blob/1.0/tck/src/main/java/org/eclipse/microprofile/reactive/streams/operators/tck/spi/OnErrorResumeStageVerification.java
-//Modified to disable required_spec109_mustIssueOnSubscribeForNonNullSubscriber
+
 package org.eclipse.microprofile.reactive.streams.operators.tck.spi;
 
 import org.reactivestreams.Processor;
@@ -227,15 +226,13 @@ public class OnErrorResumeStageVerification extends AbstractStageVerification {
         public Integer createElement(int element) {
             return element;
         }
-
+        
         /**
          * 
          * Liberty Change:
          * Disable this test due to very infrequent intermittent failures
          * See defect 286531
          * 
-         * A fix was attempted in https://github.com/smallrye/smallrye-reactive-streams-operators/issues/63
-         * but we do not believe that it worked. Therefore the test is overridden here to be a no-op.
          */
         @Override
         @Test

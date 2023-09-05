@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,8 +18,6 @@ import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
 import org.apache.cxf.ws.addressing.ReferenceParametersType;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jaxws.wsat.Constants;
 
@@ -29,17 +27,12 @@ import com.ibm.ws.jaxws.wsat.Constants;
 public class WSATCoordinator extends WSATEndpoint {
     private static final long serialVersionUID = 1L;
 
-    private static final TraceComponent TC = Tr.register(WSATCoordinator.class);
-
     private final String globalId;
 
     private transient WSATParticipant participant;
 
     public WSATCoordinator(String tranId, EndpointReferenceType epr) {
         super(epr);
-        if (TC.isDebugEnabled()) {
-            Tr.debug(TC, "WSATCoordinator:\nglobalId:\n{0}\nEPR:\n{1}", tranId, DebugUtils.printEPR(epr));
-        }
         globalId = tranId;
     }
 
@@ -64,6 +57,7 @@ public class WSATCoordinator extends WSATEndpoint {
      * the participant identifier. Later, when the participant calls us back using
      * this EPR we will easily be able to identify who the caller was.
      */
+
     public EndpointReferenceType getEndpointReference(String partId) {
         EndpointReferenceType epr = EndpointReferenceUtils.duplicate(getEndpointReference());
         // duplicate doesn't seem to copy the ReferenceParams?, so add
@@ -97,14 +91,5 @@ public class WSATCoordinator extends WSATEndpoint {
             return globalId.hashCode();
 
         return 0;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("GlobalId: ").append(globalId);
-        if (participant != null) {
-            sb.append("\nWSATParticipant: ").append(participant.toString());
-        }
-        return sb.toString();
     }
 }

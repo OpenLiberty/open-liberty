@@ -15,19 +15,23 @@ package com.ibm.ws.jaxws.fat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 import com.ibm.ws.jaxws.fat.util.TestUtils;
-import com.ibm.ws.properties.test.servlet.LibertyCXFNegativePropertiesTestServlet;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpUtils;
 
 /*
  * Positive tests checking behavior changes after 2 property settings
@@ -38,27 +42,30 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class LibertyCXFNegativePropertiesTest {
 
-    public static final String APP_NAME = "libertyCXFProperty";
-
     @Server("LibertyCXFNegativePropertiesTestServer")
-    @TestServlet(servlet = LibertyCXFNegativePropertiesTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
+    private final static Class<?> c = LibertyCXFNegativePropertiesTest.class;
+    private static final int CONN_TIMEOUT = 300;
+
+    // *** Stop and Start server between tests ***
     @BeforeClass
     public static void setUp() throws Exception {
-        ExplodedShrinkHelper.explodedApp(server, APP_NAME, "com.ibm.ws.properties.test.client.stub",
-                                         "com.ibm.ws.properties.test.service",
-                                         "com.ibm.ws.properties.test.servlet");
+        ExplodedShrinkHelper.explodedApp(server, "webServiceRefFeatures", "com.ibm.ws.test.client.stub",
+                                         "com.ibm.ws.test.wsfeatures.client",
+                                         "com.ibm.ws.test.wsfeatures.client.handler",
+                                         "com.ibm.ws.test.wsfeatures.handler",
+                                         "com.ibm.ws.test.wsfeatures.service");
 
         TestUtils.publishFileToServer(server,
-                                      "LibertyCXFPropertiesTest", "service-image.wsdl",
-                                      "apps/libertyCXFProperty.war/WEB-INF/wsdl", "service-image.wsdl");
+                                      "WebServiceRefFeaturesTestServer", "image-property.wsdl",
+                                      "apps/webServiceRefFeatures.war/WEB-INF/wsdl", "image.wsdl");
 
         TestUtils.publishFileToServer(server,
-                                      "LibertyCXFPropertiesTest", "client-image.wsdl",
-                                      "apps/libertyCXFProperty.war/WEB-INF/wsdl", "image.wsdl");
+                                      "WebServiceRefFeaturesTestServer/client", "image.wsdl",
+                                      "", "image.wsdl");
 
-        server.startServer("LibertyCXFPropertiesTest.log");
+        server.startServer("LibertyCXFNegativePropertiesTestServer.log");
 
         server.waitForStringInLog("CWWKF0011I");
 
@@ -67,35 +74,68 @@ public class LibertyCXFNegativePropertiesTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
+        if (server != null && server.isStarted()) {
+            // Ignore different SSL connection errors for negative test cases
+            server.stopServer("SRVE0777E", "SRVE0315E", "CWWKO0801E");
+        }
+    }
 
-        // @Test = testCxfUnsupportedPolicyProperty()
+    /*
+     * Testing cxf.ignore.unsupported.policy for not supported alternative policies.
+     * Not setting this property make alternative policies to not be supported in PolicyEngineImpl
+     */
+    @Test
+    public void testCxfUnsupportedPolicyProperty() throws Exception {
+
+        connect("ImageServiceImplServiceTwo", HttpsURLConnection.HTTP_OK);
+
         assertNotNull("Since cxf.ignore.unsupported.policy is not enabled, invalid alternative policies are not supported",
-                      server.waitForStringInLog("None of the policy alternatives can be satisfied"));
+                      server.waitForStringInTraceUsingMark("BasicAuthentication is not supported"));
 
         assertNull("Since cxf.ignore.unsupported.policy is not enabled, Unsupported policy assertions won't be ignored",
                    server.waitForStringInTraceUsingMark("WARNING: Unsupported policy assertions will be ignored"));
+    }
 
-        // @Test = testCxfUsedAlternativePolicyProperty()
+    /*
+     * Testing cxf.ignore.unsupported.policy for used alternative policies
+     * When this property is not set, it allows addition of used policies
+     * into ws-policy.validated.alternatives in PolicyVerificationInInterceptor
+     */
+    @Test
+    public void testCxfUsedAlternativePolicyProperty() throws Exception {
+
+        connect("ImageServiceImplService", HttpsURLConnection.HTTP_OK);
+
         assertNotNull("Since cxf.ignore.unsupported.policy is not enabled, used alternative policies are not put as alternatives",
                       server.waitForStringInTraceUsingMark("Verified policies for inbound message"));
 
         assertNull("Since cxf.ignore.unsupported.policy is not enabled, checkEffectivePolicy will be called",
                    server.waitForStringInTraceUsingMark("WARNING: checkEffectivePolicy will not be called"));
 
-        // @Test = testCxfAttachmentOutputProperty()
+    }
+
+    /*
+     * Testing cxf.multipart.attachment property is not set or set to false
+     * it sets up the attachment data out in SwAOutInterceptor
+     */
+    @Test
+    public void testCxfAttachmentOutputProperty() throws Exception {
+
+        connect("ImageServiceImplService", HttpsURLConnection.HTTP_OK);
+
         assertNotNull("Since cxf.multipart.attachment is not enabled, ",
                       server.waitForStringInTraceUsingMark("--uuid:"));
 
-        if (JakartaEE10Action.isActive()) {
-            // Woodstox StAX provider is enabled for these tests, assert provider is found.
-            assertNotNull("The Woodstox StAX Provider was not enabled, despite the `org.apache.cxf.stax.allowInsecureParser` property being set to false",
-                          server.waitForStringInTraceUsingMark("Jakarta EE 10 found, using Woodstox's StAX provider"));
+    }
 
-        }
-
-        if (server != null && server.isStarted()) {
-            // Ignore different SSL connection errors for negative test cases
-            server.stopServer("SRVE0777E", "SRVE0315E", "CWWKO0801E");
-        }
+    private void connect(String methodName, int ExpectedConnection) throws Exception {
+        String serverURL = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort();
+        URL url = new URL(serverURL + "/webServiceRefFeatures/wsapolicyskip?impl=" + methodName + "&serverurl=" + serverURL);
+        Log.info(c, "LibertyCXFNegativePropertiesTest",
+                 "Calling Application with URL=" + url.toString());
+        HttpUtils.trustAllCertificates();
+        HttpUtils.trustAllHostnames();
+        HttpsURLConnection con = (HttpsURLConnection) HttpUtils.getHttpConnection(url, ExpectedConnection, CONN_TIMEOUT);
+        con.disconnect();
     }
 }

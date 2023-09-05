@@ -1,8 +1,0 @@
-#Mon Jun 19 10:07:37 BST 2023
-com.ibm.websphere.ltpa.version=1.0
-com.ibm.websphere.ltpa.3DESKey=FUoZvcSao08x61+C+1LKvw4suiZerrMN3/cGjIn+mR4\=
-com.ibm.websphere.ltpa.PrivateKey=OpeWfZ+D5wRpadaCekU6bmOVVa3JUv9lQbRjZqLl7OIAMyG7E67g3b+qtF+nLTblpsp2n8MKfGfgHOjNKE4siCA3x2DLjzFSD2zsyhpdVMZp2BD+QE8o4esSkkN8ngFvKvMhNM6enusLQFvkhVRytUrPND4D5GYmC2MmZUVNvqUBJGvCmgJfT3Lwr9DuoqrZ7Yya1f042uJXYUdyMP+GXjeVVqqXaBsz1gIDCjdzbrtGKio9jqUGZejJvJ31H+PjY5W7pxvK4UHjhDMSRgiFdfgW4qAufSeQwwNbrfu02iGpExI923AbOWA1GI9cxWBQlXBRs5j4Etq6tgpSiy87/EKOhme+F/3lZxMSwMSyEcQ\=
-com.ibm.websphere.CreationHost=localhost
-com.ibm.websphere.ltpa.Realm=defaultRealm
-com.ibm.websphere.ltpa.PublicKey=AIDHevuuleWqD/VnYlYF7VI+XcGAIQZigpiO7JADNMKUqlEaPegRwhu1kjltG2Lp0P/h8cauXXAvPqAh16GgqoRV9zseVoxhNd4RMbr81ZDHqrW6l8/VEtN3C+/Dyw+VJ7qzrFFei1ha4zG0DsECXIoIaUvOmr0ppPwxTKJQG4UdAQAB
-com.ibm.websphere.CreationDate=Mon Jun 19 10\:07\:37 BST 2023

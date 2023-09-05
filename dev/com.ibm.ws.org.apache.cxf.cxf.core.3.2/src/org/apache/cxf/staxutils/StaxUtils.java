@@ -161,9 +161,7 @@ public final class StaxUtils {
             getLong(MAX_XML_CHARACTERS, Long.MAX_VALUE);
     private static final int PARSER_POOL_SIZE_VAL =
             getInteger("org.apache.cxf.staxutils.pool-size", 20);
-    
-    // Liberty Change: set to public to allow Liberty's StAXUtils to look up this value
-    public static final boolean ALLOW_INSECURE_PARSER_VAL;
+    private static final boolean ALLOW_INSECURE_PARSER_VAL;
     private static final boolean AUTO_CLOSE_INPUT_SOURCE;
 
     // Here we check old names first and then new names for the threshold properties

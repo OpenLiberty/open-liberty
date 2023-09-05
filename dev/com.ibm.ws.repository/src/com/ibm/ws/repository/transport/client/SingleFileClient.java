@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,7 +46,6 @@ import com.ibm.ws.repository.transport.model.AppliesToFilterInfo;
 import com.ibm.ws.repository.transport.model.Asset;
 import com.ibm.ws.repository.transport.model.Attachment;
 import com.ibm.ws.repository.transport.model.AttachmentSummary;
-import com.ibm.ws.repository.transport.model.CopyUtils;
 import com.ibm.ws.repository.transport.model.WlpInformation;
 
 /**
@@ -64,9 +63,10 @@ import com.ibm.ws.repository.transport.model.WlpInformation;
 public class SingleFileClient extends AbstractRepositoryClient implements RepositoryWriteableClient {
 
     private final File file;
+    private long fileLastModified = 0;
+    private long fileLastSize = 0;
+    private Map<String, JsonObject> assets;
     private AtomicInteger idCounter;
-    private final FileDataCache<Map<String, JsonObject>> assetMapCache;
-    private final FileDataCache<Collection<Asset>> allAssetsCache;
 
     /**
      * Create a SingleFileClient instance
@@ -79,8 +79,6 @@ public class SingleFileClient extends AbstractRepositoryClient implements Reposi
      */
     public SingleFileClient(File jsonFile) {
         this.file = jsonFile;
-        this.assetMapCache = new FileDataCache<>(jsonFile, this);
-        this.allAssetsCache = new FileDataCache<>(jsonFile, this);
     }
 
     /**
@@ -89,22 +87,29 @@ public class SingleFileClient extends AbstractRepositoryClient implements Reposi
      * This method will re-read the json file if it has not yet been read, or if it has changed since we last read it.
      */
     private synchronized Map<String, JsonObject> getAssetMap() throws IOException {
-        return assetMapCache.get(this::readAssetMap);
-    }
+        if (!file.canRead()) {
+            throw new IOException("Cannot read repository file: " + file.getAbsolutePath());
+        } else if (assets == null || file.lastModified() != fileLastModified || file.length() != fileLastSize) {
+            // Re-read the file if either we've never read it or it's changed length since we last read it
+            assets = null;
+            fileLastModified = file.lastModified();
+            fileLastSize = file.length();
 
-    private Map<String, JsonObject> readAssetMap() throws IOException {
-        HashMap<String, JsonObject> result = new HashMap<>();
-        idCounter = new AtomicInteger(1);
-        try (JsonReader reader = Json.createReader(new FileInputStream(file))) {
-            JsonArray assetList = reader.readArray();
-            for (JsonValue val : assetList) {
-                String id = Integer.toString(idCounter.getAndIncrement());
-                if (val.getValueType() == ValueType.OBJECT) {
-                    result.put(id, (JsonObject) val);
+            idCounter = new AtomicInteger(1);
+            assets = new HashMap<String, JsonObject>();
+            try (JsonReader reader = Json.createReader(new FileInputStream(file))) {
+                JsonArray assetList = reader.readArray();
+                for (JsonValue val : assetList) {
+                    String id = Integer.toString(idCounter.getAndIncrement());
+                    if (val.getValueType() == ValueType.OBJECT) {
+                        assets.put(id, (JsonObject) val);
+                    }
                 }
             }
         }
-        return result;
+
+        return assets;
+
     }
 
     @Override
@@ -120,13 +125,7 @@ public class SingleFileClient extends AbstractRepositoryClient implements Reposi
     }
 
     @Override
-    public Collection<Asset> getAllAssets() throws IOException {
-        // Fetch via the cache and then make a copy before returning
-        // to prevent a caller from modifying the cached data
-        return CopyUtils.copyCollection(allAssetsCache.get(this::doGetAllAssets), Asset::new);
-    }
-
-    public Collection<Asset> doGetAllAssets() throws IOException {
+    public Collection<Asset> getAllAssets() throws IOException, RequestFailureException {
         ArrayList<Asset> result = new ArrayList<Asset>();
 
         for (Entry<String, JsonObject> entry : getAssetMap().entrySet()) {
@@ -173,7 +172,7 @@ public class SingleFileClient extends AbstractRepositoryClient implements Reposi
             JsonObject json = (JsonObject) DataModelSerializer.serializeAsJson(asset.createMinimalAssetForJSON());
             String id = Integer.toString(idCounter.getAndIncrement());
             assetMap.put(id, json);
-            rewriteFile(assetMap);
+            rewriteFile();
 
             return getAsset(id);
         } catch (IllegalAccessException ex) {
@@ -209,7 +208,7 @@ public class SingleFileClient extends AbstractRepositoryClient implements Reposi
         if (assets.containsKey(assetId)) {
             assets.remove(assetId);
         }
-        rewriteFile(assets);
+        rewriteFile();
     }
 
     /**
@@ -231,11 +230,11 @@ public class SingleFileClient extends AbstractRepositoryClient implements Reposi
      * <p>
      * This method ensures that the asset with id {@code n} is always written to the {@code n}th position in the file, using {@code null}s for padding if required.
      */
-    private synchronized void rewriteFile(Map<String, JsonObject> assetMap) throws FileNotFoundException, IOException {
+    private synchronized void rewriteFile() throws FileNotFoundException, IOException {
         JsonArrayBuilder jsonToStore = Json.createArrayBuilder();
 
         // Iterate through the assets in id order
-        assetMap = assetMap == null ? Collections.emptyMap() : assetMap;
+        Map<String, JsonObject> assetMap = assets == null ? Collections.<String, JsonObject> emptyMap() : assets;
         for (int i = 1; i < idCounter.get(); i++) {
             JsonObject json = assetMap.get(Integer.toString(i));
             if (json == null) {

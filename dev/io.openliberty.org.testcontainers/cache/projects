@@ -9,7 +9,6 @@ com.ibm.ws.concurrent.persistent_fat_locking
 com.ibm.ws.concurrent.persistent_fat_multiple
 com.ibm.ws.concurrent.persistent_fat_timers
 com.ibm.ws.couchdb_fat
-com.ibm.ws.install.featureUtility_fat
 com.ibm.ws.jdbc_fat
 com.ibm.ws.jdbc_fat_db2
 com.ibm.ws.jdbc_fat_krb5
@@ -101,8 +100,6 @@ com.ibm.ws.jpa.tests.spec20_jpa_2.1_fat
 com.ibm.ws.jpa.tests.spec20_jpa_2.2_fat
 com.ibm.ws.jpa.tests.spec20_jpa_3.0_fat
 com.ibm.ws.jpa.tests.spec20_jpa_3.1_fat
-com.ibm.ws.jsf.2.2_fat
-com.ibm.ws.jsf.2.3_fat
 com.ibm.ws.logstash.collector_fat
 com.ibm.ws.microprofile.health.2.0_fat
 com.ibm.ws.microprofile.reactive.messaging_fat
@@ -147,8 +144,6 @@ com.ibm.ws.transaction.hadb_fat.sqlserver.1
 com.ibm.ws.transaction.hadb_fat.sqlserver.2
 com.ibm.ws.transaction.hadb_fat.sqlserver.lease
 com.ibm.ws.transaction.hadb_fat.sqlserver.retriablecodes
-com.ibm.ws.wsat.migration_fat.6
-com.ibm.ws.wsat.recovery_fat.multi.6
 fattest.simplicity
 io.openliberty.checkpoint_fat_persistence
 io.openliberty.data.internal_fat

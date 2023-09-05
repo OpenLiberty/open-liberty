@@ -1,6 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.netty.internal-1.0
-WLP-DisableAllFeatures-OnConflict: false
 Subsystem-Name: Netty internal implementation 1.0
 singleton=true
 -features=\

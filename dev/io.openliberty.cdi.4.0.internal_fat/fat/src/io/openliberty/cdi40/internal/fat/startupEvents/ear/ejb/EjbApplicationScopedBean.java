@@ -70,12 +70,8 @@ public class EjbApplicationScopedBean extends AbstractObserver {
 
         //EJB PreDestroy should be seen after any test request
         assertTrue(logMsg("EJB PreDestroy was observed before test"), testRequested);
-        /* 
-         * EJB PreDestroy for a bean with ApplicationScoped should be seen after Shutdown
-         * https://jakarta.ee/specifications/cdi/4.0/jakarta-cdi-spec-4.0.html#session_beans - A singleton session bean can be ApplicationScoped or Dependent
-         * https://jakarta.ee/specifications/cdi/4.0/jakarta-cdi-spec-4.0.html#startup_event - jakarta.enterprise.event.Shutdown is not after @BeforeDestroyed(ApplicationScoped.class)
-         */
-        assertTrue(logMsg("EJB PreDestroy was observed before Shutdown"), shutdownObserved);
+        //EJB PreDestroy should be seen before Shutdown
+        assertFalse(logMsg("EJB PreDestroy was observed after Shutdown"), shutdownObserved);
     }
 
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -50,9 +50,6 @@ public class EJBVisibilityTests extends FATServletClient {
 
     public static final String SERVER_NAME = "cdi12EJBServer";
 
-    //Because this test includes Fault Tolerance, the repeat must be done using MicroProfileActions.
-    //Fault Tolerance is included as a feature with CDI extension which can see application BDAs.
-    //This previously caused issues with masked classes.
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP14, MicroProfileActions.MP50);
 

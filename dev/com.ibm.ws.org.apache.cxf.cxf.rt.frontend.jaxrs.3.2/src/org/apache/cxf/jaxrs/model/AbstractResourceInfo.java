@@ -22,54 +22,48 @@ package org.apache.cxf.jaxrs.model;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.security.AccessController; // Liberty Change 
-import java.security.PrivilegedAction; // Liberty Change 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet; // Liberty Change 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set; // Liberty Change 
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
-
-// Liberty Change Start - Imports
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Providers;
-// Liberty Change End
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.common.util.ReflectionUtil;
 import org.apache.cxf.jaxrs.impl.tl.ThreadLocalProxy;
 import org.apache.cxf.jaxrs.utils.InjectionUtils;
-// Liberty Change Start - Imports
 import org.apache.cxf.jaxrs.utils.ThreadLocalProxyCopyOnWriteArraySet;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-// Liberty Change End
 
 public abstract class AbstractResourceInfo {
-    private static final TraceComponent tc = Tr.register(AbstractResourceInfo.class); // Liberty Change
-    // Liberty Change Start  - defect 169218
-    // Property name of the set used to store the ThreadLocalProxy objects in bus
+    private static final TraceComponent tc = Tr.register(AbstractResourceInfo.class);
+    //Liberty code change start defect 169218
+    //Property name of the set used to store the ThreadLocalProxy objects in bus
     public static final String PROXY_SET = "proxy-set";
-    // Liberty Change End
+    //Liberty code change end
     public static final String CONSTRUCTOR_PROXY_MAP = "jaxrs-constructor-proxy-map";
-    //private static final Logger LOG = LogUtils.getL7dLogger(AbstractResourceInfo.class); // Liberty Change
+    //private static final Logger LOG = LogUtils.getL7dLogger(AbstractResourceInfo.class);
     private static final String FIELD_PROXY_MAP = "jaxrs-field-proxy-map";
     private static final String SETTER_PROXY_MAP = "jaxrs-setter-proxy-map";
 
-    // Liberty Change Start
     private static final Set<String> STANDARD_CONTEXT_CLASSES = new HashSet<String>();
     static {
         // JAX-RS 1.0-1.1
@@ -88,7 +82,6 @@ public abstract class AbstractResourceInfo {
         STANDARD_CONTEXT_CLASSES.add("javax.ws.rs.container.ResourceInfo");
         STANDARD_CONTEXT_CLASSES.add("javax.ws.rs.core.Configuration");
     }
-	// Liberty Change End
 
     protected boolean root;
     protected Class<?> resourceClass;
@@ -96,11 +89,11 @@ public abstract class AbstractResourceInfo {
 
     private Map<Class<?>, List<Field>> contextFields;
     private Map<Class<?>, Map<Class<?>, Method>> contextMethods;
-    private final Bus bus; // Liberty Change
+    private final Bus bus;
     private boolean constructorProxiesAvailable;
     private boolean contextsAvailable;
 
-    // Liberty Change Start
+    // Liberty code change start
     // There are many providers added during initialization.  This map maintains the providers we know about that are
     // processed during startup so that we don't have to determine if they have @Context annotations which can be quite expensive.
     private static final Map<String, ProviderContextInfo> CONTEXT_PROPS = new HashMap<>();
@@ -183,7 +176,7 @@ public abstract class AbstractResourceInfo {
             return sb.toString();
         }
     }
-    // Liberty Change End
+    // Liberty code change end
 
     protected AbstractResourceInfo(Bus bus) {
         this.bus = bus;
@@ -212,22 +205,23 @@ public abstract class AbstractResourceInfo {
 
     private void findContexts(Class<?> cls, Object provider,
                               Map<Class<?>, ThreadLocalProxy<?>> constructorProxies) {
-        // Liberty Change Start
+        // Liberty code change start
         ProviderContextInfo contextInfo = CONTEXT_PROPS.get(cls.getName());
         if (contextInfo == null || contextInfo.processingRequired) {
             findContextFields(cls, provider, contextInfo);
             findContextSetterMethods(cls, provider, contextInfo);
         }
-        // Liberty Change End
+        // Liberty code change end
 
         if (constructorProxies != null) {
             Map<Class<?>, Map<Class<?>, ThreadLocalProxy<?>>> proxies = getConstructorProxyMap();
             proxies.put(serviceClass, constructorProxies);
-            // Liberty Change Start defect 169218
-            // Add the constructorProxies to the set
+            //Liberty code change start defect 169218
+            //Add the constructorProxies to the set
             ThreadLocalProxyCopyOnWriteArraySet<ThreadLocalProxy<?>> proxySet = getProxySet();
             proxySet.addAll(constructorProxies.values());
-            // Liberty Change End
+
+            //Liberty code change end
             constructorProxiesAvailable = true;
         }
 
@@ -255,23 +249,26 @@ public abstract class AbstractResourceInfo {
         return serviceClass;
     }
 
-    // Liberty Change Start
+    // Liberty code change start
     private void findContextFields(final Class<?> cls, Object provider, ProviderContextInfo contextInfo) {
+    // Liberty code change end
         if (cls == Object.class || cls == null) {
             return;
         }
-		
-        if (contextInfo == null || contextInfo.fieldNames != null) { // Liberty Change
+
+        // Liberty code change start
+        if (contextInfo == null || contextInfo.fieldNames != null) {
+        // Liberty code change end
             for (Field f : ReflectionUtil.getDeclaredFields(cls)) {
-                // Liberty Change Start
+                // Liberty code change start
                 if (contextInfo != null && !contextInfo.fieldNames.contains(f.getName())) {
                     continue;
                 }
+                // Liberty code change end
                 Class<?> fType = f.getType();
-                // Liberty Change End
                 for (Annotation a : f.getAnnotations()) {
-                    // Liberty Change Start - defect 169218
-                    // Add the FieldProxy to the set
+                    //Liberty code change start defect 169218
+                    //Add the FieldProxy to the set
                     if (a.annotationType() == Context.class) {
                         contextFields = addContextField(contextFields, f);
                         if (fType.isInterface()) {
@@ -284,12 +281,13 @@ public abstract class AbstractResourceInfo {
                                     proxySet.add(proxy);
                                 }
                             }
-                        } // Liberty Change End
+                        }
+                        //Liberty code change end
                     }
                 }
             }
+        // Liberty code change start
         }
-		// Liberty Change Start
         Class<?> superClass = cls.getSuperclass();
         if (superClass != null && superClass != Object.class) {
             ProviderContextInfo superContextInfo = CONTEXT_PROPS.get(superClass.getName());
@@ -297,7 +295,7 @@ public abstract class AbstractResourceInfo {
                 findContextFields(superClass, provider, superContextInfo);
             }
         }
-        // Liberty Change End
+        // Liberty code change end
     }
 
     private static ThreadLocalProxy<?> getFieldThreadLocalProxy(Field f, Object provider) {
@@ -319,7 +317,7 @@ public abstract class AbstractResourceInfo {
         return InjectionUtils.createThreadLocalProxy(f.getType());
     }
 
-    @FFDCIgnore(Throwable.class) // Liberty Change
+    @FFDCIgnore(Throwable.class)
     private static ThreadLocalProxy<?> getMethodThreadLocalProxy(Method m, Object provider) {
         if (provider != null) {
             Object proxy = null;
@@ -336,7 +334,7 @@ public abstract class AbstractResourceInfo {
                     InjectionUtils.injectThroughMethod(provider, m, proxy);
                 }
             }
-            return (ThreadLocalProxy<?>)proxy;
+            return (ThreadLocalProxy<?>) proxy;
         }
         return InjectionUtils.createThreadLocalProxy(m.getParameterTypes()[0]);
     }
@@ -350,20 +348,20 @@ public abstract class AbstractResourceInfo {
             );
         }
 
-        Object property;
-        //synchronized (bus) { // Liberty Change
+        Object property = null;
+        //synchronized (bus) {
         property = bus.getProperty(prop);
         if (property == null && create) {
             Map<Class<?>, Map<T, ThreadLocalProxy<?>>> map = new ConcurrentHashMap<>(2);
             bus.setProperty(prop, map);
             property = map;
         }
-        //} // Liberty Change
+        //}
         return (Map<Class<?>, Map<T, ThreadLocalProxy<?>>>) property;
     }
 
-    // Liberty Change Start - defect 169218
-    // Create a CopyOnWriteArraySet to store the ThreadLocalProxy objects for convenience of clearance
+    //Liberty code change start defect 169218
+    //Create a CopyOnWriteArraySet to store the ThreadLocalProxy objects for convenience of clearance
     @SuppressWarnings("unchecked")
     private ThreadLocalProxyCopyOnWriteArraySet<ThreadLocalProxy<?>> getProxySet() {
         Object property = null;
@@ -376,7 +374,8 @@ public abstract class AbstractResourceInfo {
         }
         return (ThreadLocalProxyCopyOnWriteArraySet<ThreadLocalProxy<?>>) property;
     }
-    // Liberty Change End
+
+    //Liberty code change end
 
     public Map<Class<?>, ThreadLocalProxy<?>> getConstructorProxies() {
         if (constructorProxiesAvailable) {
@@ -405,11 +404,13 @@ public abstract class AbstractResourceInfo {
         return getProxyMap(SETTER_PROXY_MAP, create);
     }
 
-    // Liberty Code Start
+    // Liberty code change start
     private void findContextSetterMethods(Class<?> cls, Object provider, ProviderContextInfo contextInfo) {
         if (contextInfo == null || contextInfo.methodNames != null) {
+            // Liberty code change end
 
             for (Method m : cls.getMethods()) {
+                // Liberty code change start
                 String methodName = m.getName();
                 if (contextInfo != null && !contextInfo.methodNames.contains(methodName)) {
                     continue;
@@ -417,6 +418,7 @@ public abstract class AbstractResourceInfo {
                 if (!methodName.startsWith("set") || m.getParameterTypes().length != 1) {
                     continue;
                 }
+                // Liberty code change end
                 for (Annotation a : m.getAnnotations()) {
                     if (a.annotationType() == Context.class) {
                         checkContextMethod(m, provider);
@@ -424,25 +426,26 @@ public abstract class AbstractResourceInfo {
                     }
                 }
             }
+        // Liberty code change start
         }
-        // Liberty Change End
+        // Liberty code change end
         Class<?>[] interfaces = cls.getInterfaces();
         for (Class<?> i : interfaces) {
-            // // Liberty Change Start
+            // Liberty code change start
             ProviderContextInfo iContextInfo = CONTEXT_PROPS.get(i.getName());
             if (iContextInfo == null || iContextInfo.processingRequired) {
                 findContextSetterMethods(i, provider, iContextInfo);
             }
-            // Liberty Change End
+            // Liberty code change end
         }
         Class<?> superCls = cls.getSuperclass();
         if (superCls != null && superCls != Object.class) {
-            // Liberty Change Start
+            // Liberty code change start
             ProviderContextInfo superContextInfo = CONTEXT_PROPS.get(superCls.getName());
             if (superContextInfo == null || superContextInfo.processingRequired) {
                 findContextSetterMethods(superCls, provider, superContextInfo);
             }
-            // Liberty Change End
+            // Liberty code change end
         }
     }
 
@@ -455,18 +458,18 @@ public abstract class AbstractResourceInfo {
     }
 
     private void checkContextClass(Class<?> type) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) { // Liberty Change
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             if (!STANDARD_CONTEXT_CLASSES.contains(type.getName())) {
-                Tr.debug(tc, "Injecting a custom context " + type.getName() // Liberty Change
+                Tr.debug(tc, "Injecting a custom context " + type.getName()
                              + ", ContextProvider is required for this type");
             }
         }
     }
 
-    @SuppressWarnings("unchecked") // Liberty Change
+    @SuppressWarnings("unchecked")
     public Map<Class<?>, Method> getContextMethods() {
         Map<Class<?>, Method> methods = contextMethods == null ? null : contextMethods.get(getServiceClass());
-        return methods == null ? Collections.EMPTY_MAP : Collections.unmodifiableMap(methods); // Liberty Change
+        return methods == null ? Collections.EMPTY_MAP : Collections.unmodifiableMap(methods);
     }
 
     private void addContextMethod(Class<?> contextClass, Method m, Object provider) {
@@ -474,15 +477,16 @@ public abstract class AbstractResourceInfo {
             contextMethods = new HashMap<>();
         }
         addToMap(contextMethods, contextClass, m);
-        if (m.getParameterTypes()[0] != Application.class) { // Liberty Change Start -  defect 169218
-            // Add the MethodProxy to the set
+        if (m.getParameterTypes()[0] != Application.class) {
+            //Liberty code change start defect 169218
+            //Add the MethodProxy to the set
             ThreadLocalProxy<?> proxy = getMethodThreadLocalProxy(m, provider);
             boolean added = addToMap(getSetterProxyMap(true), m, proxy);
             if (added) {
                 ThreadLocalProxyCopyOnWriteArraySet<ThreadLocalProxy<?>> proxySet = getProxySet();
                 proxySet.add(proxy);
             }
-            // Liberty Change End
+            //Liberty code change end
         }
     }
 
@@ -514,15 +518,15 @@ public abstract class AbstractResourceInfo {
         if (bus != null) {
             Object property = bus.getProperty(FIELD_PROXY_MAP);
             if (property != null) {
-                ((Map)property).clear();
+                ((Map) property).clear();
             }
             property = bus.getProperty(SETTER_PROXY_MAP);
             if (property != null) {
-                ((Map)property).clear();
+                ((Map) property).clear();
             }
             property = bus.getProperty(CONSTRUCTOR_PROXY_MAP);
             if (property != null) {
-                ((Map)property).clear();
+                ((Map) property).clear();
             }
         }
     }
@@ -561,7 +565,7 @@ public abstract class AbstractResourceInfo {
         return theFields;
     }
 
-    // Liberty Change Start - defect 182967 returns boolean instead of void
+    //Liberty code change start defect 182967 - returns boolean instead of void
     private <T, V> boolean addToMap(Map<Class<?>, Map<T, V>> proxyMap,
                                     T f,
                                     V proxy) {
@@ -576,7 +580,7 @@ public abstract class AbstractResourceInfo {
         }
         return false;
     }
-    // Liberty Change End
+    //Liberty code change end
 
     private List<Field> getList(Map<Class<?>, List<Field>> fields) {
         List<Field> ret = fields == null ? null : fields.get(getServiceClass());

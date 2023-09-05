@@ -21,13 +21,8 @@ import com.ibm.websphere.channelfw.EndPointInfo;
 import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.sip.stack.transport.ActiveConfiguration;
-import com.ibm.ws.sip.stack.transport.GenericEndpointImpl;
-import com.ibm.ws.sip.stack.transport.GenericChainBase.Type;
-import com.ibm.ws.sip.stack.transport.sip.chfw.SipInboundChannel;
+import com.ibm.ws.sip.stack.transport.sip.SipInboundChannel;
 import com.ibm.wsspi.channelfw.ChainEventListener;
-
-import jain.protocol.ip.sip.ListeningPoint;
 
 /**
  * Encapsulation of steps for starting/stopping an http chain in a controlled/predictable
@@ -159,15 +154,5 @@ public class GenericUDPChain extends GenericChain implements ChainEventListener 
         //TODO Liberty - do we need to setup properties for this chain ?
     }
 
-    @Override
-    public Type getType() {
-        return Type.UDP;
-    }
-
-
-    @Override
-    public String getTransport() {
-        return ListeningPoint.TRANSPORT_UDP;
-    }
-
+ 
 }

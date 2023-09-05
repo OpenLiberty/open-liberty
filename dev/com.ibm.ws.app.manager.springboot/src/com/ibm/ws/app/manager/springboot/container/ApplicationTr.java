@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2023 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,12 +16,19 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 public class ApplicationTr {
+
     private static final TraceComponent tc = Tr.register(ApplicationTr.class);
 
     public enum Type {
+        ERROR_NEED_SPRING_BOOT_VERSION_15("error.need.springboot.version.15"),
+        ERROR_NEED_SPRING_BOOT_VERSION_20("error.need.springboot.version.20"),
+        ERROR_NEED_SPRING_BOOT_VERSION_30("error.need.springboot.version.30"),
+        ERROR_MISSING_SERVLET_FEATURE("error.missing.servlet"),
+        ERROR_MISSING_WEBSOCKET_FEATURE("error.missing.websocket"),
+        ERROR_UNSUPPORTED_SPRING_BOOT_VERSION("error.wrong.spring.boot.version"),
+        WARNING_UNSUPPORTED_JAVA_VERSION("warning.java.version.not.supported"),
         ERROR_INVALID_PACKAGED_LIBERTY_JAR("error.invalid.packaged.liberty.jar"),
-        ERROR_APP_NOT_FOUND_INSIDE_PACKAGED_LIBERTY_JAR("error.application.not.found.inside.packaged.liberty.jar"),
-        ERROR_UNSUPPORTED_SPRING_BOOT_VERSION("error.wrong.spring.boot.version");
+        ERROR_APP_NOT_FOUND_INSIDE_PACKAGED_LIBERTY_JAR("error.application.not.found.inside.packaged.liberty.jar");
 
         private final String msgKey;
 
@@ -38,11 +45,4 @@ public class ApplicationTr {
         Tr.warning(tc, type.getMessageKey(), messageArgs);
     }
 
-    public static final void warning(String msgKey, Object... messageArgs) {
-        Tr.warning(tc, msgKey, messageArgs);
-    }
-
-    public static final void error(String msgKey, Object... messageArgs) {
-        Tr.error(tc, msgKey, messageArgs);
-    }
 }

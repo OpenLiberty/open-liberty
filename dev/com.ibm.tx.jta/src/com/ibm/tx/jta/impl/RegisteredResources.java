@@ -6,7 +6,7 @@ package com.ibm.tx.jta.impl;
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -255,7 +255,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
                                "as the recovery log was not available at transaction start";
             final IllegalStateException ise = new IllegalStateException(msg);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "enlistResource (SPI)", ise);
+                Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", ise });
             throw ise;
         }
 
@@ -276,7 +276,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
                 final IllegalStateException ise = new IllegalStateException(msg);
                 // FFDC in TransactionImpl
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "enlistResource (SPI)", ise);
+                    Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", ise });
                 throw ise;
             }
         }
@@ -458,13 +458,13 @@ public class RegisteredResources implements Comparator<JTAResource> {
         {
             FFDCFilter.processException(ise, "com.ibm.tx.jta.impl.RegisteredResources.enlistResource", "483", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "enlistResource (SPI)", ise);
+                Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", ise });
             throw ise;
         } catch (Exception e) {
             FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RegisteredResources.enlistResource", "489", this);
             final Throwable toThrow = new SystemException(e.getLocalizedMessage()).initCause(e);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "enlistResource (SPI)", toThrow);
+                Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", toThrow });
             throw (SystemException) toThrow;
         }
 

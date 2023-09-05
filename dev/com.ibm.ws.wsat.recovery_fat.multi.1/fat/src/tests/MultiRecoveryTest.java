@@ -14,7 +14,6 @@ package tests;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,7 +29,6 @@ import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
-import com.ibm.ws.transaction.fat.util.SetupRunner;
 import com.ibm.ws.wsat.fat.util.WSATTest;
 
 import componenttest.annotation.Server;
@@ -41,50 +39,38 @@ public class MultiRecoveryTest {
 	protected static String BASE_URL;
 	protected static String BASE_URL2;
 
-	protected final static int REQUEST_TIMEOUT = HttpUtils.DEFAULT_TIMEOUT;
+	private final static int REQUEST_TIMEOUT = HttpUtils.DEFAULT_TIMEOUT;
 
 	private final static String recoveryClient = "recoveryClient";
-	protected final static String recoveryServer = "recoveryServer";
+	private final static String recoveryServer = "recoveryServer";
 
-	protected static final String str = "Performed recovery for ";
-	protected static final String failMsg = " did not perform recovery for ";
-
-	@Server("WSATRecoveryClient1")
+	@Server("WSATRecovery1")
 	public static LibertyServer server1;
 
-	@Server("WSATRecoveryServer1")
+	@Server("WSATRecovery2")
 	public static LibertyServer server2;
 
-    protected static SetupRunner runner;
-    protected static WebArchive clientApp;
-    protected static WebArchive serverApp;
-
-    @BeforeClass
+	@BeforeClass
 	public static void beforeTests() throws Exception {
 		//		System.getProperties().entrySet().stream().forEach(e -> Log.info(MultiRecoveryTest.class, "beforeTests", e.getKey() + " -> " + e.getValue()));
 
-		runner = new SetupRunner() {
-	        @Override
-	        public void run(LibertyServer s) throws Exception {
-	        	Log.info(MultiRecoveryTest.class, "setupRunner.run", "Setting up "+s.getServerName());
-	            s.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
-	        }
-	    };
-	    
 		BASE_URL = "http://" + server1.getHostname() + ":" + server1.getHttpDefaultPort();
 
 		server2.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_secondary")));
 		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
 
-        clientApp = ShrinkHelper.buildDefaultApp("recoveryClient", "client.*");
+        final WebArchive clientApp = ShrinkHelper.buildDefaultApp("recoveryClient", "client.*");
 		ShrinkHelper.exportDropinAppToServer(server1, clientApp);
 		ShrinkHelper.exportDropinAppToServer(server2, clientApp);
 
-        serverApp = ShrinkHelper.buildDefaultApp("recoveryServer", "server.*");
+        final WebArchive serverApp = ShrinkHelper.buildDefaultApp("recoveryServer", "server.*");
 		ShrinkHelper.exportDropinAppToServer(server1, serverApp);
 		ShrinkHelper.exportDropinAppToServer(server2, serverApp);
 
-		FATUtils.startServers(runner, server1, server2);
+		server1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+		server2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+
+		FATUtils.startServers(server1, server2);
 	}
 	
 	@Before
@@ -97,11 +83,7 @@ public class MultiRecoveryTest {
 		FATUtils.stopServers(server1, server2);
 	}
 
-	protected void recoveryTest(LibertyServer server, LibertyServer server2, String id, String crashingServers) throws Exception {
-		recoveryTest(server, server2, id, crashingServers, crashingServers);
-	}
-	
-	protected void recoveryTest(LibertyServer server, LibertyServer server2, String id, String crashingServers, String restartingServers) throws Exception {
+	protected void recoveryTest(LibertyServer server, LibertyServer server2, String id, String startServer) throws Exception {
 		final String method = "recoveryTest";
 		String result = null;
 
@@ -112,49 +94,37 @@ public class MultiRecoveryTest {
 			// This is fine. The setup servlet crashed its server
 		}
 
-		// wait for crashing servers to have gone away
-		if ("both".equals(crashingServers) || crashingServers.equals("server1")) {
+		final String str = "Performed recovery for ";
+		final String failMsg = " did not perform recovery";
+		//restart server in three modes
+		if (startServer.equals("server1")) {
+			// wait for 1st server to have gone away
 			assertNotNull(server.getServerName() + " did not crash", server.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
-		}
-		if ("both".equals(crashingServers) || crashingServers.equals("server2")) {
+			FATUtils.startServers(server);
+			assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
+		} else if (startServer.equals("server2")) {
+			// wait for 2nd server to have gone away
 			assertNotNull(server2.getServerName() + " did not crash", server2.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
+			FATUtils.startServers(server2);
+			assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
+		} else if(startServer.equals("both")) {
+			// wait for both servers to have gone away
+			assertNotNull(server.getServerName() + " did not crash", server.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
+			assertNotNull(server2.getServerName() + " did not crash", server2.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
+			FATUtils.startServers(server, server2);
+			assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
+			assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
 		}
 
-		// Start the ones that need restarting
-		if (!"none".equals(restartingServers)) {
-			if ("both".equals(restartingServers) || restartingServers.equals("server1")) {
-				FATUtils.startServers(runner, server);
-			}
-			if ("both".equals(restartingServers) || restartingServers.equals("server2")) {
-				FATUtils.startServers(runner, server2);
-			}
+		try {
+			result = callCheckServlet(id);
+		} catch (Exception e) {
+			Log.error(getClass(), method, e);
+			throw e;
 		}
-
-		// Wait for the relevant server to have done its stuff
-		if (crashingServers.equals(restartingServers)) {
-			// This is traditional recovery
-			if ("both".equals(crashingServers) || crashingServers.equals("server1")) {
-				assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
-			}
-			if ("both".equals(crashingServers) || crashingServers.equals("server2")) {
-				assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
-			}
-
-			try {
-				result = callCheckServlet(id);
-			} catch (Exception e) {
-				Log.error(getClass(), method, e);
-				throw e;
-			}
-		} else {
-			// This is peer recovery
-			checkPeerRecovery(server, server2, crashingServers, restartingServers, id);
-		}
-
+		
 		Log.info(getClass(), method, "callCheckServlet(" + id + ") returned: " + result);
 	}
-
-	protected void checkPeerRecovery(LibertyServer server, LibertyServer server2, String crashingServers, String restartingServers, String testNumber) throws IOException {}
 
 	protected String callCheckServlet(String testNumber) throws IOException {
 		final String method = "callCheckServlet";
@@ -289,9 +259,7 @@ public class MultiRecoveryTest {
 		}
 		assertNotNull(result);
 		Log.info(getClass(), method, "Recovery test " + testNumber + " Result : " + result);
-	}
-
-	protected void assert1stArgRecoveredFor2ndArg(LibertyServer recoverer, LibertyServer recoveree) {
-		assertNotNull(recoverer.getServerName()+failMsg+recoveree.getServerName(), recoverer.waitForStringInTrace(str+recoveree.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
+		assertTrue("Cannot get expected reply from server",
+				!result.contains("failed"));
 	}
 }

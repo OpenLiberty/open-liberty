@@ -44,10 +44,10 @@ public class UsernameTokenProcessor implements Processor {
         Element elem,
         RequestData data
     ) throws WSSecurityException {
-        LOG.debug("Found UsernameToken list element");
+    	LOG.debug("Found UsernameToken list element");
         // See if the token has been previously processed
         String id = elem.getAttributeNS(WSConstants.WSU_NS, "Id");
-        if (id.length() != 0) {
+        if (!"".equals(id)) {
             Element foundElement = data.getWsDocInfo().getTokenElement(id);
             if (elem.equals(foundElement)) {
                 WSSecurityEngineResult result = data.getWsDocInfo().getResult(id);
@@ -76,7 +76,7 @@ public class UsernameTokenProcessor implements Processor {
         }
         WSSecurityEngineResult result = new WSSecurityEngineResult(action, token);
         String tokenId = token.getID();
-        if (tokenId.length() != 0) {
+        if (!"".equals(tokenId)) {
             result.put(WSSecurityEngineResult.TAG_ID, tokenId);
         }
         result.put(WSSecurityEngineResult.TAG_SECRET, secretKey);

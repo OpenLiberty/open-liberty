@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,12 +17,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.transaction.xa.XAResource;
 
-import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.tx.jta.DestroyXAResourceException;
@@ -46,8 +43,6 @@ import com.ibm.ws.wsat.service.impl.RegistrationImpl;
 public class ParticipantFactoryService implements XAResourceFactory {
 
     private static final TraceComponent TC = Tr.register(ParticipantFactoryService.class);
-
-    private static Map<String, EndpointReferenceType> recoveryAddressMap = new HashMap<String, EndpointReferenceType>();
 
     private final RegistrationImpl registrationService = RegistrationImpl.getInstance();
 
@@ -157,18 +152,5 @@ public class ParticipantFactoryService implements XAResourceFactory {
         }
 
         return participant;
-    }
-
-    /**
-     * @param globalId
-     * @param id
-     * @return
-     */
-    public static EndpointReferenceType getRecoveryAddress(String globalId, String id) {
-        return recoveryAddressMap.remove(globalId + "/" + id);
-    }
-
-    public static void putRecoveryAddress(String globalId, String id, EndpointReferenceType recoveryAddress) {
-        recoveryAddressMap.put(globalId + "/" + id, recoveryAddress);
     }
 }

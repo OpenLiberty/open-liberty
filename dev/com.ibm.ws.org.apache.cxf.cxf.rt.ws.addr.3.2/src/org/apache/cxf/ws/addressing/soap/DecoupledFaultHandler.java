@@ -33,7 +33,7 @@ import org.apache.cxf.ws.addressing.ContextUtils;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.Names;
 
-import com.ibm.websphere.ras.annotation.Sensitive; // Liberty Change
+import com.ibm.websphere.ras.annotation.Sensitive;
 /**
  * Utility interceptor for dealing with faults occurred during processing
  * the one way requests with WSA FaultTo EPR pointing to a decoupled destination.
@@ -42,10 +42,6 @@ import com.ibm.websphere.ras.annotation.Sensitive; // Liberty Change
  * It can be installed using @InInterceptors and @OutInterceptors
  * annotations or explicitly added to the list of interceptors.
  */
-// Liberty Change; This class has no Liberty specific changes other than the Sensitive annotation 
-// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
-// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
-// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
 public class DecoupledFaultHandler extends AbstractSoapInterceptor {
 
     public static final String WSA_ACTION = "http://schemas.xmlsoap.org/wsdl/soap/envelope/fault";
@@ -55,14 +51,14 @@ public class DecoupledFaultHandler extends AbstractSoapInterceptor {
         addBefore(MAPCodec.class.getName());
     }
 
-    public void handleMessage(SoapMessage message) { // Liberty Change
+    public void handleMessage(@Sensitive SoapMessage message) {
         // complete
     }
 
     // Ideally, this code will instead be executed as part of the Fault chain
     // but at the moment PhaseInterceptorChain needs to be tricked that this is
     // a two way request for a fault chain be invoked
-    public void handleFault(@Sensitive SoapMessage message) { // Liberty Change
+    public void handleFault(@Sensitive SoapMessage message) {
         if (!ContextUtils.isRequestor(message)) {
 
             Exchange exchange = message.getExchange();

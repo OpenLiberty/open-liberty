@@ -33,9 +33,9 @@ import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.openliberty.microprofile.openapi20.internal.OpenAPIProvider;
 import io.openliberty.microprofile.openapi20.internal.merge.MergeProcessor;
 import io.openliberty.microprofile.openapi20.internal.merge.ModelCopy;
-import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
 import io.smallrye.openapi.runtime.io.Format;
 import io.smallrye.openapi.runtime.io.OpenApiParser;
 import io.smallrye.openapi.runtime.io.OpenApiSerializer;

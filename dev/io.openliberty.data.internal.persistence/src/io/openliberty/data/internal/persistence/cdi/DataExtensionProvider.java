@@ -24,14 +24,10 @@ import java.util.concurrent.ExecutorService;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -40,13 +36,11 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
 import com.ibm.ws.container.service.metadata.ApplicationMetaDataListener;
 import com.ibm.ws.container.service.metadata.MetaDataEvent;
 import com.ibm.ws.container.service.metadata.MetaDataException;
-import com.ibm.ws.container.service.metadata.ModuleMetaDataListener;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
-import io.openliberty.data.internal.persistence.EntityValidator;
 import jakarta.enterprise.inject.spi.Extension;
 
 /**
@@ -85,11 +79,6 @@ public class DataExtensionProvider implements CDIExtensionMetadata, ApplicationM
     @Reference
     public EmbeddableWebSphereTransactionManager tranMgr;
 
-    /**
-     * Abstraction for an optionally available validation service.
-     */
-    private transient EntityValidator validator;
-
     @Override
     @Trivial
     public void applicationMetaDataCreated(MetaDataEvent<ApplicationMetaData> event) throws MetaDataException {
@@ -116,7 +105,7 @@ public class DataExtensionProvider implements CDIExtensionMetadata, ApplicationM
     }
 
     @Deactivate
-    protected void deactivate(ComponentContext cc) {
+    protected void deactivate() {
         // Remove and delete configurations that our extension generated.
         for (Iterator<Map<String, Configuration>> it = dbStoreConfigAllApps.values().iterator(); it.hasNext();) {
             Map<String, Configuration> configurations = it.next();
@@ -145,26 +134,5 @@ public class DataExtensionProvider implements CDIExtensionMetadata, ApplicationM
     @Trivial
     public Set<Class<? extends Extension>> getExtensions() {
         return extensions;
-    }
-
-    @Reference(service = ModuleMetaDataListener.class, // also a BeanValidation.class, but that class might not be available to this bundle
-               target = "(service.pid=com.ibm.ws.beanvalidation.OSGiBeanValidationImpl)",
-               cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.DYNAMIC,
-               policyOption = ReferencePolicyOption.GREEDY)
-    protected void setValidation(ModuleMetaDataListener svc) {
-        validator = EntityValidator.newInstance(svc);
-    }
-
-    protected void unsetValidation(ModuleMetaDataListener svc) {
-        if (validator != null && validator.getValidation() == svc)
-            validator = null;
-    }
-
-    /**
-     * @return an abstraction for Jakarta Validation if available, otherwise null.
-     */
-    public EntityValidator validator() {
-        return validator;
     }
 }

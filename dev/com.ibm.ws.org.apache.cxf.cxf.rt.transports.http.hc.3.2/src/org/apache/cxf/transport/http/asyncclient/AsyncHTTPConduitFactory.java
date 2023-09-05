@@ -20,8 +20,8 @@
 package org.apache.cxf.transport.http.asyncclient;
 
 import java.io.IOException;
-import java.security.AccessController; // Liberty Change
-import java.security.PrivilegedAction; // Liberty Change
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -56,13 +56,15 @@ import org.apache.http.impl.nio.conn.ManagedNHttpClientConnectionFactory;
 import org.apache.http.impl.nio.conn.PoolingNHttpClientConnectionManager;
 import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
 import org.apache.http.impl.nio.reactor.IOReactorConfig;
+
 import org.apache.http.nio.conn.NoopIOSessionStrategy;
 import org.apache.http.nio.conn.SchemeIOSessionStrategy;
 import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
 import org.apache.http.nio.reactor.IOReactorException;
+
 import org.apache.http.protocol.HttpContext;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore; // Liberty Change
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  *
@@ -279,7 +281,7 @@ public class AsyncHTTPConduitFactory implements HTTPConduitFactory {
         isShutdown = true;
     }
 
-    @FFDCIgnore(IOException.class) // Liberty Change
+    @FFDCIgnore(IOException.class)
     private static void shutdown(CloseableHttpAsyncClient client) {
         try {
             client.close();
@@ -322,7 +324,7 @@ public class AsyncHTTPConduitFactory implements HTTPConduitFactory {
 
         Registry<SchemeIOSessionStrategy> ioSessionFactoryRegistry = RegistryBuilder.<SchemeIOSessionStrategy>create()
                     .register("http", NoopIOSessionStrategy.INSTANCE)
-                    // Liberty Change Start - doPriv
+                    // Liberty change - doPriv
                     .register("https", AccessController.doPrivileged(new PrivilegedAction<SSLIOSessionStrategy>(){
 
                         @Override
@@ -330,7 +332,6 @@ public class AsyncHTTPConduitFactory implements HTTPConduitFactory {
                             return SSLIOSessionStrategy.getSystemDefaultStrategy();
                         }}))
                     .build();
-					// Liberty Change End
 
 
         ManagedNHttpClientConnectionFactory connectionFactory = new ManagedNHttpClientConnectionFactory();
@@ -376,14 +377,13 @@ public class AsyncHTTPConduitFactory implements HTTPConduitFactory {
 
         adaptClientBuilder(httpAsyncClientBuilder);
 
-        // Liberty Change Start - doPriv
+        // Liberty change - doPriv
         client = AccessController.doPrivileged(new PrivilegedAction<CloseableHttpAsyncClient>(){
 
             @Override
             public CloseableHttpAsyncClient run() {
                 return httpAsyncClientBuilder.build();
             }});
-		// Liberty Change End
         // Start the client thread
         client.start();
         //Always start the idle checker thread to validate pending requests and
@@ -416,7 +416,7 @@ public class AsyncHTTPConduitFactory implements HTTPConduitFactory {
             this.client = client;
         }
 
-        @FFDCIgnore(InterruptedException.class) // Liberty Change
+        @FFDCIgnore(InterruptedException.class)
         @Override
         public void run() {
             long nextIdleCheck = System.currentTimeMillis() + connectionMaxIdle;

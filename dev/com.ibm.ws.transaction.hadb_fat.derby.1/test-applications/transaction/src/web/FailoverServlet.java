@@ -310,7 +310,7 @@ public class FailoverServlet extends FATServlet {
         // JTMXAResourceInfo());
         final Serializable xaResInfo1 = XAResourceInfoFactory.getXAResourceInfo(0);
 
-        final int recoveryId = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
+        final int recoveryId = tm.registerResourceInfo("(testfilter=jon)", xaResInfo1);
 
         /*
          * These parameters specify the key attributes of the test: the number
@@ -396,7 +396,7 @@ public class FailoverServlet extends FATServlet {
         con.setAutoCommit(false);
         DatabaseMetaData mdata = con.getMetaData();
         String dbName = mdata.getDatabaseProductName();
-        System.out.println("insertStaleLease with cleanup");
+
         // Access the Database
         boolean rowNotFound = false;
         boolean isPostgreSQL = false;
@@ -463,13 +463,6 @@ public class FailoverServlet extends FATServlet {
             } finally {
                 if (claimPeerUpdateStmt != null && !claimPeerUpdateStmt.isClosed())
                     claimPeerUpdateStmt.close();
-                if (claimPeerlockingStmt != null && !claimPeerlockingStmt.isClosed())
-                    claimPeerlockingStmt.close();
-                if (claimPeerLockingRS != null && !claimPeerLockingRS.isClosed())
-                    claimPeerLockingRS.close();
-                if (con != null) {
-                    con.close();
-                }
             }
         } else {
             // We didn't find the row in the table
@@ -501,13 +494,6 @@ public class FailoverServlet extends FATServlet {
             } finally {
                 if (specStatement != null && !specStatement.isClosed())
                     specStatement.close();
-                if (claimPeerlockingStmt != null && !claimPeerlockingStmt.isClosed())
-                    claimPeerlockingStmt.close();
-                if (claimPeerLockingRS != null && !claimPeerLockingRS.isClosed())
-                    claimPeerLockingRS.close();
-                if (con != null) {
-                    con.close();
-                }
             }
         }
     }
@@ -545,9 +531,6 @@ public class FailoverServlet extends FATServlet {
         } finally {
             if (deleteStmt != null && !deleteStmt.isClosed())
                 deleteStmt.close();
-            if (con != null) {
-                con.close();
-            }
         }
 
     }

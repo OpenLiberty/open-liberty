@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -79,8 +79,8 @@ autoFVT.doLast {
  * for use both as a BELL and as a user feature.
  */
 task certificateMapper_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "com.ibm.ws.security.registry.basic.certificate.mapper.sample_1.0.jar"
+  destinationDir file("${appBuildDir}")
+  archiveName "com.ibm.ws.security.registry.basic.certificate.mapper.sample_1.0.jar"
   manifest { 
   	from 'test-applications/certificateMappers/META-INF/MANIFEST.MF'
   }

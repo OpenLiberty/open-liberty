@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -49,6 +49,6 @@ javac.target: 11
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	jakarta.inject.jakarta.inject-api;version=latest,\
 	io.openliberty.jakarta.jsonp.2.1;version=latest,\
-	com.ibm.db2:jcc;version=latest,\
+	com.ibm.db2.jcc;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.security.token;version=latest

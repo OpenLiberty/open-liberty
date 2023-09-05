@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,7 +30,6 @@ class ApplicationStateManager extends StateChangeManager<ApplicationStateListene
      * @param info
      */
     public void fireStarting(ApplicationInfo info) throws StateChangeException {
-        StateChangeException error = null;
         if (info != null && info.getConfigHelper() == null) {
             Iterator<ServiceAndServiceReferencePair<ApplicationStateListener>> iterator = listeners.getServicesWithReferences();
             while (iterator.hasNext()) {
@@ -41,25 +40,22 @@ class ApplicationStateManager extends StateChangeManager<ApplicationStateListene
                     try {
                         listener.applicationStarting(info);
                     } catch (StateChangeException t) {
-                        error = suppressListenerError(t, error);
+                        throw t;
                     } catch (Throwable t) {
-                        error = suppressListenerError(new StateChangeException(t), error);
+                        throw new StateChangeException(t);
                     }
                 }
             }
-        } else {
-            for (ApplicationStateListener listener : listeners.services()) {
-                try {
-                    listener.applicationStarting(info);
-                } catch (StateChangeException t) {
-                    error = suppressListenerError(t, error);
-                } catch (Throwable t) {
-                    error = suppressListenerError(new StateChangeException(t), error);
-                }
-            }
+            return;
         }
-        if (error != null) {
-            throw error;
+        for (ApplicationStateListener listener : listeners.services()) {
+            try {
+                listener.applicationStarting(info);
+            } catch (StateChangeException t) {
+                throw t;
+            } catch (Throwable t) {
+                throw new StateChangeException(t);
+            }
         }
     }
 
@@ -67,7 +63,6 @@ class ApplicationStateManager extends StateChangeManager<ApplicationStateListene
      * @param info
      */
     public void fireStarted(ApplicationInfo info) throws StateChangeException {
-        StateChangeException error = null;
         if (info != null && info.getConfigHelper() == null) {
             Iterator<ServiceAndServiceReferencePair<ApplicationStateListener>> iterator = listeners.getServicesWithReferences();
             while (iterator.hasNext()) {
@@ -78,34 +73,23 @@ class ApplicationStateManager extends StateChangeManager<ApplicationStateListene
                     try {
                         listener.applicationStarted(info);
                     } catch (StateChangeException t) {
-                        error = suppressListenerError(t, error);
+                        throw t;
                     } catch (Throwable t) {
-                        error = suppressListenerError(new StateChangeException(t), error);
+                        throw new StateChangeException(t);
                     }
                 }
             }
-        } else {
-            for (ApplicationStateListener listener : listeners.services()) {
-                try {
-                    listener.applicationStarted(info);
-                } catch (StateChangeException t) {
-                    error = suppressListenerError(t, error);
-                } catch (Throwable t) {
-                    error = suppressListenerError(new StateChangeException(t), error);
-                }
+            return;
+        }
+        for (ApplicationStateListener listener : listeners.services()) {
+            try {
+                listener.applicationStarted(info);
+            } catch (StateChangeException t) {
+                throw t;
+            } catch (Throwable t) {
+                throw new StateChangeException(t);
             }
         }
-        if (error != null) {
-            throw error;
-        }
-    }
-
-    private StateChangeException suppressListenerError(StateChangeException t, StateChangeException existing) {
-        if (existing != null) {
-            existing.addSuppressed(t);
-            return existing;
-        }
-        return t;
     }
 
     /**

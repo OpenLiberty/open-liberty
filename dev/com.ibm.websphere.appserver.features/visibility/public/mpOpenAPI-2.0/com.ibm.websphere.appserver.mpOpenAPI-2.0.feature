@@ -45,7 +45,6 @@ IBM-API-Package: \
     io.openliberty.io.smallrye.openapi.core, \
     io.openliberty.io.smallrye.openapi.jaxrs, \
     io.openliberty.microprofile.openapi.2.0.internal, \
-    io.openliberty.microprofile.openapi.2.0.internal.servlet, \
     io.openliberty.microprofile.openapi.2.0.internal.services, \
     com.ibm.ws.microprofile.openapi.ui, \
     io.openliberty.microprofile.openapi.internal.common,\

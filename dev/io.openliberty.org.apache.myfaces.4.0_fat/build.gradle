@@ -31,41 +31,13 @@ dependencies {
     requiredLibs 'org.apache.httpcomponents:httpclient:4.5.7'
     requiredLibs 'org.apache.httpcomponents:httpcore:4.4.9'
     requiredLibs 'org.apache.httpcomponents:httpmime:4.5.3'
-    requiredLibs('org.eclipse.jetty:jetty-client') {
-        version {
-            strictly '9.4.9.v20180320'
-        }
-    }
-    requiredLibs('org.eclipse.jetty:jetty-http') {
-        version {
-            strictly '9.4.9.v20180320'
-        }
-    }
-    requiredLibs('org.eclipse.jetty:jetty-io') {
-        version {
-            strictly '9.4.9.v20180320'
-        }
-    }
-    requiredLibs('org.eclipse.jetty:jetty-util') {
-        version {
-            strictly '9.4.9.v20180320'
-        }
-    }
-    requiredLibs('org.eclipse.jetty.websocket:websocket-client') {
-        version {
-            strictly '9.4.9.v20180320'
-        }
-    }
-    requiredLibs('org.eclipse.jetty.websocket:websocket-api') {
-        version {
-            strictly '9.4.9.v20180320'
-        }
-    }
-    requiredLibs('org.eclipse.jetty.websocket:websocket-common') {
-        version {
-            strictly '9.4.9.v20180320'
-        }
-    }
+    requiredLibs('org.eclipse.jetty:jetty-client:9.4.9.v20180320') { force = true }
+    requiredLibs('org.eclipse.jetty:jetty-http:9.4.9.v20180320') { force = true }
+    requiredLibs('org.eclipse.jetty:jetty-io:9.4.9.v20180320') { force = true }
+    requiredLibs('org.eclipse.jetty:jetty-util:9.4.9.v20180320') { force = true }
+    requiredLibs('org.eclipse.jetty.websocket:websocket-client:9.4.9.v20180320') { force = true }
+    requiredLibs('org.eclipse.jetty.websocket:websocket-api:9.4.9.v20180320') { force = true }
+    requiredLibs('org.eclipse.jetty.websocket:websocket-common:9.4.9.v20180320') { force = true }
     requiredLibs 'org.brotli:dec:0.1.2'
     requiredLibs 'xalan:xalan:2.7.2'
     requiredLibs 'xml-apis:xml-apis:1.4.01'

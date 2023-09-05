@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,7 +24,6 @@ import org.osgi.service.component.ComponentContext;
 import com.ibm.tx.jta.impl.TransactionImpl;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.InconsistentLocalTranException;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
@@ -40,10 +39,10 @@ import com.ibm.wsspi.webcontainer.collaborator.TxCollaboratorConfig;
 /**
  * This class implements the IWebAppTransactionCollaborator and its main job is to ensure
  * proper start/end of the LTC on the thread.
- *
+ * 
  * LIMITATIONS: In its first version I am not implementing the "shared LTC" logic (see story 50487)
- *
- *
+ * 
+ * 
  */
 public class WebAppTransactionCollaboratorImpl implements IWebAppTransactionCollaborator {
 
@@ -126,13 +125,8 @@ public class WebAppTransactionCollaboratorImpl implements IWebAppTransactionColl
         this.ltCurrentRef.unsetReference(ref);
     }
 
-    @Trivial
     private LocalTransactionCurrent getLtCurrent() {
-        LocalTransactionCurrent ltCurrent = this.ltCurrentRef.getService();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "getLtCurrent {0}", ltCurrent);
-        }
-        return ltCurrent;
+        return this.ltCurrentRef.getService();
     }
 
     /*
@@ -175,13 +169,8 @@ public class WebAppTransactionCollaboratorImpl implements IWebAppTransactionColl
         this.userTranRef.unsetReference(ref);
     }
 
-    @Trivial
     private EmbeddableWebSphereTransactionManager getTranMgr() {
-        EmbeddableWebSphereTransactionManager tm = this.tranMgrRef.getService();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "getTranMgr {0}", tm);
-        }
-        return tm;
+        return this.tranMgrRef.getService();
     }
 
     private EmbeddableWebSphereUserTransaction getUserTran() {
@@ -190,7 +179,7 @@ public class WebAppTransactionCollaboratorImpl implements IWebAppTransactionColl
 
     /**
      * Collaborator preInvoke.
-     *
+     * 
      * Called before the webapp is invoked, to ensure that a LTC is started
      * in the absence of a global transaction. A global tran may be active
      * on entry if the webapp that caused this dispatch left a global tran
@@ -202,14 +191,15 @@ public class WebAppTransactionCollaboratorImpl implements IWebAppTransactionColl
      * If an LTC is suspended, the LTC is returned by this method and
      * passed back to the caller who will resupply it to postInvoke() who will resume the
      * suspended Tx.
-     *
+     * 
      * Request is not null for a proper servlet service call. It is null if called for
      * a servlet context change, for an init or destroy servlet.
-     *
+     * 
      * @param isServlet23 represents if we're dealing with servlet 2.3
      */
     @Override
-    public TxCollaboratorConfig preInvoke(final HttpServletRequest request, final boolean isServlet23) throws ServletException {
+    public TxCollaboratorConfig preInvoke(final HttpServletRequest request, final boolean isServlet23)
+                    throws ServletException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Calling preInvoke. Request=" + request + " | isServlet23=" + isServlet23);
         }
@@ -225,14 +215,17 @@ public class WebAppTransactionCollaboratorImpl implements IWebAppTransactionColl
                     if (incumbentTx instanceof TransactionImpl)
                         incumbentTxImpl = (TransactionImpl) incumbentTx;
 
-                    if (incumbentTxImpl != null && incumbentTxImpl.getTxType() == UOWCoordinator.TXTYPE_NONINTEROP_GLOBAL) {
+                    if (incumbentTxImpl != null && incumbentTxImpl.getTxType() == UOWCoordinator.TXTYPE_NONINTEROP_GLOBAL)
+                    {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "the tx is NONINTEROP_GLOBAL set it to null");
                         }
                         // The following call should nullify the current tx on the current thread (in this special case where the
                         // TxType is TXTYPE_NONINTEROP_GLOBAL
                         tranManager.suspend();
-                    } else {
+                    }
+                    else
+                    {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "Global transaction was present.");
                         }
@@ -262,7 +255,7 @@ public class WebAppTransactionCollaboratorImpl implements IWebAppTransactionColl
             return null;
         }
 
-        //Create config return object
+        //Create config return object     
         TxCollaboratorConfig retConfig = new TxCollaboratorConfig();
 
         // see if there is a local transaction on the thread

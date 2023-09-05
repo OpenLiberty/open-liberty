@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -12,7 +12,7 @@
 #*******************************************************************************
 -include=~../cnf/resources/bnd/bundle.props
 
-# This needs to stay at 3.2.4 even though the bundle version is 3.5.5.
+# This needs to stay at 3.2.4 even though the bundle version is 3.4.3.
 # The reason is that the feature checker in WS-CD-Open has an ignore rule
 # for the case where org.apache.cxf.databinding is exported by both the
 # JAX-WS and JAX-RS features - it is correct to ignore this problem since
@@ -26,7 +26,6 @@
 # (yes, unused rules cause failures...). So, without a co-delivery
 # (changing the OL code at the same time we change the WS-CD-Open code),
 # it is not possible to update the export version.
-importVer=3.5.5
 exportVer=3.2.4
 bVersion=1.0
 
@@ -156,8 +155,9 @@ DynamicImport-Package: \
 -dsannotations: \
   com.ibm.ws.cxf.jaxrs21.client.component.*
 
+# CXF's version is 3.4.3 even tho exportVer=3.2.4 see top comment
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-core;${importVer};EXACT}!/!*-INF/*, \
+  @${repo;org.apache.cxf:cxf-core;3.4.3;EXACT}!/!*-INF/*, \
   org/apache/cxf=${bin}/org/apache/cxf, \
   META-INF=resources/META-INF
 
@@ -170,10 +170,9 @@ instrument.classesExcludes: \
 -buildpath: \
   javax.activation:activation;version=1.1, \
   com.ibm.websphere.javaee.jaxb.2.2;version=latest, \
-  com.ibm.websphere.javaee.jaxws.2.2;version=latest, \
-  org.apache.cxf:cxf-core;strategy=exact;version=${importVer}, \
+  org.apache.cxf:cxf-core;strategy=exact;version=3.4.3, \
   com.ibm.ws.logging.core, \
-  org.apache.cxf:cxf-rt-transports-http;strategy=exact;version=${importVer}, \
+  org.apache.cxf:cxf-rt-transports-http;strategy=exact;version=3.4.3, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
   com.ibm.websphere.org.osgi.service.component;version=latest, \
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \

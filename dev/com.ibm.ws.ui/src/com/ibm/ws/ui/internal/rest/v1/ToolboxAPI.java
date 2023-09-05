@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.ws.Response;
 
 import com.ibm.websphere.jsonsupport.JSON;
 import com.ibm.websphere.ras.Tr;
@@ -38,10 +40,10 @@ import com.ibm.ws.ui.internal.v1.pojo.DuplicateException;
 import com.ibm.ws.ui.internal.v1.pojo.Message;
 import com.ibm.ws.ui.internal.v1.pojo.NoSuchToolException;
 import com.ibm.ws.ui.internal.v1.pojo.ToolEntry;
-import com.ibm.ws.ui.internal.v1.utils.Utils;
 import com.ibm.ws.ui.internal.validation.InvalidToolException;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
+import com.ibm.ws.ui.internal.v1.utils.Utils;
 
 /**
  * <p>Defines the toolbox API for the version 1 of the adminCenter REST API.</p>
@@ -225,7 +227,7 @@ public class ToolboxAPI extends CommonJSONRESTHandler implements V1Constants {
         if (CHILD_RESOURCE_TOOL_ENTRIES.equals(child)) {
             ToolEntry toAdd = readJSONPayload(request, ToolEntry.class);
 
-            if (!Utils.isValidJsonString(toAdd.toString(), "ToolEntry ")) {
+            if(!Utils.isValidJsonString(toAdd.toString(), "ToolEntry ")) {
                 throw new RESTException(HTTP_INTERNAL_ERROR);
             }
 
@@ -248,7 +250,7 @@ public class ToolboxAPI extends CommonJSONRESTHandler implements V1Constants {
         } else if (CHILD_RESOURCE_BOOKMARKS.equals(child)) {
             Bookmark toAdd = readJSONPayload(request, Bookmark.class);
 
-            if (!Utils.isValidJsonString(toAdd.toString(), "Bookmark ")) {
+            if(!Utils.isValidJsonString(toAdd.toString(), "Bookmark ")) {
                 throw new RESTException(HTTP_INTERNAL_ERROR);
             }
 
@@ -287,7 +289,7 @@ public class ToolboxAPI extends CommonJSONRESTHandler implements V1Constants {
             @SuppressWarnings("unchecked")
             Map<String, Object> preferences = readJSONPayload(request, Map.class);
 
-            if (!Utils.isValidJsonString(preferences.toString())) {
+            if(!Utils.isValidJsonString(preferences.toString())) {
                 throw new RESTException(HTTP_INTERNAL_ERROR);
             }
 

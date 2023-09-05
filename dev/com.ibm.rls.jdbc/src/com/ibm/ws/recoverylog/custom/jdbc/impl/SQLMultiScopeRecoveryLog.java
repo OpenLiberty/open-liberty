@@ -143,6 +143,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     volatile private boolean _isPostgreSQL;
     volatile private boolean _isDB2;
     volatile private boolean _isSQLServer;
+    volatile private boolean _isDerby;
     volatile private boolean _isNonStandard;
 
     private boolean isolationFailureReported;
@@ -520,7 +521,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     } else {
                         if (tc.isEntryEnabled())
                             Tr.exit(tc, "openLog", "InternalLogException");
-                        throw new InternalLogException("Peer server did not lose log ownership");
+                        throw new InternalLogException(null);
                     }
                 }
 
@@ -812,6 +813,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             } else if (dbName.toLowerCase().contains("microsoft sql")) {
                 _isSQLServer = true;
             } else if (dbName.toLowerCase().contains("derby")) {
+                _isDerby = true;
             } else {
                 _isNonStandard = true;
                 // We're not working with the standard set of databases. The "default" behaviour is not to retry for such non-standard, untested databases,
@@ -1776,7 +1778,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             if (_closesRequired <= 0) {
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "writeRUSection", this);
-                throw new InternalLogException("Already closed");
+                throw new InternalLogException(new LogClosedException());
             }
 
             try {
@@ -1843,7 +1845,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             if (_closesRequired <= 0) {
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "updateRUSection", this);
-                throw new InternalLogException("Already closed");
+                throw new InternalLogException(new LogClosedException());
             }
 
             if (tc.isEventEnabled()) {
@@ -1956,7 +1958,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 if (_closesRequired <= 0) {
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "internalForceSections", new Object[] { this, "Already Closed" });
-                    throw new InternalLogException("Already Closed");
+                    throw new InternalLogException(new LogClosedException());
                 }
 
                 cachedInserts = _writeToCacheA ? _cachedInsertsA : _cachedInsertsB;
@@ -2721,6 +2723,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
         Statement dropTableStmt = null;
 
+        boolean success = false;
+
         try {
             dropTableStmt = conn.createStatement();
 
@@ -2774,7 +2778,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         if (_closesRequired <= 0) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "removing", this);
-            throw new InternalLogException("Already closed");
+            throw new InternalLogException(new LogClosedException());
         }
 
         try {
@@ -2945,7 +2949,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         if (_peerServerLostLogOwnership) {
             return new PeerLostLogOwnershipException(null);
         } else {
-            return new InternalLogException("Peer server did not lose log ownership");
+            return new InternalLogException(null);
         }
     }
 
@@ -3907,6 +3911,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
         boolean isClaimed = false;
         boolean sqlSuccess = false;
+        boolean tableExists = false;
         Throwable nonTransientException = null;
         int initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
         // Calling either local or peer claim, means that the new locking scheme is in play. Setting the _useNewLockingScheme flag

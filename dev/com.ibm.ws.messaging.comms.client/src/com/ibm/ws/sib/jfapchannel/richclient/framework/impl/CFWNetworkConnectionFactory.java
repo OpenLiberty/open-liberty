@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2023 IBM Corporation and others.
+ * Copyright (c) 2003, 2006 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,6 @@ import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionFactory;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.channelfw.OutboundVirtualConnection;
 import com.ibm.wsspi.channelfw.VirtualConnectionFactory;
-import com.ibm.wsspi.channelfw.exception.ChainException;
-import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.channelfw.exception.ChannelFrameworkException;
 
 /**
@@ -135,13 +133,14 @@ public class CFWNetworkConnectionFactory implements NetworkConnectionFactory
         return conn;
     }
 
-
-    public void destroy() throws FrameworkException{
-    	try {
-    		this.vcFactory.destroy();
-    	} catch(ChannelException | ChainException e) {
-    		throw new FrameworkException(e);
-    	}
+/*
+ * (non-Javadoc)
+ * 
+ * @see com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionFactory#getOutboundVirtualConFactory()
+ */
+    @Override
+    public VirtualConnectionFactory getOutboundVirtualConFactory() {
+        return vcFactory;
     }
 
 }

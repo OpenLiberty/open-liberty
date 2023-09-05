@@ -16,12 +16,6 @@ Bundle-SymbolicName: io.openliberty.netty.internal.tls.impl
 Bundle-Description: Liberty Netty Transport TLS Provider Implementation ${bVersion}
 WS-TraceGroup: Netty
 
-IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
-
-Include-Resource: \
-    OSGI-INF=resources/OSGI-INF
-
-
 Export-Package: io.openliberty.netty.internal.tls.impl
 
 Import-Package: \

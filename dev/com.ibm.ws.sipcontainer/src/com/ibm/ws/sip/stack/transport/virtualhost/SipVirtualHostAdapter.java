@@ -42,7 +42,7 @@ import com.ibm.ws.sip.container.matching.SipServletsMatcher;
 import com.ibm.ws.sip.container.parser.SipAppDesc;
 import com.ibm.ws.sip.container.virtualhost.VirtualHostAlias;
 import com.ibm.ws.sip.container.virtualhost.VirtualHostAliasImpl;
-import com.ibm.ws.sip.stack.transport.GenericEndpointImpl;
+import com.ibm.ws.sip.stack.transport.chfw.GenericEndpointImpl;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 
 /**

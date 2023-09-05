@@ -29,7 +29,6 @@ import com.ibm.ws.sip.parser.util.InetAddressCache;
 import com.ibm.ws.sip.properties.StackProperties;
 import com.ibm.ws.sip.stack.transaction.SIPTransactionConstants;
 import com.ibm.ws.sip.stack.transaction.transport.connections.SIPConnection;
-import com.ibm.ws.sip.stack.util.SipStackUtil;
 
 import jain.protocol.ip.sip.ListeningPoint;
 import jain.protocol.ip.sip.SipParseException;
@@ -397,7 +396,7 @@ public class SIPStackUtil
 			if( transport!=null )
 			{
 				// Assaf: TODO: do this properly.
-				if (transport.equalsIgnoreCase(SipStackUtil.TLS_TRANSPORT))
+				if (transport.equalsIgnoreCase("tls"))
 				{
 					retVal.setScheme("sips");
 				}
@@ -445,7 +444,7 @@ public class SIPStackUtil
 							//host or transport 
 							if( nameAdress.equalsIgnoreCase(ListeningPointImpl.TRANSPORT_UDP) || 
 								nameAdress.equalsIgnoreCase(ListeningPointImpl.TRANSPORT_TCP) ||
-								nameAdress.equalsIgnoreCase(SipStackUtil.TLS_TRANSPORT) )
+								nameAdress.equalsIgnoreCase(ListeningPointImpl.TRANSPORT_TLS) )
 								{
 									host = getLocalHost();
 									port = "5060";

@@ -57,11 +57,11 @@
 @REM
 @REM WINDOWS_SERVICE_START_TIMEOUT - Use when liberty is registered as a Windows
 @REM              service.  The value specifies the number of seconds the script 
-@REM              waits for the service to start before continuing. Default is 30.
+@REM              waits for the service to start before continuing. Default is 5.
 @REM
 @REM WINDOWS_SERVICE_STOP_TIMEOUT - Use when liberty is registered as a Windows
 @REM              service.  The value specifies the number of seconds the script 
-@REM              waits for the service to stop before continuing.  Default is 30.
+@REM              waits for the service to stop before continuing.  Default is 5.
 @REM
 @REM SERVER_WORKING_DIR - The directory containing output files from the JVM.  For 
 @REM              example the javadump files.  The default value is the location
@@ -108,8 +108,8 @@ if defined WLP_DEBUG_ADDRESS set WLP_DEBUG_ADDRESS=!WLP_DEBUG_ADDRESS:"=!
 if defined WINDOWS_SERVICE_START_TIMEOUT set WINDOWS_SERVICE_START_TIMEOUT=!WINDOWS_SERVICE_START_TIMEOUT:"=!
 if defined WINDOWS_SERVICE_STOP_TIMEOUT set WINDOWS_SERVICE_STOP_TIMEOUT=!WINDOWS_SERVICE_STOP_TIMEOUT:"=!
 
-if NOT defined WINDOWS_SERVICE_START_TIMEOUT set WINDOWS_SERVICE_START_TIMEOUT=30
-if NOT defined WINDOWS_SERVICE_STOP_TIMEOUT set WINDOWS_SERVICE_STOP_TIMEOUT=30
+if NOT defined WINDOWS_SERVICE_START_TIMEOUT set WINDOWS_SERVICE_START_TIMEOUT=5
+if NOT defined WINDOWS_SERVICE_STOP_TIMEOUT set WINDOWS_SERVICE_STOP_TIMEOUT=5
 
 @REM Consume script parameters
 

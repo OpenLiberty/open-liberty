@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -48,30 +48,12 @@ LTPA_CONFIG_ERROR=CWWKS4106E: LTPA configuration error. Unable to create or read
 LTPA_CONFIG_ERROR.explanation=The LTPA keys could not be read or created at the specified location.
 LTPA_CONFIG_ERROR.useraction=Ensure the location is accessible by the server process. Any FFDCs might indicate a fatal error in generating or loading the keys.
 
-LTPA_KEYS_TO_LOAD=CWWKS4107A: The following LTPA keys files are either created, deleted, or modified: {0}, or the LTPA configuration was modified. All the LTPA keys are reloaded.
-LTPA_KEYS_TO_LOAD.explanation=The LTPA keys files must be reloaded due to a change to the LTPA keys files or the configuration.
-LTPA_KEYS_TO_LOAD.useraction=Ensure that all servers that participate in single sign-on share the same LTPA keys and password.
+LTPA_KEYS_TO_LOAD=CWWKS4107A: The LTPA keys file or configuration were modified. The LTPA keys will be reloaded from the file: {0}
+LTPA_KEYS_TO_LOAD.explanation=The LTPA keys need to be reloaded because there was a change to the LTPA keys file or the configuration.
+LTPA_KEYS_TO_LOAD.useraction=Ensure that all servers participating in Single-Sign-On use the same LTPA keys and password.
 
 LTPA_KEY_CREATE_ERROR=CWWKS4108E: The system cannot create the LTPA key.
 LTPA_KEY_CREATE_ERROR.explanation=The LTPA key cannot be created.
 LTPA_KEY_CREATE_ERROR.useraction=Any FFDCs might indicate a fatal error in generating the keys.
 
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE=CWWKS4109W: The {0} value for the notUseAfterDate attribute for the {1} LTPA validation keys file is in the past. The LTPA validation keys cannot be used.
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.explanation=The LTPA validation keys are used only if the notUseAfterDate attribute value is in the future.
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.useraction=Update the notUseAfterDate attribute value to a future date if the LTPA keys must be used. Otherwise, delete the LTPA keys file.
 
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT=CWWKS4110E: The {0} value for the notUseAfterDate attribute for the {1} LTPA validation keys file has an invalid date format. The LTPA validation keys cannot be used.
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.explanation=The notUseAfterDate attribute value must be formatted in the ISO date, time, and zone format. The following example shows the ISO date format: "2023-04-18T18:08:35Z".
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.useraction=Update the notUseAfterDate attribute value to a ISO date, time, and zone format.
-
-LTPA_VALIDATION_KEYS_MISSING_ATTR=CWWKS4111E: The {0} LTPA validationKeys element that is specified in the server.xml file is missing either the filename, password, or both: {1}.
-LTPA_VALIDATION_KEYS_MISSING_ATTR.explanation=The LTPA validationKeys element requires the filename and password attributes.
-LTPA_VALIDATION_KEYS_MISSING_ATTR.useraction=Add the missing attributes.
-
-LTPA_KEYS_FILE_DOES_NOT_EXIST=CWWKS4112E: The {0} LTPA validation keys file does not exist.
-LTPA_KEYS_FILE_DOES_NOT_EXIST.explanation=The validation keys file does not exist.
-LTPA_KEYS_FILE_DOES_NOT_EXIST.useraction=Make sure that the validation keys file exists in the specified location that is specified by the validationKeys element.
-
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED=CWWKS4113W: The monitorDirectory attribute is set to true but the monitor interval is {0}. No dynamic reload occurs when validation keys files are created, modified or deleted in the directory.
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.explanation= The value for the monitorInterval attribute  is zero or less than zero. The directory cannot be monitored for any create, delete, or modify actions on files with the .keys suffix and dynamic reload cannot occur.
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.useraction=Set the monitorInterval attribute to an interval that is greater than zero.

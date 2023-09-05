@@ -12,12 +12,10 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.SslConfigs;
 import org.junit.ClassRule;
@@ -46,18 +44,13 @@ public class TlsTests extends TestContainerSuite {
                     .withStartupAttempts(3)
                     .withLogConsumer(new SimpleLogConsumer(TlsTests.class, "kafka-tls"));
 
-    public static Map<String, Object> connectionProperties() {
-        Map<String, Object> properties = new HashMap<>();
+    public static Map<String, String> connectionProperties() {
+        Map<String, String> properties = new HashMap<>();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
         properties.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, KafkaUtils.TRUSTSTORE_FILENAME);
         properties.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, TlsTests.kafkaContainer.getKeystorePassword());
         properties.put("security.protocol", "SSL");
         return properties;
-    }
-
-    public static AdminClient getAdminClient() throws IOException {
-        KafkaUtils.copyTrustStoreToTest(kafkaContainer);
-        return AdminClient.create(connectionProperties());
     }
 
 }

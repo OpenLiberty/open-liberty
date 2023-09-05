@@ -48,10 +48,7 @@ import org.apache.xml.security.transforms.Transforms;
  * Validate results corresponding to the processing of a Signature, EncryptedKey or
  * EncryptedData structure against an AlgorithmSuite policy.
  */
-// Liberty Change; This class has no Liberty specific changes other than the Sensitive annotation 
-// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
-// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
-// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
+//No Liberty Change, but needed to recompile due to Liberty change in MessageImpl.
 public class AlgorithmSuitePolicyValidator extends AbstractSecurityPolicyValidator {
 
     /**

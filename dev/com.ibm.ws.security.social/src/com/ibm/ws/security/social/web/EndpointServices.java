@@ -1,17 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -32,7 +34,6 @@ import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.common.web.CommonWebConstants;
 import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutHelper;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
-import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
 import com.ibm.ws.security.openidconnect.clients.common.RedirectionEntry;
 import com.ibm.ws.security.openidconnect.clients.common.RedirectionProcessor;
 import com.ibm.ws.security.social.Constants;
@@ -306,8 +307,7 @@ public class EndpointServices {
 
         try {
             SocialUtil.validateEndpointWithQuery(requestUrl);
-            OidcClientUtil.verifyReferrerHostIsValid(request, requestUrl, ClientConstants.COOKIE_NAME_REQ_URL_PREFIX);
-        } catch (Exception e) {
+        } catch (SocialLoginException e) {
             Tr.error(tc, "REQUEST_URL_NOT_VALID", new Object[] { requestUrl, e.getMessage() });
             ErrorHandlerImpl.getInstance().handleErrorResponse(response);
             return;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2023 IBM Corporation and others.
+ * Copyright (c) 2003, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -71,7 +71,7 @@ public class OutboundConnection extends Connection
     /**
      * Creates a new client connection
      * 
-     * @throws FrameworkException if anything goes wrong while creating a new instance of OutboundConnection.
+     * @throws FrameworkException if anything goes wrong while creating a new instace of OutboundConnection.
      */
     public OutboundConnection(NetworkConnectionContext connLink, // F177053
                               NetworkConnection vc,
@@ -79,9 +79,8 @@ public class OutboundConnection extends Connection
                               int heartbeatInterval, // F175658
                               int heartbeatTimeout, // F175658
                               ConnectionData connectionData) throws FrameworkException
-    {//TODO: Check about using requireService for this see https://github.com/OpenLiberty/open-liberty/issues/24830
-        super(connLink, vc, heartbeatInterval, heartbeatTimeout, 
-        		CommsOutboundChain.getChainDetails(connLink.getMetaData().getChainName()) == null ? false : CommsOutboundChain.getChainDetails(connLink.getMetaData().getChainName()).useNetty()); // F174772, F175658
+    {
+        super(connLink, vc, heartbeatInterval, heartbeatTimeout); // F174772, F175658
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "<init>",
@@ -447,8 +446,6 @@ public class OutboundConnection extends Connection
         buf.append(handshakeComplete);
         buf.append(", Handshakers Waiting: ");
         buf.append(handshakersWaiting);
-        buf.append(", Using Netty Framework: ");
-		buf.append(isUsingNetty());
         buf.append("}\nEvents follow:\n");
         buf.append(getDiagnostics(false));
 

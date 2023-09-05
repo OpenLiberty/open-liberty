@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -133,7 +133,8 @@ instrument.classesExcludes: com/ibm/ws/wssecurity/resources/*.class
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.org.ehcache.ehcache.107.3.8.1,\
-	io.openliberty.wssecurity;version=latest
+	io.openliberty.wssecurity;version=latest,\
+	org.apache.wss4j.wss4j-ws-security-common
 	
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\

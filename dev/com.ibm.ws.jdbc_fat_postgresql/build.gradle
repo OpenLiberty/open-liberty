@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,34 +12,12 @@
  *******************************************************************************/
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
-// Use a variable for the aws sdk version so that we can test customer issues easily
-ext.awsSDKVerion = '2.20.127'
-
 configurations {
-  aws
-  postgres
+    postgres
 }
 
 dependencies {
-  aws      "software.amazon.jdbc:aws-advanced-jdbc-wrapper:2.2.3",
-           "software.amazon.awssdk:secretsmanager:${awsSDKVerion}", // Used for Secrets Manager
-           "software.amazon.awssdk:rds:${awsSDKVerion}", // Used for Identity and Access Management
-           project(':io.openliberty.com.fasterxml.jackson')
   postgres 'org.postgresql:postgresql:42.4.2'
-}
-
-task copyAWS(type: Copy) {
-  shouldRunAfter jar
-  from configurations.aws
-  into new File(autoFvtDir, "publish/shared/resources/aws/")
-  rename "aws-advanced-jdbc-wrapper-.*.", "aws-advanced-jdbc-wrapper.jar"
-}
-
-task copyPostgreSQLAWS(type: Copy) {
-  shouldRunAfter jar
-  from configurations.postgres
-  into new File(autoFvtDir, "publish/shared/resources/aws/")
-  rename "postgresql-.*.", "postgresql.jar"
 }
 
 task copySharedPostgres(type: Copy) {
@@ -56,10 +34,6 @@ task copyAnonymousPostgres(type: Copy) {
   rename 'postgresql-.*.jar', 'driver.jar'
 }
 
-addRequiredLibraries {
-  dependsOn copyAWS
-  dependsOn copyPostgreSQLAWS
-  dependsOn copySharedPostgres
-  dependsOn copyAnonymousPostgres
-  dependsOn copyTestContainers
-}
+addRequiredLibraries.dependsOn copySharedPostgres
+addRequiredLibraries.dependsOn copyAnonymousPostgres
+addRequiredLibraries.dependsOn copyTestContainers

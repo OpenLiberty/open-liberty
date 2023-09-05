@@ -27,7 +27,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
-//@Mode(TestMode.FULL)
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class RecoveryTestBase extends FATServletClient {
 

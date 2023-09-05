@@ -181,7 +181,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS2433E_PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME = "CWWKS2433E";
     public static final String CWWKS2434E_PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF = "CWWKS2434E";
     public static final String CWWKS2435E_PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY = "CWWKS2435E";
-    public static final String CWWKS2436E_CANNOT_RETRIEVE_PUBLIC_KEY_FROM_TRUSTSTORE = "CWWKS2436E";
+
     public static final String CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES = "CWWKS5207W";
 
     public static final String CWWKS5453E_CANNOT_CREATE_JWT_FROM_ID_TOKEN = "CWWKS5453E";
@@ -235,7 +235,6 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWPKI0033E_KEYSTORE_DOES_NOT_EXIST = "CWPKI0033E";
     public static final String CWPKI0807W_KEYSTORE_CANNOT_BE_FOUND = "CWPKI0807W";
     public static final String CWPKI0809W_FAILURE_LOADING_KEYSTORE = "CWPKI0809W";
-    public static final String CWPKI0823E_SSL_HANDSHAKE_FAILURE = "CWPKI0823E";
 
     public static final String CWNEN0049W_ANNOTATIONS_IGNORED = "CWNEN0049W";
     public static final String CWNEN0050W_ANNOTATIONS_IGNORED_REFERENCED = "CWNEN0050W";

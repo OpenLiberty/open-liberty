@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,8 +12,6 @@
  *******************************************************************************/
 
 package com.ibm.ws.repository.transport.model;
-
-import static com.ibm.ws.repository.transport.model.CopyUtils.copyCollection;
 
 import java.util.List;
 
@@ -25,24 +23,6 @@ public class AppliesToFilterInfo {
     String installType;
     List<String> rawEditions;
     String hasMaxVersion = "false"; // False unless a max version is set
-
-    public AppliesToFilterInfo() {
-    }
-
-    /**
-     * Copy constructor
-     *
-     * @param other the object to copy
-     */
-    public AppliesToFilterInfo(AppliesToFilterInfo other) {
-        this.productId = other.productId;
-        this.minVersion = CopyUtils.copyObject(other.minVersion, FilterVersion::new);
-        this.maxVersion = CopyUtils.copyObject(other.maxVersion, FilterVersion::new);
-        this.editions = copyCollection(other.editions);
-        this.installType = other.installType;
-        this.rawEditions = copyCollection(other.rawEditions);
-        this.hasMaxVersion = other.hasMaxVersion;
-    }
 
     /**
      * Indicates if this class has a max version. Used so that we can filter assets that don't and does not have a setter but is set by a call to

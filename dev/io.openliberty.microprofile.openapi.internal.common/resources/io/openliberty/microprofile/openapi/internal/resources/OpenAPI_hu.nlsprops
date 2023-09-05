@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2023 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -98,35 +98,3 @@ OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.useraction=A hibasz\u00f6veget \u00e1tteki
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W=CWWKO1667W: A(z) {0} konfigur\u00e1ci\u00f3s tulajdons\u00e1g "{1}" \u00e9rt\u00e9ket tartalmaz, de nem felel meg egyetlen telep\u00edtett alkalmaz\u00e1snak vagy webmodulnak sem.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.explanation=A kiszolg\u00e1l\u00f3 \u00fagy van be\u00e1ll\u00edtva, hogy l\u00e9trehozza az OpenAPI dokument\u00e1ci\u00f3t az alkalmaz\u00e1s- vagy moduln\u00e9vhez, de nincs telep\u00edtve ilyen nev\u0171 alkalmaz\u00e1s vagy webmodul.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden alkalmaz\u00e1s megfelel\u0151en el van ind\u00edtva \u00e9s a konfigur\u00e1ci\u00f3s tulajdons\u00e1gban a nevek helyesen vannak megadva.
-
-OPEN_API_UI_PATH_UPDATE_CWWKO1668I=CWWKO1668I: Az OpenAPI felhaszn\u00e1l\u00f3i fel\u00fclet \u00fatvonala a k\u00f6vetkez\u0151: {0}.
-OPEN_API_UI_PATH_UPDATE_CWWKO1668I.explanation=Az OpenAPI felhaszn\u00e1l\u00f3i fel\u00fclet \u00fatvonala olyan \u00e9rt\u00e9kre van be\u00e1ll\u00edtva, amely nem az alap\u00e9rtelmezett.
-OPEN_API_UI_PATH_UPDATE_CWWKO1668I.useraction=Nincs teend\u0151.
-
-OPEN_API_DOC_PATH_UPDATE_CWWKO1669I=CWWKO1669I: Az OpenAPI dokumentum \u00fatvonala a k\u00f6vetkez\u0151: {0}.
-OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.explanation=Az OpenAPI dokumentum \u00fatvonala olyan \u00e9rt\u00e9kre van be\u00e1ll\u00edtva, amely nem az alap\u00e9rtelmezett.
-OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.useraction=Nincs teend\u0151.
-
-OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E=CWWKO1670E: Az OpenAPI felhaszn\u00e1l\u00f3i fel\u00fclet \u00fatvonala \u00e9rv\u00e9nytelen. Az alap\u00e9rtelmezett \u00e9rt\u00e9k ker\u00fcl felhaszn\u00e1l\u00e1sra helyette. Az \u00e9rv\u00e9nyes\u00edt\u00e9si hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1hoz ellen\u0151rizze a kor\u00e1bbi figyelmeztet\u00e9seket.
-OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.explanation=Az OpenAPI felhaszn\u00e1l\u00f3i fel\u00fclet \u00fatvonala \u00e9rv\u00e9nytelen. Az alap\u00e9rtelmezett \u00e9rt\u00e9k ker\u00fcl felhaszn\u00e1l\u00e1sra helyette.
-OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.useraction=Az \u00e9rv\u00e9nyes\u00edt\u00e9si hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1hoz ellen\u0151rizze a kor\u00e1bbi hiba\u00fczeneteket.
-
-OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E=CWWKO1671E: Az OpenAPI dokumentum \u00fatvonala \u00e9rv\u00e9nytelen. Az alap\u00e9rtelmezett \u00e9rt\u00e9k ker\u00fcl felhaszn\u00e1l\u00e1sra helyette. Az \u00e9rv\u00e9nyes\u00edt\u00e9si hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1hoz ellen\u0151rizze a kor\u00e1bbi figyelmeztet\u00e9seket.
-OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.explanation=Az OpenAPI dokumentum \u00fatvonala \u00e9rv\u00e9nytelen. Az alap\u00e9rtelmezett \u00e9rt\u00e9k ker\u00fcl felhaszn\u00e1l\u00e1sra helyette.
-OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.useraction=Az \u00e9rv\u00e9nyes\u00edt\u00e9si hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1hoz ellen\u0151rizze a kor\u00e1bbi hiba\u00fczeneteket.
-
-OPEN_API_UI_PATH_CONFLICT_CWWKO1672E=CWWKO1672E: Az OpenAPI felhaszn\u00e1l\u00f3i fel\u00fclet \u00fatvonala nem \u00e1ll\u00edthat\u00f3 be a k\u00f6vetkez\u0151re: {0}. Ez az \u00fatvonal az OpenAPI dokumentumok lek\u00e9r\u00e9s\u00e9re szolg\u00e1l.
-OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.explanation=Az OpenAPI dokumentum \u00e9s az OpenAPI felhaszn\u00e1l\u00f3i fel\u00fclet \u00fatvonalak nem lehetnek azonosak.
-OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.useraction=Adjon meg egy egyedi \u00fatvonalat az OpenAPI felhaszn\u00e1l\u00f3i fel\u00fclet sz\u00e1m\u00e1ra.
-
-OPEN_API_UI_PATH_INVALID_CWWKO1675E=CWWKO1675E: Az OpenAPI felhaszn\u00e1l\u00f3i fel\u00fclet \u00fatvonala \u00e9rv\u00e9nytelen vagy \u00e9rv\u00e9nytelen karaktereket tartalmaz. Az URL c\u00edm csak Unicode alfanumerikus karaktereket (A-Za-z0-9), al\u00e1h\u00faz\u00e1st (_), k\u00f6t\u0151jelet (-), oszt\u00e1sjelet (/) \u00e9s pontot (.) tartalmazhat.
-OPEN_API_UI_PATH_INVALID_CWWKO1675E.explanation=Az OpenAPI felhaszn\u00e1l\u00f3i fel\u00fclet \u00fatvonala nem \u00e1ll\u00edthat\u00f3 be \u00e9rv\u00e9nytelen karaktereket tartalmaz\u00f3 \u00e9rt\u00e9kre.
-OPEN_API_UI_PATH_INVALID_CWWKO1675E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenAPI \u00fatvonal csak a k\u00f6vetkez\u0151 karaktereket tartalmazza: A-Za-z0-9, _, -, ., /.
-
-OPEN_API_DOC_PATH_INVALID_CWWKO1676E=CWWKO1676E: Az OpenAPI dokumentum \u00fatvonal \u00e9rv\u00e9nytelen vagy \u00e9rv\u00e9nytelen karaktereket tartalmaz. Az URL c\u00edm csak Unicode alfanumerikus karaktereket (A-Za-z0-9), al\u00e1h\u00faz\u00e1st (_), k\u00f6t\u0151jelet (-), oszt\u00e1sjelet (/) \u00e9s pontot (.) tartalmazhat.
-OPEN_API_DOC_PATH_INVALID_CWWKO1676E.explanation=Az OpenAPI dokumentum \u00fatvonala nem \u00e1ll\u00edthat\u00f3 be \u00e9rv\u00e9nytelen karaktereket tartalmaz\u00f3 \u00e9rt\u00e9kre.
-OPEN_API_DOC_PATH_INVALID_CWWKO1676E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenAPI \u00fatvonal csak a k\u00f6vetkez\u0151 karaktereket tartalmazza: A-Za-z0-9, _, -, ., /.
-
-OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E=CWWKO1677E: A "/." vagy a "/.." \u00e9rv\u00e9nytelen \u00fatvonal szegmens az OpenAPI v\u00e9gpontokhoz.
-OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.explanation=Az OpenAPI \u00fatvonal szegmens "/." vagy a "/.." \u00e9rv\u00e9nytelen.
-OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.useraction=T\u00e1vol\u00edtsa el a "/." vagy a "/.." szegmenst az \u00fatvonalb\u00f3l.

@@ -18,7 +18,6 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -43,28 +42,6 @@ class QueryInfo {
     static enum Type {
         COUNT, DELETE, DELETE_WITH_ENTITY_PARAM, EXISTS, FIND, FIND_AND_DELETE, MERGE, UPDATE
     }
-
-    /**
-     * Return types for deleteBy that distinguish delete-only from find-and-delete.
-     */
-    private static final Set<Class<?>> RETURN_TYPES_FOR_DELETE_ONLY = Set.of(void.class, Void.class,
-                                                                             boolean.class, Boolean.class,
-                                                                             int.class, Integer.class,
-                                                                             long.class, Long.class,
-                                                                             Number.class);
-
-    /**
-     * Mapping of Java primitive class to wrapper class.
-     */
-    private static final Map<Class<?>, Class<?>> WRAPPER_CLASSES = Map.of(boolean.class, Boolean.class,
-                                                                          byte.class, Byte.class,
-                                                                          char.class, Character.class,
-                                                                          double.class, Double.class,
-                                                                          float.class, Float.class,
-                                                                          int.class, Integer.class,
-                                                                          long.class, Long.class,
-                                                                          short.class, Short.class,
-                                                                          void.class, Void.class);
 
     /**
      * Information about the type of entity to which the query pertains.
@@ -188,11 +165,6 @@ class QueryInfo {
     Type type;
 
     /**
-     * For save operations, indicates if validation should be attempted when Jakarta Validation is available.
-     */
-    boolean validatable;
-
-    /**
      * Construct partially complete query information.
      */
     QueryInfo(Method method, Class<?> returnArrayType, List<Class<?>> returnTypeAtDepth) {
@@ -211,7 +183,7 @@ class QueryInfo {
      */
     @Trivial
     void addSort(boolean ignoreCase, String attribute, boolean descending) {
-        Set<String> names = entityInfo.idClassAttributeAccessors != null && "id".equalsIgnoreCase(attribute) //
+        Set<String> names = entityInfo.idClass != null && "id".equalsIgnoreCase(attribute) //
                         ? entityInfo.idClassAttributeAccessors.keySet() //
                         : Set.of(attribute);
 
@@ -241,7 +213,7 @@ class QueryInfo {
      */
     @Trivial
     List<Sort> combineSorts(List<Sort> combined, List<Sort> additional) {
-        boolean hasIdClass = entityInfo.idClassAttributeAccessors != null;
+        boolean hasIdClass = entityInfo.idClass != null;
         if (combined == null && !additional.isEmpty())
             combined = sorts == null ? new ArrayList<>() : new ArrayList<>(sorts);
         for (Sort sort : additional) {
@@ -267,7 +239,7 @@ class QueryInfo {
      */
     @Trivial
     List<Sort> combineSorts(List<Sort> combined, Sort... additional) {
-        boolean hasIdClass = entityInfo.idClassAttributeAccessors != null;
+        boolean hasIdClass = entityInfo.idClass != null;
         if (combined == null && additional.length > 0)
             combined = sorts == null ? new ArrayList<>() : new ArrayList<>(sorts);
         for (Sort sort : additional) {
@@ -387,50 +359,24 @@ class QueryInfo {
     }
 
     /**
-     * Determines whether a delete operation is find-and-delete (true) or delete only (false).
-     * The determination is made based on the return type, with multiple and Optional results
-     * indicating find-and-delete, and void or singular results that are boolean or a numeric
-     * type compatible with an update count indicating delete only. Singular results that are
-     * the entity type, record type, or id type other than the delete-only types indicate
-     * find-and-delete.
+     * Determines whether a delete operation is a delete only (returning void or an update count)
+     * or find-and-delete (returning the deleted entity).
      *
      * @return true if the return type is void or is the type of an update count.
-     * @throws MappingException if the repository method return type is incompatible with both
-     *                              delete-only and find-and-delete.
      */
-    @Trivial
-    boolean isFindAndDelete() {
-        boolean isFindAndDelete = true;
-
-        boolean isMultiple, isOptional;
-        int d;
-        Class<?> type = returnTypeAtDepth.get(d = 0);
-        if (CompletionStage.class.equals(type) || CompletableFuture.class.equals(type))
-            type = returnTypeAtDepth.get(++d);
-        if (isOptional = Optional.class.equals(type))
-            type = returnTypeAtDepth.get(++d);
-        if (isMultiple = d < returnTypeAtDepth.size() - 1)
-            type = returnTypeAtDepth.get(++d);
-
-        isFindAndDelete = isOptional || isMultiple || !RETURN_TYPES_FOR_DELETE_ONLY.contains(type);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "isFindAndDelete? " + isFindAndDelete + " isOptional? " + isOptional + " isMultiple? " + isMultiple +
-                               " type: " + (type == null ? null : type.getName()));
-
-        if (isFindAndDelete) {
-            if (type != null
-                && !type.equals(entityInfo.entityClass)
-                && !type.equals(entityInfo.recordClass)
-                && !type.equals(Object.class)
-                && !wrapperClassIfPrimitive(type).equals(wrapperClassIfPrimitive(entityInfo.idType)))
-                throw new MappingException("Results for find-and-delete repository queries must be the entity class (" +
-                                           (entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName() +
-                                           ") or the id class (" + entityInfo.idType +
-                                           "), not the " + type.getName() + " class."); // TODO NLS
+    boolean hasVoidOrBooleanOrUpdateCountReturnType() {
+        boolean returnsVoidOrBooleanOrUpdateCount;
+        if (getMultipleResultType() == null) {
+            Class<?> singleType = getSingleResultType();
+            returnsVoidOrBooleanOrUpdateCount = void.class.equals(singleType) || Void.class.equals(singleType) //
+                                                || boolean.class.equals(singleType) || Boolean.class.equals(singleType) //
+                                                || int.class.equals(singleType) || Integer.class.equals(singleType) //
+                                                || long.class.equals(singleType) || Long.class.equals(singleType) //
+                                                || Number.class.equals(singleType);
+        } else {
+            returnsVoidOrBooleanOrUpdateCount = false;
         }
-
-        return isFindAndDelete;
+        return returnsVoidOrBooleanOrUpdateCount;
     }
 
     /**
@@ -462,7 +408,7 @@ class QueryInfo {
         if (paramNames == null) // positional parameters
             for (int i = 0; i < keysetCursor.size(); i++) {
                 Object value = keysetCursor.getKeysetElement(i);
-                if (entityInfo.idClassAttributeAccessors != null && entityInfo.idType.isInstance(value)) {
+                if (entityInfo.idClass != null && entityInfo.idClass.isInstance(value)) {
                     for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
                         Object v = accessor instanceof Field ? ((Field) accessor).get(value) : ((Method) accessor).invoke(value);
                         if (++paramNum - paramCount > sorts.size())
@@ -484,7 +430,7 @@ class QueryInfo {
         else // named parameters
             for (int i = 0; i < keysetCursor.size(); i++) {
                 Object value = keysetCursor.getKeysetElement(i);
-                if (entityInfo.idClassAttributeAccessors != null && entityInfo.idType.isInstance(value)) {
+                if (entityInfo.idClass != null && entityInfo.idClass.isInstance(value)) {
                     for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
                         Object v = accessor instanceof Field ? ((Field) accessor).get(value) : ((Method) accessor).invoke(value);
                         if (++paramNum - paramCount > sorts.size())
@@ -524,14 +470,14 @@ class QueryInfo {
                                        " parameters, but requires " + methodParamForQueryCount +
                                        " method parameters. The generated JPQL query is: " + jpql + "."); // TODO NLS
 
-        if (entityInfo.idClassAttributeAccessors == null || type != Type.DELETE_WITH_ENTITY_PARAM) {
+        if (entityInfo.idClass == null || type != Type.DELETE_WITH_ENTITY_PARAM) {
             int namedParamCount = paramNames == null ? 0 : paramNames.size();
             for (int i = 0, p = 0; i < methodParamForQueryCount; i++) {
                 Object arg = type == Type.DELETE_WITH_ENTITY_PARAM && i == 0 //
                                 ? toEntityId(args[i]) //
                                 : args[i];
 
-                if (arg == null || entityInfo.idClassAttributeAccessors == null || !entityInfo.idType.isInstance(arg)) {
+                if (arg == null || entityInfo.idClass == null || !entityInfo.idClass.isInstance(arg)) {
                     if (p < namedParamCount) {
                         if (trace && tc.isDebugEnabled())
                             Tr.debug(this, tc, "set :" + paramNames.get(p) + ' ' + (arg == null ? null : arg.getClass().getSimpleName()));
@@ -670,19 +616,6 @@ class QueryInfo {
         q.saveParamType = saveParamType;
         q.sorts = sorts;
         q.type = type;
-        q.validatable = validatable;
         return q;
-    }
-
-    /**
-     * Returns the wrapper class if a primitive class, otherwise the same class.
-     *
-     * @param c class that is possibly a primitive class.
-     * @return wrapper class for a primitive, otherwise the same class that was supplied as a parameter.
-     */
-    @Trivial
-    static final Class<?> wrapperClassIfPrimitive(Class<?> c) {
-        Class<?> w = WRAPPER_CLASSES.get(c);
-        return w == null ? c : w;
     }
 }

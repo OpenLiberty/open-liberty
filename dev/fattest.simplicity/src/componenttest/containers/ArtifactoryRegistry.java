@@ -13,15 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.util.DefaultIndenter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.utils.ExternalTestService;
@@ -130,69 +121,65 @@ public class ArtifactoryRegistry {
         final String m = "generateDockerConfig";
 
         File configFile = new File(configDir, "config.json");
+        String contents = "";
 
-        final ObjectMapper mapper = JsonMapper.builder()
-                        .enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY) // alpha properties
-                        .disable(MapperFeature.SORT_CREATOR_PROPERTIES_FIRST) // ensures new properties are not excluded from alpha
-                        .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS) // alpha maps
-                        .enable(SerializationFeature.INDENT_OUTPUT) // use pretty printer by default
-                        .defaultPrettyPrinter(
-                                              // pretty printer should use tabs and new lines
-                                              new DefaultPrettyPrinter().withObjectIndenter(new DefaultIndenter("\t", "\n")))
-                        .build();
-        ObjectNode root;
-
-        //If config file already exists, read it, otherwise create a new json object
+        String privateAuth = "\t\t\"" + registry + "\": {\n" +
+                             "\t\t\t\"auth\": \"" + authToken + "\",\n"
+                             + "\t\t\t\"email\": null\n" + "\t\t}";
         if (configFile.exists()) {
-            try {
-                root = (ObjectNode) mapper.readTree(configFile);
+            Log.info(c, m, "Config already exists at: " + configFile.getAbsolutePath());
+            for (String line : Files.readAllLines(configFile.toPath()))
+                contents += line + '\n';
 
-                Log.info(c, m, "Config already exists at: " + configFile.getAbsolutePath());
-                logConfigContents(m, "Original contents", serializeOutput(mapper, root));
+            logConfigContents(m, "Original contents", contents);
+            int authsIndex = contents.indexOf("\"auths\"");
+            boolean replacedAuth = false;
 
-                //If existing config contains correct registry and auth token combination, return original file.
-                if (testExistingConfig(root, registry, authToken)) {
+            if (contents.contains(registry)) {
+                Log.info(c, m, "Config already contains the private registry: " + registry);
+                int registryIndex = contents.indexOf(registry, authsIndex);
+                int authIndex = contents.indexOf("\"auth\":", registryIndex);
+                int authIndexEnd = contents.indexOf(',', authIndex) + 1;
+                String authSubstring = contents.substring(authIndex, authIndexEnd);
+                if (authSubstring.contains(authToken)) {
                     Log.info(c, m, "Config already contains the correct auth token for registry: " + registry);
                     return configFile;
+                } else {
+                    replacedAuth = true;
+                    Log.info(c, m, "Replacing auth token for registry: " + registry);
+                    contents = contents.replace(authSubstring, "\"auth\": \"" + authToken + "\",");
                 }
-            } catch (Exception e) {
-                Log.error(c, m, e);
-                Log.warning(c, "Could not read config file, or it was malformed, recreating from scrach");
-                root = mapper.createObjectNode();
+            }
+
+            if (authsIndex >= 0 && !replacedAuth) {
+                Log.info(c, m, "Other auths exist. Need to add auth token for registry: " + registry);
+                int splitAt = contents.indexOf('{', authsIndex);
+                String firstHalf = contents.substring(0, splitAt + 1);
+                String secondHalf = contents.substring(splitAt + 1);
+                contents = firstHalf + '\n' + privateAuth + "," + secondHalf;
+            } else if (!replacedAuth) {
+                Log.info(c, m, "No auths exist. Adding auth block");
+                int splitAt = contents.indexOf('{');
+                String firstHalf = contents.substring(0, splitAt + 1);
+                String secondHalf = contents.substring(splitAt + 1);
+                String delimiter = secondHalf.contains(":") ? "," : "";
+                contents = firstHalf + "\n\t\"auths\": {\n" + privateAuth + "\n\t}" + delimiter + secondHalf;
             }
         } else {
-            root = mapper.createObjectNode();
-
             configDir.mkdirs();
-            Log.info(c, m, "Generating a private registry config file at: " + configFile.getAbsolutePath());
+            Log.info(c, m, "Generating a private registry config file at: "
+                           + configFile.getAbsolutePath());
+            contents = "{\n\t\"auths\": {\n" + privateAuth + "\n\t}\n}";
         }
-
-        //Get existing nodes
-        ObjectNode authsObject = root.has("auths") ? (ObjectNode) root.get("auths") : mapper.createObjectNode();
-        ObjectNode registryObject = authsObject.has(registry) ? (ObjectNode) authsObject.get(registry) : mapper.createObjectNode();
-        TextNode registryAuthObject = TextNode.valueOf(authToken); //Replace existing auth token with this one.
-
-        //Replace nodes with updated/new configuration
-        registryObject.replace("auth", registryAuthObject);
-        authsObject.replace(registry, registryObject);
-        root.set("auths", authsObject);
-
-        //Output results to file
-        String newContent = serializeOutput(mapper, root);
-        logConfigContents(m, "New config.json contents are", newContent);
-        writeFile(configFile, newContent);
+        logConfigContents(m, "New config.json contents are", contents);
+        configFile.delete();
+        writeFile(configFile, contents);
         return configFile;
     }
 
     //   UTILITY METHODS
 
-    /**
-     * Deletes current file if it exists and writes the content to a new file
-     *
-     * @param outFile - The output file destination
-     * @param content - The content to be written
-     */
-    static void writeFile(final File outFile, final String content) {
+    static void writeFile(File outFile, String content) {
         try {
             Files.deleteIfExists(outFile.toPath());
             Files.write(outFile.toPath(), content.getBytes());
@@ -204,74 +191,14 @@ public class ArtifactoryRegistry {
     }
 
     /**
-     * Tests to see if the existing JSON object contains the expected registry
-     *
-     * @param  root      - The collected JSON object
-     * @param  registry  - The expected registry
-     * @param  authToken - The expected authToken
-     * @return           true, if the existing json object contains the registry and authToken, false otherwise.
-     */
-    static boolean testExistingConfig(final ObjectNode root, final String registry, final String authToken) {
-        final String m = "testExistingConfig";
-
-        try {
-            if (root.isNull()) {
-                return false;
-            }
-
-            if (!root.hasNonNull("auths")) {
-                Log.finer(c, m, "Config does not contain the auths element");
-                return false;
-            }
-
-            if (!root.get("auths").hasNonNull(registry)) {
-                Log.finer(c, m, "Config does not contain the registry [ " + registry + " ] element under the auths element");
-                return false;
-            }
-
-            if (!root.get("auths").get(registry).hasNonNull("auth")) {
-                Log.finer(c, m, "Config does not contain the auth element under registry [ " + registry + " ] element");
-                return false;
-            }
-
-            if (!root.get("auths").get(registry).get("auth").isTextual()) {
-                Log.finer(c, m, "Config contains an auth element that is not textual");
-                return false;
-            }
-
-            return root.get("auths").get(registry).get("auth").textValue().equals(authToken);
-        } catch (Exception e) {
-            //Unexpected exception log it and consider fixing the logic above to void it
-            Log.error(c, m, e);
-            return false;
-        }
-
-    }
-
-    /**
-     * Takes a modified JSON object and will serialize it to ensure proper formatting
-     *
-     * @param  mapper                  - The ObjectMapper to use for serialization
-     * @param  root                    - The modified JSON object
-     * @return                         - The serialized JSON object as a string
-     * @throws JsonProcessingException - if any error occurs during serialization.
-     */
-    static String serializeOutput(final ObjectMapper mapper, final ObjectNode root) throws JsonProcessingException {
-        String input = mapper.writeValueAsString(root);
-        Object pojo = mapper.readValue(input, Object.class);
-        String output = mapper.writeValueAsString(pojo);
-        return output;
-    }
-
-    /**
      * Log the contents of a config file that may contain authentication data which should be redacted.
      *
-     * @param method   - The method calling this logger
-     * @param msg      - The message to output
-     * @param contents - The content that needs to be sanitized
+     * @param method
+     * @param msg
+     * @param contents
      */
-    static void logConfigContents(final String method, final String msg, final String contents) {
-        String sanitizedContents = contents.replaceAll("\"auth\" : \".*\"", "\"auth\" : \"****Token Redacted****\"");
+    private static void logConfigContents(String method, String msg, String contents) {
+        String sanitizedContents = contents.replaceAll("\"auth\": \".*\"", "\"auth\": \"****Token Redacted****\"");
         Log.info(c, method, msg + ":\n" + sanitizedContents);
     }
 }

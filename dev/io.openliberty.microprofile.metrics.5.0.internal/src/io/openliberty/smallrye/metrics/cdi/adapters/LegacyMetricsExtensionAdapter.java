@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,15 +15,6 @@ package io.openliberty.smallrye.metrics.cdi.adapters;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.eclipse.microprofile.metrics.annotation.Counted;
-import org.eclipse.microprofile.metrics.annotation.Gauge;
-import org.eclipse.microprofile.metrics.annotation.Timed;
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-
-import io.openliberty.microprofile.metrics50.helper.Util;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -33,12 +24,19 @@ import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
 import jakarta.enterprise.inject.spi.WithAnnotations;
 
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Gauge;
+import org.eclipse.microprofile.metrics.annotation.Timed;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
+import io.openliberty.microprofile.metrics50.helper.Util;
+
 /**
  *
  */
 public class LegacyMetricsExtensionAdapter implements Extension {
-
-    private static final String FQ_V51_METRIC_REGISTRY_PRODUCER_ADAPTER = "io.openliberty.smallrye.metrics.cdi.adapters51.MetricRegistryProducerAdapter";
 
     Class<?> srLegacyMetricsExtensionClass;
     Object srLegacymetricsExtensionObj;
@@ -77,7 +75,6 @@ public class LegacyMetricsExtensionAdapter implements Extension {
         return srLegacymetricsExtensionObj;
     }
 
-    @FFDCIgnore(ClassNotFoundException.class)
     void registerAnnotatedTypes(@Observes BeforeBeanDiscovery bbd, BeanManager manager) {
         if (srLegacymetricsExtensionObj == null)
             return;
@@ -87,47 +84,11 @@ public class LegacyMetricsExtensionAdapter implements Extension {
                     BeforeBeanDiscovery.class, BeanManager.class);
             method.invoke(srLegacymetricsExtensionObj, bbd, manager);
 
-            bbd.addAnnotatedType(manager.createAnnotatedType(MetricProducerAdapter.class),
+            bbd.addAnnotatedType(manager.createAnnotatedType(MetricRegistryProducerAdapter.class),
                     LegacyMetricsExtensionAdapter.class.getName() + "_"
                             + MetricRegistryProducerAdapter.class.getName());
 
-            /*
-             * Attempt to load the MetricRegistryProducerAdapter from the
-             * io.openliberty.microprofile.metrics.5.1.internal bundle. If this succeeds, we
-             * are running mpMetrics-5.1 then we will load this class and provide it to the
-             * CDI runtime. We need to load this separately due to the change in 5.1
-             * where @RegistryScope is a qualifier. This affects how the producer is
-             * implemented.
-             *
-             * This works because the io.openliberty.microprofile.metrics.5.1.internal
-             * bundle re-exports all packages + classes from this
-             * io.openliberty.microprofile.metrics.5.0.internal bundle. Therefore, when
-             * io.openliberty.microprofile.metrics.5.1.internal is active, this class will
-             * be running in that bundle and have class visibility to
-             * io.openliberty.smallrye.metrics.cdi.adapters51.MetricRegistryProducerAdapter.
-             *
-             * Furthermore, since this class itself is in the
-             * io.openliberty.microprofile.metrics.5.0.internal bundle we wouldn't have
-             * visibility to
-             * io.openliberty.smallrye.metrics.cdi.adapters51.MetricRegistryProducerAdapter
-             * during build time. Hence the use of reflection!
-             *
-             *
-             * If that fails, that means we are running mpMetrics-5.0. And we will load the
-             * MetricRegistryProducerAdapter class found in the
-             * io.openliberty.microprofile.metrics.5.0.internal bundle
-             */
-            try {
-                Class<?> metricRegistryProducerAdapter51Class = Class.forName(FQ_V51_METRIC_REGISTRY_PRODUCER_ADAPTER);
-                bbd.addAnnotatedType(manager.createAnnotatedType(metricRegistryProducerAdapter51Class),
-                        LegacyMetricsExtensionAdapter.class.getName() + "_"
-                                + MetricRegistryProducerAdapter.class.getName());
-                return;
-            } catch (ClassNotFoundException exception) {
-                // Nothing to do - we're not running mpMetrics-5.1
-            }
-
-            bbd.addAnnotatedType(manager.createAnnotatedType(MetricRegistryProducerAdapter.class),
+            bbd.addAnnotatedType(manager.createAnnotatedType(MetricProducerAdapter.class),
                     LegacyMetricsExtensionAdapter.class.getName() + "_"
                             + MetricRegistryProducerAdapter.class.getName());
 

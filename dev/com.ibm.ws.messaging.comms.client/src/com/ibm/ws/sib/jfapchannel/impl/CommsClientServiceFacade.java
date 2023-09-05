@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,8 +35,6 @@ import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.sib.core.SelectionCriteriaFactory;
 
-import io.openliberty.netty.internal.NettyFramework;
-
 @Component (
         service = {CommsClientServiceFacade.class, CommsClientServiceFacadeInterface.class, Singleton.class},
         configurationPolicy = IGNORE,
@@ -46,7 +44,6 @@ public class CommsClientServiceFacade implements CommsClientServiceFacadeInterfa
     private static final TraceComponent tc = Tr.register(CommsClientServiceFacade.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
 
     private final CHFWBundle chfwBundle;
-    private final NettyFramework nettyBundle;
     private final ExecutorService executorService;
     private final AlarmManager alarmManager;
     private final ClientConnectionFactory clientConnectionFactoryInstance = new ClientConnectionFactoryImpl();
@@ -58,14 +55,11 @@ public class CommsClientServiceFacade implements CommsClientServiceFacadeInterfa
             @Reference(name="executorService")
             ExecutorService executorService,
             @Reference(name="alarmManager")
-            AlarmManager alarmManager,
-            @Reference(name="nettyBundle")
-            NettyFramework nettyBundle) {
+            AlarmManager alarmManager) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "CommsClientServiceFacade",new Object[] {chfwBundle, nettyBundle, executorService, alarmManager});
+            SibTr.entry(tc, "CommsClientServiceFacade",new Object[] {chfwBundle, executorService, alarmManager});
 
         this.chfwBundle = chfwBundle;
-		this.nettyBundle = nettyBundle;
         this.executorService = executorService;
         this.alarmManager = alarmManager;
 
@@ -85,10 +79,6 @@ public class CommsClientServiceFacade implements CommsClientServiceFacadeInterfa
 
     public ChannelFramework getChannelFramework() {
         return chfwBundle.getFramework();
-    }
-    
-    public NettyFramework getNettyFramework() {
-        return nettyBundle;
     }
 
     public ExecutorService getExecutorService() {

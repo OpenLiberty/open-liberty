@@ -73,7 +73,6 @@ import com.ibm.ws.app.manager.internal.lifecycle.ServiceReg;
 import com.ibm.ws.app.manager.internal.monitor.AppMonitorConfigurator;
 import com.ibm.ws.app.manager.internal.statemachine.ApplicationStateMachine;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
@@ -95,12 +94,12 @@ import com.ibm.wsspi.logging.Introspector;
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
-@Component(service = { ManagedServiceFactory.class, Introspector.class, RuntimeUpdateListener.class, ApplicationRecycleCoordinator.class},
+@Component(service = { ManagedServiceFactory.class, Introspector.class, RuntimeUpdateListener.class, ApplicationRecycleCoordinator.class, CheckpointHook.class },
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = { Constants.SERVICE_VENDOR + "=" + "IBM",
                         Constants.SERVICE_PID + "=" + AppManagerConstants.APPLICATIONS_PID })
-public class ApplicationConfigurator implements ManagedServiceFactory, Introspector, RuntimeUpdateListener, ApplicationRecycleCoordinator {
+public class ApplicationConfigurator implements ManagedServiceFactory, Introspector, RuntimeUpdateListener, ApplicationRecycleCoordinator, CheckpointHook {
     private static final TraceComponent _tc = Tr.register(ApplicationConfigurator.class);
 
     /**
@@ -579,20 +578,6 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
 
     protected void unsetApplicationMonitorConfigurator(AppMonitorConfigurator appMonitorConfigurator) {
         _appMonitorConfigurator = null;
-    }
-
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
-    protected void setServerStarted(ServerStarted serverStarted) {
-        if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE) {
-            _appFromName.values().forEach((a) -> a.getStateMachine().resetStartTime());
-            _restoreMessages.forEach(Runnable::run);
-            _restoreMessages.clear();
-        }
-    }
-
-    
-    protected void unsetServerStarted(ServerStarted serverStarted) {
-        // do nothing
     }
 
     @Reference(name = "appTypeSupported", service = ApplicationTypeSupported.class,
@@ -2117,5 +2102,12 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         if (_checkpointPhase != CheckpointPhase.INACTIVE) {
             _restoreMessages.add(message);
         }
+    }
+
+    @Override
+    public synchronized void restore() {
+        _appFromName.values().forEach((a) -> a.getStateMachine().resetStartTime());
+        _restoreMessages.forEach(Runnable::run);
+        _restoreMessages.clear();
     }
 }

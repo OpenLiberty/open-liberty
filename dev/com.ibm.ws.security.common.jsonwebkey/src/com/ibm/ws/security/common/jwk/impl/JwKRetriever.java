@@ -1,11 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2023 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.common.jwk.impl;
 
@@ -194,7 +197,7 @@ public class JwKRetriever {
 
     @Sensitive
     private Key getJwkFromJWKSet(@Sensitive String setId, String kid, String x5t, String use, @Sensitive String keyText, JwkKeyType keyType) {
-        boolean isKeyIdentifierUsed = (kid != null || x5t != null);
+        boolean isKeyIdentifierUsed = (kid != null || x5t != null || use != null);
         Key key = null;
         if (kid != null) {
             key = jwkSet.getKeyBySetIdAndKid(setId, kid, keyType);

@@ -55,10 +55,6 @@ public class KafkaPartitionTestServlet extends AbstractKafkaTestServlet {
     private String kafkaBootstrap;
 
     @Inject
-    @ConfigProperty(name = "mp.messaging.incoming." + CHANNEL_NAME + ".topic")
-    private String topic;
-
-    @Inject
     private PartitionTestReceptionBean receptionBean;
 
     /**
@@ -86,9 +82,9 @@ public class KafkaPartitionTestServlet extends AbstractKafkaTestServlet {
         consumerConfig.put(ConsumerConfig.GROUP_ID_CONFIG, APP_GROUPID);
         consumerConfig.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
         consumerConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        KafkaReader<String, String> reader = kafkaTestClient.readerFor(consumerConfig, topic);
+        KafkaReader<String, String> reader = kafkaTestClient.readerFor(consumerConfig, CHANNEL_NAME);
 
-        List<PartitionInfo> allPartitions = reader.getConsumer().partitionsFor(topic);
+        List<PartitionInfo> allPartitions = reader.getConsumer().partitionsFor(CHANNEL_NAME);
 
         // Assert that the new reader is assigned one partition
         Duration elapsed = Duration.ZERO;
@@ -113,11 +109,11 @@ public class KafkaPartitionTestServlet extends AbstractKafkaTestServlet {
         }
 
         // We want to check that the offset is advanced correctly later, so take a baseline now
-        long testReaderPartitionOffset = kafkaTestClient.getTopicOffset(topic, testReaderPartitionId, APP_GROUPID);
-        long receptionBeanPartitionOffset = kafkaTestClient.getTopicOffset(topic, receptionBeanPartitionId, APP_GROUPID);
+        long testReaderPartitionOffset = kafkaTestClient.getTopicOffset(CHANNEL_NAME, testReaderPartitionId, APP_GROUPID);
+        long receptionBeanPartitionOffset = kafkaTestClient.getTopicOffset(CHANNEL_NAME, receptionBeanPartitionId, APP_GROUPID);
 
         // Send a message to the partition assigned to the test reader and check the new reader receives it and advances the partition offset
-        KafkaWriter<String, String> writer = kafkaTestClient.writerFor(topic);
+        KafkaWriter<String, String> writer = kafkaTestClient.writerFor(CHANNEL_NAME);
         writer.sendMessage("test1", testReaderPartitionId, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
         List<String> testMessagesRead = reader.assertReadMessages(1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
         assertThat(testMessagesRead, contains("test1"));
@@ -128,7 +124,7 @@ public class KafkaPartitionTestServlet extends AbstractKafkaTestServlet {
         List<String> beanMessagePayloads = beanMessagesRead.stream().map(Message::getPayload).collect(Collectors.toList());
         beanMessagesRead.forEach(Message::ack);
         assertThat(beanMessagePayloads, contains("test2"));
-        kafkaTestClient.assertTopicOffsetAdvancesTo(receptionBeanPartitionOffset + 1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, topic, receptionBeanPartitionId,
+        kafkaTestClient.assertTopicOffsetAdvancesTo(receptionBeanPartitionOffset + 1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, CHANNEL_NAME, receptionBeanPartitionId,
                                                     APP_GROUPID);
 
         // Close the test reader
@@ -136,7 +132,7 @@ public class KafkaPartitionTestServlet extends AbstractKafkaTestServlet {
 
         // With AUTO_COMMIT_CONFIG, we don't have control over when Kafka commits the partition offset for us
         // but it should happen once we've closed the reader
-        kafkaTestClient.assertTopicOffsetAdvancesTo(testReaderPartitionOffset + 1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, topic, testReaderPartitionId, APP_GROUPID);
+        kafkaTestClient.assertTopicOffsetAdvancesTo(testReaderPartitionOffset + 1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, CHANNEL_NAME, testReaderPartitionId, APP_GROUPID);
 
         // Send a message to each partition and check that the bean receives both of them and advances the offset of both partitions
         writer.sendMessage("test3", testReaderPartitionId, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
@@ -157,8 +153,8 @@ public class KafkaPartitionTestServlet extends AbstractKafkaTestServlet {
                 m.ack();
             }
 
-            testReaderFinalOffset = kafkaTestClient.getTopicOffset(topic, testReaderPartitionId, APP_GROUPID);
-            receptionBeanFinalOffset = kafkaTestClient.getTopicOffset(topic, receptionBeanPartitionId, APP_GROUPID);
+            testReaderFinalOffset = kafkaTestClient.getTopicOffset(CHANNEL_NAME, testReaderPartitionId, APP_GROUPID);
+            receptionBeanFinalOffset = kafkaTestClient.getTopicOffset(CHANNEL_NAME, receptionBeanPartitionId, APP_GROUPID);
             if (testReaderFinalOffset == testReaderPartitionOffset + 2 && receptionBeanFinalOffset == receptionBeanPartitionOffset + 2) {
                 done = true;
             }

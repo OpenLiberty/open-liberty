@@ -18,7 +18,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 
@@ -28,7 +27,7 @@ import componenttest.topology.database.container.DatabaseContainerFactory;
                 DataCoreTckLauncher.class,
                 DataWebTckLauncher.class //full mode
 })
-public class FATSuite extends TestContainerSuite {
+public class FATSuite {
     @ClassRule
     public static JdbcDatabaseContainer<?> jdbcContainer = DatabaseContainerFactory.create();
 }

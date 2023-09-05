@@ -139,7 +139,7 @@ public final class WSS4JUtils {
                     }
                     if (WSS4JCacheUtil.isEhCacheInstalled()) {
                         Bus bus = message.getExchange().getBus();
-                        final Path diskstoreParent;
+                        Path diskstoreParent = null;
                         try {
                             diskstoreParent = Files.createTempDirectory("cxf");
                         } catch (IOException ex) {
@@ -221,8 +221,8 @@ public final class WSS4JUtils {
     ) {
         SoapFault fault;
 
-        final String errorMessage;
-        final javax.xml.namespace.QName faultCode;
+        String errorMessage = null;
+        javax.xml.namespace.QName faultCode = null;
 
         boolean returnSecurityError =
             MessageUtils.getContextualBoolean(message, SecurityConstants.RETURN_SECURITY_ERROR, false);
@@ -349,9 +349,9 @@ public final class WSS4JUtils {
             URL propsURL = SecurityUtils.loadResource(message, s);
             Properties props = WSS4JUtils.getProps(s, propsURL);
             if (props == null) {
-                // Liberty Change Start
+                //Liberty code change start
                 //LOG.fine("Cannot find Crypto Signature properties: " + s);
-                // Liberty Change End
+                //Liberty code change end
                 Exception ex = new Exception("Cannot find Crypto Signature properties: " + s);
                 throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, ex);
             }

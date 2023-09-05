@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,7 +15,6 @@ package com.ibm.ws.recoverylog.spi;
 import com.ibm.tx.util.alarm.AlarmManager;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 
 //------------------------------------------------------------------------------
 // Class: Configuration
@@ -115,10 +114,10 @@ public class Configuration {
      *
      * @param WASInstallDirectory The WAS install directory
      */
-    @Trivial
-    public static final void setWASInstallDirectory(String WASInstallDirectory) {
+    public static final void WASInstallDirectory(String WASInstallDirectory) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "setWASInstallDirectory {0}", WASInstallDirectory);
+            Tr.debug(tc, "WASInstallDirectory", WASInstallDirectory);
+
         _WASInstallDirectory = WASInstallDirectory;
     }
 
@@ -130,10 +129,9 @@ public class Configuration {
      *
      * @return String The WAS install directory.
      */
-    @Trivial
-    public static final String getWASInstallDirectory() {
+    public static final String WASInstallDirectory() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getWASInstallDirectory {0}", _WASInstallDirectory);
+            Tr.debug(tc, "WASInstallDirectory", _WASInstallDirectory);
         return _WASInstallDirectory;
     }
 
@@ -232,10 +230,10 @@ public class Configuration {
      *
      * @param name The name of the WAS server
      */
-    @Trivial
     public static final void serverName(String name) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "serverName {0}", name);
+            Tr.debug(tc, "serverName", name);
+
         _serverName = name;
     }
 
@@ -319,12 +317,11 @@ public class Configuration {
      *
      * @return String The fully qualified name of the WAS server
      */
-    @Trivial
     public static final String fqServerName() {
         String fqServerName = _serverName; // RLSUtils.FQHAMCompatibleServerName(_cellName,_nodeName,_serverName); tWAS
 
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "fqServerName {0}", fqServerName);
+            Tr.debug(tc, "fqServerName", fqServerName);
         return fqServerName;
     }
 
@@ -338,7 +335,8 @@ public class Configuration {
      */
     public static final void HAEnabled(boolean HAEnabled) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "Setting HAEnabled: {0}", HAEnabled);
+            Tr.debug(tc, "HAEnabled", HAEnabled);
+
         _HAEnabled = HAEnabled;
     }
 
@@ -350,10 +348,9 @@ public class Configuration {
      *
      * @return boolean name The HAEnabled flag
      */
-    @Trivial
     public static final boolean HAEnabled() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "HAEnabled: {0}", _HAEnabled);
+            Tr.debug(tc, "HAEnabled", _HAEnabled);
         return _HAEnabled;
     }
 
@@ -365,9 +362,14 @@ public class Configuration {
      *
      * @param localFailureScope The local FailureScope
      */
-    @Trivial
     public static final void localFailureScope(FailureScope localFailureScope) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "localFailureScope", localFailureScope);
+
         _localFailureScope = localFailureScope;
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "localFailureScope");
     }
 
     //------------------------------------------------------------------------------
@@ -387,10 +389,13 @@ public class Configuration {
     //------------------------------------------------------------------------------
     // Method: Configuration.txRecoveryAgent
     //------------------------------------------------------------------------------
-    @Trivial
-    public static void setTxRecoveryAgent(RecoveryAgent txRecoveryAgent) {
+    /**
+    *
+    */
+    public static void txRecoveryAgent(RecoveryAgent txRecoveryAgent) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "setTxRecoveryAgent {0}", txRecoveryAgent);
+            Tr.debug(tc, "txRecoveryAgent", txRecoveryAgent);
+
         _txRecoveryAgent = txRecoveryAgent;
     }
 
@@ -400,30 +405,28 @@ public class Configuration {
     /**
     *
     */
-    @Trivial
-    public static RecoveryAgent getTxRecoveryAgent() {
+    public static RecoveryAgent txRecoveryAgent() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getTxRecoveryAgent {0}", _txRecoveryAgent);
+            Tr.debug(tc, "txRecoveryAgent", _txRecoveryAgent);
         return _txRecoveryAgent;
     }
-
     //---------------------------------------------------------------------------
     // Method: Configuration.setRecoveryLogComponent
     //---------------------------------------------------------------------------
-    @Trivial
+
     public static final void setRecoveryLogComponent(RecoveryLogComponent rls) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "setRecoveryLogComponent {0}", rls);
+            Tr.debug(tc, "setRecoveryLogComponent", rls);
         _reclogComponent = rls;
     }
 
     //---------------------------------------------------------------------------
     // Method: Configuration.getSetRecoveryLogComponent
     //---------------------------------------------------------------------------
-    @Trivial
+
     public static final RecoveryLogComponent getRecoveryLogComponent() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getRecoveryLogComponent {0}", _reclogComponent);
+            Tr.debug(tc, "getRecoveryLogComponent", _reclogComponent);
         return _reclogComponent;
     }
 

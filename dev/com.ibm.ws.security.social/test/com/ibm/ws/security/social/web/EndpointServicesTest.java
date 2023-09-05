@@ -1,11 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2023 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.web;
 
@@ -16,11 +19,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -40,6 +41,7 @@ import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.common.random.RandomUtils;
+import com.ibm.ws.security.common.web.CommonWebConstants;
 import com.ibm.ws.security.social.Constants;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.error.SocialLoginException;
@@ -1107,7 +1109,6 @@ public class EndpointServicesTest extends CommonTestClass {
             // Request URL cookie must a valid URL for the redirect to succeed
             final String url = "some invalid URL";
             getRequestUrlCookieValue(cookie2, state, url);
-            checkRequestUrlAgainstAllowedDomains(url);
             handleErrorExpectations();
 
             services.doRedirect(request, response, socialLoginConfig);
@@ -1123,28 +1124,6 @@ public class EndpointServicesTest extends CommonTestClass {
     }
 
     @Test
-    public void doRedirect_reqUrlNotValidDomain() {
-        try {
-            final Map<String, String[]> paramMap = new HashMap<String, String[]>();
-            final Cookie[] cookies = new Cookie[] { cookie1, cookie2 };
-
-            getDoRedirectInitialExpectations(paramMap, state, cookies);
-            getStateCookieExpectations(cookie1, state);
-            final String urlFromCookie = httpsScheme + "://" + "a-different-host.com" + "/some/path";
-            getRequestUrlCookieValue(cookie2, state, urlFromCookie);
-            checkRequestUrlAgainstAllowedDomains(url);
-            handleErrorExpectations();
-
-            services.doRedirect(request, response, socialLoginConfig);
-
-            verifyLogMessage(outputMgr, CWWKS5499E_REQUEST_URL_NOT_VALID + ".+" + CWWKS1554E_MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
     public void doRedirect_missingCode() {
         try {
             final Map<String, String[]> paramMap = new HashMap<String, String[]>();
@@ -1153,7 +1132,6 @@ public class EndpointServicesTest extends CommonTestClass {
             getDoRedirectInitialExpectations(paramMap, state, cookies);
             getStateCookieExpectations(cookie1, state);
             getRequestUrlCookieValue(cookie2, state, url);
-            checkRequestUrlAgainstAllowedDomains(url);
             mockery.checking(new Expectations() {
                 {
                     // Code parameter must be present in order to redirect
@@ -1181,7 +1159,6 @@ public class EndpointServicesTest extends CommonTestClass {
             getDoRedirectInitialExpectations(paramMap, state, cookies);
             getStateCookieExpectations(cookie1, state);
             getRequestUrlCookieValue(cookie2, state, url);
-            checkRequestUrlAgainstAllowedDomains(url);
             mockery.checking(new Expectations() {
                 {
                     // Code parameter must be present and non-empty in order to redirect
@@ -1210,7 +1187,6 @@ public class EndpointServicesTest extends CommonTestClass {
             getDoRedirectInitialExpectations(paramMap, state, cookies);
             getStateCookieExpectations(cookie1, state);
             getRequestUrlCookieValue(cookie2, state, url);
-            checkRequestUrlAgainstAllowedDomains(url);
             mockery.checking(new Expectations() {
                 {
                     one(request).getParameter(ClientConstants.CODE);
@@ -1397,17 +1373,52 @@ public class EndpointServicesTest extends CommonTestClass {
         });
     }
 
-    private void checkRequestUrlAgainstAllowedDomains(String requestUrl) {
-        List<String> allowedDomainNames = new ArrayList<>();
-        allowedDomainNames.add(host);
+    private void getAllSocialLoginConfigsExpectations(final Iterator<SocialLoginConfig> iter) {
         mockery.checking(new Expectations() {
             {
-                allowing(request).getRequestURL();
-                will(returnValue(new StringBuffer(requestUrl)));
-                allowing(webAppSecConfig).getWASReqURLRedirectDomainNames();
-                will(returnValue(allowedDomainNames));
+                one(socialLoginConfigRef).getServices();
+                will(returnValue(iter));
             }
         });
+    }
+
+    private void writeToResponseExpectations() throws IOException {
+        addNoCacheHeadersExpectations();
+        mockery.checking(new Expectations() {
+            {
+                one(response).setStatus(HttpServletResponse.SC_OK);
+                one(response).setHeader(CommonWebConstants.HTTP_HEADER_CONTENT_TYPE, CommonWebConstants.HTTP_CONTENT_TYPE_JSON);
+                one(response).getWriter();
+                will(returnValue(writer));
+                one(writer).write(with(any(String.class)));
+                one(writer).flush();
+                one(writer).close();
+            }
+        });
+    }
+
+    private void addNoCacheHeadersExpectations() {
+        final String cacheControlHeaderVal = RandomUtils.getRandomSelection(null, "someValue");
+        mockery.checking(new Expectations() {
+            {
+                one(response).getHeader(CommonWebConstants.HEADER_CACHE_CONTROL);
+                will(returnValue(cacheControlHeaderVal));
+                one(response).setHeader(CommonWebConstants.HEADER_PRAGMA, CommonWebConstants.PRAGMA_NO_CACHE);
+            }
+        });
+        if (cacheControlHeaderVal == null) {
+            mockery.checking(new Expectations() {
+                {
+                    one(response).setHeader(CommonWebConstants.HEADER_CACHE_CONTROL, CommonWebConstants.CACHE_CONTROL_NO_STORE);
+                }
+            });
+        } else {
+            mockery.checking(new Expectations() {
+                {
+                    one(response).setHeader(CommonWebConstants.HEADER_CACHE_CONTROL, cacheControlHeaderVal + ", " + CommonWebConstants.CACHE_CONTROL_NO_STORE);
+                }
+            });
+        }
     }
 
 }

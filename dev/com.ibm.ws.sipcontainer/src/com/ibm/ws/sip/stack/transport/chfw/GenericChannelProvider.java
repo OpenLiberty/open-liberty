@@ -25,7 +25,14 @@ import com.ibm.websphere.channelfw.osgi.ChannelFactoryProvider;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sip.stack.transport.sip.SipChannelFactory;
-import com.ibm.ws.sip.stack.transport.sip.chfw.*;
+import com.ibm.ws.sip.stack.transport.sip.SipInboundChannel;
+import com.ibm.ws.sip.stack.transport.sip.SipInboundChannelFactoryWs;
+import com.ibm.ws.sip.stack.transport.sip.SipTcpOutboundChannel;
+import com.ibm.ws.sip.stack.transport.sip.SipTcpOutboundChannelFactory;
+import com.ibm.ws.sip.stack.transport.sip.SipTlsOutboundChannel;
+import com.ibm.ws.sip.stack.transport.sip.SipTlsOutboundChannelFactory;
+import com.ibm.ws.sip.stack.transport.sip.SipUdpOutboundChannel;
+import com.ibm.ws.sip.stack.transport.sip.SipUdpOutboundChannelFactory;
 import com.ibm.wsspi.channelfw.ChannelFactory;
 
 /**

@@ -22,7 +22,6 @@ import javax.transaction.xa.Xid;
 import com.ibm.tx.TranConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.DistributedRecoveryLog;
 import com.ibm.ws.recoverylog.spi.RecoveryLog;
@@ -70,14 +69,15 @@ public class PartnerLogTable {
     private final Lock _pltReadLock = _pltLock.readLock();
     private final Lock _pltWriteLock = _pltLock.writeLock();
 
-    @Trivial
     public PartnerLogTable(FailureScopeController failureScopeController) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "PartnerLogTable", failureScopeController);
 
         _partnerLogTable = new ArrayList<PartnerLogData>();
         _failureScopeController = failureScopeController;
 
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "PartnerLogTable {0}", this);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "PartnerLogTable");
     }
 
     /**

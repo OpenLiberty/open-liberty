@@ -158,7 +158,6 @@ public class HttpsURLConnectionFactory {
                    socketFactory = HttpsURLConnection.getDefaultSSLSocketFactory();
 		}
             }
-			
 	    if (ctx != null) { // do we have SSL context?
                 LOG.fine("Create new socketFactory from SSLContext and set Ciphersuites");
                 String[] cipherSuites =
@@ -180,8 +179,7 @@ public class HttpsURLConnectionFactory {
             //recalc the hashcode since some of the above MAY have changed the tlsClientParameters
             lastTlsHash = tlsClientParameters.hashCode();
         } else {
-            LOG.fine("SSL socketFactory already initialized!"); 
-			// Liberty Change End
+            LOG.fine("SSL socketFactory already initialized!");  // Liberty Change
            // ssl socket factory already initialized, reuse it to benefit of keep alive
         }
 

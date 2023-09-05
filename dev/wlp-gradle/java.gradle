@@ -102,12 +102,6 @@ subprojects {
           targetCompatibility = "1.8"
       }
 
-      if ('21'.equals(sourceCompatibility)) {
-          javaCompiler = javaToolchains.compilerFor {
-              languageVersion = JavaLanguageVersion.of(21)
-          }
-      }
-
       // Set the --release compiler flag to keep bootclasspath in sync 
       if(!'off'.equals(bnd.get('javac.args.release'))) {
         def release = sourceCompatibility
@@ -137,14 +131,10 @@ subprojects {
 task testReport(type: TestReport) {
   // Run after all `test` tasks, so no test results are missing
   mustRunAfter subprojects*.test
-  destinationDirectory = cnf.file('generated/testReports/allUnitTests')
+  destinationDir = cnf.file('generated/testReports/allUnitTests')
 
   // Include the results from the `test` task in all subprojects
-  Test[] tests = subprojects*.test
-  ConfigurableFileCollection results = getTestResults()
-  for (Test test : tests) {
-    results.from(test.getBinaryResultsDirectory())
-  }
+  reportOn subprojects*.test
 
   doLast {
     // Save test count properties to a file, so they can be loaded by subsequent builds

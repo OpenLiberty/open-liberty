@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.Properties;
-import java.util.logging.Level; // Liberty Change
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.security.auth.callback.CallbackHandler;
@@ -37,15 +37,16 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.resource.ResourceManager;
 
-import com.ibm.websphere.ras.annotation.Trivial; // Liberty Change
+import com.ibm.websphere.ras.annotation.Trivial;
 
 
 /**
  * Some common functionality
  */
 public final class SecurityUtils {
+//Liberty Debug only
     private static final Logger LOG = LogUtils.getL7dLogger(SecurityUtils.class);
-    private static boolean doDebug = LOG.isLoggable(Level.FINE); // Liberty Change
+    private static boolean doDebug = LOG.isLoggable(Level.FINE);
 
     private SecurityUtils() {
         // complete
@@ -55,31 +56,29 @@ public final class SecurityUtils {
         IllegalAccessException, ClassNotFoundException {
         CallbackHandler handler = null;
         if (o instanceof CallbackHandler) {
-		    // Liberty Change Start
             if (doDebug) {
                 LOG.fine("CallbackHandler type object is in use!");
             }
-            // Liberty Change End
+            
             handler = (CallbackHandler)o;
         } else if (o instanceof String) {
-		    // Liberty Change Start
             if (doDebug) {
                 LOG.fine("cbh is a string, need to load the class!");
             }
-            // Liberty Change End
+            
             handler = (CallbackHandler)ClassLoaderUtils.loadClass((String)o,
                                                                   SecurityUtils.class).newInstance();
         }
         return handler;
     }
-    @Trivial // Liberty Change
+    @Trivial // Liberty code change
     public static URL getConfigFileURL(Message message, String configFileKey, String configFileDefault) {
-        LOG.entering("SecurityUtils.getConfigFileURL", "message, configFileKey, configFileDefault"); // Liberty Change
+        LOG.entering("SecurityUtils.getConfigFileURL", "message, configFileKey, configFileDefault");
         Object o = message.getContextualProperty(configFileKey);
         if (o == null) {
             o = configFileDefault;
         }
-        LOG.exiting("SecurityUtils.getConfigFileURL", "message, configFileKey, configFileDefault"); // Liberty Change
+        LOG.exiting("SecurityUtils.getConfigFileURL", "message, configFileKey, configFileDefault");
 
         return loadResource(message, o);
     }
@@ -88,9 +87,9 @@ public final class SecurityUtils {
         return loadResource((Message)null, o);
     }
 
-    @Trivial // Liberty Change
+    @Trivial
     public static URL loadResource(Message message, Object o) {
-        LOG.entering("SecurityUtils.loadResource", "message, Object"); // Liberty Change
+        LOG.entering("SecurityUtils.loadResource", "message, Object");
         Message msg = message;
         if (msg == null) {
             msg = PhaseInterceptorChain.getCurrentMessage();
@@ -99,7 +98,7 @@ public final class SecurityUtils {
         if (msg != null && msg.getExchange() != null && msg.getExchange().getBus() != null) {
             manager = msg.getExchange().getBus().getExtension(ResourceManager.class);
         }
-        LOG.exiting("SecurityUtils.loadResource", "Message, Object"); // Liberty Change
+        LOG.exiting("SecurityUtils.loadResource", "Message, Object");
         return loadResource(manager, o);
     }
 
@@ -189,14 +188,14 @@ public final class SecurityUtils {
      * Get the security property value for the given property. It also checks for the older "ws-"* property
      * values.
      */
-    @Trivial // Liberty Change
+    @Trivial
     public static Object getSecurityPropertyValue(String property, Message message) {
-        LOG.entering("SecurityUtils.getSecurityPropertyValue", property); // Liberty Change
+        LOG.entering("SecurityUtils.getSecurityPropertyValue", property);
         Object value = message.getContextualProperty(property);
         if (value != null) {
             return value;
         }
-        LOG.exiting("SecurityUtils.getSecurityPropertyValue", "String, Message"); // Liberty Change
+        LOG.exiting("SecurityUtils.getSecurityPropertyValue", "String, Message");
         return message.getContextualProperty("ws-" + property);
     }
 
@@ -204,16 +203,16 @@ public final class SecurityUtils {
      * Get the security property boolean for the given property. It also checks for the older "ws-"* property
      * values. If none is configured, then the defaultValue parameter is returned.
      */
-    @Trivial // Liberty Change
+    @Trivial
     public static boolean getSecurityPropertyBoolean(String property, Message message, boolean defaultValue) {
-        LOG.entering("SecurityUtils.getSecurityPropertyBoolean", property); // Liberty Change
+        LOG.entering("SecurityUtils.getSecurityPropertyBoolean", property);
         Object value = getSecurityPropertyValue(property, message);
 
         if (value != null) {
-            LOG.exiting("SecurityUtils.getSecurityPropertyBoolean", "String, Message, boolean"); // Liberty Change
+            LOG.exiting("SecurityUtils.getSecurityPropertyBoolean", "String, Message, boolean");
             return PropertyUtils.isTrue(value);
         }
-        LOG.exiting("SecurityUtils.getSecurityPropertyBoolean", "String, Message, boolean"); // Liberty Change
+        LOG.exiting("SecurityUtils.getSecurityPropertyBoolean", "String, Message, boolean");
         return defaultValue;
     }
 }

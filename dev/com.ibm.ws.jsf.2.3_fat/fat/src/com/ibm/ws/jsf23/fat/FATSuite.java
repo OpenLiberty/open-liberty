@@ -44,14 +44,11 @@ import com.ibm.ws.jsf23.fat.tests.JSF23ViewResourceTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23WebSocketTests;
 import com.ibm.ws.jsf23.fat.tests.JSFFeatureConflictTests;
 
-import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
-
-import  org.testcontainers.utility.DockerImageName;
 
 /**
  * JSF 2.3 Tests
@@ -98,7 +95,7 @@ import  org.testcontainers.utility.DockerImageName;
                 JSF23SpecIssueTests.class
 })
 
-public class FATSuite extends TestContainerSuite {
+public class FATSuite {
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}
@@ -133,13 +130,4 @@ public class FATSuite extends TestContainerSuite {
                             .andWith(FeatureReplacementAction.EE9_FEATURES());
         }
     }
-
-    public static DockerImageName getChromeImage() {
-        if (FATRunner.ARM_ARCHITECTURE) {
-            return DockerImageName.parse("seleniarm/standalone-chromium:4.8.3").asCompatibleSubstituteFor("selenium/standalone-chrome");
-        } else {
-            return DockerImageName.parse("selenium/standalone-chrome:4.8.3");
-        }
-    }
 }
-

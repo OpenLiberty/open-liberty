@@ -18,4 +18,3 @@ Subsystem-Name: Java Database Connectivity 4.1
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
-WLP-InstantOn-Enabled: true

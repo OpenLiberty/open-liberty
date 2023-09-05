@@ -1,11 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.impl;
 
@@ -36,7 +39,7 @@ import com.ibm.wsspi.sib.core.exception.SIConnectionLostException;
  * Each connection should have exactly one of these callbacks.
  * @author prestona
  */
-public class ConnectionReadCompletedCallback extends BaseConnectionReadCallback
+public class ConnectionReadCompletedCallback implements IOReadCompletedCallback
 {
    private static final TraceComponent tc = SibTr.register(ConnectionReadCompletedCallback.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
 	

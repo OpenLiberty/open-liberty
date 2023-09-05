@@ -19,7 +19,7 @@
 
 	<include location="${server.config.dir}/imports/goodBasicRegistry.xml" />
 
-	<include location="${server.config.dir}/imports/privateKeyAllAlgSSLSettings.xml" />
+	<include location="${server.config.dir}/imports/allAlgSSLSettings.xml" />
 
 	<include location="${server.config.dir}/imports/formlogin_1.xml" />
 

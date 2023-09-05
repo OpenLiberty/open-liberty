@@ -43,8 +43,6 @@ Import-Package: \
    com.ibm.ws.javaee.ddmodel.wsbnd, \
    org.apache.cxf.*;version="[3.2,4)", \
    javax.annotation;version=!,\
-   com.ctc.wstx.*;resolution:=optional, \
-   org.codehaus.stax2.*;resolution:=optional, \
    *
 
 Private-Package:\
@@ -56,9 +54,8 @@ Private-Package:\
 DynamicImport-Package: com.sun.xml.bind.v2, \
     com.ibm.xml.xlxp2.jaxb, \
     com.ibm.xml.xlxp2.api.stax, \
-    com.ibm.xml.xlxp2.api.wssec, \
-    com.ctc.wstx.*, \
-    org.codehaus.stax2.*   
+    com.ibm.xml.xlxp2.api.wssec
+    
 
 -dsannotations: com.ibm.ws.jaxws.metadata.builder.AnnotationEndpointInfoConfigurator,\
   com.ibm.ws.jaxws.metadata.builder.WebServicesBndEndpointInfoConfigurator,\

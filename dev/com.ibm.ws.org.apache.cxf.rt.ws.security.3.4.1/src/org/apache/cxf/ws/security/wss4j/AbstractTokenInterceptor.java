@@ -22,7 +22,7 @@ package org.apache.cxf.ws.security.wss4j;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-import java.util.logging.Level;  // Liberty Change
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.security.auth.callback.CallbackHandler;
@@ -60,6 +60,7 @@ import org.apache.wss4j.policy.model.AbstractToken;
  * An abstract interceptor that can be used to form the basis of an interceptor to add and process
  * a specific type of security token.
  */
+
 public abstract class AbstractTokenInterceptor extends AbstractSoapInterceptor {
     private static final Logger LOG = LogUtils.getL7dLogger(AbstractSoapInterceptor.class);
     private static final Set<QName> HEADERS =
@@ -170,11 +171,10 @@ public abstract class AbstractTokenInterceptor extends AbstractSoapInterceptor {
         el.setAttributeNS(WSS4JConstants.XMLNS_NS, "xmlns:wsse", WSS4JConstants.WSSE_NS);
 
         SoapHeader sh = new SoapHeader(new QName(WSS4JConstants.WSSE_NS, "Security"), el);
-        // Liberty Change Start
+        //Liberty change
         boolean mustunderstand = true;
         mustunderstand = translateMustUnderstandProperty(message);
         sh.setMustUnderstand(mustunderstand);
-		// Liberty Change End
         if (actor != null && actor.length() > 0) {
             sh.setActor(actor);
         }
@@ -182,7 +182,6 @@ public abstract class AbstractTokenInterceptor extends AbstractSoapInterceptor {
         return sh;
     }
     
-	// Liberty Change Start
     /**
      * @param message
      * @return
@@ -203,13 +202,11 @@ public abstract class AbstractTokenInterceptor extends AbstractSoapInterceptor {
         } 
         return true;
     }
-	
-		// Liberty Change End
 
     protected String getPassword(String userName, AbstractToken info,
                                  int usage, SoapMessage message) {
         //Then try to get the password from the given callback handler
-        final CallbackHandler handler;
+        CallbackHandler handler = null;
         try {
             Object o = SecurityUtils.getSecurityPropertyValue(SecurityConstants.CALLBACK_HANDLER, message);
             handler = SecurityUtils.getCallbackHandler(o);

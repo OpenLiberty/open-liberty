@@ -47,7 +47,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
-import com.ibm.tx.jta.embeddable.EmbeddableTransactionManagerFactory;
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
@@ -141,6 +140,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     private static final Set<String> stuckApps = new ConcurrentSkipListSet<String>();
 
     private final AtomicServiceReference<JPARuntime> jpaRuntime = new AtomicServiceReference<JPARuntime>(REFERENCE_JPA_RUNTIME);
+    private final AtomicServiceReference<EmbeddableWebSphereTransactionManager> ivTransactionManagerSR = new AtomicServiceReference<EmbeddableWebSphereTransactionManager>(REFERENCE_TRANSACTION_MANAGER);
     private final AtomicServiceReference<JPAExPcBindingContextAccessor> ivContextAccessorSR = new AtomicServiceReference<JPAExPcBindingContextAccessor>(REFERENCE_CONTEXT_ACCESSOR);
     private final ConcurrentServiceReferenceSet<ResourceBindingListener> resourceBindingListeners = new ConcurrentServiceReferenceSet<ResourceBindingListener>(REFERENCE_RESOURCE_BINDING_LISTENERS);
     private final AtomicServiceReference<JPAProviderIntegration> providerIntegrationSR = new AtomicServiceReference<JPAProviderIntegration>(REFERENCE_JPA_PROVIDER);
@@ -154,6 +154,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         props = cc.getProperties();
         setDefaultProperties(props);
         jpaRuntime.activate(cc);
+        ivTransactionManagerSR.activate(cc);
         ivContextAccessorSR.activate(cc);
         resourceBindingListeners.activate(cc);
         providerIntegrationSR.activate(cc);
@@ -166,6 +167,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     @Deactivate
     protected void deactivate(ComponentContext cc) {
         jpaRuntime.deactivate(cc);
+        ivTransactionManagerSR.deactivate(cc);
         ivContextAccessorSR.deactivate(cc);
         resourceBindingListeners.deactivate(cc);
         providerIntegrationSR.deactivate(cc);
@@ -851,6 +853,16 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         return new HashSet<String>(list);
     }
 
+    @Reference(name = REFERENCE_TRANSACTION_MANAGER,
+               service = EmbeddableWebSphereTransactionManager.class)
+    protected void setEmbeddableWebSphereTransactionManager(ServiceReference<EmbeddableWebSphereTransactionManager> ref) {
+        ivTransactionManagerSR.setReference(ref);
+    }
+
+    protected void unsetEmbeddableWebSphereTransactionManager(ServiceReference<EmbeddableWebSphereTransactionManager> ref) {
+        ivTransactionManagerSR.unsetReference(ref);
+    }
+
     @Reference(name = REFERENCE_JPA_PROVIDER, service = JPAProviderIntegration.class)
     protected void setJPAProvider(ServiceReference<JPAProviderIntegration> jpaSR) {
         providerIntegrationSR.setReference(jpaSR);
@@ -979,12 +991,12 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
 
     @Override
     public UOWCurrent getUOWCurrent() {
-        return EmbeddableTransactionManagerFactory.getUOWCurrent();
+        return (UOWCurrent) ivTransactionManagerSR.getService();
     }
 
     @Override
     public EmbeddableWebSphereTransactionManager getEmbeddableWebSphereTransactionManager() {
-        return EmbeddableTransactionManagerFactory.getTransactionManager();
+        return ivTransactionManagerSR.getService();
     }
 
     /*

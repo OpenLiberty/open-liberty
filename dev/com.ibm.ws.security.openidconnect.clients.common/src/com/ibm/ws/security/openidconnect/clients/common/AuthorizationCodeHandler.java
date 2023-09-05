@@ -161,7 +161,6 @@ public class AuthorizationCodeHandler {
         tokenRequestBuilder.useSystemPropertiesForHttpClientConnections(clientConfig.getUseSystemPropertiesForHttpClientConnections());
         String tokenEndpointAuthMethod = clientConfig.getTokenEndpointAuthMethod();
         tokenRequestBuilder.authMethod(tokenEndpointAuthMethod);
-        tokenRequestBuilder.originHeaderValue(clientConfig.getTokenRequestOriginHeader());
         setAuthMethodSpecificSettings(tokenRequestBuilder, tokenEndpointAuthMethod);
 
         TokenRequestor tokenRequestor = tokenRequestBuilder.build();

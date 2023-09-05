@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,7 +14,6 @@ package com.ibm.ws.jaxws.test.wsr.clienthandler;
 
 import javax.annotation.Resource;
 import javax.jws.HandlerChain;
-import javax.xml.stream.XMLEventFactory;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.WebServiceRef;
 
@@ -35,9 +34,6 @@ public class ClientHandler {
     public static void main(String[] args) {
 
         try {
-
-            // Simple Check for StAXProvider used in Liberty's client container
-            System.out.println("XMLEventFactory.newInstance().toString() returns: " + XMLEventFactory.newInstance().toString());
 
             SayHelloService portFromRes = serviceFromRes.getHelloServicePort();
             SayHelloService portFromRef = serviceFromRef.getHelloServicePort();

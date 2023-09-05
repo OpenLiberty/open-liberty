@@ -1,11 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2023 IBM Corporation and others.
+ * Copyright (c) 2003, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 // NOTE: D181601 is not changed flagged as it modifies every line of trace and FFDC.
@@ -153,8 +156,7 @@ public class JFapInboundConnLink extends InboundApplicationLink implements MetaD
                                             conn,
                                             acceptListener,
                                             heartbeatInterval,
-                                            heartbeatTimeout,
-                                            false);
+                                            heartbeatTimeout);
         } catch (FrameworkException fe) {
             //At this point the underlying TCP/IP connection has gone away.
             //We can't throw an Exception so there is little we can do here other than FFDC.

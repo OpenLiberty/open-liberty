@@ -36,6 +36,7 @@ import org.junit.Test;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLConfigChangeListener;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.ssl.SecuritySSLUtils;
 import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.ws.ssl.KeyStoreService;
@@ -78,6 +79,7 @@ public class PrivateKeyJwtAuthMethodTest extends CommonTestClass {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         outputMgr.captureStreams();
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
         keyGen.initialize(4096);
         keyPair = keyGen.generateKeyPair();
@@ -108,6 +110,7 @@ public class PrivateKeyJwtAuthMethodTest extends CommonTestClass {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
+        System.clearProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY);
         outputMgr.dumpStreams();
         outputMgr.restoreStreams();
     }

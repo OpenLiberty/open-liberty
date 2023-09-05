@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,7 +16,6 @@ import com.ibm.tx.TranConstants;
 import com.ibm.tx.util.Utils;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  *
@@ -38,7 +37,6 @@ public class PeerLeaseData {
             Tr.exit(tc, "PeerLeaseData");
     }
 
-    @Trivial
     public String getRecoveryIdentity() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getRecoveryIdentity", _recoveryIdentity);
@@ -48,7 +46,6 @@ public class PeerLeaseData {
     /**
      * @return the _leaseTime
      */
-    @Trivial
     public long getLeaseTime() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getLeaseTime", Utils.traceTime(_leaseTime));
@@ -58,8 +55,9 @@ public class PeerLeaseData {
     /**
      * Has the peer expired?
      */
-    @Trivial
     public boolean isExpired() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "isExpired", new Object[] { _leaseTimeout });
         boolean expired = false;
         long curTime = System.currentTimeMillis();
 
@@ -76,6 +74,8 @@ public class PeerLeaseData {
             }
         }
 
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "isExpired", expired);
         return expired;
     }
 

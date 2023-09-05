@@ -270,7 +270,6 @@ public class ClientImpl implements Client {
             this(uriBuilder, config, null);
         }
 
-		// Liberty Change Start
         @FFDCIgnore(IllegalArgumentException.class)
         public WebTargetImpl(UriBuilder uriBuilder,
                              Configuration config,
@@ -307,7 +306,6 @@ public class ClientImpl implements Client {
                 config.property(key, props.get(key));
             }
         }
-		// Liberty Change End
 
         public WebClient getWebClient() {
             return this.targetClient;
@@ -549,7 +547,7 @@ public class ClientImpl implements Client {
         @Override
         public WebTarget property(String name, @Sensitive Object value) {
             checkClosed();
-            // Liberty change start - need to convert proxy password to ProtectedString 
+            // need to convert proxy password to ProtectedString - Liberty change start
             if (JAXRSClientConstants.PROXY_PASSWORD.equals(name) && value != null &&
                 !(value instanceof ProtectedString)) {
                 return configImpl.property(name, new ProtectedString(value.toString().toCharArray()));

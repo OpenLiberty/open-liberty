@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,19 +33,19 @@ import componenttest.app.FATServlet;
 public class SPIExtensionServlet extends FATServlet {
 
     @Inject
-    private MyExtensionString extensionString;
+    MyExtensionString extensionString;
 
     @Inject
-    private MyProducedString classString;
+    MyProducedString classString;
 
     @Inject
-    private MyBeanInjectionString beanInjectedString;
+    MyBeanInjectionString beanInjectedString;
 
     @Inject
-    private AppBean appBean;
+    AppBean appBean;
 
     @Inject
-    private CustomBDABean customBDABean;
+    CustomBDABean customBDABean;
 
     private static final long serialVersionUID = 1L;
 
@@ -82,7 +82,7 @@ public class SPIExtensionServlet extends FATServlet {
     }
 
     @Test
-    public void testSPIProducerNormal() {
+    public void testSPIInterceptorNormal() {
         assertEquals("Produced injection", classString.toString());
     }
 

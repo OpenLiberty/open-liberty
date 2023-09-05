@@ -53,7 +53,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.app.manager.springboot.container.ApplicationError;
 import com.ibm.ws.app.manager.springboot.container.ApplicationTr.Type;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * A utility class for thinning an uber jar by separating application code in a separate jar
@@ -309,8 +308,7 @@ public class SpringBootThinUtil implements Closeable {
 
     protected String hash(JarFile jf, ZipEntry entry) throws IOException, NoSuchAlgorithmException {
         InputStream eis = jf.getInputStream(entry);
-        // sha-1 is used temporarily while doing checkpoint/restore for Spring Boot applications until sha-256 is made available by JVM.
-        MessageDigest digest = getDigest("sha-256", "sha-1");
+        MessageDigest digest = MessageDigest.getInstance("sha-256");
         byte[] buffer = new byte[4096];
         int read = -1;
 
@@ -319,25 +317,6 @@ public class SpringBootThinUtil implements Closeable {
         }
         byte[] digested = digest.digest();
         return convertToHexString(digested);
-    }
-    
-    @FFDCIgnore(NoSuchAlgorithmException.class)
-    private static MessageDigest getDigest(String... algorithms) throws NoSuchAlgorithmException {
-        NoSuchAlgorithmException error = null;
-        for (String algorithm : algorithms) {
-            try {
-                return MessageDigest.getInstance(algorithm);
-            } catch (NoSuchAlgorithmException suppressed) {
-                // Algorithm not available, save the error and try the next one.
-                if (error != null) {
-                    error.addSuppressed(suppressed);
-                } else {
-                    error = suppressed;
-                }
-
-            }
-        }
-        throw error;
     }
 
     private static String convertToHexString(byte[] digested) {
@@ -1310,6 +1289,8 @@ public class SpringBootThinUtil implements Closeable {
             return startersToDependentArtifactIdsMap;
         }
 
+        public static boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
+
         private static final Map<String, Set<String>> startersToDependentArtifactIdsMap;
 
         static {
@@ -1323,7 +1304,8 @@ public class SpringBootThinUtil implements Closeable {
             theMap.put(starterJarNamePrefix(TOMCAT, "2.5"), loadStarterMvnDeps(mvnSpringBoot25TomcatStarterDeps));
             theMap.put(starterJarNamePrefix(TOMCAT, "2.6"), loadStarterMvnDeps(mvnSpringBoot26TomcatStarterDeps));
             theMap.put(starterJarNamePrefix(TOMCAT, "2.7"), loadStarterMvnDeps(mvnSpringBoot27TomcatStarterDeps));
-            theMap.put(starterJarNamePrefix(TOMCAT, "3.0"), loadStarterMvnDeps(mvnSpringBoot30TomcatStarterDeps));
+            if (isBeta)
+                theMap.put(starterJarNamePrefix(TOMCAT, "3.0"), loadStarterMvnDeps(mvnSpringBoot30TomcatStarterDeps));
 
             theMap.put(starterJarNamePrefix(JETTY, "1.5"), loadStarterMvnDeps(mvnSpringBoot15JettyStarterDeps));
             theMap.put(starterJarNamePrefix(JETTY, "2.0"), loadStarterMvnDeps(mvnSpringBoot20JettyStarterDeps));
@@ -1334,8 +1316,10 @@ public class SpringBootThinUtil implements Closeable {
             theMap.put(starterJarNamePrefix(JETTY, "2.5"), loadStarterMvnDeps(mvnSpringBoot25JettyStarterDeps));
             theMap.put(starterJarNamePrefix(JETTY, "2.6"), loadStarterMvnDeps(mvnSpringBoot26JettyStarterDeps));
             theMap.put(starterJarNamePrefix(JETTY, "2.7"), loadStarterMvnDeps(mvnSpringBoot27JettyStarterDeps));
-            theMap.put(starterJarNamePrefix(JETTY, "3.0"), loadStarterMvnDeps(mvnSpringBoot30JettyStarterDeps));
-            theMap.put(starterJarNamePrefix(JETTY, "3.1"), loadStarterMvnDeps(mvnSpringBoot31JettyStarterDeps));
+            if (isBeta) {
+                theMap.put(starterJarNamePrefix(JETTY, "3.0"), loadStarterMvnDeps(mvnSpringBoot30JettyStarterDeps));
+                theMap.put(starterJarNamePrefix(JETTY, "3.1"), loadStarterMvnDeps(mvnSpringBoot31JettyStarterDeps));
+            }
 
             theMap.put(starterJarNamePrefix(UNDERTOW, "1.5"), loadStarterMvnDeps(mvnSpringBoot15UndertowStarterDeps));
             theMap.put(starterJarNamePrefix(UNDERTOW, "2.0"), loadStarterMvnDeps(mvnSpringBoot20UndertowStarterDeps));
@@ -1346,7 +1330,8 @@ public class SpringBootThinUtil implements Closeable {
             theMap.put(starterJarNamePrefix(UNDERTOW, "2.5"), loadStarterMvnDeps(mvnSpringBoot25UndertowStarterDeps));
             theMap.put(starterJarNamePrefix(UNDERTOW, "2.6"), loadStarterMvnDeps(mvnSpringBoot26UndertowStarterDeps));
             theMap.put(starterJarNamePrefix(UNDERTOW, "2.7"), loadStarterMvnDeps(mvnSpringBoot27UndertowStarterDeps));
-            theMap.put(starterJarNamePrefix(UNDERTOW, "3.0"), loadStarterMvnDeps(mvnSpringBoot30UndertowStarterDeps));
+            if (isBeta)
+                theMap.put(starterJarNamePrefix(UNDERTOW, "3.0"), loadStarterMvnDeps(mvnSpringBoot30UndertowStarterDeps));
 
             theMap.put(starterJarNamePrefix(NETTY, "2.0"), loadStarterMvnDeps(mvnSpringBoot20NettyStarterDeps));
             theMap.put(starterJarNamePrefix(NETTY, "2.1"), loadStarterMvnDeps(mvnSpringBoot21NettyStarterDeps));
@@ -1356,7 +1341,8 @@ public class SpringBootThinUtil implements Closeable {
             theMap.put(starterJarNamePrefix(NETTY, "2.5"), loadStarterMvnDeps(mvnSpringBoot25NettyStarterDeps));
             theMap.put(starterJarNamePrefix(NETTY, "2.6"), loadStarterMvnDeps(mvnSpringBoot26NettyStarterDeps));
             theMap.put(starterJarNamePrefix(NETTY, "2.7"), loadStarterMvnDeps(mvnSpringBoot27NettyStarterDeps));
-            theMap.put(starterJarNamePrefix(NETTY, "3.0"), loadStarterMvnDeps(mvnSpringBoot30NettyStarterDeps));
+            if (isBeta)
+                theMap.put(starterJarNamePrefix(NETTY, "3.0"), loadStarterMvnDeps(mvnSpringBoot30NettyStarterDeps));
 
             startersToDependentArtifactIdsMap = Collections.unmodifiableMap(theMap);
         }

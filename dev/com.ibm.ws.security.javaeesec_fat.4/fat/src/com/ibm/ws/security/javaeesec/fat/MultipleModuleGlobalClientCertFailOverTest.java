@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,8 +12,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.fat;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -195,21 +193,6 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
             }
         }
         urlBase = "https://" + myServer.getHostname() + ":" + myServer.getHttpDefaultSecurePort();
-    }
-
-    /**
-     * This is an internal method used to set the server.xml
-     * if the file in changed, restart the server.
-     */
-    @SuppressWarnings("restriction")
-    @Override
-    public void setServerConfiguration(String serverXML, String... appNames) throws Exception {
-        // Update server.xml
-        Log.info(logClass, "setServerConfiguration", "setServerConfigurationFile to : " + serverXML);
-        server.setMarkToEndOfLog();
-        server.setServerConfigurationFile("/" + serverXML);
-        server.waitForConfigUpdateInLogUsingMark(new HashSet<>(Arrays.asList(appNames)));
-        serverConfigurationFile = serverXML;
     }
 
     /**

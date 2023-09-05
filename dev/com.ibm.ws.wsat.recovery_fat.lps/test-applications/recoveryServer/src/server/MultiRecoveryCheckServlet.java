@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ibm.tx.jta.ut.util.TxTestUtils;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 
 @WebServlet({ "/MultiRecoveryCheckServlet" })
@@ -31,7 +30,6 @@ public class MultiRecoveryCheckServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {		
-		TxTestUtils.setTestResourcesFile();
 			int number = Integer.parseInt(request.getParameter("number").trim());
 			System.out.println("==============MultiRecoveryCheckServlet Test Number: " + number
 					+ "================");

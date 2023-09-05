@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -606,14 +606,14 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
     public void enlistAsyncResource(String xaResFactoryFilter, Serializable xaResInfo, Xid xid) throws SystemException // @LIDB1922-5C
     {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "enlistAsyncResource (SPI)", xaResFactoryFilter, xaResInfo, xid);
+            Tr.entry(tc, "enlistAsyncResource", new Object[] { "(SPI): args: ", xaResFactoryFilter, xaResInfo, xid });
         try {
             final WSATAsyncResource res = new WSATAsyncResource(xaResFactoryFilter, xaResInfo, xid);
             final WSATParticipantWrapper wrapper = new WSATParticipantWrapper(res);
             getResources().addAsyncResource(wrapper);
         } finally {
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "enlistAsyncResource (SPI)");
+                Tr.exit(tc, "enlistAsyncResource", "(SPI)");
         }
     }
 

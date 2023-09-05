@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.repository.resolver.internal.kernel;
 
+import static com.ibm.ws.repository.resolver.internal.ResolutionMode.DETECT_CONFLICTS;
+import static com.ibm.ws.repository.resolver.internal.ResolutionMode.IGNORE_CONFLICTS;
 import static com.ibm.ws.repository.resolver.internal.kernel.KernelResolverResultMatcher.result;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -38,7 +40,7 @@ public class FeatureResolverTest {
     @Test
     public void testSingleFeatureResolution() {
         FeatureResolver resolver = new FeatureResolverImpl();
-        KernelResolverRepository repo = new KernelResolverRepository(null, null);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
 
         EsaResourceWritable esa = WritableResourceFactory.createEsa(null);
         esa.setProvideFeature("com.example.featureA");
@@ -53,7 +55,7 @@ public class FeatureResolverTest {
     @Test
     public void testDependencyResolution() {
         FeatureResolver resolver = new FeatureResolverImpl();
-        KernelResolverRepository repo = new KernelResolverRepository(null, null);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
 
         EsaResourceWritable featureA = WritableResourceFactory.createEsa(null);
         featureA.setProvideFeature("com.example.featureA");
@@ -74,7 +76,7 @@ public class FeatureResolverTest {
     @Test
     public void testToleratesChoosesPreferred() {
         FeatureResolver resolver = new FeatureResolverImpl();
-        KernelResolverRepository repo = new KernelResolverRepository(null, null);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
 
         EsaResourceWritable featureA10 = WritableResourceFactory.createEsa(null);
         featureA10.setProvideFeature("com.example.featureA-1.0");
@@ -100,7 +102,7 @@ public class FeatureResolverTest {
     @Test
     public void testToleratesUsedWhenPreferredMissing() {
         FeatureResolver resolver = new FeatureResolverImpl();
-        KernelResolverRepository repo = new KernelResolverRepository(null, null);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
 
         EsaResourceWritable featureA11 = WritableResourceFactory.createEsa(null);
         featureA11.setProvideFeature("com.example.featureA-1.1");
@@ -121,7 +123,7 @@ public class FeatureResolverTest {
     @Test
     public void testToleratesUsedWhenConflictingVersionsRequired() {
         FeatureResolver resolver = new FeatureResolverImpl();
-        KernelResolverRepository repo = new KernelResolverRepository(null, null);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
 
         EsaResourceWritable featureA10 = WritableResourceFactory.createEsa(null);
         featureA10.setProvideFeature("com.example.featureA-1.0");
@@ -155,7 +157,7 @@ public class FeatureResolverTest {
     @Test
     public void testToleratesNotUsedWhenNotSingleton() {
         FeatureResolver resolver = new FeatureResolverImpl();
-        KernelResolverRepository repo = new KernelResolverRepository(null, null);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
 
         // Note featureA-1.0 and 1.1 are not singletons so can resolve together
         EsaResourceWritable featureA10 = WritableResourceFactory.createEsa(null);
@@ -188,7 +190,7 @@ public class FeatureResolverTest {
     @Test
     public void testAutofeatureResolved() {
         FeatureResolver resolver = new FeatureResolverImpl();
-        KernelResolverRepository repo = new KernelResolverRepository(null, null);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
 
         EsaResourceWritable featureA = WritableResourceFactory.createEsa(null);
         featureA.setProvideFeature("com.example.featureA");
@@ -219,7 +221,7 @@ public class FeatureResolverTest {
     @Test
     public void testFeatureMissing() {
         FeatureResolver resolver = new FeatureResolverImpl();
-        KernelResolverRepository repo = new KernelResolverRepository(null, null);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null, DETECT_CONFLICTS);
 
         EsaResourceWritable featureB = WritableResourceFactory.createEsa(null);
         featureB.setProvideFeature("com.example.featureB-1.0");
@@ -235,7 +237,7 @@ public class FeatureResolverTest {
     @Test
     public void testConflict() {
         FeatureResolver resolver = new FeatureResolverImpl();
-        KernelResolverRepository repo = new KernelResolverRepository(null, null);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null, DETECT_CONFLICTS);
 
         EsaResourceWritable featureA1 = WritableResourceFactory.createEsa(null);
         featureA1.setProvideFeature("com.example.featureA-1.0");

@@ -162,20 +162,8 @@ projectNames.each { projectName ->
     }
 }
 
-// The project 'com.ibm.ws.springboot.fat20.war.app' has an implementation
-// dependency on task 'module' of itself!  See the dependencies list of that
-// project.
-
-if (allBndProjects.contains('com.ibm.ws.springboot.fat20.war.app')) {
-    include ':com.ibm.ws.springboot.fat20.war.app:module'
-}
-
-// The project 'io.openliberty.springboot.fat30.war.app' has an implementation
-// dependency on task 'module' of itself!  See the dependencies list of that
-// project.
-
-if (allBndProjects.contains('io.openliberty.springboot.fat30.war.app')) {
-    include ':io.openliberty.springboot.fat30.war.app:module'
+if (allBndProjects.contains('com.ibm.ws.springboot.support.version20.test.war.app')) {
+    include ':com.ibm.ws.springboot.support.version20.test.war.app:module'
 }
 
 private boolean parseBoolean(String value) {

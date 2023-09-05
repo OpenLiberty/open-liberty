@@ -32,10 +32,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
-import java.security.AccessController; // Liberty Change
+import java.security.AccessController;
 import java.security.GeneralSecurityException;
 import java.security.Principal;
-import java.security.PrivilegedAction; // Liberty Change
+import java.security.PrivilegedAction;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,15 +94,15 @@ import org.apache.http.nio.conn.SchemeIOSessionStrategy;
 import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
 import org.apache.http.nio.reactor.IOSession;
 import org.apache.http.nio.util.HeapByteBufferAllocator;
-// Liberty Change Start
+
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.cxf.jaxrs21.client.component.AsyncClientRunnableWrapperManager;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-// Liberty Change End
+
 /**
  *
  */
-@Trivial // Liberty Change
+@Trivial
 public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
     public static final String USE_ASYNC = "use.async.http.conduit";
 
@@ -136,7 +136,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
         return factory;
     }
 
-    @FFDCIgnore(URISyntaxException.class) // Liberty Change
+    @FFDCIgnore(URISyntaxException.class)
     @Override
     protected void setupConnection(Message message, Address address, HTTPClientPolicy csPolicy) throws IOException {
         if (factory.isShutdown()) {
@@ -201,6 +201,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
         if (StringUtils.isEmpty(uri.getPath())) {
             //hc needs to have the path be "/"
             uri = uri.resolve("/");
+            addressChanged = true;
         }
 
         message.put(USE_ASYNC, Boolean.TRUE);
@@ -241,6 +242,8 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
         message.put(CXFHttpRequest.class, e);
     }
 
+
+
     private void propagateJaxwsSpecTimeoutSettings(Message message, HTTPClientPolicy csPolicy) {
         int receiveTimeout = determineReceiveTimeout(message, csPolicy);
         if (csPolicy.getReceiveTimeout() == 60000) {
@@ -272,7 +275,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
         return super.createOutputStream(message, needToCacheRequest, isChunking, chunkThreshold);
     }
 
-    @Trivial // Liberty Change
+    @Trivial
     public class AsyncWrappedOutputStream extends WrappedOutputStream
         implements CopyingOutputStream, WritableByteChannel {
         final HTTPClientPolicy csPolicy;
@@ -473,7 +476,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             }
         }
 
-        @FFDCIgnore(GeneralSecurityException.class) // Liberty Change
+        @FFDCIgnore(GeneralSecurityException.class)
         protected void connect(boolean output) throws IOException {
             if (connectionFuture != null) {
                 return;
@@ -570,10 +573,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
                                     setSSLSession(sslsession);
                                 }
                             });
-                    // See please https://issues.apache.org/jira/browse/HTTPASYNC-168, the attribute names
-                    // are case-sensitive.
                     ctx.setAttribute("http.iosession-factory-registry", regBuilder.build());
-                    ctx.setAttribute("http.ioSession-factory-registry", regBuilder.build());
                 } catch (GeneralSecurityException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -604,7 +604,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
                 ctx.setAuthSchemeRegistry(asp);
             }
 
-            AccessController.doPrivileged(new PrivilegedAction<Void>() { //Liberty Change Start
+            AccessController.doPrivileged(new PrivilegedAction<Void>() { //Liberty change
                 @Override
                 public Void run() {
                     c.execute(new CXFHttpAsyncRequestProducer(entity, outbuf),
@@ -614,7 +614,6 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
                     return null;
                 }
             });
-			// Liberty Change End
         }
 
         private boolean isSslTargetDifferent(URI lastURL, URI url) {
@@ -632,7 +631,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             return !isAsync;
         }
         
-        @FFDCIgnore(Exception.class) // Liberty Change
+        @FFDCIgnore(Exception.class)
         protected synchronized void setHttpResponse(HttpResponse r) {
             httpResponse = r;
             if (isAsync) {
@@ -648,7 +647,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
         }
         
         
-        @FFDCIgnore(Exception.class) // Liberty Change
+        @FFDCIgnore(Exception.class)
         protected synchronized void setException(Exception ex) {
             exception = ex;
             if (isAsync) {
@@ -666,7 +665,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             notifyAll();
         }
 
-        @FFDCIgnore(InterruptedException.class) // Liberty Change
+        @FFDCIgnore(InterruptedException.class)
         protected synchronized HttpResponse getHttpResponse() throws IOException {
             while (httpResponse == null) {
                 if (exception == null) { //already have an exception, skip waiting
@@ -699,7 +698,8 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
         }
 
         protected void handleResponseAsync() throws IOException {
-            AsyncClientRunnableWrapperManager.prepare(outMessage); // Liberty Change
+            AsyncClientRunnableWrapperManager.prepare(outMessage); // Liberty change
+            isAsync = true;
         }
 
         protected void closeInputStream() throws IOException {
@@ -735,7 +735,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             return this.entity.getConfig().getProxy() != null;
         }
 
-        @FFDCIgnore(InterruptedException.class) // Liberty Change
+        @FFDCIgnore(InterruptedException.class)
         protected HttpsURLConnectionInfo getHttpsURLConnectionInfo() throws IOException {
             if ("http".equals(outMessage.get("http.scheme"))) {
                 return null;
@@ -808,7 +808,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             cookies.readFromHeaders(h);
         }
 
-        @FFDCIgnore(IOException.class) // Liberty Change
+        @FFDCIgnore(IOException.class)
         protected InputStream getPartialResponse() throws IOException {
             InputStream in = null;
             int responseCode = getResponseCode();
@@ -850,7 +850,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             cookies.readFromHeaders(h);
         }
 
-        @FFDCIgnore(Throwable.class) // Liberty Change
+        @FFDCIgnore(Throwable.class)
         protected boolean authorizationRetransmit() throws IOException {
             boolean b = super.authorizationRetransmit();
             if (!b) {
@@ -877,7 +877,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             wrappedStream.close();
         }
 
-        @FFDCIgnore(URISyntaxException.class) // Liberty Change
+        @FFDCIgnore(URISyntaxException.class)
         protected void setupNewConnection(String newURL) throws IOException {
             httpResponse = null;
             isAsync = outMessage != null && outMessage.getExchange() != null
@@ -929,7 +929,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             return sslContext;
         }
 
-        final SSLContext ctx;
+        SSLContext ctx = null;
         if (tlsClientParameters.getSslContext() != null) {
             ctx = tlsClientParameters.getSslContext();
         } else {
@@ -940,7 +940,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
 
             ctx = provider == null ? SSLContext.getInstance(protocol) : SSLContext
                 .getInstance(protocol, provider);
-            ctx.getClientSessionContext().setSessionTimeout(tlsClientParameters.getSslCacheTimeout()); // Liberty Change
+            ctx.getClientSessionContext().setSessionTimeout(tlsClientParameters.getSslCacheTimeout());
 
             KeyManager[] keyManagers = tlsClientParameters.getKeyManagers();
             if (keyManagers == null) {
@@ -956,7 +956,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             }
 
             ctx.init(configuredKeyManagers, trustManagers, tlsClientParameters.getSecureRandom());
-
+            
             if (ctx.getClientSessionContext() != null) {
                 ctx.getClientSessionContext().setSessionTimeout(tlsClientParameters.getSslCacheTimeout());
             }

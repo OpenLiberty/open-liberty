@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,18 +18,13 @@ import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProp
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaClientLibs;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaPermissions;
 
-import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
-import componenttest.rules.repeater.RepeatTests;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PropertiesAsset;
@@ -53,14 +48,10 @@ public class LibertyLoginModuleSpecialCharsTest {
 
     private static final String APP_NAME = "kafkaLoginModuleSpecialCharsTest";
     private static final String APP_GROUP_ID = "login-module-special-chars-test-group";
-    private static final String SERVER_NAME = "SimpleRxMessagingServer";
 
-    @Server(SERVER_NAME)
+    @Server("SimpleRxMessagingServer")
     @TestServlet(contextRoot = APP_NAME, servlet = LibertyLoginModuleSpecialCharsTestServlet.class)
     public static LibertyServer server;
-
-    @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -102,11 +93,6 @@ public class LibertyLoginModuleSpecialCharsTest {
     @AfterClass
     public static void teardownTest() throws Exception {
         server.stopServer();
-    }
-
-    @AfterClass
-    public static void teardownKafka() throws ExecutionException, InterruptedException, IOException {
-        KafkaUtils.deleteKafkaTopics(SaslPlainTests.getAdminClient());
     }
 
 }

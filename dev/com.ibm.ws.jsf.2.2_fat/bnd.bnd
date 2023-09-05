@@ -1,19 +1,17 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2023 IBM Corporation and others.
+# Copyright (c) 2020, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-
-fat.test.container.images: \
-    seleniarm/standalone-chromium:4.8.3,\
-    selenium/standalone-chrome:4.8.3,\
-    alpine:3.16
 
 src: \
     fat/src,\
@@ -64,9 +62,8 @@ src: \
     test-applications/PH01566.war/src,\
     test-applications/JSF22LocalizationTester.war/src,\
     test-applications/JSF22ThirdPartyApi.war/src,\
-    test-applications/FunctionMapper.war/src,\
-    test-applications/ViewScopeLeak.war/src,\
-    test-applications/MYFACES-4512.war/src
+    test-applications/FunctionMapper.war/src, \
+    test-applications/ViewScopeLeak.war/src
 
 fat.project: true
 
@@ -89,32 +86,25 @@ tested.features: \
 
 
 -buildpath: \
-    com.google.guava:guava;version=latest,\
-    com.ibm.websphere.appserver.thirdparty.jsf-2.2;version=latest,\
-    com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-    com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-    com.ibm.websphere.javaee.el.3.0;version=latest,\
-    com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
-    com.ibm.websphere.javaee.jsf.2.2;version=latest,\
-    com.ibm.websphere.javaee.jsp.2.3;version=latest,\
-    com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-    com.ibm.websphere.javaee.validation.1.1;version=latest,\
-    com.ibm.ws.jsf.2.2;version=latest,\
-    com.ibm.ws.jsp.2.3;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     com.ibm.ws.org.apache.httpcomponents;version=latest, \
-    io.openliberty.org.apache.commons.codec;version=latest,\
-    io.openliberty.org.apache.commons.logging;version=latest,\
-    io.openliberty.org.apache.xercesImpl;version=latest,\
-    io.openliberty.org.testcontainers;version=latest,\
-    net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
     net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
-    net.sourceforge.htmlunit:neko-htmlunit;strategy=exact;version=2.44.0,\
     net.sourceforge.htmlunit:webdriver;version=2.6,\
-    org.brotli:dec;version=0.1.2,\
-    org.seleniumhq.selenium:selenium-api;version=4.8.3,\
-    org.seleniumhq.selenium:selenium-chrome-driver;version=4.8.3,\
-    org.seleniumhq.selenium:selenium-chromium-driver;version=4.8.3,\
-    org.seleniumhq.selenium:selenium-remote-driver;version=4.8.3,\
-    org.seleniumhq.selenium:selenium-support;version=4.8.3,\
+    net.sourceforge.htmlunit:neko-htmlunit;strategy=exact;version=2.44.0,\
     org.seleniumhq.webdriver:webdriver-common;version=0.9.7376,\
-    xml-apis:xml-apis;version=1.4.01
+    org.brotli:dec;version=0.1.2,\
+    net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
+    xml-apis:xml-apis;version=1.4.01,\
+    com.ibm.websphere.appserver.thirdparty.jsf-2.2;version=latest,\
+    com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+    com.ibm.websphere.javaee.jsf.2.2;version=latest,\
+    com.ibm.websphere.javaee.validation.1.1;version=latest,\
+    com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+    com.ibm.websphere.javaee.el.3.0;version=latest,\
+    com.ibm.ws.jsp.2.3;version=latest,\
+    com.ibm.ws.jsf.2.2;version=latest,\
+    com.ibm.websphere.javaee.jsp.2.3;version=latest,\
+    com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+    io.openliberty.org.apache.commons.logging;version=latest,\
+    io.openliberty.org.apache.commons.codec;version=latest,\
+    io.openliberty.org.apache.xercesImpl;version=latest

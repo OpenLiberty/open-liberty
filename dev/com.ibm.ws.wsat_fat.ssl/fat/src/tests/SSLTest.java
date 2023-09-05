@@ -22,28 +22,20 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.SSL;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
-import com.ibm.ws.transaction.fat.util.SetupRunner;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class SSLTest extends DBTestBase {
-	
-    protected static SetupRunner runner;
 
 	@BeforeClass
 	public static void beforeTests() throws Exception {
-		
-		runner = new SetupRunner() {
-	        @Override
-	        public void run(LibertyServer s) throws Exception {
-	        	Log.info(SSLTest.class, "setupRunner.run", "Setting up "+s.getServerName());
-	        }
-	    };
 
 		// Test URL
 		appName = "wsatApp";
@@ -72,7 +64,7 @@ public class SSLTest extends DBTestBase {
 		Server2_URL = "http://" + server2.getHostname() + ":"
 				+ server2.getHttpDefaultPort();
 
-		FATUtils.startServers(runner, client, server1, server2);
+		FATUtils.startServers(client, server1, server2);
 	}
 
 	@AfterClass
@@ -125,6 +117,7 @@ public class SSLTest extends DBTestBase {
     }
 
 	@Test
+    @Mode(TestMode.LITE)
 	public void testSSL_AllCommitByProxy() {
 		client.waitForStringInLog("CWLIB0206I");
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -162,6 +155,7 @@ public class SSLTest extends DBTestBase {
 	}
 
 	@Test
+    @Mode(TestMode.LITE)
 	public void testSSL_AllCommitByProx_WithClientAuth() throws Exception {
 		try (AutoCloseable x = clientAuthentify()) {
 			final String testURL = "/" + appName + "/ClientServlet";

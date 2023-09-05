@@ -27,12 +27,12 @@ public class AbortableXAResourceImpl extends com.ibm.tx.jta.ut.util.XAResourceIm
     /**  */
     private static final long serialVersionUID = -1945889317488521383L;
 
-    public AbortableXAResourceImpl(String string) {
-        super(string);
+    public AbortableXAResourceImpl(int i) {
+        super(i);
     }
 
-    public static AbortableXAResourceImpl getAbortableXAResourceImpl(String string) {
-        return new AbortableXAResourceImpl(string);
+    public static AbortableXAResourceImpl getAbortableXAResourceImpl(int key) {
+        return new AbortableXAResourceImpl(key);
     }
 
     @Override

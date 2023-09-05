@@ -36,8 +36,7 @@ public class LibertyReactiveWebServerFactory extends AbstractReactiveWebServerFa
     public WebServer getWebServer(HttpHandler httpHandler) {
         String springVersion = SpringBootVersion.getVersion();
         if (springVersion != null) {
-            // min <= v < max
-            ServerConfigurationFactory.checkSpringBootVersion("3.0.0", "4.0.0", springVersion);
+            ServerConfigurationFactory.checkSpringBootVersion("3.0", "3.0.4", springVersion);
         }
         ServletContextInitializer[] initializers = { (c) -> {
             ServletHttpHandlerAdapter servlet = new ServletHttpHandlerAdapter(httpHandler);

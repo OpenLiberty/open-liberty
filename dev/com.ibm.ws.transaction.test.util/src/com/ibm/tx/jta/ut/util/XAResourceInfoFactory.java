@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,29 +13,22 @@
 package com.ibm.tx.jta.ut.util;
 
 import java.util.HashMap;
-import java.util.UUID;
+
+import com.ibm.tx.jta.impl.XidImpl;
 
 /**
  *
  */
 public class XAResourceInfoFactory {
-    private static final HashMap<String, XAResourceInfoImpl> _xaResInfoTable = new HashMap<String, XAResourceInfoImpl>();
+    private static final HashMap<Integer, XAResourceInfoImpl> _xaResInfoTable = new HashMap<Integer, XAResourceInfoImpl>();
 
-    public static final String filter = "(testfilter=jon)";
+    private XidImpl dummy;
 
     public static XAResourceInfoImpl getXAResourceInfo(int i) {
-    	return getXAResourceInfo(Integer.toString(i));
-    }
-
-    public static XAResourceInfoImpl getXAResourceInfo(String i) {
         if (_xaResInfoTable.get(i) == null) {
             _xaResInfoTable.put(i, new XAResourceInfoImpl(i));
         }
 
         return _xaResInfoTable.get(i);
-    }
-    
-    public static XAResourceInfoImpl getXAResourceInfo() {
-    	return getXAResourceInfo(UUID.randomUUID().toString());
     }
 }

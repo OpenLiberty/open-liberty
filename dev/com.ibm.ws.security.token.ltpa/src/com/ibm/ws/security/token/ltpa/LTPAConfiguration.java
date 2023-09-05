@@ -1,19 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.token.ltpa;
-
-import java.util.List;
-import java.util.Properties;
 
 import com.ibm.wsspi.security.ltpa.TokenFactory;
 
@@ -44,31 +41,6 @@ public interface LTPAConfiguration {
     public static final String CFG_KEY_MONITOR_INTERVAL = "monitorInterval";
 
     /**
-     * The Boolean to monitor the token keys file's directory.
-     */
-    static final String CFG_KEY_MONITOR_DIRECTORY = "monitorDirectory";
-
-    /**
-     * The token validation keys.
-     */
-    static final String CFG_KEY_VALIDATION_KEYS = "validationKeys";
-
-    /**
-     * The token validation keys file(s).
-     */
-    static final String CFG_KEY_VALIDATION_FILE_NAME = "fileName";
-
-    /**
-     * The token validation keys file password.
-     */
-    static final String CFG_KEY_VALIDATION_PASSWORD = "password";
-
-    /**
-     * The the date-time to stop using the token validation keys.
-     */
-    static final String CFG_KEY_VALIDATION_NOT_USE_AFTER_DATE = "notUseAfterDate";
-
-    /**
      * @return TokenFactory instance corresponding to this LTPA configuration
      */
     TokenFactory getTokenFactory();
@@ -81,12 +53,12 @@ public interface LTPAConfiguration {
     /**
      * @return LTPA key file
      */
-    String getPrimaryKeyFile();
+    String getKeyFile();
 
     /**
      * @return LTPA key password
      */
-    String getPrimaryKeyPassword();
+    String getKeyPassword();
 
     /**
      * @return LTPA expiration
@@ -94,7 +66,7 @@ public interface LTPAConfiguration {
     long getTokenExpiration();
 
     /**
-     * @return authFiler reference
+     * @return authFilter reference
      */
     String getAuthFilterRef();
 
@@ -102,15 +74,5 @@ public interface LTPAConfiguration {
      * @return Maximum expiration difference allowed
      */
     long getExpirationDifferenceAllowed();
-
-    /**
-     * @return monitor directory
-     */
-    boolean getMonitorDirectory();
-
-    /**
-     * @return validation Keys
-     */
-    List<Properties> getValidationKeys();
 
 }

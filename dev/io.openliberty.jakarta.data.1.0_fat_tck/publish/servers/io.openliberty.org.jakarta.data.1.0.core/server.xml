@@ -28,6 +28,9 @@
     
     <include location="../fatTestPorts.xml" />
 
+    <!-- Allow Arquillian to monitor application -->
+    <applicationMonitor updateTrigger="mbean"/>
+
     <!-- Allow Arquillian access to dropins directory for application installation -->
     <remoteFileAccess>
         <writeDir>${server.config.dir}/dropins</writeDir>
@@ -42,10 +45,26 @@
       <jdbcDriver libraryRef="dbRotationLib"/>
       <properties.derby.embedded createDatabase="create" databaseName="memory:testdb" user="dbuser1" password="dbpwd1"/>
     </dataSource>
+    
+    <!-- Include test dependencies needed on the server at runtime at a global scope -->
+    <library id="global">
+               <fileset dir="${shared.resource.dir}/junit5/5.9.0" includes="*.jar"/>
+               <fileset dir="${shared.resource.dir}/sigtest/1.6" includes="*.jar"/>
+    </library>
 
     <!--Java2 security-->
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
-	
+
+    <!-- Signature test application permissions -->
+    <javaPermission codeBase="${shared.resource.dir}/sigtest/sigtest-maven-plugin.jar" className="java.security.AllPermission"/>
+    <javaPermission codeBase="${server.config.dir}/dropins/signatureTest.war" className="java.security.AllPermission"/>
+    
+    <!-- Signature test plugin permissions -->
+    <javaPermission codeBase="${shared.resource.dir}/sigtest/1.6/sigtest.jar" className="java.security.AllPermission" />
+    <javaPermission codeBase="${shared.resource.dir}/sigtest/1.6/sigtest.jar" className="java.lang.RuntimePermission"  name="accessClassInPackage.jdk.internal" />
+    <javaPermission codeBase="${shared.resource.dir}/sigtest/1.6/sigtest.jar" className="java.lang.RuntimePermission"  name="accessClassInPackage.jdk.internal.reflect" />
+    <javaPermission codeBase="${shared.resource.dir}/sigtest/1.6/sigtest.jar" className="java.lang.RuntimePermission"  name="accessClassInPackage.jdk.internal.vm.annotation" />
+    
     <!-- Permission needed for Oracle driver -->
     <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" />
     
@@ -55,4 +74,5 @@
     <!-- Permission needed for SQLServer driver -->
     <javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>
     <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+
 </server>

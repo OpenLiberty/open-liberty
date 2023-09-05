@@ -54,8 +54,8 @@ autoFVT.dependsOn unzip1, unzip2
  ******************************************************************
  ******************************************************************/
 /*task webcontent_WAR(type: War, dependsOn: classes) {
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "webcontent.war"
+  destinationDir file(appBuildDir)
+  archiveName "webcontent.war"
   
   from ('test-applications/webcontentclient/resources') {
     include '**'
@@ -75,8 +75,8 @@ autoFVT.dependsOn unzip1, unzip2
  ******************************************************************
  ******************************************************************/
 /*task WSSampleSeiClien_WAR(type: War, dependsOn: classes) {
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "WSSampleSeiClient.war"
+  destinationDir file(appBuildDir)
+  archiveName "WSSampleSeiClient.war"
   
   from ('test-applications/WSSampleSeiClient/resources') {
     include '**'

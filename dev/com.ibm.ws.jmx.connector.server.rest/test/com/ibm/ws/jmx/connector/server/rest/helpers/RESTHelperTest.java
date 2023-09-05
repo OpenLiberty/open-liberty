@@ -67,14 +67,10 @@ public class RESTHelperTest {
         assertEquals("com.foo.mybean/with//slash:foo=bar", RESTHelper.repairSlashes("com.foo.mybean/with/slash:foo=bar", new RESTRequestTestImpl(" https://9.20.198.170:9443/IBMJMXConnectorREST/mbeans/com.foo.mybean/with//slash:foo=bar/seg1/seg2")));
         assertEquals("com.foo.mybean/with//slash:foo=bar", RESTHelper.repairSlashes("com.foo.mybean/with/slash:foo=bar", new RESTRequestTestImpl(" https://9.20.198.170:9443/IBMJMXConnectorREST/mbeans/com.foo.mybean%2Fwith%2F%2Fslash%3Afoo%3Dbar/seg1/seg2")));
 
-        // Tests with more than 2 repeated slashes
+        // Tests with more thatn 2 repeated slashes
         assertEquals("com.foo.mybean/with///slash:foo=bar", RESTHelper.repairSlashes("com.foo.mybean/with/slash:foo=bar", new RESTRequestTestImpl(" https://9.20.198.170:9443/IBMJMXConnectorREST/mbeans/com.foo.mybean/with///slash:foo=bar")));
         assertEquals("com.foo.mybean//with///slash:foo=bar", RESTHelper.repairSlashes("com.foo.mybean/with/slash:foo=bar", new RESTRequestTestImpl(" https://9.20.198.170:9443/IBMJMXConnectorREST/mbeans/com.foo.mybean%2F%2Fwith%2F%2F%2Fslash%3Afoo%3Dbar")));
 
-        // Tests with leading slashes
-        assertEquals("/home/bob/wlp/foo.xsd", RESTHelper.repairSlashes("home/bob/wlp/foo.xsd", new RESTRequestTestImpl("https://:password@liberty.ibm.com:9447/IBMJMXConnectorREST/file//home/bob/wlp/foo.xsd")));
-        assertEquals("/home/bob/wlp/foo.xsd/", RESTHelper.repairSlashes("home/bob/wlp/foo.xsd/", new RESTRequestTestImpl("https://:password@liberty.ibm.com:9447/IBMJMXConnectorREST/file//home/bob/wlp/foo.xsd/")));
-        assertEquals("/home/bob//wlp/foo.xsd//", RESTHelper.repairSlashes("home/bob/wlp/foo.xsd/", new RESTRequestTestImpl("https://:password@liberty.ibm.com:9447/IBMJMXConnectorREST/file//home/bob//wlp/foo.xsd//")));
  
         // Tests for fail cases.
         // There is only one case, which is where the object name can't be found in the request URI. It

@@ -41,10 +41,7 @@ import org.apache.wss4j.policy.model.SupportingTokens;
  * Translate any AlgorithmSuite policy that may be operative into a WSS4J AlgorithmSuite object
  * to enforce what algorithms are allowed in a request.
  */
-// Liberty Change; This class has no Liberty specific changes other than the Sensitive annotation 
-// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
-// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
-// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
+//No Liberty Change, but needed to recompile due to Liberty change in MessageImpl.
 public final class AlgorithmSuiteTranslater {
 
     public void translateAlgorithmSuites(AssertionInfoMap aim, RequestData data) throws WSSecurityException {

@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2023 IBM Corporation and others.
+# Copyright (c) 2019, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -15,13 +15,8 @@
 -sub: *.bnd
 
 bVersion=1.0
-# See comments in the CXF Core bnd.bnd for explaination on versioning in imports vs exports
-cxfImportVersion=3.5.5
-cxfExportVersion=3.4.3
+cxfVersion=3.4.3
 
-# Using version=! in order to not have a version attached to the import for packages that were removed
-# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
-# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
   !java.*, \
   !org.apache.aries.*;version="[0.3,2)", \
@@ -33,10 +28,10 @@ Import-Package: \
   com.ibm.websphere.ras, \
   com.ibm.websphere.ras.annotation, \
   com.ibm.ws.ffdc, \
-  javax.activation;resolution:=optional;version=!, \
+  javax.activation;resolution:=optional, \
   javax.annotation, \
   javax.xml.bind.annotation;version="[2.2,3)", \
-  javax.jws.soap;version=!, \
+  javax.jws.soap, \
   javax.wsdl, \
   javax.wsdl.extensions, \
   javax.wsdl.extensions.mime, \
@@ -44,7 +39,7 @@ Import-Package: \
   javax.wsdl.extensions.soap12, \
   javax.wsdl.factory, \
   javax.xml.namespace, \
-  javax.xml.soap;resolution:=optional;version=!, \
+  javax.xml.soap;resolution:=optional, \
   javax.xml.stream, \
   javax.xml.stream.events, \
   javax.xml.transform, \
@@ -100,19 +95,17 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.apache.cxf.binding.soap.*;version=${cxfExportVersion};-split-package:=merge-last
+  org.apache.cxf.binding.soap.*;version=${cxfVersion};-split-package:=merge-last
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-bindings-soap;${cxfImportVersion};EXACT}!/!META-INF/*, \
+  @${repo;org.apache.cxf:cxf-rt-bindings-soap;${cxfVersion};EXACT}!/!META-INF/*, \
   org/apache/cxf=${bin}/org/apache/cxf, \
   META-INF=resources/META-INF
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-bindings-soap;strategy=exact;version=${cxfImportVersion}, \
+  org.apache.cxf:cxf-rt-bindings-soap;strategy=exact;version=${cxfVersion}, \
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest, \
   com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2, \
-  com.ibm.websphere.javaee.activation.1.1;version=latest, \
-  com.ibm.websphere.javaee.jws.1.0;version=latest, \
   com.ibm.websphere.javaee.wsdl4j.1.2, \
   com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3, \
   com.ibm.websphere.org.osgi.core, \

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,8 +20,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -52,7 +52,7 @@ public class ConfiguredJAXRSCDITest {
 
     //Get a RepeatTests instance for all MP versions that have mpConfig. MP41 will be run in LITE mode. The others will be run in FULL.
     public static RepeatTests repeatAllWithConfig() {
-        List<FeatureSet> others = new ArrayList<>(MicroProfileActions.ALL);
+        Set<FeatureSet> others = new HashSet<>(MicroProfileActions.ALL);
         others.remove(MicroProfileActions.MP41);
         others.remove(MicroProfileActions.MP10); //Does not contain mpConfig
         return MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP41, others);

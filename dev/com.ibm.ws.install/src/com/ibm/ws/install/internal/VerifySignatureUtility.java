@@ -322,7 +322,7 @@ public class VerifySignatureUtility {
             }
             return pgpPubRingCollection;
 
-        } catch (IOException e) {
+        } catch (IOException | PGPException e) {
             throw new InstallException(e.getMessage());
         }
     }

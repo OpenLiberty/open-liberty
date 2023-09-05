@@ -25,12 +25,8 @@
 
     <basicRegistry id="basic" realm="BasicRealm">
         <user name="user1" password="user1pwd" />
-        <user name="user2" password="user2pwd" />
         <group name="group1">
             <member name="user1"/>
-        </group>
-        <group name="group2">
-            <member name="user2"/>
         </group>
     </basicRegistry>
 
@@ -39,10 +35,6 @@
             <security-role name="Employee">
                 <user name="user1" />
                 <group name="group1" />
-            </security-role>
-            <security-role name="Manager">
-                <user name="user2" />
-                <group name="group2" />
             </security-role>        
             <security-role name="AllAuthenticated">
                 <special-subject type="ALL_AUTHENTICATED_USERS" />
@@ -55,10 +47,6 @@
             <security-role name="Employee">
                 <user name="user1" />
                 <group name="group1" />
-            </security-role>
-            <security-role name="Manager">
-                <user name="user2" />
-                <group name="group2" />
             </security-role>        
             <security-role name="AllAuthenticated">
                 <special-subject type="ALL_AUTHENTICATED_USERS" />
@@ -71,10 +59,6 @@
             <security-role name="Employee">
                 <user name="user1" />
                 <group name="group1" />
-            </security-role>
-            <security-role name="Manager">
-                <user name="user2" />
-                <group name="group2" />
             </security-role>        
             <security-role name="AllAuthenticated">
                 <special-subject type="ALL_AUTHENTICATED_USERS" />
@@ -87,10 +71,6 @@
             <security-role name="Employee">
                 <user name="user1" />
                 <group name="group1" />
-            </security-role>
-            <security-role name="Manager">
-                <user name="user2" />
-                <group name="group2" />
             </security-role>        
             <security-role name="AllAuthenticated">
                 <special-subject type="ALL_AUTHENTICATED_USERS" />

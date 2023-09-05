@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -338,7 +338,7 @@ public class RecoverableUnitSectionImpl implements RecoverableUnitSection {
         if (_recLog.failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "addData", this);
-            throw new InternalLogException("Log has already failed");
+            throw new InternalLogException(null);
         }
 
         // Get the shared lock since we are going to modify the internal data structures.
@@ -449,7 +449,7 @@ public class RecoverableUnitSectionImpl implements RecoverableUnitSection {
         if (_recLog.failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "write", this);
-            throw new InternalLogException("Log has already failed");
+            throw new InternalLogException(null);
         }
 
         _controlLock.getSharedLock(LOCK_REQUEST_ID_RUSI_WRITE);
@@ -526,7 +526,7 @@ public class RecoverableUnitSectionImpl implements RecoverableUnitSection {
         if (_recLog.failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "force", this);
-            throw new InternalLogException("Log has already failed");
+            throw new InternalLogException(null);
         }
 
         try {
@@ -593,7 +593,7 @@ public class RecoverableUnitSectionImpl implements RecoverableUnitSection {
         if (_recLog.failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "format", "InternalLogException");
-            throw new InternalLogException("Log has already failed");
+            throw new InternalLogException(null);
         }
 
         _controlLock.getSharedLock(LOCK_REQUEST_ID_RUSI_FORMAT);
@@ -728,7 +728,7 @@ public class RecoverableUnitSectionImpl implements RecoverableUnitSection {
         if (_recLog.failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "data", this);
-            throw new InternalLogException("Log has already failed");
+            throw new InternalLogException(null);
         }
 
         _controlLock.getSharedLock(LOCK_REQUEST_ID_RUSI_DATA);
@@ -832,7 +832,7 @@ public class RecoverableUnitSectionImpl implements RecoverableUnitSection {
         if (_recLog.failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "recover", "InternalLogException");
-            throw new InternalLogException("Log has already failed");
+            throw new InternalLogException(null);
         }
 
         try {

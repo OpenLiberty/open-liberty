@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2023 IBM Corporation and others.
+# Copyright (c) 2020, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -16,7 +16,4 @@
 
 
 -buildpath: net.shibboleth.utilities:java-support;strategy=exact;version=7.5.1, \
-  com.ibm.ws.org.joda.time.2.9.9;version=latest, \
-  io.openliberty.org.bouncycastle.bcprov-jdk18on;version=latest, \
-  io.openliberty.org.bouncycastle.bcpkix-jdk18on;version=latest, \
-  io.openliberty.org.bouncycastle.bcutil-jdk18on;version=latest
+  com.ibm.ws.org.joda.time.2.9.9;version=latest

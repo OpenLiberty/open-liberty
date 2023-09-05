@@ -33,7 +33,7 @@ import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.configuration.ConfiguredBeanLocator;
 import org.apache.cxf.extension.BusExtension;
 import org.apache.cxf.helpers.CastUtils;
-import org.apache.cxf.interceptor.Interceptor;  // Liberty CHange
+import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.service.factory.FactoryBeanListener;
 import org.apache.cxf.service.factory.FactoryBeanListenerManager;
@@ -81,7 +81,7 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
     private boolean addedBusInterceptors;
     private AlternativeSelector alternativeSelector;
     
-    // Liberty Change Start: migration of behaviour from CXF 2.6.2
+ // Liberty change begin migration of behaviour from CXF 2.6.2
     private static boolean ignoreUnsupportedPolicy;
     
     static {
@@ -96,7 +96,7 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
         } else {
             ignoreUnsupportedPolicy = false;
         }
-    } // Liberty Change End
+    } // Liberty change end
 
 
     public PolicyEngineImpl() {
@@ -668,7 +668,7 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
                         if (doLog) {
                             LOG.fine("Alternative " + a.getName() + " is not supported");
                         }
-                        // Liberty Change Start: migration of behaviour from CXF 2.6.2
+                        // Liberty change begin migration of behaviour from CXF 2.6.2
                         if (ignoreUnsupportedPolicy) {
                             if (doLog) {
                                // Please do not modify log message below, it's been used in PropertySettingTest
@@ -678,14 +678,14 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
                             return true;
                         } else {
                             return false;
-                        } // Liberty Change End
+                        } // Liberty change end
                     }
                     for (PolicyInterceptorProvider p : s) {
                         if (!p.configurationPresent(m, a)) {
                             if (doLog) {
                                 LOG.fine("Alternative " + a.getName() + " is not supported");
                             }
-                            // Liberty Change Start: migration of behaviour from CXF 2.6.2
+                            // Liberty change begin migration of behaviour from CXF 2.6.2
                             if (ignoreUnsupportedPolicy) {
                                if (doLog) {
                                   // Please do not modify log message below, it's been used in PropertySettingTest
@@ -695,7 +695,7 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
                                return true;
                             } else {
                                return false;
-                            } // Liberty Change End
+                            } // Liberty change end
                         }
                     }
                 }

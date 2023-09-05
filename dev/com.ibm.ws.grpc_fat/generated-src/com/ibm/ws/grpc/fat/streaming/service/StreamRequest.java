@@ -30,6 +30,11 @@ private static final long serialVersionUID = 0L;
     return new StreamRequest();
   }
 
+  @java.lang.Override
+  public final com.google.protobuf.UnknownFieldSet
+  getUnknownFields() {
+    return this.unknownFields;
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return com.ibm.ws.grpc.fat.streaming.service.StreamingProto.internal_static_streaming_StreamRequest_descriptor;
@@ -44,8 +49,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int MESSAGE_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object message_ = "";
+  private volatile java.lang.Object message_;
   /**
    * <code>string message = 1;</code>
    * @return The message.
@@ -190,13 +194,11 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-
   public static com.ibm.ws.grpc.fat.streaming.service.StreamRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-
   public static com.ibm.ws.grpc.fat.streaming.service.StreamRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -275,8 +277,8 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      bitField0_ = 0;
       message_ = "";
+
       return this;
     }
 
@@ -303,16 +305,9 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.ibm.ws.grpc.fat.streaming.service.StreamRequest buildPartial() {
       com.ibm.ws.grpc.fat.streaming.service.StreamRequest result = new com.ibm.ws.grpc.fat.streaming.service.StreamRequest(this);
-      if (bitField0_ != 0) { buildPartial0(result); }
+      result.message_ = message_;
       onBuilt();
       return result;
-    }
-
-    private void buildPartial0(com.ibm.ws.grpc.fat.streaming.service.StreamRequest result) {
-      int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.message_ = message_;
-      }
     }
 
     @java.lang.Override
@@ -361,7 +356,6 @@ private static final long serialVersionUID = 0L;
       if (other == com.ibm.ws.grpc.fat.streaming.service.StreamRequest.getDefaultInstance()) return this;
       if (!other.getMessage().isEmpty()) {
         message_ = other.message_;
-        bitField0_ |= 0x00000001;
         onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -392,7 +386,7 @@ private static final long serialVersionUID = 0L;
               break;
             case 10: {
               message_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000001;
+
               break;
             } // case 10
             default: {
@@ -410,7 +404,6 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
-    private int bitField0_;
 
     private java.lang.Object message_ = "";
     /**
@@ -453,9 +446,11 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setMessage(
         java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
       message_ = value;
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -464,8 +459,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearMessage() {
+      
       message_ = getDefaultInstance().getMessage();
-      bitField0_ = (bitField0_ & ~0x00000001);
       onChanged();
       return this;
     }
@@ -476,10 +471,12 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setMessageBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
       message_ = value;
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }

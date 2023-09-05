@@ -62,21 +62,18 @@ import org.apache.cxf.jaxrs.impl.PathSegmentImpl;
 import org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl;
 import org.apache.cxf.jaxrs.model.ParameterType;
 import org.apache.cxf.message.Message;
-import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transport.Destination;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
 import org.apache.cxf.transport.http.Headers;
 import org.apache.cxf.transport.servlet.BaseUrlHelper;
 
-// Liberty Change Start - Imports
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxrs20.utils.UriEncoder;
-// Liberty Change End
 
 public final class HttpUtils {
 
-    private static final TraceComponent tc = Tr.register(HttpUtils.class); // Liberty Change
+    private static final TraceComponent tc = Tr.register(HttpUtils.class);
     private static final ResourceBundle BUNDLE = BundleUtils.getBundle(HttpUtils.class);
 
     private static final String REQUEST_PATH_TO_MATCH = "path_to_match";
@@ -102,17 +99,6 @@ public final class HttpUtils {
         new HashSet<>(Arrays.asList(new String[]{"GET", "HEAD", "OPTIONS", "TRACE"}));
     private static final Set<String> KNOWN_HTTP_VERBS_WITH_NO_RESPONSE_CONTENT =
         new HashSet<>(Arrays.asList(new String[]{"HEAD", "OPTIONS"}));
-
-    // Liberty change start
-    // private static final Pattern HTTP_SCHEME_PATTERN = Pattern.compile("^(?i)(http|https)$");
-
-    private static final HashSet<String> HTTP_SCHEMES = new HashSet<>();
-
-    static {
-        HTTP_SCHEMES.add("http");
-        HTTP_SCHEMES.add("https");
-    }
-    // Liberty change end
 
     private HttpUtils() {
     }
@@ -315,9 +301,9 @@ public final class HttpUtils {
 
     public static Locale getLocale(String value) {
         if (value == null) {
-            return new Locale("", ""); // Liberty Change
+            return new Locale("", ""); //Liberty change
         }
-        // Liberty Change Start
+        // Liberty change start
         String[] languageLocale = value.split("-", 2);
         return languageLocale.length > 1 ? new Locale(languageLocale[0], languageLocale[1]) : new Locale(languageLocale[0]);
         /*
@@ -340,7 +326,7 @@ public final class HttpUtils {
         }
         return new Locale(language, locale);
         */
-        // Liberty Change End
+        //Liberty change end
     }
 
     public static int getContentLength(String value) {
@@ -390,13 +376,6 @@ public final class HttpUtils {
             (HttpServletRequest)message.get(AbstractHTTPDestination.HTTP_REQUEST));
         return URI.create(base + relativePath);
     }
-    
-    public static void setHttpRequestURI(Message message, String uriTemplate) {
-        HttpServletRequest request =
-            (HttpServletRequest)message.get(AbstractHTTPDestination.HTTP_REQUEST);
-        request.setAttribute("org.springframework.web.servlet.HandlerMapping.bestMatchingPattern", uriTemplate);
-    }
-
 
     public static URI toAbsoluteUri(URI u, Message message) {
         HttpServletRequest request =
@@ -494,7 +473,7 @@ public final class HttpUtils {
     public static String getBaseAddress(Message m) {
         String endpointAddress = getEndpointAddress(m);
 
-        //Liberty Change Start
+        //Liberty code change start
         String[] addr = parseURI(endpointAddress, false);
         if (addr == null) {
             return endpointAddress;
@@ -584,34 +563,20 @@ public final class HttpUtils {
         }
         return p;
     }
-    // Liberty Change End
+    //Liberty code change end
 
-    public static String getEndpointUri(Message m) {
-        final Object servletRequest = m.get(AbstractHTTPDestination.HTTP_REQUEST);
-        
-        if (servletRequest != null) {
-            final Object property = ((javax.servlet.http.HttpServletRequest)servletRequest)
-                .getAttribute("org.apache.cxf.transport.endpoint.uri");
-            if (property != null) {
-                return property.toString();
-            }
-        }
-        
-        return getEndpointAddress(m);
-    }
     public static String getEndpointAddress(Message m) {
-        String address;
+        String address = null;
         Destination d = m.getExchange().getDestination();
         if (d != null) {
             if (d instanceof AbstractHTTPDestination) {
-                EndpointInfo ei = ((AbstractHTTPDestination)d).getEndpointInfo();
-                HttpServletRequest request = (HttpServletRequest)m.get(AbstractHTTPDestination.HTTP_REQUEST);
-                Object property = request != null
-                    ? request.getAttribute("org.apache.cxf.transport.endpoint.address") : null;
-                address = property != null ? property.toString() : ei.getAddress();
+                HttpServletRequest request = (HttpServletRequest) m.get(AbstractHTTPDestination.HTTP_REQUEST);
+                Object property = request != null ? request.getAttribute("org.apache.cxf.transport.endpoint.address") : null;
+                //Liberty code change start
+                address = property != null ? property.toString() : ((AbstractHTTPDestination) d).getEndpointInfo().getAddress();
+                //Liberty code change end
             } else {
-                address = m.containsKey(Message.BASE_PATH)
-                    ? (String)m.get(Message.BASE_PATH) : d.getAddress().getAddress().getValue();
+                address = m.containsKey(Message.BASE_PATH) ? (String) m.get(Message.BASE_PATH) : d.getAddress().getAddress().getValue();
             }
         } else {
             address = (String) m.get(Message.ENDPOINT_ADDRESS);
@@ -638,7 +603,7 @@ public final class HttpUtils {
 
     public static String getPathToMatch(String path, String address, boolean addSlash) {
 
-        String origPath = path; // Liberty Change
+        String origPath = path;
 
         int ind = path.indexOf(address);
         if (ind == -1 && address.equals(path + "/")) {
@@ -652,7 +617,6 @@ public final class HttpUtils {
             path = "/" + path;
         }
 
-	    // Liberty Change Start
         if (path.equals(origPath) && origPath.contains("%")) {
             address = UriEncoder.encodeString(address).replace("%2F", "/");
             path = origPath;
@@ -673,7 +637,6 @@ public final class HttpUtils {
 //            path = path.replace("!", "%21");
 //            path = getPathToMatch(path, address, addSlash);
 //        }
-		// Liberty Change End
         return path;
     }
 
@@ -718,7 +681,7 @@ public final class HttpUtils {
             return enc;
         } catch (UnsupportedEncodingException ex) {
             String message = new org.apache.cxf.common.i18n.Message("UNSUPPORTED_ENCODING", BUNDLE, enc, defaultEncoding).toString();
-            Tr.warning(tc, message); // Liberty Change
+            Tr.warning(tc, message);
             headers.putSingle(HttpHeaders.CONTENT_TYPE,
                               JAXRSUtils.mediaTypeToString(mt, CHARSET_PARAMETER)
                                                         + ';' + CHARSET_PARAMETER + "="
@@ -840,9 +803,5 @@ public final class HttpUtils {
 
     public static boolean isMethodWithNoResponseContent(String method) {
         return KNOWN_HTTP_VERBS_WITH_NO_RESPONSE_CONTENT.contains(method);
-    }
-    
-    public static boolean isHttpScheme(final String scheme) {
-        return scheme != null && HTTP_SCHEMES.contains(scheme.toLowerCase()); // Liberty change
     }
 }

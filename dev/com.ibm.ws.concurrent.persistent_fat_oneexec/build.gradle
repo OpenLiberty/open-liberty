@@ -18,7 +18,6 @@ dependencies {
 }
 
 task copyFeatureBundle(type: Copy) {
-  dependsOn jar
   from buildDir
   into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles')
   include 'test.feature.ejb.singleton.jar'

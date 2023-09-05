@@ -354,12 +354,6 @@
             name="%maxFileCount.name" 
             description="%maxFileCount.desc" 
             required="false" type="Integer" default="5000" />
-            
-        <!--com.ibm.ws.webcontainer.-->
-        <AD id="set400SCOnTooManyParentDirs"
-            name="%set400SCOnTooManyParentDirs.name" 
-            description="%set400SCOnTooManyParentDirs.desc" 
-            required="false" type="Boolean" default="false"/>
 
         <!--com.ibm.ws.webcontainer.-->
         <AD id="donotCloseOutputOnForwardForServletError"

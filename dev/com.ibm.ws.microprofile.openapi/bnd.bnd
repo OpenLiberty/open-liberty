@@ -19,6 +19,10 @@ Bundle-SymbolicName: com.ibm.ws.microprofile.openapi
 
 Bundle-Description: MicroProfile OpenAPI 1.0, version ${bVersion}
 
+IBM-Web-Extension-Processing-Disabled: true
+
+Web-ContextPath: /openapi
+
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
@@ -41,6 +45,7 @@ Export-Package: \
 	com.ibm.ws.microprofile.openapi.servlet.filter
         
 Include-Resource: \
+    WEB-INF=resources/WEB-INF, \
   	META-INF/services=resources/META-INF/services
   	
 

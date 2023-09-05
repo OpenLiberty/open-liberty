@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
@@ -121,9 +120,6 @@ public class HttpUtils {
      */
     public static BufferedReader getErrorStream(HttpURLConnection con) throws IOException {
         InputStream is = con.getErrorStream();
-        if (is == null) {
-            return new BufferedReader(new StringReader(""));
-        }
         return getBufferedReader(is);
     }
 
@@ -137,9 +133,6 @@ public class HttpUtils {
      */
     public static BufferedReader getErrorStream(HttpURLConnection con, String charsetName) throws IOException {
         InputStream is = con.getErrorStream();
-        if (is == null) {
-            return new BufferedReader(new StringReader(""));
-        }
         return getBufferedReader(is, charsetName);
     }
 

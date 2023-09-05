@@ -72,15 +72,11 @@ import org.apache.cxf.ws.addressing.RelatesToType;
 import org.apache.cxf.ws.addressing.VersionTransformer.Names200408;
 
 
-import com.ibm.websphere.ras.annotation.Sensitive; // Liberty Change
+import com.ibm.websphere.ras.annotation.Sensitive;
 /**
  * SOAP interceptor responsible for {en|de}coding the Message Addressing
  * Properties for {outgo|incom}ing messages.
  */
-// Liberty Change; This class has no Liberty specific changes other than the Sensitive annotation 
-// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
-// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
-// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
 public class MAPCodec extends AbstractSoapInterceptor {
     public static final MAPCodec INSTANCE = new MAPCodec();
 
@@ -140,7 +136,7 @@ public class MAPCodec extends AbstractSoapInterceptor {
      *
      * @param message the messsage
      */
-    public void handleMessage(@Sensitive SoapMessage message) { // Liberty Change
+    public void handleMessage(@Sensitive SoapMessage message) {
         mediate(message);
     }
 
@@ -391,12 +387,13 @@ public class MAPCodec extends AbstractSoapInterceptor {
                         if (header == null) {
                             header = getHeaderFactory().getHeader(msg.getVersion());
                         }
+                        JAXBElement<?> jaxbEl = null;
                         if (o instanceof Element) {
                             Element e = (Element)o;
                             Node importedNode = header.getOwnerDocument().importNode(e, true);
                             header.appendChild(importedNode);
                         } else {
-                            JAXBElement<?> jaxbEl = (JAXBElement<?>) o;
+                            jaxbEl = (JAXBElement<?>) o;
                             ctx.createMarshaller().marshal(jaxbEl, header);
                         }
 

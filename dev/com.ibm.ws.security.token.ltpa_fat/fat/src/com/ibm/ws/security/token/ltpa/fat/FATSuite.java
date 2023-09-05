@@ -32,9 +32,8 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                ContextRootCookiePathTests.class,
+                //ContextRootCookiePathTests.class,
                 FATTest.class,
-                LTPAKeyRotationTests.class,
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.

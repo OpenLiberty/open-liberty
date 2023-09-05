@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -72,8 +72,8 @@ addRequiredLibraries {
  ******************************************************************
  ******************************************************************/
 task CustomLoginModule_JAR(type: Jar, dependsOn: classes) { 
-  destinationDirectory = file(appBuildDir)
-  archiveFileName = "CustomLoginModule.jar"
+  destinationDir file(appBuildDir)
+  archiveName "CustomLoginModule.jar"
    
   from ('build/classes/java/main') { 
     include 'io/openliberty/jcache/internal/fat/loginmodule/*'
@@ -89,8 +89,8 @@ task CustomLoginModule_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SubjectCast_WAR(type: Zip, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "subjectcast.war"
+  destinationDir file("${appBuildDir}")
+  archiveName "subjectcast.war"
   
   from('test-applications/subjectcast/resources') {
     include '**/*'
@@ -109,8 +109,8 @@ task SubjectCast_WAR(type: Zip, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task ProviderInApp_WAR(type: War, dependsOn: classes) {
-  destinationDirectory = file("${appBuildDir}")
-  archiveFileName = "providerinapp.war"
+  destinationDir file("${appBuildDir}")
+  archiveName "providerinapp.war"
   
   from('test-applications/providerinapp/resources') {
     include '**/*'

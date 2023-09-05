@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2023 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,7 +18,6 @@ import java.util.Arrays;
 import com.ibm.tx.TranConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 
 //------------------------------------------------------------------------------
 // Class: ReadableLogRecord
@@ -104,7 +103,7 @@ public class ReadableLogRecord extends LogRecord {
                 // we can check the tail sequence number.
                 recordLength = viewBuffer.getInt();
 
-                // Preserve the current byte cursor position so that we can reset back to it later.
+                // Preserve the current byte cursor position so that we can reset back to it later. 
                 // Move the byte cursor to the first byte after the record data.
                 final int recordDataPosition = viewBuffer.position();
                 viewBuffer.position(recordDataPosition + recordLength);
@@ -145,7 +144,7 @@ public class ReadableLogRecord extends LogRecord {
 
         // If there is a partial write, or a missing record, the next valid record will be at least LogRecord.HEADER_SIZE
         // forward from the current position so skip to that in the viewBuffer and start from there.
-        for (int position = LogRecord.HEADER_SIZE; position + LogRecord.HEADER_SIZE < viewBuffer.limit(); //  its possible we will be able to find a record in the remainder
+        for (int position = LogRecord.HEADER_SIZE; position + LogRecord.HEADER_SIZE < viewBuffer.limit(); //  its possible we will be able to find a record in the remainder 
                         position++) {
             viewBuffer.position(position);
 
@@ -174,7 +173,6 @@ public class ReadableLogRecord extends LogRecord {
         return logRecord;
     }
 
-    @Trivial
     protected long getSequenceNumber() {
         return _sequenceNumber;
     }

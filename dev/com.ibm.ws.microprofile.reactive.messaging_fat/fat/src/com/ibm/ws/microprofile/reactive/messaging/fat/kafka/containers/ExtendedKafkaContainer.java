@@ -97,10 +97,6 @@ public class ExtendedKafkaContainer extends GenericContainer<ExtendedKafkaContai
         return this;
     }
 
-    public String getListenerScheme(){
-        return this.listenerScheme;
-    }
-
     public ExtendedKafkaContainer withZookeeperJaasConfig(String zookeeperJaasConfig) {
         this.zookeeperJaasConfig = zookeeperJaasConfig;
         return this;

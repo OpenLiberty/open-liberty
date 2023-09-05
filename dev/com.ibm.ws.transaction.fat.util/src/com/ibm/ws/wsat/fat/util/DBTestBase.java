@@ -19,8 +19,6 @@ import java.io.BufferedReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import com.ibm.websphere.simplicity.log.Log;
-
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -144,12 +142,12 @@ public abstract class DBTestBase extends WSATTest {
 	}
 
 	public String executeWSAT(String url) throws Exception {
-		Log.info(DBTestBase.class, "executeWSAT", url);
 		HttpURLConnection con = getHttpConnection(new URL(url),
 				HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
 		BufferedReader br = HttpUtils.getConnectionStream(con);
 		String result = br.readLine();
-		Log.info(DBTestBase.class, "executeWSAT", "Result: " + result);
+		System.out.println("Execute WS-AT test from " + url);
+		System.out.println("Result: " + result);
 		return result;
 	}
 }

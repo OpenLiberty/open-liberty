@@ -29,6 +29,11 @@ private static final long serialVersionUID = 0L;
     return new BeerResponse();
   }
 
+  @java.lang.Override
+  public final com.google.protobuf.UnknownFieldSet
+  getUnknownFields() {
+    return this.unknownFields;
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return com.ibm.ws.grpc.fat.beer.service.BeerProto.internal_static_beer_BeerResponse_descriptor;
@@ -43,7 +48,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int DONE_FIELD_NUMBER = 1;
-  private boolean done_ = false;
+  private boolean done_;
   /**
    * <code>bool done = 1;</code>
    * @return The done.
@@ -163,13 +168,11 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-
   public static com.ibm.ws.grpc.fat.beer.service.BeerResponse parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-
   public static com.ibm.ws.grpc.fat.beer.service.BeerResponse parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -248,8 +251,8 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      bitField0_ = 0;
       done_ = false;
+
       return this;
     }
 
@@ -276,16 +279,9 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.ibm.ws.grpc.fat.beer.service.BeerResponse buildPartial() {
       com.ibm.ws.grpc.fat.beer.service.BeerResponse result = new com.ibm.ws.grpc.fat.beer.service.BeerResponse(this);
-      if (bitField0_ != 0) { buildPartial0(result); }
+      result.done_ = done_;
       onBuilt();
       return result;
-    }
-
-    private void buildPartial0(com.ibm.ws.grpc.fat.beer.service.BeerResponse result) {
-      int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.done_ = done_;
-      }
     }
 
     @java.lang.Override
@@ -363,7 +359,7 @@ private static final long serialVersionUID = 0L;
               break;
             case 8: {
               done_ = input.readBool();
-              bitField0_ |= 0x00000001;
+
               break;
             } // case 8
             default: {
@@ -381,7 +377,6 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
-    private int bitField0_;
 
     private boolean done_ ;
     /**
@@ -398,9 +393,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setDone(boolean value) {
-
+      
       done_ = value;
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -409,7 +403,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearDone() {
-      bitField0_ = (bitField0_ & ~0x00000001);
+      
       done_ = false;
       onChanged();
       return this;

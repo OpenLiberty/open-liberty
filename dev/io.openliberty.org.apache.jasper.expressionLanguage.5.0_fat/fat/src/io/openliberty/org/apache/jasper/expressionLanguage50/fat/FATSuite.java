@@ -23,7 +23,7 @@ import io.openliberty.org.apache.jasper.expressionLanguage50.fat.tests.EL50Lambd
 import io.openliberty.org.apache.jasper.expressionLanguage50.fat.tests.EL50MethodReferenceTest;
 
 /**
- * Expression Language 5.0 Tests
+ * Expresssion Language 5.0 Tests
  *
  * The tests for both features should be included in this test component.
  *

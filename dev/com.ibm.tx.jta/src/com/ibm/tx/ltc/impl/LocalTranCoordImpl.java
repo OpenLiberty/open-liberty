@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,7 +24,6 @@ import com.ibm.tx.TranConstants;
 import com.ibm.tx.jta.OnePhaseXAResource;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.ContainerSynchronization;
 import com.ibm.ws.LocalTransaction.InconsistentLocalTranException;
 import com.ibm.ws.LocalTransaction.LTCSystemException;
@@ -198,20 +197,26 @@ public class LocalTranCoordImpl implements LocalTransactionCoordinator, UOWCoord
         }
     }
 
-    @Trivial
     protected LocalTranCoordImpl(boolean boundaryIsAS, LocalTranCurrentImpl current) throws IllegalStateException {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "LocalTranCoordImpl {}", boundaryIsAS);
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "LocalTranCoordImpl", "boundaryIsAS=" + boundaryIsAS);
 
         _state = Running;
         _current = current;
 
         _localId = -1;
 
-        if (boundaryIsAS) {
-            _configuredBoundary = BOUNDARY_ACTIVITYSESSION;
-        } else {
-            _configuredBoundary = BOUNDARY_BEAN_METHOD;
+        try {
+            if (boundaryIsAS) {
+                _configuredBoundary = BOUNDARY_ACTIVITYSESSION;
+            } else {
+                _configuredBoundary = BOUNDARY_BEAN_METHOD;
+            }
+
+        } finally {
+            // Exception logging/reporting performed by initForActivitySessions
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "LocalTranCoordImpl");
         }
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -61,7 +61,7 @@ task runPebble(type: JavaExec) {
     
     workingDir = 'build/libs/autoFVT'
     classpath = files(sourceSets.main.runtimeClasspath, configurations.runPebble)
-    mainClass = "com.ibm.ws.security.acme.docker.pebble.PebbleDriver"
+    main = "com.ibm.ws.security.acme.docker.pebble.PebbleDriver"
     
     /*
      * Don't fail looking up private artifactory in ArtifactoryImageNameSubstitutor.
@@ -78,7 +78,7 @@ task runBoulder(type: JavaExec) {
     
     workingDir = 'build/libs/autoFVT'
     classpath = files(sourceSets.main.runtimeClasspath, configurations.runBoulder)
-    mainClass = "com.ibm.ws.security.acme.docker.boulder.BoulderDriver"
+    main = "com.ibm.ws.security.acme.docker.boulder.BoulderDriver"
     
     /*
      * Don't fail looking up private artifactory in ArtifactoryImageNameSubstitutor.

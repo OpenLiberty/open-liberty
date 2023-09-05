@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -40,6 +40,8 @@ public class SSLRecoveryServlet extends FATServlet {
     @Resource
     UserTransaction ut;
 
+    private static final String filter = "(testfilter=jon)";
+
     public void setupRec001(HttpServletRequest request,
                             HttpServletResponse response) throws Exception {
         final Serializable xaResInfo1 = XAResourceInfoFactory
@@ -52,7 +54,7 @@ public class SSLRecoveryServlet extends FATServlet {
         final XAResource xaRes1 = ((XAResourceImpl) (XAResourceFactoryImpl.instance()
                         .getXAResource(xaResInfo1))).setCommitAction(XAResourceImpl.DIE);
 
-        final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
+        final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
 
         tm.enlist(xaRes1, recoveryId1);
 

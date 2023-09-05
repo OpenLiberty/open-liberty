@@ -37,48 +37,17 @@ warning.could.not.thin.application=CWWKC0251W: Could not convert the application
 warning.could.not.thin.application.explanation=The application could not be converted to a thin application. The application will continue to run from the original JAR. 
 warning.could.not.thin.application.useraction=Attempt to resolve the issue in the exception message and either restart the server or update the application. 
 
-#UPDATED for SpringBoot 3.0:
-# error.need.springboot.version.15=CWWKC0252E: The application failed to start because the springBoot-2.0 feature is configured in the server.xml file. The application requires the springBoot-1.5 feature to be configured.
-#error.need.springboot.version.15.explanation=The application requires the springBoot-1.5 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.  
-#error.need.springboot.version.15.useraction=Configure the springBoot-1.5 feature in the server.xml file. Remove any other Spring Boot features.
+error.need.springboot.version.15=CWWKC0252E: The application failed to start because the springBoot-2.0 feature is configured in the server.xml file. The application requires the springBoot-1.5 feature to be configured.
+error.need.springboot.version.15.explanation=The application requires the springBoot-1.5 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.  
+error.need.springboot.version.15.useraction=Configure the springBoot-1.5 feature in the server.xml file. Remove any other Spring Boot features.
 
-#0: The required spring feature.
-#1: The current spring feature.
-#2: The version of spring content found in the application.
-error.spring.required.15=CWWKC0252E: The {0} feature must be configured in the server.xml file. The {1} feature is configured and the application has Spring {2} content.
-error.spring.required.15.explanation=The currently configured Spring Boot feature is not compatible with application content.
-error.spring.required.15.useraction=Configure a version of the Spring Boot feature that is compatible with application content.
+error.need.springboot.version.20=CWWKC0253E: The application failed to start because the springBoot-1.5 feature is configured in the server.xml file. The application requires the springBoot-2.0 feature to be configured.
+error.need.springboot.version.20.explanation=The application requires the springBoot-2.0 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.  
+error.need.springboot.version.20.useraction=Configure the springBoot-2.0 feature in the server.xml file. Remove any other Spring Boot features.
 
-#UPDATED for SpringBoot 3.0:
-#error.need.springboot.version.20=CWWKC0253E: The application failed to start because the springBoot-1.5 feature is configured in the server.xml file. The application requires the springBoot-2.0 feature to be configured.
-#error.need.springboot.version.20.explanation=The application requires the springBoot-2.0 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.
-#error.need.springboot.version.20.useraction=Configure the springBoot-2.0 feature in the server.xml file. Remove any other Spring Boot features.
-
-#0: The required spring feature.
-#1: The current spring feature.
-#2: The version of spring content found in the application.
-error.spring.required.20=CWWKC0253E: The {0} feature must be configured in the server.xml file. The {1} feature is configured and the application has Spring {2} content.
-error.spring.required.20.explanation=The currently configured Spring Boot feature is not compatible with application content.
-error.spring.required.20.useraction=Configure a version of the Spring Boot feature that is compatible with application content.
-
-#ADDED for SpringBoot 3.0:
-error.spring3.required=CWWKC0273E: The springBoot-3.0 feature must be configured. The springBoot-1.5 or springBoot-2.0 feature is configured and the application has Spring 3.0 content.
-error.spring3.required.explanation=The currently configured Spring Boot feature is not compatible with application content.
-error.spring3.required.useraction=Configure a version of the Spring Boot feature that is compatible with application content.
-
-#UPDATED for SpringBoot 3.0:
-#error.missing.servlet=CWWKC0254E: The application failed to start because it requires a Servlet feature to be configured in the server.xml file.
-#error.missing.servlet.explanation=The application is a web application, and it requires a Servlet feature to be configured in the server.xml file.
-#error.missing.servlet.useraction=Configure a Servlet feature in the server.xml file.
-
-error.spring2.requires.servlet31.application=CWWKC0254E: The servlet-3.1 or servlet-4.0 feature must be configured. The springBoot-1.5 or springBoot-2.0 feature is configured and the application uses Servlets.
-error.spring2.requires.servlet31.application.explanation=The application uses Servlets but no Servlet feature is configured.
-error.spring2.requires.servlet31.application.useraction=Configure one of the specified Servlet features.
-
-#ADDED for SpringBoot 3.0:
-error.spring3.requires.servlet6.application=CWWKC0274E: The servlet-6.0 feature must be configured. The springBoot-3.0 feature is configured and the application uses servlets.
-error.spring3.requires.servlet6.application.explanation=The application uses Servlets but a no Servlet feature is configured.
-error.spring3.requires.servlet6.application.useraction=Configure the specified Servlet feature.
+error.missing.servlet=CWWKC0254E: The application failed to start because it requires a servlet feature to be configured in the server.xml file.
+error.missing.servlet.explanation=The application is a web application, and it requires a servlet feature to be configured in the server.xml file.
+error.missing.servlet.useraction=Configure a servlet feature in the server.xml file.
 
 error.multiple.applications.not.allowed=CWWKC0255E: Spring Boot application {0} cannot be started because application {1} is already active. You cannot configure multiple Spring Boot applications in the same server configuration.
 error.multiple.applications.not.allowed.explanation=Configuring multiple Spring Boot applications in the same server configuration is not supported.
@@ -96,19 +65,9 @@ error.missing.ssl=CWWKC0258E: The application failed to start because it require
 error.missing.ssl.explanation=The application is a secure application, and it requires an SSL feature to be configured in the server.xml file.
 error.missing.ssl.useraction=Configure the transportSecurity-1.0 feature in the server.xml file.
 
-#UPDATED for SpringBoot 3.0:
-#error.missing.websocket=CWWKC0259E: The application failed to start because it requires a websocket feature to be configured in the server.xml file.
-#error.missing.websocket.explanation=The application is a Web Socket application, and it requires a Web Socket feature to be configured in the server.xml file.
-#error.missing.websocket.useraction=Configure a websocket feature in the server.xml file.
-
-error.spring2.requires.websocket1.application=CWWKC0259E: Feature websocket-1.0 or websocket-1.1 must be configured: Feature springBoot-1.5 or springBoot-2.0 is configured and the application uses Web Sockets.
-error.spring2.requires.websocket1.application.explanation=The application uses Web Sockets but no Web Socket feature is configured.
-error.spring2.requires.websocket1.application.useraction=Configure one of the specified Web Socket features.
-
-#ADDED for SpringBoot 3.0:
-error.spring3.requires.websocket2.application=CWWKC0275E: Feature websocket-2.0 must be configured: Feature springBoot-3.0 is configured and the application uses Web Sockets.
-error.spring3.requires.websocket2.application.explanation=The application uses Web Sockets but no Web Socket feature is configured.
-error.spring3.requires.websocket2.application.useraction=Configure the specified Web Socket feature.
+error.missing.websocket=CWWKC0259E: The application failed to start because it requires a websocket feature to be configured in the server.xml file.
+error.missing.websocket.explanation=The application is a web socket application, and it requires a websocket feature to be configured in the server.xml file.
+error.missing.websocket.useraction=Configure a websocket feature in the server.xml file.
 
 # CWWKC0260E: GOT REMOVED
 
@@ -128,17 +87,9 @@ warning.application.started.event.timeout=CWWKC0264W: The {0} application did no
 warning.application.started.event.timeout.explanation=The application did not issue the starting event in the expected time. The server might be overloaded or the application might be large. If the application is starting as part of server startup, the sever startup can finish without waiting for the application to start.
 warning.application.started.event.timeout.useraction=If the application eventually starts, then no action is required. If the application does not start, check the server logs to see whether other messages indicate a cause.
 
-#UPDATED for SpringBoot 3.0
-#warning.java.version.not.supported=CWWKC0265W: The current Java version {0} is not supported by the Spring Boot version {1}. Upgrade the Spring Boot version of the application to 2.0.x or later.
-#warning.java.version.not.supported.explanation=Java versions higher than 1.8 are not supported by the Spring Boot versions 1.5.x and below.
-#warning.java.version.not.supported.useraction=Upgrade the Spring Boot version of the application to 2.0.x or later.
-
-#0: The current Java version
-#1: The configured Spring Boot version.
-#2: The Java version required for the configured Spring Boot version
-warning.unsupported.spring.java.version=CWWKC0265W: The current Java version {0} does not support Spring Boot version {1}: Java version {2} is required.
-warning.unsupported.spring.java.version.explanation=Spring Boot has specific Java version requirements.  The current Java version does not support the application Spring Boot version.
-warning.unsupported.spring.java.version.useraction=Either, change the Java version to a required version, or rebuild the application using a different Spring Boot version.
+warning.java.version.not.supported=CWWKC0265W: The current Java version {0} is not supported by the Spring Boot version {1}. Upgrade the Spring Boot version of the application to 2.0.x or later.
+warning.java.version.not.supported.explanation=Java versions higher than 1.8 are not supported by the Spring Boot versions 1.5.x and below.
+warning.java.version.not.supported.useraction=Upgrade the Spring Boot version of the application to 2.0.x or later.
 
 error.invalid.packaged.liberty.jar=CWWKC0265E: The application failed to start because the packaged Liberty server JAR file is not valid.
 error.invalid.packaged.liberty.jar.explanation=The packaged Liberty server JAR file is missing a Server-Name manifest header, entries for the server root, or entries for the lib.index.cache directory.
@@ -147,3 +98,9 @@ error.invalid.packaged.liberty.jar.useraction=Configure a valid packaged Liberty
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: The application failed to start because the Spring Boot application was not found inside the packaged Liberty Server JAR file.
 error.application.not.found.inside.packaged.liberty.jar.explanation=The packaged Liberty Server JAR file must contain a configured Spring Boot application.
 error.application.not.found.inside.packaged.liberty.jar.useraction=Configure a valid packaged Liberty server JAR file.
+
+#SB3
+
+error.need.springboot.version.30=CWWKC0267E: The application failed to start because the springBoot-1.5 or springBoot-2.0 feature is configured in the server.xml file. The application requires the springBoot-3.0 feature to be configured.
+error.need.springboot.version.30.explanation=The application requires the springBoot-3.0 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.  
+error.need.springboot.version.30.useraction=Configure the springBoot-3.0 feature in the server.xml file. Remove any other Spring Boot features.

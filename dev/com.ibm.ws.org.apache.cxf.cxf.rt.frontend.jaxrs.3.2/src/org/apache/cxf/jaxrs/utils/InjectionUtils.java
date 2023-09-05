@@ -42,7 +42,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;  // Liberty Change 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,8 +52,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.ws.rs.ApplicationPath;  // Liberty Change 
-import javax.ws.rs.Path;   // Liberty Change 
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.GenericEntity;
@@ -67,11 +67,11 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.ParamConverter;
-import javax.ws.rs.ext.Provider;  // Liberty Change 
+import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.Providers;
 
 import org.apache.cxf.common.i18n.BundleUtils;
-import org.apache.cxf.common.classloader.ClassLoaderUtils;   // Liberty Change 
+import org.apache.cxf.common.classloader.ClassLoaderUtils;
 import org.apache.cxf.common.util.ClassHelper;
 import org.apache.cxf.common.util.PrimitiveUtils;
 import org.apache.cxf.common.util.ProxyClassLoaderCache;
@@ -93,20 +93,19 @@ import org.apache.cxf.jaxrs.impl.tl.ThreadLocalProxy;
 import org.apache.cxf.jaxrs.impl.tl.ThreadLocalRequest;
 import org.apache.cxf.jaxrs.impl.tl.ThreadLocalSecurityContext;
 import org.apache.cxf.jaxrs.impl.tl.ThreadLocalUriInfo;
-import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;   // Liberty Change 
+import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
 import org.apache.cxf.jaxrs.model.AbstractResourceInfo;
-import org.apache.cxf.jaxrs.model.ApplicationInfo;   // Liberty Change 
-import org.apache.cxf.jaxrs.model.ClassResourceInfo;   // Liberty Change 
+import org.apache.cxf.jaxrs.model.ApplicationInfo;
+import org.apache.cxf.jaxrs.model.ClassResourceInfo;
 import org.apache.cxf.jaxrs.model.Parameter;
 import org.apache.cxf.jaxrs.model.ParameterType;
-import org.apache.cxf.jaxrs.model.ProviderInfo;  // Liberty Change 
+import org.apache.cxf.jaxrs.model.ProviderInfo;
 import org.apache.cxf.jaxrs.provider.ProviderFactory;
 import org.apache.cxf.jaxrs.provider.ServerProviderFactory;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
 
-// Liberty Change Start - Imports
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
@@ -121,10 +120,9 @@ import com.ibm.wsspi.anno.info.ClassInfo;
 import com.ibm.wsspi.anno.info.FieldInfo;
 import com.ibm.wsspi.anno.info.MethodInfo;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
-// Liberty Change End
 
 public final class InjectionUtils {
-    private static final TraceComponent tc = Tr.register(InjectionUtils.class); // Liberty Change
+    private static final TraceComponent tc = Tr.register(InjectionUtils.class);
 
     public static final Set<String> STANDARD_CONTEXT_CLASSES = new HashSet<>();
     public static final Set<String> VALUE_CONTEXTS = new HashSet<>();
@@ -179,6 +177,7 @@ public final class InjectionUtils {
         new ProxyClassLoaderCache();
 
     private InjectionUtils() {
+        // Empty
     }
 
     public static Field getDeclaredField(Class<?> cls, String fieldName) {
@@ -289,7 +288,7 @@ public final class InjectionUtils {
                                         final Object o,
                                         final Object v) {
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
-            @Override // Liberty Change
+            @Override
             public Object run() {
                 try {
                     f.setAccessible(true);
@@ -306,7 +305,7 @@ public final class InjectionUtils {
     public static Object extractFieldValue(final Field f,
                                         final Object o) {
         return AccessController.doPrivileged(new PrivilegedAction<Object>() {
-            @Override // Liberty Change
+            @Override
             public Object run() {
                 try {
                     f.setAccessible(true);
@@ -346,7 +345,7 @@ public final class InjectionUtils {
             } else if (genericType instanceof GenericArrayType) {
                 genericType = ((GenericArrayType)genericType).getGenericComponentType();
             }
-            final Class<?> cls;
+            Class<?> cls = null;
             if (!(genericType instanceof ParameterizedType)) {
                 cls = (Class<?>)genericType;
             } else {
@@ -357,12 +356,10 @@ public final class InjectionUtils {
         }
         ParameterizedType paramType = (ParameterizedType)genericType;
         Type t = getType(paramType.getActualTypeArguments(), pos);
-        //return t instanceof Class ? (Class<?>) t : getActualType(t, 0); // Liberty Change 
-        return getClassType(t); // Liberty Change 
+        //return t instanceof Class ? (Class<?>) t : getActualType(t, 0);//Liberty change
+        return getClassType(t); //Liberty change
     }
 
-
-    // Liberty Change Start
     /**
      * Get the class type of the provided type. If the type is a Class, then
      * type is returned. If the type is ParameterizedType, then the Raw type is
@@ -375,6 +372,7 @@ public final class InjectionUtils {
      * @param type the type to return the class type for
      * @return the class type of type
      */
+    //Liberty change
     public static Class<?> getClassType(Type type) {
         if (type instanceof Class<?>) {
             return (Class<?>) type;
@@ -401,7 +399,6 @@ public final class InjectionUtils {
 
         return null;
     }
-	// Liberty Change End
 
     public static Type getType(Type[] types, int pos) {
         if (pos >= types.length) {
@@ -451,7 +448,7 @@ public final class InjectionUtils {
         } catch (IllegalAccessException ex) {
             reportServerError("METHOD_ACCESS_FAILURE", method.getName());
         } catch (InvocationTargetException ex) {
-            Tr.error(tc, ex.getCause().getMessage(), ex); // Liberty Change
+            Tr.error(tc, ex.getCause().getMessage(), ex); // Liberty change
             Response r = JAXRSUtils.convertFaultToResponse(ex.getCause(), inMessage);
             if (r != null) {
                 inMessage.getExchange().put(Response.class, r);
@@ -494,11 +491,11 @@ public final class InjectionUtils {
             return null;
         }
 
-        // Liberty Change Start - fix new Date("") throw exception defect
+        //fix new Date("") throw exception defect
         if (value.isEmpty() && genericType == Date.class) {
             return null;
         }
-		// Liberty Change End
+
         if (pType == ParameterType.PATH) {
             if (PathSegment.class.isAssignableFrom(pClass)) {
                 return pClass.cast(new PathSegmentImpl(value, decoded));
@@ -519,7 +516,7 @@ public final class InjectionUtils {
             throw createParamConversionException(pType, nfe);
         }
         if (result != null) {
-            final T theResult;
+            T theResult = null;
             if (pClass.isPrimitive()) {
                 theResult = (T) result;
             } else {
@@ -542,14 +539,12 @@ public final class InjectionUtils {
         }
         if (pClass.isPrimitive()) {
             try {
-			    // Liberty Change Start
                 @SuppressWarnings("unchecked")
                 T ret = (T) PrimitiveUtils.read(value, pClass);
                 // cannot us pClass.cast as the pClass is something like
                 // Boolean.TYPE (representing the boolean primitive) and
                 // the object is a Boolean object
                 return ret;
-				// Liberty Change End
             } catch (NumberFormatException nfe) {
                 throw createParamConversionException(pType, nfe);
             }
@@ -579,7 +574,7 @@ public final class InjectionUtils {
             Throwable t = getOrThrowActualException(ex);
             Tr.error(tc, new org.apache.cxf.common.i18n.Message("CLASS_CONSTRUCTOR_FAILURE",
                             BUNDLE,
-                            pClass.getName()).toString()); // Liberty Change
+                            pClass.getName()).toString());
             Response r = JAXRSUtils.toResponse(HttpUtils.getParameterFailureStatus(pType));
             throw ExceptionUtils.toHttpException(t, r);
         }
@@ -659,7 +654,7 @@ public final class InjectionUtils {
                                         BUNDLE,
                                         parameter);
         if (logError) {
-            Tr.error(tc, errorMessage.toString()); // Libberty Change
+            Tr.error(tc, errorMessage.toString());
         }
         Response r = JAXRSUtils.toResponseBuilder(Response.Status.INTERNAL_SERVER_ERROR)
                         .type(MediaType.TEXT_PLAIN_TYPE)
@@ -691,13 +686,13 @@ public final class InjectionUtils {
             Throwable t = getOrThrowActualException(factoryMethodEx);
             Tr.error(tc, new org.apache.cxf.common.i18n.Message("CLASS_VALUE_OF_FAILURE",
                             BUNDLE,
-                            cls.getName()).toString()); // Liberty Change
+                            cls.getName()).toString());
             throw new WebApplicationException(t, HttpUtils.getParameterFailureStatus(pType));
         }
         return result;
     }
 
-    @FFDCIgnore({ NoSuchMethodException.class, IllegalAccessException.class }) // Liberty Change
+    @FFDCIgnore({ NoSuchMethodException.class, IllegalAccessException.class })
     private static <T> T evaluateFactoryMethod(String value,
                                                Class<T> pClass,
                                                String methodName)
@@ -745,11 +740,11 @@ public final class InjectionUtils {
             new HashMap<>();
         for (Map.Entry<String, List<String>> entry : values.entrySet()) {
             String memberKey = entry.getKey();
-            final String beanKey;
+            String beanKey = null;
 
             int idx = memberKey.indexOf('.');
             if (idx == -1) {
-                beanKey = '.' + memberKey;
+                beanKey = "." + memberKey;
             } else {
                 beanKey = memberKey.substring(0, idx);
                 memberKey = memberKey.substring(idx + 1);
@@ -800,7 +795,7 @@ public final class InjectionUtils {
                 if (setter != null && getter != null) {
                     final Class<?> type;
                     final Type genericType;
-                    Object paramValue;
+                    Object paramValue = null;
                     if (setter instanceof Method) {
                         type = Method.class.cast(setter).getParameterTypes()[0];
                         genericType = Method.class.cast(setter).getGenericParameterTypes()[0];
@@ -1039,7 +1034,7 @@ public final class InjectionUtils {
                                                       boolean isbean, boolean decoded,
                                                       ParameterType pathParam, Message message) {
         //CHECKSTYLE:ON
-        // Liberty Change Start
+        // Liberty change start
         ParamConverter<?> pm = null;
         if (message != null) {
             ServerProviderFactory pf = ServerProviderFactory.getInstance(message);
@@ -1059,7 +1054,7 @@ public final class InjectionUtils {
                 }
             }
         }
-        // Liberty Change End
+        // Liberty change end
         Class<?> type = getCollectionType(rawType);
 
         final Class<?> realType;
@@ -1206,13 +1201,13 @@ public final class InjectionUtils {
             proxy = new ThreadLocalProviders();
         } else if (MessageContext.class.isAssignableFrom(type)) {
             proxy = new ThreadLocalMessageContext();
-		// Liberty Change Start
+// Liberty Change for CXF Begin
         } else if (type.getName().equals(MessageContext.class.getName())) {
             MessageContextProxyClassLoader loader = new MessageContextProxyClassLoader(getClassLoader(Proxy.class), getClassLoader(type), getClassLoader(ThreadLocalProxy.class));
             proxy = (ThreadLocalProxy<T>) Proxy.newProxyInstance(loader,
                                                                  new Class[] { type, ThreadLocalProxy.class },
                                                                  new ProxyInvocationHandler(new ThreadLocalMessageContext()));
-		// Liberty Change Start
+// Liberty Change for CXF Begin
         }
 
         if (proxy == null && isServletApiContext(type.getName())) {
@@ -1223,14 +1218,14 @@ public final class InjectionUtils {
                 = proxyClassLoaderCache.getProxyClassLoader(Proxy.class.getClassLoader(), 
                                                             new Class<?>[]{Proxy.class, ThreadLocalProxy.class, type}); 
             if (!canSeeAllClasses(loader, new Class<?>[]{Proxy.class, ThreadLocalProxy.class, type})) {
-                // Liberty Change Start - (LOG to Tr)
+                // Liberty change start - (LOG to Tr)
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "find a loader from ProxyClassLoader cache," 
                         + " but can't see all interfaces");
                 
                     Tr.debug(tc, "create a new one with parent  " + Proxy.class.getClassLoader());
                 }
-                // Liberty Change End
+                //Liberty change end
                 proxyClassLoaderCache.removeStaleProxyClassLoader(type);
                 proxyClassLoaderCache.getProxyClassLoader(Proxy.class.getClassLoader(), 
                                                           new Class<?>[]{Proxy.class, ThreadLocalProxy.class, type}); 
@@ -1276,9 +1271,9 @@ public final class InjectionUtils {
         }
         if (proxyClassName != null) {
             try {
-                // Liberty Change Start
+                // Liberty Change for CXF Begin
                 return (ThreadLocalProxy<?>) getClassLoader(InjectionUtils.class).loadClass(proxyClassName).newInstance();
-                // Liberty Change End
+                // Liberty Change for CXF Begin
             } catch (Throwable t) {
                 throw new RuntimeException(t);
             }
@@ -1288,14 +1283,14 @@ public final class InjectionUtils {
 
     public static Method getGetterFromSetter(Method setter) throws Exception {
         return setter.getDeclaringClass().getMethod("get" + setter.getName().substring(3));
-    } // Liberty Change End
-	
+    }
+
+    // Liberty Change for CXF Begin
     public static void injectContextProxiesAndApplication(AbstractResourceInfo cri,
                                                           Object instance,
                                                           Application app,
                                                           ProviderFactory factory) {
 
-	    // Liberty Change Start
         /** inject proxy for singleton only */
         if (!cri.isSingleton())
             return;
@@ -1308,7 +1303,6 @@ public final class InjectionUtils {
         Boolean isManagedBean = beanCustomizer == null ? false : true;
 
         InjectionRuntimeContext irc = InjectionRuntimeContextHelper.getRuntimeContext();
-		// Liberty Change End
         synchronized (instance) {
             for (Map.Entry<Class<?>, Method> entry : cri.getContextMethods().entrySet()) {
                 Method method = entry.getValue();
@@ -1325,9 +1319,9 @@ public final class InjectionUtils {
                     value = cri.getContextSetterProxy(method);
                 }
 
-                if (isManagedBean) // Liberty Change Start
+                if (isManagedBean)
                     irc.setRuntimeCtxObject(entry.getKey().getName(), value);
-                else // Liberty Change End
+                else
                     InjectionUtils.injectThroughMethod(instance, method, value);
             }
 
@@ -1345,7 +1339,6 @@ public final class InjectionUtils {
                     value = cri.getContextFieldProxy(f);
                 }
 
-			    // Liberty Change Start
                 if (isManagedBean)
                     irc.setRuntimeCtxObject(f.getType().getName(), value);
                 else
@@ -1373,7 +1366,7 @@ public final class InjectionUtils {
 
     }
 
-    // Liberty Change End
+    // Liberty Change for CXF End
 
     public static void injectContextProxies(AbstractResourceInfo cri, Object instance) {
         injectContextProxiesAndApplication(cri, instance, null, null);
@@ -1392,7 +1385,7 @@ public final class InjectionUtils {
         }
     }
 
-    // Liberty Change Start
+    // Liberty Change for CXF Begin
     @SuppressWarnings("unchecked")
     public static void injectManagedObjectContextField(AbstractResourceInfo cri,
                                                        Field f, Object o, Object value) {
@@ -1412,7 +1405,6 @@ public final class InjectionUtils {
 //
 //      }
     }
-	// Liberty Change End
 
     public static void injectContexts(Object requestObject,
                                       AbstractResourceInfo resource,
@@ -1420,7 +1412,6 @@ public final class InjectionUtils {
 
         if (resource.contextsAvailable()) {
 
-			// Liberty Change Start
             final Class clz;
 
             if (((resource instanceof ProviderInfo)) && !(resource instanceof ApplicationInfo) && resource.getConstructorProxies() == null) {
@@ -1482,7 +1473,8 @@ public final class InjectionUtils {
             }
         });
     }
-	// Liberty Change End
+
+// Liberty Change for CXF End
 
     @SuppressWarnings("unchecked")
     public static void injectContextMethods(Object requestObject,
@@ -1512,7 +1504,7 @@ public final class InjectionUtils {
         }
     }
 
-	// Liberty Change Start
+// Liberty Change for CXF Begain
     /**
      * @param requestObject
      * @param resource
@@ -1548,8 +1540,8 @@ public final class InjectionUtils {
 //            }
         }
     }
-	// Liberty Change End
-	
+
+// Liberty Change for CXF End
     public static void injectContextFields(Object o,
                                            AbstractResourceInfo cri,
                                            Message m) {
@@ -1559,12 +1551,12 @@ public final class InjectionUtils {
                 continue;
             }
             Object value = JAXRSUtils.createContextValue(m, f.getGenericType(), f.getType());
-            if (value != null) // Liberty Change
+            if (value != null)
                 InjectionUtils.injectContextField(cri, f, o, value);
         }
     }
 
-	// Liberty Change Start
+// Liberty Change for CXF Begain
     public static void injectManagedObjectContextFields(Object o,
                                                         AbstractResourceInfo cri,
                                                         Message m) {
@@ -1577,7 +1569,8 @@ public final class InjectionUtils {
             InjectionUtils.injectManagedObjectContextField(cri, f, o, value);
         }
     }
-	// Liberty Change End
+
+// Liberty Change for CXF End
     @SuppressWarnings("unchecked")
     public static void injectConstructorProxies(Object o,
                                                 AbstractResourceInfo cri,
@@ -1714,7 +1707,7 @@ public final class InjectionUtils {
         }
         if (param == ParameterType.PATH || param == ParameterType.MATRIX) {
             return HttpUtils.pathDecode(value);
-        } else { // Liberty Change
+        } else {
             return HttpUtils.urlDecode(value);
         }
     }
@@ -1795,7 +1788,7 @@ public final class InjectionUtils {
         return null;
     }
 
-	// Liberty Change Start
+// Liberty Change for CXF Begain
     private static boolean isAsyncMethod(Method method) {
         Class<?>[] parameterTypes = method.getParameterTypes();
         for (Class<?> c : parameterTypes)
@@ -1877,8 +1870,8 @@ public final class InjectionUtils {
 
         return type;
     }
-    // Liberty Change End
-	
+
+    // Liberty Change for CXF End
     public static Class<?> updateParamClassToTypeIfNeeded(Class<?> paramCls, Type type) {
         if (paramCls != type && type instanceof Class) {
             Class<?> clsType = (Class<?>) type;
@@ -1917,8 +1910,7 @@ public final class InjectionUtils {
     public static Object getEntity(Object o) {
         return o instanceof GenericEntity ? ((GenericEntity<?>) o).getEntity() : o;
     }
-	
-	// Liberty Change Start
+
     private static final List<String> JAXRS_COMPONENTS_INTERFACE;
     static {
         JAXRS_COMPONENTS_INTERFACE = new ArrayList<String>();
@@ -2221,6 +2213,4 @@ public final class InjectionUtils {
             return ( className != null );
         }
     }
-	
-	// Liberty Change End
 }

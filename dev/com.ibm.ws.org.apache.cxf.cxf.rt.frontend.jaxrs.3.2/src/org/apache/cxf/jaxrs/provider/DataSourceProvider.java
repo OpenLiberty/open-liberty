@@ -59,18 +59,15 @@ public class DataSourceProvider<T> implements MessageBodyReader<T>, MessageBodyW
                                MultivaluedMap<String, String> headers, InputStream is)
         throws IOException {
 
-        final DataSource ds;
+        DataSource ds = null;
         if (cls == FileDataSource.class) {
             File file = new BinaryDataProvider<File>().readFrom(File.class, File.class, annotations, type, headers, is);
             ds = new FileDataSource(file);
         } else if (cls == DataSource.class || cls == DataHandler.class) {
-		    // Liberty Change Start: Copy Input Stream
-			// Do we need this change? Why would we copy wasted the time to copy an input stream and not use it? 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             IOUtils.copy(is, baos);
             InputStream copiedStream = new ByteArrayInputStream(baos.toByteArray());
             ds = new InputStreamDataSource(copiedStream, type.toString());
-			// Liberty Change End
         } else {
             LOG.warning("Unsupported DataSource class: " + cls.getName());
             throw ExceptionUtils.toWebApplicationException(null, null);

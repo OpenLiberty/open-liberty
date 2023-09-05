@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,7 +15,6 @@ package com.ibm.ws.recoverylog.spi;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 
 //------------------------------------------------------------------------------
 // Class: FileFailureScope
@@ -63,7 +62,6 @@ public class FileFailureScope implements FailureScope {
     /**
      * @return the _leaseInfo
      */
-    @Trivial
     public LeaseInfo getLeaseInfo() {
         return _leaseInfo;
     }
@@ -75,9 +73,13 @@ public class FileFailureScope implements FailureScope {
      * Constructor to create a new failure scope that encompasses the current point
      * of execution. In WebSphere distributed, this means the current server.
      */
-    @Trivial
     public FileFailureScope() {
         this(Configuration.fqServerName());
+
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "FileFailureScope");
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "FileFailureScope", this);
     }
 
     //------------------------------------------------------------------------------
@@ -89,15 +91,17 @@ public class FileFailureScope implements FailureScope {
      *
      * @param serverName The target server name
      */
-    @Trivial
     public FileFailureScope(String serverName) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "FileFailureScope", serverName);
+
         _serverName = serverName;
         _hashCode = _serverName.hashCode();
 
         _stringForm = "FileFailureScope: " + _serverName + " [" + _hashCode + "]";
 
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "FileFailureScope {0}", _stringForm);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "FileFailureScope", this);
     }
 
     public FileFailureScope(String serverName, LeaseInfo leaseInfo) {
@@ -214,10 +218,11 @@ public class FileFailureScope implements FailureScope {
      * @return String server name
      */
     @Override
-    @Trivial
     public String serverName() {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "serverName: {0}", _serverName);
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "serverName", this);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "serverName", _serverName);
         return _serverName;
     }
 

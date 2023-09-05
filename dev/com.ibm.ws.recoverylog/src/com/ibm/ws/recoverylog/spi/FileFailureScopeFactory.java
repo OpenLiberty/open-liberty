@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,10 +19,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import com.ibm.tx.util.Utils;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 
 //------------------------------------------------------------------------------
@@ -49,8 +47,9 @@ public class FileFailureScopeFactory implements FailureScopeFactory {
      * @return FailureScope A corrisponding FailureScope object.
      */
     @Override
-    @Trivial
     public FailureScope toFailureScope(byte[] bytes) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "toFailureScope", new Object[] { RLSUtils.toHexString(bytes), this });
 
         final ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         final DataInputStream dis = new DataInputStream(bais);
@@ -58,7 +57,7 @@ public class FileFailureScopeFactory implements FailureScopeFactory {
         int version = 0;
         try {
             // The first byte is the failure scope ID. We can disgard this
-            // as the factory manager has already determined that the
+            // as the factory manager has already determined that the 
             // failure scope contained in the byte[] should be inflated by
             // this factory.
             byte failureScopeID = dis.readByte();
@@ -96,8 +95,8 @@ public class FileFailureScopeFactory implements FailureScopeFactory {
             // REQD Throw an exception if versions do not match, or return null from the method?
         }
 
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "toFailureScope {0} {1} {2}", this, RLSUtils.toHexString(bytes), failureScope);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "toFailureScope", failureScope);
         return failureScope;
     }
 
@@ -114,8 +113,9 @@ public class FileFailureScopeFactory implements FailureScopeFactory {
      * @return byte[] A serialiazed form of the FailureScope.
      */
     @Override
-    @Trivial
     public byte[] toByteArray(FailureScope failureScope) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "toByteArray", new Object[] { failureScope, this });
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final DataOutputStream dos = new DataOutputStream(baos);
@@ -137,8 +137,8 @@ public class FileFailureScopeFactory implements FailureScopeFactory {
             // REQD Throw an exception here, or leave method to return null?
         }
 
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "toByteArray", this, failureScope, Utils.toString(bytes));
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "toByteArray", bytes);
         return bytes;
     }
 }

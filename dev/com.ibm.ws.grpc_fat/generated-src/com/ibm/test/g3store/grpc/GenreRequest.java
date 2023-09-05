@@ -26,6 +26,11 @@ private static final long serialVersionUID = 0L;
     return new GenreRequest();
   }
 
+  @java.lang.Override
+  public final com.google.protobuf.UnknownFieldSet
+  getUnknownFields() {
+    return this.unknownFields;
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return com.ibm.test.g3store.grpc.AppConsumerProto.internal_static_test_g3store_grpc_GenreRequest_descriptor;
@@ -40,7 +45,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int GENRETYPE_FIELD_NUMBER = 1;
-  private int genreType_ = 0;
+  private int genreType_;
   /**
    * <code>.GenreType genreType = 1;</code>
    * @return The enum numeric value on the wire for genreType.
@@ -53,7 +58,8 @@ private static final long serialVersionUID = 0L;
    * @return The genreType.
    */
   @java.lang.Override public com.ibm.test.g3store.grpc.GenreType getGenreType() {
-    com.ibm.test.g3store.grpc.GenreType result = com.ibm.test.g3store.grpc.GenreType.forNumber(genreType_);
+    @SuppressWarnings("deprecation")
+    com.ibm.test.g3store.grpc.GenreType result = com.ibm.test.g3store.grpc.GenreType.valueOf(genreType_);
     return result == null ? com.ibm.test.g3store.grpc.GenreType.UNRECOGNIZED : result;
   }
 
@@ -165,13 +171,11 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-
   public static com.ibm.test.g3store.grpc.GenreRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-
   public static com.ibm.test.g3store.grpc.GenreRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -246,8 +250,8 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      bitField0_ = 0;
       genreType_ = 0;
+
       return this;
     }
 
@@ -274,16 +278,9 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.ibm.test.g3store.grpc.GenreRequest buildPartial() {
       com.ibm.test.g3store.grpc.GenreRequest result = new com.ibm.test.g3store.grpc.GenreRequest(this);
-      if (bitField0_ != 0) { buildPartial0(result); }
+      result.genreType_ = genreType_;
       onBuilt();
       return result;
-    }
-
-    private void buildPartial0(com.ibm.test.g3store.grpc.GenreRequest result) {
-      int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.genreType_ = genreType_;
-      }
     }
 
     @java.lang.Override
@@ -361,7 +358,7 @@ private static final long serialVersionUID = 0L;
               break;
             case 8: {
               genreType_ = input.readEnum();
-              bitField0_ |= 0x00000001;
+
               break;
             } // case 8
             default: {
@@ -379,7 +376,6 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
-    private int bitField0_;
 
     private int genreType_ = 0;
     /**
@@ -395,8 +391,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setGenreTypeValue(int value) {
+      
       genreType_ = value;
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -406,7 +402,8 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public com.ibm.test.g3store.grpc.GenreType getGenreType() {
-      com.ibm.test.g3store.grpc.GenreType result = com.ibm.test.g3store.grpc.GenreType.forNumber(genreType_);
+      @SuppressWarnings("deprecation")
+      com.ibm.test.g3store.grpc.GenreType result = com.ibm.test.g3store.grpc.GenreType.valueOf(genreType_);
       return result == null ? com.ibm.test.g3store.grpc.GenreType.UNRECOGNIZED : result;
     }
     /**
@@ -418,7 +415,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      bitField0_ |= 0x00000001;
+      
       genreType_ = value.getNumber();
       onChanged();
       return this;
@@ -428,7 +425,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearGenreType() {
-      bitField0_ = (bitField0_ & ~0x00000001);
+      
       genreType_ = 0;
       onChanged();
       return this;

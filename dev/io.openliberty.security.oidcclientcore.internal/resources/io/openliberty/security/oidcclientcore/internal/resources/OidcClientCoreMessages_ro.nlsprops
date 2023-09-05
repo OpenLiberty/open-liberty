@@ -146,23 +146,3 @@ PRIVATE_KEY_JWT_AUTH_ERROR.useraction=Pentru mai multe informa\u021bii, vede\u02
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY=CWWKS2431E: Clientului OpenID Connect [{0}] \u00eei lipse\u0219te cheia necesar\u0103 pentru a semna jetonul pentru autentificarea clientului.
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.explanation=\u00cen configura\u021bia clientului OpenID Connect lipsesc date sau nu poate fi g\u0103sit\u0103 o cheie cu numele alias de cheie \u00een configura\u021bia SSL pentru clientul OpenID Connect.
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.useraction=Asigura\u021bi-v\u0103 c\u0103 clientul OpenID Connect are un nume alias de cheie \u0219i este configurat\u0103 referin\u021ba SSL. Verifica\u021bi dac\u0103 depozitul de chei la care se face referire \u00een configura\u021bia SSL con\u021bine o cheie al c\u0103rei alias se potrive\u0219te cu numele alias de cheie din configura\u021bia clientului OpenID Connect.
-
-TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR=CWWKS2432E: Clientul OpenID Connect [{0}] a detectat o eroare la setarea autentific\u0103rii clientului pentru punctul final de jeton pentru metoda de autentificare [{1}]. {2}
-TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.explanation=Punctul final de jeton OpenID Connect necesit\u0103 autentificarea clientului, dar este posibil s\u0103 lipseasc\u0103 informa\u021bii pentru clientul OpenID Connect sau clientul s\u0103 fi detectat alt\u0103 eroare la setarea datelor de autentificare.
-TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare.
-
-PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME=CWWKS2433E: Clientul [{0}] OpenID Connect nu are configurat un nume alias de cheie, astfel \u00eenc\u00e2t clientul nu poate localiza cheile care sunt necesare pentru crearea JSON Web Token pentru autentificarea clientului.
-PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.explanation=Clientul OpenID Connect trebuie s\u0103 configureze un nume alias de cheie pentru a defini cheia de utilizat pentru a semna JWT. Trebuie s\u0103 fie utilizat acela\u0219i alias de cheie at\u00e2t pentru cheia privat\u0103 care este utilizat\u0103 pentru a semna JWT, c\u00e2t \u0219i pentru cheia public\u0103 corespondent\u0103.
-PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.useraction=Verifica\u021bi dac\u0103 clientul OpenID Connect are configurat un nume alias de cheie.
-
-PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF=CWWKS2434E: Clientul OpenID Connect [{0}] nu are configurat\u0103 o referin\u021b\u0103 de depozit de chei, astfel \u00eenc\u00e2t clientul nu poate localiza cheia de utilizat pentru a semna JSON Web Token pentru autentificarea clientului.
-PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.explanation=Clientul OpenID Connect trebuie s\u0103 configureze o referin\u021b\u0103 de depozit de chei pentru a defini locul unde se g\u0103se\u0219te cheia de utilizat pentru a semna JWT.
-PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.useraction=Verifica\u021bi dac\u0103 clientul OpenID Connect are configurat\u0103 o referin\u021b\u0103 de depozit de chei.
-
-PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY=CWWKS2435E: Clientul nu poate extrage cheia privat\u0103 [{0}] din inelul de chei [{1}] pentru a semna JSON Web Token. {2}
-PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY.explanation=Clientul OpenID Connect trebuie s\u0103 utilizeze o cheie privat\u0103 pentru a semna JSON Web Token pentru autentificarea clientului. Clientul a detectat o eroare la extragerea cheii private.
-PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare.
-
-PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY=CWWKS2436E: Clientul nu poate extrage cheia public\u0103 [{0}] din inelul de chei [{1}] pentru a calcula antetul x5t pentru JSON Web Token. {2}
-PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY.explanation=Antetul x5t este amprenta digital\u0103 de certificat a cheii publice care corespunde cheii private utilizate pentru a semna JSON Web Token. Antetul x5t ajut\u0103 furnizorii OpenID Connect s\u0103 identifice certificatul de utilizat pentru verificarea semn\u0103turii JWT. Clientul a detectat o eroare la extragerea cheii publice.
-PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare.

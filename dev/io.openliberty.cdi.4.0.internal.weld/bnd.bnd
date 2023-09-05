@@ -25,7 +25,7 @@ Bundle-Description:cdi 4.0 weld impl, version ${bVersion}
 
 -dsannotations: io.openliberty.cdi40.internal.weld.CDI40BeansXmlParserImpl,\
                 io.openliberty.cdi40.internal.weld.DefaultCDI40SecurityService,\
-                io.openliberty.cdi40.internal.weld.CDI40ExtensionSPIProvider,\
+                io.openliberty.cdi40.internal.weld.LiteExtensionProvider,\
                 io.openliberty.cdi40.internal.weld.CDI40AggregatedConfigurationImpl, \
                 io.openliberty.cdi40.internal.weld.CDI40BceFinder,\
                 io.openliberty.cdi40.internal.weld.CDI40ContainerEventManagerImpl
@@ -51,7 +51,6 @@ WS-TraceGroup: JCDI
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	org.eclipse.osgi,\
 	io.openliberty.jakarta.cdi.4.0,\
-	io.openliberty.cdi.4.0.interfaces,\
 	io.openliberty.org.jboss.weld5,\
 	com.ibm.ws.cdi.internal.jakarta,\
 	com.ibm.ws.cdi.interfaces.jakarta,\

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2023 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,7 +18,6 @@ import java.util.HashMap;
 import com.ibm.tx.TranConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 
 //------------------------------------------------------------------------------
@@ -66,7 +65,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
  * no-op. The 'attemptExclusiveLock' method returns a boolean to indicate if the lock has been
  * granted or not.
  * </p>
- *
+ * 
  * <p>
  * A group of threads make the request to obtain the exclusive lock for a given keypoint event.
  * These requests occur around about the same time but ultlimatly only one of these requests
@@ -75,7 +74,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
  * At this point all threads will be released, those that did not get the lock simply continue
  * without performing a keypoint and the cycle is ready to repeat at the next keypoint event.
  * </p>
- *
+ * 
  * <p>
  * The exclusive lock can't be granted if other threads in the system hold shared locks and this
  * imposes a couple of extra rules :
@@ -156,8 +155,9 @@ public class Lock {
      *                      trace output. It should be used to 'pair up' get/set pairs in
      *                      the code.
      */
-    @Trivial
     public void getSharedLock(int requestId) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "getSharedLock", this, requestId);
 
         Thread currentThread = Thread.currentThread();
         Integer count = null;
@@ -180,7 +180,7 @@ public class Lock {
                         FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.Lock.getSharedLock", "180", this);
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Thread " + Integer.toHexString(currentThread.hashCode()) + " was interrupted unexpectedly during wait. Retesting condition");
-                        // This exception is received if another thread interrupts this thread by calling this threads
+                        // This exception is received if another thread interrupts this thread by calling this threads 
                         // Thread.interrupt method. The Lock class does not use this mechanism for breaking out of the
                         // wait call - it uses notifyAll to wake up all waiting threads. This exception should never
                         // be generated. If for some reason it is called then ignore it and start to wait again.
@@ -202,7 +202,10 @@ public class Lock {
         }
 
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getSharedLock {0} {1}", this, requestId);
+            Tr.debug(tc, "Count: " + count);
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "getSharedLock");
     }
 
     //------------------------------------------------------------------------------
@@ -217,8 +220,9 @@ public class Lock {
      *                      trace output. It should be used to 'pair up' get/set pairs in
      *                      the code.
      */
-    @Trivial
     public void releaseSharedLock(int requestId) throws NoSharedLockException {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "releaseSharedLock", this, requestId);
 
         Thread currentThread = Thread.currentThread();
         int newValue = 0;
@@ -249,8 +253,12 @@ public class Lock {
             }
         }
 
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "releaseSharedLock", this, requestId, _sharedThreads.get(currentThread));
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Count: " + _sharedThreads.get(currentThread));
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "releaseSharedLock");
     }
 
     //------------------------------------------------------------------------------
@@ -280,7 +288,7 @@ public class Lock {
                 throw new HoldingExclusiveLockException();
             } else {
                 if ((_threadHoldingExclusiveLock != null) || (_threadRequestingExclusiveLock != null)) {
-                    // Another thread is either holding or requesting the exclusive lock. This thread will
+                    // Another thread is either holding or requesting the exclusive lock. This thread will 
                     // not be granted the lock and will return with 'false'. Before returning, this
                     // thread will wait for the exclusive lock to be released.
 
@@ -306,7 +314,7 @@ public class Lock {
                             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.Lock.attemptExclusiveLock", "325", this);
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "Thread " + Integer.toHexString(currentThread.hashCode()) + " was interrupted unexpectedly during wait. Retesting condition");
-                            // This exception is received if another thread interrupts this thread by calling this threads
+                            // This exception is received if another thread interrupts this thread by calling this threads 
                             // Thread.interrupt method. The Lock class does not use this mechanism for breaking out of the
                             // wait call - it uses notifyAll to wake up all waiting threads. This exception should never
                             // be generated. If for some reason it is called then ignore it and start to wait again.
@@ -342,7 +350,7 @@ public class Lock {
                             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.Lock.attemptExclusiveLock", "362", this);
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "Thread " + Integer.toHexString(currentThread.hashCode()) + " was interrupted unexpectedly during wait. Retesting condition");
-                            // This exception is received if another thread interrupts this thread by calling this threads
+                            // This exception is received if another thread interrupts this thread by calling this threads 
                             // Thread.interrupt method. The Lock class does not use this mechanism for breaking out of the
                             // wait call - it uses notifyAll to wake up all waiting threads. This exception should never
                             // be generated. If for some reason it is called then ignore it and start to wait again.
@@ -402,7 +410,7 @@ public class Lock {
     //------------------------------------------------------------------------------
     /**
      * Returns the string representation of this object instance.
-     *
+     * 
      * @return String The string representation of this object instance.
      */
     @Override
@@ -424,10 +432,10 @@ public class Lock {
      * {
      * Set entrySet = _sharedThreads.entrySet();
      * Iterator entrySetIterator = entrySet.iterator();
-     *
+     * 
      * //System.out.println("Requesting exclusive lock thread :");
      * if (tc.isDebugEnabled()) Tr.debug(tc, "Requesting exclusive lock thread :");
-     *
+     * 
      * if (_threadRequestingExclusiveLock != null)
      * {
      * //System.out.println("Thread " + Integer.toHexString(_threadRequestingExclusiveLock.hashCode()));
@@ -438,10 +446,10 @@ public class Lock {
      * //System.out.println("Not held");
      * if (tc.isDebugEnabled()) Tr.debug(tc, "Not held");
      * }
-     *
+     * 
      * //System.out.println("Holding exclusive lock thread :");
      * if (tc.isDebugEnabled()) Tr.debug(tc, "Holding exclusive lock thread :");
-     *
+     * 
      * if (_threadHoldingExclusiveLock != null)
      * {
      * //System.out.println("Thread " + Integer.toHexString(_threadHoldingExclusiveLock.hashCode()));
@@ -452,19 +460,19 @@ public class Lock {
      * //System.out.println("Not held");
      * if (tc.isDebugEnabled()) Tr.debug(tc,"Not held" );
      * }
-     *
+     * 
      * //System.out.println("Shared locks :");
      * if (tc.isDebugEnabled()) Tr.debug(tc, "Shared locks :");
-     *
+     * 
      * if (entrySetIterator.hasNext())
      * {
      * while (entrySetIterator.hasNext())
      * {
      * Map.Entry entry = (Map.Entry)entrySetIterator.next();
-     *
+     * 
      * Thread thread = (Thread)entry.getKey();
      * Integer count = (Integer)entry.getValue();
-     *
+     * 
      * //System.out.println("Thread " + " " + Integer.toHexString(thread.hashCode()) + " " + count.intValue());
      * if (tc.isDebugEnabled()) Tr.debug(tc, "Thread " + " " + Integer.toHexString(thread.hashCode()) + " " + count.intValue());
      * }

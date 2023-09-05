@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2017 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -21,36 +21,30 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF
-    
-Import-Package: \
-	io.openliberty.netty.internal*,\
-	!*.internal.*,\
-	*
 
 Export-Package: \
-	com.ibm.ws.sib.comms.client,\
-	com.ibm.ws.sib.comms.client.proxyqueue,\
-	com.ibm.ws.sib.comms.client.proxyqueue.asynch,\
-	com.ibm.ws.sib.comms.client.proxyqueue.impl,\
-	com.ibm.ws.sib.comms.client.proxyqueue.queue,\
-	com.ibm.ws.sib.comms.client.util,\
-	com.ibm.ws.sib.comms.common,\
-	com.ibm.ws.sib.jfapchannel.approxtime,\
-	com.ibm.ws.sib.jfapchannel.framework,\
-	com.ibm.ws.sib.jfapchannel.impl,\
-	com.ibm.ws.sib.jfapchannel.impl.eventrecorder,\
-	com.ibm.ws.sib.jfapchannel.impl.octracker,\
-	com.ibm.ws.sib.jfapchannel.impl.rldispatcher,\
-	com.ibm.ws.sib.jfapchannel.richclient.approxtime.impl,\
-	com.ibm.ws.sib.jfapchannel.richclient.framework.impl,\
-	com.ibm.ws.sib.jfapchannel.richclient.impl,\
-	com.ibm.ws.sib.jfapchannel.richclient.impl.octracker,\
-	com.ibm.ws.sib.jfapchannel.richclient.threadpool.impl,\
-	com.ibm.ws.sib.jfapchannel.threadpool,\
-	com.ibm.ws.sib.jfapchannel,\
-	com.ibm.ws.sib.jfapchannel.buffer,\
-	com.ibm.ws.sib.jfapchannel.richclient.buffer.impl,\
-	com.ibm.ws.sib.jfapchannel.netty
+com.ibm.ws.sib.comms.client,\
+com.ibm.ws.sib.comms.client.proxyqueue,\
+com.ibm.ws.sib.comms.client.proxyqueue.asynch,\
+com.ibm.ws.sib.comms.client.proxyqueue.impl,\
+com.ibm.ws.sib.comms.client.proxyqueue.queue,\
+com.ibm.ws.sib.comms.client.util,\
+com.ibm.ws.sib.comms.common,\
+com.ibm.ws.sib.jfapchannel.approxtime,\
+com.ibm.ws.sib.jfapchannel.framework,\
+com.ibm.ws.sib.jfapchannel.impl,\
+com.ibm.ws.sib.jfapchannel.impl.eventrecorder,\
+com.ibm.ws.sib.jfapchannel.impl.octracker,\
+com.ibm.ws.sib.jfapchannel.impl.rldispatcher,\
+com.ibm.ws.sib.jfapchannel.richclient.approxtime.impl,\
+com.ibm.ws.sib.jfapchannel.richclient.framework.impl,\
+com.ibm.ws.sib.jfapchannel.richclient.impl,\
+com.ibm.ws.sib.jfapchannel.richclient.impl.octracker,\
+com.ibm.ws.sib.jfapchannel.richclient.threadpool.impl,\
+com.ibm.ws.sib.jfapchannel.threadpool,\
+com.ibm.ws.sib.jfapchannel,\
+com.ibm.ws.sib.jfapchannel.buffer,\
+com.ibm.ws.sib.jfapchannel.richclient.buffer.impl
 
 -dsannotations: com.ibm.ws.sib.jfapchannel.impl.*
 
@@ -70,11 +64,5 @@ instrument.disabled: true
 	com.ibm.ws.serialization;version=latest,\
 	com.ibm.ws.timer;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
-	com.ibm.ws.channelfw;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	io.openliberty.io.netty;version=latest,\
-	io.openliberty.netty.internal;version=latest,\
-	io.openliberty.netty.internal.impl;version=latest, \
-	io.openliberty.io.netty.ssl,\
-	com.ibm.ws.kernel.service,\
-	com.ibm.ws.kernel.boot
+	com.ibm.ws.channelfw;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

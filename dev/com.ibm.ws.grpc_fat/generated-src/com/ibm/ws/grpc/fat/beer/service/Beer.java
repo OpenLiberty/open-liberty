@@ -32,6 +32,11 @@ private static final long serialVersionUID = 0L;
     return new Beer();
   }
 
+  @java.lang.Override
+  public final com.google.protobuf.UnknownFieldSet
+  getUnknownFields() {
+    return this.unknownFields;
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return com.ibm.ws.grpc.fat.beer.service.BeerProto.internal_static_beer_Beer_descriptor;
@@ -46,8 +51,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int BEERNAME_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object beerName_ = "";
+  private volatile java.lang.Object beerName_;
   /**
    * <code>string beerName = 1;</code>
    * @return The beerName.
@@ -85,8 +89,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int BEERMAKER_FIELD_NUMBER = 2;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object beerMaker_ = "";
+  private volatile java.lang.Object beerMaker_;
   /**
    * <code>string beerMaker = 2;</code>
    * @return The beerMaker.
@@ -124,7 +127,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int BEERTYPE_FIELD_NUMBER = 3;
-  private int beerType_ = 0;
+  private int beerType_;
   /**
    * <code>.beer.BeerType beerType = 3;</code>
    * @return The enum numeric value on the wire for beerType.
@@ -137,12 +140,13 @@ private static final long serialVersionUID = 0L;
    * @return The beerType.
    */
   @java.lang.Override public com.ibm.ws.grpc.fat.beer.service.BeerType getBeerType() {
-    com.ibm.ws.grpc.fat.beer.service.BeerType result = com.ibm.ws.grpc.fat.beer.service.BeerType.forNumber(beerType_);
+    @SuppressWarnings("deprecation")
+    com.ibm.ws.grpc.fat.beer.service.BeerType result = com.ibm.ws.grpc.fat.beer.service.BeerType.valueOf(beerType_);
     return result == null ? com.ibm.ws.grpc.fat.beer.service.BeerType.UNRECOGNIZED : result;
   }
 
   public static final int BEERRATING_FIELD_NUMBER = 4;
-  private float beerRating_ = 0F;
+  private float beerRating_;
   /**
    * <code>float beerRating = 4;</code>
    * @return The beerRating.
@@ -293,13 +297,11 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-
   public static com.ibm.ws.grpc.fat.beer.service.Beer parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-
   public static com.ibm.ws.grpc.fat.beer.service.Beer parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -378,11 +380,14 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      bitField0_ = 0;
       beerName_ = "";
+
       beerMaker_ = "";
+
       beerType_ = 0;
+
       beerRating_ = 0F;
+
       return this;
     }
 
@@ -409,25 +414,12 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.ibm.ws.grpc.fat.beer.service.Beer buildPartial() {
       com.ibm.ws.grpc.fat.beer.service.Beer result = new com.ibm.ws.grpc.fat.beer.service.Beer(this);
-      if (bitField0_ != 0) { buildPartial0(result); }
+      result.beerName_ = beerName_;
+      result.beerMaker_ = beerMaker_;
+      result.beerType_ = beerType_;
+      result.beerRating_ = beerRating_;
       onBuilt();
       return result;
-    }
-
-    private void buildPartial0(com.ibm.ws.grpc.fat.beer.service.Beer result) {
-      int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.beerName_ = beerName_;
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.beerMaker_ = beerMaker_;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.beerType_ = beerType_;
-      }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.beerRating_ = beerRating_;
-      }
     }
 
     @java.lang.Override
@@ -476,12 +468,10 @@ private static final long serialVersionUID = 0L;
       if (other == com.ibm.ws.grpc.fat.beer.service.Beer.getDefaultInstance()) return this;
       if (!other.getBeerName().isEmpty()) {
         beerName_ = other.beerName_;
-        bitField0_ |= 0x00000001;
         onChanged();
       }
       if (!other.getBeerMaker().isEmpty()) {
         beerMaker_ = other.beerMaker_;
-        bitField0_ |= 0x00000002;
         onChanged();
       }
       if (other.beerType_ != 0) {
@@ -518,22 +508,22 @@ private static final long serialVersionUID = 0L;
               break;
             case 10: {
               beerName_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000001;
+
               break;
             } // case 10
             case 18: {
               beerMaker_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000002;
+
               break;
             } // case 18
             case 24: {
               beerType_ = input.readEnum();
-              bitField0_ |= 0x00000004;
+
               break;
             } // case 24
             case 37: {
               beerRating_ = input.readFloat();
-              bitField0_ |= 0x00000008;
+
               break;
             } // case 37
             default: {
@@ -551,7 +541,6 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
-    private int bitField0_;
 
     private java.lang.Object beerName_ = "";
     /**
@@ -594,9 +583,11 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setBeerName(
         java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
       beerName_ = value;
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -605,8 +596,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearBeerName() {
+      
       beerName_ = getDefaultInstance().getBeerName();
-      bitField0_ = (bitField0_ & ~0x00000001);
       onChanged();
       return this;
     }
@@ -617,10 +608,12 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setBeerNameBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
       beerName_ = value;
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -666,9 +659,11 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setBeerMaker(
         java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
       beerMaker_ = value;
-      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -677,8 +672,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearBeerMaker() {
+      
       beerMaker_ = getDefaultInstance().getBeerMaker();
-      bitField0_ = (bitField0_ & ~0x00000002);
       onChanged();
       return this;
     }
@@ -689,10 +684,12 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setBeerMakerBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
       beerMaker_ = value;
-      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -711,8 +708,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setBeerTypeValue(int value) {
+      
       beerType_ = value;
-      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -722,7 +719,8 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public com.ibm.ws.grpc.fat.beer.service.BeerType getBeerType() {
-      com.ibm.ws.grpc.fat.beer.service.BeerType result = com.ibm.ws.grpc.fat.beer.service.BeerType.forNumber(beerType_);
+      @SuppressWarnings("deprecation")
+      com.ibm.ws.grpc.fat.beer.service.BeerType result = com.ibm.ws.grpc.fat.beer.service.BeerType.valueOf(beerType_);
       return result == null ? com.ibm.ws.grpc.fat.beer.service.BeerType.UNRECOGNIZED : result;
     }
     /**
@@ -734,7 +732,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      bitField0_ |= 0x00000004;
+      
       beerType_ = value.getNumber();
       onChanged();
       return this;
@@ -744,7 +742,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearBeerType() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      
       beerType_ = 0;
       onChanged();
       return this;
@@ -765,9 +763,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setBeerRating(float value) {
-
+      
       beerRating_ = value;
-      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -776,7 +773,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearBeerRating() {
-      bitField0_ = (bitField0_ & ~0x00000008);
+      
       beerRating_ = 0F;
       onChanged();
       return this;

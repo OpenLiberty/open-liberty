@@ -140,8 +140,6 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     private String pkceCodeChallengeMethod = null;
     public static final String CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM = "tokenEndpointAuthSigningAlgorithm";
     private String tokenEndpointAuthSigningAlgorithm = null;
-    public static final String CFG_KEY_TOKEN_REQUEST_ORIGIN_HEADER = "tokenRequestOriginHeader";
-    private String tokenRequestOriginHeader = null;
 
     HttpUtils httputils = new HttpUtils();
     ConfigUtils oidcConfigUtils = new ConfigUtils(null);
@@ -224,7 +222,6 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         forwardLoginParameter = oidcConfigUtils.readAndSanitizeForwardLoginParameter(props, uniqueId, CFG_KEY_FORWARD_LOGIN_PARAMETER);
         keyManagementKeyAlias = configUtils.getConfigAttribute(props, CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS);
         pkceCodeChallengeMethod = configUtils.getConfigAttribute(props, CFG_KEY_PKCE_CODE_CHALLENGE_METHOD);
-        tokenRequestOriginHeader = configUtils.getConfigAttribute(props, CFG_KEY_TOKEN_REQUEST_ORIGIN_HEADER);
 
         if (discovery) {
             String OIDC_CLIENT_DISCOVERY_COMPLETE = "CWWKS6110I: The client [{" + getId() + "}] configuration has been established with the information from the discovery endpoint URL [{" + discoveryEndpointUrl + "}]. This information enables the client to interact with the OpenID Connect provider to process the requests such as authorization and token.";
@@ -975,11 +972,6 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     @Override
     public String getPkceCodeChallengeMethod() {
         return pkceCodeChallengeMethod;
-    }
-
-    @Override
-    public String getTokenRequestOriginHeader() {
-        return tokenRequestOriginHeader;
     }
 
 }

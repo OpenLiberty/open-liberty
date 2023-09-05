@@ -43,7 +43,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore; // Liberty Change
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import org.apache.cxf.attachment.AttachmentUtil;
 import org.apache.cxf.binding.soap.SoapFault;
@@ -51,8 +51,8 @@ import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.SoapVersion;
 import org.apache.cxf.binding.soap.saaj.SAAJInInterceptor;
 import org.apache.cxf.binding.soap.saaj.SAAJUtils;
-import org.apache.cxf.common.classloader.ClassLoaderUtils; // Liberty Change
-import org.apache.cxf.common.classloader.ClassLoaderUtils.ClassLoaderHolder; // Liberty Change
+import org.apache.cxf.common.classloader.ClassLoaderUtils;
+import org.apache.cxf.common.classloader.ClassLoaderUtils.ClassLoaderHolder;
 import org.apache.cxf.common.i18n.Message;
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.util.PropertyUtils;
@@ -255,6 +255,8 @@ public class WSS4JInInterceptor extends AbstractWSS4JInterceptor {
 
         SOAPMessage doc = getSOAPMessage(msg);
 
+        
+
         SoapVersion version = msg.getVersion();
         try {
             reqData.setEncryptionSerializer(new StaxSerializer());
@@ -413,16 +415,17 @@ public class WSS4JInInterceptor extends AbstractWSS4JInterceptor {
                     getDocumentElement().getFirstChild().getNextSibling().getFirstChild();
             }
             if (document != null && node != null) {
+                Node newNode = null;
                 try {
-                    Node newNode = DOMUtils.getDomElement(document.importNode(node, true));
+                    newNode = DOMUtils.getDomElement(document.importNode(node, true));
                     elem.getOwnerDocument().getDocumentElement().getFirstChild().
                         getNextSibling().replaceChild(newNode, node);
-                    // Liberty Change Start
+                    //Liberty code change start
                     List<WSSecurityEngineResult> encryptResults = new ArrayList<>();
                     if (wsResult.getActionResults().containsKey(WSConstants.ENCR)) {
                         encryptResults.addAll(wsResult.getActionResults().get(WSConstants.ENCR));
                     }               
-                    // List<WSSecurityEngineResult> encryptResults = wsResult.getActionResults().get(WSConstants.ENCR);               
+                    //List<WSSecurityEngineResult> encryptResults = wsResult.getActionResults().get(WSConstants.ENCR);               
                     if (!encryptResults.isEmpty()) {
                         for (WSSecurityEngineResult result : encryptResults) {
                             List<WSDataRef> dataRefs = CastUtils.cast((List<?>)result
@@ -435,7 +438,7 @@ public class WSS4JInInterceptor extends AbstractWSS4JInterceptor {
                                 }
                             }
                         }
-                    } // Liberty Change End
+                    } //Liberty code change end
 
                     List<WSSecurityEngineResult> signedResults = new ArrayList<>();
                     if (wsResult.getActionResults().containsKey(WSConstants.SIGN)) {
@@ -450,13 +453,13 @@ public class WSS4JInInterceptor extends AbstractWSS4JInterceptor {
                     for (WSSecurityEngineResult result : signedResults) {
                         List<WSDataRef> dataRefs = CastUtils.cast((List<?>)result
                                                                   .get(WSSecurityEngineResult.TAG_DATA_REF_URIS));
-                        if (dataRefs != null) { // Liberty Change Start
+                        if (dataRefs != null) { //Liberty code change start
                             for (WSDataRef dataRef :dataRefs) {
                                 if (dataRef.getProtectedElement() == node) {
                                     dataRef.setProtectedElement((Element)newNode);
                                 }
                             }
-                        } //Liberty Change End
+                        } //Liberty code change end
                     }
                 } catch (Exception ex) {
                     //just to the best try

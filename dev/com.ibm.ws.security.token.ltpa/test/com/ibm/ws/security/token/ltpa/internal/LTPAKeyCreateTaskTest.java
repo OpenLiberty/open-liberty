@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,12 +30,11 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
+import test.common.SharedOutputManager;
+
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
-import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
-
-import test.common.SharedOutputManager;
 
 /**
  *
@@ -45,9 +44,7 @@ public class LTPAKeyCreateTaskTest {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
     private static final String DEFAULT_OUTPUT_LOCATION = "${server.output.dir}/resources/security/ltpa.keys";
-    private static final String DEFAULT_OUTPUT_LOCATION_DIR = "${server.output.dir}/resources/security/";
     private static final String RESOLVED_DEFAULT_OUTPUT_LOCATION = "testServerName/resources/security/ltpa.keys";
-    private static final String RESOLVED_DEFAULT_OUTPUT_LOCATION_DIR = "testServerName/resources/security/";
     private static String TEST_FILE_NAME = "testFileName";
 
     /**
@@ -66,9 +63,6 @@ public class LTPAKeyCreateTaskTest {
     private final ServiceReference<WsLocationAdmin> locationServiceRef = mock.mock(ServiceReference.class, "locationServiceRef");
     private final WsLocationAdmin locationService = mock.mock(WsLocationAdmin.class);
     private Map<String, Object> props;
-
-    private final WsResource keysFileInServerConfig = mock.mock(WsResource.class, "keysFileInServerConfig");
-    private final WsResource parentResource = mock.mock(WsResource.class, "parentResource");
 
     private class LTPAKeyCreatorDouble extends LTPAKeyCreateTask {
         LTPAKeyCreatorDouble(WsLocationAdmin locService, LTPAConfigurationImpl config) {
@@ -102,27 +96,14 @@ public class LTPAKeyCreateTaskTest {
         props.put(LTPAConfiguration.CFG_KEY_PASSWORD, new SerializableProtectedString("notUsed".toCharArray()));
         props.put(LTPAConfiguration.CFG_KEY_TOKEN_EXPIRATION, 0L);
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, 0L);
-        props.put(LTPAConfiguration.CFG_KEY_MONITOR_DIRECTORY, false);
         props.put(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED, 0L);
     }
 
     private void setupLocationServiceExpecatations() {
         mock.checking(new Expectations() {
             {
-                one(locationService).resolveResource(TEST_FILE_NAME);
-                will(returnValue(keysFileInServerConfig));
-
-                one(keysFileInServerConfig).getParent();
-                will(returnValue(parentResource));
-
-                one(parentResource).toRepositoryPath();
-                will(returnValue(""));
-
-                one(locationService).resolveString("");
-                will(returnValue(""));
-
-                one(keysFileInServerConfig).getName();
-                will(returnValue(TEST_FILE_NAME));
+                one(locationService).resolveString(DEFAULT_OUTPUT_LOCATION);
+                will(returnValue(RESOLVED_DEFAULT_OUTPUT_LOCATION));
             }
         });
     }

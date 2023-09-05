@@ -12,16 +12,10 @@
  *******************************************************************************/
 package com.ibm.tx.jta.ut.util;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.ConnectException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientException;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.naming.InitialContext;
@@ -119,28 +113,4 @@ public class TxTestUtils {
             throw new SQLNonTransientException(new ConnectException("Scuppering connection attempt number " + connectCount));
         }
 	}
-
-	public static void setTestResourcesFile() throws IOException {
-		String recoveryId = System.getProperty("LOCAL_RECOVERY_ID");
-		System.out.println("setTestResourcesFile: recoveryId prop="+recoveryId);
-		if (recoveryId != null) {
-			String resourcesDirPath = System.getenv("WLP_OUTPUT_DIR") + "/../shared/test-resources/" + recoveryId;
-			File resourcesDir = new File(resourcesDirPath);
-			// Create it if necessary
-			if (!resourcesDir.exists()) {
-				resourcesDir.mkdirs();
-			}
-			XAResourceImpl.setStateFile(new File(resourcesDir.getPath() + File.separator + "XAResources.dat"));
-			System.out.println("setTestResourcesFile: "+XAResourceImpl.STATE_FILE);
-		}
-	}
-
-	public static void setTimeouts(Map<String, Object> requestContext, int timeout) {
-		requestContext.put("com.sun.xml.ws.connect.timeout", timeout);
-		requestContext.put("com.sun.xml.ws.request.timeout", timeout);
-		requestContext.put("javax.xml.ws.client.connectionTimeout", timeout);
-		requestContext.put("javax.xml.ws.client.receiveTimeout", timeout);
-	}
 }
-
-

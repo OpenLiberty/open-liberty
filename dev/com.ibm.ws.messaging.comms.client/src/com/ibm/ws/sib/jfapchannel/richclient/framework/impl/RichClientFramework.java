@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -40,12 +40,9 @@ import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.framework.Framework;
 import com.ibm.ws.sib.jfapchannel.framework.FrameworkException;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkTransportFactory;
-import com.ibm.ws.sib.jfapchannel.impl.CommsOutboundChain;
 import com.ibm.ws.sib.jfapchannel.richclient.impl.octracker.JFapOutboundChannelDefinitionImpl;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.channelfw.ChannelFramework;
-
-import io.openliberty.netty.internal.exception.NettyException;
 
 /**
  * This class is the channel framework implementation of the JFap transport framework. All the
@@ -108,7 +105,7 @@ public class RichClientFramework extends Framework
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "getNetworkTransportFactory");
-        NetworkTransportFactory factory = new RichClientTransportFactory();
+        NetworkTransportFactory factory = new RichClientTransportFactory(framework);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "getNetworkTransportFactory", factory);
         return factory;
@@ -128,13 +125,6 @@ public class RichClientFramework extends Framework
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "getOutboundConnectionProperties",
                         outboundTransportName);
-        
-        // TODO: Check if this data path is even used https://github.com/OpenLiberty/open-liberty/issues/22692
-        CommsOutboundChain chain = CommsOutboundChain.getChainDetails(outboundTransportName);
-        if(chain != null && chain.useNetty())
-        {
-        	throw new SIErrorException(new NettyException("Chain " + outboundTransportName + "was set up to use Netty but code path has not been updated to allow Netty."));
-        }
 
         ChainData chainData = framework.getChain(outboundTransportName);
 
@@ -171,20 +161,10 @@ public class RichClientFramework extends Framework
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "getOutboundConnectionProperties", ep);
-        
-     // TODO: Check if this data path is even used see https://github.com/OpenLiberty/open-liberty/issues/22692
 
         Map properties = null;
         if (ep instanceof CFEndPoint)
         {
-        	
-        	String chainName = ((CFEndPoint) ep).getName();
-        	CommsOutboundChain chain = CommsOutboundChain.getChainDetails(chainName);
-            if(chain != null && chain.useNetty())
-            {
-            	throw new SIErrorException(new NettyException("Chain " + chainName + "was set up to use Netty but code path has not been updated to allow Netty."));
-            }
-        	
             OutboundChannelDefinition[] channelDefinitions = (OutboundChannelDefinition[]) ((CFEndPoint) ep).getOutboundChannelDefs().toArray();
             if (channelDefinitions.length < 1)
                 throw new SIErrorException(nls.getFormattedMessage("OUTCONNTRACKER_INTERNAL_SICJ0064", null, "OUTCONNTRACKER_INTERNAL_SICJ0064"));
@@ -215,18 +195,11 @@ public class RichClientFramework extends Framework
             SibTr.entry(this, tc, "prepareOutboundConnection", ep);
 
         final CFEndPoint originalEndPoint = (CFEndPoint) ep;
-        
-        String chainName = originalEndPoint.getName();
-    	CommsOutboundChain chain = CommsOutboundChain.getChainDetails(chainName);
-        if(chain != null && chain.useNetty())
-        {
-        	throw new SIErrorException(new NettyException("Chain " + chainName + "was set up to use Netty but code path has not been updated to allow Netty."));
-        }
 
         //Attempt to clone the original end point to prevent us affecting other users.
         final CFEndPoint endPoint = cloneEndpoint(originalEndPoint);
 
-        // If the endpoint contains an TCP channel - then modify its properties by overriding
+        // If the endpoint contains an TCP channel - then modifiy its properties by overriding
         // the threadpool it will use.
         Class<?> tcpChannelFactory = null;
         try

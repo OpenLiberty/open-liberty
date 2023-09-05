@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,7 +14,6 @@ package com.ibm.ws.security.token.ltpa.internal;
 
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 
 import org.osgi.framework.BundleContext;
@@ -27,7 +26,6 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPublicKey;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
-import com.ibm.ws.security.token.ltpa.LTPAValidationKeysInfo;
 import com.ibm.ws.security.token.ltpa.LTPAKeyInfoManager;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
@@ -49,32 +47,30 @@ class LTPAKeyCreateTask implements Runnable {
 
     @Sensitive
     byte[] getKeyPasswordBytes() {
-        return PasswordUtil.passwordDecode(config.getPrimaryKeyPassword()).getBytes();
+        return PasswordUtil.passwordDecode(config.getKeyPassword()).getBytes();
     }
 
     private LTPAKeyInfoManager getPreparedLtpaKeyInfoManager() throws Exception {
         LTPAKeyInfoManager keyInfoManager = new LTPAKeyInfoManager();
         keyInfoManager.prepareLTPAKeyInfo(locService,
-                                          config.getPrimaryKeyFile(),
-                                          getKeyPasswordBytes(), config.getValidationKeys());
+                                          config.getKeyFile(),
+                                          getKeyPasswordBytes());
         return keyInfoManager;
     }
 
     @Sensitive
     private Map<String, Object> createTokenFactoryMap() {
         LTPAKeyInfoManager keyInfoManager = config.getLTPAKeyInfoManager();
-        LTPAPrivateKey primaryPrivateKey = new LTPAPrivateKey(keyInfoManager.getPrivateKey(config.getPrimaryKeyFile()));
-        LTPAPublicKey primaryPublicKey = new LTPAPublicKey(keyInfoManager.getPublicKey(config.getPrimaryKeyFile()));
-        byte[] primarySharedKey = keyInfoManager.getSecretKey(config.getPrimaryKeyFile());
-        List<LTPAValidationKeysInfo> validationKeys = keyInfoManager.getValidationLTPAKeys();
+        LTPAPrivateKey ltpaPrivateKey = new LTPAPrivateKey(keyInfoManager.getPrivateKey(config.getKeyFile()));
+        LTPAPublicKey ltpaPublicKey = new LTPAPublicKey(keyInfoManager.getPublicKey(config.getKeyFile()));
+        byte[] sharedKey = keyInfoManager.getSecretKey(config.getKeyFile());
         long expDiffAllowed = config.getExpirationDifferenceAllowed();
 
         Map<String, Object> tokenFactoryMap = new HashMap<String, Object>();
         tokenFactoryMap.put(LTPAConstants.EXPIRATION, config.getTokenExpiration());
-        tokenFactoryMap.put(LTPAConstants.PRIMARY_SECRET_KEY, primarySharedKey);
-        tokenFactoryMap.put(LTPAConstants.PRIMARY_PUBLIC_KEY, primaryPublicKey);
-        tokenFactoryMap.put(LTPAConstants.PRIMARY_PRIVATE_KEY, primaryPrivateKey);
-        tokenFactoryMap.put(LTPAConstants.VALIDATION_KEYS, validationKeys);
+        tokenFactoryMap.put(LTPAConstants.SECRET_KEY, sharedKey);
+        tokenFactoryMap.put(LTPAConstants.PUBLIC_KEY, ltpaPublicKey);
+        tokenFactoryMap.put(LTPAConstants.PRIVATE_KEY, ltpaPrivateKey);
         tokenFactoryMap.put(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED, expDiffAllowed);
         return tokenFactoryMap;
     }
@@ -118,10 +114,10 @@ class LTPAKeyCreateTask implements Runnable {
                 }
             }
 
-            Tr.info(tc, "LTPA_CONFIG_READY", TimestampUtils.getElapsedTimeNanos(start), config.getPrimaryKeyFile());
+            Tr.info(tc, "LTPA_CONFIG_READY", TimestampUtils.getElapsedTimeNanos(start), config.getKeyFile());
             config.configReady();
         } catch (Exception e) {
-            Tr.error(tc, "LTPA_CONFIG_ERROR", config.getPrimaryKeyFile());
+            Tr.error(tc, "LTPA_CONFIG_ERROR", config.getKeyFile());
         } catch (Throwable t) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Exception creating the LTPA key.", t);

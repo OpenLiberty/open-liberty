@@ -40,7 +40,7 @@ public class RecLogServiceImpl {
 
     public RecLogServiceImpl() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "RecLogServiceImpl {0}", this);
+            Tr.debug(tc, "RecLogServiceImpl", this);
     }
 
     //------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ public class RecLogServiceImpl {
         String installDirectory = "dir";
         Configuration.serverName(serverName);
 
-        Configuration.setWASInstallDirectory(installDirectory);
+        Configuration.WASInstallDirectory(installDirectory);
         Configuration.localFailureScope(new FileFailureScope());
 
         // Componentization config required to remove WAS dependencies
@@ -81,12 +81,12 @@ public class RecLogServiceImpl {
      */
     protected void activate(ComponentContext cc) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "activate {0}", this);
+            Tr.debug(tc, "activate", this);
     }
 
     public void unsetRecoveryLogFactory(RecoveryLogFactory fac) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "unsetRecoveryLogFactory, factory: {0} {1}", fac, this);
+            Tr.debug(tc, "unsetRecoveryLogFactory, factory: " + fac, this);
     }
 
     //------------------------------------------------------------------------------

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,7 +16,6 @@ import org.osgi.service.component.ComponentContext;
 
 import com.ibm.tx.jta.embeddable.EmbeddableTransactionManagerFactory;
 import com.ibm.tx.ltc.impl.LocalTranCurrentSet;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.InconsistentLocalTranException;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
@@ -34,7 +33,7 @@ public class LocalTransactionCurrentService implements LocalTransactionCurrent {
     protected void activate(ComponentContext ctxt) {
         //The assumption is that we get an instance of EmbeddableLocalTranCurrentSet
         //which has a "self()" that provides an implementation of the interface
-        //SynchronizationRegistryUOWScope.
+        //SynchronizationRegistryUOWScope.  
         ltc = EmbeddableTransactionManagerFactory.getLocalTransactionCurrent();
 
     }
@@ -109,7 +108,6 @@ public class LocalTransactionCurrentService implements LocalTransactionCurrent {
 
     /** {@inheritDoc} */
     @Override
-    @Trivial
     public LocalTransactionCoordinator getLocalTranCoord() {
         if (ltc != null) {
             return ltc.getLocalTranCoord();

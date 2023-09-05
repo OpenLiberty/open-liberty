@@ -24,7 +24,6 @@ import java.io.PushbackInputStream;
 import java.net.HttpURLConnection;
 
 import org.apache.cxf.helpers.HttpHeaderHelper;
-// Liberty Change
 // Added this file changing it's access modifier to public because it was used from a different package 
 // for issue #8827 Create com.ibm.ws.jaxws.2.3.clientcontainer. 
 final public class ChunkedUtil {

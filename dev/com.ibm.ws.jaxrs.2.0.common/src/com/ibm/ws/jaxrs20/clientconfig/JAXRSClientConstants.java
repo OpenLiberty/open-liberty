@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -38,5 +38,5 @@ public class JAXRSClientConstants {
     public static final String DISABLE_CN_CHECK = "com.ibm.ws.jaxrs.client.disableCNCheck";
     public final static String SAML_HANDLER = "com.ibm.ws.jaxrs.client.saml.sendToken";
     public final static String KEEP_ALIVE_CONNECTION = "com.ibm.ws.jaxrs.client.keepalive.connection"; // valid values are "keep-alive" and "close"
-    public final static String USE_HTTPS_URL_CONNECTION_DEFAULT_SSLSOCKETFACTORY = "com.ibm.ws.jaxrs.client.useHttpsURLConnectionDefaultSslSocketFactory";
+
 }

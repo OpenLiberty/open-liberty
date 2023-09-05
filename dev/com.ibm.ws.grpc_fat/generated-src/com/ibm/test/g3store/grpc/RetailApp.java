@@ -31,6 +31,11 @@ private static final long serialVersionUID = 0L;
     return new RetailApp();
   }
 
+  @java.lang.Override
+  public final com.google.protobuf.UnknownFieldSet
+  getUnknownFields() {
+    return this.unknownFields;
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return com.ibm.test.g3store.grpc.StoreProto.internal_static_RetailApp_descriptor;
@@ -45,8 +50,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int NAME_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object name_ = "";
+  private volatile java.lang.Object name_;
   /**
    * <code>string name = 1;</code>
    * @return The name.
@@ -84,8 +88,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int DESC_FIELD_NUMBER = 2;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object desc_ = "";
+  private volatile java.lang.Object desc_;
   /**
    * <code>string desc = 2;</code>
    * @return The desc.
@@ -123,8 +126,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int ID_FIELD_NUMBER = 3;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object id_ = "";
+  private volatile java.lang.Object id_;
   /**
    * <code>string id = 3;</code>
    * @return The id.
@@ -162,7 +164,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int FREE_FIELD_NUMBER = 4;
-  private boolean free_ = false;
+  private boolean free_;
   /**
    * <code>bool free = 4;</code>
    * @return The free.
@@ -173,7 +175,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int GENRETYPE_FIELD_NUMBER = 5;
-  private int genreType_ = 0;
+  private int genreType_;
   /**
    * <code>.GenreType genreType = 5;</code>
    * @return The enum numeric value on the wire for genreType.
@@ -186,12 +188,13 @@ private static final long serialVersionUID = 0L;
    * @return The genreType.
    */
   @java.lang.Override public com.ibm.test.g3store.grpc.GenreType getGenreType() {
-    com.ibm.test.g3store.grpc.GenreType result = com.ibm.test.g3store.grpc.GenreType.forNumber(genreType_);
+    @SuppressWarnings("deprecation")
+    com.ibm.test.g3store.grpc.GenreType result = com.ibm.test.g3store.grpc.GenreType.valueOf(genreType_);
     return result == null ? com.ibm.test.g3store.grpc.GenreType.UNRECOGNIZED : result;
   }
 
   public static final int SECURITYTYPE_FIELD_NUMBER = 6;
-  private int securityType_ = 0;
+  private int securityType_;
   /**
    * <code>.SecurityType securityType = 6;</code>
    * @return The enum numeric value on the wire for securityType.
@@ -204,12 +207,12 @@ private static final long serialVersionUID = 0L;
    * @return The securityType.
    */
   @java.lang.Override public com.ibm.test.g3store.grpc.SecurityType getSecurityType() {
-    com.ibm.test.g3store.grpc.SecurityType result = com.ibm.test.g3store.grpc.SecurityType.forNumber(securityType_);
+    @SuppressWarnings("deprecation")
+    com.ibm.test.g3store.grpc.SecurityType result = com.ibm.test.g3store.grpc.SecurityType.valueOf(securityType_);
     return result == null ? com.ibm.test.g3store.grpc.SecurityType.UNRECOGNIZED : result;
   }
 
   public static final int PRICES_FIELD_NUMBER = 7;
-  @SuppressWarnings("serial")
   private java.util.List<com.ibm.test.g3store.grpc.Price> prices_;
   /**
    * <code>repeated .Price prices = 7;</code>
@@ -272,7 +275,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public com.ibm.test.g3store.grpc.CreatorOrBuilder getCreatorOrBuilder() {
-    return creator_ == null ? com.ibm.test.g3store.grpc.Creator.getDefaultInstance() : creator_;
+    return getCreator();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -464,13 +467,11 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-
   public static com.ibm.test.g3store.grpc.RetailApp parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-
   public static com.ibm.test.g3store.grpc.RetailApp parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -545,23 +546,29 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      bitField0_ = 0;
       name_ = "";
+
       desc_ = "";
+
       id_ = "";
+
       free_ = false;
+
       genreType_ = 0;
+
       securityType_ = 0;
+
       if (pricesBuilder_ == null) {
         prices_ = java.util.Collections.emptyList();
       } else {
         prices_ = null;
         pricesBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000040);
-      creator_ = null;
-      if (creatorBuilder_ != null) {
-        creatorBuilder_.dispose();
+      bitField0_ = (bitField0_ & ~0x00000001);
+      if (creatorBuilder_ == null) {
+        creator_ = null;
+      } else {
+        creator_ = null;
         creatorBuilder_ = null;
       }
       return this;
@@ -590,49 +597,29 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.ibm.test.g3store.grpc.RetailApp buildPartial() {
       com.ibm.test.g3store.grpc.RetailApp result = new com.ibm.test.g3store.grpc.RetailApp(this);
-      buildPartialRepeatedFields(result);
-      if (bitField0_ != 0) { buildPartial0(result); }
-      onBuilt();
-      return result;
-    }
-
-    private void buildPartialRepeatedFields(com.ibm.test.g3store.grpc.RetailApp result) {
+      int from_bitField0_ = bitField0_;
+      result.name_ = name_;
+      result.desc_ = desc_;
+      result.id_ = id_;
+      result.free_ = free_;
+      result.genreType_ = genreType_;
+      result.securityType_ = securityType_;
       if (pricesBuilder_ == null) {
-        if (((bitField0_ & 0x00000040) != 0)) {
+        if (((bitField0_ & 0x00000001) != 0)) {
           prices_ = java.util.Collections.unmodifiableList(prices_);
-          bitField0_ = (bitField0_ & ~0x00000040);
+          bitField0_ = (bitField0_ & ~0x00000001);
         }
         result.prices_ = prices_;
       } else {
         result.prices_ = pricesBuilder_.build();
       }
-    }
-
-    private void buildPartial0(com.ibm.test.g3store.grpc.RetailApp result) {
-      int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.name_ = name_;
+      if (creatorBuilder_ == null) {
+        result.creator_ = creator_;
+      } else {
+        result.creator_ = creatorBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.desc_ = desc_;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.id_ = id_;
-      }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.free_ = free_;
-      }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.genreType_ = genreType_;
-      }
-      if (((from_bitField0_ & 0x00000020) != 0)) {
-        result.securityType_ = securityType_;
-      }
-      if (((from_bitField0_ & 0x00000080) != 0)) {
-        result.creator_ = creatorBuilder_ == null
-            ? creator_
-            : creatorBuilder_.build();
-      }
+      onBuilt();
+      return result;
     }
 
     @java.lang.Override
@@ -681,17 +668,14 @@ private static final long serialVersionUID = 0L;
       if (other == com.ibm.test.g3store.grpc.RetailApp.getDefaultInstance()) return this;
       if (!other.getName().isEmpty()) {
         name_ = other.name_;
-        bitField0_ |= 0x00000001;
         onChanged();
       }
       if (!other.getDesc().isEmpty()) {
         desc_ = other.desc_;
-        bitField0_ |= 0x00000002;
         onChanged();
       }
       if (!other.getId().isEmpty()) {
         id_ = other.id_;
-        bitField0_ |= 0x00000004;
         onChanged();
       }
       if (other.getFree() != false) {
@@ -707,7 +691,7 @@ private static final long serialVersionUID = 0L;
         if (!other.prices_.isEmpty()) {
           if (prices_.isEmpty()) {
             prices_ = other.prices_;
-            bitField0_ = (bitField0_ & ~0x00000040);
+            bitField0_ = (bitField0_ & ~0x00000001);
           } else {
             ensurePricesIsMutable();
             prices_.addAll(other.prices_);
@@ -720,7 +704,7 @@ private static final long serialVersionUID = 0L;
             pricesBuilder_.dispose();
             pricesBuilder_ = null;
             prices_ = other.prices_;
-            bitField0_ = (bitField0_ & ~0x00000040);
+            bitField0_ = (bitField0_ & ~0x00000001);
             pricesBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getPricesFieldBuilder() : null;
@@ -760,32 +744,32 @@ private static final long serialVersionUID = 0L;
               break;
             case 10: {
               name_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000001;
+
               break;
             } // case 10
             case 18: {
               desc_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000002;
+
               break;
             } // case 18
             case 26: {
               id_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000004;
+
               break;
             } // case 26
             case 32: {
               free_ = input.readBool();
-              bitField0_ |= 0x00000008;
+
               break;
             } // case 32
             case 40: {
               genreType_ = input.readEnum();
-              bitField0_ |= 0x00000010;
+
               break;
             } // case 40
             case 48: {
               securityType_ = input.readEnum();
-              bitField0_ |= 0x00000020;
+
               break;
             } // case 48
             case 58: {
@@ -805,7 +789,7 @@ private static final long serialVersionUID = 0L;
               input.readMessage(
                   getCreatorFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000080;
+
               break;
             } // case 66
             default: {
@@ -866,9 +850,11 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setName(
         java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
       name_ = value;
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -877,8 +863,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearName() {
+      
       name_ = getDefaultInstance().getName();
-      bitField0_ = (bitField0_ & ~0x00000001);
       onChanged();
       return this;
     }
@@ -889,10 +875,12 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setNameBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
       name_ = value;
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -938,9 +926,11 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setDesc(
         java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
       desc_ = value;
-      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -949,8 +939,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearDesc() {
+      
       desc_ = getDefaultInstance().getDesc();
-      bitField0_ = (bitField0_ & ~0x00000002);
       onChanged();
       return this;
     }
@@ -961,10 +951,12 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setDescBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
       desc_ = value;
-      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -1010,9 +1002,11 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setId(
         java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
       id_ = value;
-      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -1021,8 +1015,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearId() {
+      
       id_ = getDefaultInstance().getId();
-      bitField0_ = (bitField0_ & ~0x00000004);
       onChanged();
       return this;
     }
@@ -1033,10 +1027,12 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setIdBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
       id_ = value;
-      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -1056,9 +1052,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setFree(boolean value) {
-
+      
       free_ = value;
-      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -1067,7 +1062,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearFree() {
-      bitField0_ = (bitField0_ & ~0x00000008);
+      
       free_ = false;
       onChanged();
       return this;
@@ -1087,8 +1082,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setGenreTypeValue(int value) {
+      
       genreType_ = value;
-      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -1098,7 +1093,8 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public com.ibm.test.g3store.grpc.GenreType getGenreType() {
-      com.ibm.test.g3store.grpc.GenreType result = com.ibm.test.g3store.grpc.GenreType.forNumber(genreType_);
+      @SuppressWarnings("deprecation")
+      com.ibm.test.g3store.grpc.GenreType result = com.ibm.test.g3store.grpc.GenreType.valueOf(genreType_);
       return result == null ? com.ibm.test.g3store.grpc.GenreType.UNRECOGNIZED : result;
     }
     /**
@@ -1110,7 +1106,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      bitField0_ |= 0x00000010;
+      
       genreType_ = value.getNumber();
       onChanged();
       return this;
@@ -1120,7 +1116,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearGenreType() {
-      bitField0_ = (bitField0_ & ~0x00000010);
+      
       genreType_ = 0;
       onChanged();
       return this;
@@ -1140,8 +1136,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setSecurityTypeValue(int value) {
+      
       securityType_ = value;
-      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1151,7 +1147,8 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public com.ibm.test.g3store.grpc.SecurityType getSecurityType() {
-      com.ibm.test.g3store.grpc.SecurityType result = com.ibm.test.g3store.grpc.SecurityType.forNumber(securityType_);
+      @SuppressWarnings("deprecation")
+      com.ibm.test.g3store.grpc.SecurityType result = com.ibm.test.g3store.grpc.SecurityType.valueOf(securityType_);
       return result == null ? com.ibm.test.g3store.grpc.SecurityType.UNRECOGNIZED : result;
     }
     /**
@@ -1163,7 +1160,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      bitField0_ |= 0x00000020;
+      
       securityType_ = value.getNumber();
       onChanged();
       return this;
@@ -1173,7 +1170,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearSecurityType() {
-      bitField0_ = (bitField0_ & ~0x00000020);
+      
       securityType_ = 0;
       onChanged();
       return this;
@@ -1182,9 +1179,9 @@ private static final long serialVersionUID = 0L;
     private java.util.List<com.ibm.test.g3store.grpc.Price> prices_ =
       java.util.Collections.emptyList();
     private void ensurePricesIsMutable() {
-      if (!((bitField0_ & 0x00000040) != 0)) {
+      if (!((bitField0_ & 0x00000001) != 0)) {
         prices_ = new java.util.ArrayList<com.ibm.test.g3store.grpc.Price>(prices_);
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000001;
        }
     }
 
@@ -1334,7 +1331,7 @@ private static final long serialVersionUID = 0L;
     public Builder clearPrices() {
       if (pricesBuilder_ == null) {
         prices_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
       } else {
         pricesBuilder_.clear();
@@ -1411,7 +1408,7 @@ private static final long serialVersionUID = 0L;
         pricesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             com.ibm.test.g3store.grpc.Price, com.ibm.test.g3store.grpc.Price.Builder, com.ibm.test.g3store.grpc.PriceOrBuilder>(
                 prices_,
-                ((bitField0_ & 0x00000040) != 0),
+                ((bitField0_ & 0x00000001) != 0),
                 getParentForChildren(),
                 isClean());
         prices_ = null;
@@ -1427,7 +1424,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the creator field is set.
      */
     public boolean hasCreator() {
-      return ((bitField0_ & 0x00000080) != 0);
+      return creatorBuilder_ != null || creator_ != null;
     }
     /**
      * <code>.Creator creator = 8;</code>
@@ -1449,11 +1446,11 @@ private static final long serialVersionUID = 0L;
           throw new NullPointerException();
         }
         creator_ = value;
+        onChanged();
       } else {
         creatorBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000080;
-      onChanged();
+
       return this;
     }
     /**
@@ -1463,11 +1460,11 @@ private static final long serialVersionUID = 0L;
         com.ibm.test.g3store.grpc.Creator.Builder builderForValue) {
       if (creatorBuilder_ == null) {
         creator_ = builderForValue.build();
+        onChanged();
       } else {
         creatorBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000080;
-      onChanged();
+
       return this;
     }
     /**
@@ -1475,38 +1472,38 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeCreator(com.ibm.test.g3store.grpc.Creator value) {
       if (creatorBuilder_ == null) {
-        if (((bitField0_ & 0x00000080) != 0) &&
-          creator_ != null &&
-          creator_ != com.ibm.test.g3store.grpc.Creator.getDefaultInstance()) {
-          getCreatorBuilder().mergeFrom(value);
+        if (creator_ != null) {
+          creator_ =
+            com.ibm.test.g3store.grpc.Creator.newBuilder(creator_).mergeFrom(value).buildPartial();
         } else {
           creator_ = value;
         }
+        onChanged();
       } else {
         creatorBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000080;
-      onChanged();
+
       return this;
     }
     /**
      * <code>.Creator creator = 8;</code>
      */
     public Builder clearCreator() {
-      bitField0_ = (bitField0_ & ~0x00000080);
-      creator_ = null;
-      if (creatorBuilder_ != null) {
-        creatorBuilder_.dispose();
+      if (creatorBuilder_ == null) {
+        creator_ = null;
+        onChanged();
+      } else {
+        creator_ = null;
         creatorBuilder_ = null;
       }
-      onChanged();
+
       return this;
     }
     /**
      * <code>.Creator creator = 8;</code>
      */
     public com.ibm.test.g3store.grpc.Creator.Builder getCreatorBuilder() {
-      bitField0_ |= 0x00000080;
+      
       onChanged();
       return getCreatorFieldBuilder().getBuilder();
     }

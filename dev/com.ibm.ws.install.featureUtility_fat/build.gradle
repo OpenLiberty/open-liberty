@@ -1,4 +1,4 @@
-/* Copyright (c) 2021, 2023 IBM Corporation and others.
+/* Copyright (c) 2021 IBM Corporation and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License 2.0
 * which accompanies this distribution, and is available at
@@ -19,8 +19,7 @@ addRequiredLibraries {
     dependencies {
       usrFeatures 'test.featureUtility_fat:userFeature:1.0@zip'
       features 'test.featureUtility_fat:Archive:1.0@zip'
-      requiredLibs project(':com.ibm.ws.org.slf4j.api'),
-      	project(':com.ibm.ws.org.slf4j.simple')
+      
     }    
     
     copy {
@@ -32,6 +31,4 @@ addRequiredLibraries {
         from configurations.features
         into "publish/repo/archive"
     }
-
-    dependsOn copyTestContainers
 }

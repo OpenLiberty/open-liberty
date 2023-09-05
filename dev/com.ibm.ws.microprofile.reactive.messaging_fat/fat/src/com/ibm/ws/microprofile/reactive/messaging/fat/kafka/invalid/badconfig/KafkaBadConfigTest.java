@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,12 +15,13 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.invalid.badconfig;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties.simpleIncomingChannel;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaPermissions;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
@@ -28,7 +29,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,14 +36,12 @@ import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.KafkaConnectorConstants;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -58,14 +56,9 @@ public class KafkaBadConfigTest {
 
     private static final String APP_NAME = "KafkaBadConfig";
     private static final String APP_GROUP_ID = "bad-config-test-group";
-    private static final String SERVER_NAME = "SimpleRxMessagingServer";
 
-    @Server(SERVER_NAME)
+    @Server("SimpleRxMessagingServer")
     public static LibertyServer server;
-
-    @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10,
-                                                                  ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -108,8 +101,7 @@ public class KafkaBadConfigTest {
 
         // Check that the bad config error was emitted
         List<String> configErrorLines = server.findStringsInLogsUsingMark("CWMRX1007E:", server.getDefaultLogFile());
-        // (exact number of error lines can vary due to CDI changes and FFDC log messages)
-        assertThat(configErrorLines, not(empty()));
+        assertThat(configErrorLines, hasSize(1));
         String configErrorLine = configErrorLines.get(0);
         // ...and that it contained the channel name
         assertThat(configErrorLine, containsString(KafkaBadConfigIncomingBean.CHANNEL_NAME));
@@ -145,8 +137,7 @@ public class KafkaBadConfigTest {
 
         // Check that the bad config error was emitted
         List<String> configErrorLines = server.findStringsInLogsUsingMark("CWMRX1007E:", server.getDefaultLogFile());
-        // (exact number of error lines can vary due to CDI changes and FFDC log messages)
-        assertThat(configErrorLines, not(empty()));
+        assertThat(configErrorLines, hasSize(1));
         String configErrorLine = configErrorLines.get(0);
         // ...and that it contained the channel name
         assertThat(configErrorLine, containsString(KafkaBadConfigIncomingBean.CHANNEL_NAME));
@@ -186,8 +177,7 @@ public class KafkaBadConfigTest {
 
         // Check that the bad config error was emitted
         List<String> configErrorLines = server.findStringsInLogsUsingMark("CWMRX1008E:", server.getDefaultLogFile());
-        // (exact number of error lines can vary due to CDI changes and FFDC log messages)
-        assertThat(configErrorLines, not(empty()));
+        assertThat(configErrorLines, hasSize(1));
         String configErrorLine = configErrorLines.get(0);
         // ...and that it contained the channel name
         assertThat(configErrorLine, containsString(KafkaBadConfigOutgoingBean.CHANNEL_NAME));
@@ -224,8 +214,7 @@ public class KafkaBadConfigTest {
 
         // Check that the bad config error was emitted
         List<String> configErrorLines = server.findStringsInLogsUsingMark("CWMRX1008E:", server.getDefaultLogFile());
-        // (exact number of error lines can vary due to CDI changes and FFDC log messages)
-        assertThat(configErrorLines, not(empty()));
+        assertThat(configErrorLines, hasSize(1));
         String configErrorLine = configErrorLines.get(0);
         // ...and that it contained the channel name
         assertThat(configErrorLine, containsString(KafkaBadConfigOutgoingBean.CHANNEL_NAME));

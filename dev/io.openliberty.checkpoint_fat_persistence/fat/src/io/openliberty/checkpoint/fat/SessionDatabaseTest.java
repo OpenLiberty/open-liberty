@@ -18,22 +18,17 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatActions.SEVersion;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.DerbyNetworkUtilities;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -48,15 +43,6 @@ public class SessionDatabaseTest extends FATServletClient {
 
     public static SessionDatabaseApp app = null;
     private static int DERBY_PORT = 1528;
-
-    @ClassRule
-    public static RepeatTests rt = RepeatTests.with(new FeatureReplacementAction().removeFeatures(Collections.singleton("jdbc-*")).addFeature("jdbc-4.2").withID("JDBC4.2"))
-                    .andWith(new FeatureReplacementAction().removeFeatures(Collections.singleton("jdbc-*")).addFeature("jdbc-4.1").withID("JDBC4.1").fullFATOnly())
-                    .andWith(new FeatureReplacementAction().removeFeatures(Collections.singleton("jdbc-*"))
-                                    .addFeature("jdbc-4.3")
-                                    .withID("JDBC4.3")
-                                    .withMinJavaLevel(SEVersion.JAVA11)
-                                    .fullFATOnly());
 
     @BeforeClass
     public static void setUp() throws Exception {

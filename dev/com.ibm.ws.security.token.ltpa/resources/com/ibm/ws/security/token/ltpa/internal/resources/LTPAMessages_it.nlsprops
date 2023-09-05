@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -48,30 +48,12 @@ LTPA_CONFIG_ERROR=CWWKS4106E: Errore di configurazione LTPA. Impossibile creare 
 LTPA_CONFIG_ERROR.explanation=Non \u00e8 stato possibile leggere o creare le chiavi LTPA nell'ubicazione specificata.
 LTPA_CONFIG_ERROR.useraction=Verificare che l'ubicazione sia accessibile da parte del processo del server. La presenza di FFDC potrebbe indicare un errore irreversibile durante la creazione o il caricamento delle chiavi.
 
-LTPA_KEYS_TO_LOAD=CWWKS4107A: i seguenti file di chiavi LTPA sono stati creati, eliminati o modificati: {0}oppure la configurazione LTPA \u00e8 stata modificata. Tutte le chiavi LTPA vengono ricaricate.
-LTPA_KEYS_TO_LOAD.explanation=I file delle chiavi LTPA devono essere ricaricati a causa di una modifica ai file delle chiavi LTPA o alla configurazione.
-LTPA_KEYS_TO_LOAD.useraction=Assicurarsi che tutti i server che partecipano a SSO (single sign-on) condividano le stesse chiavi LTPA e password.
+LTPA_KEYS_TO_LOAD=CWWKS4107A: La configurazione o il file di chiavi LTPA sono stati modificati. Le chiavi LTPA verranno ricaricate dal file: {0}
+LTPA_KEYS_TO_LOAD.explanation=Le chiavi LTPA devono essere ricaricate perch\u00e9 c'\u00e8 stata una modifica al file delle chiavi LTPA o alla configurazione.
+LTPA_KEYS_TO_LOAD.useraction=Accertarsi che tutti i server che partecipano a SSO (Single-Sign-On) utilizzino le stesse chiavi LTPA e password.
 
 LTPA_KEY_CREATE_ERROR=CWWKS4108E: Il sistema non pu\u00f2 creare la chiave LTPA.
 LTPA_KEY_CREATE_ERROR.explanation=Non \u00e8 stato possibile creare la chiave LTPA.
 LTPA_KEY_CREATE_ERROR.useraction=La presenza di FFDC potrebbe indicare un errore irreversibile durante la creazione delle chiavi.
 
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE=CWWKS4109W: Il valore {0} per l''attributo notUseAfterDate per il file delle chiavi di convalida LTPA {1} \u00e8 passato. Impossibile utilizzare le chiavi di convalida LTPA.
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.explanation=Le chiavi di convalida LTPA vengono utilizzate solo se il valore dell'attributo notUseAfterDate \u00e8 futuro.
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.useraction=Aggiornare il valore dell'attributo notUseAfterDate ad una data futura se \u00e8 necessario utilizzare le chiavi LTPA. Altrimenti, eliminare il file di chiavi LTPA.
 
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT=CWWKS4110E: Il valore {0} per l''attributo notUseAfterDate per il file delle chiavi di convalida LTPA {1} ha un formato data non valido. Impossibile utilizzare le chiavi di convalida LTPA.
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.explanation=Il valore dell'attributo notUseAfterDate deve essere formattato in formato di data, ora e zona ISO. Il seguente esempio mostra il formato data ISO: "2023-04-18T18:08:35Z".
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.useraction=Aggiorna il valore dell'attributo notUseAfterDate in un formato di data, ora e zona ISO.
-
-LTPA_VALIDATION_KEYS_MISSING_ATTR=CWWKS4111E: L''elemento {0} LTPA validationKeys specificato nel file server.xml non contiene il nome file, la password o entrambi: {1}.
-LTPA_VALIDATION_KEYS_MISSING_ATTR.explanation=L'elemento LTPA validationKeys richiede gli attributi nome file e password.
-LTPA_VALIDATION_KEYS_MISSING_ATTR.useraction=Aggiungere gli attributi mancanti.
-
-LTPA_KEYS_FILE_DOES_NOT_EXIST=CWWKS4112E: Il file delle chiavi di convalida LTPA {0} non esiste.
-LTPA_KEYS_FILE_DOES_NOT_EXIST.explanation=Il file delle chiavi di convalida non esiste.
-LTPA_KEYS_FILE_DOES_NOT_EXIST.useraction=Assicurarsi che il file delle chiavi di convalida esista nell'ubicazione specificata dall'elemento validationKeys.
-
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED=CWWKS4113W: L''attributo monitorDirectory \u00e8 impostato su true ma l''intervallo di controllo \u00e8 {0}. Non si verifica alcun ricaricamento dinamico quando i file delle chiavi di convalida vengono creati, modificati o eliminati nella directory.
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.explanation= Il valore per l'attributo monitorInterval \u00e8 zero o inferiore a zero. La directory non pu\u00f2 essere monitorata per le azioni di creazione, eliminazione o modifica sui file con il suffisso .keys e il ricaricamento dinamico non pu\u00f2 verificarsi.
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.useraction=Impostare l'attributo monitorInterval su un intervallo maggiore di zero.

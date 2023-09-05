@@ -248,7 +248,7 @@ public class ServiceImpl extends ServiceDelegate {
     private JaxWsClientEndpointImpl getJaxwsEndpoint(QName portName, AbstractServiceFactoryBean sf,
                                       WebServiceFeature...features) {
         Service service = sf.getService();
-        EndpointInfo ei;
+        EndpointInfo ei = null;
         if (portName == null) {
             ei = service.getServiceInfos().get(0).getEndpoints().iterator().next();
         } else {
@@ -289,7 +289,7 @@ public class ServiceImpl extends ServiceDelegate {
     private AbstractServiceFactoryBean createDispatchService(DataBinding db) {
         AbstractServiceFactoryBean serviceFactory;
 
-        final Service dispatchService;
+        Service dispatchService = null;
 
         if (null != wsdlURL) {
             WSDLServiceFactory sf = new WSDLServiceFactory(bus, wsdlURL, serviceName);
@@ -433,7 +433,7 @@ public class ServiceImpl extends ServiceDelegate {
         LOG.log(Level.FINE, "endpoint reference:", epr);
         LOG.log(Level.FINE, "endpoint interface:", serviceEndpointInterface);
 
-        final JaxWsProxyFactoryBean proxyFac = new JaxWsProxyFactoryBean(); // Liberty Change
+        final JaxWsProxyFactoryBean proxyFac = new JaxWsProxyFactoryBean();
         JaxWsClientFactoryBean clientFac = (JaxWsClientFactoryBean) proxyFac.getClientFactoryBean();
         JaxWsServiceFactoryBean serviceFactory = (JaxWsServiceFactoryBean) proxyFac.getServiceFactory();
         List<WebServiceFeature> f = getAllFeatures(features);
@@ -492,7 +492,7 @@ public class ServiceImpl extends ServiceDelegate {
             // handlerchain should be on the generated Service object
             proxyFac.setLoadHandlers(false);
         }
-        // Libery Change Start 
+              
         Object obj =  AccessController.doPrivileged(new PrivilegedAction<Object>() { 
             @Override
             public Object run() {
@@ -500,7 +500,7 @@ public class ServiceImpl extends ServiceDelegate {
   
             }
         });
-        // Liberty Change End
+     // Liberty Change End
          proxyFac.create();
 
         // Configure the Service
@@ -528,6 +528,7 @@ public class ServiceImpl extends ServiceDelegate {
     private EndpointInfo createEndpointInfo(AbstractServiceFactoryBean serviceFactory,
                                             QName portName,
                                             PortInfoImpl portInfo) throws BusException {
+        EndpointInfo ei = null;
         String address = portInfo.getAddress();
         String bindingID = BindingID.getBindingID(portInfo.getBindingID());
 
@@ -541,7 +542,7 @@ public class ServiceImpl extends ServiceDelegate {
         }
         DestinationFactory df = dfm.getDestinationFactoryForUri(address);
 
-        final String transportId;
+        String transportId = null;
         if (df != null && df.getTransportIds() != null && !df.getTransportIds().isEmpty()) {
             transportId = df.getTransportIds().get(0);
         } else {
@@ -559,7 +560,7 @@ public class ServiceImpl extends ServiceDelegate {
         Service service = serviceFactory.getService();
         service.getServiceInfos().get(0).addBinding(bindingInfo);
 
-        EndpointInfo ei = new EndpointInfo(service.getServiceInfos().get(0), transportId);
+        ei = new EndpointInfo(service.getServiceInfos().get(0), transportId);
         ei.setName(portName);
         ei.setAddress(address);
         ei.setBinding(bindingInfo);
@@ -649,7 +650,7 @@ public class ServiceImpl extends ServiceDelegate {
         //Initialize Features.
         configureObject(portName.toString() + ".jaxws-client.proxyFactory", clientFac);
 
-        final AbstractServiceFactoryBean sf;
+        AbstractServiceFactoryBean sf = null;
         try {
             DataBinding db;
             if (context != null) {

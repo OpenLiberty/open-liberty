@@ -18,6 +18,7 @@ import java.util.concurrent.CountDownLatch;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
@@ -33,8 +34,8 @@ public class OpenAPIUIBundlesListener implements ServiceListener {
     private final CountDownLatch countDownLatch;
     private final BundleContext bundleContext;
 
-    public OpenAPIUIBundlesListener(Set<Bundle> openAPIUIBundles, BundleContext context) throws InvalidSyntaxException {
-        this.bundleContext = context;
+    public OpenAPIUIBundlesListener(Set<Bundle> openAPIUIBundles) throws InvalidSyntaxException {
+        this.bundleContext = FrameworkUtil.getBundle(OpenAPIUIBundlesUpdater.class).getBundleContext();
         ConcurrentHashMap<String, Boolean> expectedBundleNames = new ConcurrentHashMap<>();
         for (Bundle bundle : openAPIUIBundles) {
             expectedBundleNames.put(bundle.getSymbolicName(), Boolean.TRUE);

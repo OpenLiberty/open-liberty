@@ -4,8 +4,11 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.el50.fat.basic.servlets;
 
@@ -24,11 +27,11 @@ public class SimpleBean {
         return 25;
     }
 
-    public int getSimpleProperty() {
+    public int getSimpleProperty(){
         return simpleProperty;
     }
 
-    public String getStringVarArgs(String... strings) {
+    public String getStringVarArgs(String... strings){
         return Arrays.toString(strings);
     }
 

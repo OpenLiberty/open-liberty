@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,55 +14,104 @@ package jakarta.data.repository;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import jakarta.data.repository.Pageable.Cursor;
-import jakarta.data.repository.Pageable.Mode;
 
 /**
  * Method signatures are copied from jakarta.data.repository.Pageable from the Jakarta Data repo.
  */
-record Pagination(long page,
-                int size,
-                List<Sort> sorts,
-                Mode mode,
-                Cursor cursor)
-                implements Pageable {
+class Pagination implements Pageable {
+    private final Cursor cursor;
+    private final Mode mode;
+    private final List<Sort> order;
+    private final long pageNumber;
+    private final int pageSize;
+    private final int hash;
 
-    Pagination {
-        if (page < 1)
-            throw new IllegalArgumentException("pageNumber: " + page);
-        if (size < 1)
-            throw new IllegalArgumentException("maxPageSize: " + size);
+    Pagination(long pageNumber, int pageSize, List<Sort> order, Mode mode, Cursor cursor) {
+        if (pageNumber < 1)
+            throw new IllegalArgumentException("pageNumber: " + pageNumber);
+        if (pageSize < 1)
+            throw new IllegalArgumentException("pageSize: " + pageSize);
         if (mode != Mode.OFFSET && (cursor == null || cursor.size() == 0))
             throw new IllegalArgumentException("No keyset values were provided.");
+        this.cursor = cursor;
+        this.mode = mode;
+        this.order = order;
+        this.pageNumber = pageNumber;
+        this.pageSize = pageSize;
+        this.hash = Objects.hash(pageSize, pageNumber, order, mode, cursor);
     }
 
     @Override
     public Pageable afterKeyset(Object... keyset) {
-        return new Pagination(page, size, sorts, Mode.CURSOR_NEXT, new KeysetCursor(keyset));
+        return new Pagination(pageNumber, pageSize, order, Mode.CURSOR_NEXT, new KeysetCursor(keyset));
     }
 
     @Override
     public Pageable afterKeysetCursor(Pageable.Cursor cursor) {
-        return new Pagination(page, size, sorts, Mode.CURSOR_NEXT, cursor);
+        return new Pagination(pageNumber, pageSize, order, Mode.CURSOR_NEXT, cursor);
     }
 
     @Override
     public Pageable beforeKeyset(Object... keyset) {
-        return new Pagination(page, size, sorts, Mode.CURSOR_PREVIOUS, new KeysetCursor(keyset));
+        return new Pagination(pageNumber, pageSize, order, Mode.CURSOR_PREVIOUS, new KeysetCursor(keyset));
     }
 
     @Override
     public Pageable beforeKeysetCursor(Pageable.Cursor cursor) {
-        return new Pagination(page, size, sorts, Mode.CURSOR_PREVIOUS, cursor);
+        return new Pagination(pageNumber, pageSize, order, Mode.CURSOR_PREVIOUS, cursor);
+    }
+
+    @Override
+    public Cursor cursor() {
+        return cursor;
+    }
+
+    @Override
+    public boolean equals(Object p) {
+        Pagination pagination;
+        return this == p
+               || p != null
+                  && p.getClass() == getClass()
+                  && (pagination = (Pagination) p).hash == hash
+                  && pagination.mode == mode
+                  && pagination.pageNumber == pageNumber
+                  && pagination.pageSize == pageSize
+                  && pagination.order.equals(order)
+                  && Objects.equals(pagination.cursor, cursor);
+    }
+
+    @Override
+    public final int hashCode() {
+        return hash;
+    }
+
+    @Override
+    public Mode mode() {
+        return mode;
+    }
+
+    @Override
+    public long page() {
+        return pageNumber;
+    }
+
+    @Override
+    public int size() {
+        return pageSize;
+    }
+
+    @Override
+    public List<Sort> sorts() {
+        return order;
     }
 
     @Override
     public Pagination next() {
         if (mode == Mode.OFFSET)
-            return new Pagination(page + 1, size, sorts, mode, null);
+            return new Pagination(pageNumber + 1, pageSize, order, mode, null);
         else
             throw new UnsupportedOperationException("Not supported for keyset pagination. Instead use afterKeyset or afterKeysetCursor to provide the next keyset values or obtain the nextPageable from a KeysetAwareSlice.");
     }
@@ -76,13 +125,13 @@ record Pagination(long page,
     }
 
     @Override
-    public Pagination page(long pageNumber) {
-        return new Pagination(pageNumber, size, sorts, mode, cursor);
+    public Pagination page(long page) {
+        return new Pagination(page, pageSize, order, mode, cursor);
     }
 
     @Override
-    public Pagination size(int maxPageSize) {
-        return new Pagination(page, maxPageSize, sorts, mode, cursor);
+    public Pagination size(int size) {
+        return new Pagination(pageNumber, size, order, mode, cursor);
     }
 
     @Override
@@ -93,7 +142,7 @@ record Pagination(long page,
         else
             order = StreamSupport.stream(sorts.spliterator(), false).collect(Collectors.toUnmodifiableList());
 
-        return new Pagination(page, size, order, mode, cursor);
+        return new Pagination(pageNumber, pageSize, order, mode, cursor);
     }
 
     @Override
@@ -101,19 +150,18 @@ record Pagination(long page,
         @SuppressWarnings("unchecked")
         List<Sort> order = sorts == null ? Collections.EMPTY_LIST : List.of(sorts);
 
-        return new Pagination(page, size, order, mode, cursor);
+        return new Pagination(pageNumber, pageSize, order, mode, cursor);
     }
 
     @Override
     public String toString() {
-        StringBuilder b = new StringBuilder("Pageable{page=").append(page).append(", size=").append(size);
+        StringBuilder b = new StringBuilder("Pageable{page=").append(pageNumber).append(", size=").append(pageSize);
 
         if (cursor != null)
             b.append(", mode=").append(mode).append(", ").append(cursor.size()).append(" keys");
 
-        for (Sort o : sorts) {
-            b.append(", ").append(o.property()).append(o.ignoreCase() ? " IGNORE CASE" : "").append(o.isDescending() ? " DESC" : " ASC");
-        }
+        for (Sort o : order)
+            b.append(", ").append(o.property()).append(o.isDescending() ? " DESC" : " ASC");
 
         b.append("}");
 

@@ -28,7 +28,6 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.io.DelegatingInputStream;
 import org.apache.cxf.jaxrs.utils.ExceptionUtils;
@@ -39,7 +38,6 @@ public class ContainerRequestContextImpl extends AbstractRequestContextImpl
     implements ContainerRequestContext {
 
     private static final String ENDPOINT_ADDRESS_PROPERTY = "org.apache.cxf.transport.endpoint.address";
-    private static final String ENDPOINT_URI_PROPERTY = "org.apache.cxf.transport.endpoint.uri";
 
     private boolean preMatch;
     public ContainerRequestContextImpl(Message message, boolean preMatch, boolean responseContext) {
@@ -110,15 +108,7 @@ public class ContainerRequestContextImpl extends AbstractRequestContextImpl
             String baseUriString = new UriInfoImpl(m).getBaseUri().toString();
             String requestUriString = requestUri.toString();
             if (!requestUriString.startsWith(baseUriString)) {
-                String path = requestUri.getRawPath();
-                if (StringUtils.isEmpty(path)) {
-                    path = "/";
-                }
-                String query = requestUri.getRawQuery();
-                if (!StringUtils.isEmpty(query)) {
-                    path = path + "?" + query;
-                }
-                setRequestUri(requestUri.resolve("/"), URI.create(path));
+                setRequestUri(requestUri, URI.create("/"));
                 return;
             }
             requestUriString = requestUriString.substring(baseUriString.length());
@@ -133,10 +123,7 @@ public class ContainerRequestContextImpl extends AbstractRequestContextImpl
 
     protected void doSetRequestUri(URI requestUri) throws IllegalStateException {
         checkNotPreMatch();
-		// TODO: The JAX-RS TCK requires the full uri toString() rather than just the raw path, but
-        // changing to toString() seems to have adverse effects downstream. Needs more investigation.
-		
-        // Liberty change - using requestUri.toString() to pass CTS
+        //Liberty change - using requestUri.toString() to pass CTS
         // this was changed after 3.1.8 in the community but the CTS
         // requires the full toString().  we may try to change this
         // back in the community too, but for now we are only changing
@@ -155,14 +142,7 @@ public class ContainerRequestContextImpl extends AbstractRequestContextImpl
         if (servletRequest != null) {
             ((javax.servlet.http.HttpServletRequest)servletRequest)
                 .setAttribute(ENDPOINT_ADDRESS_PROPERTY, baseUri.toString());
-            
-            // The base URI and request URI should be treated differently
-            if (requestUri.isAbsolute() && baseUri.resolve("/").compareTo(requestUri.resolve("/")) != 0) {
-                ((javax.servlet.http.HttpServletRequest)servletRequest)
-                    .setAttribute(ENDPOINT_URI_PROPERTY, requestUri.resolve("/"));
-            }
         }
-        
     }
 
     @Override

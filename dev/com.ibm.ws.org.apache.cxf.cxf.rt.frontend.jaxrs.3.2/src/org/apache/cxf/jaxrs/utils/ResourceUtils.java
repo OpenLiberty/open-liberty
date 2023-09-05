@@ -29,13 +29,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.net.MalformedURLException; // Liberty Change
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException; // Liberty Change
-import java.security.PrivilegedExceptionAction; // Liberty Change
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -78,7 +78,7 @@ import org.apache.cxf.BusFactory;
 import org.apache.cxf.common.classloader.ClassLoaderUtils;
 import org.apache.cxf.common.i18n.BundleUtils;
 import org.apache.cxf.common.logging.LogUtils;
-import org.apache.cxf.common.util.ReflectionUtil; // Liberty Change
+import org.apache.cxf.common.util.ReflectionUtil;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.feature.Feature;
 import org.apache.cxf.helpers.CastUtils;
@@ -104,8 +104,8 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.resource.ResourceManager;
 import org.apache.cxf.staxutils.StaxUtils;
-import org.w3c.dom.Document; // Liberty Change
-import org.w3c.dom.Element; // Liberty Change
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public final class ResourceUtils {
 
@@ -148,27 +148,27 @@ public final class ResourceUtils {
         return findPostConstructMethod(c, null);
     }
 
-    public static Method findPostConstructMethod(final Class<?> c, String name) { // Liberty Change
+    public static Method findPostConstructMethod(final Class<?> c, String name) {
         if (Object.class == c || null == c) {
             return null;
         }
         for (Method m : getDeclaredMethods(c)) {
             if (name != null) {
                 if (m.getName().equals(name)) {
-                    return ReflectionUtil.setAccessible(m); // Liberty Change - setAccessible
+                    return ReflectionUtil.setAccessible(m); //Liberty change - setAccessible
                 }
             } else if (m.getAnnotation(PostConstruct.class) != null) {
-                return ReflectionUtil.setAccessible(m); // Liberty Change - setAccessible
+                return ReflectionUtil.setAccessible(m); //Liberty change - setAccessible
             }
         }
         Method m = findPostConstructMethod(c.getSuperclass(), name);
         if (m != null) {
-            return ReflectionUtil.setAccessible(m); // Liberty Change - setAccessible
+            return ReflectionUtil.setAccessible(m); //Liberty change - setAccessible
         }
         for (Class<?> i : c.getInterfaces()) {
             m = findPostConstructMethod(i, name);
             if (m != null) {
-                return ReflectionUtil.setAccessible(m); // Liberty Change - setAccessible
+                return ReflectionUtil.setAccessible(m); //Liberty change - setAccessible
             }
         }
         return null;
@@ -185,20 +185,20 @@ public final class ResourceUtils {
         for (Method m : getDeclaredMethods(c)) {
             if (name != null) {
                 if (m.getName().equals(name)) {
-                    return ReflectionUtil.setAccessible(m); // Liberty Change - setAccessible
+                    return ReflectionUtil.setAccessible(m); //Liberty change - setAccessible
                 }
             } else if (m.getAnnotation(PreDestroy.class) != null) {
-                return ReflectionUtil.setAccessible(m); /// Liberty Change - setAccessible
+                return ReflectionUtil.setAccessible(m); //Liberty change - setAccessible
             }
         }
         Method m = findPreDestroyMethod(c.getSuperclass(), name);
         if (m != null) {
-            return ReflectionUtil.setAccessible(m); // Liberty Change - setAccessible
+            return ReflectionUtil.setAccessible(m); //Liberty change - setAccessible
         }
         for (Class<?> i : c.getInterfaces()) {
             m = findPreDestroyMethod(i, name);
             if (m != null) {
-                return ReflectionUtil.setAccessible(m); // Liberty Change - setAccessible
+                return ReflectionUtil.setAccessible(m); //Liberty change - setAccessible
             }
         }
         return null;
@@ -331,52 +331,17 @@ public final class ResourceUtils {
         MethodDispatcher md = new MethodDispatcher();
         Class<?> serviceClass = cri.getServiceClass();
 
-        final Map<Method, Method> annotatedMethods = new HashMap<>();
-
         for (Method m : serviceClass.getMethods()) {
-            if (!m.isBridge() && !m.isSynthetic()) {
-                //do real methods first
-                Method annotatedMethod = AnnotationUtils.getAnnotatedMethod(serviceClass, m);
-                if (!annotatedMethods.containsKey(annotatedMethod)) {
-                    evaluateResourceMethod(cri, enableStatic, md, m, annotatedMethod);
-                    annotatedMethods.put(annotatedMethod, m);
-                }
-            }
-        }
-        for (Method m : serviceClass.getMethods()) {
-            if (m.isBridge() || m.isSynthetic()) {
-                //if a bridge/synthetic method isn't already mapped to something, go ahead and do it
-                Method annotatedMethod = AnnotationUtils.getAnnotatedMethod(serviceClass, m);
-                if (!annotatedMethods.containsKey(annotatedMethod)) {
-                    evaluateResourceMethod(cri, enableStatic, md, m, annotatedMethod);
-                    annotatedMethods.put(annotatedMethod, m);
-                } else {
-                    // Certain synthetic / bridge methods could be quite useful to handle
-                    // methods with co-variant return types, especially when used with client proxies,
-                    // see please: https://blogs.oracle.com/sundararajan/covariant-return-types-in-java
-                    bindResourceMethod(md, m, annotatedMethods.get(annotatedMethod));
-                }
-            }
-        }
-        cri.setMethodDispatcher(md);
-    }
-    
-    private static void bindResourceMethod(MethodDispatcher md, Method m, Method bound) {
-        final OperationResourceInfo ori = md.getOperationResourceInfo(bound);
-        if (ori != null && !ori.getMethodToInvoke().equals(m)) {
-            md.bind(ori, bound, m);
-        }
-    }
 
-    private static void evaluateResourceMethod(ClassResourceInfo cri, boolean enableStatic, MethodDispatcher md,
-                                               Method m, Method annotatedMethod) {
-        String httpMethod = AnnotationUtils.getHttpMethodValue(annotatedMethod);
-        Path path = AnnotationUtils.getMethodAnnotation(annotatedMethod, Path.class);
+            Method annotatedMethod = AnnotationUtils.getAnnotatedMethod(serviceClass, m);
 
-        if (httpMethod != null || path != null) {
-            if (!checkAsyncResponse(annotatedMethod)) {
-                return;
-            }
+            String httpMethod = AnnotationUtils.getHttpMethodValue(annotatedMethod);
+            Path path = AnnotationUtils.getMethodAnnotation(annotatedMethod, Path.class);
+
+            if (httpMethod != null || path != null) {
+                if (!checkAsyncResponse(annotatedMethod)) {
+                    continue;
+                }
 
                 md.bind(createOperationInfo(m, annotatedMethod, cri, path, httpMethod), m);
                 if (httpMethod == null) {
@@ -394,14 +359,16 @@ public final class ResourceUtils {
                                                                cri.getBus());
                         }
 
-                    if (subCri != null) {
-                        cri.addSubClassResourceInfo(subCri);
+                        if (subCri != null) {
+                            cri.addSubClassResourceInfo(subCri);
+                        }
                     }
                 }
+            } else {
+                reportInvalidResourceMethod(m, NOT_RESOURCE_METHOD_MESSAGE_ID, Level.FINE);
             }
-        } else {
-            reportInvalidResourceMethod(m, NOT_RESOURCE_METHOD_MESSAGE_ID, Level.FINE);
         }
+        cri.setMethodDispatcher(md);
     }
 
     private static void reportInvalidResourceMethod(Method m, String messageId, Level logLevel) {
@@ -426,7 +393,7 @@ public final class ResourceUtils {
                     return true;
                 }
                 reportInvalidResourceMethod(m, NO_VOID_RETURN_ASYNC_MESSAGE_ID, Level.WARNING);
-                return true; // Liberty Change - followup to CXF-7121
+                return true; //Liberty change - followup to CXF-7121
             }
         }
         return true;
@@ -445,16 +412,16 @@ public final class ResourceUtils {
     public static Constructor<?> findResourceConstructor(Class<?> resourceClass, boolean perRequest) {
         List<Constructor<?>> cs = new LinkedList<>();
         for (Constructor<?> c : resourceClass.getConstructors()) {
-            // Liberty Change Start
+            // Liberty change start
             Annotation[] anna = c.getDeclaredAnnotations();
             boolean hasInject = hasInjectAnnotation(anna);
-            // Liberty Change End
+            // Liberty change end
             Class<?>[] params = c.getParameterTypes();
             Annotation[][] anns = c.getParameterAnnotations();
             boolean match = true;
             for (int i = 0; i < params.length; i++) {
                 if (!perRequest) {
-                    // // Liberty Change - annotation is not null and not equals context
+                    //annotation is not null and not equals context
                     if (AnnotationUtils.getAnnotation(anns[i], Context.class) == null && !isInjectionPara(hasInject, anns[i])) { // Liberty change
                         match = false;
                         break;
@@ -470,7 +437,7 @@ public final class ResourceUtils {
         }
         Collections.sort(cs, new Comparator<Constructor<?>>() {
 
-            @Override // Liberty Change
+            @Override
             public int compare(Constructor<?> c1, Constructor<?> c2) {
                 int p1 = c1.getParameterTypes().length;
                 int p2 = c2.getParameterTypes().length;
@@ -481,7 +448,7 @@ public final class ResourceUtils {
         return cs.isEmpty() ? null : cs.get(0);
     }
 
-    // Liberty change Start
+    // Liberty change start
     /**
      * @param hasInject
      * @param anns
@@ -506,7 +473,7 @@ public final class ResourceUtils {
         return false;
     }
 
-    // Liberty change End
+    // Liberty change end
 
     public static List<Parameter> getParameters(Method resourceMethod) {
         Annotation[][] paramAnns = resourceMethod.getParameterAnnotations();
@@ -541,11 +508,11 @@ public final class ResourceUtils {
 
         PathParam a = AnnotationUtils.getAnnotation(anns, PathParam.class);
         if (a != null) {
-            // Liberty Change Start
+            // Liberty change start
             Parameter p = new Parameter(ParameterType.PATH, index, a.value(), isEncoded, dValue);
             p.setJavaType(type);
             return p;
-            // Liberty Change End
+            // Liberty change end
         }
         QueryParam q = AnnotationUtils.getAnnotation(anns, QueryParam.class);
         if (q != null) {
@@ -580,14 +547,14 @@ public final class ResourceUtils {
     private static OperationResourceInfo createOperationInfo(Method m, Method annotatedMethod,
                                                              ClassResourceInfo cri, Path path, String httpMethod) {
         OperationResourceInfo ori = new OperationResourceInfo(m, annotatedMethod, cri);
-        String classNameandPath = getClassNameandPath(cri.getResourceClass().getName(), path); // Liberty Change       
-        URITemplate t = URITemplate.createTemplate(path, ori.getParameters(), classNameandPath); // Liberty Change
+        String classNameandPath = getClassNameandPath(cri.getResourceClass().getName(), path); // Liberty change       
+        URITemplate t = URITemplate.createTemplate(path, ori.getParameters(), classNameandPath); // Liberty change
         ori.setURITemplate(t);
         ori.setHttpMethod(httpMethod);
         return ori;
     }
     
-	// Start Liberty Change
+// start Liberty change    
     private static String getClassNameandPath (String className, Path path) {
         if (path == null) {            
             return getClassNameandPath(className, "/");
@@ -612,7 +579,7 @@ public final class ResourceUtils {
 
         return sb.toString();
     }
-	// End Liberty Change
+// end Liberty change
     
     private static boolean checkMethodDispatcher(ClassResourceInfo cr) {
         if (cr.getMethodDispatcher().getOperationResourceInfos().isEmpty()) {
@@ -651,15 +618,14 @@ public final class ResourceUtils {
         return url == null ? null : url.openStream();
     }
 
-    public static URL getResourceURL(final String loc, final Bus bus) throws IOException { // Liberty Change - Add final
-        URL url;
+    public static URL getResourceURL(final String loc, final Bus bus) throws IOException {
+        URL url = null;
         if (loc.startsWith(CLASSPATH_PREFIX)) {
             String path = loc.substring(CLASSPATH_PREFIX.length());
             url = ResourceUtils.getClasspathResourceURL(path, ResourceUtils.class, bus);
         } else {
             try {
-			// Liberty Change Start
-                url = AccessController.doPrivileged(new PrivilegedExceptionAction<URL>() { 
+                url = AccessController.doPrivileged(new PrivilegedExceptionAction<URL>() { // Liberty change - added doPriv
 
                     @Override
                     public URL run() throws MalformedURLException {
@@ -683,7 +649,6 @@ public final class ResourceUtils {
                 Throwable t = pae.getException();
                 throw t instanceof IOException ? (IOException) t : new IOException(t);
             }
-			// Liberty Change End
 
         }
         if (url == null) {
@@ -714,7 +679,7 @@ public final class ResourceUtils {
 
     public static Properties loadProperties(String propertiesLocation, Bus bus) throws IOException {
         Properties props = new Properties();
-        InputStream is = getResourceStream(propertiesLocation, bus); // Liberty Change
+        InputStream is = getResourceStream(propertiesLocation, bus);
         props.load(is);
         return props;
     }

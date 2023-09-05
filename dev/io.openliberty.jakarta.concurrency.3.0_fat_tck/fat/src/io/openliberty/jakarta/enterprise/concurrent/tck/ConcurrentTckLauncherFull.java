@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -69,9 +69,6 @@ public class ConcurrentTckLauncherFull {
         server.stopServer(
                           "WLTC0032W", //Transaction rollback warning.
                           "WLTC0033W", //Transaction rollback warning.
-                          "J2CA0046E", //See: https://github.com/jakartaee/concurrency/issues/317
-                          "DSRA9400E", //See: https://github.com/jakartaee/concurrency/issues/317
-                          "CWWKC1101E", //See: https://github.com/jakartaee/concurrency/issues/317
                           "CWWKS0901E" //Quickstart security
         );
     }

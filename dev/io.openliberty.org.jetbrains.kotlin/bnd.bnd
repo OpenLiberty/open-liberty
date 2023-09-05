@@ -22,13 +22,13 @@ Import-Package: \
   *
 
 Export-Package: \
-  kotlin;version="1.9.0",\
-  kotlin.*;version="1.9.0"
+  kotlin;version="1.6.20",\
+  kotlin.*;version="1.6.20"
 
 instrument.disabled: true
 
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
 -buildpath: \
-  org.jetbrains.kotlin:kotlin-stdlib;version=1.9.0,\
-  org.jetbrains.kotlin:kotlin-stdlib-common;version=1.9.0
+  org.jetbrains.kotlin:kotlin-stdlib;version=1.6.20,\
+  org.jetbrains.kotlin:kotlin-stdlib-common;version=1.6.20

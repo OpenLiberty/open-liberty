@@ -22,9 +22,7 @@ Subsystem-Name: gRPC Client 1.0
   io.openliberty.grpc.client.1.0.thirdparty; location:="dev/api/third-party/,lib/", \
   io.openliberty.grpc.client.1.0.jakarta.thirdparty; location:="dev/api/third-party/,lib/"
 -bundles=\
-  io.openliberty.org.apache.commons.logging, \
-  io.openliberty.io.netty, \
-  io.openliberty.io.netty.ssl
+  io.openliberty.org.apache.commons.logging
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

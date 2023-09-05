@@ -541,12 +541,6 @@ public class MetadataAsmFactory extends MetadataFactory {
             return null;
         }
 
-        // Change from 8ac1935575, Fixes ECL #1832 -- released in 4.0.2
-        @Override
-        public void visitAttribute(Attribute attr) {
-            super.visitAttributeSuper(attr);
-        }
-
         /**
          * At the end of visiting this method add it to the
          * {@link MetadataClass} and handle duplicate method names by chaining

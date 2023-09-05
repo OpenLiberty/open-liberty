@@ -54,7 +54,7 @@ public class HelloImplTwoway{
 					xaRes = XAResourceFactoryImpl.instance().getXAResourceImpl(
 							xaResInfo);
 				}
-				final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
+				final int recoveryId = TM.registerResourceInfo("xaResInfo",
 						xaResInfo);
 				xaRes.setExpectedDirection(expectedDirection);
 				result = TM.enlist(xaRes, recoveryId);
@@ -88,7 +88,7 @@ public class HelloImplTwoway{
 				xaRes = XAResourceFactoryImpl.instance().getXAResourceImpl(
 						xaResInfo);
 			}
-			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
+			final int recoveryId = TM.registerResourceInfo("xaResInfo",
 					xaResInfo);
 			xaRes.setExpectedDirection(expectedDirection);
 			result = TM.enlist(xaRes, recoveryId);

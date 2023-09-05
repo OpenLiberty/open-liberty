@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 
+import io.openliberty.microprofile.openapi20.internal.OpenAPIProvider;
 import io.openliberty.microprofile.openapi20.internal.merge.MergeProcessor;
-import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
 
 public class TestUtil {
 

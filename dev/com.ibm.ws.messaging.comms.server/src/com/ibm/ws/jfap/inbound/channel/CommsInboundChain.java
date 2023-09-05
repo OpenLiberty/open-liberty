@@ -1,11 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jfap.inbound.channel;
 
@@ -36,7 +39,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
  * JFAP inbound chain class definition
  * As of now only two instances are possible: InboundBasic and InboundSecure
  */
-public class CommsInboundChain implements InboundChain, ChainEventListener {
+public class CommsInboundChain implements ChainEventListener {
     private static final TraceComponent tc = Tr.register(CommsInboundChain.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
 
     private boolean _isSecureChain = false;
@@ -111,7 +114,7 @@ public class CommsInboundChain implements InboundChain, ChainEventListener {
 
     }
 
-    public InboundChain init(String endpointName, CHFWBundle cfBundle) {
+    public void init(String endpointName, CHFWBundle cfBundle) {
         _cfw = cfBundle.getFramework();
         _endpointMgr = cfBundle.getEndpointManager();
         _endpointName = endpointName;
@@ -126,7 +129,6 @@ public class CommsInboundChain implements InboundChain, ChainEventListener {
             _tcpName = _endpointName;
             _jfapName = "JFAP-" + _endpointName;
         }
-        return this;
     }
 
     public void enable(boolean enbaled) {

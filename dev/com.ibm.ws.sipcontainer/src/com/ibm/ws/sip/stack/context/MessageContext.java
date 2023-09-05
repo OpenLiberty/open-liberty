@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2021 IBM Corporation and others.
+ * Copyright (c) 2008, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,9 +32,6 @@ import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.tcpchannel.TCPWriteCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-
 /**
  * the context holding all relevant information for sending a message
  * the context will be passed through the various elements
@@ -43,7 +40,7 @@ import io.netty.channel.ChannelFutureListener;
  * 
  * @author nogat
  */
-public abstract class MessageContext implements TCPWriteCompletedCallback, SipStreamConnectionWriteListener, ChannelFutureListener {
+public abstract class MessageContext implements TCPWriteCompletedCallback, SipStreamConnectionWriteListener{
 
 	/** class logger */
 	private static final LogMgr s_logger = Log.get(MessageContext.class);
@@ -264,9 +261,7 @@ public abstract class MessageContext implements TCPWriteCompletedCallback, SipSt
 
 	
 	@Override
-	/**
-	 * When the channel framework is in use, this will get invoked when this context has completed
-	 *
+	/*
 	 * (non-Javadoc)
 	 * @see com.ibm.wsspi.tcpchannel.TCPWriteCompletedCallback#complete(com.ibm.wsspi.channelfw.VirtualConnection, com.ibm.wsspi.tcpchannel.TCPWriteRequestContext)
 	 */
@@ -276,23 +271,6 @@ public abstract class MessageContext implements TCPWriteCompletedCallback, SipSt
 	}
 
 	/**
-	 * When Netty is in use, this will be invoked when the Future associated with this context has completed
-	 */
-    @Override
-    public void operationComplete(ChannelFuture future) throws Exception {
-        if (s_logger.isTraceDebugEnabled()) {
-            s_logger.traceDebug(this, "operationComplete", "[" + future.isSuccess() + "]");
-        }
-        if (future.isSuccess()) {
-            writeComplete();
-        } else {
-            writeError(new Exception(future.cause()));
-        }
-    }
-
-	/**
-	 * When the channel framework is in use, this will get invoked for error cases
-	 *
 	 * @see com.ibm.wsspi.tcpchannel.TCPWriteCompletedCallback#error(com.ibm.wsspi.channelfw.VirtualConnection, com.ibm.wsspi.tcpchannel.TCPWriteRequestContext, java.io.IOException)
 	 */
 	public void error(VirtualConnection vc, TCPWriteRequestContext wsc, IOException ioe) {

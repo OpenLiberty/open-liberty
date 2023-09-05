@@ -22,12 +22,12 @@ package org.apache.cxf.ws.security.wss4j.policyvalidators;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
-import java.util.logging.Logger; // Liberty Code Change
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
-import org.apache.cxf.common.logging.LogUtils; // Liberty Code Change
+import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.ws.policy.AssertionInfo;
@@ -52,7 +52,7 @@ import org.apache.wss4j.policy.model.AbstractTokenWrapper;
 import org.apache.wss4j.policy.model.EncryptionToken;
 import org.apache.wss4j.policy.model.ProtectionToken;
 import org.apache.wss4j.policy.model.SignatureToken;
-import org.apache.wss4j.policy.model.UsernameToken; // Liberty Code Change
+import org.apache.wss4j.policy.model.UsernameToken; //Liberty code change
 import org.apache.wss4j.policy.model.X509Token;
 
 /**
@@ -61,7 +61,7 @@ import org.apache.wss4j.policy.model.X509Token;
 public abstract class AbstractBindingPolicyValidator implements SecurityPolicyValidator {
 
     private static final QName SIG_QNAME = new QName(WSConstants.SIG_NS, WSConstants.SIG_LN);
-    private static final Logger LOG = LogUtils.getL7dLogger(AbstractBindingPolicyValidator.class); // Liberty Code Change
+    private static final Logger LOG = LogUtils.getL7dLogger(AbstractBindingPolicyValidator.class); //Liberty code change
 
     /**
      * Validate a Timestamp
@@ -280,7 +280,7 @@ public abstract class AbstractBindingPolicyValidator implements SecurityPolicyVa
         AbstractToken token = tokenWrapper.getToken();
         boolean isDerivedKeys = token.getDerivedKeys() == DerivedKeys.RequireDerivedKeys;
         // If derived keys are not required then just return
-        if (!((token instanceof X509Token || token instanceof UsernameToken) && isDerivedKeys)) { // Liberty Code Change
+        if (!((token instanceof X509Token || token instanceof UsernameToken) && isDerivedKeys)) { //Liberty code change
             return true;
         }
         if (tokenWrapper instanceof EncryptionToken
@@ -290,7 +290,7 @@ public abstract class AbstractBindingPolicyValidator implements SecurityPolicyVa
             && !hasDerivedKeys && !signedResults.isEmpty()) {
             return false;
         } else if (tokenWrapper instanceof ProtectionToken
-            && !hasDerivedKeys && !(signedResults.isEmpty() && encryptedResults.isEmpty())) { // Liberty Code Change
+            && !hasDerivedKeys && !(signedResults.isEmpty() && encryptedResults.isEmpty())) { //Liberty code change
             return false;
         }
         return true;

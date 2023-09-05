@@ -14,7 +14,6 @@ package io.openliberty.microprofile.metrics50.internal;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.osgi.service.component.annotations.Component;
@@ -60,23 +59,9 @@ public class ApplicationListener50 implements ApplicationStateListener {
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
 
-        Set<String> scopeNamesSet = sharedMetricRegistry.getMetricRegistryScopeNames();
-        if (scopeNamesSet.contains(MetricRegistry.VENDOR_SCOPE)) {
-            scopeNamesSet.remove(MetricRegistry.VENDOR_SCOPE);
-        } else if (!scopeNamesSet.contains(MetricRegistry.APPLICATION_SCOPE)) {
-            scopeNamesSet.add(MetricRegistry.APPLICATION_SCOPE);
-        } else if (!scopeNamesSet.contains(MetricRegistry.BASE_SCOPE)) {
-            scopeNamesSet.add(MetricRegistry.BASE_SCOPE);
-        }
-
-        MetricRegistry[] registryArray = new MetricRegistry[scopeNamesSet.size()];
-
-        int i = 0;
-        for (String scope : scopeNamesSet) {
-            registryArray[i] = sharedMetricRegistry.getOrCreate(scope);
-            i++;
-        }
-
+        MetricRegistry[] registryArray = new MetricRegistry[] {
+                sharedMetricRegistry.getOrCreate(MetricRegistry.APPLICATION_SCOPE),
+                sharedMetricRegistry.getOrCreate(MetricRegistry.BASE_SCOPE) };
         for (MetricRegistry registry : registryArray) {
             if (Util.SR_LEGACY_METRIC_REGISTRY_CLASS.isInstance(registry)) {
                 try {

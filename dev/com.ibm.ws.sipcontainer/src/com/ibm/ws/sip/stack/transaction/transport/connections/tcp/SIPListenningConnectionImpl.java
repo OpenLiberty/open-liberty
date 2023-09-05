@@ -15,7 +15,9 @@ package com.ibm.ws.sip.stack.transaction.transport.connections.tcp;
 import jain.protocol.ip.sip.ListeningPoint;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 import com.ibm.sip.util.log.Log;
 import com.ibm.sip.util.log.LogMgr;
@@ -25,8 +27,6 @@ import com.ibm.ws.sip.stack.dispatch.Dispatcher;
 import com.ibm.ws.sip.stack.transaction.transport.Hop;
 import com.ibm.ws.sip.stack.transaction.transport.connections.SIPConnection;
 import com.ibm.ws.sip.stack.transaction.transport.connections.SIPListenningConnection;
-import com.ibm.ws.sip.stack.transport.GenericEndpointImpl;
-import com.ibm.ws.sip.stack.util.SipStackUtil;
 
 public class SIPListenningConnectionImpl
 	implements SIPListenningConnection  
@@ -70,12 +70,10 @@ public class SIPListenningConnectionImpl
 			//if the port was not 0 , it will just set the same port
 			m_lp.setPort(m_sock.getLocalPort());
 
-			if (!GenericEndpointImpl.useNetty()) {
-    			Thread thread = new Thread(new ConnectionsListener(this),
-    					"SIP TCP Connections Listener on " + m_lp);
-    			isRunning = true;
-    			thread.start();
-			}
+			Thread thread = new Thread(new ConnectionsListener(this),
+					"SIP TCP Connections Listener on " + m_lp);
+			isRunning = true;
+			thread.start();
 		}
 		catch (IOException ex)
 		{
@@ -97,9 +95,7 @@ public class SIPListenningConnectionImpl
 	{		
 		try 
 		{
-		    if (!GenericEndpointImpl.useNetty()) {
-		        m_sock.close();
-		    }
+			m_sock.close();
 			notifyClosed();
 		} 
 		catch (IOException e) 
@@ -110,17 +106,7 @@ public class SIPListenningConnectionImpl
 			}
 		}
 	}
-
-    public void notifyConnectionCreated(InetSocketAddress remoteAddress) {
-        InetAddress address = remoteAddress.getAddress();
-        int port = remoteAddress.getPort();
-        Hop key = new Hop(SipStackUtil.TCP, InetAddressCache.getHostAddress(address), port);
-        SIPConnectionImpl connection = new SIPConnectionImpl(this, address, port);
-        connection.setKey(key);
-        notifyConnectionCreated(connection);
-
-    }
-
+	
 	private void notifyConnectionCreated( SIPConnection connection )
 	{
 		Dispatcher.instance().queueConnectionAcceptedEvent(this, connection);
@@ -167,7 +153,7 @@ public class SIPListenningConnectionImpl
 					Socket sock = m_sock.accept();
 					InetAddress address = sock.getInetAddress();
 					int port = sock.getPort();					
-					Hop key = new Hop(SipStackUtil.TCP, InetAddressCache.getHostAddress(address), port);
+					Hop key = new Hop("TCP", InetAddressCache.getHostAddress(address), port);
 					SIPConnectionImpl connection = new SIPConnectionImpl(m_parent, sock);
 					connection.setKey(key);
 					notifyConnectionCreated(connection);														

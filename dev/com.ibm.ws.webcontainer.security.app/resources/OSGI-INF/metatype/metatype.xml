@@ -139,7 +139,7 @@
         </AD>    
         
         <AD id="useContextRootForSSOCookiePath" name="%useContextRootForSSOCookiePath" description="%useContextRootForSSOCookiePath.desc" 
-            required="false" type="Boolean" default="false"/>
+            required="false" type="Boolean" default="false" ibm:beta="true"/>
      			
         <!-- 
               JCache configuration.

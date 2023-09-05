@@ -24,7 +24,6 @@ import com.ibm.ws.fat.util.SharedServer;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
-import componenttest.rules.repeater.RepeatActions.SEVersion;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FileUtils;
@@ -78,7 +77,7 @@ public class JakartaEE11Action extends FeatureReplacementAction {
                                                   "appAuthorization-3.0",
                                                   "appSecurity-6.0",
                                                   "batch-2.1",
-                                                  "beanValidation-3.1",
+                                                  "beanValidation-3.0",
                                                   "cdi-4.1",
                                                   "concurrent-3.1",
                                                   "connectors-2.1",
@@ -100,6 +99,7 @@ public class JakartaEE11Action extends FeatureReplacementAction {
                                                   "faces-5.0",
                                                   "facesContainer-5.0",
                                                   "pages-4.0",
+                                                  "managedBeans-2.0",
                                                   "mdb-4.0",
                                                   "messaging-3.1",
                                                   "messagingClient-3.0",
@@ -125,7 +125,7 @@ public class JakartaEE11Action extends FeatureReplacementAction {
         removeFeatures(JakartaEE9Action.EE9_FEATURE_SET);
         removeFeatures(JakartaEE10Action.EE10_FEATURE_SET);
         forceAddFeatures(false);
-        withMinJavaLevel(SEVersion.JAVA17);
+        withMinJavaLevel(17);
         withID(ID);
     }
 
@@ -177,7 +177,7 @@ public class JakartaEE11Action extends FeatureReplacementAction {
     }
 
     @Override
-    public JakartaEE11Action withMinJavaLevel(SEVersion javaLevel) {
+    public JakartaEE11Action withMinJavaLevel(int javaLevel) {
         return (JakartaEE11Action) super.withMinJavaLevel(javaLevel);
     }
 

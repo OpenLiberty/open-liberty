@@ -16,7 +16,6 @@ import java.util.stream.Stream;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Streamable;
 
 /**
  *
@@ -38,7 +37,7 @@ public interface Employees {
     @OrderBy("badge")
     Stream<Badge> findByLastName(String lastName);
 
-    Streamable<Employee> save(Employee... e);
+    void save(Employee e);
 
     // "IN" is not supported for embeddables, but EclipseLink generates SQL that leads to an SQLDataException rather than rejecting outright
     @Query("SELECT e FROM Employee e WHERE e.badge IN ?1")

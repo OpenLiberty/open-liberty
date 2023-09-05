@@ -136,17 +136,7 @@ autoFVT.doLast {
       from new File(project(':com.ibm.ws.security.fat.common.SSO.clientTests').projectDir, 'publish/shared/config/')
       into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
       include 'privateKeyJwtTokenEndpointApp.xml'
-      include 'privateKeyAllAlgSSLSettings.xml'
     }  
- 
-     /* copy shared key/trust stores from the common security fat project */
-    copy {
-     from project(':com.ibm.ws.security.fat.common.SSO.clientTests').file('publish/shared/securityKeys')
-     into new File(autoFvtDir, 'publish/servers/' + server + '/')
-     include 'altAllAlgKeyStore.p12'
-     include 'altAllAlgTrustStore.p12'
-     include 'diffTrustStore.p12'
-    }           
-                 
+  
   }
 }

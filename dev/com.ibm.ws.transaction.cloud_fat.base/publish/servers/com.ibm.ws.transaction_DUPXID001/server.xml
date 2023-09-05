@@ -70,4 +70,8 @@
     <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.lang.RuntimePermission" name="modifyThread"/>
     <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
     <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.util.PropertyPermission" name="java.util.concurrent.ForkJoinPool.*" actions="read"/>
+ 
+    <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
+     
+
 </server>

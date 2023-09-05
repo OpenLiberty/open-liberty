@@ -10,6 +10,6 @@ IBM-Provision-Capability: \
 IBM-Install-Policy: when-satisfied
 IBM-API-Package: com.ibm.ws.springboot.support.web.server.initializer; type="internal"
 
-kind=ga
+kind=beta
 edition=core
 

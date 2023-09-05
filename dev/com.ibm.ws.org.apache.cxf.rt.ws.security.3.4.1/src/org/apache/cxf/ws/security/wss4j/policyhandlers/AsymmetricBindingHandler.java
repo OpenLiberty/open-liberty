@@ -87,10 +87,7 @@ import org.opensaml.saml.common.SAMLVersion;
 /**
  *
  */
-// Liberty Change; This class has no Liberty specific changes other than the Sensitive annotation 
-// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
-// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
-// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
+//No Liberty Change, but needed to recompile due to Liberty change in MessageImpl.
 public class AsymmetricBindingHandler extends AbstractBindingBuilder {
 
     private static final Logger LOG = LogUtils.getL7dLogger(AsymmetricBindingHandler.class);
@@ -346,7 +343,7 @@ public class AsymmetricBindingHandler extends AbstractBindingBuilder {
             unassertPolicy(encryptionToken, ex);
         }
 
-        final List<WSEncryptionPart> encrParts;
+        List<WSEncryptionPart> encrParts = null;
         try {
             encrParts = getEncryptedParts();
             //Signed parts are determined before encryption because encrypted signed headers
@@ -496,7 +493,7 @@ public class AsymmetricBindingHandler extends AbstractBindingBuilder {
 
             Crypto crypto = getEncryptionCrypto();
 
-            final SecurityToken securityToken;
+            SecurityToken securityToken = null;
             try {
                 securityToken = getSecurityToken();
                 if (!isRequestor() && securityToken != null

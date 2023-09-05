@@ -50,7 +50,7 @@ public class PrivateKeyJwtTokenEndpoint extends HttpServlet {
         PrintWriter writer = resp.getWriter();
         writer.println("In handleSaveConfigTokenRequest");
 
-        printContent(writer, req);
+        printParms(writer, req);
 
         sigAlgForPrivateKey = req.getParameter("sigAlgForPrivateKey");
 
@@ -64,35 +64,16 @@ public class PrivateKeyJwtTokenEndpoint extends HttpServlet {
         PrintWriter writer = resp.getWriter();
         writer.println("In handleProcessTokenRequest");
 
-        printContent(writer, req);
+        printParms(writer, req);
 
         writer.flush();
         writer.close();
 
     }
 
-    protected void printContent(PrintWriter writer, HttpServletRequest req) throws IOException {
-
-        testWriter(writer, "request: " + req.getQueryString());
-        printHeader(writer, req);
-        printParms(writer, req);
-    }
-
-    protected void printHeader(PrintWriter writer, HttpServletRequest req) throws IOException {
-
-        testWriter(writer, "Headers:");
-
-        Enumeration<String> headerNames = req.getHeaderNames();
-        while (headerNames != null && headerNames.hasMoreElements()) {
-            String headerName = headerNames.nextElement();
-            String value = req.getHeader(headerName);
-            testWriter(writer, "header: " + headerName + ":" + value);
-        }
-
-    }
-
     protected void printParms(PrintWriter writer, HttpServletRequest req) throws IOException {
 
+        testWriter(writer, "request: " + req.getQueryString());
         testWriter(writer, "Parameters:");
 
         Enumeration<String> parameterNames = req.getParameterNames();

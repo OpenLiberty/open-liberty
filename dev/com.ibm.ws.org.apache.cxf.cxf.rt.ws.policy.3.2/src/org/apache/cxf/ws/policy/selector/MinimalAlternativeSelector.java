@@ -30,7 +30,7 @@ import org.apache.neethi.Assertion;
 import org.apache.neethi.Policy;
 
 /**
- *
+ * 
  */
 public class MinimalAlternativeSelector extends BaseAlternativeSelector {
 
@@ -38,25 +38,24 @@ public class MinimalAlternativeSelector extends BaseAlternativeSelector {
         Policy policy, PolicyEngine engine,
         Assertor assertor,
         List<List<Assertion>> request, Message msg) {
-
+        
         Collection<Assertion> choice = null;
         Iterator<List<Assertion>> alternatives = policy.getAlternatives();
         while (alternatives.hasNext()) {
             List<Assertion> alternative = alternatives.next();
-            // Liberty Change Start: restores behavior of CXF 2.6.2 
+            // Liberty change restores behavior of CXF 2.6.2 
             if (engine.supportsAlternative(alternative, assertor, msg)
                 && isCompatibleWithRequest(alternative, request)
                 && (null == choice || alternative.size() < choice.size())) {
                 choice = alternative;
             }
-			// Liberty Change End
         }
         if (choice == null) {
             // didn't find one completely compatible with the incoming, just get the minimal
             alternatives = policy.getAlternatives();
             while (alternatives.hasNext()) {
                 List<Assertion> alternative = alternatives.next();
-
+                
                 if (engine.supportsAlternative(alternative, assertor, msg)
                     && (null == choice || alternative.size() < choice.size())) {
                     choice = alternative;

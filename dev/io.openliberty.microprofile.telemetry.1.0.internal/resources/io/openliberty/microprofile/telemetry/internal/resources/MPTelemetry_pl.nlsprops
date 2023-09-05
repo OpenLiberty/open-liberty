@@ -1,0 +1,31 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Telemetry Tracing
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+# 
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWMOT5000 - CWMOT5999
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block for io.openliberty.microprofile.telemetry.1.0.internal: CWMOT5100 - CWMOT5199
+
+CWMOT5100.tracing.is.disabled=CWMOT5100I: Funkcja MicroProfile Telemetry Tracing est w\u0142\u0105czona, ale nie zosta\u0142a skonfigurowana w celu generowania danych \u015bledzenia dla aplikacji {0}.
+CWMOT5100.tracing.is.disabled.explanation=Aby mo\u017cna by\u0142o utworzy\u0107 \u015bledzenie i wyeksportowa\u0107 je do systemu \u015bledzenia, nale\u017cy skonfigurowa\u0107 funkcj\u0119 MicroProfile Telemetry Tracing.
+CWMOT5100.tracing.is.disabled.useraction=Aby w\u0142\u0105czy\u0107 \u015bledzenie, nale\u017cy poda\u0107 warto\u015b\u0107 otel.sdk.disabled=false w dowolnym ze \u017ar\u00f3de\u0142 konfiguracji dost\u0119pnych za pomoc\u0105 funkcji MicroProfile Config. Mo\u017ce by\u0107 wymagana dalsza konfiguracja, aby umo\u017cliwi\u0107 funkcji MicroProfile Telemetry Tracing wyeksportowanie danych \u015bledzenia do systemu \u015bledzenia.

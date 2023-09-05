@@ -11,8 +11,6 @@
 		<feature>txtest-1.0</feature>
 	</featureManager>
 
-	<transaction recoverOnStartup="true" waitForRecovery="true"/>
-
 	<httpEndpoint httpPort="8092" httpsPort="9445" id="defaultHttpEndpoint"/>
 	
 	<jdbcDriver id="derbyDriver">
@@ -26,7 +24,7 @@
     	databaseName="${shared.config.dir}/data/derbydb" -->
     	<properties.derby.embedded createDatabase="create" databaseName="memory:WsatDatabase2"></properties.derby.embedded>
     </dataSource>
-
+    <logging traceSpecification="com.ibm.ws.jaxws.*=debug:org.apache.cxf.ext.logging.slf4j.Slf4jEventSender=debug:wsat=all:Transaction=all"/>
     <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${server.config.dir}/dropins/wsatApp.war" className="java.security.AllPermission"/>
 </server>

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -66,7 +66,7 @@ public class HandlerImpl {
 
     // Must ensure isTranActive never returns true when we are making a WS-AT protocol call
     public void setWsatCall(boolean isWsat) {
-        wsatCall.set(isWsat);
+        wsatCall.set(Boolean.valueOf(isWsat));
     }
 
     //
@@ -83,12 +83,12 @@ public class HandlerImpl {
         // information needed to build a CoordinationContext.  We should return null
         // if there is no transaction active.
         if (tranService.isTranActive()) {
-            // Start by getting the expiry time for the current tran. We need to
+            // Start by getting the expiry time for the current tran. We need to 
             // get this now, before we export the tran as, once exported, the tran
             // may be suspended and we'd be unable to query the expiry!
             long timeout = tranService.getTimeout();
 
-            // Now export the tran to obtain its globalid.  This will be passed as
+            // Now export the tran to obtain its globalid.  This will be passed as 
             // the contextId in the WS-AT CoordinationContext.
             String globalId = tranService.getGlobalId();
 
@@ -106,13 +106,13 @@ public class HandlerImpl {
                         Tr.debug(TC, "Created new WSAT global transaction: {0}", globalId);
                     }
 
-                    // Activate returns a WSATContext but we also need the WSATTransaction.
+                    // Activate returns a WSATContext but we also need the WSATTransaction. 
                     // This will have been created during the activation processing so we can
                     // recover it here.
                     wsatTran = WSATTransaction.getTran(globalId);
 
                 } else {
-                    // We've seen this transaction before.  We must return the existing
+                    // We've seen this transaction before.  We must return the existing 
                     // CoordinationContext details.
                     ctx = wsatTran.getContext();
                     if (TC.isDebugEnabled()) {
@@ -169,7 +169,7 @@ public class HandlerImpl {
             // We must 'unexport' the transaction to return local control.
             tranService.unexportTransaction(wsatTran.getGlobalId());
 
-            // TODO: For the future: if we support the tWAS style of deferred registration
+            // TODO: For the future: if we support the tWAS style of deferred registration 
             //       there will be some work to do here to detect it.
         } else {
             // Response interceptor might get called for web service responses that
@@ -192,32 +192,32 @@ public class HandlerImpl {
     public void serverRequest(String ctxId, EndpointReferenceType registration, long expires) throws WSATException {
         WSATTransaction wsatTran = null;
 
-        // Our distributed transaction 'globalID' is the value passed in the WS-AT
-        // CoordinationContext content id.  Normally we expect this to have come from
+        // Our distributed transaction 'globalID' is the value passed in the WS-AT 
+        // CoordinationContext content id.  Normally we expect this to have come from 
         // another Liberty or tWAS, but it could have come from some other app server.
         // This doesn't matter - we don't interpret the id in any way, just use it to
         // identify our transaction.
         String globalId = ctxId;
 
-        // First action is to 'import' the distributed tran into this server.  If we
-        // have never seen this global tran before the transaction manager will need to
+        // First action is to 'import' the distributed tran into this server.  If we  
+        // have never seen this global tran before the transaction manager will need to 
         // create a new local tran.
         boolean tranCreated = tranService.importTransaction(globalId, (int) expires / 1000);
 
         try {
             if (tranCreated) {
                 // If we create a new local tran, we are a new participant in this
-                // distributed global tran, so must call the registration service
+                // distributed global tran, so must call the registration service 
                 // back on the coordinator.
                 if (TC.isDebugEnabled()) {
                     Tr.debug(TC, "Create new WSAT global transaction: {0}", globalId);
                 }
 
-                // Invoke our (local-only) WS-AT activation service to configure ourselves
-                // as a participant.
+                // Invoke our (local-only) WS-AT activation service to configure ourselves 
+                // as a participant. 
                 registrationService.activate(globalId, registration, expires, false);
 
-                // Activate returns a WSATContext but we also need the WSATTransaction.
+                // Activate returns a WSATContext but we also need the WSATTransaction. 
                 // This will have been created during the activation processing so we can
                 // recover it here.
                 wsatTran = WSATTransaction.getTran(globalId);
@@ -274,7 +274,7 @@ public class HandlerImpl {
                 Tr.debug(TC, "Response for server WSAT transaction: {0}", wsatTran.getGlobalId());
             }
 
-            // We must 'unimport' the transaction before we return to the caller.
+            // We must 'unimport' the transaction before we return to the caller. 
             tranService.unimportTransaction(wsatTran.getGlobalId());
 
         } else {

@@ -102,7 +102,6 @@ import org.apache.cxf.phase.PhaseManager;
 import org.apache.cxf.service.Service;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.transport.MessageObserver;
-import org.apache.cxf.transport.http.HTTPConduit;
 
 /**
  * Common proxy and http-centric client implementation
@@ -440,11 +439,6 @@ public abstract class AbstractClient implements Client {
         if (responseMessage == null) {
             return currentResponseBuilder;
         }
-        
-        final String reasonPhrase = (String)responseMessage.get(HTTPConduit.HTTP_RESPONSE_MESSAGE);
-        if (reasonPhrase != null) {
-            currentResponseBuilder.status(status, reasonPhrase);
-        }
 
         Map<String, List<Object>> protocolHeaders =
             CastUtils.cast((Map<?, ?>)responseMessage.get(Message.PROTOCOL_HEADERS));
@@ -561,9 +555,8 @@ public abstract class AbstractClient implements Client {
 
     protected boolean responseStreamCanBeClosed(Message outMessage, Class<?> cls) {
         return !JAXRSUtils.isStreamingOutType(cls)
-            && MessageUtils.getContextualBoolean(outMessage, ResponseImpl.RESPONSE_STREAM_AUTO_CLOSE);
+            && MessageUtils.getContextualBoolean(outMessage, "response.stream.auto.close");
     }
-
 
     protected void completeExchange(Exchange exchange, boolean proxy) {
         // higher level conduits such as FailoverTargetSelector need to
@@ -963,8 +956,6 @@ public abstract class AbstractClient implements Client {
     }
 
     protected void setSupportOnewayResponseProperty(Message outMessage) {
-        // Do propagate the response down to observer chain
-        outMessage.put(Message.PROPAGATE_202_RESPONSE_ONEWAY_OR_PARTIAL, true);
         if (!outMessage.getExchange().isOneWay()) {
             outMessage.put(Message.PROCESS_ONEWAY_RESPONSE, true);
         }

@@ -1,11 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -18,7 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.web.WebUtils;
 import com.ibm.ws.webcontainer.security.CookieHelper;
 
@@ -105,7 +107,6 @@ public class RedirectionProcessor {
         out.flush();
     }
 
-    @FFDCIgnore(Exception.class)
     private void continueWithRedirection(RedirectionEntry redirectionEntry, String state) throws IOException {
         if (state == null || state.isEmpty()) {
             redirectionEntry.handleNoState(request, response);
@@ -117,13 +118,6 @@ public class RedirectionProcessor {
         if (requestUrl == null || requestUrl.isEmpty()) {
             String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_BAD_REQUEST_NO_COOKIE", request.getRequestURL()); // CWWKS1750E
             Tr.error(tc, errorMsg);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return;
-        }
-        try {
-            OidcClientUtil.verifyReferrerHostIsValid(request, requestUrl, OidcStorageUtils.getOriginalReqUrlStorageKey(state));
-        } catch (Exception e) {
-            Tr.error(tc, e.getMessage());
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
         }

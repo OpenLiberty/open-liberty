@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2023 IBM Corporation and others.
+ * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,75 +11,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-configurations {
-    app17
-    app18
-    app19
-    app20
-    app21
- }
- 
- dependencies {
-    app17 'io.openliberty:java-apps:17.0.0'
-    app18 'io.openliberty:java-apps:18.0.0'
-    app19 'io.openliberty:java-apps:19.0.0'
-    app20 'io.openliberty:java-apps:20.0.0'
-    app21 'io.openliberty:java-apps:21.0.0'
- }
-
 task copyKernelService(type: Copy) {
   dependsOn ':com.ibm.ws.kernel.service:assemble'
   from project(':com.ibm.ws.kernel.service').buildDir
   into new File(autoFvtDir, 'lib')
 }
 
-task copyApp17A(type: Copy) {
-  from configurations.app17
-  into new File(autoFvtDir, 'publish/servers/java17-cdi-server/apps/')
-  rename 'java-apps-*.*.*.jar', 'io.openliberty.java.internal_fat_17.war'
-}
-
-task copyApp17B(type: Copy) {
-  from configurations.app17
-  into new File(autoFvtDir, 'publish/servers/java17-server/apps/')
-  rename 'java-apps-*.*.*.jar', 'io.openliberty.java.internal_fat_17.war'
-}
-
-task copyApp18A(type: Copy) {
-  from configurations.app18
-  into new File(autoFvtDir, 'publish/servers/java18-cdi-server/apps/')
-  rename 'java-apps-*.*.*.jar', 'io.openliberty.java.internal_fat_18.war'
-}
-
-task copyApp18B(type: Copy) {
-  from configurations.app18
-  into new File(autoFvtDir, 'publish/servers/java18-server/apps/')
-  rename 'java-apps-*.*.*.jar', 'io.openliberty.java.internal_fat_18.war'
-}
-
-task copyApp19(type: Copy) {
-  from configurations.app19
-  into new File(autoFvtDir, 'publish/servers/java19-server/apps/')
-  rename 'java-apps-*.*.*.jar', 'io.openliberty.java.internal_fat_19.war'
-}
-
-task copyApp20(type: Copy) {
-  from configurations.app20
-  into new File(autoFvtDir, 'publish/servers/java20-server/apps/')
-  rename 'java-apps-*.*.*.jar', 'io.openliberty.java.internal_fat_20.war'
-}
-
-task copyApp21(type: Copy) {
-  from configurations.app21
-  into new File(autoFvtDir, 'publish/servers/java21-server/apps/')
-  rename 'java-apps-*.*.*.jar', 'io.openliberty.java.internal_fat_21.war'
-}
-
 addRequiredLibraries.dependsOn copyKernelService
-addRequiredLibraries.dependsOn copyApp17A
-addRequiredLibraries.dependsOn copyApp17B
-addRequiredLibraries.dependsOn copyApp18A
-addRequiredLibraries.dependsOn copyApp18B
-addRequiredLibraries.dependsOn copyApp19
-addRequiredLibraries.dependsOn copyApp20
-addRequiredLibraries.dependsOn copyApp21

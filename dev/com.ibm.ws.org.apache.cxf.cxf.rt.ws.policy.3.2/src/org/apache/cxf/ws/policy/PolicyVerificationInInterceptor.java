@@ -45,7 +45,7 @@ public class PolicyVerificationInInterceptor extends AbstractPolicyInterceptor {
 
     private static final Logger LOG = LogUtils.getL7dLogger(PolicyVerificationInInterceptor.class);
 
-    // Liberty Change Start: migration of behaviour from CXF 2.6.2
+    // Liberty change begin migration of behaviour from CXF 2.6.2
     private static boolean ignoreUnsupportedPolicy;
     
     static {
@@ -58,7 +58,7 @@ public class PolicyVerificationInInterceptor extends AbstractPolicyInterceptor {
             && skipPolicyCheck.trim().equalsIgnoreCase("true")) {
             ignoreUnsupportedPolicy = true;
         }
-    } // Liberty Change End
+    }// Liberty change end
     
     public PolicyVerificationInInterceptor() {
         super(Phase.PRE_INVOKE);
@@ -114,7 +114,7 @@ public class PolicyVerificationInInterceptor extends AbstractPolicyInterceptor {
             }
         }
         try {
-        	// Liberty Change Start: migration of behaviour from CXF 2.6.2
+        	// Liberty change begin migration of behaviour from CXF 2.6.2
             List<List<Assertion>> usedAlternatives = null;
             
             if (ignoreUnsupportedPolicy) {
@@ -123,7 +123,7 @@ public class PolicyVerificationInInterceptor extends AbstractPolicyInterceptor {
                                 + "property cxf.ignore.unsupported.policy is set to true.");
             } else {
                 usedAlternatives = aim.checkEffectivePolicy(effectivePolicy.getPolicy());
-            } // Liberty Change End
+            }// Liberty change end
             
             if (usedAlternatives != null && !usedAlternatives.isEmpty() && message.getExchange() != null) {
                 message.getExchange().put("ws-policy.validated.alternatives", usedAlternatives);

@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2023 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -71,13 +71,9 @@ OPENAPI_MERGE_PROBLEMS_CWWKO1662W=CWWKO1662W: Se han producido los siguientes pr
 OPENAPI_MERGE_PROBLEMS_CWWKO1662W.explanation=La documentaci\u00f3n de OpenAPI de varios m\u00f3dulos web no se puede fusionar satisfactoriamente. Los puntos finales de los m\u00f3dulos notificados no se incluyen en el documento OpenAPI generado.
 OPENAPI_MERGE_PROBLEMS_CWWKO1662W.useraction=Revise los problemas de fusi\u00f3n para identificar por qu\u00e9 no se pueden fusionar los documentos de OpenAPI generados.
 
-OPENAPI_MERGE_PROBLEM_PATH_CLASH=La v\u00eda de acceso {0} del m\u00f3dulo {1} choca con una v\u00eda de acceso del m\u00f3dulo {2}. El m\u00f3dulo {1} no se puede fusionar.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH=La v\u00eda de acceso {0} del m\u00f3dulo {1} choca con una v\u00eda de acceso del m\u00f3dulo {2}. {1} no se fusionar\u00e1.
 OPENAPI_MERGE_PROBLEM_PATH_CLASH.explanation=La v\u00eda de acceso es de dos m\u00f3dulos. Ambas instancias de la v\u00eda de acceso no se pueden incluir en el mismo documento OpenAPI. Este mensaje se devuelve como parte de CWWKO1662.
-OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=Cambie uno de los m\u00f3dulos en conflicto o configure la caracter\u00edstica mpOpenApi-2.0 para excluir uno de los m\u00f3dulos. Este problema puede producirse si los servidores se incluyen en el documento OpenAPI y el URL del servidor no finaliza con la ra\u00edz de contexto de la aplicaci\u00f3n. Por ejemplo, cuando se accede a la aplicaci\u00f3n en un URL distinto a trav\u00e9s de un proxy inverso.
-
-OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH=La clave de extensi\u00f3n {0} del m\u00f3dulo {1} entra en conflicto con la misma clave de extensi\u00f3n del m\u00f3dulo {2}. El m\u00f3dulo {1} no se puede fusionar.
-OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH.explanation=Dos m\u00f3dulos declaran la misma extensi\u00f3n con valores diferentes en el nivel superior del documento OpenAPI. No se pueden incluir las dos instancias de la extensi\u00f3n en el mismo documento OpenAPI. Este mensaje se devuelve como parte de CWWKO1662.
-OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH.useraction=Cambie uno de los m\u00f3dulos en conflicto para eliminar la extensi\u00f3n o configure la caracter\u00edstica mpOpenApi-2.0 para excluir uno de los m\u00f3dulos.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=Cambie uno de los m\u00f3dulos en conflicto o configure la caracter\u00edstica mpOpenApi-2.0 para excluir uno de ellos. Este problema se puede producir si los servidores se incluyen en el documento OpenAPI y el URL del servidor no finaliza con la ra\u00edz de contexto de la aplicaci\u00f3n (por ejemplo, porque se accede a la aplicaci\u00f3n en un URL distinto a trav\u00e9s de un proxy inverso).
 
 OPENAPI_MERGE_DISABLED_CWWKO1663I=CWWKO1663I: La combinaci\u00f3n de documentaci\u00f3n de OpenAPI de varios m\u00f3dulos est\u00e1 inhabilitada. S\u00f3lo se utiliza {0} para generar la documentaci\u00f3n de OpenAPI. Para habilitar la fusi\u00f3n de la documentaci\u00f3n de OpenAPI de todos los m\u00f3dulos, establezca la propiedad de configuraci\u00f3n mp.openapi.extensions.liberty.merged.include = all.
 OPENAPI_MERGE_DISABLED_CWWKO1663I.explanation=A menos que la fusi\u00f3n de documentaci\u00f3n de OpenAPI est\u00e9 habilitada, la documentaci\u00f3n de OpenAPI s\u00f3lo se genera para el primer m\u00f3dulo OpenAPI desplegado.
@@ -98,35 +94,3 @@ OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.useraction=Revise el texto del error para 
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W=CWWKO1667W: La propiedad de configuraci\u00f3n {0} incluye "{1}" pero no coincide con ninguna aplicaci\u00f3n o m\u00f3dulo web desplegado.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.explanation=El servidor est\u00e1 configurado para crear la documentaci\u00f3n de OpenAPI para el nombre de aplicaci\u00f3n o de m\u00f3dulo, pero no se ha desplegado ninguna aplicaci\u00f3n o m\u00f3dulo web con ese nombre.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.useraction=Compruebe que todas las aplicaciones se han iniciado correctamente y que los nombres de la propiedad de configuraci\u00f3n se han especificado correctamente.
-
-OPEN_API_UI_PATH_UPDATE_CWWKO1668I=CWWKO1668I: La v\u00eda de acceso de la interfaz de usuario de OpenAPI se ha establecido en {0}.
-OPEN_API_UI_PATH_UPDATE_CWWKO1668I.explanation=La v\u00eda de acceso de la interfaz de usuario de OpenAPI se ha establecido en un valor que no es el predeterminado.
-OPEN_API_UI_PATH_UPDATE_CWWKO1668I.useraction=No se requiere ninguna acci\u00f3n.
-
-OPEN_API_DOC_PATH_UPDATE_CWWKO1669I=CWWKO1669I: La v\u00eda de acceso del documento OpenAPI se ha establecido en {0}.
-OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.explanation=La v\u00eda de acceso del documento OpenAPI se establece en un valor que no es el valor predeterminado.
-OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.useraction=No se requiere ninguna acci\u00f3n.
-
-OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E=CWWKO1670E: La v\u00eda de acceso de la interfaz de usuario de OpenAPI no es v\u00e1lida. En su lugar, se utilizar\u00e1 el valor predeterminado. Compruebe los avisos anteriores para ver la causa del error de validaci\u00f3n.
-OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.explanation=La v\u00eda de acceso de la interfaz de usuario de OpenAPI no es v\u00e1lida. En su lugar, se utilizar\u00e1 el valor predeterminado.
-OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.useraction=Compruebe los mensajes de error anteriores para ver la causa del error de validaci\u00f3n.
-
-OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E=CWWKO1671E: La v\u00eda de acceso del documento OpenAPI no es v\u00e1lida. En su lugar, se utilizar\u00e1 el valor predeterminado. Compruebe los avisos anteriores para ver la causa del error de validaci\u00f3n.
-OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.explanation=La v\u00eda de acceso del documento OpenAPI no es v\u00e1lida. En su lugar, se utilizar\u00e1 el valor predeterminado.
-OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.useraction=Compruebe los mensajes de error anteriores para ver la causa del error de validaci\u00f3n.
-
-OPEN_API_UI_PATH_CONFLICT_CWWKO1672E=CWWKO1672E: La v\u00eda de acceso de la interfaz de usuario de OpenAPI no se puede establecer en {0}. Esta v\u00eda de acceso se utiliza para recuperar los documentos de OpenAPI.
-OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.explanation=Las v\u00edas de acceso de documento de OpenAPI y de interfaz de usuario de OpenAPI no pueden ser la misma.
-OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.useraction=Especifique una v\u00eda de acceso exclusiva para la interfaz de usuario de OpenAPI.
-
-OPEN_API_UI_PATH_INVALID_CWWKO1675E=CWWKO1675E: La v\u00eda de acceso de la interfaz de usuario de OpenAPI no es v\u00e1lida o contiene caracteres no v\u00e1lidos. El URL debe construirse con caracteres alfanum\u00e9ricos Unicode A-Za-z0-9, subrayado (_), gui\u00f3n (-), barra inclinada (/) o punto (.).
-OPEN_API_UI_PATH_INVALID_CWWKO1675E.explanation=La v\u00eda de acceso de la interfaz de usuario de OpenAPI no se puede establecer en un valor que contenga caracteres no v\u00e1lidos.
-OPEN_API_UI_PATH_INVALID_CWWKO1675E.useraction=Aseg\u00farese de que la v\u00eda de acceso de OpenAPI solo contiene caracteres A-Za-z0-9 , _, -, ., /.
-
-OPEN_API_DOC_PATH_INVALID_CWWKO1676E=CWWKO1676E: La v\u00eda de acceso de documento de OpenAPI no es v\u00e1lida o contiene caracteres no v\u00e1lidos. El URL debe construirse con caracteres alfanum\u00e9ricos Unicode A-Za-z0-9, subrayado (_), gui\u00f3n (-), barra inclinada (/) o punto (.).
-OPEN_API_DOC_PATH_INVALID_CWWKO1676E.explanation=La v\u00eda de acceso de documento de OpenAPI no se puede establecer en un valor que contenga caracteres no v\u00e1lidos.
-OPEN_API_DOC_PATH_INVALID_CWWKO1676E.useraction=Aseg\u00farese de que la v\u00eda de acceso de OpenAPI solo contiene caracteres A-Za-z0-9 , _, -, ., /.
-
-OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E=CWWKO1677E: Segmento de v\u00eda de acceso "/." o "/.." no es v\u00e1lido para los puntos finales de OpenAPI.
-OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.explanation=Segmento de v\u00eda de acceso de OpenAPI "/." o "/.." no es v\u00e1lida.
-OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.useraction=Elimine cualquier segmento de v\u00eda de acceso "/." o "/.." de la v\u00eda de acceso.

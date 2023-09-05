@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -560,9 +560,7 @@ public class ServerLock {
             FileOutputStream fos = new FileOutputStream(lockFile);
             lockFileChannel = fos.getChannel();
 
-            // Removed check ( && !FileUtils.isWSL()).  It's not clear why it was added,
-            // but it was causing this method to always return true on WSL.
-            if (tryServerLock()) {
+            if (tryServerLock() && !FileUtils.isWSL()) {
                 // we could obtain the server lock, server is not running
                 return false;
             }

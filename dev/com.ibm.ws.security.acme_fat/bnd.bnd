@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -38,7 +38,6 @@ fat.test.container.images: mariadb:10.3, \
     org.shredzone.acme4j:acme4j-client;version=2.7,\
     org.shredzone.acme4j:acme4j-utils;version=2.7,\
     com.ibm.ws.logging;version=latest,\
-    com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\
     com.ibm.ws.org.jose4j;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\

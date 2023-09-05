@@ -917,17 +917,21 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
         Marshaller m = null;
 
         if (!ENABLE_MARSHALL_POOLING) {
-            LOG.fine("Marshaller created [no pooling]"); // Liberty change
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.fine("Marshaller created [no pooling]");
+            }
         } else {
             Deque<SoftReference<Marshaller>> marshallers = noEscape ? noEscapeMarshallers : escapeMarshallers;
             SoftReference<Marshaller> ref = marshallers.poll();
             while (ref != null && (m = ref.get()) == null) {
                 ref = marshallers.poll();
             }
-            if (m == null) {
-                LOG.fine("Marshaller created [not in pool]"); // Liberty change
-            } else {
-                LOG.fine("Marshaller obtained [from  pool]"); // Liberty change
+            if (LOG.isLoggable(Level.FINE)) {
+                if (m == null) {
+                    LOG.fine("Marshaller created [not in pool]");
+                } else {
+                    LOG.fine("Marshaller obtained [from  pool]");
+                }
             }
         }
 
@@ -1010,17 +1014,20 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
     public Unmarshaller getJAXBUnmarshaller(boolean setEventHandler, ValidationEventHandler veventHandler) throws JAXBException {
         Unmarshaller unm = null;
         if (!ENABLE_UNMARSHALL_POOLING) {
-            LOG.fine("Unmarshaller created [no pooling]"); // Liberty change
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.fine("Unmarshaller created [no pooling]");
+            }
         } else {
             SoftReference<Unmarshaller> ref = unmarshallers.poll();
             while (ref != null && (unm = ref.get()) == null) {
                 ref = unmarshallers.poll();
             }
-
-            if (unm == null) {
-                LOG.fine("Unmarshaller created [not in pool]"); // Liberty change
-            } else {
-                LOG.fine("Unmarshaller obtained [from  pool]"); // Liberty change
+            if (LOG.isLoggable(Level.FINE)) {
+                if (unm == null) {
+                    LOG.fine("Unmarshaller created [not in pool]");
+                } else {
+                    LOG.fine("Unmarshaller obtained [from  pool]");
+                }
             }
         }
 
@@ -1029,24 +1036,21 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
             Class<? extends ValidationEventHandler> handlerClass = oldEventHandler == null ? null : oldEventHandler.getClass();
             if (!setEventHandler) {
                 if (handlerClass != DefaultValidationEventHandler.class) {
-                    LOG.fine("The ValidationEventHandler class, which is not the default, is not set."); // Liberty change
+
                     // Don't add an eventHandler if the unmarshaller doesn't already have one.
                     // unm.setEventHandler(null);
                 }
             } else {
                 unm.setEventHandler(veventHandler);
-                LOG.fine("ValidationEventHandler is set"); // Liberty change
             }
         } else {
             unm = context.createUnmarshaller();
-            LOG.fine("Unmarshaller is created from JAXBContext"); // Liberty change
             if (unmarshallerListener != null) {
                 unm.setListener(unmarshallerListener);
-                LOG.fine("UnmarshallerListener is set"); // Liberty change
             }
             if (setEventHandler) {
                 unm.setEventHandler(veventHandler);
-                LOG.fine("ValidationEventHandler is set"); // Liberty change
+                
             }
             if (unmarshallerProperties != null) {
                 for (Map.Entry<String, Object> propEntry
@@ -1070,9 +1074,9 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
      * @param unmarshaller Unmarshaller
      */
     public void releaseJAXBUnmarshaller(Unmarshaller unmarshaller) {
-
-        LOG.fine("Unmarshaller placed back into pool"); // Liberty change
-
+        if (LOG.isLoggable(Level.FINE)) {
+            LOG.fine("Unmarshaller placed back into pool");
+        }
         if (ENABLE_UNMARSHALL_POOLING && unmarshaller != null) {
             try {
                 //defect 176959
@@ -1083,11 +1087,12 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                 }
             } catch (Throwable t) {
                 // Log the problem, and continue without pooling
-                LOG.fine("The following exception is ignored. Processing continues " + t); // Liberty change
+                if (LOG.isLoggable(Level.FINE)) {
+                    LOG.fine("The following exception is ignored. Processing continues " + t);
+                }
             }
         } else {
             JAXBUtils.closeUnmarshaller(unmarshaller);
-            LOG.fine("Unmarshaller is closed"); // Liberty change
         }
     }
     // Liberty change end

@@ -22,7 +22,6 @@ Import-Package: \
   jakarta.enterprise.event;version="[3.0,5)",\
   jakarta.enterprise.inject.spi;version="[3.0,5)",\
   jakarta.enterprise.inject;version="[3.0,5)",\
-  org.reactivestreams;version="[1.1,2)",\
   *
     
 Include-Resource: \
@@ -47,5 +46,4 @@ src: src
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	io.openliberty.org.eclipse.microprofile.reactive.streams.operators.3.0;version=latest, \
 	com.ibm.ws.logging.core;version=latest,\
-	io.openliberty.microprofile.reactive.streams.operators30.internal;version=latest,\
-	com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest
+	io.openliberty.microprofile.reactive.streams.operators30.internal;version=latest

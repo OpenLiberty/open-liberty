@@ -19,25 +19,26 @@
 
 package org.apache.cxf.jaxrs.model;
 
-import java.lang.reflect.Proxy; // Liberty Change
+import java.lang.reflect.Proxy;
 import java.util.Map;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.jaxrs.impl.tl.ThreadLocalProxy;
 
-import com.ibm.ejs.ras.Tr;  // Liberty Change
-import com.ibm.ejs.ras.TraceComponent;  // Liberty Change
-import com.ibm.websphere.ras.annotation.Trivial;  // Liberty Change
+import com.ibm.ejs.ras.Tr;
+import com.ibm.ejs.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 public class ProviderInfo<T> extends AbstractResourceInfo {
-    private final static TraceComponent tc = Tr.register(ProviderInfo.class);  // Liberty Change
+    private final static TraceComponent tc = Tr.register(ProviderInfo.class);
 
     private T provider;
-    // Liberty Change for CXF Begin
+// Liberty Change for CXF Begin
     private T oldProvider = null;
 
     private boolean isInit = false;
-    // Liberty Change for CXF End
+
+// Liberty Change for CXF End
 
     private boolean custom;
     private boolean busGlobal;
@@ -76,8 +77,8 @@ public class ProviderInfo<T> extends AbstractResourceInfo {
         super(resourceClass, serviceClass, true, checkContexts, constructorProxies, bus, provider);
         this.provider = provider;
         this.custom = custom;
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) { // Liberty Change
-            Tr.debug(tc, "<init> provider.getClass()=" + provider.getClass() + " isProxy=" + Proxy.isProxyClass(provider.getClass())); // Liberty Change
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "<init> provider.getClass()=" + provider.getClass() + " isProxy=" + Proxy.isProxyClass(provider.getClass()));
         }
     }
 
@@ -94,16 +95,16 @@ public class ProviderInfo<T> extends AbstractResourceInfo {
         return true;
     }
 
-    @Trivial // Liberty Change
+    @Trivial
     public T getProvider() {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) { // Liberty Change
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getProvider : provider=" + (provider==null?"null":provider.getClass()) + 
-                            " oldProvider=" + (oldProvider==null?"null":oldProvider.getClass())); // Liberty Change
+                            " oldProvider=" + (oldProvider==null?"null":oldProvider.getClass()));
         }
         return provider;
     }
 
-    // Liberty Change Start
+// Liberty Change for CXF Begin
     @Trivial
     public T getOldProvider() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -146,24 +147,22 @@ public class ProviderInfo<T> extends AbstractResourceInfo {
     public void setIsInit(boolean check) {
         this.isInit = check;
     }
-    // Liberty Change End
-	
-    @Override // Liberty Change - @Overide
+
+// Liberty Change for CXF End
+    @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof ProviderInfo)) {
             return false;
         }
         return provider.equals(((ProviderInfo<?>) obj).getProvider());
     }
- 
-    @Override // Liberty Change 
+
+    @Override
     public int hashCode() {
-	    // Liberty Change Start
-        if (provider != null) 
+        if (provider != null)
             return provider.hashCode();
-        else 
+        else
             return super.hashCode();
-		// Liberty Change End
     }
 
     public boolean isCustom() {
@@ -178,7 +177,7 @@ public class ProviderInfo<T> extends AbstractResourceInfo {
         this.busGlobal = busGlobal;
     }
 
-    //Liberty Change Start - 2267600
+    //Liberty 226760 begin
     @Override
     public String toString() {
         if (provider != null) {
@@ -187,5 +186,5 @@ public class ProviderInfo<T> extends AbstractResourceInfo {
             return "{NULL}";
         }
     }
-    // Liberty Change End - 226760 
+    //Liberty 226760 end
 }

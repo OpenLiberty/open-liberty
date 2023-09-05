@@ -14,8 +14,6 @@
 test {
     dependsOn ':cnf:copyMavenLibs'
     doFirst {
-        jvmArgs = ['-javaagent:' + cnf.file('mavenlibs/jmockit-1.25.jar'),
-        '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
-        '--add-opens', 'java.base/java.net=ALL-UNNAMED']
+        jvmArgs = ['-javaagent:' + cnf.file('mavenlibs/jmockit-1.25.jar'), '--add-opens', 'java.base/java.net=ALL-UNNAMED']
     }
 }

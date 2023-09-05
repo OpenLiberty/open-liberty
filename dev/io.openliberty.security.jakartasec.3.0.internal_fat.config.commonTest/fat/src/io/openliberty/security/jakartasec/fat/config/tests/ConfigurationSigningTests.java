@@ -846,7 +846,6 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
      * @throws Exception
      */
     @Test
-    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfWindows.class) // skip test if windows - we'll log a msg and then use the default timeout which is too short on our windows test systems.
     public void ConfigurationSigningTests_providerSignsWithRS256_clientExpectsRS256_negativeJwksConnectionTimeoutValue() throws Exception {
 
         String appName = buildAppNameAndUpdateIssuer("OPNegativeJWKS", -1, 0, Constants.SIGALG_RS256);
@@ -912,7 +911,6 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
      * @throws Exception
      */
     @Test
-    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfWindows.class) // skip test if windows - we'll log a msg and then use the default timeout which is too short on our windows test systems.
     public void ConfigurationSigningTests_providerSignsWithRS256_clientExpectsRS256_negativeJwksReadTimeoutValue() throws Exception {
 
         String appName = buildAppNameAndUpdateIssuer("OPNegativeJWKS", 0, -1, Constants.SIGALG_RS256);

@@ -184,7 +184,7 @@ public class HttpHeadersImpl implements HttpHeaders {
 
     public List<Locale> getAcceptableLanguages() {
         List<String> ls = getListValues(HttpHeaders.ACCEPT_LANGUAGE);
-        if (ls.isEmpty() // Liberty Change - original check
+        if (ls.isEmpty() // original check
             || (ls.size() == 1 && (ls.get(0) == null || "".equals(ls.get(0).trim())))) { // Liberty change
             return Collections.singletonList(new Locale("*"));
         }

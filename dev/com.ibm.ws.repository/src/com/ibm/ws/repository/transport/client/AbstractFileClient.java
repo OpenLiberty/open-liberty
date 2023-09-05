@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -69,10 +69,11 @@ public abstract class AbstractFileClient extends AbstractRepositoryClient implem
     /**
      * {@inheritDoc}
      *
+     * @throws RequestFailureException
      * @throws IOException
      */
     @Override
-    public List<Asset> getAllAssets() throws IOException {
+    public List<Asset> getAllAssets() throws IOException, RequestFailureException {
         return readAssetsRelative("");
     }
 
@@ -99,7 +100,7 @@ public abstract class AbstractFileClient extends AbstractRepositoryClient implem
     /**
      * Gets the specified asset
      *
-     * @param assetId            The asset id to get
+     * @param assetId The asset id to get
      * @param includeAttachments Flag to specify if the attachments should be read as well.
      * @return
      * @throws FileNotFoundException
@@ -177,7 +178,7 @@ public abstract class AbstractFileClient extends AbstractRepositoryClient implem
      * @throws IOException
      * @throws RequestFailureException
      */
-    protected List<Asset> readAssetsRelative(final String relative) throws IOException {
+    protected List<Asset> readAssetsRelative(final String relative) throws IOException, RequestFailureException {
         Collection<String> relativePaths = getChildren(relative);
         List<Asset> results = new ArrayList<Asset>();
 
@@ -224,8 +225,8 @@ public abstract class AbstractFileClient extends AbstractRepositoryClient implem
      * Given a ZipInputStream to an asset within the repo get an input stream to the license attachment within the
      * asset.
      *
-     * @param zis          ZipInputStream to the container for the asset (i.e. ZipInputStream to an ESA file inside a repo).
-     * @param assetId      The id of the asset
+     * @param zis ZipInputStream to the container for the asset (i.e. ZipInputStream to an ESA file inside a repo).
+     * @param assetId The id of the asset
      * @param attachmentId The id of the license to get an input stream to.
      * @return
      * @throws IOException
@@ -274,7 +275,7 @@ public abstract class AbstractFileClient extends AbstractRepositoryClient implem
      * Get the specified header from the manifest for the specified asset
      *
      * @param assetId The asset id to look at
-     * @param type    The header field to look for
+     * @param type The header field to look for
      * @return
      * @throws IOException
      */

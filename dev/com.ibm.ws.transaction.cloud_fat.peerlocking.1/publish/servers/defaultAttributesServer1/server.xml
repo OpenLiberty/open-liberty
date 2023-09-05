@@ -52,4 +52,7 @@
     <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.security.AllPermission"/>
     <javaPermission className="java.lang.RuntimePermission" name="*" actions="*"/>
     <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read,write,delete"/>
+        
+    <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:com.ibm.wsspi.kernel.service.*=all:*=info=enabled"/>
+     
 </server>

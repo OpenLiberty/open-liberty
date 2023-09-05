@@ -9,7 +9,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 /**
- * @version 1.14.0
+ * @version 1.13.0
  */
-@org.osgi.annotation.versioning.Version("1.14.0")
+@org.osgi.annotation.versioning.Version("1.13.0")
 package com.ibm.wsspi.webcontainer;
