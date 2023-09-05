@@ -326,7 +326,7 @@ public class TranManagerImpl {
         }
 
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getStatus (SPI)", Util.printStatus(status));
+            Tr.debug(tc, "getStatus (SPI): {0}", Util.printStatus(status));
 
         return status;
     }
