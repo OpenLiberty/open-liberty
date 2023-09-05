@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -39,6 +40,7 @@ import com.ibm.websphere.simplicity.config.File;
 import com.ibm.websphere.simplicity.config.Fileset;
 import com.ibm.websphere.simplicity.config.Library;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -71,11 +73,26 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         try {
             if (server.isStarted()) {
                 server.stopServer("CWWKG0033W");
+
+                if (isZOS()) {
+                    Log.info(SessionCacheConfigUpdateTest.class, "tearDown", "Allow more time for ZOS shutdown");
+                    TimeUnit.SECONDS.sleep(20);
+                }
             }
         } finally {
+            server.setMarkToEndOfLog();
             server.updateServerConfiguration(savedConfig);
+            server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
         }
         System.out.println("server configuration restored");
+    }
+
+    private static final boolean isZOS() {
+        String osName = System.getProperty("os.name");
+        if (osName.contains("OS/390") || osName.contains("z/OS") || osName.contains("zOS")) {
+            return true;
+        }
+        return false;
     }
 
     @BeforeClass
