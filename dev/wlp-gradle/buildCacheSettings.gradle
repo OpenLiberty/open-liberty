@@ -15,21 +15,16 @@
  * Configure Gradle Build Cache.
  * See: https://docs.gradle.org/current/userguide/build_cache.html
  */
-boolean isCiServer = 'true'.equalsIgnoreCase(gradle.userProps.getProperty('is.continuous.build'))
-String buildCacheURL = ('https://' + gradle.userProps.getProperty('artifactory.download.server') + '/artifactory/wasliberty-generic-local/')
-if (isCiServer) {
-  buildCacheURL = ('https://' + gradle.userProps.getProperty('artifactory.upload.server') + '/artifactory/wasliberty-generic-local/')
-}
-
-buildCache {
-  local {
-    enabled = !'true'.equalsIgnoreCase(gradle.userProps.getProperty('is.automated.build'))
+if (gradle.userProps.getProperty('is.using.artifactory')) {
+  String buildCacheURL = ('https://' + gradle.userProps.getProperty('artifactory.download.server') + '/artifactory/wasliberty-generic-local/')
+  if ('true'.equalsIgnoreCase(gradle.userProps.getProperty('is.continuous.build'))) {
+    buildCacheURL = ('https://' + gradle.userProps.getProperty('artifactory.upload.server') + '/artifactory/wasliberty-generic-local/')
   }
 
-  if ('true'.equalsIgnoreCase(gradle.userProps.getProperty('is.using.artifactory'))) {
+  buildCache {
     remote(HttpBuildCache) {
       url = buildCacheURL
-      push = isCiServer
+      push = 'true'.equalsIgnoreCase(gradle.userProps.getProperty('is.continuous.build'))
 
       credentials {
         username = gradle.userProps.getProperty("artifactory.download.user")
