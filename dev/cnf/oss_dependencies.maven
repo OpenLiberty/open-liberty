@@ -603,7 +603,7 @@ org.eclipse.transformer:org.eclipse.transformer.jakarta:0.5.0
 org.eclipse.transformer:org.eclipse.transformer:0.5.0
 org.eclipse:yasson:1.0.11
 org.eclipse:yasson:2.0.4
-org.eclipse:yasson:3.0.2
+org.eclipse:yasson:3.0.3
 org.ehcache:ehcache:3.9.3
 org.ektorp:org.ektorp:1.5.0
 org.fusesource.jansi:jansi:1.18

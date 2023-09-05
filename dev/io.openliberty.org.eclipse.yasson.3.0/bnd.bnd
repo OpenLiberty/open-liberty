@@ -10,19 +10,19 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.eclipse:yasson;3.0.2;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.eclipse:yasson;3.0.3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 instrument.disabled: true
 
 -includeresource: \
-   @${repo;org.eclipse:yasson;3.0.2;EXACT}!/org/eclipse/yasson/*,\
-   @${repo;org.eclipse:yasson;3.0.2;EXACT}!/META-INF/versions/*,\
-   @${repo;org.eclipse:yasson;3.0.2;EXACT}!/META-INF/services/jakarta.json.bind.spi.JsonbProvider,\
+   @${repo;org.eclipse:yasson;3.0.3;EXACT}!/org/eclipse/yasson/*,\
+   @${repo;org.eclipse:yasson;3.0.3;EXACT}!/META-INF/versions/*,\
+   @${repo;org.eclipse:yasson;3.0.3;EXACT}!/META-INF/services/jakarta.json.bind.spi.JsonbProvider,\
    =resources/
 
 -buildpath: \
     io.openliberty.jakarta.jsonb.3.0;version=latest,\
-	org.eclipse:yasson;version=3.0.2
+	org.eclipse:yasson;version=3.0.3
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
