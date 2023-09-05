@@ -17,6 +17,10 @@ import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http2.Http2Connection;
+import io.netty.handler.codec.http2.Http2Exception;
+import io.netty.handler.codec.http2.Http2Exception.StreamException;
+import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 
 /**
  *
@@ -44,7 +48,19 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
 
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
-        System.out.println("Got exception from dispatcher!!");
+        System.out.println("Got exception from dispatcher now!!");
+        System.out.println(cause.getClass().getCanonicalName());
+        System.out.println(cause.getSuppressed());
+        if (cause instanceof Http2Exception.StreamException) {
+            System.out.println("Got a HTTP2 stream exception!! Need to close the stream");
+            StreamException c = (Http2Exception.StreamException) cause;
+            HttpToHttp2ConnectionHandler handler = context.pipeline().get(HttpToHttp2ConnectionHandler.class);
+            Http2Connection connection = handler.connection();
+//            handler.closeStream(connection.stream(c.streamId()), new VoidChannelPromise(context.channel(), true));
+            connection.stream(c.streamId()).close();
+            cause.printStackTrace();
+            return;
+        }
         cause.printStackTrace();
         context.close();
     }

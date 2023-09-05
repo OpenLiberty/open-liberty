@@ -15,6 +15,7 @@ import java.util.Objects;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.channel.h2internal.Constants;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
@@ -39,6 +40,7 @@ import io.netty.handler.codec.http.HttpServerUpgradeHandler.UpgradeEvent;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent;
 import io.netty.handler.codec.http2.DefaultHttp2Connection;
+import io.netty.handler.codec.http2.DefaultHttp2LocalFlowController;
 import io.netty.handler.codec.http2.Http2CodecUtil;
 import io.netty.handler.codec.http2.Http2Connection;
 import io.netty.handler.codec.http2.Http2Error;
@@ -219,9 +221,38 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Got upgrade event for channel " + ctx.channel(), evt);
                 }
+                System.out.println("Got request upgrade: " + evt.upgradeRequest());
                 ctx.fireUserEventTriggered(evt.retain());
             }
         });
+
+//        pipeline.addLast("Upgrade Detector", new SimpleUserEventChannelHandler<UpgradeEvent>() {
+//
+//            @Override
+//            protected void eventReceived(ChannelHandlerContext ctx, UpgradeEvent evt) throws Exception {
+//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                    Tr.debug(this, tc, "Got upgrade event for channel " + ctx.channel(), evt);
+//                }
+//                evt.upgradeRequest();
+//             // Remove http1 handler adder
+//                ctx.pipeline().remove(NO_UPGRADE_OCURRED_HANDLER_NAME);
+//                // Call upgrade
+//                super.upgradeTo(ctx, request);
+//                // Set as stream 1 as defined in RFC
+//                request.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), 1);
+//                if (Constants.SPEC_INITIAL_WINDOW_SIZE != httpConfig.getH2ConnectionWindowSize()) {
+//                    // window update sets the difference between what the client has (default) and the new value.
+//
+//                    int updateSize = httpConfig.getH2ConnectionWindowSize() - Constants.SPEC_INITIAL_WINDOW_SIZE;
+//                    // Would probably fail
+//                    handler.encoder().writeWindowUpdate(ctx, 1, updateSize, null);
+//                }
+//                // Forward request to dispatcher
+//                ctx.fireChannelRead(ReferenceCountUtil.retain(evt.upgradeRequest()));
+////                ctx.fireUserEventTriggered(evt.retain());
+//                super.userEventTriggered(ctx, evt);
+//            }
+//        });
 
         // Handler to decide if an upgrade occurred or not and to add HTTP1 handlers on top
 //        pipeline.addLast("settingsHandler", new SimpleChannelInboundHandler<Http2Settings>() {
@@ -342,8 +373,20 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             initialSettings.initialWindowSize(httpConfig.getH2SettingsInitialWindowSize());
         builder = new InboundHttp2ToHttpAdapterBuilder(connection).propagateSettings(false).maxContentLength(64 * 1024).validateHttpHeaders(false);
 //        return new HttpToHttp2ConnectionHandlerBuilder().frameListener(builder.build()).frameLogger(LOGGER).connection(connection).initialSettings(initialSettings).build();
-        return new HttpToHttp2ConnectionHandlerBuilder().frameListener(new ExtendedInboundHttp2ToHttpHandler(connection, 64
-                                                                                                                         * 1024, false, false)).frameLogger(LOGGER).connection(connection).initialSettings(initialSettings).build();
+        HttpToHttp2ConnectionHandler handler = new HttpToHttp2ConnectionHandlerBuilder().frameListener(new ExtendedInboundHttp2ToHttpHandler(connection, 64
+                                                                                                                                                         * 1024, false, false)).frameLogger(LOGGER).connection(connection).initialSettings(initialSettings).build();
+        if (!httpConfig.getH2LimitWindowUpdateFrames()) {
+            ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowUpdateRatio(0.99999f);
+            try {
+                ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowUpdateRatio(connection.connectionStream(), 0.9999f);
+            } catch (Http2Exception e) {
+                // TODO Auto-generated catch block
+                System.out.println("Damn an exception happened");
+                e.printStackTrace();
+            }
+        }
+
+        return handler;
 
     }
 
@@ -403,17 +446,42 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             // TODO Auto-generated constructor stub
         }
 
+//        @Override
+//        public void onHeadersRead(ChannelHandlerContext ctx, int streamId, io.netty.handler.codec.http2.Http2Headers headers, int padding,
+//                                  boolean endOfStream) throws Http2Exception {
+//            System.out.println("Called from extended headers!");
+//            new Exception(new Throwable()).printStackTrace();
+//            super.onHeadersRead(ctx, streamId, headers, padding, endOfStream);
+//        };
+//
+//        @Override
+//        public void onHeadersRead(ChannelHandlerContext ctx, int streamId, io.netty.handler.codec.http2.Http2Headers headers, int streamDependency, short weight, boolean exclusive,
+//                                  int padding, boolean endOfStream) throws Http2Exception {
+//            System.out.println("Called from extended headers!");
+//            new Exception(new Throwable()).printStackTrace();
+//            super.onHeadersRead(ctx, streamId, headers, streamDependency, weight, exclusive, padding, endOfStream);
+//        };
+
         @Override
+        @FFDCIgnore(NullPointerException.class)
+        // Extended to properly get stream errors when working with header parsing with missing pesudoheaders
         protected io.netty.handler.codec.http.FullHttpMessage processHeadersBegin(ChannelHandlerContext ctx, io.netty.handler.codec.http2.Http2Stream stream,
                                                                                   io.netty.handler.codec.http2.Http2Headers headers, boolean endOfStream, boolean allowAppend,
                                                                                   boolean appendToTrailer) throws io.netty.handler.codec.http2.Http2Exception {
             try {
                 System.out.println("Here go the headers begin!");
                 return super.processHeadersBegin(ctx, stream, headers, endOfStream, allowAppend, appendToTrailer);
+                // TODO Check stream error https://github.com/netty/netty/blob/4.1/codec-http2/src/main/java/io/netty/handler/codec/http2/Http2Exception.java#L150
             } catch (NullPointerException e) {
-//               ctx.pipeline().get(HttpToHttp2ConnectionHandler.class).resetStream(ctx, stream.id(), io.netty.handler.codec.http2.Http2Error.PROTOCOL_ERROR.code(), new VoidChannelPromise(ctx.channel(), false));
-                throw new Http2Exception.StreamException(stream.id(), Http2Error.PROTOCOL_ERROR, "Bad headers");
-            } catch (Exception e2) {
+//                 ctx.pipeline().get(HttpToHttp2ConnectionHandler.class).resetStream(ctx, stream.id(), io.netty.handler.codec.http2.Http2Error.PROTOCOL_ERROR.code(), new
+//                VoidChannelPromise(ctx.channel(), false));
+                System.out.println("Got null processisng headers! Sending streamError");
+//                ctx.fireExceptionCaught(Http2Exception.streamError(stream.id(), Http2Error.PROTOCOL_ERROR, e.getMessage()));
+                throw Http2Exception.streamError(stream.id(), Http2Error.PROTOCOL_ERROR, e.getMessage());
+//                throw new Http2Exception.StreamException(stream.id(), Http2Error.PROTOCOL_ERROR, "Bad headers");
+            }
+
+            catch (Exception e2) {
                 System.out.println("Uncatched Issue with processing headers");
                 e2.printStackTrace();
                 throw e2;

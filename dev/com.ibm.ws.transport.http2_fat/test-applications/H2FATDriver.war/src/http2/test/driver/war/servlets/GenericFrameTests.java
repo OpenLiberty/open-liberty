@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -62,7 +62,11 @@ public class GenericFrameTests extends H2FATDriverServlet {
         secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
         // cannot assume language of test machine
         secondHeadersReceived.add(new H2HeaderField("content-language", ".*"));
-        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(7, null, 0, 0, 0, false, true, false, false, false, false);
+        FrameHeadersClient secondFrameHeaders;
+        if (USING_NETTY)
+            secondFrameHeaders = new FrameHeadersClient(7, null, 0, 0, 0, false, true, false, true, false, false);
+        else
+            secondFrameHeaders = new FrameHeadersClient(7, null, 0, 0, 0, false, true, false, false, false, false);
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
 
         //Headers frame to send for stream 7 request
@@ -199,8 +203,13 @@ public class GenericFrameTests extends H2FATDriverServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         // add the expected error frame
-        byte[] debugData = "DATA frame stream ID cannot be 0x0".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "DATA frame stream ID cannot be 0x0".getBytes();
+        byte[] nettyDebugData = "Frame of type 0 must be associated with a stream.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);
