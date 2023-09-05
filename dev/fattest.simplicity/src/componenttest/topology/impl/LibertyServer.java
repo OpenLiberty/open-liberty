@@ -1110,6 +1110,21 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
+     * Wait for the server to state that it is listening on its SSL port
+     *
+     * @throws Exception
+     */
+    public void waitForSSLStart() throws Exception {
+        //wait for "CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host"
+        String sslStartMsg = waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint-ssl.*");
+        if (sslStartMsg == null) {
+            RuntimeException rx = new RuntimeException("Timed out waiting for the server to initialize defaultHttpEndpoint-ssl");
+            Log.error(c, "waitForSSLStart", rx);
+            throw rx;
+        }
+    }
+
+    /**
      * Start the server and validate that the server was started:
      * prepares/cleans the server directory, then performs a clean start
      *

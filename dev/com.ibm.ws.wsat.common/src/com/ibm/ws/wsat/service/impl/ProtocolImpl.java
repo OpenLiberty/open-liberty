@@ -20,6 +20,7 @@ import org.apache.cxf.ws.addressing.Names;
 import org.apache.cxf.ws.addressing.ReferenceParametersType;
 import org.w3c.dom.Element;
 
+import com.ibm.tx.remote.DistributableTransaction;
 import com.ibm.tx.remote.Vote;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -238,11 +239,25 @@ public class ProtocolImpl {
         final String globalId = wrapper.getTxID();
         final WSATTransaction tran = WSATTransaction.getTran(globalId);
 
+        DistributableTransaction t = null;
+
         if (tran != null) {
             tranService.commitTransaction(globalId);
+        } else {
+            t = tranService.getRemoteTranMgr().getTransactionForID(globalId);
         }
 
-        participantResponse(tran, globalId, wrapper.getResponseEpr(), WSATParticipantState.COMMITTED);
+        if (t != null) {
+            if (TC.isDebugEnabled()) {
+                Tr.debug(TC, "Participant is probably still in replay. Coordinator can retry later: {0}", t);
+            }
+        } else {
+            if (TC.isDebugEnabled()) {
+                Tr.debug(TC, "No sign of this subordinate. Assume it committed");
+            }
+
+            participantResponse(tran, globalId, wrapper.getResponseEpr(), WSATParticipantState.COMMITTED);
+        }
     }
 
     public void rollback(ProtocolServiceWrapper wrapper) throws WSATException {

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,12 +18,8 @@ import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProp
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaClientLibs;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaPermissions;
 
-import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
-import componenttest.rules.repeater.RepeatTests;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -38,11 +34,13 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestCons
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils;
+import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.SaslPlainTests;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -60,7 +58,8 @@ public class LibertyLoginModuleSpecialCharsTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10,
+                                                                  ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -101,12 +100,11 @@ public class LibertyLoginModuleSpecialCharsTest {
 
     @AfterClass
     public static void teardownTest() throws Exception {
-        server.stopServer();
-    }
-
-    @AfterClass
-    public static void teardownKafka() throws ExecutionException, InterruptedException, IOException {
-        KafkaUtils.deleteKafkaTopics(SaslPlainTests.getAdminClient());
+        try {
+            server.stopServer();
+        } finally {
+            KafkaUtils.deleteKafkaTopics(SaslPlainTests.getAdminClient());
+        }
     }
 
 }

@@ -35,7 +35,7 @@
     <oauthProvider id="TestProvider" filter="request-url%=/test">
         <autoAuthorizeClient>client01</autoAuthorizeClient>
         <localStore>
-            <client displayname="MicroProfile OpenAPI UI" name="${clientName}" secret="${clientSecret}" redirect="https://${host}:8020${uiPath}/oauth2-redirect.html" enabled="true"/>
+            <client displayname="MicroProfile OpenAPI UI" name="${clientName}" secret="${clientSecret}" redirect="https://${host}:${httpsPort}${uiPath}/oauth2-redirect.html" enabled="true"/>
         </localStore>
     </oauthProvider>
 

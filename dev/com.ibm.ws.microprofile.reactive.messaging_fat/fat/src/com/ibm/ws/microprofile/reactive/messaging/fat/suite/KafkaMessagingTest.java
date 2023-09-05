@@ -19,7 +19,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -73,7 +72,8 @@ public class KafkaMessagingTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10,
+                                                                  ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
 
     private static KafkaConsumer<String, String> kafkaConsumer;
     private static KafkaProducer<String, String> kafkaProducer;
@@ -130,11 +130,11 @@ public class KafkaMessagingTest {
     /**
      * Poll Kafka until the desired number of records is received
      *
-     * @param <K> Key type of kafka record
-     * @param <V> Value type of kafka record
+     * @param <K>      Key type of kafka record
+     * @param <V>      Value type of kafka record
      * @param consumer the kafka consumer
-     * @param count the number of records expected
-     * @param timeout the amount of time to wait for the expected number of records to be received
+     * @param count    the number of records expected
+     * @param timeout  the amount of time to wait for the expected number of records to be received
      * @return the list of records received
      */
     private static <K, V> List<ConsumerRecord<K, V>> pollForRecords(KafkaConsumer<K, V> consumer, int count, Duration timeout) {
@@ -164,12 +164,11 @@ public class KafkaMessagingTest {
 
     @AfterClass
     public static void teardownTest() throws Exception {
-        server.stopServer();
-    }
-
-    @AfterClass
-    public static void teardownKafka() throws ExecutionException, InterruptedException, IOException {
-        KafkaUtils.deleteKafkaTopics(PlaintextTests.getAdminClient());
+        try {
+            server.stopServer();
+        } finally {
+            KafkaUtils.deleteKafkaTopics(PlaintextTests.getAdminClient());
+        }
     }
 
 }

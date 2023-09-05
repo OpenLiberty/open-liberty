@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Condition;
 import java.util.logging.Level;
 
 import org.osgi.framework.Bundle;
@@ -31,7 +32,6 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
-import org.osgi.service.condition.Condition;
 
 import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.RuntimeMetaDataProvider;
@@ -277,10 +277,16 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     public int getClientInactivityTimeout() {
         // return Integer.valueOf(_props.get("client.inactivity.timeout"));
         Number num = (Number) _props.get("clientInactivityTimeout");
-        return num.intValue();
+
+        int timeout = num.intValue();
+
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getClientInactivityTimeout: {0}", timeout);
+        return timeout;
     }
 
     @Override
+    @Trivial
     public int getHeuristicRetryInterval() {
         int interval = ((Number) _props.get("heuristicRetryInterval")).intValue();
         if (interval == HEURISTIC_RETRY_INTERVAL_DEFAULT) {
@@ -293,13 +299,20 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
             }
         }
 
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getHeuristicRetryInterval: {0}", interval);
         return interval;
     }
 
     @Override
+    @Trivial
     public int getHeuristicRetryLimit() {
         Number num = (Number) _props.get("heuristicRetryLimit");
-        return num.intValue();
+
+        int limit = num.intValue();
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getHeuristicRetryLimit: {0}", limit);
+        return limit;
     }
 
     @Override

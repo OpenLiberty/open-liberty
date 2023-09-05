@@ -19,8 +19,6 @@ import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.ka
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaPermissions;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -91,12 +89,11 @@ public class KafkaSharedLibTest {
 
     @AfterClass
     public static void teardownTest() throws Exception {
-        server.stopServer();
-    }
-
-    @AfterClass
-    public static void teardownKafka() throws ExecutionException, InterruptedException, IOException {
-        KafkaUtils.deleteKafkaTopics(PlaintextTests.getAdminClient());
+        try {
+            server.stopServer();
+        } finally {
+            KafkaUtils.deleteKafkaTopics(PlaintextTests.getAdminClient());
+        }
     }
 
 }

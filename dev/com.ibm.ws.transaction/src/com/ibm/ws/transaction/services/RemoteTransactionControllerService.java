@@ -270,7 +270,7 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
      * @param xid
      * @return
      */
-    private DistributableTransaction getTransactionForID(String globalId) {
+    public DistributableTransaction getTransactionForID(String globalId) {
 
         for (TransactionImpl tx : LocalTIDTable.getAllTransactions()) {
             if (globalId.equals(((DistributableTransaction) tx).getGlobalId())) {
