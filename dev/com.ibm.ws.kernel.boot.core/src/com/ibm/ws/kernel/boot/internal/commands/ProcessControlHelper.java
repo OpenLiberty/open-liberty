@@ -153,8 +153,24 @@ public class ProcessControlHelper {
     }
 
     private ReturnCode waitForProcessStop(String pid, long endTime) {
+        long expireTime = endTime;
+        ProcessStatus ps;
 
-        ProcessStatus ps = pid == null ? new FileShareLockProcessStatusImpl(consoleLogFile) : new PSProcessStatusImpl(pid);
+        // If the pid is null, wait on the lock for the console.log file.  Previously, we did not wait
+        // for the process to stop when the pid was null.  However, there is a delay between the time
+        // the server releases the .slock file and when the server finally stops.  This delay should be
+        // very small, but it is non-zero.  So we need at least a small wait here.
+        // The console.log might be held open by another process.  For example it might be open in an editor.
+        // In such a case, we might wait the entire timeout period, which would normally be an excessive delay
+        // since the caller should have already waited for the server to release the .slock file before calling
+        // this method. So a 2-second max wait us added here.
+        // Normally, the pid is expected to be null on Windows.
+        if (pid == null) {
+            ps = new FileShareLockProcessStatusImpl(consoleLogFile);
+            expireTime = (System.currentTimeMillis() + 2000) < endTime ? (System.currentTimeMillis() + 2000) : endTime;
+        } else {
+            ps = new PSProcessStatusImpl(pid);
+        }
 
         do {
             try {
@@ -164,7 +180,7 @@ public class ProcessControlHelper {
                 }
 
                 long timeNow = System.currentTimeMillis();
-                if (timeNow > endTime) {
+                if (timeNow > expireTime) {
                     break;
                 }
                 Thread.sleep(BootstrapConstants.POLL_INTERVAL_MS);
