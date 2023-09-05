@@ -15,7 +15,7 @@
  * Configure Gradle Build Cache.
  * See: https://docs.gradle.org/current/userguide/build_cache.html
  */
-if (gradle.userProps.getProperty('is.using.artifactory')) {
+if ('true'.equalsIgnoreCase(gradle.userProps.getProperty('is.using.artifactory'))) {
   String buildCacheURL = ('https://' + gradle.userProps.getProperty('artifactory.download.server') + '/artifactory/wasliberty-generic-local/')
   if ('true'.equalsIgnoreCase(gradle.userProps.getProperty('is.continuous.build'))) {
     buildCacheURL = ('https://' + gradle.userProps.getProperty('artifactory.upload.server') + '/artifactory/wasliberty-generic-local/')
