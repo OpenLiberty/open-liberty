@@ -14,6 +14,7 @@ package componenttest.topology.utils.tck;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -69,7 +70,6 @@ import componenttest.topology.utils.tck.TCKResultsInfo.TCKJarInfo;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKUtilities.ArtifactoryAuthenticator;
 import componenttest.topology.utils.tck.TCKUtilities.ProcessResult;
-import junit.framework.AssertionFailedError;
 
 /**
  * MvnUtils allows an arquillian based MicroProfile TCK suite to be launched via Maven. The results will then be converted to junit format and presented
@@ -249,9 +249,11 @@ public class TCKRunner {
     private void runTCK() throws Exception {
         Assume.assumeThat(System.getProperty("os.name"), CoreMatchers.not("OS/400")); // skip tests on IBM i due to mvn issue.
 
-        List<String> testOutput = runCleanTestCmd();
-        List<String> failingTestsList = postProcessTestResults(testOutput);
-        assertTestsPassed(this.bucketName, this.testName, failingTestsList);
+        ProcessResult testOutput = runCleanTestCmd();
+        List<String> failingTestsList = postProcessTestResults(testOutput.getOutput());
+        if (failingTestsList.isEmpty()) {
+            assertEquals("No tests failed but maven exit code was non-zero", 0, testOutput.getExitCode());
+        }
 
         List<String> dependencyOutput = runDependencyCmd();
         TCKJarInfo tckJarInfo = TCKUtilities.getTCKJarInfo(this.type, dependencyOutput);
@@ -262,11 +264,11 @@ public class TCKRunner {
     /**
      * runs "mvn clean test" in the tck folder, passing through all the required properties
      */
-    private List<String> runCleanTestCmd() throws Exception {
+    private ProcessResult runCleanTestCmd() throws Exception {
 
         List<String> testcmd = getMvnCommandParams(MVN_CLEAN, MVN_TEST);
-        List<String> mvnOutput = runMvnCmd(testcmd, getTCKRunnerDir(), getMavenUserHome(), getMvnTestOutputFile());
-        return mvnOutput;
+        ProcessResult mvnResult = runMvnCmd(testcmd, getTCKRunnerDir(), getMavenUserHome(), getMvnTestOutputFile());
+        return mvnResult;
     }
 
     /**
@@ -274,8 +276,8 @@ public class TCKRunner {
      */
     private List<String> runDependencyCmd() throws Exception {
         List<String> dependencyCmd = getMvnCommandParams(MVN_DEPENDENCY);
-        List<String> mvnOutput = runMvnCmd(dependencyCmd, getTCKRunnerDir(), getMavenUserHome(), getMvnDependencyOutputFile());
-        return mvnOutput;
+        ProcessResult mvnOutput = runMvnCmd(dependencyCmd, getTCKRunnerDir(), getMavenUserHome(), getMvnDependencyOutputFile());
+        return mvnOutput.getOutput();
     }
 
     /**
@@ -686,16 +688,6 @@ public class TCKRunner {
         return new File(getResultsDir(), "dependency.txt");
     }
 
-    private static void assertTestsPassed(String bucketName, String testName, List<String> failingTestsList) {
-        if (failingTestsList != null && failingTestsList.size() > 0) {
-            String msg = bucketName + ":" + testName + " tests failed:";
-            for (String test : failingTestsList) {
-                msg += "\n - " + test;
-            }
-            throw new AssertionFailedError(msg);
-        }
-    }
-
     /**
      * Copy a list of result files to the target directory, appending the id string to both the file name and to test names inside the result XML.
      *
@@ -967,7 +959,7 @@ public class TCKRunner {
      * @return                  The return code of the process. (TCKs return 0 if all tests pass and !=0 otherwise).
      * @throws Exception
      */
-    private static List<String> runMvnCmd(List<String> mvnParams, File workingDirectory, File mavenUserHome, File logFile) throws Exception {
+    private static ProcessResult runMvnCmd(List<String> mvnParams, File workingDirectory, File mavenUserHome, File logFile) throws Exception {
 
         //calculate the timeout
         long hardTimeout = Long.parseLong(System.getProperty("fat.timeout", "10800000"));
@@ -990,6 +982,6 @@ public class TCKRunner {
         //if the process timed out throw an Error
         TCKUtilities.assertNotTimedOut(output, hardTimeout, softTimeout);
 
-        return output.getOutput();
+        return output;
     }
 }
