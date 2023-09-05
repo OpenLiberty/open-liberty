@@ -163,11 +163,12 @@ public class ProcessControlHelper {
         // The console.log might be held open by another process.  For example it might be open in an editor.
         // In such a case, we might wait the entire timeout period, which would normally be an excessive delay
         // since the caller should have already waited for the server to release the .slock file before calling
-        // this method. So a 2-second max wait us added here.
+        // this method. So a 1-second max wait is added here.
         // Normally, the pid is expected to be null on Windows.
         if (pid == null) {
             ps = new FileShareLockProcessStatusImpl(consoleLogFile);
-            expireTime = (System.currentTimeMillis() + 2000) < endTime ? (System.currentTimeMillis() + 2000) : endTime;
+            final long timeNowPlusOneSec = System.currentTimeMillis() + 1000;
+            expireTime = timeNowPlusOneSec < endTime ? timeNowPlusOneSec : endTime;
         } else {
             ps = new PSProcessStatusImpl(pid);
         }

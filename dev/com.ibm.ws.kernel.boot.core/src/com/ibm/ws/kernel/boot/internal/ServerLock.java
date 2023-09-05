@@ -252,7 +252,7 @@ public class ServerLock {
      * @return true if server lock was obtained (!null & valid)
      */
     private synchronized boolean getServerLock() {
-        return getServerLock(new Integer(BootstrapConstants.SERVER_STOP_WAIT_TIME_DEFAULT));
+        return getServerLock((System.currentTimeMillis() + (Integer.valueOf(BootstrapConstants.SERVER_STOP_WAIT_TIME_DEFAULT) * 1000)));
     }
 
     /**
