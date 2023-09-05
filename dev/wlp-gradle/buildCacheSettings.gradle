@@ -15,22 +15,18 @@
  * Configure Gradle Build Cache.
  * See: https://docs.gradle.org/current/userguide/build_cache.html
  */
-boolean isCiServer = 'true'.equalsIgnoreCase(gradle.userProps.getProperty('is.continuous.build'))
-String buildCacheURL = ('https://' + gradle.userProps.getProperty('artifactory.download.server') + '/artifactory/wasliberty-generic-local/')
-if (isCiServer) {
-  buildCacheURL = ('https://' + gradle.userProps.getProperty('artifactory.upload.server') + '/artifactory/wasliberty-generic-local/')
-}
-
-buildCache {
-  local {
-    enabled = !'true'.equalsIgnoreCase(gradle.userProps.getProperty('is.automated.build'))
+boolean isUsingArtifactory = 'true'.equalsIgnoreCase(gradle.userProps.getProperty('is.using.artifactory'))
+if (isUsingArtifactory) {
+  String artifactoryServer = gradle.userProps.getProperty('artifactory.download.server')
+  boolean isCIServer = 'true'.equalsIgnoreCase(gradle.userProps.getProperty('is.continuous.build'))
+  if (isCIServer) {
+    // Use the upload Artifactory URL when running on a CI server.
+    artifactoryServer = gradle.userProps.getProperty('artifactory.upload.server')
   }
-
-  if ('true'.equalsIgnoreCase(gradle.userProps.getProperty('is.using.artifactory'))) {
+  buildCache {
     remote(HttpBuildCache) {
-      url = buildCacheURL
-      push = isCiServer
-
+      url = ('https://' + artifactoryServer + '/artifactory/wasliberty-generic-local/')
+      push = isCIServer
       credentials {
         username = gradle.userProps.getProperty("artifactory.download.user")
         password = gradle.userProps.getProperty("artifactory.download.token")
