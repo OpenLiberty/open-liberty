@@ -119,12 +119,15 @@ public class ProcessControlHelper {
             stopRc = ReturnCode.REDUNDANT_ACTION_STATUS;
         }
 
-        int timeout = launchArgs.getStopTimeout();
+        final int timeout = launchArgs.getStopTimeout();
+        final long timeoutMillis = timeout * 1000;
+        final long startTime = System.currentTimeMillis();
+        final long endTime = startTime + timeoutMillis;
 
         // If the lock file existed before we attempted to stop the server,
         // wait until we can obtain the server lock file (because the server process has stopped)
         if (stopRc == ReturnCode.OK && lockExists) {
-            stopRc = serverLock.waitForStop(timeout);
+            stopRc = serverLock.waitForStop(endTime);
         }
 
         if (stopRc == ReturnCode.OK) {
@@ -132,7 +135,7 @@ public class ProcessControlHelper {
             // On Windows, the pid seems to be always null.
             // On other operating systems, optimistically assume the process is no longer running.
             if (pid != null || WINDOWS) {
-                stopRc = waitForProcessStop(pid, timeout);
+                stopRc = waitForProcessStop(pid, endTime);
             }
         }
 
@@ -149,13 +152,9 @@ public class ProcessControlHelper {
         return stopRc;
     }
 
-    private ReturnCode waitForProcessStop(String pid, int timeout) {
+    private ReturnCode waitForProcessStop(String pid, long endTime) {
 
         ProcessStatus ps = pid == null ? new FileShareLockProcessStatusImpl(consoleLogFile) : new PSProcessStatusImpl(pid);
-
-        final long timeoutMillis = timeout * 1000;
-        final long startTime = System.currentTimeMillis();
-        final long expireTime = startTime + timeoutMillis;
 
         do {
             try {
@@ -165,7 +164,7 @@ public class ProcessControlHelper {
                 }
 
                 long timeNow = System.currentTimeMillis();
-                if ((timeNow) > expireTime) {
+                if (timeNow > endTime) {
                     break;
                 }
                 Thread.sleep(BootstrapConstants.POLL_INTERVAL_MS);
