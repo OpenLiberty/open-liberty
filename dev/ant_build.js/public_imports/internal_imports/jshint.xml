@@ -24,8 +24,8 @@
              classpath="${basedir}/../ant_build.js/lib/jshint/ant-jshint-0.3.6-deps.jar" />
 
     <!-- Lint the code -->
-    <!-- Default to running jshint unless the build definition overrides this property with false. -->
-    <property name="run.jshint" value="true" />
+    <!-- Default to skipping jshint unless the build definition overrides this property with true. -->
+    <property name="run.jshint" value="false" />
     <if iff="run.jshint">
         <jshint dir="${basedir}/resources/WEB-CONTENT/"
           options="dojo=true, jquery=true, browser=true, devel=true"

@@ -14,7 +14,7 @@
 bVersion=1.0.0
 
 Bundle-Name: wssecuritycbhwss4j
-Bundle-SymbolicName: com.ibm.ws.wssecurity.example.cbhwss4j
+Bundle-SymbolicName: com.ibm.ws.wssecurity.example.cbhwss4j.3
 Bundle-Version: ${bVersion}
 Bundle-Description: An PasswordCallbackHandler; version=${bVersion}
 
