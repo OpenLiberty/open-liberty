@@ -10,7 +10,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-@TraceOptions(traceGroup = "checkpoint")
+@TraceOptions(traceGroup = "checkpoint", messageBundle = "io.openliberty.crac.resources.CRaCMessages")
 package io.openliberty.crac;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
