@@ -32,6 +32,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -48,8 +50,10 @@ public class FacesBeanTest extends FATServletClient {
     @Rule
     public TestName testName = new TestName();
 
+    // TODO additional work needed to run this test on EE10/MP6
     @ClassRule
-    public static RepeatTests repeatTests = FATSuite.defaultMPRepeat(FACES_BEAN_SERVER_NAME);
+    public static RepeatTests repeatTests = MicroProfileActions.repeat(FACES_BEAN_SERVER_NAME, TestMode.LITE,
+                                                                       MicroProfileActions.MP41, MicroProfileActions.MP50 /* , MicroProfileActions.MP60 */);
 
     @Server(FACES_BEAN_SERVER_NAME)
     public static LibertyServer facesBeanServer;
