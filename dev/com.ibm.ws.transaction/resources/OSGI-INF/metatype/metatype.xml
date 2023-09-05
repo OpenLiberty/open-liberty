@@ -60,7 +60,7 @@
         <AD name="internal" description="%lease.check.strategy.desc"
             id="leaseCheckStrategy" required="false" type="String" default="round-robin" />            
 
-        <AD name="internal" description="%backendURL.desc"
+        <AD name="%backendURL" description="%backendURL.desc"
             id="backendURL" required="false" type="String" default="" />            
 
         <AD name="%lease.check.interval" description="%lease.check.interval.desc"
