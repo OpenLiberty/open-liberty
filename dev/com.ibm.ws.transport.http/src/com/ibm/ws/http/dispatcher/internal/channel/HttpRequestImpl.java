@@ -20,6 +20,7 @@ import java.util.Set;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.http.channel.internal.HttpBaseMessageImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
+import com.ibm.ws.http.netty.MSP;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
@@ -169,6 +170,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public String getMethod() {
+        MSP.log("method: " + this.message.getMethod());
         return this.message.getMethod();
     }
 
@@ -178,6 +180,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
     @Override
     @Trivial
     public String getQuery() {
+        MSP.log("query: " + this.message.getQueryString());
         return this.message.getQueryString();
     }
 
@@ -186,6 +189,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public String getScheme() {
+        MSP.log("scheme: " + message.getScheme());
         return this.message.getScheme();
     }
 
@@ -194,6 +198,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public String getURI() {
+        MSP.log("getURI: " + this.message.getRequestURI());
         return this.message.getRequestURI();
     }
 
@@ -202,6 +207,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public String getURL() {
+        MSP.log("getURL: " + message.getRequestURL().toString());
         return this.message.getRequestURL().toString();
     }
 
@@ -210,6 +216,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public String getVersion() {
+        MSP.log("getVersion: " + this.message.getVersion());
         return this.message.getVersion();
     }
 
@@ -218,6 +225,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public String getVirtualHost() {
+        MSP.log("getVirtualHost: " + message.getVirtualHost());
         return this.message.getVirtualHost();
     }
 
@@ -226,6 +234,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public int getVirtualPort() {
+        MSP.log("getVirtualPort: " + message.getVirtualPort());
         return this.message.getVirtualPort();
     }
 
