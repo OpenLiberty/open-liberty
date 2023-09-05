@@ -60,7 +60,7 @@ public class FacesBeanTest extends FATServletClient {
         facesBeanApp = (WebArchive) ShrinkHelper.addDirectory(facesBeanApp, "test-applications/" + FACES_APP_NAME + "/resources");
         // Add Myfaces or Mojarra provider libraries when testing facesContainer-x.y; e.g.:
         //facesBeanApp = FATSuite.addMyFaces(facesApp);
-        ShrinkHelper.exportDropinAppToServer(facesBeanServer, facesBeanApp, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(facesBeanServer, facesBeanApp, DeployOptions.SERVER_ONLY, DeployOptions.OVERWRITE);
 
         TestMethod testMethod = getTestMethod(TestMethod.class, testName);
 

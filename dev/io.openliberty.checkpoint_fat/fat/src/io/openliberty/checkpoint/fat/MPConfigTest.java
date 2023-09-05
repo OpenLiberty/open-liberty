@@ -28,6 +28,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
@@ -59,7 +60,7 @@ public class MPConfigTest extends FATServletClient {
 
     @BeforeClass
     public static void copyAppToDropins() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, APP_NAME);
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, APP_NAME);
         FATSuite.copyAppsAppToDropins(server, APP_NAME);
     }
 

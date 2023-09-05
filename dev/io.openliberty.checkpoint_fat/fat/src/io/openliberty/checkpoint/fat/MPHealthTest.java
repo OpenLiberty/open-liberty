@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -72,7 +73,7 @@ public class MPHealthTest extends FATServletClient {
 
     @BeforeClass
     public static void copyAppToDropins() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, APP_NAME);
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, APP_NAME);
         FATSuite.copyAppsAppToDropins(server, APP_NAME);
     }
 

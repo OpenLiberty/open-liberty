@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
@@ -62,7 +63,7 @@ public class BellsTest extends FATServletClient {
         buildAndExportBellLibrary(server, "bells", "AppInitializer", "TestInterfaceImpl");
         server.installUserBundle(USER_BUNDLE_NAME);
         server.installUserFeature(USER_FEATURE_NAME);
-        ShrinkHelper.defaultApp(server, APP_NAME, APP_NAME);
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, APP_NAME);
         FATSuite.copyAppsAppToDropins(server, APP_NAME);
     }
 
@@ -130,7 +131,7 @@ public class BellsTest extends FATServletClient {
                                                                     }
                                                                 },
                                                                 "bells");
-        ShrinkHelper.exportToServer(targetServer, "sharedLib", bellArchive);
+        ShrinkHelper.exportToServer(targetServer, "sharedLib", bellArchive, DeployOptions.OVERWRITE);
     }
 
     @After
