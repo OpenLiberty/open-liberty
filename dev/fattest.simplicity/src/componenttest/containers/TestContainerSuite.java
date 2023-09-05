@@ -21,9 +21,14 @@ import java.util.Properties;
 
 import org.junit.ClassRule;
 import org.junit.rules.ExternalResource;
+import org.testcontainers.dockerclient.EnvironmentAndSystemPropertyClientProviderStrategy;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.utils.ExternalTestService;
+
+@SuppressWarnings("deprecation")
 public class TestContainerSuite {
 
     private static final Class<?> c = TestContainerSuite.class;
@@ -44,7 +49,7 @@ public class TestContainerSuite {
      * We will set the following properties:
      * 1. docker.client.strategy:
      * Default: [Depends on local OS]
-     * Custom : componenttest.containers.ExternalDockerClientStrategy
+     * Custom : org.testcontainers.dockerclient.EnvironmentAndSystemPropertyClientProviderStrategy
      * Purpose: This is the strategy testcontainers uses to locate and run against a remote docker instance.
      *
      * 2. image.substitutor:
@@ -86,27 +91,127 @@ public class TestContainerSuite {
 
     private static void generateTestcontainersConfig() {
         final String m = "generateTestcontainersConfig";
-
-        File testcontainersConfigFile = new File(System.getProperty("user.home"), ".testcontainers.properties");
+        final File testcontainersConfigFile = new File(System.getProperty("user.home"), ".testcontainers.properties");
 
         Properties tcProps = new Properties();
-        try {
-            if (testcontainersConfigFile.exists()) {
-                Log.info(c, m, "Testcontainers config already exists at: " + testcontainersConfigFile.getAbsolutePath());
-                FileInputStream tcPropsInputStream = new FileInputStream(testcontainersConfigFile);
-                tcProps.load(tcPropsInputStream);
-                tcProps.remove("docker.client.strategy");
-                tcPropsInputStream.close(); // avoids delete failing on windows
+
+        //Create new config file or load existing config properties
+        if (testcontainersConfigFile.exists()) {
+            Log.info(c, m, "Testcontainers config already exists at: " + testcontainersConfigFile.getAbsolutePath());
+            try {
+                try (FileInputStream in = new FileInputStream(testcontainersConfigFile)) {
+                    tcProps.load(in);
+                }
                 Files.delete(testcontainersConfigFile.toPath());
-            } else {
-                Log.info(c, m, "Testcontainers config being created at: " + testcontainersConfigFile.getAbsolutePath());
+            } catch (IOException e) {
+                Log.error(c, "generateTestcontainersConfig", e);
+                throw new RuntimeException(e);
             }
-            tcProps.setProperty("image.substitutor", ArtifactoryImageNameSubstitutor.class.getCanonicalName().toString());
+        } else {
+            Log.info(c, m, "Testcontainers config being created at: " + testcontainersConfigFile.getAbsolutePath());
+        }
+
+        //If using remote docker then setup strategy
+        if (useRemoteDocker()) {
+            try {
+                ExternalTestService.getService("docker-engine", ExternalDockerClientFilter.instance());
+            } catch (Exception e) {
+                Log.error(c, "generateTestcontainersConfig", e);
+                throw new RuntimeException(e);
+            }
+
+            if (ExternalDockerClientFilter.instance().isValid()) {
+                tcProps.setProperty("docker.client.strategy", EnvironmentAndSystemPropertyClientProviderStrategy.class.getCanonicalName());
+                tcProps.setProperty("docker.host", ExternalDockerClientFilter.instance().getHost());
+                tcProps.setProperty("docker.tls.verify", ExternalDockerClientFilter.instance().getVerify());
+                tcProps.setProperty("docker.cert.path", ExternalDockerClientFilter.instance().getCertPath());
+            } else {
+                Log.warning(c, "Unable to find valid External Docker Client");
+            }
+        } else {
+            tcProps.remove("docker.host");
+            tcProps.remove("docker.tls.verify");
+            tcProps.remove("docker.cert.path");
+        }
+
+        //Always use ArtifactoryImageNameSubstitutor
+        tcProps.setProperty("image.substitutor", ArtifactoryImageNameSubstitutor.class.getCanonicalName().toString());
+
+        try {
             tcProps.store(new FileOutputStream(testcontainersConfigFile), "Modified by FAT framework");
             Log.info(c, m, "Testcontainers config properties: " + tcProps.toString());
         } catch (IOException e) {
             Log.error(c, "generateTestcontainersConfig", e);
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Determines if we are going to attempt to run against a remote
+     * docker host, or a local docker host.
+     *
+     * Priority:
+     * 1. System Property: fat.test.use.remote.docker
+     * 2. System Property: fat.test.docker.host -> REMOTE
+     * 3. System: GITHUB_ACTIONS -> LOCAL
+     * 4. System: WINDOWS -> REMOTE
+     * 5. System: ARM -> REMOTE
+     *
+     * default (!!! fat.test.localrun)
+     *
+     * @return true, we are running against a remote docker host, false otherwise.
+     */
+    private static boolean useRemoteDocker() {
+        boolean result;
+        String reason;
+
+        do {
+            //State 1: fat.test.use.remote.docker should always be honored first
+            if (System.getProperty("fat.test.use.remote.docker") != null) {
+                result = Boolean.getBoolean("fat.test.use.remote.docker");
+                reason = "fat.test.use.remote.docker set to " + result;
+                break;
+            }
+
+            //State 2: User provided a remote docker host, assume they want to use the remote host
+            if (ExternalDockerClientFilter.instance().isForced()) {
+                result = true;
+                reason = "fat.test.docker.host was configured";
+                break;
+            }
+
+            //State 3: Github actions build should always use local
+            if (Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS"))) {
+                result = false;
+                reason = "GitHub Actions Build";
+                break;
+            }
+
+            //State 4: Earlier version of TestContainers didn't support docker for windows
+            // Assume a user on windows with no other preferences will want to use a remote host.
+            if (System.getProperty("os.name", "unknown").toLowerCase().contains("windows")) {
+                result = true;
+                reason = "Local operating system is Windows. Default container support not guaranteed.";
+                break;
+            }
+
+            //State 5: ARM architecture can cause performance/starting issues with x86 containers, so also assume remote as the default.
+            if (FATRunner.ARM_ARCHITECTURE) {
+                result = true;
+                reason = "CPU architecture is ARM. x86 container support and performance not guaranteed.";
+                break;
+            }
+
+            // Default, use local docker for local runs, and remote docker for remote (RTC) runs
+            result = !FATRunner.FAT_TEST_LOCALRUN;
+            reason = "fat.test.localrun set to " + FATRunner.FAT_TEST_LOCALRUN;
+        } while (false);
+
+        reason = result ? //
+                        "Remote docker host will be the highest priority. Reason: " + reason : //
+                        "Local docker host will be the highest priority. Reason: " + reason;
+
+        Log.info(c, "useRemoteDocker", reason);
+        return result;
     }
 }

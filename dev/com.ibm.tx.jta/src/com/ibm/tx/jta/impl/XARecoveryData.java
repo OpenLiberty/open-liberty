@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -484,7 +484,7 @@ public class XARecoveryData extends PartnerLogData {
         /*----------------------------------------------------------*/
         /* Filter out all non-WAS formatIds from the inDoubt list. */
         /*----------------------------------------------------------*/
-        ArrayList xidList = filterXidsByType(inDoubt);
+        ArrayList<XidImpl> xidList = filterXidsByType(inDoubt);
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "After type filter, Xids to recover " + xidList.size());
         }
@@ -508,7 +508,7 @@ public class XARecoveryData extends PartnerLogData {
         /* doesn't, forget it. */
         /*----------------------------------------------------------*/
         for (int y = 0; y < xidList.size(); y++) {
-            final XidImpl ourXid = (XidImpl) xidList.get(y);
+            final XidImpl ourXid = xidList.get(y);
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Recovering Xid[" + y + "]", ourXid);
             }
@@ -558,7 +558,7 @@ public class XARecoveryData extends PartnerLogData {
             decrementCount(); // recovery good
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "recover", new Boolean(_recovered));
+            Tr.exit(tc, "recover", _recovered);
 
         return _recovered;
     }
@@ -570,7 +570,7 @@ public class XARecoveryData extends PartnerLogData {
      * @param xidArray An array of generic Xids.
      * @return An ArrayList of XidImpl objects.
      */
-    protected ArrayList filterXidsByType(Xid[] xidArray) {
+    protected ArrayList<XidImpl> filterXidsByType(Xid[] xidArray) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "filterXidsByType", xidArray);
 
@@ -636,13 +636,13 @@ public class XARecoveryData extends PartnerLogData {
      * their bqual. Assumes that all Xids are XidImpls.
      *
      * @param xidList A list of XidImpls.
-     * @param cruuid The cruuid to filter.
-     * @param epoch The epoch number to filter.
+     * @param cruuid  The cruuid to filter.
+     * @param epoch   The epoch number to filter.
      * @return An ArrayList of XidImpl objects.
      */
-    protected ArrayList filterXidsByCruuidAndEpoch(ArrayList xidList,
-                                                   byte[] cruuid,
-                                                   int epoch) {
+    protected ArrayList<XidImpl> filterXidsByCruuidAndEpoch(ArrayList<XidImpl> xidList,
+                                                            byte[] cruuid,
+                                                            int epoch) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "filterXidsByCruuidAndEpoch", new Object[] {
                                                                       xidList,
@@ -650,7 +650,7 @@ public class XARecoveryData extends PartnerLogData {
                                                                       epoch });
 
         for (int x = xidList.size() - 1; x >= 0; x--) {
-            final XidImpl ourXid = (XidImpl) xidList.get(x);
+            final XidImpl ourXid = xidList.get(x);
             final byte[] xidCruuid = ourXid.getCruuid();
             final int xidEpoch = ourXid.getEpoch();
             if (tc.isDebugEnabled()) {
@@ -683,7 +683,7 @@ public class XARecoveryData extends PartnerLogData {
      * service, and tries to match the given javax.transaction.xa.Xid
      * with one of them.
      *
-     * @param ourXid The javax.transaction.xa.Xid we are trying to match.
+     * @param ourXid    The javax.transaction.xa.Xid we are trying to match.
      * @param knownXids The array of Xids that are possible matches.
      * @return true if we find a match, false if not.
      */
@@ -881,12 +881,12 @@ public class XARecoveryData extends PartnerLogData {
             Tr.entry(tc, "auditTransactionXid", new Object[] { xid, txnXid, xaResInfo });
 
         if (auditRecovery) {
-            String txnid;
-            if (txnXid instanceof XidImpl) {
-                txnid = ((XidImpl) txnXid).printOtid();
-            } else {
-                txnid = txnXid.toString();
-            }
+//            String txnid;
+//            if (txnXid instanceof XidImpl) {
+//                txnid = ((XidImpl) txnXid).printOtid();
+//            } else {
+//                txnid = txnXid.toString();
+//            }
             Tr.audit(tc, "WTRN0149_REC_XA_TRAN", new Object[] { xid.printOtid(), getRMInfo(xaResInfo), getTransactionId(txnXid), Util.printStatus(getTransactionStatus(txnXid)) });
         }
 

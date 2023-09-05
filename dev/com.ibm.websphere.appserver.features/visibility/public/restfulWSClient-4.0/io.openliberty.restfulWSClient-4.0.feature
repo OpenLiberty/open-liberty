@@ -9,8 +9,6 @@ IBM-API-Package: jakarta.ws.rs; type="spec", \
  jakarta.ws.rs.ext; type="spec", \
  jakarta.ws.rs.sse; type="spec", \
  com.ibm.websphere.jaxrs20.multipart; type="ibm-api", \
- jakarta.xml.bind.annotation; type="internal", \
- jakarta.xml.bind.annotation.adapters; type="internal", \
  org.jboss.resteasy.annotations; type="internal", \
  org.jboss.resteasy.client.jaxrs; type="internal", \
  org.jboss.resteasy.client.jaxrs.internal; type="internal", \
@@ -27,7 +25,7 @@ WLP-AlsoKnownAs: jaxrsClient-4.0
 Subsystem-Name: Jakarta RESTful Web Services 4.0 Client
 -features=io.openliberty.cdi-4.1, \
   io.openliberty.jakarta.mail-2.1, \
-  io.openliberty.jakarta.validation-3.0, \
+  io.openliberty.jakarta.validation-3.1, \
   com.ibm.websphere.appserver.eeCompatible-11.0, \
   io.openliberty.servlet.internal-6.1, \
   io.openliberty.jakarta.restfulWS-4.0, \

@@ -9,7 +9,8 @@ task prebuild(type: Sync) {
         include "org.eclipse.osgi.jar"
     }
 }
-build.dependsOn 'prebuild'
+prebuild.dependsOn ':org.eclipse.osgi:jar'
+jar.dependsOn 'prebuild'
 build.dependsOn ':wlp.lib.extract:assemble'
 
 task postrunfat(type: Delete) {

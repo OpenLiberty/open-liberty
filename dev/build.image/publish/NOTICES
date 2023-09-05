@@ -15,7 +15,8 @@ CDDL V1
 CDDL V1.1
 CPL  
 EPL  
-EPL V2  
+EPL V2
+GPL-2.0-WITH-CLASSPATH-EXCEPTION  
 ISC  
 JDOM
 MIT  
@@ -543,6 +544,9 @@ JAVAX.TRANSACTION-API
 JAVAX.JMS
 (https://github.com/javaee/jms-spec/tree/master/jms2.0)
 
+JAXB-IMPL 
+(https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api/2.2.1)
+
 
 END OF COMMON DEVELOPMENT AND DISTRIBUTION V1.1 LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -679,11 +683,30 @@ ORG.ECLIPSE.PERSISTENCE.JPA
 (https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.jpa/4.0.1)
 ORG.ECLIPSE.PERSISTENCE.JPA.JPQL
 (https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.jpa.jpql/4.0.1),
-
+JBOSS-ANNOTATIONS-API
+(https://mvnrepository.com/artifact/org.jboss.spec.javax.annotation/jboss-annotations-api_1.3_spec/2.0.1.Final)
 
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+GPL-2.0-WITH-CLASSPATH-EXCEPTION
+
+The Program includes some or all of the following that IBM obtained
+under a GPL-2.0-with-classpath-exception license:
+
+
+JBOSS-ANNOTATIONS-API_SPEC | Copyright (c) Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+
+The Program includes some or all of the following available
+under the GNU General Public License. For copies of the source
+code for this software, send an email to identifying the IBM
+product and the GPL-licensed program for which you are
+requesting the source code.
+
+END OF GPL-2.0-WITH-CLASSPATH-EXCEPTION NON-IBM-LICENSE INFORMATION
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 ISC LICENSE
 
@@ -821,6 +844,7 @@ to <mbroz@us.ibm.com> identifying the IBM Program and the Modifiable Third
 Party Code for which you are requesting the source code. 
 
 RESTEASYPROVIDERFACTORYDELEGATE [JBoss RESTEasy] (No Copyright)
+JBOSS-RMI-API_1.0_SPEC Copyright (C) 1991, 1999 Free Software Foundation, Inc.
 
                   GNU LESSER GENERAL PUBLIC LICENSE
                        Version 2.1, February 1999

@@ -27,11 +27,6 @@ private static final long serialVersionUID = 0L;
     return new PurchaseRequest();
   }
 
-  @java.lang.Override
-  public final com.google.protobuf.UnknownFieldSet
-  getUnknownFields() {
-    return this.unknownFields;
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return com.ibm.test.g3store.grpc.StoreProto.internal_static_PurchaseRequest_descriptor;
@@ -46,7 +41,8 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int NAME_FIELD_NUMBER = 1;
-  private volatile java.lang.Object name_;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object name_ = "";
   /**
    * <code>string name = 1;</code>
    * @return The name.
@@ -84,7 +80,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int PURCHASETYPE_FIELD_NUMBER = 2;
-  private int purchaseType_;
+  private int purchaseType_ = 0;
   /**
    * <code>.PurchaseType purchaseType = 2;</code>
    * @return The enum numeric value on the wire for purchaseType.
@@ -97,8 +93,7 @@ private static final long serialVersionUID = 0L;
    * @return The purchaseType.
    */
   @java.lang.Override public com.ibm.test.g3store.grpc.PurchaseType getPurchaseType() {
-    @SuppressWarnings("deprecation")
-    com.ibm.test.g3store.grpc.PurchaseType result = com.ibm.test.g3store.grpc.PurchaseType.valueOf(purchaseType_);
+    com.ibm.test.g3store.grpc.PurchaseType result = com.ibm.test.g3store.grpc.PurchaseType.forNumber(purchaseType_);
     return result == null ? com.ibm.test.g3store.grpc.PurchaseType.UNRECOGNIZED : result;
   }
 
@@ -220,11 +215,13 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
+
   public static com.ibm.test.g3store.grpc.PurchaseRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
+
   public static com.ibm.test.g3store.grpc.PurchaseRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -299,10 +296,9 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      bitField0_ = 0;
       name_ = "";
-
       purchaseType_ = 0;
-
       return this;
     }
 
@@ -329,10 +325,19 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.ibm.test.g3store.grpc.PurchaseRequest buildPartial() {
       com.ibm.test.g3store.grpc.PurchaseRequest result = new com.ibm.test.g3store.grpc.PurchaseRequest(this);
-      result.name_ = name_;
-      result.purchaseType_ = purchaseType_;
+      if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
+    }
+
+    private void buildPartial0(com.ibm.test.g3store.grpc.PurchaseRequest result) {
+      int from_bitField0_ = bitField0_;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.name_ = name_;
+      }
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.purchaseType_ = purchaseType_;
+      }
     }
 
     @java.lang.Override
@@ -381,6 +386,7 @@ private static final long serialVersionUID = 0L;
       if (other == com.ibm.test.g3store.grpc.PurchaseRequest.getDefaultInstance()) return this;
       if (!other.getName().isEmpty()) {
         name_ = other.name_;
+        bitField0_ |= 0x00000001;
         onChanged();
       }
       if (other.purchaseType_ != 0) {
@@ -414,12 +420,12 @@ private static final long serialVersionUID = 0L;
               break;
             case 10: {
               name_ = input.readStringRequireUtf8();
-
+              bitField0_ |= 0x00000001;
               break;
             } // case 10
             case 16: {
               purchaseType_ = input.readEnum();
-
+              bitField0_ |= 0x00000002;
               break;
             } // case 16
             default: {
@@ -437,6 +443,7 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int bitField0_;
 
     private java.lang.Object name_ = "";
     /**
@@ -479,11 +486,9 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setName(
         java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
+      if (value == null) { throw new NullPointerException(); }
       name_ = value;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -492,8 +497,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearName() {
-      
       name_ = getDefaultInstance().getName();
+      bitField0_ = (bitField0_ & ~0x00000001);
       onChanged();
       return this;
     }
@@ -504,12 +509,10 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setNameBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
       name_ = value;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -528,8 +531,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setPurchaseTypeValue(int value) {
-      
       purchaseType_ = value;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -539,8 +542,7 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public com.ibm.test.g3store.grpc.PurchaseType getPurchaseType() {
-      @SuppressWarnings("deprecation")
-      com.ibm.test.g3store.grpc.PurchaseType result = com.ibm.test.g3store.grpc.PurchaseType.valueOf(purchaseType_);
+      com.ibm.test.g3store.grpc.PurchaseType result = com.ibm.test.g3store.grpc.PurchaseType.forNumber(purchaseType_);
       return result == null ? com.ibm.test.g3store.grpc.PurchaseType.UNRECOGNIZED : result;
     }
     /**
@@ -552,7 +554,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      
+      bitField0_ |= 0x00000002;
       purchaseType_ = value.getNumber();
       onChanged();
       return this;
@@ -562,7 +564,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearPurchaseType() {
-      
+      bitField0_ = (bitField0_ & ~0x00000002);
       purchaseType_ = 0;
       onChanged();
       return this;

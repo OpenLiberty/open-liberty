@@ -101,6 +101,7 @@ public class FileHandler implements RESTHandler {
 
     private void download(RESTRequest request, RESTResponse response) {
         String filePath = RESTHelper.getRequiredParam(request, APIConstants.PARAM_FILEPATH);
+        filePath = RESTHelper.repairSlashes(filePath, request);
         String startOffsetValue = RESTHelper.getQueryParam(request, APIConstants.PARAM_START_OFFSET);
         String endOffsetValue = RESTHelper.getQueryParam(request, APIConstants.PARAM_END_OFFSET);
 
@@ -188,6 +189,7 @@ public class FileHandler implements RESTHandler {
         }
         if (filePath == null && !nodeDeployment) {
             filePath = RESTHelper.getRequiredParam(request, APIConstants.PARAM_FILEPATH);
+            filePath = RESTHelper.repairSlashes(filePath, request);
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "file path: " + filePath);
             }
@@ -257,6 +259,7 @@ public class FileHandler implements RESTHandler {
 
     private void delete(RESTRequest request, RESTResponse response) {
         String filePath = RESTHelper.getRequiredParam(request, APIConstants.PARAM_FILEPATH);
+        filePath = RESTHelper.repairSlashes(filePath, request);
         String recursiveDelete = RESTHelper.getQueryParam(request, APIConstants.PARAM_RECURSIVE_DELETE);
 
         final boolean recursive = recursiveDelete != null && "true".compareToIgnoreCase(recursiveDelete) == 0;

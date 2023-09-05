@@ -35,7 +35,7 @@ task copyJavadoc(type: Copy) {
     into downloadJavadocDir
 }
 
-assemble {
+jar {
     dependsOn copySource
     dependsOn copyJavadoc
 }

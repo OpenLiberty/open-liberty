@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -126,10 +126,14 @@ public class TokenManagerImpl implements TokenManager {
                 } else {
                     token = tokenService.recreateTokenFromBytes(tokenBytes, removeAttributes);
                 }
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Successfully recreated token using token service " + tokenService + ".");
+
+                if (token != null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Successfully recreated token using token service " + tokenService + ".");
+                    }
+                    return token;
                 }
-                break;
+
             } catch (InvalidTokenException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "The token service " + tokenService + " failed to recreate the token.", e);
@@ -137,16 +141,10 @@ public class TokenManagerImpl implements TokenManager {
             }
         }
 
-        if (token == null) {
-            Tr.info(tc, "TOKEN_SERVICE_INVALID_TOKEN_INFO");
-            String translatedMessage = TraceNLS.getStringFromBundle(this.getClass(),
-                                                                    TraceConstants.MESSAGE_BUNDLE,
-                                                                    "TOKEN_SERVICE_INVALID_TOKEN_INFO",
-                                                                    "CWWKS4001I: The security token cannot be validated.");
-            throw new InvalidTokenException(translatedMessage);
-        }
-
-        return token;
+        Tr.info(tc, "TOKEN_SERVICE_INVALID_TOKEN_INFO");
+        String translatedMessage = TraceNLS.getStringFromBundle(this.getClass(), TraceConstants.MESSAGE_BUNDLE, "TOKEN_SERVICE_INVALID_TOKEN_INFO",
+                                                                "CWWKS4001I: The security token cannot be validated.");
+        throw new InvalidTokenException(translatedMessage);
     }
 
     /** {@inheritDoc} */

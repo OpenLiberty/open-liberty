@@ -26,11 +26,6 @@ private static final long serialVersionUID = 0L;
     return new GenreCounts();
   }
 
-  @java.lang.Override
-  public final com.google.protobuf.UnknownFieldSet
-  getUnknownFields() {
-    return this.unknownFields;
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return com.ibm.test.g3store.grpc.AppConsumerProto.internal_static_test_g3store_grpc_GenreCounts_descriptor;
@@ -45,7 +40,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int GENRETYPE_FIELD_NUMBER = 1;
-  private int genreType_;
+  private int genreType_ = 0;
   /**
    * <code>.GenreType genreType = 1;</code>
    * @return The enum numeric value on the wire for genreType.
@@ -58,13 +53,12 @@ private static final long serialVersionUID = 0L;
    * @return The genreType.
    */
   @java.lang.Override public com.ibm.test.g3store.grpc.GenreType getGenreType() {
-    @SuppressWarnings("deprecation")
-    com.ibm.test.g3store.grpc.GenreType result = com.ibm.test.g3store.grpc.GenreType.valueOf(genreType_);
+    com.ibm.test.g3store.grpc.GenreType result = com.ibm.test.g3store.grpc.GenreType.forNumber(genreType_);
     return result == null ? com.ibm.test.g3store.grpc.GenreType.UNRECOGNIZED : result;
   }
 
   public static final int TOTALCOUNT_FIELD_NUMBER = 2;
-  private int totalCount_;
+  private int totalCount_ = 0;
   /**
    * <code>int32 totalCount = 2;</code>
    * @return The totalCount.
@@ -193,11 +187,13 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
+
   public static com.ibm.test.g3store.grpc.GenreCounts parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
+
   public static com.ibm.test.g3store.grpc.GenreCounts parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -272,10 +268,9 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      bitField0_ = 0;
       genreType_ = 0;
-
       totalCount_ = 0;
-
       return this;
     }
 
@@ -302,10 +297,19 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.ibm.test.g3store.grpc.GenreCounts buildPartial() {
       com.ibm.test.g3store.grpc.GenreCounts result = new com.ibm.test.g3store.grpc.GenreCounts(this);
-      result.genreType_ = genreType_;
-      result.totalCount_ = totalCount_;
+      if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
+    }
+
+    private void buildPartial0(com.ibm.test.g3store.grpc.GenreCounts result) {
+      int from_bitField0_ = bitField0_;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.genreType_ = genreType_;
+      }
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.totalCount_ = totalCount_;
+      }
     }
 
     @java.lang.Override
@@ -386,12 +390,12 @@ private static final long serialVersionUID = 0L;
               break;
             case 8: {
               genreType_ = input.readEnum();
-
+              bitField0_ |= 0x00000001;
               break;
             } // case 8
             case 16: {
               totalCount_ = input.readInt32();
-
+              bitField0_ |= 0x00000002;
               break;
             } // case 16
             default: {
@@ -409,6 +413,7 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int bitField0_;
 
     private int genreType_ = 0;
     /**
@@ -424,8 +429,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setGenreTypeValue(int value) {
-      
       genreType_ = value;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -435,8 +440,7 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public com.ibm.test.g3store.grpc.GenreType getGenreType() {
-      @SuppressWarnings("deprecation")
-      com.ibm.test.g3store.grpc.GenreType result = com.ibm.test.g3store.grpc.GenreType.valueOf(genreType_);
+      com.ibm.test.g3store.grpc.GenreType result = com.ibm.test.g3store.grpc.GenreType.forNumber(genreType_);
       return result == null ? com.ibm.test.g3store.grpc.GenreType.UNRECOGNIZED : result;
     }
     /**
@@ -448,7 +452,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      
+      bitField0_ |= 0x00000001;
       genreType_ = value.getNumber();
       onChanged();
       return this;
@@ -458,7 +462,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearGenreType() {
-      
+      bitField0_ = (bitField0_ & ~0x00000001);
       genreType_ = 0;
       onChanged();
       return this;
@@ -479,8 +483,9 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setTotalCount(int value) {
-      
+
       totalCount_ = value;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -489,7 +494,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearTotalCount() {
-      
+      bitField0_ = (bitField0_ & ~0x00000002);
       totalCount_ = 0;
       onChanged();
       return this;

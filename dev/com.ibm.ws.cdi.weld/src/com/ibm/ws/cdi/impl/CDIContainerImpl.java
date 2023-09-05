@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -57,6 +57,7 @@ import com.ibm.ws.cdi.internal.interfaces.CDIContainerEventManager;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
+import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveFactory;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveProvider;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
@@ -653,28 +654,35 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
             }
         }
 
-        //Now do the exact same thing for extensions coming from the SPI
-        Iterator<ServiceAndServiceReferencePair<CDIExtensionMetadata>> spiExtensions = cdiRuntime.getSPIExtensionServices();
-        while (spiExtensions.hasNext()) {
-            ServiceAndServiceReferencePair<CDIExtensionMetadata> extensionMetaData = spiExtensions.next();
-            ServiceReference<CDIExtensionMetadata> sr = extensionMetaData.getServiceReference();
-            if (sr != null) {
-                Long serviceID = ServiceReferenceUtils.getId(sr);
-                ExtensionArchive extensionArchive = null;
-                synchronized (this) {
-                    extensionArchive = runtimeExtensionMap.get(serviceID);
+        // There should only be one of these, which one depends on the EE level.
+        if (cdiRuntime.getExtensionArchiveFactories().size() != 1) {
+            throw new IllegalStateException("found " + cdiRuntime.getExtensionArchiveFactories().size() + " extension archive factories");
+        }
+        
+        for (ExtensionArchiveFactory factory : cdiRuntime.getExtensionArchiveFactories()) {
+            //First iterate through the implementations of CDIExtensionMetadata and ask the providers for an archive for every implementation 
+            Iterator<ServiceAndServiceReferencePair<CDIExtensionMetadata>> spiExtensions = cdiRuntime.getSPIExtensionServices();
+            while (spiExtensions.hasNext()) {
+                ServiceAndServiceReferencePair<CDIExtensionMetadata> extensionMetaData = spiExtensions.next();
+                ServiceReference<CDIExtensionMetadata> sr = extensionMetaData.getServiceReference();
+                if (sr != null) {
+                    Long serviceID = ServiceReferenceUtils.getId(sr);
+                    ExtensionArchive extensionArchive = null;
+                    synchronized (cdiRuntime) { //cdiRuntime is sure to be a common object across all threads.
+                        extensionArchive = runtimeExtensionMap.get(serviceID);
 
-                    if (extensionArchive == null) {
-                        extensionArchive = newSPIExtensionArchive(sr, extensionMetaData.getService(), applicationContext);
+                        if (extensionArchive == null) {
+                            extensionArchive = factory.newSPIExtensionArchive(cdiRuntime, sr, extensionMetaData.getService(), applicationContext);
+                        }
                         runtimeExtensionMap.put(serviceID, extensionArchive);
+                        extensionSet.add(extensionArchive);
                     }
                 }
-                extensionSet.add(extensionArchive);
             }
         }
 
+        //Now ask any providers for any ExtensionArchives that are not coming from an SPI impl. These do not go in runtimeExtensionMap but do go in the extensionSet
         for (ExtensionArchiveProvider provider : cdiRuntime.getExtensionArchiveProviders()) {
-            //add any custom archives from ExtensionArchiveProvider service providers
             extensionSet.addAll(provider.getArchives(cdiRuntime, applicationContext));
         }
 
@@ -690,45 +698,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         return extensionSet;
     }
 
-    private ExtensionArchive newSPIExtensionArchive(ServiceReference<CDIExtensionMetadata> sr,
-                                                    CDIExtensionMetadata webSphereCDIExtensionMetaData, WebSphereCDIDeployment applicationContext) throws CDIException {
-        Bundle bundle = sr.getBundle();
 
-        Set<Class<? extends Extension>> extensionClasses = webSphereCDIExtensionMetaData.getExtensions();
-        Set<Class<?>> beanClasses = webSphereCDIExtensionMetaData.getBeanClasses();
-        Set<Class<? extends Annotation>> beanDefiningAnnotationClasses = webSphereCDIExtensionMetaData.getBeanDefiningAnnotationClasses();
-
-        Set<String> extensionClassNames = extensionClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
-
-        Set<String> extra_classes = beanClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
-        Set<String> extraAnnotations = beanDefiningAnnotationClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
-        //The simpler SPI does not offer these properties.
-        boolean applicationBDAsVisible = false;
-        boolean extClassesOnly = false;
-
-        if (webSphereCDIExtensionMetaData instanceof CDIExtensionMetadataInternal) {
-            CDIExtensionMetadataInternal internalExtension = (CDIExtensionMetadataInternal) webSphereCDIExtensionMetaData;
-            applicationBDAsVisible = internalExtension.applicationBeansVisible();
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "newSPIExtensionArchive", "***We are creating a new CDI Extension Archive***");
-            Tr.debug(tc, "newSPIExtensionArchive", "The following classes will be registered as beans: " + String.join(", ", extra_classes));
-            Tr.debug(tc, "newSPIExtensionArchive", "The following classes will be registered as extensions: " + String.join(", ", extensionClassNames));
-            Tr.debug(tc, "newSPIExtensionArchive", "The following annotations will be registered as bean defining annotations: " + String.join(", ", extraAnnotations));
-            if (applicationBDAsVisible) {
-                Tr.debug(tc, "newSPIExtensionArchive", "The extension will be able to see and inject beans provided by the application and other extensions");
-            } else {
-                Tr.debug(tc, "newSPIExtensionArchive", "The extension will **NOT** be able to see and inject beans provided by the application and other extensions");
-            }
-        }
-
-        ExtensionArchive extensionArchive = cdiRuntime.getExtensionArchiveForBundle(bundle, extra_classes, extraAnnotations,
-                                                                                    applicationBDAsVisible,
-                                                                                    extClassesOnly, extensionClassNames);
-
-        return extensionArchive;
-    }
 
     private ExtensionArchive newExtensionArchive(ServiceReference<WebSphereCDIExtension> sr) throws CDIException {
         Bundle bundle = sr.getBundle();

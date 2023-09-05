@@ -40,7 +40,7 @@ Subsystem-Name: Jakarta Faces 5.0
   com.ibm.websphere.appserver.servlet-6.1, \
   io.openliberty.facesProvider-5.0.0.MyFaces, \
   com.ibm.websphere.appserver.eeCompatible-11.0, \
-  io.openliberty.jakarta.validation-3.0, \
+  io.openliberty.jakarta.validation-3.1, \
   io.openliberty.jakarta.faces-5.0, \
   io.openliberty.expressionLanguage-6.0, \
   io.openliberty.cdi-4.1

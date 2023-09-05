@@ -60,7 +60,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore; //Liberty code change
 /**
  * WS-Security Utility methods. <p/>
  */
-//No Liberty code change, debug only
+// No Liberty code change, debug only
 public final class WSSecurityUtil {
 
     private static boolean isSAAJ14 = false;
@@ -70,7 +70,7 @@ public final class WSSecurityUtil {
 
     private static final ClassValue<Method> GET_DOM_ELEMENTS_METHODS = new ClassValue<Method>() {
         @Override
-        @FFDCIgnore(NoSuchMethodException.class)
+        @FFDCIgnore(NoSuchMethodException.class) // Liberty Change
         protected Method computeValue(Class<?> type) {
             try {
                 return getMethod(type, "getDomElement");
@@ -83,7 +83,7 @@ public final class WSSecurityUtil {
 
     private static final ClassValue<Method> GET_ENVELOPE_METHODS = new ClassValue<Method>() {
         @Override
-        @FFDCIgnore(NoSuchMethodException.class)
+        @FFDCIgnore(NoSuchMethodException.class) // Liberty Change
         protected Method computeValue(Class<?> type) {
             try {
                 return getMethod(type, "getEnvelope");
@@ -128,7 +128,7 @@ public final class WSSecurityUtil {
         // Complete
     }
 
-    @FFDCIgnore(PrivilegedActionException.class)
+    @FFDCIgnore(PrivilegedActionException.class) // Liberty Change
     private static Method getMethod(final Class<?> clazz, final String name,
                                    final Class<?>... parameterTypes) throws NoSuchMethodException {
         try {
@@ -528,44 +528,44 @@ public final class WSSecurityUtil {
             return Collections.emptyList();
         }
         actionToParse = actionToParse.trim();
-        if ("".equals(actionToParse)) {
+        if (actionToParse.length() == 0) {
             return Collections.emptyList();
         }
 
         List<Integer> actions = new ArrayList<>();
         String[] single = actionToParse.split("\\s");
-        for (int i = 0; i < single.length; i++) {
-            if (single[i].equals(WSHandlerConstants.NO_SECURITY)) {
+        for (String parsedAction : single) {
+            if (parsedAction.equals(WSHandlerConstants.NO_SECURITY)) {
                 return Collections.emptyList();
-            } else if (single[i].equals(WSHandlerConstants.USERNAME_TOKEN)) {
+            } else if (parsedAction.equals(WSHandlerConstants.USERNAME_TOKEN)) {
                 actions.add(WSConstants.UT);
-            } else if (single[i].equals(WSHandlerConstants.USERNAME_TOKEN_NO_PASSWORD)) {
+            } else if (parsedAction.equals(WSHandlerConstants.USERNAME_TOKEN_NO_PASSWORD)) {
                 actions.add(WSConstants.UT_NOPASSWORD);
-            } else if (single[i].equals(WSHandlerConstants.SIGNATURE)) {
+            } else if (parsedAction.equals(WSHandlerConstants.SIGNATURE)) {
                 actions.add(WSConstants.SIGN);
-            } else if (single[i].equals(WSHandlerConstants.SIGNATURE_DERIVED)) {
+            } else if (parsedAction.equals(WSHandlerConstants.SIGNATURE_DERIVED)) {
                 actions.add(WSConstants.DKT_SIGN);
-            } else if (single[i].equals(WSHandlerConstants.ENCRYPT)
-                || single[i].equals(WSHandlerConstants.ENCRYPTION)) {
+            } else if (parsedAction.equals(WSHandlerConstants.ENCRYPT)
+                || parsedAction.equals(WSHandlerConstants.ENCRYPTION)) {
                 actions.add(WSConstants.ENCR);
-            } else if (single[i].equals(WSHandlerConstants.ENCRYPT_DERIVED)
-                || single[i].equals(WSHandlerConstants.ENCRYPTION_DERIVED)) {
+            } else if (parsedAction.equals(WSHandlerConstants.ENCRYPT_DERIVED)
+                || parsedAction.equals(WSHandlerConstants.ENCRYPTION_DERIVED)) {
                 actions.add(WSConstants.DKT_ENCR);
-            } else if (single[i].equals(WSHandlerConstants.SAML_TOKEN_UNSIGNED)) {
+            } else if (parsedAction.equals(WSHandlerConstants.SAML_TOKEN_UNSIGNED)) {
                 actions.add(WSConstants.ST_UNSIGNED);
-            } else if (single[i].equals(WSHandlerConstants.SAML_TOKEN_SIGNED)) {
+            } else if (parsedAction.equals(WSHandlerConstants.SAML_TOKEN_SIGNED)) {
                 actions.add(WSConstants.ST_SIGNED);
-            } else if (single[i].equals(WSHandlerConstants.TIMESTAMP)) {
+            } else if (parsedAction.equals(WSHandlerConstants.TIMESTAMP)) {
                 actions.add(WSConstants.TS);
-            } else if (single[i].equals(WSHandlerConstants.USERNAME_TOKEN_SIGNATURE)) {
+            } else if (parsedAction.equals(WSHandlerConstants.USERNAME_TOKEN_SIGNATURE)) {
                 actions.add(WSConstants.UT_SIGN);
-            } else if (single[i].equals(WSHandlerConstants.ENABLE_SIGNATURE_CONFIRMATION)) {
+            } else if (parsedAction.equals(WSHandlerConstants.ENABLE_SIGNATURE_CONFIRMATION)) {
                 actions.add(WSConstants.SC);
-            } else if (single[i].equals(WSHandlerConstants.CUSTOM_TOKEN)) {
+            } else if (parsedAction.equals(WSHandlerConstants.CUSTOM_TOKEN)) {
                 actions.add(WSConstants.CUSTOM_TOKEN);
             } else {
                 throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, "empty",
-                                              new Object[] {"Unknown action defined: " + single[i]}
+                                              new Object[] {"Unknown action defined: " + parsedAction}
                 );
             }
         }
@@ -590,47 +590,47 @@ public final class WSSecurityUtil {
 
         List<HandlerAction> actions = new ArrayList<>();
         String[] single = action.split(" ");
-        for (int i = 0; i < single.length; i++) {
-            if (single[i].equals(WSHandlerConstants.NO_SECURITY)) {
+        for (String parsedAction : single) {
+            if (parsedAction.equals(WSHandlerConstants.NO_SECURITY)) {
                 return actions;
-            } else if (single[i].equals(WSHandlerConstants.USERNAME_TOKEN)) {
+            } else if (parsedAction.equals(WSHandlerConstants.USERNAME_TOKEN)) {
                 actions.add(new HandlerAction(WSConstants.UT));
-            } else if (single[i].equals(WSHandlerConstants.USERNAME_TOKEN_NO_PASSWORD)) {
+            } else if (parsedAction.equals(WSHandlerConstants.USERNAME_TOKEN_NO_PASSWORD)) {
                 actions.add(new HandlerAction(WSConstants.UT_NOPASSWORD));
-            } else if (single[i].equals(WSHandlerConstants.SIGNATURE)) {
+            } else if (parsedAction.equals(WSHandlerConstants.SIGNATURE)) {
                 actions.add(new HandlerAction(WSConstants.SIGN));
-            } else if (single[i].equals(WSHandlerConstants.SIGNATURE_DERIVED)) {
+            } else if (parsedAction.equals(WSHandlerConstants.SIGNATURE_DERIVED)) {
                 actions.add(new HandlerAction(WSConstants.DKT_SIGN));
-            } else if (single[i].equals(WSHandlerConstants.ENCRYPT)
-                || single[i].equals(WSHandlerConstants.ENCRYPTION)) {
+            } else if (parsedAction.equals(WSHandlerConstants.ENCRYPT)
+                || parsedAction.equals(WSHandlerConstants.ENCRYPTION)) {
                 actions.add(new HandlerAction(WSConstants.ENCR));
-            } else if (single[i].equals(WSHandlerConstants.ENCRYPT_DERIVED)
-                || single[i].equals(WSHandlerConstants.ENCRYPTION_DERIVED)) {
+            } else if (parsedAction.equals(WSHandlerConstants.ENCRYPT_DERIVED)
+                || parsedAction.equals(WSHandlerConstants.ENCRYPTION_DERIVED)) {
                 actions.add(new HandlerAction(WSConstants.DKT_ENCR));
-            } else if (single[i].equals(WSHandlerConstants.SAML_TOKEN_UNSIGNED)) {
+            } else if (parsedAction.equals(WSHandlerConstants.SAML_TOKEN_UNSIGNED)) {
                 actions.add(new HandlerAction(WSConstants.ST_UNSIGNED));
-            } else if (single[i].equals(WSHandlerConstants.SAML_TOKEN_SIGNED)) {
+            } else if (parsedAction.equals(WSHandlerConstants.SAML_TOKEN_SIGNED)) {
                 actions.add(new HandlerAction(WSConstants.ST_SIGNED));
-            } else if (single[i].equals(WSHandlerConstants.TIMESTAMP)) {
+            } else if (parsedAction.equals(WSHandlerConstants.TIMESTAMP)) {
                 actions.add(new HandlerAction(WSConstants.TS));
-            } else if (single[i].equals(WSHandlerConstants.USERNAME_TOKEN_SIGNATURE)) {
+            } else if (parsedAction.equals(WSHandlerConstants.USERNAME_TOKEN_SIGNATURE)) {
                 actions.add(new HandlerAction(WSConstants.UT_SIGN));
-            } else if (single[i].equals(WSHandlerConstants.ENABLE_SIGNATURE_CONFIRMATION)) {
+            } else if (parsedAction.equals(WSHandlerConstants.ENABLE_SIGNATURE_CONFIRMATION)) {
                 actions.add(new HandlerAction(WSConstants.SC));
-            } else if (single[i].equals(WSHandlerConstants.CUSTOM_TOKEN)) {
+            } else if (parsedAction.equals(WSHandlerConstants.CUSTOM_TOKEN)) {
                 actions.add(new HandlerAction(WSConstants.CUSTOM_TOKEN));
             } else {
                 try {
-                    int parsedAction = Integer.parseInt(single[i]);
-                    if (wssConfig == null || wssConfig.getAction(parsedAction) == null) {
+                    int customAction = Integer.parseInt(parsedAction);
+                    if (wssConfig == null || wssConfig.getAction(customAction) == null) {
                         throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, "empty",
-                                                      new Object[] {"Unknown action defined: " + single[i]}
+                                                      new Object[] {"Unknown action defined: " + parsedAction}
                         );
                     }
-                    actions.add(new HandlerAction(parsedAction));
+                    actions.add(new HandlerAction(customAction));
                 } catch (NumberFormatException ex) {
                     throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, "empty",
-                                                  new Object[] {"Unknown action defined: " + single[i]}
+                                                  new Object[] {"Unknown action defined: " + parsedAction}
                     );
                 }
             }

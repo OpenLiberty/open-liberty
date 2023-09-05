@@ -213,6 +213,9 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "webAppSecurity")
     private WebAppSecurity webAppSecurity;
 
+    @XmlElement(name = "ltpa")
+    private LTPA ltpa;
+
     @XmlElement(name = "sslDefault")
     private SSLDefault sslDefault;
 
@@ -284,6 +287,9 @@ public class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "openapi")
     private OpenAPIElement openAPIElement;
+
+    @XmlElement(name = "mpOpenAPI")
+    private MpOpenAPIElement mpOpenAPIElement;
 
     @XmlElement(name = "federatedRepository")
     private FederatedRepository federatedRepository;
@@ -703,6 +709,12 @@ public class ServerConfiguration implements Cloneable {
         return webAppSecurity;
     }
 
+    public LTPA getLTPA() {
+        if (ltpa == null)
+            ltpa = new LTPA();
+        return ltpa;
+    }
+
     /**
      * @return the KeyStore configurations for this server
      */
@@ -789,6 +801,14 @@ public class ServerConfiguration implements Cloneable {
         }
 
         return this.openAPIElement;
+    }
+
+    public MpOpenAPIElement getMpOpenAPIElement() {
+        if (this.mpOpenAPIElement == null) {
+            this.mpOpenAPIElement = new MpOpenAPIElement();
+        }
+
+        return this.mpOpenAPIElement;
     }
 
     public MPMetricsElement getMPMetricsElement() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,10 +19,13 @@ import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.ka
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
+import componenttest.rules.repeater.RepeatTests;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,9 +46,13 @@ public class KafkaNoLibTest {
 
     private static final String APP_NAME = "KafkaNoLib";
     private static final String APP_GROUP_ID = "no-lib-test-group";
+    private static final String SERVER_NAME = "SimpleRxMessagingServer";
 
-    @Server("SimpleRxMessagingServer")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10);
 
     @BeforeClass
     public static void setup() throws Exception {

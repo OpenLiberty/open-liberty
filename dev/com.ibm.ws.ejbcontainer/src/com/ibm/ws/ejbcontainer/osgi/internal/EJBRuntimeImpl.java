@@ -179,7 +179,8 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @Component(service = { ApplicationStateListener.class, DeferredMetaDataFactory.class, EJBRuntimeImpl.class, ServerQuiesceListener.class },
            configurationPid = "com.ibm.ws.ejbcontainer.runtime",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           property = { "deferredMetaData=EJB" })
+           property = { "deferredMetaData=EJB"}) //EJB must shut down after CDI but the default service ranking achieves that. This is because EJBs can have a cdi application scope and according to the CDI spec "jakarta.enterprise.event.Shutdown is not after @BeforeDestroyed(ApplicationScoped.class)
+                                                 //The default service.ranking of zero satisfies this requirement.
 public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationStateListener, DeferredMetaDataFactory, ServerQuiesceListener {
     private static final String CLASS_NAME = EJBRuntimeImpl.class.getName();
     private static final TraceComponent tc = Tr.register(EJBRuntimeImpl.class);

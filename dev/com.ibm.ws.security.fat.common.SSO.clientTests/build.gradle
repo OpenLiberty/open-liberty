@@ -77,8 +77,8 @@ assemble.dependsOn 'tokenEndpoint'
 
 task tokenEndpoint(type: War, dependsOn: classes) {
   def appName = "privateKeyJwtTokenEndpoint"
-  destinationDir file("${appBuildDir}")
-  archiveName "${appName}.war"
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "${appName}.war"
 
  println "In tokenEndpoint"
   from("test-applications/${appName}/resources") {

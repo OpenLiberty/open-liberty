@@ -23,6 +23,10 @@
 			<property name="failSafeUndeployment">${tck_failSafeUndeployment}</property>
 			<property name="appDeployTimeout">${tck_appDeployTimeout}</property>
 			<property name="appUndeployTimeout">${tck_appUndeployTimeout}</property>
+			
+			
+			<!-- Specific to web/full profiles -->
+			<property name="testProtocol">servlet</property>
 			<property name="allowConnectingToRunningServer">true</property>
 		</configuration>
 	</container>

@@ -29,6 +29,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.ws.transaction.fat.util.SetupRunner;
 import com.ibm.ws.wsat.fat.util.DBTestBase;
 
 import componenttest.annotation.AllowedFFDC;
@@ -48,15 +49,26 @@ public class SimpleTest extends DBTestBase {
 	@Server("MigrationServer2")
 	public static LibertyServer server2;
 
+    protected static SetupRunner runner;
+
 	public static String[] serverNames = new String[] {"MigrationServer1", "MigrationServer2"};
 
-	private static String BASE_URL;
-	private static String BASE_URL2;
+	public static String BASE_URL;
+	public static String BASE_URL2;
 
 	@BeforeClass
 	public static void beforeTests() throws Exception {
 
 		System.getProperties().entrySet().stream().forEach(e -> Log.info(SimpleTest.class, "beforeTests", e.getKey() + " -> " + e.getValue()));
+
+		runner = new SetupRunner() {
+	        @Override
+	        public void run(LibertyServer s) throws Exception {
+	        	Log.info(SimpleTest.class, "setupRunner.run", "Setting up "+s.getServerName());
+	            s.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+	        }
+	    };
+	    
 		BASE_URL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
 		server2.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_secondary")));
 		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
@@ -67,10 +79,7 @@ public class SimpleTest extends DBTestBase {
 		ShrinkHelper.defaultDropinApp(server, "simpleClient", "web.simpleclient");
 		ShrinkHelper.defaultDropinApp(server2, "simpleService", "web.simpleservice");
 
-		server.setServerStartTimeout(START_TIMEOUT);
-		server2.setServerStartTimeout(START_TIMEOUT);
-
-		FATUtils.startServers(server, server2);;
+		FATUtils.startServers(runner, server, server2);;
 	}
 
 	@AfterClass

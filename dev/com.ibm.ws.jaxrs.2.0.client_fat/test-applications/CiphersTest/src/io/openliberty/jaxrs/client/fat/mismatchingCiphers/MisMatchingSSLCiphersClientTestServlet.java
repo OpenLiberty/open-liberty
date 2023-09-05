@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,6 +25,8 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Test;
 
+import com.ibm.ws.jaxrs20.client.JAXRSClientConstants;
+
 import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
 
@@ -40,6 +42,9 @@ public class MisMatchingSSLCiphersClientTestServlet extends FATServlet {
     public void before() throws ServletException {
         client = ClientBuilder.newClient();
         client.property("com.ibm.ws.jaxrs.client.ssl.config", "mySSLConfig");
+
+        // Workaround for setting Cipher Suites on the outbound SSL request
+        System.setProperty(JAXRSClientConstants.USE_HTTPS_URL_CONNECTION_DEFAULT_SSLSOCKETFACTORY, "true");
     }
 
     @Override

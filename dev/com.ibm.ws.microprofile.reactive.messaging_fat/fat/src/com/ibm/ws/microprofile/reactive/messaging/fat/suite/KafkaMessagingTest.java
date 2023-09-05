@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,6 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,6 +44,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -54,6 +56,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestCons
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -64,8 +67,13 @@ public class KafkaMessagingTest {
 
     private static final String APP_NAME = "basicKafkaTest";
 
-    @Server("SimpleRxMessagingServer")
+    public static final String SERVER_NAME = "SimpleRxMessagingServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
 
     private static KafkaConsumer<String, String> kafkaConsumer;
     private static KafkaProducer<String, String> kafkaProducer;
@@ -122,11 +130,11 @@ public class KafkaMessagingTest {
     /**
      * Poll Kafka until the desired number of records is received
      *
-     * @param <K>      Key type of kafka record
-     * @param <V>      Value type of kafka record
+     * @param <K> Key type of kafka record
+     * @param <V> Value type of kafka record
      * @param consumer the kafka consumer
-     * @param count    the number of records expected
-     * @param timeout  the amount of time to wait for the expected number of records to be received
+     * @param count the number of records expected
+     * @param timeout the amount of time to wait for the expected number of records to be received
      * @return the list of records received
      */
     private static <K, V> List<ConsumerRecord<K, V>> pollForRecords(KafkaConsumer<K, V> consumer, int count, Duration timeout) {
@@ -150,13 +158,18 @@ public class KafkaMessagingTest {
     }
 
     @AfterClass
-    public static void testdownProducer() {
+    public static void teardownProducer() {
         kafkaProducer.close();
     }
 
     @AfterClass
     public static void teardownTest() throws Exception {
         server.stopServer();
+    }
+
+    @AfterClass
+    public static void teardownKafka() throws ExecutionException, InterruptedException, IOException {
+        KafkaUtils.deleteKafkaTopics(PlaintextTests.getAdminClient());
     }
 
 }

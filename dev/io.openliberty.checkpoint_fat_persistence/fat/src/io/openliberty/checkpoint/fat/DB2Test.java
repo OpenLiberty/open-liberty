@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.function.Consumer;
 
 import org.junit.AfterClass;
@@ -38,6 +39,9 @@ import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.annotation.TestServlet;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatActions.SEVersion;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.db2.web.DB2TestServlet;
@@ -64,6 +68,15 @@ public class DB2Test extends FATServletClient {
                                     .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN && !FATRunner.ARM_ARCHITECTURE ? 5 : 25)))
                     .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "db2-ssl"))
                     .withReuse(true);
+
+    @ClassRule
+    public static RepeatTests rt = RepeatTests.with(new FeatureReplacementAction().removeFeatures(Collections.singleton("jdbc-*")).addFeature("jdbc-4.1").withID("JDBC4.1"))
+                    .andWith(new FeatureReplacementAction().removeFeatures(Collections.singleton("jdbc-*")).addFeature("jdbc-4.2").withID("JDBC4.2").fullFATOnly())
+                    .andWith(new FeatureReplacementAction().removeFeatures(Collections.singleton("jdbc-*"))
+                                    .addFeature("jdbc-4.3")
+                                    .withID("JDBC4.3")
+                                    .withMinJavaLevel(SEVersion.JAVA11)
+                                    .fullFATOnly());
 
     public static final String APP_NAME = "db2fat";
     public static final String SERVLET_NAME = "DB2TestServlet";

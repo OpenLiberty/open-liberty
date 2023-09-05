@@ -54,6 +54,10 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
 
+import  org.testcontainers.utility.DockerImageName;
+
+import componenttest.containers.TestContainerSuite;
+
 /**
  * JSF 2.2 Tests
  *
@@ -99,7 +103,7 @@ import componenttest.topology.impl.JavaInfo;
                 JSF22AparTests.class,
                 JSF22ThirdPartyApiTests.class
 })
-public class FATSuite {
+public class FATSuite extends TestContainerSuite {
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}
@@ -134,6 +138,14 @@ public class FATSuite {
             repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
                             .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
                             .andWith(FeatureReplacementAction.EE9_FEATURES());
+        }
+    }
+
+    public static DockerImageName getChromeImage() {
+        if (FATRunner.ARM_ARCHITECTURE) {
+            return DockerImageName.parse("seleniarm/standalone-chromium:4.8.3").asCompatibleSubstituteFor("selenium/standalone-chrome");
+        } else {
+            return DockerImageName.parse("selenium/standalone-chrome:4.8.3");
         }
     }
 }

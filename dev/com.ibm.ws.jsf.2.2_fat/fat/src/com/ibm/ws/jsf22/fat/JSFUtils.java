@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,30 @@ public class JSFUtils {
         StringBuilder sb = new StringBuilder();
         sb.append("http://")
                         .append(server.getHostname())
+                        .append(":")
+                        .append(server.getHttpDefaultPort())
+                        .append("/")
+                        .append(contextRoot)
+                        .append("/")
+                        .append(path);
+
+        return sb.toString();
+    }
+
+    /**
+     * Construct a URL for for the testcontainer selenium docker image. Relies on 'host.testcontainers.internal' address
+     *
+     * @param server      - The server that is under test, this is used to get the port and host name.
+     * @param contextRoot - The context root of the application
+     * @param path        - Additional path information for the request.
+     * @return - A fully formed URL string.
+     * @throws Exception
+     */
+    public static String createSeleniumURLString(LibertyServer server, String contextRoot, String path) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("http://")
+                        .append("host.testcontainers.internal")
                         .append(":")
                         .append(server.getHttpDefaultPort())
                         .append("/")

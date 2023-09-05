@@ -14,7 +14,6 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -24,7 +23,6 @@ import com.ibm.ws.microprofile.reactive.streams.test.context.ReactiveStreamsCont
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -47,8 +45,7 @@ public class ReactiveStreamsContextTest extends FATServletClient {
 
     public static final String SERVER_NAME = "ReactiveStreamsContextServer";
 
-    @ClassRule
-    public static RepeatTests r = FATSuite.repeat(SERVER_NAME, TestMode.LITE, FATSuite.MPRS10, FATSuite.MPRS30_MP50, FATSuite.MPRS30_MP60);
+    public static RepeatTests r = FATSuite.repeatDefault(SERVER_NAME);
 
     public static final String APP_NAME = "ReactiveStreamsContextTest";
 

@@ -83,6 +83,8 @@ public class NettyFrameworkImplTest {
         framework = null;
         testChannels = null;
         options = null;
+        outputMgr.copyTraceStream();
+        outputMgr.copyMessageStream();
         outputMgr.resetStreams();
     }
 

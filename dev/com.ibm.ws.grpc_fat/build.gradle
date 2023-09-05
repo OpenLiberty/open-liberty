@@ -42,7 +42,7 @@ plugins {
 }
 
 def grpcVersion = '1.43.2'
-def protocVersion = '3.19.6'
+def protocVersion = '3.23.4'
 
 // only run the protobuf compilation plugin if the build is run with "-PcompileProtobufs"
 // this will allow us to avoid recompiling the protobuf stubs on every build, and additionally
@@ -125,9 +125,9 @@ configurations {
 dependencies {
 
     // Adding libraries the application to run in FAT
-    storeAppWarLibs 'com.google.protobuf:protobuf-java-util:3.19.6',
+    storeAppWarLibs 'com.google.protobuf:protobuf-java-util:3.23.4',
     project(':io.openliberty.com.google.gson'),
-    'com.google.guava:guava:30.1-android',
+    project(':com.ibm.ws.com.google.guava'),
     'com.google.errorprone:error_prone_annotations:2.4.0',
     'com.google.guava:failureaccess:1.0.1',
     'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava',
@@ -142,7 +142,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 
     //
-    implementation 'com.google.protobuf:protobuf-java-util:3.19.6'
+    implementation 'com.google.protobuf:protobuf-java-util:3.23.4'
     // @jar is needed since some of the dependencies of java-util were overwritten
     providedCompile 'io.grpc:grpc-protobuf:' + grpcVersion + '@jar'
     compileOnly 'io.grpc:grpc-stub:' + grpcVersion
@@ -152,7 +152,7 @@ dependencies {
     implementation 'com.ibm.websphere.appserver.api:com.ibm.websphere.appserver.api.distributedMap:2.0.37'
 
     // provided
-    providedCompile 'com.google.protobuf:protobuf-java:3.19.6'
+    providedCompile 'com.google.protobuf:protobuf-java:3.23.4'
     providedCompile 'javax.annotation:javax.annotation-api:1.2'
     providedCompile 'jakarta.platform:jakarta.jakartaee-api:8.0.0'
     providedCompile 'org.eclipse.microprofile:microprofile:3.2'
@@ -179,8 +179,8 @@ dependencies {
       'io.grpc:grpc-stub:' + grpcVersion,
       'io.grpc:grpc-protobuf:' + grpcVersion,
       'io.grpc:grpc-netty:' + grpcVersion,
-      'com.google.protobuf:protobuf-java:3.19.6',
-      'com.google.protobuf:protobuf-java-util:3.19.6'
+      'com.google.protobuf:protobuf-java:3.23.4',
+      'com.google.protobuf:protobuf-java-util:3.23.4'
 }
 
 

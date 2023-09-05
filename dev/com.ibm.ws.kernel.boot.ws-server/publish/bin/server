@@ -829,12 +829,25 @@ readServerEnv()
               fi
            fi ;;
       *=*)
-        # Only accept alphanumeric variable names to avoid eval complexities.
-        if var=`safeEcho "$line" | sed -e 's/^\([_[:alnum:]][_[:alnum:]]*\)=.*/\1/'`; then
-           case $var in
-           *=*)
-               SERVER_ENV_SETUP_FAILURE="${var} ${SERVER_ENV_SETUP_FAILURE}" ;;
-           *)
+          # The sed commands extracts the variable from the line but only if it contains alpha-numeric
+          # characters. Only accept alphanumeric variable names to avoid eval complexities.
+          if [ "$uname" != "SunOS" ]; then
+
+            # This is the preferred pattern, because it handles characters 
+            # from multiple languages, but it doesn't work on Solaris.
+            var=$(safeEcho "$line" | sed -n -e 's/^\([_[:alpha:]][_[:alnum:]]*\)=.*/\1/p')
+
+          else
+            # On Solaris we cannot use alpha or alnum
+            var=$(safeEcho "$line" | sed -n -e 's/^\([a-zA-Z_][a-zA-Z0-9_]*\)=.*/\1/p')
+          fi
+
+          if [ -n "$var" ]; then
+
+            case $var in
+            *=*)
+              SERVER_ENV_SETUP_FAILURE="${var} ${SERVER_ENV_SETUP_FAILURE}" ;;
+            *)
               # if variable expansion is enabled, then we have already "sourced" the entire file.  As a result
               # all of the variables in server.env have already been defined as shell variables.  To make them
               # accessible to child processes, they need to be exported.
@@ -848,8 +861,8 @@ readServerEnv()
                  extractValueAndEscapeForEval "${line}"
                  eval "${var}=${escapeForEvalResult}; export ${var}"
               fi
-           esac
-        fi ;;
+            esac
+          fi ;;
       esac
     done
     IFS=$saveIFS
@@ -861,15 +874,23 @@ readServerEnv()
 criuEnvDefaults() {
   if [ -z "$GLIBC_TUNABLES" ]
   then
-    GLIBC_TUNABLES=glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load:glibc.pthread.rseq=0
+    GLIBC_TUNABLES=glibc.cpu.hwcaps=z14,arch_2_07,-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load:glibc.pthread.rseq=0
   else
-    GLIBC_TUNABLES=${GLIBC_TUNABLES}:glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load:glibc.pthread.rseq=0
+    GLIBC_TUNABLES=${GLIBC_TUNABLES}:glibc.cpu.hwcaps=z14,arch_2_07,-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load:glibc.pthread.rseq=0
   fi
   export GLIBC_TUNABLES
   export LD_BIND_NOT=on
+
   # Disable CRIU's use of HW breakpoints on restore.
   # HW breakpoints are slower in some environments.
   export CRIU_FAULT=130 # 130=FI_NO_BREAKPOINTS
+
+  # for z/OS arch s390x we need to set DFLTCC=0 to disable
+  # hardware-accelerated compression for checkpoint
+  CHECK_ARCH=`arch`
+  if [ "$CHECK_ARCH" = "s390x" ]; then
+    export DFLTCC=0
+  fi
 }
 
 ##
@@ -990,7 +1011,8 @@ javaCmd()
     fi
 
     # IgnoreUnrecognizedVMOptions is used so that other JVMs don't fail on these args
-    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+IgnoreUnrecognizedVMOptions -XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode $X_WLP_IMMUTABLE_VARS"
+    # IgnoreUnrecognizedRestoreOptions to avoid failing to restore if unsupported options are specified to restore
+    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+IgnoreUnrecognizedVMOptions -XX:+IgnoreUnrecognizedRestoreOptions -XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode $X_WLP_IMMUTABLE_VARS"
 
 
     checkCriuUnprivileged
@@ -1049,8 +1071,10 @@ javaCmd()
     #On some shells (bash) the shell will issue an ugly message to STDERR when criu kills the process.
     # We direct STDERR to /dev/null to avoid that noise.
     {
+      # JAVA_CHECKPOINT_PREFIX_CMD is used externally to allow prefixing commands before the
+      # java invocation.  For example, to make calls to ld.so to fine tune glibc behavior.
       #  Launch with stdin set to /dev/null to avoid file-handle complications on criu restore
-      "${JAVA_CMD}" "$@" >> "${CHECKPOINT_CONSOLE_LOG}" 2>&1 < /dev/null
+      ${JAVA_CHECKPOINT_PREFIX_CMD}"${JAVA_CMD}" "$@" >> "${CHECKPOINT_CONSOLE_LOG}" 2>&1 < /dev/null
     } 2> /dev/null
     rc=$?
     if [ $rc -eq 20 ]; then

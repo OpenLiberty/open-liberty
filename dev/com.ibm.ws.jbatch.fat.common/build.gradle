@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,8 +22,8 @@ def appBuildDir = "${buildDir}/test-application"
 //Formerly com.ibm.ws.jbatch.test.dbservlet.client.jar
 task buildCommonClientJar(type: Jar, dependsOn: classes) {
   def appName = "CommonClient"
-  destinationDir file("${appBuildDir}")
-  archiveName "${appName}.jar"
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "${appName}.jar"
 
   from ("build/classes/java/main") {
     include "com/ibm/ws/jbatch/test/**/*.class"
@@ -34,8 +34,8 @@ task buildCommonClientJar(type: Jar, dependsOn: classes) {
 
 task buildDbServletAppWar(type: War, dependsOn: classes) {
   def appName = "DbServletApp"
-  destinationDir file("${appBuildDir}")
-  archiveName "${appName}.war"
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "${appName}.war"
 
   //from("test-applications/${appName}/resources") {
   //  include "**/*"
@@ -48,8 +48,8 @@ task buildDbServletAppWar(type: War, dependsOn: classes) {
 
 task buildCommonUtilJar(type: Jar, dependsOn: classes) {
   def appName = "CommonUtil"
-  destinationDir file("${appBuildDir}")
-  archiveName "${appName}.jar"
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "${appName}.jar"
 
   from ("build/classes/java/main") {
     include "batch/fat/common/util/**/*.class"
@@ -61,10 +61,10 @@ task buildCommonUtilJar(type: Jar, dependsOn: classes) {
 
 task buildBonusPayoutWar(type: War, dependsOn: buildCommonUtilJar) {
   def appName = "BonusPayout"
-  destinationDir file("${appBuildDir}")
-  archiveName "${appName}.war"
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "${appName}.war"
 
-  from("test-applications/${archiveName}/resources") {
+  from("test-applications/BonusPayout.war/resources") {
     include "**/*"
   }
   from ("build/classes/java/main") {
@@ -79,7 +79,7 @@ task buildBonusPayoutWar(type: War, dependsOn: buildCommonUtilJar) {
     include "**/CommonUtil.jar"
     into "WEB-INF/lib"
   }
-  from("test-applications/${archiveName}") {
+  from("test-applications/BonusPayout.war") {
     include "README.txt"
     into ""
   }
@@ -87,10 +87,10 @@ task buildBonusPayoutWar(type: War, dependsOn: buildCommonUtilJar) {
 
 task buildBonusPayoutEAREar(type: Ear, dependsOn: buildBonusPayoutWar) {
   def appName = "BonusPayoutEAR"
-  destinationDir file("${appBuildDir}")
-  archiveName "${appName}.ear"
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "${appName}.ear"
 
-  from("test-applications/${archiveName}/resources") {
+  from("test-applications/BonusPayoutEAR.ear/resources") {
     include "**/*"
   }
   from ("build/libs/test-application") {

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,7 +35,7 @@ public class EmbeddableTranManagerImpl extends TranManagerImpl {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
-            Tr.entry(tc, "begin", "(SPI)");
+            Tr.entry(tc, "begin (SPI)");
 
         if (tx != null) {
             if (tx.getTxType() != UOWCoordinator.TXTYPE_NONINTEROP_GLOBAL) {
@@ -44,7 +44,7 @@ public class EmbeddableTranManagerImpl extends TranManagerImpl {
 
                 FFDCFilter.processException(nse, "com.ibm.tx.jta.embeddable.impl.EmbeddableTranManagerImpl.begin", "63", this);
                 if (traceOn && tc.isEntryEnabled())
-                    Tr.exit(tc, "begin", new Object[] {"(SPI)", nse});
+                    Tr.exit(tc, "begin (SPI)", nse);
                 throw nse;
             } else {
                 if (tc.isDebugEnabled())
@@ -67,7 +67,7 @@ public class EmbeddableTranManagerImpl extends TranManagerImpl {
         invokeEventListener(tx, UOWEventListener.POST_BEGIN, null);
 
         if (traceOn && tc.isEntryEnabled())
-            Tr.exit(tc, "begin", "(SPI)");
+            Tr.exit(tc, "begin (SPI)");
     }
 
     @Override

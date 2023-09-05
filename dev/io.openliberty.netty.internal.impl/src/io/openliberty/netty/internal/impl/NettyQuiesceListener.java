@@ -116,7 +116,7 @@ public class NettyQuiesceListener{
 					}
 				}
 			}
-		}, 0, 1000, TimeUnit.MILLISECONDS);
+		}, 1000, 1000, TimeUnit.MILLISECONDS); // Schedule to run every second starting one second after creation. See https://github.com/OpenLiberty/open-liberty/issues/25800
 		
 		return quiesceFinishTask;
 	}

@@ -42,8 +42,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.microprofile.openapi20.internal.MergedOpenAPIProvider;
-import io.openliberty.microprofile.openapi20.internal.OpenAPIProvider;
 import io.openliberty.microprofile.openapi20.internal.merge.NameProcessor.DocumentNameProcessor;
+import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
 import io.openliberty.microprofile.openapi20.internal.utils.MessageConstants;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelVisitor;

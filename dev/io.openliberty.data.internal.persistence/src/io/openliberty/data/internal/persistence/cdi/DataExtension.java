@@ -14,17 +14,20 @@ package io.openliberty.data.internal.persistence.cdi;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedParameterizedType;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,6 +44,7 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
@@ -73,7 +77,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
     /**
      * OSGi service that registers this extension.
      */
-    private final DataExtensionProvider provider = AccessController.doPrivileged(this);
+    public final DataExtensionProvider provider = AccessController.doPrivileged(this);
 
     /**
      * Beans for repository interfaces.
@@ -88,6 +92,11 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
      * for different applications or the same application being restarted.
      */
     private final ConcurrentHashMap<AnnotatedType<?>, String> repositoryTypes = new ConcurrentHashMap<>();
+
+    /**
+     * jakarata.validation.Valid, if available. Otherwise null.
+     */
+    public final Class<? extends Annotation> Valid = loadIfAvailable("jakarta.validation.Valid");
 
     /**
      * A key for a group of entities for the same backend database
@@ -155,7 +164,9 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
             AnnotatedType<?> repositoryType = entry.getKey();
             String databaseStoreId = entry.getValue();
             Class<?> repositoryInterface = repositoryType.getJavaClass();
-            Class<?> entityClass = getEntityClass(repositoryInterface);
+            Entry<Class<?>, Boolean> entityClassInfo = getEntityClass(repositoryInterface);
+            Class<?> entityClass = entityClassInfo.getKey();
+            boolean requestsValidation = entityClassInfo.getValue();
             ClassLoader loader = repositoryInterface.getClassLoader();
 
             if (supportsEntity(entityClass, repositoryType)) {
@@ -167,7 +178,8 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                 entityDefiner.add(entityClass);
 
                 BeanAttributes<?> attrs = beanMgr.createBeanAttributes(repositoryType);
-                Bean<?> bean = beanMgr.createBean(attrs, repositoryInterface, new RepositoryProducer.Factory<>(beanMgr, provider, entityDefiner, entityClass));
+                Bean<?> bean = beanMgr.createBean(attrs, repositoryInterface, new RepositoryProducer.Factory<>( //
+                                beanMgr, this, entityDefiner, entityClass, requestsValidation));
                 repositoryBeans.add(bean);
             }
         }
@@ -334,18 +346,22 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
      * </ul>
      *
      * @param repositoryInterface
-     * @return entity class for the repository.
+     * @return entity class for the repository and whether the repository requests validation
+     *         of the entity class by annotating it with jakarta.validation.Valid.
      */
-    private static Class<?> getEntityClass(Class<?> repositoryInterface) {
+    private Entry<Class<?>, Boolean> getEntityClass(Class<?> repositoryInterface) {
         Class<?> entityClass = null;
+        boolean requestsValidation = false;
 
-        for (Type interfaceType : repositoryInterface.getGenericInterfaces()) {
-            if (interfaceType instanceof ParameterizedType) {
-                ParameterizedType parameterizedType = (ParameterizedType) interfaceType;
-                Type typeParams[] = parameterizedType.getActualTypeArguments();
-                if (typeParams.length == 2 && typeParams[0] instanceof Class) {
-                    entityClass = (Class<?>) typeParams[0];
-                    if (parameterizedType.getRawType().getTypeName().startsWith(DataRepository.class.getPackageName()))
+        for (java.lang.reflect.AnnotatedType interfaceType : repositoryInterface.getAnnotatedInterfaces()) {
+            if (interfaceType instanceof AnnotatedParameterizedType) {
+                AnnotatedParameterizedType parameterizedType = (AnnotatedParameterizedType) interfaceType;
+                java.lang.reflect.AnnotatedType typeParams[] = parameterizedType.getAnnotatedActualTypeArguments();
+                Type firstParamType = typeParams.length > 0 ? typeParams[0].getType() : null;
+                if (firstParamType != null && firstParamType instanceof Class) {
+                    entityClass = (Class<?>) firstParamType;
+                    requestsValidation = typeParams[0].isAnnotationPresent(Valid);
+                    if (typeParams.length == 2 && parameterizedType.getType().getTypeName().startsWith(DataRepository.class.getPackageName()))
                         break; // spec-defined repository interfaces take precedence if multiple interfaces are present
                 }
             }
@@ -382,7 +398,25 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                                                    " or another built-in repository interface and supply the entity class as the first parameter.");
         }
 
-        return entityClass;
+        return new AbstractMap.SimpleImmutableEntry<>(entityClass, requestsValidation);
+    }
+
+    /**
+     * Loads the specified annotation class if it can be found.
+     *
+     * @param className fully qualified annotation class name to load.
+     * @return loaded annotation class or null.
+     */
+    @FFDCIgnore(ClassNotFoundException.class)
+    @SuppressWarnings("unchecked")
+    private Class<? extends Annotation> loadIfAvailable(String annotationClassName) {
+        Class<? extends Annotation> c;
+        try {
+            c = (Class<? extends Annotation>) DataExtension.class.getClassLoader().loadClass(annotationClassName);
+        } catch (ClassNotFoundException x) {
+            c = null;
+        }
+        return c;
     }
 
     /**

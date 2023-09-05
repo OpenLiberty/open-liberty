@@ -24,14 +24,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.Level; // Liberty Change
+import java.util.logging.Logger; // Liberty Change
 
 import javax.xml.namespace.QName;
 
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.interceptor.SoapInterceptor;
-import org.apache.cxf.common.logging.LogUtils;
+import org.apache.cxf.common.logging.LogUtils; // Liberty Change
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
@@ -62,7 +62,7 @@ public abstract class AbstractWSS4JInterceptor extends WSHandler implements Soap
     private final Set<String> after = new HashSet<>();
     private String phase;
     private String id;
-    private static final Logger LOG = LogUtils.getL7dLogger(AbstractWSS4JInterceptor.class);
+    private static final Logger LOG = LogUtils.getL7dLogger(AbstractWSS4JInterceptor.class); // Liberty Change
 
     public AbstractWSS4JInterceptor() {
         super();
@@ -211,7 +211,7 @@ public abstract class AbstractWSS4JInterceptor extends WSHandler implements Soap
         if (passwordEncryptor != null) {
             msg.put(ConfigurationConstants.PASSWORD_ENCRYPTOR_INSTANCE, passwordEncryptor);
         }
-        // Liberty change
+        // Liberty Change Start
         String mustunderstand = (String)msg.getContextualProperty("ws-security.must-understand");
         if (mustunderstand != null && !mustunderstand.isEmpty()) {
             msg.put(ConfigurationConstants.MUST_UNDERSTAND, mustunderstand);
@@ -220,6 +220,7 @@ public abstract class AbstractWSS4JInterceptor extends WSHandler implements Soap
                 LOG.fine("AbstractWSS4JInterceptor: OLGH23255 - mustUnderstand is set = " + mustunderstand);
             }        
         }
+		// Liberty Change End
     }
 
     @Override

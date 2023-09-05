@@ -98,4 +98,20 @@ public class DataTest extends FATServletClient {
     public void testFindAndDeleteMultipleAnnotated() throws Exception {
         runTest(server, "DataTestApp", "testFindAndDeleteMultipleAnnotated&jdbcJarName=" + jdbcJarName);
     }
+
+    /**
+     * This test has conditional logic based on the JDBC driver/database.
+     */
+    @Test
+    public void testFindAndDeleteReturnsIds() throws Exception {
+        runTest(server, "DataTestApp", "testFindAndDeleteReturnsIds&jdbcJarName=" + jdbcJarName);
+    }
+
+    /**
+     * This test has conditional logic based on the JDBC driver/database.
+     */
+    @Test
+    public void testFindAndDeleteReturnsObjects() throws Exception {
+        runTest(server, "DataTestApp", "testFindAndDeleteReturnsObjects&jdbcJarName=" + jdbcJarName);
+    }
 }

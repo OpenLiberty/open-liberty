@@ -35,6 +35,7 @@ import com.ibm.ws.fat.util.SharedServer;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.RepeatActions.SEVersion;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FileUtils;
@@ -192,7 +193,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     }
 
     @Override
-    public JakartaEE9Action withMinJavaLevel(int javaLevel) {
+    public JakartaEE9Action withMinJavaLevel(SEVersion javaLevel) {
         return (JakartaEE9Action) super.withMinJavaLevel(javaLevel);
     }
 

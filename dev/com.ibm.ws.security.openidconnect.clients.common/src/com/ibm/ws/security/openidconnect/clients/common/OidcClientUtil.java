@@ -11,6 +11,7 @@ package com.ibm.ws.security.openidconnect.clients.common;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -218,14 +219,14 @@ public class OidcClientUtil {
     }
 
     @FFDCIgnore(Exception.class)
-    public static boolean isReferrerHostValid(HttpServletRequest req, @Sensitive String requestUrl) {
+    public static void verifyReferrerHostIsValid(HttpServletRequest req, @Sensitive String requestUrl, String cookieNameOrPrefix) throws Exception {
         try {
             // Get the redirection domain names from the global security configuration, <webAppSecurity wasReqURLRedirectDomainNames="mydomain"/>
             ReferrerURLCookieHandler.isReferrerHostValid(PasswordNullifier.nullifyParams(req.getRequestURL().toString()), PasswordNullifier.nullifyParams(requestUrl),
                     getWebAppSecurityConfig().getWASReqURLRedirectDomainNames());
-            return true;
         } catch (Exception re) {
-            return false;
+            String errorMsg = Tr.formatMessage(tc, "MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE", req.getRequestURL(), cookieNameOrPrefix, (new URL(requestUrl)).getHost());
+            throw new Exception(errorMsg, re);
         }
     }
 

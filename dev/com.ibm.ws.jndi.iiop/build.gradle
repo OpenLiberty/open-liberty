@@ -22,7 +22,10 @@ test {
     // subtests must only run as part of containing suites
     filter { excludeTestsMatching "com.ibm.ws.jndi.iiop.subtests.*" }
 
-    jvmArgs = ["--add-opens", "java.base/java.io=ALL-UNNAMED", "--add-opens", "java.rmi/java.rmi=ALL-UNNAMED"]
+    jvmArgs = ["--add-opens", "java.base/java.lang=ALL-UNNAMED",
+               "--add-opens", "java.base/java.io=ALL-UNNAMED",
+               "--add-opens", "java.base/java.util=ALL-UNNAMED",
+               "--add-opens", "java.rmi/java.rmi=ALL-UNNAMED"]
 
     // pre Java 9: use the endorsed standards mechanism to override ORB API
     if (JavaVersion.current() < JavaVersion.VERSION_1_9) {

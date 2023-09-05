@@ -26,8 +26,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledExecutorService; // Liberty Change
+import java.util.concurrent.ScheduledFuture; // Liberty Change
 import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.ServiceUnavailableException;
@@ -46,16 +46,16 @@ import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.jaxrs.utils.HttpUtils;
 import org.apache.cxf.message.Message;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.jaxrs21.component.LibertyJaxRsThreadPoolAdapter;
+import com.ibm.websphere.ras.Tr; // Liberty Change
+import com.ibm.websphere.ras.TraceComponent; // Liberty Change
+import com.ibm.ws.jaxrs21.component.LibertyJaxRsThreadPoolAdapter; // Liberty Change
 
 public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
 
     private static final TraceComponent tc = Tr.register(AsyncResponseImpl.class); // Liberty Change
 
     private Continuation cont;
-    private final Message inMessage;
+    private final Message inMessage;  // Liberty Change
     private TimeoutHandler timeoutHandler;
     private volatile boolean initialSuspend;
     private volatile boolean cancelled;
@@ -63,8 +63,8 @@ public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
     private volatile boolean resumedByApplication;
     private volatile Long pendingTimeout;
 
-    private final List<CompletionCallback> completionCallbacks = new LinkedList<>();
-    private final List<ConnectionCallback> connectionCallbacks = new LinkedList<>();
+    private final List<CompletionCallback> completionCallbacks = new LinkedList<>(); // Liberty Change
+    private final List<ConnectionCallback> connectionCallbacks = new LinkedList<>(); // Liberty Change
     private Throwable unmappedThrowable;
     //Liberty code change start
     //defect 168372
@@ -140,11 +140,11 @@ public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
             return false;
         }
 
-        //defect 168367
+        // Liberty Change Start - defect 168367
         if (resumedByApplication) {
             return false;
         }
-
+ 		// Liberty Change End
         cancelled = true;
         ResponseBuilder rb = Response.status(503);
         if (retryAfterHeader != null) {
@@ -200,12 +200,12 @@ public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
             timeoutFuture = asyncScheduler.schedule(task, time, unit);
             return true;
         } else {
-            //Liberty code change end
             setAsyncResponseOnExchange();
             initialSuspend = false;
             cont.suspend(timeout);
             return true;
         }
+		//Liberty code change end
     }
 
     private void setAsyncResponseOnExchange() {
@@ -337,14 +337,14 @@ public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
             } else {
                 cont.setObject(new ServiceUnavailableException());
             }
-            //Liberty code change start
-            //defect 168372
-            //cont isPending means the timeout is come from a second setTimeout request, need to resume the continuation and complete it.
+            // Liberty Change Start
+            // defect 168372
+            // cont isPending means the timeout is come from a second setTimeout request, need to resume the continuation and complete it.
             if (cont.isPending()) {
                 cont.resume();
                 onComplete();
             }
-            //Liberty code change end
+            // Liberty Change End
         }
     }
 

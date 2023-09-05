@@ -112,7 +112,7 @@ import com.ibm.wsspi.resource.ResourceBindingListener;
                        ModuleMetaDataListener.class,
                        ComponentMetaDataListener.class,
                        ApplicationStateListener.class },
-           property = { "service.vendor=IBM" })
+           property = { "service.vendor=IBM", "service.ranking:Integer=200" }) //CDI can trigger application code during startup. This application code may do JNDI lookups, thus injection engine must start before CDI so it can provide JNDI results.
 public class OSGiInjectionEngineImpl extends AbstractInjectionEngine implements InjectionEngine, ApplicationMetaDataListener, ModuleMetaDataListener, ComponentMetaDataListener, ApplicationStateListener {
 
     private static final TraceComponent tc = Tr.register(OSGiInjectionEngineImpl.class);

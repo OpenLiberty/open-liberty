@@ -4,6 +4,7 @@
 		<feature>jndi-1.0</feature>
 		<feature>jaxws-2.2</feature>
 		<feature>wsSecurity-1.1</feature>
+        <feature>componenttest-1.0</feature>
 	</featureManager>
 
 	<include location="../fatTestPorts.xml" />
@@ -23,12 +24,15 @@
 	<javaPermission className="java.security.AllPermission"
 		name="*" actions="*" />
 		
-	<webApplication id="webServiceRefFeatures" name="webServiceRefFeatures" cotext-root="webServiceRefFeatures" location="webServiceRefFeatures.war">
+	<webApplication id="" name="libertyCXFProperty" cotext-root="libertyCXFProperty" location="libertyCXFProperty.war">
 		<webservices-bnd> 	
 			<webservice-endpoint-properties enableLoggingInOutInterceptor="true"/>  		
             <service-ref name="services/ImageServicePropertyImplService"
-				port-address="https://localhost:${bvt.prop.HTTP_default.secure}/webServiceRefFeatures/ImageServiceImplService"
-				wsdl-location="https://localhost:${bvt.prop.HTTP_default.secure}/webServiceRefFeatures/ImageServiceImplService?wsdl" />
+				port-address="https://localhost:${bvt.prop.HTTP_default.secure}/libertyCXFProperty/ImageServiceImplService"
+				wsdl-location="https://localhost:${bvt.prop.HTTP_default.secure}/libertyCXFProperty/ImageServiceImplService?wsdl" />			  		
+            <service-ref name="services/ImageServicePropertyImplServiceTwo"
+				port-address="https://localhost:${bvt.prop.HTTP_default.secure}/libertyCXFProperty/ImageServiceImplServiceTwo"
+				wsdl-location="https://localhost:${bvt.prop.HTTP_default.secure}/libertyCXFProperty/ImageServiceImplServiceTwo?wsdl" />
 		</webservices-bnd>
     </webApplication>
     

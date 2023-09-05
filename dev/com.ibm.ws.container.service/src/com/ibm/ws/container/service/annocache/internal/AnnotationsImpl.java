@@ -13,7 +13,6 @@
 package com.ibm.ws.container.service.annocache.internal;
 
 import java.net.URL;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,15 +22,11 @@ import java.util.TreeSet;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-
-import com.ibm.wsspi.artifact.ArtifactContainer;
-import com.ibm.wsspi.artifact.ArtifactEntry;
-import com.ibm.wsspi.artifact.overlay.OverlayContainer;
-
+import com.ibm.ws.container.service.annocache.Annotations;
+import com.ibm.ws.container.service.annocache.SpecificAnnotations;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.annocache.classsource.ClassSource_ClassLoader;
@@ -47,10 +42,9 @@ import com.ibm.wsspi.annocache.service.AnnotationCacheService_Service;
 import com.ibm.wsspi.annocache.targets.AnnotationTargets_Exception;
 import com.ibm.wsspi.annocache.targets.AnnotationTargets_Factory;
 import com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets;
-
-import com.ibm.ws.container.service.annocache.Annotations;
-import com.ibm.ws.container.service.annocache.SpecificAnnotations;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.wsspi.artifact.ArtifactContainer;
+import com.ibm.wsspi.artifact.ArtifactEntry;
+import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 /**
  * Common annotations code.
@@ -69,10 +63,10 @@ public abstract class AnnotationsImpl implements Annotations {
 
     /**
      * Data from a path lookup.
-     * 
+     *
      * When finding the full path above a specified container, tell where
      * a given parent container is relative to the initial container.
-     * 
+     *
      * Set the span values to -1 if the parent container is not a parent
      * of the specified container.
      */
@@ -110,7 +104,7 @@ public abstract class AnnotationsImpl implements Annotations {
 
     /**
      * Obtain the full path to a specified container.
-     * 
+     *
      * Return data which indicates whether the path reaches above
      * a specified parent container.
      *
@@ -119,7 +113,7 @@ public abstract class AnnotationsImpl implements Annotations {
      *
      * @return Path data for the container.
      *
-     * @throws UnableToAdaptException Thrown if traversal from the containre
+     * @throws UnableToAdaptException Thrown if traversal from the container
      *     to its parents fails.
      */
     public static PathData getPathData(
@@ -219,7 +213,7 @@ public abstract class AnnotationsImpl implements Annotations {
             return null; // FFDC
         }
         if ( tc.isDebugEnabled() ) {
-        	Tr.debug(tc, "Module Delegate [ " + modDelegate + " ]");
+                Tr.debug(tc, "Module Delegate [ " + modDelegate + " ]");
         }
 
         ArtifactContainer targetDelegate;
@@ -233,10 +227,10 @@ public abstract class AnnotationsImpl implements Annotations {
         }
 
         ArtifactContainer rootOfRootsModDelegate = getRootOfRoots(modDelegate);
-    	ArtifactContainer rootOfRootsTargetDelegate = getRootOfRoots(targetDelegate);
+        ArtifactContainer rootOfRootsTargetDelegate = getRootOfRoots(targetDelegate);
         if ( tc.isDebugEnabled() ) {
-        	Tr.debug(tc, "Module Delegate Root-of-roots [ " + rootOfRootsModDelegate + " ]");
-        	Tr.debug(tc, "Target Delegate Root-of-roots[ " + rootOfRootsTargetDelegate + " ]");
+                Tr.debug(tc, "Module Delegate Root-of-roots [ " + rootOfRootsModDelegate + " ]");
+                Tr.debug(tc, "Target Delegate Root-of-roots[ " + rootOfRootsTargetDelegate + " ]");
         }
 
         String targetPathCase;
@@ -284,7 +278,7 @@ public abstract class AnnotationsImpl implements Annotations {
     }
 
     //
-    
+
     @SuppressWarnings("unchecked")
     protected static <T> T cacheGet(
         OverlayContainer container,
@@ -330,7 +324,7 @@ public abstract class AnnotationsImpl implements Annotations {
      *     naming from occurring. 
      * @param modName The name of the enclosing module.  Null if there is no enclosing module.
      * @param modCatName A category name for the module.  Used to enable multiple results for
-     *     ths same module.
+     *     the same module.
      */
     public AnnotationsImpl(
         AnnotationsAdapterImpl annotationsAdapter,
@@ -556,7 +550,7 @@ public abstract class AnnotationsImpl implements Annotations {
     }
 
     private final String modCatName;
-    
+
     @Override
     public String getModCategoryName() {
         return modCatName;
@@ -709,7 +703,7 @@ public abstract class AnnotationsImpl implements Annotations {
             Tr.debug(tc, message1);
             Tr.debug(tc, message2);
         }
-        
+
         try {
             return classSourceFactory.createAggregateClassSource(
                 useAppName, useModName, useModCatName,
@@ -744,46 +738,28 @@ public abstract class AnnotationsImpl implements Annotations {
     }
 
     /**
-     * Determine if the Jakarta EE Common Annotations APIs are enabled for the classloader
-     * of the current container.
-     *
-     * @return true if the Jakarta EE Common Annotations APIs are enabled, otherwise false.
-     */
-    @Trivial
-    @FFDCIgnore(ClassNotFoundException.class)
-    private boolean jakartaCommonAnnotationAPIs() {
-        if (classLoader == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Jakarta Common Annotations not present - ClassLoader not set");
-            }
-            return false;
-        }
-        try {
-            classLoader.loadClass(JAKARTA_RESOURCE);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Jakarta Common Annotations present");
-            }
-            return true;
-        } catch (ClassNotFoundException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Jakarta Common Annotations not present");
-            }
-            return false;
-        }
-    }
-
-    /**
      * Check for use of the wrong package (javax.annotation instead of jakarta.annotation)
      * for the Jakarta Common Annotation APIs where the "javax" version of the annotations
      * were previously included in the JDK. An informational message will be logged to
      * the console for each annotation type found.
      *
-     * @param targets the scanned annotation targets for the current container
+     * @param targets      the scanned annotation targets for the current container
      * @param scanPolicies The policies for which to select annotated classes, as bitwise
-     *            OR of scan policy values.
+     *                         OR of scan policy values.
      */
     private void checkForWrongPackageCommonAnnotations(AnnotationTargets_Targets targets, int scanPolicies) {
-        if (modName == null || !jakartaCommonAnnotationAPIs()) {
+        // Only check EJB and Web modules (non-null module name and classloader)
+        if (classLoader == null || modName == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Skip wrong package check - not an EJB or Web module");
+            }
+            return;
+        }
+        // Only check when EE 9+ (jakarta package) features are enabled
+        if (annotationsAdapter.eeVersion < 9) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Skip wrong package check - Jakarta features not enabled : eeVersion = " + annotationsAdapter.eeVersion);
+            }
             return;
         }
 

@@ -1,0 +1,45 @@
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.org.apache.jasper.expressionLanguage.6.0
+Bundle-Description: Jakarta Expression Language EE11 Implementation, version 6.0
+Implementation-Version: 6.0.0
+
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
+Export-Package: org.apache.el;thread-context=true;version=${Implementation-Version}, \
+   org.apache.el.lang;thread-context=true;version=${Implementation-Version}, \
+   org.apache.el.parser;version=${Implementation-Version}, \
+   org.apache.el.util;version=${Implementation-Version}, \
+   org.apache.el.stream;version=${Implementation-Version}
+
+Import-Package: \
+    jakarta.el; version=6.0.0, \
+    *
+# Set this to 5.0.0 for now until other EE11 features such as Security, CDI and Faces update
+# to depend on Expression Language 6.0.
+Require-Capability: osgi.contract;
+ filter:="(&(osgi.contract=JavaEL)(version=5.0.0))"
+
+# Remove the org/apache/el=${bin}/org/apache/el entry once we no longer have overlays and can run with Java 21.
+# Currently we are overlaying all the source so that we can build with Java 17.
+-includeresource: \
+    org/apache/el=${bin}/org/apache/el
+
+instrument.disabled: true
+
+-buildpath: \
+    org.apache.tomcat:tomcat-jasper-el;strategy=exact;version=11.0.0.M9,\
+    io.openliberty.jakarta.expressionLanguage.6.0;version=latest

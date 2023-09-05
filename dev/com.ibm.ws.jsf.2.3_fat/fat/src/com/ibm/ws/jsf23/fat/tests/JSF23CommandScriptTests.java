@@ -9,27 +9,33 @@
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertTrue;
 
-import java.net.URL;
 import java.util.List;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testcontainers.Testcontainers;
+import org.testcontainers.containers.BrowserWebDriverContainer;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.jsf23.fat.FATSuite;
 import com.ibm.ws.jsf23.fat.JSFUtils;
+import com.ibm.ws.jsf23.fat.selenium_util.CustomDriver;
+import com.ibm.ws.jsf23.fat.selenium_util.ExtendedWebDriver;
+import com.ibm.ws.jsf23.fat.selenium_util.WebPage;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -49,6 +55,16 @@ public class JSF23CommandScriptTests {
     @Server("jsf23CommandScriptServer")
     public static LibertyServer server;
 
+    private String contextRoot = "CommandScript";
+
+    @Rule
+    public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
+                    .withAccessToHost(true)
+                    .withLogConsumer(new SimpleLogConsumer(c, "selenium-driver"));
+
+    private ExtendedWebDriver driver;
+
+
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "CommandScript.war",
@@ -58,6 +74,7 @@ public class JSF23CommandScriptTests {
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server
         server.startServer(c.getSimpleName() + ".log");
+        Testcontainers.exposeHostPorts(server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
     }
 
     @AfterClass
@@ -68,6 +85,11 @@ public class JSF23CommandScriptTests {
         }
     }
 
+    @Before
+    public void setupPerTest() throws Exception {
+        driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
+    }
+
     /**
      * This test case ensures that the commandScript is called when the page loads because of the autorun attribute.
      * This test also verifies that a default value for the execute attribute will be used since the attribute is not specified.
@@ -76,23 +98,18 @@ public class JSF23CommandScriptTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testCommandScriptAutorunDefaultExecute() throws Exception {
-        String contextRoot = "CommandScript";
-        try (WebClient webClient = new WebClient()) {
 
-            // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(server, contextRoot, "JSF23CommandScriptAutorunDefaultExecute.xhtml");
+        String url = JSFUtils.createSeleniumURLString(server, contextRoot, "JSF23CommandScriptAutorunDefaultExecute.xhtml");
+        WebPage page = new WebPage(driver);
+        page.get(url);
+        page.waitForPageToLoad();
 
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
-            webClient.waitForBackgroundJavaScript(10000);
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            Log.info(c, name.getMethodName(), page.asXml());
+        Log.info(c, name.getMethodName(), page.getPageSource());
 
-            //if the commandScript code works properly the success message will be displayed on the page.
-            assertTrue("The commandScript test failed, success not displayed.", page.asText().contains("The value of output is: success"));
-        }
+        //if the commandScript code works properly the success message will be displayed on the page.
+        assertTrue("The commandScript test failed, success not displayed.", page.isInPage("The value of output is: success"));
+
     }
 
     /**
@@ -103,24 +120,17 @@ public class JSF23CommandScriptTests {
      */
     @Test
     @Mode(TestMode.FULL)
-    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testCommandScriptAutorun() throws Exception {
-        String contextRoot = "CommandScript";
-        try (WebClient webClient = new WebClient()) {
 
-            // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(server, contextRoot, "JSF23CommandScriptAutorun.xhtml");
+        String url = JSFUtils.createSeleniumURLString(server, contextRoot, "JSF23CommandScriptAutorun.xhtml");
+        WebPage page = new WebPage(driver);
+        page.get(url);
+        page.waitForPageToLoad();
 
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
-            webClient.waitForBackgroundJavaScript(10000);
+        Log.info(c, name.getMethodName(), page.getPageSource());
 
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            Log.info(c, name.getMethodName(), page.asXml());
-
-            //if the commandScript code works properly the success message will be displayed on the page.
-            assertTrue("The commandScript test failed, success not displayed.", page.asText().contains("The value of output is: success"));
-        }
+        //if the commandScript code works properly the success message will be displayed on the page.
+        assertTrue("The commandScript test failed, success not displayed.", page.isInPage("The value of output is: success"));
     }
 
     /**
@@ -131,28 +141,21 @@ public class JSF23CommandScriptTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testCommandScriptActionListener() throws Exception {
-        String contextRoot = "CommandScript";
-        try (WebClient webClient = new WebClient()) {
 
-            // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(server, contextRoot, "JSF23CommandScriptActionListener.xhtml");
+        String url = JSFUtils.createSeleniumURLString(server, contextRoot, "JSF23CommandScriptActionListener.xhtml");
+        WebPage page = new WebPage(driver);
+        page.get(url);
+        page.waitForPageToLoad();
 
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
-            webClient.waitForBackgroundJavaScript(10000);
+        Log.info(c, name.getMethodName(), page.getPageSource());
 
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            Log.info(c, name.getMethodName(), page.asXml());
+        //if the commandScript code works properly the success message will be displayed on the page.
+        assertTrue("The commandScript test failed, success not displayed.", page.isInPage("The value of output is: success"));
 
-            //if the commandScript code works properly the success message will be displayed on the page.
-            assertTrue("The commandScript test failed, success not displayed.", page.asText().contains("The value of output is: success"));
-
-            //verify that the message from the listener is in the log file.
-            List<String> result = server.findStringsInLogs("CommandScriptActionListener.processAction called");
-            assertTrue("The ActionListener was not called.", result.size() == 1);
-        }
+        //verify that the message from the listener is in the log file.
+        List<String> result = server.findStringsInLogs("CommandScriptActionListener.processAction called");
+        assertTrue("The ActionListener was not called.", result.size() == 1);
     }
 
     /**
@@ -164,28 +167,21 @@ public class JSF23CommandScriptTests {
      */
     @Test
     @Mode(TestMode.FULL)
-    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testCommandScriptActionListenerAttr() throws Exception {
-        String contextRoot = "CommandScript";
-        try (WebClient webClient = new WebClient()) {
 
-            // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(server, contextRoot, "JSF23CommandScriptActionListenerAttr.xhtml");
+        String url = JSFUtils.createSeleniumURLString(server, contextRoot, "JSF23CommandScriptActionListenerAttr.xhtml");
+        WebPage page = new WebPage(driver);
+        page.get(url);
+        page.waitForPageToLoad();
 
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
-            webClient.waitForBackgroundJavaScript(10000);
+        Log.info(c, name.getMethodName(), page.getPageSource());
 
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            Log.info(c, name.getMethodName(), page.asXml());
+        //if the commandScript code works properly the success message will be displayed on the page.
+        assertTrue("The commandScript test failed, success not displayed.", page.isInPage("The value of output is: success"));
 
-            //if the commandScript code works properly the success message will be displayed on the page.
-            assertTrue("The commandScript test failed, success not displayed.", page.asText().contains("The value of output is: success"));
-
-            //verify that the message from the listener is in the log file.
-            List<String> result = server.findStringsInLogs("performAction called");
-            assertTrue("The ActionListener was not called.", result.size() == 1);
-        }
+        //verify that the message from the listener is in the log file.
+        List<String> result = server.findStringsInLogs("performAction called");
+        assertTrue("The ActionListener was not called.", result.size() == 1);
     }
 
     /**
@@ -197,24 +193,17 @@ public class JSF23CommandScriptTests {
      */
     @Test
     @Mode(TestMode.FULL)
-    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testCommandScriptParam() throws Exception {
-        String contextRoot = "CommandScript";
-        try (WebClient webClient = new WebClient()) {
 
-            // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(server, contextRoot, "JSF23CommandScriptParam.xhtml");
+        String url = JSFUtils.createSeleniumURLString(server, contextRoot, "JSF23CommandScriptParam.xhtml");
+        WebPage page = new WebPage(driver);
+        page.get(url);
+        page.waitForPageToLoad();
 
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
-            webClient.waitForBackgroundJavaScript(10000);
+        Log.info(c, name.getMethodName(), page.getPageSource());
 
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            Log.info(c, name.getMethodName(), page.asXml());
-
-            //if the commandScript code works properly the parameter values will be displayed on the page.
-            assertTrue("The commandScript test failed, parameter values not displayed.", page.asText().contains("The value of output is: Value1 Value2"));
-        }
+        //if the commandScript code works properly the success message will be displayed on the page.
+        assertTrue("The commandScript test failed, success not displayed.", page.isInPage("The value of output is: Value1 Value2"));
     }
 
     /**
@@ -225,26 +214,18 @@ public class JSF23CommandScriptTests {
      */
     @Test
     @Mode(TestMode.FULL)
-    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testCommandScriptButton() throws Exception {
-        String contextRoot = "CommandScript";
-        try (WebClient webClient = new WebClient()) {
 
-            // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(server, contextRoot, "JSF23CommandScriptButton.xhtml");
+        String url = JSFUtils.createSeleniumURLString(server, contextRoot, "JSF23CommandScriptButton.xhtml");
+        WebPage page = new WebPage(driver);
+        page.get(url);
+        page.waitForPageToLoad();
 
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
+        page.findElement(By.id("button1")).click();
+        page.waitReqJs();
+        Log.info(c, name.getMethodName(), page.getPageSource());
 
-            // Now click the submit button
-            page.getElementById("button1").click();
-            webClient.waitForBackgroundJavaScript(10000);
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            Log.info(c, name.getMethodName(), page.asXml());
-
-            //if the commandScript code works properly the parameter values will be displayed on the page.
-            assertTrue("The commandScript test failed, parameter values not displayed.", page.asText().contains("submitForm called"));
-        }
+        //if the commandScript code works properly the success message will be displayed on the page.
+        assertTrue("The commandScript test failed, success not displayed.", page.isInPage("submitForm called"));
     }
 }

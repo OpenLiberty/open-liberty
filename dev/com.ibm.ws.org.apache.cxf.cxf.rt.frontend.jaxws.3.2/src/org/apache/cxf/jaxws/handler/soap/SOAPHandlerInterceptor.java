@@ -71,7 +71,10 @@ import org.apache.cxf.ws.addressing.Names;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 
-//No Liberty Change: jaxws-2.3 requires recompiling this class
+// Liberty Change - This class has no Liberty specific changes other than the Sensitive annotation 
+// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
+// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
+// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
 public class SOAPHandlerInterceptor extends
         AbstractProtocolHandlerInterceptor<SoapMessage> implements
         SoapInterceptor {
@@ -81,7 +84,7 @@ public class SOAPHandlerInterceptor extends
             SOAPHandlerInterceptor.class.getName() + ".ENDING",
             Phase.USER_PROTOCOL) {
 
-        public void handleMessage(@Sensitive SoapMessage message) throws Fault {
+        public void handleMessage(@Sensitive SoapMessage message) throws Fault { // Liberty Change
             handleMessageInternal(message);
         }
     };
@@ -107,7 +110,7 @@ public class SOAPHandlerInterceptor extends
         return understood;
     }
 
-    public void handleMessage(@Sensitive SoapMessage message) {
+    public void handleMessage(@Sensitive SoapMessage message) { // Liberty Change
         if (binding.getHandlerChain().isEmpty()) {
             return;
         }

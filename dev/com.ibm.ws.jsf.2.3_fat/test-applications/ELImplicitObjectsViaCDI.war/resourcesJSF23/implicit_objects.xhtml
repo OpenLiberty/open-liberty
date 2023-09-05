@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-    Copyright (c) 2017, 2022 IBM Corporation and others.
+    Copyright (c) 2017, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -40,10 +40,10 @@
         Flash isRedirect: <h:outputText value="#{flash.isRedirect()}"/>
         <br/>
         <br/>
-        Header: <h:outputText value="#{header.get('headerMessage')}"/>
+        Header: <h:outputText value="#{header.get('User-Agent')}"/>
         <br/>
         <br/>
-        HeaderValues: <ui:repeat var="item" value="#{headerValues.get('headerMessage')}"> <h:outputText value="#{item}"/> </ui:repeat>
+        HeaderValues: <ui:repeat var="item" value="#{headerValues.get('User-Agent')}"> <h:outputText value="#{item}"/> </ui:repeat>
         <br/>
         <br/>
         InitParam: <h:outputText value="#{initParam.get('WELD_CONTEXT_ID_KEY')}"/>

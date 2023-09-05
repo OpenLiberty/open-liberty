@@ -17,7 +17,22 @@ src: \
 	fat/src
 
 
-tested.features: mpReactiveMessaging-1.0
+tested.features: mpReactiveMessaging-1.0, \
+                 mpReactiveMessaging-3.0, \
+                 mpReactiveStreams-1.0, \
+                 mpReactiveStreams-3.0, \
+                 jsonb-2.0, \
+                 jsonb-3.0, \
+                 concurrent-2.0, \
+                 concurrent-3.0, \
+                 mpConfig-3.0, \
+                 servlet-5.0, \
+                 servlet-6.0, \
+                 cdi-3.0, \
+                 cdi-4.0, \
+                 jsonp-2.0, \
+                 jsonp-2.1
+                 
 
 fat.project: true
 
@@ -33,7 +48,7 @@ fat.test.container.images: confluentinc/cp-kafka:7.1.1
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
-	org.apache.kafka:kafka-clients;version=2.3.0,\
+	org.apache.kafka:kafka-clients;version=3.5.1,\
 	io.openliberty.org.testcontainers;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	org.testng:testng;version=7.5.1,\

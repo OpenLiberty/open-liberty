@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -89,10 +89,15 @@ public class CDI12ExtensionSPIConstructorExceptionTest extends FATServletClient 
 
     @AfterClass
     public static void cleanup() throws Exception {
-        final String METHOD_NAME = "cleanup";
-        Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Stopping the server.");
-        server.stopServer("CWOWB1010E");//The error thrown when a SPI extension constructor fails.
-        Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Removing cdi extension test user feature files.");
-        CDIExtensionRepeatActions.uninstallUserExtension(server, CDIExtensionRepeatActions.SPI_XTOR_FAIL_EXTENSION_BUNDLE_ID);
+        try {
+            final String METHOD_NAME = "cleanup";
+            Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Stopping the server.");
+            if (server.isStarted()) {
+                server.stopServer("CWOWB1010E");//The error thrown when a SPI extension constructor fails.
+            }
+            Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Removing cdi extension test user feature files.");
+        } finally {
+            CDIExtensionRepeatActions.uninstallUserExtension(server, CDIExtensionRepeatActions.SPI_XTOR_FAIL_EXTENSION_BUNDLE_ID);
+        }
     }
 }

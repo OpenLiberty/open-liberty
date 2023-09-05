@@ -76,7 +76,7 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
 
     private ClassLoadingService classLoadingService;
     private volatile Library sharedLib = null;
-    private static boolean isSuccesfulActivation = true;
+    private static boolean isSuccessfulActivation = true;
     private MetricsConfig metricsConfig;
 
     /**
@@ -91,8 +91,8 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
      *
      * @return boolean did SmallryeMetricsCDIMetadata activate properly
      */
-    public boolean isSuccesfulActivation() {
-        return isSuccesfulActivation;
+    public boolean isSuccessfulActivation() {
+        return isSuccessfulActivation;
     }
 
     @Modified
@@ -110,7 +110,7 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
         try {
             smallRyeMetricsJarFile = resolveSmallRyeMetricsJar();
         } catch (FileNotFoundException e) {
-            isSuccesfulActivation = false;
+            isSuccessfulActivation = false;
             return;
         }
 
@@ -128,7 +128,7 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
                 File micrometerJarFile = resolveMicrometerJar();
                 classPath.add(micrometerJarFile);
             } catch (FileNotFoundException e) {
-                isSuccesfulActivation = false;
+                isSuccessfulActivation = false;
                 return;
             }
         }
@@ -142,14 +142,14 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
              * Probable cause: Bundle add-on class-loader was null
              */
             Tr.error(tc, "nullBundleAddOnClassLoader.error.CWMMC0011E");
-            isSuccesfulActivation = false;
+            isSuccessfulActivation = false;
         } catch (ClassNotFoundException e) { // for loadSmallRyeClasses()
             /*
              * Probable cause: classes that need to be loaded from embedded SmallRye Metrics
              * JAR are missing
              */
             Tr.error(tc, "missingSmallRyeClasses.error.CWMMC0012E");
-            isSuccesfulActivation = false;
+            isSuccessfulActivation = false;
         } catch (NoClassDefFoundError e) {
             /*
              * Probable cause: Missing dependent class(es) during runtime initialization.
@@ -163,7 +163,7 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
              */
 
             Tr.error(tc, "missingDependencyClasses.error.CWMMC0013E");
-            isSuccesfulActivation = false;
+            isSuccessfulActivation = false;
         }
     }
 
@@ -173,7 +173,7 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
          * If activation did not complete properly, we should prevent CDI extension
          * registration.
          */
-        if (!isSuccesfulActivation) {
+        if (!isSuccessfulActivation) {
             return null;
         }
         Set<Class<? extends Extension>> extensions = new HashSet<Class<? extends Extension>>();

@@ -238,14 +238,14 @@ public class Hop
 	 * @return the same string, uppercase
 	 */
 	private static String transportToUpperCase(String transport) {
-		if (transport.equalsIgnoreCase("UDP")) {
-			return "UDP";
+		if (transport.equalsIgnoreCase(SIPTransactionConstants.UDP)) {
+			return SIPTransactionConstants.UDP.toUpperCase();
 		}
-		if (transport.equalsIgnoreCase("TCP")) {
-			return "TCP";
+		if (transport.equalsIgnoreCase(SIPTransactionConstants.TCP)) {
+			return SIPTransactionConstants.TCP.toUpperCase();
 		}
-		if (transport.equalsIgnoreCase("TLS")) {
-			return "TLS";
+		if (transport.equalsIgnoreCase(SIPTransactionConstants.TLS)) {
+			return SIPTransactionConstants.TLS.toUpperCase();
 		}
 		return transport.toUpperCase();
 	}

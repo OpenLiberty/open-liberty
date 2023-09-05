@@ -39,11 +39,9 @@ import com.ibm.wsspi.uow.UOWManager;
 
 import componenttest.app.FATServlet;
 
+@SuppressWarnings("serial")
 @WebServlet("/WaitForRecoveryServlet")
 public class WaitForRecoveryServlet extends FATServlet {
-
-    /**  */
-    private static final String filter = "(testfilter=jon)";
 
     @Resource
     UOWManager uowm;
@@ -108,17 +106,17 @@ public class WaitForRecoveryServlet extends FATServlet {
                     final XAResource xaRes1 = XAResourceFactoryImpl.instance()
                                     .getXAResourceImpl(xaResInfo1)
                                     .setCommitAction(XAResourceImpl.DIE);
-                    final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+                    final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
                     tm.enlist(xaRes1, recoveryId1);
 
                     final XAResource xaRes2 = XAResourceFactoryImpl.instance()
                                     .getXAResourceImpl(xaResInfo2);
-                    final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+                    final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
                     tm.enlist(xaRes2, recoveryId2);
 
                     final XAResource xaRes3 = XAResourceFactoryImpl.instance()
                                     .getXAResourceImpl(xaResInfo3);
-                    final int recoveryId3 = tm.registerResourceInfo(filter, xaResInfo3);
+                    final int recoveryId3 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo3);
                     tm.enlist(xaRes3, recoveryId3);
                     return Boolean.TRUE;
                 }

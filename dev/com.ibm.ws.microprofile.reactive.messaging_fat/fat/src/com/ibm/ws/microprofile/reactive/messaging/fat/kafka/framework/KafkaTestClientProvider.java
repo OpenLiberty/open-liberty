@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,13 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
@@ -37,8 +39,8 @@ public class KafkaTestClientProvider {
     public static final String CONNECTION_PROPERTIES_KEY = "kafka-connection-properties";
 
     @Inject
-    @ConfigProperty(name = CONNECTION_PROPERTIES_KEY, defaultValue = "")
-    private List<String> connectionProps;
+    @ConfigProperty(name = CONNECTION_PROPERTIES_KEY)
+    private Optional<List<String>> connectionProps;
 
     @Produces
     @RequestScoped
@@ -52,7 +54,7 @@ public class KafkaTestClientProvider {
 
     private Map<String, String> getConnectionPropertiesMap() {
         HashMap<String, String> result = new HashMap<>();
-        Iterator<String> propsIterator = connectionProps.iterator();
+        Iterator<String> propsIterator = connectionProps.orElse(Collections.emptyList()).iterator();
         while (propsIterator.hasNext()) {
             String key = propsIterator.next();
             String value = propsIterator.next();

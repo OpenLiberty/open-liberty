@@ -85,6 +85,7 @@ public final class TransactionWrapper implements ResourceCallback {
     private Exception _heuristic = null;
     private ResourceCallback _resourceCallback;
     private final int _retryWait = (ConfigurationProviderManager.getConfigurationProvider().getHeuristicRetryInterval() <= 0) ? EmbeddableTransactionImpl.defaultRetryTime : ConfigurationProviderManager.getConfigurationProvider().getHeuristicRetryInterval();
+    private final int _clientInactivityTimeout = ConfigurationProviderManager.getConfigurationProvider().getClientInactivityTimeout();
 
     private static final Hashtable<String, TransactionWrapper> _wrappers = new Hashtable<String, TransactionWrapper>();
 
@@ -171,7 +172,7 @@ public final class TransactionWrapper implements ResourceCallback {
                 switch (state) {
                     case TransactionState.STATE_PREPARED:
                         // Start the in-doubt timer in case we never get a commit/rollback
-                        EmbeddableTimeoutManager.setTimeout(_transaction, EmbeddableTimeoutManager.IN_DOUBT_TIMEOUT, _retryWait);
+                        EmbeddableTimeoutManager.setTimeout(_transaction, EmbeddableTimeoutManager.IN_DOUBT_TIMEOUT, _clientInactivityTimeout);
                         result = Vote.VoteCommit;
                         break;
                     case TransactionState.STATE_ROLLED_BACK: // one phase opt

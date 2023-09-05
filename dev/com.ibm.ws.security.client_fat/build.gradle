@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,12 +17,15 @@ apply plugin: 'war'
 war { enabled false }
 
 dependencies {
-  requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
-               'org.apache.httpcomponents:httpcore:4.1.2',
-               project(':io.openliberty.org.apache.commons.codec'),
-               project(':io.openliberty.org.apache.commons.logging'),
-               project(':com.ibm.websphere.javaee.servlet.3.0'),
-               project(':com.ibm.ws.security.audit_fat.common.tooling')
+ requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
+        'org.apache.httpcomponents:httpcore:4.1.2',
+        project(':com.ibm.ws.security.fat.common'),
+        project(':io.openliberty.org.apache.commons.codec'),
+        project(':io.openliberty.org.apache.commons.logging'),
+        project(':com.ibm.websphere.javaee.servlet.3.0'),
+        project(':com.ibm.ws.security.audit_fat.common.tooling'),
+        'jtidy:jtidy:4aug2000r7-dev',
+        'rhino:js:1.6R5' 
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer
@@ -866,8 +869,8 @@ task helloWorld_JAR (type: Zip, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task TestBeans_WAR(type: War, dependsOn: classes) {
-  destinationDir file(appBuildDir)
-  archiveName "TestBeans.war"
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "TestBeans.war"
   classpath = classpath.filter{ false }
   
   manifest {

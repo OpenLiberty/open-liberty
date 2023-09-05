@@ -272,7 +272,7 @@ public class SymmetricBindingHandler extends AbstractBindingBuilder {
                     }
 
                     if (!secondEncrParts.isEmpty()) {
-                        Element secondRefList = null;
+                        final Element secondRefList;
 
                         if (encryptionToken.getDerivedKeys() == DerivedKeys.RequireDerivedKeys) {
                             secondRefList = ((WSSecDKEncrypt)encr).encryptForExternalRef(null, secondEncrParts);
@@ -301,16 +301,15 @@ public class SymmetricBindingHandler extends AbstractBindingBuilder {
 
     private void doSignBeforeEncrypt() {
         AbstractTokenWrapper sigAbstractTokenWrapper = getSignatureToken();
-        //Liberty code change start
+        // Liberty Change Start
         if (sigAbstractTokenWrapper == null) {
             unassertPolicy(sigAbstractTokenWrapper, "No signature or protection token");
             return;
         }
-        //Liberty code change end
+        // Liberty Change End
         assertTokenWrapper(sigAbstractTokenWrapper);
         AbstractToken sigToken = sigAbstractTokenWrapper.getToken();
         String sigTokId = null;
-        Element sigTokElem = null;
 
         try {
             SecurityToken sigTok = null;
@@ -354,11 +353,11 @@ public class SymmetricBindingHandler extends AbstractBindingBuilder {
             boolean tokIncluded = true;
             if (isTokenRequired(sigToken.getIncludeTokenType())) {
                 Element el = sigTok.getToken();
-                sigTokElem = cloneElement(el);
+                Element sigTokElem = cloneElement(el);
                 this.addEncryptedKeyElement(sigTokElem);
             } else if (isRequestor() && sigToken instanceof X509Token) {
                 Element el = sigTok.getToken();
-                sigTokElem = cloneElement(el);
+                Element sigTokElem = cloneElement(el);
                 this.addEncryptedKeyElement(sigTokElem);
             } else {
                 tokIncluded = false;
@@ -390,7 +389,7 @@ public class SymmetricBindingHandler extends AbstractBindingBuilder {
             //Encryption
             AbstractTokenWrapper encrAbstractTokenWrapper = getEncryptionToken();
             AbstractToken encrToken = encrAbstractTokenWrapper.getToken();
-            SecurityToken encrTok = null;
+            final SecurityToken encrTok;
             if (sigToken.equals(encrToken)) {
                 //Use the same token
                 encrTok = sigTok;
@@ -420,12 +419,12 @@ public class SymmetricBindingHandler extends AbstractBindingBuilder {
             }
 
             if (encrAbstractTokenWrapper.getToken() != null && !enc.isEmpty()) {
-                WSSecBase encr = null;
+                final WSSecBase encr;
                 if (encrAbstractTokenWrapper.getToken().getDerivedKeys() == DerivedKeys.RequireDerivedKeys) {
                     encr = doEncryptionDerived(encrAbstractTokenWrapper, encrTok, tokIncluded, enc, false);
                 } else {
                     byte[] ephemeralKey = encrTok.getSecret();
-                    SecretKey symmetricKey = null;
+                    final SecretKey symmetricKey;
                     String symEncAlgorithm = sbinding.getAlgorithmSuite().getAlgorithmSuiteType().getEncryption();
                     if (ephemeralKey != null) {
                         symmetricKey = KeyUtils.prepareSecretKey(symEncAlgorithm, ephemeralKey);
@@ -537,8 +536,7 @@ public class SymmetricBindingHandler extends AbstractBindingBuilder {
             dkEncr.setSymmetricEncAlgorithm(algType.getEncryption());
             dkEncr.setDerivedKeyLength(algType.getEncryptionDerivedKeyLength() / 8);
             dkEncr.prepare(encrTok.getSecret());
-            Element encrDKTokenElem = null;
-            encrDKTokenElem = dkEncr.getdktElement();
+            Element encrDKTokenElem = dkEncr.getdktElement();
             addDerivedKeyElement(encrDKTokenElem);
 
             Element refList = dkEncr.encryptForExternalRef(null, encrParts);
@@ -931,7 +929,7 @@ public class SymmetricBindingHandler extends AbstractBindingBuilder {
         AlgorithmSuiteType algType = sbinding.getAlgorithmSuite().getAlgorithmSuiteType();
         sig.setDigestAlgo(algType.getDigest());
         sig.setSigCanonicalization(sbinding.getAlgorithmSuite().getC14n().getValue());
-        Crypto crypto = null;
+        final Crypto crypto;
         if (sbinding.getProtectionToken() != null) {
             crypto = getEncryptionCrypto();
         } else {

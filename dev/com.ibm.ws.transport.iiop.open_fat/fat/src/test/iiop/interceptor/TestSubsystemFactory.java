@@ -27,8 +27,8 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 
-@Component(service = SubsystemFactory.class)
-public class TestSubsystemFactory extends SubsystemFactory {
+@Component
+public class TestSubsystemFactory implements SubsystemFactory {
     private static final String INITIALIZER_CLASS_NAME = ORBInitializerImpl.class.getName();
     private Register providerRegistry;
     private BundleProviderLoader initializerClassLoader;

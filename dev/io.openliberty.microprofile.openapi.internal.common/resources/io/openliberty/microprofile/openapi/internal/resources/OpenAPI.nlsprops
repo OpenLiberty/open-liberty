@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2021 IBM Corporation and others.
+# Copyright (c) 2018, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -98,3 +98,35 @@ OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.useraction=Review the error text to identi
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W=CWWKO1667W: The {0} configuration property includes "{1}" but that does not match any deployed application or web module.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.explanation=The server is configured to create OpenAPI documentation for the application or module name, but no application or web module with that name was deployed.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.useraction=Check that all applications started correctly and that the names in the configuration property are specified correctly.
+
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I=CWWKO1668I: The OpenAPI UI path is set to {0}.
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I.explanation=The OpenAPI UI path is set to a value that is not the default.
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I.useraction=No action is required.
+
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I=CWWKO1669I: The OpenAPI Document path is set to {0}.
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.explanation=The OpenAPI Document path is set to a value that is not the default.
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.useraction=No action is required.
+
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E=CWWKO1670E: The OpenAPI UI path is invalid. The default value is used instead. Check previous warnings for the cause of validation failure.
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.explanation=The OpenAPI UI path is invalid. The default value is used instead.
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.useraction=Check earlier error messages for the cause of validation failure.
+
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E=CWWKO1671E: The OpenAPI Document path is invalid. The default value is used instead. Check previous warnings for the cause of validation failure.
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.explanation=The OpenAPI Document path is invalid. The default value is used instead.
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.useraction=Check earlier error messages for the cause of validation failure.
+
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E=CWWKO1672E: The OpenAPI UI path cannot be set to {0}. This path is used to retrieve the OpenAPI documents.
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.explanation=The OpenAPI Document and OpenAPI UI paths cannot be the same.
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.useraction=Specify a unique path for the OpenAPI UI.
+
+OPEN_API_UI_PATH_INVALID_CWWKO1675E=CWWKO1675E: The OpenAPI UI path is invalid or contains invalid characters. The URL must be constructed with Unicode alphanumeric characters A-Za-z0-9, underscore (_), dash (-), forward slash (/), or period (.).
+OPEN_API_UI_PATH_INVALID_CWWKO1675E.explanation=The OpenAPI UI Path cannot be set to a value that contains invalid characters.
+OPEN_API_UI_PATH_INVALID_CWWKO1675E.useraction=Ensure the OpenAPI Path contains only A-Za-z0-9, _, -, ., /.
+
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E=CWWKO1676E: The OpenAPI Document path is invalid or contains invalid characters. The URL must be constructed with Unicode alphanumeric characters A-Za-z0-9, underscore (_), dash (-), forward slash (/), or period (.).
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E.explanation=The OpenAPI Document Path cannot be set to a value that contains invalid characters.
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E.useraction=Ensure the OpenAPI Path contains only A-Za-z0-9, _, -, ., /.
+
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E=CWWKO1677E: Path segment "/." or "/.." is invalid for OpenAPI endpoints.
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.explanation=OpenAPI path segment "/." or "/.." is invalid.
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.useraction=Remove any path "/." or "/.." segment from the path.

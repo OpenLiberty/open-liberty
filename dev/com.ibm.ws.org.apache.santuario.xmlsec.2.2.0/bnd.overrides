@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2020,2022 IBM Corporation and others.
+# Copyright (c) 2020,2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -12,13 +12,13 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
-
+santuarioVersion=2.3.0
 
 WS-TraceGroup: XMLSEC
 
 Export-Package: \
- org.apache.xml.security.*;version="2.2.3",\
- org.apache.jcp.xml.dsig.internal.*;version="2.2.3"
+ org.apache.xml.security.*;version=${santuarioVersion},\
+ org.apache.jcp.xml.dsig.internal.*;version=${santuarioVersion}
 
 Import-Package: \
  !sun.security.ec, \
@@ -26,10 +26,13 @@ Import-Package: \
  org.apache.xml.dtm*;resolution:=optional, \
  org.apache.xml.utils*;resolution:=optional,\
  org.apache.xpath*;resolution:=optional, \
- org.apache.xml.security.*;version="2.2.3", \
- javax.xml.bind.*;resolution:=optional,\
+ org.apache.xml.security.*;version=${santuarioVersion}, \
+ javax.xml.bind.*;resolution:=optional,\,\
+ com.ctc.wstx.*;resolution:=optional,\
+ org.codehaus.stax2.*;resolution:=optional,\
  *
 
 DynamicImport-Package: \
- org.glassfish.jaxb.runtime.v2.*
-
+ org.glassfish.jaxb.runtime.v2.*, \
+ com.ctc.wstx.*, \
+ org.codehaus.stax2.*

@@ -18,6 +18,9 @@ configurations {
 }
 
 dependencies {
+  requiredLibs(project(':com.ibm.ws.jmx.connector.client.restConnector')) {
+    transitive = false
+  }
   cxf 'org.apache.cxf.xjcplugins:cxf-xjc-boolean:3.3.1',
   'org.apache.cxf.xjcplugins:cxf-xjc-bug671:3.3.1',
   'org.apache.cxf.xjcplugins:cxf-xjc-dv:3.3.1',
@@ -75,14 +78,8 @@ task addPureCXF(type: Copy) {
   into "${buildDir}/autoFVT/publish/shared/resources/pureCXF/"
 }
 
-task addRestConnector(type: Copy) {
-  shouldRunAfter jar
-  from buildImage.file('wlp/clients/restConnector.jar')
-  into new File(autoFvtDir, 'lib')
-}
-
 addRequiredLibraries {
-  dependsOn addCXF, addSpring, addPureCXF, addRestConnector
+  dependsOn addCXF, addSpring, addPureCXF
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer

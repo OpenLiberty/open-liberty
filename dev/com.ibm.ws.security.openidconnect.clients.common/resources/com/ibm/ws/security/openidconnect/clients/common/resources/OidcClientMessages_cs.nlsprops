@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2013, 2022 IBM Corporation and others.
+# Copyright (c) 2013, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/clients/common/resources/OidcClientMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -79,12 +76,12 @@ OAUTH_REQUEST_ACCESS_DENIED.useraction=U\u017eivatel mus\u00ed povolit poskytova
 
 #
 #used by clients project
-OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE=CWWKS1712E: Klient pro p\u0159ipojen\u00ed OpenID Connect [{0}] neobdr\u017eel token ID od poskytovatele p\u0159ipojen\u00ed OpenID Connect [{1}].
+OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE=CWWKS1712E: Klient pro p\u0159ipojen\u00ed OpenID [{0}] neobdr\u017eel token ID od poskytovatele p\u0159ipojen\u00ed OpenID [{1}].
 OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE.explanation=Klientu pro p\u0159ipojen\u00ed OpenID (z\u00e1visl\u00e9 stran\u011b nebo RP) se nezda\u0159ilo z\u00edskat token ID od poskytovatele p\u0159ipojen\u00ed OpenID (OP). Mo\u017en\u00e1 nebyl OP v dob\u011b po\u017eadavku dostupn\u00fd, po\u017eadavek nebyl sm\u011brov\u00e1n na platn\u00fd koncov\u00fd bod, nebo do\u0161lo k neshod\u011b konfigurac\u00ed OP a RP. 
 OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE.useraction=Zkontrolujte konfiguraci serveru a ujist\u011bte se, \u017ee nakonfigurovan\u00e1 adresa URL koncov\u00e9ho bodu tokenu je platnou adresou URL a \u017ee ukazuje na koncov\u00fd bod tokenu aktivn\u00edho poskytovatele p\u0159ipojen\u00ed OpenID. Projd\u011bte si tak\u00e9 akce pro chyby zobrazen\u00e9 p\u0159ed touto zpr\u00e1vou.
 
 # used by clients
-OIDC_CLIENT_REQUEST_MISSING_OPENID_SCOPE=CWWKS1713E: Po\u017eadavek klienta pro p\u0159ipojen\u00ed OpenID Connect [{0}] vy\u017eaduje rozsah obor\u016f [openid], ale sada rozsah\u016f obor\u016f [{1}] uveden\u00e1 v konfiguraci klienta pro p\u0159ipojen\u00ed OpenID Connect nem\u00e1 uveden\u00fd obor rozsah\u016f.
+OIDC_CLIENT_REQUEST_MISSING_OPENID_SCOPE=CWWKS1713E: Po\u017eadavek klienta pro p\u0159ipojen\u00ed OpenID [{0}] vy\u017eaduje rozsah obor\u016f [openid], ale sada rozsah\u016f obor\u016f [{1}] uveden\u00e1 v konfiguraci klienta pro p\u0159ipojen\u00ed OpenID nem\u00e1 uveden\u00fd obor rozsah\u016f.
 OIDC_CLIENT_REQUEST_MISSING_OPENID_SCOPE.explanation=Po\u017eadavek klienta pro p\u0159ipojen\u00ed OpenID vy\u017eaduje, aby byl nastaven rozsah obor\u016f [openid], a pokud v konfiguraci klienta pro p\u0159ipojen\u00ed OpenID tento obor rozsah\u016f chyb\u00ed, po\u017eadavek se nezda\u0159\u00ed.
 OIDC_CLIENT_REQUEST_MISSING_OPENID_SCOPE.useraction=Ujist\u011bte se, \u017ee m\u00e1te po\u017eadovan\u00fd obor rozsah\u016f [openid] uveden v konfiguraci klienta pro p\u0159ipojen\u00ed OpenID.
 
@@ -107,12 +104,12 @@ PROPAGATION_TOKEN_MISSING_USERID.useraction=Prove\u010fte jednu z n\u00e1sleduj\
 # PROPAGATION_TOKEN_USERINFO_ISS_ERROR.useraction=Verify that the OpenID Connect client configuration has the issuerIdentifier that matches the "iss" claim in the UserInfo.
 
 #unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: Serveru prost\u0159edk\u016f se nezda\u0159il po\u017eadavek na ov\u011b\u0159en\u00ed, nebo\u0165 metoda ov\u011b\u0159en\u00ed [{0}] nen\u00ed vhodn\u00e1 pro adresu URL koncov\u00e9ho bodu ov\u011b\u0159en\u00ed platnosti [{1}].
+PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: Serveru prost\u0159edk\u016f se nezda\u0159ila \u017e\u00e1dost o ov\u011b\u0159en\u00ed, nebo\u0165 metoda ov\u011b\u0159en\u00ed [{0}] nen\u00ed vhodn\u00e1 pro adresu URL koncov\u00e9ho bodu ov\u011b\u0159en\u00ed platnosti [{1}].
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=Atribut validationEndpointUrl ur\u010den\u00fd v konfiguraci klienta OpenID Connect nen\u00ed vhodn\u00fdm koncov\u00fdm bodem pro ur\u010denou metodu validationMethod.
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Aktualizuje konfiguraci klienta OpenID Connect zm\u011bnou metody validationMethod nebo validationEndpointUrl.
  
 #used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: Serveru prost\u0159edk\u016f se nezda\u0159ila \u017e\u00e1dost o ov\u011b\u0159en\u00ed, proto\u017ee datov\u00fd typ n\u00e1roku [{0}] v p\u0159\u00edstupov\u00e9m prvku p\u0159idru\u017een\u00fd k atributu konfigurace [{1}] nen\u00ed platn\u00fd. 
+PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: Serveru prost\u0159edk\u016f se nezda\u0159ila \u017e\u00e1dost o ov\u011b\u0159en\u00ed, proto\u017ee datov\u00fd typ n\u00e1roku [{0}] v p\u0159\u00edstupov\u00e9m tokenu p\u0159idru\u017een\u00fd k atributu konfigurace [{1}] nen\u00ed platn\u00fd. 
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.explanation=Poskytnut\u00fd p\u0159\u00edstupov\u00fd token m\u00e1 neplatn\u00fd datov\u00fd typ n\u00e1roku a b\u011bhov\u00fd modul nem\u016f\u017ee pokra\u010dovat ve zpracov\u00e1n\u00ed ov\u011b\u0159en\u00ed.
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.useraction=Ov\u011b\u0159te, \u017ee konfigurace klienta pro p\u0159ipojen\u00ed OpenID uv\u00e1d\u00ed pro atribut spr\u00e1vn\u00fd n\u00e1zev n\u00e1roku.
 
@@ -310,17 +307,10 @@ ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS1553E: Klient protokolu OpenID Connect 
 ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=Konfigurace klienta protokolu OpenID Connect m\u016f\u017ee postr\u00e1dat informace, nebo klient zjistil chybu p\u0159i komunikaci s poskytovatelem protokolu OpenID Connect.
 ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b.
 
-TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR=CWWKS1554E: Klient OpenID Connect [{0}] zjistil chybu p\u0159i nastavov\u00e1n\u00ed ov\u011b\u0159en\u00ed klienta pro koncov\u00fd bod tokenu pro metodu ov\u011b\u0159en\u00ed [{1}]. {2}
-TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.explanation=Koncov\u00fd bod tokenu OpenID Connect vy\u017eaduje ov\u011b\u0159en\u00ed klienta, ale klientovi OpenID Connect mohou chyb\u011bt informace, nebo klient zjistil jinou chybu p\u0159i nastavov\u00e1n\u00ed dat ov\u011b\u0159ov\u00e1n\u00ed.
-TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b.
-
-PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME=CWWKS1555E: Klient OpenID Connect [{0}] nem\u00e1 nakonfigurov\u00e1n n\u00e1zev aliasu kl\u00ed\u010de, tak\u017ee klient nem\u016f\u017ee naj\u00edt kl\u00ed\u010d, kter\u00fd se m\u00e1 pou\u017e\u00edt k podeps\u00e1n\u00ed webov\u00e9ho tokenu JSON pro ov\u011b\u0159en\u00ed klienta.
-PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.explanation=Klient OpenID Connect mus\u00ed nakonfigurovat n\u00e1zev aliasu kl\u00ed\u010de, aby definoval kl\u00ed\u010d, kter\u00fd se m\u00e1 pou\u017e\u00edt k podeps\u00e1n\u00ed JWT.
-PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.useraction=Ov\u011b\u0159te, \u017ee m\u00e1 klient OpenID Connect nakonfigurov\u00e1n n\u00e1zev aliasu kl\u00ed\u010de.
-
-PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF=CWWKS1556E: Klient OpenID Connect [{0}] nem\u00e1 nakonfigurov\u00e1n odkaz na \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, tak\u017ee klient nem\u016f\u017ee naj\u00edt kl\u00ed\u010d, kter\u00fd se m\u00e1 pou\u017e\u00edt k podeps\u00e1n\u00ed webov\u00e9ho tokenu JSON pro ov\u011b\u0159en\u00ed klienta.
-PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.explanation=Klient OpenID Connect mus\u00ed nakonfigurovat odkaz na \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, aby definoval, kde naj\u00edt kl\u00ed\u010d, kter\u00fd se m\u00e1 pou\u017e\u00edt k podeps\u00e1n\u00ed JWT.
-PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.useraction=Ov\u011b\u0159te, \u017ee m\u00e1 klient OpenID Connect nakonfigurov\u00e1n odkaz na \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f.
+# do not translate hostname, wasReqURLRedirectDomainNames, and webAppSecurity
+MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE=CWWKS1554E: Po\u017eadavek na [{0}] nen\u00ed platn\u00fd. Vy\u017eadovan\u00fd soubor cookie s n\u00e1zvem, kter\u00fd za\u010d\u00edn\u00e1 \u0159et\u011bzcem [{1}], m\u00e1 nespr\u00e1vnou hodnotu. N\u00e1zev hostitele [{2}], kter\u00fd se pou\u017e\u00edv\u00e1 v souboru cookie, neodpov\u00edd\u00e1 n\u00e1zvu hostitele po\u017eadavku a n\u00e1zev hostitele v souboru cookie nen\u00ed jedn\u00edm z povolen\u00fdch n\u00e1zv\u016f dom\u00e9n.
+MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.explanation=Po\u017eadavek obsahuje chybn\u00fd soubor cookie. N\u00e1zev hostitele v souboru cookie se mus\u00ed shodovat s aktu\u00e1ln\u00edm po\u017eadavkem, nebo mus\u00ed odpov\u00eddat jednomu z povolen\u00fdch n\u00e1zv\u016f dom\u00e9n. Soubor cookie m\u016f\u017ee b\u00fdt upraven v r\u00e1mci agenta u\u017eivatele.
+MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.useraction=Ov\u011b\u0159te poskytovatele OpenID Connect a konfigurace klienta. Pokud je o\u010dek\u00e1v\u00e1n n\u00e1zev hostitele, p\u0159idejte jej do atributu wasReqURLRedirectDomain Names v prvku webAppSecurity v konfiguraci serveru.
 
 #CWWKS1557 used in client bundle, do not use here.
 

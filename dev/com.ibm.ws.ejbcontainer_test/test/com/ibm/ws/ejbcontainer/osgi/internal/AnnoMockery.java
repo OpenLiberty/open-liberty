@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,6 +24,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.annotation.ManagedBean;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -131,12 +133,19 @@ public class AnnoMockery {
                 for (final Annotation ann : element.getAnnotations()) {
                     final AnnotationInfo annInfo = mockAnnotationInfo(ann);
                     Class<? extends Annotation> annType = ann.annotationType();
-                    allowing(info).getAnnotation(annType);
+                    // Class name is used for ManagedBean rather than Class since the Class may not exist
+                    if (ManagedBean.class.equals(annType)) {
+                        allowing(info).getAnnotation(ManagedBean.class.getName());
+                    } else {
+                        allowing(info).getAnnotation(annType);
+                    }
                     will(returnValue(annInfo));
                     allowing(info).isAnnotationPresent(annType.getName());
                     will(returnValue(true));
                 }
                 allowing(info).getAnnotation(with(any(Class.class)));
+                will(returnValue(null));
+                allowing(info).getAnnotation(ManagedBean.class.getName());
                 will(returnValue(null));
                 allowing(info).isAnnotationPresent(with(any(String.class)));
                 will(returnValue(false));
@@ -281,7 +290,7 @@ public class AnnoMockery {
 
                 allowing(targets).scan(with(any(ClassSource_Aggregate.class)));
 
-                // 95160: Update to the new API, which uses 'get' and has a second scan policies parameter.                
+                // 95160: Update to the new API, which uses 'get' and has a second scan policies parameter.
                 allowing(targets).getAnnotatedClasses(with(any(String.class)), with(any(int.class)));
                 will(returnValue(Collections.emptySet()));
 

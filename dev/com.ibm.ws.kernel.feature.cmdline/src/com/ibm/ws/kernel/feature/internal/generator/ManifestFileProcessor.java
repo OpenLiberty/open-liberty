@@ -48,8 +48,10 @@ public class ManifestFileProcessor {
     protected static final String USER_FEATURE_DIR = "extension/lib/features";
 
     protected HashMap<String, ProductExtensionInfo> productExtNameInfoMap;
+    protected Map<String, ProvisioningFeatureDefinition> allFeatureDefs;
 
-    public static final String MF_EXTENSION = ".mf";
+
+	public static final String MF_EXTENSION = ".mf";
     public static final String CORE_PRODUCT_NAME = "core";
 
     public static final String USR_PRODUCT_EXT_NAME = ExtensionConstants.USER_EXTENSION;
@@ -165,31 +167,36 @@ public class ManifestFileProcessor {
      * @return All product installed product features.
      */
     public Map<String, ProvisioningFeatureDefinition> getFeatureDefinitions() {
-        Map<String, ProvisioningFeatureDefinition> featureDefs = new TreeMap<String, ProvisioningFeatureDefinition>();
-
-        // Add feature definitions from Liberty core.
-        featureDefs.putAll(getCoreProductFeatureDefinitions());
-
-        // Add product extension feature definitions in the default usr location.
-        Map<String, ProvisioningFeatureDefinition> userFeatureDefs = getUsrProductFeatureDefinitions();
-        if (userFeatureDefs != null && !userFeatureDefs.isEmpty()) {
-            featureDefs.putAll(userFeatureDefs);
+        Map<String, ProvisioningFeatureDefinition> featureDefs = getFeatureDefs();
+        if (featureDefs != null)
+        	return featureDefs;
+        else {
+        	featureDefs = new TreeMap<String, ProvisioningFeatureDefinition>();
+	        // Add feature definitions from Liberty core.
+	        featureDefs.putAll(getCoreProductFeatureDefinitions());
+	
+	        // Add product extension feature definitions in the default usr location.
+	        Map<String, ProvisioningFeatureDefinition> userFeatureDefs = getUsrProductFeatureDefinitions();
+	        if (userFeatureDefs != null && !userFeatureDefs.isEmpty()) {
+	            featureDefs.putAll(userFeatureDefs);
+	        }
+	
+	        // Add product extension feature definitions that are not in the default usr location.
+	        readProductExtFeatureLocations();
+	        if (!productExtNameInfoMap.isEmpty()) {
+	            for (String productExtName : BundleRepositoryRegistry.keys()) {
+	                if (productExtName.isEmpty() || USR_PRODUCT_EXT_NAME.equals(productExtName))
+	                    continue;
+	
+	                Map<String, ProvisioningFeatureDefinition> prodExtFeatureDefs = getProductExtFeatureDefinitions(productExtName);
+	                if (prodExtFeatureDefs != null && !prodExtFeatureDefs.isEmpty())
+	                    featureDefs.putAll(prodExtFeatureDefs);
+	            }
+	        }
+	        // cache the featureDefs
+	        allFeatureDefs = featureDefs;
+	        return featureDefs;
         }
-
-        // Add product extension feature definitions that are not in the default usr location.
-        readProductExtFeatureLocations();
-        if (!productExtNameInfoMap.isEmpty()) {
-            for (String productExtName : BundleRepositoryRegistry.keys()) {
-                if (productExtName.isEmpty() || USR_PRODUCT_EXT_NAME.equals(productExtName))
-                    continue;
-
-                Map<String, ProvisioningFeatureDefinition> prodExtFeatureDefs = getProductExtFeatureDefinitions(productExtName);
-                if (prodExtFeatureDefs != null && !prodExtFeatureDefs.isEmpty())
-                    featureDefs.putAll(prodExtFeatureDefs);
-            }
-        }
-
-        return featureDefs;
     }
 
     /**
@@ -504,4 +511,10 @@ public class ManifestFileProcessor {
     public ContentBasedLocalBundleRepository getBundleRepository(String featureName, WsLocationAdmin locService) {
         return BundleRepositoryRegistry.getRepositoryHolder(featureName).getBundleRepository();
     }
+    /**
+	 * @return the cached featureDefs if present, or lazily read them and store.
+	 */
+	private Map<String, ProvisioningFeatureDefinition> getFeatureDefs() {
+		return allFeatureDefs;
+	}
 }
