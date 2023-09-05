@@ -190,7 +190,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         MSP.debug(probe);
 
         nettyRequest = request;
-        this.isc.setNettyRequest(request);;
+        this.isc.setNettyRequest(request);
         this.usingNetty = true;
 
         this.request = new HttpRequestImpl(HttpDispatcher.useEE7Streams());

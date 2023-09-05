@@ -116,8 +116,6 @@ public class HttpPipelineInitializer extends ChannelInitializer<Channel> {
             SSLEngine engine = context.newEngine(channel.alloc());
             pipeline.addFirst("SSL_HANDLER", new SslHandler(engine, false));
             channel.attr(NettyHttpConstants.IS_SECURE).set(Boolean.TRUE);
-        } else {
-            channel.attr(NettyHttpConstants.IS_SECURE).set(Boolean.FALSE);
         }
 
         if (httpConfig.isAccessLoggingEnabled()) {
