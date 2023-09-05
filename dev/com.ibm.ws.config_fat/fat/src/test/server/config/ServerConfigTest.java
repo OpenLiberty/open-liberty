@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -259,9 +260,9 @@ public class ServerConfigTest {
 
         try {
             // check all files listed in log
-            assertStringsPresentInLog(server, new String[] { "common/a.xml" });
-            assertStringsPresentInLog(server, new String[] { "common/b.xml" });
-            assertStringsPresentInLog(server, new String[] { "common/c.xml" });
+            assertStringsPresentInLog(server, new String[] { "common" + File.separator + "a.xml" });
+            assertStringsPresentInLog(server, new String[] { "common" + File.separator + "b.xml" });
+            assertStringsPresentInLog(server, new String[] { "common" + File.separator + "c.xml" });
             test(server, "/restart/restart?testName=includeDir");
         } finally {
             server.stopServer();
