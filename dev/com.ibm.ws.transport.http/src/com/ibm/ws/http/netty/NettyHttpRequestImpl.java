@@ -244,7 +244,7 @@ public class NettyHttpRequestImpl extends HttpRequestImpl implements Http2Reques
     @Override
     public String getURI() {
         MSP.log("NettyRequest URI - " + nettyRequest.uri());
-        return this.nettyDecoder.path();
+        return this.nettyDecoder.uri();
 //        return this.nettyRequest.uri();
     }
 

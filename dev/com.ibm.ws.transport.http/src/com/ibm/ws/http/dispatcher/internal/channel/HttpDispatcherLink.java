@@ -194,6 +194,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         this.usingNetty = true;
 
         this.request = new HttpRequestImpl(HttpDispatcher.useEE7Streams());
+
         this.response = new HttpResponseImpl(this);
         isc.setNettyResponse(new DefaultHttpResponse(nettyRequest.protocolVersion(), HttpResponseStatus.OK));
         MSP.log("Netty response completed");
@@ -220,6 +221,11 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (usingNetty) {
 
             ChannelFuture closeFuture;
+            if (response.isPersistent()) {
+                MSP.log("Persist clear");
+                isc.clear();
+            }
+
 //            if (response.isPersistent()) {
 //                response.setHeader(HttpHeaderKeys.HDR_CONNECTION.getName(), "keep-alive");
 //                nettyContext.channel().read();
@@ -434,11 +440,11 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             this.isc.setRemoteAddr(remoteAddress);
 
         }
-        System.out.println("MSP: 1");
+        System.out.println("MSP: ready 1");
         // Make sure to initialize the response in case of an early-return-error message
         //((NettyHttpRequestImpl) this.request).init(this.nettyRequest, this.nettyContext.channel(), this.isc);
-        MSP.log("Init Request");
-        this.request.init(isc);
+        // MSP.log("Init Request");
+        this.request.init(nettyRequest, isc);
         MSP.log("Init Response");
         this.response.init(isc);
         linkIsReady = true;
@@ -464,6 +470,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             send404Message(url);
             return;
         }
+
+        MSP.log("ready - before try");
+
         Runnable handler = null;
         try {
             handler = vhost.discriminate(this);
@@ -484,6 +493,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 }
             } else {
                 wrapHandlerAndExecute(handler);
+                MSP.log("finished wrap");
             }
         } catch (Throwable t) {
             // no FFDC required
@@ -721,6 +731,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
     @FFDCIgnore(Throwable.class)
     private void send404Message(String url) {
+
+        MSP.log("sending 404 message, url: " + url);
+
         String s = HttpDispatcher.getContextRootNotFoundMessage();
         boolean addAddress = false;
         if ((s == null) || (s.isEmpty())) {
