@@ -6,14 +6,13 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.jakarta.jsonb.internal.fat;
 
-import org.junit.AfterClass;
+import java.util.Map;
+
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -30,18 +29,47 @@ import test.yasson.translation.web.YassonTranslationTestServlet;
 @RunWith(FATRunner.class)
 public class YassonTranslationTest extends FATServletClient {
 
+    private static final String APP_NAME = "yassontranslationtestapp";
+    private static final String CONTEXT = "YassonTranslationTestServlet";
+
     @Server("io.openliberty.jakarta.yasson.internal.fat.translation")
-    @TestServlet(servlet = YassonTranslationTestServlet.class, contextRoot = "yassontranslationtestapp")
+    @TestServlet(servlet = YassonTranslationTestServlet.class, contextRoot = CONTEXT)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, "yassontranslationtestapp", "test.yasson.translation.web");
-        server.startServer();
+        ShrinkHelper.defaultApp(server, APP_NAME, "test.yasson.translation.web");
     }
 
-    @AfterClass
-    public static void tearDown() throws Exception {
+    @Test
+    public void testYassonTransaltionFunction() throws Exception {
+        // Ensure default server settings
+        Map<String, String> jvmOptions = server.getJvmOptionsAsMap();
+        jvmOptions.remove("-Duser.language");
+        jvmOptions.remove("-Duser.country");
+        server.setJvmOptions(jvmOptions);
+
+        server.startServer();
+
+        runTest(server, APP_NAME + "/" + CONTEXT, "testTranslationMessageDefault");
+        runTest(server, APP_NAME + "/" + CONTEXT, "testTranslationMessageProvidedLocale");
+
+        server.stopServer();
+    }
+
+    @Test
+    public void testServerTranslationFunction() throws Exception {
+        // Ensure Japanese language and Japan country
+        Map<String, String> jvmOptions = server.getJvmOptionsAsMap();
+        jvmOptions.put("-Duser.language", "ja");
+        jvmOptions.put("-Duser.country", "JP");
+        server.setJvmOptions(jvmOptions);
+
+        server.startServer();
+
+        runTest(server, APP_NAME + "/" + CONTEXT, "testTranslationMessageServerLocale");
+        runTest(server, APP_NAME + "/" + CONTEXT, "testTranslationMessageServerException");
+
         server.stopServer();
     }
 }

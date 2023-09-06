@@ -192,17 +192,24 @@ public class JSONBTestServlet extends FATServlet {
             CharArrayWriter cw = new CharArrayWriter();
             jsonb.toJson(bytes, cw);
             System.out.println("JSON for byte[]: " + cw.toString());
-            CharArrayReader cr = new CharArrayReader(cw.toCharArray());
-            byte[] b = jsonb.fromJson(cr, byte[].class);
-            assertArrayEquals(bytes, b);
 
-            //Yasson 3.0.3 now makes sure to close parser and the stream associated with a CharArrayReader
-            cr = new CharArrayReader(cw.toCharArray());
-            s = jsonb.fromJson(cr, String[].class);
-            cr.close();
-            assertEquals(bytes.length, s.length);
-            for (int i = 0; i < bytes.length; i++)
-                assertEquals("failed at position " + i, Byte.toString(bytes[i]), s[i]);
+            /**
+             * Yasson 3.0.3 ensures the closure of the constructed parser and consequently the Reader.
+             * Therefore, this test needed to be modified to avoid calling reset()
+             * The more pragmatic way to right this test, is to use try-with-resources to control the scope of the Reader.
+             */
+            try (CharArrayReader cr = new CharArrayReader(cw.toCharArray())) {
+                byte[] b = jsonb.fromJson(cr, byte[].class);
+                assertArrayEquals(bytes, b);
+            }
+
+            try (CharArrayReader cr = new CharArrayReader(cw.toCharArray())) {
+                s = jsonb.fromJson(cr, String[].class);
+                assertEquals(bytes.length, s.length);
+                for (int i = 0; i < bytes.length; i++)
+                    assertEquals("failed at position " + i, Byte.toString(bytes[i]), s[i]);
+            }
+
         }
 
         long[] empty = new long[] {};
