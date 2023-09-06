@@ -758,16 +758,37 @@ serverEnvAndJVMOptions()
     mergeJVMOptions "${WLP_INSTALL_DIR}/etc/jvm.options"
   fi
 
+  # Determine location of Java Platform Module System (JPMS) modules directory
   if [ -z "${JAVA_HOME}" ]; then
-    JAVA_PATH_FROM_PATH=$(command -v java)
-    if [ -n "${JAVA_PATH_FROM_PATH}" ] ; then
-      JPMS_MODULE_FILE_LOCATION=$(dirname $(dirname $JAVA_PATH_FROM_PATH))/lib/modules
+
+    # JAVA_HOME not set.  Locate java using the PATH.
+    JAVA_PATH=$(command -v java)
+    if [ -n "${JAVA_PATH}" ] ; then
+
+      # Found java, but path might have symbolic links.  Need to find the real path. 
+      if command -v realpath >/dev/null; then
+        REAL_JAVA_PATH=$(realpath "${JAVA_PATH}" 2>/dev/null)        
+      fi
+
+      # If realpath is not available, try readlink -e  
+      if [ -z "${REAL_JAVA_PATH}" ] && command -v readlink >/dev/null; then
+        REAL_JAVA_PATH=$(readlink -e "${JAVA_PATH}" 2>/dev/null)
+      fi
+
+      # if realpath and readlink failed then try to resolve the hard way
+      if [ -z "${REAL_JAVA_PATH}" ]; then
+         REAL_JAVA_PATH=$(resolve_symlinks "${JAVA_PATH}")
+      fi
+
+      if [ -n "${REAL_JAVA_PATH}" ]; then
+         JPMS_MODULE_FILE_LOCATION=$(dirname "$(dirname "${REAL_JAVA_PATH}")")/lib/modules
+      fi
     fi
   else
     JPMS_MODULE_FILE_LOCATION="${JAVA_HOME}/lib/modules"
   fi
 
-  # If we are running on Java 9, apply Liberty's built-in java 9 options  
+  # If we are running on Java 9 and up, apply Liberty's built-in java 9 options  
   if [ -f "${JPMS_MODULE_FILE_LOCATION}" ]; then
     mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
   fi
@@ -775,6 +796,23 @@ serverEnvAndJVMOptions()
   return $rc
 }
 
+# resolve symbolic links in a path
+resolve_symlinks() {
+  file="$1"
+  while [ -h "$file" ]; do
+    # Get absolute path to file without symbolic links
+    dir=$(cd -P "$(dirname "$file")" && pwd)
+    file=$(ls -l "$file" | awk '{print $NF}')
+
+    case "$file" in
+      # absolute path case - do nothing
+      /*) ;;
+      # relative path case - convert to absolute path.
+      *) file="$dir/$file" ;;
+    esac
+  done
+  echo "$file"
+}
 
 mergeJVMOptions()
 {
@@ -819,9 +857,9 @@ readServerEnv()
            # "enable_variable_expansion", and nothing else (ignoring case and white space).
            # If found, we use the source command ( . ) which performs all of the server.env
            # variable assignments while resolving any variable references.
-           if [ $variableExpansionEnabled = 0  ] && [ $(echo $line | grep -i "enable_variable_expansion") ]
+           if [ $variableExpansionEnabled = 0  ] && [ $(safeEcho $line | grep -i "enable_variable_expansion") ]
            then
-              processedLine=$(echo $line | tr -d '[:blank:]' | tr '[:upper:]' '[:lower:]')
+              processedLine=$(safeEcho $line | tr -d '[:blank:]' | tr '[:upper:]' '[:lower:]')
               if [ "#enable_variable_expansion" = $processedLine ]
               then
                  eval ". $1"
