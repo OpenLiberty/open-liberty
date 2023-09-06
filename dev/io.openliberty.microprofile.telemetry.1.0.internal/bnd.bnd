@@ -51,7 +51,7 @@ Service-Component: \
 # created for other API classes
 Import-Package: \
 	io.opentelemetry.api.common,\
-	io.openliberty.microprofile.telemetry.common.resources,\
+	io.openliberty.microprofile.telemetry.common.*,\
 	*
 
 Export-Package: \

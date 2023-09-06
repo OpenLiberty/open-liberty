@@ -47,7 +47,7 @@ public class TelemetryLongRunningTest extends FATServletClient {
     public static final String SERVER_NAME = "Telemetry10LongRunning";
     public static final String APP_NAME = "LongRunningApp";
     public static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(120); // 120 seconds
-    
+
     @Server(SERVER_NAME)
     public static LibertyServer server;
 

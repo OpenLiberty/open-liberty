@@ -44,8 +44,9 @@ public class TelemetryDisabledTest extends FATServletClient {
 
     public static final String SERVER_NAME = "Telemetry10DisabledTracing";
     public static final String APP_NAME = "TelemetryDisabledTracingApp";
-@Server(SERVER_NAME)
-public static LibertyServer server;
+    
+    @Server(SERVER_NAME)
+    public static LibertyServer server;
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61);
