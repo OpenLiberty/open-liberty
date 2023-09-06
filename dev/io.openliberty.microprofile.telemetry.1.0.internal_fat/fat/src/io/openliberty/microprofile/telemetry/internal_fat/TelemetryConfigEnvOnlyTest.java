@@ -45,7 +45,10 @@ public class TelemetryConfigEnvOnlyTest extends FATServletClient {
                     @TestServlet(servlet = ConfigServlet.class, contextRoot = APP_NAME),
     })
     public static LibertyServer server;
-
+    
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61);
+    
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")

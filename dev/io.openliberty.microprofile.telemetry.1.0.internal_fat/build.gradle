@@ -14,11 +14,13 @@ apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 	
 configurations {
   shimLibs
+  shimLibs129
 }
 
 dependencies {
   requiredLibs project(':io.openliberty.mpTelemetry.1.0.thirdparty')
   shimLibs 'io.opentelemetry:opentelemetry-opentracing-shim:1.19.0-alpha'
+  shimLibs129 'io.opentelemetry:opentelemetry-opentracing-shim:1.29.0'
 }
 
 task addShimLibs(type: Copy) {
@@ -26,7 +28,13 @@ task addShimLibs(type: Copy) {
   into new File(autoFvtDir, 'lib/shim')
 }
 
+task addShimLibs129(type: Copy) {
+  from configurations.shimLibs129
+  into new File(autoFvtDir, 'lib/shim129')
+}
+
 addRequiredLibraries {
   dependsOn addShimLibs
+  dependsOn addShimLibs129
   dependsOn addJakartaTransformer
 }

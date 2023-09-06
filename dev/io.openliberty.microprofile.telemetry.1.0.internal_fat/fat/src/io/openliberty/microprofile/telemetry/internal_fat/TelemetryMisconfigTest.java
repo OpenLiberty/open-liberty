@@ -11,7 +11,7 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertFalse;
-
+import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -131,54 +131,68 @@ public class TelemetryMisconfigTest extends FATServletClient {
     }
 
     @Test
-    @ExpectedFFDC({ "org.jboss.resteasy.spi.UnhandledException" })
+    @ExpectedFFDC({ "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
     public void testInvalidExporter() throws Exception {
         server.setMarkToEndOfLog();
 
         new HttpRequest(server, "/" + INVALID_EXPORTER_APP_NAME + "/misconfig/jaxrsclient")
-                        .expectCode(500)
+                        .expectCode(200)
                         .run(String.class);
 
-        assertFalse(server.waitForStringInLogUsingMark("Unrecognized value for otel.traces.exporter: " + INVALID_EXPORTER).isEmpty());
-    }
+        assertNotNull(server.waitForStringInLogUsingMark("Unrecognized value for otel.traces.exporter: " + INVALID_EXPORTER));
+    } 
 
     @Test
-    @ExpectedFFDC({ "org.jboss.resteasy.spi.UnhandledException" })
+    @ExpectedFFDC(repeatAction = MicroProfileActions.MP60_ID,
+                  value = { "java.lang.IllegalArgumentException"})
+    @ExpectedFFDC(repeatAction = MicroProfileActions.MP61_ID,
+                  value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
     public void testInvalidJaegerExporterEndpoint() throws Exception {
         server.setMarkToEndOfLog();
 
         new HttpRequest(server, "/" + INVALID_JAEGER_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
-                        .expectCode(500)
+                        .expectCode(200)
                         .run(String.class);
-
-        assertFalse(server.waitForStringInLogUsingMark("Invalid endpoint, must start with http:// or https://: " + INVALID_JAEGER_ENDPOINT).isEmpty());
-
+        if(RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)){
+            assertNotNull(server.waitForStringInLogUsingMark("Invalid endpoint, must start with http:// or https://: " + INVALID_JAEGER_ENDPOINT));
+        }
+        else{
+            assertNotNull(server.waitForStringInLogUsingMark("Unexpected configuration error."));
+        }
     }
 
     @Test
-    @ExpectedFFDC({ "org.jboss.resteasy.spi.UnhandledException" })
+    @ExpectedFFDC(repeatAction = MicroProfileActions.MP60_ID,
+                  value = { "java.lang.IllegalArgumentException"})
+    @ExpectedFFDC(repeatAction = MicroProfileActions.MP61_ID,
+                  value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
     public void testInvalidZipkinExporterEndpoint() throws Exception {
         server.setMarkToEndOfLog();
 
         new HttpRequest(server, "/" + INVALID_ZIPKIN_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
-                        .expectCode(500)
+                        .expectCode(200)
                         .run(String.class);
 
-        assertFalse(server.waitForStringInLogUsingMark("invalid POST url: " + INVALID_ZIPKIN_ENDPOINT).isEmpty());
+        if(RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)){
+            assertNotNull(server.waitForStringInLogUsingMark("invalid POST url: " + INVALID_ZIPKIN_ENDPOINT));
+        }
+        else{
+            assertNotNull(server.waitForStringInLogUsingMark("Unexpected configuration error."));
+        }
     }
 
     @Test
-    @ExpectedFFDC({ "org.jboss.resteasy.spi.UnhandledException" })
+    @ExpectedFFDC({ "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
     public void testInvalidOtlpExporterEndpoint() throws Exception {
         server.setMarkToEndOfLog();
 
         new HttpRequest(server, "/" + INVALID_OTLP_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
-                        .expectCode(500)
+                        .expectCode(200)
                         .run(String.class);
 
-        assertFalse(server.waitForStringInLogUsingMark("OTLP endpoint must be a valid URL: " + INVALID_OTLP_ENDPOINT).isEmpty());
+        assertNotNull(server.waitForStringInLogUsingMark("OTLP endpoint must be a valid URL: " + INVALID_OTLP_ENDPOINT));
     }
-
+    
     @Test
     public void testNotKnownEndpoint() throws Exception {
         server.setMarkToEndOfLog();
@@ -188,12 +202,10 @@ public class TelemetryMisconfigTest extends FATServletClient {
                         .run(String.class);
 
         if(RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID)){
-            assertFalse(server.waitForStringInLogUsingMark("Failed to export spans. Server responded with gRPC status code 2. Error message: " + INVALID_JAEGER_ENDPOINT.toLowerCase())
-            .isEmpty());
+            assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. Server responded with gRPC status code 2. Error message: " + INVALID_JAEGER_ENDPOINT.toLowerCase()));
         }
         else{
-            assertFalse(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message:.*" + INVALID_JAEGER_ENDPOINT.toLowerCase())
-            .isEmpty());
+            assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message:.*" + INVALID_JAEGER_ENDPOINT.toLowerCase()));
         }
     }
 
@@ -205,33 +217,27 @@ public class TelemetryMisconfigTest extends FATServletClient {
                         .run(String.class);
 
         if(RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID)){
-            assertFalse(server.waitForStringInLogUsingMark("Failed to export spans. Server responded with gRPC status code 2. Error message: Failed to connect to.*" + ":10000")
-            .isEmpty());
+            assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. Server responded with gRPC status code 2. Error message: Failed to connect to.*" + ":10000"));
         }
         else{
-            assertFalse(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message: Failed to connect to.*" + ":10000")
-            .isEmpty());
+            assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message: Failed to connect to.*" + ":10000"));
         }
     }
 
     @Test
-    @ExpectedFFDC({ "org.jboss.resteasy.spi.UnhandledException" })
+    @ExpectedFFDC({ "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
     public void testInvalidJaegerTimeout() throws Exception {
         server.setMarkToEndOfLog();
 
         new HttpRequest(server, "/" + INVALID_JAEGER_TIMEOUT_APP_NAME + "/misconfig/jaxrsclient")
-                        .expectCode(500)
+                        .expectCode(200)
                         .run(String.class);
 
-        assertFalse(server.waitForStringInLogUsingMark("Invalid duration property otel.exporter.jaeger.timeout").isEmpty());
+        assertNotNull(server.waitForStringInLogUsingMark("Invalid duration property otel.exporter.jaeger.timeout"));
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("SRVE0777E", // Exception thrown by application class
-                          "SRVE0315E: .*INVALID_EXPORTER", // An exception occurred: ... Unrecognized value for otel.traces.exporter: INVALID_EXPORTER
-                          "SRVE0315E: .*INVALID_TIMEOUT", // An exception occurred: ... Invalid duration property otel.exporter.jaeger.timeout: INVALID_TIMEOUT
-                          "SRVE0315E: .*ENDPOINT", //An exception occurred: ... Endpoint must be a valid URL: INVALID_ENDPOINT
-                          "SRVE0315E: .*configuration error"); //An exception occurred: ... Unexpected configuration error
+        server.stopServer(  "CWMOT5002E" ); //Exception thrown in OpenTelemetryProducer
     }
 }

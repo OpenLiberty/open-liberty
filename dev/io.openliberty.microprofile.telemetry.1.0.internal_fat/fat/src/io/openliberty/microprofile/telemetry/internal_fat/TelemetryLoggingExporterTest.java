@@ -12,7 +12,7 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-
+import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -69,8 +69,8 @@ public class TelemetryLoggingExporterTest extends FATServletClient {
         assertNull(server.verifyStringNotInLogUsingMark("Failed to export spans", 1000));
 
         //Checks for span output in logs
-        assertFalse(server.waitForStringInLogUsingMark("io.opentelemetry.exporter.logging.LoggingSpanExporter").isEmpty());
-        assertFalse(server.waitForStringInLogUsingMark("'testSpan' : .* \\[tracer: logging-exporter-test:1.0.0\\]").isEmpty());
+        assertNotNull(server.waitForStringInLogUsingMark("io.opentelemetry.exporter.logging.LoggingSpanExporter"));
+        assertNotNull(server.waitForStringInLogUsingMark("'testSpan' : .* \\[tracer: logging-exporter-test:1.0.0\\]"));
     }
 
     @AfterClass

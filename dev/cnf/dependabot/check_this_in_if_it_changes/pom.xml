@@ -763,6 +763,11 @@
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-opentracing-shim</artifactId>
+      <version>1.29</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-sdk-common</artifactId>
       <version>1.19.0</version>
     </dependency>

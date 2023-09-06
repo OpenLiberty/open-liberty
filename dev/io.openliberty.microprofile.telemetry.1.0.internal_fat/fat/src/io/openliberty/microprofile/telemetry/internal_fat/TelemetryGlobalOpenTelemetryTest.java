@@ -15,6 +15,7 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -68,7 +69,7 @@ public class TelemetryGlobalOpenTelemetryTest extends FATServletClient {
     public void testGetGlobalOpenTelemetry() throws Exception {
         server.setMarkToEndOfLog();
         runTest(server, APP_NAME + "/GlobalOpenTelemetryServlet", "testGetGlobalOpenTelemetry");
-        assertFalse(server.waitForStringInLogUsingMark("CWMOT5000W: The GlobalOpenTelemetry.get method was called. This method returns a non-functional OpenTelemetry object. Use CDI to inject an OpenTelemetry object instead.").isEmpty());
+        assertNotNull(server.waitForStringInLogUsingMark("CWMOT5000W: The GlobalOpenTelemetry.get method was called. This method returns a non-functional OpenTelemetry object. Use CDI to inject an OpenTelemetry object instead."));
 
         server.setMarkToEndOfLog();
         runTest(server, APP_NAME + "/GlobalOpenTelemetryServlet", "testGetGlobalOpenTelemetry");
