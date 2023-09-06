@@ -57,7 +57,7 @@ tested.features:\
 -buildpath: \
   com.ibm.ws.wssecurity.fat.utils.common;version=latest,\
   com.ibm.ws.security.fat.common;version=latest,\
-  com.ibm.ws.security.saml.sso_fat.common;version=latest, \
+  com.ibm.ws.security.saml.sso_fat.common;version=latest,\
   com.ibm.websphere.javaee.servlet.3.0;version=latest,\
   httpunit:httpunit;version=1.5.4,\
   com.ibm.websphere.security;version=latest,\
@@ -87,6 +87,5 @@ tested.features:\
   com.ibm.ws.org.apache.wss4j.ws.security.policy.stax;version=latest,\
   com.ibm.ws.org.apache.wss4j.ws.security.stax;version=latest,\
   com.ibm.ws.org.apache.wss4j.ws.security.web;version=latest,\
-  com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest
-
-  
+  com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
+  com.ibm.ws.org.apache.directory.server;version=latest
