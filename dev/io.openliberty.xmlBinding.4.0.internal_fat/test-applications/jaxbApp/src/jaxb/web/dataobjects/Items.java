@@ -64,9 +64,9 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ItemList", propOrder = {
-                                          "item",
-                                          "itemNames"
+@XmlType(propOrder = {
+                       "item",
+                       "itemNames"
 })
 public class Items {
 
