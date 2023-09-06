@@ -28,4 +28,5 @@ task copyYasson(type: Copy) {
 
 addRequiredLibraries {
   dependsOn copyYasson
+  dependsOn addJakartaTransformer
 }

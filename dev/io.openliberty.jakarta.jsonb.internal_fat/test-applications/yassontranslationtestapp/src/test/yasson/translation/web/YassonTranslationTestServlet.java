@@ -20,9 +20,9 @@ import org.eclipse.yasson.internal.properties.MessageKeys;
 import org.eclipse.yasson.internal.properties.Messages;
 
 import componenttest.app.FATServlet;
-import jakarta.json.bind.JsonbConfig;
-import jakarta.json.bind.JsonbException;
-import jakarta.servlet.annotation.WebServlet;
+import javax.json.bind.JsonbConfig;
+import javax.json.bind.JsonbException;
+import javax.servlet.annotation.WebServlet;
 
 @SuppressWarnings({ "serial", "restriction" })
 @WebServlet(urlPatterns = "/YassonTranslationTestServlet")

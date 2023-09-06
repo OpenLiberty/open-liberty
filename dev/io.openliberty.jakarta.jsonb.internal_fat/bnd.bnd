@@ -27,12 +27,21 @@ javac.target: 11
 fat.minimum.java.level: 11
 fat.project: true
 
+tested.features: \
+	jsonb-1.0, servlet-4.0, jsonp-1.1,\
+	jsonb-2.0, servlet-5.0, jsonp-2.0,\
+	jsonb-3.0, servlet-6.0, jsonp-2.1
+	
+
 -buildpath: \
 	com.ibm.ws.componenttest.2.0;version=latest,\
 	com.ibm.wsspi.org.osgi.core;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.org.eclipse.yasson.1.0;version=latest,\
+	com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
+	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	io.openliberty.jakarta.jsonb.3.0;version=latest,\
 	io.openliberty.jakarta.jsonp.2.1;version=latest,\
-	io.openliberty.jakarta.servlet.5.0;version=latest,\
-	io.openliberty.org.eclipse.yasson.3.0;version=latest
+	io.openliberty.jakarta.servlet.6.0;version=latest
+	

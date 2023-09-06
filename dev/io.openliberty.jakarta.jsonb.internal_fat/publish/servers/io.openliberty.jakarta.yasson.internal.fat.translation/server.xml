@@ -9,15 +9,15 @@
  -->
 <server>
     <featureManager>
-      <feature>componenttest-2.0</feature>
-      <feature>jsonb-3.0</feature>
-      <feature>servlet-6.0</feature>
+      <feature>componenttest-1.0</feature>
+      <feature>jsonb-1.0</feature>
+      <feature>servlet-4.0</feature>
     </featureManager>
 
 	<include location="../fatTestPorts.xml"/>
 	
 	<library id="yasson">
-        <fileset dir="${wlp.install.dir}/lib" includes="io.openliberty.org.eclipse.yasson.3.0*jar"/>
+        <fileset dir="${wlp.install.dir}/lib" includes="${env.YASSON_JAR}"/>
     </library>
     
 	<application location="yassontranslationtestapp.war">

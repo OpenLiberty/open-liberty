@@ -11,16 +11,24 @@ package io.openliberty.jakarta.jsonb.internal.fat;
 
 import java.util.Map;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import test.yasson.translation.web.YassonTranslationTestServlet;
@@ -32,13 +40,37 @@ public class YassonTranslationTest extends FATServletClient {
     private static final String APP_NAME = "yassontranslationtestapp";
     private static final String CONTEXT = "YassonTranslationTestServlet";
 
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly());
+
     @Server("io.openliberty.jakarta.yasson.internal.fat.translation")
     @TestServlet(servlet = YassonTranslationTestServlet.class, contextRoot = CONTEXT)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "test.yasson.translation.web");
+        DeployOptions[] options = { DeployOptions.SERVER_ONLY };
+        ShrinkHelper.defaultApp(server, APP_NAME, options, "test.yasson.translation.web");
+    }
+
+    @Before
+    public void setup() {
+        if (JakartaEE10Action.isActive()) {
+            server.addEnvVar("YASSON_JAR", "io.openliberty.org.eclipse.yasson.3.0*jar");
+        } else if (JakartaEE9Action.isActive()) {
+            server.addEnvVar("YASSON_JAR", "com.ibm.ws.org.eclipse.yasson.2.0*jar");
+        } else {
+            server.addEnvVar("YASSON_JAR", "com.ibm.ws.org.eclipse.yasson.1.0*jar");
+        }
+    }
+
+    @After
+    public void cleanup() throws Exception {
+        if (server.isStarted()) {
+            server.stopServer("CWWKE0955E");
+        }
     }
 
     @Test
@@ -53,8 +85,6 @@ public class YassonTranslationTest extends FATServletClient {
 
         runTest(server, APP_NAME + "/" + CONTEXT, "testTranslationMessageDefault");
         runTest(server, APP_NAME + "/" + CONTEXT, "testTranslationMessageProvidedLocale");
-
-        server.stopServer();
     }
 
     @Test
@@ -69,7 +99,5 @@ public class YassonTranslationTest extends FATServletClient {
 
         runTest(server, APP_NAME + "/" + CONTEXT, "testTranslationMessageServerLocale");
         runTest(server, APP_NAME + "/" + CONTEXT, "testTranslationMessageServerException");
-
-        server.stopServer();
     }
 }
