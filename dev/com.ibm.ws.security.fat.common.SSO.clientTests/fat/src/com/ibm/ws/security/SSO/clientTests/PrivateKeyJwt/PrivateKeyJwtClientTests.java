@@ -6,6 +6,9 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.SSO.clientTests.PrivateKeyJwt;
 
@@ -581,6 +584,7 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
      * the keystore is a different cert.
      * We should not have access to the protected app.
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfJava8.class) // Java 8 has trouble with the trust store we're using.
     @AllowedFFDC({ "io.openliberty.security.oidcclientcore.http.BadPostRequestException", "sun.security.validator.ValidatorException", "javax.net.ssl.SSLHandshakeException", "java.security.cert.CertPathValidatorException" })
     @Test
     public void PrivateKeyJwtClientTests_accessTokenUsesRS256_privateKeyJwtUsesRS256_sameAliasDiffCert() throws Exception {
