@@ -80,9 +80,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
                 }
             }
         } finally {
-            server.setMarkToEndOfLog();
             server.updateServerConfiguration(savedConfig);
-            server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
         }
         System.out.println("server configuration restored");
     }
