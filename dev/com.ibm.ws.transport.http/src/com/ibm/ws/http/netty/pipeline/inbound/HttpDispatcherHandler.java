@@ -13,6 +13,7 @@ import java.util.Objects;
 
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
+import com.ibm.ws.http.netty.MSP;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -34,17 +35,22 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
 
     @Override
     protected void channelRead0(ChannelHandlerContext context, FullHttpRequest request) throws Exception {
-        // TODO Auto-generated method stub
+
         newRequest(context, request);
 
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
-        context.close();
+        MSP.log("Closing context because of: ");
+        cause.printStackTrace();
+
+        //context.close();
     }
 
     public void newRequest(ChannelHandlerContext context, FullHttpRequest request) {
+        MSP.log("Shiny new dispatcher link");
+
         link = new HttpDispatcherLink();
         link.init(context, request, config);
         link.ready();

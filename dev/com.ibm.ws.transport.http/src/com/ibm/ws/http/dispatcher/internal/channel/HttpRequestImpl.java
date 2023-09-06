@@ -31,6 +31,7 @@ import com.ibm.wsspi.http.ee7.HttpInputStreamEE7;
 import com.ibm.wsspi.http.ee8.Http2PushBuilder;
 import com.ibm.wsspi.http.ee8.Http2Request;
 
+import io.netty.handler.codec.http.FullHttpRequest;
 import io.openliberty.http.ext.HttpRequestExt;
 
 /**
@@ -68,6 +69,22 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
             this.body = new HttpInputStreamEE7(context);
         } else {
             this.body = new HttpInputStreamImpl(context);
+        }
+    }
+
+    /**
+     * Initialize with a new connection.
+     *
+     * @param context
+     */
+    public void init(FullHttpRequest request, HttpInboundServiceContext context) {
+
+        this.message = context.getRequest();
+
+        if (this.useEE7Streams) {
+            this.body = new HttpInputStreamEE7(context, request);
+        } else {
+            this.body = new HttpInputStreamImpl(context, request);
         }
     }
 

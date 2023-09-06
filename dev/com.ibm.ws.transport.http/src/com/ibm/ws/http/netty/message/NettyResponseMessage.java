@@ -663,13 +663,14 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void setStatusCode(int code) {
+        MSP.log("Setting status: " + code);
         this.nettyResponse.setStatus(HttpResponseStatus.valueOf(code));
 
     }
 
     @Override
     public void setStatusCode(StatusCodes code) {
-
+        MSP.log("setting status: " + code);
         setStatusCode(code.getIntCode());
 
     }

@@ -49,9 +49,9 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     private static final TraceComponent tc = Tr.register(NettyRequestMessage.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
-    private final FullHttpRequest request;
-    private final HttpHeaders headers;
-    private final HttpInboundServiceContext context;
+    private FullHttpRequest request;
+    private HttpHeaders headers;
+    private HttpInboundServiceContext context;
 
     private String url;
 
@@ -60,10 +60,14 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     private QueryStringDecoder query;
 
-    private final Map<String, String[]> parameters;
+    private Map<String, String[]> parameters;
 
     public NettyRequestMessage(FullHttpRequest request, HttpInboundServiceContext isc) {
+        init(request, isc);
 
+    }
+
+    public void init(FullHttpRequest request, HttpInboundServiceContext isc) {
         MSP.log("NettyRequestMessage request null:" + Objects.isNull(request));
         MSP.log("NettyRequestMessage isc null: " + Objects.isNull(isc));
 
@@ -80,18 +84,30 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         HttpChannelConfig config = isc instanceof HttpInboundServiceContextImpl ? ((HttpInboundServiceContextImpl) isc).getHttpConfig() : null;
 
         super.init(request, isc, config);
-
     }
 
     @Override
     public void clear() {
-        // TODO Auto-generated method stub
+        request = null;
+        headers = null;
+        context = null;
+
+        url = null;
+
+        method = null;
+        scheme = null;
+
+        query = null;
+        parameters.clear();
+
+        super.clear();
 
     }
 
     @Override
     public void destroy() {
-        // TODO Auto-generated method stub
+
+        super.destroy();
 
     }
 
@@ -185,9 +201,9 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public String getRequestURI() {
-        MSP.log("getRequestURI: " + request.uri());
+        MSP.log("getRequestURI: query.path()" + query.path() + "query uri: " + query.uri());
 
-        return request.uri();
+        return query.path();
     }
 
     @Override
@@ -223,7 +239,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     @Override
     public String getQueryString() {
 
-        return Objects.isNull(parameters) || parameters.isEmpty() ? null : query.path();
+        return Objects.isNull(parameters) || parameters.isEmpty() ? null : query.rawQuery();
 
     }
 
