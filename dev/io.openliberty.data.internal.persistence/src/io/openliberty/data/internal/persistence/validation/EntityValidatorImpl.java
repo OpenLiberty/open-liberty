@@ -13,6 +13,7 @@
 package io.openliberty.data.internal.persistence.validation;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.Set;
 
 import com.ibm.ws.beanvalidation.service.BeanValidation;
@@ -23,6 +24,7 @@ import io.openliberty.data.internal.persistence.EntityValidator;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
+import jakarta.validation.executable.ExecutableValidator;
 
 /**
  * Abstraction for a Jakarta Validation Validator.
@@ -101,6 +103,44 @@ public class EntityValidatorImpl implements EntityValidator {
                     throw new ConstraintViolationException(violations); // TODO better message? Ensure that message includes at least the first violation.
                 // TODO Should we continue after an invalid entity is found and collect up the violations across all?
             }
+        }
+    }
+
+    /**
+     * Validates method parameters where the method or its class is annotated with ValidateOnExecution.
+     *
+     * @param object instance that has the method with parameters to validate.
+     * @param method the method.
+     * @param args   the method parameters.
+     * @throws ConstraintValidationException if any of the constraints are violated.
+     */
+    @Override
+    public <T> void validateParameters(T object, Method method, Object[] args) {
+        ComponentMetaData cdata = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        if (cdata != null) {
+            ExecutableValidator validator = validation.getValidator(cdata).forExecutables();
+            Set<ConstraintViolation<Object>> violations = validator.validateParameters(object, method, args);
+            if (violations != null && !violations.isEmpty())
+                throw new ConstraintViolationException(violations); // TODO better message? Ensure that message includes at least the first violation.
+        }
+    }
+
+    /**
+     * Validates the return value where the method or its class is annotated with ValidateOnExecution.
+     *
+     * @param object      instance that has the method with the return value to validate.
+     * @param method      the method.
+     * @param returnValue the return value of the method.
+     * @throws ConstraintValidationException if any of the constraints are violated.
+     */
+    @Override
+    public <T> void validateReturnValue(T object, Method method, Object returnValue) {
+        ComponentMetaData cdata = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        if (cdata != null) {
+            ExecutableValidator validator = validation.getValidator(cdata).forExecutables();
+            Set<ConstraintViolation<Object>> violations = validator.validateReturnValue(object, method, returnValue);
+            if (violations != null && !violations.isEmpty())
+                throw new ConstraintViolationException(violations); // TODO better message? Ensure that message includes at least the first violation.
         }
     }
 }

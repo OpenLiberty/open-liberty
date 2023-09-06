@@ -12,14 +12,24 @@
  *******************************************************************************/
 package test.jakarta.data.validation.web;
 
+import java.util.List;
+
 import jakarta.data.repository.Repository;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
 
 /**
  * Repository for a record with bean validation annotations.
  */
 @Repository(dataStore = "java:module/jdbc/DerbyDataSource")
 public interface Rectangles {
+
+    @NotEmpty
+    Rectangle[] findByIdStartsWith(String prefix);
+
+    List<Rectangle> findByWidth(@Positive int width);
+
     int findWidthById(String id);
 
     void save(@Valid Rectangle r);

@@ -23,6 +23,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.security.AccessController;
@@ -1349,9 +1350,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             first = false;
                         }
                     else {
-                        //for (RecordComponent component : recordClass.getRecordComponents()) {
-                        //    String name = component.getName();
-                        for (String name : List.of("purchaseId", "customer", "total")) { // TODO replace with above once compiling against Java 17
+                        for (RecordComponent component : entityInfo.recordClass.getRecordComponents()) {
+                            String name = component.getName();
                             generateSelectExpression(q, first, function, distinct, o, name);
                             first = false;
                         }
@@ -1865,6 +1865,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, queryInfo.toString());
 
+            EntityValidator validator = provider.validator();
+            if (validator != null) // TODO also use queryInfo.validatable which will previously check with bean validation
+                validator.validateParameters(proxy, method, args);
+
             LocalTransactionCoordinator suspendedLTC = null;
             EntityManager em = null;
             Object returnValue;
@@ -1890,8 +1894,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                 switch (queryInfo.type) {
                     case MERGE: {
-                        EntityValidator validator = provider.validator();
-
                         em = entityInfo.persister.createEntityManager();
 
                         List<Object> results;
@@ -2275,6 +2277,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         provider.tranMgr.setRollbackOnly();
                 }
             }
+
+            if (validator != null) // TODO queryInfo.validatable
+                validator.validateReturnValue(proxy, method, returnValue);
 
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), returnValue);
