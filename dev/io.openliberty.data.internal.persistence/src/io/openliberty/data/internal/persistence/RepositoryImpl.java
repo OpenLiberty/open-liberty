@@ -146,10 +146,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
     public RepositoryImpl(DataExtension extension, EntityDefiner definer, Class<R> repositoryInterface, Class<?> defaultEntityClass, boolean requestsValidation) {
         this.defaultEntityClass = defaultEntityClass;
-        this.provider = extension.provider;
+        this.provider = extension.getProvider();
         this.repositoryInterface = repositoryInterface;
         this.requestsValidation = requestsValidation;
-        this.Valid = extension.Valid;
+        this.Valid = extension.getValid();
 
         boolean inheritance = defaultEntityClass.getAnnotation(Inheritance.class) != null;
         Class<?> recordClass = null;

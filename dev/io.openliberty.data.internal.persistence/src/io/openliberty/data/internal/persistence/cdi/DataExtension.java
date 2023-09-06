@@ -77,7 +77,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
     /**
      * OSGi service that registers this extension.
      */
-    public final DataExtensionProvider provider = AccessController.doPrivileged(this);
+    private final DataExtensionProvider provider = AccessController.doPrivileged(this);
 
     /**
      * Beans for repository interfaces.
@@ -96,7 +96,15 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
     /**
      * jakarata.validation.Valid, if available. Otherwise null.
      */
-    public final Class<? extends Annotation> Valid = loadIfAvailable("jakarta.validation.Valid");
+    private final Class<? extends Annotation> Valid = loadIfAvailable("jakarta.validation.Valid");
+
+    public DataExtensionProvider getProvider() {
+        return provider;
+    }
+
+    public Class<? extends Annotation> getValid() {
+        return Valid;
+    }
 
     /**
      * A key for a group of entities for the same backend database
