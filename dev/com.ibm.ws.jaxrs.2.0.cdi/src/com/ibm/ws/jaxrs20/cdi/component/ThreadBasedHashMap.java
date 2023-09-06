@@ -30,6 +30,16 @@ import com.ibm.wsspi.injectionengine.ReferenceContext;
  *
  */
 public class ThreadBasedHashMap extends ConcurrentHashMap<Class<?>, ManagedObject<?>> {
+    /*
+     * A problem that was identified as possible under https://github.com/OpenLiberty/open-liberty/pull/206 occurred (see comment added in
+     * com.ibm.ws.jaxrs20.cdi.component.JaxRsFactoryImplicitBeanCDICustomizer.
+     * ("because we are using a ThreadBasedHashMap here, we not actually clobbering data, but we have the potential for problems as
+     * multiple threads are access the same CDI-managed, per-request resource concurrently.")
+     * We have attempted to address this in https://github.com/OpenLiberty/open-liberty/pull/26069 by extending ConcurrentHashMap, but this was
+     * initially prevented because ConcurrentHashMaps cannot store null-valued entries that are required here. To resolved this we've created the
+     * NULL_MANAGED_OBJECT and added code to accommodate it.
+     * TO-DO: With the change to extend ConcurrentHashMap the ThreadLocal map may no longer be needed.
+     */
 
     private static final long serialVersionUID = 3759994379932861970L;
 
