@@ -28,6 +28,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.utility.Base58;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.ExtendedKafkaContainer;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.liberty_login.LibertyLoginModuleTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.liberty_login.invalid.LibertyLoginModuleInvalidTest;

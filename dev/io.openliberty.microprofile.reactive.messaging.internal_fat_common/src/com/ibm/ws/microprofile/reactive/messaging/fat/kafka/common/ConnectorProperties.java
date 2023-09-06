@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
+package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common;
 
 import java.util.Collections;
 import java.util.Map;

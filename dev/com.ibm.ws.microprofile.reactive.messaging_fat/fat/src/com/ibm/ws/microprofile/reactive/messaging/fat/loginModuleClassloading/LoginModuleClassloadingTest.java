@@ -16,6 +16,7 @@ import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONL
 
 import javax.enterprise.inject.spi.Extension;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
 import componenttest.rules.repeater.RepeatTests;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -27,7 +28,6 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

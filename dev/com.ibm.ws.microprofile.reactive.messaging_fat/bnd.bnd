@@ -42,6 +42,7 @@ fat.project: true
 fat.test.container.images: confluentinc/cp-kafka:7.1.1
 
 -buildpath: \
+	io.openliberty.microprofile.reactive.messaging.internal_fat_common;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.reactive.messaging.1.0;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.config.1.3;version=latest,\

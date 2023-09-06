@@ -13,10 +13,10 @@
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.tls;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties.simpleIncomingChannel;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties.simpleOutgoingChannel;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaClientLibs;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaPermissions;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleIncomingChannel;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleOutgoingChannel;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -28,12 +28,12 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.reactive.messaging.fat.apps.kafka.BasicMessagingBean;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.Direction;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties.Direction;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.TlsTests;
 

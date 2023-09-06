@@ -12,8 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.message;
 
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaClientLibs;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaPermissions;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,11 +33,11 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
 

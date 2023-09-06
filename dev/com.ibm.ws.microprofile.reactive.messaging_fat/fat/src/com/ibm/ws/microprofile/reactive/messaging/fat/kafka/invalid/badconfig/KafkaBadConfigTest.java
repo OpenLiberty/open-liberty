@@ -13,8 +13,8 @@
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.invalid.badconfig;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties.simpleIncomingChannel;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaPermissions;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleIncomingChannel;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
@@ -34,8 +34,8 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.KafkaConnectorConstants;
 

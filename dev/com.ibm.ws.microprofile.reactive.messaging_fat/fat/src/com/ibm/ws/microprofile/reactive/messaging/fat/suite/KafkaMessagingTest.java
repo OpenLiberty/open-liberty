@@ -12,9 +12,9 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties.simpleIncomingChannel;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties.simpleOutgoingChannel;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaClientLibs;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleIncomingChannel;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleOutgoingChannel;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
@@ -52,6 +52,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.reactive.messaging.fat.apps.kafka.BasicMessagingBean;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
