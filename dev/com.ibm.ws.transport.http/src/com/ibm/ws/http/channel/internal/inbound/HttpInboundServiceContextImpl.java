@@ -237,6 +237,8 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         this.forwardedRemotePort = -1;
         this.suppress0ByteChunk = false;
 
+        this.requestMessage = null;
+
         if (getHttpConfig().runningOnZOS()) {
             // @311734 - clean the statemap of the final write mark
             getVC().getStateMap().remove(HttpConstants.FINAL_WRITE_MARK);
@@ -514,6 +516,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     public HttpRequestMessage getRequest() {
         if (Objects.nonNull(nettyContext)) {
             if (Objects.isNull(requestMessage)) {
+                MSP.log("getRequest -> creating new NettyRequestMessage");
                 this.requestMessage = new NettyRequestMessage(nettyRequest, this);
             }
             return this.requestMessage;
