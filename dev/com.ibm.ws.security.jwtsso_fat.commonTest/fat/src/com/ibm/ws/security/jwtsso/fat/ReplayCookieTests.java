@@ -12,8 +12,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwtsso.fat;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.io.File;
 import java.io.StringReader;
 import java.net.MalformedURLException;
@@ -40,7 +38,6 @@ import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.common.encoder.Base64Coder;
-import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.apps.CommonFatApplications;
 import com.ibm.ws.security.fat.common.apps.jwtbuilder.JwtBuilderServlet;
@@ -57,6 +54,7 @@ import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 import com.ibm.ws.security.jwtsso.fat.actions.JwtFatActions;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
+import com.ibm.ws.security.jwtsso.fat.utils.CommonJwtssoFat;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatUtils;
 import com.ibm.ws.security.jwtsso.fat.utils.MessageConstants;
@@ -72,7 +70,7 @@ import componenttest.topology.utils.ServerFileUtils;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class ReplayCookieTests extends CommonSecurityFat {
+public class ReplayCookieTests extends CommonJwtssoFat {
 
     protected static Class<?> thisClass = ReplayCookieTests.class;
 
@@ -111,6 +109,8 @@ public class ReplayCookieTests extends CommonSecurityFat {
         serverTracker.addServer(server);
 
         server.startServerUsingExpandedConfiguration(DEFAULT_CONFIG, CommonWaitForAppChecks.getLTPAReadyMsgs(CommonWaitForAppChecks.getSSLChannelReadyMsgs()));
+
+        addServerStartupAllowedErrors(server);
 
     }
 
@@ -353,7 +353,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
         Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, ltpaCookie);
         validationUtils.validateResult(response, currentAction, expectations);
     }
-    
+
     /**
      * Tests:
      * - Log into the protected resource WITHOUT the JWT SSO feature, obtaining an LTPA token/cookie (context root is set)
@@ -388,7 +388,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
         validationUtils.validateResult(response, currentAction, expectations);
         actions.destroyWebClient(webClient);
     }
-    
+
     /**
      * Tests:
      * - Log into the protected resource WITHOUT the JWT SSO feature, obtaining an LTPA token/cookie (context root is set)
@@ -408,7 +408,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
 
         expandAndUpdateServerConfiguration(server, "server_useLtpaIfJwtAbsent_true_configureSecondApp.xml", true, APP_NAME_JWT_BUILDER, JwtFatConstants.APP_FORMLOGIN);
 
-        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;       
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
         String newProtectedUrl = httpUrlBase + JwtFatConstants.JWT_BUILDER_CONTEXT_ROOT + "/protected";
 
         Expectations expectations = new Expectations();
@@ -527,7 +527,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
         Page response = actions.invokeUrlWithCookie(_testName, newProtectedUrl, jwtCookie);
         validationUtils.validateResult(response, currentAction, expectations);
     }
-    
+
     /**
      * Tests:
      * - Logs into the protected resource with the JWT SSO feature configured. JWT SSO cookie is created with context root
@@ -554,7 +554,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
         validationUtils.validateResult(response, currentAction, expectations);
         actions.destroyWebClient(wc);
     }
-    
+
     /**
      * Tests:
      * - Logs into the protected resource with the JWT SSO feature configured. JWT SSO cookie is created without context root
@@ -576,7 +576,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
         expectations.addExpectation(new ResponseStatusExpectation(currentAction, HttpServletResponse.SC_OK));
         expectations.addExpectation(new ResponseUrlExpectation(currentAction, JwtFatConstants.STRING_EQUALS, newProtectedUrl, "Did not reach the expected URL."));
         expectations.addExpectation(Expectation.createResponseExpectation(currentAction, String.format(ProtectedServlet.SUCCESS_MESSAGE, defaultUser),
-                                                                         "Did not find the expected success message in the servlet response."));
+                                                                          "Did not find the expected success message in the servlet response."));
         expectations.addExpectations(CommonExpectations.getJwtPrincipalExpectations(currentAction, defaultUser, JwtFatConstants.DEFAULT_ISS_REGEX));
         Page response = actions.invokeUrl(_testName, wc, newProtectedUrl);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -702,7 +702,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
     }
 
     /********************************************** Helper methods **********************************************/
-    
+
     /**
      * Expands any imports in the specified server config and copies the expanded configuration to the server.xml of the server root.
      * <p>
@@ -715,7 +715,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
      * @param configFileName the config file in the publish/configs directory
      * @param featureUpdate whether this config updates features
      * @param appNames names of applications which should start after this update completes
-     * @throws Exception 
+     * @throws Exception
      */
     private void expandAndUpdateServerConfiguration(LibertyServer server, String configFileName, boolean featureUpdate, String... appNames) throws Exception {
         Set<String> appNameSet = new HashSet<>(Arrays.asList(appNames));
