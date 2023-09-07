@@ -4069,6 +4069,7 @@ const Lang_1 = __webpack_require__(/*! ../util/Lang */ "./typescript/faces/impl/
 const Const_1 = __webpack_require__(/*! ../core/Const */ "./typescript/faces/impl/core/Const.ts");
 const RequestDataResolver_1 = __webpack_require__(/*! ./RequestDataResolver */ "./typescript/faces/impl/xhrCore/RequestDataResolver.ts");
 var failSaveExecute = Lang_1.ExtLang.failSaveExecute;
+const ExtDomQuery_1 = __webpack_require__(/*! ../util/ExtDomQuery */ "./typescript/faces/impl/util/ExtDomQuery.ts");
 /**
  * Faces XHR Request Wrapper
  * as AsyncRunnable for our Asynchronous queue
@@ -4147,6 +4148,13 @@ class XhrRequest extends AsyncRunnable_1.AsyncRunnable {
                 // on the key renaming before doing ops like deep copy
                 this.requestContext.$nspEnabled = true;
                 requestPassThroughParams.$nspEnabled = true;
+            }
+            const issuingItemId = this.internalContext.getIf(Const_1.CTX_PARAM_SRC_CTL_ID).value;
+            if (issuingItemId) {
+                const issuingItem = mona_dish_1.DQ.byId(issuingItemId);
+                const arr = new ExtDomQuery_1.ExtConfig({});
+                arr.assign(issuingItemId).value = issuingItem.val;
+                formData.shallowMerge(arr, true, true);
             }
             this.responseContext = requestPassThroughParams.deepCopy;
             // we have to shift the internal passthroughs around to build up our response context
