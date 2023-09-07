@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>io.openliberty.microprofile.reactive.streams.messaging30.internal_fat_tck</name>
+	<name>io.openliberty.microprofile.reactive.messaging30.internal_fat_tck</name>
 	<comment></comment>
 	<projects>
 	</projects>

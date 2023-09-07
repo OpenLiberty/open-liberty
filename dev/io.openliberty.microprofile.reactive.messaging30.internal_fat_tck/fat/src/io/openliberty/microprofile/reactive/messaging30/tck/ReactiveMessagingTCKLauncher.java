@@ -48,7 +48,7 @@ public class ReactiveMessagingTCKLauncher {
     @Mode(TestMode.FULL)
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchReactiveMessaging30Tck() throws Exception {
-        String bucketName = "com.ibm.ws.microprofile.reactive.messaging30_fat_tck";
+        String bucketName = "io.openliberty.microprofile.reactive.messaging30.internal_fat_tck";
         String testName = this.getClass() + ":launchReactiveMessaging30Tck";
         Type type = Type.MICROPROFILE;
         String specName = "Reactive Messaging";
