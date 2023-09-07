@@ -6,11 +6,13 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-@TraceOptions(traceGroup = "TELEMETRY", messageBundle = "io.openliberty.microprofile.telemetry.internal.common.resources.MPTelemetry")
-package io.opentelemetry.api;
+package io.openliberty.microprofile.telemetry.internal.common.rest;
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
+public abstract class AbstractTelemetryContainerFilter {
+	
+    protected static final String SPAN_SCOPE = "otel.span.server.scope";
+
+    
+
+}

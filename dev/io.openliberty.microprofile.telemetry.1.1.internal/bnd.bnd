@@ -12,7 +12,7 @@ bVersion=1.0
 
 Bundle-Name: io.openliberty.microprofile.telemetry.1.1.internal
 Bundle-SymbolicName: io.openliberty.microprofile.telemetry.1.1.internal
-Bundle-Activator: io.openliberty.microprofile.telemetry.internal.helper.InstrumenterActivator
+Bundle-Activator: io.openliberty.microprofile.telemetry11.internal.helper.InstrumenterActivator
 Bundle-Description: MicroProfile.telemetry, version 1.1
 
 javac.source: 11
@@ -25,10 +25,7 @@ src: src, resources
 #-cdiannotations:
 
 -dsannotations: \
-  io.openliberty.microprofile.telemetry.internal.cdi.SPIMetaData,\
-  io.openliberty.microprofile.telemetry.internal.rest.TelemetryClientAsyncTaskWrapper,\
-  io.openliberty.microprofile.telemetry.internal.rest.TelemetryClientBuilderListener,\
-  io.openliberty.microprofile.telemetry.internal.rest.TelemetryServletContainerInitializer
+  io.openliberty.microprofile.telemetry11.internal.cdi.SPIMetaData
 
 -dsannotations-inherit: true
 
@@ -49,17 +46,15 @@ Service-Component: \
 # Need an explicit import for api.common because it gets used by weld proxies
 # created for other API classes
 Import-Package: \
-  io.opentelemetry.api.common,\
-  io.openliberty.microprofile.telemetry.common.resources,\
-  *
+	io.opentelemetry.api.common,\
+	io.openliberty.microprofile.telemetry.internal.common.resources,\
+	*
 
 Export-Package: \
-    io.openliberty.microprofile.telemetry.resources;version='1.0',\
-	io.openliberty.microprofile.telemetry.internal.cdi;version='1.0',\
-	io.openliberty.microprofile.telemetry.internal.rest;version='1.0';thread-context=true
+	io.openliberty.microprofile.telemetry11.internal.cdi;version='1.0',\
+	io.openliberty.microprofile.telemetry11.internal.rest;version='1.0';thread-context=true
 	
-Private-Package: \
-	io.openliberty.microprofile.telemetry.internal.helper
+Private-Package: io.openliberty.microprofile.telemetry11.internal.helper
 
 -buildpath: \
     io.openliberty.jakarta.restfulWS.3.1;version=latest,\
@@ -70,9 +65,9 @@ Private-Package: \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.ws.logging.core;version=latest,\
     com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
-    io.openliberty.microprofile.telemetry.common;version=latest,\
+    io.openliberty.microprofile.telemetry.internal.common;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-    io.openliberty.io.opentelemetry.1.1;version=latest,\
+    io.openliberty.io.opentelemetry.1.29;version=latest,\
     io.openliberty.org.eclipse.microprofile.config.3.0,\
     io.openliberty.org.eclipse.microprofile.rest.client.3.0,\
     io.openliberty.org.jboss.resteasy.common.ee10;version=latest,\
