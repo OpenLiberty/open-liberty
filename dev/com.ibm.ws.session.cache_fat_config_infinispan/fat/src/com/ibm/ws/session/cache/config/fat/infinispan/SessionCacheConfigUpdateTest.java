@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,6 +34,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.HttpSessionCache;
 import com.ibm.websphere.simplicity.config.Monitor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -106,6 +107,19 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         } finally {
             server.stopServer();
         }
+
+        if (isZOS()) {
+            Log.info(SessionCacheConfigUpdateTest.class, "tearDown", "Allow more time for ZOS shutdown");
+            TimeUnit.SECONDS.sleep(20);
+        }
+    }
+
+    private static final boolean isZOS() {
+        String osName = System.getProperty("os.name");
+        if (osName.contains("OS/390") || osName.contains("z/OS") || osName.contains("zOS")) {
+            return true;
+        }
+        return false;
     }
 
     /**
