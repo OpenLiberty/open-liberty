@@ -30,6 +30,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.sql.Connection;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
 import java.sql.SQLSyntaxErrorException;
@@ -57,6 +58,8 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
+
+import javax.sql.DataSource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -91,7 +94,6 @@ import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
-import jakarta.data.repository.RepositoryAssist;
 import jakarta.data.repository.Slice;
 import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
@@ -166,9 +168,20 @@ public class RepositoryImpl<R> implements InvocationHandler {
         defaultEntityInfoFuture = definer.entityInfoMap.computeIfAbsent(defaultEntityClass, EntityInfo::newFuture);
 
         for (Method method : repositoryInterface.getMethods()) {
-            if (RepositoryAssist.class.equals(method.getDeclaringClass()) // skip mix-in interface
-                || method.isDefault()) // skip default methods
+            if (method.isDefault()) // skip default methods
                 continue;
+
+            // Check for resource accessor methods:
+            Class<?> returnType = method.getReturnType();
+            if (method.getParameterCount() == 0 &&
+                (EntityManager.class.equals(returnType)
+                 || DataSource.class.equals(returnType)
+                 || Connection.class.equals(returnType))) {
+                QueryInfo queryInfo = new QueryInfo(method, null, null);
+                queryInfo.type = QueryInfo.Type.RESOURCE_ACCESS;
+                queries.put(method, CompletableFuture.completedFuture(queryInfo));
+                continue;
+            }
 
             Class<?> returnArrayComponentType = null;
             List<Class<?>> returnTypeAtDepth = new ArrayList<>(5);
@@ -1774,23 +1787,28 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
-     * Implementation of RepositoryAssist.getResource for the specified resource type.
+     * Request an instance of a resource of the specified type.
      *
      * @param type resource type.
-     * @return optional populated with the resource or the empty optional.
+     * @return instance of the resource. Never null.
+     * @throws UnsupportedOperationException if the type of resource is not available.
      */
-    private <T> Optional<T> getResource(Class<T> type) {
+    private <T> T getResource(Class<T> type) {
         Deque<EntityManager> resources = defaultMethodResources.get();
-        if (resources == null)
-            throw new IllegalStateException("The " + type.getName() + " resource cannot be obtained outside the scope of a repository default method."); // TODO NLS
         if (EntityManager.class.equals(type)) {
             EntityManager em = defaultEntityInfoFuture.join().persister.createEntityManager();
-            resources.add(em);
+            if (resources == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, type + " accessed outside the scope of repository default method",
+                             Arrays.toString(new Exception().getStackTrace()));
+            } else {
+                resources.add(em);
+            }
             @SuppressWarnings("unchecked")
             T t = (T) em;
-            return Optional.of(t);
+            return t;
         }
-        return Optional.empty();
+        throw new UnsupportedOperationException("The " + type.getName() + " type of resource is not available from the Jakarta Data provider."); // TODO NLS
     }
 
     @FFDCIgnore(Throwable.class)
@@ -1801,13 +1819,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         boolean isDefaultMethod = false;
 
         if (queryInfoFuture == null)
-            if (RepositoryAssist.class.equals(method.getDeclaringClass())) {
-                String methodName = method.getName();
-                if ("getResource".equals(methodName))
-                    return getResource((Class<?>) args[0]);
-                else
-                    throw new UnsupportedOperationException(method.toString());
-            } else if (method.isDefault()) {
+            if (method.isDefault()) {
                 isDefaultMethod = true;
             } else {
                 String methodName = method.getName();
@@ -1866,7 +1878,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 Tr.debug(this, tc, queryInfo.toString());
 
             EntityValidator validator = provider.validator();
-            if (validator != null) // TODO also use queryInfo.validatable which will previously check with bean validation
+            if (args != null && args.length > 0 && validator != null) // TODO also use queryInfo.validatable which will previously check with bean validation
                 validator.validateParameters(proxy, method, args);
 
             LocalTransactionCoordinator suspendedLTC = null;
@@ -1880,6 +1892,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 case FIND:
                 case COUNT:
                 case EXISTS:
+                case RESOURCE_ACCESS:
                     requiresTransaction = false;
                     break;
                 default:
@@ -2250,6 +2263,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
                             returnValue = CompletableFuture.completedFuture(returnValue);
                         }
+                        break;
+                    }
+                    case RESOURCE_ACCESS: {
+                        returnValue = getResource(returnType);
                         break;
                     }
                     default:

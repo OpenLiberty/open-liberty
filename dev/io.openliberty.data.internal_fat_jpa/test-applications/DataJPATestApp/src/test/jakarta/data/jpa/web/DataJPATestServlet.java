@@ -256,16 +256,13 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Verify that the getResource method does not permit the EntityManager to be obtained outside the
-     * scope of a default method.
+     * Verify that the EntityManager can be obtained outside the scope of a default method.
      */
     @Test
-    public void testEntityManagerDisallowedWithoutDefaultMethod() {
-        try {
-            EntityManager em = counties.getResource(EntityManager.class).orElseThrow();
-            fail("Should not be able to obtain EntityManager from outside the scope of a default method.");
-        } catch (IllegalStateException x) {
-            // expected
+    public void testEntityManagerOutsideOfDefaultMethod() {
+        try (EntityManager em = counties.getEntityManager()) {
+            assertEquals(true, em.isOpen());
+            System.out.println("Entity manager properties: " + em.getProperties());
         }
     }
 
