@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -319,8 +319,10 @@ public class JSSEProviderFactory {
 
         if (!fipsInitialized) {
             int ibmjcefips_position = 0;
+            int ibmjceplusfips_position = 0;
             Provider[] provider_list = null;
             Provider ibmjcefips = null;
+            Provider ibmjceplusfips = null;
             Provider sun = null;
 
             try {
@@ -330,7 +332,10 @@ public class JSSEProviderFactory {
                 for (int i = 0; i < provider_list.length; i++) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "Provider[" + i + "]: " + provider_list[i].getName());
-                    if (provider_list[i].getName().equals("IBMJCEFIPS")) {
+                    if (provider_list[i].getName().equals("IBMJCEPlusFIPS")) {
+                        ibmjceplusfips_position = i;
+                        ibmjceplusfips = provider_list[i];
+                    } else if (provider_list[i].getName().equals("IBMJCEFIPS")) {
                         ibmjcefips_position = i;
                         ibmjcefips = provider_list[i];
                     } else if (provider_list[i].getName().equals("SUN")) {
@@ -338,7 +343,34 @@ public class JSSEProviderFactory {
                     }
                 }
 
-                if (ibmjcefips == null) {
+                if (ibmjceplusfips == null) {
+                    provider_list = Security.getProviders();
+
+                    try {
+                        ibmjceplusfips = (Provider) Class.forName(Constants.IBMJCEPlusFIPS).newInstance();
+
+                        if (sun != null) {
+                            insertProviderAt(sun, 1);
+                            insertProviderAt(ibmjceplusfips, 2);
+                        } else {
+                            insertProviderAt(ibmjceplusfips, 1);
+                        }
+                    } catch (Exception e) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(tc, "Exception loading provider: " + Constants.IBMJCEFIPS + "; " + e);
+                    }
+                } else if (ibmjceplusfips_position != 0) {
+                    // it's there but not the first, let's reorder it.
+                    provider_list = Security.getProviders();
+
+                    if (sun != null) {
+                        insertProviderAt(sun, 1);
+                        insertProviderAt(ibmjceplusfips, 2);
+                    } else {
+                        insertProviderAt(ibmjceplusfips, 1);
+                    }
+
+                } else if (ibmjcefips == null) {
                     provider_list = Security.getProviders();
 
                     try {
@@ -508,8 +540,10 @@ public class JSSEProviderFactory {
         for (int i = 0; i < providerList.length; i++) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Provider name [" + i + "]: " + providerList[i].getName());
-
-            if (providerList[i].getName().equalsIgnoreCase(Constants.IBMJSSE2_NAME)) {
+            if (providerList[i].getName().equalsIgnoreCase(Constants.IBMJCEPlusFIPS_NAME)) {
+                providerFromProviderList = Constants.IBMJCEPlusFIPS_NAME;
+                break;
+            } else if (providerList[i].getName().equalsIgnoreCase(Constants.IBMJSSE2_NAME)) {
                 providerFromProviderList = Constants.IBMJSSE2_NAME;
                 break;
             } else if (providerList[i].getName().equalsIgnoreCase(Constants.IBMJSSE_NAME)) {

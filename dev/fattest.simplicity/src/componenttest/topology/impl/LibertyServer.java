@@ -232,6 +232,12 @@ public class LibertyServer implements LogMonitorClient {
                     ? Boolean.parseBoolean(PrivHelper.getProperty("global.debug.java2.sec", "true")) //
                     : Boolean.parseBoolean(PrivHelper.getProperty("global.debug.java2.sec", "false"));
 
+    //issue 25138 enabling FIPS-140-3
+    protected static final boolean GLOBAL_FIPS_140_3 = Boolean.parseBoolean(PrivHelper.getProperty("global.fips_140-3", "false"));
+    protected static final boolean GLOBAL_DEBUG_FIPS_140_3 = FAT_TEST_LOCALRUN //
+                    ? Boolean.parseBoolean(PrivHelper.getProperty("global.debug.fips_140-3", "true")) //
+                    : Boolean.parseBoolean(PrivHelper.getProperty("global.debug.fips_140-3", "false"));
+
     protected static final String GLOBAL_TRACE = PrivHelper.getProperty("global.trace.spec", "").trim();
     protected static final String GLOBAL_JVM_ARGS = PrivHelper.getProperty("global.jvm.args", "").trim();
 
@@ -1570,6 +1576,7 @@ public class LibertyServer implements LogMonitorClient {
         // Debug for a highly intermittent problem on IBM JVMs.
         // Unfortunately, this problem does not seem to happen when we enable this dump trace. We also can't proceed without getting
         // a system dump, so our only option is to enable this and hope the timing eventually works out.
+
         if (info.VENDOR == Vendor.IBM) {
             JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#ServiceFactoryUse.<init>*\"";
             JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#org/eclipse/osgi/internal/serviceregistry/ServiceFactoryUse.<init>*\"";
@@ -1580,7 +1587,7 @@ public class LibertyServer implements LogMonitorClient {
             JVM_ARGS += " " + JAVA_AGENT_FOR_JACOCO;
         }
 
-        //if we are on Mac then use the value of the perm gen arg that has been
+        //if we are on Mac then use the value of the perm gen arg that has been       //
         //passed in via the system property
         if (MAC_RUN != null && !!!MAC_RUN.equalsIgnoreCase(Boolean.toString(false))) {
             JVM_ARGS += " " + MAC_RUN;
@@ -1625,6 +1632,21 @@ public class LibertyServer implements LogMonitorClient {
                 // If we are running on Java 18+, then we need to explicitly enable the security manager
                 Log.info(c, "startServerWithArgs", "Java 18 + Java2Sec requested, setting -Djava.security.manager=allow");
                 JVM_ARGS += " -Djava.security.manager=allow";
+            }
+        }
+
+        //issue 25138
+        // if we have FIPS 140-3 enabled, add JVM Arg
+        //exclude hybrid jdk (OSX), non-JDK8 with Vendor IBM (major=17, vendor=IBM)
+        if (isFIPS140_3Enabled()) {
+            if ((info.majorVersion() == 8) && (info.VENDOR == Vendor.IBM)) {
+                Log.info(c, "startServerWithArgs", "The JDK version: " + info.majorVersion() + " and vendor: " + JavaInfo.Vendor.IBM);
+                Log.info(c, "startServerWithArgs", "FIPS 140-3 global build properties is set for server " + getServerName() + ", adding JVM arguments to run with FIPS enabled");
+
+                JVM_ARGS += " -Xenablefips140-3";
+                JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
+                JVM_ARGS += " -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS";
+                //JVM_ARGS += " -Djavax.net.debug=all";
             }
         }
 
@@ -7083,6 +7105,13 @@ public class LibertyServer implements LogMonitorClient {
         boolean isJava2SecExempt = "true".equalsIgnoreCase(getBootstrapProperties().getProperty("websphere.java.security.exempt"));
         Log.info(c, "isJava2SecurityEnabled", "Is server " + getServerName() + " Java 2 Security exempt?  " + isJava2SecExempt);
         return !isJava2SecExempt;
+    }
+
+    //issue 25138
+    public boolean isFIPS140_3Enabled() {
+        boolean globalEnabled = GLOBAL_FIPS_140_3 || GLOBAL_DEBUG_FIPS_140_3;
+        Log.info(c, "isFIPS140_3Enabled", "Is global build properties FIPS_140_3 set for server " + getServerName() + "? " + globalEnabled);
+        return globalEnabled;
     }
 
     /**
