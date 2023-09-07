@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,10 +14,12 @@ package com.ibm.ws.wsat.common.impl;
 
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
+import com.ibm.tx.remote.Vote;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.wsat.service.WSATContext;
+import com.ibm.ws.wsat.service.WSATException;
 import com.ibm.ws.wsat.tm.impl.TranManagerImpl;
 
 /**
@@ -163,5 +165,31 @@ public class WSATTransaction {
     @Override
     public String toString() {
         return getClass().getSimpleName() + ": " + globalId;
+    }
+
+    // Protocol message handlers are here so they can be synchronized
+
+    /**
+     * @throws WSATException
+     *
+     */
+    public synchronized void rollback() throws WSATException {
+        tranService.rollbackTransaction(globalId);
+    }
+
+    /**
+     * @return
+     * @throws WSATException
+     */
+    public synchronized Vote prepare() throws WSATException {
+        return tranService.prepareTransaction(globalId);
+    }
+
+    /**
+     * @throws WSATException
+     *
+     */
+    public synchronized void commit() throws WSATException {
+        tranService.commitTransaction(globalId);
     }
 }

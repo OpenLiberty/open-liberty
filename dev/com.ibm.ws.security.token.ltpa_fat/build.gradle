@@ -36,8 +36,8 @@ def appBuildDir = "${buildDir}/test-application"
  ******************************************************************
  ******************************************************************/
 task ltpaTest(type: Zip, dependsOn: classes) {
-  destinationDir file("${appBuildDir}")
-  archiveName "ltpaTest.zip"
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "ltpaTest.zip"
   
   from('test-applications/ltpaTest/resources') {
     include '**/*'

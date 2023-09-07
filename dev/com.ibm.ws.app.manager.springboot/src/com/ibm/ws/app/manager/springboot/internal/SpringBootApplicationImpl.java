@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -124,6 +125,9 @@ import com.ibm.wsspi.classloading.GatewayConfiguration;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
+
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 public class SpringBootApplicationImpl extends DeployedAppInfoBase implements SpringBootConfigFactory, SpringBootApplication {
     private static final TraceComponent tc = Tr.register(SpringBootApplicationImpl.class);
@@ -282,7 +286,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             checkExistingConfig(config);
 
             if (config.getVirtualHosts().isEmpty()) {
-                if (!instance.isEndpointConfigured()) {
+                if (!installVirtualHostOnRestore(instance, config) && !instance.isEndpointConfigured()) {
                     //use app configured port with default_host
                     virtualHostConfig.updateAndGet((b) -> installVirtualHostBundle(b, config));
                 }
@@ -291,6 +295,36 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
                 virtualHostConfig.updateAndGet((b) -> installVirtualHostBundle(b, config));
             }
             instance.start();
+        }
+
+        public boolean installVirtualHostOnRestore(Instance instance, ServerConfiguration config) {
+            if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE) {
+                if (!CheckpointPhase.getPhase().restored()) {
+                    Hashtable<String, Object> hookProps = new Hashtable<>();
+                    // We want this to be one of the last restore hooks called. It has to be after the hook in
+                    // com.ibm.ws.http.internal.VirtualHostImpl.RegistrationHolder.listenOnRestore because this hook installs virtual host bundle to use app configured port with default_host
+                    // Using max rank with multi-thread hook will run the restore hook "last"
+                    hookProps.put(Constants.SERVICE_RANKING, Integer.MAX_VALUE);
+                    hookProps.put(CheckpointHook.MULTI_THREADED_HOOK, Boolean.TRUE);
+                    final AtomicReference<ServiceRegistration<CheckpointHook>> hookReg = new AtomicReference<>();
+                    hookReg.set(SpringBootApplicationImpl.this.factory.getBundleContext().registerService(CheckpointHook.class, new CheckpointHook() {
+                        @Override
+                        public void restore() {
+                            //Do not install virtual host bundle if the default virtual host is already configured
+                            if (!instance.isEndpointConfigured()) {
+                                //use app configured port with default_host
+                                virtualHostConfig.updateAndGet((b) -> installVirtualHostBundle(b, config));
+                            }
+                            ServiceRegistration<CheckpointHook> currentReg = hookReg.get();
+                            if (currentReg != null) {
+                                currentReg.unregister();
+                            }
+                        }
+                    }, hookProps));
+                }
+                return true;
+            }
+            return false;
         }
 
         @Override

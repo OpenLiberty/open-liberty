@@ -22,6 +22,7 @@ import java.util.Arrays;
 import org.hamcrest.Matchers;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -57,7 +58,7 @@ public class UICustomPathTest {
     public static final String UI_PROPERTY_NAME = "customUIPath";
     public static final String DOC_PROPERTY_NAME = "customDocPath";
     public static final String UI_PATH_VALUE = "/foo/bar";
-    public static final String DOC_PATH_VALUE = "/bar/foo";
+    public static final String DOC_PATH_VALUE = "/get/docs/here";
     /**
      * Wait for "long" tasks like initial page load or making a test request to the server
      */
@@ -86,10 +87,16 @@ public class UICustomPathTest {
         server.addEnvVar(DOC_PROPERTY_NAME, DOC_PATH_VALUE);
 
         //Set guards
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true", "-Dopen_api_path_enabled=true"));
+        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         server.startServer();
 
         Testcontainers.exposeHostPorts(server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
+    }
+
+    @After
+    public void teardownTest() throws Exception {
+        // Close the browser after tests to ensure selenium is clean between tests
+        driver.quit();
     }
 
     @Before
@@ -100,7 +107,6 @@ public class UICustomPathTest {
 
     @Test
     public void testCustomUIPath() {
-
         // Check the title loads
         WebElement title = waitForElement(driver, By.cssSelector("h2.title"), LONG_WAIT);
         assertThat("Page title", title.getText(), Matchers.containsString("Generated API"));

@@ -35,8 +35,8 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.WebFault;
 
 
-import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.websphere.ras.annotation.Sensitive; // Liberty Change
+import com.ibm.websphere.ras.annotation.Trivial; // Liberty Change
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.binding.soap.Soap12;
@@ -92,6 +92,10 @@ import org.apache.cxf.ws.policy.AssertionInfoMap;
  * Properties for outgoing messages.
  */
 @Trivial // Liberty Change
+// Liberty Change; This class has no Liberty specific changes other than the Sensitive annotation 
+// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
+// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
+// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
 public class MAPAggregatorImpl extends MAPAggregator {
 
     private static final Logger LOG =
@@ -955,7 +959,7 @@ public class MAPAggregatorImpl extends MAPAggregator {
             EndpointReferenceUtils.getEndpointReference(replyToAddress);
         if (reference != null) {
             String decoupledAddress = reference.getAddress().getValue();
-            LOG.finest("creating decoupled endpoint: " + decoupledAddress);
+            LOG.finest("creating decoupled endpoint: " + decoupledAddress); // Liberty Change
             try {
                 Destination dest = getDestination(bus, replyToAddress, message);
                 bus.getExtension(ClientLifeCycleManager.class).registerListener(DECOUPLED_DEST_CLEANER);
@@ -1066,8 +1070,7 @@ public class MAPAggregatorImpl extends MAPAggregator {
                                              boolean isProviderContext,
                                              boolean isOutbound) {
 
-        AddressingProperties maps = null;
-        maps = ContextUtils.retrieveMAPs(message,
+        AddressingProperties maps = ContextUtils.retrieveMAPs(message,
                                          isProviderContext,
                                          isOutbound);
         LOG.log(Level.FINE, "MAPs retrieved from message {0}", maps);

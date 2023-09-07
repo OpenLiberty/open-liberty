@@ -27,11 +27,6 @@ private static final long serialVersionUID = 0L;
     return new Creator();
   }
 
-  @java.lang.Override
-  public final com.google.protobuf.UnknownFieldSet
-  getUnknownFields() {
-    return this.unknownFields;
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return com.ibm.test.g3store.grpc.StoreProto.internal_static_Creator_descriptor;
@@ -46,7 +41,8 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int COMPANYNAME_FIELD_NUMBER = 1;
-  private volatile java.lang.Object companyName_;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object companyName_ = "";
   /**
    * <code>string companyName = 1;</code>
    * @return The companyName.
@@ -84,7 +80,8 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int EMAIL_FIELD_NUMBER = 2;
-  private volatile java.lang.Object email_;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object email_ = "";
   /**
    * <code>string email = 2;</code>
    * @return The email.
@@ -239,11 +236,13 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
+
   public static com.ibm.test.g3store.grpc.Creator parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
+
   public static com.ibm.test.g3store.grpc.Creator parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -318,10 +317,9 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      bitField0_ = 0;
       companyName_ = "";
-
       email_ = "";
-
       return this;
     }
 
@@ -348,10 +346,19 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.ibm.test.g3store.grpc.Creator buildPartial() {
       com.ibm.test.g3store.grpc.Creator result = new com.ibm.test.g3store.grpc.Creator(this);
-      result.companyName_ = companyName_;
-      result.email_ = email_;
+      if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
+    }
+
+    private void buildPartial0(com.ibm.test.g3store.grpc.Creator result) {
+      int from_bitField0_ = bitField0_;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.companyName_ = companyName_;
+      }
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.email_ = email_;
+      }
     }
 
     @java.lang.Override
@@ -400,10 +407,12 @@ private static final long serialVersionUID = 0L;
       if (other == com.ibm.test.g3store.grpc.Creator.getDefaultInstance()) return this;
       if (!other.getCompanyName().isEmpty()) {
         companyName_ = other.companyName_;
+        bitField0_ |= 0x00000001;
         onChanged();
       }
       if (!other.getEmail().isEmpty()) {
         email_ = other.email_;
+        bitField0_ |= 0x00000002;
         onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -434,12 +443,12 @@ private static final long serialVersionUID = 0L;
               break;
             case 10: {
               companyName_ = input.readStringRequireUtf8();
-
+              bitField0_ |= 0x00000001;
               break;
             } // case 10
             case 18: {
               email_ = input.readStringRequireUtf8();
-
+              bitField0_ |= 0x00000002;
               break;
             } // case 18
             default: {
@@ -457,6 +466,7 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int bitField0_;
 
     private java.lang.Object companyName_ = "";
     /**
@@ -499,11 +509,9 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setCompanyName(
         java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
+      if (value == null) { throw new NullPointerException(); }
       companyName_ = value;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -512,8 +520,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearCompanyName() {
-      
       companyName_ = getDefaultInstance().getCompanyName();
+      bitField0_ = (bitField0_ & ~0x00000001);
       onChanged();
       return this;
     }
@@ -524,12 +532,10 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setCompanyNameBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
       companyName_ = value;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -575,11 +581,9 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setEmail(
         java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
+      if (value == null) { throw new NullPointerException(); }
       email_ = value;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -588,8 +592,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearEmail() {
-      
       email_ = getDefaultInstance().getEmail();
+      bitField0_ = (bitField0_ & ~0x00000002);
       onChanged();
       return this;
     }
@@ -600,12 +604,10 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setEmailBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
       email_ = value;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }

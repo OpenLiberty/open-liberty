@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -72,19 +72,18 @@ public class SpnegoHelper {
 
     /**
      * Build a SPNEGO Authorization string using a Kerberos credential from the delegate service that impersonates the user (S4U2self).
-     * The method will use that credential to request a SPNEGO token for a targetServiceSpn (SPN) for the target service system.
+     * The method will use that credential to request a SPNEGO token for a target service principal name  for the target service system.
      * If the system property java.security.krb5.conf has not been set by the run time, you need to set the java.security.krb5.conf that point to your Kerberos configuration file.
      *
-     * @param upn - UserPrincipalName of the user for which the SPNEGO token will be generated.
-     * @param targetServiceSpn - ServicePrincipalName of system for which SPNEGO token will be targeted.
-     * @param lifetime - Lifetime for the context, for example GSSCredential.INDEFINITE_LIFETIME
+     * @param upn – User principal name of the user for which the SPNEGO token will be generated.
+     * @param targetServiceSpn – Service principal name of a system for which SPNEGO token will be targeted.
+     * @param lifetime – Lifetime for the context, for example GSSCredential.INDEFINITE_LIFETIME.
      * @param delegate - Whether the token includes delegatable GSSCredential credentials.
-     * @param delegateServiceSpn - Delegate servicePrincipalName of system for which the user already authenticated.
-     * @param jaasLoginContextEntry - JAAS login context entry to use.
-     * @param krb5Keytab - Kerberos keytab that contained the firstServiceSpn and its keys.
-     * @return - String "Negotiate " + Base64 encoded version of SPNEGO Token
-     * @throws GSSException - thrown when SPNEGO token generation fails, when delegate service's subject is null, when the delegate serivce's subject
-     *             does not contain Kerberos credentials, when firstServiceSpn or targetServiceSpn is invalid.
+     * @param delegateServiceSpn - Delegate service principal name of system for which the user already authenticated.
+     * @param jaasLoginContextEntry - JAAS login context entry to use. This parameter is currently not used.
+     * @param krb5Keytab - Kerberos keytab file that contained the delegate service principal name and its keys.
+     * @return - String "Negotiate " + Base64 encoded version of SPNEGO Token.
+     * @throws GSSException - thrown when SPNEGO token generation fails, when delegate service principal is null, when the delegate service principal's subject does not contain Kerberos credentials, when the target service principal is invalid.
      * @throws PrivilegedActionException - unexpected - thrown when Java 2 security is misconfigured.
      * @throws LoginException - thrown when the Login fails with the delegate service SPN
      */

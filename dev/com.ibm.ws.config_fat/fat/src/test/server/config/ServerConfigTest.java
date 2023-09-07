@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -245,6 +246,27 @@ public class ServerConfigTest {
             server.stopServer();
         }
 
+    }
+
+    @Test
+    public void testIncludeDirectory() throws Exception {
+        LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.include.directory");
+        ShrinkHelper.exportAppToServer(server, restartApp, DeployOptions.DISABLE_VALIDATION);
+        server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
+        server.setServerStartTimeout(SERVER_START_TIMEOUT);
+        server.startServer("includeDir.log");
+        // Wait for the application to be installed before proceeding
+        assertNotNull("The restart application never came up", server.waitForStringInLog("CWWKZ0001I.* restart"));
+
+        try {
+            // check all files listed in log
+            assertStringsPresentInLog(server, new String[] { "common" + File.separator + "a.xml" });
+            assertStringsPresentInLog(server, new String[] { "common" + File.separator + "b.xml" });
+            assertStringsPresentInLog(server, new String[] { "common" + File.separator + "c.xml" });
+            test(server, "/restart/restart?testName=includeDir");
+        } finally {
+            server.stopServer();
+        }
     }
 
     @Test

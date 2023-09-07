@@ -40,7 +40,6 @@ Export-Package: \
  
 Private-Package: \
     com.ibm.ws.security.acme.internal.*,\
-    org.bouncycastle.*,\
     org.shredzone.*,\
     org.jose4j.*,\
     com.ibm.ws.security.acme.resources
@@ -49,9 +48,6 @@ Include-Resource: \
     OSGI-INF=resources/OSGI-INF,\
     @${repo;org.shredzone.acme4j:acme4j-client;2.7;EXACT},\
     @${repo;org.shredzone.acme4j:acme4j-utils;2.7;EXACT},\
-    @${repo;org.bouncycastle:bcprov-jdk18on;1.75;EXACT}!/!META-INF/versions/9/module-info.class,\
-    @${repo;org.bouncycastle:bcpkix-jdk18on;1.75;EXACT}!/!META-INF/versions/9/module-info.class,\
-    @${repo;org.bouncycastle:bcutil-jdk18on;1.75;EXACT}!/!META-INF/versions/9/module-info.class,\
     org=${bin}/org
 
 instrument.classesExcludes: com/ibm/ws/security/acme/resources/*.class
@@ -93,9 +89,9 @@ instrument.classesExcludes: com/ibm/ws/security/acme/resources/*.class
 	com.ibm.ws.org.slf4j.api;version=latest,\
 	org.shredzone.acme4j:acme4j-client;version=2.7,\
 	org.shredzone.acme4j:acme4j-utils;version=2.7,\
-	org.bouncycastle:bcprov-jdk18on;version=1.75,\
-	org.bouncycastle:bcpkix-jdk18on;version=1.75,\
-	org.bouncycastle:bcutil-jdk18on;version=1.75,\
+	io.openliberty.org.bouncycastle.bcprov-jdk18on;version=latest,\
+	io.openliberty.org.bouncycastle.bcpkix-jdk18on;version=latest,\
+	io.openliberty.org.bouncycastle.bcutil-jdk18on;version=latest,\
  	com.ibm.ws.org.jose4j;version=latest,\
 	com.ibm.ws.app.manager;version=latest,\
 	com.ibm.ws.ssl;version=latest,\

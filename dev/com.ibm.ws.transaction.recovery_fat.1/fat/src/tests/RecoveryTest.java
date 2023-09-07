@@ -19,11 +19,8 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
-@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class RecoveryTest extends RecoveryTestBase {
 

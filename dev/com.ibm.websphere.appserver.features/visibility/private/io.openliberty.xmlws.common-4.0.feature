@@ -51,7 +51,9 @@ IBM-API-Package:\
  com.ibm.ws.javaee.ddmodel.wsbnd, \
  com.ibm.ws.org.jvnet.mimepull, \
  io.openliberty.xmlWS.3.0.internal.tools, \
- io.openliberty.com.sun.xml.messaging.saaj.3.0
+ io.openliberty.com.sun.xml.messaging.saaj.3.0, \
+ io.openliberty.org.codehaus.woodstox.stax2.api, \
+ io.openliberty.com.fasterxml.woodstox.core
 kind=ga
 edition=base
 WLP-Activation-Type: parallel

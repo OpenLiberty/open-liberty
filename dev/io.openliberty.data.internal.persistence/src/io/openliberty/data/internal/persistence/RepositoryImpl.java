@@ -12,15 +12,20 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -33,10 +38,12 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -55,8 +62,10 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.data.internal.persistence.cdi.DataExtension;
 import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Count;
@@ -82,6 +91,7 @@ import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
+import jakarta.data.repository.RepositoryAssist;
 import jakarta.data.repository.Slice;
 import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
@@ -123,14 +133,24 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private static final Set<Compare> SUPPORTS_COLLECTIONS = Set.of //
     (Compare.Equal, Compare.Contains, Compare.Empty, Compare.Not, Compare.NotContains, Compare.NotEmpty);
 
+    private static final ThreadLocal<Deque<EntityManager>> defaultMethodResources = new ThreadLocal<>();
+
+    private final Class<?> defaultEntityClass; // entity class as specified by the user (not generated for records)
+    private final CompletableFuture<EntityInfo> defaultEntityInfoFuture;
     private final AtomicBoolean isDisposed = new AtomicBoolean();
     private final DataExtensionProvider provider;
     final Map<Method, CompletableFuture<QueryInfo>> queries = new HashMap<>();
     private final Class<R> repositoryInterface;
+    private final boolean requestsValidation; // indicates if repository superinterface is annotated with jakarta.validation.Valid
+    private final Class<? extends Annotation> Valid; // the jakarta.validation.Valid, if available
 
-    public RepositoryImpl(DataExtensionProvider provider, EntityDefiner definer, Class<R> repositoryInterface, Class<?> defaultEntityClass) {
-        this.provider = provider;
+    public RepositoryImpl(DataExtension extension, EntityDefiner definer, Class<R> repositoryInterface, Class<?> defaultEntityClass, boolean requestsValidation) {
+        this.defaultEntityClass = defaultEntityClass;
+        this.provider = extension.provider;
         this.repositoryInterface = repositoryInterface;
+        this.requestsValidation = requestsValidation;
+        this.Valid = extension.Valid;
+
         boolean inheritance = defaultEntityClass.getAnnotation(Inheritance.class) != null;
         Class<?> recordClass = null;
 
@@ -143,13 +163,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 throw new MappingException("Unable to load generated entity class for record " + recordClass, x); // TODO NLS
             }
 
-        CompletableFuture<EntityInfo> defaultEntityInfoFuture = definer.entityInfoMap.computeIfAbsent(defaultEntityClass, EntityInfo::newFuture);
+        defaultEntityInfoFuture = definer.entityInfoMap.computeIfAbsent(defaultEntityClass, EntityInfo::newFuture);
 
         for (Method method : repositoryInterface.getMethods()) {
-            if (method.isDefault()) // skip default methods
+            if (RepositoryAssist.class.equals(method.getDeclaringClass()) // skip mix-in interface
+                || method.isDefault()) // skip default methods
                 continue;
 
-            Class<?> returnArrayType = null;
+            Class<?> returnArrayComponentType = null;
             List<Class<?>> returnTypeAtDepth = new ArrayList<>(5);
             Type type = method.getGenericReturnType();
             for (int depth = 0; depth < 5 && type != null; depth++) {
@@ -169,12 +190,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     } else if (DoubleStream.class.equals(type)) {
                         returnTypeAtDepth.add(double.class);
                         depth++;
-                    } else if (returnArrayType == null) {
-                        returnArrayType = c.getComponentType();
-                        if (returnArrayType != null) {
-                            returnTypeAtDepth.add(returnArrayType);
+                    } else if (returnArrayComponentType == null) {
+                        returnArrayComponentType = c.getComponentType();
+                        if (returnArrayComponentType != null) {
+                            returnTypeAtDepth.add(returnArrayComponentType);
                             depth++;
                         }
+                    }
+                    type = null;
+                } else if (type instanceof GenericArrayType) {
+                    // TODO cover the possibility that the generic type could be for something other than the entity, such as the primary key?
+                    Class<?> arrayComponentType = recordClass == null ? defaultEntityClass : recordClass;
+                    returnTypeAtDepth.add(arrayComponentType.arrayType());
+                    if (returnArrayComponentType == null) {
+                        returnTypeAtDepth.add(returnArrayComponentType = arrayComponentType);
+                        depth++;
                     }
                     type = null;
                 } else {
@@ -192,7 +222,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             ? defaultEntityInfoFuture //
                             : definer.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
 
-            queries.put(method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(new QueryInfo(method, returnArrayType, returnTypeAtDepth)),
+            QueryInfo queryInfo = new QueryInfo(method, returnArrayComponentType, returnTypeAtDepth);
+            queries.put(method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(queryInfo),
                                                              this::completeQueryInfo));
         }
     }
@@ -375,9 +406,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
             } else if (queryInfo.method.getName().startsWith("save")) {
                 queryInfo.type = QueryInfo.Type.MERGE;
                 Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-                if (paramTypes.length == 0)
-                    throw new UnsupportedOperationException(queryInfo.method.getName() + " without any parameters");
+                if (paramTypes.length != 1)
+                    throw new UnsupportedOperationException("Repository save operations must have exactly 1 parameter," +
+                                                            " which can be the entity or a collection or array of entities. The " + queryInfo.method.getName() +
+                                                            " method has " + paramTypes.length + " parameters."); // TODO NLS
                 queryInfo.saveParamType = paramTypes[0];
+                if (Valid != null)
+                    queryInfo.validatable = isValidatable(queryInfo.method, queryInfo.saveParamType);
             } else {
                 // Query by method name
                 q = generateMethodNameQuery(queryInfo, countPages);//keyset queries before orderby
@@ -1315,9 +1350,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             first = false;
                         }
                     else {
-                        //for (RecordComponent component : recordClass.getRecordComponents()) {
-                        //    String name = component.getName();
-                        for (String name : List.of("purchaseId", "customer", "total")) { // TODO replace with above once compiling against Java 17
+                        for (RecordComponent component : entityInfo.recordClass.getRecordComponents()) {
+                            String name = component.getName();
                             generateSelectExpression(q, first, function, distinct, o, name);
                             first = false;
                         }
@@ -1739,6 +1773,26 @@ public class RepositoryImpl<R> implements InvocationHandler {
         return q.append(')');
     }
 
+    /**
+     * Implementation of RepositoryAssist.getResource for the specified resource type.
+     *
+     * @param type resource type.
+     * @return optional populated with the resource or the empty optional.
+     */
+    private <T> Optional<T> getResource(Class<T> type) {
+        Deque<EntityManager> resources = defaultMethodResources.get();
+        if (resources == null)
+            throw new IllegalStateException("The " + type.getName() + " resource cannot be obtained outside the scope of a repository default method."); // TODO NLS
+        if (EntityManager.class.equals(type)) {
+            EntityManager em = defaultEntityInfoFuture.join().persister.createEntityManager();
+            resources.add(em);
+            @SuppressWarnings("unchecked")
+            T t = (T) em;
+            return Optional.of(t);
+        }
+        return Optional.empty();
+    }
+
     @FFDCIgnore(Throwable.class)
     @Override
     @Trivial
@@ -1747,7 +1801,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
         boolean isDefaultMethod = false;
 
         if (queryInfoFuture == null)
-            if (method.isDefault()) {
+            if (RepositoryAssist.class.equals(method.getDeclaringClass())) {
+                String methodName = method.getName();
+                if ("getResource".equals(methodName))
+                    return getResource((Class<?>) args[0]);
+                else
+                    throw new UnsupportedOperationException(method.toString());
+            } else if (method.isDefault()) {
                 isDefaultMethod = true;
             } else {
                 String methodName = method.getName();
@@ -1773,12 +1833,30 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                 " is no longer in scope."); // TODO
 
             if (isDefaultMethod) {
-                // TODO invoke directly once compiling against Java 17+
-                Object returnValue = InvocationHandler.class.getMethod("invokeDefault", Object.class, Method.class, Object[].class) //
-                                .invoke(null, proxy, method, args);
-                if (trace && tc.isEntryEnabled())
-                    Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), returnValue);
-                return returnValue;
+                Deque<EntityManager> resourceStack = defaultMethodResources.get();
+                boolean added;
+                if (added = (resourceStack == null))
+                    defaultMethodResources.set(resourceStack = new LinkedList<>());
+                else
+                    resourceStack.add(null); // indicator of nested default method
+                try {
+                    Object returnValue = InvocationHandler.invokeDefault(proxy, method, args);
+                    if (trace && tc.isEntryEnabled())
+                        Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), returnValue);
+                    return returnValue;
+                } finally {
+                    for (EntityManager em; (em = resourceStack.pollLast()) != null;)
+                        if (em.isOpen())
+                            try {
+                                if (trace && tc.isDebugEnabled())
+                                    Tr.debug(this, tc, "close " + em);
+                                em.close();
+                            } catch (Throwable x) {
+                                FFDCFilter.processException(x, getClass().getName(), "1827", this);
+                            }
+                    if (added)
+                        defaultMethodResources.remove();
+                }
             }
 
             QueryInfo queryInfo = queryInfoFuture.join();
@@ -1786,6 +1864,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, queryInfo.toString());
+
+            EntityValidator validator = provider.validator();
+            if (validator != null) // TODO also use queryInfo.validatable which will previously check with bean validation
+                validator.validateParameters(proxy, method, args);
 
             LocalTransactionCoordinator suspendedLTC = null;
             EntityManager em = null;
@@ -1814,23 +1896,47 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     case MERGE: {
                         em = entityInfo.persister.createEntityManager();
 
+                        List<Object> results;
                         if (queryInfo.saveParamType.isArray()) {
-                            ArrayList<Object> results = new ArrayList<>();
+                            results = new ArrayList<>();
                             Object a = args[0];
                             int length = Array.getLength(a);
+                            if (queryInfo.validatable && validator != null)
+                                validator.validate(a, length);
                             for (int i = 0; i < length; i++)
                                 results.add(em.merge(toEntity(Array.get(a, i))));
                             em.flush();
-                            returnValue = results;
                         } else if (Iterable.class.isAssignableFrom(queryInfo.saveParamType)) {
-                            ArrayList<Object> results = new ArrayList<>();
+                            if (queryInfo.validatable && validator != null)
+                                validator.validate((Iterable<?>) args[0]);
+                            results = new ArrayList<>();
                             for (Object e : ((Iterable<?>) args[0]))
                                 results.add(em.merge(toEntity(e)));
                             em.flush();
-                            returnValue = results;
                         } else {
-                            returnValue = em.merge(toEntity(args[0]));
+                            if (queryInfo.validatable && validator != null && args[0] != null)
+                                validator.validate(args[0]);
+                            results = List.of(em.merge(toEntity(args[0])));
                             em.flush();
+                        }
+
+                        if (queryInfo.returnArrayType != null) {
+                            Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
+                            returnValue = results.toArray(newArray);
+                        } else {
+                            Class<?> multiType = queryInfo.getMultipleResultType();
+                            if (multiType == null)
+                                returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results?
+                            else if (multiType.isInstance(results))
+                                returnValue = results;
+                            else if (Stream.class.equals(multiType))
+                                returnValue = results.stream();
+                            else if (Iterable.class.isAssignableFrom(multiType))
+                                returnValue = toIterable(multiType, null, results);
+                            else if (Iterator.class.equals(multiType))
+                                returnValue = results.iterator();
+                            else
+                                throw new UnsupportedOperationException(multiType + " is an unsupported return type."); // TODO NLS
                         }
 
                         if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
@@ -2005,36 +2111,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                     returnValue = oneResult(results);
                                 } else if (multiType != null && multiType.isInstance(results) && (results.isEmpty() || !(results.get(0) instanceof Object[]))) {
                                     returnValue = results;
-                                } else if (Streamable.class.equals(multiType)) {
-                                    returnValue = new StreamableImpl<>(results);
                                 } else if (multiType != null && Iterable.class.isAssignableFrom(multiType)) {
-                                    try {
-                                        Collection<Object> list;
-                                        if (multiType.isInterface()) {
-                                            if (multiType.isAssignableFrom(ArrayList.class)) // covers Iterable, Collection, List
-                                                list = new ArrayList<>(results.size());
-                                            else if (multiType.isAssignableFrom(ArrayDeque.class)) // covers Queue, Deque
-                                                list = new ArrayDeque<>(results.size());
-                                            else if (multiType.isAssignableFrom(LinkedHashSet.class)) // covers Set
-                                                list = new LinkedHashSet<>(results.size());
-                                            else
-                                                throw new UnsupportedOperationException(multiType + " is an unsupported return type.");
-                                        } else {
-                                            @SuppressWarnings("unchecked")
-                                            Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) multiType.getConstructor();
-                                            list = c.newInstance();
-                                        }
-                                        if (results.size() == 1 && results.get(0) instanceof Object[]) {
-                                            Object[] a = (Object[]) results.get(0);
-                                            for (int i = 0; i < a.length; i++)
-                                                list.add(singleType.isInstance(a[i]) ? a[i] : to(singleType, a[i], true));
-                                        } else {
-                                            list.addAll(results);
-                                        }
-                                        returnValue = list;
-                                    } catch (NoSuchMethodException x) {
-                                        throw new UnsupportedOperationException(multiType + " lacks public zero parameter constructor.");
-                                    }
+                                    returnValue = toIterable(multiType, singleType, results);
                                 } else if (Iterator.class.equals(multiType)) {
                                     returnValue = results.iterator();
                                 } else if (queryInfo.returnArrayType != null) {
@@ -2200,16 +2278,93 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
             }
 
+            if (validator != null) // TODO queryInfo.validatable
+                validator.validateReturnValue(proxy, method, returnValue);
+
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), returnValue);
             return returnValue;
         } catch (Throwable x) {
-            if (x instanceof Exception)
+            if (!isDefaultMethod && x instanceof Exception)
                 x = failure((Exception) x);
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), x);
             throw x;
         }
+    }
+
+    /**
+     * Determine whether or not the parameter to the method should be validated.
+     * Prerequisites: the Valid field must contain the jakarta.validation.Valid class and not be null.
+     *
+     * @param method    repository method.
+     * @param arg0Class class of the first argument to the method.
+     * @return whether or not the first parameter to the method should be validated.
+     */
+    @Trivial
+    private boolean isValidatable(Method method, Class<?> arg0Class) {
+        // TODO based on outcome of Jakarta Data issue 216, either remove this method and requestsValidation
+        // or switch to use it and also implement validation for remove.
+        if (true)
+            return true;
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "isValidatable", method, arg0Class);
+
+        if (method.isAnnotationPresent(Valid)) {
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "isValidatable", "true: method has @Valid");
+            return true;
+        }
+
+        for (Annotation paramAnno : method.getParameterAnnotations()[0])
+            if (paramAnno.annotationType().equals(Valid)) {
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(this, tc, "isValidatable", "true: first arg has @Valid");
+                return true;
+            }
+
+        if (requestsValidation && (Object.class.equals(arg0Class) || defaultEntityClass.isAssignableFrom(arg0Class))) {
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "isValidatable", "true: first arg type matches or is generic");
+            return true;
+        }
+
+        if (requestsValidation) {
+            Class<?> arrayComponentClass = arg0Class.componentType();
+            if (arrayComponentClass != null
+                && (Object.class.equals(arrayComponentClass) || defaultEntityClass.isAssignableFrom(arrayComponentClass))) {
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(this, tc, "isValidatable", "true: first arg array class matches or is generic");
+                return true;
+            } else if (trace && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "array component " + arrayComponentClass + " is non-matching and non-generic");
+            }
+
+            if (Iterable.class.isAssignableFrom(arg0Class)) {
+                Type iterableComponentType = method.getGenericParameterTypes()[0];
+                if (iterableComponentType instanceof ParameterizedType) {
+                    Type[] typeParams = ((ParameterizedType) iterableComponentType).getActualTypeArguments();
+                    if (typeParams == null || typeParams.length == 0 || typeParams[0] instanceof TypeVariable // generic
+                        || typeParams[0] instanceof Class && defaultEntityClass.isAssignableFrom((Class<?>) typeParams[0])) {
+                        if (trace && tc.isEntryEnabled())
+                            Tr.exit(this, tc, "isValidatable", "true: first arg Iterable class matches or is generic");
+                        return true;
+                    } else if (trace && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "iterable component " + typeParams[0] + " is non-matching and non-generic");
+                    }
+                } else {
+                    if (trace && tc.isEntryEnabled())
+                        Tr.exit(this, tc, "isValidatable", "true: " + iterableComponentType + " is not a parameterized type");
+                    return true;
+                }
+            }
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "isValidatable", "false, requestsValidation? " + requestsValidation);
+        return false;
     }
 
     @Trivial
@@ -2504,6 +2659,51 @@ public class RepositoryImpl<R> implements InvocationHandler {
             return Integer.parseInt((String) o);
         else
             throw new IllegalArgumentException("Not representable as an int value: " + o.getClass().getName());
+    }
+
+    /**
+     * Convert the results list into an Iterable of the specified type.
+     *
+     * @param iterableType the desired type of Iterable.
+     * @param elementType  the type of each element if a find operation. Can be NULL if a save operation.
+     * @param results      results of a find or save operation.
+     * @return results converted to an Iterable of the specified type.
+     */
+    @Trivial
+    private static final Iterable<?> toIterable(Class<?> iterableType, Class<?> elementType, List<?> results) {
+        if (Streamable.class.equals(iterableType))
+            return new StreamableImpl<>(results);
+        Collection<Object> list;
+        if (iterableType.isInterface()) {
+            if (iterableType.isAssignableFrom(ArrayList.class)) // covers Iterable, Collection, List
+                list = new ArrayList<>(results.size());
+            else if (iterableType.isAssignableFrom(ArrayDeque.class)) // covers Queue, Deque
+                list = new ArrayDeque<>(results.size());
+            else if (iterableType.isAssignableFrom(LinkedHashSet.class)) // covers Set
+                list = new LinkedHashSet<>(results.size());
+            else
+                throw new UnsupportedOperationException(iterableType + " is an unsupported return type."); // TODO NLS
+        } else {
+            try {
+                @SuppressWarnings("unchecked")
+                Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) iterableType.getConstructor();
+                list = c.newInstance();
+            } catch (NoSuchMethodException x) {
+                throw new MappingException("The " + iterableType.getName() + " result type lacks a public zero parameter constructor.", x); // TODO NLS
+            } catch (IllegalAccessException | InstantiationException x) {
+                throw new MappingException("Unable to access the zero parameter constructor of the " + iterableType.getName() + " result type.", x); // TODO NLS
+            } catch (InvocationTargetException x) {
+                throw new MappingException("The constructor for the " + iterableType.getName() + " result type raised an error: " + x.getCause().getMessage(), x.getCause()); // TODO NLS
+            }
+        }
+        if (results.size() == 1 && results.get(0) instanceof Object[]) {
+            Object[] a = (Object[]) results.get(0);
+            for (int i = 0; i < a.length; i++)
+                list.add(elementType.isInstance(a[i]) ? a[i] : to(elementType, a[i], true));
+        } else {
+            list.addAll(results);
+        }
+        return list;
     }
 
     @Trivial

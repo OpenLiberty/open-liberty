@@ -19,7 +19,7 @@ defaultTasks 'clean', 'build'
 // Project version is the Bundle-Version attribute if a bundle gets released, otherwise the version is the buildID.
 project.version = bnd.get('Bundle-Version', bnd.buildID)
 jar {
-  version=null
+  archiveVersion=null
 }
 
 if (parseBoolean(bnd.get('globalize', 'true'))) {
@@ -29,7 +29,7 @@ if (parseBoolean(bnd.get('globalize', 'true'))) {
 
     ext.destinationDir = new File(buildDir, "src/${name}/java")
 
-    inputs.files(fileTree(dir: project.file('resources'), include: '**/*.nlsprops')).skipWhenEmpty()
+    inputs.files(fileTree(dir: project.file('resources'), include: '**/*.nlsprops')).ignoreEmptyDirectories().skipWhenEmpty()
     outputs.dir destinationDir
     doFirst {
       project.mkdir(destinationDir)
@@ -174,7 +174,7 @@ if (!parseBoolean(bnd.get('instrument.disabled', 'false'))) {
       }
     }
   }
-
+  compileTestJava.dependsOn(instrument)
   jar.dependsOn(instrument)
 }
 
@@ -284,7 +284,7 @@ if (bnd.get('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd.get('pub
 
   task zipJavadoc(type: Zip) {
     dependsOn apiSpiJavadoc
-    archiveName bnd.get('Bundle-SymbolicName', project.name) + '.javadoc.zip'
+    archiveFileName = bnd.get('Bundle-SymbolicName', project.name) + '.javadoc.zip'
     from new File(project.buildDir, "javadoc")
 
     configurations {
@@ -331,7 +331,7 @@ if (bnd.get('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd.get('pub
 
         javaexec {
             classpath configurations.jakartaeeTransformJars
-            main = 'org.eclipse.transformer.cli.JakartaTransformerCLI'
+            mainClass = 'org.eclipse.transformer.cli.JakartaTransformerCLI'
             args = transformerArgs
         }
       }

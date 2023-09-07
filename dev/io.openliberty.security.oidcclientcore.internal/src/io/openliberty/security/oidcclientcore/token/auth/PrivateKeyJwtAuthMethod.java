@@ -25,7 +25,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.ssl.SecuritySSLUtils;
 import com.ibm.ws.ssl.KeyStoreService;
 
@@ -55,8 +54,6 @@ public class PrivateKeyJwtAuthMethod extends TokenEndpointAuthMethod {
     public static final String AUTH_METHOD = "private_key_jwt";
 
     private static final float EXP_TIME_IN_MINUTES = 5;
-
-    private static boolean issuedBetaMessage = false;
 
     private String configurationId;
     private String clientId;
@@ -90,27 +87,11 @@ public class PrivateKeyJwtAuthMethod extends TokenEndpointAuthMethod {
     @Override
     @FFDCIgnore(PrivateKeyJwtAuthException.class)
     public void setAuthMethodSpecificSettings(Builder tokenRequestBuilder) throws TokenEndpointAuthMethodSettingsException {
-        if (!isRunningBetaMode()) {
-            return;
-        }
         try {
             HashMap<String, String> customParams = getPrivateKeyJwtParameters();
             tokenRequestBuilder.customParams(customParams);
         } catch (PrivateKeyJwtAuthException e) {
             throw new TokenEndpointAuthMethodSettingsException(configurationId, AUTH_METHOD, e.getMessage());
-        }
-    }
-
-    private boolean isRunningBetaMode() {
-        if (!ProductInfo.getBetaEdition()) {
-            return false;
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for this class
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-            return true;
         }
     }
 

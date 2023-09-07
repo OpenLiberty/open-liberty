@@ -26,6 +26,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jain.protocol.ip.sip.ListeningPointImpl;
+import com.ibm.ws.sip.stack.util.SipStackUtil;
 
 /**
  * @author Amir Perlman, Feb 19, 2003
@@ -293,7 +294,7 @@ public class StackProperties
             	providers = m_providers;
             }
         }
-        else if(transport.equalsIgnoreCase(ListeningPointImpl.TRANSPORT_TLS)){
+        else if(transport.equalsIgnoreCase(SipStackUtil.TLS_TRANSPORT)){
         	providersMap = m_tlsProviders; 
         }
         else if(transport.equalsIgnoreCase(ListeningPoint.TRANSPORT_TCP)){
@@ -396,7 +397,7 @@ public class StackProperties
 	                provider = getFirstProvider();
 	            }
 	        }
-	        else if(transport.equalsIgnoreCase(ListeningPointImpl.TRANSPORT_TLS))
+	        else if(transport.equalsIgnoreCase(SipStackUtil.TLS_TRANSPORT))
 	        {
 	        	provider = m_tlsProvider; 
 	        }

@@ -154,7 +154,7 @@ public final class WSProviderConfig {
     public static void setXmlSecIgnoreLineBreak() {
         //really need to make sure ignoreLineBreaks is set to
         boolean wasSet = false;
-        String sysPropertySet = "false";
+        String sysPropertySet = "false"; // Liberty Change
         try {
             // Don't override if it was set explicitly
 
@@ -164,7 +164,7 @@ public final class WSProviderConfig {
                     if (System.getProperty(lineBreakPropName) == null) {
                         System.setProperty(lineBreakPropName, "true");
                         return false;
-                    } else if (System.getProperty(lineBreakPropName).equals("true")) { // Liberty Change
+                    } else if (System.getProperty(lineBreakPropName).equals("true")) { // Liberty Change Start
                         return false;
                     } // End Liberty Change
                     
@@ -198,7 +198,7 @@ public final class WSProviderConfig {
     }
 
     private static void initializeResourceBundles() {
-     // Liberty Change
+     // Liberty Change Start
         try {
             AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
                 public Boolean run() throws Exception {
@@ -211,7 +211,7 @@ public final class WSProviderConfig {
         } catch (Throwable t) { //NOPMD
             //ignore
         }
-     // End Liberty Change
+     // Liberty Change End
         I18n.init(new WSS4JResourceBundle());
     }
 

@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2023 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ *******************************************************************************/
 package com.ibm.ws.jaxws.security.fat;
 
 import java.util.ArrayList;
@@ -11,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 
@@ -19,6 +30,9 @@ import componenttest.custom.junit.runner.Mode;
  */
 @Mode(Mode.TestMode.FULL)
 @RunWith(FATRunner.class)
+// As part of the deprecation of the Java Security Manager, as specified by JEP 411,
+// Liberty does not support the Java Security Manager with Java 18 or later, that this test uses.
+@MaximumJavaLevel(javaLevel = 17)
 public class SSLConfigurationNoTrustStoreTest extends AbstractJaxWsTransportSecuritySSLTest {
 
     private static final String SCHEMA = "https";

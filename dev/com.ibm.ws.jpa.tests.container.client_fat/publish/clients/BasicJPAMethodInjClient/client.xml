@@ -23,4 +23,6 @@ maxFiles="10"
 traceFormat="BASIC" />
 -->
         <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+      <!-- Doubling the default start timeout because this bucket tends to have issues on slow hardware -->
+   <applicationManager startTimeout="60s"/>
 </client>

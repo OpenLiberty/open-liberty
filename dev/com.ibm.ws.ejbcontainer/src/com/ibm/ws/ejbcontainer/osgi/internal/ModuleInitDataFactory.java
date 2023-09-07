@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.annotation.ManagedBean;
 import javax.ejb.DependsOn;
 import javax.ejb.Local;
 import javax.ejb.LocalBean;
@@ -171,6 +170,7 @@ public class ModuleInitDataFactory {
     private static final String REFERENCE_SESSION_BEAN_RUNTIME = "sessionBeanRuntime";
     private static final String REFERENCE_MDB_RUNTIME = "mdbRuntime";
     private static final String REFERENCE_MANAGED_BEAN_RUNTIME = "managedBeanRuntime";
+    private static final String MANAGED_BEAN_CLASSNAME = "javax.annotation.ManagedBean";
 
     private final AtomicServiceReference<AnnotationService_Service> annoServiceSRRef = new AtomicServiceReference<AnnotationService_Service>(REFERENCE_ANNOTATION_SERVICE);
     private final AtomicServiceReference<J2EENameFactory> j2eeNameFactorySRRef = new AtomicServiceReference<J2EENameFactory>(REFERENCE_J2EE_NAME_FACTORY);
@@ -283,12 +283,7 @@ public class ModuleInitDataFactory {
         }
 
         J2EENameFactory j2eeNameFactory = j2eeNameFactorySRRef.getService();
-        ModuleInitDataImpl mid = new ModuleInitDataImpl(
-                        modName, appName,
-                        ejbJar == null ? EJBJar.VERSION_3_0 : ejbJar.getVersionID(),
-                        sessionBeanRuntime,
-                        mdbRuntime,
-                        managedBeanRuntimeSRRef.getService());
+        ModuleInitDataImpl mid = new ModuleInitDataImpl(modName, appName, ejbJar == null ? EJBJar.VERSION_3_0 : ejbJar.getVersionID(), sessionBeanRuntime, mdbRuntime, managedBeanRuntimeSRRef.getService());
         mid.container = container;
         mid.ivLogicalName = modLogicalName;
         mid.ivJ2EEName = j2eeNameFactory.create(mid.ivAppName, mid.ivName, null);
@@ -451,7 +446,7 @@ public class ModuleInitDataFactory {
                 // to use SEED | PARTIAL | EXCLUDED in all cases regardless of whether EJB or WEB targets
                 // were obtained.
 
-                classNames.addAll(targets.getAnnotatedClasses(ManagedBean.class.getName(), AnnotationTargets_Targets.POLICY_ALL_EXCEPT_EXTERNAL));
+                classNames.addAll(targets.getAnnotatedClasses(MANAGED_BEAN_CLASSNAME, AnnotationTargets_Targets.POLICY_ALL_EXCEPT_EXTERNAL));
             }
 
             for (String className : classNames) {
@@ -580,8 +575,7 @@ public class ModuleInitDataFactory {
             if (modMergeData.isManagedBeanEnabled()) {
                 mid.managedBeanBinding = container.adapt(ManagedBeanBnd.class);
                 if (mid.managedBeanBinding != null) {
-                    Map<String, com.ibm.ws.javaee.dd.managedbean.ManagedBean> managedBeanBindings =
-                                    getManagedBeanBindings(mid.managedBeanBinding.getManagedBeans());
+                    Map<String, com.ibm.ws.javaee.dd.managedbean.ManagedBean> managedBeanBindings = getManagedBeanBindings(mid.managedBeanBinding.getManagedBeans());
 
                     for (BeanMergeData beanMergeData : modMergeData.getBeans()) {
                         BeanInitDataImpl bid = beanMergeData.getBeanInitData();
@@ -733,7 +727,7 @@ public class ModuleInitDataFactory {
         // If bean merge data already exists then this is not a managed bean
         // as managed beans cannot be defined in XML.
         if (modData.isManagedBeanEnabled()) {
-            AnnotationInfo managedBeanAnn = classInfo.getAnnotation(ManagedBean.class);
+            AnnotationInfo managedBeanAnn = classInfo.getAnnotation(MANAGED_BEAN_CLASSNAME);
             if (managedBeanAnn != null &&
                 !modData.containsBeanMergeDataForClass(classInfo.getName())) {
                 mergeComponentDefiningAnnotation(classInfo, managedBeanAnn,
@@ -862,7 +856,7 @@ public class ModuleInitDataFactory {
     }
 
     private String getManagedBeansName(ClassInfo classInfo) {
-        AnnotationInfo ann = classInfo.getAnnotation(ManagedBean.class);
+        AnnotationInfo ann = classInfo.getAnnotation(MANAGED_BEAN_CLASSNAME);
         return ann == null ? null : getStringValue(ann, "value");
     }
 
@@ -1001,7 +995,7 @@ public class ModuleInitDataFactory {
 
         if (isTraceOn && tc.isDebugEnabled()) {
             Tr.debug(tc, "checked interfaces", new Object[] { "interfaces=" + classInfo.getInterfaceNames(),
-                                                             "eligibleInterfaces=" + eligibleInterfaceNames });
+                                                              "eligibleInterfaces=" + eligibleInterfaceNames });
         }
 
         if (!bid.ivLocalBean) {
@@ -1069,12 +1063,12 @@ public class ModuleInitDataFactory {
 
         if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "mergeSessionInterfaces", new Object[] { "remoteHome=" + bid.ivRemoteHomeInterfaceName,
-                                                                "localHome=" + bid.ivLocalHomeInterfaceName,
-                                                                "localBean=" + bid.ivLocalBean,
-                                                                "remoteBusiness=" + beanMergeData.getRemoteBusinessInterfaceNames(),
-                                                                "localBusiness=" + beanMergeData.getLocalBusinessInterfaceNames(),
-                                                                "webServiceEndpoint=" + bid.ivWebServiceEndpoint,
-                                                                "webServiceEndpointName=" + bid.ivWebServiceEndpointInterfaceName });
+                                                                 "localHome=" + bid.ivLocalHomeInterfaceName,
+                                                                 "localBean=" + bid.ivLocalBean,
+                                                                 "remoteBusiness=" + beanMergeData.getRemoteBusinessInterfaceNames(),
+                                                                 "localBusiness=" + beanMergeData.getLocalBusinessInterfaceNames(),
+                                                                 "webServiceEndpoint=" + bid.ivWebServiceEndpoint,
+                                                                 "webServiceEndpointName=" + bid.ivWebServiceEndpointInterfaceName });
         }
     }
 

@@ -304,7 +304,7 @@ public class JavaInfo {
         // Temp fix for a JVM bug affecting checkpoint. Add hard coded location to library search path for libcriu.
         // the specified paths cover criu installed on a range of supported systems where we may run checkpoint FATs
         String libLoadPathSpec = "-Djava.library.path=" + System.getProperty("java.library.path") +
-                                 ":/usr/local/lib64:/usr/lib/x86_64-linux-gnu";
+                                 ":/usr/local/lib64:/usr/lib/x86_64-linux-gnu:/usr/local/lib/x86_64-linux-gnu";
         ProcessBuilder procBuilder = new ProcessBuilder(javaHome() + "/bin/java", "-XX:+EnableCRIUSupport", libLoadPathSpec, //
                         "-cp", simplicityJar, "componenttest.topology.impl.probe.CriuSupport");
         Process proc;

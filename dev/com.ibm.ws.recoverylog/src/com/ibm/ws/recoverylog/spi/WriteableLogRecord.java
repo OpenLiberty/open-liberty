@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,7 @@ import java.nio.ByteBuffer;
 import com.ibm.tx.TranConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 // REQD: LogRecord, ReadableLogRecord and WritableLogRecord need to be re-factored
 //       in the 5.1.2 timeframe. They are not very well organized.
@@ -60,20 +61,18 @@ public class WriteableLogRecord extends LogRecord {
      * @param length         The length of the data that other recovery log components will
      *                           write to the record.
      */
+    @Trivial
     protected WriteableLogRecord(ByteBuffer buffer, long sequenceNumber, int length, int absolutePosition) {
         super(buffer, absolutePosition);
 
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "WriteableLogRecord", buffer, sequenceNumber, length, absolutePosition);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "WriteableLogRecord {0} {1} {2} {3} {4}", this, buffer, sequenceNumber, length, absolutePosition);
 
         _buffer.put(RECORD_MAGIC_NUMBER);
         _buffer.putLong(sequenceNumber);
         _buffer.putInt(length);
 
         _sequenceNumber = sequenceNumber;
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "WriteableLogRecord", this);
     }
 
     //------------------------------------------------------------------------------
@@ -86,17 +85,12 @@ public class WriteableLogRecord extends LogRecord {
      *
      * @param bytes The source byte array from which the bytes will be written.
      */
+    @Trivial
     protected void put(byte[] bytes) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "put", new Object[] { RLSUtils.toHexString(bytes, RLSUtils.MAX_DISPLAY_BYTES), this });
-
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "Writing at position " + _buffer.position());
+            Tr.debug(tc, "put {0} {1} {2}", RLSUtils.toHexString(bytes, RLSUtils.MAX_DISPLAY_BYTES), _buffer.position(), this);
 
         _buffer.put(bytes);
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "put");
     }
 
     //------------------------------------------------------------------------------
@@ -108,9 +102,10 @@ public class WriteableLogRecord extends LogRecord {
      *
      * @param data The int value to be written.
      */
+    @Trivial
     protected void putInt(int data) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "Writing at position " + _buffer.position(), data, this);
+            Tr.debug(tc, "Writing at position {0} {1} {2}", _buffer.position(), data, this);
 
         _buffer.putInt(data);
     }
@@ -124,9 +119,10 @@ public class WriteableLogRecord extends LogRecord {
      *
      * @param data The long value to be written.
      */
+    @Trivial
     protected void putLong(long data) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "Writing at position " + _buffer.position(), data, this);
+            Tr.debug(tc, "Writing at position {0} {1} {2}", _buffer.position(), data, this);
         _buffer.putLong(data);
     }
 
@@ -139,9 +135,10 @@ public class WriteableLogRecord extends LogRecord {
      *
      * @param data The short value to be written.
      */
+    @Trivial
     protected void putShort(short data) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "Writing at position " + _buffer.position(), data, this);
+            Tr.debug(tc, "Writing at position {0} {1} {2}", _buffer.position(), data, this);
         _buffer.putShort(data);
     }
 
@@ -154,9 +151,10 @@ public class WriteableLogRecord extends LogRecord {
      *
      * @param data The boolean value to be written.
      */
+    @Trivial
     protected void putBoolean(boolean data) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "Writing at position " + _buffer.position(), data, this);
+            Tr.debug(tc, "Writing at position {0} {1} {2}", _buffer.position(), data, this);
         _buffer.put(data ? TRUE : FALSE);
     }
 
@@ -170,12 +168,9 @@ public class WriteableLogRecord extends LogRecord {
      * this call has been issued.
      */
     protected void close() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "close", this);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "close {0}", this);
 
         _buffer.putLong(_sequenceNumber);
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "close");
     }
 }

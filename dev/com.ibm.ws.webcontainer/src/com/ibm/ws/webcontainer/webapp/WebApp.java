@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.webapp;
 
@@ -316,7 +313,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
     private static boolean errorExceptionTypeFirst = WCCustomProperties.ERROR_EXCEPTION_TYPE_FIRST;
     private static boolean initFilterBeforeServletInit = WCCustomProperties.INIT_FILTER_BEFORE_INIT_SERVLET; //PM62909
     //protected final static boolean stopAppStartupOnListenerException = WCCustomProperties.STOP_APP_STARTUP_ON_LISTENER_EXCEPTION ; //PI58875 update server.xml without restarting server may not pick up the change dynamically.
-    private static boolean SET_400_SC_ON_TOO_MANY_PARENT_DIRS = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.set400scontoomanyparentdirs")).booleanValue(); //PI80786
+    private static boolean SET_400_SC_ON_TOO_MANY_PARENT_DIRS = WCCustomProperties.SET_400_SC_ON_TOO_MANY_PARENT_DIRS ; //PI80786 , 25295
 
     private List<IServletConfig> sortedServletConfigs;
     private int effectiveMajorVersion;
@@ -5086,9 +5083,9 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
                 }
             }
         } catch (Throwable th) {
-            //PI80786
+            //PI80786; issue 25291: message changed in the WSUtil
             if (SET_400_SC_ON_TOO_MANY_PARENT_DIRS) { 
-                if(th.getMessage().contains("is invalid because it contains more references to parent directories")){
+                if(th.getMessage().contains("Non-valid URI")){
                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
                         logger.logp(Level.FINE, CLASS_NAME, "handleRequest", "Request contains more ../ than allowed, will set 400 SC");
                     }

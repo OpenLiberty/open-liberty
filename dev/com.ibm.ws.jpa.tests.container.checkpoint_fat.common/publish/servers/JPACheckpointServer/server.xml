@@ -40,7 +40,7 @@
     <javaPermission className="java.io.FilePermission" name="files/timertestoutput.txt" actions="read,write"/>
     <javaPermission className="java.io.FilePermission" name="files" actions="write"/>
 
-    <logging  traceSpecification="*=info:JPA=all:checkpoint=all"
+    <logging  traceSpecification="*=info:JPA=all:JPAORM=all:checkpoint=all"
               traceFileName="trace.log"
               maxFileSize="2000"
               maxFiles="10"

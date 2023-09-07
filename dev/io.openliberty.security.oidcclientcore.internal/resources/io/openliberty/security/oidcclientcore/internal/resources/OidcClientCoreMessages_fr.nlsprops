@@ -146,3 +146,23 @@ PRIVATE_KEY_JWT_AUTH_ERROR.useraction=Pour plus d'informations, voir l'erreur da
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY=CWWKS2431E: Le client [{0}] OpenID Connect ne poss\u00e8de pas la cl\u00e9 n\u00e9cessaire pour signer le jeton pour l''authentification client.
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.explanation=Des donn\u00e9es sont manquantes dans la configuration du client OpenID Connect ou une cl\u00e9 est introuvable avec le nom d'alias de cl\u00e9 dans la configuration SSL pour le client OpenID Connect.
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.useraction=V\u00e9rifiez que le client OpenID Connect poss\u00e8de un nom d'alias de cl\u00e9 et une r\u00e9f\u00e9rence SSL configur\u00e9s. V\u00e9rifiez que le magasin de cl\u00e9s r\u00e9f\u00e9renc\u00e9 par la configuration SSL contient une cl\u00e9 dont l'alias correspond au nom d'alias de cl\u00e9 dans la configuration du client OpenID Connect.
+
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR=CWWKS2432E: Le client [{0}] OpenID Connect a rencontr\u00e9 une erreur lors de la configuration de l''authentification client pour le noeud final de jeton pour la m\u00e9thode d''authentification [{1}]. {2}
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.explanation=Le noeud final de jeton OpenID Connect requiert une authentification client, mais il se peut que le client OpenID Connect ne dispose pas d'informations ou que le client ait rencontr\u00e9 une autre erreur lors de la configuration des donn\u00e9es d'authentification.
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.useraction=Pour plus d'informations, reportez-vous au message d'erreur.
+
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME=CWWKS2433E: Le client [{0}] OpenID Connect n''a pas de nom d''alias de cl\u00e9 configur\u00e9, de sorte que le client ne peut pas localiser les cl\u00e9s n\u00e9cessaires \u00e0 la cr\u00e9ation du jeton Web JSON pour l''authentification du client.
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.explanation=Le client OpenID Connect doit configurer un nom d'alias de cl\u00e9 pour d\u00e9finir la cl\u00e9 \u00e0 utiliser pour signer le jeton Web JSON (JWT). Le m\u00eame alias de cl\u00e9 doit \u00eatre utilis\u00e9 pour la cl\u00e9 priv\u00e9e utilis\u00e9e pour signer le jeton Web JSON (JWT) et la cl\u00e9 publique correspondante.
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.useraction=V\u00e9rifiez que le client OpenID Connect poss\u00e8de un nom d'alias de cl\u00e9 configur\u00e9.
+
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF=CWWKS2434E: Le client [{0}] OpenID Connect ne poss\u00e8de pas de r\u00e9f\u00e9rence de magasin de cl\u00e9s configur\u00e9e, de sorte que le client ne peut pas localiser la cl\u00e9 \u00e0 utiliser pour signer le jeton Web JSON pour l''authentification client.
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.explanation=Le client OpenID Connect doit configurer une r\u00e9f\u00e9rence de magasin de cl\u00e9s pour d\u00e9finir l'emplacement dans lequel rechercher la cl\u00e9 \u00e0 utiliser pour signer le jeton Web JSON (JWT).
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.useraction=V\u00e9rifiez que le client OpenID Connect poss\u00e8de une r\u00e9f\u00e9rence de magasin de cl\u00e9s configur\u00e9e.
+
+PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY=CWWKS2435E: Le client ne peut pas extraire la cl\u00e9 priv\u00e9e [{0}] du magasin de cl\u00e9s [{1}] pour signer le jeton Web JSON. {2}
+PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY.explanation=Le client OpenID Connect doit utiliser une cl\u00e9 priv\u00e9e pour signer le jeton Web JSON pour l'authentification du client. Le client a rencontr\u00e9 une erreur lors de l'extraction de la cl\u00e9 priv\u00e9e.
+PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY.useraction=Pour plus d'informations, reportez-vous au message d'erreur.
+
+PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY=CWWKS2436E: Le client ne peut pas extraire la cl\u00e9 publique [{0}] du magasin de cl\u00e9s [{1}] pour calculer l''en-t\u00eate x5t pour le jeton Web JSON. {2}
+PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY.explanation=L'en-t\u00eate x5t est l'empreinte de certificat de la cl\u00e9 publique qui correspond \u00e0 la cl\u00e9 priv\u00e9e utilis\u00e9e pour signer le jeton Web JSON. L'en-t\u00eate x5t permet aux fournisseurs OpenID Connect d'identifier le certificat \u00e0 utiliser pour v\u00e9rifier la signature du jeton Web JSON (JWT). Le client a rencontr\u00e9 une erreur lors de l'extraction de la cl\u00e9 publique.
+PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY.useraction=Pour plus d'informations, reportez-vous au message d'erreur.

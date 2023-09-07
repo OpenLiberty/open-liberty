@@ -36,6 +36,5 @@ tested.features: samlweb-2.0, jdbc-4.0, jsp-2.3, servlet-4.0, el-3.0, \
     com.ibm.ws.org.joda.time.1.6.2;version=latest, \
     com.ibm.ws.webcontainer.security;version=latest, \
     com.ibm.ws.security.saml.websso.2.0;version=latest, \
-    net.sourceforge.htmlunit:htmlunit;version=2.44.0, \
-    com.ibm.ws.org.apache.directory.server;version=latest
+    net.sourceforge.htmlunit:htmlunit;version=2.44.0
     

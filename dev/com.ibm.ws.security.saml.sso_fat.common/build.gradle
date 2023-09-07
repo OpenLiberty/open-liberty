@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -75,10 +75,8 @@ dependencies {
      */
     collectedDeps project(':io.openliberty.org.apache.commons.codec'),
                   project(':io.openliberty.org.apache.commons.logging'),
-                  'com.unboundid:unboundid-ldapsdk:5.1.0',
 //                  'jdom:1.1.2',                                     NOT USED IN OPEN LIBERTY YET
                   project(':com.ibm.json4j'),
-                  project(':com.ibm.ws.com.unboundid'),
                   project(':com.ibm.ws.com.meterware.httpunit.1.7'),
 //                  project(':com.ibm.ws.org.apache.commons.lang'),   NOT IN OPEN LIBERTY
                   project(':com.ibm.ws.org.joda.time')
@@ -109,8 +107,8 @@ def fixed410Files = "${projectDir}/shibboleth-idp/4.1.0/fixedFiles"
  ******************************************************************
  ******************************************************************/
 task SAML_Demo_WAR(type: War, dependsOn: classes) {
-  destinationDir file(appBuildDir)
-  archiveName "SAML_Demo.war"
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "SAML_Demo.war"
   classpath = classpath.filter{ false }
 
   manifest {
@@ -137,8 +135,8 @@ task SAML_Demo_WAR(type: War, dependsOn: classes) {
 task SAML_Demo_EAR(type: Jar) {
   dependsOn 'SAML_Demo_WAR'
 
-  destinationDir file(appBuildDir)
-  archiveName "SAML_Demo.ear"
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "SAML_Demo.ear"
 
   manifest {
     attributes("Class-Path": "")
@@ -161,8 +159,8 @@ task SAML_Demo_EAR(type: Jar) {
  ******************************************************************
  ******************************************************************/
 task samlclient_WAR(type: War, dependsOn: classes) {
-  destinationDir file(appBuildDir)
-  archiveName "samlclient.war"
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "samlclient.war"
   classpath = classpath.filter{ false }
   
   manifest {
@@ -189,8 +187,8 @@ task samlclient_WAR(type: War, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task httpServletRequestApp_WAR(type: War, dependsOn: classes) {
-  destinationDir file(appBuildDir)
-  archiveName "httpServletRequestApp.war"
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "httpServletRequestApp.war"
   classpath = classpath.filter{ false }
   
   manifest {
@@ -247,7 +245,7 @@ task copy_41x_IDP {
 task updateIdp_3_x_WAR(type: Zip, dependsOn: copy_331_IDP) {
   def originalWar = new File(downloadDir, 'idp-war-3.3.1.war')
   
-  destinationDir file(appBuildDir)
+  destinationDirectory = file(appBuildDir)
   archiveFileName = 'idp-war-3.3.1.war'
 
   from (zipTree(originalWar))
@@ -263,7 +261,7 @@ task updateIdp_3_x_WAR(type: Zip, dependsOn: copy_331_IDP) {
 task updateIdp_4_0_x_WAR(type: Zip, dependsOn: copy_40x_IDP) {
   def originalWar = new File(downloadDir, 'idp-war-4.0.1.war')
   
-  destinationDir file(appBuildDir)
+  destinationDirectory = file(appBuildDir)
   archiveFileName = 'idp-war-4.0.1.war'
 
   from (zipTree(originalWar)) 
@@ -289,7 +287,7 @@ task updateIdp_4_1_x_WAR(type: Zip, dependsOn: copy_41x_IDP) {
   
   def originalWar = new File(downloadDir, 'idp-war-4.1.0.war')
   
-  destinationDir file(appBuildDir)
+  destinationDirectory = file(appBuildDir)
   archiveFileName = 'idp-war-4.1.0.war'
 
   from (zipTree(originalWar)) {

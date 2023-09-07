@@ -31,9 +31,6 @@ import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.kernel.service.utils.FileUtils;
 
-/**
- *
- */
 public class RuntimeFactory {
 
     private final CDILibertyRuntime services;
@@ -121,7 +118,6 @@ public class RuntimeFactory {
             ExtensionContainerInfo containerInfo = new ExtensionContainerInfo(container, loader, CDIServiceUtils.getSymbolicNameWithoutMinorOrMicroVersionPart(bundle.getSymbolicName())
                                                                                                  + "_"
                                                                                                  + CDIServiceUtils.getOSGIVersionForBndName(bundle.getVersion()), extraClasses, extraAnnotations, applicationBDAsVisible, extClassesOnly);
-
             extensionArchive = new ExtensionArchiveImpl(containerInfo, this, extraExtensionClasses);
         }
         return extensionArchive;

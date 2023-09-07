@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.ws.rs.RuntimeType;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.client.RxInvokerProvider;
@@ -75,7 +76,7 @@ public final class ClientProviderFactory extends ProviderFactory {
     @Override
     protected void setProviders(boolean custom, boolean busGlobal, Object... providers) {
         List<ProviderInfo<? extends Object>> theProviders = prepareProviders(custom, busGlobal, providers, null);
-        super.setCommonProviders(theProviders);
+        super.setCommonProviders(theProviders, RuntimeType.CLIENT);
 
         //Liberty code change start
         List<ProviderInfo<ClientRequestFilter>> newClientRequestFilters = new ArrayList<>();
@@ -89,6 +90,12 @@ public final class ClientProviderFactory extends ProviderFactory {
                 // If the provider is a lambda, ClassHelper.getRealClass returns Object.class
                 providerCls = provider.getProvider().getClass();
             }
+            
+            // Check if provider is constrained to client
+            if (!constrainedTo(providerCls, RuntimeType.CLIENT)) {
+                continue;
+            }
+            
             if (filterContractSupported(provider, providerCls, ClientRequestFilter.class)) {
                 //Liberty code change start
                 addProviderToList(newClientRequestFilters, provider);

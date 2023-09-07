@@ -9,5 +9,6 @@
  *******************************************************************************/
 
 test {
-   jvmArgs = ["--add-opens", "java.base/java.security.cert=ALL-UNNAMED"]
+   jvmArgs = ["--add-opens", "java.base/java.lang=ALL-UNNAMED",
+              "--add-opens", "java.base/java.security.cert=ALL-UNNAMED"]
 }

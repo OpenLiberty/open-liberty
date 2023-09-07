@@ -26,16 +26,26 @@ import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.install.InstallException;
 
+import componenttest.containers.SimpleLogConsumer;
+
 public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 	private static final Class<?> c = InstallFeatureTest.class;
 	private static String userFeatureSigPath = "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc";
+
+	@ClassRule
+	public static GenericContainer<?> container = new GenericContainer<>("jiwoo/simple-keyserver:1.0")
+		.withExposedPorts(8080).waitingFor(Wait.forHttp("/"))
+		.withLogConsumer(new SimpleLogConsumer(InstallFeatureTest.class, "keyserver"));
 
 
 	@BeforeClass
@@ -68,7 +78,6 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 		if (!isZos) {
 			resetOriginalWlpProps();
 		}
-
 	}
 
 	/**
@@ -683,19 +692,21 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	}
 
 	/*
-	 * Test installFeature --verify=all from external keyserver
-	 * (https://keyserver.ubuntu.com)
+	 * Test installFeature --verify=all from external test container
 	 */
 	@Test
-	public void testVerifyhttpsKeyServer() throws Exception {
-	    final String METHOD_NAME = "testVerifyhttpsKeyServer";
+	public void testVerifyhttpKeyServer() throws Exception {
+	    final String METHOD_NAME = "testVerifyhttpKeyServer";
 	    Log.entering(c, METHOD_NAME);
-	Properties envProps = new Properties();envProps.put("FEATURE_VERIFY","all");
+	    Properties envProps = new Properties();
+	    envProps.put("FEATURE_VERIFY", "all");
 
-	writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
+	    String containerUrl = "http://" + container.getHost() + ":" + container.getMappedPort(8080)
+		    + "/validKey.asc";
+
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa");
-	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-		    "https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x71f8e6239b6834aa");
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl", containerUrl);
 
 	    String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 

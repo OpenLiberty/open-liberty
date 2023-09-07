@@ -202,14 +202,15 @@ public class PolicyBasedWSS4JInInterceptor extends WSS4JInInterceptor {
         }
 
         Crypto encrCrypto = getEncryptionCrypto(e, message, data);
-        Crypto signCrypto = null;
+        final Crypto signCrypto;
         if (e != null && e.equals(s)) {
             signCrypto = encrCrypto;
         } else {
-            signCrypto = getSignatureCrypto(s, message, data);  
+            signCrypto = getSignatureCrypto(s, message, data);
         }
 
         final String signCryptoRefId = signCrypto != null ? "RefId-" + signCrypto.hashCode() : null;
+
         if (signCrypto != null) {
             message.put(ConfigurationConstants.DEC_PROP_REF_ID, signCryptoRefId);
             message.put(signCryptoRefId, signCrypto);
@@ -242,7 +243,7 @@ public class PolicyBasedWSS4JInInterceptor extends WSS4JInInterceptor {
         }
 
         Crypto encrCrypto = getEncryptionCrypto(e, message, data);
-        Crypto signCrypto = null;
+        final Crypto signCrypto;
         if (e != null && e.equals(s)) {
             signCrypto = encrCrypto;
         } else {
@@ -351,7 +352,7 @@ public class PolicyBasedWSS4JInInterceptor extends WSS4JInInterceptor {
         }
 
         Crypto encrCrypto = getEncryptionCrypto(e, message, data);
-        Crypto signCrypto = null;
+        final Crypto signCrypto;
         if (e != null && e.equals(s)) {
             signCrypto = encrCrypto;
         } else {
@@ -584,13 +585,13 @@ public class PolicyBasedWSS4JInInterceptor extends WSS4JInInterceptor {
             }
         }
 
-        //Liberty code change start
+        // Liberty Change Start
         List<WSSecurityEngineResult> encryptResults = new ArrayList<>();
         if (results.getActionResults().containsKey(WSConstants.ENCR)) {
             encryptResults.addAll(results.getActionResults().get(WSConstants.ENCR));
         }
         //encryptResults = results.getActionResults().get(WSConstants.ENCR);
-        //Liberty code change end  
+        // Liberty Change End  
         Collection<WSDataRef> encrypted = new HashSet<>();
         if (encryptResults != null) {
             for (WSSecurityEngineResult result : encryptResults) {

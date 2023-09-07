@@ -1,17 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.common.jwk.impl;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -20,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 import java.security.PublicKey;
 
-import org.jmock.Expectations;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -31,8 +28,6 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
 import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.wsspi.ssl.SSLSupport;
-import com.ibm.ws.security.common.http.HttpUtils;
-
 
 import test.common.SharedOutputManager;
 
@@ -40,6 +35,7 @@ public class JwKRetrieverTest extends CommonTestClass {
 
     private static final String JWK_RESOURCE_NAME = "jwk_test.json";
     private static final String RELATIVE_JWK_LOCATION = "./com/ibm/ws/security/common/jwk/impl/jwk_test.json";
+    private static final String RELATIVE_JWK_MINIMUM_LOCATION = "./com/ibm/ws/security/common/jwk/impl/jwk_minimum_test.json";
     private static final String RELATIVE_PEM_LOCATION = "./com/ibm/ws/security/common/jwk/impl/rsa_key.pem";
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.common.*=all");
 
@@ -54,7 +50,6 @@ public class JwKRetrieverTest extends CommonTestClass {
     private String signatureAlgorithm = "RS256";
     private String publickey;
     private String keyLocation;
-    private HttpUtils httpUtils;
 
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -66,7 +61,6 @@ public class JwKRetrieverTest extends CommonTestClass {
         System.out.println("Entering test: " + testName.getMethodName());
         jwkSet = new JWKSet();
         sslSupport = mockery.mock(SSLSupport.class);
-        httpUtils = mockery.mock(HttpUtils.class);
     }
 
     @After
@@ -91,6 +85,38 @@ public class JwKRetrieverTest extends CommonTestClass {
         PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, true);
 
         assertNotNull("There must a public key.", publicKey);
+    }
+
+    @Test
+    public void testGetPublicKeyFromJwk_relativeLocation_minimumJwkRSA() throws Exception {
+        keyLocation = RELATIVE_JWK_MINIMUM_LOCATION;
+        JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
+
+        PublicKey publicKey1 = jwkRetriever.getPublicKeyFromJwk(null, null, false);
+
+        assertNotNull("Should have successfully loaded the public key, but didn't.", publicKey1);
+
+        PublicKey publicKey2 = jwkRetriever.getPublicKeyFromJwk(null, null, false);
+
+        assertNotNull("Should have successfully re-loaded the public key, but didn't.", publicKey2);
+        assertEquals("Retrieved keys did not match but should have.", publicKey1, publicKey2);
+    }
+
+    @Test
+    public void testGetPublicKeyFromJwk_relativeLocation_minimumJwkRSA_withUse() throws Exception {
+        keyLocation = RELATIVE_JWK_MINIMUM_LOCATION;
+        JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
+
+        PublicKey publicKey1 = jwkRetriever.getPublicKeyFromJwk(null, null, "sig", false);
+
+        assertNotNull("Should have successfully loaded the public key, but didn't.", publicKey1);
+
+        PublicKey publicKey2 = jwkRetriever.getPublicKeyFromJwk(null, null, "sig", false);
+
+        assertNotNull("Should have successfully re-loaded the public key, but didn't.", publicKey2);
+        assertEquals("Retrieved keys did not match but should have.", publicKey1, publicKey2);
     }
 
     @Test
@@ -254,8 +280,8 @@ public class JwKRetrieverTest extends CommonTestClass {
         assertFalse("Should have failed to parse key text, but did not.", result);
     }
 
-    //@Test
-    public void testParseKeyText_keyTypeRSA() throws Exception {
+    @Test
+    public void testParseKeyText_keyTypeRSA_missingN() throws Exception {
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
                 jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
@@ -265,7 +291,36 @@ public class JwKRetrieverTest extends CommonTestClass {
         JWKSet jwkset = null;
         String signatureAlgorithm = null;
 
-        // TODO - figure out how to fix this
+        boolean result = jwkRetriever.parseKeyText(keyText, location, jwkset, signatureAlgorithm);
+        assertFalse("Should not have successfully parsed key text, but did.", result);
+    }
+
+    @Test
+    public void testParseKeyText_keyTypeRSA_missingE() throws Exception {
+        JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
+
+        String kty = "RSA";
+        String keyText = "{\"kty\":\"" + kty + "\",\"n\":\"rkCYJj7QPIURA+T0arwFkBWK/8PemAW/gppsY5p+uqwASoFNnHLOiUpS6k3NJRcb0QEu2MHjt7IKZ/mya4NgoAMfM+lm0+QmDhY1XFUrmKj0WQhp/Oc6X48kX2zDmu00GXjO3H2446IofTnBeWxIpClpH+aQ0rcCZlLOu/O/CDIHz30qpe4NT4MlkYUeKNltUBctNQP7VMJw4iPHCdsXlIfpVqzONWIdbsFTsk1r3ynrReOeIbP4JA2/sI03LdSS0XxMVYe7zwIb9dHmWlOjMcejNTEh4fRdNnwQYbU3aWhj55gNYpDxUvwazwN52Rm9XoTsv+pi0pj3SK0PeE3s1w==\"}";
+        String location = null;
+        JWKSet jwkset = null;
+        String signatureAlgorithm = null;
+
+        boolean result = jwkRetriever.parseKeyText(keyText, location, jwkset, signatureAlgorithm);
+        assertFalse("Should not have successfully parsed key text, but did.", result);
+    }
+
+    @Test
+    public void testParseKeyText_keyTypeRSA_minimum() throws Exception {
+        JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
+
+        String kty = "RSA";
+        String keyText = "{\"kty\":\"" + kty + "\",\"n\":\"rkCYJj7QPIURA+T0arwFkBWK/8PemAW/gppsY5p+uqwASoFNnHLOiUpS6k3NJRcb0QEu2MHjt7IKZ/mya4NgoAMfM+lm0+QmDhY1XFUrmKj0WQhp/Oc6X48kX2zDmu00GXjO3H2446IofTnBeWxIpClpH+aQ0rcCZlLOu/O/CDIHz30qpe4NT4MlkYUeKNltUBctNQP7VMJw4iPHCdsXlIfpVqzONWIdbsFTsk1r3ynrReOeIbP4JA2/sI03LdSS0XxMVYe7zwIb9dHmWlOjMcejNTEh4fRdNnwQYbU3aWhj55gNYpDxUvwazwN52Rm9XoTsv+pi0pj3SK0PeE3s1w==\",\"e\":\"AQAB\"}";
+        String location = null;
+        JWKSet jwkset = null;
+        String signatureAlgorithm = null;
+
         boolean result = jwkRetriever.parseKeyText(keyText, location, jwkset, signatureAlgorithm);
         assertTrue("Should have successfully parsed key text, but did not.", result);
     }
@@ -358,6 +413,6 @@ public class JwKRetrieverTest extends CommonTestClass {
     }
 
     // TODO: Test Base64 encoded JWK
-    // TODO: Test Base64 encoded JWKS 
+    // TODO: Test Base64 encoded JWKS
 
 }

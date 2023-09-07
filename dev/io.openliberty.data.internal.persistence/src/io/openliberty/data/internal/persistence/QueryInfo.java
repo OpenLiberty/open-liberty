@@ -188,6 +188,11 @@ class QueryInfo {
     Type type;
 
     /**
+     * For save operations, indicates if validation should be attempted when Jakarta Validation is available.
+     */
+    boolean validatable;
+
+    /**
      * Construct partially complete query information.
      */
     QueryInfo(Method method, Class<?> returnArrayType, List<Class<?>> returnTypeAtDepth) {
@@ -665,6 +670,7 @@ class QueryInfo {
         q.saveParamType = saveParamType;
         q.sorts = sorts;
         q.type = type;
+        q.validatable = validatable;
         return q;
     }
 

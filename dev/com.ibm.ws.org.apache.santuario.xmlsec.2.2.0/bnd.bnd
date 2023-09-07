@@ -1,28 +1,36 @@
 #*******************************************************************************
-# Copyright (c) 2020,2022 IBM Corporation and others.
+# Copyright (c) 2020,2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.santuario:xmlsec;2.2.3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.santuario:xmlsec;2.3.0;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -sub: *.bnd
 
+santuarioVersion=2.3.0
+
+instrument.classesExcludes: org/apache/xml/security/stax/ext/*.class
 
 -includeresource: \
-   @${repo;org.apache.santuario:xmlsec;2.2.3;EXACT}!/!META-INF/maven/*,\
-   @${repo;org.apache.santuario:xmlsec;2.2.3;EXACT}!/META-INF/**, \
-   @${repo;org.apache.santuario:xmlsec;2.2.3;EXACT}!/templates/**, \
-   @${repo;org.apache.santuario:xmlsec;2.2.3;EXACT}!/schemas/**, \
-   @${repo;org.apache.santuario:xmlsec;2.2.3;EXACT}!/*xml, \
-   org/apache/xml/security/resource/xmlsecurity_en.nlsprops=resources/org/apache/xml/security/resource/xmlsecurity_en.nlsprops
+  @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/META-INF/**, \
+  @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/templates/**, \
+  @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/schemas/**, \
+  @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/*xml, \
+  org/apache/xml/security=${bin}/org/apache/xml/security, \
+  org/apache/xml/security/resource/xmlsecurity_en.nlsprops=resources/org/apache/xml/security/resource/xmlsecurity_en.nlsprops
 
--buildpath: org.apache.santuario:xmlsec;strategy=exact;version=2.2.3
+-buildpath: \
+	org.apache.santuario:xmlsec;strategy=exact;version='${santuarioVersion}',\
+	com.ibm.ws.org.slf4j.api;version=latest,\
+	io.openliberty.com.fasterxml.woodstox.core;version=latest,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest
 
 globalize: false

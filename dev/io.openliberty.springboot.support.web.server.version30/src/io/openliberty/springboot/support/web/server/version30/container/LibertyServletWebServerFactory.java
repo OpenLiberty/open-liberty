@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,10 +15,13 @@ package io.openliberty.springboot.support.web.server.version30.container;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.server.WebServer;
+import org.springframework.boot.web.server.WebServerException;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.boot.web.servlet.server.AbstractServletWebServerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  *
@@ -30,7 +33,36 @@ public class LibertyServletWebServerFactory extends AbstractServletWebServerFact
 
     @Override
     public WebServer getWebServer(ServletContextInitializer... initializers) {
-        return new LibertyWebServer(this, this, mergeInitializers(initializers));
+        CheckpointPhase phase = CheckpointPhase.getPhase();
+        if (!phase.restored()) {
+            // for InstantOn we create a wrapper so that we can recreate the LibertyWebServer on restart
+            return new WebServer() {
+                LibertyWebServer webServer = new LibertyWebServer(LibertyServletWebServerFactory.this, LibertyServletWebServerFactory.this, mergeInitializers(initializers));
+
+                @Override
+                public synchronized void start() throws WebServerException {
+                    if (webServer == null) {
+                        webServer = new LibertyWebServer(LibertyServletWebServerFactory.this, LibertyServletWebServerFactory.this, mergeInitializers(initializers));;
+                    }
+                    webServer.start();
+                }
+
+                @Override
+                public synchronized void stop() throws WebServerException {
+                    if (webServer != null) {
+                        webServer.stop();
+                        webServer = null;
+                    }
+                }
+
+                @Override
+                public synchronized int getPort() {
+                    return webServer != null ? webServer.getPort() : 0;
+                }
+            };
+        } else {
+            return new LibertyWebServer(this, this, mergeInitializers(initializers));
+        }
     }
 
     @Override

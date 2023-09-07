@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Condition;
 import java.util.logging.Level;
 
 import org.osgi.framework.Bundle;
@@ -31,7 +32,6 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
-import org.osgi.service.condition.Condition;
 
 import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.RuntimeMetaDataProvider;
@@ -39,6 +39,8 @@ import com.ibm.tx.jta.config.DefaultConfigurationProvider;
 import com.ibm.tx.jta.embeddable.TransactionSettingsProvider;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.kernel.launch.service.ForcedServerStop;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
@@ -63,7 +65,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private static final String defaultLogDir = "$(server.output.dir)/tranlog";
     private boolean activateHasBeenCalled; // Used for eyecatcher in trace for startup ordering.
     private boolean _dataSourceFactorySet;
-    private static boolean _frameworkShutting = false;
+    private static boolean _frameworkShutting;
 
     private final ConcurrentServiceReferenceSet<TransactionSettingsProvider> _transactionSettingsProviders = new ConcurrentServiceReferenceSet<TransactionSettingsProvider>("transactionSettingsProvider");
     /**
@@ -85,11 +87,14 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private TransactionManagerService tmsRef;
     private byte[] _applId;
 
-    private boolean _setRetriableSqlcodes = false;
-    private boolean _setNonRetriableSqlcodes = false;
+    private boolean _setRetriableSqlcodes;
+    private boolean _setNonRetriableSqlcodes;
     List<Integer> retriableSqlCodeList;
     List<Integer> nonRetriableSqlCodeList;
 
+    private boolean _recoveryIDisSanitary;
+
+    @Trivial
     public JTMConfigurationProvider() {
     }
 
@@ -199,10 +204,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     /*
      * Called by DS to inject location service ref
      */
+    @Trivial
     protected synchronized void setLocationService(WsLocationAdmin locSvc) {
         this.locationService = locSvc;
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "setLocationService, locSvc " + locSvc);
+            Tr.debug(tc, "setLocationService {0}", locSvc);
     }
 
     /*
@@ -271,10 +277,16 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     public int getClientInactivityTimeout() {
         // return Integer.valueOf(_props.get("client.inactivity.timeout"));
         Number num = (Number) _props.get("clientInactivityTimeout");
-        return num.intValue();
+
+        int timeout = num.intValue();
+
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getClientInactivityTimeout: {0}", timeout);
+        return timeout;
     }
 
     @Override
+    @Trivial
     public int getHeuristicRetryInterval() {
         int interval = ((Number) _props.get("heuristicRetryInterval")).intValue();
         if (interval == HEURISTIC_RETRY_INTERVAL_DEFAULT) {
@@ -287,13 +299,20 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
             }
         }
 
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getHeuristicRetryInterval: {0}", interval);
         return interval;
     }
 
     @Override
+    @Trivial
     public int getHeuristicRetryLimit() {
         Number num = (Number) _props.get("heuristicRetryLimit");
-        return num.intValue();
+
+        int limit = num.intValue();
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getHeuristicRetryLimit: {0}", limit);
+        return limit;
     }
 
     @Override
@@ -323,13 +342,14 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public String getTransactionLogDirectory() {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "getTransactionLogDirectory working with " + logDir);
-
         if (logDir == null) {
             logDir = parseTransactionLogDirectory();
         }
+
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getTransactionLogDirectory {0}", logDir);
         return logDir;
     }
 
@@ -339,6 +359,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public String getBackendURL() {
         return (String) _props.get("backendURL");
     }
@@ -362,12 +383,15 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public String getServerName() {
         String serverName = "";
         synchronized (this) {
             if (locationService != null)
                 serverName = locationService.getServerName();
         }
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getServerName {0}", serverName);
         return serverName;
     }
 
@@ -392,6 +416,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public int getTransactionLogSize() {
         return ((Integer) _props.get("transactionLogSize")).intValue();
     }
@@ -414,10 +439,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public boolean isRecoverOnStartup() {
         Boolean isRoS = (Boolean) _props.get("recoverOnStartup");
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "isRecoverOnStartup set to " + isRoS);
+            Tr.debug(tc, "isRecoverOnStartup {0}", isRoS);
         if (isRoS && checkpointWaitForConfig()) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Defer recovery until restore config updates complete");
@@ -451,10 +477,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public boolean isWaitForRecovery() {
         Boolean isWfR = (Boolean) _props.get("waitForRecovery");
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "isWaitForRecovery set to " + isWfR);
+            Tr.debug(tc, "isWaitForRecovery {0}", isWfR);
         if (!isWfR && checkpointWaitForConfig()) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Defer recovery until restore config updates complete");
@@ -486,20 +513,31 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public String getRecoveryIdentity() {
 
-        _recoveryIdentity = (String) _props.get("recoveryIdentity");
+        // Make recoveryIdentity suitable for DDL
+        if (!_recoveryIDisSanitary) {
+            _recoveryIdentity = (String) _props.get("recoveryIdentity");
+            if (_recoveryIdentity != null) {
+                _recoveryIdentity = _recoveryIdentity.replaceAll("\\W", "");
+            }
+
+            _recoveryIDisSanitary = true;
+        }
+
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getRecoveryIdentity " + _recoveryIdentity);
+            Tr.debug(tc, "getRecoveryIdentity {0}", _recoveryIdentity);
         return _recoveryIdentity;
     }
 
     @Override
+    @Trivial
     public String getRecoveryGroup() {
 
         _recoveryGroup = (String) _props.get("recoveryGroup");
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getRecoveryGroup " + _recoveryGroup);
+            Tr.debug(tc, "getRecoveryGroup {0}", _recoveryGroup);
         return _recoveryGroup;
     }
 
@@ -572,9 +610,10 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @return true if it is
      */
     @Override
+    @Trivial
     public boolean isSQLRecoveryLog() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "isSQLRecoveryLog " + _isSQLRecoveryLog);
+            Tr.debug(tc, "isSQLRecoveryLog {0}", _isSQLRecoveryLog);
         return _isSQLRecoveryLog;
     }
 
@@ -584,6 +623,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @see com.ibm.tx.config.ConfigurationProvider#needToCoordinateServices()
      */
     @Override
+    @Trivial
     public boolean needToCoordinateServices() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "needToCoordinateServices");
@@ -695,20 +735,22 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public void setApplId(byte[] name) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "setApplId - " + Arrays.toString(name));
+            Tr.debug(tc, "setApplId {0}", Util.toHexString(name));
         // Store the applId.
         this._applId = name.clone();
     }
 
     @Override
+    @Trivial
     public byte[] getApplId() {
         // Determine the applId.
         final byte[] result = _applId;
 
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getApplId - " + Arrays.toString(result));
+            Tr.debug(tc, "getApplId - " + Util.toHexString(result));
         return result;
     }
 
@@ -908,7 +950,10 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public boolean isDataSourceFactorySet() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "isDataSourceFactorySet {0}", _dataSourceFactorySet);
         return _dataSourceFactorySet;
     }
 

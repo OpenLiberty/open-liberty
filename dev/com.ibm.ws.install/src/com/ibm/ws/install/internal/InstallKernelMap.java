@@ -512,6 +512,8 @@ public class InstallKernelMap implements Map {
         } else if (InstallConstants.VERIFY_OPTION.equals(key)) {
             if (value instanceof VerifyOption) {
                 data.put(InstallConstants.VERIFY_OPTION, value);
+            } else if (value instanceof String) {
+                data.put(InstallConstants.VERIFY_OPTION, VerifyOption.valueOf((String) value));
             } else {
                 throw new IllegalArgumentException();
             }
@@ -2300,6 +2302,7 @@ public class InstallKernelMap implements Map {
     private Integer verifySignatures() {
         VerifyOption verifyOption = (VerifyOption) data.get(InstallConstants.VERIFY_OPTION);
         List<File> failedFeatures = new ArrayList<>();
+
         try {
             VerifySignatureUtility verifyUtility = new VerifySignatureUtility();
             verifyUtility.verifySignatures((List<File>) data.get(InstallConstants.ACTION_VERIFY), pubKeys, failedFeatures);

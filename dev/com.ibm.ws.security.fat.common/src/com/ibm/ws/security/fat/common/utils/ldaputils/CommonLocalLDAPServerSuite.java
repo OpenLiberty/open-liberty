@@ -21,6 +21,7 @@ import org.junit.BeforeClass;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.ldap.LocalLDAPServerSuite;
 import componenttest.topology.utils.LDAPUtils;
 
@@ -32,7 +33,7 @@ public class CommonLocalLDAPServerSuite {
 
         // We prefer to use in-memory LDAP to avoid network issues
         String os = System.getProperty("os.name").toLowerCase();
-        if (!os.startsWith("z/os")) {
+        if (!(os.startsWith("z/os") && JavaInfo.forCurrentVM().majorVersion() >= 17)) {
             System.setProperty("fat.test.really.use.local.ldap", "true");
         }
 

@@ -1,0 +1,37 @@
+<server>
+	<featureManager>
+		<feature>localConnector-1.0</feature>
+		<feature>jsp-2.3</feature>
+		<feature>wsAtomicTransaction-1.2</feature>
+		<feature>jndi-1.0</feature>
+		<feature>servlet-3.1</feature>
+		<feature>cdi-1.2</feature>
+		<feature>txtest-1.0</feature>
+	</featureManager>
+
+	<include location="../fatTestCommon.xml" />
+
+  	<httpEndpoint id="defaultHttpEndpoint"
+                host="*"
+                httpPort="${bvt.prop.HTTP_secondary}"
+                httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+
+	<tcpOptions id="defaultTCPOptions" portOpenRetries="60"/>
+
+	<httpOptions
+		readTimeout="150s"
+		wirteTimeout="150s"
+		persistTimeout="150s"
+	/>
+
+	<transaction
+	  backendURL="http://localhost:${bvt.prop.HTTP_secondary}"
+      recoveryIdentity="Server2"
+      recoveryGroup="defaultGroup"
+      recoverOnStartup="true"
+      waitForRecovery="true"
+    />
+
+	<javaPermission name="*" actions="*" className="java.security.AllPermission"/>
+
+</server>

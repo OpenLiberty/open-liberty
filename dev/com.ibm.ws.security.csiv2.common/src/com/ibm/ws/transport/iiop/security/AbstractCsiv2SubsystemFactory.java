@@ -1,16 +1,20 @@
-/*******************************************************************************
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+/*
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ */
 package com.ibm.ws.transport.iiop.security;
+
+import static com.ibm.websphere.ras.Tr.debug;
+import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,11 +22,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import org.apache.yoko.osgi.locator.LocalFactory;
 import org.apache.yoko.osgi.locator.Register;
@@ -44,15 +50,13 @@ import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.ssl.SSLSupport;
 
-/**
- *
- */
-public abstract class AbstractCsiv2SubsystemFactory extends SubsystemFactory {
+public abstract class AbstractCsiv2SubsystemFactory implements SubsystemFactory {
     private static final TraceComponent tc = Tr.register(AbstractCsiv2SubsystemFactory.class);
     protected static long TIMEOUT_SECONDS = 10;
 
     private enum MyLocalFactory implements LocalFactory {
         INSTANCE;
+
         @Override
         public Class<?> forName(String clsName) throws ClassNotFoundException {
             return Class.forName(clsName);
@@ -86,7 +90,8 @@ public abstract class AbstractCsiv2SubsystemFactory extends SubsystemFactory {
         if (repertoireIds != null) {
             sslRefs = Arrays.asList(repertoireIds);
         }
-        //no updateRegistered necessary here since this is before activate, there can be no ReadyRegistrations yet.
+        // no updateRegistered necessary here since this is before activate, there can
+        // be no ReadyRegistrations yet.
     }
 
     protected void updatedSSLSupport(SSLSupportOptional sslSupport, Map<String, Object> props) {
@@ -125,13 +130,11 @@ public abstract class AbstractCsiv2SubsystemFactory extends SubsystemFactory {
         SecurityServices.clean();
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getInitializerClassName(boolean endpoint) {
         return SecurityInitializer.class.getName();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void register(ReadyListener listener, Map<String, Object> properties, List<IIOPEndpoint> endpoints) {
         String timeoutValue = (String) properties.get("orbSSLInitTimeout");
@@ -146,14 +149,8 @@ public abstract class AbstractCsiv2SubsystemFactory extends SubsystemFactory {
         rr.check();
     }
 
-    /**
-     * @param properties
-     * @param endpoints
-     * @return
-     */
     protected abstract Set<String> extractSslRefs(Map<String, Object> properties, List<IIOPEndpoint> endpoints);
 
-    /** {@inheritDoc} */
     @Override
     public void unregister(ReadyListener listener) {
         for (ReadyRegistration rr : regs) {
@@ -197,11 +194,6 @@ public abstract class AbstractCsiv2SubsystemFactory extends SubsystemFactory {
         private final ReadyListener listener;
         private ScheduledFuture<?> future;
 
-        /**
-         * @param ssf
-         * @param requiredSslRefs
-         * @param listener
-         */
         public ReadyRegistration(Set<String> requiredSslRefs, ReadyListener listener) {
             super();
             this.requiredSslRefs = requiredSslRefs;
@@ -210,20 +202,15 @@ public abstract class AbstractCsiv2SubsystemFactory extends SubsystemFactory {
         }
 
         protected void scheduleTimeout() {
-            this.future = executor.schedule(new Runnable() {
-
-                @Override
-                public void run() {
-                    timeoutMessage(requiredSslRefs, listener);
-                }
-            }, TIMEOUT_SECONDS, TimeUnit.SECONDS);
+            this.future = executor.schedule(() -> timeoutMessage(requiredSslRefs, listener), TIMEOUT_SECONDS, SECONDS);
         }
 
         void check() {
             boolean containsAll = AbstractCsiv2SubsystemFactory.this.check(requiredSslRefs);
             listener.readyChanged(AbstractCsiv2SubsystemFactory.this, containsAll);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Check: Known ssl configurations: {0}, required: {1}, containsAll: {2} timeout exists: {3}", sslRefs, requiredSslRefs, containsAll, future != null);
+            if (isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                debug(tc, "Check: Known ssl configurations: {0}, required: {1}, containsAll: {2} timeout exists: {3}",
+                        sslRefs, requiredSslRefs, containsAll, future != null);
             }
             synchronized (this) {
                 if (containsAll) {
@@ -240,7 +227,5 @@ public abstract class AbstractCsiv2SubsystemFactory extends SubsystemFactory {
                 future = null;
             }
         }
-
     }
-
 }

@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.tx.jta.ut.util.TxTestUtils;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 
 @SuppressWarnings("serial")
@@ -28,7 +29,7 @@ public class ClearResourcesServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		
+		TxTestUtils.setTestResourcesFile();
 		System.out.println("==============ClearResourcesServlet================");
 		XAResourceImpl.clear();
 	}

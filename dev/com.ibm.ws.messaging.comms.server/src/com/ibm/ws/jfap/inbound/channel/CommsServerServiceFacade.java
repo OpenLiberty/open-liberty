@@ -1,14 +1,11 @@
 /*
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  */
 package com.ibm.ws.jfap.inbound.channel;
 
@@ -29,6 +26,7 @@ import static org.osgi.service.component.annotations.ReferencePolicyOption.GREED
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.service.component.ComponentConstants;
@@ -54,6 +52,10 @@ import com.ibm.ws.sib.mfp.trm.TrmMessageFactory;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.ChannelConfiguration;
 
+import io.openliberty.netty.internal.NettyFramework;
+import io.openliberty.netty.internal.tls.NettyTlsProvider;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+
 /**
  * This is a messaging {@link Singleton}.
  * It will be required by the {@link SingletonsReady} component
@@ -62,27 +64,35 @@ import com.ibm.wsspi.channelfw.ChannelConfiguration;
 @Component(
         configurationPid = "com.ibm.ws.messaging.comms.server",
         configurationPolicy = REQUIRE,
-        property = {"type=messaging.comms.server.service", "service.vendor=IBM"})
+        property = { "type=messaging.comms.server.service", "nettyTlsProvider.cardinality.minimum=1", "service.vendor=IBM" })
 public class CommsServerServiceFacade implements Singleton {
     private static final String SECURE_PORT = "wasJmsSSLPort";
     private static final String BASIC_PORT = "wasJmsPort";
     private static final String CONFIG_ALIAS = "wasJmsEndpoint";
     private static final TraceComponent tc = register(CommsServerServiceFacade.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
     private String endpointName = null;
-
-    private final CommsInboundChain inboundBasicChain = new CommsInboundChain(this, false);
-    private final CommsInboundChain inboundSecureChain = new CommsInboundChain(this, true);
+    
+    private final InboundChain inboundBasicChain;
+    private final InboundChain inboundSecureChain;
 
     private int basicPort;
     private int securePort;
     private String host = null;
     private boolean iswasJmsEndpointEnabled = true;
+    
+    /** If useNettyTransport is set to true in the inbound connection configuration */
+    private boolean useNettyTransport = false;
 
     private final JsAdminService jsAdminService;
+    
+    private volatile AtomicBoolean awaitingTlsProvider = new AtomicBoolean(false);
 
     private final CHFWBundle chfw;
+    private final NettyFramework nettyBundle;
     private final ChannelConfiguration tcpOptions;
     private final AtomicReference<InboundSecureFacet> secureFacetRef = new AtomicReference<>();
+    
+    private NettyTlsProvider nettyTlsProvider;
     private final EventEngine eventEngine;
 
     /** Lock to guard chain actions (update,stop and sslOnlyStop).. as of now as all chain actions are executed by SCR thread */
@@ -94,18 +104,26 @@ public class CommsServerServiceFacade implements Singleton {
             JsAdminService jsAdminService,
             @Reference(name = "chfw")
             CHFWBundle chfw,
+            @Reference(name = "nettyBundle")
+            NettyFramework nettyBundle,
+            @Reference(name = "nettyTlsProvider", cardinality = OPTIONAL)
+            NettyTlsProvider nettyTlsProvider,
             @Reference(name = "tcpOptions", target = "(id=unbound)") // target to be overwritten by metatype
             ChannelConfiguration tcpOptions,
             @Reference(name = "eventEngine")
             EventEngine eventEngine,
             Map<String, Object> properties) {
         final String methodName = "<init>";
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, methodName, new Object[]{jsAdminService, chfw, tcpOptions, eventEngine, properties});
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, methodName, new Object[]{jsAdminService, nettyBundle, chfw, tcpOptions, eventEngine, properties});
 
         this.jsAdminService = jsAdminService;
         this.chfw = chfw;
+        this.nettyBundle = nettyBundle;
         this.tcpOptions = tcpOptions;
         this.eventEngine = eventEngine;
+        this.nettyTlsProvider = nettyTlsProvider;
+
+        useNettyTransport = ProductInfo.getBetaEdition() && parseBoolean(CONFIG_ALIAS, "useNettyTransport", properties.get("useNettyTransport"), true);
 
         Object cid = properties.get(ComponentConstants.COMPONENT_ID);
 
@@ -118,9 +136,14 @@ public class CommsServerServiceFacade implements Singleton {
 
         //Go ahead and Register JFAPChannel with Channel Framework by providing JFAPServerInboundChannelFactory
         chfw.getFramework().registerFactory("JFAPChannel", JFAPServerInboundChannelFactory.class);
-
-        this.inboundBasicChain.init(endpointName, chfw);
-        this.inboundSecureChain.init(endpointName + "-ssl", chfw);
+        
+        if(useNetty()) {
+        	inboundBasicChain = new NettyInboundChain(this, false).init(endpointName, this.nettyBundle);
+        	inboundSecureChain = new NettyInboundChain(this, true).init(endpointName + "-ssl", this.nettyBundle);
+        }else {
+        	inboundBasicChain = new CommsInboundChain(this, false).init(endpointName, this.chfw);
+        	inboundSecureChain = new CommsInboundChain(this, true).init(endpointName + "-ssl", this.chfw);
+        }
 
         this.iswasJmsEndpointEnabled = parseBoolean(CONFIG_ALIAS, "enabled", properties.get("enabled"), true);
         this.host = (String) properties.get("host");
@@ -144,6 +167,12 @@ public class CommsServerServiceFacade implements Singleton {
         if (isAnyTracingEnabled() && tc.isEventEnabled()) event(tc, "CommsServerServiceFacade deactivated, reason=" + reason);
         factotum.stopBasicChain(true);
     }
+    
+    public NettyTlsProvider getNettyTlsProvider() {
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "getNettyTlsProvider");
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "getNettyTlsProvider", nettyTlsProvider);
+        return nettyTlsProvider;
+    }
 
     @Reference(name = "secureFacet", cardinality = OPTIONAL, policy = DYNAMIC, policyOption = GREEDY, unbind = "unbindSecureFacet")
     void bindSecureFacet(InboundSecureFacet facet) {
@@ -154,6 +183,7 @@ public class CommsServerServiceFacade implements Singleton {
             factotum.updateSecureChain();
         }
     }
+    
 
     void unbindSecureFacet(InboundSecureFacet facet) {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "unbindSecureFacet", facet);
@@ -263,4 +293,13 @@ public class CommsServerServiceFacade implements Singleton {
     int getBasicPort() { return basicPort; }
     int getSecurePort() { return securePort; }
     String getHost() { return host; }
+    
+    /**
+     * Query if Netty has been enabled for this endpoint
+     * @return true if Netty should be used for this endpoint
+     */
+    public boolean useNetty() {
+    	return useNettyTransport;
+    }
+    
 }

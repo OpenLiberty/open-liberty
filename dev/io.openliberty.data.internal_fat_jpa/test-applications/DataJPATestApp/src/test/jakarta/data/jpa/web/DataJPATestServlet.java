@@ -54,6 +54,8 @@ import jakarta.data.repository.Pageable.Cursor;
 import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -212,6 +214,75 @@ public class DataJPATestServlet extends FATServlet {
         assertNotNull(found);
         assertEquals("Found " + found.toString(), 1, found.size());
         assertEquals("IBM", found.get(0).name);
+    }
+
+    /**
+     * Verify that an EntityManager can be obtained for a repository and used to perform database operations.
+     */
+    @Test
+    public void testEntityManager() throws Exception {
+        counties.deleteByNameIn(List.of("Houston"));
+
+        int[] houstonZipCodes = new int[] { 55919, 55921, 55931, 55941, 55943, 55947, 55971, 55974 };
+
+        County houston = new County("Houston", "Minnesota", 18843, houstonZipCodes, "Caledonia", "Brownsville", "Eitzen", "Hokah", "Houston", "La Crescent", "Spring Grove");
+
+        counties.insert(houston);
+
+        // Unlike save, which uses em.merge, the custom insert method uses em.persist and raises an error if the entity already exists,
+        try {
+            counties.insert(houston);
+        } catch (PersistenceException x) {
+            // expected
+        }
+
+        County c = counties.findByName("Houston").orElseThrow();
+
+        assertEquals("Houston", c.name);
+        assertEquals(18843, c.population);
+        assertEquals(Arrays.toString(houstonZipCodes), Arrays.toString(c.zipcodes));
+
+        assertEquals(1, counties.deleteByNameIn(List.of("Houston")));
+    }
+
+    /**
+     * Verify that an EntityManager is automatically closed when it goes out of scope of the default method
+     * where it was obtained.
+     */
+    @Test
+    public void testEntityManagerAutomaticallyClosed() {
+        EntityManager em = counties.getAutoClosedEntityManager();
+        assertEquals(false, em.isOpen());
+    }
+
+    /**
+     * Verify that the getResource method does not permit the EntityManager to be obtained outside the
+     * scope of a default method.
+     */
+    @Test
+    public void testEntityManagerDisallowedWithoutDefaultMethod() {
+        try {
+            EntityManager em = counties.getResource(EntityManager.class).orElseThrow();
+            fail("Should not be able to obtain EntityManager from outside the scope of a default method.");
+        } catch (IllegalStateException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Verify that an EntityManager remains open when a default method invokes another default method,
+     * and is closed after the outer default method ends.
+     */
+    @Test
+    public void testEntityManagerRemainsOpenAfterNestedDefaultMethod() {
+        Object[] isOpenFromTopLevelDefaultMethod = counties.topLevelDefaultMethod();
+        EntityManager emOuter1 = (EntityManager) isOpenFromTopLevelDefaultMethod[0];
+        EntityManager emOuter2 = (EntityManager) isOpenFromTopLevelDefaultMethod[1];
+        assertEquals(false, emOuter1.isOpen()); // must be closed after default method ends
+        assertEquals(false, emOuter2.isOpen()); // must be closed after default method ends
+        assertEquals(Boolean.TRUE, isOpenFromTopLevelDefaultMethod[2]); // outer1
+        assertEquals(Boolean.TRUE, isOpenFromTopLevelDefaultMethod[3]); // outer2
+        assertEquals(Boolean.FALSE, isOpenFromTopLevelDefaultMethod[4]); // inner
     }
 
     /**
@@ -431,7 +502,6 @@ public class DataJPATestServlet extends FATServlet {
         a1.state = "Minnesota";
         a1.streetAddress = new StreetAddress(2800, "37th St NW", List.of("Receiving Dock", "Building 040-1"));
         a1.zipCode = 55901;
-        shippingAddresses.save(a1);
 
         ShippingAddress a2 = new ShippingAddress();
         a2.id = 1002L;
@@ -439,7 +509,6 @@ public class DataJPATestServlet extends FATServlet {
         a2.state = "Minnesota";
         a2.streetAddress = new StreetAddress(201, "4th St SE");
         a2.zipCode = 55904;
-        shippingAddresses.save(a2);
 
         ShippingAddress a3 = new ShippingAddress();
         a3.id = 1003L;
@@ -447,7 +516,6 @@ public class DataJPATestServlet extends FATServlet {
         a3.state = "Minnesota";
         a3.streetAddress = new StreetAddress(200, "1st Ave SW");
         a3.zipCode = 55902;
-        shippingAddresses.save(a3);
 
         ShippingAddress a4 = new ShippingAddress();
         a4.id = 1004L;
@@ -455,7 +523,11 @@ public class DataJPATestServlet extends FATServlet {
         a4.state = "Minnesota";
         a4.streetAddress = new StreetAddress(151, "4th St SE");
         a4.zipCode = 55904;
-        shippingAddresses.save(a4);
+
+        Set<ShippingAddress> added = shippingAddresses.save(Set.of(a1, a2, a3, a4));
+
+        assertEquals(Set.of(1001L, 1002L, 1003L, 1004L),
+                     added.stream().map(a -> a.id).collect(Collectors.toSet()));
 
         assertArrayEquals(new ShippingAddress[] { a4, a2 },
                           shippingAddresses.findByStreetNameOrderByHouseNumber("4th St SE"),
@@ -523,7 +595,19 @@ public class DataJPATestServlet extends FATServlet {
         TaxPayer t6 = new TaxPayer(678006780L, TaxPayer.FilingStatus.MarriedFilingSeparately, 3, 126000.0f, a2);
         TaxPayer t7 = new TaxPayer(789007890L, TaxPayer.FilingStatus.Single, 0, 37000.0f);
 
-        taxpayers.save(t1, t2, t3, t4, t5, t6, t7);
+        Iterable<TaxPayer> added = taxpayers.save(List.of(t1, t2, t3, t4));
+
+        assertEquals(List.of(123001230L, 234002340L, 345003450L, 456004560L),
+                     StreamSupport.stream(added.spliterator(), false)
+                                     .map(t -> t.ssn)
+                                     .collect(Collectors.toList()));
+
+        Iterator<TaxPayer> addedIt = taxpayers.save(t5, t6, t7);
+
+        assertEquals(List.of(567005670L, 678006780L, 789007890L),
+                     StreamSupport.stream(Spliterators.spliteratorUnknownSize(addedIt, Spliterator.ORDERED), false)
+                                     .map(t -> t.ssn)
+                                     .collect(Collectors.toList()));
 
         assertIterableEquals(List.of("AccountId:66320100:410224", "AccountId:77512000:705030", "AccountId:88191200:410224"),
                              taxpayers.findAccountsBySSN(234002340L)
@@ -1472,10 +1556,13 @@ public class DataJPATestServlet extends FATServlet {
         // Clear out data before test
         employees.deleteByLastName("TestIdOnEmbeddable");
 
-        employees.save(new Employee("Irene", "TestIdOnEmbeddable", (short) 2636, 'A'));
-        employees.save(new Employee("Isabella", "TestIdOnEmbeddable", (short) 8171, 'B'));
-        employees.save(new Employee("Ivan", "TestIdOnEmbeddable", (short) 4948, 'A'));
-        employees.save(new Employee("Isaac", "TestIdOnEmbeddable", (short) 5310, 'C'));
+        Streamable<Employee> added = employees.save(new Employee("Irene", "TestIdOnEmbeddable", (short) 2636, 'A'),
+                                                    new Employee("Isabella", "TestIdOnEmbeddable", (short) 8171, 'B'),
+                                                    new Employee("Ivan", "TestIdOnEmbeddable", (short) 4948, 'A'),
+                                                    new Employee("Isaac", "TestIdOnEmbeddable", (short) 5310, 'C'));
+
+        assertEquals(List.of("Irene", "Isabella", "Ivan", "Isaac"),
+                     added.stream().map(e -> e.firstName).collect(Collectors.toList()));
 
         Employee emp4948 = employees.findById(4948);
         assertEquals("Ivan", emp4948.firstName);
@@ -2095,7 +2182,10 @@ public class DataJPATestServlet extends FATServlet {
         County wabasha = new County("Wabasha", "Minnesota", 21387, wabashaZipCodes, "Wabasha", "Bellechester", "Elgin", "Hammond", "Kellogg", "Lake City", "Mazeppa", "Millville", "Minneiska", "Plainview", "Zumbro Falls");
         County fillmore = new County("Fillmore", "Minnesota", 21228, fillmoreZipCodes, "Preston", "Canton", "Chatfield", "Fountain", "Harmony", "Lanesboro", "Mabel", "Ostrander", "Peterson", "Rushford", "Rushford Village", "Spring Valley", "Whalen", "Wykoff");
 
-        counties.save(olmsted, winona, wabasha, fillmore);
+        Stream<County> saved = counties.save(olmsted, winona, wabasha, fillmore);
+
+        assertEquals(List.of("Olmsted", "Winona", "Wabasha", "Fillmore"),
+                     saved.map(s -> s.name).collect(Collectors.toList()));
 
         // find one entity by id as Optional
         County c = counties.findByName("Olmsted").orElseThrow();

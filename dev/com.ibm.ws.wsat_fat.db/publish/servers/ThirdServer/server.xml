@@ -11,6 +11,8 @@
 	</featureManager>
 	<httpEndpoint httpPort="9988" httpsPort="9989"
 		id="defaultHttpEndpoint" />
-	<logging traceSpecification="com.ibm.ws.jaxws.*=debug:org.apache.cxf.ext.logging.slf4j.Slf4jEventSender=debug:wsat=all:Transaction=all"/>
+
+	<transaction recoverOnStartup="true" waitForRecovery="true"/>
+
  <javaPermission codebase="${server.config.dir}/dropins/endtoend.war" className="java.security.AllPermission"/>
 </server>

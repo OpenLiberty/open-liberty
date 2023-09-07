@@ -10,17 +10,22 @@
 
 package io.openliberty.microprofile.openapi.internal.common;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
-import io.openliberty.microprofile.openapi.internal.common.services.OpenAPIEndpointProvider;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+import io.openliberty.microprofile.openapi.internal.common.services.OpenAPIEndpointProvider;
 
 @Component(configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true, configurationPid = "io.openliberty.microprofile.openapi")
 public class OpenAPIEndpointManager implements OpenAPIEndpointProvider {
@@ -64,10 +69,7 @@ public class OpenAPIEndpointManager implements OpenAPIEndpointProvider {
         uiPath = docPath + OPEN_API_UI_PATH;
 
         if (ProductInfo.getBetaEdition()) {
-            //check for system property `open_api_path_enabled` as additional guide - getBoolean returns `true` if the value exists and is set to `true`, if the value is `false`
-            if (Boolean.getBoolean("open_api_path_enabled")) {
-                getPathsFromProperties(properties);
-            }
+            getPathsFromProperties(properties);
         }
 
         uiWabConfigManager = new WABConfigManager(context, OPEN_API_UI_VAR_NAME, "OpenAPI UI");
@@ -79,12 +81,8 @@ public class OpenAPIEndpointManager implements OpenAPIEndpointProvider {
     @Modified
     protected void modified(Map<String, Object> properties) {
         if (ProductInfo.getBetaEdition()) {
-            //check for system property `open_api_path_enabled` as additional guide - getBoolean returns `true` if the value exists and is set to `true`, if the value is `false`
-            if (Boolean.getBoolean("open_api_path_enabled")) {
-                getPathsFromProperties(properties);
-            }
+            getPathsFromProperties(properties);
         }
-
         uiWabConfigManager.setPath(uiPath);
         docWabConfigManager.setPath(docPath);
     }

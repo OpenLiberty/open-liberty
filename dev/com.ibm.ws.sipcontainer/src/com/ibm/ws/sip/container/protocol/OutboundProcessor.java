@@ -178,7 +178,7 @@ public class OutboundProcessor
 		SipURI uri = sipFactory.createSipURI(flowToken, selfHost);
 		uri.setSecure(sips);
 		uri.setPort(selfPort);
-		if (sips && transport.equals("tls")) {
+		if (sips && transport.equals(SipStackUtil.TLS_TRANSPORT)) {
 			transport = "tcp";
 		}
 		uri.setTransportParam(transport);
@@ -315,7 +315,7 @@ public class OutboundProcessor
 		else if (transport.equalsIgnoreCase(ListeningPoint.TRANSPORT_TCP)) {
 			transportValue = 1;
 		}
-		else if (transport.equalsIgnoreCase(ListeningPointImpl.TRANSPORT_TLS)) {
+		else if (transport.equalsIgnoreCase(SipStackUtil.TLS_TRANSPORT)) {
 			transportValue = 2;
 		}
 		else {
@@ -461,7 +461,7 @@ public class OutboundProcessor
 			transport = ListeningPoint.TRANSPORT_TCP;
 			break;
 		case 2:
-			transport = ListeningPointImpl.TRANSPORT_TLS;
+			transport = SipStackUtil.TLS_TRANSPORT;
 			break;
 		default:
 			if (s_logger.isTraceFailureEnabled()) {

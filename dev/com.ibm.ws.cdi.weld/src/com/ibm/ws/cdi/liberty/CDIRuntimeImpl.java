@@ -56,6 +56,7 @@ import com.ibm.ws.cdi.internal.interfaces.CDIContainerEventManager;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.EjbEndpointService;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
+import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveFactory;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveProvider;
 import com.ibm.ws.cdi.internal.interfaces.TransactionService;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
@@ -86,7 +87,9 @@ import io.openliberty.cdi.spi.CDIExtensionMetadata;
 /**
  * This class is to get hold all necessary services.
  */
-@Component(name = "com.ibm.ws.cdi.liberty.CDIRuntimeImpl", service = { ApplicationStateListener.class, CDIService.class, CDIProvider.class }, property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.cdi.liberty.CDIRuntimeImpl", service = { ApplicationStateListener.class, CDIService.class, CDIProvider.class }, 
+    property = { "service.vendor=IBM",  "service.ranking:Integer=100" }) //CDI must shut down before EJB as EJBs can have a cdi application scope and according to the CDI spec "jakarta.enterprise.event.Shutdown is not after @BeforeDestroyed(ApplicationScoped.class)"
+                                                                         //CDI must also start up after injection engine, as CDI can trigger JNDI lookups in app code as part of starting up and that code can do JNDI lookups
 public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationStateListener, CDIService, CDILibertyRuntime, CDIProvider {
     private static final TraceComponent tc = Tr.register(CDIRuntimeImpl.class);
 
@@ -134,6 +137,9 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
     @Reference(policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     private volatile List<ExtensionArchiveProvider> extensionArchiveProviders;
+
+    @Reference(policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    private volatile List<ExtensionArchiveFactory> extensionArchiveFactories;
 
     private MetaDataSlot applicationSlot;
     private boolean isClientProcess;
@@ -697,6 +703,12 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     @Override
     public Collection<ExtensionArchiveProvider> getExtensionArchiveProviders() {
         return extensionArchiveProviders;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Collection<ExtensionArchiveFactory> getExtensionArchiveFactories() {
+        return extensionArchiveFactories;
     }
 
     /** {@inheritDoc} */

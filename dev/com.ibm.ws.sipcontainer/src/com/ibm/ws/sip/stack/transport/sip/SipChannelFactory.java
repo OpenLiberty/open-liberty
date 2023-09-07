@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,6 @@ import com.ibm.wsspi.udpchannel.UDPContext;
 /**
  * base class for factories that create sip application channels
  * 
- * @author ran
  */
 public abstract class SipChannelFactory implements ChannelFactory
 {

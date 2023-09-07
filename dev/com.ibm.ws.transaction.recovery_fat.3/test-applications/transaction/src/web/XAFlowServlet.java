@@ -52,9 +52,6 @@ public class XAFlowServlet extends FATServlet {
     /* Tran timeout for test setup */
     private static final int SETUP_TIMEOUT = 300; // 5 mins
 
-    /**  */
-    private static final String filter = "(testfilter=jon)";
-
     public void setupXAFlow001(HttpServletRequest request,
                                HttpServletResponse response) throws Exception {
         final ExtendedTransactionManager tm = TransactionManagerFactory.getTransactionManager();
@@ -66,11 +63,11 @@ public class XAFlowServlet extends FATServlet {
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResource(xaResInfo2);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             XAResourceImpl.dumpState(true);

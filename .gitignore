@@ -4,6 +4,9 @@
 # Ignore bin folders at the root of each project
 /*/*/bin/
 
+# Ignore bin_test folders at the root of each project
+/*/*/bin_test/
+
 # Ignore generated folders at the root of each project
 /*/*/generated/
 
@@ -27,3 +30,6 @@
 
 # Ignore JetBrains .idea
 .idea
+
+# Ignore direnv files - for quickly switching between JDK levels between projects
+.envrc

@@ -80,6 +80,9 @@ public class OidcClientPrivateKeyJwtTests extends PrivateKeyJwtClientTests {
         testSettings.setFlowType(Constants.RP_FLOW);
         testSettings.setTokenEndpt(clientServer.getHttpString() + "/PrivateKeyJwtTokenEndpoint/token");
 
+        allowPrivateKeyJwtErrorMessages();
+
+        usingSocialClient = false;
     }
 
 }

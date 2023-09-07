@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,6 +21,7 @@ import org.eclipse.microprofile.reactive.streams.operators.core.ReactiveStreamsF
 import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsFactoryResolver;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testng.ITestNGListener;
@@ -30,9 +31,12 @@ import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
+
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 import io.smallrye.reactive.streams.Engine;
 
 /**
@@ -43,6 +47,9 @@ import io.smallrye.reactive.streams.Engine;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class ReactiveStreamsTckTest {
+
+    @ClassRule
+    public static RepeatTests r = ReactiveMessagingActions.repeat(null, ReactiveMessagingActions.MP20_RM10);
 
     @BeforeClass
     public static void setup() {
@@ -85,7 +92,7 @@ public class ReactiveStreamsTckTest {
      */
     private XmlSuite createSuiteForTestClasses(List<Class<?>> testClasses) {
         XmlSuite suite = new XmlSuite();
-                           // Ignore below, a new testng requires suit names
+        // Ignore below, a new testng requires suit names
         suite.setName("ReactiveStreamsTckTest"); // No suite name so that result files are not put in a subdirectory
 
         for (Class<?> testClass : testClasses) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,6 @@ import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.common.encoder.Base64Coder;
-import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.apps.CommonFatApplications;
 import com.ibm.ws.security.fat.common.apps.jwtbuilder.JwtBuilderServlet;
@@ -55,6 +54,7 @@ import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 import com.ibm.ws.security.jwtsso.fat.actions.JwtFatActions;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
+import com.ibm.ws.security.jwtsso.fat.utils.CommonJwtssoFat;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatUtils;
 import com.ibm.ws.security.jwtsso.fat.utils.MessageConstants;
@@ -70,7 +70,7 @@ import componenttest.topology.utils.ServerFileUtils;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class ReplayCookieTests extends CommonSecurityFat {
+public class ReplayCookieTests extends CommonJwtssoFat {
 
     protected static Class<?> thisClass = ReplayCookieTests.class;
 
@@ -109,6 +109,8 @@ public class ReplayCookieTests extends CommonSecurityFat {
         serverTracker.addServer(server);
 
         server.startServerUsingExpandedConfiguration(DEFAULT_CONFIG, CommonWaitForAppChecks.getLTPAReadyMsgs(CommonWaitForAppChecks.getSSLChannelReadyMsgs()));
+
+        addServerStartupAllowedErrors(server);
 
     }
 
@@ -354,6 +356,71 @@ public class ReplayCookieTests extends CommonSecurityFat {
 
     /**
      * Tests:
+     * - Log into the protected resource WITHOUT the JWT SSO feature, obtaining an LTPA token/cookie (context root is set)
+     * - Reconfigure the server to enable the JWT SSO feature
+     * - useLtpaIfJwtAbsent is set to true
+     * - Re-access the protected resource (same context root) with the same conversation (the ltpa cookie that was just obtained is available)
+     * Expects:
+     * - Upon re-access, should reach the resource without having to log in
+     * - User principal (as obtained from HttpServletRequest.getUserPrincipal()) should now be a JWT, not a WSPrincipal
+     * - Subject should contain both the original WSPrincipal and a new JWT principal
+     */
+    @Test
+    public void test_obtainLtpa_setContextRoot_reconfigureJwtSso_reaccessWithLtpaCookie() throws Exception {
+
+        expandAndUpdateServerConfiguration(server, "server_noFeature_withContextRoot.xml", true, JwtFatConstants.APP_FORMLOGIN, JwtFatConstants.APP_TESTMARKER);
+        WebClient webClient = actions.createWebClient();
+        actions.logInAndObtainLtpaCookie(_testName, webClient, protectedUrl, defaultUser, defaultPassword);
+
+        expandAndUpdateServerConfiguration(server, "server_useLtpaIfJwtAbsent_true.xml", true, JwtFatConstants.APP_FORMLOGIN);
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(currentAction, protectedUrl));
+        expectations.addExpectations(CommonExpectations.responseTextIncludesCookie(currentAction, JwtFatConstants.LTPA_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(currentAction, JwtFatConstants.JWT_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.responseTextIncludesExpectedRemoteUser(currentAction, defaultUser));
+        expectations.addExpectations(CommonExpectations.responseTextIncludesJwtPrincipal(currentAction));
+        expectations.addExpectations(CommonExpectations.responseTextIncludesExpectedAccessId(currentAction, JwtFatConstants.BASIC_REALM, defaultUser));
+        expectations.addExpectations(CommonExpectations.getJwtPrincipalExpectations(currentAction, defaultUser, JwtFatConstants.DEFAULT_ISS_REGEX));
+
+        Page response = actions.invokeUrl(_testName, webClient, protectedUrl);
+        validationUtils.validateResult(response, currentAction, expectations);
+        actions.destroyWebClient(webClient);
+    }
+
+    /**
+     * Tests:
+     * - Log into the protected resource WITHOUT the JWT SSO feature, obtaining an LTPA token/cookie (context root is set)
+     * - Reconfigure the server to enable the JWT SSO feature
+     * - useLtpaIfJwtAbsent is set to true
+     * - access another protected resource (different context root) with the same conversation (the ltpa cookie that was just obtained should not be available)
+     * Expects:
+     * - 401
+     *
+     */
+    @Test
+    public void test_obtainLtpa_setContextRoot_reconfigureJwtSso_accessSecondAppWithLtpaCookie() throws Exception {
+
+        expandAndUpdateServerConfiguration(server, "server_noFeature_withContextRoot.xml", true, JwtFatConstants.APP_FORMLOGIN, JwtFatConstants.APP_TESTMARKER);
+        WebClient webClient = actions.createWebClient();
+        actions.logInAndObtainLtpaCookie(_testName, webClient, protectedUrl, defaultUser, defaultPassword);
+
+        expandAndUpdateServerConfiguration(server, "server_useLtpaIfJwtAbsent_true_configureSecondApp.xml", true, APP_NAME_JWT_BUILDER, JwtFatConstants.APP_FORMLOGIN);
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        String newProtectedUrl = httpUrlBase + JwtFatConstants.JWT_BUILDER_CONTEXT_ROOT + "/protected";
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(currentAction, HttpServletResponse.SC_UNAUTHORIZED));
+
+        Page response = actions.invokeUrl(_testName, webClient, newProtectedUrl);
+        validationUtils.validateResult(response, currentAction, expectations);
+        actions.destroyWebClient(webClient);
+    }
+
+    /**
+     * Tests:
      * - Log into the protected resource with the JWT SSO feature, obtaining an JWT SSO cookie
      * - Reconfigure the server to disable the JWT SSO feature
      * - Re-access the protected resource with the JWT cookie that was just obtained
@@ -459,6 +526,61 @@ public class ReplayCookieTests extends CommonSecurityFat {
 
         Page response = actions.invokeUrlWithCookie(_testName, newProtectedUrl, jwtCookie);
         validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    /**
+     * Tests:
+     * - Logs into the protected resource with the JWT SSO feature configured. JWT SSO cookie is created with context root
+     * - Access a different protected (with a different context root) resource using the same web conversation
+     * - since the context root is different between the protected resources, second invocation should fail because there is no sso cookie
+     * Expects:
+     * - Should receive a 401
+     */
+    @Test
+    public void test_obtainJwt_accessNewProtectedResource_contextRootSetInSSOCookie() throws Exception {
+
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_withBuilderApp_jwtCookie_withContextRoot.xml");
+        WebClient wc = actions.createWebClient();
+        Cookie jwtCookie = actions.logInAndObtainJwtCookie(_testName, wc, protectedUrl, defaultUser, defaultPassword);
+
+        // Access a different protected resource with the JWT cookie
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        String newProtectedUrl = httpUrlBase + JwtFatConstants.JWT_BUILDER_CONTEXT_ROOT + "/protected";
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(currentAction, HttpServletResponse.SC_UNAUTHORIZED));
+
+        Page response = actions.invokeUrl(_testName, wc, newProtectedUrl);
+        validationUtils.validateResult(response, currentAction, expectations);
+        actions.destroyWebClient(wc);
+    }
+
+    /**
+     * Tests:
+     * - Logs into the protected resource with the JWT SSO feature configured. JWT SSO cookie is created without context root
+     * - Access a different protected resource (with a different context root) using the same web conversation
+     * - since there is no context root set in the jwt cookie, second invocation to another protected resource should succeed
+     * Expects:
+     * - Should reach the other resource without having to log in
+     */
+    @Test
+    public void test_obtainJwt_accessNewProtectedResource_noContextRootInSSOCookie() throws Exception {
+        WebClient wc = actions.createWebClient();
+        actions.logInAndObtainJwtCookie(_testName, wc, protectedUrl, defaultUser, defaultPassword);
+
+        // Access a different protected resource using the same web client
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        String newProtectedUrl = httpUrlBase + JwtFatConstants.JWT_BUILDER_CONTEXT_ROOT + "/protected";
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(currentAction, HttpServletResponse.SC_OK));
+        expectations.addExpectation(new ResponseUrlExpectation(currentAction, JwtFatConstants.STRING_EQUALS, newProtectedUrl, "Did not reach the expected URL."));
+        expectations.addExpectation(Expectation.createResponseExpectation(currentAction, String.format(ProtectedServlet.SUCCESS_MESSAGE, defaultUser),
+                                                                          "Did not find the expected success message in the servlet response."));
+        expectations.addExpectations(CommonExpectations.getJwtPrincipalExpectations(currentAction, defaultUser, JwtFatConstants.DEFAULT_ISS_REGEX));
+        Page response = actions.invokeUrl(_testName, wc, newProtectedUrl);
+        validationUtils.validateResult(response, currentAction, expectations);
+        actions.destroyWebClient(wc);
     }
 
     /**
@@ -580,7 +702,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
     }
 
     /********************************************** Helper methods **********************************************/
-    
+
     /**
      * Expands any imports in the specified server config and copies the expanded configuration to the server.xml of the server root.
      * <p>
@@ -593,7 +715,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
      * @param configFileName the config file in the publish/configs directory
      * @param featureUpdate whether this config updates features
      * @param appNames names of applications which should start after this update completes
-     * @throws Exception 
+     * @throws Exception
      */
     private void expandAndUpdateServerConfiguration(LibertyServer server, String configFileName, boolean featureUpdate, String... appNames) throws Exception {
         Set<String> appNameSet = new HashSet<>(Arrays.asList(appNames));

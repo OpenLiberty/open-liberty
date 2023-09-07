@@ -1590,6 +1590,45 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Inherited repository method with a generic array return type.
+     */
+    @Test
+    public void testGenericArrayReturnType() {
+        people.deleteByIdBetween(100101001l, 100101004l);
+
+        Person p1 = new Person();
+        p1.firstName = "George";
+        p1.lastName = "TestGenericArrayReturnType";
+        p1.ssn_id = 100101001l;
+
+        Person p2 = new Person();
+        p2.firstName = "Gordon";
+        p2.lastName = "TestGenericArrayReturnType";
+        p2.ssn_id = 100101002l;
+
+        Person p3 = new Person();
+        p3.firstName = "Gary";
+        p3.lastName = "TestGenericArrayReturnType-NonMatching";
+        p3.ssn_id = 100101003l;
+
+        Person p4 = new Person();
+        p4.firstName = "Gerald";
+        p4.lastName = "TestGenericArrayReturnType";
+        p4.ssn_id = 100101004l;
+
+        people.save(List.of(p1, p2, p3, p4));
+
+        Person[] found = people.findByLastName("TestGenericArrayReturnType");
+
+        assertEquals(Arrays.toString(found), 3, found.length);
+        assertEquals("George", found[0].firstName);
+        assertEquals("Gerald", found[1].firstName);
+        assertEquals("Gordon", found[2].firstName);
+
+        assertEquals(4l, people.deleteByIdBetween(100101001l, 100101004l));
+    }
+
+    /**
      * Keyset pagination with ignoreCase in the sort criteria.
      */
     @Test

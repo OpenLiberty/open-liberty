@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsp.translator.visitor.generator;
 
@@ -45,11 +42,13 @@ public class OptimizedTagGenerator extends BaseTagGenerator implements TagGenera
     protected Map attrMap = new HashMap();
     protected List declaredIdList = null;
     protected String tagPushBodyCountVar = null;
-    
+    private boolean genTagInMethod = false;
+
     public OptimizedTagGenerator(OptimizedTag optimizedTag,
-                                 String tagPushBodyCountVar, 
+                                 String tagPushBodyCountVar,
                                  int nestingLevel,
                                  boolean isTagFile,
+                                 boolean genTagInMethod,
                                  boolean hasBody,
                                  boolean hasJspBody,
                                  String tagHandlerVar,
@@ -63,91 +62,76 @@ public class OptimizedTagGenerator extends BaseTagGenerator implements TagGenera
                                  ValidateResult.CollectedTagData collectedTagData,
                                  FragmentHelperClassWriter fragmentHelperClassWriter,
                                  JspOptions jspOptions) {
-        super(nestingLevel,
-              isTagFile,
-              hasBody,
-              hasJspBody,
-              tagHandlerVar,
-              element,
-              tagLibraryCache,
-              jspConfiguration,
-              ctxt,
-              tagClassInfo,
-              ti,
-              persistentData,
-              collectedTagData,
-              fragmentHelperClassWriter,
-              jspOptions);
-        
+        super(nestingLevel, isTagFile, hasBody, hasJspBody, tagHandlerVar, element, tagLibraryCache, jspConfiguration, ctxt, tagClassInfo, ti, persistentData, collectedTagData, fragmentHelperClassWriter, jspOptions);
+
         this.jspOptions = jspOptions; //PK65013
         this.optimizedTag = optimizedTag;
         this.tagPushBodyCountVar = tagPushBodyCountVar;
-        
+        this.genTagInMethod = genTagInMethod;
+
         NamedNodeMap nodeAttrs = element.getAttributes();
         for (int i = 0; i < nodeAttrs.getLength(); i++) {
-            Attr attr = (Attr)nodeAttrs.item(i);
+            Attr attr = (Attr) nodeAttrs.item(i);
             if (attr.getName().equals("jsp:id") == false && attr.getName().startsWith("xmlns") == false) {
                 attrMap.put(attr.getName(), Boolean.FALSE);
             }
         }
-        
+
         NodeList nl = element.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node childNode = nl.item(i);
             if (childNode.getNodeType() == Node.ELEMENT_NODE) {
-                Element childElement = (Element)childNode;
-                if (childElement.getNamespaceURI() != null && 
-                    childElement.getNamespaceURI().equals(Constants.JSP_NAMESPACE) && 
+                Element childElement = (Element) childNode;
+                if (childElement.getNamespaceURI() != null &&
+                    childElement.getNamespaceURI().equals(Constants.JSP_NAMESPACE) &&
                     childElement.getLocalName().equals(Constants.JSP_ATTRIBUTE_TYPE)) {
-                        String name = childElement.getAttribute("name");
-                        if (name.indexOf(':') != -1) {
-                            name = name.substring(name.indexOf(':') + 1);
-                        }
-                        attrMap.put(name, Boolean.TRUE);
+                    String name = childElement.getAttribute("name");
+                    if (name.indexOf(':') != -1) {
+                        name = name.substring(name.indexOf(':') + 1);
+                    }
+                    attrMap.put(name, Boolean.TRUE);
                 }
             }
         }
-        
-        declaredIdList = (List)persistentData.get("declaredIdList");
+
+        declaredIdList = (List) persistentData.get("declaredIdList");
         if (declaredIdList == null) {
             declaredIdList = new ArrayList();
             persistentData.put("declaredIdList", declaredIdList);
         }
     }
-    
+
     public boolean optimizePossible() {
         return optimizedTag.doOptimization(this);
     }
-    
+
     public MethodWriter generateTagStart() throws JspCoreException {
         tagStartWriter = new MethodWriter();
         if (hasBody) {
-            
+
             // LIDB4147-24
-            if (!jspOptions.isDisableResourceInjection()){		//PM06063
+            if (!jspOptions.isDisableResourceInjection()) { //PM06063
                 // have CDI create and inject the managed object
-                tagStartWriter.print ("com.ibm.ws.managedobject.ManagedObject " + tagHandlerVar + "_mo = ");
-                tagStartWriter.print ("_jspx_iaHelper.inject(");
-                tagStartWriter.print (tagClassInfo.getTagClassName() + ".class");
-                tagStartWriter.println (");");
-            
+                tagStartWriter.print("com.ibm.ws.managedobject.ManagedObject " + tagHandlerVar + "_mo = ");
+                tagStartWriter.print("_jspx_iaHelper.inject(");
+                tagStartWriter.print(tagClassInfo.getTagClassName() + ".class");
+                tagStartWriter.println(");");
+
                 // get the underlying object from the managed object
                 tagStartWriter.print(tagClassInfo.getTagClassName());
                 tagStartWriter.print(" ");
-                tagStartWriter.print(tagHandlerVar);   
-                tagStartWriter.print(" = ");           
-                tagStartWriter.println("("+tagClassInfo.getTagClassName()+")"+tagHandlerVar+"_mo.getObject();"); 
+                tagStartWriter.print(tagHandlerVar);
+                tagStartWriter.print(" = ");
+                tagStartWriter.println("(" + tagClassInfo.getTagClassName() + ")" + tagHandlerVar + "_mo.getObject();");
 
-            	tagStartWriter.print ("_jspx_iaHelper.doPostConstruct(");
-            	tagStartWriter.print (tagHandlerVar);
-            	tagStartWriter.println (");");
-            	
-                tagStartWriter.print ("_jspx_iaHelper.addTagHandlerToCdiMap(");
-                tagStartWriter.print (tagHandlerVar + ", " + tagHandlerVar + "_mo");
-                tagStartWriter.println (");");
-                
+                if (genTagInMethod) {
+                    tagStartWriter.println("try {");
+                } 
+
+                tagStartWriter.print("_jsp_tagPostConstruct(" +tagHandlerVar+ ", " + (!genTagInMethod ? "_jspTagList, " : "null, ") + tagHandlerVar + "_mo" + ");");
+
             } else {
-                
+
                 // not using CDI
                 tagStartWriter.print(tagClassInfo.getTagClassName());
                 tagStartWriter.print(" ");
@@ -157,13 +141,17 @@ public class OptimizedTagGenerator extends BaseTagGenerator implements TagGenera
                 tagStartWriter.print(tagClassInfo.getTagClassName());
                 tagStartWriter.print("();");
                 tagStartWriter.println();
+
+                if (!genTagInMethod) {
+                    tagStartWriter.println ("_jspTagList.add("+ tagHandlerVar + ");");
+                }
             }
-            
+
             tagStartWriter.println();
         }
         return tagStartWriter;
     }
-    
+
     public MethodWriter generateTagMiddle() throws JspCoreException {
         tagMiddleWriter = new MethodWriter();
         if (tagClassInfo.implementsTryCatchFinally()) {
@@ -174,7 +162,7 @@ public class OptimizedTagGenerator extends BaseTagGenerator implements TagGenera
         }
         return tagMiddleWriter;
     }
-    
+
     public MethodWriter generateTagEnd() throws JspCoreException {
         generateJspAttributeSetters();
         currentWriter = tagMiddleWriter;
@@ -184,47 +172,47 @@ public class OptimizedTagGenerator extends BaseTagGenerator implements TagGenera
         optimizedTag.generateEnd(this);
         return tagEndWriter;
     }
-    
+
     public void generateImports(JavaCodeWriter writer) {
         currentWriter = writer;
         optimizedTag.generateImports(this);
     }
-    
+
     public void generateDeclarations(JavaCodeWriter writer) {
         currentWriter = writer;
         optimizedTag.generateDeclarations(this);
     }
-    
+
     protected void generateSetterCall(String attrName,
                                       String evalAttrValue,
                                       String uri,
                                       MethodWriter setterWriter,
                                       boolean isDymanic) {
-        optimizedTag.setAttribute(attrName, evalAttrValue);                                              
+        optimizedTag.setAttribute(attrName, evalAttrValue);
     }
-    
+
     public void writeSource(String source) {
         currentWriter.println(source);
     }
-    
+
     public void writeImport(String importId, String importSource) {
         if (declaredIdList.contains(importId) == false) {
             currentWriter.println(importSource);
-            declaredIdList.add(importId);                                
+            declaredIdList.add(importId);
         }
     }
-    
+
     public void writeDeclaration(String declarationId, String declarationSource) {
         if (declaredIdList.contains(declarationId) == false) {
-            currentWriter.println(declarationSource);                    
-            declaredIdList.add(declarationId);                                
+            currentWriter.println(declarationSource);
+            declaredIdList.add(declarationId);
         }
     }
-    
+
     public String createTemporaryVariable() {
         return GeneratorUtils.nextTemporaryVariableName(persistentData);
     }
-    
+
     public boolean hasAttribute(String attrName) {
         return attrMap.containsKey(attrName);
     }
@@ -232,11 +220,11 @@ public class OptimizedTagGenerator extends BaseTagGenerator implements TagGenera
     public boolean isJspAttribute(String attrName) {
         boolean b = false;
         if (attrMap.containsKey(attrName)) {
-            b = ((Boolean)attrMap.get(attrName)).booleanValue();    
+            b = ((Boolean) attrMap.get(attrName)).booleanValue();
         }
         return b;
     }
-    
+
     public OptimizedTag getParent() {
         OptimizedTag parentTag = null;
         if (parentTagInstanceInfo != null) {
@@ -245,17 +233,20 @@ public class OptimizedTagGenerator extends BaseTagGenerator implements TagGenera
         return parentTag;
     }
 
-    public void generateInitialization(JavaCodeWriter writer) {}
-    public void generateFinally(JavaCodeWriter writer) {}
-    
+    public void generateInitialization(JavaCodeWriter writer) {
+    }
+
+    public void generateFinally(JavaCodeWriter writer) {
+    }
+
     public boolean hasBody() {
         return hasBody;
     }
-    
+
     public boolean hasJspBody() {
         return hasJspBody;
     }
-    
+
     //PK65013 start
     public JspOptions getJspOptions() {
         return jspOptions;

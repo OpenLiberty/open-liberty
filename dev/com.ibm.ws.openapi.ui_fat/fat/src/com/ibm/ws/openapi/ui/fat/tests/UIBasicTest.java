@@ -20,6 +20,7 @@ import java.time.Duration;
 import org.hamcrest.Matchers;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -86,6 +87,13 @@ public class UIBasicTest {
         driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true));
     }
 
+    @After
+    public void teardownTest() throws Exception {
+        // Ensure clean closure of selenium components at end of test
+        // As no server changes required, no need to stop the server
+        driver.quit();
+    }
+
     @Test
     public void testPublicUI() {
         driver.get("http://host.testcontainers.internal:" + server.getHttpDefaultPort() + "/api/explorer");
@@ -93,7 +101,11 @@ public class UIBasicTest {
     }
 
     @Test
-    public void testPrivateUI() {
+    public void testPrivateUI() throws Exception {
+        //Reduce possibility that Server is not listening on its HTTPS Port
+        //Especially for Windows if certificates are slow to create
+        server.waitForSSLStart();
+
         driver.get("https://admin:test@host.testcontainers.internal:" + server.getHttpDefaultSecurePort() + "/ibm/api/explorer");
         testUI();
     }

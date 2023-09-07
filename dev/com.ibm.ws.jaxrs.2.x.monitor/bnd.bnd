@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2022 IBM Corporation and others.
+# Copyright (c) 2019, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -36,7 +36,11 @@ Service-Component: \
 
 WS-TraceGroup: JAXRS
 
+# Using version=! in order to not have a version attached to the import for packages that were removed
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
+# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
+    javax.annotation;version=!, \
     com.ibm.websphere.servlet.container, \
     javax.servlet; version="[2.6,3)", \
     !*.internal.*,*
@@ -57,6 +61,7 @@ Liberty-Monitoring-Components:
 -buildpath: \
 	com.ibm.ws.classloading,\
 	com.ibm.ws.monitor,\
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.javaee.jaxrs.2.0,\
 	com.ibm.websphere.org.osgi.core;version=latest,\

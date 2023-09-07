@@ -27,6 +27,7 @@ import javax.transaction.TransactionManager;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.jta.embeddable.impl.EmbeddableTranManagerSet;
 import com.ibm.tx.jta.embeddable.impl.EmbeddableTransactionImpl;
 import com.ibm.tx.jta.embeddable.impl.WSATRecoveryCoordinator;
@@ -44,6 +45,8 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.Transaction.JTA.HeuristicHazardException;
+import com.ibm.ws.Transaction.JTS.Configuration;
+import com.ibm.ws.recoverylog.spi.SharedServerLeaseLog;
 
 /**
  *
@@ -267,7 +270,7 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
      * @param xid
      * @return
      */
-    private DistributableTransaction getTransactionForID(String globalId) {
+    public DistributableTransaction getTransactionForID(String globalId) {
 
         for (TransactionImpl tx : LocalTIDTable.getAllTransactions()) {
             if (globalId.equals(((DistributableTransaction) tx).getGlobalId())) {
@@ -434,5 +437,27 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
     @Override
     public void putResource(String globalId, Object o) {
         ((TransactionImpl) getTransactionForID(globalId)).putResource(globalId, o);
+    }
+
+    @Override
+    public String getRecoveryId() {
+        return ConfigurationProviderManager.getConfigurationProvider().getRecoveryIdentity();
+    }
+
+    // Retrieve address from lease log
+    @Override
+    public String getAddress(String recoveryId) {
+        SharedServerLeaseLog leaseLog = Configuration.getLogManager().getLeaseLog();
+
+        try {
+            if (leaseLog != null) {
+                return leaseLog.getBackendURL(recoveryId);
+            }
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "getAddress", e);
+        }
+
+        return null;
     }
 }

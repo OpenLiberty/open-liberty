@@ -31,7 +31,7 @@
     </webApplication>
     
     <!-- this sections mirrors permissions.xml to apply the permissions to the Kafka client jar in the shared library -->
-    <variable name="kafkaCodebase" value="${server.config.dir}/kafkaLib/kafka-clients-3.1.0.jar"/>
+    <variable name="kafkaCodebase" value="${server.config.dir}/kafkaLib/kafka-clients-3.5.1.jar"/>
     <javaPermission codebase="${kafkaCodebase}" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
     <javaPermission codebase="${kafkaCodebase}" className="javax.management.MBeanPermission" name="*" actions="*"/>
     <javaPermission codebase="${kafkaCodebase}" className="javax.management.MBeanTrustPermission" name="register"/>

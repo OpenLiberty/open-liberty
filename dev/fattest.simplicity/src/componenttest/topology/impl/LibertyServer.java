@@ -365,6 +365,24 @@ public class LibertyServer implements LogMonitorClient {
      */
     public String getMicroVersion() {
         return RELEASE_MICRO_VERSION;
+
+        // The micro version is set by by 'cnf\build.gradle':
+        //   inputs.file('resources/bnd/liberty-release.props')
+        // And by 'wlp-gradle/subprojects/fat.gradle':
+        //   bndProps.setProperty('micro.version', bnd.get('libertyBundleMicroVersion'))
+        //
+        // The micro version is used as a suffix to the base name of
+        // library jars, for example:
+        //
+        // libertyBundleMicroVersion=78
+        //
+        // -rw-rw-rw-  1 874973897 874973897  348465 06-12 22:12 com.ibm.ws.kernel.boot.archive_1.0.78.jar
+        // -rw-rw-rw-  1 874973897 874973897  829676 06-13 16:11 com.ibm.ws.kernel.boot_1.0.78.jar
+        // -rw-rw-rw-  1 874973897 874973897  829671 06-28 12:07 com.ibm.ws.kernel.boot_1.0.78.jar
+        //
+        // Errors can occur if the micro version does not match the names under 'wlp/lib'.
+        // This occurs rarely during official builds, possibly because of the splicing of
+        // a newer WAS liberty build with an older open liberty build.
     }
 
     public String getMicroSuffix() {
@@ -743,6 +761,8 @@ public class LibertyServer implements LogMonitorClient {
             throw new IllegalArgumentException("No installRoot was set in " + b);
         }
 
+        // TODO: Verify the micro version matches the files under 'installRoot/lib'.
+
         // Allow user directory name to be provided in bootstrap properties.
         // It is optional and if it is not set, setup() will set it.
         userDir = b.getValue("libertyUserDir");
@@ -1087,6 +1107,21 @@ public class LibertyServer implements LogMonitorClient {
             Log.info(c, thisMethod, "Did not detect a restart of the SSL port");
         }
 
+    }
+
+    /**
+     * Wait for the server to state that it is listening on its SSL port
+     *
+     * @throws Exception
+     */
+    public void waitForSSLStart() throws Exception {
+        //wait for "CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host"
+        String sslStartMsg = waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint-ssl.*");
+        if (sslStartMsg == null) {
+            RuntimeException rx = new RuntimeException("Timed out waiting for the server to initialize defaultHttpEndpoint-ssl");
+            Log.error(c, "waitForSSLStart", rx);
+            throw rx;
+        }
     }
 
     /**
@@ -6129,7 +6164,7 @@ public class LibertyServer implements LogMonitorClient {
      * @param  outputFile file to check
      * @return            line that matched the regexp
      */
-    protected String waitForStringInLogUsingMark(String regexp, long intendedTimeout, RemoteFile outputFile) {
+    public String waitForStringInLogUsingMark(String regexp, long intendedTimeout, RemoteFile outputFile) {
         return waitForStringInLogUsingMark(regexp, intendedTimeout, 2 * intendedTimeout, outputFile);
     }
 
@@ -7263,5 +7298,13 @@ public class LibertyServer implements LogMonitorClient {
             this.openLibertyVersion = (String) getOpenLibertyProperties().get(COM_IBM_WEBSPHERE_PRODUCTVERSION_KEY);
         }
         return this.openLibertyVersion;
+    }
+
+    /**
+     * @param  var
+     * @return
+     */
+    public String getEnvVar(String var) {
+        return envVars.get(var);
     }
 }

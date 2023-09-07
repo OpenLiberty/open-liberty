@@ -26,11 +26,6 @@ private static final long serialVersionUID = 0L;
     return new Price();
   }
 
-  @java.lang.Override
-  public final com.google.protobuf.UnknownFieldSet
-  getUnknownFields() {
-    return this.unknownFields;
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return com.ibm.test.g3store.grpc.StoreProto.internal_static_Price_descriptor;
@@ -45,7 +40,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int PURCHASETYPE_FIELD_NUMBER = 1;
-  private int purchaseType_;
+  private int purchaseType_ = 0;
   /**
    * <code>.PurchaseType purchaseType = 1;</code>
    * @return The enum numeric value on the wire for purchaseType.
@@ -58,13 +53,12 @@ private static final long serialVersionUID = 0L;
    * @return The purchaseType.
    */
   @java.lang.Override public com.ibm.test.g3store.grpc.PurchaseType getPurchaseType() {
-    @SuppressWarnings("deprecation")
-    com.ibm.test.g3store.grpc.PurchaseType result = com.ibm.test.g3store.grpc.PurchaseType.valueOf(purchaseType_);
+    com.ibm.test.g3store.grpc.PurchaseType result = com.ibm.test.g3store.grpc.PurchaseType.forNumber(purchaseType_);
     return result == null ? com.ibm.test.g3store.grpc.PurchaseType.UNRECOGNIZED : result;
   }
 
   public static final int SELLINGPRICE_FIELD_NUMBER = 2;
-  private double sellingPrice_;
+  private double sellingPrice_ = 0D;
   /**
    * <code>double sellingPrice = 2;</code>
    * @return The sellingPrice.
@@ -195,11 +189,13 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
+
   public static com.ibm.test.g3store.grpc.Price parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
+
   public static com.ibm.test.g3store.grpc.Price parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -274,10 +270,9 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      bitField0_ = 0;
       purchaseType_ = 0;
-
       sellingPrice_ = 0D;
-
       return this;
     }
 
@@ -304,10 +299,19 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.ibm.test.g3store.grpc.Price buildPartial() {
       com.ibm.test.g3store.grpc.Price result = new com.ibm.test.g3store.grpc.Price(this);
-      result.purchaseType_ = purchaseType_;
-      result.sellingPrice_ = sellingPrice_;
+      if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
+    }
+
+    private void buildPartial0(com.ibm.test.g3store.grpc.Price result) {
+      int from_bitField0_ = bitField0_;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.purchaseType_ = purchaseType_;
+      }
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.sellingPrice_ = sellingPrice_;
+      }
     }
 
     @java.lang.Override
@@ -388,12 +392,12 @@ private static final long serialVersionUID = 0L;
               break;
             case 8: {
               purchaseType_ = input.readEnum();
-
+              bitField0_ |= 0x00000001;
               break;
             } // case 8
             case 17: {
               sellingPrice_ = input.readDouble();
-
+              bitField0_ |= 0x00000002;
               break;
             } // case 17
             default: {
@@ -411,6 +415,7 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int bitField0_;
 
     private int purchaseType_ = 0;
     /**
@@ -426,8 +431,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setPurchaseTypeValue(int value) {
-      
       purchaseType_ = value;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -437,8 +442,7 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public com.ibm.test.g3store.grpc.PurchaseType getPurchaseType() {
-      @SuppressWarnings("deprecation")
-      com.ibm.test.g3store.grpc.PurchaseType result = com.ibm.test.g3store.grpc.PurchaseType.valueOf(purchaseType_);
+      com.ibm.test.g3store.grpc.PurchaseType result = com.ibm.test.g3store.grpc.PurchaseType.forNumber(purchaseType_);
       return result == null ? com.ibm.test.g3store.grpc.PurchaseType.UNRECOGNIZED : result;
     }
     /**
@@ -450,7 +454,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      
+      bitField0_ |= 0x00000001;
       purchaseType_ = value.getNumber();
       onChanged();
       return this;
@@ -460,7 +464,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearPurchaseType() {
-      
+      bitField0_ = (bitField0_ & ~0x00000001);
       purchaseType_ = 0;
       onChanged();
       return this;
@@ -481,8 +485,9 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setSellingPrice(double value) {
-      
+
       sellingPrice_ = value;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -491,7 +496,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearSellingPrice() {
-      
+      bitField0_ = (bitField0_ & ~0x00000002);
       sellingPrice_ = 0D;
       onChanged();
       return this;

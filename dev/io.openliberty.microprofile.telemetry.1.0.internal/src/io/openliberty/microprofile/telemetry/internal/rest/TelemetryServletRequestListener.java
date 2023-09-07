@@ -13,6 +13,9 @@ import io.opentelemetry.context.Scope;
 import jakarta.servlet.ServletRequestEvent;
 import jakarta.servlet.ServletRequestListener;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 /**
  * Closes the Scope at the end of the request.
  * <p>
@@ -23,15 +26,21 @@ import jakarta.servlet.ServletRequestListener;
  */
 public class TelemetryServletRequestListener implements ServletRequestListener {
 
+    private static final TraceComponent tc = Tr.register(TelemetryServletRequestListener.class);
+
     /** {@inheritDoc} */
     @Override
     public void requestDestroyed(ServletRequestEvent sre) {
-        // End the span scope (if present)
-        Scope scope = (Scope) sre.getServletRequest().getAttribute(TelemetryContainerFilter.SPAN_SCOPE);
-        if (scope != null) {
-            scope.close();
-            sre.getServletRequest().removeAttribute(TelemetryContainerFilter.SPAN_SCOPE);
+        try {
+            // End the span scope (if present)
+            Scope scope = (Scope) sre.getServletRequest().getAttribute(TelemetryContainerFilter.SPAN_SCOPE);
+            if (scope != null) {
+                scope.close();
+                sre.getServletRequest().removeAttribute(TelemetryContainerFilter.SPAN_SCOPE);
+            }
+        } catch (Exception e) {
+           Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+           return;
         }
     }
-
 }

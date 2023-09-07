@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package com.ibm.ws.recoverylog.spi;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 //------------------------------------------------------------------------------
 // Class: FileLogProperties
@@ -254,9 +255,10 @@ public class FileLogProperties implements LogProperties {
      * @return int The unique RLI value.
      */
     @Override
+    @Trivial
     public int logIdentifier() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "logIdentifier", this, _logIdentifier);
+            Tr.debug(tc, "logIdentifier {0} {1}", this, _logIdentifier);
         return _logIdentifier;
     }
 
@@ -269,9 +271,10 @@ public class FileLogProperties implements LogProperties {
      * @return String The unique RLN value.
      */
     @Override
+    @Trivial
     public String logName() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "logName", this, _logName);
+            Tr.debug(tc, "logName {0} {1}", this, _logName);
         return _logName;
     }
 
@@ -284,9 +287,10 @@ public class FileLogProperties implements LogProperties {
      *
      * @return String The phyisical log directory path
      */
+    @Trivial
     public String logDirectory() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "logDirectory", this, _logDirectory);
+            Tr.debug(tc, "logDirectory {0} {1}", this, _logDirectory);
         return _logDirectory;
     }
 
@@ -299,9 +303,10 @@ public class FileLogProperties implements LogProperties {
      *
      * @return String The stem of the log directory path
      */
+    @Trivial
     public String logDirectoryStem() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "logDirectoryStem", this, _logDirectoryStem);
+            Tr.debug(tc, "logDirectoryStem {0} {1}", this, _logDirectoryStem);
         return _logDirectoryStem;
     }
 
@@ -314,9 +319,10 @@ public class FileLogProperties implements LogProperties {
      *
      * @return int The phyisical log size (in kilobytes)
      */
+    @Trivial
     public int logFileSize() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "logFileSize", this, _logFileSize);
+            Tr.debug(tc, "logFileSize {0} {1}", this, _logFileSize);
         return _logFileSize;
     }
 
@@ -329,15 +335,17 @@ public class FileLogProperties implements LogProperties {
      *
      * @return int The maximum phyisical log size (in kilobytes)
      */
+    @Trivial
     public int maxLogFileSize() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "maxLogFileSize", this, _maxLogFileSize);
+            Tr.debug(tc, "maxLogFileSize {0} {1}", this, _maxLogFileSize);
         return _maxLogFileSize;
     }
 
+    @Trivial
     protected int logType() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "logType", this, _logType);
+            Tr.debug(tc, "logType {0} {1}", this, _logType);
         return _logType;
     }
 

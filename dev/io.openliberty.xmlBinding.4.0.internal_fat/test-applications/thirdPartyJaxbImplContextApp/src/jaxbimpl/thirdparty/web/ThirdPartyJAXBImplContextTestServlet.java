@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
+import java.util.Arrays;
+import java.util.Locale;
 
 import org.junit.Test;
 
@@ -33,6 +35,7 @@ import jaxb.web.utils.JAXBXMLSchemaConstants;
 import jaxb.web.utils.StringSchemaOutputResolver;
 
 /**
+ * Testing third party XML Binding implementations
  *
  */
 @SuppressWarnings("serial")
@@ -78,6 +81,9 @@ public class ThirdPartyJAXBImplContextTestServlet extends FATServlet {
         assertEquals("org.eclipse.persistence.jaxb.JAXBContext", clazz.getName());
     }
 
+    // If this testEE10PropertyMapContextMarshalling and testEE10SystemPropertyContextMarshalling tests continue failing,
+    // we need to rewrite the tests removing direct comparison on serialized results since third party implementations are
+    // out of IBM's test scope
     @Test
     public void testEE10PropertyMapContextMarshalling() throws Exception {
 
@@ -87,11 +93,23 @@ public class ThirdPartyJAXBImplContextTestServlet extends FATServlet {
 
         String purchaseOrderTypeMarshalledResult = JAXBContextUtils.marshallForTest(thirdPartyPropertyMapContext);
 
-        assertTrue("Expected purchaseOrderTypeMarshalledResult to contain: " + JAXBXMLSchemaConstants.EXPECTED_PURCHASEORDERTYPE_MARSHALLED_RESULT
-                   + " but contained " + purchaseOrderTypeMarshalledResult,
-                   purchaseOrderTypeMarshalledResult.contains(JAXBXMLSchemaConstants.EXPECTED_PURCHASEORDERTYPE_MARSHALLED_RESULT));
+        if (isWindows()) {
+            // This solution compares everything line by line trimming all tabs, whitespace and new lines. Comparison of XML Strings on Windows platform
+            // gives false result even though comparison line by line gives positive results
+            assertTrue("Expected purchaseOrderTypeMarshalledResult to contain all lines in order : "
+                       + Arrays.toString(JAXBXMLSchemaConstants.EXPECTED_PURCHASEORDERTYPE_MARSHALLED_RESULT_ARRAY)
+                       + " but contained " + purchaseOrderTypeMarshalledResult,
+                       JAXBContextUtils.compareMarshalledXML(JAXBXMLSchemaConstants.EXPECTED_PURCHASEORDERTYPE_MARSHALLED_RESULT_ARRAY, purchaseOrderTypeMarshalledResult));
+        } else {
+            assertTrue("Expected purchaseOrderTypeMarshalledResult to contain: " + JAXBXMLSchemaConstants.EXPECTED_PURCHASEORDERTYPE_MARSHALLED_RESULT
+                       + " but contained " + purchaseOrderTypeMarshalledResult,
+                       purchaseOrderTypeMarshalledResult.contains(JAXBXMLSchemaConstants.EXPECTED_PURCHASEORDERTYPE_MARSHALLED_RESULT));
+        }
     }
 
+    // If this testEE10SystemPropertyContextMarshalling and testEE10PropertyMapContextMarshalling tests continue failing,
+    // we need to rewrite the tests removing direct comparison on serialized results since third party implementations are
+    // out of IBM's test scope
     @Test
     public void testEE10SystemPropertyContextMarshalling() throws Exception {
 
@@ -101,9 +119,18 @@ public class ThirdPartyJAXBImplContextTestServlet extends FATServlet {
 
         String purchaseOrderTypeMarshalledResult = JAXBContextUtils.marshallForTest(thirdPartySystemPropertyContext);
 
-        assertTrue("Expected purchaseOrderTypeMarshalledResult to contain: " + JAXBXMLSchemaConstants.EXPECTED_PURCHASEORDERTYPE_MARSHALLED_RESULT
-                   + " but contained " + purchaseOrderTypeMarshalledResult,
-                   purchaseOrderTypeMarshalledResult.contains(JAXBXMLSchemaConstants.EXPECTED_PURCHASEORDERTYPE_MARSHALLED_RESULT));
+        if (isWindows()) {
+            // This solution compares everything line by line trimming all tabs, whitespace and new lines. Comparison of XML Strings on Windows platform
+            // gives false result even though comparison line by line gives positive results
+            assertTrue("Expected purchaseOrderTypeMarshalledResult to contain all lines in order : "
+                       + Arrays.toString(JAXBXMLSchemaConstants.EXPECTED_PURCHASEORDERTYPE_MARSHALLED_RESULT_ARRAY)
+                       + " but contained " + purchaseOrderTypeMarshalledResult,
+                       JAXBContextUtils.compareMarshalledXML(JAXBXMLSchemaConstants.EXPECTED_PURCHASEORDERTYPE_MARSHALLED_RESULT_ARRAY, purchaseOrderTypeMarshalledResult));
+        } else {
+            assertTrue("Expected purchaseOrderTypeMarshalledResult to contain: " + JAXBXMLSchemaConstants.EXPECTED_PURCHASEORDERTYPE_MARSHALLED_RESULT
+                       + " but contained " + purchaseOrderTypeMarshalledResult,
+                       purchaseOrderTypeMarshalledResult.contains(JAXBXMLSchemaConstants.EXPECTED_PURCHASEORDERTYPE_MARSHALLED_RESULT));
+        }
     }
 
     @Test
@@ -231,4 +258,8 @@ public class ThirdPartyJAXBImplContextTestServlet extends FATServlet {
         assertNull(notFoundString + " is expected to be in generated schema: " + schemaString, notFoundString);
     }
 
+    // Simple method checking if OS is Windows
+    private boolean isWindows() {
+        return System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
+    }
 }

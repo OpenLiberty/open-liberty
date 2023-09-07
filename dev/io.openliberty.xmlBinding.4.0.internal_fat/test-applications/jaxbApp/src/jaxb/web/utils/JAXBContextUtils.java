@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -95,13 +95,17 @@ public class JAXBContextUtils {
      * @return
      */
     public static Items getItems() {
-        Items tempItems = new Items();
-        List<Item> itemList = createItemsList();
-        List<String> itemNames = createItemNames(itemList);
-        tempItems.setItem(itemList);
-        tempItems.setItemNames(itemNames);
-        ITEMS = tempItems;
-        return ITEMS;
+        if (ITEMS == null) {
+            Items tempItems = new Items();
+            List<Item> itemList = createItemsList();
+            tempItems.setItem(itemList);
+            List<String> itemNames = createItemNames(itemList);
+            tempItems.setItemNames(itemNames);
+            ITEMS = tempItems;
+            return ITEMS;
+        } else {
+            return ITEMS;
+        }
     }
 
     /**
@@ -137,30 +141,15 @@ public class JAXBContextUtils {
     }
 
     /**
+     *
      * @return
      */
-    public static List<Item> createItemsList() {
-        Item item = new Item();
-        item.setComment("I'm a test product");
-        item.setProductName("Test Product");
-        BigDecimal price = new BigDecimal(59872325.999999999898);
-        item.setPrice(price);
-        item.setQuantity(15);
-
-        item.setShipDate(getDate());
-
-        Item item2 = new Item();
-
-        item2.setComment("I'm another test product");
-        item2.setProductName("Test Product 2");
-        BigDecimal price2 = new BigDecimal(135165.999999999898);
-        item2.setPrice(price2);
-        item2.setQuantity(1251);
-        item2.setShipDate(getDate());
-
-        List<Item> itemList = new ArrayList<Item>();
-        itemList.add(item);
-        itemList.add(item2);
+    // Synchronized added to prevent intermittent duplicate list creation on Windows OS
+    public static synchronized List<Item> createItemsList() {
+        List<Item> itemList = new ArrayList<Item>(2); // Only and only 2 items
+        // Better to call one constructor method and set all fields than set each fields one by one
+        itemList.add(new Item("Test Product", 15, new BigDecimal(59872325.999999999898), "I'm a test product", getDate()));
+        itemList.add(new Item("Test Product 2", 1251, new BigDecimal(135165.999999999898), "I'm another test product", getDate()));
 
         return itemList;
     }
@@ -225,6 +214,34 @@ public class JAXBContextUtils {
 
         return marshallToString(of.createPurchaseOrderType(getPurchaseOrderType()), marshaller);
 
+    }
+
+    /**
+     * This method does line by line comparison removing tab, whitespace or new line kind of characters
+     * since they cause negative comparison result
+     *
+     * @param expectedResultArrray String array that should match resultString
+     * @param resultString         XML String returned after the process to compare
+     * @return boolean true if all element in expectedResultArrray find in resultString with same order
+     */
+    public static boolean compareMarshalledXML(String[] expectedResultArrray, String result) {
+        String[] resultStringArray = result.split("\n");
+        int i = 0;
+        if (resultStringArray[0].contains("<?xml")) {
+            i = 1;
+        }
+        try {
+            for (String expectedResultString : expectedResultArrray) {
+                if (!expectedResultString.equals(resultStringArray[i].trim())) {
+                    return false;
+                }
+                ++i;
+            }
+        } catch (IndexOutOfBoundsException e) {
+            // If result is shorter than expected. Then, they are not equal.
+            return false;
+        }
+        return true;
     }
 
     /**

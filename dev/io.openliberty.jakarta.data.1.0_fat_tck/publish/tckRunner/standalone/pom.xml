@@ -13,9 +13,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>io.openliberty.jakarta.data</groupId>
+	<parent>
+		<groupId>io.openliberty.jakarta.data</groupId>
+		<artifactId>tck.runner</artifactId>
+	    <version>1.0-SNAPSHOT</version>
+	</parent>
+	
 	<artifactId>tck.runner.standalone</artifactId>
-	<version>1.0-SNAPSHOT</version>
 	<name>Jakarta Data TCK Runner TCK Module</name>
 
 	<repositories>
@@ -40,38 +44,8 @@
 	</repositories>
 
 	<properties>
-		<!-- Global Maven settings -->
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
-		<maven.compiler.release>17</maven.compiler.release>
-
-		<!-- Jakarta EE API -->
-		<jakarta.data.groupid>jakarta.data</jakarta.data.groupid>
-		<jakarta.data.version>1.0.0-SNAPSHOT</jakarta.data.version>
-		<jakarta.data.tck.version>1.0.0-SNAPSHOT</jakarta.data.tck.version>
-
-		<!-- Test Infrastructure versions -->
-		<junit.version>5.9.2</junit.version>
-		<sigtest.version>1.6</sigtest.version>
-
 		<targetDirectory>${project.basedir}/target</targetDirectory>
 	</properties>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.junit</groupId>
-				<artifactId>junit-bom</artifactId>
-				<version>${junit.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
 
 	<dependencies>
 		<!-- tck - data - external TCK -->

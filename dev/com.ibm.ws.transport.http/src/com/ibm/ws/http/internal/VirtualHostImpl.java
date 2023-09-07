@@ -893,8 +893,8 @@ public class VirtualHostImpl implements VirtualHost {
                 Hashtable<String, Object> hookProps = new Hashtable<>();
                 // We want this to be one of the last restore hooks called. It has to be after the hook in
                 // HttpEndpointImpl.registerCheckResolvedHostHook because this hook re-resolves the host name on restore
-                // Using max rank with multi-thread hook will run the restore hook "last"
-                hookProps.put(Constants.SERVICE_RANKING, Integer.MAX_VALUE);
+                // Using 10000 rank with multi-thread hook will make sure this hook is run later than hook in HttpEndpointImpl
+                hookProps.put(Constants.SERVICE_RANKING, 10000);
                 hookProps.put(CheckpointHook.MULTI_THREADED_HOOK, Boolean.TRUE);
                 final AtomicReference<ServiceRegistration<CheckpointHook>> hookReg = new AtomicReference<>();
                 hookReg.set(bContext.registerService(CheckpointHook.class, new CheckpointHook() {

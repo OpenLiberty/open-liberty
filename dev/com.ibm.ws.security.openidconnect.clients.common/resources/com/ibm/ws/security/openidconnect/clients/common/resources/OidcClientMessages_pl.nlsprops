@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2013, 2022 IBM Corporation and others.
+# Copyright (c) 2013, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/clients/common/resources/OidcClientMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -39,7 +36,7 @@ OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Klient OpenID Connect (strona zal
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: najpierw upewnij si\u0119, \u017ce dostawca OpenID Connect obs\u0142uguje protok\u00f3\u0142 SSL. Je\u015bli dostawca OpenID Connect nie obs\u0142uguje protoko\u0142u SSL, u\u017cyj sk\u0142adnika klienta OpenID Connect i ustaw w\u0142a\u015bciwo\u015b\u0107 enforceHTTPS na warto\u015b\u0107 false w konfiguracji sk\u0142adnika klienta OpenID Connect.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
-OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Bie\u017c\u0105cy stan [{0}] dla klienta OpenID Connect [{2}] i parametr stanu [{1}] w odpowiedzi dostawcy OpenID Connect s\u0105 niezgodne.  Ten warunek jest niedozwolony.
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Bie\u017c\u0105cy stan [{0}] dla klienta OpenID Connect [{2}] i parametr stanu [{1}] w odpowiedzi dostawcy OpenID Connect s\u0105 niezgodne.  Taka sytuacja nie jest dozwolona.
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=Klient OpenID Connect (strona zale\u017cna) wys\u0142a\u0142 \u017c\u0105danie do dostawcy OpenID Connect, kt\u00f3ry odes\u0142a\u0142 odpowied\u017a z parametrem stanu niezgodnym ze stanem strony zale\u017cnej w momencie wys\u0142ania. Dostawca OpenID musi do\u0142\u0105czy\u0107 do odpowiedzi taki sam stan, jaki zosta\u0142 wys\u0142any.  Stan jest u\u017cywany w ten spos\u00f3b do ochrony przed atakami typu CSRF (Cross-Site Request Forgery). 
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.useraction=Upewnij si\u0119, \u017ce adres URL u\u017cywanego dostawcy OpenID jest poprawny. Sprawd\u017a dzienniki dostawcy OpenID, aby upewni\u0107 si\u0119, \u017ce otrzyma\u0142 \u017c\u0105danie.
 
@@ -96,7 +93,7 @@ OIDC_CLIENT_REQUEST_NONCE_FAILED.useraction=Upewnij si\u0119, \u017ce dostawca O
 # 1715, 16, 17, 18, 19, 20, 21 are used in client bundle, do not use here.
 
 # used by clients proj
-PROPAGATION_TOKEN_MISSING_USERID=CWWKS1722E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znacznik dost\u0119pu nie zawiera roszczenia [{0}] okre\u015blonego przez atrybut [{1}].
+PROPAGATION_TOKEN_MISSING_USERID=CWWKS1722E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znacznik dost\u0119pu nie zawiera \u017c\u0105dania [{0}] okre\u015blonego przez atrybut [{1}].
 PROPAGATION_TOKEN_MISSING_USERID.explanation=Podany znacznik dost\u0119pu nie zawiera okre\u015blonego \u017c\u0105dania i \u015brodowisko wykonawcze nie mo\u017ce kontynuowa\u0107 procesu uwierzytelniania.
 PROPAGATION_TOKEN_MISSING_USERID.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci. 1) Sprawd\u017a, czy w konfiguracji klienta OpenID Connect okre\u015blono poprawn\u0105 nazw\u0119 \u017c\u0105dania. 2) Sprawd\u017a czy dostawca OpenID Connect emituje znacznik dost\u0119pu z okre\u015blonym \u017c\u0105daniem.
 
@@ -112,12 +109,12 @@ PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=Element validationEndpointUrl 
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Zaktualizuj konfiguracj\u0119 klienta OpenID Connect, zmieniaj\u0105c element validationMethod lub validationEndpointUrl.
  
 #used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E:  Przetwarzanie \u017c\u0105dania uwierzytelnienia przez serwer zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c typ danych roszczenia [{0}] w znaczniku dost\u0119pu powi\u0105zanym z atrybutem konfiguracji [{1}] nie jest poprawny. 
+PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: Przetwarzanie \u017c\u0105dania uwierzytelnienia przez serwer zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c typ danych \u017c\u0105dania [{0}] w znaczniku dost\u0119pu powi\u0105zanym z atrybutem konfiguracji [{1}] nie jest poprawny. 
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.explanation=Podany znacznik dost\u0119pu ma niepoprawny typ danych \u017c\u0105dania i \u015brodowisko wykonawcze nie mo\u017ce kontynuowa\u0107 procesu uwierzytelniania.
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.useraction=Sprawd\u017a, czy konfiguracja klienta OpenID Connect okre\u015bla poprawn\u0105 nazw\u0119 \u017c\u0105dania dla atrybutu.
 
 #unused
-PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znacznik dost\u0119pu nie zawiera roszczenia [{0}] okre\u015blonego przez atrybut [{1}].
+PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znacznik dost\u0119pu nie zawiera \u017c\u0105dania [{0}] okre\u015blonego przez atrybut [{1}].
 PROPAGATION_TOKEN_MISSING_REALM.explanation=Udost\u0119pniony znacznik dost\u0119pu nie zawiera okre\u015blonego \u017c\u0105dania na potrzeby identyfikacji dziedziny i \u015brodowisko wykonawcze nie mo\u017ce kontynuowa\u0107 procesu uwierzytelniania.
 PROPAGATION_TOKEN_MISSING_REALM.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci. 1) Sprawd\u017a, czy w konfiguracji klienta OpenID Connect okre\u015blono atrybut realmName. 2) Sprawd\u017a, czy dostawca OpenID Connect emituje znacznik dost\u0119pu z okre\u015blonym \u017c\u0105daniem. 3) Sprawd\u017a, czy dostawca OpenID Connect mo\u017ce emitowa\u0107 znacznik dost\u0119pu z \u017c\u0105daniem iss. 
 
@@ -310,17 +307,10 @@ ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS1553E: Klient OpenID Connect o nazwie {
 ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=Konfiguracja klienta OpenID Connect mo\u017ce nie zawiera\u0107 potrzebnych informacji lub klient napotka\u0142 b\u0142\u0105d podczas komunikowania si\u0119 z dostawc\u0105 OpenID Connect.
 ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d w komunikacie.
 
-TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR=CWWKS1554E: Klient [{0}] OpenID Connect napotka\u0142 b\u0142\u0105d podczas konfigurowania uwierzytelniania klienta dla punktu ko\u0144cowego tokenu dla metody uwierzytelniania [{1}]. {2}
-TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.explanation=Punkt ko\u0144cowy tokenu OpenID Connect wymaga uwierzytelniania klienta, ale klient OpenID Connect mo\u017ce nie mie\u0107 informacji lub napotka\u0142 inny b\u0142\u0105d podczas konfigurowania danych uwierzytelniania.
-TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d w komunikacie.
-
-PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME=CWWKS1555E: Klient [{0}] OpenID Connect nie ma skonfigurowanej nazwy aliasu klucza, dlatego klient nie mo\u017ce znale\u017a\u0107 klucza, kt\u00f3ry ma by\u0107 u\u017cywany do podpisywania tokenu JSON Web Token na potrzeby uwierzytelniania klienta.
-PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.explanation=Klient OpenID Connect musi skonfigurowa\u0107 nazw\u0119 aliasu klucza w celu zdefiniowania klucza, kt\u00f3ry ma by\u0107 u\u017cywany do podpisywania JWT.
-PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.useraction=Upewnij si\u0119, \u017ce klient OpenID Connect ma skonfigurowan\u0105 nazw\u0119 aliasu klucza.
-
-PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF=CWWKS1556E: Klient [{0}] OpenID Connect nie ma skonfigurowanego odwo\u0142ania do magazynu kluczy, dlatego klient nie mo\u017ce znale\u017a\u0107 klucza, kt\u00f3ry ma by\u0107 u\u017cywany do podpisywania tokenu JSON Web Token na potrzeby uwierzytelniania klienta.
-PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.explanation=Klient OpenID Connect musi skonfigurowa\u0107 odwo\u0142anie do magazynu kluczy, aby zdefiniowa\u0107 miejsce, w kt\u00f3rym mo\u017cna znale\u017a\u0107 klucz u\u017cywany do podpisywania JWT.
-PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.useraction=Upewnij si\u0119, \u017ce klient OpenID Connect ma skonfigurowane odwo\u0142anie do magazynu kluczy.
+# do not translate hostname, wasReqURLRedirectDomainNames, and webAppSecurity
+MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE=CWWKS1554E: \u017b\u0105danie skierowane do [{0}] jest niepoprawne. Wymagany plik cookie o nazwie rozpoczynaj\u0105cej si\u0119 od [{1}] ma niepoprawn\u0105 warto\u015b\u0107. Nazwa hosta [{2}] u\u017cyta w pliku cookie nie jest zgodna z nazw\u0105 hosta \u017c\u0105dania. Ponadto nazwa hosta w pliku cookie nie jest jedn\u0105 z dozwolonych nazw domen.
+MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.explanation=\u017b\u0105danie zawiera zniekszta\u0142cony plik cookie. Nazwa hosta w pliku cookie musi by\u0107 zgodna z bie\u017c\u0105cym \u017c\u0105daniem lub z jedn\u0105 z dozwolonych nazw domen. Plik cookie mo\u017cna modyfikowa\u0107 z poziomu agenta u\u017cytkownika.
+MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.useraction=Sprawd\u017a konfiguracje dostawcy i klienta OpenID Connect. Je\u015bli oczekiwana jest nazwa hosta, dodaj j\u0105 do atrybutu wasReqURLRedirectDomainNames elementu webAppSecurity w konfiguracji serwera.
 
 #CWWKS1557 used in client bundle, do not use here.
 

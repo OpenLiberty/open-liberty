@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,6 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.apache.cxf.jaxrs.utils;
 
@@ -27,6 +25,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
  * @author Grant
  * 
  */
+ // Liberty Change for CXF Begin - Entire class is unique to our fork.
 public class ProxyInvocationHandler implements InvocationHandler {
 
     private final Object target;

@@ -15,6 +15,7 @@ package io.openliberty.microprofile.telemetry.internal.cdi;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,41 +69,44 @@ public class OpenTelemetryProducer {
     @ApplicationScoped
     @Produces
     public OpenTelemetryInfo getOpenTelemetryInfo() {
-
-        if (AgentDetection.isAgentActive()) {
-            // If we're using the agent, it will have set GlobalOpenTelemetry and we must use its instance
-            // all config is handled by the agent in this case
-            return new OpenTelemetryInfo(true, GlobalOpenTelemetry.get());
-        }
-
-        HashMap<String, String> telemetryProperties = getTelemetryProperties();
-
-        //Builds tracer provider if user has enabled tracing aspects with config properties
-        if (!checkDisabled(telemetryProperties)) {
-            OpenTelemetry openTelemetry = AccessController.doPrivileged((PrivilegedAction<OpenTelemetry>) () -> {
-                return AutoConfiguredOpenTelemetrySdk.builder()
-                                .addPropertiesCustomizer(x -> telemetryProperties) //Overrides OpenTelemetry's property order
-                                .addResourceCustomizer(this::customizeResource)//Defaults service name to application name
-                                .setServiceClassLoader(Thread.currentThread().getContextClassLoader())
-                                .setResultAsGlobal(false)
-                                .registerShutdownHook(false)
-                                .build()
-                                .getOpenTelemetrySdk();
-            });
-
-            if (openTelemetry != null) {
-                return new OpenTelemetryInfo(true, openTelemetry);
+        try {
+            if (AgentDetection.isAgentActive()) {
+                // If we're using the agent, it will have set GlobalOpenTelemetry and we must use its instance
+                // all config is handled by the agent in this case
+                return new OpenTelemetryInfo(true, GlobalOpenTelemetry.get());
             }
+
+            HashMap<String, String> telemetryProperties = getTelemetryProperties();
+
+            //Builds tracer provider if user has enabled tracing aspects with config properties
+            if (!checkDisabled(telemetryProperties)) {
+                OpenTelemetry openTelemetry = AccessController.doPrivileged((PrivilegedAction<OpenTelemetry>) () -> {
+                    return AutoConfiguredOpenTelemetrySdk.builder()
+                                    .addPropertiesCustomizer(x -> telemetryProperties) //Overrides OpenTelemetry's property order
+                                    .addResourceCustomizer(this::customizeResource)//Defaults service name to application name
+                                    .setServiceClassLoader(Thread.currentThread().getContextClassLoader())
+                                    .setResultAsGlobal(false)
+                                    .registerShutdownHook(false)
+                                    .build()
+                                    .getOpenTelemetrySdk();
+                });
+
+                if (openTelemetry != null) {
+                    return new OpenTelemetryInfo(true, openTelemetry);
+                }
+            }
+            //By default, MicroProfile Telemetry tracing is off.
+            //The absence of an installed SDK is a “no-op” API
+            //Operations on a Tracer, or on Spans have no side effects and do nothing
+            ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+            String applicationName = cData.getJ2EEName().getApplication();
+            Tr.info(tc, "CWMOT5100.tracing.is.disabled", applicationName);
+
+            return new OpenTelemetryInfo(false, OpenTelemetry.noop());
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return new OpenTelemetryInfo(false, OpenTelemetry.noop());
         }
-        //By default, MicroProfile Telemetry tracing is off.
-        //The absence of an installed SDK is a “no-op” API
-        //Operations on a Tracer, or on Spans have no side effects and do nothing
-        ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        String applicationName = cData.getJ2EEName().getApplication();
-        Tr.info(tc, "CWMOT5100.tracing.is.disabled", applicationName);
-
-        return new OpenTelemetryInfo(false, OpenTelemetry.noop());
-
     }
 
     //Uses application name if the user has not given configured service.name resource attribute
@@ -114,7 +118,6 @@ public class OpenTelemetryProducer {
                 appName = cmd.getModuleMetaData().getApplicationMetaData().getName();
             }
         }
-
         return appName;
     }
 
@@ -126,31 +129,34 @@ public class OpenTelemetryProducer {
     }
 
     public void disposeOpenTelemetry(@Disposes OpenTelemetry openTelemetry) {
-
-        if (AgentDetection.isAgentActive()) {
-            return;
-        }
-
-        if (openTelemetry instanceof OpenTelemetrySdk) {
-            OpenTelemetrySdk sdk = (OpenTelemetrySdk) openTelemetry;
-            List<CompletableResultCode> results = new ArrayList<>();
-
-            SdkTracerProvider tracerProvider = sdk.getSdkTracerProvider();
-            if (tracerProvider != null) {
-                results.add(tracerProvider.shutdown());
+        try {
+            if (AgentDetection.isAgentActive()) {
+                return;
             }
 
-            SdkMeterProvider meterProvider = sdk.getSdkMeterProvider();
-            if (meterProvider != null) {
-                results.add(meterProvider.shutdown());
-            }
+            if (openTelemetry instanceof OpenTelemetrySdk) {
+                OpenTelemetrySdk sdk = (OpenTelemetrySdk) openTelemetry;
+                List<CompletableResultCode> results = new ArrayList<>();
 
-            SdkLoggerProvider loggerProvider = sdk.getSdkLoggerProvider();
-            if (loggerProvider != null) {
-                results.add(loggerProvider.shutdown());
-            }
+                SdkTracerProvider tracerProvider = sdk.getSdkTracerProvider();
+                if (tracerProvider != null) {
+                    results.add(tracerProvider.shutdown());
+                }
 
-            CompletableResultCode.ofAll(results).join(10, TimeUnit.SECONDS);
+                SdkMeterProvider meterProvider = sdk.getSdkMeterProvider();
+                if (meterProvider != null) {
+                    results.add(meterProvider.shutdown());
+                }
+
+                SdkLoggerProvider loggerProvider = sdk.getSdkLoggerProvider();
+                if (loggerProvider != null) {
+                    results.add(loggerProvider.shutdown());
+                }
+
+                CompletableResultCode.ofAll(results).join(10, TimeUnit.SECONDS);
+            }
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
         }
     }
 
@@ -165,24 +171,34 @@ public class OpenTelemetryProducer {
     }
 
     private HashMap<String, String> getTelemetryProperties() {
-        HashMap<String, String> telemetryProperties = new HashMap<>();
-        for (String propertyName : config.getPropertyNames()) {
-            if (propertyName.startsWith("otel.")) {
-                config.getOptionalValue(propertyName, String.class).ifPresent(
-                                                                              value -> telemetryProperties.put(propertyName, value));
+        try {
+            HashMap<String, String> telemetryProperties = new HashMap<>();
+            for (String propertyName : config.getPropertyNames()) {
+                if (propertyName.startsWith("otel.")) {
+                    config.getOptionalValue(propertyName, String.class).ifPresent(
+                                                                                  value -> telemetryProperties.put(propertyName, value));
+                }
             }
+            //Metrics and logs are disabled by default
+            telemetryProperties.put(CONFIG_METRICS_EXPORTER_PROPERTY, "none");
+            telemetryProperties.put(CONFIG_LOGS_EXPORTER_PROPERTY, "none");
+            telemetryProperties.put(ENV_METRICS_EXPORTER_PROPERTY, "none");
+            telemetryProperties.put(ENV_LOGS_EXPORTER_PROPERTY, "none");
+            return telemetryProperties;
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return new HashMap<String, String>();
         }
-        //Metrics and logs are disabled by default
-        telemetryProperties.put(CONFIG_METRICS_EXPORTER_PROPERTY, "none");
-        telemetryProperties.put(CONFIG_LOGS_EXPORTER_PROPERTY, "none");
-        telemetryProperties.put(ENV_METRICS_EXPORTER_PROPERTY, "none");
-        telemetryProperties.put(ENV_LOGS_EXPORTER_PROPERTY, "none");
-        return telemetryProperties;
     }
 
     @Produces
     public Tracer getTracer(OpenTelemetry openTelemetry) {
-        return openTelemetry.getTracer(INSTRUMENTATION_NAME);
+        try {
+            return openTelemetry.getTracer(INSTRUMENTATION_NAME);
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return OpenTelemetry.noop().getTracerProvider().get("");
+        }
     }
 
     @Produces
@@ -200,6 +216,11 @@ public class OpenTelemetryProducer {
     @ApplicationScoped
     @Produces
     public OpenTelemetry getOpenTelemetry(OpenTelemetryInfo openTelemetryInfo) {
-        return openTelemetryInfo.getOpenTelemetry();
+        try {
+            return openTelemetryInfo.getOpenTelemetry();
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return OpenTelemetry.noop();
+        }
     }
 }

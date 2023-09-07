@@ -24,6 +24,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 import javax.xml.ws.BindingProvider;
 
+import com.ibm.tx.jta.ut.util.TxTestUtils;
+
 @WebServlet({ "/RecoverySetupServlet" })
 public class RecoverySetupServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -35,6 +37,7 @@ public class RecoverySetupServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		TxTestUtils.setTestResourcesFile();
 			int number = Integer.parseInt(request.getParameter("number").trim());
 			System.out.println("==============RecoverySetupServlet Test Number: " + number
 					+ "================");

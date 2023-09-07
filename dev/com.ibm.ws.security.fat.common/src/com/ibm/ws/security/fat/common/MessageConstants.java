@@ -22,6 +22,8 @@ public class MessageConstants {
     public static final String CWWKS4105I_LTPA_CONFIG_READY = "CWWKS4105I";
     public static final String CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR = "CWWKG0014E";
 
+    public static final String CWWKE0701E_BUNDLE_ACTIVATOR_FAILURE = "CWWKE0701E";
+
     public static final String CWWKE1102W_QUIESCE_WARNING = "CWWKE1102W";
     public static final String CWWKE1106W_QUIESCE_LISTENERS_NOT_COMPLETE = "CWWKE1106W";
     public static final String CWWKE1107W_QUIESCE_WAITING_ON_THREAD = "CWWKE1107W";

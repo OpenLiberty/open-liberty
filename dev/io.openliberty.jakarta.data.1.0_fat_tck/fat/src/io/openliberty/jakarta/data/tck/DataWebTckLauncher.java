@@ -49,7 +49,9 @@ public class DataWebTckLauncher {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer(
+                          "CWWKE0955E" //websphere.java.security java 18+
+        );
     }
 
     /**
@@ -67,7 +69,7 @@ public class DataWebTckLauncher {
 
         //TODO Remove once TCK is available from stagging repo
         additionalProps.put("jakarta.data.groupid", "io.openliberty.jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.0-05112023");
+        additionalProps.put("jakarta.data.tck.version", "1.0.0-20230802");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckWeb";

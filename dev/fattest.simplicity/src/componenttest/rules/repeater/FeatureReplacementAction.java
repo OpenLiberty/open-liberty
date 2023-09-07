@@ -43,6 +43,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
+import componenttest.rules.repeater.RepeatActions.SEVersion;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyClientFactory;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -147,7 +148,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
     }
 
     private boolean forceAddFeatures = true;
-    private int minJavaLevel = 8;
+    private SEVersion minJavaLevel = SEVersion.JAVA8;
     protected String currentID = null;
     private final Set<String> optionsToAdd = new HashSet<String>();
     private final Set<File> optionFilesCreated = new HashSet<File>();
@@ -299,12 +300,12 @@ public class FeatureReplacementAction implements RepeatTestAction {
     /**
      * Defines a minimum java level in order for this RepeatTestAction to be enabled
      */
-    public FeatureReplacementAction withMinJavaLevel(int javaLevel) {
+    public FeatureReplacementAction withMinJavaLevel(SEVersion javaLevel) {
         this.minJavaLevel = javaLevel;
         return this;
     }
 
-    public int getMinJavaLevel() {
+    public SEVersion getMinJavaLevel() {
         return this.minJavaLevel;
     }
 
@@ -435,7 +436,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     @Override
     public boolean isEnabled() {
-        if (JavaInfo.forCurrentVM().majorVersion() < minJavaLevel) {
+        if (JavaInfo.forCurrentVM().majorVersion() < minJavaLevel.majorVersion()) {
             Log.info(c, "isEnabled", "Skipping action '" + toString() + "' because the java level is too low.");
             return false;
         }

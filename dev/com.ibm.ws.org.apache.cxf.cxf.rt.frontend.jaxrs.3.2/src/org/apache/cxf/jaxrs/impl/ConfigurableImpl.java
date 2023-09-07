@@ -19,8 +19,8 @@
 
 package org.apache.cxf.jaxrs.impl;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
+import java.security.AccessController;  // Liberty Change
+import java.security.PrivilegedAction;  // Liberty Change
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -49,12 +49,12 @@ import org.apache.cxf.jaxrs.utils.AnnotationUtils;
 
 public class ConfigurableImpl<C extends Configurable<C>> implements Configurable<C>, AutoCloseable {
     private static final Logger LOG = LogUtils.getL7dLogger(ConfigurableImpl.class);
-
-    private static final Class<?>[] RESTRICTED_CLASSES_IN_SERVER = {ClientRequestFilter.class,
+    
+    private static final Class<?>[] RESTRICTED_CLASSES_IN_SERVER = {ClientRequestFilter.class, 
                                                                     ClientResponseFilter.class};
-    private static final Class<?>[] RESTRICTED_CLASSES_IN_CLIENT = {ContainerRequestFilter.class,
+    private static final Class<?>[] RESTRICTED_CLASSES_IN_CLIENT = {ContainerRequestFilter.class, 
                                                                     ContainerResponseFilter.class};
-
+    
     private ConfigurationImpl config;
     private final C configurable;
     private final ClassLoader classLoader;
@@ -71,16 +71,16 @@ public class ConfigurableImpl<C extends Configurable<C>> implements Configurable
             // no-op
         }
     }
-
+    
     public ConfigurableImpl(C configurable, RuntimeType rt) {
         this(configurable, new ConfigurationImpl(rt));
     }
-
+    
     public ConfigurableImpl(C configurable, Configuration config) {
         this.configurable = configurable;
         this.config = config instanceof ConfigurationImpl
             ? (ConfigurationImpl)config : new ConfigurationImpl(config);
-        this.classLoader = getContextClassLoader();
+        this.classLoader = getContextClassLoader(); // Liberty Change
         restrictedContractTypes = RuntimeType.CLIENT.equals(config.getRuntimeType()) ? RESTRICTED_CLASSES_IN_CLIENT
             : RESTRICTED_CLASSES_IN_SERVER;
     }
@@ -274,7 +274,7 @@ public class ConfigurableImpl<C extends Configurable<C>> implements Configurable
                             + " runtime because it is constrained to " + providerRuntime + " runtimes.");
                 return false;
             }
-
+            
             Class<?>[] restrictedInterfaces = RuntimeType.CLIENT.equals(providerRuntime) ? RESTRICTED_CLASSES_IN_CLIENT
                                                                                          : RESTRICTED_CLASSES_IN_SERVER;
             for (Class<?> restrictedContract : restrictedInterfaces) {
@@ -298,3 +298,4 @@ public class ConfigurableImpl<C extends Configurable<C>> implements Configurable
         return instance;
     }
 }
+

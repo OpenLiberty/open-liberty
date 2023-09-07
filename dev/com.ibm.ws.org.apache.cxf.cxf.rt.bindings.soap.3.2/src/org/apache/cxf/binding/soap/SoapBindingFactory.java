@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger; // Liberty Change
 
 import javax.wsdl.BindingInput;
 import javax.wsdl.BindingOutput;
@@ -76,6 +77,7 @@ import org.apache.cxf.common.injection.NoJSR250Annotations;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.common.xmlschema.SchemaCollection;
 import org.apache.cxf.endpoint.Endpoint;
+import org.apache.cxf.headers.Header;
 import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.interceptor.AbstractOutDatabindingInterceptor;
 import org.apache.cxf.interceptor.AttachmentInInterceptor;
@@ -114,12 +116,14 @@ import static org.apache.cxf.helpers.CastUtils.cast;
 import com.ibm.websphere.ras.annotation.Sensitive; // Liberty Change
 
 
-// Liberty Change; This class has no Liberty specific changes other than the Sensitive annotation 
-// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
-// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
-// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
+// Liberty Change: When a <wsdl:header message="ns2:header"> is defined in a <wsdl:operation>
+// and the tns is not the same namespace as "ns2", CXF cannot deserialize the header value from schema.
+// Our changes to the class correct this behavior by preventing CXF from setting the namespace of the header
+// to the namespace of the message. 
 @NoJSR250Annotations(unlessNull = { "bus" })
 public class SoapBindingFactory extends AbstractWSDLBindingFactory {
+    // Liberty Change: Add Logger for debugging
+    private static final Logger LOG = Logger.getLogger(SoapBindingFactory.class.getName());
     public static final Collection<String> DEFAULT_NAMESPACES = Collections.unmodifiableList(Arrays.asList(
         "http://schemas.xmlsoap.org/soap/",
         "http://schemas.xmlsoap.org/wsdl/soap/",
@@ -330,7 +334,7 @@ public class SoapBindingFactory extends AbstractWSDLBindingFactory {
                 SoapHeaderInfo headerInfo = new SoapHeaderInfo();
                 headerInfo.setPart(part);
                 headerInfo.setUse(config.getUse());
-
+                
                 bMsg.addExtensor(headerInfo);
             } else {
                 parts.add(part);
@@ -636,6 +640,9 @@ public class SoapBindingFactory extends AbstractWSDLBindingFactory {
                               String partNameFilter) {
         for (Part part : cast(msg.getParts().values(), Part.class)) {
 
+        	// Liberty Change Start: Correct OutofBound MessagePartInfos from inheriting the wrong QName from MessageInfo
+            QName partTypeQname = part.getTypeName();
+            QName partElementQname = part.getElementName();
             if (StringUtils.isEmpty(partNameFilter)
                 || part.getName().equals(partNameFilter)) {
 
@@ -650,21 +657,27 @@ public class SoapBindingFactory extends AbstractWSDLBindingFactory {
                     && pi.getMessageInfo().getName().equals(msg.getQName())) {
                     continue;
                 }
-                pi = minfo.addOutOfBandMessagePart(pqname);
+                if (partElementQname != null && !partElementQname.equals(pqname)) { // Use ElementQname to check for correct QName
+                    pi = minfo.addOutOfBandMessagePart(partElementQname);
+                    LOG.finest("QName mismatch corrected, PartInfo is now = " + pi);
+                } else {
+                    pi = minfo.addOutOfBandMessagePart(pqname);
+                }
 
                 if (!minfo.getName().equals(msg.getQName())) {
-                    pi.setMessageContainer(new MessageInfo(minfo.getOperation(), null, msg.getQName()));
+                    pi.setMessageContainer(new MessageInfo(minfo.getOperation(), null, msg.getQName()));        
                 }
 
-                if (part.getTypeName() != null) {
-                    pi.setTypeQName(part.getTypeName());
+                if (partTypeQname != null) {
+                    pi.setTypeQName(partTypeQname);
                     pi.setElement(false);
-                    pi.setXmlSchema(schemas.getTypeByQName(part.getTypeName()));
+                    pi.setXmlSchema(schemas.getTypeByQName(partTypeQname));
                 } else {
-                    pi.setElementQName(part.getElementName());
+                    pi.setElementQName(partElementQname);
                     pi.setElement(true);
-                    pi.setXmlSchema(schemas.getElementByQName(part.getElementName()));
+                    pi.setXmlSchema(schemas.getElementByQName(partElementQname));
                 }
+                // Liberty Change End:
                 pi.setProperty(OUT_OF_BAND_HEADER, Boolean.TRUE);
                 pi.setProperty(HEADER, Boolean.TRUE);
                 pi.setIndex(nextId);
@@ -719,6 +732,7 @@ public class SoapBindingFactory extends AbstractWSDLBindingFactory {
     }
 
     private void initializeMessage(SoapBindingInfo bi, BindingOperationInfo boi, BindingMessageInfo bmsg) {
+        
         MessageInfo msg = bmsg.getMessageInfo();
 
         List<MessagePartInfo> messageParts = new ArrayList<>();
@@ -735,8 +749,12 @@ public class SoapBindingFactory extends AbstractWSDLBindingFactory {
                                                + boi.getName().getLocalPart()
                                                + " does not specify a part.");
                 }
-                MessagePartInfo part = msg.getMessagePart(new QName(msg.getName().getNamespaceURI(),
-                                                                    header.getPart()));
+                MessagePartInfo part = msg.getMessagePart(new QName(msg.getName().getNamespaceURI(),header.getPart()));
+                // Liberty Change Start: CXF will create Parts with a QName inherited from the message
+                // we can correct for this by tracking if the QName matches an OutofBoundsPart and then removing
+                // the mismatched Part from the MessageContents and then adding the mismatched Part to the header lists
+                Boolean isOutofBoundPart = false;
+                QName outOfBoundQname = null;
                 if (part != null && header.getMessage() != null
                     && !part.getMessageInfo().getName().equals(header.getMessage())) {
                     part = null;
@@ -745,14 +763,25 @@ public class SoapBindingFactory extends AbstractWSDLBindingFactory {
                         if (mpi.getName().getLocalPart().equals(header.getPart())
                             && mpi.getMessageInfo().getName().equals(header.getMessage())) {
                             part = mpi;
+                            isOutofBoundPart = true;
+                            outOfBoundQname = mpi.getName();
                         }
                     }
                 }
                 if (part != null) {
-                    headerInfo.setPart(part);
-                    messageParts.remove(part);
-                    bmsg.addExtensor(headerInfo);
-                }
+                    if (isOutofBoundPart) {
+                          LOG.finest("This Header's QName is mismatched from the expected OutOfBounds QName, removing mismatched MessagePartInfo, and adding mismatched Header");
+                          part = msg.getMessagePart(new QName(msg.getName().getNamespaceURI(), header.getPart()));                                        
+                          headerInfo.setPart(part);
+                          messageParts.remove(part);
+                          bmsg.addExtensor(headerInfo);
+                    }
+                    else {
+                          headerInfo.setPart(part);
+                          messageParts.remove(part);
+                          bmsg.addExtensor(headerInfo);
+                    }   // Liberty Change End
+              }
             }
 
             // Exclude the header parts from the message part list.

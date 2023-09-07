@@ -29,6 +29,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.Provider;
 import javax.xml.bind.JAXBElement;
 
+// Liberty Change for CXF Begin - Entire class is unique to our fork
 @Produces({ "application/xml", "application/*+xml", "text/xml" })
 @Consumes({ "application/xml", "application/*+xml", "text/xml" })
 @Provider

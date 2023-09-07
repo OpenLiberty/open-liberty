@@ -20,17 +20,19 @@
 package org.apache.cxf.ws.security.tokenstore;
 
 import java.io.Closeable;
+// Liberty Change Start: Imports
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+// Liberty Change End
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Supplier;
+import java.util.function.Supplier; // Liberty Change
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.buslifecycle.BusLifeCycleListener;
@@ -43,9 +45,11 @@ import org.ehcache.Status;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
 
+// Liberty Change Start: Imports
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.EntryUnit;
 import org.ehcache.expiry.ExpiryPolicy;
+// Liberty Change End
 import org.ehcache.xml.XmlConfiguration;
 
 /**
@@ -53,11 +57,13 @@ import org.ehcache.xml.XmlConfiguration;
  * and the max TTL is 12 hours.
  */
 public class EHCacheTokenStore implements TokenStore, Closeable, BusLifeCycleListener {
+    // Liberty Change Start
     protected static Duration timetoidle = null;
     protected static Duration timetolive = null;
     private final Bus bus;
     private Cache<String, SecurityToken> cache;
     private CacheManager cacheManager;
+	// Liberty Change End
     private final String key;
 
     public EHCacheTokenStore(String key, Bus b, URL configFileURL) throws TokenStoreException {
@@ -68,7 +74,7 @@ public class EHCacheTokenStore implements TokenStore, Closeable, BusLifeCycleLis
 
         this.key = key;
         try {
-            XmlConfiguration xmlConfig = new XmlConfiguration(configFileURL);
+            XmlConfiguration xmlConfig = new XmlConfiguration(configFileURL); // Liberty Change
 
             // Exclude the endpoint info bit added in TokenStoreUtils when getting the template name
             String template = key;
@@ -90,12 +96,13 @@ public class EHCacheTokenStore implements TokenStore, Closeable, BusLifeCycleLis
         }
     }
     
+	
+    // Liberty Change Start
     /**
      * @param cachekey
      * @param bus
      * @param oldconfig
      */
-    //Liberty Change
     public EHCacheTokenStore(String cachekey, Bus bus, HashMap oldconfig) {
         this.key = cachekey;
         this.bus = bus;
@@ -161,7 +168,7 @@ public class EHCacheTokenStore implements TokenStore, Closeable, BusLifeCycleLis
         cache = cacheManager.getCache(cachekey, String.class, SecurityToken.class);
                   
     }
-
+	// Liberty Change Start
 
     public void add(SecurityToken token) {
         if (token != null && !StringUtils.isEmpty(token.getId())) {
@@ -181,7 +188,7 @@ public class EHCacheTokenStore implements TokenStore, Closeable, BusLifeCycleLis
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") // Liberty Change
     public Collection<String> getTokenIdentifiers() {
         if (cache == null) {
             return null;

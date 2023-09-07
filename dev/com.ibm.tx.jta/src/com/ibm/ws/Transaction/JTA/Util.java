@@ -6,7 +6,7 @@ package com.ibm.ws.Transaction.JTA;
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -266,6 +266,9 @@ public final class Util {
      * Converts a byte array to a hexadecimal string.
      */
     public static String toHexString(byte[] b) {
+        if (b == null) {
+            return "null";
+        }
         StringBuffer result = new StringBuffer(b.length * 2);
         for (int i = 0; i < b.length; i++) {
             result.append(digits.charAt((b[i] >> 4) & 0xf));

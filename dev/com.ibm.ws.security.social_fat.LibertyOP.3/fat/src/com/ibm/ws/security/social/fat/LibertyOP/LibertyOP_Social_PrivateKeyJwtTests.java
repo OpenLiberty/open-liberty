@@ -80,6 +80,9 @@ public class LibertyOP_Social_PrivateKeyJwtTests extends PrivateKeyJwtClientTest
         testSettings.setFlowType(SocialConstants.SOCIAL);
         testSettings.setTokenEndpt(clientServer.getHttpsString() + "/PrivateKeyJwtTokenEndpoint/token");
 
+        allowPrivateKeyJwtErrorMessages();
+
+        usingSocialClient = true;
     }
 
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -220,6 +220,8 @@ public final class ThreadPoolController {
      */
     private final int poolIncrementBoundLow;
     private final int poolIncrementBoundMedium;
+    private final int poolIncrementBoundHigh;
+    private final int poolIncrementBoundExtraHigh;
 
     /**
      * These variable allow manual limits to be placed on the amount by which the pool will
@@ -337,6 +339,23 @@ public final class ThreadPoolController {
     private final static double resetDistroConsecutiveOutliers;
 
     /**
+     * How many multiples of the current poolIncrement will qualify as a deep queue
+     */
+    private static final int deepQueueMultiple;
+
+    /**
+     * After this many consecutive deepQueue events, we will grow the pool by more
+     * than the usual poolIncrement, in an attempt to catch up to the request backlog
+     */
+    private static final int consecutiveDeepQueueThreshold;
+
+    /**
+     * How much to inflate the usual poolIncrement when the queue is deep and
+     * has been deep for more than consecutiveDeepQueueThreshold cycles in a row
+     */
+    private static final int deepQueuePoolIncrementMultiple;
+
+    /**
      * Read in applicable system properties, use defaults if the property is not present
      * These system properties will not be documented, and are intended for diagnostic and/or
      * triage use by support.
@@ -402,6 +421,15 @@ public final class ThreadPoolController {
         String tpcCompareRange = getSystemProperty("tpcCompareRange");
         compareRange = (tpcCompareRange == null) ? 4 : Integer.parseInt(tpcCompareRange);
 
+        String tpcDeepQueueMultiple = getSystemProperty("tpcDeepQueueMultiple");
+        deepQueueMultiple = (tpcDeepQueueMultiple == null) ? 4 : Integer.parseInt(tpcDeepQueueMultiple);
+
+        String tpcDeepQueuePoolIncrementMultiple = getSystemProperty("tpcDeepQueuePoolIncrementMultiple");
+        deepQueuePoolIncrementMultiple = (tpcDeepQueuePoolIncrementMultiple == null) ? 4 : Integer.parseInt(tpcDeepQueuePoolIncrementMultiple);
+
+        String tpcConsecutiveDeepQueueThreshold = getSystemProperty("tpcConsecutiveDeepQueueThreshold");
+        consecutiveDeepQueueThreshold = (tpcConsecutiveDeepQueueThreshold == null) ? 5 : Integer.parseInt(tpcConsecutiveDeepQueueThreshold);
+
     }
 
     /**
@@ -422,6 +450,16 @@ public final class ThreadPoolController {
      * decisions it makes.
      */
     private int queueDepth = 0;
+
+    /**
+     * Is the queue currently deep?
+     */
+    private boolean deepQueue;
+
+    /**
+     * How many times in a row has the queue been deep?
+     */
+    private int consecutiveDeepQueueCycles = 0;
 
     /**
      * How many threads are active (running tasks) at the current controller cycle
@@ -654,7 +692,7 @@ public final class ThreadPoolController {
             poolChangeBasis = numberCpus;
         }
 
-        maxThreadsToBreakHang = Math.max(1000, 128 * numberCpus);
+        maxThreadsToBreakHang = Math.min(1000, 128 * numberCpus);
         /**
          * Now that poolChangeBasis is set, we can assign the poolIncrement limit values
          * using poolChangeBasis, rather than NUMBER_CPUS, if the system properties are not present
@@ -664,6 +702,9 @@ public final class ThreadPoolController {
 
         String tpcPoolIncrementBoundMedium = getSystemProperty("tpcPoolIncrementBoundMedium");
         poolIncrementBoundMedium = (tpcPoolIncrementBoundMedium == null) ? poolChangeBasis * 64 : Integer.parseInt(tpcPoolIncrementBoundMedium);
+
+        poolIncrementBoundHigh = poolIncrementBoundMedium * 2;
+        poolIncrementBoundExtraHigh = poolIncrementBoundHigh * 2;
 
         POOL_INCREMENT_MAX_DEFAULT = poolChangeBasis * 4;
 
@@ -925,6 +966,13 @@ public final class ThreadPoolController {
         boolean flippedCoin = false;
         int downwardCompareSpan = 0;
 
+        // with available cpu and a deep request queue,
+        // no reason to shrink the thread pool
+        if (!cpuHigh && deepQueue) {
+            shrinkScore = 0.0;
+            return shrinkScore;
+        }
+
         if (poolSize >= currentMinimumPoolSize + poolDecrement) {
             // compareSpan is poolSize range used for throughput comparison
             downwardCompareSpan = Math.min(compareRange * poolDecrement, poolSize - currentMinimumPoolSize);
@@ -1072,6 +1120,14 @@ public final class ThreadPoolController {
         double growScore = 0.0;
         boolean flippedCoin = false;
         int upwardCompareSpan = 0;
+
+        // with available cpu and a deep request queue,
+        // move directly to growing the thread pool
+        if (!cpuHigh && deepQueue) {
+            growScore = 1.0;
+            return growScore;
+        }
+
         // Don't grow beyond max or when pool activity is low
         if (poolSize + poolIncrement <= maxThreads && !lowActivity) {
             // compareSpan is the poolSize range used for throughput comparison
@@ -1296,14 +1352,27 @@ public final class ThreadPoolController {
         try {
             queueDepth = threadPool.getQueue().size();
             boolean queueEmpty = (queueDepth <= 0);
-            activeThreads = threadPool.getActiveCount();
-
             // Count the number of consecutive times we've seen an empty queue
             if (!queueEmpty) {
                 consecutiveQueueEmptyCount = 0;
             } else if (lastAction != LastAction.SHRINK) { // 9/5/2012
                 consecutiveQueueEmptyCount++;
             }
+
+            deepQueue = (queueDepth > deepQueueMultiple * poolIncrement);
+            // Count the number of consecutive times we've seen a deep queue
+            if (deepQueue) {
+                consecutiveDeepQueueCycles++;
+            } else {
+                consecutiveDeepQueueCycles = 0;
+            }
+
+            if (tc.isEventEnabled()) {
+                Tr.event(tc, "deepQueue: " + deepQueue + ", queueDepth: " + queueDepth + ", deepQueueMultiple: "
+                             + deepQueueMultiple + ", poolIncrement: " + poolIncrement);
+            }
+
+            activeThreads = threadPool.getActiveCount();
 
             // update cpu utilization info
             processCpuUtil = CpuInfo.getJavaCpuUsage();
@@ -1383,6 +1452,13 @@ public final class ThreadPoolController {
             int poolAdjustment = 0;
             if (growScore >= growScoreFilterLevel && (growScore - growShrinkDiffFilter) > shrinkScore) {
                 poolAdjustment = poolIncrement;
+                // with available cpu and a persistently deep queue, grow the pool by more than usual
+                if (!cpuHigh && !systemCpuNA && deepQueue) {
+                    if (consecutiveDeepQueueCycles > consecutiveDeepQueueThreshold) {
+                        poolAdjustment = Math.min(poolAdjustment * deepQueuePoolIncrementMultiple, maxThreads - poolSize);
+                    }
+                }
+
             } else if (shrinkScore >= shrinkScoreFilterLevel && (shrinkScore - growShrinkDiffFilter) > growScore) {
                 poolAdjustment = -poolDecrement;
             }
@@ -1390,7 +1466,7 @@ public final class ThreadPoolController {
             // Force some random variation into the pool size algorithm
             poolAdjustment = forceVariation(poolSize, poolAdjustment, deltaCompleted, lowActivity);
 
-            // Format an event level trace point with the most useful data
+            // Format an event level trace point with some useful data
             if (tc.isEventEnabled()) {
                 Tr.event(tc, "Interval data", toIntervalData(throughput, forecast, deltaCompleted, shrinkScore, growScore,
                                                              poolSize, poolAdjustment));
@@ -1425,6 +1501,7 @@ public final class ThreadPoolController {
         sb.append("\nHeuristics:");
         sb.append(String.format(" queueDepth = %8d", Integer.valueOf(queueDepth)));
         sb.append(String.format(" consecutiveQueueEmptyCount = %2d", Integer.valueOf(consecutiveQueueEmptyCount)));
+        sb.append(String.format(" consecutiveDeepQueueCycles = %2d", Integer.valueOf(consecutiveDeepQueueCycles)));
         sb.append(String.format(" consecutiveNoAdjustment = %2d", Integer.valueOf(consecutiveNoAdjustment)));
 
         sb.append("\nOutliers:  ");
@@ -1446,6 +1523,7 @@ public final class ThreadPoolController {
         sb.append(String.format(" activeThreads = %2d", Integer.valueOf(activeThreads)));
         sb.append(String.format(" poolIncrement = %2d", Integer.valueOf(poolIncrement)));
         sb.append(String.format(" poolDecrement = %2d", Integer.valueOf(poolDecrement)));
+        sb.append(String.format(" poolAdjustment = %2d", Integer.valueOf(poolAdjustment)));
         sb.append(String.format(" compareRange = %2d", Integer.valueOf(compareRange)));
 
         sb.append("\nConfig:");
@@ -1772,7 +1850,9 @@ public final class ThreadPoolController {
                 poolDecrement = poolIncrement;
             }
         } else {
-            // set poolIncrement/poolDecrement based on current poolSize and number of cpus
+            // set poolIncrement/poolDecrement based on current poolSize original pool change value
+            // we grow/shrink the pool by larger amounts as the pool size grows, to keep the changes
+            // roughly proportional to the pool size
             if (poolSize <= poolIncrementBoundLow) {
                 poolIncrement = poolChangeBasis;
                 poolDecrement = poolIncrement;
@@ -1782,12 +1862,24 @@ public final class ThreadPoolController {
                 // special case when we are at the edge of increment size change
                 if (poolSize == (poolIncrementBoundLow + poolChangeBasis))
                     poolDecrement = poolChangeBasis;
-            } else {
+            } else if (poolSize <= poolIncrementBoundHigh) {
                 poolIncrement = poolChangeBasis * 4;
                 poolDecrement = poolIncrement;
                 // special case when we are at the edge of increment size change
                 if (poolSize == (poolIncrementBoundMedium + poolChangeBasis * 2))
                     poolDecrement = poolChangeBasis * 2;
+            } else if (poolSize <= poolIncrementBoundExtraHigh) {
+                poolIncrement = poolChangeBasis * 8;
+                poolDecrement = poolIncrement;
+                // special case when we are at the edge of increment size change
+                if (poolSize == (poolIncrementBoundHigh + poolChangeBasis * 4))
+                    poolDecrement = poolChangeBasis * 4;
+            } else {
+                poolIncrement = poolChangeBasis * 16;
+                poolDecrement = poolIncrement;
+                // special case when we are at the edge of increment size change
+                if (poolSize == (poolIncrementBoundExtraHigh + poolChangeBasis * 8))
+                    poolDecrement = poolChangeBasis * 8;
             }
         }
 

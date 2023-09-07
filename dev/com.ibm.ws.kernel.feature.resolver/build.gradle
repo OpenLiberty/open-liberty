@@ -22,4 +22,5 @@ task prebuild(type: Sync) {
                 "com/ibm/ws/kernel/provisioning/package-info.java"
     }
 }
+processResources.dependsOn prebuild
 compileJava.dependsOn prebuild

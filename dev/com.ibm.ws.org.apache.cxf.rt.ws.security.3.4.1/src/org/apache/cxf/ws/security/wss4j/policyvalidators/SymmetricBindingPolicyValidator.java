@@ -21,9 +21,9 @@ package org.apache.cxf.ws.security.wss4j.policyvalidators;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.logging.Logger; // Liberty Change Start
 
-import org.apache.cxf.common.logging.LogUtils;
+import org.apache.cxf.common.logging.LogUtils; // Liberty Change Start
 import org.apache.cxf.ws.policy.AssertionInfo;
 import org.apache.cxf.ws.policy.AssertionInfoMap;
 import org.apache.cxf.ws.security.policy.PolicyUtils;

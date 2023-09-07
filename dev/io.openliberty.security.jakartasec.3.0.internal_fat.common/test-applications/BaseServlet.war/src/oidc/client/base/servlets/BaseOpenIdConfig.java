@@ -336,9 +336,9 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
 
     public int getJwksConnectTimeoutExpression() {
 
-        int value = Constants.DEFAULT_JWKS_CONN_TIMEOUT;
+        int value = Constants.OVERRIDE_DEFAULT_JWKS_CONN_TIMEOUT;
         if (config.containsKey(Constants.JWKSCONNECTTIMEOUTEXPRESSION)) {
-            value = getIntValue(Constants.JWKSCONNECTTIMEOUTEXPRESSION, Constants.DEFAULT_JWKS_CONN_TIMEOUT);
+            value = getIntValue(Constants.JWKSCONNECTTIMEOUTEXPRESSION, Constants.OVERRIDE_DEFAULT_JWKS_CONN_TIMEOUT);
         }
 
         return value;

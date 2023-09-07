@@ -10,9 +10,10 @@
 		<feature>jaxws-2.2</feature>
 	</featureManager>
 
+	<transaction recoverOnStartup="true" waitForRecovery="true"/>
+
 	<include location="../fatTestPorts.xml" />
 
-	<logging traceSpecification="com.ibm.ws.jaxws.*=debug:org.apache.cxf.ext.logging.slf4j.Slf4jEventSender=debug:wsat=all:Transaction=all"/>
   <javaPermission codebase="${server.config.dir}/dropins/assertion.war" className="java.security.AllPermission"/>
   <javaPermission codebase="${server.config.dir}/dropins/oneway.war" className="java.security.AllPermission"/>
   <javaPermission codebase="${server.config.dir}/dropins/endtoend.war" className="java.security.AllPermission"/>

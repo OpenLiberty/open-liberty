@@ -32,6 +32,7 @@ import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanNameExtrac
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanStatusExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.net.NetServerAttributesExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.net.NetServerAttributesGetter;
+import io.openliberty.microprofile.telemetry.common.rest.RestRouteCache;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
@@ -44,8 +45,13 @@ import jakarta.ws.rs.container.ResourceInfo;
 import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.ext.Provider;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 @Provider
 public class TelemetryContainerFilter implements ContainerRequestFilter, ContainerResponseFilter {
+
+    private static final TraceComponent tc = Tr.register(TelemetryContainerFilter.class);
 
     private static final String INSTRUMENTATION_NAME = "io.openliberty.microprofile.telemetry";
 
@@ -72,19 +78,24 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
     @Inject
     public TelemetryContainerFilter(final OpenTelemetryInfo openTelemetry) {
-        if (openTelemetry.getEnabled() && !AgentDetection.isAgentActive()) {
-            InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
+        try {
+            if (openTelemetry.getEnabled() && !AgentDetection.isAgentActive()) {
+                InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
                                                                                                                   openTelemetry.getOpenTelemetry(),
                                                                                                                   INSTRUMENTATION_NAME,
                                                                                                                   HttpSpanNameExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER));
 
-            this.instrumenter = builder
+                this.instrumenter = builder
                             .setSpanStatusExtractor(HttpSpanStatusExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
                             .addAttributesExtractor(HttpServerAttributesExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
                             .addAttributesExtractor(NetServerAttributesExtractor.create(NET_SERVER_ATTRIBUTES_GETTER))
                             .buildServerInstrumenter(new ContainerRequestContextTextMapGetter());
 
-        } else {
+           } else {
+               this.instrumenter = null;
+           }
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
             this.instrumenter = null;
         }
     }
@@ -95,16 +106,20 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
             return;
         }
 
-        Context parentContext = Context.current();
-        if (instrumenter.shouldStart(parentContext, request)) {
-            request.setProperty(REST_RESOURCE_CLASS, resourceInfo.getResourceClass());
-            request.setProperty(REST_RESOURCE_METHOD, resourceInfo.getResourceMethod());
+        try {
+            Context parentContext = Context.current();
+            if (instrumenter.shouldStart(parentContext, request)) {
+                request.setProperty(REST_RESOURCE_CLASS, resourceInfo.getResourceClass());
+                request.setProperty(REST_RESOURCE_METHOD, resourceInfo.getResourceMethod());
 
-            Context spanContext = instrumenter.start(parentContext, request);
-            Scope scope = spanContext.makeCurrent();
-            request.setProperty(SPAN_CONTEXT, spanContext);
-            request.setProperty(SPAN_PARENT_CONTEXT, parentContext);
-            request.setProperty(SPAN_SCOPE, scope);
+                Context spanContext = instrumenter.start(parentContext, request);
+                Scope scope = spanContext.makeCurrent();
+                request.setProperty(SPAN_CONTEXT, spanContext);
+                request.setProperty(SPAN_PARENT_CONTEXT, parentContext);
+                request.setProperty(SPAN_SCOPE, scope);
+            }
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
         }
     }
 
@@ -113,22 +128,25 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
         // Note: for async resource methods, this may not run on the same thread as the other filter method
         // Scope is ended in TelemetryServletRequestListener to ensure it does run on the original request thread
 
-        if (instrumenter == null) {
-            return;
-        }
-
-        Context spanContext = (Context) request.getProperty(SPAN_CONTEXT);
-        if (spanContext == null) {
-            return;
-        }
-
         try {
-            instrumenter.end(spanContext, request, response, null);
-        } finally {
-            request.removeProperty(REST_RESOURCE_CLASS);
-            request.removeProperty(REST_RESOURCE_METHOD);
-            request.removeProperty(SPAN_CONTEXT);
-            request.removeProperty(SPAN_PARENT_CONTEXT);
+            if (instrumenter == null) {
+                return;
+            }
+
+            Context spanContext = (Context) request.getProperty(SPAN_CONTEXT);
+            if (spanContext == null) {
+                return;
+            }
+            try {
+                instrumenter.end(spanContext, request, response, null);
+            } finally {
+                request.removeProperty(REST_RESOURCE_CLASS);
+                request.removeProperty(REST_RESOURCE_METHOD);
+                request.removeProperty(SPAN_CONTEXT);
+                request.removeProperty(SPAN_PARENT_CONTEXT);
+            }
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
         }
     }
 
