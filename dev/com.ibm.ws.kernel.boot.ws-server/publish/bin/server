@@ -765,20 +765,7 @@ serverEnvAndJVMOptions()
     JAVA_PATH=$(command -v java)
     if [ -n "${JAVA_PATH}" ] ; then
 
-      # Found java, but path might have symbolic links.  Need to find the real path. 
-      if command -v realpath >/dev/null; then
-        REAL_JAVA_PATH=$(realpath "${JAVA_PATH}" 2>/dev/null)        
-      fi
-
-      # If realpath is not available, try readlink -e  
-      if [ -z "${REAL_JAVA_PATH}" ] && command -v readlink >/dev/null; then
-        REAL_JAVA_PATH=$(readlink -e "${JAVA_PATH}" 2>/dev/null)
-      fi
-
-      # if realpath and readlink failed then try to resolve the hard way
-      if [ -z "${REAL_JAVA_PATH}" ]; then
-         REAL_JAVA_PATH=$(resolve_symlinks "${JAVA_PATH}")
-      fi
+      REAL_JAVA_PATH=$(findRealPath "${JAVA_PATH}")
 
       if [ -n "${REAL_JAVA_PATH}" ]; then
          JPMS_MODULE_FILE_LOCATION=$(dirname "$(dirname "${REAL_JAVA_PATH}")")/lib/modules
@@ -796,21 +783,38 @@ serverEnvAndJVMOptions()
   return $rc
 }
 
-# resolve symbolic links in a path
-resolve_symlinks() {
+# resolve symbolic links in a path to a file
+findRealPath() {
   file="$1"
-  while [ -h "$file" ]; do
-    # Get absolute path to file without symbolic links
-    dir=$(cd -P "$(dirname "$file")" && pwd)
-    file=$(ls -l "$file" | awk '{print $NF}')
+  local REAL_PATH
 
-    case "$file" in
-      # absolute path case - do nothing
-      /*) ;;
-      # relative path case - convert to absolute path.
-      *) file="$dir/$file" ;;
-    esac
-  done
+  # Try realpath command 
+  if command -v realpath >/dev/null; then
+    REAL_PATH=$(realpath "${file}" 2>/dev/null)        
+  fi
+
+  # If realpath is not available, try readlink -e  
+  if [ -z "${REAL_PATH}" ] && command -v readlink >/dev/null; then
+    REAL_PATH=$(readlink -e "${file}" 2>/dev/null)
+  fi
+
+  # If still no luck, try a more basic implementation
+  if [ -n "${REAL_PATH}" ]; then
+    while [ -h "$file" ]; do
+      # Get absolute path to file without symbolic links
+      dir=$(cd -P "$(dirname "$file")" && pwd)
+      file=$(ls -l "$file" | awk '{print $NF}')
+
+      case "$file" in
+        # absolute path case - do nothing
+        /*) ;;
+        # relative path case - convert to absolute path.
+        *) file="$dir/$file" ;;
+      esac
+    done
+  else
+    file="$REAL_PATH"
+  fi
   echo "$file"
 }
 
