@@ -211,5 +211,6 @@ public abstract class AbstractOpenTelemetryProducer {
         }
     }
     
+	//This method is abstract because requires calling an API that changes across different upstream versions of OpenTelemetry
     protected abstract PrivilegedAction<OpenTelemetry> getSDKBuilderPrivilegedAction(HashMap<String, String> telemetryProperties);
 }

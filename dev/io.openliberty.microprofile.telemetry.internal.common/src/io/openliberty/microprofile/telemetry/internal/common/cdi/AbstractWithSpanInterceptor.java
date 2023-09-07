@@ -38,6 +38,9 @@ import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
 
+/** 
+ * This intercepter is responsible for creating Spans and managing the span context for all methods annotated @Span
+ */
 public abstract class AbstractWithSpanInterceptor {
 	protected static final TraceComponent tc = Tr.register(AbstractWithSpanInterceptor.class);
 
@@ -59,6 +62,7 @@ public abstract class AbstractWithSpanInterceptor {
 				.buildInstrumenter(methodRequest -> spanKindFromMethod(methodRequest.getMethod()));
 	}
 
+	//This method is abstract because requires calling an API that changes across different upstream versions of OpenTelemetry
 	protected abstract MethodSpanAttributesExtractor<MethodRequest, Void> getMethodSpanAttributesExtractor();
 
 	private static SpanKind spanKindFromMethod(Method method) {

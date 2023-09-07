@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,16 +25,18 @@ import jakarta.interceptor.Interceptor;
 @Interceptor
 @Priority(100)
 public class WithSpanInterceptor extends AbstractWithSpanInterceptor {
-	
+
     @Inject
     public WithSpanInterceptor(OpenTelemetry openTelemetry) {
         super(openTelemetry);
     }
 
+    //OpenTelemetry renamed MethodSpanAttributesExtractor.newInstance to MethodSpanAttributesExtractor.create
+    //So we move this method to non-common code.
     @Override
     protected MethodSpanAttributesExtractor<MethodRequest, Void> getMethodSpanAttributesExtractor() {
         return MethodSpanAttributesExtractor.create(MethodRequest::getMethod,
-                                                         getNewWithSpanParameterAttributeNamesExtractor(),
-                                                         MethodRequest::getArgs);
+                                                    getNewWithSpanParameterAttributeNamesExtractor(),
+                                                    MethodRequest::getArgs);
     }
 }

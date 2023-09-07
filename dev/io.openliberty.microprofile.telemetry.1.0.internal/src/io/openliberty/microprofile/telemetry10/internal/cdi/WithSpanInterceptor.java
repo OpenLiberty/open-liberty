@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry10.internal.cdi;
 
@@ -25,12 +23,14 @@ import jakarta.interceptor.Interceptor;
 @Interceptor
 @Priority(100)
 public class WithSpanInterceptor extends AbstractWithSpanInterceptor {
-    
+
     @Inject
     public WithSpanInterceptor(OpenTelemetry openTelemetry) {
         super(openTelemetry);
     }
 
+    //OpenTelemetry renamed MethodSpanAttributesExtractor.newInstance to MethodSpanAttributesExtractor.create
+    //So we move this method to non-common code.
     @Override
     protected MethodSpanAttributesExtractor<MethodRequest, Void> getMethodSpanAttributesExtractor() {
         return MethodSpanAttributesExtractor.newInstance(MethodRequest::getMethod,

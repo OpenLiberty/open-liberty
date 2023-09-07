@@ -39,8 +39,7 @@ Import-Package: \
 	com.ibm.wsspi.classloading,\
 	org.osgi.framework,\
 	com.ibm.websphere.ras,\
-	com.ibm.websphere.ras.annotation,\
-	io.openliberty.microprofile.telemetry.internal.common.resources
+	com.ibm.websphere.ras.annotation
 
 Export-Package: \
   io.opentelemetry.extension.trace.propagation;version=${openTelemetryVersion};thread-context=true,\

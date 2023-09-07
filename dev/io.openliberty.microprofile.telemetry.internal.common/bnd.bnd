@@ -18,6 +18,9 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 src: src, resources
 
+javac.source: 11
+javac.target: 11
+
 #-cdiannotations:
 
 -dsannotations: \

@@ -26,10 +26,12 @@ public abstract class AbstractTelemetryClientFilter {
      *
      * @return the TelemetryClientFilter for the current application
      */
+	//This is here so there is only one entry point via static methods regardless of which mpTelemetry version is in use.
     public static AbstractTelemetryClientFilter getCurrent() {
         return CDI.current().select(AbstractTelemetryClientFilter.class).get();
     }
 
+    //This is here because it is called by other classes in the common package
 	protected abstract boolean isEnabled();
 
 }

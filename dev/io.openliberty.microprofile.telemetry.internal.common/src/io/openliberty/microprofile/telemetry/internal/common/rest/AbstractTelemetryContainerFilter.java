@@ -11,8 +11,7 @@ package io.openliberty.microprofile.telemetry.internal.common.rest;
 
 public abstract class AbstractTelemetryContainerFilter {
 	
-    protected static final String SPAN_SCOPE = "otel.span.server.scope";
-
-    
+	//This is here to prevent a build time dependency from the common package to the versioned packages.
+    protected static final String SPAN_SCOPE = "otel.span.server.scope";  
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry10.internal.cdi;
 
@@ -25,8 +23,13 @@ import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 
+/**
+ * The main access point for acquiring OpenTelemetry objects, this class functions via CDI.
+ */
 public class OpenTelemetryProducer extends AbstractOpenTelemetryProducer {
 
+    //CDI producer annotations are not inherited so we annotate methods on the concrete class
+    //And delegate to the abstract.
     @Override
     protected PrivilegedAction<OpenTelemetry> getSDKBuilderPrivilegedAction(HashMap<String, String> telemetryProperties) {
         return (PrivilegedAction<OpenTelemetry>) () -> {
