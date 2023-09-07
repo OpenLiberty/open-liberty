@@ -23,7 +23,8 @@ DynamicImport-Package: \
   org.apache.myfaces.spi
 
 -includeresource: \
-	@${repo;org.apache.myfaces.core:myfaces-api;${Implementation-Version};EXACT}!/!(META-INF/maven/*|module-info.class)
+	@${repo;org.apache.myfaces.core:myfaces-api;${Implementation-Version};EXACT}!/!(META-INF/maven/*|module-info.class), \
+  META-INF=@src/META-INF
 
 instrument.disabled: true
 
