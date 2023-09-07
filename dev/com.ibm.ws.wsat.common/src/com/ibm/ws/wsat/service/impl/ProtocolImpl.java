@@ -150,7 +150,7 @@ public class ProtocolImpl {
             final WSATTransaction tran = WSATTransaction.getTran(globalId);
             if (tran != null) {
                 try {
-                    Vote vote = tranService.prepareTransaction(globalId);
+                    Vote vote = tran.prepare();
                     WSATParticipantState resp = (vote == Vote.VoteCommit) ? WSATParticipantState.PREPARED : (vote == Vote.VoteReadOnly) ? WSATParticipantState.READONLY : WSATParticipantState.ABORTED;
                     participantResponse(tran, globalId, wrapper.getResponseEpr(), resp);
                 } catch (WSATException e) {
@@ -242,7 +242,7 @@ public class ProtocolImpl {
         DistributableTransaction t = null;
 
         if (tran != null) {
-            tranService.commitTransaction(globalId);
+            tran.commit();
         } else {
             t = tranService.getRemoteTranMgr().getTransactionForID(globalId);
         }
@@ -260,6 +260,7 @@ public class ProtocolImpl {
         }
     }
 
+    @FFDCIgnore(WSATException.class)
     public void rollback(ProtocolServiceWrapper wrapper) throws WSATException {
         if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
             rerouteToCorrectParticipant(wrapper, WSATParticipantState.ROLLBACK);
@@ -270,7 +271,13 @@ public class ProtocolImpl {
         final WSATTransaction tran = WSATTransaction.getTran(globalId);
 
         if (tran != null) {
-            tranService.rollbackTransaction(globalId);
+            try {
+                tran.rollback();
+            } catch (WSATException e) {
+                if (TC.isDebugEnabled()) {
+                    Tr.debug(TC, "Transaction is probably gone already: {0}", e);
+                }
+            }
         }
 
         participantResponse(tran, globalId, wrapper.getResponseEpr(), WSATParticipantState.ABORTED);
