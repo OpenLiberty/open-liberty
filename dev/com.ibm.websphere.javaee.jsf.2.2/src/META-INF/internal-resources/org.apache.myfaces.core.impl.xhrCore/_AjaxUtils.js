@@ -57,8 +57,11 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
      */
     appendIssuingItem: function (item, targetBuf) {
         // if triggered by a Button send it along
-        if (item && item.type && item.type.toLowerCase() == "submit") {
-            targetBuf.append(item.name, item.value);
+        if (item && item.type &&
+            (item.type.toLowerCase() == "submit" ||
+             item.type.toLowerCase() == "button" )) {
+            //buttons not always have a name unlike inputs
+            targetBuf.append(item.id || item.name, item.value);
         }
     },
 
