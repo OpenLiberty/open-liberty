@@ -28,7 +28,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
-import io.openliberty.microprofile.telemetry.common.internal.helper.AgentDetection;
+import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.baggage.Baggage;

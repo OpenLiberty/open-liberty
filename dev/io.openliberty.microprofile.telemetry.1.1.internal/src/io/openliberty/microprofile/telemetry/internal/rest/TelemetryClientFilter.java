@@ -20,8 +20,8 @@ import java.security.PrivilegedAction;
 import java.util.List;
 
 import io.openliberty.microprofile.telemetry.common.internal.cdi.OpenTelemetryInfo;
-import io.openliberty.microprofile.telemetry.common.internal.helper.AgentDetection;
 import io.openliberty.microprofile.telemetry.common.internal.rest.AbstractTelemetryClientFilter;
+import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;

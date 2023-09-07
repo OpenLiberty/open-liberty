@@ -54,9 +54,8 @@ Import-Package: \
   *
 
 Export-Package: \
+    io.openliberty.microprofile.telemetry.resources;version='1.0',\
 	io.openliberty.microprofile.telemetry.internal.cdi;version='1.0',\
-	io.openliberty.microprofile.telemetry.resources;version='1.0',\
-	io.openliberty.microprofile.telemetry.rest;version='1.0',\
 	io.openliberty.microprofile.telemetry.internal.rest;version='1.0';thread-context=true
 	
 Private-Package: \

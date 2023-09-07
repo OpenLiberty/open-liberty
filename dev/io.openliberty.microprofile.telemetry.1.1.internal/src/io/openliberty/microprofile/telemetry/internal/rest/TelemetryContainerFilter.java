@@ -20,7 +20,6 @@ import java.net.URI;
 import java.util.List;
 
 import io.openliberty.microprofile.telemetry.common.internal.cdi.OpenTelemetryInfo;
-import io.openliberty.microprofile.telemetry.common.internal.helper.AgentDetection;
 import io.openliberty.microprofile.telemetry.common.internal.rest.AbstractTelemetryContainerFilter;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
@@ -34,6 +33,7 @@ import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanStatusExtr
 import io.opentelemetry.instrumentation.api.instrumenter.net.NetServerAttributesGetter;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 import io.openliberty.microprofile.telemetry.common.rest.RestRouteCache;
+import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;

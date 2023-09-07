@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.common.internal.helper;
+package io.openliberty.microprofile.telemetry.internal.common;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 

@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
-import io.openliberty.microprofile.telemetry.common.internal.helper.AgentDetection;
+import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.microprofile.telemetry.internal.rest.TelemetryClientFilter;
 import io.openliberty.microprofile.telemetry.internal.rest.TelemetryContainerFilter;
 
