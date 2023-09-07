@@ -127,7 +127,6 @@ public class LTPAKeyRotationTests {
      * Verify the following:
      * <OL>
      * <LI>Set MonitorDirectory to true, and MonitorInterval to 5.
-     * <LI>Start the server with a default ltpa.keys file.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Rename the ltpa.keys file to validation1.keys.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -137,7 +136,6 @@ public class LTPAKeyRotationTests {
      * <P>Expected Results:
      * <OL>
      * <LI>MonitorDirectory is set to true, and MonitorInterval to 5.
-     * <LI>Server starts successfully, and a default ltpa.keys file is automatically generated.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is renamed to validation1.keys.
      * <LI>Continued authentication to simple servlet; server is not restarted and does not need to login again.
@@ -148,27 +146,8 @@ public class LTPAKeyRotationTests {
     @Mode(TestMode.LITE)
     @Test
     public void testLTPAFileCreationDeletion_monitorDirectory_true_monitorInterval_5() throws Exception {
-        // Get the server configuration
-        ServerConfiguration serverConfiguration = server.getServerConfiguration();
-        LTPA ltpa = serverConfiguration.getLTPA();
-
-        // Check if the configuration needs to be updated
-        boolean configurationUpdateNeeded = false;
-
-        // Set MonitorDirectory to true, and MonitorInterval to 5
-        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "true") | setLTPAMonitorIntervalElement(ltpa, "5");
-
-        // Apply server configuration update if needed
-        if (configurationUpdateNeeded) {
-            updateConfigDynamically(server, serverConfiguration, true);
-            
-            // Wait for the LTPA configuration to be ready after the change
-            assertNotNull("Expected LTPA configuration ready message not found in the log.",
-            server.waitForStringInLog("CWWKS4105I", 5000));
-        }
-
-        // Assert that a default ltpa.keys file is generated
-        assertFileWasCreated(DEFAULT_KEY_PATH);
+        // Configure the server
+        configureServer("true", "5", true);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -208,7 +187,6 @@ public class LTPAKeyRotationTests {
      * Verify the following:
      * <OL>
      * <LI>Set MonitorDirectory to true, and MonitorInterval to 5.
-     * <LI>Start the server with a default ltpa.keys file.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Replace the primary key with a different valid key.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -217,7 +195,6 @@ public class LTPAKeyRotationTests {
      * <P>Expected Results:
      * <OL>
      * <LI>MonitorDirectory is set to true, and MonitorInterval to 5.
-     * <LI>Server starts successfully, and a default ltpa.keys file is automatically generated.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is replaced with a different key.
      * <LI>Failed authentication to simple servlet.
@@ -229,27 +206,8 @@ public class LTPAKeyRotationTests {
         // Copy validation key file (validation2.keys) to the server
         copyFileToServerResourcesSecurityDir("alternate/validation2.keys");
 
-        // Get the server configuration
-        ServerConfiguration serverConfiguration = server.getServerConfiguration();
-        LTPA ltpa = serverConfiguration.getLTPA();
-
-        // Check if the configuration needs to be updated
-        boolean configurationUpdateNeeded = false;
-
-        // Set MonitorDirectory to true, and MonitorInterval to 5
-        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "true") | setLTPAMonitorIntervalElement(ltpa, "5");
-
-        // Apply server configuration update if needed
-        if (configurationUpdateNeeded) {
-            updateConfigDynamically(server, serverConfiguration, true);
-            
-            // Wait for the LTPA configuration to be ready after the change
-            assertNotNull("Expected LTPA configuration ready message not found in the log.",
-            server.waitForStringInLog("CWWKS4105I", 5000));
-        }
-
-        // Assert that a default ltpa.keys file is generated
-        assertFileWasCreated(DEFAULT_KEY_PATH);
+        // Configure the server
+        configureServer("true", "5", true);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -287,7 +245,6 @@ public class LTPAKeyRotationTests {
      * Verify the following:
      * <OL>
      * <LI>Set MonitorDirectory to true, and MonitorInterval to 5.
-     * <LI>Start the server with a default ltpa.keys file.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Replace the primary key with a different invalid key which has garbage values in the private key.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -296,7 +253,6 @@ public class LTPAKeyRotationTests {
      * <P>Expected Results:
      * <OL>
      * <LI>MonitorDirectory is set to true, and MonitorInterval to 5.
-     * <LI>Server starts successfully, and a default ltpa.keys file is automatically generated.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is replaced with a different key causing a CWWKS4106E: LTPA configuration error.
      * <LI>Successful authentication to simple servlet since the old cookie is still being used.
@@ -309,27 +265,8 @@ public class LTPAKeyRotationTests {
         // Copy validation keys file(validation3.keys) to the server. This file has garbage values in the private key.
         copyFileToServerResourcesSecurityDir("alternate/validation3.keys");
 
-        // Get the server configuration
-        ServerConfiguration serverConfiguration = server.getServerConfiguration();
-        LTPA ltpa = serverConfiguration.getLTPA();
-
-        // Check if the configuration needs to be updated
-        boolean configurationUpdateNeeded = false;
-
-        // Set MonitorDirectory to true, and MonitorInterval to 5
-        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "true") | setLTPAMonitorIntervalElement(ltpa, "5");
-
-        // Apply server configuration update if needed
-        if (configurationUpdateNeeded) {
-            updateConfigDynamically(server, serverConfiguration, true);
-            
-            // Wait for the LTPA configuration to be ready after the change
-            assertNotNull("Expected LTPA configuration ready message not found in the log.",
-            server.waitForStringInLog("CWWKS4105I", 5000));
-        }
-
-        // Assert that a default ltpa.keys file is generated
-        assertFileWasCreated(DEFAULT_KEY_PATH);
+        // Configure the server
+        configureServer("true", "5", true);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -367,7 +304,6 @@ public class LTPAKeyRotationTests {
      * Verify the following:
      * <OL>
      * <LI>Set MonitorDirectory to false, and MonitorInterval to 0.
-     * <LI>Start the server with a default ltpa.keys file.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Rename the ltpa.keys file to validation1.keys.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -378,7 +314,6 @@ public class LTPAKeyRotationTests {
      * <P>Expected Results:
      * <OL>
      * <LI>MonitorDirectory is set to false, and MonitorInterval to 0.
-     * <LI>Server starts successfully, and a default ltpa.keys file is automatically generated.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is renamed to validation1.keys.
      * <LI>Continued authentication to simple servlet; server is not restarted and does not need to login again.
@@ -390,27 +325,8 @@ public class LTPAKeyRotationTests {
     @Mode(TestMode.LITE)
     @Test
     public void testLTPAFileCreationDeletion_monitorDirectory_false_monitorInterval_0() throws Exception {
-        // Get the server configuration
-        ServerConfiguration serverConfiguration = server.getServerConfiguration();
-        LTPA ltpa = serverConfiguration.getLTPA();
-
-        // Check if the configuration needs to be updated
-        boolean configurationUpdateNeeded = false;
-
-        // Set MonitorDirectory to true, and MonitorInterval to 5
-        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "false") | setLTPAMonitorIntervalElement(ltpa, "0");
-
-        // Apply server configuration update if needed
-        if (configurationUpdateNeeded) {
-            updateConfigDynamically(server, serverConfiguration, true);
-            
-            // Wait for the LTPA configuration to be ready after the change
-            assertNotNull("Expected LTPA configuration ready message not found in the log.",
-            server.waitForStringInLog("CWWKS4105I", 5000));
-        }
-
-        // Assert that a default ltpa.keys file is generated
-        assertFileWasCreated(DEFAULT_KEY_PATH);
+        // Configure the server
+        configureServer("false", "0", true);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -446,7 +362,6 @@ public class LTPAKeyRotationTests {
      * Verify the following:
      * <OL>
      * <LI>Set MonitorDirectory to false, and MonitorInterval to 0.
-     * <LI>Start the server with a default ltpa.keys file.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Replace the primary key with a different valid key.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -455,7 +370,6 @@ public class LTPAKeyRotationTests {
      * <P>Expected Results:
      * <OL>
      * <LI>MonitorDirectory is set to false, and MonitorInterval to 0.
-     * <LI>Server starts successfully, and a default ltpa.keys file is automatically generated.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is replaced with a different key.
      * <LI>Successful authentication to simple servlet, since the server still uses the old key without file monitoring.
@@ -467,27 +381,8 @@ public class LTPAKeyRotationTests {
         // Copy validation key file (validation2.keys) to the server
         copyFileToServerResourcesSecurityDir("alternate/validation2.keys");
 
-        // Get the server configuration
-        ServerConfiguration serverConfiguration = server.getServerConfiguration();
-        LTPA ltpa = serverConfiguration.getLTPA();
-
-        // Check if the configuration needs to be updated
-        boolean configurationUpdateNeeded = false;
-
-        // Set MonitorDirectory to true, and MonitorInterval to 5
-        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "false") | setLTPAMonitorIntervalElement(ltpa, "0");
-
-        // Apply server configuration update if needed
-        if (configurationUpdateNeeded) {
-            updateConfigDynamically(server, serverConfiguration, true);
-            
-            // Wait for the LTPA configuration to be ready after the change
-            assertNotNull("Expected LTPA configuration ready message not found in the log.",
-            server.waitForStringInLog("CWWKS4105I", 5000));
-        }
-
-        // Assert that a default ltpa.keys file is generated
-        assertFileWasCreated(DEFAULT_KEY_PATH);
+        // Configure the server
+        configureServer("false", "0", true);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -516,7 +411,6 @@ public class LTPAKeyRotationTests {
      * Verify the following:
      * <OL>
      * <LI>Set MonitorDirectory to false, and MonitorInterval to 5.
-     * <LI>Start the server with a default ltpa.keys file.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Rename the ltpa.keys file to validation1.keys.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -526,7 +420,6 @@ public class LTPAKeyRotationTests {
      * <P>Expected Results:
      * <OL>
      * <LI>MonitorDirectory is set to false, and MonitorInterval to 5.
-     * <LI>Server starts successfully, and a default ltpa.keys file is automatically generated.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is renamed to validation1.keys.
      * <LI>Continued authentication to simple servlet; server is not restarted and does not need to login again.
@@ -540,23 +433,8 @@ public class LTPAKeyRotationTests {
         // Copy validation keys file(validation1.keys) to the server.
         copyFileToServerResourcesSecurityDir("alternate/validation1.keys");
 
-        // Get the server configuration
-        ServerConfiguration serverConfiguration = server.getServerConfiguration();
-        LTPA ltpa = serverConfiguration.getLTPA();
-
-        // Check if the configuration needs to be updated
-        boolean configurationUpdateNeeded = false;
-
-        // Set MonitorDirectory to true, and MonitorInterval to 5
-        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "false") | setLTPAMonitorIntervalElement(ltpa, "5");
-
-        // Apply server configuration update if needed
-        if (configurationUpdateNeeded) {
-            updateConfigDynamically(server, serverConfiguration, true);
-        }
-
-        // Assert that a default ltpa.keys file is generated
-        assertFileWasCreated(DEFAULT_KEY_PATH);
+        // Configure the server
+        configureServer("false", "5", false);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -596,7 +474,6 @@ public class LTPAKeyRotationTests {
      * Verify the following:
      * <OL>
      * <LI>Set MonitorDirectory to false, and MonitorInterval to 5.
-     * <LI>Start the server with a default ltpa.keys file.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Replace the primary key with a different valid key.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -606,7 +483,6 @@ public class LTPAKeyRotationTests {
      * <P>Expected Results:
      * <OL>
      * <LI>MonitorDirectory is set to false, and MonitorInterval to 5.
-     * <LI>Server starts successfully, and a default ltpa.keys file is automatically generated.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is replaced with a different key.
      * <LI>Failed authentication to simple servlet.
@@ -619,27 +495,8 @@ public class LTPAKeyRotationTests {
         // Copy validation key file (validation2.keys) to the server
         copyFileToServerResourcesSecurityDir("alternate/validation2.keys");
 
-        // Get the server configuration
-        ServerConfiguration serverConfiguration = server.getServerConfiguration();
-        LTPA ltpa = serverConfiguration.getLTPA();
-
-        // Check if the configuration needs to be updated
-        boolean configurationUpdateNeeded = false;
-
-        // Set MonitorDirectory to true, and MonitorInterval to 5
-        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "false") | setLTPAMonitorIntervalElement(ltpa, "5");
-
-        // Apply server configuration update if needed
-        if (configurationUpdateNeeded) {
-            updateConfigDynamically(server, serverConfiguration, true);
-            
-            // Wait for the LTPA configuration to be ready after the change
-            assertNotNull("Expected LTPA configuration ready message not found in the log.",
-            server.waitForStringInLog("CWWKS4105I", 5000));
-        }
-
-        // Assert that a default ltpa.keys file is generated
-        assertFileWasCreated(DEFAULT_KEY_PATH);
+        // Configure the server
+        configureServer("false", "5", true);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -687,7 +544,6 @@ public class LTPAKeyRotationTests {
      * Verify the following:
      * <OL>
      * <LI>Set MonitorDirectory to true, and MonitorInterval to 0.
-     * <LI>Start the server with a default ltpa.keys file.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Rename the ltpa.keys file to validation1.keys.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -698,7 +554,6 @@ public class LTPAKeyRotationTests {
      * <P>Expected Results:
      * <OL>
      * <LI>MonitorDirectory is set to true, and MonitorInterval to 0.
-     * <LI>Server starts successfully, and a default ltpa.keys file is automatically generated.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is renamed to validation1.keys.
      * <LI>Continued authentication to simple servlet; server is not restarted and does not need to login again.
@@ -710,27 +565,12 @@ public class LTPAKeyRotationTests {
     @Mode(TestMode.LITE)
     @Test
     public void testLTPAFileCreationDeletion_monitorDirectory_true_monitorInterval_0() throws Exception {
-        // Get the server configuration
-        ServerConfiguration serverConfiguration = server.getServerConfiguration();
-        LTPA ltpa = serverConfiguration.getLTPA();
-
-        // Check if the configuration needs to be updated
-        boolean configurationUpdateNeeded = false;
-
-        // Set MonitorDirectory to true, and MonitorInterval to 0
-        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "true") | setLTPAMonitorIntervalElement(ltpa, "0");
-
-        // Apply server configuration update if needed
-        if (configurationUpdateNeeded) {
-            updateConfigDynamically(server, serverConfiguration, true);
-        }
+        // Configure the server
+        configureServer("true", "0", false);
 
         // Wait for configuration error message to be logged
         assertNotNull("Expected LTPA configuration error message not found in the log.",
                       server.waitForStringInLog("CWWKS4113W", 5000));
-
-        // Assert that a default ltpa.keys file is generated
-        assertFileWasCreated(DEFAULT_KEY_PATH);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -766,7 +606,6 @@ public class LTPAKeyRotationTests {
      * Verify the following:
      * <OL>
      * <LI>Set MonitorDirectory to true, and MonitorInterval to 0.
-     * <LI>Start the server with a default ltpa.keys file.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Replace the primary key with a different valid key.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -775,7 +614,6 @@ public class LTPAKeyRotationTests {
      * <P>Expected Results:
      * <OL>
      * <LI>MonitorDirectory is set to true, and MonitorInterval to 0.
-     * <LI>Server starts successfully, and a default ltpa.keys file is automatically generated.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is replaced with a different key.
      * <LI>Successful authentication to simple servlet, since the server still uses the old key without file monitoring.
@@ -787,27 +625,8 @@ public class LTPAKeyRotationTests {
         // Copy validation key file (validation2.keys) to the server
         copyFileToServerResourcesSecurityDir("alternate/validation2.keys");
 
-        // Get the server configuration
-        ServerConfiguration serverConfiguration = server.getServerConfiguration();
-        LTPA ltpa = serverConfiguration.getLTPA();
-
-        // Check if the configuration needs to be updated
-        boolean configurationUpdateNeeded = false;
-
-        // Set MonitorDirectory to true, and MonitorInterval to 0
-        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "true") | setLTPAMonitorIntervalElement(ltpa, "0");
-
-        // Apply server configuration update if needed
-        if (configurationUpdateNeeded) {
-            updateConfigDynamically(server, serverConfiguration, true);
-            
-            // Wait for the LTPA configuration to be ready after the change
-            assertNotNull("Expected LTPA configuration ready message not found in the log.",
-            server.waitForStringInLog("CWWKS4105I", 5000));
-        }
-
-        // Assert that a default ltpa.keys file is generated
-        assertFileWasCreated(DEFAULT_KEY_PATH);
+        // Configure the server
+        configureServer("true", "0", true);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -836,7 +655,6 @@ public class LTPAKeyRotationTests {
      * Verify the following:
      * <OL>
      * <LI>Set MonitorDirectory to true, and MonitorInterval to 5.
-     * <LI>Start the server with a default ltpa.keys file.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Rename the ltpa.keys file to validation1.keys.
      * <LI>Set fileName to null to make it not configured in the validation keys element.
@@ -855,7 +673,6 @@ public class LTPAKeyRotationTests {
      * <P>Expected Results:
      * <OL>
      * <LI>MonitorDirectory is set to true, and MonitorInterval to 5.
-     * <LI>Server starts successfully, and a default ltpa.keys file is automatically generated.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is renamed to validation1.keys.
      * <LI>fileName is not configured in the validation keys element.
@@ -878,27 +695,8 @@ public class LTPAKeyRotationTests {
         // Copy validation keys files (validation1.keys, and validation3.keys) to the server.
         copyFileToServerResourcesSecurityDir("alternate/validation1.keys");
 
-        // Get the server configuration
-        ServerConfiguration serverConfiguration = server.getServerConfiguration();
-        LTPA ltpa = serverConfiguration.getLTPA();
-
-        // Check if the configuration needs to be updated
-        boolean configurationUpdateNeeded = false;
-
-        // Set MonitorDirectory to true, and MonitorInterval to 0
-        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "true") | setLTPAMonitorIntervalElement(ltpa, "5");
-
-        // Apply server configuration update if needed
-        if (configurationUpdateNeeded) {
-            updateConfigDynamically(server, serverConfiguration, true);
-            
-            // Wait for the LTPA configuration to be ready after the change
-            assertNotNull("Expected LTPA configuration ready message not found in the log.",
-            server.waitForStringInLog("CWWKS4105I", 5000));
-        }
-
-        // Assert that a default ltpa.keys file is generated
-        assertFileWasCreated(DEFAULT_KEY_PATH);
+        // Configure the server
+        configureServer("true", "5", true);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -915,7 +713,9 @@ public class LTPAKeyRotationTests {
                       server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Set fileName to null to make it not configured in the validation keys element.
-        configurationUpdateNeeded = setLTPAValidationKeyFileNameElement(ltpa, null);
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        LTPA ltpa = serverConfiguration.getLTPA();
+        Boolean configurationUpdateNeeded = setLTPAValidationKeyFileNameElement(ltpa, null);
         updateConfigDynamically(server, serverConfiguration, true);
 
         // Exceptions are thrown in the logs since fileName is a required attribute
@@ -978,7 +778,6 @@ public class LTPAKeyRotationTests {
      * Verify the following:
      * <OL>
      * <LI>Set MonitorDirectory to true, and MonitorInterval to 5.
-     * <LI>Start the server with a default ltpa.keys file.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Rename the ltpa.keys file to validation1.keys.
      * <LI>Set password to null to make it not configured in the validation keys element.
@@ -993,7 +792,6 @@ public class LTPAKeyRotationTests {
      * <P>Expected Results:
      * <OL>
      * <LI>MonitorDirectory is set to true, and MonitorInterval to 5.
-     * <LI>Server starts successfully, and a default ltpa.keys file is automatically generated.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is renamed to validation1.keys.
      * <LI>password is not configured in the validation keys element.
@@ -1009,27 +807,8 @@ public class LTPAKeyRotationTests {
     @Test
     @AllowedFFDC({ "javax.crypto.BadPaddingException", "java.lang.IllegalArgumentException", "java.lang.NullPointerException" })
     public void testValidationKeys_passwordAttribute() throws Exception {
-        // Get the server configuration
-        ServerConfiguration serverConfiguration = server.getServerConfiguration();
-        LTPA ltpa = serverConfiguration.getLTPA();
-
-        // Check if the configuration needs to be updated
-        boolean configurationUpdateNeeded = false;
-
-        // Set MonitorDirectory to true, and MonitorInterval to 0
-        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "true") | setLTPAMonitorIntervalElement(ltpa, "5");
-
-        // Apply server configuration update if needed
-        if (configurationUpdateNeeded) {
-            updateConfigDynamically(server, serverConfiguration, true);
-            
-            // Wait for the LTPA configuration to be ready after the change
-            assertNotNull("Expected LTPA configuration ready message not found in the log.",
-            server.waitForStringInLog("CWWKS4105I", 5000));
-        }
-
-        // Assert that a default ltpa.keys file is generated
-        assertFileWasCreated(DEFAULT_KEY_PATH);
+        // Configure the server
+        configureServer("true", "5", true);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -1046,7 +825,9 @@ public class LTPAKeyRotationTests {
                       server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Set password value to null
-        configurationUpdateNeeded = setLTPAValidationKeyPasswordElement(ltpa, null);
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        LTPA ltpa = serverConfiguration.getLTPA();
+        Boolean configurationUpdateNeeded = setLTPAValidationKeyPasswordElement(ltpa, null);
         updateConfigDynamically(server, serverConfiguration, true);
 
         // Exceptions are thrown in the logs since the validation key password is a required attribute if ltpa element has password configured
@@ -1089,7 +870,6 @@ public class LTPAKeyRotationTests {
      * Verify the following:
      * <OL>
      * <LI>Set MonitorDirectory to true, and MonitorInterval to 5.
-     * <LI>Start the server with a default ltpa.keys file.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Rename the ltpa.keys file to validation1.keys.
      * <LI>Set notUseAfterDate to null to make it not configured in the validation keys element.
@@ -1106,7 +886,6 @@ public class LTPAKeyRotationTests {
      * <P>Expected Results:
      * <OL>
      * <LI>MonitorDirectory is set to true, and MonitorInterval to 5.
-     * <LI>Server starts successfully, and a default ltpa.keys file is automatically generated.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is renamed to validation1.keys.
      * <LI>notUseAfterDate is not configured in the validation keys element.
@@ -1125,27 +904,8 @@ public class LTPAKeyRotationTests {
     @Test
     @AllowedFFDC({ "java.time.format.DateTimeParseException" })
     public void testValidationKeys_notUseAfterDateAttribute() throws Exception {
-        // Get the server configuration
-        ServerConfiguration serverConfiguration = server.getServerConfiguration();
-        LTPA ltpa = serverConfiguration.getLTPA();
-
-        // Check if the configuration needs to be updated
-        boolean configurationUpdateNeeded = false;
-
-        // Set MonitorDirectory to true, and MonitorInterval to 0
-        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, "true") | setLTPAMonitorIntervalElement(ltpa, "5");
-
-        // Apply server configuration update if needed
-        if (configurationUpdateNeeded) {
-            updateConfigDynamically(server, serverConfiguration, true);
-            
-            // Wait for the LTPA configuration to be ready after the change
-            assertNotNull("Expected LTPA configuration ready message not found in the log.",
-            server.waitForStringInLog("CWWKS4105I", 5000));
-        }
-
-        // Assert that a default ltpa.keys file is generated
-        assertFileWasCreated(DEFAULT_KEY_PATH);
+        // Configure the server
+        configureServer("true", "5", true);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -1162,7 +922,9 @@ public class LTPAKeyRotationTests {
                       server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Set notUseAfterDate value to null
-        configurationUpdateNeeded = setLTPAValidationKeyNotUseAfterDateElement(ltpa, null);
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        LTPA ltpa = serverConfiguration.getLTPA();
+        Boolean configurationUpdateNeeded = setLTPAValidationKeyNotUseAfterDateElement(ltpa, null);
         updateConfigDynamically(server, serverConfiguration, true);
 
         // Set notUseAfterDate value to empty string
@@ -1199,6 +961,42 @@ public class LTPAKeyRotationTests {
         // Set the mark offset to the end of the default trace
         server.setMarkToEndOfLog(server.getDefaultLogFile());
         server.setMarkToEndOfLog(server.getMostRecentTraceFile());
+    }
+
+    /** 
+     * Function to do the server configuration for all the tests.
+     * Assert that the server has with a default ltpa.keys file.
+     * 
+     * @param monitorDirectory
+     * @param monitorInterval
+     * @param waitForLTPAConfigReadyMessage
+     * 
+     * @throws Exception
+     */
+    public void configureServer(String monitorDirectory, String monitorInterval, Boolean waitForLTPAConfigReadyMessage) throws Exception{
+        // Get the server configuration
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        LTPA ltpa = serverConfiguration.getLTPA();
+
+        // Check if the configuration needs to be updated
+        boolean configurationUpdateNeeded = false;
+
+        // Set MonitorDirectory to true, and MonitorInterval to 0
+        configurationUpdateNeeded = setLTPAMonitorDirectoryElement(ltpa, monitorDirectory) | setLTPAMonitorIntervalElement(ltpa, monitorInterval);
+
+        // Apply server configuration update if needed
+        if (configurationUpdateNeeded) {
+            updateConfigDynamically(server, serverConfiguration, true);
+            
+            if (waitForLTPAConfigReadyMessage) {
+                // Wait for the LTPA configuration to be ready after the change
+                assertNotNull("Expected LTPA configuration ready message not found in the log.",
+                server.waitForStringInLog("CWWKS4105I", 5000));
+            }
+        }
+
+        // Assert that a default ltpa.keys file is generated
+        assertFileWasCreated(DEFAULT_KEY_PATH);
     }
 
     // Function to set the monitorDirectory to true or false

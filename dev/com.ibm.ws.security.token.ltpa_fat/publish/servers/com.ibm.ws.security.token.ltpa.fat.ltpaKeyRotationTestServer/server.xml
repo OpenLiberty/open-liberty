@@ -100,8 +100,6 @@
 
     <webAppSecurity useContextRootForSSOCookiePath="false" />
 
-    <httpSession invalidateOnUnauthorizedSessionRequestException="true"/>
-
     <authentication id="Basic" cacheEnabled="false" />
 
     <ltpa monitorInterval = "5" monitorDirectory="true" keysPassword="{xor}Lz4sLCgwLTs=">
