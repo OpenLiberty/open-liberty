@@ -12,7 +12,7 @@ Subsystem-Name: Batch Management 1.0
   com.ibm.websphere.appserver.transaction-1.2; ibm.tolerates:="2.0", \
   com.ibm.websphere.appserver.jdbc-4.1; ibm.tolerates:="4.0,4.2,4.3", \
   com.ibm.websphere.appserver.eeCompatible-7.0; ibm.tolerates:="8.0,9.0,10.0,11.0", \
-  io.openliberty.batchManagement1.0.internal.ee-7.0; ibm.tolerates:="9.0,10.0,11.0"
+  io.openliberty.batchManagement1.0.internal.ee-7.0; ibm.tolerates:="9.0,10.0"
 -jars=com.ibm.ws.jbatch.utility, \
   com.ibm.websphere.javaee.batch.1.0; location:="dev/api/spec/", \
   com.ibm.ws.org.glassfish.json.1.0, \
