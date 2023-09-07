@@ -23,6 +23,7 @@ import com.ibm.ws.jsf22.fat.tests.CDIFacesInMetaInfTests;
 import com.ibm.ws.jsf22.fat.tests.CDIFacesInWebXMLTests;
 import com.ibm.ws.jsf22.fat.tests.CDIFlowsTests;
 import com.ibm.ws.jsf22.fat.tests.CDITests;
+import com.ibm.ws.jsf22.fat.tests.JSF22APARSeleniumTests;
 import com.ibm.ws.jsf22.fat.tests.JSF22AparTests;
 import com.ibm.ws.jsf22.fat.tests.JSF22AppConfigPopTests;
 import com.ibm.ws.jsf22.fat.tests.JSF22BeanValidationTests;
@@ -101,7 +102,8 @@ import componenttest.containers.TestContainerSuite;
                 JSF22InputFileTests.class,
                 JSF22LocalizationTesterTests.class,
                 JSF22AparTests.class,
-                JSF22ThirdPartyApiTests.class
+                JSF22ThirdPartyApiTests.class,
+                JSF22APARSeleniumTests.class
 })
 public class FATSuite extends TestContainerSuite {
 
