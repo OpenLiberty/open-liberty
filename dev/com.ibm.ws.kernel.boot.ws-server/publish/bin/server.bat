@@ -585,6 +585,11 @@ goto:eof
     set SERVER_IBM_JAVA_OPTIONS=!SPECIFIED_JAVA_OPTIONS!
   )
 
+  @REM Check for any verbose:gc variable set by user
+  @REM By default we set this to be true unless user specifies otherwise
+  @REM if not jvmargs, javaoptions, jvmoptionsquoted contains verbose:gc, verbosegc, etc ( set SERVER_IBM_JAVA_OPTIONS=%SERVER_IBM_JAVA_OPTIONS% -Xverbosegclog:verbosegc.%seq.log,10,1024)
+  set SERVER_IBM_JAVA_OPTIONS=%SERVER_IBM_JAVA_OPTIONS% -Xverbosegclog:verbosegc.%seq.log,10,1024
+
   @REM Add -Xquickstart -Xshareclasses:none for client JVMs only.  We don't want 
   @REM shared classes cache created for client operations.
   set IBM_JAVA_OPTIONS=-Xquickstart !IBM_JAVA_OPTIONS! -Xshareclasses:none
