@@ -786,7 +786,6 @@ serverEnvAndJVMOptions()
 # resolve symbolic links in a path to a file
 findRealPath() {
   file="$1"
-  local REAL_PATH
 
   # Try realpath command 
   if command -v realpath >/dev/null; then
@@ -799,22 +798,34 @@ findRealPath() {
   fi
 
   # If still no luck, try a more basic implementation
-  if [ -n "${REAL_PATH}" ]; then
+  if [ -z "${REAL_PATH}" ]; then
+    # while $file resolves to an existing directory entry for a symbolic link 
     while [ -h "$file" ]; do
-      # Get absolute path to file without symbolic links
+      # Get absolute path to directory without symbolic links
+      # Potential Issue: awk might produce incorrect result if file or directory names contain spaces.
       dir=$(cd -P "$(dirname "$file")" && pwd)
       file=$(ls -l "$file" | awk '{print $NF}')
 
       case "$file" in
-        # absolute path case - do nothing
-        /*) ;;
-        # relative path case - convert to absolute path.
-        *) file="$dir/$file" ;;
+        # absolute path case: 1) Find dir without symlinks 2) Get file name 3) Add file name back to path
+        /*)
+          dir=$(cd -P "$(dirname "$file")" && pwd)
+          file=$(basename "$file")
+          file="$dir/$file" 
+          ;;
+        # relative path case: 1) Make absolute 2) Find dir without symlinks 3) Get file name 4) Add file name back to path
+        *) 
+          file="$dir/$file"
+          dir=$(cd -P "$(dirname "$file")" && pwd)
+          file=$(basename "$file")
+          file="$dir/$file"
+          ;;
       esac
     done
   else
     file="$REAL_PATH"
   fi
+  # return the resolved file path
   echo "$file"
 }
 
