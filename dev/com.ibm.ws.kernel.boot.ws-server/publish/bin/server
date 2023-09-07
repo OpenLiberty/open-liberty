@@ -468,9 +468,9 @@ serverEnvDefaults()
   # shared classes cache created for client operations.
   # Add -Dcom.ibm.tools.attach.enable=yes to allow self-attach on z/OS
   
-  IBM_JAVA_OPTIONS="-Xquickstart -Dcom.ibm.tools.attach.enable=yes ${SPECIFIED_JAVA_OPTIONS} -Xshareclasses:none -Xverbosegclog:verbosegc.%seq.log,10,1024"
+  IBM_JAVA_OPTIONS="-Xquickstart -Dcom.ibm.tools.attach.enable=yes ${SPECIFIED_JAVA_OPTIONS} -Xshareclasses:none"
   export IBM_JAVA_OPTIONS
-  OPENJ9_JAVA_OPTIONS="-Xquickstart -Dcom.ibm.tools.attach.enable=yes ${SPECIFIED_JAVA_OPTIONS} -Xshareclasses:none -Xverbosegclog:verbosegc.%seq.log,10,1024"
+  OPENJ9_JAVA_OPTIONS="-Xquickstart -Dcom.ibm.tools.attach.enable=yes ${SPECIFIED_JAVA_OPTIONS} -Xshareclasses:none"
   export OPENJ9_JAVA_OPTIONS
 
   # Set a default file encoding if needed
