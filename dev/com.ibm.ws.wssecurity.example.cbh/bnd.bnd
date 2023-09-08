@@ -13,8 +13,13 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0.0
 
+src: \
+  test-bundles/com.ibm.ws.wssecurity.cbh/src
+
+test.project: true
+
 Bundle-Name: wssecuritycbh
-Bundle-SymbolicName: com.ibm.ws.wssecurity.example.cbh.3
+Bundle-SymbolicName: com.ibm.ws.wssecurity.example.cbh
 Bundle-Version: ${bVersion}
 Bundle-Description: An PasswordCallbackHandler; version=${bVersion}
 
@@ -29,3 +34,7 @@ Export-Package: \
 #  OSGI-INF=resources/OSGI-INF
 
 allow.bundle-version.override=true
+
+-buildpath: \
+  com.ibm.ws.org.apache.wss4j.ws.security.common;version=latest,\
+  com.ibm.ws.wssecurity.fat.utils.common;version=latest

@@ -16,8 +16,6 @@ bVersion=1.0
 
 src: \
   fat/src,\
-  test-bundles/com.ibm.ws.wssecurity.cbh/src,\
-  test-bundles/com.ibm.ws.wssecurity.cbhwss4j/src,\
   test-applications/callerclient/src,\
   test-applications/callertoken/src,\
   test-applications/cxfclient/src,\
@@ -89,4 +87,6 @@ tested.features:\
 	com.ibm.ws.org.apache.wss4j.ws.security.web;version=latest,\
 	com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
 	com.ibm.ws.wssecurity.3.4.1;version=latest,\
-	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+	com.ibm.ws.wssecurity.example.cbh;version=latest,\
+	com.ibm.ws.wssecurity.example.cbhwss4j;version=latest
