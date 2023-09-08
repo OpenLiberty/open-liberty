@@ -1914,21 +1914,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             results = new ArrayList<>();
                             Object a = args[0];
                             int length = Array.getLength(a);
-                            if (queryInfo.validatable && validator != null)
-                                validator.validate(a, length);
                             for (int i = 0; i < length; i++)
                                 results.add(em.merge(toEntity(Array.get(a, i))));
                             em.flush();
                         } else if (Iterable.class.isAssignableFrom(queryInfo.saveParamType)) {
-                            if (queryInfo.validatable && validator != null)
-                                validator.validate((Iterable<?>) args[0]);
                             results = new ArrayList<>();
                             for (Object e : ((Iterable<?>) args[0]))
                                 results.add(em.merge(toEntity(e)));
                             em.flush();
                         } else {
-                            if (queryInfo.validatable && validator != null && args[0] != null)
-                                validator.validate(args[0]);
                             results = List.of(em.merge(toEntity(args[0])));
                             em.flush();
                         }
@@ -2273,6 +2267,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         throw new UnsupportedOperationException(queryInfo.type.name());
                 }
 
+                if (validator != null) // TODO queryInfo.validatable
+                    validator.validateReturnValue(proxy, method, returnValue);
+
                 failed = false;
             } finally {
                 if (em != null)
@@ -2294,9 +2291,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         provider.tranMgr.setRollbackOnly();
                 }
             }
-
-            if (validator != null) // TODO queryInfo.validatable
-                validator.validateReturnValue(proxy, method, returnValue);
 
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), returnValue);

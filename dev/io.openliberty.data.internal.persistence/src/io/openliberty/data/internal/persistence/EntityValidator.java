@@ -44,31 +44,6 @@ public interface EntityValidator {
     }
 
     /**
-     * Validates each entity instance per its specified constraints (if any).
-     *
-     * @param entities instances to validate.
-     * @throws ConstraintValidationException if any of the constraints are violated for an entity.
-     */
-    void validate(Iterable<?> entities);
-
-    /**
-     * Validates the entity instance per its specified constraints (if any).
-     *
-     * @param entity instance to validate.
-     * @throws ConstraintValidationException if any of the constraints are violated.
-     */
-    void validate(Object entity);
-
-    /**
-     * Validates each entity instance per its specified constraints (if any).
-     *
-     * @param entities instances to validate.
-     * @param length   number of instances in the array to validate.
-     * @throws ConstraintValidationException if any of the constraints are violated for an entity.
-     */
-    void validate(Object entityArray, int length);
-
-    /**
      * Validates method parameters where the method or its class is annotated with ValidateOnExecution.
      *
      * @param object instance that has the method with parameters to validate.

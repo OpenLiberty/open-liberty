@@ -112,7 +112,8 @@ public class DataValidationTestServlet extends FATServlet {
     /**
      * Attempt to save a Java class (no entity annotation) that violates constraints for PastOrPresent.
      */
-    @Test
+    //TODO enable once Jakarta Validation allows @Valid on type variables of interface
+    //@Test
     public void testInsertInvalidPastOrPresent_Class() {
         Creature c = new Creature(100l, "Black Bear", "Ursus americanus", //
                         BigDecimal.valueOf(44107730l, 6), BigDecimal.valueOf(-92489272l, 6), //
@@ -319,7 +320,8 @@ public class DataValidationTestServlet extends FATServlet {
     /**
      * Attempt to save updates to Java class entities (no entity annotation) where the updates violate one or more constraints.
      */
-    @Test
+    //TODO enable once Jakarta Validation allows @Valid on type variables of interface
+    //@Test
     public void testUpdateSaveInvalidPatternAndMax_Class() {
         final ZoneId CENTRAL = ZoneId.of("America/Chicago");
         Iterable<Creature> added = creatures.saveAll(List.of( //
