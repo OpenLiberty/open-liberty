@@ -71,6 +71,26 @@ public class DataValidationTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that a constraint placed on the parameterized type variable for the Id type
+     * enforces validation on that type when methods from the repository are used.
+     */
+    //TODO enable once Jakarta Validation allows constraints on type variables of interface
+    //@Test
+    public void testIdTypeVariableWithConstraint() {
+        // invalid method argument type
+        try {
+            int count = creatures.countById(-1L);
+            fail("Did not detect violated constraint. Instead found: " + count);
+        } catch (ConstraintViolationException x) {
+            Set<?> violations = x.getConstraintViolations();
+            if (violations.isEmpty())
+                throw x;
+        }
+
+        assertEquals(0, creatures.countById(1000000L));
+    }
+
+    /**
      * Checks whether there is automatic integration between Jakarta Persistence and
      * Jakarta Validation when Jakarta Data isn't involved. In this case, the entity
      * should be automatically validated.
