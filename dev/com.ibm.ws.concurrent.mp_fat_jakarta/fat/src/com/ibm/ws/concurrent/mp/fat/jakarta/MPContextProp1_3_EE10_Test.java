@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp.fat.jakarta;
 
@@ -16,14 +13,17 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -35,6 +35,9 @@ public class MPContextProp1_3_EE10_Test extends FATServletClient {
 
     @Server("com.ibm.ws.concurrent.mp.fat.1.3.ee10")
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = FATSuite.repeat("com.ibm.ws.concurrent.mp.fat.1.3.ee10", FATSuite.MP61_CTX13);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -48,7 +51,7 @@ public class MPContextProp1_3_EE10_Test extends FATServletClient {
                         .addPackage("org.test.mp.context.priority")
                         .addAsServiceProvider(Class.forName("org.eclipse.microprofile.context.spi.ThreadContextProvider"),
                                               Class.forName("org.test.mp.context.priority.PriorityContextProvider"));
-        ShrinkHelper.exportToServer(server, "lib", customContextProviders);
+        ShrinkHelper.exportToServer(server, "lib", customContextProviders, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }
@@ -63,7 +66,7 @@ public class MPContextProp1_3_EE10_Test extends FATServletClient {
      */
     @Test
     public void testAsynchronousNotAllowedOnClass() throws Exception {
-        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", testName);
+        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", "testAsynchronousNotAllowedOnClass");
     }
 
     /**
@@ -72,7 +75,7 @@ public class MPContextProp1_3_EE10_Test extends FATServletClient {
      */
     @Test
     public void testAsyncMethodUsesJakartaEEManagedExecutorService() throws Exception {
-        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", testName);
+        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", "testAsyncMethodUsesJakartaEEManagedExecutorService");
     }
 
     /**
@@ -81,7 +84,7 @@ public class MPContextProp1_3_EE10_Test extends FATServletClient {
      */
     @Test
     public void testAsyncMethodUsesResourceRefToManagedExecutor() throws Exception {
-        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", testName);
+        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", "testAsyncMethodUsesResourceRefToManagedExecutor");
     }
 
     /**
@@ -90,7 +93,7 @@ public class MPContextProp1_3_EE10_Test extends FATServletClient {
      */
     @Test
     public void testClose() throws Exception {
-        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", testName);
+        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", "testClose");
     }
 
     /**
@@ -101,7 +104,7 @@ public class MPContextProp1_3_EE10_Test extends FATServletClient {
      */
     @Test
     public void testCopy() throws Exception {
-        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", testName);
+        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", "testCopy");
     }
 
     /**
@@ -109,7 +112,7 @@ public class MPContextProp1_3_EE10_Test extends FATServletClient {
      */
     @Test
     public void testCustomContextIsNotPropagatedByDefault() throws Exception {
-        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", testName);
+        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", "testCustomContextIsNotPropagatedByDefault");
     }
 
     /**
@@ -117,7 +120,7 @@ public class MPContextProp1_3_EE10_Test extends FATServletClient {
      */
     @Test
     public void testCustomEEContextIsPropagatedWhenConfigured() throws Exception {
-        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", testName);
+        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", "testCustomEEContextIsPropagatedWhenConfigured");
     }
 
     /**
@@ -125,7 +128,7 @@ public class MPContextProp1_3_EE10_Test extends FATServletClient {
      */
     @Test
     public void testCustomMPContextIsPropagatedWhenConfigured() throws Exception {
-        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", testName);
+        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", "testCustomMPContextIsPropagatedWhenConfigured");
     }
 
     /**
@@ -134,7 +137,7 @@ public class MPContextProp1_3_EE10_Test extends FATServletClient {
      */
     @Test
     public void testDefaultManagedExecutorService() throws Exception {
-        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", testName);
+        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", "testDefaultManagedExecutorService");
     }
 
     /**
@@ -143,7 +146,7 @@ public class MPContextProp1_3_EE10_Test extends FATServletClient {
      */
     @Test
     public void testFaultToleranceAsyncMethod() throws Exception {
-        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", testName);
+        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", "testFaultToleranceAsyncMethod");
     }
 
     /**
@@ -152,7 +155,7 @@ public class MPContextProp1_3_EE10_Test extends FATServletClient {
      */
     @Test
     public void testFaultToleranceClassLevelAsynchronousCollidesWithMethod() throws Exception {
-        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", testName);
+        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", "testFaultToleranceClassLevelAsynchronousCollidesWithMethod");
     }
 
     /**
@@ -161,7 +164,7 @@ public class MPContextProp1_3_EE10_Test extends FATServletClient {
      */
     @Test
     public void testFaultToleranceCollidesOnSameAsyncMethod() throws Exception {
-        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", testName);
+        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", "testFaultToleranceCollidesOnSameAsyncMethod");
     }
 
     /**
@@ -172,6 +175,6 @@ public class MPContextProp1_3_EE10_Test extends FATServletClient {
      */
     @Test
     public void testIntermixMicroProfileAndJakartaEECompletionStages() throws Exception {
-        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", testName);
+        runTest(server, APP_NAME + "/MPContextProp1_3_EE10_TestServlet", "testIntermixMicroProfileAndJakartaEECompletionStages");
     }
 }

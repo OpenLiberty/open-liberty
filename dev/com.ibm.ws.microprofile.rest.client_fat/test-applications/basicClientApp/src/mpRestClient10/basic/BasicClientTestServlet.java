@@ -136,7 +136,7 @@ public class BasicClientTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID}) // timeout property not supported in Rest Client 3.0 - use timeout method instead
+    @SkipForRepeat({MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID, MicroProfileActions.MP61_ID}) // timeout property not supported in Rest Client 3.0 - use timeout method instead
     public void testReadTimeout(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         try {
             builder.property("com.ibm.ws.jaxrs.client.receive.timeout", "5");

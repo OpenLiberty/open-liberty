@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,17 +15,13 @@ package com.ibm.ws.rest.handler.validator.fat;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EE9PackageReplacementHelper;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
-import componenttest.rules.repeater.MicroProfileActions;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -41,14 +37,6 @@ import componenttest.topology.utils.HttpUtils;
 public class FATSuite {
 
     private static final EE9PackageReplacementHelper packageReplacementHelper = new EE9PackageReplacementHelper();
-
-    @ClassRule
-    public static RepeatTests r1 = MicroProfileActions.repeat(null, TestMode.FULL,
-                                                              MicroProfileActions.MP60,
-                                                              MicroProfileActions.MP50, // EE9
-                                                              MicroProfileActions.MP40, // EE8
-                                                              MicroProfileActions.MP30,
-                                                              MicroProfileActions.MP20);
 
     @BeforeClass
     public static void setup() throws Exception {

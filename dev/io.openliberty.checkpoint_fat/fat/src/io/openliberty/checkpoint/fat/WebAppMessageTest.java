@@ -28,8 +28,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -45,10 +43,7 @@ public class WebAppMessageTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests repeatTest = MicroProfileActions.repeat("checkpointFATServer", TestMode.FULL, //
-                                                                      MicroProfileActions.MP41, // first test in LITE mode
-                                                                      // rest are FULL mode
-                                                                      MicroProfileActions.MP50, MicroProfileActions.MP60);
+    public static RepeatTests repeatTest = FATSuite.defaultMPRepeat("checkpointFATServer");
 
     @BeforeClass
     public static void copyAppToDropins() throws Exception {

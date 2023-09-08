@@ -41,6 +41,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -183,5 +185,12 @@ public class FATSuite {
                 JakartaEE10Action.transformApp(someArchive);
             }
         }
+    }
+
+    public static RepeatTests defaultMPRepeat(String serverName) {
+        return MicroProfileActions.repeat(serverName,
+                                          MicroProfileActions.MP61, // first test in LITE mode
+                                          MicroProfileActions.MP41, // rest are FULL mode
+                                          MicroProfileActions.MP50);
     }
 }

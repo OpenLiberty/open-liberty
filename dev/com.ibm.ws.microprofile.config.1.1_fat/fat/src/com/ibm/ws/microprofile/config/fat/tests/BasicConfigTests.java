@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -79,8 +79,11 @@ public class BasicConfigTests extends FATServletClient {
     public static final String CUSTOM_SOURCES_APP_NAME = "customSources";
     public static final String TYPES_APP_NAME = "types";
 
+    //This is the basic test so repeat with all features
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60,
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+                                                             MicroProfileActions.MP61,
+                                                             MicroProfileActions.MP60,
                                                              MicroProfileActions.MP12,
                                                              MicroProfileActions.MP13,
                                                              MicroProfileActions.MP14,

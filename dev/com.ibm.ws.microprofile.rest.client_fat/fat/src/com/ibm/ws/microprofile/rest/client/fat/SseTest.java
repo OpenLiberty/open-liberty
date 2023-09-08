@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,11 +18,11 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -37,11 +37,12 @@ public class SseTest extends FATServletClient {
     private static final String appName = "sseApp";
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, 
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+                                                             MicroProfileActions.MP61,
                                                              MicroProfileActions.MP40, //mpRestClient-2.0
                                                              MicroProfileActions.MP50); // 3.0
-                                                             // TODO: MP60 currently causes Java 2 security errors
-                                                             // MicroProfileActions.MP60);// 3.0+EE10
+                                                             // There was a note here which suggested that MP60 caused Java 2 security errors
+                                                             // Testing with MP61 does not show any issues
     /*
      * We need two servers to clearly distinguish that the "client" server
      * only has the client features enabled - it includes mpRestClient-1.0
@@ -57,7 +58,7 @@ public class SseTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        ShrinkHelper.defaultDropinApp(server, appName, "mpRestClient20.sse");
+        ShrinkHelper.defaultDropinApp(server, appName, new DeployOptions[] {DeployOptions.SERVER_ONLY}, "mpRestClient20.sse");
         server.startServer();
     }
 

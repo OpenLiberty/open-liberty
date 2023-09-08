@@ -36,7 +36,7 @@ public class PropsTestServlet extends FATServlet {
     private final static Logger _log = Logger.getLogger(PropsTestServlet.class.getName());
 
     @Test
-    @SkipForRepeat({MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID}) // EE9 does not support keep-alive property
+    @SkipForRepeat({MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID, MicroProfileActions.MP61_ID}) // EE9 does not support keep-alive property
     public void testKeepAliveProp(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         final String m = "testKeepAliveProp";
         int port = req.getServerPort();

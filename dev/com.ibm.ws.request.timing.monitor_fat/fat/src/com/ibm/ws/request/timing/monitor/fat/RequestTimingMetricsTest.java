@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.request.timing.app.RequestTimingServlet;
 
@@ -36,6 +37,8 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.MicroProfileActions;
@@ -59,9 +62,8 @@ import componenttest.topology.impl.LibertyServer;
 public class RequestTimingMetricsTest {
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("RequestTimingFeatureWithMetrics",
-                                                             TestMode.LITE,
-                                                             MicroProfileActions.MP60,
+    public static RepeatTests r = MicroProfileActions.repeat(FeatureReplacementAction.ALL_SERVERS,
+                                                             MicroProfileActions.MP61,
                                                              MicroProfileActions.MP50,
                                                              MicroProfileActions.MP41,
                                                              MicroProfileActions.MP33,
@@ -92,7 +94,7 @@ public class RequestTimingMetricsTest {
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, "RequestTimingWebApp", "com.ibm.ws.request.timing.app");
+        ShrinkHelper.defaultDropinApp(server, "RequestTimingWebApp", new DeployOptions[] { DeployOptions.SERVER_ONLY }, "com.ibm.ws.request.timing.app");
         totalRequestCount = new AtomicInteger();
         activeServletRequest = 1;
 
@@ -108,16 +110,20 @@ public class RequestTimingMetricsTest {
 
     }
 
+    private static boolean isMetrics5() throws Exception {
+        return RepeatTestFilter.isAnyRepeatActionActive(MicroProfileActions.MP60_ID, MicroProfileActions.MP61_ID);
+    }
+
     private static void resolveRequestTimingMetricString() throws Exception {
-        if (server.getServerConfiguration().getFeatureManager().getFeatures().contains("mpMetrics-5.0")) {
-            Log.info(c, "resolveRequestTimingMetricString", "Feature set contains mpMetrics-5.0");
+        if (isMetrics5()) {
+            Log.info(c, "resolveRequestTimingMetricString", "Feature set contains mpMetrics-5.x");
             vendorPath = "/metrics?scope=vendor";
             activeRequestCountString = "requestTiming_activeRequestCount{mp_scope=\"vendor\",}";
             requestCountTotalString = "requestTiming_requestCount_total{mp_scope=\"vendor\",}";
             hungRequestCountString = "requestTiming_hungRequestCount{mp_scope=\"vendor\",}";
             slowRequstCount = "requestTiming_slowRequestCount{mp_scope=\"vendor\",}";
         } else {
-            Log.info(c, "resolveRequestTimingMetricString", "Feature set does not contain mpMetrics-5.0");
+            Log.info(c, "resolveRequestTimingMetricString", "Feature set does not contain mpMetrics-5.x");
             vendorPath = "/metrics/vendor";
             activeRequestCountString = "vendor_requestTiming_activeRequestCount";
             requestCountTotalString = "vendor_requestTiming_requestCount_total";
@@ -149,12 +155,6 @@ public class RequestTimingMetricsTest {
     public void testBasic() throws Exception {
         String testName = "testBasic";
         Log.info(c, testName, "Entry");
-
-        if (server.getServerConfiguration().getFeatureManager().getFeatures().contains("mpMetrics-5.0")) {
-            vendorPath = "/metrics?scope=vendor";
-        } else {
-            vendorPath = "/metrics/vendor";
-        }
 
         /*
          * The call to /metrics counts as an active request. And the total is 1.
@@ -420,7 +420,7 @@ public class RequestTimingMetricsTest {
      * allow a test to finish
      *
      * @param countToWaitFor
-     *                           Value looked for in CountDownLatch
+     *            Value looked for in CountDownLatch
      * @throws Exception
      */
     private void waitInServletForCountDownLatch(int countToWaitFor) throws Exception {
@@ -502,13 +502,13 @@ public class RequestTimingMetricsTest {
      * test
      *
      * @param th
-     *                            -- array of threads
+     *            -- array of threads
      * @param numReqs
-     *                            -- number of requests is the number of threads needed
+     *            -- number of requests is the number of threads needed
      * @param servletTestName
-     *                            -- Used for request to servlet
+     *            -- Used for request to servlet
      * @param testMethodName
-     *                            -- Used for printing to logs
+     *            -- Used for printing to logs
      */
     private void createRequestThreads(Thread[] th, int numReqs) {
         // Send N servlet requests to server, last request used to terminate
