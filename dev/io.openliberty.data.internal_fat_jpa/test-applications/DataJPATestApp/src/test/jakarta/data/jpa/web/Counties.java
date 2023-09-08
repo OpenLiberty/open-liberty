@@ -21,7 +21,6 @@ import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.RepositoryAssist;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
@@ -32,7 +31,7 @@ import javax.naming.InitialContext;
  * Repository for the County entity.
  */
 @Repository
-public interface Counties extends RepositoryAssist {
+public interface Counties {
 
     boolean deleteByNameAndLastUpdated(String name, Timestamp version);
 
@@ -68,13 +67,15 @@ public interface Counties extends RepositoryAssist {
     Optional<Iterator<int[]>> findZipCodesByPopulationLessThanEqual(int maxPopulation);
 
     default EntityManager getAutoClosedEntityManager() {
-        return getResource(EntityManager.class).orElseThrow();
+        return getEntityManager(); // must be automatically closed after getAutoClosedEntityManager ends
     }
+
+    EntityManager getEntityManager();
 
     default void insert(County c) throws Exception {
         UserTransaction tx = InitialContext.doLookup("java:comp/UserTransaction");
         tx.begin();
-        try (EntityManager em = getResource(EntityManager.class).orElseThrow()) {
+        try (EntityManager em = getEntityManager()) {
             em.persist(c);
             em.flush();
         } finally {
@@ -90,9 +91,9 @@ public interface Counties extends RepositoryAssist {
     Stream<County> save(County... c);
 
     default Object[] topLevelDefaultMethod() {
-        EntityManager emOuter1 = getResource(EntityManager.class).orElseThrow();
+        EntityManager emOuter1 = getEntityManager();
         EntityManager emInner = getAutoClosedEntityManager();
-        EntityManager emOuter2 = getResource(EntityManager.class).orElseThrow();
+        EntityManager emOuter2 = getEntityManager();
         return new Object[] { emOuter1, emOuter2, emOuter1.isOpen(), emOuter2.isOpen(), emInner.isOpen() };
     }
 
