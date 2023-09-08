@@ -26,6 +26,7 @@ import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTelemetryContainerFilter;
 import io.openliberty.microprofile.telemetry.internal.common.rest.RestRouteCache;
+import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.propagation.TextMapGetter;
@@ -39,7 +40,6 @@ import io.opentelemetry.instrumentation.api.instrumenter.net.NetServerAttributes
 import io.opentelemetry.instrumentation.api.instrumenter.net.NetServerAttributesGetter;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 import jakarta.annotation.Nullable;
-import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
@@ -72,13 +72,9 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
     @jakarta.ws.rs.core.Context
     private ResourceInfo resourceInfo;
 
-    // RESTEasy requires no-arg constructor for CDI injection: https://issues.redhat.com/browse/RESTEASY-1538
     public TelemetryContainerFilter() {
-    }
-
-    @Inject
-    public TelemetryContainerFilter(final OpenTelemetryInfo openTelemetry) {
         try {
+            OpenTelemetryInfo openTelemetry = OpenTelemetryAccessor.getOpenTelemetryInfo();
             if (openTelemetry.getEnabled() && !AgentDetection.isAgentActive()) {
                 InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
                                                                                                                       openTelemetry.getOpenTelemetry(),
