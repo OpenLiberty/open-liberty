@@ -8,13 +8,9 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal.common.rest;
+@TraceOptions(traceGroup = "TELEMETRY", messageBundle = "io.openliberty.microprofile.telemetry.internal.common.resources.MPTelemetry")
+package io.openliberty.microprofile.telemetry11.internal.sdk;
 
-public abstract class AbstractTelemetryClientFilter {
-
-    //This is here because it is called by other classes in the common package
-	protected abstract boolean isEnabled();
-
-}
+import com.ibm.websphere.ras.annotation.TraceOptions;

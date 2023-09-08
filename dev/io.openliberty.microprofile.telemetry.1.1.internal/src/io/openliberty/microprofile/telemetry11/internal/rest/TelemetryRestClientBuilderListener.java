@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal.common.rest;
+package io.openliberty.microprofile.telemetry11.internal.rest;
 
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.spi.RestClientBuilderListener;
@@ -26,7 +26,7 @@ public class TelemetryRestClientBuilderListener implements RestClientBuilderList
     @Override
     public void onNewBuilder(RestClientBuilder builder) {
         try {
-            AbstractTelemetryClientFilter currentFilter = AbstractTelemetryClientFilter.getCurrent();
+            TelemetryClientFilter currentFilter = new TelemetryClientFilter();
             if (currentFilter.isEnabled()) {
                 builder.register(currentFilter);
             }

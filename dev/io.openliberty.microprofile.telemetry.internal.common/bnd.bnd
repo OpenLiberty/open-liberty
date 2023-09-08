@@ -24,8 +24,8 @@ javac.target: 11
 #-cdiannotations:
 
 -dsannotations: \
+  io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfoFactory,\
   io.openliberty.microprofile.telemetry.internal.common.rest.TelemetryClientAsyncTaskWrapper,\
-  io.openliberty.microprofile.telemetry.internal.common.rest.TelemetryClientBuilderListener,\
   io.openliberty.microprofile.telemetry.internal.common.rest.TelemetryServletContainerInitializer
 
 -dsannotations-inherit: true
@@ -33,8 +33,7 @@ javac.target: 11
 -includeresource: resources
 
 app-resources= \
-  META-INF/services/jakarta.ws.rs.ext.Providers | \
-  META-INF/services/org.eclipse.microprofile.rest.client.spi.RestClientBuilderListener
+  META-INF/services/jakarta.ws.rs.ext.Providers
 
 Include-Resource: \
   META-INF=resources/META-INF
@@ -58,24 +57,26 @@ Import-Package: \
 Export-Package: \
 	io.openliberty.microprofile.telemetry.internal.common.resources;version='1.0',\
 	io.openliberty.microprofile.telemetry.internal.common.cdi;version='1.0',\
+	io.openliberty.microprofile.telemetry.internal.interfaces;version='1.0',\
 	io.openliberty.microprofile.telemetry.internal.common.rest;version='1.0';thread-context=true,\
 	io.openliberty.microprofile.telemetry.internal.common;version='1.0'
 
 -buildpath: \
-    io.openliberty.jakarta.restfulWS.3.1;version=latest,\
-    io.openliberty.jakarta.annotation.2.1;version=latest,\
-    io.openliberty.jakarta.interceptor.2.1;version=latest,\
-    io.openliberty.jakarta.cdi.4.0;version=latest,\
-    io.openliberty.jakarta.servlet.6.0;version=latest,\
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-    com.ibm.ws.logging.core;version=latest,\
-    com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
-    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-    io.openliberty.io.opentelemetry;version=latest,\
-    io.openliberty.org.eclipse.microprofile.config.3.0,\
-    io.openliberty.org.eclipse.microprofile.rest.client.3.0,\
-    io.openliberty.org.jboss.resteasy.common.ee10;version=latest,\
-    com.ibm.websphere.org.osgi.core;version=latest,\
-    com.ibm.ws.container.service;version=latest
+	io.openliberty.jakarta.restfulWS.3.1;version=latest,\
+	io.openliberty.jakarta.annotation.2.1;version=latest,\
+	io.openliberty.jakarta.interceptor.2.1;version=latest,\
+	io.openliberty.jakarta.cdi.4.0;version=latest,\
+	io.openliberty.jakarta.servlet.6.0;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	io.openliberty.io.opentelemetry;version=latest,\
+	io.openliberty.org.eclipse.microprofile.config.3.0,\
+	io.openliberty.org.eclipse.microprofile.rest.client.3.0,\
+	io.openliberty.org.jboss.resteasy.common.ee10;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service
 
 WS-TraceGroup: TELEMETRY

@@ -23,6 +23,7 @@ import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
+import io.openliberty.microprofile.telemetry.internal.common.cdi.OpenTelemetryProducer;
 import io.openliberty.microprofile.telemetry10.internal.rest.TelemetryClientFilter;
 import io.openliberty.microprofile.telemetry10.internal.rest.TelemetryContainerFilter;
 
@@ -32,6 +33,8 @@ public class SPIMetaData implements CDIExtensionMetadata, CDIExtensionMetadataIn
     @Override
     public Set<Class<?>> getBeanClasses() {
         Set<Class<?>> beans = new HashSet<Class<?>>();
+        //Referencing a class in another jar like this is not best practice, but it works
+        //and will avoid the performance overhead of creating two BDAs for mpTelemetry
         beans.add(OpenTelemetryProducer.class);
         if (!AgentDetection.isAgentActive()) {
             beans.add(WithSpanInterceptor.class);
