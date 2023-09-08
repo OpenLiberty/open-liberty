@@ -45,7 +45,7 @@ Export-Package:
 
 -buildpath: \
   io.openliberty.jakarta.interceptor.2.1;version=latest,\
-  io.openliberty.io.opentelemetry.1.1;version=latest
+  io.openliberty.io.opentelemetry.1.29;version=latest
   
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
