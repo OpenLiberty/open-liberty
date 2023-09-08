@@ -23,8 +23,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
-import io.openliberty.microprofile.telemetry.internal.common.cdi.OpenTelemetryInfo;
+import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTelemetryClientFilter;
+import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;
@@ -37,7 +38,6 @@ import io.opentelemetry.instrumentation.api.instrumenter.net.NetClientAttributes
 import io.opentelemetry.instrumentation.api.instrumenter.net.NetClientAttributesGetter;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 import jakarta.annotation.Nullable;
-import jakarta.inject.Inject;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
 import jakarta.ws.rs.client.ClientResponseContext;
@@ -56,8 +56,8 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
     private static final NetClientAttributesGetterImpl NET_CLIENT_ATTRIBUTES_GETTER = new NetClientAttributesGetterImpl();
     private static final HttpClientAttributesGetterImpl HTTP_CLIENT_ATTRIBUTES_GETTER = new HttpClientAttributesGetterImpl();
 
-    @Inject
-    TelemetryClientFilter(OpenTelemetryInfo openTelemetryInfo) {
+    TelemetryClientFilter() {
+        OpenTelemetryInfo openTelemetryInfo = OpenTelemetryAccessor.getOpenTelemetryInfo();
         Instrumenter<ClientRequestContext, ClientResponseContext> instrumenter = null;
         try {
             if (openTelemetryInfo.getEnabled() && !AgentDetection.isAgentActive()) {
@@ -79,13 +79,6 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
         } finally {
             this.instrumenter = instrumenter;
         }
-    }
-
-    /**
-     * No-args constructor for CDI
-     */
-    TelemetryClientFilter() {
-        this.instrumenter = null;
     }
 
     @Override
@@ -140,6 +133,7 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
      * @return false if OpenTelemetry is disabled
      *         Indicated by instrumenter being set to null
      */
+    @Override
     public boolean isEnabled() {
         return instrumenter != null;
     }

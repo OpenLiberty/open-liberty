@@ -20,8 +20,9 @@ import java.security.PrivilegedAction;
 import java.util.List;
 
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
-import io.openliberty.microprofile.telemetry.internal.common.cdi.OpenTelemetryInfo;
+import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTelemetryClientFilter;
+import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;
@@ -30,11 +31,8 @@ import io.opentelemetry.instrumentation.api.instrumenter.http.HttpClientAttribut
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpClientAttributesGetter;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanNameExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanStatusExtractor;
-import io.opentelemetry.instrumentation.api.instrumenter.net.NetClientAttributesGetter;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 import jakarta.annotation.Nullable;
-import jakarta.enterprise.inject.spi.CDI;
-import jakarta.inject.Inject;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
 import jakarta.ws.rs.client.ClientResponseContext;
@@ -50,9 +48,8 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
 
     private static final HttpClientAttributesGetterImpl HTTP_CLIENT_ATTRIBUTES_GETTER = new HttpClientAttributesGetterImpl();
 
-    @Inject
-    TelemetryClientFilter(OpenTelemetryInfo openTelemetryInfo) {
-
+    TelemetryClientFilter() {
+        final OpenTelemetryInfo openTelemetryInfo = OpenTelemetryAccessor.getOpenTelemetryInfo();
         if (openTelemetryInfo.getEnabled() && !AgentDetection.isAgentActive()) {
             InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(openTelemetryInfo.getOpenTelemetry(),
                                                                                                             "Client filter",
@@ -65,13 +62,6 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
         } else {
             this.instrumenter = null;
         }
-    }
-
-    /**
-     * No-args constructor for CDI
-     */
-    TelemetryClientFilter() {
-        this.instrumenter = null;
     }
 
     @Override
@@ -118,6 +108,7 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
      * @return false if OpenTelemetry is disabled
      *         Indicated by instrumenter being set to null
      */
+    @Override
     public boolean isEnabled() {
         return instrumenter != null;
     }
@@ -163,13 +154,13 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
 
         @Nullable
         @Override
-        public String getServerAddress(final ClientRequestContext request){
+        public String getServerAddress(final ClientRequestContext request) {
             return request.getUri().getHost();
         }
 
         @Nullable
         @Override
-        public Integer getServerPort(final ClientRequestContext request){
+        public Integer getServerPort(final ClientRequestContext request) {
             return request.getUri().getPort();
         }
 

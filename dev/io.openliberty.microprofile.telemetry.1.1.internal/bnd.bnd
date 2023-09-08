@@ -25,7 +25,9 @@ src: src, resources
 #-cdiannotations:
 
 -dsannotations: \
-  io.openliberty.microprofile.telemetry11.internal.cdi.SPIMetaData
+  io.openliberty.microprofile.telemetry11.internal.cdi.SPIMetaData,\
+  io.openliberty.microprofile.telemetry11.internal.rest.TelemetryClientBuilderListener,\
+  io.openliberty.microprofile.telemetry11.internal.sdk.OpenTelemetrySdkBuilderSupplierImpl
 
 -dsannotations-inherit: true
 
@@ -54,7 +56,8 @@ Export-Package: \
 	io.openliberty.microprofile.telemetry11.internal.cdi;version='1.0',\
 	io.openliberty.microprofile.telemetry11.internal.rest;version='1.0';thread-context=true
 	
-Private-Package: io.openliberty.microprofile.telemetry11.internal.helper
+Private-Package: io.openliberty.microprofile.telemetry11.internal.helper,\
+	io.openliberty.microprofile.telemetry11.internal.sdk
 
 -buildpath: \
     io.openliberty.jakarta.restfulWS.3.1;version=latest,\
