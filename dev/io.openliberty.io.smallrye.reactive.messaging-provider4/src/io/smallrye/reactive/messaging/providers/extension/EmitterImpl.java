@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 Red Hat Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.smallrye.reactive.messaging.providers.extension;
 
 import io.smallrye.reactive.messaging.EmitterConfiguration;
@@ -11,6 +26,12 @@ import static io.smallrye.reactive.messaging.providers.i18n.ProviderExceptions.e
 
 /**
  * Implementation of the emitter pattern.
+ *
+ * This is a derivative work based on Smallrye Reactive Messaging EmitterImpl
+ * https://github.com/smallrye/smallrye-reactive-messaging/blob/4.9.0/smallrye-reactive-messaging-provider/src/main/java/io/smallrye/reactive/messaging/providers/extension/EmitterImpl.java
+ *
+ * Changelog
+ * Replace SmallRye Reactive Messaging ContextAwareMessage with MicroProfile Reactive Messaging Message to remove requirement to include Vert.x
  *
  * @param <T> the type of payload sent by the emitter.
  */
