@@ -15,20 +15,32 @@ package com.ibm.websphere.simplicity.config;
 import javax.xml.bind.annotation.XmlAttribute;
 
 /**
- * Represents the <webAppSecurity> element in server.xml
+ * Represents the <validationKeys> element which is embedded inside <ltpa> element in server.xml
  */
-public class WebAppSecurity extends ConfigElement {
 
-    // Attribute to toggle the use of context root for SSO cookie path
+public class ValidationKeys extends ConfigElement {
+
+    // Atrribute to specify the name of the validation key file
     @XmlAttribute
-    public String useContextRootForSSOCookiePath;
+    public String fileName;
+
+    // Atrribute to specify the password for the validation key file
+    @XmlAttribute
+    public String password;
+
+    // Atrribute to specify the expiration value for the validation key file
+    @XmlAttribute
+    public String notUseAfterDate;
 
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(getClass().getSimpleName()).append('{');
         // Attributes
-        buf.append("useContextRootForSSOCookiePath=").append(useContextRootForSSOCookiePath);
+        buf.append("fileName=").append(fileName);
+        buf.append(", password=").append(password);
+        buf.append(", notUseAfterDate=").append(notUseAfterDate);
         buf.append('}');
         return buf.toString();
     }
+    
 }
