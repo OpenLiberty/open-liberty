@@ -583,7 +583,7 @@ serverEnvDefaults()
     X_LOG_DIR=${SERVER_OUTPUT_DIR}/logs
   else
     X_LOG_DIR=${LOG_DIR}
-    unset LOG_DIR
+    # unset LOG_DIR
   fi
   export X_LOG_DIR
 

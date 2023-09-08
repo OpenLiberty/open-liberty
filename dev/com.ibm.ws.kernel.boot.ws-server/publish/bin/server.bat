@@ -1,7 +1,7 @@
 @echo off
 @REM WebSphere Application Server liberty launch script
 @REM
-@REM Copyright (c) 2011, 2021 IBM Corporation and others.
+@REM Copyright (c) 2011, 2023 IBM Corporation and others.
 @REM All rights reserved. This program and the accompanying materials
 @REM are made available under the terms of the Eclipse Public License 2.0
 @REM which accompanies this distribution, and is available at
@@ -528,7 +528,7 @@ goto:eof
   )
 
   @REM Unset these variables to prevent collisions with nested process invocations
-  set LOG_DIR=
+  @REM set LOG_DIR=
   set LOG_FILE=
 
   if NOT defined JAVA_HOME (
