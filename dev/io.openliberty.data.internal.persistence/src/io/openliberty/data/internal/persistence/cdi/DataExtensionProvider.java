@@ -46,7 +46,6 @@ import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
-import io.openliberty.data.internal.persistence.EntityValidator;
 import jakarta.enterprise.inject.spi.Extension;
 
 /**
@@ -86,9 +85,9 @@ public class DataExtensionProvider implements CDIExtensionMetadata, ApplicationM
     public EmbeddableWebSphereTransactionManager tranMgr;
 
     /**
-     * Abstraction for an optionally available validation service.
+     * Service that provides Jakarta Validation.
      */
-    private transient EntityValidator validator;
+    private transient Object validationService;
 
     @Override
     @Trivial
@@ -150,21 +149,21 @@ public class DataExtensionProvider implements CDIExtensionMetadata, ApplicationM
     @Reference(service = ModuleMetaDataListener.class, // also a BeanValidation.class, but that class might not be available to this bundle
                target = "(service.pid=com.ibm.ws.beanvalidation.OSGiBeanValidationImpl)",
                cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.DYNAMIC,
+               policy = ReferencePolicy.STATIC,
                policyOption = ReferencePolicyOption.GREEDY)
     protected void setValidation(ModuleMetaDataListener svc) {
-        validator = EntityValidator.newInstance(svc);
+        validationService = svc;
     }
 
     protected void unsetValidation(ModuleMetaDataListener svc) {
-        if (validator != null && validator.getValidation() == svc)
-            validator = null;
+        if (validationService == svc)
+            validationService = null;
     }
 
     /**
-     * @return an abstraction for Jakarta Validation if available, otherwise null.
+     * @return service that provides Jakarta Validation.
      */
-    public EntityValidator validator() {
-        return validator;
+    public Object validationService() {
+        return validationService;
     }
 }

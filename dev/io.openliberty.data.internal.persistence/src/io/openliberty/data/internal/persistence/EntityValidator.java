@@ -19,10 +19,6 @@ import java.lang.reflect.Method;
  * Abstraction for a Jakarta Validation Validator.
  */
 public interface EntityValidator {
-    /**
-     * @return the com.ibm.ws.beanvalidation.service.BeanValidation service that this EntityValidator uses.
-     */
-    Object getValidation();
 
     /**
      * Construct a provider for the EntityValidator abstraction.
@@ -30,18 +26,27 @@ public interface EntityValidator {
      * @param validation com.ibm.ws.beanvalidation.service.BeanValidation service for this provider to use.
      * @return the provider.
      */
-    static EntityValidator newInstance(Object validation) {
+    static EntityValidator newInstance(Object validation, Class<?> repositoryInterface) {
         try {
             @SuppressWarnings("unchecked")
             Class<EntityValidator> EntityValidatorImpl = (Class<EntityValidator>) EntityValidator.class.getClassLoader() //
                             .loadClass("io.openliberty.data.internal.persistence.validation.EntityValidatorImpl");
-            return EntityValidatorImpl.getConstructor(Object.class).newInstance(validation);
+            return EntityValidatorImpl.getConstructor(Object.class, Class.class).newInstance(validation, repositoryInterface);
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException x) {
             throw new RuntimeException(x); // internal error
         } catch (InvocationTargetException x) {
             throw new RuntimeException(x.getCause()); // internal error
         }
     }
+
+    /**
+     * Determines whether validation is needed for the method return value and parameters.
+     *
+     * @param method a repository method.
+     * @return pair of booleans where the first is whether to validate the return value
+     *         and the second is whether to validate parameters.
+     */
+    public boolean[] isValidatable(Method method);
 
     /**
      * Validates method parameters where the method or its class is annotated with ValidateOnExecution.
