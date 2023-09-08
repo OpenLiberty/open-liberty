@@ -21,19 +21,22 @@ task copyTestPackages(type: Copy ) {
 		into ("${buildDir}/autoFVT/publish/packages.test")
 }
 
+if (isBuildOsNativePackages) {
+	task copyCurrentPackages(type: Copy ) {
+		dependsOn ':build.image:buildOsNativePackages'
+		into ("${buildDir}/autoFVT/publish")
 
-task copyCurrentPackages(type: Copy ) {
-	into ("${buildDir}/autoFVT/publish")
-	
-	into ("packages.current") {
-	from "${project(':build.image').projectDir}/packaging/debuild/"
-	    include ('*.deb', '*.build', '*.buildinfo', '*.changes')
+		into ("packages.current") {
+		from "${project(':build.image').projectDir}/packaging/debuild/"
+		    include ('*.deb', '*.build', '*.buildinfo', '*.changes')
+		}
+
+		into ("packages.current") {
+		from "${project(':build.image').projectDir}/packaging/rpmbuild/RPMS/noarch/"
+		    include ('*.rpm')
+		}
 	}
-
-	into ("packages.current") {
-	from "${project(':build.image').projectDir}/packaging/rpmbuild/RPMS/noarch/"
-        include ('*.rpm')
-    }
+	zipAutoFVT.dependsOn copyCurrentPackages
 }
 
-zipAutoFVT.dependsOn copyServerFolder, copyTestPackages, copyCurrentPackages
+zipAutoFVT.dependsOn copyServerFolder, copyTestPackages
