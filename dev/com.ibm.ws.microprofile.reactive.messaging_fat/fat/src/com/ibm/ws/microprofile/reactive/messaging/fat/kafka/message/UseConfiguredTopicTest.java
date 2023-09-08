@@ -69,7 +69,8 @@ public class UseConfiguredTopicTest {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsLibraries(kafkaClientLibs())
                         .addAsManifestResource(kafkaPermissions(), "permissions.xml")
-                        .addPackage(UseConfiguredTopicServlet.class.getPackage())
+                        .addClass(UseConfiguredTopicServlet.class)
+                        .addClass(ConfiguredTopicBean.class)
                         .addPackage(KafkaTestConstants.class.getPackage())
                         .addPackage(KafkaTestClientProvider.class.getPackage())
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");

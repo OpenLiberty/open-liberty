@@ -79,6 +79,8 @@ public class KafkaCustomSerializerTest {
                         .addPackage(KafkaSerializerTestServlet.class.getPackage())
                         .addPackage(AbstractKafkaTestServlet.class.getPackage())
                         .addPackage(KafkaTestConstants.class.getPackage())
+                        .deleteClass(MyDataMessagingBean2.class)
+                        .deleteClass(KafkaKeySerializerTestServlet.class)
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
