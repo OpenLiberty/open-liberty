@@ -188,9 +188,14 @@ class QueryInfo {
     Type type;
 
     /**
-     * For save operations, indicates if validation should be attempted when Jakarta Validation is available.
+     * Indicates whether or not to validate method parameters, if Jakarta Validation is available.
      */
-    boolean validatable;
+    boolean validateParams;
+
+    /**
+     * Indicates whether or not to validate method results, if Jakarta Validation is available.
+     */
+    boolean validateResult;
 
     /**
      * Construct partially complete query information.
@@ -670,7 +675,8 @@ class QueryInfo {
         q.saveParamType = saveParamType;
         q.sorts = sorts;
         q.type = type;
-        q.validatable = validatable;
+        q.validateParams = validateParams;
+        q.validateParams = validateResult;
         return q;
     }
 

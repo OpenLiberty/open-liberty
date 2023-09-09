@@ -19,10 +19,6 @@ import java.lang.reflect.Method;
  * Abstraction for a Jakarta Validation Validator.
  */
 public interface EntityValidator {
-    /**
-     * @return the com.ibm.ws.beanvalidation.service.BeanValidation service that this EntityValidator uses.
-     */
-    Object getValidation();
 
     /**
      * Construct a provider for the EntityValidator abstraction.
@@ -30,12 +26,12 @@ public interface EntityValidator {
      * @param validation com.ibm.ws.beanvalidation.service.BeanValidation service for this provider to use.
      * @return the provider.
      */
-    static EntityValidator newInstance(Object validation) {
+    static EntityValidator newInstance(Object validation, Class<?> repositoryInterface) {
         try {
             @SuppressWarnings("unchecked")
             Class<EntityValidator> EntityValidatorImpl = (Class<EntityValidator>) EntityValidator.class.getClassLoader() //
                             .loadClass("io.openliberty.data.internal.persistence.validation.EntityValidatorImpl");
-            return EntityValidatorImpl.getConstructor(Object.class).newInstance(validation);
+            return EntityValidatorImpl.getConstructor(Object.class, Class.class).newInstance(validation, repositoryInterface);
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException x) {
             throw new RuntimeException(x); // internal error
         } catch (InvocationTargetException x) {
@@ -44,29 +40,13 @@ public interface EntityValidator {
     }
 
     /**
-     * Validates each entity instance per its specified constraints (if any).
+     * Determines whether validation is needed for the method return value and parameters.
      *
-     * @param entities instances to validate.
-     * @throws ConstraintValidationException if any of the constraints are violated for an entity.
+     * @param method a repository method.
+     * @return pair of booleans where the first is whether to validate the return value
+     *         and the second is whether to validate parameters.
      */
-    void validate(Iterable<?> entities);
-
-    /**
-     * Validates the entity instance per its specified constraints (if any).
-     *
-     * @param entity instance to validate.
-     * @throws ConstraintValidationException if any of the constraints are violated.
-     */
-    void validate(Object entity);
-
-    /**
-     * Validates each entity instance per its specified constraints (if any).
-     *
-     * @param entities instances to validate.
-     * @param length   number of instances in the array to validate.
-     * @throws ConstraintValidationException if any of the constraints are violated for an entity.
-     */
-    void validate(Object entityArray, int length);
+    public boolean[] isValidatable(Method method);
 
     /**
      * Validates method parameters where the method or its class is annotated with ValidateOnExecution.
