@@ -38,7 +38,7 @@ public class DerbyResourceAdapterSecurityTest extends FATServletClient {
 
     private static final String APP = "derbyRAApp";
     private static final String WAR_NAME = "fvtweb";
-    private static final String derbyRAAppName = "derbyRAAppName";
+    private static final String RAR_NAME = "DerbyRA";
     private static final String DerbyRAServlet = "fvtweb/DerbyRAServlet";
     private static final String DerbyRAAnnoServlet = "fvtweb/DerbyRAAnnoServlet";
 
@@ -58,7 +58,7 @@ public class DerbyResourceAdapterSecurityTest extends FATServletClient {
         ShrinkHelper.addDirectory(ear, "lib/LibertyFATTestFiles/derbyRAApp");
         ShrinkHelper.exportAppToServer(server, ear);
 
-        ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, "DerbyRA.rar");
+        ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, RAR_NAME + ".rar");
         rar.as(JavaArchive.class).addPackage("fat.derbyra.resourceadapter");
         rar.addAsManifestResource(new File("test-resourceadapters/fvt-resourceadapter/resources/META-INF/ra.xml"));
         rar.addAsManifestResource(new File("test-resourceadapters/fvt-resourceadapter/resources/META-INF/wlp-ra.xml"));
@@ -74,7 +74,6 @@ public class DerbyResourceAdapterSecurityTest extends FATServletClient {
 
         server.addEnvVar("PERMISSION", (JakartaEE9Action.isActive()
                                         || JakartaEE10Action.isActive()) ? "jakarta.resource.spi.security.PasswordCredential" : "javax.resource.spi.security.PasswordCredential");
-        server.addInstalledAppForValidation(derbyRAAppName);
         server.startServer();
     }
 
