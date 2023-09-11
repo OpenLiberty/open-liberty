@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -53,7 +53,7 @@ public class MultiSessionTests extends FATServletClient {
     String defaultServletPath = "H2FATDriver/H2FATDriverServlet?hostName=";
 
     @Rule
-    public final TestName testName = new TestName();
+    public TestName testName = new Utils.CustomTestName();
 
     @BeforeClass
     public static void before() throws Exception {

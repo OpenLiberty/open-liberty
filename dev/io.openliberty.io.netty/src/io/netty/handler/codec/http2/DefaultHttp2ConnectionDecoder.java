@@ -131,15 +131,15 @@ public class DefaultHttp2ConnectionDecoder implements Http2ConnectionDecoder {
         this.connection = checkNotNull(connection, "connection");
         contentLengthKey = this.connection.newKey();
         this.frameReader = checkNotNull(frameReader, "frameReader");
-        System.out.println(this.frameReader.getClass().getName());
-        if(this.frameReader instanceof DefaultHttp2FrameReader) {
-        	System.out.println("Setting connection!!");
-        	((DefaultHttp2FrameReader) this.frameReader).setConnection(connection);
-        }
-        if(this.frameReader instanceof Http2InboundFrameLogger) {
-        	System.out.println("Setting connection!!");
-        	((Http2InboundFrameLogger) this.frameReader).setConnection(connection);
-        }
+//        System.out.println(this.frameReader.getClass().getName());
+//        if(this.frameReader instanceof DefaultHttp2FrameReader) {
+//        	System.out.println("Setting connection!!");
+//        	((DefaultHttp2FrameReader) this.frameReader).setConnection(connection);
+//        }
+//        if(this.frameReader instanceof Http2InboundFrameLogger) {
+//        	System.out.println("Setting connection!!");
+//        	((Http2InboundFrameLogger) this.frameReader).setConnection(connection);
+//        }
         this.encoder = checkNotNull(encoder, "encoder");
         this.requestVerifier = checkNotNull(requestVerifier, "requestVerifier");
         if (connection.local().flowController() == null) {

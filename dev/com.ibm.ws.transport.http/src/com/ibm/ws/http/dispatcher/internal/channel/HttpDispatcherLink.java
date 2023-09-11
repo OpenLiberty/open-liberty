@@ -1456,14 +1456,15 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             if (checkEnabledOnly) {
                 return isc.isHttp2Enabled();
             }
-        }
-        //Check headers for HTTP/2 upgrade header
-        else {
-            HttpInboundLink link = isc.getLink();
-            if (link != null) {
-                return link.isHTTP2UpgradeRequest(headers);
+            //Check headers for HTTP/2 upgrade header
+            else {
+                HttpInboundLink link = isc.getLink();
+                if (link != null) {
+                    return link.isHTTP2UpgradeRequest(headers);
+                }
             }
         }
+
         return false;
 
     }

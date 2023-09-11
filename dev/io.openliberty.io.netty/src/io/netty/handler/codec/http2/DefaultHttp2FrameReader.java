@@ -390,19 +390,6 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
         verifyAssociatedWithAStream();
 
         if (headersContinuation == null) {
-        	System.out.println("Found null continuation for streamId "+streamId);
-        	System.out.println(connection);
-        	System.out.println(connection.streamMayHaveExisted(streamId));
-        	// Not expecting continuation header. Need to check if stream was closed or send a connection error back
-//        	if(connection != null && connection.streamMayHaveExisted(streamId)) {
-//        		Http2Stream stream = connection.stream(streamId);
-//        		System.out.println(stream);
-//        		if(stream != null) {
-//        			System.out.println(stream.state());
-//        		}
-//        		throw connectionError(STREAM_CLOSED, "CONTINUATION frame received on a closed stream");
-//        	}
-        		
             throw connectionError(PROTOCOL_ERROR, "Received %s frame but not currently processing headers.",
                     frameType);
         }

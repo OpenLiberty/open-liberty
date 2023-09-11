@@ -57,7 +57,7 @@ public class Http2FullModeTests extends FATServletClient {
     static final String pushPromisePath = "H2FATDriver/PushPromiseTests?hostName=";
 
     @Rule
-    public TestName testName = new TestName();
+    public TestName testName = new Utils.CustomTestName();
 
     @BeforeClass
     public static void before() throws Exception {
@@ -74,6 +74,7 @@ public class Http2FullModeTests extends FATServletClient {
         // Go through Logs and check if Netty is being used
         boolean runningNetty = false;
         // Wait for endpoints to finish loading and get the endpoint started messages
+        runtimeServer.waitForStringInLog("CWWKO0219I.*");
         server.waitForStringInLog("CWWKO0219I.*");
         List<String> test = server.findStringsInLogs("CWWKO0219I.*");
         if (LOGGER.isLoggable(Level.INFO)) {

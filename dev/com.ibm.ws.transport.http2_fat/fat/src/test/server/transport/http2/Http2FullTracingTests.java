@@ -51,7 +51,7 @@ public class Http2FullTracingTests extends FATServletClient {
     static final String methodServletPath = "H2FATDriver/HttpMethodTests?hostName=";
 
     @Rule
-    public TestName testName = new TestName();
+    public TestName testName = new Utils.CustomTestName();
 
     @BeforeClass
     public static void before() throws Exception {
@@ -69,6 +69,7 @@ public class Http2FullTracingTests extends FATServletClient {
         boolean runningNetty = false;
         // Wait for endpoints to finish loading and get the endpoint started messages
         server.waitForStringInLog("CWWKO0219I.*");
+        runtimeServer.waitForStringInLog("CWWKO0219I.*");
         List<String> test = server.findStringsInLogs("CWWKO0219I.*");
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, CLASS_NAME, "test()", "Got port list...... " + Arrays.toString(test.toArray()));

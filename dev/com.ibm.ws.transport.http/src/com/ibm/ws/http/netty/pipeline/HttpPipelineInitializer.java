@@ -369,12 +369,15 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             builder.maxContentLength(maxContentlength);
         System.out.println("Found length to be: " + maxContentlength);
         Http2Settings initialSettings = new Http2Settings().maxConcurrentStreams(httpConfig.getH2MaxConcurrentStreams()).maxFrameSize(httpConfig.getH2MaxFrameSize());
+        System.out.println("Initial window size got: " + httpConfig.getH2SettingsInitialWindowSize());
         if (httpConfig.getH2SettingsInitialWindowSize() != Constants.SPEC_INITIAL_WINDOW_SIZE)
             initialSettings.initialWindowSize(httpConfig.getH2SettingsInitialWindowSize());
         builder = new InboundHttp2ToHttpAdapterBuilder(connection).propagateSettings(false).maxContentLength(64 * 1024).validateHttpHeaders(false);
 //        return new HttpToHttp2ConnectionHandlerBuilder().frameListener(builder.build()).frameLogger(LOGGER).connection(connection).initialSettings(initialSettings).build();
         HttpToHttp2ConnectionHandler handler = new HttpToHttp2ConnectionHandlerBuilder().frameListener(new ExtendedInboundHttp2ToHttpHandler(connection, 64
                                                                                                                                                          * 1024, false, false)).frameLogger(LOGGER).connection(connection).initialSettings(initialSettings).build();
+        System.out.println("Limit window update frames? " + httpConfig.getH2LimitWindowUpdateFrames());
+        System.out.println("Connection window size: " + httpConfig.getH2ConnectionWindowSize());
         if (!httpConfig.getH2LimitWindowUpdateFrames()) {
             ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowUpdateRatio(0.99999f);
             try {
@@ -414,10 +417,30 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                         request.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), 1);
                         if (Constants.SPEC_INITIAL_WINDOW_SIZE != httpConfig.getH2ConnectionWindowSize()) {
                             // window update sets the difference between what the client has (default) and the new value.
-
+                            // TODO Should this actually be a difference from the settings value instead of the spec size itself since that's the part where the ohter endpoint has the established info
                             int updateSize = httpConfig.getH2ConnectionWindowSize() - Constants.SPEC_INITIAL_WINDOW_SIZE;
-                            // Would probably fail
-                            handler.encoder().writeWindowUpdate(ctx, 1, updateSize, null);
+                            System.out.println("Update size to work with: " + updateSize);
+                            try {
+                                System.out.println("Original initial window size for connection: "
+                                                   + ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).initialWindowSize(handler.decoder().connection().connectionStream()));
+                                System.out.println("Original window size for connection: "
+                                                   + ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowSize(handler.decoder().connection().connectionStream()));
+//                                ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowUpdateRatio(handler.decoder().connection().connectionStream(),
+//                                                                                                                         0.000000001f);
+                                ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).incrementWindowSize(handler.decoder().connection().connectionStream(),
+                                                                                                                           updateSize);
+//                                ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).setConnectionWindow(httpConfig.getH2ConnectionWindowSize());
+//                                ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowUpdateRatio(handler.decoder().connection().connectionStream(), 0.5f);
+                                System.out.println("New window size for connection: "
+                                                   + ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowSize(handler.decoder().connection().connectionStream()));
+                                System.out.println("New initial window size for connection: "
+                                                   + ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).initialWindowSize(handler.decoder().connection().connectionStream()));
+                            } catch (Http2Exception e) {
+                                // TODO Auto-generated catch block
+                                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+//                                e.printStackTrace();
+                                ctx.fireExceptionCaught(e);
+                            }
                         }
                         // Forward request to dispatcher
                         ctx.fireChannelRead(ReferenceCountUtil.retain(request));

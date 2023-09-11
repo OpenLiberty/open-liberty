@@ -2813,7 +2813,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
             }
             formatHeaders(msg, complete);
-        } else {
+        } else if (getHttpConfig().useNetty()) {
             System.out.println("MSP set netty CL");
             HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
         }
