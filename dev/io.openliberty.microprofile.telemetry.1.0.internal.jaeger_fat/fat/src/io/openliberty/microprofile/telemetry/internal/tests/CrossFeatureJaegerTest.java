@@ -36,6 +36,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
@@ -57,6 +59,9 @@ public class CrossFeatureJaegerTest {
     @ClassRule
     public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
 
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat("crossFeatureTelemetryServer", MicroProfileActions.MP61, MicroProfileActions.MP60);
+
     public static JaegerQueryClient client;
 
     @Server("crossFeatureOpenTracingServer")
@@ -70,8 +75,8 @@ public class CrossFeatureJaegerTest {
 
         client = new JaegerQueryClient(jaegerContainer);
 
-        // Inform the test framework that telemetryServer is configured to use the secondary HTTP ports
-        telemetryServer.useSecondaryHTTPPort();
+        // Inform the test framework that opentracingServer is configured to use the secondary HTTP ports
+        opentracingServer.useSecondaryHTTPPort();
 
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOltpGrpcUrl());
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
@@ -102,10 +107,6 @@ public class CrossFeatureJaegerTest {
     @AfterClass
     public static void teardownTelemetry() throws Exception {
         telemetryServer.stopServer();
-    }
-
-    @AfterClass
-    public static void teardownOpentracing() throws Exception {
         opentracingServer.stopServer();
     }
 

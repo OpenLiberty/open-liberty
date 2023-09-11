@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <server description="testServer1">
-
     <!-- Enable features -->
     <featureManager>
         <feature>mpTelemetry-1.0</feature>
@@ -9,12 +8,6 @@
     </featureManager>
 
     <include location="../fatTestPorts.xml" />
-
-    <!-- Use secondary HTTP ports since we will start this -->
-    <!-- at the same time as crossFeatureOpenTracingServer -->
-    <httpEndpoint id="defaultHttpEndpoint"
-              httpPort="${bvt.prop.HTTP_secondary}"
-              httpsPort="${bvt.prop.HTTP_secondary.secure}" />
 
     <!-- Automatically expand WAR files and EAR files -->
     <applicationManager autoExpand="true" />
