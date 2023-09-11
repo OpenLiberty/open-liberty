@@ -55,7 +55,7 @@ public class TelemetryConfigEnvOnlyTest extends FATServletClient {
                         .addClasses(ConfigServlet.class);
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
-
+        
         // This tests that we do pick up config properties which are _only_ defined in the environment, using a format which MP Config only accepts for environment variables.
         server.addEnvVar("otel_service_name", "overrideDone");
         server.addEnvVar("otel_sdk_disabled", "false");

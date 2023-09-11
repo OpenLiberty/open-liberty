@@ -23,21 +23,20 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.shim.OpenTracingShimServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.shim.TracedBean;
 
-import componenttest.rules.repeater.MicroProfileActions;
-import componenttest.rules.repeater.RepeatTests;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 /**
  * Test use of the Open Telemetry Autoconfigure Trace SPIs: https://www.javadoc.io/doc/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/latest/index.html
  */
@@ -55,21 +54,20 @@ public class TelemetryShimTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61);
-    
+
     @BeforeClass
     public static void setup() throws Exception {
-        if(RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID)){
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID)) {
             WebArchive exporterTestWar = ShrinkWrap.create(WebArchive.class, SHIM_APP_NAME + ".war")
-                .addClass(OpenTracingShimServlet.class)
-                .addClass(TracedBean.class)
-                .addAsLibraries(new File("lib/shim129").listFiles());
+                            .addClass(OpenTracingShimServlet.class)
+                            .addClass(TracedBean.class)
+                            .addAsLibraries(new File("lib/shim129").listFiles());
             ShrinkHelper.exportAppToServer(server, exporterTestWar, SERVER_ONLY);
-        }
-        else{
+        } else {
             WebArchive exporterTestWar = ShrinkWrap.create(WebArchive.class, SHIM_APP_NAME + ".war")
-                .addClass(OpenTracingShimServlet.class)
-                .addClass(TracedBean.class)
-                .addAsLibraries(new File("lib/shim").listFiles());
+                            .addClass(OpenTracingShimServlet.class)
+                            .addClass(TracedBean.class)
+                            .addAsLibraries(new File("lib/shim").listFiles());
             ShrinkHelper.exportAppToServer(server, exporterTestWar, SERVER_ONLY);
         }
 
