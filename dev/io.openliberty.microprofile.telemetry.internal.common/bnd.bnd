@@ -50,6 +50,7 @@ Service-Component: \
 # created for other API classes
 Import-Package: \
   io.opentelemetry.api.common,\
+  io.opentelemetry.context.propagation,\
   com.ibm.websphere.ras,\
   com.ibm.websphere.ras.annotation,\
   *
