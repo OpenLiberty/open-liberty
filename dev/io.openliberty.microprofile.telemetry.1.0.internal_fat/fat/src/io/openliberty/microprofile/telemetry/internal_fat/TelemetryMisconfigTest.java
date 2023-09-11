@@ -10,7 +10,6 @@
 package io.openliberty.microprofile.telemetry.internal_fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -29,14 +28,13 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrsmisconfig.JaxRsMisConfigEndpoints;
-
-import componenttest.rules.repeater.MicroProfileActions;
-import componenttest.rules.repeater.RepeatTests;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 
 //Tests behaviour when placing an invalid value into the OpenTelemetry configuration options
 @Mode(TestMode.FULL)
@@ -64,7 +62,7 @@ public class TelemetryMisconfigTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61);
-    
+
     @BeforeClass
     public static void setUp() throws Exception {
         //Invalid exporter name (Should allow Jaeger, Zipkin, OTLP, Logging)
@@ -140,32 +138,27 @@ public class TelemetryMisconfigTest extends FATServletClient {
                         .run(String.class);
 
         assertNotNull(server.waitForStringInLogUsingMark("Unrecognized value for otel.traces.exporter: " + INVALID_EXPORTER));
-    } 
+    }
 
     @Test
-    @ExpectedFFDC(repeatAction = MicroProfileActions.MP60_ID,
-                  value = { "java.lang.IllegalArgumentException"})
-    @ExpectedFFDC(repeatAction = MicroProfileActions.MP61_ID,
-                  value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
+    @ExpectedFFDC(repeatAction = MicroProfileActions.MP60_ID, value = { "java.lang.IllegalArgumentException" })
+    @ExpectedFFDC(repeatAction = MicroProfileActions.MP61_ID, value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
     public void testInvalidJaegerExporterEndpoint() throws Exception {
         server.setMarkToEndOfLog();
 
         new HttpRequest(server, "/" + INVALID_JAEGER_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
                         .expectCode(200)
                         .run(String.class);
-        if(RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)){
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             assertNotNull(server.waitForStringInLogUsingMark("Invalid endpoint, must start with http:// or https://: " + INVALID_JAEGER_ENDPOINT));
-        }
-        else{
+        } else {
             assertNotNull(server.waitForStringInLogUsingMark("Unexpected configuration error."));
         }
     }
 
     @Test
-    @ExpectedFFDC(repeatAction = MicroProfileActions.MP60_ID,
-                  value = { "java.lang.IllegalArgumentException"})
-    @ExpectedFFDC(repeatAction = MicroProfileActions.MP61_ID,
-                  value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
+    @ExpectedFFDC(repeatAction = MicroProfileActions.MP60_ID, value = { "java.lang.IllegalArgumentException" })
+    @ExpectedFFDC(repeatAction = MicroProfileActions.MP61_ID, value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
     public void testInvalidZipkinExporterEndpoint() throws Exception {
         server.setMarkToEndOfLog();
 
@@ -173,10 +166,9 @@ public class TelemetryMisconfigTest extends FATServletClient {
                         .expectCode(200)
                         .run(String.class);
 
-        if(RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)){
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             assertNotNull(server.waitForStringInLogUsingMark("invalid POST url: " + INVALID_ZIPKIN_ENDPOINT));
-        }
-        else{
+        } else {
             assertNotNull(server.waitForStringInLogUsingMark("Unexpected configuration error."));
         }
     }
@@ -192,7 +184,7 @@ public class TelemetryMisconfigTest extends FATServletClient {
 
         assertNotNull(server.waitForStringInLogUsingMark("OTLP endpoint must be a valid URL: " + INVALID_OTLP_ENDPOINT));
     }
-    
+
     @Test
     public void testNotKnownEndpoint() throws Exception {
         server.setMarkToEndOfLog();
@@ -201,11 +193,12 @@ public class TelemetryMisconfigTest extends FATServletClient {
                         .expectCode(200)
                         .run(String.class);
 
-        if(RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID)){
-            assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. Server responded with gRPC status code 2. Error message: " + INVALID_JAEGER_ENDPOINT.toLowerCase()));
-        }
-        else{
-            assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message:.*" + INVALID_JAEGER_ENDPOINT.toLowerCase()));
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID)) {
+            assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. Server responded with gRPC status code 2. Error message: "
+                                                             + INVALID_JAEGER_ENDPOINT.toLowerCase()));
+        } else {
+            assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message:.*"
+                                                             + INVALID_JAEGER_ENDPOINT.toLowerCase()));
         }
     }
 
@@ -216,10 +209,9 @@ public class TelemetryMisconfigTest extends FATServletClient {
                         .expectCode(200)
                         .run(String.class);
 
-        if(RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID)){
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID)) {
             assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. Server responded with gRPC status code 2. Error message: Failed to connect to.*" + ":10000"));
-        }
-        else{
+        } else {
             assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message: Failed to connect to.*" + ":10000"));
         }
     }
@@ -238,6 +230,6 @@ public class TelemetryMisconfigTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer(  "CWMOT5002E" ); //Exception thrown in OpenTelemetryProducer
+        server.stopServer("CWMOT5002E"); //Exception thrown in OpenTelemetryProducer
     }
 }
