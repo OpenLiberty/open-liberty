@@ -32,9 +32,9 @@ import com.ibm.ws.kernel.feature.internal.cmdline.ReturnCode;
 
 public enum FeatureAction implements ActionDefinition {
     installFeature(new InstallFeatureAction(), "if", -1, "--noCache", "--verbose", "--acceptLicense", "--featuresBom",
-	    "--to", "name..."),
+	    "--to", "--verify", "name..."),
     installServerFeatures(new InstallServerAction(), "isf", -1, "--noCache", "--verbose", "--acceptLicense",
-	    "--featuresBom", "name..."),
+	    "--featuresBom", "--verify", "name..."),
     viewSettings(new ViewSettingsAction(),"", 0, "--viewValidationMessages"),
     find(new FindAction(), "", -1, "[searchString]"),
     help(new FeatureHelpAction(),"", 0);
@@ -50,23 +50,7 @@ public enum FeatureAction implements ActionDefinition {
         positionalOptions = count;
         abbreviation = abbreviationString;
 
-	// For beta FAT test
-	boolean enableVerify = System.getProperty("enable.verify") != null
-		&& System.getProperty("enable.verify").equals("true");
-	if (enableVerify) {
-	    if (abbreviationString.equals("if")) {
-		commandOptions = Collections.unmodifiableList(Arrays.asList("--noCache", "--verbose",
-			    "--acceptLicense", "--featuresBom", "--to", "--verify", "name..."));
-	    } else if (abbreviationString.equals("isf")) {
-		commandOptions = Collections.unmodifiableList(Arrays.asList("--noCache", "--verbose",
-			    "--acceptLicense", "--featuresBom", "--verify", "name..."));
-	    } else {
-		commandOptions = Collections.unmodifiableList(Arrays.asList(args));
-	    }
-
-	} else {
-	    commandOptions = Collections.unmodifiableList(Arrays.asList(args));
-	}
+	commandOptions = Collections.unmodifiableList(Arrays.asList(args));
 
     }
 
