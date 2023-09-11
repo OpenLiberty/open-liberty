@@ -286,13 +286,6 @@ final class ServletServerStream extends AbstractServerStream {
             new Object[] {logId, trailers, headersSent, status});
       }
      
-      try {
-          writer.flush();
-      } catch (IOException e) {
-          logger.log(WARNING, String.format("[{%s}] Exception when flushBuffer", logId), e);
-          cancel(Status.fromThrowable(e));
-      }
-      
       if (!headersSent) {
         writeHeadersToServletResponse(trailers);
       } else {
@@ -304,7 +297,14 @@ final class ServletServerStream extends AbstractServerStream {
           trailerSupplier.get().putIfAbsent(key, newValue);
         }
       }
-
+      
+      try {
+          writer.flush();
+      } catch (IOException e) {
+          logger.log(WARNING, String.format("[{%s}] Exception when flushBuffer", logId), e);
+          cancel(Status.fromThrowable(e));
+      }
+      
       writer.complete();
     }
 
