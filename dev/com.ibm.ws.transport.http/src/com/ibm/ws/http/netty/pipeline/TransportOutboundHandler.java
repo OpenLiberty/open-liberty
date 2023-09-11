@@ -54,6 +54,8 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
 
         }
 
+        MSP.log("writeAndFlush for message: " + msg.toString());
+
         ctx.writeAndFlush(msg);
     }
 

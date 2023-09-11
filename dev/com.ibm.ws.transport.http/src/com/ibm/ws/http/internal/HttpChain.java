@@ -48,15 +48,16 @@ import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 public class HttpChain implements ChainEventListener {
     private static final TraceComponent tc = Tr.register(HttpChain.class);
 
-    enum ChainState {
+    public enum ChainState {
         UNINITIALIZED(0, "UNINITIALIZED"),
         DESTROYED(1, "DESTROYED"),
         INITIALIZED(2, "INITIALIZED"),
         STOPPED(3, "STOPPED"),
         QUIESCED(4, "QUIESCED"),
-        STARTED(5, "STARTED");
+        STARTED(5, "STARTED"),
+        RESTARTING(6, "RESTARTING");
 
-        final int val;
+        public final int val;
         final String name;
 
         @Trivial
@@ -80,6 +81,8 @@ public class HttpChain implements ChainEventListener {
                     return "QUIESCED";
                 case 5:
                     return "STARTED";
+                case  6:
+                    return "RESTARTING";
             }
             return "UNKNOWN";
         }
@@ -95,7 +98,7 @@ public class HttpChain implements ChainEventListener {
     protected String httpName;
     protected String dispatcherName;
     protected String chainName;
-    private ChannelFramework cfw;
+    protected ChannelFramework cfw;
     protected EndPointMgr endpointMgr;
 
     /**
@@ -708,7 +711,7 @@ public class HttpChain implements ChainEventListener {
      * Publish an event relating to a chain starting/stopping with the
      * given properties set about the chain.
      */
-    private void postEvent(String t, ActiveConfiguration c, Exception e) {
+    protected void postEvent(String t, ActiveConfiguration c, Exception e) {
         Map<String, Object> eventProps = new HashMap<String, Object>(4);
 
         eventProps.put(HttpServiceConstants.ENDPOINT_NAME, endpointName);
@@ -798,6 +801,14 @@ public class HttpChain implements ChainEventListener {
          */
         public void clearActivePort() {
             activePort = -1;
+        }
+        
+        public String getResolvedHost() {
+            return resolvedHost;
+        }
+        
+        public int getConfigPort() {
+            return configPort;
         }
 
         /**
@@ -936,13 +947,13 @@ public class HttpChain implements ChainEventListener {
         }
     }
 
-    private class StopWait {
+    public class StopWait {
 
         @Trivial
         StopWait() {
         }
 
-        synchronized void waitForStop(long timeout, HttpChain chain) {
+        public synchronized void waitForStop(long timeout, HttpChain chain) {
             // HttpChain parameter helps with debug..
 
             // wait for the configured timeout (the parameter) + a smidgen of time
