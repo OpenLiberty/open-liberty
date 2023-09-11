@@ -59,6 +59,7 @@ import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
+import jakarta.data.exceptions.EntityExistsException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
@@ -89,6 +90,7 @@ import jakarta.transaction.UserTransaction;
 
 import org.junit.Test;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
 
 @DataSourceDefinition(name = "java:app/jdbc/DerbyDataSource",
@@ -1779,6 +1781,111 @@ public class DataTestServlet extends FATServlet {
                                              .stream()
                                              .map(p -> p.hex)
                                              .collect(Collectors.toList()));
+    }
+
+    /**
+     * Tests repository insert methods.
+     */
+    @AllowedFFDC("jakarta.data.exceptions.EntityExistsException")
+    @Test
+    public void testInsert() throws Exception {
+        people.deleteByIdBetween(0L, 999999999L);
+
+        // insert single:
+
+        Person isaac = new Person();
+        isaac.firstName = "Isaac";
+        isaac.lastName = "TestInsert";
+        isaac.ssn_id = 999009001;
+        persons.insert(isaac);
+
+        Person ike = new Person();
+        ike.firstName = "Ike";
+        ike.lastName = "TestInsert";
+        ike.ssn_id = 999009001;
+        try {
+            persons.insert(ike);
+            fail("Did not detect duplicate insert of id.");
+        } catch (EntityExistsException x) {
+            // pass
+        }
+
+        Person p = personnel.findBySSN_Id(999009001).join();
+        assertEquals("Isaac", p.firstName);
+
+        // insert collection:
+
+        Person ian = new Person();
+        ian.firstName = "Ian";
+        ian.lastName = "TestInsert";
+        ian.ssn_id = 999009002;
+
+        Person isabelle = new Person();
+        isabelle.firstName = "Isabelle";
+        isabelle.lastName = "TestInsert";
+        isabelle.ssn_id = 999009003;
+
+        try {
+            persons.insertAll(List.of(ian, ike, isabelle));
+            fail("Did not detect duplicate insert of id within collection.");
+        } catch (EntityExistsException x) {
+            // pass
+        }
+
+        persons.insertAll(List.of(ian, isabelle));
+
+        // insert varargs array:
+        Person irene = new Person();
+        irene.firstName = "Irene";
+        irene.lastName = "TestInsert";
+        irene.ssn_id = 999009004;
+
+        Person isaiah = new Person();
+        isaiah.firstName = "Isaiah";
+        isaiah.lastName = "TestInsert";
+        isaiah.ssn_id = 999009005;
+
+        persons.insertAll(irene, isaiah);
+
+        Person ivan = new Person();
+        ivan.firstName = "Ivan";
+        ivan.lastName = "TestInsert";
+        ivan.ssn_id = 999009006;
+
+        Person iris = new Person();
+        iris.firstName = "Iris";
+        iris.lastName = "TestInsert";
+        iris.ssn_id = ivan.ssn_id;
+
+        try {
+            persons.insertAll(ivan, iris);
+            fail("Did not detect duplicate insert of id within array.");
+        } catch (EntityExistsException x) {
+            // pass
+        }
+
+        tran.begin();
+        try {
+            Person ivy = new Person();
+            ivy.firstName = "Ivy";
+            ivy.lastName = "TestInsert";
+            ivy.ssn_id = 999009007;
+            persons.insert(ivy);
+
+            try {
+                persons.insert(ike);
+                fail("Did not detect duplicate insert of id within transaction.");
+            } catch (EntityExistsException x) {
+                // pass
+            }
+        } finally {
+            if (tran.getStatus() == Status.STATUS_MARKED_ROLLBACK)
+                tran.rollback();
+            else
+                tran.commit();
+        }
+
+        assertEquals(5, people.deleteByIdBetween(0L, 999999999L));
     }
 
     /**
