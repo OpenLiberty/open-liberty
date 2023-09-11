@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package com.ibm.tx.ltc.impl;
 
 import java.util.ArrayList;
@@ -201,7 +200,7 @@ public class LocalTranCoordImpl implements LocalTransactionCoordinator, UOWCoord
     @Trivial
     protected LocalTranCoordImpl(boolean boundaryIsAS, LocalTranCurrentImpl current) throws IllegalStateException {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "LocalTranCoordImpl {}", boundaryIsAS);
+            Tr.debug(tc, "LocalTranCoordImpl {0}", boundaryIsAS);
 
         _state = Running;
         _current = current;
@@ -1202,26 +1201,22 @@ public class LocalTranCoordImpl implements LocalTransactionCoordinator, UOWCoord
 
     // Suspend any native context off the thread
     protected void suspend() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "suspend");
 
         _current = null;
         _state = Suspended;
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "suspend");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "suspend");
     }
 
     // Resume any native context onto the thread
     protected void resume(LocalTranCurrentImpl current) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "resume", current);
 
         _current = current;
         _state = Running;
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "resume");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "resume: {0}", current);
     }
 
     /*

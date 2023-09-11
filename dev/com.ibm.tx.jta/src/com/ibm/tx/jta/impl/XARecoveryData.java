@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2022 IBM Corporation and others.
+ * Copyright (c) 2002, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -792,44 +792,35 @@ public class XARecoveryData extends PartnerLogData {
      */
     public ClassLoader getRecoveryClassLoader() /* @369064.2A */
     {
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "getRecoveryClassLoader", _recoveryClassLoader);
-        }
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getRecoveryClassLoader: {0}", _recoveryClassLoader);
 
         return _recoveryClassLoader;
     }
 
     public boolean supportsIsSameRM() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "supportsIsSameRM");
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "supportsIsSameRM", Boolean.valueOf(_supportsIsSameRM));
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "supportsIsSameRM: {0}", _supportsIsSameRM);
 
         return _supportsIsSameRM;
     }
 
     protected void auditXaRecover(Serializable xaResInfo) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "auditXaRecover", xaResInfo);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "auditXaRecover: {0}", xaResInfo);
 
         if (auditRecovery) {
             Tr.audit(tc, "WTRN0151_REC_XA_RECOVER", getRMInfo(xaResInfo));
         }
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "auditXaRecover");
     }
 
     protected void auditXaRecoverCount(Serializable xaResInfo, int rms, int ours) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "auditXaRecoverCount", new Object[] { xaResInfo, rms, ours });
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "auditXaRecoverCount: {0} {1} {2}", xaResInfo, rms, ours);
 
         if (auditRecovery) {
             Tr.audit(tc, "WTRN0146_REC_XA_RECOVERED", new Object[] { rms, getRMInfo(xaResInfo), ours });
         }
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "auditXaRecoverCount");
     }
 
     public String getRMInfo(Serializable xaResInfo) {
@@ -841,57 +832,39 @@ public class XARecoveryData extends PartnerLogData {
     }
 
     protected void auditLateEpoch(XidImpl xid, Serializable xaResInfo) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "auditLateEpoch", new Object[] { xid, xaResInfo });
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "auditLateEpoch: {0} {1}", xid, xaResInfo);
 
         if (auditRecovery) {
             Tr.audit(tc, "WTRN0147_REC_XID_LATE", new Object[] { xid.printOtid(), getRMInfo(xaResInfo), xid.getEpoch() });
         }
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "auditLateEpoch");
     }
 
     protected void auditSendRollback(XidImpl xid, Serializable xaResInfo) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "auditSendRollback", new Object[] { xid, xaResInfo });
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "auditLateEpoch: {0} {1}", xid, xaResInfo);
 
         if (auditRecovery) {
             Tr.audit(tc, "WTRN0148_REC_XA_ROLLBACK", new Object[] { xid.printOtid(), getRMInfo(xaResInfo) });
         }
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "auditSendRollback");
     }
 
     protected void auditRollbackResponse(int code, XidImpl xid, Serializable xaResInfo) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "auditRollbackResponse", new Object[] { xid, xaResInfo });
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "auditLateEpoch: {0} {1}", xid, xaResInfo);
 
         if (auditRecovery) {
             Tr.audit(tc, "WTRN0150_REC_XA_ROLLEDBACK", new Object[] { xid.printOtid(), getRMInfo(xaResInfo), XAReturnCodeHelper.convertXACode(code) });
         }
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "auditRollbackResponse");
     }
 
     private void auditTransactionXid(XidImpl xid, Xid txnXid, Serializable xaResInfo) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "auditTransactionXid", new Object[] { xid, txnXid, xaResInfo });
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "auditTransactionXid: {0} {1} {2}", xid, txnXid, xaResInfo);
 
         if (auditRecovery) {
-//            String txnid;
-//            if (txnXid instanceof XidImpl) {
-//                txnid = ((XidImpl) txnXid).printOtid();
-//            } else {
-//                txnid = txnXid.toString();
-//            }
             Tr.audit(tc, "WTRN0149_REC_XA_TRAN", new Object[] { xid.printOtid(), getRMInfo(xaResInfo), getTransactionId(txnXid), Util.printStatus(getTransactionStatus(txnXid)) });
         }
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "auditTransactionXid");
     }
 
     protected int getTransactionStatus(Xid xid) {

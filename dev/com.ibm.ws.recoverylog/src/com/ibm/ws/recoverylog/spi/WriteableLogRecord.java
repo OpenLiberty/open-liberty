@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2021 IBM Corporation and others.
+ * Copyright (c) 2003, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,9 +18,6 @@ import com.ibm.tx.TranConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-
-// REQD: LogRecord, ReadableLogRecord and WritableLogRecord need to be re-factored
-//       in the 5.1.2 timeframe. They are not very well organized.
 
 //------------------------------------------------------------------------------
 // Class: WritableLogRecord
@@ -167,6 +164,7 @@ public class WriteableLogRecord extends LogRecord {
      * after the log record. No further access to this instance is permitted after
      * this call has been issued.
      */
+    @Trivial
     protected void close() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "close {0}", this);
