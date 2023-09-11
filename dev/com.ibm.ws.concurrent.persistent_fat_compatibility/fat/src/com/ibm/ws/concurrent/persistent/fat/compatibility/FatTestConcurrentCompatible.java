@@ -17,12 +17,9 @@ import static org.junit.Assert.assertEquals;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -45,8 +42,6 @@ import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
 
 @RunWith(FATRunner.class)
 public class FatTestConcurrentCompatible extends CommonUtils {
-	
-    private static final Set<String> appNames = new TreeSet<String>(Arrays.asList("PersistExecComp"));
     
 	private static final String APP_NAME = "PersistentExecutor";
 
@@ -57,11 +52,10 @@ public class FatTestConcurrentCompatible extends CommonUtils {
 
     @BeforeClass
     public static void beforeSuite() throws Exception {
-    	//TODO using ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.test.servlet")
-    	//causes time out error waiting for app to start.
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                 .addPackage("com.ibm.test.servlet");
         ShrinkHelper.exportAppToServer(server, app);
+        
         //No need to start the server.  Each test will start the server when necessary.
     }
 
@@ -89,7 +83,6 @@ public class FatTestConcurrentCompatible extends CommonUtils {
         } else {
             server.setMarkToEndOfLog();
             server.setServerConfigurationFile("/config/disableTaskExecuteServer.xml");
-            server.waitForConfigUpdateInLogUsingMark(appNames);
         }
 
         // set default props
