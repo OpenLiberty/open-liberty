@@ -11,16 +11,13 @@ package io.openliberty.microprofile.telemetry.internal.tests;
 
 import static io.openliberty.microprofile.telemetry.internal.utils.TestUtils.findOneFrom;
 import static io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpanMatcher.hasTag;
-import static io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpanMatcher.hasKind;
 import static io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpanMatcher.span;
-import static io.opentelemetry.semconv.resource.attributes.ResourceAttributes.TELEMETRY_SDK_NAME;
 import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.HTTP_ROUTE;
 import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.HTTP_URL;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
 import java.util.List;
-import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -37,6 +34,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
@@ -58,6 +57,9 @@ public class CrossFeatureZipkinTest {
     @ClassRule
     public static ZipkinContainer zipkinContainer = new ZipkinContainer().withLogConsumer(new SimpleLogConsumer(ZipkinTest.class, "zipkin"));
 
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat("crossFeatureTelemetryServer", MicroProfileActions.MP61, MicroProfileActions.MP60);
+
     public static ZipkinQueryClient client;
 
     @Server("crossFeatureOpenTracingZipkinServer")
@@ -71,8 +73,8 @@ public class CrossFeatureZipkinTest {
 
         client = new ZipkinQueryClient(zipkinContainer);
 
-        // Inform the test framework that telemetryServer is configured to use the secondary HTTP ports
-        telemetryServer.useSecondaryHTTPPort();
+        // Inform the test framework that opentracingServer is configured to use the secondary HTTP ports
+        opentracingServer.useSecondaryHTTPPort();
 
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "zipkin");
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_ZIPKIN_ENDPOINT, zipkinContainer.getApiBaseUrl() + "/spans");
@@ -86,10 +88,10 @@ public class CrossFeatureZipkinTest {
         opentracingServer.addEnvVar("ZIPKIN_SAMPLER_TYPE", "const"); // Trace every call
         opentracingServer.addEnvVar("ZIPKIN_SAMPLER_PARAM", "1"); // Trace every call
         opentracingServer.addEnvVar("TESTCLIENT_MP_REST_URL", getUrl(telemetryServer));
-        
+
         opentracingServer.installUserBundle("com.ibm.ws.io.opentracing.zipkintracer-0.33");
         opentracingServer.installUserFeature("opentracingZipkin-0.33");
-        
+
         // create apps
         WebArchive opentracingWar = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                               .addPackage(io.openliberty.microprofile.telemetry.internal.apps.crossfeature.opentracing.CrossFeatureResource.class.getPackage());
@@ -137,10 +139,9 @@ public class CrossFeatureZipkinTest {
         for (ZipkinSpan span : spans) {
             Log.info(c, "testCrossFeatureFromTelemetry", span.toString());
         }
-
         ZipkinSpan server1 = findOneFrom(spans, hasTag(HTTP_ROUTE.getKey(), "/crossFeature/1"));
         ZipkinSpan client2 = findOneFrom(spans, span().withKind(SpanKind.CLIENT)
-                                                .withTag(HTTP_URL.getKey(), getUrl(opentracingServer) + "/2"));
+                                                      .withTag(HTTP_URL.getKey(), getUrl(opentracingServer) + "/2"));
         ZipkinSpan server2 = findOneFrom(spans, span().hasKind(SpanKind.SERVER)
                                                       .withTag(HTTP_URL.getKey(), getUrl(opentracingServer) + "/2"));
         ZipkinSpan client3 = findOneFrom(spans, hasTag(HTTP_URL.getKey(), getUrl(telemetryServer) + "/3"));
@@ -149,7 +150,6 @@ public class CrossFeatureZipkinTest {
         assertThat(server1, hasTag("otel.scope.name", "io.openliberty.microprofile.telemetry"));
         assertThat(client2, hasTag("otel.scope.name", "Client filter"));
     }
-    
 
     /**
      * Test calls between telemetry and opentracing, starting with opentracing

@@ -21,6 +21,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.Network;
 
@@ -30,6 +31,8 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
@@ -45,20 +48,26 @@ public class JaegerOtelCollectorTest extends JaegerBaseTest {
 
     public static final int OTLP_GRPC_PORT = 4317;
 
-    @ClassRule
     public static Network network = Network.newNetwork();
 
-    @ClassRule
     public static JaegerContainer jaegerContainer = new JaegerContainer()
                                                                          .withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"))
                                                                          .withNetwork(network)
                                                                          .withNetworkAliases("jaeger-all-in-one");
-    @ClassRule
+
     public static OtelCollectorContainer otelCollectorContainer = new OtelCollectorContainer(new File("lib/LibertyFATTestFiles/otel-collector-config-jaeger.yaml"))
                                                                                                                                                                    .withNetwork(network)
                                                                                                                                                                    .withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class,
                                                                                                                                                                                                           "otelCol"))
                                                                                                                                                                    .withNetworkAliases("otel-collector-jaeger");
+    public static RepeatTests r = MicroProfileActions.repeat("spanTestServer", MicroProfileActions.MP61, MicroProfileActions.MP60);
+
+    @ClassRule
+    public static RuleChain chain = RuleChain
+                                             .outerRule(network)
+                                             .around(jaegerContainer)
+                                             .around(otelCollectorContainer)
+                                             .around(r);
 
     public static JaegerQueryClient client;
 

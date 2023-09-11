@@ -32,6 +32,13 @@ fat.test.container.images: \
 
 grpcVersion=1.57.2
 
+tested.features:\
+  mpTelemetry-1.0,\
+  mpTelemetry-1.1,\
+  mpConfig-3.1,\
+  restfulWS-3.1,\
+  servlet-6.0
+
 -buildpath: \
 	io.openliberty.jakarta.restfulWS.3.1;version=latest,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
