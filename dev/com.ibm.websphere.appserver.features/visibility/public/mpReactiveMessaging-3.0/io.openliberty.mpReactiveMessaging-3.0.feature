@@ -23,6 +23,6 @@ Subsystem-Name: MicroProfile Reactive Messaging 3.0
  com.ibm.ws.microprofile.reactive.messaging.kafka.jakarta, \
  com.ibm.ws.microprofile.reactive.messaging.kafka.adapter, \
  com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

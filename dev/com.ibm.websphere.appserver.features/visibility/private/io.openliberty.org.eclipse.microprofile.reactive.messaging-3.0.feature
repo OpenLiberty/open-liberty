@@ -8,6 +8,6 @@ singleton=true
   io.openliberty.org.eclipse.microprofile.reactive.streams.operators-3.0, \
   io.openliberty.org.eclipse.microprofile.config-3.0; ibm.tolerates:="3.1", \
   io.openliberty.jakarta.cdi-3.0; ibm.tolerates:="4.0"
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
