@@ -19,7 +19,10 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.internal.HttpChain;
+import com.ibm.ws.http.internal.HttpChain.ChainState;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
+import com.ibm.ws.http.internal.HttpServiceConstants;
+import com.ibm.ws.http.internal.VirtualHostMap;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer.ConfigElement;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -28,9 +31,6 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
@@ -104,6 +104,9 @@ public class NettyChain extends HttpChain {
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Successfully stopped server channel " + serverChannel);
+                    if (chainState.get() == ChainState.RESTARTING.val) {
+                        startNettyChannel();
+                    }
                 }
             }
             TCPUtils.logChannelStopped(serverChannel);
@@ -113,6 +116,9 @@ public class NettyChain extends HttpChain {
             }
         } finally {
             this.disable();
+            String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STOPPED;
+            postEvent(topic, currentConfig, null);
+            currentConfig.clearActivePort();
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.exit(this, tc, "stop chain " + this);
@@ -155,33 +161,77 @@ public class NettyChain extends HttpChain {
         Map<String, Object> samesiteOptions = this.getOwner().getSamesiteConfig();
         Map<String, Object> headersOptions = this.getOwner().getHeadersConfig();
 
+        // currentConfig = new ActiveConfiguration(this.isHttps(), tcpOptions, sslOptions, httpOptions, remoteIpOptions, compressionOptions, samesiteOptions, headersOptions, endpointOptions, resolvedHostName);
+
         final ActiveConfiguration newConfig = new ActiveConfiguration(this.isHttps(), tcpOptions, sslOptions, httpOptions, remoteIpOptions, compressionOptions, samesiteOptions, headersOptions, endpointOptions, resolvedHostName);
 
         if (newConfig.configPort < 0 || !newConfig.complete()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Stopping chain due to configuration " + newConfig);
             }
+        }
 
-            // save the new/changed configuration before we start setting up the new chain
-            currentConfig = newConfig;
+        // save the new/changed configuration before we start setting up the new chain
+        currentConfig = newConfig;
 
+        boolean sameConfig = newConfig.unchanged(oldConfig);
+
+        if (validOldConfig) {
+            if (sameConfig) {
+
+            }
+
+        }
+
+        if (!sameConfig) {
+            chainState.set(ChainState.RESTARTING.val);
             stop();
         }
 
-        else {
-            Map<Object, Object> chanProps;
-            try {
-                boolean sameConfig = newConfig.unchanged(oldConfig);
-                if (validOldConfig) {
+//        } else {
+//            Map<Object, Object> chanProps;
+//
+//            try {
+//
+//                if (validOldConfig) {
+//                    if (sameConfig) {
+//                        int state = chainState.get();
+//                        if (state == ChainState.STARTED.val) {
+//                            // If configurations are identical, see if the listening port is also the same
+//                            // which would indicate that the chain is running with the unchanged configuration
+//                            // toggle start/stop of chain if we are somehow active on a different port..
+//                            sameConfig = oldConfig.validateActivePort();
+//                            if (sameConfig) {
+//                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                                    Tr.debug(this, tc, "Configuration is unchanged, and chain is already started: " + oldConfig);
+//                                }
+//                                // EARLY EXIT: we have nothing else to do here: "new configuration" not saved
+//                                return;
+//                            } else {
+//                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                                    Tr.debug(this, tc, "Configuration is unchanged, but chain is running with a mismatched configuration: " + oldConfig);
+//                                }
+//                            }
+//                        } else if (state == ChainState.QUIESCED.val) {
+//                            // Chain is in the process of stopping.. we need to wait for it
+//                            // to finish stopping before we start it again
+//                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                                Tr.debug(this, tc, "Configuration is unchanged, chain is quiescing, wait for stop: " + newConfig);
+//                            }
+//                            stopWait.waitForStop(nettyFramework.getDefaultChainQuiesceTimeout(), this); // BLOCK
+//                        } else {
+//                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                                Tr.debug(this, tc, "Configuration is unchanged, chain must be started: " + newConfig);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
-                } else {
-                    currentConfig = newConfig;
-                }
-            } catch (Exception e) {
+        currentConfig = newConfig;
 
-            }
-        }           
-        this.startNettyChannel();
+        startNettyChannel();
     }
 
     public void startNettyChannel() {
@@ -230,7 +280,13 @@ public class NettyChain extends HttpChain {
                     }
 
                 } else {
+
+                    this.chainState.set(ChainState.STARTED.val);
+
                     parent.serverChannel = f.channel();
+                    VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
+                    String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
+                    postEvent(topic, currentConfig, null);
                 }
             });
         } catch (Exception e) {
@@ -245,7 +301,7 @@ public class NettyChain extends HttpChain {
     public int getActivePort() {
         return (currentConfig != null) ? currentConfig.configPort : -1;
     }
-    
+
     public String getActiveHost() {
         return (currentConfig != null) ? currentConfig.configHost : null;
     }
