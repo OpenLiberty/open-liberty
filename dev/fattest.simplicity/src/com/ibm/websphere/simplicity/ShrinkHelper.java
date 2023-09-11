@@ -82,10 +82,6 @@ public class ShrinkHelper {
      * autoFVT/publish/... and wlp/usr/...
      */
     public static void exportToServer(LibertyServer server, String path, Archive<?> a, DeployOptions... options) throws Exception {
-        if (path == "dropins" || path == "apps") {
-            Log.warning(c, "Consider using 'exportAppToServer' or 'exportDropinAppToServer' when copying an Application "
-                           + "these methods will automatically add the application for validation on server startup.");
-        }
         String localLocation;
         if (serverOnly(options)) {
             localLocation = getTmpLocation(a);
