@@ -72,4 +72,5 @@ fat.project: true
 	com.ibm.ws.cdi.interfaces;version=latest,\
         io.openliberty.cdi.4.0.interfaces;version=latest,\
 	com.ibm.ws.cdi.internal;version=latest,\
-	io.openliberty.jakarta.cdi.4.0
+	io.openliberty.jakarta.cdi.4.0,\
+        com.ibm.ws.org.jboss.weld.2.4.8;version=latest

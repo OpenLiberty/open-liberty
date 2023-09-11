@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 @TraceOptions(traceGroup = "TELEMETRY", messageBundle = "io.openliberty.microprofile.telemetry.internal.common.resources.MPTelemetry")
-package io.opentelemetry.api;
+package io.openliberty.microprofile.telemetry10.internal.cdi;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
