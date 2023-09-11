@@ -11,15 +11,13 @@
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.security.openidconnect.client.fat.IBM;
+package com.ibm.ws.security.SSO.clientTests.WasReqUrl;
 
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -32,7 +30,6 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.ClientTestHelpers;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebResponse;
@@ -53,61 +50,34 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 @Mode(TestMode.FULL)
 @AllowedFFDC({ "org.apache.http.NoHttpResponseException" })
 @RunWith(FATRunner.class)
-public class OidcClientWasReqURLTests extends CommonTest {
+public class ClientWasReqURLTests extends CommonTest {
 
-    public static Class<?> thisClass = OidcClientWasReqURLTests.class;
+    public static Class<?> thisClass = ClientWasReqURLTests.class;
 
     @Rule
     public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
 
-    private static final String opServerConfig = "op_server_orig.xml";
-    private static final String localHost = "localhost";
-    private static final String otherHost = "ibm.com";
-    private static final String badHost = "abc";
+    protected static final String opServerConfig = "op_server_WasReqUrl.xml";
+    protected static final String localHost = "localhost";
+    protected static final String otherHost = "ibm.com";
+    protected static final String badHost = "abc";
 
-    private static final String simpleString = "Test Value";
-    private static final String complexString = "Value;newCookie=Attack;<tag>Hi</tag>";
-    private static final String specialChars1 = "! * ' ( ) ; : @ & = + $ , / ? % # [ ]";
-    private static final String specialChars2 = "! * ' \" ( ) ; : @ & = + $ , / ? % # [ ]";
-    private static final String scriptString1 = "<script>echo \"hiThere\";</script>";
-    private static final String scriptString2 = "<script>echo \"hi there\";</script>";
-    private static final String scriptString3 = "<script>echo+\"hi there\";</script>";
+    protected static final String simpleString = "Test Value";
+    protected static final String complexString = "Value;newCookie=Attack;<tag>Hi</tag>";
+    protected static final String specialChars1 = "! * ' ( ) ; : @ & = + $ , / ? % # [ ]";
+    protected static final String specialChars2 = "! * ' \" ( ) ; : @ & = + $ , / ? % # [ ]";
+    protected static final String scriptString1 = "<script>echo \"hiThere\";</script>";
+    protected static final String scriptString2 = "<script>echo \"hi there\";</script>";
+    protected static final String scriptString3 = "<script>echo+\"hi there\";</script>";
+
+    protected static String clientNameRoot = null;
+    protected static final String socialError500 = "Error 500: SRVE0295E: Error reported: 500";
 
     //
     public enum ExpectedResult {
         SUCCESS, INVALID_COOKIE, EXCEPTION, MISSING_COOKIE
     }
 
-    @SuppressWarnings("serial")
-    @BeforeClass
-    public static void setUp() throws Exception {
-
-        List<String> apps = new ArrayList<String>() {
-            {
-                add(Constants.OPENID_APP);
-            }
-        };
-
-        testSettings = new TestSettings();
-
-        // Set config parameters for Access token with X509 Certificate in OP config files
-        String tokenType = Constants.ACCESS_TOKEN_KEY;
-        String certType = Constants.X509_CERT;
-
-        // Start the OIDC OP server
-        testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.op", opServerConfig, Constants.OIDC_OP, Constants.NO_EXTRA_APPS,
-                Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
-
-        //Start the OIDC RP server and setup default values
-        testRPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.rp", "rp_server_wasReqUrl_notSet.xml", Constants.OIDC_RP, apps, Constants.DO_NOT_USE_DERBY,
-                Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
-
-        // speed up the tests by not restoring the config between tests - each test will config the server that it needs (cut the time in half)
-        testRPServer.setRestoreServerBetweenTests(false);
-
-        testSettings.setFlowType(Constants.RP_FLOW);
-    }
-
     /**
      * test with: webAppSecurity wasReqURLRedirectDomainNames not set
      * Replace the hostname within WasReqURLOidc... with "abc" before invoking the login page
@@ -118,9 +88,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_NotSet_updateCookieTo_abc() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_NotSet_updateCookieTo_abc() throws Exception {
 
-        testWasReqURLOidc_cookie(badHost, "rp_server_wasReqUrl_notSet.xml", ExpectedResult.INVALID_COOKIE);
+        testWasReqURLOidc_cookie(badHost, clientNameRoot + "server_wasReqUrl_notSet.xml", ExpectedResult.INVALID_COOKIE);
     }
 
     /**
@@ -133,9 +103,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_NotSet_updateCookieTo_otherExistingHostName() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_NotSet_updateCookieTo_otherExistingHostName() throws Exception {
 
-        testWasReqURLOidc_cookie(otherHost, "rp_server_wasReqUrl_notSet.xml", ExpectedResult.INVALID_COOKIE);
+        testWasReqURLOidc_cookie(otherHost, clientNameRoot + "server_wasReqUrl_notSet.xml", ExpectedResult.INVALID_COOKIE);
     }
 
     /**
@@ -148,9 +118,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_NotSet_updateCookieTo_localHostAddress() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_NotSet_updateCookieTo_localHostAddress() throws Exception {
 
-        testWasReqURLOidc_cookie(testOPServer.getServerHostIp(), "rp_server_wasReqUrl_notSet.xml", ExpectedResult.INVALID_COOKIE);
+        testWasReqURLOidc_cookie(testOPServer.getServerHostIp(), clientNameRoot + "server_wasReqUrl_notSet.xml", ExpectedResult.INVALID_COOKIE);
     }
 
     /**
@@ -164,9 +134,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
      */
     @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_NotSet_updateCookieTo_localHostName() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_NotSet_updateCookieTo_localHostName() throws Exception {
 
-        testWasReqURLOidc_cookie(testOPServer.getServerHostname(), "rp_server_wasReqUrl_notSet.xml", ExpectedResult.INVALID_COOKIE);
+        testWasReqURLOidc_cookie(testOPServer.getServerHostname(), clientNameRoot + "server_wasReqUrl_notSet.xml", ExpectedResult.INVALID_COOKIE);
     }
 
     /**
@@ -178,9 +148,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_NotSet_doNotUpdateCookie() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_NotSet_doNotUpdateCookie() throws Exception {
 
-        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_notSet.xml", ExpectedResult.SUCCESS);
+        testWasReqURLOidc_cookie(null, clientNameRoot + "server_wasReqUrl_notSet.xml", ExpectedResult.SUCCESS);
     }
 
     /**
@@ -193,9 +163,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_updateCookieTo_abc() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToLocalHostName_updateCookieTo_abc() throws Exception {
 
-        testWasReqURLOidc_cookie(badHost, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.INVALID_COOKIE);
+        testWasReqURLOidc_cookie(badHost, clientNameRoot + "server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.INVALID_COOKIE);
     }
 
     /**
@@ -208,9 +178,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_updateCookieTo_otherExistingHostName() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToLocalHostName_updateCookieTo_otherExistingHostName() throws Exception {
 
-        testWasReqURLOidc_cookie(otherHost, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.INVALID_COOKIE);
+        testWasReqURLOidc_cookie(otherHost, clientNameRoot + "server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.INVALID_COOKIE);
     }
 
     /**
@@ -223,9 +193,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_updateCookieTo_localHostAddress() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToLocalHostName_updateCookieTo_localHostAddress() throws Exception {
 
-        testWasReqURLOidc_cookie(testOPServer.getServerHostIp(), "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.INVALID_COOKIE);
+        testWasReqURLOidc_cookie(testOPServer.getServerHostIp(), clientNameRoot + "server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.INVALID_COOKIE);
     }
 
     /**
@@ -240,9 +210,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
      */
     @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_updateCookieTo_localHostName() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToLocalHostName_updateCookieTo_localHostName() throws Exception {
 
-        testWasReqURLOidc_cookie(testOPServer.getServerHostname(), "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.MISSING_COOKIE);
+        testWasReqURLOidc_cookie(testOPServer.getServerHostname(), clientNameRoot + "server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.MISSING_COOKIE);
     }
 
     /**
@@ -254,9 +224,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie() throws Exception {
 
-        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS);
+        testWasReqURLOidc_cookie(null, clientNameRoot + "server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS);
     }
 
     /**
@@ -270,9 +240,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToMultipleHosts_updateCookieTo_abc() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToMultipleHosts_updateCookieTo_abc() throws Exception {
 
-        testWasReqURLOidc_cookie(badHost, "rp_server_wasReqUrl_setToMultipleEntries.xml", ExpectedResult.INVALID_COOKIE);
+        testWasReqURLOidc_cookie(badHost, clientNameRoot + "server_wasReqUrl_setToMultipleEntries.xml", ExpectedResult.INVALID_COOKIE);
     }
 
     /**
@@ -286,9 +256,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToMultipleHosts_updateCookieTo_otherExistingHostName() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToMultipleHosts_updateCookieTo_otherExistingHostName() throws Exception {
 
-        testWasReqURLOidc_cookie(otherHost, "rp_server_wasReqUrl_setToMultipleEntries.xml", ExpectedResult.INVALID_COOKIE);
+        testWasReqURLOidc_cookie(otherHost, clientNameRoot + "server_wasReqUrl_setToMultipleEntries.xml", ExpectedResult.INVALID_COOKIE);
     }
 
     /**
@@ -304,9 +274,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
      */
     @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToMultipleHosts_updateCookieTo_localHostAddress() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToMultipleHosts_updateCookieTo_localHostAddress() throws Exception {
 
-        testWasReqURLOidc_cookie(testOPServer.getServerHostIp(), "rp_server_wasReqUrl_setToMultipleEntries.xml", ExpectedResult.MISSING_COOKIE);
+        testWasReqURLOidc_cookie(testOPServer.getServerHostIp(), clientNameRoot + "server_wasReqUrl_setToMultipleEntries.xml", ExpectedResult.MISSING_COOKIE);
     }
 
     /**
@@ -322,9 +292,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
      */
     @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToMultipleHosts_updateCookieTo_localHostName() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToMultipleHosts_updateCookieTo_localHostName() throws Exception {
 
-        testWasReqURLOidc_cookie(testOPServer.getServerHostname(), "rp_server_wasReqUrl_setToMultipleEntries.xml", ExpectedResult.MISSING_COOKIE);
+        testWasReqURLOidc_cookie(testOPServer.getServerHostname(), clientNameRoot + "server_wasReqUrl_setToMultipleEntries.xml", ExpectedResult.MISSING_COOKIE);
     }
 
     /**
@@ -337,9 +307,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToMultipleHosts_doNotUpdateCookie() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToMultipleHosts_doNotUpdateCookie() throws Exception {
 
-        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToMultipleEntries.xml", ExpectedResult.SUCCESS);
+        testWasReqURLOidc_cookie(null, clientNameRoot + "server_wasReqUrl_setToMultipleEntries.xml", ExpectedResult.SUCCESS);
     }
 
     /**
@@ -353,9 +323,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToOther_updateCookieTo_abc() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToOther_updateCookieTo_abc() throws Exception {
 
-        testWasReqURLOidc_cookie(badHost, "rp_server_wasReqUrl_setToOther.xml", ExpectedResult.INVALID_COOKIE);
+        testWasReqURLOidc_cookie(badHost, clientNameRoot + "server_wasReqUrl_setToOther.xml", ExpectedResult.INVALID_COOKIE);
     }
 
     /**
@@ -368,9 +338,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToOther_updateCookieTo_otherExistingHostName() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToOther_updateCookieTo_otherExistingHostName() throws Exception {
 
-        testWasReqURLOidc_cookie(otherHost, "rp_server_wasReqUrl_setToOther.xml", ExpectedResult.EXCEPTION);
+        testWasReqURLOidc_cookie(otherHost, clientNameRoot + "server_wasReqUrl_setToOther.xml", ExpectedResult.EXCEPTION);
     }
 
     /**
@@ -384,9 +354,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToOther_updateCookieTo_localHostAddress() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToOther_updateCookieTo_localHostAddress() throws Exception {
 
-        testWasReqURLOidc_cookie(testOPServer.getServerHostIp(), "rp_server_wasReqUrl_setToOther.xml", ExpectedResult.INVALID_COOKIE);
+        testWasReqURLOidc_cookie(testOPServer.getServerHostIp(), clientNameRoot + "server_wasReqUrl_setToOther.xml", ExpectedResult.INVALID_COOKIE);
     }
 
     /**
@@ -405,13 +375,13 @@ public class OidcClientWasReqURLTests extends CommonTest {
      */
     @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToOther_updateCookieTo_localHostName() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToOther_updateCookieTo_localHostName() throws Exception {
 
         String hostName = testOPServer.getServerHostname();
         if (hostName.endsWith("ibm.com")) {
-            testWasReqURLOidc_cookie(hostName, "rp_server_wasReqUrl_setToOther.xml", ExpectedResult.MISSING_COOKIE);
+            testWasReqURLOidc_cookie(hostName, clientNameRoot + "server_wasReqUrl_setToOther.xml", ExpectedResult.MISSING_COOKIE);
         } else {
-            testWasReqURLOidc_cookie(hostName, "rp_server_wasReqUrl_setToOther.xml", ExpectedResult.INVALID_COOKIE);
+            testWasReqURLOidc_cookie(hostName, clientNameRoot + "server_wasReqUrl_setToOther.xml", ExpectedResult.INVALID_COOKIE);
         }
     }
 
@@ -425,9 +395,9 @@ public class OidcClientWasReqURLTests extends CommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToOther_doNotUpdateCookie() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToOther_doNotUpdateCookie() throws Exception {
 
-        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToOther.xml", ExpectedResult.SUCCESS);
+        testWasReqURLOidc_cookie(null, clientNameRoot + "server_wasReqUrl_setToOther.xml", ExpectedResult.SUCCESS);
     }
 
     /**
@@ -442,7 +412,7 @@ public class OidcClientWasReqURLTests extends CommonTest {
      */
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_simple() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_simple() throws Exception {
 
         String parmValue = simpleString;
         Map<String, String> parms = new HashMap<String, String>();
@@ -453,7 +423,7 @@ public class OidcClientWasReqURLTests extends CommonTest {
         List<validationData> extraExpectations = vData.addExpectation(null, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
                 "Passed Parm value was incorrect.", null, "Param: testParm with value: " + parmValue);
 
-        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+        testWasReqURLOidc_cookie(null, clientNameRoot + "server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
     }
 
     /**
@@ -468,7 +438,7 @@ public class OidcClientWasReqURLTests extends CommonTest {
      */
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_complex1() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_complex1() throws Exception {
 
         String parmValue = complexString;
         Map<String, String> parms = new HashMap<String, String>();
@@ -484,12 +454,12 @@ public class OidcClientWasReqURLTests extends CommonTest {
         extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
                 "Found a cookie that should not have been created.", null, "cookie: Attack");
 
-        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+        testWasReqURLOidc_cookie(null, clientNameRoot + "server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
     }
 
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_complex2() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_complex2() throws Exception {
 
         String parmValue = specialChars1;
         String parmSearchValue = parmValue.replace("'", "\'");
@@ -507,12 +477,12 @@ public class OidcClientWasReqURLTests extends CommonTest {
         extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
                 "Found a cookie that should not have been created.", null, "cookie: Attack");
 
-        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+        testWasReqURLOidc_cookie(null, clientNameRoot + "server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
     }
 
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_complex3() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_complex3() throws Exception {
 
         String parmValue = specialChars2;
         String parmSearchValue = parmValue.replace("'", "\'");
@@ -530,12 +500,12 @@ public class OidcClientWasReqURLTests extends CommonTest {
         extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
                 "Found a cookie that should not have been created.", null, "cookie: Attack");
 
-        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+        testWasReqURLOidc_cookie(null, clientNameRoot + "server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
     }
 
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_complex4() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_complex4() throws Exception {
 
         String parmValue = scriptString1;
         Map<String, String> parms = new HashMap<String, String>();
@@ -551,12 +521,12 @@ public class OidcClientWasReqURLTests extends CommonTest {
         extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
                 "Found a cookie that should not have been created.", null, "cookie: Attack");
 
-        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+        testWasReqURLOidc_cookie(null, clientNameRoot + "server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
     }
 
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_complex5() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_complex5() throws Exception {
 
         String parmValue = scriptString2;
         Map<String, String> parms = new HashMap<String, String>();
@@ -572,12 +542,12 @@ public class OidcClientWasReqURLTests extends CommonTest {
         extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
                 "Found a cookie that should not have been created.", null, "cookie: Attack");
 
-        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+        testWasReqURLOidc_cookie(null, clientNameRoot + "server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
     }
 
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_complex6() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_complex6() throws Exception {
 
         String parmValue = scriptString3;
         Map<String, String> parms = new HashMap<String, String>();
@@ -593,7 +563,7 @@ public class OidcClientWasReqURLTests extends CommonTest {
         extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
                 "Found a cookie that should not have been created.", null, "cookie: Attack");
 
-        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+        testWasReqURLOidc_cookie(null, clientNameRoot + "server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
     }
 
     /**
@@ -608,7 +578,7 @@ public class OidcClientWasReqURLTests extends CommonTest {
      */
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_simple() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_simple() throws Exception {
 
         String parmValue = simpleString;
         String parmSearchValue = parmValue.replace(" ", "+");
@@ -621,7 +591,7 @@ public class OidcClientWasReqURLTests extends CommonTest {
         List<validationData> extraExpectations = vData.addExpectation(null, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
                 "Passed Parm value was incorrect.", null, "Param: testParm with value: " + parmSearchValue);
 
-        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+        testWasReqURLOidc_cookie(null, clientNameRoot + "server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
     }
 
     /**
@@ -636,7 +606,7 @@ public class OidcClientWasReqURLTests extends CommonTest {
      */
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_complex1() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_complex1() throws Exception {
 
         String parmValue = URLEncoder.encode(complexString, "UTF-8");
         Map<String, String> parms = new HashMap<String, String>();
@@ -652,12 +622,12 @@ public class OidcClientWasReqURLTests extends CommonTest {
         extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
                 "Found a cookie that should not have been created.", null, "cookie: Attack");
 
-        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+        testWasReqURLOidc_cookie(null, clientNameRoot + "server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
     }
 
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_complex2() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_complex2() throws Exception {
 
         String parmValue = URLEncoder.encode(specialChars1, "UTF-8");
         Map<String, String> parms = new HashMap<String, String>();
@@ -673,12 +643,12 @@ public class OidcClientWasReqURLTests extends CommonTest {
         extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
                 "Found a cookie that should not have been created.", null, "cookie: Attack");
 
-        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+        testWasReqURLOidc_cookie(null, clientNameRoot + "server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
     }
 
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_complex3() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_complex3() throws Exception {
 
         String parmValue = URLEncoder.encode(specialChars2, "UTF-8");
         Map<String, String> parms = new HashMap<String, String>();
@@ -694,12 +664,12 @@ public class OidcClientWasReqURLTests extends CommonTest {
         extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
                 "Found a cookie that should not have been created.", null, "cookie: Attack");
 
-        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+        testWasReqURLOidc_cookie(null, clientNameRoot + "server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
     }
 
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_complex4() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_complex4() throws Exception {
 
         String parmValue = URLEncoder.encode(scriptString1, "UTF-8");
         Map<String, String> parms = new HashMap<String, String>();
@@ -715,12 +685,12 @@ public class OidcClientWasReqURLTests extends CommonTest {
         extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
                 "Found a cookie that should not have been created.", null, "cookie: Attack");
 
-        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+        testWasReqURLOidc_cookie(null, clientNameRoot + "server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
     }
 
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_complex5() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_complex5() throws Exception {
 
         String parmValue = URLEncoder.encode(scriptString2, "UTF-8");
         Map<String, String> parms = new HashMap<String, String>();
@@ -736,12 +706,12 @@ public class OidcClientWasReqURLTests extends CommonTest {
         extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
                 "Found a cookie that should not have been created.", null, "cookie: Attack");
 
-        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+        testWasReqURLOidc_cookie(null, clientNameRoot + "server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
     }
 
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_complex6() throws Exception {
+    public void ClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_complex6() throws Exception {
 
         String parmValue = URLEncoder.encode(scriptString3, "UTF-8");
         Map<String, String> parms = new HashMap<String, String>();
@@ -757,7 +727,7 @@ public class OidcClientWasReqURLTests extends CommonTest {
         extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
                 "Found a cookie that should not have been created.", null, "cookie: Attack");
 
-        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+        testWasReqURLOidc_cookie(null, clientNameRoot + "server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
     }
 
     /**
@@ -782,6 +752,22 @@ public class OidcClientWasReqURLTests extends CommonTest {
 
     }
 
+    public List<validationData> setFrontEndMessage(List<validationData> expectations) throws Exception {
+
+        expectations = vData.addSuccessStatusCodesForActions(expectations, Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
+        expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, Constants.INTERNAL_SERVER_ERROR_STATUS);
+
+        if (clientNameRoot.contains("rp")) {
+            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                    "Did not receive error message " + MessageConstants.CWOAU0073E_FRONT_END_ERROR + " in the response", null,
+                    MessageConstants.CWOAU0073E_FRONT_END_ERROR);
+        } else {
+            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                    "Did not receive error message \"" + socialError500 + "\" in the response", null, socialError500);
+        }
+        return expectations;
+    }
+
     public void testWasReqURLOidc_cookie(String updatedHost, String rpServerConfig, ExpectedResult expectedResult, List<validationData> extraExpectations) throws Exception {
 
         // Reconfigure OP server with Basic registry
@@ -794,22 +780,25 @@ public class OidcClientWasReqURLTests extends CommonTest {
         switch (expectedResult) {
         case SUCCESS:
             expectations = vData.addSuccessStatusCodes(expectations);
-            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_MATCHES,
-                    "Did not receive " + Constants.IDToken_STR + " in the response.", null, Constants.IDToken_STR);
+            if (clientNameRoot.contains("rp")) {
+                expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_MATCHES,
+                        "Did not receive " + Constants.IDToken_STR + " in the response.", null, Constants.IDToken_STR);
+            } else {
+                expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_MATCHES,
+                        "Did not receive " + Constants.FORMLOGIN_SERVLET + " in the response.", null, Constants.FORMLOGIN_SERVLET);
+            }
             break;
         case INVALID_COOKIE:
-            expectations = vData.addSuccessStatusCodesForActions(expectations, Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
-            expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, Constants.INTERNAL_SERVER_ERROR_STATUS);
-            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
-                    "Did not receive error message " + MessageConstants.CWOAU0073E_FRONT_END_ERROR + " in the response", null,
-                    MessageConstants.CWOAU0073E_FRONT_END_ERROR);
+
+            expectations = setFrontEndMessage(expectations);
+            if (clientNameRoot.contains("rp")) {
+                expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS,
+                        "Server log did not contain an error message about the missing WASReqURLOidc cookie.",
+                        MessageConstants.CWWKS1532E_MALFORMED_URL_IN_COOKIE + ".*" + updatedHost + ".*");
+            }
             expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS,
                     "Server log did not contain an error message about an invalid hostname in the WASReqURLOidc cookie.",
                     MessageConstants.CWWKS1554E_PRIVATE_KEY_JWT_MISSING_ALIAS + ".*" + updatedHost + ".*");
-            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS,
-                    "Server log did not contain an error message about the missing WASReqURLOidc cookie.",
-                    MessageConstants.CWWKS1532E_MALFORMED_URL_IN_COOKIE + ".*" + updatedHost + ".*");
-
             break;
         case EXCEPTION:
             expectations = vData.addSuccessStatusCodesForActions(expectations, Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
@@ -824,14 +813,13 @@ public class OidcClientWasReqURLTests extends CommonTest {
                     "java.net.ConnectException", "Connection refused");
             break;
         case MISSING_COOKIE:
-            expectations = vData.addSuccessStatusCodesForActions(expectations, Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
-            expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, Constants.INTERNAL_SERVER_ERROR_STATUS);
-            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
-                    "Did not receive error message " + MessageConstants.CWOAU0073E_FRONT_END_ERROR + " in the response", null,
-                    MessageConstants.CWOAU0073E_FRONT_END_ERROR);
-            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS,
-                    "Server log did not contain an error message about the missing WASReqURLOidc cookie.",
-                    MessageConstants.CWWKS1520E_MISSING_SAMESITE_COOKIE);
+            expectations = setFrontEndMessage(expectations);
+            // chc needs to be updated once 26225 is resolved
+            if (clientNameRoot.contains("rp")) {
+                expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS,
+                        "Server log did not contain an error message about the missing WASReqURLOidc cookie.",
+                        MessageConstants.CWWKS1520E_MISSING_SAMESITE_COOKIE);
+            }
             break;
         default:
             break;
