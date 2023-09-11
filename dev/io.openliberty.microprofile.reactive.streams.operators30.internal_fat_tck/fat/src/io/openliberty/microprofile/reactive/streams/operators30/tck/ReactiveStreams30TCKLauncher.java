@@ -12,8 +12,10 @@ package io.openliberty.microprofile.reactive.streams.operators30.tck;
 import java.util.HashMap;
 import java.util.Map;
 
+import componenttest.rules.repeater.RepeatTests;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,7 +35,12 @@ import componenttest.topology.utils.tck.TCKRunner;
 @RunWith(FATRunner.class)
 public class ReactiveStreams30TCKLauncher {
 
-    @Server("ReactiveStreams30TCKServer")
+    public static final String SERVER_NAME = "ReactiveStreams30TCKServer";
+
+    @ClassRule
+    public static RepeatTests r = FATSuite.repeatDefault(SERVER_NAME);
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass
@@ -54,7 +61,6 @@ public class ReactiveStreams30TCKLauncher {
 
     @Test
     @Mode(TestMode.FULL) //The TCK takes around 15mins and is difficult to break up so running in FULL mode
-    @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchReactiveStreams30Tck() throws Exception {
         String bucketName = "io.openliberty.microprofile.reactive.streams.operators30.internal_fat_tck";
         String testName = this.getClass() + ":launchReactiveStreams30Tck";

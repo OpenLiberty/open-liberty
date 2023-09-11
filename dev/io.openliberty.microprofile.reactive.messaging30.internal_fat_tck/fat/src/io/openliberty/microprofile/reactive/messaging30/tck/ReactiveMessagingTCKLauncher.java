@@ -17,11 +17,13 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -31,7 +33,12 @@ import org.junit.runner.RunWith;
 @RunWith(FATRunner.class)
 public class ReactiveMessagingTCKLauncher {
 
-    @Server("ReactiveMessaging30TCKServer")
+    public static final String SERVER_NAME = "ReactiveMessaging30TCKServer";
+
+    @ClassRule
+    public static RepeatTests r = FATSuite.repeatDefault(SERVER_NAME);
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass
@@ -46,7 +53,7 @@ public class ReactiveMessagingTCKLauncher {
 
     @Test
     @Mode(TestMode.FULL)
-    @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
+    @AllowedFFDC({ "org.jboss.weld.exceptions.DeploymentException", "com.ibm.ws.container.service.state.StateChangeException" }) // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchReactiveMessaging30Tck() throws Exception {
         String bucketName = "io.openliberty.microprofile.reactive.messaging30.internal_fat_tck";
         String testName = this.getClass() + ":launchReactiveMessaging30Tck";
