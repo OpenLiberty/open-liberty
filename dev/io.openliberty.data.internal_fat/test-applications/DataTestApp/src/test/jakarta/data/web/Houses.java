@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Sort;
 
 /**
  * Repository for operations on the unannotated House entity,
@@ -33,6 +34,8 @@ public interface Houses {
     long deleteByKitchenWidthGreaterThan(int widthAbove);
 
     boolean existsById(String parcel);
+
+    Stream<House> findByAreaGreaterThan(int minArea, Sort... sorts);
 
     List<House> findByGarageTypeOrderByGarageDoorWidthDesc(Garage.Type type);
 

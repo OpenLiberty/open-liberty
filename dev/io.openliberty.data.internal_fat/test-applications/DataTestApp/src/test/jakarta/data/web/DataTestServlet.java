@@ -935,6 +935,47 @@ public class DataTestServlet extends FATServlet {
         assertEquals(188000f, h.purchasePrice, 0.001f);
         assertEquals(Year.of(2020), h.sold);
 
+        // Sorting with type-safe StaticMetamodel constant-like fields
+
+        assertEquals(List.of("TestEmbeddable-404-4418-40",
+                             "TestEmbeddable-204-2992-20",
+                             "TestEmbeddable-104-2288-60",
+                             "TestEmbeddable-304-3655-30"),
+                     houses.findByAreaGreaterThan(1500,
+                                                  Sort.desc(House_.numBedrooms),
+                                                  Sort.asc(House_.LotSize))
+                                     .map(house -> house.parcelId)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of("TestEmbeddable-404-4418-40",
+                             "TestEmbeddable-304-3655-30",
+                             "TestEmbeddable-104-2288-60",
+                             "TestEmbeddable-204-2992-20"),
+                     houses.findByAreaGreaterThan(1400,
+                                                  Sort.desc(House_.garage_door_height),
+                                                  Sort.asc(House_.kitchen_width),
+                                                  Sort.asc(House_.AREA))
+                                     .map(house -> house.parcelId)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of("TestEmbeddable-404-4418-40",
+                             "TestEmbeddable-304-3655-30",
+                             "TestEmbeddable-204-2992-20",
+                             "TestEmbeddable-104-2288-60"),
+                     houses.findByAreaGreaterThan(1300,
+                                                  Sort.desc(House_.parcelid))
+                                     .map(house -> house.parcelId)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of("TestEmbeddable-104-2288-60",
+                             "TestEmbeddable-204-2992-20",
+                             "TestEmbeddable-304-3655-30",
+                             "TestEmbeddable-404-4418-40"),
+                     houses.findByAreaGreaterThan(1200,
+                                                  Sort.asc(House_.id))
+                                     .map(house -> house.parcelId)
+                                     .collect(Collectors.toList()));
+
         // Find a single attribute type
 
         assertArrayEquals(new int[] { 180, 200, 220, 220 },
