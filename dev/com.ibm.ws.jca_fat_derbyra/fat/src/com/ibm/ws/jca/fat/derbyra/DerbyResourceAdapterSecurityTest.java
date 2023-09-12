@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -56,7 +57,7 @@ public class DerbyResourceAdapterSecurityTest extends FATServletClient {
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, APP + ".ear");
         ear.addAsModule(war);
         ShrinkHelper.addDirectory(ear, "lib/LibertyFATTestFiles/derbyRAApp");
-        ShrinkHelper.exportAppToServer(server, ear);
+        ShrinkHelper.exportAppToServer(server, ear, DeployOptions.SERVER_ONLY);
 
         ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, RAR_NAME + ".rar");
         rar.as(JavaArchive.class).addPackage("fat.derbyra.resourceadapter");
