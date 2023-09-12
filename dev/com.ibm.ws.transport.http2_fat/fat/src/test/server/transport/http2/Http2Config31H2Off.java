@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,7 +18,9 @@ import java.util.logging.Logger;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import componenttest.custom.junit.runner.FATRunner;
@@ -48,6 +50,9 @@ public class Http2Config31H2Off extends FATServletClient {
     private final static String defaultServletPath = "H2FATDriver/H2FATDriverServlet?hostName=";
     private final static String TEST_NAME = "testHeaderAndDataPost";
 
+    @Rule
+    public TestName testName = new Utils.CustomTestName();
+
     @BeforeClass
     public static void before() throws Exception {
 
@@ -60,6 +65,12 @@ public class Http2Config31H2Off extends FATServletClient {
 
         server.startServer(true, true);
         runtimeServer.startServer(true, true);
+        // Go through Logs and check if Netty is being used
+//      boolean runningNetty = false;
+        // Wait for endpoints to finish loading and get the endpoint started messages
+        runtimeServer.waitForStringInLog("CWWKO0219I.*");
+        server.waitForStringInLog("CWWKO0219I.*");
+
     }
 
     @AfterClass

@@ -51,8 +51,13 @@ public class DataFrameTests extends H2FATDriverServlet {
         String testName = "testDataOnIdleStream";
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "DATA Frame Received in the wrong state of: IDLE".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "DATA Frame Received in the wrong state of: IDLE".getBytes();
+        byte[] nettyDebugData = "Stream 3 does not exist".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);
@@ -124,8 +129,13 @@ public class DataFrameTests extends H2FATDriverServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         // Add expected goaway before the init sequence.
-        byte[] debugData = "Error processing the payload for DATA frame on stream 5".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "Error processing the payload for DATA frame on stream 5".getBytes();
+        byte[] nettyDebugData = "Frame payload too small for padding.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);
@@ -159,10 +169,17 @@ public class DataFrameTests extends H2FATDriverServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         int ERROR_CODE = 0x6; // FRAME_SIZE_ERROR
-        byte[] debugData = "DATA payload greater than allowed by the max frame size".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ERROR_CODE, 1, false);
-        h2Client.addExpectedFrame(errorFrame);
+        byte[] chfwDebugData = "DATA payload greater than allowed by the max frame size".getBytes();
+        byte[] nettyDebugData = "Frame length: 57601 exceeds maximum: 57344".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, ERROR_CODE, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, ERROR_CODE, 1, false);
 
+        System.out.println("Using netty?!?: " + USING_NETTY);
+
+        h2Client.addExpectedFrame(errorFrame);
         setupDefaultUpgradedConnection(h2Client);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
@@ -222,11 +239,12 @@ public class DataFrameTests extends H2FATDriverServlet {
         FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
 
-        // generate 1000 bytes for data frame
+        // // generate 1000 bytes for data frame
         byte[] data = new byte[999];
         for (int i = 0; i < data.length; i++) {
             data[i] = 0x01;
         }
+
         FrameData dataFrame = new FrameData(3, data, 0, false, true, false);
 
         h2Client.sendFrame(frameHeadersToSend);
@@ -283,6 +301,7 @@ public class DataFrameTests extends H2FATDriverServlet {
         for (int i = 0; i < data.length; i++) {
             data[i] = 0x01;
         }
+
         FrameData dataFrame3 = new FrameData(3, data, 0, false, true, false);
         // EOS set, so we do NOT expect a window update response
         FrameData dataFrame5 = new FrameData(5, data, 0, true, true, false);
@@ -324,10 +343,12 @@ public class DataFrameTests extends H2FATDriverServlet {
 
         // expect window updates on streams 0 (connection) and 3 (stream)
         FrameWindowUpdate streamUpdateFrame = new FrameWindowUpdate(3, 502, false);
-        // This one should be sent just after the preface is processed to add 2 to the existing connection window size
-        FrameWindowUpdate connectionUpdateFrame = new FrameWindowUpdate(0, 2, false);
         h2Client.addExpectedFrame(streamUpdateFrame);
-        h2Client.addExpectedFrame(connectionUpdateFrame);
+        if (!USING_NETTY) {
+            // This one should be sent just after the preface is processed to add 2 to the existing connection window size
+            FrameWindowUpdate connectionUpdateFrame = new FrameWindowUpdate(0, 2, false);
+            h2Client.addExpectedFrame(connectionUpdateFrame);
+        }
 
         setupDefaultUpgradedConnection(h2Client);
 

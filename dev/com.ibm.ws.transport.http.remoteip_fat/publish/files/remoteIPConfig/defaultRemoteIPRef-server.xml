@@ -22,7 +22,8 @@
                   host="*"
                   httpPort="${bvt.prop.HTTP_default}"
                   httpsPort="${bvt.prop.HTTP_default.secure}"
-                  remoteIpRef="myRemoteIp">
+                  remoteIpRef="myRemoteIp"
+                  useNettyTransport="true">
     </httpEndpoint>
     
     <remoteIp id="myRemoteIp"/>

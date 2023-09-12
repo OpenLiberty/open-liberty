@@ -51,8 +51,11 @@ import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.internal.HttpChain.ChainState;
 import com.ibm.ws.http.logging.internal.AccessLogger;
 import com.ibm.ws.http.logging.internal.DisabledLogger;
+import com.ibm.ws.http.netty.MSP;
+import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.kernel.launch.service.PauseableComponent;
 import com.ibm.ws.kernel.launch.service.PauseableComponentException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
@@ -69,6 +72,8 @@ import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
+import io.openliberty.netty.internal.NettyFramework;
+import io.openliberty.netty.internal.impl.NettyConstants;
 
 @Component(configurationPid = "com.ibm.ws.http",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
@@ -103,6 +108,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     /** Required, static Channel framework reference */
     private CHFWBundle chfw = null;
+    /** Required, static Netty framework reference */
+    private NettyFramework netty = null;
 
     /** Required, dynamic tcpOptions: unmodifiable map */
     private volatile ChannelConfiguration tcpOptions = null;
@@ -143,6 +150,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     private volatile String topicString = null;
     private volatile String name = null;
     private volatile String pid = null;
+    private volatile boolean useNetty = false;
 
     private BundleContext bundleContext = null;
 
@@ -159,8 +167,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      */
     protected volatile OnError onError = OnError.WARN;
 
-    private final HttpChain httpChain = new HttpChain(this, false);
-    private final HttpChain httpSecureChain = new HttpChain(this, true);
+    private HttpChain httpChain;
+    private HttpChain httpSecureChain;
 
     private final AtomicReference<AccessLog> accessLogger = new AtomicReference<AccessLog>(DisabledLogger.getRef());
 
@@ -225,6 +233,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         public void run() {
             synchronized (actionLock) {
                 // only try to update the chains if the endpoint is enabled/started and framework is good
+
                 if (endpointStarted && endpointState.get() == ENABLED && FrameworkState.isValid()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "EndpointAction: updating chains " + HttpEndpointImpl.this, httpChain, httpSecureChain);
@@ -260,8 +269,26 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         sslOptions.activate(ctx);
         eventService.activate(ctx);
 
-        httpChain.init(name, cid, chfw);
-        httpSecureChain.init(name, cid, chfw);
+        //useNetty = ProductInfo.getBetaEdition() ?
+        //                MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), false);
+
+        useNetty = ProductInfo.getBetaEdition() && MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), true);
+        System.out.println("Using netty? " + useNetty);
+        System.out.println("In beta? " + ProductInfo.getBetaEdition());
+        if (useNetty) {
+            httpChain = new NettyChain(this, false);
+            httpSecureChain = new NettyChain(this, true);
+
+            ((NettyChain) httpChain).initNettyChain(pid, config, netty);
+            ((NettyChain) httpSecureChain).initNettyChain(pid, config, netty);
+
+        } else {
+            httpChain = new HttpChain(this, false);
+            httpSecureChain = new HttpChain(this, true);
+
+            httpChain.init(name, cid, chfw);
+            httpSecureChain.init(name, cid, chfw);
+        }
 
         modified(config);
     }
@@ -730,6 +757,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "set remote ip " + config.getProperty("id"), this);
         }
+        MSP.log("Remote IP config set called");
         this.remoteIpConfig = config;
         if (remoteIpConfig != null) {
             performAction(updateAction);
@@ -855,8 +883,21 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     protected void unsetChfwBundle(CHFWBundle bundle) {
     }
 
-    protected CHFWBundle getChfwBundle() {
+    public CHFWBundle getChfwBundle() {
         return chfw;
+    }
+
+    @Reference(name = "nettyBundle")
+    protected void setNettyBundle(NettyFramework bundle) {
+        netty = bundle;
+    }
+
+    protected void unsetNettyBundle(NettyFramework bundle) {
+
+    }
+
+    protected NettyFramework getNettyBundle() {
+        return netty;
     }
 
     /**

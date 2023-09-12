@@ -833,14 +833,15 @@ public class H2Connection {
         private void checkResponseHeaders(String responseHeaders) throws UnexpectedUpgradeHeader {
             String[] headerNamesAndValues;
             if (responseHeaders.contains("<CR>\n<LF><CR>\n<LF>")) { //we have the H1.1 headers at this point
+                System.out.println(responseHeaders);
                 headerNamesAndValues = responseHeaders.split("<CR>\n<LF>");
                 boolean switchingProtocols = false, upgradeH2c = false, connectionUpgrade = false;
                 for (String header_value : headerNamesAndValues) {
-                    if (header_value.equals("HTTP/1.1 101 Switching Protocols")) {
+                    if (header_value.equalsIgnoreCase("HTTP/1.1 101 Switching Protocols")) {
                         switchingProtocols = true;
-                    } else if (header_value.equals("Upgrade: h2c")) {
+                    } else if (header_value.equalsIgnoreCase("Upgrade: h2c")) {
                         upgradeH2c = true;
-                    } else if (header_value.equals("Connection: Upgrade")) {
+                    } else if (header_value.equalsIgnoreCase("Connection: Upgrade")) {
                         connectionUpgrade = true;
                     }
                 }
