@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.RecordComponent;
 import java.util.ArrayList;
@@ -324,6 +325,45 @@ public class EntityDefiner implements Runnable {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, entityType.getName() + " getIdType: " + idType);
         return idType;
+    }
+
+    /**
+     * Assigns the public static volatile fields of @StaticMetaModel classes
+     * to be the corresponding entity attribute name from the metamodel.
+     *
+     * @param staticMetamodels static metamodel class(es) per entity class.
+     */
+    public void populateStaticMetamodelClasses(Map<Class<?>, List<Class<?>>> staticMetamodels) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        for (Class<?> entityClass : entities) {
+            List<Class<?>> metamodelClasses = staticMetamodels.get(entityClass);
+            if (metamodelClasses != null) {
+                CompletableFuture<EntityInfo> entityInfoFuture = entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
+                EntityInfo entityInfo = entityInfoFuture.join();
+                for (Class<?> metamodelClass : metamodelClasses)
+                    for (Field field : metamodelClass.getFields()) {
+                        int mod = field.getModifiers();
+                        if (String.class.equals(field.getType())
+                            && Modifier.isPublic(mod)
+                            && Modifier.isStatic(mod)
+                            && !Modifier.isFinal(mod)
+                            && Modifier.isVolatile(mod)) {
+
+                            String fieldName = field.getName();
+                            String value = entityInfo.attributeNames.get(fieldName.toLowerCase());
+                            if (value != null)
+                                try {
+                                    if (trace && tc.isDebugEnabled())
+                                        Tr.debug(this, tc, "set " + metamodelClass.getSimpleName() + '.' + fieldName + " = " + value);
+                                    field.set(null, value);
+                                } catch (IllegalAccessException | IllegalArgumentException x) {
+                                    System.out.println("Unable to set the value of the " + field + " field to " + value);
+                                    // TODO NLS
+                                }
+                        }
+                    }
+            }
+        }
     }
 
     @Override
