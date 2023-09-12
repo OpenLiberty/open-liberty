@@ -16,7 +16,8 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/postgresqlApp/src
+	test-applications/postgresqlApp/src,\
+	test-applications/postgresqlAwsApp/src
 
 fat.project: true
 

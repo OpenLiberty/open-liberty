@@ -24,7 +24,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import jdbc.fat.postgresql.web.PostgreSQLAWSTestServlet;
+import jdbc.fat.postgresql.aws.web.PostgreSQLAWSTestServlet;
 
 @RunWith(FATRunner.class)
 public class PostgreSQLAWSTest extends FATServletClient {
@@ -59,10 +59,12 @@ public class PostgreSQLAWSTest extends FATServletClient {
         server.addEnvVar("PG_HOST", FATSuite.postgre.getHost());
 
         // Create a normal Java EE application and export to server
-        ShrinkHelper.defaultApp(server, JEE_APP, "jdbc.fat.postgresql.web");
+        ShrinkHelper.defaultApp(server, JEE_APP, "jdbc.fat.postgresql.aws.web");
 
         // Start Server
         server.startServer();
+
+        server.waitForStringInLog("EXIT contextInitialized");
     }
 
     @AfterClass
