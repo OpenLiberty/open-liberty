@@ -33,7 +33,7 @@ Import-Package: \
   !io.smallrye.common.vertx.*,\
   !io.micrometer.*,\
   !io.opentelemetry.*,\
-  !org.eclipse.microprofile.metrics.*,\
+  org.eclipse.microprofile.metrics.*; version="[4.0,6)",\
   jakarta.enterprise.*; version="[3.0,5)",\
   *
 
