@@ -401,17 +401,14 @@ public class XMLConfigParser {
 
                 } else if (includeResource.exists() &&
                            ((includeResource.isType(WsResource.Type.DIRECTORY)))) {
-                    boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
-                    if(isBeta){
-                        Iterator<String> children = includeResource.getChildren();
-                        ArrayList<String> alphabeticalChildren = new ArrayList<String>();
-                        while (children.hasNext()) {
-                            alphabeticalChildren.add(children.next());
-                        }
-                        Collections.sort(alphabeticalChildren);
-                        for(String child : alphabeticalChildren){
-                            parseIncludeDir(parser, docLocation, child, includes, configuration);
-                        }
+                    Iterator<String> children = includeResource.getChildren();
+                    ArrayList<String> alphabeticalChildren = new ArrayList<String>();
+                    while (children.hasNext()) {
+                        alphabeticalChildren.add(children.next());
+                    }
+                    Collections.sort(alphabeticalChildren);
+                    for(String child : alphabeticalChildren){
+                        parseIncludeDir(parser, docLocation, child, includes, configuration);
                     }
 
                 } else {

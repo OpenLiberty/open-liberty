@@ -606,25 +606,22 @@ public class XMLConfigParserTest {
 
     @Test
     public void testIncludesWithDir() throws Exception {
-        boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
-        if(isBeta){
-            changeLocationSettings("directory.include");
+        changeLocationSettings("directory.include");
 
-            String base;
-            base = CONFIG_ROOT;
-            WsResource resource = wsLocation.resolveResource(CONFIG_ROOT);
-            configParser = new XMLConfigParser(wsLocation, variableRegistry);
-            ServerConfiguration serverConfig = configParser.parseServerConfiguration(resource);
+        String base;
+        base = CONFIG_ROOT;
+        WsResource resource = wsLocation.resolveResource(CONFIG_ROOT);
+        configParser = new XMLConfigParser(wsLocation, variableRegistry);
+        ServerConfiguration serverConfig = configParser.parseServerConfiguration(resource);
 
-            //check both files from shared.config.dir are within server's includes as specified in the server.xml
-            WsResource baseConfigXML = configParser.resolveInclude("${shared.config.dir}/baseConfig.xml", base, wsLocation);
-            WsResource includeXML = configParser.resolveInclude("${shared.config.dir}/include.xml", base, wsLocation);
+        //check both files from shared.config.dir are within server's includes as specified in the server.xml
+        WsResource baseConfigXML = configParser.resolveInclude("${shared.config.dir}/baseConfig.xml", base, wsLocation);
+        WsResource includeXML = configParser.resolveInclude("${shared.config.dir}/include.xml", base, wsLocation);
 
-            assertTrue(serverConfig.getIncludes().contains(baseConfigXML));
-            assertTrue(serverConfig.getIncludes().contains(includeXML));
+        assertTrue(serverConfig.getIncludes().contains(baseConfigXML));
+        assertTrue(serverConfig.getIncludes().contains(includeXML));
 
-            assertEquals(2, serverConfig.getIncludes().size());
-        }
+        assertEquals(2, serverConfig.getIncludes().size());
     }
 
     private static final boolean isWindows = System.getProperty("os.name", "unknown").toUpperCase(Locale.ENGLISH).contains("WINDOWS");
