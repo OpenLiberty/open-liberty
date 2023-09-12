@@ -52,7 +52,8 @@ import componenttest.topology.impl.LibertyServer;
                 CRaCResourceRequestNotSupportedTest.class,
                 CRaCResourceRequestPhaseAfterAppStartTest.class,
                 CRaCResourceRequestPhaseBeforeAppStartTest.class,
-                CRaCResourceMultiAppTest.class
+                CRaCResourceMultiAppTest.class,
+                CRaCMXBeanTest.class
 })
 
 public class FATSuite {
