@@ -88,7 +88,7 @@ public class MultiRecoveryTest {
 	}
 	
 	@Before
-	public void before() throws IOException {
+	public void before() throws Exception {
 		WSATTest.callClearResourcesServlet(recoveryServer, server1, server2);
 	}
 
