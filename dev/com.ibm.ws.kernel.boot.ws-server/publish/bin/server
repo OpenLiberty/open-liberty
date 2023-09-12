@@ -460,10 +460,6 @@ serverEnvDefaults()
     fi
   esac
 
-  # Check for any verbose:gc variable set by user
-  # By default we set this to be true unless user specifies otherwise
-  # if [ ! jvmargs, javaoptions, jvmoptionsquoted contains verbose:gc, verbosegc, etc] then SERVER_IBM_JAVA_OPTIONS += -Xverbosegclog:verbosegc.%seq.log,10,1024
-  SERVER_IBM_JAVA_OPTIONS+=" -Xverbosegclog:verbosegc.%seq.log,10,1024"
   # Add -Xquickstart -Xshareclasses:none for client JVMs only.  We don't want 
   # shared classes cache created for client operations.
   # Add -Dcom.ibm.tools.attach.enable=yes to allow self-attach on z/OS
@@ -1122,11 +1118,11 @@ serverCmd()
   # Check for any verbose:gc variable set by user
   # By default we set this to be true unless user specifies otherwise
   # if [ ! jvmargs, javaoptions, jvmoptionsquoted contains verbose:gc, verbosegc, etc] then SERVER_IBM_JAVA_OPTIONS += -Xverbosegclog:verbosegc.%seq.log,10,1024
-  if [ $IBM_JAVA_OPTIONS == *"verbosegc"* ] or [$IBM_JAVA_OPTIONS == *"verbose:gc"* ] then
-    IBM_JAVA_OPTIONS+=" -Xverbosegclog:verbosegc.%seq.log,10,1024"
-    OPENJ9_JAVA_OPTIONS+=" -Xverbosegclog:verbosegc.%seq.log,10,1024"
+  if ! [[ $JVM_OPTIONS_QUOTED = *"verbosegc"* ] || [ $JVM_OPTIONS_QUOTED = *"verbose:gc"* ]]
+  then
+    IBM_JAVA_OPTIONS+=" -Xverbosegclog:logs/verbosegc.%seq.log,10,1024"
+    OPENJ9_JAVA_OPTIONS+=" -Xverbosegclog:logs/verbosegc.%seq.log,10,1024"
   fi
-
 
   if $os400lib; then
     serverCmdOS400 "${SERVER_CMD_BACKGROUND_LOG}" "${SERVER_NAME}" "$@"

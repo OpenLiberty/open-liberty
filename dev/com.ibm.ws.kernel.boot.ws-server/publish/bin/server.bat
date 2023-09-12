@@ -275,6 +275,18 @@ goto:eof
   set SAVE_OPENJ9_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
   set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
   set OPENJ9_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
+
+  @REM Check for any verbose:gc variable set by user
+  @REM By default we set this to be true unless user specifies otherwise
+  @REM if not jvmargs, javaoptions, jvmoptionsquoted contains verbose:gc, verbosegc, etc ( set SERVER_IBM_JAVA_OPTIONS=%SERVER_IBM_JAVA_OPTIONS% -Xverbosegclog:verbosegc.%seq.log,10,1024)
+  if not x%JVM_OPTIONS:verbose:gc=%==x%JVM_OPTIONS% (
+    set IBM_JAVA_OPTIONS=%IBM_JAVA_OPTIONS% -Xverbosegclog:logs/verbosegc.%seq.log,10,1024
+    set OPENJ9_JAVA_OPTIONS=%OPENJ9_JAVA_OPTIONS% -Xverbosegclog:logs/verbosegc.%seq.log,10,1024
+  ) else if not x%JVM_OPTIONS:verbosegc=%==x%JVM_OPTIONS% (
+    set IBM_JAVA_OPTIONS=%IBM_JAVA_OPTIONS% -Xverbosegclog:logs/verbosegc.%seq.log,10,1024
+    set OPENJ9_JAVA_OPTIONS=%OPENJ9_JAVA_OPTIONS% -Xverbosegclog:logs/verbosegc.%seq.log,10,1024
+  )
+
   !JAVA_CMD_QUOTED! !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED!
   set RC=%errorlevel%
   set IBM_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
@@ -584,11 +596,6 @@ goto:eof
   ) else (
     set SERVER_IBM_JAVA_OPTIONS=!SPECIFIED_JAVA_OPTIONS!
   )
-
-  @REM Check for any verbose:gc variable set by user
-  @REM By default we set this to be true unless user specifies otherwise
-  @REM if not jvmargs, javaoptions, jvmoptionsquoted contains verbose:gc, verbosegc, etc ( set SERVER_IBM_JAVA_OPTIONS=%SERVER_IBM_JAVA_OPTIONS% -Xverbosegclog:verbosegc.%seq.log,10,1024)
-  set SERVER_IBM_JAVA_OPTIONS=%SERVER_IBM_JAVA_OPTIONS% -Xverbosegclog:verbosegc.%seq.log,10,1024
 
   @REM Add -Xquickstart -Xshareclasses:none for client JVMs only.  We don't want 
   @REM shared classes cache created for client operations.
