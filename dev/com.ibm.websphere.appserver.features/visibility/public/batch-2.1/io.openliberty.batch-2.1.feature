@@ -18,7 +18,7 @@ IBM-ShortName: batch-2.1
 Subsystem-Name: Jakarta Batch 2.1
 -features=com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
   io.openliberty.batch2.1.internal.ee-10.0; ibm.tolerates:="11.0", \
-  io.openliberty.jakarta.annotation-2.1, \
+  io.openliberty.jakarta.annotation-2.1; ibm.tolerates:="3.0", \
   com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0", \
   com.ibm.websphere.appserver.contextService-1.0, \
   io.openliberty.persistenceService-2.0, \
