@@ -20,22 +20,25 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.transactional.web.TransactionalTestServlet;
+import com.ibm.ws.transactional.web.CheckedUncheckedTestServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-public class TransactionalTest extends FATServletClient {
+@Mode(TestMode.FULL)
+public class CheckedUncheckedTest extends FATServletClient {
 
     public static final String APP_NAME = "transactional";
-    public static final String SERVLET_NAME = APP_NAME + "/transactional";
+    public static final String SERVLET_NAME = APP_NAME + "/checkedunchecked";
 
     @Server("com.ibm.ws.transactional")
-    @TestServlet(servlet = TransactionalTestServlet.class, contextRoot = APP_NAME)
+    @TestServlet(servlet = CheckedUncheckedTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @BeforeClass

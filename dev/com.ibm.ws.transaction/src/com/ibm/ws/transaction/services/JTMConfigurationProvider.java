@@ -274,6 +274,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public int getClientInactivityTimeout() {
         // return Integer.valueOf(_props.get("client.inactivity.timeout"));
         Number num = (Number) _props.get("clientInactivityTimeout");
@@ -316,9 +317,12 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public int getMaximumTransactionTimeout() {
         //return ((Integer) _props.get("propogatedOrBMTTranLifetimeTimeout")).intValue();
         Number num = (Number) _props.get("propogatedOrBMTTranLifetimeTimeout");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getMaximumTransactionTimeout: {0}", num);
         return num.intValue();
     }
 
@@ -434,6 +438,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public boolean isAcceptHeuristicHazard() {
         return (Boolean) _props.get("acceptHeuristicHazard");
     }
@@ -461,14 +466,16 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public boolean isOnePCOptimization() {
         Boolean is1PC = (Boolean) _props.get("OnePCOptimization");
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "OnePCOptimization set to " + is1PC);
+            Tr.debug(tc, "OnePCOptimization set to {0}", is1PC);
         return is1PC;
     }
 
     @Override
+    @Trivial
     public boolean isForcePrepare() {
         Boolean forcePrepare = (Boolean) _props.get("forcePrepare");
         if (tc.isDebugEnabled())

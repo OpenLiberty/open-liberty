@@ -1417,15 +1417,11 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     /**
      * Indicate that the prepare XA phase failed.
      */
-    protected void setPrepareXAFailed() // d266464A
-    {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "setPrepareXAFailed");
+    protected void setPrepareXAFailed() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setPrepareXAFailed");
 
         setRBO(); // Ensure native context is informed
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "setPrepareXAFailed");
     }
 
     /**

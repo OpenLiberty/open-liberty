@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,14 +30,11 @@ import com.ibm.wsspi.uow.UOWManager;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 
 /**
  * Servlet implementation class TransactionalTest
  */
 @WebServlet("/transactional")
-@Mode(TestMode.FULL)
 public class TransactionalTestServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
 
@@ -191,21 +188,18 @@ public class TransactionalTestServlet extends FATServlet {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     @ExpectedFFDC(value = { "java.lang.IllegalStateException" })
     public void testMA007a() {
         testMA007(methodAnnotatedTestBean, "MA007a");
     }
 
     @Test
-    @Mode(TestMode.LITE)
     @ExpectedFFDC(value = { "java.lang.IllegalStateException" })
     public void testMA007b() {
         testMA007(classAnnotatedMandatoryTestBean, "MA007b");
     }
 
     @Test
-    @Mode(TestMode.LITE)
     @ExpectedFFDC(value = { "java.lang.IllegalStateException" })
     public void testMA007c() {
         testMA007(classAnnotatedMandatoryStereotypeTestBean, "MA007c");
@@ -411,13 +405,11 @@ public class TransactionalTestServlet extends FATServlet {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testNE008a() {
         testNE008(methodAnnotatedTestBean, "NE008a");
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testNE008b() {
         testNE008(classAnnotatedNeverTestBean, "NE008b");
     }
@@ -577,14 +569,12 @@ public class TransactionalTestServlet extends FATServlet {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     @ExpectedFFDC(value = { "java.lang.IllegalStateException" })
     public void testNS009a() {
         testNS009(methodAnnotatedTestBean, "NS009a");
     }
 
     @Test
-    @Mode(TestMode.LITE)
     @ExpectedFFDC(value = { "java.lang.IllegalStateException" })
     public void testNS009b() {
         testNS009(classAnnotatedNotSupportedTestBean, "NS009b");
@@ -809,13 +799,11 @@ public class TransactionalTestServlet extends FATServlet {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRE010a() {
         testRE010(methodAnnotatedTestBean, "RE010a");
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRE010b() {
         testRE010(classAnnotatedRequiredTestBean, "RE010b");
     }
@@ -1031,13 +1019,11 @@ public class TransactionalTestServlet extends FATServlet {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRN006a() {
         testRN006(methodAnnotatedTestBean, "RN006a");
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testRN006b() {
         testRN006(classAnnotatedRequiresNewTestBean, "RN006b");
     }
@@ -1327,14 +1313,12 @@ public class TransactionalTestServlet extends FATServlet {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     @ExpectedFFDC(value = { "java.lang.IllegalStateException" })
     public void testSU012a() {
         testSU012(methodAnnotatedTestBean, "SU012a");
     }
 
     @Test
-    @Mode(TestMode.LITE)
     @ExpectedFFDC(value = { "java.lang.IllegalStateException" })
     public void testSU012b() {
         testSU012(classAnnotatedSupportsTestBean, "SU012b");
@@ -1447,7 +1431,6 @@ public class TransactionalTestServlet extends FATServlet {
      * in 'nested' @Transactional calls.
      */
     @Test
-    @Mode(TestMode.LITE)
     @ExpectedFFDC(value = { "java.lang.IllegalStateException" })
     public void testNestedUTAccess() throws Throwable {
         final TestContext tc = new TestContext("NestedUTAccess");
