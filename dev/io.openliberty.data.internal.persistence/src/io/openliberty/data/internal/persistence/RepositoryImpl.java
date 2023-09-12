@@ -29,6 +29,7 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
 import java.sql.SQLSyntaxErrorException;
@@ -81,6 +82,7 @@ import io.openliberty.data.repository.Update;
 import jakarta.data.exceptions.DataConnectionException;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
+import jakarta.data.exceptions.EntityExistsException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
@@ -421,20 +423,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 q = generateSelectClause(queryInfo, select).append(whereClause);
                 if (countPages && queryInfo.type == QueryInfo.Type.FIND)
                     generateCount(queryInfo, whereClause.toString());
-            } else if (queryInfo.method.getName().startsWith("save")) {
-                queryInfo.type = QueryInfo.Type.MERGE;
-                Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-                if (paramTypes.length != 1)
-                    throw new UnsupportedOperationException("Repository save operations must have exactly 1 parameter," +
-                                                            " which can be the entity or a collection or array of entities. The " + queryInfo.method.getName() +
-                                                            " method has " + paramTypes.length + " parameters."); // TODO NLS
-                queryInfo.saveParamType = paramTypes[0];
             } else {
-                // Query by method name
-                q = generateMethodNameQuery(queryInfo, countPages);//keyset queries before orderby
+                // Query by method name or Query by parameters
+                q = generateQueryFromMethod(queryInfo, countPages);//keyset queries before orderby
 
                 // @Select annotation only
-                if (q == null) {
+                if (q == null && queryInfo.type == null) {
                     Select select = queryInfo.method.getAnnotation(Select.class);
                     if (select != null) {
                         queryInfo.type = QueryInfo.Type.FIND;
@@ -636,10 +630,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     x = new DataConnectionException(original);
                 else if (cause instanceof SQLSyntaxErrorException)
                     x = new MappingException(original);
+                else if (cause instanceof SQLIntegrityConstraintViolationException)
+                    x = new EntityExistsException(original);
             }
             if (x == null) {
                 if (original instanceof OptimisticLockException)
                     x = new OptimisticLockingFailureException(original);
+                else if (original instanceof jakarta.persistence.EntityExistsException)
+                    x = new EntityExistsException(original);
                 else if (original instanceof NoResultException)
                     x = new EmptyResultException(original);
                 else if (original instanceof jakarta.persistence.NonUniqueResultException)
@@ -1154,7 +1152,45 @@ public class RepositoryImpl<R> implements InvocationHandler {
             Tr.debug(this, tc, "forward & previous keyset queries", queryInfo.jpqlAfterKeyset, queryInfo.jpqlBeforeKeyset);
     }
 
-    private StringBuilder generateMethodNameQuery(QueryInfo queryInfo, boolean countPages) {
+    /**
+     * Generates the JPQL ORDER BY clause. This method is common between the OrderBy annotation and keyword.
+     */
+    private void generateOrderBy(QueryInfo queryInfo, StringBuilder q) {
+        Class<?> multiType = queryInfo.getMultipleResultType();
+
+        boolean needsKeysetQueries = KeysetAwarePage.class.equals(multiType)
+                                     || KeysetAwareSlice.class.equals(multiType)
+                                     || Iterator.class.equals(multiType);
+
+        StringBuilder fwd = needsKeysetQueries ? new StringBuilder(100) : q; // forward page order
+        StringBuilder prev = needsKeysetQueries ? new StringBuilder(100) : null; // previous page order
+
+        boolean first = true;
+        for (Sort sort : queryInfo.sorts) {
+            fwd.append(first ? " ORDER BY " : ", ");
+            appendSort(fwd, queryInfo.entityVar, sort, true);
+
+            if (needsKeysetQueries) {
+                prev.append(first ? " ORDER BY " : ", ");
+                appendSort(prev, queryInfo.entityVar, sort, false);
+            }
+            first = false;
+        }
+
+        if (needsKeysetQueries) {
+            generateKeysetQueries(queryInfo, q, fwd, prev);
+            q.append(fwd);
+        }
+    }
+
+    /**
+     * Handles both Query by Method Name and Query by Parameters patterns. // TODO add this second pattern one piece at a time
+     *
+     * @param queryInfo  query information to populate.
+     * @param countPages whether to generate a count query (for Page.totalElements and Page.totalPages).
+     * @return the generated query written to a StringBuilder.
+     */
+    private StringBuilder generateQueryFromMethod(QueryInfo queryInfo, boolean countPages) {
         EntityInfo entityInfo = queryInfo.entityInfo;
         String o = queryInfo.entityVar;
         String methodName = queryInfo.method.getName();
@@ -1180,6 +1216,22 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (orderBy >= c)
                 parseOrderBy(queryInfo, orderBy, q);
             queryInfo.type = QueryInfo.Type.FIND;
+        } else if (queryInfo.method.getName().startsWith("save")) {
+            queryInfo.type = QueryInfo.Type.MERGE;
+            Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
+            if (paramTypes.length != 1)
+                throw new UnsupportedOperationException("Repository " + "save" + " operations must have exactly 1 parameter," +
+                                                        " which can be the entity or a collection or array of entities. The " + queryInfo.method.getName() +
+                                                        " method has " + paramTypes.length + " parameters."); // TODO NLS
+            queryInfo.saveParamType = paramTypes[0];
+        } else if (methodName.startsWith("insert")) {
+            queryInfo.type = QueryInfo.Type.INSERT;
+            Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
+            if (paramTypes.length != 1)
+                throw new UnsupportedOperationException("Repository " + "insert" + " operations must have exactly 1 parameter," +
+                                                        " which can be the entity or a collection or array of entities. The " + queryInfo.method.getName() +
+                                                        " method has " + paramTypes.length + " parameters."); // TODO NLS
+            queryInfo.saveParamType = paramTypes[0];
         } else if (methodName.startsWith("delete") || methodName.startsWith("remove")) {
             int by = methodName.indexOf("By", 6);
             int c = by < 0 ? methodName.length() : by + 2;
@@ -1255,37 +1307,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
         }
 
         return q;
-    }
-
-    /**
-     * Generates the JPQL ORDER BY clause. This method is common between the OrderBy annotation and keyword.
-     */
-    private void generateOrderBy(QueryInfo queryInfo, StringBuilder q) {
-        Class<?> multiType = queryInfo.getMultipleResultType();
-
-        boolean needsKeysetQueries = KeysetAwarePage.class.equals(multiType)
-                                     || KeysetAwareSlice.class.equals(multiType)
-                                     || Iterator.class.equals(multiType);
-
-        StringBuilder fwd = needsKeysetQueries ? new StringBuilder(100) : q; // forward page order
-        StringBuilder prev = needsKeysetQueries ? new StringBuilder(100) : null; // previous page order
-
-        boolean first = true;
-        for (Sort sort : queryInfo.sorts) {
-            fwd.append(first ? " ORDER BY " : ", ");
-            appendSort(fwd, queryInfo.entityVar, sort, true);
-
-            if (needsKeysetQueries) {
-                prev.append(first ? " ORDER BY " : ", ");
-                appendSort(prev, queryInfo.entityVar, sort, false);
-            }
-            first = false;
-        }
-
-        if (needsKeysetQueries) {
-            generateKeysetQueries(queryInfo, q, fwd, prev);
-            q.append(fwd);
-        }
     }
 
     /**
@@ -1952,6 +1973,29 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
                         } else {
                             returnValue = returnType.isInstance(returnValue) ? returnValue : null;
+                        }
+                        break;
+                    }
+                    case INSERT: {
+                        em = entityInfo.persister.createEntityManager();
+
+                        if (queryInfo.saveParamType.isArray()) {
+                            Object a = args[0];
+                            int length = Array.getLength(a);
+                            for (int i = 0; i < length; i++)
+                                em.persist(toEntity(Array.get(a, i)));
+                        } else if (Iterable.class.isAssignableFrom(queryInfo.saveParamType)) {
+                            for (Object e : ((Iterable<?>) args[0]))
+                                em.persist(toEntity(e));
+                        } else {
+                            em.persist(toEntity(args[0]));
+                        }
+                        em.flush();
+
+                        if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+                            returnValue = CompletableFuture.completedFuture(null); // useful for @Asynchronous
+                        } else {
+                            returnValue = null;
                         }
                         break;
                     }
