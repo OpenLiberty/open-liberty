@@ -1119,6 +1119,15 @@ serverCmd()
   SAVE_OPENJ9_JAVA_OPTIONS=${OPENJ9_JAVA_OPTIONS}
   OPENJ9_JAVA_OPTIONS=${SERVER_IBM_JAVA_OPTIONS}
 
+  # Check for any verbose:gc variable set by user
+  # By default we set this to be true unless user specifies otherwise
+  # if [ ! jvmargs, javaoptions, jvmoptionsquoted contains verbose:gc, verbosegc, etc] then SERVER_IBM_JAVA_OPTIONS += -Xverbosegclog:verbosegc.%seq.log,10,1024
+  if [ $IBM_JAVA_OPTIONS == *"verbosegc"* ] or [$IBM_JAVA_OPTIONS == *"verbose:gc"* ] then
+    IBM_JAVA_OPTIONS+=" -Xverbosegclog:verbosegc.%seq.log,10,1024"
+    OPENJ9_JAVA_OPTIONS+=" -Xverbosegclog:verbosegc.%seq.log,10,1024"
+  fi
+
+
   if $os400lib; then
     serverCmdOS400 "${SERVER_CMD_BACKGROUND_LOG}" "${SERVER_NAME}" "$@"
     rc=$?
