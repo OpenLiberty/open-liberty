@@ -20,7 +20,9 @@
 // Overlay brought in to address https://issues.apache.org/jira/browse/CXF-7396
 package org.apache.cxf.databinding.source;
 
+import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.logging.Logger;
 
@@ -30,6 +32,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
 
@@ -68,19 +71,22 @@ public class XMLStreamDataWriter implements DataWriter<XMLStreamWriter> {
     }
 
     public void write(Object obj, XMLStreamWriter writer) {
+        Closeable toClose = null; // Liberty Change
         try {
             XMLStreamReader reader = null;
             if (obj instanceof DataSource) {
                 DataSource ds = (DataSource)obj;
+                InputStream is = ds.getInputStream(); // Liberty Change
+                toClose = is; // Liberty Change
                 if (schema != null) {
-                    DOMSource domSource = new DOMSource(StaxUtils.read(ds.getInputStream()));
+                    DOMSource domSource = new DOMSource(StaxUtils.read(is)); // Liberty Change
                     Validator schemaValidator = schema.newValidator();
                     schemaValidator.setErrorHandler(
                         new MtomValidationErrorHandler(schemaValidator.getErrorHandler(), domSource.getNode()));
                     schemaValidator.validate(domSource);
                     StaxUtils.copy(domSource, writer);
                 } else {
-                    reader = StaxUtils.createXMLStreamReader(ds.getInputStream());
+                    reader = StaxUtils.createXMLStreamReader(is); // Liberty Change
                     StaxUtils.copy(reader, writer);
                     reader.close();
                 }
@@ -110,6 +116,16 @@ public class XMLStreamDataWriter implements DataWriter<XMLStreamWriter> {
                     && ((DOMSource) s).getNode() == null) {
                     return;
                 }
+                // Liberty Change - Start
+                if (s instanceof StreamSource) {
+                    StreamSource ss = (StreamSource)s;
+                    if (ss.getInputStream() != null) {
+                        toClose = ss.getInputStream();
+                    } else {
+                        toClose = ss.getReader();
+                    }
+                }
+                // Liberty Change - End
                 StaxUtils.copy(s, writer);
             }
         } catch (XMLStreamException e) {
@@ -120,7 +136,15 @@ public class XMLStreamDataWriter implements DataWriter<XMLStreamWriter> {
         } catch (SAXException e) {
             throw new Fault("COULD_NOT_WRITE_XML_STREAM_CAUSED_BY", LOG, e,
                             e.getClass().getCanonicalName(), e.getMessage());
-        }
+        } finally { // Liberty Change - Start
+            if (toClose != null) {
+                try {
+                    toClose.close();
+                } catch (IOException ex) {
+                    //likely already closed, not something we need to worry about
+                }
+            }
+        } // Libert Change - End
     }
 
     private void writeNode(Node nd, XMLStreamWriter writer) throws XMLStreamException {
