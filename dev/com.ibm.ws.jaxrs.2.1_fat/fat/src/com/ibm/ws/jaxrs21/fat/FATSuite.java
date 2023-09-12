@@ -27,6 +27,7 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 AlwaysPassesTest.class,
                 CxfReservedTypeAndCTypeTest.class,
+                ExceptionTest.class,
                 JAXRS21SecurityAnnotationsTest.class,
                 JAXRS21SecurityAnnotationsTestRolesAsGroups.class,
                 JAXRS21SecurityContextTest.class,

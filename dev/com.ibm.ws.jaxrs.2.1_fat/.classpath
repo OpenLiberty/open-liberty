@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/exception/src"/>
 	<classpathentry kind="src" path="test-applications/jaxrs21security/src"/>
 	<classpathentry kind="src" path="test-applications/jaxrs21typeAndCType/src"/>
 	<classpathentry kind="src" path="test-applications/jaxrs21uriInfo/src"/>
