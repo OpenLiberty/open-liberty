@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.common;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -45,12 +47,8 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
-import io.openliberty.microprofile.telemetry.internal.common.cdi.BaggageProxy;
-import io.openliberty.microprofile.telemetry.internal.common.cdi.SpanProxy;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.OpenTelemetry;
-import io.opentelemetry.api.baggage.Baggage;
-import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdkBuilder;
@@ -109,20 +107,21 @@ public class OpenTelemetryInfoFactory implements ApplicationStateListener {
         }
     }
 
-    public static Span getSpan() {
-        return new SpanProxy(); //TODO I cannot see a way to get no-op spans or baggage, check if we need code here to handle apps that have shut down.
-    }
-
-    public static Baggage getBaggage() {
-        return new BaggageProxy();
-    };
-
     //The key methods that provide access to telemetry objects end here
 
     private static OpenTelemetryInfo createOpenTelemetryInfo(J2EEName j2EEName) {
         //If the app has already shut down but something still tries to get OpenTelemetry objects return a no-op object
         if (shutDownApplications.contains(j2EEName)){ //There is a low risk race condition here. Thread A gets past this check just as thread B shuts everything down.
             Tr.warning(tc, Tr.formatMessage(tc, "CWMOT5003.factory.used.after.shutdown"));
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Exception e = new Exception();
+                ByteArrayOutputStream stackStream = new ByteArrayOutputStream();
+                PrintStream stackPrintStream = new PrintStream(stackStream);
+                e.printStackTrace(stackPrintStream);
+                
+                Tr.debug(tc, "OpenTelemetryInfoFactory", "The stack that led to OpenTelemetryInfoFactory being called after {0} has shutdown is:.", j2EEName.getApplication());
+                Tr.debug(tc, stackStream.toString());
+            }
             return new OpenTelemetryInfo(false, OpenTelemetry.noop());
         }
 
@@ -185,7 +184,7 @@ public class OpenTelemetryInfoFactory implements ApplicationStateListener {
                 openTelemetry = appToInfo.get(j2EEName).getOpenTelemetry();
             }
 
-            if (openTelemetry  instanceof OpenTelemetrySdk) {
+            if (openTelemetry instanceof OpenTelemetrySdk) {
                 OpenTelemetrySdk sdk = (OpenTelemetrySdk) openTelemetry;
                 List<CompletableResultCode> results = new ArrayList<>();
 

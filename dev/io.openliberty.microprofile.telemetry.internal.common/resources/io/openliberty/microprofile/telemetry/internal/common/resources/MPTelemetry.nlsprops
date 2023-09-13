@@ -43,3 +43,6 @@ CWMOT5002.telemetry.error=CWMOT5002E: An internal error occurred in MicroProfile
 CWMOT5002.telemetry.error.explanation=An error has occurred that prevents normal operation of MicroProfile Telemetry.
 CWMOT5002.telemetry.error.useraction=Review the server message.log file and FFDC logs to identify the problem.
 
+CWMOT5003.factory.used.after.shutdown=CWMOT5003W: Application {0} called OpenTelemetryInfoFactory after the application has shutdown. 
+CWMOT5003.factory.used.after.shutdown.explanation=After an application shuts down OpenTelemetryInfoFactory returns objects that will silently perform no-op actions when invoked, this could lead to the absense of expected telemetry data.    
+CWMOT5003.factory.used.after.shutdown.useraction=Review your application to see why it is attempting to use OpenTelemetry after it has shutdown. Enabling open telemetry tracing at the debug level or finer will generate stack traces. 

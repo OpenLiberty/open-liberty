@@ -55,13 +55,13 @@ public class OpenTelemetryProducer {
     @Produces
     @ApplicationScoped
     public Span getSpan() {
-        return OpenTelemetryInfoFactory.getSpan();
+        return new SpanProxy();
     }
 
     @Produces
     @ApplicationScoped
     public Baggage getBaggage() {
-        return OpenTelemetryInfoFactory.getBaggage();
+        return new BaggageProxy();
     }
 
     @ApplicationScoped
