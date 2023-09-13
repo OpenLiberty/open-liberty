@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,10 +24,11 @@ import io.opentelemetry.context.Scope;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/SpanCurrentServlet")
+@WebServlet("/testSpanCurrent")
 public class SpanCurrentServlet extends FATServlet {
 
-    @Test
+    // With HTTP tracing enabled, there will be always a current span.  Comment out this test
+    // @Test
     public void testGetCurrentSpan_Default() {
         Span span = Span.current();
         assertEquals(span, Span.getInvalid()); //Current span has no context as none was created

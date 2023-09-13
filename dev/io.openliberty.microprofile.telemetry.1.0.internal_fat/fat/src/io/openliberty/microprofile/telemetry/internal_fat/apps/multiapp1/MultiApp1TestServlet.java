@@ -38,7 +38,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.client.ClientBuilder;
 
 @SuppressWarnings("serial")
-@WebServlet("/multiapp1")
+@WebServlet("/testMultiapp1")
 public class MultiApp1TestServlet extends FATServlet {
 
     @Inject

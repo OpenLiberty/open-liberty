@@ -22,7 +22,7 @@ import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/MetricsDisabledServlet")
+@WebServlet("/testMetricsDisabled")
 @ApplicationScoped
 public class MetricsDisabledServlet extends FATServlet {
 

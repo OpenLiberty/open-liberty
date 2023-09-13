@@ -25,7 +25,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/baggage")
+@WebServlet("/testBaggage")
 @ApplicationScoped // Make this a bean so that there's one bean in the archive, otherwise CDI gets disabled and @Inject doesn't work
 public class BaggageAPIServlet extends FATServlet {
 

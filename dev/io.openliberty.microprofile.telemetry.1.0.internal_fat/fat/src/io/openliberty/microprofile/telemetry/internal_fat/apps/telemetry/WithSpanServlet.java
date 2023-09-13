@@ -33,74 +33,77 @@ import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/WithSpanServlet")
+@WebServlet("/testWithSpan")
 public class WithSpanServlet extends FATServlet {
 
     @Inject
     private SpanBean spanBean;
 
     private static final String PARAMETER_TEST = "testString";
-    private static final String INVALID_SPAN_ID = "0000000000000000";
     private static final String TEST_NAME = "testSpan";
 
     @Test
     public void callNotAnnotated() {
-        //Returned spanId from methodNotAnnotated should not be the spanID of 0000000000000000
+        String originalSpanId = Span.current().getSpanContext().getSpanId();
         //No span was created
         String spanId = spanBean.methodNotAnnotated();
-        assertThat(spanId, equalTo(INVALID_SPAN_ID));
+        assertThat(spanId, equalTo(originalSpanId));
     }
 
     @Test
     public void callAnnotated() {
+        String originalSpanId = Span.current().getSpanContext().getSpanId();
         String spanId = spanBean.methodAnnotated();
         //Span should end when returned to this method so the current span should have the default spanID of 0000000000000000
         Span span = Span.current();
-        assertThat(span.getSpanContext().getSpanId(), equalTo(INVALID_SPAN_ID));
+        assertThat(span.getSpanContext().getSpanId(), equalTo(originalSpanId));
 
         //Returned spanId from methodAnnotated should not be the default spanID
-        assertThat(spanId, not(equalTo(INVALID_SPAN_ID)));
+        assertThat(spanId, not(equalTo(originalSpanId)));
         //Create another span
         String newSpanId = spanBean.methodAnnotated();
-        assertThat(newSpanId, not(equalTo(INVALID_SPAN_ID)));
+        assertThat(newSpanId, not(equalTo(originalSpanId)));
         assertThat(spanId, not(equalTo(newSpanId)));
     }
 
     @Test
     public void callAnnotatedWithName() {
-        assertThat(Span.current().getSpanContext().getSpanId(), equalTo(INVALID_SPAN_ID)); // No current span before call
+        String originalSpanId = Span.current().getSpanContext().getSpanId();
+        assertThat(Span.current().getSpanContext().getSpanId(), equalTo(originalSpanId)); // No current span before call
 
         ReadableSpan testSpan = spanBean.methodAnnotatedWithName();
 
-        assertThat(Span.current().getSpanContext().getSpanId(), equalTo(INVALID_SPAN_ID)); // No current span after call
+        assertThat(Span.current().getSpanContext().getSpanId(), equalTo(originalSpanId)); // No current span after call
 
-        assertThat(testSpan.getSpanContext().getSpanId(), not(equalTo(INVALID_SPAN_ID)));
+        assertThat(testSpan.getSpanContext().getSpanId(), not(equalTo(originalSpanId)));
         assertThat(testSpan.getName(), equalTo(TEST_NAME));
         assertThat(testSpan.getKind(), equalTo(SpanKind.INTERNAL));
     }
 
     @Test
     public void callAnnotatedWithKind() {
-        assertThat(Span.current().getSpanContext().getSpanId(), equalTo(INVALID_SPAN_ID)); // No current span before call
+        String originalSpanId = Span.current().getSpanContext().getSpanId();
+        assertThat(Span.current().getSpanContext().getSpanId(), equalTo(originalSpanId)); // No current span before call
 
         ReadableSpan testSpan = spanBean.methodAnnotatedWithKind();
 
-        assertThat(Span.current().getSpanContext().getSpanId(), equalTo(INVALID_SPAN_ID)); // No current span after call
+        assertThat(Span.current().getSpanContext().getSpanId(), equalTo(originalSpanId)); // No current span after call
 
-        assertThat(testSpan.getSpanContext().getSpanId(), not(equalTo(INVALID_SPAN_ID)));
+        assertThat(testSpan.getSpanContext().getSpanId(), not(equalTo(originalSpanId)));
         assertThat(testSpan.getName(), equalTo("SpanBean.methodAnnotatedWithKind"));
         assertThat(testSpan.getKind(), equalTo(SpanKind.PRODUCER));
     }
 
     @Test
     public void callAnnotatedWithNameAndKind() {
-        assertThat(Span.current().getSpanContext().getSpanId(), equalTo(INVALID_SPAN_ID)); // No current span before call
+        String originalSpanId = Span.current().getSpanContext().getSpanId();
+        assertThat(Span.current().getSpanContext().getSpanId(), equalTo(originalSpanId)); // No current span before call
 
         ReadableSpan testSpan = spanBean.methodAnnotatedWithNameAndKind();
 
-        assertThat(Span.current().getSpanContext().getSpanId(), equalTo(INVALID_SPAN_ID)); // No current span after call
+        assertThat(Span.current().getSpanContext().getSpanId(), equalTo(originalSpanId)); // No current span after call
 
-        assertThat(testSpan.getSpanContext().getSpanId(), not(equalTo(INVALID_SPAN_ID)));
+        assertThat(testSpan.getSpanContext().getSpanId(), not(equalTo(originalSpanId)));
         assertThat(testSpan.getName(), equalTo(TEST_NAME));
         assertThat(testSpan.getKind(), equalTo(SpanKind.CONSUMER));
     }

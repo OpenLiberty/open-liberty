@@ -27,6 +27,7 @@ import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTelemetryContainerFilter;
 import io.openliberty.microprofile.telemetry.internal.common.rest.RestRouteCache;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
+import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.propagation.TextMapGetter;
@@ -113,6 +114,34 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
                 request.setProperty(SPAN_CONTEXT, spanContext);
                 request.setProperty(SPAN_PARENT_CONTEXT, parentContext);
                 request.setProperty(SPAN_SCOPE, scope);
+            } else {
+                Span currentSpan = Span.current();
+                if (currentSpan != null) {
+
+                    Class<?> resourceClass = resourceInfo.getResourceClass();
+                    Method resourceMethod = resourceInfo.getResourceMethod();
+
+                    String route = ROUTE_CACHE.getRoute(resourceClass, resourceMethod);
+
+                    if (route == null) {
+
+                        String contextRoot = request.getUriInfo().getBaseUri().getPath();
+                        UriBuilder template = UriBuilder.fromPath(contextRoot);
+
+                        if (resourceClass.isAnnotationPresent(Path.class)) {
+                            template.path(resourceClass);
+                        }
+
+                        if (resourceMethod.isAnnotationPresent(Path.class)) {
+                            template.path(resourceMethod);
+                        }
+
+                        route = template.toTemplate();
+                        ROUTE_CACHE.putRoute(resourceClass, resourceMethod, route);
+                    }
+
+                    currentSpan.setAttribute(SemanticAttributes.HTTP_ROUTE, route);
+                }
             }
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));

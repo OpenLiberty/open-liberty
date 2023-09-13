@@ -226,7 +226,9 @@ public class InMemorySpanExporter implements SpanExporter {
         List<SpanData> lSpans = new ArrayList<SpanData>(spans);
         Iterator<SpanData> iter = lSpans.listIterator();
         while (iter.hasNext()) {
-            if (iter.next().getName().contains("readspans")) {
+            SpanData span = iter.next();
+            // Remove readspans and FAT servlet spans
+            if (span.getName().contains("readspans") || span.getName().matches("^/.*/test.*$")) {
                 iter.remove();
             }
         }
