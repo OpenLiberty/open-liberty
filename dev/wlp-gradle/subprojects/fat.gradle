@@ -621,14 +621,6 @@ build {
   }
 }
 
-release {
-  // Skip out on 'assemble' unless top-level gradle invocation contains "fat"
-  if(!buildFatEnabled) {
-    enabled = false;
-    dependsOn = [];
-  }
-}
-
 buildfat {
   dependsOn cleanFat
   dependsOn assemble
