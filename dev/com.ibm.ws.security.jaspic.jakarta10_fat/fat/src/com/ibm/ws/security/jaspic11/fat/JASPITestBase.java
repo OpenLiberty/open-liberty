@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.jaspic11.fat;
@@ -42,8 +42,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.rules.repeater.JakartaEE9Action;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 public class JASPITestBase {
@@ -207,33 +206,33 @@ public class JASPITestBase {
     // Jaspi helper methods
     protected static void verifyServerStarted(LibertyServer server) {
         assertNotNull("FeatureManager did not report update was complete",
-                      server.waitForStringInLogUsingMark("CWWKF0008I"));
+                server.waitForStringInLogUsingMark("CWWKF0008I"));
         assertNotNull("Security service did not report it was ready",
-                      server.waitForStringInLogUsingMark("CWWKS0008I"));
+                server.waitForStringInLogUsingMark("CWWKS0008I"));
     }
 
     protected static void verifyServerUpdated(LibertyServer server) {
         assertNotNull("Feature update wasn't complete",
-                      server.waitForStringInLogUsingMark("CWWKF0008I"));
+                server.waitForStringInLogUsingMark("CWWKF0008I"));
         assertNotNull("The server configuration wasn't updated.",
-                      server.waitForStringInLogUsingMark("CWWKG0017I:.*"));
+                server.waitForStringInLogUsingMark("CWWKG0017I:.*"));
 
     }
 
     protected static void verifyServerUpdatedWithJaspi(LibertyServer server, String appName) {
         verifyServerUpdated(server);
         assertNotNull("The JASPI user feature did not report it was ready",
-                      server.waitForStringInLogUsingMark(MSG_JASPI_PROVIDER_ACTIVATED));
+                server.waitForStringInLogUsingMark(MSG_JASPI_PROVIDER_ACTIVATED));
 
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             assertNotNull("The feature manager did not report the JASPI provider is included in features.",
-                          server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-3.0"));
-        } else if (JakartaEE9Action.isActive()) {
+                    server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-3.0"));
+        } else if (JakartaEEAction.isEE9Active()) {
             assertNotNull("The feature manager did not report the JASPI provider is included in features.",
-                          server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-2.0"));
+                    server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-2.0"));
         } else {
             assertNotNull("The feature manager did not report the JASPI provider is included in features.",
-                          server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-1.0"));
+                    server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-1.0"));
         }
         // Need to wait for the application started message.
         assertNotNull("URL not available " + server.waitForStringInLogUsingMark("CWWKT0016I.*" + appName + ".*"));
@@ -249,7 +248,7 @@ public class JASPITestBase {
     protected static void verifyServerRemovedJaspi(LibertyServer server, String appName) {
         verifyServerUpdated(server);
         assertNotNull("The JASPI user feature did not report it was ready",
-                      server.waitForStringInLogUsingMark(MSG_JASPI_PROVIDER_DEACTIVATED));
+                server.waitForStringInLogUsingMark(MSG_JASPI_PROVIDER_DEACTIVATED));
         // Need to wait for the application started message.
         assertNotNull("URL not available " + server.waitForStringInLogUsingMark("CWWKT0016I.*" + appName + ".*"));
     }
@@ -257,17 +256,17 @@ public class JASPITestBase {
     protected static void verifyServerStartedWithJaspiFeature(LibertyServer server) {
         verifyServerStarted(server);
         assertNotNull("The JASPI user feature did not report it was ready",
-                      server.waitForStringInLogUsingMark(MSG_JASPI_PROVIDER_ACTIVATED));
+                server.waitForStringInLogUsingMark(MSG_JASPI_PROVIDER_ACTIVATED));
 
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             assertNotNull("The feature manager did not report the JASPI provider is included in features.",
-                          server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-3.0"));
-        } else if (JakartaEE9Action.isActive()) {
+                    server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-3.0"));
+        } else if (JakartaEEAction.isEE9Active()) {
             assertNotNull("The feature manager did not report the JASPI provider is included in features.",
-                          server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-2.0"));
+                    server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-2.0"));
         } else {
             assertNotNull("The feature manager did not report the JASPI provider is included in features.",
-                          server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-1.0"));
+                    server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-1.0"));
         }
 
     }
@@ -289,11 +288,11 @@ public class JASPITestBase {
 
         String methodName = "executeGetRequestBasicAuthCreds";
         Log.info(logClass, getCurrentTestName(), "Servlet url: " + url + " userid: " + userid + ", password: " + password + ", expectedStatusCode=" + expectedStatusCode
-                                                 + " , method=" + methodName);
+                + " , method=" + methodName);
         HttpGet getMethod = new HttpGet(url);
         if (userid != null)
             httpClient.getCredentialsProvider().setCredentials(new AuthScope("localhost", AuthScope.ANY_PORT, AuthScope.ANY_REALM),
-                                                               new UsernamePasswordCredentials(userid, password));
+                    new UsernamePasswordCredentials(userid, password));
         HttpResponse response = httpClient.execute(getMethod);
         Log.info(logClass, methodName, "> Actual response: " + response.toString());
 
@@ -309,13 +308,14 @@ public class JASPITestBase {
      * Process the response from an http invocation, such as validating
      * the status code, extracting the response entity...
      *
-     * @param response the HttpResponse
+     * @param response
+     *            the HttpResponse
      * @param expectedStatusCode
      * @return The response entity text, or null if request failed
      * @throws IOException
      */
     protected String processResponse(HttpResponse response,
-                                     int expectedStatusCode) throws IOException {
+            int expectedStatusCode) throws IOException {
         String methodName = "processResponse";
 
         Log.info(logClass, methodName, "getMethod status: " + response.getStatusLine());
@@ -325,7 +325,7 @@ public class JASPITestBase {
         EntityUtils.consume(entity);
 
         assertEquals("Expected " + expectedStatusCode + " was not returned",
-                     expectedStatusCode, response.getStatusLine().getStatusCode());
+                expectedStatusCode, response.getStatusLine().getStatusCode());
 
         return content;
     }
@@ -334,10 +334,14 @@ public class JASPITestBase {
      * Send HttpClient get request to the given URL, ensure that the user is redirected to the form login page
      * and that the JASPI provider was or was not called, as expected.
      *
-     * @param httpclient HttpClient object to execute request
-     * @param url URL for request, should be protected and redirect to form login page
-     * @param providerName Name of JASPI provider that should authenticate the request, null if JASPI not enabled for request
-     * @param formTitle Name of Login form (defaults to Form Login Page if not specified)
+     * @param httpclient
+     *            HttpClient object to execute request
+     * @param url
+     *            URL for request, should be protected and redirect to form login page
+     * @param providerName
+     *            Name of JASPI provider that should authenticate the request, null if JASPI not enabled for request
+     * @param formTitle
+     *            Name of Login form (defaults to Form Login Page if not specified)
      * @throws Exception
      */
 
@@ -356,7 +360,7 @@ public class JASPITestBase {
             Log.info(logClass, methodName, "Form login page result: " + response.getStatusLine());
 
             assertEquals("Expected " + HttpServletResponse.SC_OK + " status code for form login page was not returned",
-                         HttpServletResponse.SC_OK, response.getStatusLine().getStatusCode());
+                    HttpServletResponse.SC_OK, response.getStatusLine().getStatusCode());
 
             String content = EntityUtils.toString(response.getEntity());
 
@@ -366,7 +370,7 @@ public class JASPITestBase {
             if (response.getStatusLine().getStatusCode() == HttpServletResponse.SC_OK) {
                 // Verify we get the form login JSP
                 assertTrue("Did not find expected form login page: " + formTitle,
-                           content.contains(formTitle));
+                        content.contains(formTitle));
                 Log.info(logClass, methodName, "Found expected Form login page title: " + formTitle);
             }
 
@@ -378,10 +382,14 @@ public class JASPITestBase {
     /**
      * Post HttpClient request to execute a form login on the given page, using the given username and password
      *
-     * @param httpclient HttpClient object to execute login
-     * @param url URL for login page
-     * @param username User name
-     * @param password User password
+     * @param httpclient
+     *            HttpClient object to execute login
+     * @param url
+     *            URL for login page
+     * @param username
+     *            User name
+     * @param password
+     *            User password
      * @return URL of page redirected to after the login
      * @throws Exception
      */
@@ -442,7 +450,7 @@ public class JASPITestBase {
             Log.info(logClass, methodName, "getMethod status:  " + response.getStatusLine());
 
             assertEquals("Expected " + expectedStatusCode + " was not returned",
-                         expectedStatusCode, response.getStatusLine().getStatusCode());
+                    expectedStatusCode, response.getStatusLine().getStatusCode());
 
             String content = EntityUtils.toString(response.getEntity());
             Log.info(logClass, methodName, "Servlet full response content: \n" + content);
@@ -452,11 +460,11 @@ public class JASPITestBase {
             // Paranoia check, make sure we hit the right servlet
             if (response.getStatusLine().getStatusCode() == 200) {
                 assertTrue("Response did not contain expected servlet name (" + servletName + ")",
-                           content.contains(servletName));
+                        content.contains(servletName));
                 return content;
             } else if (expectedStatusCode == 401) {
                 assertTrue("Response was not the expected error page: "
-                           + LOGIN_ERROR_PAGE, content.contains(LOGIN_ERROR_PAGE));
+                        + LOGIN_ERROR_PAGE, content.contains(LOGIN_ERROR_PAGE));
                 return null;
             } else {
                 return null;
@@ -521,7 +529,7 @@ public class JASPITestBase {
 
     protected void verifyAuthenticatedResponse(String response, String getAuthType, String getUserPrincipal, String getRemoteUser) {
         Log.info(logClass, "verifyAuthenticatedResponse", "Verify response shows:  " + isAuthenticatedTrue + " ," + getUserPrincipal + " , "
-                                                          + getRemoteUser);
+                + getRemoteUser);
         mustContain(response, isAuthenticatedTrue);
         mustContain(response, getAuthType);
         verifyUserResponse(response, getUserPrincipal, getRemoteUser);
@@ -544,61 +552,61 @@ public class JASPITestBase {
 
     protected void verifyUnauthenticatedResponseInMessageLog() {
         Log.info(logClass, "verifyUnautenticatedResponseInMessageLog", "Verify messages.log contains unauthenticated results:  " + isAuthenticatedFalse + ", "
-                                                                       + getUserPrincipalNull
-                                                                       + " , " + getRemoteUserNull);
+                + getUserPrincipalNull
+                + " , " + getRemoteUserNull);
         assertNotNull("Servlet authenticate call did not return " + isAuthenticatedFalse + " as expected in messages.log.",
-                      server.waitForStringInLogUsingMark(isAuthenticatedFalse));
+                server.waitForStringInLogUsingMark(isAuthenticatedFalse));
         assertNotNull("Servlet getUserPrincipal call did not return " + getUserPrincipalNull + " as expected in messages.log.",
-                      server.waitForStringInLogUsingMark(getUserPrincipalNull));
+                server.waitForStringInLogUsingMark(getUserPrincipalNull));
         assertNotNull("Servlet getRemoteUser call did not return " + getRemoteUserNull + " as expected in messages.log.",
-                      server.waitForStringInLogUsingMark(getRemoteUserNull));
+                server.waitForStringInLogUsingMark(getRemoteUserNull));
     }
 
     protected void verifyJaspiAuthenticationProcessedInMessageLog() {
         Log.info(logClass, "verifyJaspiAuthenticationProcessedInMessageLog", "Verify messages.log contains isMandatory=true and calls to validateRequest and secureResponse ");
         assertNotNull("Messages.log did not show that security runtime indicated that isMandatory=true and the JASPI provider must protect this resource. ",
-                      server.waitForStringInLogUsingMark("JASPI_PROTECTED isMandatory=true"));
+                server.waitForStringInLogUsingMark("JASPI_PROTECTED isMandatory=true"));
         assertNotNull("Messages.log did not show JASPI provider validateRequest was called. ",
-                      server.waitForStringInLogUsingMark("validateRequest"));
+                server.waitForStringInLogUsingMark("validateRequest"));
         assertNotNull("Messages.log did not show JASPI provider secureResponse was called. ",
-                      server.waitForStringInLogUsingMark("secureResponse"));
+                server.waitForStringInLogUsingMark("secureResponse"));
     }
 
     protected void verifyAuthenticateMethodProcessedInMessageLog(String method) {
         Log.info(logClass, "verifyAuthenticateMethodProcessedInMessageLog", "Verify messages.log contains QueryString: method=" + method
-                                                                            + " followed by call to validateRequest");
+                + " followed by call to validateRequest");
         assertNotNull("Messages.log did not show QueryString: method=" + method,
-                      server.waitForStringInLogUsingMark("QueryString: method=" + method));
+                server.waitForStringInLogUsingMark("QueryString: method=" + method));
         assertNotNull("Messages.log did not show validateRequest",
-                      server.waitForStringInLogUsingMark("validateRequest"));
+                server.waitForStringInLogUsingMark("validateRequest"));
         assertNotNull("Messages.log did not show Servlet authenticate invoked for " + method,
-                      server.waitForStringInLogUsingMark("Servlet authenticate invoked for " + method));
+                server.waitForStringInLogUsingMark("Servlet authenticate invoked for " + method));
     }
 
     protected void verifyJaspiAuthenticationProcessedUnprotectedInMessageLog() {
         Log.info(logClass, "verifyJaspiAuthenticationProcessedUnprotectedInMessageLog",
-                 "Verify messages.log contains isMandatory=false and calls to validateRequest and secureResponse ");
+                "Verify messages.log contains isMandatory=false and calls to validateRequest and secureResponse ");
         assertNotNull("Messages.log did not show that the security runtime indicated that authentication is optional for unprotected servlet through isMandatory=false. ",
-                      server.waitForStringInLogUsingMark("JASPI_UNPROTECTED isMandatory=false"));
+                server.waitForStringInLogUsingMark("JASPI_UNPROTECTED isMandatory=false"));
         assertNotNull("Messages.log did not show JASPI provider validateRequest was called. ",
-                      server.waitForStringInLogUsingMark("validateRequest"));
+                server.waitForStringInLogUsingMark("validateRequest"));
         assertNotNull("Messages.log did not show JASPI provider secureResponse was called. ",
-                      server.waitForStringInLogUsingMark("secureResponse"));
+                server.waitForStringInLogUsingMark("secureResponse"));
     }
 
     // For Form Login positive flow, after the form is submitted, we only get validateRequest and not a call to secureResponse
     protected void verifyJaspiAuthenticationProcessedValidateRequestInMessageLog() {
         Log.info(logClass, "verifyJaspiAuthenticationProcessedValidateRequestInMessageLog", "Verify messages.log contains calls to validateRequest and secureResponse ");
         assertNotNull("Messages.log did not show JASPI provider is protecting this resource. ",
-                      server.waitForStringInLogUsingMark("JASPI_UNPROTECTED isMandatory=false"));
+                server.waitForStringInLogUsingMark("JASPI_UNPROTECTED isMandatory=false"));
         assertNotNull("Messages.log did not show JASPI provider validateRequest was called. ",
-                      server.waitForStringInLogUsingMark("validateRequest"));
+                server.waitForStringInLogUsingMark("validateRequest"));
     }
 
     protected void verifyJaspiLogoutProcessedCleanSubjectInMessageLog() {
         Log.info(logClass, "verifyJaspiLogoutProcessedCleanSubjectInMessageLog", "Verify messages.log contains call to cleanSubject.");
         assertNotNull("Messages.log did not show JASPI provider called cleanSubject. ",
-                      server.waitForStringInLogUsingMark("cleanSubject"));
+                server.waitForStringInLogUsingMark("cleanSubject"));
     }
 
     protected void verifyUserResponse(String response, String getUserPrincipal, String getRemoteUser) {
@@ -651,7 +659,7 @@ public class JASPITestBase {
 
     protected void verifyMessageReceivedInMessageLog(String message) {
         assertNotNull("The messages.log file should contain the following message but did not --" + message,
-                      server.waitForStringInLogUsingMark(message));
+                server.waitForStringInLogUsingMark(message));
     }
 
     protected String buildQueryString(String operation, String layer, String appContext, String providerClass) {

@@ -36,9 +36,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.custom.junit.runner.RepeatTestFilter;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -222,9 +220,8 @@ public class ShrinkHelper {
      * @param printArchiveContents Whether or not to log the contents of the archive being exported
      */
     public static Archive<?> exportArtifact(Archive<?> a, String dest, boolean printArchiveContents) {
-        // overwrite by default when transforming to EE9 to EE10
-        return exportArtifact(a, dest, printArchiveContents,
-                              RepeatTestFilter.isAnyRepeatActionActive(JakartaEE9Action.ID, JakartaEE10Action.ID));
+        // overwrite by default when transforming to EE9 or later
+        return exportArtifact(a, dest, printArchiveContents, JakartaEEAction.isEE9OrLaterActive());
     }
 
     /**
@@ -258,10 +255,8 @@ public class ShrinkHelper {
         exportedArchives.add(outputFile);
         if (outputFile.exists() && !overWrite) {
             Log.info(ShrinkHelper.class, "exportArtifact", "Not exporting artifact because it already exists at " + outputFile.getAbsolutePath());
-            if (RepeatTestFilter.isRepeatActionActive(JakartaEE9Action.ID)) {
-                JakartaEE9Action.transformApp(outputFile.toPath());
-            } else if (RepeatTestFilter.isRepeatActionActive(JakartaEE10Action.ID)) {
-                JakartaEE10Action.transformApp(outputFile.toPath());
+            if (JakartaEEAction.isEE9OrLaterActive()) {
+                JakartaEEAction.transformApp(outputFile.toPath());
             }
             return a;
         }
@@ -273,10 +268,8 @@ public class ShrinkHelper {
         }
         if (printArchiveContents)
             Log.info(ShrinkHelper.class, "exportArtifact", a.toString(true));
-        if (RepeatTestFilter.isRepeatActionActive(JakartaEE9Action.ID)) {
-            JakartaEE9Action.transformApp(outputFile.toPath());
-        } else if (RepeatTestFilter.isRepeatActionActive(JakartaEE10Action.ID)) {
-            JakartaEE10Action.transformApp(outputFile.toPath());
+        if (JakartaEEAction.isEE9OrLaterActive()) {
+            JakartaEEAction.transformApp(outputFile.toPath());
         }
         return a;
     }

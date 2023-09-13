@@ -17,8 +17,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 public class JASPIFatUtils {
@@ -30,10 +29,10 @@ public class JASPIFatUtils {
      * @throws Exception If the install failed.
      */
     public static void installJaspiUserFeature(LibertyServer myServer) throws Exception {
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             myServer.installUserBundle("com.ibm.ws.security.jaspic.test_3.0");
             myServer.installUserFeature("jaspicUserTestFeature-3.0");
-        } else if (JakartaEE9Action.isActive()) {
+        } else if (JakartaEEAction.isEE9Active()) {
             myServer.installUserBundle("com.ibm.ws.security.jaspic.test_2.0");
             myServer.installUserFeature("jaspicUserTestFeature-2.0");
         } else {
@@ -49,10 +48,10 @@ public class JASPIFatUtils {
      * @throws Exception If the uninstall failed.
      */
     public static void uninstallJaspiUserFeature(LibertyServer myServer) throws Exception {
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             myServer.uninstallUserBundle("com.ibm.ws.security.jaspic.test_3.0");
             myServer.uninstallUserFeature("jaspicUserTestFeature-3.0");
-        } else if (JakartaEE9Action.isActive()) {
+        } else if (JakartaEEAction.isEE9Active()) {
             myServer.uninstallUserBundle("com.ibm.ws.security.jaspic.test_2.0");
             myServer.uninstallUserFeature("jaspicUserTestFeature-2.0");
         } else {
@@ -68,15 +67,10 @@ public class JASPIFatUtils {
      * @param apps     The simple names of the applications to transform.
      */
     public static void transformApps(LibertyServer myServer, String... apps) {
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             for (String app : apps) {
                 Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + app);
-                JakartaEE9Action.transformApp(someArchive);
-            }
-        } else if (JakartaEE10Action.isActive()) {
-            for (String app : apps) {
-                Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + app);
-                JakartaEE10Action.transformApp(someArchive);
+                JakartaEEAction.transformApp(someArchive);
             }
         }
     }

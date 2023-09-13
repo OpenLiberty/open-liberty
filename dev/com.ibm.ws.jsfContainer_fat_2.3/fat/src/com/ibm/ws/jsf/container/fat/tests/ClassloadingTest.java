@@ -25,8 +25,7 @@ import com.ibm.ws.jsf.container.fat.FATSuite;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
@@ -47,8 +46,8 @@ public class ClassloadingTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        isEE10 = JakartaEE10Action.isActive();
-        isEE9 = JakartaEE9Action.isActive();
+        isEE10 = JakartaEEAction.isEE10OrLaterActive();
+        isEE9 = JakartaEEAction.isEE9Active();
         // Build test app with JSF (Mojarra) and a test servlet
         WebArchive jsfApp = ShrinkHelper.buildDefaultApp(JSF_APP, "jsf.container.bean", "jsf.container.nojsf.web");
 

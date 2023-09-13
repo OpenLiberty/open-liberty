@@ -31,7 +31,7 @@ import com.ibm.ws.jsf23.fat.JSFUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -53,7 +53,7 @@ public class JSF23CDIInjectionTests extends CDITestBase {
 
     @BeforeClass
     public static void setup() throws Exception {
-        boolean isEE10 = JakartaEE10Action.isActive();
+        boolean isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         // Include @Named beans if Faces 4.0 is being tested. Include @ManagedBean beans otherwise.
         // Include correct resources directory, since the faces-config.xml points to different
@@ -219,8 +219,8 @@ public class JSF23CDIInjectionTests extends CDITestBase {
      */
     @Test
     public void testInjectionProvider() throws Exception {
-        String msgToSearchFor1 = JakartaEE10Action
-                        .isActive() ? "Using InjectionProvider io.openliberty.faces40.internal.spi.impl.WASCDIAnnotationDelegateInjectionProvider" : "Using InjectionProvider com.ibm.ws.jsf.spi.impl.WASCDIAnnotationDelegateInjectionProvider";
+        String msgToSearchFor1 = JakartaEEAction
+                        .isEE10OrLaterActive() ? "Using InjectionProvider io.openliberty.faces40.internal.spi.impl.WASCDIAnnotationDelegateInjectionProvider" : "Using InjectionProvider com.ibm.ws.jsf.spi.impl.WASCDIAnnotationDelegateInjectionProvider";
 
         // The Message that is output by MyFaces was changed in https://issues.apache.org/jira/browse/MYFACES-4334
         // for MyFaces 2.3.7 and newer versions. The original message was "MyFaces CDI support enabled".

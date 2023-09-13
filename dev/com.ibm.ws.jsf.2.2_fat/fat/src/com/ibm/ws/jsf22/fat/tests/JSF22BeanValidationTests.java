@@ -32,8 +32,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -55,7 +54,7 @@ public class JSF22BeanValidationTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        boolean isEE10 = JakartaEE10Action.isActive();
+        boolean isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         ShrinkHelper.defaultDropinApp(jsf22beanvalServer, "BeanValidationTests.war",
                                       isEE10 ? "com.ibm.ws.jsf22.fat.beanvalidation.faces40" : "com.ibm.ws.jsf22.fat.beanvalidation.jsf22");
@@ -93,7 +92,7 @@ public class JSF22BeanValidationTests {
             Log.info(c, name.getMethodName(), "Navigating to: /BeanValidationTests/BeanValidation.jsf");
 
             String logMessage;
-            if (JakartaEE10Action.isActive() || JakartaEE9Action.isActive() || RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID)) {
+            if (JakartaEEAction.isEE9OrLaterActive() || RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID)) {
                 Log.info(c, name.getMethodName(), "Looking for message " + msgToSearchForMyFaces30 + " in the logs");
                 logMessage = jsf22beanvalServer.waitForStringInLog(msgToSearchForMyFaces30);
             } else {

@@ -39,8 +39,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -74,7 +73,7 @@ public class BeanVal20Test extends FATServletClient {
         JavaArchive multipleValidationXmlEjb2_jar = buildJavaArchive("MultipleValidationXmlEjb2.jar", "bval.v20.ejb2.*");
         WebArchive multipleValidationXmlWeb_war = buildDefaultApp("MultipleValidationXmlWeb.war", "bval.v20.multixml.*");
 
-        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             multipleValidationXmlEjb1_jar.move("/META-INF/constraints/constraints-house_EE9.xml", "/META-INF/constraints/constraints-house.xml");
             multipleValidationXmlEjb2_jar.move("/META-INF/constraints/constraints-house_EE9.xml", "/META-INF/constraints/constraints-house.xml");
             multipleValidationXmlWeb_war.move("/WEB-INF/constraints3/constraints-house_EE9.xml", "/WEB-INF/constraints3/constraints-house.xml");

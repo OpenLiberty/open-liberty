@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,7 +25,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -122,7 +122,7 @@ public class WCGetMappingTest {
     @Test
     @Mode(TestMode.FULL)
     public void test_HttpServletRequestGetMapping_ContextRootMapping_Async() throws Exception {
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             LOG.info("Servlet 6.0 test_HttpServletRequestGetMapping_ContextRootMapping_Async");
             HttpUtils.findStringInReadyUrl(server, "/" + APP_NAME + "/pathAsyncMatch?dispatchPath=/",
                                            "ServletMapping values: mappingMatch: CONTEXT_ROOT matchValue:  pattern:  servletName: GetMappingTestServlet");
@@ -184,7 +184,7 @@ public class WCGetMappingTest {
     @Test
     @Mode(TestMode.FULL)
     public void test_HttpServletRequestGetMapping_PathMapping_Async() throws Exception {
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             LOG.info("Servlet 6.0 test_HttpServletRequestGetMapping_PathMapping_Async");
             HttpUtils.findStringInReadyUrl(server, "/" + APP_NAME + "/pathAsyncMatch?dispatchPath=pathMatch/testPath",
                                            "ServletMapping values: mappingMatch: PATH matchValue: testPath pattern: /pathMatch/* servletName: GetMappingTestServlet");
@@ -246,7 +246,7 @@ public class WCGetMappingTest {
     @Test
     @Mode(TestMode.FULL)
     public void test_HttpServletRequestGetMapping_DefaultMapping_Async() throws Exception {
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             LOG.info("Servlet 6.0 test_HttpServletRequestGetMapping_DefaultMapping_Async");
             HttpUtils.findStringInReadyUrl(server, "/" + APP_NAME + "/pathAsyncMatch?dispatchPath=invalid",
                                            "ServletMapping values: mappingMatch: DEFAULT matchValue:  pattern: / servletName: GetMappingTestServlet");
@@ -307,7 +307,7 @@ public class WCGetMappingTest {
     @Test
     @Mode(TestMode.FULL)
     public void test_HttpServletRequestGetMapping_ExactMapping_Async() throws Exception {
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             LOG.info("Servlet 6.0 test_HttpServletRequestGetMapping_ExactMapping_Async");
             HttpUtils.findStringInReadyUrl(server, "/" + APP_NAME + "/pathAsyncMatch?dispatchPath=exactMatch",
                                            "ServletMapping values: mappingMatch: EXACT matchValue: exactMatch pattern: /exactMatch servletName: GetMappingTestServlet");
@@ -373,7 +373,7 @@ public class WCGetMappingTest {
     @Test
     @Mode(TestMode.FULL)
     public void test_HttpServletRequestGetMapping_ExtensionMapping_Async() throws Exception {
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             LOG.info("Servlet 6.0 test_HttpServletRequestGetMapping_ExtensionMapping_Async");
             HttpUtils.findStringInReadyUrl(server, "/" + APP_NAME + "/pathAsyncMatch?dispatchPath=extensionMatch.extension",
                                            "ServletMapping values: mappingMatch: EXTENSION matchValue: extensionMatch pattern: *.extension servletName: GetMappingTestServlet");

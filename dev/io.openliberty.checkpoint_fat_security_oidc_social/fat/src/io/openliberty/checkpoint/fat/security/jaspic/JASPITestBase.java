@@ -29,8 +29,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 public class JASPITestBase {
@@ -75,10 +74,10 @@ public class JASPITestBase {
         verifyServerUpdated(server);
         assertNotNull("The JASPI user feature did not report it was ready",
                       server.waitForStringInLogUsingMark(MSG_JASPI_PROVIDER_ACTIVATED));
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             assertNotNull("The feature manager did not report the JASPI provider is included in features.",
                           server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-3.0"));
-        } else if (JakartaEE9Action.isActive()) {
+        } else if (JakartaEEAction.isEE9Active()) {
             assertNotNull("The feature manager did not report the JASPI provider is included in features.",
                           server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-2.0"));
         } else {
@@ -91,10 +90,10 @@ public class JASPITestBase {
 
     protected static void verifyServerStartedWithJaspiFeature(LibertyServer server) {
         verifyServerStarted(server);
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             assertNotNull("The feature manager did not report the JASPI provider is included in features.",
                           server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-3.0"));
-        } else if (JakartaEE9Action.isActive()) {
+        } else if (JakartaEEAction.isEE9Active()) {
             assertNotNull("The feature manager did not report the JASPI provider is included in features.",
                           server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-2.0"));
         } else {

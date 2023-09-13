@@ -43,8 +43,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -174,7 +173,7 @@ public class JSF23GeneralTests {
             // Check the value of each API constant
             String output = page.getElementById("out1").getTextContent();
 
-            if (JakartaEE10Action.isActive()) {
+            if (JakartaEEAction.isEE10OrLaterActive()) {
                 assertTrue("The value of jakarta.faces.application.ResourceHandler.JSF_SCRIPT_RESOURCE_NAME was incorrect: " + output,
                            output.equals("faces.js"));
             } else {
@@ -186,7 +185,7 @@ public class JSF23GeneralTests {
 
             String expected = "javax.faces";
 
-            if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+            if (JakartaEEAction.isEE9OrLaterActive()) {
                 expected = "jakarta.faces";
             }
 
@@ -631,7 +630,7 @@ public class JSF23GeneralTests {
 
             // Construct the URL for the test, in this case: faces/selectManyListboxSelectItems.jsp
             // Faces 4.0 does not support Pages any longer!
-            if (!JakartaEE10Action.isActive()) {
+            if (!JakartaEEAction.isEE10OrLaterActive()) {
                 url = JSFUtils.createHttpUrl(server, contextRoot, "faces/selectManyListboxSelectItems.jsp");
 
                 try {

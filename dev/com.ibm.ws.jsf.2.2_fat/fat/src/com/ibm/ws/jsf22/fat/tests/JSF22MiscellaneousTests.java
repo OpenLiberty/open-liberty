@@ -51,8 +51,7 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -85,7 +84,7 @@ public class JSF22MiscellaneousTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        boolean isEE10 = JakartaEE10Action.isActive();
+        boolean isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         JavaArchive JSF22MiscellaneousJar = ShrinkHelper.buildJavaArchive(APP_NAME_MISCELLANEOUS + ".jar", "com.ibm.ws.jsf22.fat.miscbean.jar",
                                                                           isEE10 ? "com.ibm.ws.jsf22.fat.miscbean.jar.faces40" : "com.ibm.ws.jsf22.fat.miscbean.jar.jsf22");
@@ -282,7 +281,7 @@ public class JSF22MiscellaneousTests {
             if (!page.asText().contains("This is a protected page.")) {
                 Assert.fail("Invalid response from server.  The protected page was not retrieved = " + page.asText());
             }
-            if (!page.getUrl().toString().contains((JakartaEE10Action.isActive() || JakartaEE9Action.isActive() ? "jakarta." : "javax.") + "faces.Token=")) {
+            if (!page.getUrl().toString().contains((JakartaEEAction.isEE9OrLaterActive() ? "jakarta." : "javax.") + "faces.Token=")) {
                 Assert.fail("Invalid response from server.  This page does NOT contain the token = " + page.asText());
             }
 

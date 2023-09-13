@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -103,9 +103,9 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
         TestUtils.addDropinsWebApp(clientServer, subscriptionAppName, subscriptionPackages);
 
         String clientXml = "SharedSubscriptionDurClient.xml";
-        if ( JakartaEE9Action.isActive() ) {
+        if ( JakartaEEAction.isEE9OrLaterActive() ) {
             Path clientXmlFile = Paths.get("lib/LibertyFATTestFiles", clientXml);
-            JakartaEE9Action.transformApp(clientXmlFile);
+            JakartaEEAction.transformApp(clientXmlFile);
             Log.info(c, "setUp", "Transformed server " + clientXmlFile);
         }
         clientServer.setServerConfigurationFile(clientXml);

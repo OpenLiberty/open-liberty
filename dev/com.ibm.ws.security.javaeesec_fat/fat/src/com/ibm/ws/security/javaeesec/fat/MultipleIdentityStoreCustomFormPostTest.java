@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -43,7 +43,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -378,7 +378,7 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
         params.add(new BasicNameValuePair(PARAM_PHONE, VALUE_PHONE));
         params.add(new BasicNameValuePair(PARAM_OPERATION, VALUE_OPERATION));
         params.add(new BasicNameValuePair("form_SUBMIT", "1"));
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             params.add(new BasicNameValuePair("jakarta.faces.ViewState", viewState));
         } else {
             params.add(new BasicNameValuePair("javax.faces.ViewState", viewState));

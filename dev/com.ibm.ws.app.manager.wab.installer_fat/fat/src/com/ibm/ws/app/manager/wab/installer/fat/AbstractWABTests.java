@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,8 +25,7 @@ import org.junit.rules.TestName;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -66,25 +65,14 @@ public abstract class AbstractWABTests {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             /* transform any wab bundles with javax.servlet classes to jakartaee-9 equivalents */
-            Log.info(c, "setUp", "Transforming product bundles to Jakarta-EE-10: ");
+            Log.info(c, "setUp", "Transforming product bundles to Jakarta-EE-9 or later: ");
             for (String bundle : PRODUCT_BUNDLES) {
 
                 Path bundleFile = Paths.get("publish", "productbundles", bundle + ".jar");
                 Path newBundleFile = Paths.get("publish", "productbundles", bundle + ".jakarta.jar");
-                JakartaEE10Action.transformApp(bundleFile, newBundleFile);
-                Log.info(c, "setUp", "Transformed bundle " + bundleFile + " to " + newBundleFile);
-            }
-            isJakarta9OrLater = true;
-        } else if (JakartaEE9Action.isActive()) {
-            /* transform any wab bundles with javax.servlet classes to jakartaee-9 equivalents */
-            Log.info(c, "setUp", "Transforming product bundles to Jakarta-EE-9: ");
-            for (String bundle : PRODUCT_BUNDLES) {
-
-                Path bundleFile = Paths.get("publish", "productbundles", bundle + ".jar");
-                Path newBundleFile = Paths.get("publish", "productbundles", bundle + ".jakarta.jar");
-                JakartaEE9Action.transformApp(bundleFile, newBundleFile);
+                JakartaEEAction.transformApp(bundleFile, newBundleFile);
                 Log.info(c, "setUp", "Transformed bundle " + bundleFile + " to " + newBundleFile);
             }
             isJakarta9OrLater = true;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.cdi.thirdparty.tests;
-
-import static componenttest.rules.repeater.EERepeatActions.EE10_ID;
-import static componenttest.rules.repeater.EERepeatActions.EE9_ID;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -39,9 +36,8 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.EERepeatActions;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -87,14 +83,14 @@ public class HibernateSearchTest extends FATServletClient {
 
         //To prevent errors on Windows because of file locks, we create a seperate set of transformed jakarta jars rather than transform the existing ones.
         //This must happen before LibertyServerFactory.getLibertyServer as that method is what copies the publish directory into the server.
-        if (RepeatTestFilter.isAnyRepeatActionActive(EE9_ID, EE10_ID)) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             List<Path> files = Files.list(Paths.get("publish/shared/resources/hibernatejavax")).collect(Collectors.toList());
             for (Path file : files) {
                 File dir = new File("publish/shared/resources/hibernatejakarta/");
                 dir.mkdir();
                 String newPathString = "publish/shared/resources/hibernatejakarta/" + file.getFileName();
                 Path newPath = Paths.get(newPathString);
-                JakartaEE9Action.transformApp(file, newPath);
+                JakartaEEAction.transformApp(file, newPath);
             }
             // This will copy our newly transformed library to the server
             LibertyServerFactory.getLibertyServer(SERVER_NAME);
@@ -110,7 +106,7 @@ public class HibernateSearchTest extends FATServletClient {
         ShrinkHelper.exportAppToServer(server, hibernateSearchTest, DeployOptions.SERVER_ONLY);
 
         //Update the server.xml file to point to the new jakarta jars. This must be done after LibertyServerFactory.getLibertyServer() as the xml files in publish are unchanged.
-        if (RepeatTestFilter.isAnyRepeatActionActive(EE9_ID, EE10_ID)) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             server.swapInServerXMLFromPublish("jakarta.xml");
         }
 

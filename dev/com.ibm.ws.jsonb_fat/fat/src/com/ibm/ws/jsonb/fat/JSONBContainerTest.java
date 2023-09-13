@@ -31,8 +31,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jsonb.cdi.web.JsonbCDITestServlet;
@@ -58,7 +57,7 @@ public class JSONBContainerTest extends FATServletClient {
 
         server.startServer();
 
-        if (JakartaEE10Action.isActive()) { //TODO possibly back port this info message to EE9 and EE8
+        if (JakartaEEAction.isEE10OrLaterActive()) { //TODO possibly back port this info message to EE9 and EE8
             assertTrue(!server.findStringsInLogsAndTrace("CWWKJ0350I").isEmpty());
         }
     }
@@ -92,9 +91,9 @@ public class JSONBContainerTest extends FATServletClient {
         ServerConfiguration config = server.getServerConfiguration();
         ServerConfiguration configClone = config.clone();
 
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             config.getFeatureManager().getFeatures().add("jsonb-3.0");
-        } else if (JakartaEE9Action.isActive()) {
+        } else if (JakartaEEAction.isEE9Active()) {
             config.getFeatureManager().getFeatures().add("jsonb-2.0");
         } else {
             config.getFeatureManager().getFeatures().add("jsonb-1.0");

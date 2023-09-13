@@ -23,7 +23,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -44,7 +44,7 @@ public class JSF23CDIFacesInMetaInfTests extends CDITestBase {
 
     @BeforeClass
     public static void setup() throws Exception {
-        boolean isEE10 = JakartaEE10Action.isActive();
+        boolean isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         // Include @Named beans if Faces 4.0 is being tested. Include @ManagedBean beans otherwise.
         // Include correct resources directory, since the faces-config.xml points to different CustomNavigationHandler classes.

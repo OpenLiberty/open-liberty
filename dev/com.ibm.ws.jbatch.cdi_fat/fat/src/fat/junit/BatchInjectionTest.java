@@ -31,6 +31,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -74,13 +75,13 @@ public class BatchInjectionTest extends FATServletClient {
                         .addPackages(true, "app.injection")
                         .addPackages(true, "fat.util");
 
-        if (!JakartaEE10Action.isActive()) {
+        if (!JakartaEEAction.isEE10OrLaterActive()) {
             implicit.deletePackages(true, "app.injection.ee10");
         }
 
         addBatchJob(implicit, "Injection.xml");
 
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             addBatchJob(implicit, "InjectionNonStringProps.xml");
         }
 

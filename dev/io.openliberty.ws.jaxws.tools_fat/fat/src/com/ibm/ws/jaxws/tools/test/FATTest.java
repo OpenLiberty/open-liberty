@@ -37,7 +37,7 @@ import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
@@ -90,8 +90,8 @@ public class FATTest {
         File outputFile = new File(localLocation);
         outputFile.mkdirs();
         File explodedFile = war.as(ExplodedExporter.class).exportExploded(outputFile, "PeopleService.war");
-        if (JakartaEE9Action.isActive()) {
-            JakartaEE9Action.transformApp(explodedFile.toPath());
+        if (JakartaEEAction.isEE9OrLaterActive()) {
+            JakartaEEAction.transformApp(explodedFile.toPath());
         }
         ExplodedShrinkHelper.copyFileToDirectory(server, outputFile, "dropins");
 
@@ -104,7 +104,7 @@ public class FATTest {
 
     @Before
     public void start() throws Exception {
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             toolsDirectory = "xmlWS";
         } else {
 
@@ -286,7 +286,7 @@ public class FATTest {
 
         server.waitForStringInLog("CWWKZ0001I.*PeopleService");
 
-        String wsimportArgs = new StringBuilder().append("-s ").append(wsimportSrcDir.getAbsolutePath()).append(" -d ").append(wsimportClassesDir.getAbsolutePath()).append(JakartaEE9Action.isActive() ? " -target 3.0 " : " -target 2.2 ").append(TEST_WSDL_LOCATION).toString();
+        String wsimportArgs = new StringBuilder().append("-s ").append(wsimportSrcDir.getAbsolutePath()).append(" -d ").append(wsimportClassesDir.getAbsolutePath()).append(JakartaEEAction.isEE9OrLaterActive() ? " -target 3.0 " : " -target 2.2 ").append(TEST_WSDL_LOCATION).toString();
 
         assertTrue("The file bin/wsimport does not exist.", wsimport.exists());
         assertTrue("The file bin/wsimport.bat does not exist.", wsimportBat.exists());
@@ -379,7 +379,7 @@ public class FATTest {
 
     // Not required for xmlWS-3.0
     @Test
-    @SkipForRepeat(JakartaEE9Action.ID)
+    @SkipForRepeat(JakartaEEAction.EE9_ACTION_ID)
     public void testWsImportToolWithoutTarget() throws Exception {
 
         server.waitForStringInLog("CWWKZ0001I.*PeopleService");

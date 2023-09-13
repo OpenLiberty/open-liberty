@@ -26,8 +26,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -57,9 +56,9 @@ public class YassonTranslationTest extends FATServletClient {
 
     @Before
     public void setup() {
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             server.addEnvVar("YASSON_JAR", "io.openliberty.org.eclipse.yasson.3.0*jar");
-        } else if (JakartaEE9Action.isActive()) {
+        } else if (JakartaEEAction.isEE9Active()) {
             server.addEnvVar("YASSON_JAR", "com.ibm.ws.org.eclipse.yasson.2.0*jar");
         } else {
             server.addEnvVar("YASSON_JAR", "com.ibm.ws.org.eclipse.yasson.1.0*jar");

@@ -29,8 +29,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -68,7 +67,7 @@ public class CdiPropsAndProvidersTest extends FATServletClient {
     @AfterClass
     public static void afterClass() throws Exception {
         try {
-            if (!JakartaEE9Action.isActive() && !JakartaEE10Action.isActive()) {
+            if (!JakartaEEAction.isEE9OrLaterActive()) {
                 List<String> requestScopedIntfMsgs = server.findStringsInLogs("CWWKW0750I.*" + CdiPropsAndProvidersClient.class.getName());
                 assertNotNull("Did not find expected CWWKW0750I message about request scoped interfaces", requestScopedIntfMsgs);
                 assertEquals("Found unexpected number of CWWKW0750I messages about request scoped interfaces (should be 1)",

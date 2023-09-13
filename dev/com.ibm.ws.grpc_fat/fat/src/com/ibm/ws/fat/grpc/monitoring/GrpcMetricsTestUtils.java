@@ -21,8 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.logging.Logger;
 
-import componenttest.custom.junit.runner.RepeatTestFilter;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 public class GrpcMetricsTestUtils {
@@ -38,7 +37,7 @@ public class GrpcMetricsTestUtils {
      * @return the actual value received from the Metrics endpoint
      */
     public static String checkMetric(LibertyServer server, String metricName, String grpcMethod, String expectedValue) {
-        if (RepeatTestFilter.isRepeatActionActive(JakartaEE10Action.ID)) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             metricName = metricName.replace("/vendor", "?scope=vendor");
             metricName = metricName.replace("/grpc", "&name=grpc");
         }
@@ -59,7 +58,7 @@ public class GrpcMetricsTestUtils {
      * @return the actual value received from the Metrics endpoint
      */
     public static String checkMetric(String metricName, String expectedValue, String hostname, int port, String grpcMethod) {
-        if (RepeatTestFilter.isRepeatActionActive(JakartaEE10Action.ID)) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             metricName = metricName.replace("/vendor", "?scope=vendor");
             metricName = metricName.replace("/grpc", "&name=grpc");
         }

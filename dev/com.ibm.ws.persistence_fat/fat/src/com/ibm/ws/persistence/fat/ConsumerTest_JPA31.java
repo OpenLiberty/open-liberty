@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,7 +29,8 @@ import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
+import componenttest.rules.repeater.RepeatActions.EEVersion;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import persistence_fat.consumer.web.ConsumerServlet;
@@ -53,13 +54,13 @@ public class ConsumerTest_JPA31 extends FATServletClient {
         Assert.assertTrue(server.fileExistsInLibertyInstallRoot("lib/com.ibm.ws.persistence.consumer.jar"));
 
         Path someArchive = Paths.get(server.getInstallRoot() + File.separatorChar + "lib" + File.separatorChar + "com.ibm.ws.persistence.consumer.jar");
-        JakartaEE10Action.transformApp(someArchive);
+        JakartaEEAction.transformApp(someArchive, EEVersion.EE10);
 
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "persistence_fat.consumer.ejb", "persistence_fat.consumer.model",
                                       "persistence_fat.consumer.web");
 
         Path warArchive = Paths.get(server.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + APP_NAME + ".war");
-        JakartaEE10Action.transformApp(warArchive);
+        JakartaEEAction.transformApp(warArchive, EEVersion.EE10);
 
         server.startServer();
     }

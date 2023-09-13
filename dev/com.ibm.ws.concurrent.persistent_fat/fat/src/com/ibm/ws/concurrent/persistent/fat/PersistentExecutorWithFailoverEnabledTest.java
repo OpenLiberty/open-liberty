@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -72,7 +73,7 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
 
         // Use the Jakarta version of test features if Jakarta is being used.
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             ServerConfiguration config = server.getServerConfiguration();
             Set<String> features = config.getFeatureManager().getFeatures();
             features.remove("timerinterfacestestfeature-1.0");

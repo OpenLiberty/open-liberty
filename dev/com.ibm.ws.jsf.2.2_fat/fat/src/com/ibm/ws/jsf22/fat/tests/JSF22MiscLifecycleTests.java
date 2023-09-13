@@ -37,8 +37,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -59,7 +58,7 @@ public class JSF22MiscLifecycleTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        boolean isEE10 = JakartaEE10Action.isActive();
+        boolean isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         ShrinkHelper.defaultDropinApp(jsfTestServer1, "JSF22ActionListener.war",
                                       isEE10 ? "com.ibm.ws.jsf22.fat.actionlistener.bean.faces40" : "com.ibm.ws.jsf22.fat.actionlistener.bean.jsf22",
@@ -151,7 +150,7 @@ public class JSF22MiscLifecycleTests {
             Log.info(c, name.getMethodName(), "Page output: " + page.asXml());
 
             HtmlHiddenInput hidden;
-            if (JakartaEE10Action.isActive() || JakartaEE9Action.isActive()) {
+            if (JakartaEEAction.isEE9OrLaterActive()) {
                 hidden = (HtmlHiddenInput) page.getElementByName("jakarta.faces.ViewState");
                 Log.info(c, name.getMethodName(), "The ViewState hidden field has an id of: " + hidden.getAttribute("id"));
                 assertFalse("jakarta.faces.ViewState".equals(hidden.getAttribute("id")));

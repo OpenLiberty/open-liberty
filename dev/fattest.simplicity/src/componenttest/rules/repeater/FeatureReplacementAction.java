@@ -122,21 +122,21 @@ public class FeatureReplacementAction implements RepeatTestAction {
     /**
      * Remove the EE7 and EE8 features; replace them with the EE9 features
      */
-    public static FeatureReplacementAction EE9_FEATURES() {
+    public static JakartaEEAction EE9_FEATURES() {
         return new JakartaEE9Action();
     }
 
     /**
      * Remove the EE7, EE8, and EE9 features; replace them with the EE10 features
      */
-    public static FeatureReplacementAction EE10_FEATURES() {
+    public static JakartaEEAction EE10_FEATURES() {
         return new JakartaEE10Action();
     }
 
     /**
      * Remove the EE7, EE8, EE9, and EE10 features; replace them with the EE11 features
      */
-    public static FeatureReplacementAction EE11_FEATURES() {
+    public static JakartaEEAction EE11_FEATURES() {
         return new JakartaEE11Action();
     }
 

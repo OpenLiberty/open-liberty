@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,8 +24,7 @@ import org.junit.runner.RunWith;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -394,16 +393,16 @@ public class JMSContextTest_118058 {
 
     @Test
     public void testGetMetadata_B_SecOff() throws Exception {
-    	int major = JakartaEE10Action.isActive() || JakartaEE9Action.isActive() ? 3 : 2;
-    	int minor = JakartaEE10Action.isActive() ? 1 : 0;
+    	int major = JakartaEEAction.isEE9OrLaterActive() ? 3 : 2;
+    	int minor = JakartaEEAction.isEE10OrLaterActive() ? 1 : 0;
         boolean testResult = runInServlet("testGetMetadata_B_SecOff", new String[] {"major="+major,"minor="+minor});
         assertTrue("Test testGetMetadata_B_SecOff failed", testResult);
     }
 
     @Test
     public void testGetMetadata_TCP_SecOff() throws Exception {
-    	int major = JakartaEE10Action.isActive() || JakartaEE9Action.isActive() ? 3 : 2;
-    	int minor = JakartaEE10Action.isActive() ? 1 : 0;
+        int major = JakartaEEAction.isEE9OrLaterActive() ? 3 : 2;
+        int minor = JakartaEEAction.isEE10OrLaterActive() ? 1 : 0;
         boolean testResult = runInServlet("testGetMetadata_TCP_SecOff", new String[] {"major="+major,"minor="+minor});
         assertTrue("Test testGetMetadata_TCP_SecOff failed", testResult);
     }

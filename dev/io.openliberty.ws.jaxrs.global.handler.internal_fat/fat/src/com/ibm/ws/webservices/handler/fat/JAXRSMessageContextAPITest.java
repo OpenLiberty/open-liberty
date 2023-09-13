@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -62,7 +62,7 @@ public class JAXRSMessageContextAPITest {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile("RSMessageContextAPITest/WithBundles/server.xml");
         server.waitForStringInLog("CWWKF0012I");
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             assertNotNull("Expected to see application rsApplication updated", server.waitForStringInLog("CWWKZ0003I: The application rsApplication updated"));
         } else {
             assertNull("Did not expect to see application rsApplication updated", server.waitForStringInLog("CWWKZ0003I: The application rsApplication updated"));
