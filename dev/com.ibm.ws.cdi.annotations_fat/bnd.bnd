@@ -25,7 +25,10 @@ tested.features:\
 	servlet-5.0,\
 	cdi-3.0,\
         servlet-6.0,\
-        cdi-4.0
+        cdi-4.0,\
+        noship-1.0,\
+        cdi-4.1,\
+        servlet-6.1
 	
 	
 fat.project: true
