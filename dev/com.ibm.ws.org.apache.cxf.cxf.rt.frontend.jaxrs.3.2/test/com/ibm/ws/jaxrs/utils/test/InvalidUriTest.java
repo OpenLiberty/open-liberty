@@ -38,7 +38,25 @@ public class InvalidUriTest {
             // expected
         }
         try {
+            Link.fromUri("http://@").build();
+            Assert.fail("Expected a UriBuilderException");
+        } catch (UriBuilderException e) {
+            // expected
+        }
+        try {
             Link.fromUri("HTTP://:@").build();
+            Assert.fail("Expected a UriBuilderException");
+        } catch (UriBuilderException e) {
+            // expected
+        }
+        try {
+            Link.fromUri("http:///").build();
+            Assert.fail("Expected a UriBuilderException");
+        } catch (UriBuilderException e) {
+            // expected
+        }
+        try {
+            Link.fromUri("http://@/").build();
             Assert.fail("Expected a UriBuilderException");
         } catch (UriBuilderException e) {
             // expected
@@ -60,10 +78,46 @@ public class InvalidUriTest {
             // expected
         }
         try {
+            UriBuilder.fromUri("http://@").build();
+            Assert.fail("Expected a UriBuilderException");
+        } catch (UriBuilderException e) {
+            // expected
+        }
+        try {
             UriBuilder.fromUri("HTTP://:@").build();
             Assert.fail("Expected a UriBuilderException");
         } catch (UriBuilderException e) {
             // expected
         }
+        try {
+            UriBuilder.fromUri("http:///").build();
+            Assert.fail("Expected a UriBuilderException");
+        } catch (UriBuilderException e) {
+            // expected
+        }
+        try {
+            UriBuilder.fromUri("http://@/").build();
+            Assert.fail("Expected a UriBuilderException");
+        } catch (UriBuilderException e) {
+            // expected
+        }
     }
+
+    // Added some valid URI tests as well.  The ones below that have the semicolon after
+    // the host and port are there because there are TCK tests that use the format and expect
+    // not to get an exception.  This caused a regression with the initial version of the changes in 
+    // Rfc3986uriValidator.
+    @Test
+    public void testValidURIs() {
+        Link.fromUri("http://localhost:9080/").build();
+        Link.fromUri("http://[::1]:9080/").build();
+
+        UriBuilder.fromUri("http://localhost:9080/").build();
+        UriBuilder.fromUri("http://[::1]:9080/").build();
+
+        Link.fromUri("http://localhost:9080;x=y").build();
+
+        UriBuilder.fromUri("http://localhost:9080;x=y").build();
+    }
+
 }
