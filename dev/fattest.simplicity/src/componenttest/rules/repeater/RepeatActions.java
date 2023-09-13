@@ -14,6 +14,7 @@ package componenttest.rules.repeater;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,7 +87,9 @@ public class RepeatActions {
                                      List<FeatureSet> allFeatureSets,
                                      FeatureSet firstFeatureSet,
                                      List<FeatureSet> otherFeatureSets) {
-        return repeat(new String[] { server }, otherFeatureSetsTestMode, allFeatureSets, firstFeatureSet, otherFeatureSets);
+        // if server is null use an empty array, else return an array with the server as the sole element
+        String[] servers = server != null ? new String[] {server}: new String[] {};
+        return repeat(servers, otherFeatureSetsTestMode, allFeatureSets, firstFeatureSet, otherFeatureSets);
     }
 
     /**
