@@ -20,6 +20,7 @@ import java.util.Set;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.http.channel.internal.HttpBaseMessageImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
+import com.ibm.ws.http.netty.MSP;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
@@ -30,6 +31,7 @@ import com.ibm.wsspi.http.ee7.HttpInputStreamEE7;
 import com.ibm.wsspi.http.ee8.Http2PushBuilder;
 import com.ibm.wsspi.http.ee8.Http2Request;
 
+import io.netty.handler.codec.http.FullHttpRequest;
 import io.openliberty.http.ext.HttpRequestExt;
 
 /**
@@ -67,6 +69,22 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
             this.body = new HttpInputStreamEE7(context);
         } else {
             this.body = new HttpInputStreamImpl(context);
+        }
+    }
+
+    /**
+     * Initialize with a new connection.
+     *
+     * @param context
+     */
+    public void init(FullHttpRequest request, HttpInboundServiceContext context) {
+
+        this.message = context.getRequest();
+
+        if (this.useEE7Streams) {
+            this.body = new HttpInputStreamEE7(context, request);
+        } else {
+            this.body = new HttpInputStreamImpl(context, request);
         }
     }
 
@@ -169,6 +187,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public String getMethod() {
+        MSP.log("method: " + this.message.getMethod());
         return this.message.getMethod();
     }
 
@@ -178,6 +197,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
     @Override
     @Trivial
     public String getQuery() {
+        MSP.log("query: " + this.message.getQueryString());
         return this.message.getQueryString();
     }
 
@@ -186,6 +206,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public String getScheme() {
+        MSP.log("scheme: " + message.getScheme());
         return this.message.getScheme();
     }
 
@@ -194,6 +215,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public String getURI() {
+        MSP.log("getURI: " + this.message.getRequestURI());
         return this.message.getRequestURI();
     }
 
@@ -202,6 +224,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public String getURL() {
+        MSP.log("getURL: " + message.getRequestURL().toString());
         return this.message.getRequestURL().toString();
     }
 
@@ -210,6 +233,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public String getVersion() {
+        MSP.log("getVersion: " + this.message.getVersion());
         return this.message.getVersion();
     }
 
@@ -218,6 +242,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public String getVirtualHost() {
+        MSP.log("getVirtualHost: " + message.getVirtualHost());
         return this.message.getVirtualHost();
     }
 
@@ -226,6 +251,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public int getVirtualPort() {
+        MSP.log("getVirtualPort: " + message.getVirtualPort());
         return this.message.getVirtualPort();
     }
 

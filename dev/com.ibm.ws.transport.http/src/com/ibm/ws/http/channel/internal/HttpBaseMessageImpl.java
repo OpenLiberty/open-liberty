@@ -128,13 +128,13 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     private transient HttpServiceContextImpl myHSC = null;
 
     /** Cache of those "Cookie" headers */
-    private transient CookieCacheData cookieCache = null;
+    protected transient CookieCacheData cookieCache = null;
     /** Cache of the "Cookie2" headers */
-    private transient CookieCacheData cookie2Cache = null;
+    protected transient CookieCacheData cookie2Cache = null;
     /** Cache of those "Set-Cookie" headers */
-    private transient CookieCacheData setCookieCache = null;
+    protected transient CookieCacheData setCookieCache = null;
     /** Cache of those "Set-Cookie2" headers */
-    private transient CookieCacheData setCookie2Cache = null;
+    protected transient CookieCacheData setCookie2Cache = null;
     /** Reference to the cookie parser */
     private transient CookieHeaderByteParser cookieParser;
     /**
