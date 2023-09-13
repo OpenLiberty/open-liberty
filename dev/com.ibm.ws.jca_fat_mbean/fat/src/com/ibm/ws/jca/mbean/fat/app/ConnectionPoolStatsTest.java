@@ -128,9 +128,8 @@ public class ConnectionPoolStatsTest {
         EnterpriseArchive fvtapp_ear = ShrinkWrap.create(EnterpriseArchive.class, APP_NAME + ".ear");
         fvtapp_ear.addAsModule(fvtweb_war);
         ShrinkHelper.addDirectory(fvtapp_ear, "lib/LibertyFATTestFiles/" + APP_NAME);
-        ShrinkHelper.exportToServer(server, "apps", fvtapp_ear);
+        ShrinkHelper.exportAppToServer(server, fvtapp_ear);
 
-        server.addInstalledAppForValidation(APP_NAME);
         server.startServer();
     }
 
@@ -160,7 +159,7 @@ public class ConnectionPoolStatsTest {
     @Test
     public void testGetMaxConnectionsLimit() throws Exception {
         final String fvtweb = "fvtweb/ConnectionPoolStatsServlet";
-		// run test, check for 50 
+        // run test, check for 50
         runInServlet(testName.getMethodName(), fvtweb);
 
         // Dynamically change the maximum connections while server is running.

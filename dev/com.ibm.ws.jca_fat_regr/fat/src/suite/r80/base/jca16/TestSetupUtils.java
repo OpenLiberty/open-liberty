@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -65,8 +65,7 @@ public class TestSetupUtils {
             gwcapp_ear.addAsModules(fvtweb_war, rar1);
             ShrinkHelper.addDirectory(gwcapp_ear, "lib/LibertyFATTestFiles/" + app_name);
         }
-        ShrinkHelper.exportToServer(server, "apps", gwcapp_ear);
-        server.addInstalledAppForValidation(app_name);
+        ShrinkHelper.exportAppToServer(server, gwcapp_ear);
     }
 
     public static void setUpFvtApp(LibertyServer server) throws Exception {
@@ -98,7 +97,7 @@ public class TestSetupUtils {
             ShrinkHelper.addDirectory(fvtapp_ear, "lib/LibertyFATTestFiles/" + app_name);
         }
 
-        ShrinkHelper.exportToServer(server, "apps", fvtapp_ear);
+        ShrinkHelper.exportAppToServer(server, fvtapp_ear);
     }
 
     public static JavaArchive getResourceAdapter_jar() {
@@ -180,8 +179,7 @@ public class TestSetupUtils {
             annApp_ear.addAsModules(fvtweb_war);
             ShrinkHelper.addDirectory(annApp_ear, "lib/LibertyFATTestFiles/" + app_name);
         }
-        ShrinkHelper.exportToServer(server, "apps", annApp_ear);
-        server.addInstalledAppForValidation(app_name);
+        ShrinkHelper.exportAppToServer(server, annApp_ear);
     }
 
 }

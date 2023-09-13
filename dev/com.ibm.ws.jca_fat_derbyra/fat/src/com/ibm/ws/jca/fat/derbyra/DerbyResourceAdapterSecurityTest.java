@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -38,7 +39,7 @@ public class DerbyResourceAdapterSecurityTest extends FATServletClient {
 
     private static final String APP = "derbyRAApp";
     private static final String WAR_NAME = "fvtweb";
-    private static final String derbyRAAppName = "derbyRAAppName";
+    private static final String RAR_NAME = "DerbyRA";
     private static final String DerbyRAServlet = "fvtweb/DerbyRAServlet";
     private static final String DerbyRAAnnoServlet = "fvtweb/DerbyRAAnnoServlet";
 
@@ -56,9 +57,9 @@ public class DerbyResourceAdapterSecurityTest extends FATServletClient {
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, APP + ".ear");
         ear.addAsModule(war);
         ShrinkHelper.addDirectory(ear, "lib/LibertyFATTestFiles/derbyRAApp");
-        ShrinkHelper.exportToServer(server, "apps", ear);
+        ShrinkHelper.exportAppToServer(server, ear, DeployOptions.SERVER_ONLY);
 
-        ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, "DerbyRA.rar");
+        ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, RAR_NAME + ".rar");
         rar.as(JavaArchive.class).addPackage("fat.derbyra.resourceadapter");
         rar.addAsManifestResource(new File("test-resourceadapters/fvt-resourceadapter/resources/META-INF/ra.xml"));
         rar.addAsManifestResource(new File("test-resourceadapters/fvt-resourceadapter/resources/META-INF/wlp-ra.xml"));
@@ -74,7 +75,6 @@ public class DerbyResourceAdapterSecurityTest extends FATServletClient {
 
         server.addEnvVar("PERMISSION", (JakartaEE9Action.isActive()
                                         || JakartaEE10Action.isActive()) ? "jakarta.resource.spi.security.PasswordCredential" : "javax.resource.spi.security.PasswordCredential");
-        server.addInstalledAppForValidation(derbyRAAppName);
         server.startServer();
     }
 
