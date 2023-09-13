@@ -36,7 +36,7 @@ public class EERepeatActions {
     public static final FeatureSet EE8 = new FeatureSet(EE8_ID, EE8FeatureReplacementAction.EE8_FEATURE_SET, EEVersion.EE8);
     public static final FeatureSet EE9 = new FeatureSet(EE9_ID, JakartaEE9Action.EE9_FEATURE_SET, EEVersion.EE9);
     public static final FeatureSet EE10 = new FeatureSet(EE10_ID, JakartaEE10Action.EE10_FEATURE_SET, EEVersion.EE10);
-    public static final FeatureSet EE11 = new FeatureSet(EE11_ID, JakartaEE10Action.EE10_FEATURE_SET, EEVersion.EE11);
+    public static final FeatureSet EE11 = new FeatureSet(EE11_ID, JakartaEE11Action.EE11_FEATURE_SET, EEVersion.EE11);
 
     //The FeatureSet for the latest EE version
     public static final FeatureSet LATEST = EE10;
