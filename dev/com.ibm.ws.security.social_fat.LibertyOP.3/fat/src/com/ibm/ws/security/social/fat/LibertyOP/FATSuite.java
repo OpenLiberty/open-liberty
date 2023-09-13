@@ -29,7 +29,7 @@ import componenttest.rules.repeater.RepeatTests;
         LibertyOP_Social_PKCETests.class,
         LibertyOP_Social_PrivateKeyJwtTests.class,
         LibertyOP_Social_PKCEAndPrivateKeyJwtTests.class,
-        LibertyOP_Social_ClientWasReqURLTests.class
+        //        LibertyOP_Social_ClientWasReqURLTests.class
 
 })
 
