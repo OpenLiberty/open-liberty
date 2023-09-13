@@ -73,6 +73,8 @@ public class NettyChain extends HttpChain {
         dispatcherName = "HTTPD-" + root;
         chainName = "CHAIN-" + root;
 
+        chainState.set(ChainState.STOPPED.val);
+
     }
 
     /**
@@ -83,15 +85,29 @@ public class NettyChain extends HttpChain {
      */
     @Override
     public void stop() {
+
+        MSP.log("Netty stop() NettyChain");
+
         if (Objects.isNull(serverChannel)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.entry(tc, "Netty channel not initialized, returning from stop");
             }
             return;
         } else {
+
+            MSP.log("Removing endpoint, virtual host notify");
+
             //When channel is stopped, remove the previously registered endpoint
             //created in the update
             this.endpointMgr.removeEndPoint(endpointName);
+            MSP.log("stop() -> endpoint removed");
+            MSP.log("owner:" + owner.toString());
+            MSP.log("host: " + currentConfig.getResolvedHost());
+            MSP.log("port: " + currentConfig.getConfigPort());
+            MSP.log("isHttps:" + isHttps);
+            VirtualHostMap.notifyStopped(owner, currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
+            MSP.log("stop()-> VHOST notified");
+
         }
 
         try {
@@ -104,9 +120,7 @@ public class NettyChain extends HttpChain {
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Successfully stopped server channel " + serverChannel);
-                    if (chainState.get() == ChainState.RESTARTING.val) {
-                        startNettyChannel();
-                    }
+
                 }
             }
             TCPUtils.logChannelStopped(serverChannel);
@@ -115,10 +129,17 @@ public class NettyChain extends HttpChain {
                 Tr.debug(tc, "Error stopping chain " + this);
             }
         } finally {
+            MSP.log("Stop() finally block");
             this.disable();
             String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STOPPED;
             postEvent(topic, currentConfig, null);
             currentConfig.clearActivePort();
+            chainState.set(ChainState.STOPPED.val);
+//            if (chainState.get() == ChainState.RESTARTING.val) {
+//                MSP.log("Restarting path, set chained stopped and start again");
+//                chainState.set(ChainState.STOPPED.val);
+//                startNettyChannel();
+//            }
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.exit(this, tc, "stop chain " + this);
@@ -176,16 +197,11 @@ public class NettyChain extends HttpChain {
 
         boolean sameConfig = newConfig.unchanged(oldConfig);
 
-        if (validOldConfig) {
-            if (sameConfig) {
-
-            }
-
-        }
-
-        if (!sameConfig) {
+        if (!sameConfig && chainState.get() != ChainState.STOPPED.val) {
+            MSP.log("Not same config, restart chain");
             chainState.set(ChainState.RESTARTING.val);
             stop();
+            super.stopWait.waitForStop(nettyFramework.getDefaultChainQuiesceTimeout(), this);
         }
 
 //        } else {
@@ -229,9 +245,11 @@ public class NettyChain extends HttpChain {
 //            }
 //        }
 
-        currentConfig = newConfig;
-
         startNettyChannel();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.exit(this, tc, "update chain " + this);
+        }
     }
 
     public void startNettyChannel() {
@@ -240,6 +258,11 @@ public class NettyChain extends HttpChain {
 
         }
         System.out.println("MSP: start netty channel");
+
+        if (chainState.get() == ChainState.STARTED.val) {
+            MSP.log("Chain already started, returning");
+            return;
+        }
 
         //TODO: clean up less clogged active configuration
         Map<String, Object> httpOptions = new HashMap<String, Object>();
