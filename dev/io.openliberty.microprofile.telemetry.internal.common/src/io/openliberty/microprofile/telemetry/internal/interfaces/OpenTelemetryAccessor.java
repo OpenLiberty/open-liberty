@@ -36,11 +36,11 @@ public class OpenTelemetryAccessor {
     }
 
     public static Span getSpan() {
-        return OpenTelemetryInfoFactory.getSpan();
+        return Span.current();
     }
 
     public static Baggage getBaggage() {
-        return OpenTelemetryInfoFactory.getBaggage();
+        return Baggage.current();
     }
 
 }

@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.common;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -45,12 +47,8 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
-import io.openliberty.microprofile.telemetry.internal.common.cdi.BaggageProxy;
-import io.openliberty.microprofile.telemetry.internal.common.cdi.SpanProxy;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.OpenTelemetry;
-import io.opentelemetry.api.baggage.Baggage;
-import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdkBuilder;
@@ -93,7 +91,7 @@ public class OpenTelemetryInfoFactory implements ApplicationStateListener {
     private static final TraceComponent tc = Tr.register(OpenTelemetryInfoFactory.class);
 
     private static final Map<J2EEName, OpenTelemetryInfo> appToInfo = new ConcurrentHashMap<J2EEName, OpenTelemetryInfo>();
-    private static final Set<J2EEName> shutDownApplications = Collections.newSetFromMap(new WeakHashMap<J2EEName, Boolean>()); //We have no good place to say forget about an app entirely, so I use weakreferences. 
+    private static final Set<J2EEName> shutDownApplications = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<J2EEName, Boolean>())); //We have no good place to say forget about an app entirely, so I use weakreferences. 
 
     //The key methods that provide access to telemetry objects begin here
     public static OpenTelemetryInfo getOpenTelemetryInfo(J2EEName j2EEName) {
@@ -109,20 +107,21 @@ public class OpenTelemetryInfoFactory implements ApplicationStateListener {
         }
     }
 
-    public static Span getSpan() {
-        return new SpanProxy(); //TODO I cannot see a way to get no-op spans or baggage, check if we need code here to handle apps that have shut down.
-    }
-
-    public static Baggage getBaggage() {
-        return new BaggageProxy();
-    };
-
     //The key methods that provide access to telemetry objects end here
 
     private static OpenTelemetryInfo createOpenTelemetryInfo(J2EEName j2EEName) {
         //If the app has already shut down but something still tries to get OpenTelemetry objects return a no-op object
         if (shutDownApplications.contains(j2EEName)){ //There is a low risk race condition here. Thread A gets past this check just as thread B shuts everything down.
-            Tr.warning(tc, Tr.formatMessage(tc, "CWMOT5003.factory.used.after.shutdown"));
+            Tr.warning(tc, Tr.formatMessage(tc, "CWMOT5003.factory.used.after.shutdown", j2EEName.getApplication()));
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Exception e = new Exception();
+                ByteArrayOutputStream stackStream = new ByteArrayOutputStream();
+                PrintStream stackPrintStream = new PrintStream(stackStream);
+                e.printStackTrace(stackPrintStream);
+                
+                Tr.event(tc, "OpenTelemetryInfoFactory", "The stack that led to OpenTelemetryInfoFactory being called after " + j2EEName.getApplication() + " has shutdown is:.");
+                Tr.event(tc, stackStream.toString());
+            }
             return new OpenTelemetryInfo(false, OpenTelemetry.noop());
         }
 
@@ -185,7 +184,7 @@ public class OpenTelemetryInfoFactory implements ApplicationStateListener {
                 openTelemetry = appToInfo.get(j2EEName).getOpenTelemetry();
             }
 
-            if (openTelemetry  instanceof OpenTelemetrySdk) {
+            if (openTelemetry instanceof OpenTelemetrySdk) {
                 OpenTelemetrySdk sdk = (OpenTelemetrySdk) openTelemetry;
                 List<CompletableResultCode> results = new ArrayList<>();
 
@@ -264,9 +263,9 @@ public class OpenTelemetryInfoFactory implements ApplicationStateListener {
     public void applicationStopped(ApplicationInfo appInfo) {
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
         J2EEName j2EEName = extAppInfo.getMetaData().getJ2EEName();
+        shutDownApplications.add(j2EEName);
         disposeOpenTelemetry(j2EEName);
         appToInfo.remove(j2EEName);
-        shutDownApplications.add(j2EEName);
     }
 
     //Adds the service name to the resource attributes
