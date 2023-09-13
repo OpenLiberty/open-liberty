@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.http.netty.MSP;
 
 /**
  * This map bridges between independent dynamic components: HttpEndpoints (with their Chains), and
@@ -209,6 +210,7 @@ public class VirtualHostMap {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Notify endpoint stopped: " + endpoint, resolvedHostName, port, isHttps, defaultHost, alternateHostSelector);
         }
+        MSP.log("VHOST notifyStopped received");
         if (alternateHostSelector == null) {
             if (defaultHost != null) {
                 defaultHost.listenerStopped(endpoint, resolvedHostName, port, isHttps);
@@ -217,6 +219,7 @@ public class VirtualHostMap {
         } else {
             alternateHostSelector.alternateNotifyStopped(endpoint, resolvedHostName, port, isHttps);
         }
+        MSP.log("VHOST notifyStopped exit");
     }
 
     /**
