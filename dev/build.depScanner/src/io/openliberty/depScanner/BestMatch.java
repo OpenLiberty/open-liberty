@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -47,6 +47,7 @@ public class BestMatch {
 
     public static void main(String[] args) throws Exception {
         Repository repo = new Repository(new File(System.getProperty("user.home"), ".ibmartifactory/repository"));
+        Repository gradleRepo = new Repository(new File(System.getProperty("user.home"), ".gradle/caches"));
         String wlpDir = args[0];
         String outputDir = args[1];
         LibertyInstall liberty = new LibertyInstall(new File(wlpDir));
@@ -70,16 +71,34 @@ public class BestMatch {
 
                             matched.addAll(modules);
 
+                            List<Module> gradleModules = gradleRepo.stream()
+                                            .map(moduleInfo -> {
+                                                List<Module> moduleInfoList = moduleInfo.getValue();
+                                                moduleInfoList.sort((o1, o2) -> o2.containsCount(jar) - o1.containsCount(jar));
+
+                                                return moduleInfoList.get(0);
+                                            })
+                                            .filter(jar::contains)
+                                            .collect(Collectors.toList());
+
+                            matched.addAll(gradleModules);
+
                             List<String> moduleNames = modules.stream()
+                                            .map(module -> "\t" + module + "\t" + jar.getPackages(module))
+                                            .sorted()
+                                            .collect(Collectors.toList());
+                            List<String> gradleModuleNames = gradleModules.stream()
                                             .map(module -> "\t" + module + "\t" + jar.getPackages(module))
                                             .sorted()
                                             .collect(Collectors.toList());
 
                             List<String> foundPackages = modules.stream().flatMap(module -> jar.getPackages(module).stream()).collect(Collectors.toList());
+                            List<String> foundGradlePackages = gradleModules.stream().flatMap(module -> jar.getPackages(module).stream()).collect(Collectors.toList());
 
                             Collection<String> missingPackages = jar.getPackages();
 
                             missingPackages.removeAll(foundPackages);
+                            missingPackages.removeAll(foundGradlePackages);
 
                             missingPackages = missingPackages.stream()
                                             .filter(name -> !name.startsWith("com.ibm.ws"))
