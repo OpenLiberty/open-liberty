@@ -20,6 +20,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.StaticMetamodel;
 
 /**
  * Makes Jakarta Data's Repository annotation into a bean defining annotation.
@@ -29,7 +30,7 @@ import jakarta.data.repository.Repository;
            service = { CDIExtensionMetadata.class, BeanDefiningAnnotationMetadata.class },
            immediate = true)
 public class BeanDefiningAnnotationMetadata implements CDIExtensionMetadata {
-    private static final Set<Class<? extends Annotation>> beanDefiningAnnos = Set.of(Repository.class);
+    private static final Set<Class<? extends Annotation>> beanDefiningAnnos = Set.of(Repository.class, StaticMetamodel.class);
 
     @Override
     public Set<Class<? extends Annotation>> getBeanDefiningAnnotationClasses() {

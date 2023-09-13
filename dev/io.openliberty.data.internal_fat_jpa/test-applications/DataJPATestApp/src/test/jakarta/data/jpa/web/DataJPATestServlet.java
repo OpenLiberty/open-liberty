@@ -2113,6 +2113,33 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Tests direct usage of StaticMetamodel auto-populated fields.
+     */
+    @Test
+    public void testStaticMetamodel() {
+        assertEquals("name", CityAttrNames1.name);
+        assertEquals("population", CityAttrNames1.population);
+        assertEquals("stateName", CityAttrNames1.stateName);
+
+        assertEquals("areaCodes", CityAttrNames2.areaCodes);
+        assertEquals("changeCount", CityAttrNames2.changeCount);
+        assertEquals(null, CityAttrNames2.id);
+        assertEquals("do-not-replace", CityAttrNames2.ignore);
+        assertEquals(0L, CityAttrNames2.population);
+        assertEquals("do-not-replace-final", CityAttrNames2.name);
+    }
+
+    /**
+     * Tests that the StaticMetamodel annotation on a non-JPA entity is not populated by the JPA-based provider.
+     */
+    @Test
+    public void testStaticMetamodelIgnoresNonJPAEntity() {
+        assertEquals(null, EntityModelUnknown_.days);
+        assertEquals(null, EntityModelUnknown_.months);
+        assertEquals("do-not-replace-this", EntityModelUnknown_.years);
+    }
+
+    /**
      * Use an Entity which has a version attribute of type Timestamp.
      */
     @Test

@@ -25,6 +25,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
@@ -52,6 +54,7 @@ import io.openliberty.data.internal.persistence.EntityDefiner;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.StaticMetamodel;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AfterTypeDiscovery;
@@ -89,6 +92,11 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
      * for different applications or the same application being restarted.
      */
     private final ConcurrentHashMap<AnnotatedType<?>, String> repositoryTypes = new ConcurrentHashMap<>();
+
+    /**
+     * Map of entity class to list of static metamodel class.
+     */
+    private final Map<Class<?>, List<Class<?>>> staticMetamodels = new HashMap<>();
 
     /**
      * A key for a group of entities for the same backend database
@@ -144,6 +152,25 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
         }
     }
 
+    @Trivial
+    public <T> void annotatedStaticMetamodel(@Observes @WithAnnotations(StaticMetamodel.class) ProcessAnnotatedType<T> event) {
+        AnnotatedType<T> type = event.getAnnotatedType();
+
+        StaticMetamodel staticMetamodel = type.getAnnotation(StaticMetamodel.class);
+
+        Class<?> entityClass = staticMetamodel.value();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "annotatedStaticMetamodel for " + entityClass.getName(),
+                     type.getJavaClass().getName());
+
+        List<Class<?>> newList = new LinkedList<>();
+        newList.add(type.getJavaClass());
+        List<Class<?>> existingList = staticMetamodels.putIfAbsent(entityClass, newList);
+        if (existingList != null)
+            existingList.add(type.getJavaClass());
+    }
+
     public void afterTypeDiscovery(@Observes AfterTypeDiscovery event, BeanManager beanMgr) {
 
         // Group entities by data access provider and class loader
@@ -176,6 +203,10 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
 
         for (EntityDefiner entityDefiner : entityGroups.values()) {
             provider.executor.submit(entityDefiner);
+        }
+
+        for (EntityDefiner entityDefiner : entityGroups.values()) {
+            entityDefiner.populateStaticMetamodelClasses(staticMetamodels);
         }
     }
 
