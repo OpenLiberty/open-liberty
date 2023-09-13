@@ -783,50 +783,95 @@ serverEnvAndJVMOptions()
   return $rc
 }
 
-# resolve symbolic links in a path to a file
+# Resolve symbolic links in a path iteratively
 findRealPath() {
-  file="$1"
+  path="$1"
 
-  # Try realpath command 
+  # Try realpath command
   if command -v realpath >/dev/null; then
-    REAL_PATH=$(realpath "${file}" 2>/dev/null)        
+    resolvedPath=$(realpath "${path}" 2>/dev/null)
+  fi
+  
+  # If realpath is not available, try readlink -e
+  if [ -z "${resolvedPath}" ] && command -v readlink >/dev/null; then
+    resolvedPath=$(readlink -e "${path}" 2>/dev/null)
   fi
 
-  # If realpath is not available, try readlink -e  
-  if [ -z "${REAL_PATH}" ] && command -v readlink >/dev/null; then
-    REAL_PATH=$(readlink -e "${file}" 2>/dev/null)
+  # If neither of those methods work, try a more basic approach
+  if [ -z "${resolvedPath}" ]; then 
+
+    # Loop ends when resolvedPath does not contain any symlinks  
+    while true; do
+
+      resolvedPath=""
+      IFS="/" # Set the delimiter to '/'
+      # Split the path into components.  Purposefully not putting quotes around $path.
+      set -- $path
+      pathContainsSymLink="false"
+      for component; do
+	  
+        if [ -z "$component" ]; then
+          continue # Skip empty components
+        fi
+
+        # Combine the resolved path & component
+        if [ -z "$resolvedPath" ]; then
+          case "$path" in
+          /*)
+            resolvedPath="/$component"
+            ;;
+          *) # If path is relative, then don't add leading slash
+            resolvedPath=$component
+            ;;
+          esac
+        else
+          resolvedPath="$resolvedPath/$component"
+        fi
+
+        if [ -L "$resolvedPath" ]; then
+          pathContainsSymLink="true"
+		  
+          # Get the target of the symbolic link
+          target=$(ls -l "$resolvedPath" | awk '{print $NF}')
+
+          # Don't lose the remaining path past the symlink
+          if [ "$resolvedPath" = "$path" ]; then
+            remaining_path=""
+          else
+            # Remove the resolved part from the original path
+            remaining_path="${path#"${resolvedPath%/}"/}"
+          fi
+
+          # Save the prefix up one level from the symlink
+          savePrefix=$(cd "$(dirname "$resolvedPath")" && pwd)
+		  
+          case "$target" in
+          /*)
+            # Absolute path case
+            resolvedPath="$target/$remaining_path"
+            ;;
+          *)
+            # Relative path case"
+            resolvedPath="$savePrefix/$target/$remaining_path"
+            ;;
+          esac
+
+          break
+        else
+          :  # $resolvedPath is  NOT a symLink
+        fi
+      done  # end for
+
+      if [ "$pathContainsSymLink" = "false" ]; then
+        break
+      fi
+
+      path=$resolvedPath
+    done  # end while
   fi
 
-  # If still no luck, try a more basic implementation
-  if [ -z "${REAL_PATH}" ]; then
-    # while $file resolves to an existing directory entry for a symbolic link 
-    while [ -h "$file" ]; do
-      # Get absolute path to directory without symbolic links
-      # Potential Issue: awk might produce incorrect result if file or directory names contain spaces.
-      dir=$(cd -P "$(dirname "$file")" && pwd)
-      file=$(ls -l "$file" | awk '{print $NF}')
-
-      case "$file" in
-        # absolute path case: 1) Find dir without symlinks 2) Get file name 3) Add file name back to path
-        /*)
-          dir=$(cd -P "$(dirname "$file")" && pwd)
-          file=$(basename "$file")
-          file="$dir/$file" 
-          ;;
-        # relative path case: 1) Make absolute 2) Find dir without symlinks 3) Get file name 4) Add file name back to path
-        *) 
-          file="$dir/$file"
-          dir=$(cd -P "$(dirname "$file")" && pwd)
-          file=$(basename "$file")
-          file="$dir/$file"
-          ;;
-      esac
-    done
-  else
-    file="$REAL_PATH"
-  fi
-  # return the resolved file path
-  echo "$file"
+  # Return the fully resolved path
+  echo "$resolvedPath"
 }
 
 mergeJVMOptions()
