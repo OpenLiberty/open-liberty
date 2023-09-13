@@ -14,6 +14,9 @@ package io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -27,11 +30,15 @@ import jakarta.servlet.annotation.WebServlet;
 @WebServlet("/testSpanCurrent")
 public class SpanCurrentServlet extends FATServlet {
 
-    // With HTTP tracing enabled, there will be always a current span.  Comment out this test
-    // @Test
+    @Test
     public void testGetCurrentSpan_Default() {
-        Span span = Span.current();
-        assertEquals(span, Span.getInvalid()); //Current span has no context as none was created
+        // Need to create a new thread so that the current context created by the HTTP tracing would not propagate.
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        executorService.submit(() -> {
+            Span span = Span.current();
+            assertEquals(span, Span.getInvalid()); //Current span has no context as none was created
+        });
+        executorService.shutdown();
     }
 
     @Test

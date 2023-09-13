@@ -24,7 +24,7 @@ import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 
 @ApplicationScoped
-@WebServlet("/testTracingDisabled")
+@WebServlet("/TracingDisabledServlet")
 public class TracingDisabledServlet extends FATServlet {
 
     @Inject

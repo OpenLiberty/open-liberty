@@ -16,5 +16,6 @@
     
     <logging traceSpecification="TELEMETRY=all"/>
 
+    <!-- For HttpURLConnection -->
     <javaPermission className="java.net.URLPermission" name="http://localhost:-/-" actions="GET:" />
 </server>

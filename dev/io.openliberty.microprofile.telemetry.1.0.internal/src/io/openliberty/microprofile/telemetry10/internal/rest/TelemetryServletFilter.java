@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal.common.rest;
+package io.openliberty.microprofile.telemetry10.internal.rest;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfo;
+import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTelemetryServletFilter;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.context.Context;
@@ -54,7 +55,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
-public class TelemetryServletFilter implements Filter {
+public class TelemetryServletFilter extends AbstractTelemetryServletFilter implements Filter {
 
     private static final TraceComponent tc = Tr.register(TelemetryServletFilter.class);
 
@@ -62,14 +63,7 @@ public class TelemetryServletFilter implements Filter {
     private static final HttpServerAttributesGetterImpl HTTP_SERVER_ATTRIBUTES_GETTER = new HttpServerAttributesGetterImpl();
     private static final NetServerAttributesGetterImpl NET_SERVER_ATTRIBUTES_GETTER = new NetServerAttributesGetterImpl();
 
-    private static final String SPAN_CONTEXT = "otel.span.http.context";
-    private static final String SPAN_PARENT_CONTEXT = "otel.span.http.parentContext";
-    public static final String SPAN_SCOPE = "otel.span.http.scope";
-
     private Instrumenter<ServletRequest, ServletResponse> instrumenter;
-
-    private static final String ENV_DISABLE_HTTP_TRACING_PROPERTY = "OTEL_TRACE_HTTP_DISABLED";
-    private static final String CONFIG_DISABLE_HTTP_TRACING_PROPERTY = "otel.trace.http.disabled";
 
     private final Config config = ConfigProvider.getConfig();
 
@@ -92,7 +86,10 @@ public class TelemetryServletFilter implements Filter {
                                                                                                     INSTRUMENTATION_NAME,
                                                                                                     HttpSpanNameExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER));
 
-                instrumenter = builder.setSpanStatusExtractor(HttpSpanStatusExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER)).addAttributesExtractor(HttpServerAttributesExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER)).addAttributesExtractor(NetServerAttributesExtractor.create(NET_SERVER_ATTRIBUTES_GETTER)).buildServerInstrumenter(new ServletRequestContextTextMapGetter());
+                instrumenter = builder.setSpanStatusExtractor(HttpSpanStatusExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
+                                .addAttributesExtractor(HttpServerAttributesExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
+                                .addAttributesExtractor(NetServerAttributesExtractor.create(NET_SERVER_ATTRIBUTES_GETTER))
+                                .buildServerInstrumenter(new ServletRequestContextTextMapGetter());
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "instrumenter is initialized");
                 }
