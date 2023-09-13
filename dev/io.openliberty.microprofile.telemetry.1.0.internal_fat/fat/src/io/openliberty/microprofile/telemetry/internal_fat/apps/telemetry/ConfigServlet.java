@@ -26,7 +26,7 @@ import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/ConfigServlet")
+@WebServlet("/testConfig")
 @ApplicationScoped
 public class ConfigServlet extends FATServlet {
 

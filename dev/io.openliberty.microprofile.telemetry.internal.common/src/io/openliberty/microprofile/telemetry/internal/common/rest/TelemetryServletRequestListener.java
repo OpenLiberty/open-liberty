@@ -9,12 +9,12 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.common.rest;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 import io.opentelemetry.context.Scope;
 import jakarta.servlet.ServletRequestEvent;
 import jakarta.servlet.ServletRequestListener;
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 
 /**
  * Closes the Scope at the end of the request.
@@ -38,9 +38,14 @@ public class TelemetryServletRequestListener implements ServletRequestListener {
                 scope.close();
                 sre.getServletRequest().removeAttribute(AbstractTelemetryContainerFilter.SPAN_SCOPE);
             }
+            scope = (Scope) sre.getServletRequest().getAttribute(TelemetryServletFilter.SPAN_SCOPE);
+            if (scope != null) {
+                scope.close();
+                sre.getServletRequest().removeAttribute(TelemetryServletFilter.SPAN_SCOPE);
+            }
         } catch (Exception e) {
-           Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
-           return;
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return;
         }
     }
 }

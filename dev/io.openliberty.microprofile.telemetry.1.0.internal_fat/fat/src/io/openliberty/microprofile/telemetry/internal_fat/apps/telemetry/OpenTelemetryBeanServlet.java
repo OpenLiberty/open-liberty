@@ -26,7 +26,7 @@ import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/opentelemetry")
+@WebServlet("/testOpentelemetry")
 @ApplicationScoped
 public class OpenTelemetryBeanServlet extends FATServlet {
 

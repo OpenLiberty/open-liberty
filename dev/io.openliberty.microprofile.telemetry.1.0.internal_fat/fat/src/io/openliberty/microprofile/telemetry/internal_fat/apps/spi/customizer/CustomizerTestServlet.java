@@ -33,7 +33,7 @@ import jakarta.servlet.annotation.WebServlet;
  * The test customizer adds an attribute to a resource and also logs when each of the other customizations are called.
  */
 @SuppressWarnings("serial")
-@WebServlet("/customizer")
+@WebServlet("/testCustomizer")
 public class CustomizerTestServlet extends FATServlet {
     @Inject
     private Tracer tracer;
@@ -54,7 +54,9 @@ public class CustomizerTestServlet extends FATServlet {
 
         // Check that the other customizers added were called
         // Note: propagator listed twice since by default there are two propagators (W3C trace and W3C baggage)
-        assertThat(TestCustomizer.loggedEvents, containsInAnyOrder("propagator", "propagator", "properties", "sampler", "exporter", "tracer"));
+        assertThat(TestCustomizer.loggedEvents,
+                   containsInAnyOrder("properties", "sampler", "exporter", "tracer", "propagator", "propagator",
+                                      "properties", "sampler", "exporter", "tracer", "propagator", "propagator"));
     }
 
 }

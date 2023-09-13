@@ -21,7 +21,7 @@ import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/BaggageServlet")
+@WebServlet("/testBaggage")
 public class BaggageServlet extends FATServlet {
 
     @Inject
