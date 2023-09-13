@@ -38,10 +38,10 @@ public class TelemetryServletRequestListener implements ServletRequestListener {
                 scope.close();
                 sre.getServletRequest().removeAttribute(AbstractTelemetryContainerFilter.SPAN_SCOPE);
             }
-            scope = (Scope) sre.getServletRequest().getAttribute(TelemetryServletFilter.SPAN_SCOPE);
+            scope = (Scope) sre.getServletRequest().getAttribute(AbstractTelemetryServletFilter.SPAN_SCOPE);
             if (scope != null) {
                 scope.close();
-                sre.getServletRequest().removeAttribute(TelemetryServletFilter.SPAN_SCOPE);
+                sre.getServletRequest().removeAttribute(AbstractTelemetryServletFilter.SPAN_SCOPE);
             }
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));

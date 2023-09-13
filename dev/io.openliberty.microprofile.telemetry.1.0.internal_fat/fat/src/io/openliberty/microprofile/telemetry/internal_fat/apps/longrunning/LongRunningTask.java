@@ -25,7 +25,7 @@ import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/testLongrunning")
+@WebServlet("/longrunning")
 @ApplicationScoped
 public class LongRunningTask extends FATServlet {
 

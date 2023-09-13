@@ -25,8 +25,7 @@ javac.target: 11
 
 -dsannotations: \
   io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfoFactory,\
-  io.openliberty.microprofile.telemetry.internal.common.rest.TelemetryClientAsyncTaskWrapper,\
-  io.openliberty.microprofile.telemetry.internal.common.rest.TelemetryServletContainerInitializer
+  io.openliberty.microprofile.telemetry.internal.common.rest.TelemetryClientAsyncTaskWrapper
 
 -dsannotations-inherit: true
 
@@ -77,8 +76,7 @@ Export-Package: \
 	io.openliberty.org.jboss.resteasy.common.ee10;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
-	com.ibm.websphere.appserver.spi.kernel.service,\
-	com.ibm.ws.kernel.boot.core;version=latest
+	com.ibm.websphere.appserver.spi.kernel.service
 	
 
 WS-TraceGroup: TELEMETRY
