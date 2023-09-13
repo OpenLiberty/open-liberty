@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,9 @@ dependencies {
                 project(':com.ibm.ws.security.oauth.oidc_fat.common'),
                 project(':com.ibm.ws.com.meterware.httpunit.1.7'),
                 'jtidy:jtidy:4aug2000r7-dev',
-                'rhino:js:1.5R4.1' // See NOTE below
+                'rhino:js:1.5R4.1',  // See NOTE below
+                project(':com.ibm.ws.com.unboundid'),
+               'com.unboundid:unboundid-ldapsdk:5.1.0' 
 
   // NOTE: More current js versions have a bug that prevents multiple redirects - this causes
   // a couple of our tests to fail.
