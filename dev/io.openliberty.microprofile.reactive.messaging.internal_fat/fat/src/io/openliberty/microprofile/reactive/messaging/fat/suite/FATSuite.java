@@ -14,9 +14,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import componenttest.containers.TestContainerSuite;
-import io.openliberty.microprofile.reactive.messaging.fat.apps.kafkanack.KafkaNackTest;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ KafkaNackTest.class })
+@Suite.SuiteClasses({ KafkaTests.class })
 public class FATSuite extends TestContainerSuite {
 }

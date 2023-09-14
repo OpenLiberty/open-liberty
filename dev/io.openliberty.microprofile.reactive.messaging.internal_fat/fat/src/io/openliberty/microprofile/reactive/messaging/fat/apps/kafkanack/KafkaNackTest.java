@@ -12,6 +12,8 @@ package io.openliberty.microprofile.reactive.messaging.fat.apps.kafkanack;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider.CONNECTION_PROPERTIES_KEY;
+import static java.util.Arrays.asList;
 
 import java.util.Collections;
 import java.util.Map;
@@ -22,6 +24,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PropertiesAsset;
@@ -29,13 +32,16 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.microprofile.reactive.messaging.fat.suite.KafkaTests;
 import io.openliberty.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
 
 /**
@@ -60,11 +66,20 @@ public class KafkaNackTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
-        Map<String, Object> connectionProperties = Collections.singletonMap(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "PLAINTEXT://localhost:10000");
+        // Configure delivery to a non-existant broker so that we can test with messages which aren't delivered
+        Map<String, Object> invalidKafkaConfig = Collections.singletonMap(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "PLAINTEXT://localhost:10000");
+        ConnectorProperties invalidOutgoingConfig = ConnectorProperties.simpleOutgoingChannel(invalidKafkaConfig, KafkaNackTestDeliveryBean.NACK_TEST_CHANNEL)
+                        .addProperty(ProducerConfig.MAX_BLOCK_MS_CONFIG, "5000");
+
+        // Configure reception from a real kafka broker to test nacking received messages
+        ConnectorProperties incomingConfig = ConnectorProperties.simpleIncomingChannel(KafkaTests.connectionProperties(),
+                                                                                       KafkaNackReceptionBean.CHANNEL_IN,
+                                                                                       APP_NAME);
 
         PropertiesAsset appConfig = new PropertiesAsset()
-                        .include(ConnectorProperties.simpleOutgoingChannel(connectionProperties, KafkaNackTestDeliveryBean.NACK_TEST_CHANNEL)
-                                        .addProperty(ProducerConfig.MAX_BLOCK_MS_CONFIG, "5000"));
+                        .include(invalidOutgoingConfig)
+                        .include(incomingConfig)
+                        .addProperty(CONNECTION_PROPERTIES_KEY, KafkaTestClientProvider.encodeProperties(KafkaTests.connectionProperties()));
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsLibraries(kafkaClientLibs())
@@ -80,7 +95,20 @@ public class KafkaNackTest extends FATServletClient {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer("CWMRX1003E.*nack-test-channel"); // CWMRX1003E: An error occurred when sending a message to the Kafka broker. The error is: org.apache.kafka.common.errors.TimeoutException: Topic nack-test-channel not present in metadata after 5000 ms.
+        server.stopServer("CWMRX1003E.*nack-test-channel", // CWMRX1003E: An error occurred when sending a message to the Kafka broker. The error is: org.apache.kafka.common.errors.TimeoutException: Topic nack-test-channel not present in metadata after 5000 ms.
+                          "CWMRX1011E.*KafkaNackTestException");
+    }
+
+    @Test
+    @ExpectedFFDC("io.openliberty.microprofile.reactive.messaging.fat.apps.kafkanack.KafkaNackTestException")
+    public void testIncomingMessageCanBeNacked() throws Exception {
+        server.setMarkToEndOfLog();
+
+        // Test servlet receives messages and nacks two of them
+        runTest(server, APP_NAME + "/NackTest", "testIncomingMessageCanBeNacked");
+
+        server.waitForStringsInLogUsingMark(asList("CWMRX1011E.*KafkaNackTestException: Test exception 1",
+                                                   "CWMRX1011E.*KafkaNackTestException: Test exception 2")); // throws if not found
     }
 
 }
