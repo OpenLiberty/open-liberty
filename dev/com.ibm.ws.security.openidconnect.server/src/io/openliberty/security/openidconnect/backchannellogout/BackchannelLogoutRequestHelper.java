@@ -20,6 +20,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -42,9 +44,11 @@ public class BackchannelLogoutRequestHelper {
 
     private final PrivilegedAction<ExecutorService> getExecutorServiceAction = new GetExecutorServiceAction();
 
+    private final HttpServletRequest request;
     private final OidcServerConfig oidcServerConfig;
 
-    public BackchannelLogoutRequestHelper(OidcServerConfig oidcServerConfig) {
+    public BackchannelLogoutRequestHelper(HttpServletRequest request, OidcServerConfig oidcServerConfig) {
+        this.request = request;
         this.oidcServerConfig = oidcServerConfig;
     }
 
@@ -59,7 +63,7 @@ public class BackchannelLogoutRequestHelper {
         }
         Map<OidcBaseClient, Set<String>> logoutTokens = null;
         try {
-            LogoutTokenBuilder tokenBuilder = new LogoutTokenBuilder(oidcServerConfig);
+            LogoutTokenBuilder tokenBuilder = new LogoutTokenBuilder(request, oidcServerConfig);
             if (idTokenString == null || idTokenString.isEmpty()) {
                 logoutTokens = tokenBuilder.buildLogoutTokensFromUserName(user);
             } else {

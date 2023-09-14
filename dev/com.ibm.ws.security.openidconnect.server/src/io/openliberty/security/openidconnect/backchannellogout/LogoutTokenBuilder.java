@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.consumer.JwtContext;
@@ -50,11 +52,13 @@ public class LogoutTokenBuilder {
 
     public static final String EVENTS_MEMBER_NAME = "http://schemas.openid.net/event/backchannel-logout";
 
+    private final HttpServletRequest request;
     private final OidcServerConfig oidcServerConfig;
     private final OAuth20Provider oauth20provider;
     private final OAuth20EnhancedTokenCache tokenCache;
 
-    public LogoutTokenBuilder(OidcServerConfig oidcServerConfig) {
+    public LogoutTokenBuilder(HttpServletRequest request, OidcServerConfig oidcServerConfig) {
+        this.request = request;
         this.oidcServerConfig = oidcServerConfig;
         this.oauth20provider = getOAuth20Provider(oidcServerConfig);
         this.tokenCache = oauth20provider.getTokenCache();
@@ -116,9 +120,25 @@ public class LogoutTokenBuilder {
     void verifyIssuer(JwtClaims idTokenClaims) throws MalformedClaimException, IdTokenDifferentIssuerException {
         String issuerClaim = idTokenClaims.getIssuer();
         String expectedIssuer = oidcServerConfig.getIssuerIdentifier();
-        if (expectedIssuer != null && !expectedIssuer.equals(issuerClaim)) {
-            String errorMsg = Tr.formatMessage(tc, "ID_TOKEN_ISSUER_NOT_THIS_OP", new Object[] { issuerClaim, expectedIssuer, oidcServerConfig.getProviderId() });
-            throw new IdTokenDifferentIssuerException(errorMsg);
+        if (expectedIssuer != null && !expectedIssuer.isEmpty()) {
+            if (!expectedIssuer.equals(issuerClaim)) {
+                String errorMsg = Tr.formatMessage(tc, "ID_TOKEN_ISSUER_NOT_THIS_OP", new Object[] { issuerClaim, expectedIssuer, oidcServerConfig.getProviderId() });
+                throw new IdTokenDifferentIssuerException(errorMsg);
+            }
+        } else {
+            expectedIssuer = getIssuerFromRequest();
+            if (!expectedIssuer.equals(issuerClaim)) {
+                String otherExpectedIssuer = expectedIssuer;
+                if (otherExpectedIssuer.contains("/oidc/providers/")) {
+                    otherExpectedIssuer = otherExpectedIssuer.replace("/oidc/providers/", "/oidc/endpoint/");
+                } else if (otherExpectedIssuer.contains("/oidc/endpoint/")) {
+                    otherExpectedIssuer = otherExpectedIssuer.replace("/oidc/endpoint/", "/oidc/providers/");
+                }
+                if (!otherExpectedIssuer.equals(issuerClaim)) {
+                    String errorMsg = Tr.formatMessage(tc, "ID_TOKEN_ISSUER_NOT_THIS_OP", new Object[] { issuerClaim, expectedIssuer, oidcServerConfig.getProviderId() });
+                    throw new IdTokenDifferentIssuerException(errorMsg);
+                }
+            }
         }
     }
 
@@ -368,6 +388,18 @@ public class LogoutTokenBuilder {
         logoutTokenClaims.setClaim("events", eventsClaim);
 
         return logoutTokenClaims;
+    }
+
+    String getIssuerFromRequest() {
+        String issuerIdentifier = request.getScheme() + "://" + request.getServerName();
+        int port = request.getServerPort();
+        if (port != 80 && port != 443) {
+            issuerIdentifier += ":" + port;
+        }
+        String requestUri = request.getRequestURI();
+        requestUri = requestUri.substring(0, requestUri.lastIndexOf("/"));
+        issuerIdentifier += requestUri;
+        return issuerIdentifier;
     }
 
 }
