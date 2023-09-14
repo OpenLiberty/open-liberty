@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -25,6 +26,9 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.fat.crac.app.mxbean.TestCRaCMXBeanServlet;
@@ -40,6 +44,12 @@ public class CRaCMXBeanTest extends FATServletClient {
     @Server("cracFATServer")
     @TestServlet(servlet = TestCRaCMXBeanServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests repeatTest = MicroProfileActions.repeat("cracFATServer", TestMode.FULL, //
+                                                                      MicroProfileActions.MP41, // first test in LITE mode
+                                                                      // rest are FULL mode
+                                                                      MicroProfileActions.MP50, MicroProfileActions.MP60);
 
     @BeforeClass
     public static void copyAppToDropins() throws Exception {
