@@ -49,11 +49,14 @@ public class TestCRaCMXBeanServlet extends FATServlet {
 
         @Override
         public void afterRestore(Context<? extends Resource> context) throws Exception {
-            // after Restore both should be > 0 and uptime should be > restore time
+            // after Restore both should be > 0;
+            // restortTime must be < currentTime;
+            // upTimeSinceRestore must be < (currentTime - restoreTime)
             long testRestoreTime = crac.getRestoreTime();
             afterRestoreRestoreTime.set(testRestoreTime);
             long testUptimeSinceRestore = crac.getUptimeSinceRestore();
             afterRestoreUptimeSinceRestore.set(testUptimeSinceRestore);
+            // sleep a bit to allow current time to be sufficiently more than the upTimeSinceRestore
             Thread.sleep(100);
             assertTrue("Wrong restoreTime: " + testRestoreTime, testRestoreTime > 0 && testRestoreTime < System.currentTimeMillis());
             assertTrue("Wrong uptimeSinceRestore: " + testUptimeSinceRestore, testUptimeSinceRestore <= (System.currentTimeMillis() - testRestoreTime));
