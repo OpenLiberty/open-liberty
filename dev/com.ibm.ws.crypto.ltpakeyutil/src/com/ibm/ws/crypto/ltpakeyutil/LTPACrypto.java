@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2011 IBM Corporation and others.
+ * Copyright (c) 1997, 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.crypto.ltpakeyutil;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -40,19 +42,22 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 final class LTPACrypto {
 
+	private static final TraceComponent tc = Tr.register(LTPACrypto.class);
 	private static final String SIGNATURE_ALGORITHM = "SHA1withRSA";
 	private static final String CRYPTO_ALGORITHM = "RSA";
 	private static final String ENCRYPT_ALGORITHM = "DESede";
 	private static final String IBMJCE_NAME = "IBMJCE";
+	private static final String OPENJCEPLUS_NAME = "OpenJCEPlus";
+	private static String provider = getProvider();
 
 	private static int MAX_CACHE = 500;
-
 	private static IvParameterSpec ivs8 = null;
 	private static IvParameterSpec ivs16 = null;
-
+	@Trivial
 	private static class CachingKey {
 
 		private boolean reused = false;
@@ -63,7 +68,7 @@ final class LTPACrypto {
 		private final int len;
 		private int hashcode;
 		private byte[] result;
-
+		@Trivial
 		private CachingKey(byte[][] key, byte[] data, int off, int len) {
 			this.key = key;
 			this.data = data;
@@ -90,7 +95,7 @@ final class LTPACrypto {
 			}
 			hashcode *= 2;
 		}
-
+		@Trivial
 		@Override
 		public boolean equals(Object to) {
 			if (!(to instanceof CachingKey)) {
@@ -168,6 +173,7 @@ final class LTPACrypto {
 		}
 
 		@Override
+		@Trivial
 		public int hashCode() {
 			return hashcode;
 		}
@@ -189,6 +195,7 @@ final class LTPACrypto {
 	 *            The length of the data
 	 * @return The signature of the data
 	 */
+	@Trivial
 	protected static final byte[] signISO9796(byte[][] key, byte[] data, int off, int len) throws Exception {
 		CachingKey ck = new CachingKey(key, data, off, len);
 		CachingKey result = cryptoKeysMap.get(ck);
@@ -235,11 +242,7 @@ final class LTPACrypto {
 		BigInteger q = new BigInteger(key[4]);
 		BigInteger d = e.modInverse((p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE)));
 		KeyFactory kFact = null;
-		if (LTPAKeyUtil.isIBMJCEAvailable()) {
-			kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM, IBMJCE_NAME);
-		} else {
-			kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM);
-		}
+		kFact = (provider == null)? KeyFactory.getInstance(CRYPTO_ALGORITHM):KeyFactory.getInstance(CRYPTO_ALGORITHM, provider);
 
 		BigInteger pep = new BigInteger(key[5]);
 		BigInteger peq = new BigInteger(key[6]);
@@ -248,11 +251,7 @@ final class LTPACrypto {
 		PrivateKey privKey = kFact.generatePrivate(privCrtKeySpec);
 
 		Signature rsaSig = null;
-		if (LTPAKeyUtil.isIBMJCEAvailable()) {
-			rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM, IBMJCE_NAME);
-		} else {
-			rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM);
-		}
+		rsaSig = (provider == null)? Signature.getInstance(SIGNATURE_ALGORITHM):Signature.getInstance(SIGNATURE_ALGORITHM, provider);
 		rsaSig.initSign(privKey);
 		rsaSig.update(data, off, len);
 		byte[] sig = rsaSig.sign();
@@ -265,7 +264,7 @@ final class LTPACrypto {
 	}
 
 	private static final ConcurrentHashMap<CachingVerifyKey, CachingVerifyKey> verifyKeysMap = new ConcurrentHashMap<CachingVerifyKey, CachingVerifyKey>();
-
+	@Trivial
 	private static class CachingVerifyKey {
 
 		private long successfulUses;
@@ -278,7 +277,7 @@ final class LTPACrypto {
 		private final int sigLen;
 		private int hashcode;
 		private boolean result;
-
+		@Trivial
 		private CachingVerifyKey(byte[][] key, byte[] data, int off, int len, byte[] sig, int sigOff, int sigLen) {
 			this.key = key;
 			this.data = data;
@@ -312,6 +311,7 @@ final class LTPACrypto {
 		}
 
 		@Override
+		@Trivial
 		public boolean equals(Object to) {
 			if (!(to instanceof CachingVerifyKey)) {
 				return false;
@@ -415,14 +415,15 @@ final class LTPACrypto {
 		}
 
 		@Override
+		@Trivial
 		public int hashCode() {
 			return this.hashcode;
 		}
 
 	}
-
 	private static final Comparator<CachingVerifyKey> cachingVerifyKeyComparator = new Comparator<CachingVerifyKey>() {
 		@Override
+		@Trivial
 		public int compare(CachingVerifyKey o1, CachingVerifyKey o2) {
 			if (o1.successfulUses < o2.successfulUses) {
 				return -1;
@@ -433,9 +434,9 @@ final class LTPACrypto {
 			}
 		}
 	};
-
 	private static final Comparator<CachingKey> cachingKeyComparator = new Comparator<CachingKey>() {
 		@Override
+		@Trivial
 		public int compare(CachingKey o1, CachingKey o2) {
 			if (!o1.reused) {
 				if (o2.reused) {
@@ -475,6 +476,7 @@ final class LTPACrypto {
 	 *            The length of the signature
 	 * @return True if the signature of the data is correct
 	 */
+	@Trivial
 	protected static final boolean verifyISO9796(byte[][] key, byte[] data, int off, int len, byte[] sig, int sigOff,
 			int sigLen) throws Exception {
 		CachingVerifyKey ck = new CachingVerifyKey(key, data, off, len, sig, sigOff, sigLen);
@@ -515,18 +517,10 @@ final class LTPACrypto {
 		KeyFactory kFact = null;
 		Signature rsaSig = null;
 
-		if (LTPAKeyUtil.isIBMJCEAvailable()) {
-			kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM, IBMJCE_NAME);
-		} else {
-			kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM);
-		}
+		kFact = (provider == null)? KeyFactory.getInstance(CRYPTO_ALGORITHM):KeyFactory.getInstance(CRYPTO_ALGORITHM, provider);
 		RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(n, e);
 		PublicKey pubKey = kFact.generatePublic(pubKeySpec);
-		if (LTPAKeyUtil.isIBMJCEAvailable()) {
-			rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM, IBMJCE_NAME);
-		} else {
-			rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM);
-		}
+		rsaSig = (provider == null)? Signature.getInstance(SIGNATURE_ALGORITHM):Signature.getInstance(SIGNATURE_ALGORITHM, provider);
 		rsaSig.initVerify(pubKey);
 		rsaSig.update(data, off, len);
 		verified = rsaSig.verify(sig);
@@ -544,6 +538,7 @@ final class LTPACrypto {
 	 * @param key
 	 *            The key
 	 */
+	@Trivial
 	protected static final void setRSAKey(byte[][] key) {
 		BigInteger[] k = new BigInteger[8];
 		for (int i = 0; i < 8; i++) {
@@ -591,6 +586,7 @@ final class LTPACrypto {
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException
 	 */
+	@Trivial
 	private static SecretKey constructSecretKey(byte[] key, String cipher)
 			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
 		SecretKey sKey = null;
@@ -600,11 +596,7 @@ final class LTPACrypto {
 		} else {
 			DESedeKeySpec kSpec = new DESedeKeySpec(key);
 			SecretKeyFactory kFact = null;
-			if (LTPAKeyUtil.isIBMJCEAvailable()) {
-				kFact = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM, IBMJCE_NAME);
-			} else {
-				kFact = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM);
-			}
+			kFact = (provider == null)? SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM):SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM, provider);
 			sKey = kFact.generateSecret(kSpec);
 		}
 		return sKey;
@@ -620,17 +612,14 @@ final class LTPACrypto {
 	 * @throws InvalidKeyException
 	 * @throws InvalidAlgorithmParameterException
 	 */
+	@Trivial
 	private static Cipher createCipher(int cipherMode, byte[] key, String cipher, SecretKey sKey)
 			throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
 			InvalidAlgorithmParameterException, NoSuchProviderException {
 
 		Cipher ci = null;
-
-		if (LTPAKeyUtil.isIBMJCEAvailable()) {
-			ci = Cipher.getInstance(cipher, IBMJCE_NAME);
-		} else {
-			ci = Cipher.getInstance(cipher);
-		}
+		
+		ci = (provider == null)? Cipher.getInstance(cipher):Cipher.getInstance(cipher, provider);
 		if (cipher.indexOf("ECB") == -1) {
 			if (cipher.indexOf("AES") != -1) {
 				if (ivs16 == null) {
@@ -660,6 +649,7 @@ final class LTPACrypto {
 	 *            The cipher algorithm
 	 * @return The encrypted data (ciphertext)
 	 */
+	@Trivial
 	protected static final byte[] encrypt(byte[] data, byte[] key, String cipher) throws Exception {
 		SecretKey sKey = constructSecretKey(key, cipher);
 		Cipher ci = createCipher(Cipher.ENCRYPT_MODE, key, cipher, sKey);
@@ -677,6 +667,7 @@ final class LTPACrypto {
 	 *            The cipher algorithm
 	 * @return The decrypted data (plaintext)
 	 */
+	@Trivial
 	protected static final byte[] decrypt(byte[] msg, byte[] key, String cipher) throws Exception {
 		SecretKey sKey = constructSecretKey(key, cipher);
 		Cipher ci = createCipher(Cipher.DECRYPT_MODE, key, cipher, sKey);
@@ -688,6 +679,7 @@ final class LTPACrypto {
 	 *
 	 * @param maxCache The maximam size of the cache
 	 */
+	@Trivial
 	protected static void setMaxCache(int maxCache) {
 		MAX_CACHE = maxCache;
 	}
@@ -697,6 +689,7 @@ final class LTPACrypto {
 	 *
 	 * @param key The key
 	 */
+	@Trivial
 	private static final synchronized void setIVS8(byte[] key) {
 		if (ivs8 == null) {
 			byte[] iv8 = new byte[8];
@@ -712,7 +705,7 @@ final class LTPACrypto {
 	 *
 	 * @param key The key
 	 */
-
+	@Trivial
 	private static final synchronized void setIVS16(byte[] key) {
 		if (ivs16 == null) {
 			byte[] iv16 = new byte[16];
@@ -722,7 +715,7 @@ final class LTPACrypto {
 			ivs16 = new IvParameterSpec(iv16);
 		}
 	}
-
+    @Trivial
 	static final int lsbf(byte[] data, int i, int n) {
 		int v = 0;
 		do {
@@ -730,39 +723,39 @@ final class LTPACrypto {
 		} while (n > 0);
 		return v;
 	}
-
+    @Trivial
 	static final int lsbf4(byte[] data, int i) {
 		return (data[i] & 0xFF) | ((data[i + 1] & 0xFF) << 8) | ((data[i + 2] & 0xFF) << 16) | (data[i + 3] << 24);
 	}
-
+    @Trivial
 	static final void lsbf4(int v, byte[] data, int i) {
 		data[i] = (byte) v;
 		data[i + 1] = (byte) (v >>> 8);
 		data[i + 2] = (byte) (v >>> 16);
 		data[i + 3] = (byte) (v >>> 24);
 	}
-
+    @Trivial
 	static void lsbf2(int v, byte[] data, int i) {
 		data[i] = (byte) v;
 		data[i + 1] = (byte) (v >>> 8);
 	}
-
+    @Trivial
 	private static final int FF(int a, int b, int c, int d, int x, int l, int r, int ac) {
 		return (((a += ((b & c) | (~b & d)) + x + ac) << l) | (a >>> r)) + b;
 	}
-
+    @Trivial
 	private static final int GG(int a, int b, int c, int d, int x, int l, int r, int ac) {
 		return (((a += ((b & d) | (c & ~d)) + x + ac) << l) | (a >>> r)) + b;
 	}
-
+    @Trivial
 	private static final int HH(int a, int b, int c, int d, int x, int l, int r, int ac) {
 		return (((a += (b ^ c ^ d) + x + ac) << l) | (a >>> r)) + b;
 	}
-
+    @Trivial
 	private static final int II(int a, int b, int c, int d, int x, int l, int r, int ac) {
 		return (((a += (c ^ (b | ~d)) + x + ac) << l) | (a >>> r)) + b;
 	}
-
+    @Trivial
 	static final void md5(int[] state, byte[] data, int off, int len, byte[] to, int pos) {
 		int a, b, c, d;
 		{
@@ -900,7 +893,7 @@ final class LTPACrypto {
 	private static int[] samples = new int[56];
 	private static int[] ones = new int[16];
 	private static int[] block = new int[16];
-
+	@Trivial
 	static final void trng(byte[] to, int off, int len) {
 		long accu = 0;
 		int bits = 0, i, m, j;
@@ -984,7 +977,7 @@ final class LTPACrypto {
 
 	static byte[][][] rsaKeys;
 	static byte[][][] dsaKeys;
-
+	@Trivial
 	static final void random(byte[] to, int off, int n) {
 		if (!seedInitialized) {
 			trng(seed, 0, 32);
@@ -1029,7 +1022,7 @@ final class LTPACrypto {
 			}
 		}
 	}
-
+    @Trivial
 	static final byte[] generate3DESKey() {
 		byte[] rndSeed = null;
 		int len = 24; // 3DES
@@ -1037,19 +1030,15 @@ final class LTPACrypto {
 		random(rndSeed, 0, len);
 		return rndSeed;
 	}
-
+    @Trivial
 	static final byte[][] rsaKey(int len, boolean crt, boolean f4) {
 		byte[][] key = new byte[crt ? 8 : 3][];
 		KeyPair pair = null;
 		KeyPairGenerator keyGen = null;
 		try {
 
-			if (LTPAKeyUtil.isIBMJCEAvailable()) {
-				// IBMJCE_NAME needed for hardware crypto
-				keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM, IBMJCE_NAME);
-			} else {
-				keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM);
-			}
+			keyGen = (provider == null)? KeyPairGenerator.getInstance(CRYPTO_ALGORITHM):KeyPairGenerator.getInstance(CRYPTO_ALGORITHM, provider);
+
 			keyGen.initialize(len * 8, new SecureRandom());
 			pair = keyGen.generateKeyPair();
 			RSAPublicKey rsaPubKey = (RSAPublicKey) pair.getPublic();
@@ -1143,5 +1132,22 @@ final class LTPACrypto {
 		
 
 		return key;
+	}
+	
+	private static String getProvider(){
+		String provider = null;
+		if (LTPAKeyUtil.isIBMJCEAvailable()) {
+			provider = IBMJCE_NAME;
+		} else if(LTPAKeyUtil.isZOSandRunningJava11orHigher() && LTPAKeyUtil.isOpenJCEPlusAvailable()){
+			provider = OPENJCEPLUS_NAME;
+		}
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+		if (provider == null){
+			Tr.debug(tc, "getProvider" + " Provider configured by JDK" );
+		}
+		else{
+			Tr.debug(tc, "getProvider" + " Provider configured is "+ provider );
+		}}
+		return provider;
 	}
 }
