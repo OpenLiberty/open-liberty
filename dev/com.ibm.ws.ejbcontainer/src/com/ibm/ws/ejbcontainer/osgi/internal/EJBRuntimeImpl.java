@@ -150,6 +150,7 @@ import com.ibm.ws.exception.WsRuntimeFwException;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.DeploymentDescriptor;
+import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.managedobject.ManagedObjectContext;
 import com.ibm.ws.managedobject.ManagedObjectService;
@@ -271,19 +272,18 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         }
     }
 
-    @Reference(service = CheckpointPhase.class, //
-               target = "(" + CheckpointPhase.CHECKPOINT_RESTORED_PROPERTY + "=true)", //
+    @Reference(service = ServerStarted.class, //
                cardinality = ReferenceCardinality.OPTIONAL, //
                policy = ReferencePolicy.DYNAMIC, //
-               unbind = "ignoreCheckpointRestored")
-    protected final void checkpointRestored(ServiceReference<?> checkpoint) {
+               unbind = "ignoreUnbindOnRestore")
+    protected final void resumeTimerNpOnRestore(ServiceReference<?> checkpoint) {
         // Resume all non-persistent timers on checkpoint restore
         if (checkpointPhase != CheckpointPhase.INACTIVE) {
             TimerNpRunnable.resume();
         }
     }
 
-    protected final void ignoreCheckpointRestored(ServiceReference<?> checkpoint) {
+    protected final void ignoreUnbindOnRestore(ServiceReference<?> checkpoint) {
         // we really don't care about this, but needed to avoid compile errors
     }
 
