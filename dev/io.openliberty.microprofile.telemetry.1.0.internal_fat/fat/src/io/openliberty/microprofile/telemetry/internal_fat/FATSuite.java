@@ -39,7 +39,8 @@ import componenttest.annotation.MinimumJavaLevel;
                 TelemetryLongRunningTest.class,
                 TelemetryGlobalOpenTelemetryTest.class,
                 TelemetryDisabledTest.class,
-                TelemetryServletTest.class
+                TelemetryServletTest.class,
+                TelemetryWithSpanErrorTest.class,
 })
 
 public class FATSuite {
