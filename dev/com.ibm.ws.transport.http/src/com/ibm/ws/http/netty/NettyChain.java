@@ -372,6 +372,31 @@ public class NettyChain extends HttpChain {
         return (currentConfig != null) ? currentConfig.configHost : null;
     }
 
+    /**
+     * @return the bootstrap
+     */
+    public ServerBootstrapExtended getBootstrap() {
+        return bootstrap;
+    }
+
+    /**
+     * Helper method to check if the chain is enabled with HTTP/2.0 or only HTTP/1.1. To do this
+     * we check the HttpProtocolBehavior reference which is set according to the different servlet
+     * version loaded. We then compare with the set protocol version in the HttpEndpoint to decide
+     * which protocol the chain is loaded with.
+     *
+     * @return true if HTTP/2.0 is enabled on the chain. False if HTTP/1.1 is enabled on the chain
+     */
+    public boolean isHttp2Enabled() {
+        String protocolVersion = getOwner().getProtocolVersion();
+        Boolean defaultSetting = getOwner().getChfwBundle().getHttp2DefaultSetting();
+        System.out.println("Protocol version found to be: " + protocolVersion);
+        if (defaultSetting == null) // No default configured, only HTTP 1.1 is enabled
+            return false;
+        else
+            return defaultSetting == Boolean.TRUE ? !!!HttpConfigConstants.PROTOCOL_VERSION_11.equalsIgnoreCase(protocolVersion) : HttpConfigConstants.PROTOCOL_VERSION_2.equalsIgnoreCase(protocolVersion);
+    }
+
     public VirtualConnection processNewConnection() {
         VirtualConnectionFactory factory = new NettyVirtualConnectionFactoryImpl();
         VirtualConnection vc;
