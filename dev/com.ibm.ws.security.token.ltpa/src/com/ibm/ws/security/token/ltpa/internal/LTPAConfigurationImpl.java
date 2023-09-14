@@ -97,8 +97,11 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private long expirationDifferenceAllowed;
     private boolean monitorDirectory;
     private final List<Properties> validationKeys = new ArrayList<Properties>();
+    // configValidationKeys are specified in the server xml configuration
     private List<Properties> configValidationKeys = null;
-    private List<Properties> unConfigValidationKeys = null;
+    // nonConfigValidationKeys are not specified in the server xml configuration
+    // nonConfigValidationKeys are picked up by the directory monitor
+    private List<Properties> nonConfigValidationKeys = null;
     private final Collection<File> currentlyDeletedFiles = new HashSet<File>();;
 
     protected void setExecutorService(ServiceReference<ExecutorService> ref) {
@@ -134,7 +137,6 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         loadConfig(props);
         setupRuntimeLTPAInfrastructure();
     }
-    //TODO: add sensitive to all password later.
 
     @Sensitive
     private void loadConfig(Map<String, Object> props) {
@@ -162,9 +164,9 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             if (monitorInterval <= 0) {
                 Tr.warning(tc, "LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED", monitorInterval);
             }
-            unConfigValidationKeys = getUnConfigValidationKeys();
+            nonConfigValidationKeys = getNonConfiguredValidationKeys();
         } else {
-            unConfigValidationKeys = null;
+            nonConfigValidationKeys = null;
         }
 
         combineValidationKeys();
@@ -189,8 +191,8 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         if (configValidationKeys != null) {
             validationKeys.addAll(configValidationKeys);
         }
-        if (unConfigValidationKeys != null) {
-            validationKeys.addAll(unConfigValidationKeys);
+        if (nonConfigValidationKeys != null) {
+            validationKeys.addAll(nonConfigValidationKeys);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -206,7 +208,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      **/
     @SuppressWarnings("unlikely-arg-type")
     @Sensitive
-    private List<Properties> getUnConfigValidationKeys() {
+    private List<Properties> getNonConfiguredValidationKeys() {
         List<Properties> validationKeysInDirectory = new ArrayList<Properties>();
         WsResource keysFileInDirectory = locationService.getServiceWithException().resolveResource(primaryKeyImportDir);
         Iterator<String> keysFileNames = keysFileInDirectory.getChildren(".*\\.keys");
@@ -307,10 +309,6 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      * If only the LTPA primary key configure, keep the old behavior as the same as SecurityFileMonitor
      *
      */
-
-    /*
-     * If only the LTPA primary key configure, keep the old behavior as the same as SecurityFileMonitor
-     */
     @Override
     public void performFileBasedAction(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles) {
         Collection<File> allFiles = getAllFiles(createdFiles, modifiedFiles, deletedFiles);
@@ -331,7 +329,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
             if (configValidationKeys != null || !configValidationKeys.isEmpty())
                 validationKeys.addAll(configValidationKeys);
-            unConfigValidationKeys = getUnConfigValidationKeys();
+            nonConfigValidationKeys = getNonConfiguredValidationKeys();
             combineValidationKeys();
         }
 
@@ -730,7 +728,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             }
             return null;
         } else {
-            if (isNotUseAfterDate(configProps)) { // TODO: do we need to check it now or late? we will have to check it when we use it
+            if (isNotUseAfterDate(configProps)) {
                 return null; //it can not be used so skip this validationKeys.
             }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -750,9 +748,8 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      */
     private boolean isNotUseAfterDate(Map<String, Object> configProps) {
         String notUseAfterDate = (String) configProps.get(CFG_KEY_VALIDATION_NOT_USE_AFTER_DATE);
-        boolean result = false;
         if (notUseAfterDate == null) { // Not specify so it is good to use
-            return result;
+            return false;
         }
         OffsetDateTime noUserAfterDateOdt = null;
         try {
