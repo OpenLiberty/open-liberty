@@ -26,7 +26,8 @@ src: src
 -dsannotations: io.openliberty.microprofile.reactive.messaging30.internal.OLReactiveMessaging30Extension
 
 Include-Resource: \
-  META-INF=resources/META-INF
+  META-INF=resources/META-INF, \
+  OSGI-INF/wlp=resources/OSGI-INF/wlp
 
 Import-Package: \
   !io.vertx.*,\
@@ -36,6 +37,8 @@ Import-Package: \
   org.eclipse.microprofile.metrics.*; version="[4.0,6)",\
   jakarta.enterprise.*; version="[3.0,5)",\
   *
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Private-Package: \
 	io.smallrye.reactive.messaging.providers.connectors;-split-package:=merge-first,\

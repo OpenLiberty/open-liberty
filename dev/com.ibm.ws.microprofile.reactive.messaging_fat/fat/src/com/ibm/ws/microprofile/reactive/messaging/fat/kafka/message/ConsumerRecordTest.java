@@ -89,7 +89,8 @@ public class ConsumerRecordTest {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsLibraries(kafkaClientLibs())
                         .addAsManifestResource(kafkaPermissions(), "permissions.xml")
-                        .addPackage(ConsumerRecordServlet.class.getPackage())
+                        .addClass(ConsumerRecordServlet.class)
+                        .addClass(ConsumerRecordBean.class)
                         .addPackage(KafkaTestConstants.class.getPackage())
                         .addPackage(KafkaTestClientProvider.class.getPackage())
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");

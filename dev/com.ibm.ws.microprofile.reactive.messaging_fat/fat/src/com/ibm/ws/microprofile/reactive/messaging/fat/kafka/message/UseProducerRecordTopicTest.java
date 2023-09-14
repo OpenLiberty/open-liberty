@@ -69,7 +69,8 @@ public class UseProducerRecordTopicTest {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsLibraries(kafkaClientLibs())
                         .addAsManifestResource(kafkaPermissions(), "permissions.xml")
-                        .addPackage(UseProducerRecordTopicServlet.class.getPackage())
+                        .addClass(UseProducerRecordTopicServlet.class)
+                        .addClass(ProducerRecordBean.class)
                         .addPackage(KafkaTestConstants.class.getPackage())
                         .addPackage(KafkaTestClientProvider.class.getPackage())
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
