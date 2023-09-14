@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
@@ -48,7 +49,7 @@ public abstract class KafkaAdapterFactory {
     private static final Class<?>[] COMMIT_FAILED_EXCEPTION_ARG_TYPES = {};
 
     private static final String INCOMING_KAFKA_MESSAGE_IMPL = "com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl.IncomingKafkaMessage";
-    private static final Class<?>[] INCOMING_KAFKA_MESSAGE_ARG_TYPES = { ConsumerRecord.class, Supplier.class };
+    private static final Class<?>[] INCOMING_KAFKA_MESSAGE_ARG_TYPES = { ConsumerRecord.class, Supplier.class, Function.class };
 
     private static final String PRODUCER_RECORD_IMPL = "com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl.ProducerRecordImpl";
     private static final Class<?>[] PRODUCER_RECORD_ARG_TYPES = { String.class, String.class, Object.class };
@@ -83,9 +84,9 @@ public abstract class KafkaAdapterFactory {
      * @param ack
      * @return
      */
-    public <K, V> Message<V> newIncomingKafkaMessage(ConsumerRecord<K, V> consumerRecord, Supplier<CompletionStage<Void>> ack) {
+    public <K, V> Message<V> newIncomingKafkaMessage(ConsumerRecord<K, V> consumerRecord, Supplier<CompletionStage<Void>> ack, Function<Throwable, CompletionStage<Void>> nack) {
         @SuppressWarnings("unchecked")
-        Message<V> incomingMessage = getInstance(getClassLoader(), Message.class, INCOMING_KAFKA_MESSAGE_IMPL, INCOMING_KAFKA_MESSAGE_ARG_TYPES, consumerRecord, ack);
+        Message<V> incomingMessage = getInstance(getClassLoader(), Message.class, INCOMING_KAFKA_MESSAGE_IMPL, INCOMING_KAFKA_MESSAGE_ARG_TYPES, consumerRecord, ack, nack);
         return incomingMessage;
     }
 

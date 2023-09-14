@@ -21,7 +21,9 @@ Subsystem-Name: MicroProfile Reactive Messaging 3.0
  io.openliberty.io.smallrye.reactive.converter-api3, \
  com.ibm.ws.microprofile.reactive.messaging.kafka.jakarta, \
  com.ibm.ws.microprofile.reactive.messaging.kafka.adapter, \
- com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl
+ com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl, \
+ io.openliberty.microprofile.reactive.messaging.internal,\
+ io.openliberty.microprofile.reactive.messaging.3.0.internal
 kind=noship
 edition=full
 WLP-Activation-Type: parallel
