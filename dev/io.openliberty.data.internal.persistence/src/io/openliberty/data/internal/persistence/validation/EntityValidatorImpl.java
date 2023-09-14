@@ -66,7 +66,7 @@ public class EntityValidatorImpl implements EntityValidator {
     @Trivial
     public boolean[] isValidatable(Method method) {
         MethodDescriptor methodDesc = classDesc.getConstraintsForMethod(method.getName(), method.getParameterTypes());
-        boolean validateParams = methodDesc != null && methodDesc.hasConstrainedParameters();
+        boolean validateParams = methodDesc != null && method.getParameterCount() > 0 && methodDesc.hasConstrainedParameters();
         boolean validateResult = methodDesc != null && methodDesc.hasConstrainedReturnValue();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "isValidatable: " + method.getName(),
