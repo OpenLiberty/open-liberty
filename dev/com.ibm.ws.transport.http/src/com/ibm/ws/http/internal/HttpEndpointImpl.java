@@ -111,7 +111,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     private CHFWBundle chfw = null;
     /** Required, static Netty framework reference */
     private NettyFramework netty = null;
-    
+
     private NettyTlsProvider nettyTlsProvider = null;
 
     /** Required, dynamic tcpOptions: unmodifiable map */
@@ -236,7 +236,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         public void run() {
             synchronized (actionLock) {
                 // only try to update the chains if the endpoint is enabled/started and framework is good
-                
+
                 if (endpointStarted && endpointState.get() == ENABLED && FrameworkState.isValid()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "EndpointAction: updating chains " + HttpEndpointImpl.this, httpChain, httpSecureChain);
@@ -272,27 +272,25 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         sslOptions.activate(ctx);
         eventService.activate(ctx);
 
-        useNetty = ProductInfo.getBetaEdition() && 
-                        MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), true);
+        useNetty = ProductInfo.getBetaEdition() &&
+                   MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), true);
 
         //useNetty = MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), false);
         if (useNetty) {
             httpChain = new NettyChain(this, false);
             httpSecureChain = new NettyChain(this, true);
-            
+
             ((NettyChain) httpChain).initNettyChain(name, config, netty);
             ((NettyChain) httpSecureChain).initNettyChain(name, config, netty);
-           
-            
+
         } else {
             httpChain = new HttpChain(this, false);
             httpSecureChain = new HttpChain(this, true);
-            
+
             httpChain.init(name, cid, chfw);
             httpSecureChain.init(name, cid, chfw);
         }
-        
-        
+
         modified(config);
     }
 
@@ -361,7 +359,6 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         resolvedHostName = resolveHostName(host, cfgDefaultHost);
 
         registerCheckResolvedHostHook(config, cfgDefaultHost);
-        
 
         if (resolvedHostName == null) {
             if (HttpServiceConstants.WILDCARD.equals(host)) {
@@ -400,7 +397,6 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         httpsPort = MetatypeUtils.parseInteger(HttpServiceConstants.ENPOINT_FPID_ALIAS, "httpsPort",
                                                config.get("httpsPort"),
                                                -1);
-        
 
         String id = (String) config.get("id");
         Object cid = config.get("component.id");
@@ -888,7 +884,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     protected void unsetChfwBundle(CHFWBundle bundle) {
     }
 
-    protected CHFWBundle getChfwBundle() {
+    public CHFWBundle getChfwBundle() {
         return chfw;
     }
 
@@ -900,11 +896,11 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     protected void unsetNettyBundle(NettyFramework bundle) {
 
     }
-    
+
     protected NettyFramework getNettyBundle() {
         return netty;
     }
-    
+
     @Reference(name = "nettyTlsProvider", cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY, unbind = "unbindTlsProviderService")
     protected void bindNettyTlsProvider(NettyTlsProvider tlsProvider) {
         System.out.println("Setting Netty TLS provider");

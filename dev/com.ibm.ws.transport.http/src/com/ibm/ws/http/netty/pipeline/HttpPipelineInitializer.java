@@ -24,24 +24,33 @@ import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig.NettyConfigBuilder;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.pipeline.http2.LibertyUpgradeCodec;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.TransportInboundHandler;
 
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.SimpleUserEventChannelHandler;
+import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
+import io.netty.handler.codec.http.HttpServerUpgradeHandler;
+import io.netty.handler.codec.http.HttpServerUpgradeHandler.UpgradeEvent;
+import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
+import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import io.openliberty.netty.internal.ChannelInitializerWrapper;
 
 /**
  * Initializes a Netty Pipeline for an HTTP Endpoint. Configuration options may be
  * passed into it.
  */
-public class HttpPipelineInitializer extends ChannelInitializer<Channel> {
+public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
     private static final TraceComponent tc = Tr.register(HttpPipelineInitializer.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
@@ -66,6 +75,11 @@ public class HttpPipelineInitializer extends ChannelInitializer<Channel> {
     Map<String, Object> endpointOptions;
 
     NettyHttpChannelConfig httpConfig;
+
+    public static final String NO_UPGRADE_OCURRED_HANDLER_NAME = "UPGRADE_HANDLER_CHECK";
+    public static final String NETTY_HTTP_SERVER_CODEC = "HTTP_SERVER_HANDLER";
+    public static final String HTTP_DISPATCHER_HANDLER_NAME = "HTTP_DISPATCHER";
+    public static final String HTTP_SSL_HANDLER_NAME = "SSL_HANDLER";
 
     private HttpPipelineInitializer(HttpPipelineBuilder builder) {
         Objects.requireNonNull(builder);
@@ -128,42 +142,166 @@ public class HttpPipelineInitializer extends ChannelInitializer<Channel> {
 
         ChannelPipeline pipeline = channel.pipeline();
 
+        // Initialize with the parent bootstrap initializer
+        this.chain.getBootstrap().getBaseInitializer().init(channel);
+
         if (chain.isHttps()) {
-            SslContext context = chain.getOwner().getNettyTlsProvider().getInboundSSLContext(chain.getOwner().getSslOptions(), chain.getActiveHost(),
-                                                                                             Integer.toString(chain.getActivePort()));
-            if (context == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                    Tr.entry(this, tc, "initChannel", "Error adding TLS Support");
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                    Tr.exit(this, tc, "initChannel");
-                channel.close();
-                return;
+
+            if (chain.isHttp2Enabled()) { // h2 setup starts here
+                // Need to setup ALPN
+                setupH2Pipeline(pipeline);
+            } else { // https setup starts here
+                // No ALPN because only HTTP1.1, just need to add SSL handler here
+                setupHttpsPipeline(pipeline);
             }
-            SSLEngine engine = context.newEngine(channel.alloc());
-            pipeline.addFirst("SSL_HANDLER", new SslHandler(engine, false));
-            channel.attr(NettyHttpConstants.IS_SECURE).set(Boolean.TRUE);
+        } else {
+            if (chain.isHttp2Enabled()) { //h2c setup starts here
+                setupH2cPipeline(pipeline);
+            } else { // http 1.1 setup starts here
+                setupHttp11Pipeline(pipeline);
+
+            }
+
         }
 
+        Tr.exit(tc, "initChannel");
+    }
+
+    /**
+     * Utility method for building an H2 pipeline
+     *
+     * @param pipeline ChannelPipeline to update as necessary
+     */
+    private void setupH2Pipeline(ChannelPipeline pipeline) {
+        throw new UnsupportedOperationException("H2 not yet configured!!");
+    }
+
+    /**
+     * Utility method for building and H2C pipeline
+     *
+     * @param pipeline ChannelPipeline to update as necessary
+     */
+    private void setupH2cPipeline(ChannelPipeline pipeline) {
+        addH2CCodecHandlers(pipeline);
+        addPreHttpCodecHandlers(pipeline);
+        pipeline.addLast(new ByteBufferCodec());
+        pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));
+    }
+
+    /**
+     * Utility method for building an HTTP1.1 pipeline
+     *
+     * @param pipeline ChannelPipeline to update as necessary
+     */
+    private void setupHttp11Pipeline(ChannelPipeline pipeline) {
+        pipeline.addLast(NETTY_HTTP_SERVER_CODEC, new HttpServerCodec());
+        pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));
+        addPreHttpCodecHandlers(pipeline);
+        addPreDispatcherHandlers(pipeline);
+    }
+
+    /**
+     * Utility method for building and HTTPS pipeline
+     *
+     * @param pipeline ChannelPipeline to update as necessary
+     */
+    private void setupHttpsPipeline(ChannelPipeline pipeline) {
+        SslContext context = chain.getOwner().getNettyTlsProvider().getInboundSSLContext(chain.getOwner().getSslOptions(), chain.getActiveHost(),
+                                                                                         Integer.toString(chain.getActivePort()));
+        Channel channel = pipeline.channel();
+        if (context == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.entry(this, tc, "initChannel", "Error adding TLS Support");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.exit(this, tc, "initChannel");
+            channel.close();
+            return;
+        }
+        SSLEngine engine = context.newEngine(channel.alloc());
+        pipeline.addFirst(HTTP_SSL_HANDLER_NAME, new SslHandler(engine, false));
+        channel.attr(NettyHttpConstants.IS_SECURE).set(Boolean.TRUE);
+        setupHttp11Pipeline(pipeline);
+    }
+
+    /**
+     * Utility method for adding the Netty handlers needed for h2c connections
+     *
+     * @param pipeline ChannelPipeline to update as necessary
+     */
+    private void addH2CCodecHandlers(ChannelPipeline pipeline) {
+        final CleartextHttp2ServerUpgradeHandler cleartextHttp2ServerUpgradeHandler = LibertyUpgradeCodec.createCleartextUpgradeHandler(httpConfig);
+
+        pipeline.addLast(cleartextHttp2ServerUpgradeHandler);
+
+        // TODO: Remove this, temp to see how upgrades are going
+        pipeline.addLast("Upgrade Detector", new SimpleUserEventChannelHandler<UpgradeEvent>() {
+
+            @Override
+            protected void eventReceived(ChannelHandlerContext ctx, UpgradeEvent evt) throws Exception {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Got upgrade event for channel " + ctx.channel(), evt);
+                }
+                ctx.fireUserEventTriggered(evt.retain());
+            }
+        });
+        pipeline.addLast("Prior Knowledge Upgrade Detector", new SimpleUserEventChannelHandler<PriorKnowledgeUpgradeEvent>() {
+
+            @Override
+            protected void eventReceived(ChannelHandlerContext ctx, PriorKnowledgeUpgradeEvent evt) throws Exception {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Got priorKnowledge upgrade event for channel " + ctx.channel(), evt);
+                }
+                ctx.fireUserEventTriggered(evt);
+            }
+        });
+
+        // Handler to decide if an upgrade occurred or not and to add HTTP1 handlers on top
+        pipeline.addLast(NO_UPGRADE_OCURRED_HANDLER_NAME, new SimpleChannelInboundHandler<HttpMessage>() {
+            @Override
+            protected void channelRead0(ChannelHandlerContext ctx, HttpMessage msg) throws Exception {
+                // If this handler is hit then no upgrade has been attempted and the client is just talking HTTP 1.1.
+                // TODO Check if we need to add common handlers here
+                addPreDispatcherHandlers(ctx.pipeline());
+                System.out.println("Firing channel read from " + NO_UPGRADE_OCURRED_HANDLER_NAME + " to pipeline: ");
+                pipeline.names().forEach(handler -> System.out.println(handler));
+                // TODO Check if we need to retain this before passing to dispatcher
+                ctx.fireChannelRead(msg);
+                // Remove unused handlers
+                ctx.pipeline().remove(HttpServerUpgradeHandler.class);
+                ctx.pipeline().remove(NO_UPGRADE_OCURRED_HANDLER_NAME);
+            }
+        });
+    }
+
+    /**
+     * Utility method for adding all the handlers that need to go before the HTTP Server codec
+     *
+     * @param pipeline ChannelPipeline to update as necessary
+     */
+    private void addPreHttpCodecHandlers(ChannelPipeline pipeline) {
         if (httpConfig.isAccessLoggingEnabled()) {
-            pipeline.addLast(new AccessLoggerHandler(httpConfig));
+            pipeline.addBefore(NETTY_HTTP_SERVER_CODEC, null, new AccessLoggerHandler(httpConfig));
         }
-        pipeline.addLast(new HttpServerCodec());
-        pipeline.addLast("httpKeepAlive", new HttpServerKeepAliveHandler());
+    }
 
-        pipeline.addLast(new HttpObjectAggregator(64 * 1024));
-        pipeline.addLast(new ChunkedWriteHandler());
+    /**
+     * Utility method for adding all the handlers that need to go just before the HTTP Dispatcher Handler
+     *
+     * @param pipeline ChannelPipeline to update as necessary
+     */
+    private void addPreDispatcherHandlers(ChannelPipeline pipeline) {
+        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, "httpKeepAlive", new HttpServerKeepAliveHandler());
+        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new HttpObjectAggregator(64 * 1024));
+        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new ChunkedWriteHandler());
         // if (httpConfig.useAutoCompression()) {
         //   pipeline.addLast(new NettyHttpContentCompressor());
         //}
-        pipeline.addLast(new ByteBufferCodec());
-        pipeline.addLast(new TransportInboundHandler(httpConfig));
+        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new ByteBufferCodec());
+        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new TransportInboundHandler(httpConfig));
+        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new TransportOutboundHandler(httpConfig));
         if (httpConfig.useForwardingHeaders()) {
-            pipeline.addLast(new RemoteIpHandler(httpConfig));
+            pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new RemoteIpHandler(httpConfig));
         }
-        pipeline.addLast(new TransportOutboundHandler(httpConfig));
-        pipeline.addLast(new HttpDispatcherHandler(httpConfig));
-
-        Tr.exit(tc, "initChannel");
     }
 
     public static class HttpPipelineBuilder {
