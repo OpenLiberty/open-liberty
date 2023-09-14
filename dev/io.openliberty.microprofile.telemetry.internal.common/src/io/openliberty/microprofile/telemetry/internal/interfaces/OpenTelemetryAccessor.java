@@ -14,7 +14,6 @@ package io.openliberty.microprofile.telemetry.internal.interfaces;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfoFactory;
@@ -30,19 +29,21 @@ public class OpenTelemetryAccessor {
     /**
      * Gets or creates the instance of OpenTelemetry associated with this application and returns it wrapped inside an OpenTelemetryInfo.
      *
-     * @return An instance of OpenTelemetryInfo containing the instance of OpenTelemetry associated with this application. This instance will be a no-op OpenTelemetry if telemetry is disabled or the application has shut down.  
+     * @return An instance of OpenTelemetryInfo containing the instance of OpenTelemetry associated with this application. This instance will be a no-op OpenTelemetry if telemetry
+     *         is disabled or the application has shut down.
      */
     public static OpenTelemetryInfo getOpenTelemetryInfo() {
-        return OpenTelemetryInfoFactory.getOpenTelemetryInfo(ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getJ2EEName());
+        return OpenTelemetryInfoFactory.getOpenTelemetryInfo();
     }
 
     /**
      * Gets or creates a tracer instance from the TracerProvider for the OpenTelemetry instance associated with this application.
-     * 
-     * @return An tracer instance from the instance of OpenTelemetry associated with this application. This instance will be a no-op if telemetry is disabled or the application has shut down.
+     *
+     * @return An tracer instance from the instance of OpenTelemetry associated with this application. This instance will be a no-op if telemetry is disabled or the application has
+     *         shut down.
      */
     public static Tracer getTracer() {
-        return OpenTelemetryInfoFactory.getTracer(ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getJ2EEName());
+        return getOpenTelemetryInfo().getTracer();
     }
 
     /**

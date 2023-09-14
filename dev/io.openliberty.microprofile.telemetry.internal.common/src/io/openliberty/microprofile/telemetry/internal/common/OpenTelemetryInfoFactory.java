@@ -12,19 +12,13 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.common;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 import javax.management.ServiceNotFoundException;
 
@@ -34,49 +28,51 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
-import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
+import com.ibm.ws.container.service.metadata.MetaDataSlotService;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
+import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.OpenTelemetry;
-import io.opentelemetry.api.trace.Tracer;
-import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdkBuilder;
 import io.opentelemetry.sdk.autoconfigure.spi.ConfigProperties;
-import io.opentelemetry.sdk.common.CompletableResultCode;
-import io.opentelemetry.sdk.logs.SdkLoggerProvider;
-import io.opentelemetry.sdk.metrics.SdkMeterProvider;
 import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.resources.ResourceBuilder;
-import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.semconv.resource.attributes.ResourceAttributes;
 
 // We want this to start before CDI so it clears the list of stopped apps before CDI gets to them.
-@Component(property = { "service.vendor=IBM",  "service.ranking:Integer=150" })
+@Component(property = { "service.vendor=IBM", "service.ranking:Integer=150" })
 public class OpenTelemetryInfoFactory implements ApplicationStateListener {
 
     /*
-     * Class summary. 
-     * 
+     * Class summary.
+     *
      * This class consists of three parts
-     * 1: Static methods for producing Objects of: OpenTelemetryInfo, OpenTelemetry, Tracer, Span, Baggage.
-     *    If invoked after an app has been shutdown these will return a no-op object.
-     * 
-     * 2. A cache of OpenTelemetryInfo (using J2EENames as the key). OpenTelemetryInfo in turn contains OpenTelemetry objects. This is populated lazily using computeIfAbsent and the use of ConcurrentHashMap ensures thread safety.
-     *    
-     * 3. An ApplicationStateListener. 
-     *    On startup the ASL only removes applications from the list of apps that have shut down so they will not return a no-op
-     *    On shutdown the ASL cleans up an OpenTelemetry object, removes its parent OpenTelemetryInfo from the cache, and registers it as an app which has shut down.
+     * 1: Static methods for producing instances of OpenTelemetryInfo and its wrapped OpenTelemetry which are used by
+     * suppliers (see below)
+     *
+     * 2. An ApplicationStateListener which controls the state of OpenTelemetryInfo in a lazy fashion.
+     *
+     * On startup the ASL populates ApplicationMetaData with a lazy supplier of OpenTelemetryInfo.
+     *
+     * On shutdown the ASL replaces the supplier in ApplicationMetaData with a supplier that will return a DisposedOpenTelemetryInfo
+     * (DisposedOpenTelemetryInfo logs warnings and no-ops when it is used).
+     * The ASL also OpenTelemetryInfo.dispose() which will clean up an open telemetry object.
+     *
+     * To ensure threads do not get the wrong OpenTelemetryInfo from the application metadata, it is stored as an AtomicReference
      */
 
     private static final String ENV_DISABLE_PROPERTY = "OTEL_SDK_DISABLED";
@@ -89,119 +85,92 @@ public class OpenTelemetryInfoFactory implements ApplicationStateListener {
 
     private static final TraceComponent tc = Tr.register(OpenTelemetryInfoFactory.class);
 
-    private static final Map<J2EEName, OpenTelemetryInfo> appToInfo = new ConcurrentHashMap<J2EEName, OpenTelemetryInfo>();
-    private static final Set<J2EEName> shutDownApplications = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<J2EEName, Boolean>())); //We have no good place to say forget about an app entirely, so I use weakreferences. 
+    //As per the javadoc for com.ibm.ws.container.service.metadata.MetaDataSlotService reserveSlot() will
+    //Reserve a slot in *all* metadata objects. So it is safe to keep the key static.
+    private static MetaDataSlot SLOT_FOR_OPEN_TELEMETRY_INFO_HOLDER;
 
-    //The key methods that provide access to telemetry objects begin here
-    public static OpenTelemetryInfo getOpenTelemetryInfo(J2EEName j2EEName) {
-        return appToInfo.computeIfAbsent(j2EEName, OpenTelemetryInfoFactory::createOpenTelemetryInfo);
-    }
-
-    public static Tracer getTracer(J2EEName j2EEName) {
-        try {
-            return getOpenTelemetryInfo(j2EEName).getTracer();
-        } catch (Exception e) {
-            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
-            return OpenTelemetry.noop().getTracerProvider().get("");
-        }
+    @Activate
+    public OpenTelemetryInfoFactory(@Reference MetaDataSlotService slotService) {
+        SLOT_FOR_OPEN_TELEMETRY_INFO_HOLDER = slotService.reserveMetaDataSlot(ApplicationMetaData.class);
     }
 
     //The key methods that provide access to telemetry objects end here
 
-    private static OpenTelemetryInfo createOpenTelemetryInfo(J2EEName j2EEName) {
-        //If the app has already shut down but something still tries to get OpenTelemetry objects return a no-op object
-        if (shutDownApplications.contains(j2EEName)){ //There is a low risk race condition here. Thread A gets past this check just as thread B shuts everything down.
-            Tr.warning(tc, Tr.formatMessage(tc, "CWMOT5003.factory.used.after.shutdown", j2EEName.getApplication()));
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Exception e = new Exception();
-                ByteArrayOutputStream stackStream = new ByteArrayOutputStream();
-                PrintStream stackPrintStream = new PrintStream(stackStream);
-                e.printStackTrace(stackPrintStream);
-                
-                Tr.event(tc, "OpenTelemetryInfoFactory", "The stack that led to OpenTelemetryInfoFactory being called after " + j2EEName.getApplication() + " has shutdown is:.");
-                Tr.event(tc, stackStream.toString());
-            }
-            return new OpenTelemetryInfo(false, OpenTelemetry.noop());
-        }
-
+    private static OpenTelemetryInfo createOpenTelemetryInfo() {
         try {
+
+            String appName = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getJ2EEName().getApplication();
+
             if (AgentDetection.isAgentActive()) {
                 // If we're using the agent, it will have set GlobalOpenTelemetry and we must use its instance
                 // all config is handled by the agent in this case
-                return new OpenTelemetryInfo(true, GlobalOpenTelemetry.get());
+                return new OpenTelemetryInfoImpl(true, GlobalOpenTelemetry.get(), appName);
             }
 
             final Map<String, String> telemetryProperties = getTelemetryProperties();
 
             //Builds tracer provider if user has enabled tracing aspects with config properties
             if (!checkDisabled(telemetryProperties)) {
-                OpenTelemetry openTelemetry = AccessController.doPrivileged( (PrivilegedAction<OpenTelemetry>) () -> {
+                OpenTelemetry openTelemetry = AccessController.doPrivileged((PrivilegedAction<OpenTelemetry>) () -> {
                     //This contains API calls that change between the upstream open telemetry version.
                     //We get a partially configued SDK Builder from OSGi becase we are in a static context
                     //and do not know which version of mpTelemetry will be in use.
                     BundleContext bc = getBundleContext(OpenTelemetryInfoFactory.class);
                     OpenTelemetrySdkBuilderSupplier supplier = getService(bc, OpenTelemetrySdkBuilderSupplier.class);
 
-                    return supplier
-                                    .getPartiallyConfiguredOpenTelemetrySDKBuilder()
-                                    .addPropertiesCustomizer(x -> telemetryProperties) //Overrides OpenTelemetry's property order
+                    return supplier.getPartiallyConfiguredOpenTelemetrySDKBuilder().addPropertiesCustomizer(x -> telemetryProperties) //Overrides OpenTelemetry's property order
                                     .addResourceCustomizer(OpenTelemetryInfoFactory::customizeResource) //Defaults service name to application name
-                                    .setServiceClassLoader(Thread.currentThread().getContextClassLoader())
-                                    .build()
-                                    .getOpenTelemetrySdk();
+                                    .setServiceClassLoader(Thread.currentThread().getContextClassLoader()).build().getOpenTelemetrySdk();
                 });
 
                 if (openTelemetry != null) {
-                    return new OpenTelemetryInfo(true, openTelemetry);
+                    return new OpenTelemetryInfoImpl(true, openTelemetry, appName);
                 }
             }
             //By default, MicroProfile Telemetry tracing is off.
             //The absence of an installed SDK is a “no-op” API
             //Operations on a Tracer, or on Spans have no side effects and do nothing
-            String applicationName = j2EEName.getApplication();
-            Tr.info(tc, "CWMOT5100.tracing.is.disabled", applicationName);
+            Tr.info(tc, "CWMOT5100.tracing.is.disabled", appName);
 
-            return new OpenTelemetryInfo(false, OpenTelemetry.noop());
+            return new OpenTelemetryInfoImpl(false, OpenTelemetry.noop(), appName);
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
-            return new OpenTelemetryInfo(false, OpenTelemetry.noop());
+            return new OpenTelemetryInfoImpl(false, OpenTelemetry.noop(), "unknown");
         }
 
     }
 
-    public void disposeOpenTelemetry(J2EEName j2EEName) {
+    private static OpenTelemetryInfo createDisposedOpenTelemetryInfo() {
         try {
-            if (AgentDetection.isAgentActive()) {
-                return;
-            }
+            String appName = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getJ2EEName().getApplication();
+            return new DisposedOpenTelemetryInfo(appName); //Getting appName like this was easier than writing a functional interface
 
-            OpenTelemetry openTelemetry = null;
-
-            openTelemetry = appToInfo.get(j2EEName).getOpenTelemetry();
-
-            if (openTelemetry != null && openTelemetry instanceof OpenTelemetrySdk) {
-                OpenTelemetrySdk sdk = (OpenTelemetrySdk) openTelemetry;
-                List<CompletableResultCode> results = new ArrayList<>();
-
-                SdkTracerProvider tracerProvider = sdk.getSdkTracerProvider();
-                if (tracerProvider != null) {
-                    results.add(tracerProvider.shutdown());
-                }
-
-                SdkMeterProvider meterProvider = sdk.getSdkMeterProvider();
-                if (meterProvider != null) {
-                    results.add(meterProvider.shutdown());
-                }
-
-                SdkLoggerProvider loggerProvider = sdk.getSdkLoggerProvider();
-                if (loggerProvider != null) {
-                    results.add(loggerProvider.shutdown());
-                }
-
-                CompletableResultCode.ofAll(results).join(10, TimeUnit.SECONDS);
-            }
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return new DisposedOpenTelemetryInfo("unknown");
+        }
+    }
+
+    public static OpenTelemetryInfo getOpenTelemetryInfo() {
+        try {
+            ApplicationMetaData metaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData().getApplicationMetaData();
+
+            return getOpenTelemetryInfo(metaData);
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return new OpenTelemetryInfoImpl(false, OpenTelemetry.noop(), "unknown");
+        }
+    }
+
+    //A shortcut method to avoid fetching metadata more than we need to.
+    public static OpenTelemetryInfo getOpenTelemetryInfo(ApplicationMetaData metaData) {
+        try {
+            OpenTelemetryInfoReference atomicRef = (OpenTelemetryInfoReference) metaData.getMetaData(SLOT_FOR_OPEN_TELEMETRY_INFO_HOLDER);
+            OpenTelemetryInfoWrappedSupplier supplier = atomicRef.get();
+            return supplier.get();
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return new OpenTelemetryInfoImpl(false, OpenTelemetry.noop(), "unknown");
         }
     }
 
@@ -242,25 +211,44 @@ public class OpenTelemetryInfoFactory implements ApplicationStateListener {
     @Override
     public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
         //We do not actually initilize on application starting, we do that lazily if this is needed.
-        //However setting the j2EEName in the constructor explodes so we set it slightly afterwords in this method.
+
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
-        J2EEName j2EEName = extAppInfo.getMetaData().getJ2EEName();
-        shutDownApplications.remove(j2EEName);
+        OpenTelemetryInfoReference oTelRef = (OpenTelemetryInfoReference) extAppInfo.getMetaData().getMetaData(SLOT_FOR_OPEN_TELEMETRY_INFO_HOLDER);
+
+        OpenTelemetryInfoWrappedSupplier newSupplier = new OpenTelemetryInfoWrappedSupplier(OpenTelemetryInfoFactory::createOpenTelemetryInfo);
+
+        if (oTelRef == null) {
+            oTelRef = new OpenTelemetryInfoReference();
+        }
+        oTelRef.set(newSupplier);
+        extAppInfo.getMetaData().setMetaData(SLOT_FOR_OPEN_TELEMETRY_INFO_HOLDER, oTelRef);
     }
 
     @Override
-    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException { } //no-op
+    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
+    } //no-op
 
     @Override
-    public void applicationStopping(ApplicationInfo appInfo) { } //no-op
+    public void applicationStopping(ApplicationInfo appInfo) {
+    } //no-op
 
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
-        J2EEName j2EEName = extAppInfo.getMetaData().getJ2EEName();
-        shutDownApplications.add(j2EEName);
-        disposeOpenTelemetry(j2EEName);
-        appToInfo.remove(j2EEName);
+        OpenTelemetryInfoReference oTelRef = (OpenTelemetryInfoReference) extAppInfo.getMetaData().getMetaData(SLOT_FOR_OPEN_TELEMETRY_INFO_HOLDER);
+
+        OpenTelemetryInfoWrappedSupplier newSupplier = new OpenTelemetryInfoWrappedSupplier(OpenTelemetryInfoFactory::createDisposedOpenTelemetryInfo);
+
+        OpenTelemetryInfoWrappedSupplier oldSupplier = oTelRef.getAndSet(newSupplier);
+
+        try {
+            if (oldSupplier.hasRun) {
+                oldSupplier.get().dispose();
+            }
+        } catch (Exception e) {
+            Tr.warning(tc, "applicationStopped", "failed to dispose of OpenTelemetry");//TODO better message
+        }
+
     }
 
     //Adds the service name to the resource attributes
@@ -282,8 +270,55 @@ public class OpenTelemetryInfoFactory implements ApplicationStateListener {
         return appName;
     }
 
+    //Interfaces and private classes only relevent to this factory.
+
+    /*
+     * There are two race conditions we need to protect against.
+     *
+     * On app startup/shutdown we need to swap the holder associated with the application.
+     * We protect against race conditions here by using an AtomicReference.
+     *
+     * Within the context of an application's lifecycle we need to ensure OpenTelemetryInfo
+     * is only created once. OpenTelemetryInfoReference handles this.
+     */
     public interface OpenTelemetrySdkBuilderSupplier {
         public AutoConfiguredOpenTelemetrySdkBuilder getPartiallyConfiguredOpenTelemetrySDKBuilder();
+    }
+
+    private class OpenTelemetryInfoReference extends AtomicReference<OpenTelemetryInfoWrappedSupplier> {
+
+        private static final long serialVersionUID = -4884222080590544495L;
+    }
+
+    private class OpenTelemetryInfoWrappedSupplier {
+        private final Supplier<OpenTelemetryInfo> supplier;
+        boolean hasRun = false;
+        private OpenTelemetryInfo openTelemetryInfo = null;
+
+        public OpenTelemetryInfoWrappedSupplier(Supplier<OpenTelemetryInfo> supplier) {
+            this.supplier = supplier;
+        }
+
+        public OpenTelemetryInfo get() throws InterruptedException, ExecutionException {
+            if (openTelemetryInfo != null) {
+                return openTelemetryInfo;
+            }
+
+            synchronized (this) {
+                if (openTelemetryInfo != null) {
+                    return openTelemetryInfo;
+                }
+
+                openTelemetryInfo = supplier.get();
+                hasRun = true;
+                return openTelemetryInfo;
+            }
+        }
+
+        public boolean hasRun() {
+            return hasRun;
+        }
+
     }
 
     //OSGi Helper methods
@@ -309,13 +344,13 @@ public class OpenTelemetryInfoFactory implements ApplicationStateListener {
     /**
      * Find a service of the given type
      *
-     * @param bundleContext The context to use to find the service
      * @param serviceClass The class of the required service
      * @return the service instance
      * @throws InvalidFrameworkStateException if the server OSGi framework is being shutdown
-     * @throws ServiceNotFoundException if an instance of the requested service can not be found
+     * @throws ServiceNotFoundException       if an instance of the requested service can not be found
      */
     private static <T> T getService(BundleContext bundleContext, Class<T> serviceClass) throws BundleLoadingException {
+        bundleContext = getBundleContext(OpenTelemetryInfoFactory.class);
         if (!FrameworkState.isValid()) {
             throw new BundleLoadingException("Invalid OSGi Framework State");
         }
