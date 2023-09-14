@@ -40,6 +40,9 @@ CWMOT5001.cannot.set.globalopentelemetry.explanation=The GlobalOpenTelemetry cla
 CWMOT5001.cannot.set.globalopentelemetry.useraction=Do not call the GlobalOpenTelemetry.get method. Where the application code needs to obtain an OpenTelemetry object, use CDI to inject it.
 
 CWMOT5002.telemetry.error=CWMOT5002E: An internal error occurred in MicroProfile Telemetry. The error is: {0}.
-CWMOT5002.telemetry.error.explanation=An error has occurred that prevents normal operation of MicroProfile Telemetry.
+CWMOT5002.telemetry.error.explanation=An error occurred that prevented the normal operation of MicroProfile Telemetry.
 CWMOT5002.telemetry.error.useraction=Review the server message.log file and FFDC logs to identify the problem.
 
+CWMOT5003.factory.used.after.shutdown=CWMOT5003W: The {0} application  attempted to acquire MicroProfile Telemetry after the application shut down.
+CWMOT5003.factory.used.after.shutdown.explanation=CWMOT5003.factory.used.after.shutdown.explanation=After an application shuts down, MicroProfile Telemetry returns objects that silently perform no-op actions when they are invoked. This process might lead to the absence of expected telemetry data.
+CWMOT5003.factory.used.after.shutdown.useraction=Review the application to see why it attempted to use MicroProfile Telemetry after  shutting down. Actions that can trigger the use of MicroProfile Telemetry include calling a method that is annotated with @WithSpan or making a request with a JAX-RS Client or MP Rest Client.
