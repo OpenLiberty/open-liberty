@@ -12,11 +12,14 @@
  *******************************************************************************/
 package test.server.transport.http2;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 /**
  * HTTP/2 Tests
@@ -52,5 +55,9 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 
 public class FATSuite {
     private static final Class<?> c = FATSuite.class;
+
+    // Run with no modifications to the server besides enabling Beta and running netty
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.BETA_OPTION());
 
 }

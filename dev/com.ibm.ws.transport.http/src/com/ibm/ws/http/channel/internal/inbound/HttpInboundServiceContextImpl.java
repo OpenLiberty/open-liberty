@@ -517,7 +517,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         if (Objects.nonNull(nettyContext)) {
             if (Objects.isNull(requestMessage)) {
                 MSP.log("getRequest -> creating new NettyRequestMessage");
-                this.requestMessage = new NettyRequestMessage(nettyRequest, this);
+                this.requestMessage = new NettyRequestMessage(nettyRequest, this, nettyContext);
             }
             return this.requestMessage;
         }
@@ -565,7 +565,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     public HttpResponseMessage getResponse() {
         MSP.log("ISC - getResponse() - response: " + Objects.isNull(response) + ", context: " + Objects.nonNull(nettyContext));
         if (Objects.isNull(this.response) && Objects.nonNull(this.nettyContext)) {
-            this.response = new NettyResponseMessage(nettyResponse, this);
+            this.response = new NettyResponseMessage(nettyResponse, this, nettyRequest);
         }
 
         return Objects.nonNull(nettyContext) ? this.response : getResponseImpl();
@@ -1089,9 +1089,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                 throw inv;
             }
         }
-    }
-
-    private void nettyFinishResponseMessage(WsByteBuffer[] body) {
     }
 
     /**
