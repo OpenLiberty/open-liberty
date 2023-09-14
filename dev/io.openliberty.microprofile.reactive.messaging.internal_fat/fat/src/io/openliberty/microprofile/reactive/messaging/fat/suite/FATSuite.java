@@ -10,11 +10,13 @@
 
 package io.openliberty.microprofile.reactive.messaging.fat.suite;
 
-import componenttest.containers.TestContainerSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import componenttest.containers.TestContainerSuite;
+import io.openliberty.microprofile.reactive.messaging.fat.apps.kafkanack.KafkaNackTest;
+
 @RunWith(Suite.class)
-@Suite.SuiteClasses({})
+@Suite.SuiteClasses({ KafkaNackTest.class })
 public class FATSuite extends TestContainerSuite {
 }
