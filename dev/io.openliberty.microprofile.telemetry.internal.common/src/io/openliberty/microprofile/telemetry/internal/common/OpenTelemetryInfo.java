@@ -13,13 +13,18 @@
 package io.openliberty.microprofile.telemetry.internal.common;
 
 import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.api.trace.Tracer;
+
 /**
- * This produces an OpenTelemetry bean with info to state whether it is enabled or disabled
+ * This produces an OpenTelemetry wrapper with info to state whether it is enabled or disabled
  */
 public class OpenTelemetryInfo {
 
+    private static final String INSTRUMENTATION_NAME = "io.openliberty.microprofile.telemetry";
+
     private final boolean enabled;
     private final OpenTelemetry openTelemetry;
+    private final Tracer tracer;
 
     /**
      * @param enabled
@@ -29,6 +34,7 @@ public class OpenTelemetryInfo {
         super();
         this.enabled = enabled;
         this.openTelemetry = openTelemetry;
+        tracer = openTelemetry.getTracer(INSTRUMENTATION_NAME);
     }
 
     /**
@@ -37,6 +43,7 @@ public class OpenTelemetryInfo {
     public OpenTelemetryInfo() {
         this.enabled = false;
         this.openTelemetry = null;
+        tracer = null;
     }
 
     /**
@@ -51,6 +58,13 @@ public class OpenTelemetryInfo {
      */
     public OpenTelemetry getOpenTelemetry() {
         return openTelemetry;
+    }
+
+    /**
+     * @return the Tracer
+     */
+    public Tracer getTracer() {
+        return tracer;
     }
 
 }

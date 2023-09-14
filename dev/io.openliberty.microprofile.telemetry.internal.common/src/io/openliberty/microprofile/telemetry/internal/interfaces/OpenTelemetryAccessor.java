@@ -27,18 +27,38 @@ public class OpenTelemetryAccessor {
     private static final TraceComponent tc = Tr.register(OpenTelemetryAccessor.class);
 
     //See https://github.com/open-telemetry/opentelemetry-java-docs/blob/main/otlp/src/main/java/io/opentelemetry/example/otlp/ExampleConfiguration.java
+    /**
+     * Gets or creates the instance of OpenTelemetry associated with this application and returns it wrapped inside an OpenTelemetryInfo.
+     *
+     * @return An instance of OpenTelemetryInfo containing the instance of OpenTelemetry associated with this application. This instance will be a no-op OpenTelemetry if telemetry is disabled or the application has shut down.  
+     */
     public static OpenTelemetryInfo getOpenTelemetryInfo() {
         return OpenTelemetryInfoFactory.getOpenTelemetryInfo(ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getJ2EEName());
     }
 
+    /**
+     * Gets or creates a tracer instance from the TracerProvider for the OpenTelemetry instance associated with this application.
+     * 
+     * @return An tracer instance from the instance of OpenTelemetry associated with this application. This instance will be a no-op if telemetry is disabled or the application has shut down.
+     */
     public static Tracer getTracer() {
         return OpenTelemetryInfoFactory.getTracer(ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getJ2EEName());
     }
 
+    /**
+     * Acquires the span for the current Context
+     *
+     * @return Returns the Span from the current Context, falling back to a default, no-op Span if there is no span in the current context.
+     */
     public static Span getSpan() {
         return Span.current();
     }
 
+    /**
+     * Acquires the Baggage for the current Context
+     *
+     * @return Returns Baggage from the current Context, falling back to empty Baggage if none is in the current Context.
+     */
     public static Baggage getBaggage() {
         return Baggage.current();
     }

@@ -41,29 +41,54 @@ public class OpenTelemetryProducer {
     }
 
     //See https://github.com/open-telemetry/opentelemetry-java-docs/blob/main/otlp/src/main/java/io/opentelemetry/example/otlp/ExampleConfiguration.java
+    /**
+     * Gets or creates the instance of OpenTelemetry associated with this application and returns it wrapped inside an instance of OpenTelemetryInfo.
+     *
+     * @return An instance of OpenTelemetryInfo containing the instance of OpenTelemetry associated with this application. This instance will be a no-op OpenTelemetry if telemetry is disabled or the application has shut down.  
+     */
     @ApplicationScoped
     @Produces
     public OpenTelemetryInfo getOpenTelemetryInfo() {
         return OpenTelemetryInfoFactory.getOpenTelemetryInfo(getJ2EEName());
     }
 
+    /**
+     * Gets or creates a tracer instance from the TracerProvider for the OpenTelemetry instance associated with this application.
+     * 
+     * @return An tracer instance from the instance of OpenTelemetry associated with this application. This instance will be a no-op if telemetry is disabled or the application has shut down.
+     */
     @Produces
     public Tracer getTracer() {
         return OpenTelemetryInfoFactory.getTracer(getJ2EEName());
     }
 
+    /**
+     * Acquires a proxy for Spans
+     *
+     * @return Returns a SpanProxy that will redirect all methods to the Span associated with the current context
+     */
     @Produces
     @ApplicationScoped
     public Span getSpan() {
         return new SpanProxy();
     }
 
+    /**
+     * Acquires a proxy for Baggage
+     *
+     * @return Returns a BaggageProxy that will redirect all methods to the Baggage associated with the current context
+     */
     @Produces
     @ApplicationScoped
     public Baggage getBaggage() {
         return new BaggageProxy();
     }
 
+    /**
+     * Gets or creates the instance of OpenTelemetry associated with this application.
+     *
+     * @return An instance of OpenTelemetryInfo containing the instance of OpenTelemetry associated with this application. This instance will be a no-op OpenTelemetry if telemetry is disabled or the application has shut down.  
+     */
     @ApplicationScoped
     @Produces
     public OpenTelemetry getOpenTelemetry(OpenTelemetryInfo openTelemetryInfo) {

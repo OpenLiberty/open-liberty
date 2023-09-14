@@ -79,7 +79,6 @@ public class OpenTelemetryInfoFactory implements ApplicationStateListener {
      *    On shutdown the ASL cleans up an OpenTelemetry object, removes its parent OpenTelemetryInfo from the cache, and registers it as an app which has shut down.
      */
 
-    private static final String INSTRUMENTATION_NAME = "io.openliberty.microprofile.telemetry";
     private static final String ENV_DISABLE_PROPERTY = "OTEL_SDK_DISABLED";
     private static final String CONFIG_DISABLE_PROPERTY = "otel.sdk.disabled";
     private static final String ENV_METRICS_EXPORTER_PROPERTY = "OTEL_METRICS_EXPORTER";
@@ -100,7 +99,7 @@ public class OpenTelemetryInfoFactory implements ApplicationStateListener {
 
     public static Tracer getTracer(J2EEName j2EEName) {
         try {
-            return getOpenTelemetryInfo(j2EEName).getOpenTelemetry().getTracer(INSTRUMENTATION_NAME);
+            return getOpenTelemetryInfo(j2EEName).getTracer();
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
             return OpenTelemetry.noop().getTracerProvider().get("");
@@ -138,8 +137,8 @@ public class OpenTelemetryInfoFactory implements ApplicationStateListener {
             if (!checkDisabled(telemetryProperties)) {
                 OpenTelemetry openTelemetry = AccessController.doPrivileged( (PrivilegedAction<OpenTelemetry>) () -> {
                     //This contains API calls that change between the upstream open telemetry version.
-                    //We use @Reference because the callers coming into  OpenTelemetryInfoFactory via
-                    //The static accessor do not know which version of mpTelemetry will be in use.
+                    //We get a partially configued SDK Builder from OSGi becase we are in a static context
+                    //and do not know which version of mpTelemetry will be in use.
                     BundleContext bc = getBundleContext(OpenTelemetryInfoFactory.class);
                     OpenTelemetrySdkBuilderSupplier supplier = getService(bc, OpenTelemetrySdkBuilderSupplier.class);
 
@@ -159,8 +158,7 @@ public class OpenTelemetryInfoFactory implements ApplicationStateListener {
             //By default, MicroProfile Telemetry tracing is off.
             //The absence of an installed SDK is a “no-op” API
             //Operations on a Tracer, or on Spans have no side effects and do nothing
-            ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-            String applicationName = cData.getJ2EEName().getApplication();
+            String applicationName = j2EEName.getApplication();
             Tr.info(tc, "CWMOT5100.tracing.is.disabled", applicationName);
 
             return new OpenTelemetryInfo(false, OpenTelemetry.noop());
@@ -171,8 +169,7 @@ public class OpenTelemetryInfoFactory implements ApplicationStateListener {
 
     }
 
-
-    public synchronized void disposeOpenTelemetry(J2EEName j2EEName) {
+    public void disposeOpenTelemetry(J2EEName j2EEName) {
         try {
             if (AgentDetection.isAgentActive()) {
                 return;
@@ -180,11 +177,9 @@ public class OpenTelemetryInfoFactory implements ApplicationStateListener {
 
             OpenTelemetry openTelemetry = null;
 
-            if (appToInfo.containsKey(j2EEName)) {
-                openTelemetry = appToInfo.get(j2EEName).getOpenTelemetry();
-            }
+            openTelemetry = appToInfo.get(j2EEName).getOpenTelemetry();
 
-            if (openTelemetry instanceof OpenTelemetrySdk) {
+            if (openTelemetry != null && openTelemetry instanceof OpenTelemetrySdk) {
                 OpenTelemetrySdk sdk = (OpenTelemetrySdk) openTelemetry;
                 List<CompletableResultCode> results = new ArrayList<>();
 
