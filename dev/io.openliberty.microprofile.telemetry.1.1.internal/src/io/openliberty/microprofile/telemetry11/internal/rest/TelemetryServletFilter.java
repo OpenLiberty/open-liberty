@@ -223,15 +223,6 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
             return null;
         }
 
-//        @Override
-//        public String target(final ServletRequest request) {
-//            if (request instanceof HttpServletRequest) {
-//                HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-//                return httpServletRequest.getRequestURI();
-//            }
-//            return null;
-//        }
-
         @Override
         public String getUrlPath(ServletRequest request) {
             if (request instanceof HttpServletRequest) {
