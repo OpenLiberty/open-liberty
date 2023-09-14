@@ -9,11 +9,17 @@
  *******************************************************************************/
 package io.openliberty.microprofile.reactive.messaging.fat.apps.kafkanack;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.Test;
+
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClient;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaWriter;
 
 import componenttest.app.FATServlet;
 import jakarta.inject.Inject;
@@ -25,6 +31,12 @@ public class KafkaNackTestServlet extends FATServlet {
 
     @Inject
     private KafkaNackTestDeliveryBean deliveryBean;
+
+    @Inject
+    private KafkaNackReceptionBean receptionBean;
+
+    @Inject
+    private KafkaTestClient kafkaTestClient;
 
     /**
      * Check that if a message sent to Kafka is not sent, it is nacked
@@ -40,5 +52,28 @@ public class KafkaNackTestServlet extends FATServlet {
         } catch (Exception e) {
             throw new AssertionError("Undelivered message was not nacked", e);
         }
+    }
+
+    // Test is driven manually by test class
+    public void testIncomingMessageCanBeNacked() throws Exception {
+
+        // Send messages to the topic
+        try (KafkaWriter<String, String> writer = kafkaTestClient.writerFor(KafkaNackReceptionBean.CHANNEL_IN)) {
+            for (int i = 1; i <= 5; i++) {
+                writer.sendMessage("test message " + i);
+            }
+        }
+
+        // Wait for them to arrive
+        List<Message<String>> messages = receptionBean.assertReceivedMessages(5, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
+
+        // Nack some of the received messages
+        messages.get(0).ack();
+        messages.get(1).ack();
+        messages.get(2).nack(new KafkaNackTestException("Test exception 1"));
+        messages.get(3).nack(new KafkaNackTestException("Test exception 2"));
+        messages.get(4).ack();
+
+        // Further asserts in test class
     }
 }
