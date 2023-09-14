@@ -842,12 +842,40 @@ goto:eof
   )
 goto:eof
 
-@REM Find the first place java.exe is found in the path.  If java is not found,
-@REM just set the command to "java", which will ultimately fail when executed.
+@REM Find the first place java.exe is found in the path.  If java is not found, just set
+@REM the command to "java", which will ultimately fail when executed. Since it's not in the path.
+@REM It would have been simpler to use the where command, but it does not work for directories in
+@REM the path containing spaces:     for /f "delims=" %%i in ('where java.exe 2^>nul') do (
 :findJavaInPath
-set JAVA_CMD_QUOTED="java"
-for /f "delims=" %%i in ('where java.exe 2^>nul') do (
-    set JAVA_CMD_QUOTED="%%~dpni"
-    goto :eof
-)
+
+  call :findInPath "java.exe"
+  if defined foundInPath (
+    set JAVA_CMD_QUOTED="!foundInPath!\java"
+  ) else (
+    set JAVA_CMD_QUOTED="java"
+    goto:eof
+  )
+
+  @REM Set JAVA_HOME.  Loop is single iteration for removing "java" from the path.
+  for %%A in (!JAVA_CMD_QUOTED!) do (
+    pushd "%CD%" 
+    cd "%%~dpA.."
+    set JAVA_HOME=!CD!
+    popd
+  )
 goto:eof
+
+@REM Pass in an executable to find in the PATH.  If the executable is found
+@REM the foundInPath variable will be set to the first directory in which it is found.
+:findInPath
+  set foundInPath= 
+    
+  @REM Split the PATH variable by semicolons and iterate through directories
+  for %%i in (!PATH!) do (
+      
+    if exist "%%~i\%1" (
+      set foundInPath=%%~i
+      goto :eof
+    )
+  )
+goto eof

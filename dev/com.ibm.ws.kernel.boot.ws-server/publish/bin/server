@@ -799,6 +799,7 @@ findRealPath() {
 
   # If neither of those methods work, try a more basic approach
   if [ -z "${resolvedPath}" ]; then 
+    symLinkCount=0
 
     # Loop ends when resolvedPath does not contain any symlinks  
     while true; do
@@ -830,6 +831,7 @@ findRealPath() {
 
         if [ -L "$resolvedPath" ]; then
           pathContainsSymLink="true"
+          symLinkCount=$((symLinkCount + 1))
 		  
           # Get the target of the symbolic link
           target=$(ls -l "$resolvedPath" | awk '{print $NF}')
@@ -862,7 +864,13 @@ findRealPath() {
         fi
       done  # end for
 
-      if [ "$pathContainsSymLink" = "false" ]; then
+      if [ $pathContainsSymLink = "false" ]; then
+        break
+      fi
+
+      if [ $symLinkCount -gt 100  ]; then
+        issueMessage --message:warning.tooManySymbolicLinks "$1"
+        resolvedPath=""
         break
       fi
 

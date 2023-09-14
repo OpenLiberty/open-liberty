@@ -438,6 +438,10 @@ warning.unableToPackageLooseConfigFileMissingPath=CWWKE0095W: The server cannot 
 warning.unableToPackageLooseConfigFileMissingPath.explanation=The specified loose configuration application XML file contains invalid information about the location of the files. For example, it might specify a directory that cannot be found. Paths in this XML file should be relative to the configuration directory of the server. The archive represented by this file will not be included in the packaged server output.
 warning.unableToPackageLooseConfigFileMissingPath.useraction=Modify the paths in the loose configuration application XML file to point to the correct location that contains the application files. 
 
+warning.tooManySymbolicLinks=CWWKE0096W: Too many symbolic links encountered when trying to resolve a path ( {0} ).
+warning.tooManySymbolicLinks.explanation=Symbolic links are shortcuts that point to other files or directories. This error occurs when the system encounters too many symbolic links in a chain, making it unable to resolve the path.
+warning.tooManySymbolicLinks.useraction=To resolve this issue, consider checking the symbolic links in the path, and ensure that they do not create circular references. You may also want to use the 'readlink' command to inspect individual links in the chain.
+
 warn.packageRuntime.include.unknownOption=CWWKE0099W: Unable to use option --include={0}, will use --include=wlp instead.
 warn.packageRuntime.include.unknownOption.explanation=The option was ignored because it was not recognized.
 warn.packageRuntime.include.unknownOption.useraction=Retry the command using valid options. Try using --help for a list of valid options.
