@@ -72,6 +72,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http2.HttpConversionUtil;
 
 /**
  * Connection link object that the HTTP dispatcher provides to CHFW
@@ -223,15 +224,17 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
             //register what the close will do, let the close be handled by
             //the persist handler
+            // TODO: We should check this would probably be best to set either on ready but not on close
+            // since this can be called multiple times for persistent connections
 
-            ChannelFuture future = nettyContext.channel().closeFuture();
-            future.addListener(new ChannelFutureListener() {
-                @Override
-                public void operationComplete(ChannelFuture future) throws Exception {
-                    isc.destroy();
-                }
+            // ChannelFuture future = nettyContext.channel().closeFuture();
+            // future.addListener(new ChannelFutureListener() {
+            //     @Override
+            //     public void operationComplete(ChannelFuture future) throws Exception {
+            //         isc.destroy();
+            //     }
 
-            });
+            // });
 
 //
 //            ChannelFuture closeFuture;
@@ -239,6 +242,19 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 //                MSP.log("Persist clear");
 //                isc.clear();
 //            }
+            if (nettyRequest.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Doing nothing on close since Netty request is HTTP2 enabled. Codec will handle shutdown");
+                }
+                return;
+            }
+
+            // TODO Check if we need to do this check
+            ChannelFuture closeFuture;
+            // if (response.isPersistent()) {
+            //     MSP.log("Persist clear");
+            //     isc.clear();
+            // }
 
 //            if (response.isPersistent()) {
 //                response.setHeader(HttpHeaderKeys.HDR_CONNECTION.getName(), "keep-alive");
@@ -1289,7 +1305,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             Tr.event(tc, "Finishing conn; " + finalSc + " error=" + e);
         }
 
-        if (!usingNetty) {
+//        if (!usingNetty) {
 
             if (vc != null) { // This is added for Upgrade Servlet3.1 WebConnection
                 String webconn = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
@@ -1315,7 +1331,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                     WebConnCanCloseSync.unlock();
                 }
             }
-        }
+//        }
 
         close(getVirtualConnection(), error);
     }
@@ -1525,16 +1541,15 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             if (checkEnabledOnly) {
                 return isc.isHttp2Enabled();
             }
-        }
-        //Check headers for HTTP/2 upgrade header
-        else {
-            HttpInboundLink link = isc.getLink();
-            if (link != null) {
-                return link.isHTTP2UpgradeRequest(headers);
+            //Check headers for HTTP/2 upgrade header
+            else {
+                HttpInboundLink link = isc.getLink();
+                if (link != null) {
+                    return link.isHTTP2UpgradeRequest(headers);
+                }
             }
         }
         return false;
-
     }
 
     /**

@@ -18,6 +18,10 @@ import com.ibm.ws.http.netty.MSP;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http2.Http2Connection;
+import io.netty.handler.codec.http2.Http2Exception;
+import io.netty.handler.codec.http2.Http2Exception.StreamException;
+import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 
 /**
  *
@@ -35,7 +39,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
 
     @Override
     protected void channelRead0(ChannelHandlerContext context, FullHttpRequest request) throws Exception {
-
         newRequest(context, request);
 
     }
@@ -44,8 +47,15 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
         MSP.log("Closing context because of: ");
         cause.printStackTrace();
-
-        //context.close();
+        if (cause instanceof Http2Exception.StreamException) {
+            System.out.println("Got a HTTP2 stream exception!! Need to close the stream");
+            StreamException c = (Http2Exception.StreamException) cause;
+            HttpToHttp2ConnectionHandler handler = context.pipeline().get(HttpToHttp2ConnectionHandler.class);
+            Http2Connection connection = handler.connection();
+            connection.stream(c.streamId()).close();
+            return;
+        }
+        context.close();
     }
 
     public void newRequest(ChannelHandlerContext context, FullHttpRequest request) {
