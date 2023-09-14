@@ -13,8 +13,10 @@
 package componenttest.containers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -38,8 +40,16 @@ public class ArtifactoryImageNameSubstitutorTest {
 
     private static DockerClientFactory dockerClientFactory;
 
+    private static final File TC_CONFIG_FILE = new File(System.getProperty("user.home"), ".testcontainers.properties");
+
     @BeforeClass
     public static void setup() throws Exception {
+        //Delete ~./testcontainer.properties to avoid test failures due to out dated properties
+        if (TC_CONFIG_FILE.exists() && TC_CONFIG_FILE.isFile()) {
+            assertTrue(TC_CONFIG_FILE.delete());
+        }
+
+        //Set a registry system property for mock Artifactory usage
         System.setProperty("fat.test.artifactory.docker.server", TESTREGISTRY);
 
         //Generate the singleton ArtifactoryRegistry class
