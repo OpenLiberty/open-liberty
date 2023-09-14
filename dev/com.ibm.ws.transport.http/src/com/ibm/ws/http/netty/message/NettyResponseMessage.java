@@ -44,10 +44,12 @@ import com.ibm.wsspi.http.channel.values.TransferEncodingValues;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http2.HttpConversionUtil;
 
 /**
  *
@@ -62,13 +64,19 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     HttpInboundServiceContext context;
     HttpChannelConfig config;
 
-    public NettyResponseMessage(HttpResponse response, HttpInboundServiceContext isc) {
+    public NettyResponseMessage(HttpResponse response, HttpInboundServiceContext isc, HttpRequest request) {
         Objects.requireNonNull(isc);
         Objects.requireNonNull(response);
 
         this.context = isc;
         this.nettyResponse = response;
         this.headers = nettyResponse.headers();
+
+        if (request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+            String streamId = request.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
+            System.out.println("Got an HTTP2 request, setting stream ID of response to: " + streamId);
+            nettyResponse.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), streamId);
+        }
 
         if (isc instanceof HttpInboundServiceContextImpl) {
             incoming(((HttpInboundServiceContextImpl) isc).isInboundConnection());

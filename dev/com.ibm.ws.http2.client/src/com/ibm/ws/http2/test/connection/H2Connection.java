@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -836,11 +836,11 @@ public class H2Connection {
                 headerNamesAndValues = responseHeaders.split("<CR>\n<LF>");
                 boolean switchingProtocols = false, upgradeH2c = false, connectionUpgrade = false;
                 for (String header_value : headerNamesAndValues) {
-                    if (header_value.equals("HTTP/1.1 101 Switching Protocols")) {
+                    if (header_value.equalsIgnoreCase("HTTP/1.1 101 Switching Protocols")) {
                         switchingProtocols = true;
-                    } else if (header_value.equals("Upgrade: h2c")) {
+                    } else if (header_value.equalsIgnoreCase("Upgrade: h2c")) {
                         upgradeH2c = true;
-                    } else if (header_value.equals("Connection: Upgrade")) {
+                    } else if (header_value.equalsIgnoreCase("Connection: Upgrade")) {
                         connectionUpgrade = true;
                     }
                 }

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -124,8 +124,8 @@ public class Http2Client {
     }
 
     public void sendUpgradeHeader(String requestUri, HTTPUtils.HTTPMethod httpMethod, String body, FrameSettingsClient settingsFrame) {
-        String h1_upgradeHeader = new String(httpMethod.name() + " " + requestUri + " HTTP/1.1 \r\n" + hostName + ":" + httpDefaultPort
-                                             + "\r\nConnection: Upgrade, HTTP2-Settings\r\nUpgrade: h2c\r\nHTTP2-Settings:" + settingsFrame.getBase64UrlPayload() + "\r\n\r\n");
+        String h1_upgradeHeader = new String(httpMethod.name() + " " + requestUri + " HTTP/1.1 \r\n" + "Host: " + hostName + ":" + httpDefaultPort
+                                             + "\r\nConnection: Upgrade, HTTP2-Settings\r\nUpgrade: h2c\r\nHTTP2-Settings: " + settingsFrame.getBase64UrlPayload() + "\r\n\r\n");
 
         if (body != null && !body.isEmpty())
             h1_upgradeHeader += body;
@@ -285,7 +285,7 @@ public class Http2Client {
     /**
      * Send bytes iff the server preface has been received.
      *
-     * @param         byte[]
+     * @param byte[]
      * @param timeout -1 if the frame won't be sent.
      * @return
      * @throws Exception
