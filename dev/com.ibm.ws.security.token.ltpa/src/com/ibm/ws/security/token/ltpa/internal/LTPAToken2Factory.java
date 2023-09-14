@@ -118,7 +118,7 @@ public class LTPAToken2Factory implements TokenFactory {
                 LTPAPrivateKey ltpaPrivateKeyForValidation = ltpaKeyInfo.getLTPAPrivateKey();
                 LTPAPublicKey ltpaPublicKeyForValidation = ltpaKeyInfo.getLTPAPublicKey();
                 if (ltpaKeyInfo.isNotUseAfterDate()) {
-                    validationKeys.remove(ltpaKeyInfo);
+                    validationKeysIterator.remove();
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "validateTokenBytes with validationKeys: " + ltpaKeyInfo);
