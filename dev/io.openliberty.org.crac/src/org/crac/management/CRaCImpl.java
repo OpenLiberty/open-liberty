@@ -34,9 +34,10 @@ import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 class CRaCImpl implements CRaCMXBean {
+    static final CRaCImpl IMPL = new CRaCImpl();
     private final AtomicLong restoreTime = new AtomicLong(-1);
 
-    CRaCImpl() {
+    private CRaCImpl() {
     }
 
     @Override

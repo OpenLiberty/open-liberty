@@ -61,7 +61,7 @@ public interface CRaCMXBean extends PlatformManagedObject {
      */
     public static CRaCMXBean getCRaCMXBean() {
         if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE) {
-            return new CRaCImpl();
+            return CRaCImpl.IMPL;
         }
         return new NoImpl();
     }
