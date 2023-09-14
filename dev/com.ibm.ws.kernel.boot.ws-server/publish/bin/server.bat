@@ -534,8 +534,7 @@ goto:eof
   if NOT defined JAVA_HOME (
     if NOT defined JRE_HOME (
       if NOT defined WLP_DEFAULT_JAVA_HOME (
-        @REM Use whatever java is on the path
-        set JAVA_CMD_QUOTED="java"
+        call :findJavaInPath
       ) else (
         if "!WLP_DEFAULT_JAVA_HOME:~0,17!" == "@WLP_INSTALL_DIR@" (
           set WLP_DEFAULT_JAVA_HOME=!WLP_INSTALL_DIR!!WLP_DEFAULT_JAVA_HOME:~17!
@@ -841,4 +840,14 @@ goto:eof
   ) else (
     set RC=0
   )
+goto:eof
+
+@REM Find the first place java.exe is found in the path.  If java is not found,
+@REM just set the command to "java", which will ultimately fail when executed.
+:findJavaInPath
+set JAVA_CMD_QUOTED="java"
+for /f "delims=" %%i in ('where java.exe 2^>nul') do (
+    set JAVA_CMD_QUOTED="%%~dpni"
+    goto :eof
+)
 goto:eof
