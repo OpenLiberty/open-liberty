@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012,2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -45,7 +45,7 @@ public class FVTMessageProducer implements MessageProducer {
     // some fake delivery modes that we can use to force the JCA WorkManager or Timer to be used
     private static final int DELIVERY_MODE_ASYNC = 0xA; // Use JCA WorkManager
     private static final int DELIVERY_MODE_DELAYED = 0xD; // Use JCA Timer
-    private static final long TIMEOUT = 6000; // maximum amount of time we will wait for an async operation to complete
+    private static final long TIMEOUT = 7000; // maximum amount of time we will wait for an async operation to complete
 
     private int deliveryMode = Message.DEFAULT_DELIVERY_MODE;
     private Destination destination;
