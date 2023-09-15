@@ -84,7 +84,9 @@ public class TestCRaCMXBeanServlet extends FATServlet {
 
     @Test
     public void testGetUptimeSinceRestore(HttpServletRequest request, HttpServletResponse resp) throws Exception {
+        Thread.sleep(100);
         long testUptimeSinceRestore = crac.getUptimeSinceRestore();
+        Thread.sleep(100);
         assertTrue("Wrong uptimeSinceRestore: " + testUptimeSinceRestore, testUptimeSinceRestore <= (System.currentTimeMillis() - crac.getRestoreTime()));
         assertTrue("Wrong uptimeSinceRestore: " + testUptimeSinceRestore, testUptimeSinceRestore > afterRestoreUptimeSinceRestore.get());
     }
