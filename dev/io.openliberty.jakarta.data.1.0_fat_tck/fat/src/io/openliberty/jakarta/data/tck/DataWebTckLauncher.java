@@ -24,15 +24,13 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
 
-@Mode(TestMode.FULL)
+//@Mode(TestMode.FULL) TODO switch to full mode after feature is beta
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
 public class DataWebTckLauncher {
