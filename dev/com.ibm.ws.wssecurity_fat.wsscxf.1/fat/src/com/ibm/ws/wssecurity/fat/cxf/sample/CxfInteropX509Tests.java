@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -125,10 +125,10 @@ public class CxfInteropX509Tests {
         Log.info(thisClass, thisMethod, "JDK Vendor Name is: " + vendorName);
 
         ibmJDK = true;
-        //RTC 290711
-        //RTC 291296 handles the case with java runtime OSX_12_MONTEREY_IBMJDK8 which is hybrid jdk where
-        //Security, ORB and XML components are IBM Java and JVM, JIT, most class libraries are Oracle Java
-        if ((JavaInfo.isSystemClassAvailable("com.ibm.security.auth.module.Krb5LoginModule")) & (vendorName.contains("IBM"))) {
+        
+        //issue 30353
+        JavaInfo info = JavaInfo.forServer(server);
+        if ((info.majorVersion() == 8) && (vendorName.contains("IBM"))) {
             Log.info(thisClass, thisMethod, "Using an IBM JDK");
         } else {
             Log.info(thisClass, thisMethod, "Using NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition/OSX_12_MONTEREY_IBMJDK8 - this test should not run!");
