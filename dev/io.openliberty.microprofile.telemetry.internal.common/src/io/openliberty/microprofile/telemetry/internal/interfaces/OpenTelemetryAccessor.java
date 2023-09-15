@@ -16,10 +16,13 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfo;
-import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfoFactory;
+import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfoImpl;
+import io.openliberty.microprofile.telemetry.internal.common.cdi.OpenTelemetryProducer;
+import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
+import io.optenliberty.microprofile.telemetry.internal.common.helpers.OSGIHelpers;
 
 public class OpenTelemetryAccessor {
 
@@ -33,7 +36,12 @@ public class OpenTelemetryAccessor {
      *         is disabled or the application has shut down.
      */
     public static OpenTelemetryInfo getOpenTelemetryInfo() {
-        return OpenTelemetryInfoFactory.getOpenTelemetryInfo();
+        try {
+            OpenTelemetryInfoFactory factory = OSGIHelpers.getService(OpenTelemetryInfoFactory.class, OpenTelemetryProducer.class);
+            return factory.getOpenTelemetryInfo();
+        } catch (Exception e) {
+            return new OpenTelemetryInfoImpl(false, OpenTelemetry.noop(), "unknown");
+        }
     }
 
     /**

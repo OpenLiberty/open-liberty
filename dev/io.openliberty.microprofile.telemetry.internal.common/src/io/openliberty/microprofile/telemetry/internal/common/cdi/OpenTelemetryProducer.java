@@ -18,11 +18,13 @@ import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfo;
-import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfoFactory;
+import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfoImpl;
+import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryInfoFactory;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
+import io.optenliberty.microprofile.telemetry.internal.common.helpers.OSGIHelpers;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 
@@ -43,7 +45,12 @@ public class OpenTelemetryProducer {
     @ApplicationScoped
     @Produces
     public OpenTelemetryInfo getOpenTelemetryInfo() {
-        return OpenTelemetryInfoFactory.getOpenTelemetryInfo(metaData);
+        try {
+            OpenTelemetryInfoFactory factory = OSGIHelpers.getService(OpenTelemetryInfoFactory.class, OpenTelemetryProducer.class);
+            return factory.getOpenTelemetryInfo(metaData);
+        } catch (Exception e) {
+            return new OpenTelemetryInfoImpl(false, OpenTelemetry.noop(), "unknown");
+        }
     }
 
     /**
@@ -54,7 +61,7 @@ public class OpenTelemetryProducer {
      */
     @Produces
     public Tracer getTracer() {
-        return OpenTelemetryInfoFactory.getOpenTelemetryInfo(metaData).getTracer();
+        return getOpenTelemetryInfo().getTracer();
     }
 
     /**

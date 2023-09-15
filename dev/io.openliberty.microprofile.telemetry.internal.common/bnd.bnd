@@ -24,7 +24,7 @@ javac.target: 11
 #-cdiannotations:
 
 -dsannotations: \
-  io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfoFactory,\
+  io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfoFactoryImpl,\
   io.openliberty.microprofile.telemetry.internal.common.rest.TelemetryClientAsyncTaskWrapper
 
 -dsannotations-inherit: true
@@ -59,6 +59,8 @@ Export-Package: \
 	io.openliberty.microprofile.telemetry.internal.interfaces;version='1.0',\
 	io.openliberty.microprofile.telemetry.internal.common.rest;version='1.0';thread-context=true,\
 	io.openliberty.microprofile.telemetry.internal.common;version='1.0'
+	
+Private-Package: io.optenliberty.microprofile.telemetry.internal.common.helpers
 
 -buildpath: \
 	io.openliberty.jakarta.restfulWS.3.1;version=latest,\
