@@ -1532,7 +1532,11 @@ restoreServer()
       issueMessage --message:error.checkpoint.restore.failed.no.recovery "${X_LOG_DIR}/checkpoint/restore.log"
     else
       issueMessage --message:info.checkpoint.restore.failed "${X_LOG_DIR}/checkpoint/restore.log"
-    fi    
+    fi
+
+    if [ -f "${X_LOG_DIR}/checkpoint/restore.log" ]; then
+      cat "${X_LOG_DIR}/checkpoint/restore.log"
+    fi
   fi
   return $rc
 }

@@ -174,10 +174,13 @@ public class CheckpointFailTest {
         testSystemCheckpointFailed("SYSTEM_CHECKPOINT_FAILED", true, 74, ".*CWWKE0962E.*TESTING CHECKPOINT.LOG.*"),
         testUnknownCheckpointFailed("UNKNOWN_CHECKPOINT", true, 75),
         // Note that 1 is by criu when it fails to restore
-        testCriuRestoreFailed("SYSTEM_RESTORE_FAILED", false, 1, ".*CWWKE0964E: Restoring the checkpoint server process failed.*The server did not launch.*"),
+        testCriuRestoreFailed("SYSTEM_RESTORE_FAILED", false, 1, //
+                              ".*CWWKE0964E: Restoring the checkpoint server process failed.*The server did not launch.*", //
+                              ".*No IDS for root task.*"),
         testCriuRestoreFailedWithRecover("SYSTEM_RESTORE_FAILED", false, 0, // expect final RC of success from auto-recovery
                                          ".*CWWKE0961I: Restoring the checkpoint server process failed.*Launching the server without using the checkpoint image.*"
-                                                                            + "Server.*started with process ID.*"),
+                                                                            + "Server.*started with process ID.*", //
+                                         ".*No IDS for root task.*"),
         testSystemRestoreFailed("SYSTEM_RESTORE_FAILED", false, 80),
         testJvmRestoreFailed("JVM_RESTORE_FAILED", false, 81),
         testLibertyRestoreFailed("LIBERTY_RESTORE_FAILED", false, 82),
