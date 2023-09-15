@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -42,8 +42,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 public class JASPITestBase {
@@ -220,10 +219,10 @@ public class JASPITestBase {
         verifyServerUpdated(server);
         assertNotNull("The JASPI user feature did not report it was ready",
                       server.waitForStringInLogUsingMark(MSG_JASPI_PROVIDER_ACTIVATED));
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             assertNotNull("The feature manager did not report the JASPI provider is included in features.",
                           server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-3.0"));
-        } else if (JakartaEE9Action.isActive()) {
+        } else if (JakartaEEAction.isEE9Active()) {
             assertNotNull("The feature manager did not report the JASPI provider is included in features.",
                           server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-2.0"));
         } else {
@@ -253,10 +252,10 @@ public class JASPITestBase {
         verifyServerStarted(server);
         assertNotNull("The JASPI user feature did not report it was ready",
                       server.waitForStringInLogUsingMark(MSG_JASPI_PROVIDER_ACTIVATED));
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             assertNotNull("The feature manager did not report the JASPI provider is included in features.",
                           server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-3.0"));
-        } else if (JakartaEE9Action.isActive()) {
+        } else if (JakartaEEAction.isEE9Active()) {
             assertNotNull("The feature manager did not report the JASPI provider is included in features.",
                           server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-2.0"));
         } else {

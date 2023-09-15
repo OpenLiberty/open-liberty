@@ -37,7 +37,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServerWrapper;
 
 /**
@@ -106,7 +106,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
                  * Here are some errors that show up on the repeat for JakartaEE9. When running EE9 repeat alone, these errors do
                  * not propagate, so I think there are some issues with the test setup on repeat.
                  */
-                if (JakartaEE9Action.isActive()) {
+                if (JakartaEEAction.isEE9Active()) {
                     genericTestServer.addIgnoredServerException(SocialMessageConstants.CWWKS5451E_BADTOKEN_INFO);
                     genericTestServer.addIgnoredServerException(SocialMessageConstants.CWWKS5476E_ERROR_MAKING_REQUEST);
                     genericTestServer.addIgnoredServerException(SocialMessageConstants.CWWKS5447E_CAN_NOT_REDIRECT);

@@ -22,8 +22,7 @@ import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -42,7 +41,7 @@ public abstract class BasicValidation_Common extends FATServletClient {
         WebArchive beanvalidation_10War = ShrinkHelper.buildDefaultApp("beanvalidation_10.war", "beanvalidation10.*");
         WebArchive beanvalidation_11War = ShrinkHelper.buildDefaultApp("beanvalidation_11.war", "beanvalidation11.*");
 
-        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             beanvalidation_10War.move("/WEB-INF/constraints-house_EE9.xml", "/WEB-INF/constraints-house.xml");
             beanvalidation_11War.move("/WEB-INF/constraints-house_EE9.xml", "/WEB-INF/constraints-house.xml");
         }

@@ -34,7 +34,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -214,7 +214,7 @@ public class JSF22AppConfigPopTests {
      */
     @Test
     public void testAppPopConfiguredPhaseListener() throws Exception {
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             // Drive a request to a Facelet to verify the PhaseListener.
             this.verifyResponse(contextRoot, "simpleView.jsf", jsfTestServer2, "Hello from simpleView.xhtml!");
         } else {
@@ -232,7 +232,7 @@ public class JSF22AppConfigPopTests {
      */
     @Test
     public void testAppPopConfiguredSystemEventListener() throws Exception {
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             // Drive a request to a Facelet to verify the SystemEventListener.
             this.verifyResponse(contextRoot, "simpleView.jsf", jsfTestServer2, "Hello from simpleView.xhtml!");
         } else {

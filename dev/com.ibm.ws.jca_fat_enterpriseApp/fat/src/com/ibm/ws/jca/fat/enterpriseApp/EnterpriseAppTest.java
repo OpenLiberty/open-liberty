@@ -29,8 +29,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -66,8 +65,8 @@ public class EnterpriseAppTest extends FATServletClient {
         ShrinkHelper.addDirectory(ear, "lib/LibertyFATTestFiles/enterpriseApp");
         ShrinkHelper.exportAppToServer(server, ear);
 
-        server.addEnvVar("PERMISSION", (JakartaEE9Action.isActive()
-                                        || JakartaEE10Action.isActive()) ? "jakarta.resource.spi.security.PasswordCredential" : "javax.resource.spi.security.PasswordCredential");
+        server.addEnvVar("PERMISSION",
+                         JakartaEEAction.isEE9OrLaterActive() ? "jakarta.resource.spi.security.PasswordCredential" : "javax.resource.spi.security.PasswordCredential");
         server.startServer();
     }
 

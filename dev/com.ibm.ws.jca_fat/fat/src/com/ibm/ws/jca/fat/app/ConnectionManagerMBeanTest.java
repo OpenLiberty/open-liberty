@@ -41,8 +41,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jca.fat.FATSuite;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -97,7 +96,7 @@ public class ConnectionManagerMBeanTest extends FATServletClient {
         ShrinkHelper.addDirectory(fvtapp_ear, "lib/LibertyFATTestFiles/fvtapp");
         ShrinkHelper.exportAppToServer(server, fvtapp_ear);
 
-        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             /*
              * Need to update the destination type of the topic to ensure it matches the Jakarta FQN.
              */

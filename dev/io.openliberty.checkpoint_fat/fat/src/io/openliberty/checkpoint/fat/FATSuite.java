@@ -39,8 +39,7 @@ import com.ibm.websphere.simplicity.config.Variable;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
@@ -174,15 +173,10 @@ public class FATSuite {
     }
 
     public static void transformApps(LibertyServer myServer, String... apps) {
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             for (String app : apps) {
                 Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + app);
-                JakartaEE9Action.transformApp(someArchive);
-            }
-        } else if (JakartaEE10Action.isActive()) {
-            for (String app : apps) {
-                Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + app);
-                JakartaEE10Action.transformApp(someArchive);
+                JakartaEEAction.transformApp(someArchive);
             }
         }
     }

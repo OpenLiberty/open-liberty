@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -32,6 +32,7 @@ import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
@@ -59,8 +60,10 @@ public class FATSuite {
      */
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction())
-                    .andWith(new JakartaEE9Action().addFeature("appSecurity-4.0").removeFeature("appSecurity-1.0").alwaysAddFeature("ldapRegistry-3.0")
-                             .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                    .andWith(new JakartaEE9Action().addFeature("appSecurity-4.0")
+                                    .removeFeature("appSecurity-1.0")
+                                    .alwaysAddFeature("ldapRegistry-3.0")
+                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
                     .andWith(new JakartaEE10Action().addFeature("appSecurity-5.0").removeFeature("appSecurity-1.0").alwaysAddFeature("ldapRegistry-3.0"));
 
     @BeforeClass
@@ -90,15 +93,10 @@ public class FATSuite {
      * @param appPaths The relative paths (from the root server directory) of the applications to transform.
      */
     public static void transformApps(LibertyServer myServer, String... appPaths) {
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             for (String appPath : appPaths) {
                 Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + appPath);
-                JakartaEE9Action.transformApp(someArchive);
-            }
-        } else if (JakartaEE10Action.isActive()) {
-            for (String appPath : appPaths) {
-                Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + appPath);
-                JakartaEE10Action.transformApp(someArchive);
+                JakartaEEAction.transformApp(someArchive);
             }
         }
     }

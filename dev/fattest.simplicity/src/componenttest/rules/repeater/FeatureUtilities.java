@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.jakartaee10.internal.tests;
+package componenttest.rules.repeater;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,12 +24,6 @@ import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.common.apiservices.LocalMachine;
-import componenttest.rules.repeater.EE6FeatureReplacementAction;
-import componenttest.rules.repeater.EE7FeatureReplacementAction;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE11Action;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatActions.EEVersion;
 

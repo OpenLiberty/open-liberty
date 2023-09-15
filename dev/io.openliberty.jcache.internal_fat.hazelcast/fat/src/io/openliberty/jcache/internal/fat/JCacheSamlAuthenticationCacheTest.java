@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -53,8 +53,7 @@ import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.jcache.internal.fat.docker.KeycloakContainer;
 
@@ -93,12 +92,9 @@ public class JCacheSamlAuthenticationCacheTest extends BaseTestCase {
         keycloak = new KeycloakContainer();
         keycloak.start();
 
-        if (JakartaEE9Action.isActive()) {
-            JakartaEE9Action.transformApp(Paths.get(server1.getServerRoot() + "/apps/samlclient.war"));
-            JakartaEE9Action.transformApp(Paths.get(server2.getServerRoot() + "/apps/samlclient.war"));
-        } else if (JakartaEE10Action.isActive()) {
-            JakartaEE10Action.transformApp(Paths.get(server1.getServerRoot() + "/apps/samlclient.war"));
-            JakartaEE10Action.transformApp(Paths.get(server2.getServerRoot() + "/apps/samlclient.war"));
+        if (JakartaEEAction.isEE9OrLaterActive()) {
+            JakartaEEAction.transformApp(Paths.get(server1.getServerRoot() + "/apps/samlclient.war"));
+            JakartaEEAction.transformApp(Paths.get(server2.getServerRoot() + "/apps/samlclient.war"));
         }
     }
 

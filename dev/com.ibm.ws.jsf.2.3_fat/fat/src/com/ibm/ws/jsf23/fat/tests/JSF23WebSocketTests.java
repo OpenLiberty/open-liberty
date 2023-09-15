@@ -37,7 +37,7 @@ import com.ibm.ws.jsf23.fat.selenium_util.WebPage;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -56,7 +56,7 @@ public class JSF23WebSocketTests {
     public static LibertyServer server;
 
     private String contextRoot = "WebSocket";
-    
+
     @Rule
     public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
                     .withAccessToHost(true)
@@ -100,7 +100,7 @@ public class JSF23WebSocketTests {
     public void testPushWebsocket() throws Exception {
         String url;
 
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             url = JSFUtils.createSeleniumURLString(server, contextRoot, "faces40/PushWebSocketTest.jsf");
         } else {
             url = JSFUtils.createSeleniumURLString(server, contextRoot, "PushWebSocketTest.jsf");
@@ -123,7 +123,7 @@ public class JSF23WebSocketTests {
 
         // Now click the button and get the resulted page.
         page.findElement(By.id("form1:sendButton")).click();
-        page.waitForCondition(driver -> page.isInPage("Message from the server via push!")); // Wait for text to appear rather than some default time 
+        page.waitForCondition(driver -> page.isInPage("Message from the server via push!")); // Wait for text to appear rather than some default time
         page.waitForCondition(driver -> page.isInPage("Called onclose listener"));
 
         // Log the page for debugging if necessary in the future.
@@ -150,7 +150,7 @@ public class JSF23WebSocketTests {
     public void testOpenAndCloseWebsocket() throws Exception {
         String url;
 
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             url = JSFUtils.createSeleniumURLString(server, contextRoot, "faces40/OpenCloseWebSocketTest.jsf");
         } else {
             url = JSFUtils.createSeleniumURLString(server, contextRoot, "OpenCloseWebSocketTest.jsf");

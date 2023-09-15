@@ -52,8 +52,7 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -80,7 +79,7 @@ public class JSF23CDIGeneralTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        isEE10 = JakartaEE10Action.isActive();
+        isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         ShrinkHelper.defaultDropinApp(server, "PostRenderViewEvent.war", "com.ibm.ws.jsf23.fat.postrenderview.events");
         ShrinkHelper.defaultDropinApp(server, "CDIManagedProperty.war", "com.ibm.ws.jsf23.fat.cdi.managedproperty");
@@ -317,7 +316,7 @@ public class JSF23CDIGeneralTests {
         assertTrue(page.isInPage("Message from HeaderValuesMap: [Mozilla"));
         assertTrue(page.isInPage("Request contextPath: /ELImplicitObjectsViaCDI"));
 
-        if (JakartaEE10Action.isActive() || JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             assertTrue(page.isInPage("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: jakarta.faces"));
             assertTrue(page.isInPage("Flow map object is null: Exception: WELD-001303: No active contexts "
                                      + "for scope type jakarta.faces.flow.FlowScoped")); // Expected exception
@@ -342,7 +341,7 @@ public class JSF23CDIGeneralTests {
     public void testELResolutionImplicitObjects() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
-            // Add a message to the header map. 
+            // Add a message to the header map.
             // Tested was changed to check for User-Agent in order to be consistent with Selenium Test above
             // webClient.addRequestHeader("headerMessage", "This is a test");
 
@@ -503,7 +502,7 @@ public class JSF23CDIGeneralTests {
         page.findElement(By.id("form1:submitButton")).click();
         driver.switchTo().alert().dismiss();
         page.waitForCondition(webDriver -> page.isInPage("Hello Earth"));
-        
+
         assertTrue(page.isInPage("Hello Earth"));
     }
 
@@ -567,7 +566,7 @@ public class JSF23CDIGeneralTests {
 
         page.findElement(By.id("form1:submitButton")).click();
         page.waitReqJs();
-        
+
         // Verify that the alert contains the expected message
         assertTrue(driver.switchTo().alert().getText().contains("Hello World"));
     }

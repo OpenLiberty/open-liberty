@@ -26,9 +26,9 @@ public class EERepeatActions {
     public static final String EE6_ID = EE6FeatureReplacementAction.ID;
     public static final String EE7_ID = EE7FeatureReplacementAction.ID;
     public static final String EE8_ID = EE8FeatureReplacementAction.ID;
-    public static final String EE9_ID = JakartaEE9Action.ID;
-    public static final String EE10_ID = JakartaEE10Action.ID;
-    public static final String EE11_ID = JakartaEE11Action.ID;
+    public static final String EE9_ID = JakartaEEAction.EE9_ACTION_ID;
+    public static final String EE10_ID = JakartaEEAction.EE10_ACTION_ID;
+    public static final String EE11_ID = JakartaEEAction.EE11_ACTION_ID;
 
     //The EE FeatureSets
     public static final FeatureSet EE6 = new FeatureSet(EE6_ID, EE6FeatureReplacementAction.EE6_FEATURE_SET, EEVersion.EE6);

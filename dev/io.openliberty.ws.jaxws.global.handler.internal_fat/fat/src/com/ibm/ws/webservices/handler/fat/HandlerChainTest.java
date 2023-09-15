@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,8 +46,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -84,9 +83,11 @@ public class HandlerChainTest {
     @BeforeClass
     public static void setup() throws Exception {
         // Alternate server to prevent deregistration of incomingObserver from next EE repetition
-        if(JakartaEE10Action.isActive()) {
+        if(JakartaEEAction.isEE11Active()) {
+            server = serverAlternate1;
+        } else if(JakartaEEAction.isEE10Active()) {
             server = serverAlternate2;
-        } else if(JakartaEE9Action.isActive()) {
+        } else if(JakartaEEAction.isEE9Active()) {
             server = serverAlternate1;
         } else if(EE8FeatureReplacementAction.isActive()) {
             server = serverAlternate2;

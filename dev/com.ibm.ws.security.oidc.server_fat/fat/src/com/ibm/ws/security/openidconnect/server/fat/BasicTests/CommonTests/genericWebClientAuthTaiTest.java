@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,7 +13,6 @@
 
 package com.ibm.ws.security.openidconnect.server.fat.BasicTests.CommonTests;
 
-import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.Test;
@@ -28,8 +27,7 @@ import com.meterware.httpunit.WebConversation;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -42,29 +40,31 @@ public class genericWebClientAuthTaiTest extends CommonTest {
         updatedTestSettings.setClientID("client01");
         updatedTestSettings.setClientSecret("secret");
         updatedTestSettings.setScope("openid profile");
-        updatedTestSettings.setAuthorizeEndpt(eSettings.assembleEndpoint(testOPServer.getHttpsString(), Constants.ENDPOINT_TYPE, testSettings.getConfigSample(), Constants.AUTHORIZE_ENDPOINT));
-        updatedTestSettings.setTokenEndpt(eSettings.assembleEndpoint(testOPServer.getHttpsString(), Constants.ENDPOINT_TYPE, testSettings.getConfigSample(), Constants.TOKEN_ENDPOINT));
+        updatedTestSettings.setAuthorizeEndpt(eSettings.assembleEndpoint(testOPServer.getHttpsString(), Constants.ENDPOINT_TYPE, testSettings.getConfigSample(),
+                                                                         Constants.AUTHORIZE_ENDPOINT));
+        updatedTestSettings.setTokenEndpt(eSettings.assembleEndpoint(testOPServer.getHttpsString(), Constants.ENDPOINT_TYPE, testSettings.getConfigSample(),
+                                                                     Constants.TOKEN_ENDPOINT));
         updatedTestSettings.setProtectedResource(eSettings.assembleProtectedResource(testOPServer.getHttpsString(), testSettings.getConfigTAI(), Constants.SNIFFING));
         return updatedTestSettings;
     }
 
     // Copy OidcTAI files into their proper locations in the build.image
     static protected void copyTaiFiles(String serverDir) throws Exception {
-    	LibertyServer aTestServer = LibertyServerFactory.getLibertyServer(serverDir);
-    	if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
-    		aTestServer.copyFileToLibertyInstallRoot("lib", "lib/com.ibm.ws.security.tai_2.0.jar");
-    		aTestServer.copyFileToLibertyInstallRoot("lib", "lib/com.ibm.ws.security.tai.sample_2.0.jar");
-    		aTestServer.copyFileToLibertyInstallRoot("lib/features", "lib/features/oidcTai-2.0.mf");
-    		aTestServer.copyFileToLibertyInstallRoot("lib/features", "lib/features/sampleTai-2.0.mf");
-    	} else {
-    		aTestServer.copyFileToLibertyInstallRoot("lib", "lib/com.ibm.ws.security.tai_1.0.jar");
-    		aTestServer.copyFileToLibertyInstallRoot("lib", "lib/com.ibm.ws.security.tai.sample_1.0.jar");
-    		aTestServer.copyFileToLibertyInstallRoot("lib/features", "lib/features/oidcTai-1.0.mf");
-    		aTestServer.copyFileToLibertyInstallRoot("lib/features", "lib/features/sampleTai-1.0.mf");
-    	}
-    	aTestServer.copyFileToLibertyInstallRoot("lib/features", "lib/features/securitylibertyinternals-1.0.mf");
-    	aTestServer.copyFileToLibertyInstallRoot("lib/features/l10n", "lib/features/l10n/customTai.properties");
-    	aTestServer.copyFileToLibertyInstallRoot("lib/features/l10n", "lib/features/l10n/sampleTai.properties");
+        LibertyServer aTestServer = LibertyServerFactory.getLibertyServer(serverDir);
+        if (JakartaEEAction.isEE9OrLaterActive()) {
+            aTestServer.copyFileToLibertyInstallRoot("lib", "lib/com.ibm.ws.security.tai_2.0.jar");
+            aTestServer.copyFileToLibertyInstallRoot("lib", "lib/com.ibm.ws.security.tai.sample_2.0.jar");
+            aTestServer.copyFileToLibertyInstallRoot("lib/features", "lib/features/oidcTai-2.0.mf");
+            aTestServer.copyFileToLibertyInstallRoot("lib/features", "lib/features/sampleTai-2.0.mf");
+        } else {
+            aTestServer.copyFileToLibertyInstallRoot("lib", "lib/com.ibm.ws.security.tai_1.0.jar");
+            aTestServer.copyFileToLibertyInstallRoot("lib", "lib/com.ibm.ws.security.tai.sample_1.0.jar");
+            aTestServer.copyFileToLibertyInstallRoot("lib/features", "lib/features/oidcTai-1.0.mf");
+            aTestServer.copyFileToLibertyInstallRoot("lib/features", "lib/features/sampleTai-1.0.mf");
+        }
+        aTestServer.copyFileToLibertyInstallRoot("lib/features", "lib/features/securitylibertyinternals-1.0.mf");
+        aTestServer.copyFileToLibertyInstallRoot("lib/features/l10n", "lib/features/l10n/customTai.properties");
+        aTestServer.copyFileToLibertyInstallRoot("lib/features/l10n", "lib/features/l10n/sampleTai.properties");
     }
 
     /**
@@ -77,7 +77,7 @@ public class genericWebClientAuthTaiTest extends CommonTest {
      * 2) It sets up scope and preAuthorizedScope to make the scopes, which are openid and profile, authorized automatically
      * (No consent form handling needed, neither)
      * It directly responds with access_token, and id_token if oidc, after we submit the client.jsp.
-     * 
+     *
      * Detail:
      * This test case performs a simple end-end OAuth flow, using httpunit to
      * simulate browser requests. In this scenario, a Web client invokes a front
@@ -93,7 +93,7 @@ public class genericWebClientAuthTaiTest extends CommonTest {
      * consent form from the authorization server.
      * The test verifies that the Oauth code flow, using the authorization grant type of
      * "authorization code" works correctly for a web client.
-     * 
+     *
      */
     @Mode(TestMode.LITE)
     // not needed
@@ -109,11 +109,12 @@ public class genericWebClientAuthTaiTest extends CommonTest {
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
 
         // Check if we got authorization code
-        expectations = vData.addExpectation(expectations, Constants.SUBMIT_TO_AUTH_SERVER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not receive authorization code", null,
-                Constants.RECV_AUTH_CODE);
+        expectations = vData.addExpectation(expectations, Constants.SUBMIT_TO_AUTH_SERVER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not receive authorization code",
+                                            null,
+                                            Constants.RECV_AUTH_CODE);
         // Check if we got the access token
         expectations = vData.addExpectation(expectations, Constants.SUBMIT_TO_AUTH_SERVER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not receive access token", null,
-                Constants.RECV_FROM_TOKEN_ENDPOINT);
+                                            Constants.RECV_FROM_TOKEN_ENDPOINT);
         String providerType = updatedTestSettings.getProviderType();
         // add generic id_token expectations
         expectations = validationTools.addDefaultIDTokenExpectations(expectations, _testName, providerType, Constants.SUBMIT_TO_AUTH_SERVER, updatedTestSettings);
@@ -146,11 +147,12 @@ public class genericWebClientAuthTaiTest extends CommonTest {
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
 
         // Check if we got authorization code
-        expectations = vData.addExpectation(expectations, Constants.SUBMIT_TO_AUTH_SERVER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not receive authorization code", null,
-                Constants.RECV_AUTH_CODE);
+        expectations = vData.addExpectation(expectations, Constants.SUBMIT_TO_AUTH_SERVER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not receive authorization code",
+                                            null,
+                                            Constants.RECV_AUTH_CODE);
         // Check if we got the access token
         expectations = vData.addExpectation(expectations, Constants.SUBMIT_TO_AUTH_SERVER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not receive access token", null,
-                Constants.RECV_FROM_TOKEN_ENDPOINT);
+                                            Constants.RECV_FROM_TOKEN_ENDPOINT);
         String providerType = updatedTestSettings.getProviderType();
         // add generic id_token expectations
 
@@ -159,16 +161,16 @@ public class genericWebClientAuthTaiTest extends CommonTest {
         if (providerType.equals(Constants.OIDC_OP)) { // OAuth2 does not contain id_token
             // let's check the externalClaimNames in the payload of id_token
             expectations = vData.addExpectation(expectations, Constants.SUBMIT_TO_AUTH_SERVER, Constants.RESPONSE_ID_TOKEN,
-                    Constants.STRING_MATCHES, "Did not get claim username as user1", "username", "user1");
-            //email="bluemix54321@austin.ibm.com" 
+                                                Constants.STRING_MATCHES, "Did not get claim username as user1", "username", "user1");
+            //email="bluemix54321@austin.ibm.com"
             expectations = vData.addExpectation(expectations, Constants.SUBMIT_TO_AUTH_SERVER, Constants.RESPONSE_ID_TOKEN,
-                    Constants.STRING_MATCHES, "Did not get claim email as bluemix54321@austin.ibm.com", "email", "bluemix54321@austin.ibm.com");
+                                                Constants.STRING_MATCHES, "Did not get claim email as bluemix54321@austin.ibm.com", "email", "bluemix54321@austin.ibm.com");
             //site="faked.yahoo.com"
             expectations = vData.addExpectation(expectations, Constants.SUBMIT_TO_AUTH_SERVER, Constants.RESPONSE_ID_TOKEN,
-                    Constants.STRING_MATCHES, "Did not get claim site as faked.yahoo.com", "site", "faked.yahoo.com");
+                                                Constants.STRING_MATCHES, "Did not get claim site as faked.yahoo.com", "site", "faked.yahoo.com");
             //tenant="IDoNotKnow"
             expectations = vData.addExpectation(expectations, Constants.SUBMIT_TO_AUTH_SERVER, Constants.RESPONSE_ID_TOKEN,
-                    Constants.STRING_MATCHES, "Did not get claim tenant as IDoNotKnow", "tenant", "IDoNotKnow");
+                                                Constants.STRING_MATCHES, "Did not get claim tenant as IDoNotKnow", "tenant", "IDoNotKnow");
         }
         // add generic response expectations
         expectations = validationTools.addDefaultGeneralResponseExpectations(expectations, _testName, providerType, Constants.SUBMIT_TO_AUTH_SERVER, updatedTestSettings);

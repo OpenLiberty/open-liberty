@@ -45,7 +45,7 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -178,7 +178,7 @@ public class RestMetricsTest {
         // Execute delete method once.
         runDeleteMethod(++method_Index);
 
-        ArrayList<String> metricsList = getMetricsStrings(200, JakartaEE10Action.isActive() ? METRICS5_URL_STRING : METRICS_URL_STRING, false);
+        ArrayList<String> metricsList = getMetricsStrings(200, JakartaEEAction.isEE10OrLaterActive() ? METRICS5_URL_STRING : METRICS_URL_STRING, false);
 
         //Confirm the metrics information is available.
         for (int i = 0; i <= method_Index; i++) {
@@ -197,7 +197,7 @@ public class RestMetricsTest {
         // Expect a 200 when metrics from other methods have already been collected. However, if this test is run first or by itself
         // no metrics should exist and a 404 would be expected.
         boolean allow404 = true;
-        ArrayList<String> metricsList = getMetricsStrings(200, JakartaEE10Action.isActive() ? METRICS5_URL_STRING : METRICS_URL_STRING, allow404);
+        ArrayList<String> metricsList = getMetricsStrings(200, JakartaEEAction.isEE10OrLaterActive() ? METRICS5_URL_STRING : METRICS_URL_STRING, allow404);
 
         if ((metricsList != null) && (metricsList.contains("abortTest"))) {
             fail("The /restmetrics/rest/restmetrics/abortTest method should not have run following the ContainerRequestFilter abort so no metrics information should be collected." + metricsList.toString());
@@ -214,7 +214,7 @@ public class RestMetricsTest {
 
         runGetCheckedExceptionMethod(CHECKED_METHOD_INDEX, 500, "/restmetrics/rest/restmetrics/checked/unmappedChecked", "Unmapped Checked");
 
-        ArrayList<String> metricsList = getMetricsStrings(200, JakartaEE10Action.isActive() ? METRICS5_URL_STRING : METRICS_URL_STRING, false);
+        ArrayList<String> metricsList = getMetricsStrings(200, JakartaEEAction.isEE10OrLaterActive() ? METRICS5_URL_STRING : METRICS_URL_STRING, false);
 
         // Confirm the metrics data
         responseTimes[CHECKED_METHOD_INDEX] = checkMetrics(metricsList, CHECKED_METHOD_INDEX);
@@ -232,7 +232,7 @@ public class RestMetricsTest {
         runGetUncheckedExceptionMethod(UNCHECKED_METHOD_INDEX, 500, "/restmetrics/rest/restmetrics/unchecked/unmappedUnchecked", "Unmapped Unchecked");
 
 
-        ArrayList<String> metricsList = getMetricsStrings(200, JakartaEE10Action.isActive() ? METRICS5_URL_STRING : METRICS_URL_STRING, false);
+        ArrayList<String> metricsList = getMetricsStrings(200, JakartaEEAction.isEE10OrLaterActive() ? METRICS5_URL_STRING : METRICS_URL_STRING, false);
 
         // Confirm the metrics data
         responseTimes[UNCHECKED_METHOD_INDEX] = checkMetrics(metricsList, UNCHECKED_METHOD_INDEX);
@@ -704,13 +704,13 @@ public class RestMetricsTest {
         for (String line : lines) {
 
             if ((line.contains(METHOD_STRINGS[index])) &&
-                           (JakartaEE10Action.isActive() ? line.contains("REST_request_seconds_count") : line.contains("base_REST_request_total"))) {
+                           (JakartaEEAction.isEE10OrLaterActive() ? line.contains("REST_request_seconds_count") : line.contains("base_REST_request_total"))) {
                 String stringValue = line.substring(line.indexOf("}") + 2);
                 value = Float.valueOf(stringValue).intValue();
             }
 
             if ((line.contains(METHOD_STRINGS[index])) &&
-                            (JakartaEE10Action.isActive() ? line.contains("REST_request_seconds_sum") : line.contains("base_REST_request_elapsedTime"))) {
+                            (JakartaEEAction.isEE10OrLaterActive() ? line.contains("REST_request_seconds_sum") : line.contains("base_REST_request_elapsedTime"))) {
                 String stringValue = line.substring(line.indexOf("}") + 2);
                 responseTime = Float.parseFloat(stringValue) * 1000; //convert to ms
             }

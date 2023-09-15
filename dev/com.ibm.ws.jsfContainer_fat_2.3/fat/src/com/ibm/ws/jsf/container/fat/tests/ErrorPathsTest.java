@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,12 +16,11 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 
-import org.junit.BeforeClass;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,10 +35,9 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import componenttest.rules.repeater.JakartaEE9Action;
-import componenttest.rules.repeater.JakartaEE10Action;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -51,15 +49,15 @@ public class ErrorPathsTest extends FATServletClient {
     @Server("jsf.container.2.3_fat.errorpaths")
     public static LibertyServer server;
 
-
-   private static boolean isEE9;
-   private static boolean isEE10;
+    private static boolean isEE9;
+    private static boolean isEE10;
 
     @BeforeClass
     public static void setup() throws Exception {
-        isEE9 = JakartaEE9Action.isActive();
-        isEE10 = JakartaEE10Action.isActive();
+        isEE9 = JakartaEEAction.isEE9Active();
+        isEE10 = JakartaEEAction.isEE10OrLaterActive();
     }
+
     /**
      * Verify that the jsf-2.3 and jsfContainer-2.3 features cannot be loaded at the
      * same time.
@@ -75,25 +73,25 @@ public class ErrorPathsTest extends FATServletClient {
             String message = ".* CWWKF0033E: " +
                              ".* com.ibm.websphere.appserver.jsfProvider-2.3.0.[MyFaces|Container]" +
                              ".* com.ibm.websphere.appserver.jsfProvider-2.3.0.[MyFaces|Container].*";
-            if(isEE9){
+            if (isEE10) {
 
-               message = ".* CWWKF0033E: " +
-                               ".* io.openliberty.facesProvider-3.0.0.[MyFaces|Container]" +
-                               ".* io.openliberty.facesProvider-3.0.0.[MyFaces|Container].*";
-            } else if(isEE10){
-                
                 message = ".* CWWKF0033E: " +
-                                ".* io.openliberty.facesProvider-4.0.0.[MyFaces|Container]" +
-                                ".* io.openliberty.facesProvider-4.0.0.[MyFaces|Container].*";
+                          ".* io.openliberty.facesProvider-4.0.0.[MyFaces|Container]" +
+                          ".* io.openliberty.facesProvider-4.0.0.[MyFaces|Container].*";
+            } else if (isEE9) {
+
+                message = ".* CWWKF0033E: " +
+                          ".* io.openliberty.facesProvider-3.0.0.[MyFaces|Container]" +
+                          ".* io.openliberty.facesProvider-3.0.0.[MyFaces|Container].*";
             }
 
             server.startServer(testName.getMethodName() + ".log", true, true, false);
             assertNotNull(server.waitForStringInLog(message));
 
-      } finally {
-              server.stopServer("CWWKF0033E|CWWKF0046W");
-              server.updateServerConfiguration(originalConfig);
-          }
+        } finally {
+            server.stopServer("CWWKF0033E|CWWKF0046W");
+            server.updateServerConfiguration(originalConfig);
+        }
     }
 
     /**
@@ -166,21 +164,21 @@ public class ErrorPathsTest extends FATServletClient {
     @AllowedFFDC
     public void testBadImplVersion_MyFaces() throws Exception {
         // Build test app with that has JSF spec API Specification-Version of 2.2
-        
+
         JavaArchive badImplJar;
 
-        if(isEE10){
+        if (isEE10) {
             badImplJar = ShrinkWrap.create(JavaArchive.class)
-                        .as(ZipImporter.class)
-                        .importFrom(new File(FATSuite.MYFACES_IMP_40))
-                        .as(JavaArchive.class)
-                        .setManifest(new File("lib/LibertyFATTestFiles/MANIFEST_badMyfacesImpl_40.MF"));
+                            .as(ZipImporter.class)
+                            .importFrom(new File(FATSuite.MYFACES_IMP_40))
+                            .as(JavaArchive.class)
+                            .setManifest(new File("lib/LibertyFATTestFiles/MANIFEST_badMyfacesImpl_40.MF"));
         } else {
             badImplJar = ShrinkWrap.create(JavaArchive.class)
-                        .as(ZipImporter.class)
-                        .importFrom(new File(FATSuite.MYFACES_IMP))
-                        .as(JavaArchive.class)
-                        .setManifest(new File("lib/LibertyFATTestFiles/MANIFEST_badMyfacesImpl.MF"));
+                            .as(ZipImporter.class)
+                            .importFrom(new File(FATSuite.MYFACES_IMP))
+                            .as(JavaArchive.class)
+                            .setManifest(new File("lib/LibertyFATTestFiles/MANIFEST_badMyfacesImpl.MF"));
         }
 
         WebArchive jsfApp = ShrinkHelper.buildDefaultApp(JSF_APP_BAD_IMPL, "jsf.container.bean");
@@ -190,9 +188,9 @@ public class ErrorPathsTest extends FATServletClient {
         jsfApp = jsfApp.addAsLibraries(badImplJar)
                         .addAsLibraries(new File("publish/files/myfaces-libs/").listFiles());
 
-        if(isEE9){
+        if (isEE9) {
             jsfApp.addAsLibraries(new File(FATSuite.MYFACES_API_30));
-        } else if(isEE10){
+        } else if (isEE10) {
             jsfApp.addAsLibraries(new File(FATSuite.MYFACES_API_40));
         } else {
             jsfApp.addAsLibraries(new File(FATSuite.MYFACES_API));

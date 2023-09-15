@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -48,8 +48,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
@@ -227,10 +226,8 @@ public class DeploymentTest {
 
         war.as(ExplodedExporter.class).exportExploded(outputFile.getParentFile(), outputFile.getName());
 
-        if (JakartaEE9Action.isActive()) {
-            JakartaEE9Action.transformApp(outputFile.toPath());
-        } else if (JakartaEE10Action.isActive()) {
-            JakartaEE10Action.transformApp(outputFile.toPath());
+        if (JakartaEEAction.isEE9OrLaterActive()) {
+            JakartaEEAction.transformApp(outputFile.toPath());
         }
 
         copyLoosePackage(server, outputFile.getPath() + "/WEB-INF/classes", "looseFiles/warClasses",

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -51,7 +51,7 @@ import com.ibm.ws.jaxrs.fat.subresource.CommentError;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -430,7 +430,7 @@ public class ExceptionsSubresourcesTest {
         assertEquals(500, resp.getStatusLine().getStatusCode());
 
         //EE10 and beyond has a default exception mapper that returns the message within the Throwable
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             InputStream is = resp.getEntity().getContent();
             InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
             BufferedReader br = new BufferedReader(isr);
@@ -459,7 +459,7 @@ public class ExceptionsSubresourcesTest {
         assertEquals(500, resp.getStatusLine().getStatusCode());
 
         //EE10 and beyond has a default exception mapper that returns the message within the Throwable
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             InputStream is = resp.getEntity().getContent();
             InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
             BufferedReader br = new BufferedReader(isr);

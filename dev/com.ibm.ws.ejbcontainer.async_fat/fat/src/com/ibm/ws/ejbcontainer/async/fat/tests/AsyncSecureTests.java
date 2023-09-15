@@ -38,6 +38,7 @@ import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
@@ -58,7 +59,7 @@ public class AsyncSecureTests extends AbstractTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        String eeVersion = JakartaEE10Action.isActive() ? "EE10" : JakartaEE9Action.isActive() ? "EE9" : RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID) ? "EE8" : "";
+        String eeVersion = JakartaEEAction.isEE10OrLaterActive() ? "EE10" : JakartaEEAction.isEE9Active() ? "EE9" : RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID) ? "EE8" : "";
 
         // cleanup from prior repeat actions
         server.deleteAllDropinApplications();

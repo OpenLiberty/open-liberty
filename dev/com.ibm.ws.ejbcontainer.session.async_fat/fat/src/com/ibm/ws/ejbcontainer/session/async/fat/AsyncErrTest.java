@@ -35,8 +35,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -57,7 +56,7 @@ public class AsyncErrTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        eeVersion = JakartaEE10Action.isActive() ? "_EE10" : JakartaEE9Action.isActive() ? "_EE9" : RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID) ? "_EE8" : "";
+        eeVersion = JakartaEEAction.isEE10OrLaterActive() ? "_EE10" : JakartaEEAction.isEE9Active() ? "_EE9" : RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID) ? "_EE8" : "";
 
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.ejbcontainer.session.async.fat.AsyncErrServer");
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,8 +45,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -83,11 +82,11 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
 
         FATSuite.setupServerSideAnnotations(server);
 
-        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             //Transforming the java permission
             final String serverXml = "validatorCustomLoginModuleServer.xml";
             Path serverXmlFile = Paths.get("lib/LibertyFATTestFiles", serverXml);
-            JakartaEE9Action.transformApp(serverXmlFile);
+            JakartaEEAction.transformApp(serverXmlFile);
             Log.info(c, "setUp", "TRANSFORMED SERVER XML: " + serverXmlFile);
             server.setServerConfigurationFile(serverXml);
         }

@@ -19,14 +19,15 @@ import java.util.List;
 
 import com.ibm.websphere.simplicity.LocalFile;
 
+import com.ibm.websphere.simplicity.LocalFile;
+
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.EE7FeatureReplacementAction;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.FeatureSet;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatActions;
 import componenttest.rules.repeater.RepeatActions.EEVersion;
 import componenttest.rules.repeater.RepeatTests;
@@ -47,8 +48,8 @@ public class CDIExtensionRepeatActions {
     public static final String CDI_EXT_ID = "_CDI_EXT";
     public static final String EE7_PLUS_ID = EE7FeatureReplacementAction.ID + CDI_EXT_ID;
     public static final String EE8_PLUS_ID = EE8FeatureReplacementAction.ID + CDI_EXT_ID;
-    public static final String EE9_PLUS_ID = JakartaEE9Action.ID + CDI_EXT_ID;
-    public static final String EE10_PLUS_ID = JakartaEE10Action.ID + CDI_EXT_ID;
+    public static final String EE9_PLUS_ID = JakartaEEAction.EE9_ACTION_ID + CDI_EXT_ID;
+    public static final String EE10_PLUS_ID = JakartaEEAction.EE10_ACTION_ID + CDI_EXT_ID;
 
     public static String getBundlePath(String bundleName) {
         return BUNDLE_PATH + bundleName + ".jar";
@@ -128,7 +129,7 @@ public class CDIExtensionRepeatActions {
     }
 
     public static boolean isJakartaActive() {
-        return isJEE9Active() || isJEE10Active();
+        return JakartaEEAction.isEE9OrLaterActive();
     }
 
     public static boolean isJEE7Active() {
@@ -140,11 +141,11 @@ public class CDIExtensionRepeatActions {
     }
 
     public static boolean isJEE9Active() {
-        return (RepeatTestFilter.isRepeatActionActive(JakartaEE9Action.ID));
+        return JakartaEEAction.isEE9Active();
     }
 
     public static boolean isJEE10Active() {
-        return (RepeatTestFilter.isRepeatActionActive(JakartaEE10Action.ID));
+        return JakartaEEAction.isEE10Active();
     }
 
     public static void installUserExtension(LibertyServer server, String bundleID) throws Exception {
@@ -168,14 +169,10 @@ public class CDIExtensionRepeatActions {
     public static String transformUserBundle(LibertyServer server, String bundleID) throws Exception {
         String bundleName = getBundleName(bundleID, false);
         String originalPath = getBundlePath(bundleName);
-        if (isJEE9Active()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             bundleName = getBundleName(bundleID, true);
             String newPath = getBundlePath(bundleName);
-            JakartaEE9Action.transformApp(Paths.get(originalPath), Paths.get(newPath));
-        } else if (isJEE10Active()) {
-            bundleName = getBundleName(bundleID, true);
-            String newPath = getBundlePath(bundleName);
-            JakartaEE10Action.transformApp(Paths.get(originalPath), Paths.get(newPath));
+            JakartaEEAction.transformApp(Paths.get(originalPath), Paths.get(newPath));
         }
 
         return bundleName;

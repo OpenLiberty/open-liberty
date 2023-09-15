@@ -43,6 +43,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 @AllowedFFDC({"java.lang.ClassNotFoundException", "java.lang.ClassCastException"})
@@ -438,7 +439,7 @@ public class AnnotationScanTest {
      */
     @Test
     public void testServletSpecifiedWithInvalidApplicationClass() throws Exception {
-        final boolean lookForSRVE0271E = (JakartaEE9Action.isActive()) || (JakartaEE10Action.isActive());
+        final boolean lookForSRVE0271E = (JakartaEEAction.isEE9OrLaterActive());
         final String targetMessageRegex = lookForSRVE0271E ?
                         "SRVE0271E.*NotAnAppIBMRestServlet.*annotationscan.*com.ibm.ws.jaxrs.fat.annotation.multipleapp.MyResource3.*jakarta.ws.rs.core.Application" :
                         "CWWKW0102W.*annotationscan.*NotAnAppIBMRestServlet.*com.ibm.ws.jaxrs.fat.annotation.multipleapp.MyResource3";

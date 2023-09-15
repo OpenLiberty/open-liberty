@@ -54,6 +54,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EE7FeatureReplacementAction;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.FeatureUtilities;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatActions.EEVersion;

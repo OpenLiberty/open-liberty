@@ -43,8 +43,7 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -64,15 +63,14 @@ public class JSFCompELTests {
     @Server("jsfTestServer2")
     public static LibertyServer jsfTestServer2;
 
-
     @Rule
     public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
-                                                                                  .withAccessToHost(true)
-                                                                                  .withLogConsumer(new SimpleLogConsumer(JSFCompELTests.class, "selenium-driver"));
+                    .withAccessToHost(true)
+                    .withLogConsumer(new SimpleLogConsumer(JSFCompELTests.class, "selenium-driver"));
 
     @BeforeClass
     public static void setup() throws Exception {
-        boolean isEE10 = JakartaEE10Action.isActive();
+        boolean isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         ShrinkHelper.defaultDropinApp(jsfTestServer2, "TestJSFEL.war",
                                       isEE10 ? "com.ibm.ws.jsf22.el.beans.faces40" : "com.ibm.ws.jsf22.el.beans.jsf22",
@@ -177,8 +175,8 @@ public class JSFCompELTests {
             }
 
             //Test case on the server, which is ELExceptionBean intentionally throws exception for valueChangeListener. Hence check if it's in the log
-            String msgToSearchFor = (JakartaEE10Action.isActive() || JakartaEE9Action.isActive() ? "jakarta." : "javax.") + "servlet.ServletException: "
-                                    + (JakartaEE10Action.isActive() || JakartaEE9Action.isActive() ? "jakarta." : "javax.")
+            String msgToSearchFor = (JakartaEEAction.isEE9OrLaterActive() ? "jakarta." : "javax.") + "servlet.ServletException: "
+                                    + (JakartaEEAction.isEE9OrLaterActive() ? "jakarta." : "javax.")
                                     + "el.ELException: java.lang.NullPointerException";
             List<String> msgs = jsfTestServer2.findStringsInLogs(msgToSearchFor);
 

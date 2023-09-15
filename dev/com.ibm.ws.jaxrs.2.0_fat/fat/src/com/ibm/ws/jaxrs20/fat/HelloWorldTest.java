@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -31,8 +31,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -104,13 +103,13 @@ public class HelloWorldTest {
         // the spec doesn't mention charsets in terms of matching to resources...
         // RESTEasy says an invalid charset is a client error, and returns 400
         // CXF says it doesn't match any resource methods and returns 415
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9Active()) {
             assertEquals(400, status);
         } else {
             // The 3.1 specification introduces a defaultExceptionmapper with the following:
             // "A JAX-RS implementation MUST include a default exception mapping provider that
             // implements ExceptionMapper<Throwable> and which SHOULD set the response status to 500."
-            if (JakartaEE10Action.isActive()) {
+            if (JakartaEEAction.isEE10OrLaterActive()) {
                 assertEquals(500, status);
             } else {
                 assertEquals(415, status);

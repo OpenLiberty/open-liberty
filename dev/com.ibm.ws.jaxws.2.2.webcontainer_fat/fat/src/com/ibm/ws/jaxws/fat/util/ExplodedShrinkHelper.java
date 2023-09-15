@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,8 +22,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 public class ExplodedShrinkHelper {
@@ -60,10 +59,8 @@ public class ExplodedShrinkHelper {
         File outputFile = new File(localLocation);
         outputFile.mkdirs();
         File explodedFile = archive.as(ExplodedExporter.class).exportExploded(outputFile, archive.getName());
-        if (JakartaEE9Action.isActive()) {
-            JakartaEE9Action.transformApp(explodedFile.toPath());
-        } else if (JakartaEE10Action.isActive()) {
-            JakartaEE10Action.transformApp(explodedFile.toPath());
+        if (JakartaEEAction.isEE9OrLaterActive()) {
+            JakartaEEAction.transformApp(explodedFile.toPath());
         }
         copyFileToDirectory(server, outputFile, dest);
         return archive;
