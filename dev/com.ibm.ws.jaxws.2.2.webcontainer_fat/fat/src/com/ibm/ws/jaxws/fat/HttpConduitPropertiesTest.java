@@ -27,7 +27,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.jaxws.fat.util.TestUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -94,7 +93,6 @@ public class HttpConduitPropertiesTest {
 
         // Start server once, rather than force server start stop on every test execution
         server.startServer();
-
     }
 
     @AfterClass
@@ -111,9 +109,7 @@ public class HttpConduitPropertiesTest {
     @Test
     public void testPropertiesForMatchedServiceRef() throws Exception {
 
-        TestUtils.publishFileToServer(server, "HttpConduitPropertiesTest/includeFiles", "testPropertiesForMatchedServiceRef.xml", "include", "httpConduitProperties.xml");
-
-        waitForAppRestartAfterConfigChange();
+        swapServerConfig("testPropertiesForMatchedServiceRef.xml");
 
         Map<String, String> propertyMap = getServletResponse(testServletURL);
 
@@ -145,9 +141,7 @@ public class HttpConduitPropertiesTest {
     @Test
     public void testPropertiesForNoMatchedServiceRef() throws Exception {
 
-        TestUtils.publishFileToServer(server, "HttpConduitPropertiesTest/includeFiles", "testPropertiesForNoMatchedServiceRef.xml", "include", "httpConduitProperties.xml");
-
-        waitForAppRestartAfterConfigChange();
+        swapServerConfig("testPropertiesForNoMatchedServiceRef.xml");
 
         Map<String, String> propertyMap = getServletResponse(testServletURL);
 
@@ -178,9 +172,7 @@ public class HttpConduitPropertiesTest {
     @Test
     public void testPropertiesForMatchedPort() throws Exception {
 
-        TestUtils.publishFileToServer(server, "HttpConduitPropertiesTest/includeFiles", "testPropertiesForMatchedPort.xml", "include", "httpConduitProperties.xml");
-
-        waitForAppRestartAfterConfigChange();
+        swapServerConfig("testPropertiesForMatchedPort.xml");
 
         Map<String, String> propertyMap = getServletResponse(testServletURL);
 
@@ -212,9 +204,7 @@ public class HttpConduitPropertiesTest {
     @Test
     public void testPropertiesForNoMatchedPort() throws Exception {
 
-        TestUtils.publishFileToServer(server, "HttpConduitPropertiesTest/includeFiles", "testPropertiesForNoMatchedPort.xml", "include", "httpConduitProperties.xml");
-
-        waitForAppRestartAfterConfigChange();
+        swapServerConfig("testPropertiesForNoMatchedPort.xml");
 
         Map<String, String> propertyMap = getServletResponse(testServletURL);
 
@@ -245,9 +235,7 @@ public class HttpConduitPropertiesTest {
     @Test
     public void testPropertiesForMatchedServiceRefAndPort() throws Exception {
 
-        TestUtils.publishFileToServer(server, "HttpConduitPropertiesTest/includeFiles", "testPropertiesForMatchedServiceRefAndPort.xml", "include", "httpConduitProperties.xml");
-
-        waitForAppRestartAfterConfigChange();
+        swapServerConfig("testPropertiesForMatchedServiceRefAndPort.xml");
 
         Map<String, String> propertyMap = getServletResponse(testServletURL);
 
@@ -280,9 +268,7 @@ public class HttpConduitPropertiesTest {
     @Test
     public void testPropertiesForMultipleSampleApp() throws Exception {
 
-        TestUtils.publishFileToServer(server, "HttpConduitPropertiesTest/includeFiles", "testPropertiesForMultipleSampleApp.xml", "include", "httpConduitProperties.xml");
-
-        waitForAppRestartAfterConfigChange();
+        swapServerConfig("testPropertiesForMultipleSampleApp.xml");
         // Checks for httpConduitProperties2 restart
         server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties2");
 
@@ -347,9 +333,7 @@ public class HttpConduitPropertiesTest {
     @Test
     public void testPropertiesForTwoServiceRefInOneApp() throws Exception {
 
-        TestUtils.publishFileToServer(server, "HttpConduitPropertiesTest/includeFiles", "testPropertiesForTwoServiceRefInOneApp.xml", "include", "httpConduitProperties.xml");
-
-        waitForAppRestartAfterConfigChange();
+        swapServerConfig("testPropertiesForTwoServiceRefInOneApp.xml");
 
         Map<String, String> echoServiceProperties = getServletResponse(testServletURL);
         Map<String, String> helloServiceProperties = getServletResponse(testServletURLForHelloService);
@@ -388,9 +372,8 @@ public class HttpConduitPropertiesTest {
 
     @Test
     public void testReceiveTimeout() throws Exception {
-        TestUtils.publishFileToServer(server, "HttpConduitPropertiesTest/includeFiles", "testReceiveTimeout.xml", "include", "httpConduitProperties.xml");
 
-        waitForAppRestartAfterConfigChange();
+        swapServerConfig("testReceiveTimeout.xml");
 
         String msg = getServletResponseMessage(receiveTimeoutTestServletURL);
         // Wait for MBean to start after invoking servlet.
@@ -430,8 +413,10 @@ public class HttpConduitPropertiesTest {
     }
 
     // Waits for config change to be processed after moving the test's ibm-ws-bnd.xml file to the dropins app
-    private void waitForAppRestartAfterConfigChange() throws Exception {
-        // check logs for app restart and servlet readiness
-        server.waitForMultipleStringsInLog(++CONFIG_REFRESH_COUNT, "CWWKG0017I");
+    private void swapServerConfig(String serverXMLName) throws Exception {
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFile("HttpConduitPropertiesTest/configFiles/" + serverXMLName);
+        // Update??
+        server.waitForConfigUpdateInLogUsingMark(null, false, new String[0]);
     }
 }
