@@ -46,7 +46,7 @@ public class FATSuite {
                 return result = false;
             }
 
-            if (System.getProperty("os.name").contains("Windows")) {
+            if (System.getProperty("os.name", "unknown").toLowerCase().contains("windows")) {
                 reason = "signature test plugin not supported on Windows.";
                 return result = false;
             }
