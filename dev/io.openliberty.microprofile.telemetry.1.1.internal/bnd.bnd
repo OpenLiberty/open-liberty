@@ -27,7 +27,8 @@ src: src, resources
 -dsannotations: \
   io.openliberty.microprofile.telemetry11.internal.cdi.SPIMetaData,\
   io.openliberty.microprofile.telemetry11.internal.rest.TelemetryClientBuilderListener,\
-  io.openliberty.microprofile.telemetry11.internal.sdk.OpenTelemetrySdkBuilderSupplierImpl
+  io.openliberty.microprofile.telemetry11.internal.sdk.OpenTelemetrySdkBuilderSupplierImpl,\
+  io.openliberty.microprofile.telemetry11.internal.rest.TelemetryServletContainerInitializer
 
 -dsannotations-inherit: true
 
@@ -75,6 +76,7 @@ Private-Package: io.openliberty.microprofile.telemetry11.internal.helper,\
     io.openliberty.org.eclipse.microprofile.rest.client.3.0,\
     io.openliberty.org.jboss.resteasy.common.ee10;version=latest,\
     com.ibm.websphere.org.osgi.core;version=latest,\
-    com.ibm.ws.container.service;version=latest
+    com.ibm.ws.container.service;version=latest,\
+    com.ibm.ws.kernel.boot.core;version=latest
 
 WS-TraceGroup: TELEMETRY

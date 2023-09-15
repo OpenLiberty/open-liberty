@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal.common.rest;
+package io.openliberty.microprofile.telemetry11.internal.rest;
 
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
@@ -15,6 +15,11 @@ import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
+import io.openliberty.microprofile.telemetry.internal.common.rest.TelemetryServletRequestListener;
+import jakarta.servlet.FilterRegistration;
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -25,10 +30,21 @@ import jakarta.servlet.ServletException;
 @Component(configurationPolicy = IGNORE)
 public class TelemetryServletContainerInitializer implements ServletContainerInitializer {
 
+    private static final TraceComponent tc = Tr.register(TelemetryServletContainerInitializer.class);
+
     /** {@inheritDoc} */
     @Override
     public void onStartup(Set<Class<?>> c, ServletContext sc) throws ServletException {
         sc.addListener(TelemetryServletRequestListener.class);
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Enable TelemetryServletFilter");
+        }
+        FilterRegistration.Dynamic filterRegistration = sc.addFilter("io.openliberty.microprofile.telemetry11.internal.rest.TelemetryServletFilter",
+                                                                     TelemetryServletFilter.class);
+        filterRegistration.addMappingForUrlPatterns(null, true, "/*");
+        filterRegistration.setAsyncSupported(true);
+
     }
 
 }

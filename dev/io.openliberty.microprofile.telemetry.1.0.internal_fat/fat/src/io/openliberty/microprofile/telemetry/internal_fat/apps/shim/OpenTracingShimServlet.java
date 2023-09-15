@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,30 +12,21 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal_fat.apps.shim;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import jakarta.inject.Inject;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.servlet.annotation.WebServlet;
-
-import io.opentelemetry.api.OpenTelemetry;
-import io.opentelemetry.opentracingshim.OpenTracingShim;
-
-import io.opentracing.Span;
-import io.opentracing.Tracer;
+import org.junit.Test;
 
 import componenttest.app.FATServlet;
-
-import org.junit.Test;
+import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.opentracingshim.OpenTracingShim;
+import io.opentracing.Tracer;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.servlet.annotation.WebServlet;
 
 /**
  * JAXRS service.
  */
 @ApplicationScoped
-@WebServlet("/shim")
+@WebServlet("/testShim")
 public class OpenTracingShimServlet extends FATServlet {
     /**
      * <p>The open tracing tracer. Will bew injected as a shim from OpenTelemetry.</p>
@@ -55,7 +46,7 @@ public class OpenTracingShimServlet extends FATServlet {
 
     @Test
     public void testOpenTracingShim() {
-       bean.annotatedClassMethodImplicitlyTraced(tracer);
-    }	
+        bean.annotatedClassMethodImplicitlyTraced(tracer);
+    }
 
 }

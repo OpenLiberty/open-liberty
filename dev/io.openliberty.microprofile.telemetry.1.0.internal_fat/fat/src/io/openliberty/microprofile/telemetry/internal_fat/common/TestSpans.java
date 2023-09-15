@@ -79,7 +79,9 @@ public class TestSpans {
      */
     public Span withTestSpan(ThrowingRunnable runnable) {
         String spanName = "testSpan-" + request.getRequestURI();
-        Span span = tracer.spanBuilder(spanName).startSpan();
+        Span span = tracer.spanBuilder(spanName)
+                        .setNoParent()
+                        .startSpan();
 
         LOGGER.info("Created test span. SpanId: " + span.getSpanContext().getSpanId() + " TraceId: " + span.getSpanContext().getTraceId() + " Name: " + spanName);
 

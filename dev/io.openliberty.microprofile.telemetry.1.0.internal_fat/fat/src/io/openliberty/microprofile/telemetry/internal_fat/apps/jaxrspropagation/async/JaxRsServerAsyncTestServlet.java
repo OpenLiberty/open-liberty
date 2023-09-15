@@ -38,7 +38,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 
 @SuppressWarnings("serial")
-@WebServlet("/jaxrsServerAsync")
+@WebServlet("/testJaxrsServerAsync")
 public class JaxRsServerAsyncTestServlet extends FATServlet {
 
     private static final String TEST_VALUE = "test.value";
