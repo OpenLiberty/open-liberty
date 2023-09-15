@@ -25,7 +25,7 @@ public class CommonZOSLocalLDAP {
 
     private static InMemoryLDAPServer ds;
 
-    private static final String LDAP_PARTITION_1_DN = "O=IBM,C=US";
+    private static final String LDAP_PARTITION_1_DN = "o=ibm,c=us";
 
     private static int ldapPort;
     private static int ldapSSLPort;
@@ -39,8 +39,8 @@ public class CommonZOSLocalLDAP {
         return ldapSSLPort;
     }
 
-    private static String buildDN(String user) throws Exception {
-        return "CN=" + user + "," + LDAP_PARTITION_1_DN;
+    private static String buildDN(String entry) throws Exception {
+        return "cn=" + entry + "," + LDAP_PARTITION_1_DN;
     }
 
     // we use the same value for the uid, sn and cn - we also use that value in the DN
@@ -51,15 +51,46 @@ public class CommonZOSLocalLDAP {
     }
 
     private static void addUser(String dn, String uid, String password, String sn, String cn) throws Exception {
-        Log.info(thisClass, "addUser", "Adding user: " + uid + " to LDAP Registry");
+        Log.info(thisClass, "addUser", "Adding user: " + dn + "for id: " + uid + " to LDAP Registry");
         Entry entry = new Entry(dn);
-        entry.addAttribute("objectclass", "inetorgperson");
+        entry.addAttribute("objectclass", "organizationalPerson");
+        entry.addAttribute("objectclass", "inetOrgPerson");
+        entry.addAttribute("objectclass", "person");
+        entry.addAttribute("objectclass", "top");
         entry.addAttribute("uid", uid);
         entry.addAttribute("sn", sn);
         entry.addAttribute("cn", cn);
-        entry.addAttribute("mail", uid);
+        entry.addAttribute("mail", uid + "@ibm.com");
+        entry.addAttribute("initials", uid);
+        if (uid.contains("LDAPU")) {
+            entry.addAttribute("telephonenumber", "1 919 555 5555");
+        }
+
+        /*
+         * uid: LDAPUser1
+         */
         entry.addAttribute("userpassword", password);
         ds.add(entry);
+    }
+
+    private static void addGroup(String uid, String[] members) throws Exception {
+        addGroup(buildDN(uid), uid, members);
+    }
+
+    private static void addGroup(String dn, String uid, String[] members) throws Exception {
+
+        Log.info(thisClass, "addGroup", "Adding group: " + dn + "for id: " + uid + " to LDAP Registry");
+        Entry entry = new Entry(dn);
+        entry.addAttribute("objectclass", "groupOfNames");
+        entry.addAttribute("cn", dn);
+        entry.addAttribute("description", uid + "_description");
+        for (String member : members) {
+            Log.info(thisClass, "addGroup", "Adding member: " + member + " to group: " + dn + " in LDAP Registry");
+            entry.addAttribute("member", buildDN(member));
+        }
+        Log.info(thisClass, "addGroup", "About to add");
+        ds.add(entry);
+
     }
 
     /**
@@ -71,8 +102,6 @@ public class CommonZOSLocalLDAP {
     public static void ldapSetUp() throws Exception {
         // Choose a port for LDAP - we ran into an instance where 8020 and 8021 were chosen
         // This caused problems starting one of the other servers that the tests use
-        // ds = new InMemoryLDAPServer(LDAP_PARTITION_1_DN);
-        //        ds = new InMemoryLDAPServer(true, Constants.DEFAULT_LDAP_PORT + instance, Constants.DEFAULT_LDAP_SECURE_PORT + instance, LDAP_PARTITION_1_DN);
         try {
             Log.info(thisClass, "ldapSetUp", "Setting up LDAP");
             Log.info(thisClass, "ldapSetUp", "LDAP Port " + Constants.DEFAULT_LDAP_PORT);
@@ -109,12 +138,24 @@ public class CommonZOSLocalLDAP {
             addUser(LDAPConstants.USER_3_NAME, LDAPConstants.USER_3_PWD);
             addUser(LDAPConstants.USER_4_NAME, LDAPConstants.USER_4_PWD);
             addUser(LDAPConstants.USER_5_NAME, LDAPConstants.USER_5_PWD);
-            //        addUser(buildDN(SAMLConstants.IDP_USER_NAME), SAMLConstants.IDP_USER_NAME, SAMLConstants.IDP_USER_PWD, SAMLConstants.IDP_USER_NAME, SAMLConstants.IDP_USER_NAME);
+
+            addUser(LDAPConstants.LDAP_USER_1_NAME, LDAPConstants.LDAP_USER_1_PWD);
+            addUser(LDAPConstants.LDAP_USER_2_NAME, LDAPConstants.LDAP_USER_2_PWD);
+            addUser(LDAPConstants.LDAP_USER_3_NAME, LDAPConstants.LDAP_USER_3_PWD);
+            addUser(LDAPConstants.LDAP_USER_4_NAME, LDAPConstants.LDAP_USER_4_PWD);
+            addUser(LDAPConstants.LDAP_USER_5_NAME, LDAPConstants.LDAP_USER_5_PWD);
+            addUser(LDAPConstants.LDAP_USER_6_NAME, LDAPConstants.LDAP_USER_6_PWD);
+            addUser(LDAPConstants.LDAP_USER_7_NAME, LDAPConstants.LDAP_USER_7_PWD);
+            addUser(LDAPConstants.LDAP_USER_8_NAME, LDAPConstants.LDAP_USER_8_PWD);
+
             // logout test users (keep these odd names JUST in case we need to fail over to a real LDAP server)
             addUser("john_vmmUser", "john_vmmUser");
             addUser("ping_vmmUser", "ping_vmmUser");
             addUser("pong_vmmUser", "pong_vmmUser");
             addUser("connect_vmmUser", "connect_vmmUser");
+
+            addGroup(LDAPConstants.LDAP_GROUP_1, new String[] { LDAPConstants.LDAP_USER_1_NAME, LDAPConstants.LDAP_USER_3_NAME });
+            addGroup(LDAPConstants.LDAP_GROUP_2, new String[] { LDAPConstants.LDAP_USER_2_NAME, LDAPConstants.LDAP_USER_4_NAME });
 
         } catch (Exception e) {
             Log.info(thisClass, "ldapSetUp", "Exception setting up the unbounded in Memory LDAP server: " + e.getMessage());

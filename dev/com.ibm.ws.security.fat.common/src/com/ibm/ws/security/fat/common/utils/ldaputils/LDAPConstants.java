@@ -34,4 +34,24 @@ public class LDAPConstants extends Constants {
     public static final String USER_5_NAME = "user5";
     public static final String USER_5_PWD = "security";
 
+    public static final String LDAP_USER_1_NAME = "LDAPUser1";
+    public static final String LDAP_USER_1_PWD = "security";
+    public static final String LDAP_USER_2_NAME = "LDAPUser2";
+    public static final String LDAP_USER_2_PWD = "security";
+    public static final String LDAP_USER_3_NAME = "LDAPUser3";
+    public static final String LDAP_USER_3_PWD = "security";
+    public static final String LDAP_USER_4_NAME = "LDAPUser4";
+    public static final String LDAP_USER_4_PWD = "security";
+    public static final String LDAP_USER_5_NAME = "LDAPUser5";
+    public static final String LDAP_USER_5_PWD = "security";
+    public static final String LDAP_USER_6_NAME = "LDAPUser6";
+    public static final String LDAP_USER_6_PWD = "security";
+    public static final String LDAP_USER_7_NAME = "LDAPUser7";
+    public static final String LDAP_USER_7_PWD = "security";
+    public static final String LDAP_USER_8_NAME = "LDAPUser8";
+    public static final String LDAP_USER_8_PWD = "security";
+
+    public static final String LDAP_GROUP_1 = "group1";
+    public static final String LDAP_GROUP_2 = "group2";
+
 }

@@ -32,9 +32,10 @@ public class CommonLocalLDAPServerSuite {
     @BeforeClass
     public static void ldapSetUp() throws Exception {
 
-        // We prefer to use in-memory LDAP to avoid network issues, but, the apache ldap servers are not running on z/OS
-        // the old unbounded ldap server works, so, we'll try to use that on z/OS - use the apache tooling with z/OS and java 17 - that
-        // path will result in z/OS with Java 17 using the remote servers.
+        // We prefer to use in-memory LDAP to avoid network issues, but, the Apache LDAP servers are not running on z/OS
+        // the old unbounded LDAP server works, so, we'll try to use that on z/OS - attempt to use the Apache tooling for 
+        // distributed and z/OS with java 17 - that path will result in distributed using Apache in memory and z/OS 
+        // with Java 17 using the remote servers.
         String os = System.getProperty("os.name").toLowerCase();
 
         if ((os.startsWith("z/os") && JavaInfo.forCurrentVM().majorVersion() >= 17)) {
@@ -43,7 +44,7 @@ public class CommonLocalLDAPServerSuite {
             System.setProperty("fat.test.really.use.local.ldap", "true");
         }
 
-        //  chc - uncomment      useNewerLdap = (!os.startsWith("z/os")) || (os.startsWith("z/os") && JavaInfo.forCurrentVM().majorVersion() >= 17);
+        useNewerLdap = (!os.startsWith("z/os")) || (os.startsWith("z/os") && JavaInfo.forCurrentVM().majorVersion() >= 17);
         // non-z/OS and even z/OS with Java 17 and above - use the standard LDAP setup (in-memory for non-z/OS and remote servers with z/OS)
         // for z/OS with older versions of Java, use the old in-memory (unbounded LDAP)
         if (useNewerLdap) {
