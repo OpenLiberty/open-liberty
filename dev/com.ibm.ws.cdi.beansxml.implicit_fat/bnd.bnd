@@ -37,7 +37,12 @@ tested.features:\
 	enterprisebeans-4.0,\
 	enterprisebeansremote-4.0,\
 	enterprisebeanshome-4.0,\
-	enterprisebeanspersistenttimer-4.0
+	enterprisebeanspersistenttimer-4.0,\
+	noship-1.0,\
+	cdi-4.1,\
+	servlet-6.1,\
+	expressionlanguage-6.0,\
+	pages-4.0
 
 	
 fat.project: true
