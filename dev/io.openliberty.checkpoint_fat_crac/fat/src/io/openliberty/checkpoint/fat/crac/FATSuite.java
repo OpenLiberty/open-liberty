@@ -13,35 +13,13 @@
 package io.openliberty.checkpoint.fat.crac;
 
 import static componenttest.topology.utils.FATServletClient.getTestMethodSimpleName;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
 
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.websphere.simplicity.RemoteFile;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.websphere.simplicity.config.Variable;
-import com.ibm.websphere.simplicity.log.Log;
-
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.rules.repeater.JakartaEEAction;
-import componenttest.topology.impl.LibertyFileManager;
-import componenttest.topology.impl.LibertyServer;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -52,16 +30,11 @@ import componenttest.topology.impl.LibertyServer;
                 CRaCResourceRequestNotSupportedTest.class,
                 CRaCResourceRequestPhaseAfterAppStartTest.class,
                 CRaCResourceRequestPhaseBeforeAppStartTest.class,
-                CRaCResourceMultiAppTest.class
+                CRaCResourceMultiAppTest.class,
+                CRaCMXBeanTest.class
 })
 
 public class FATSuite {
-    public static void copyAppsAppToDropins(LibertyServer server, String appName) throws Exception {
-        RemoteFile appFile = server.getFileFromLibertyServerRoot("apps/" + appName + ".war");
-        LibertyFileManager.createRemoteFile(server.getMachine(), server.getServerRoot() + "/dropins").mkdir();
-        appFile.copyToDest(server.getFileFromLibertyServerRoot("dropins"));
-    }
-
     /**
      * Gets only the test method of the TestName without the class name
      * and without the repeating rule name.
@@ -77,67 +50,5 @@ public class FATSuite {
             testMethodSimpleName = testMethodSimpleName.substring(dot + 1);
         }
         return testMethodSimpleName;
-    }
-
-    static public <T extends Enum<T>> T getTestMethod(Class<T> type, TestName testName) {
-        String simpleName = getTestMethodNameOnly(testName);
-        try {
-            T t = Enum.valueOf(type, simpleName);
-            Log.info(FATSuite.class, testName.getMethodName(), "got test method: " + t);
-            return t;
-        } catch (IllegalArgumentException e) {
-            Log.info(type, simpleName, "No configuration enum: " + testName);
-            fail("Unknown test name: " + testName);
-            return null;
-        }
-    }
-
-    static public void configureBootStrapProperties(LibertyServer server, Map<String, String> properties) throws Exception, IOException, FileNotFoundException {
-        Properties bootStrapProperties = new Properties();
-        File bootStrapPropertiesFile = new File(server.getFileFromLibertyServerRoot("bootstrap.properties").getAbsolutePath());
-        if (bootStrapPropertiesFile.isFile()) {
-            try (InputStream in = new FileInputStream(bootStrapPropertiesFile)) {
-                bootStrapProperties.load(in);
-            }
-        }
-        bootStrapProperties.putAll(properties);
-        try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
-            bootStrapProperties.store(out, "");
-        }
-    }
-
-    static void configureEnvVariable(LibertyServer server, Map<String, String> newEnv) throws Exception {
-        Properties serverEnvProperties = new Properties();
-        serverEnvProperties.putAll(newEnv);
-        File serverEnvFile = new File(server.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
-        try (OutputStream out = new FileOutputStream(serverEnvFile)) {
-            serverEnvProperties.store(out, "");
-        }
-    }
-
-    static void updateVariableConfig(LibertyServer server, String name, String value) throws Exception {
-        // change config of variable for restore
-        ServerConfiguration config = removeTestKeyVar(server.getServerConfiguration(), name);
-        config.getVariables().add(new Variable(name, value));
-        server.updateServerConfiguration(config);
-    }
-
-    static ServerConfiguration removeTestKeyVar(ServerConfiguration config, String key) {
-        for (Iterator<Variable> iVars = config.getVariables().iterator(); iVars.hasNext();) {
-            Variable var = iVars.next();
-            if (var.getName().equals(key)) {
-                iVars.remove();
-            }
-        }
-        return config;
-    }
-
-    public static void transformApps(LibertyServer myServer, String... apps) {
-        if (JakartaEEAction.isEE9OrLaterActive()) {
-            for (String app : apps) {
-                Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + app);
-                JakartaEEAction.transformApp(someArchive);
-            }
-        }
     }
 }
