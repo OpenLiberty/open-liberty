@@ -31,7 +31,6 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -45,27 +44,28 @@ public class TelemetryDisabledTest extends FATServletClient {
     public static final String SERVER_NAME = "Telemetry10DisabledTracing";
     public static final String APP_NAME = "TelemetryDisabledTracingApp";
 
+    private static WebArchive app = null;
+
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
-                    .andWith(FeatureReplacementAction.BETA_OPTION().fullFATOnly());
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61);
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+        app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addClasses(TracingDisabledServlet.class);
 
         server.addEnvVar("OTEL_SDK_DISABLED", "true");
-        ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
-        server.startServer();
+        server.startServerAndValidate(LibertyServer.DEFAULT_PRE_CLEAN, LibertyServer.DEFAULT_CLEANSTART, false);//Don't validate the apps because they have not been deployed yet.
     }
 
     //A warning should only be shown once
     @Test
     public void testDisabledOpenTelemetry() throws Exception {
         server.setMarkToEndOfLog();
+        ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY); //Call this here because TelemetryServletFilter triggers the required error message during its init.
         runTest(server, APP_NAME + "/TracingDisabledServlet", "testTelemetryDisabled");
         assertNotNull(server.waitForStringInLogUsingMark("CWMOT5100I: The MicroProfile Telemetry Tracing feature is enabled but not configured to generate traces for the "
                                                          + APP_NAME + " application."));
@@ -80,6 +80,6 @@ public class TelemetryDisabledTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWMOT5100I");
+        server.stopServer("CWMOT5100I", "CWWKZ0014W"); // CWWKZ0014W thrown because apps defined in server.xml will be added dynamically
     }
 }
