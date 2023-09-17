@@ -11,7 +11,7 @@ The information you provide here will be included in the Open Liberty GA release
 
 Please provide the following information:
 
-1. If this was previously published in a beta blog post, then provide the link to that `OpenLiberty/open-liberty` beta blog post issue on the next line between the <`GHA-BLOG-BETA-LINK`> tags. If nothing has changed since the beta, you're done and can omit the remaining steps. If you need to make updates/alterations to the beta content, then do all the steps. 
+1. If this was previously published in a beta blog post, then provide the link to that `OpenLiberty/open-liberty` beta blog post issue on the next line between the `<GHA-BLOG-BETA-LINK>` tags. If nothing has changed since the beta, you're done and can omit the remaining steps. If you need to make updates/alterations to the beta content, then do all the steps. 
    <GHA-BLOG-BETA-LINK>https://github.com/OpenLiberty/open-liberty/issues/0</GHA-BLOG-BETA-LINK>
 
    <GHA-BLOG-RELATED-FEATURES>
