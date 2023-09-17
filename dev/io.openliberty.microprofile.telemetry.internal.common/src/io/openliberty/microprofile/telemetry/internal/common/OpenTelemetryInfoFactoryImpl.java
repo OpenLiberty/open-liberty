@@ -108,6 +108,17 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
     @Override
     public OpenTelemetryInfo getOpenTelemetryInfo(ApplicationMetaData metaData) {
         try {
+
+            //!!!!
+            //TODO Check if this is valid.
+            //Run io.openliberty.microprofile41.internal_fat to reproduce examples of liberty internal apps reaching this
+            //for "applications" that never went through application started.
+            //
+            String j2EEName = metaData.getJ2EEName().toString();
+            if (j2EEName.startsWith("io.openliberty") || j2EEName.startsWith("com.ibm.ws")) {
+                return new OpenTelemetryInfoImpl(false, OpenTelemetry.noop(), "Liberty internals");
+            }
+
             OpenTelemetryInfoReference atomicRef = (OpenTelemetryInfoReference) metaData.getMetaData(slotForOpenTelemetryInfoHolder);
             OpenTelemetryInfoWrappedSupplier supplier = atomicRef.get();
             return supplier.get();
