@@ -831,15 +831,15 @@ readServerEnv()
       *=*)
           # The sed commands extracts the variable from the line but only if it contains alpha-numeric
           # characters. Only accept alphanumeric variable names to avoid eval complexities.
-          if [ "$uname" != "SunOS" ]; then
+          if [ "$uname" != "SunOS" ] && [ "$uname" != "OS/390" ]; then
 
             # This is the preferred pattern, because it handles characters 
             # from multiple languages, but it doesn't work on Solaris.
             var=$(safeEcho "$line" | sed -n -e 's/^\([_[:alpha:]][_[:alnum:]]*\)=.*/\1/p')
 
           else
-            # On Solaris we cannot use alpha or alnum
-            var=$(safeEcho "$line" | sed -n -e 's/^\([a-zA-Z_][a-zA-Z0-9_]*\)=.*/\1/p')
+            # On Solaris & Z/OS we cannot use alpha or alnum
+            var=$(safeEcho "$line" | awk -F= '{print $1}' | sed '/^[a-zA-Z_][a-zA-Z0-9_]*$/!d')
           fi
 
           if [ -n "$var" ]; then
