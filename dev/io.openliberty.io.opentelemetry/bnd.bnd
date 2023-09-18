@@ -41,7 +41,7 @@ Import-Package: \
 
 Export-Package: \
   io.opentelemetry.extension.trace.propagation;version=${openTelemetryVersion};thread-context=true,\
-  io.opentelemetry.*;version=${openTelemetryVersion};thread-context=true
+  io.opentelemetry.*;version=${openTelemetryVersion}
   
 Private-Package: \
   io.openliberty.io.opentelemetry.resources
