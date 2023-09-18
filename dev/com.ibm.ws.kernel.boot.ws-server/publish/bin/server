@@ -758,16 +758,24 @@ serverEnvAndJVMOptions()
     mergeJVMOptions "${WLP_INSTALL_DIR}/etc/jvm.options"
   fi
 
+  # Determine location of Java Platform Module System (JPMS) modules directory
   if [ -z "${JAVA_HOME}" ]; then
-    JAVA_PATH_FROM_PATH=$(command -v java)
-    if [ -n "${JAVA_PATH_FROM_PATH}" ] ; then
-      JPMS_MODULE_FILE_LOCATION=$(dirname $(dirname $JAVA_PATH_FROM_PATH))/lib/modules
+
+    # JAVA_HOME not set.  Locate java using the PATH.
+    JAVA_PATH=$(command -v java)
+    if [ -n "${JAVA_PATH}" ] ; then
+
+      REAL_JAVA_PATH=$(findRealPath "${JAVA_PATH}")
+
+      if [ -n "${REAL_JAVA_PATH}" ]; then
+         JPMS_MODULE_FILE_LOCATION=$(dirname "$(dirname "${REAL_JAVA_PATH}")")/lib/modules
+      fi
     fi
   else
     JPMS_MODULE_FILE_LOCATION="${JAVA_HOME}/lib/modules"
   fi
 
-  # If we are running on Java 9, apply Liberty's built-in java 9 options  
+  # If we are running on Java 9 and up, apply Liberty's built-in java 9 options  
   if [ -f "${JPMS_MODULE_FILE_LOCATION}" ]; then
     mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
   fi
@@ -775,6 +783,104 @@ serverEnvAndJVMOptions()
   return $rc
 }
 
+# Resolve symbolic links in a path iteratively
+findRealPath() {
+  path="$1"
+
+  # Try realpath command
+  if command -v realpath >/dev/null; then
+    resolvedPath=$(realpath "${path}" 2>/dev/null)
+  fi
+  
+  # If realpath is not available, try readlink -e
+  if [ -z "${resolvedPath}" ] && command -v readlink >/dev/null; then
+    resolvedPath=$(readlink -e "${path}" 2>/dev/null)
+  fi
+
+  # If neither of those methods work, try a more basic approach
+  if [ -z "${resolvedPath}" ]; then 
+    symLinkCount=0
+
+    # Loop ends when resolvedPath does not contain any symlinks  
+    while true; do
+
+      resolvedPath=""
+      IFS="/" # Set the delimiter to '/'
+      # Split the path into components.  Purposefully not putting quotes around $path.
+      set -- $path
+      pathContainsSymLink="false"
+      for component; do
+	  
+        if [ -z "$component" ]; then
+          continue # Skip empty components
+        fi
+
+        # Combine the resolved path & component
+        if [ -z "$resolvedPath" ]; then
+          case "$path" in
+          /*)
+            resolvedPath="/$component"
+            ;;
+          *) # If path is relative, then don't add leading slash
+            resolvedPath=$component
+            ;;
+          esac
+        else
+          resolvedPath="$resolvedPath/$component"
+        fi
+
+        if [ -L "$resolvedPath" ]; then
+          pathContainsSymLink="true"
+          symLinkCount=$((symLinkCount + 1))
+		  
+          # Get the target of the symbolic link
+          target=$(ls -l "$resolvedPath" | awk '{print $NF}')
+
+          # Don't lose the remaining path past the symlink
+          if [ "$resolvedPath" = "$path" ]; then
+            remaining_path=""
+          else
+            # Remove the resolved part from the original path
+            remaining_path="${path#"${resolvedPath%/}"/}"
+          fi
+
+          # Save the prefix up one level from the symlink
+          savePrefix=$(cd "$(dirname "$resolvedPath")" && pwd)
+		  
+          case "$target" in
+          /*)
+            # Absolute path case
+            resolvedPath="$target/$remaining_path"
+            ;;
+          *)
+            # Relative path case"
+            resolvedPath="$savePrefix/$target/$remaining_path"
+            ;;
+          esac
+
+          break
+        else
+          :  # $resolvedPath is  NOT a symLink
+        fi
+      done  # end for
+
+      if [ $pathContainsSymLink = "false" ]; then
+        break
+      fi
+
+      if [ $symLinkCount -gt 100  ]; then
+        issueMessage --message:warning.tooManySymbolicLinks "$1"
+        resolvedPath=""
+        break
+      fi
+
+      path=$resolvedPath
+    done  # end while
+  fi
+
+  # Return the fully resolved path
+  echo "$resolvedPath"
+}
 
 mergeJVMOptions()
 {
@@ -819,9 +925,9 @@ readServerEnv()
            # "enable_variable_expansion", and nothing else (ignoring case and white space).
            # If found, we use the source command ( . ) which performs all of the server.env
            # variable assignments while resolving any variable references.
-           if [ $variableExpansionEnabled = 0  ] && [ $(echo $line | grep -i "enable_variable_expansion") ]
+           if [ $variableExpansionEnabled = 0  ] && [ $(safeEcho $line | grep -i "enable_variable_expansion") ]
            then
-              processedLine=$(echo $line | tr -d '[:blank:]' | tr '[:upper:]' '[:lower:]')
+              processedLine=$(safeEcho $line | tr -d '[:blank:]' | tr '[:upper:]' '[:lower:]')
               if [ "#enable_variable_expansion" = $processedLine ]
               then
                  eval ". $1"
