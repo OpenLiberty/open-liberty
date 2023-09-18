@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.unversioned.servlet-4.0
+symbolicName=io.openliberty.unversioned.servlet-4.0
 visibility=private
 singleton=true
 -features= \
