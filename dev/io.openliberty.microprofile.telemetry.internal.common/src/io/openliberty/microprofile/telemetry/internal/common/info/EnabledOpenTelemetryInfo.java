@@ -31,9 +31,9 @@ import io.opentelemetry.sdk.trace.SdkTracerProvider;
 /**
  * This produces an OpenTelemetry wrapper with info to state whether it is enabled or disabled
  */
-public class OpenTelemetryInfoImpl implements OpenTelemetryInfo {
+public class EnabledOpenTelemetryInfo implements OpenTelemetryInfo {
 
-    private static final TraceComponent tc = Tr.register(OpenTelemetryInfoImpl.class);
+    private static final TraceComponent tc = Tr.register(EnabledOpenTelemetryInfo.class);
     private static final String INSTRUMENTATION_NAME = "io.openliberty.microprofile.telemetry";
 
     private final boolean enabled;
@@ -41,10 +41,11 @@ public class OpenTelemetryInfoImpl implements OpenTelemetryInfo {
     private final Tracer tracer;
 
     /**
-     * @param enabled
-     * @param openTelemetry
+     * @param enabled true if enabled, otherwise false
+     * @param openTelemetry the OpenTelemetry instance contained in this wrapper
+     * @param appName the name of the application this OpenTelemetry/OpenTelemetryInfo pair support
      */
-    public OpenTelemetryInfoImpl(boolean enabled, OpenTelemetry openTelemetry, String appName) {
+    public EnabledOpenTelemetryInfo(boolean enabled, OpenTelemetry openTelemetry, String appName) {
         super();
         this.enabled = enabled;
         this.openTelemetry = openTelemetry;
@@ -52,16 +53,7 @@ public class OpenTelemetryInfoImpl implements OpenTelemetryInfo {
     }
 
     /**
-     * No-args constructor for CDI
-     */
-    public OpenTelemetryInfoImpl() {
-        this.enabled = false;
-        this.openTelemetry = null;
-        tracer = null;
-    }
-
-    /**
-     * @return the enabled
+     * @return true if enabled
      */
     @Override
     public boolean getEnabled() {

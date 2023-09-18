@@ -79,7 +79,7 @@ public class ClientWithNoCdi {
     //I'm putting it in here to avoid creating an extra server that enables trace. And in an existing method because
     //Our version of junit doesn't allow fixed test ordering.
     @Test
-    public void testClientWithNoCDiAndFactoryStarupShutdownCalled() throws Exception {
+    public void testClientWithNoCDIAndFactoryStarupShutdownCalled() throws Exception {
         HttpRequest httpRequest = new HttpRequest(server, "/" + NO_CDI_APP_NAME + "/ClientTriggeringServlet");
         assertEquals(io.openliberty.microprofile.telemetry.internal_fat.apps.clientnocdi.ClientInvokedServlet.TEST_PASSED, httpRequest.run(String.class));
 
@@ -95,7 +95,7 @@ public class ClientWithNoCdi {
                       server.waitForStringInLog("OpenTelemetryInfoFactoryImpl > applicationStopped", server.getDefaultTraceFile()));
 
         assertNotNull("OpenTelemetryInfoImpl was not disposed",
-                      server.waitForStringInLog("OpenTelemetryInfoImpl > dispose Entry", server.getDefaultTraceFile()));
+                      server.waitForStringInLog("EnabledOpenTelemetryInfo > dispose Entry", server.getDefaultTraceFile()));
     }
 
     @AfterClass

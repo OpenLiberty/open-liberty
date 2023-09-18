@@ -49,7 +49,7 @@ import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.resources.ResourceBuilder;
 import io.opentelemetry.semconv.resource.attributes.ResourceAttributes;
 
-// We want this to start before CDI so it clears the list of stopped apps before CDI gets to them.
+// We want this to start before CDI so the meta data slot is ready before anyone triggers the CDI producer.
 @Component(service = { ApplicationStateListener.class, OpenTelemetryInfoFactory.class }, property = { "service.vendor=IBM", "service.ranking:Integer=150" })
 public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, OpenTelemetryInfoFactory {
 
@@ -137,7 +137,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
             if (AgentDetection.isAgentActive()) {
                 // If we're using the agent, it will have set GlobalOpenTelemetry and we must use its instance
                 // all config is handled by the agent in this case
-                return new OpenTelemetryInfoImpl(true, GlobalOpenTelemetry.get(), appName);
+                return new EnabledOpenTelemetryInfo(true, GlobalOpenTelemetry.get(), appName);
             }
 
             final Map<String, String> telemetryProperties = getTelemetryProperties();
@@ -151,7 +151,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
                 });
 
                 if (openTelemetry != null) {
-                    return new OpenTelemetryInfoImpl(true, openTelemetry, appName);
+                    return new EnabledOpenTelemetryInfo(true, openTelemetry, appName);
                 }
             }
             //By default, MicroProfile Telemetry tracing is off.
@@ -219,7 +219,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
         OpenTelemetryInfoReference oTelRef = (OpenTelemetryInfoReference) extAppInfo.getMetaData().getMetaData(slotForOpenTelemetryInfoHolder);
 
-        OpenTelemetryInfoWrappedSupplier newSupplier = new OpenTelemetryInfoWrappedSupplier(openTelemetryInfo -> openTelemetryInfo.dispose(), this::createOpenTelemetryInfo);
+        OpenTelemetryInfoWrappedSupplier newSupplier = new OpenTelemetryInfoWrappedSupplier(this::createOpenTelemetryInfo, openTelemetryInfo -> openTelemetryInfo.dispose());
 
         if (oTelRef == null) {
             oTelRef = new OpenTelemetryInfoReference();
@@ -239,8 +239,8 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
         OpenTelemetryInfoReference oTelRef = (OpenTelemetryInfoReference) extAppInfo.getMetaData().getMetaData(slotForOpenTelemetryInfoHolder);
 
-        OpenTelemetryInfoWrappedSupplier newSupplier = new OpenTelemetryInfoWrappedSupplier(openTelemetryInfo -> {
-        }, OpenTelemetryInfoFactoryImpl::createDisposedOpenTelemetryInfo);
+        OpenTelemetryInfoWrappedSupplier newSupplier = new OpenTelemetryInfoWrappedSupplier(OpenTelemetryInfoFactoryImpl::createDisposedOpenTelemetryInfo, openTelemetryInfo -> {
+        });
 
         OpenTelemetryInfoWrappedSupplier oldSupplier = oTelRef.getAndSet(newSupplier);
 
@@ -292,12 +292,12 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
     }
 
     private class OpenTelemetryInfoWrappedSupplier {
-        private final Consumer<OpenTelemetryInfo> consumer;
+        private final Consumer<OpenTelemetryInfo> disposer;
         private Supplier<OpenTelemetryInfo> supplier;
         private volatile OpenTelemetryInfo openTelemetryInfo = null;
 
-        public OpenTelemetryInfoWrappedSupplier(Consumer<OpenTelemetryInfo> consumer, Supplier<OpenTelemetryInfo> supplier) {
-            this.consumer = consumer;
+        public OpenTelemetryInfoWrappedSupplier(Supplier<OpenTelemetryInfo> supplier, Consumer<OpenTelemetryInfo> disposer) {
+            this.disposer = disposer;
             this.supplier = supplier;
         }
 
@@ -316,11 +316,16 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
             }
         }
 
+        /**
+         * Cleans up the contained OpenTelemetryInfo, prevents this from creating new ones.
+         *
+         * @return true if an OpenTelemetryInfo instance has previously been created and now disposed. False if not OpenTelemetryInfo instance has previously been created.
+         */
         public boolean closeAndDisposeIfCreated() {
             synchronized (this) {
                 supplier = OpenTelemetryInfoFactoryImpl::createDisposedOpenTelemetryInfo;
                 if (openTelemetryInfo != null) {
-                    consumer.accept(openTelemetryInfo);
+                    disposer.accept(openTelemetryInfo);
                     return true;
                 }
                 return false;
