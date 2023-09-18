@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.text.MessageFormat;
 import java.util.EnumMap;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,6 +49,8 @@ public class ProcessControlHelper {
 
     public static final String INTERNAL_PID = "pid";
     public static final String INTERNAL_PID_FILE = "pid-file";
+
+    private static final boolean WINDOWS = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("windows");
 
     final String serverName;
     final String serverConfigDir;
@@ -116,18 +119,23 @@ public class ProcessControlHelper {
             stopRc = ReturnCode.REDUNDANT_ACTION_STATUS;
         }
 
-        int timeout = launchArgs.getStopTimeout();
+        final int timeout = launchArgs.getStopTimeout();
+        final long timeoutMillis = timeout * 1000;
+        final long startTime = System.currentTimeMillis();
+        final long endTime = startTime + timeoutMillis;
 
         // If the lock file existed before we attempted to stop the server,
         // wait until we can obtain the server lock file (because the server process has stopped)
         if (stopRc == ReturnCode.OK && lockExists) {
-            stopRc = serverLock.waitForStop(timeout);
+            stopRc = serverLock.waitForStop(endTime);
         }
 
         if (stopRc == ReturnCode.OK) {
             String pid = getPID();
-            if (pid != null) {
-                stopRc = waitForProcessStop(pid, timeout);
+            // On Windows, the pid seems to be always null.
+            // On other operating systems, optimistically assume the process is no longer running.
+            if (pid != null || WINDOWS) {
+                stopRc = waitForProcessStop(pid, endTime);
             }
         }
 
@@ -144,12 +152,26 @@ public class ProcessControlHelper {
         return stopRc;
     }
 
-    private ReturnCode waitForProcessStop(String pid, int timeout) {
-        ProcessStatus ps = new PSProcessStatusImpl(pid);
+    private ReturnCode waitForProcessStop(String pid, long endTime) {
+        long expireTime = endTime;
+        ProcessStatus ps;
 
-        final long timeoutMillis = timeout * 1000;
-        final long startTime = System.currentTimeMillis();
-        final long expireTime = startTime + timeoutMillis;
+        // If the pid is null, wait on the lock for the console.log file.  Previously, we did not wait
+        // for the process to stop when the pid was null.  However, there is a delay between the time
+        // the server releases the .slock file and when the server finally stops.  This delay should be
+        // very small, but it is non-zero.  So we need at least a small wait here.
+        // The console.log might be held open by another process.  For example it might be open in an editor.
+        // In such a case, we might wait the entire timeout period, which would normally be an excessive delay
+        // since the caller should have already waited for the server to release the .slock file before calling
+        // this method. So a 1-second max wait is added here.
+        // Normally, the pid is expected to be null on Windows.
+        if (pid == null) {
+            ps = new FileShareLockProcessStatusImpl(consoleLogFile);
+            final long timeNowPlusOneSec = System.currentTimeMillis() + 1000;
+            expireTime = timeNowPlusOneSec < endTime ? timeNowPlusOneSec : endTime;
+        } else {
+            ps = new PSProcessStatusImpl(pid);
+        }
 
         do {
             try {
@@ -159,7 +181,7 @@ public class ProcessControlHelper {
                 }
 
                 long timeNow = System.currentTimeMillis();
-                if ((timeNow) > expireTime) {
+                if (timeNow > expireTime) {
                     break;
                 }
                 Thread.sleep(BootstrapConstants.POLL_INTERVAL_MS);

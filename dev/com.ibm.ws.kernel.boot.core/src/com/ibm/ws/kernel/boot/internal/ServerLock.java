@@ -252,16 +252,16 @@ public class ServerLock {
      * @return true if server lock was obtained (!null & valid)
      */
     private synchronized boolean getServerLock() {
-        return getServerLock(new Integer(BootstrapConstants.SERVER_STOP_WAIT_TIME_DEFAULT));
+        return getServerLock((System.currentTimeMillis() + (Integer.valueOf(BootstrapConstants.SERVER_STOP_WAIT_TIME_DEFAULT) * 1000)));
     }
 
     /**
      * Try to obtain server lock
      *
-     * @param timeout value in seconds
+     * @param endTime value in milliseconds. This is the start time; e.g. System.currentTimeMillis() plus the timeout value
      * @return true if server lock was obtained (!null & valid)
      */
-    private synchronized boolean getServerLock(int timeout) {
+    private synchronized boolean getServerLock(long endTime) {
 
         Boolean fileExists = Boolean.FALSE;
         final File sDir = lockFile;
@@ -279,10 +279,6 @@ public class ServerLock {
         try {
             fos = new FileOutputStream(lockFile);
             fc = fos.getChannel();
-
-            final long timeoutMillis = timeout * 1000;
-            final long startTime = System.currentTimeMillis();
-            final long expireTime = startTime + timeoutMillis;
 
             // If we immediately try to get the lock, it seems to always be unavailable.  After
             // a failed attempt at getting the lock, we sleep for 500ms.  That's pretty much
@@ -303,7 +299,7 @@ public class ServerLock {
                 } else {
                     try {
                         long timeNow = System.currentTimeMillis();
-                        if ((timeNow) > expireTime) {
+                        if ((timeNow) > endTime) {
                             break;
                         }
                         Thread.sleep(BootstrapConstants.POLL_INTERVAL_MS);
@@ -408,7 +404,8 @@ public class ServerLock {
      *         return {@link ReturnCode#ERROR_SERVER_STOP}
      */
     public synchronized ReturnCode waitForStop() {
-        return waitForStop(Integer.valueOf(BootstrapConstants.SERVER_STOP_WAIT_TIME_DEFAULT));
+        // Calculate the endTime as the current time + the timeout value
+        return waitForStop(System.currentTimeMillis() + (Integer.valueOf(BootstrapConstants.SERVER_STOP_WAIT_TIME_DEFAULT) * 1000));
 
     }
 
@@ -418,16 +415,16 @@ public class ServerLock {
      * <p>
      * This is a separate process using the attach API to stop the server.
      *
-     * @param timeOut value in milliseconds.
+     * @param endTime value in milliseconds. This is the start time; e.g. System.currentTimeMillis() plus the timeout value.
      * @return {@link ReturnCode#OK} if server lock file can be obtained within
      *         timeout period (see {@link #getServerLock()}, will otherwise
      *         return {@link ReturnCode#ERROR_SERVER_STOP}
      * @return
      */
-    public synchronized ReturnCode waitForStop(int timeOut) {
+    public synchronized ReturnCode waitForStop(long endTime) {
 
         // if the lock is null or is invalid, the lock could not be obtained within the time out
-        if (!getServerLock(timeOut)) {
+        if (!getServerLock(endTime)) {
             serverLock = null;
             lockFileChannel = null;
             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.stopServerError"),
