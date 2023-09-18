@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.security.openidconnect.backchannellogout;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -23,6 +25,7 @@ public class BackchannelLogoutRequestHelperTest extends CommonTestClass {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("io.openliberty.security.openidconnect.*=all:com.ibm.ws.security.openidconnect*=all");
 
+    private final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
     private final OidcServerConfig oidcServerConfig = mockery.mock(OidcServerConfig.class);
 
     private BackchannelLogoutRequestHelper helper;
@@ -35,7 +38,7 @@ public class BackchannelLogoutRequestHelperTest extends CommonTestClass {
     @Before
     public void setUp() throws Exception {
         System.out.println("Entering test: " + testName.getMethodName());
-        helper = new BackchannelLogoutRequestHelper(oidcServerConfig);
+        helper = new BackchannelLogoutRequestHelper(request, oidcServerConfig);
     }
 
     @After
