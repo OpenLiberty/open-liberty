@@ -368,7 +368,13 @@ public class FeatureList {
 
             for (FeatureResource res : fd.getConstituents(SubsystemContentType.BUNDLE_TYPE)) {
                 ContentBasedLocalBundleRepository repo = mfp.getBundleRepository(fd.getBundleRepositoryType(), null);
-
+                
+                if(res.getJavaRange() != null) {
+                	// Bundles & Jars with the java range attribute should not be considered for the supported java versions 
+                    // as they are only enabled once the java runtime matches that particular range.
+                	continue;
+                }
+                
                 File bundleFile = repo.selectBundle(res.getLocation(), res.getSymbolicName(), res.getVersionRange());
 
                 List<Map<String, Object>> bundleMatches = cachedJavaVersionsByBundle.get(bundleFile);
