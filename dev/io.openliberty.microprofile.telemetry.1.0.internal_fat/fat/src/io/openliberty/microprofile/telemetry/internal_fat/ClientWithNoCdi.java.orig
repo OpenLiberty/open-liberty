@@ -14,7 +14,11 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertEquals;
+<<<<<<< HEAD
 import static org.junit.Assert.assertFalse;
+=======
+import static org.junit.Assert.assertNotNull;
+>>>>>>> 83ddedb21f (Crate test to ensure opentelemetry ASL is invoked)
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -74,20 +78,41 @@ public class ClientWithNoCdi {
     }
 
     //This test does not use open telemetry directly, but it does trigger io.openliberty.microprofile.telemetry.internal.rest.TelemetryClientFilter.java for an app with no CDI and ensures it does not throw an exception
+
+    //This test also ensures that we actually call the started and shutdown methods in OpenTelemetryInfoFactoryImpl
+    //I'm putting it in here to avoid creating an extra server that enables trace. And in an existing method because
+    //Our version of junit doesn't allow fixed test ordering.
     @Test
-    public void testClientWithNoCDi() throws Exception {
+    public void testClientWithNoCDiAndFactoryStarupShutdownCalled() throws Exception {
         HttpRequest httpRequest = new HttpRequest(server, "/" + NO_CDI_APP_NAME + "/ClientTriggeringServlet");
         assertEquals(io.openliberty.microprofile.telemetry.internal_fat.apps.clientnocdi.ClientInvokedServlet.TEST_PASSED, httpRequest.run(String.class));
 
+<<<<<<< HEAD
         assertFalse("The test did not use a TelemetryClientFilter object",
                     server.findStringsInLogsUsingMark("microprofile.telemetry\\d*.internal.rest.TelemetryClientFilter < isEnabled Exit", server.getDefaultTraceFile())
                                     .isEmpty());
+=======
+        assertNotNull("The test did not use a TelemetryClientFilter object",
+                      server.waitForStringInLog("microprofile.telemetry\\d*.internal.rest.TelemetryClientFilter < isEnabled Exit", server.getDefaultTraceFile()));
+>>>>>>> 83ddedb21f (Crate test to ensure opentelemetry ASL is invoked)
 
+        server.deleteDirectoryFromLibertyServerRoot("apps");
+
+        assertNotNull("OpenTelemetryInfoFactoryImpl.applicationStarting was not invoked",
+                      server.waitForStringInLog("telemetry.internal.common.OpenTelemetryInfoFactoryImpl > applicationStarting Entry", server.getDefaultTraceFile()));
+
+        assertNotNull("OpenTelemetryInfoFactoryImpl.applicationStopped was not invoked",
+                      server.waitForStringInLog("OpenTelemetryInfoFactoryImpl > applicationStopped", server.getDefaultTraceFile()));
+
+        assertNotNull("OpenTelemetryInfoImpl was not disposed",
+                      server.waitForStringInLog("OpenTelemetryInfoImpl > dispose Entry", server.getDefaultTraceFile()));
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        if (server.isStarted()) {
+            server.stopServer("CWWKZ0059E", "CWWKZ0014W"); //CWWKZ0059E is complaining that we're deleting an app while its still configured. This is needed to test the shutdown code works properly. (Actually stopping the server archives the trace log). CWWKZ0014W is saying the application cannot be found because we just deleted it.
+        }
     }
 
 }
