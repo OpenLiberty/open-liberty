@@ -455,7 +455,7 @@
                         <sp:IncludeTimestamp/>
                         <sp:AlgorithmSuite>
                             <wsp:Policy>
-                                <sp:Basic128/>
+                                <sp:Basic256Sha256/>
                             </wsp:Policy>
                         </sp:AlgorithmSuite>
                     </wsp:Policy>
@@ -538,7 +538,7 @@
                         <sp:IncludeTimestamp/>
                         <sp:AlgorithmSuite>
                             <wsp:Policy>
-                                <sp:Basic128/>
+                                <sp:Basic256Sha256/>
                             </wsp:Policy>
                         </sp:AlgorithmSuite>
                     </wsp:Policy>
@@ -578,7 +578,7 @@
                         <sp:IncludeTimestamp/>
                         <sp:AlgorithmSuite>
                             <wsp:Policy>
-                                <sp:Basic128/>
+                                <sp:Basic256Sha256/>
                             </wsp:Policy>
                         </sp:AlgorithmSuite>
                     </wsp:Policy>
@@ -618,7 +618,7 @@
                         <sp:IncludeTimestamp/>
                         <sp:AlgorithmSuite>
                             <wsp:Policy>
-                                <sp:Basic128/>
+                                <sp:Basic256Sha256/>
                             </wsp:Policy>
                         </sp:AlgorithmSuite>
                     </wsp:Policy>
@@ -701,7 +701,7 @@
                         <sp:IncludeTimestamp/>
                         <sp:AlgorithmSuite>
                             <wsp:Policy>
-                                <sp:Basic128/>
+                                <sp:Basic256Sha256/>
                             </wsp:Policy>
                         </sp:AlgorithmSuite>
                     </wsp:Policy>
@@ -758,7 +758,7 @@
                   <sp:OnlySignEntireHeadersAndBody/>
                   <sp:AlgorithmSuite>
                      <wsp:Policy>
-                        <sp:Basic128/>
+                        <sp:Basic256Sha256/>
                      </wsp:Policy>
                   </sp:AlgorithmSuite>
                </wsp:Policy>
@@ -1507,7 +1507,7 @@
                        <sp:EncryptSignature/>
                        <sp:AlgorithmSuite>
                           <wsp:Policy>
-                             <sp:Basic128Sha256/> 
+                             <sp:Basic256Sha256/> 
                           </wsp:Policy>
                        </sp:AlgorithmSuite>
                     </wsp:Policy>
@@ -1705,7 +1705,7 @@
                          </sp:ProtectionToken>
                          <sp:AlgorithmSuite>
                              <wsp:Policy>
-                                 <sp:Basic128Sha256/>
+                                 <sp:Basic128/>
                                  <sp:InclusiveC14N/>
                              </wsp:Policy>
                          </sp:AlgorithmSuite>
@@ -1900,7 +1900,7 @@
                          </sp:SignatureToken>
                          <sp:AlgorithmSuite>
                              <wsp:Policy>
-                                 <sp:Basic128Sha256/>
+                                 <sp:Basic256Sha256/>
                              </wsp:Policy>
                          </sp:AlgorithmSuite>
                          <sp:Layout>
