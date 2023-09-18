@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal.common;
+package io.openliberty.microprofile.telemetry.internal.common.info;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -19,7 +19,7 @@ import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.Tracer;
 
 /**
- *
+ * An impl of OpenTelemetryInfo that only occurs if an OpenTelemetryInfo was created after the relevant application has shut down.
  */
 public class DisposedOpenTelemetryInfo implements OpenTelemetryInfo {
 

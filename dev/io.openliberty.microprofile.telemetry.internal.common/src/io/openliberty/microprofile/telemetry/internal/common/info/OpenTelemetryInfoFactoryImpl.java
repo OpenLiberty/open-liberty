@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal.common;
+package io.openliberty.microprofile.telemetry.internal.common.info;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -39,6 +39,7 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
+import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryInfoFactory;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.OpenTelemetry;
@@ -101,7 +102,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
             return getOpenTelemetryInfo(metaData);
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
-            return new OpenTelemetryInfoImpl(false, OpenTelemetry.noop(), "unknown");
+            return new ErrorOpenTelemetryInfo();
         }
     }
 
@@ -114,7 +115,8 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
                 //If this is triggered by internal code that isn't supposed to call ApplicationStateListener.applicationStarting() don't throw an error
                 String j2EEName = metaData.getJ2EEName().toString();
                 if (j2EEName.startsWith("io.openliberty") || j2EEName.startsWith("com.ibm.ws")) {
-                    return new OpenTelemetryInfoImpl(false, OpenTelemetry.noop(), "Liberty internals");
+                    Tr.info(tc, "CWMOT5100.tracing.is.disabled", j2EEName);
+                    return new DisabledOpenTelemetryInfo();
                 }
                 //If it isn't throw something nicer than an NPE.
                 throw new IllegalStateException("Attempted to create openTelemetaryInfo for application " + j2EEName + " which has not gone through ApplicationStarting");
@@ -123,7 +125,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
             return supplier.get();
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
-            return new OpenTelemetryInfoImpl(false, OpenTelemetry.noop(), "unknown");
+            return new ErrorOpenTelemetryInfo();
         }
     }
 
@@ -157,10 +159,10 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
             //Operations on a Tracer, or on Spans have no side effects and do nothing
             Tr.info(tc, "CWMOT5100.tracing.is.disabled", appName);
 
-            return new OpenTelemetryInfoImpl(false, OpenTelemetry.noop(), appName);
+            return new DisabledOpenTelemetryInfo();
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
-            return new OpenTelemetryInfoImpl(false, OpenTelemetry.noop(), "unknown");
+            return new ErrorOpenTelemetryInfo();
         }
 
     }
@@ -172,7 +174,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
 
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
-            return new DisposedOpenTelemetryInfo("unknown");
+            return new ErrorOpenTelemetryInfo();
         }
     }
 

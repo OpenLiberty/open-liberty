@@ -6,24 +6,11 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal.interfaces;
+@TraceOptions(traceGroup = "TELEMETRY", messageBundle = "io.openliberty.microprofile.telemetry.internal.common.resources.MPTelemetry")
+package io.openliberty.microprofile.telemetry.internal.common.info;
 
-import com.ibm.ws.runtime.metadata.ApplicationMetaData;
-
-import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
-
-public interface OpenTelemetryInfoFactory {
-
-    /**
-     * @return
-     */
-    OpenTelemetryInfo getOpenTelemetryInfo();
-
-    /**
-     * @param metaData
-     * @return
-     */
-    OpenTelemetryInfo getOpenTelemetryInfo(ApplicationMetaData metaData);
-
-}
+import com.ibm.websphere.ras.annotation.TraceOptions;

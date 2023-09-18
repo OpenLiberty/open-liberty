@@ -15,9 +15,8 @@ package io.openliberty.microprofile.telemetry.internal.interfaces;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfo;
-import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfoImpl;
-import io.opentelemetry.api.OpenTelemetry;
+import io.openliberty.microprofile.telemetry.internal.common.info.ErrorOpenTelemetryInfo;
+import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
@@ -39,7 +38,7 @@ public class OpenTelemetryAccessor {
             OpenTelemetryInfoFactory factory = OSGIHelpers.getService(OpenTelemetryInfoFactory.class, OpenTelemetryAccessor.class);
             return factory.getOpenTelemetryInfo();
         } catch (Exception e) {
-            return new OpenTelemetryInfoImpl(false, OpenTelemetry.noop(), "unknown");
+            return new ErrorOpenTelemetryInfo();
         }
     }
 

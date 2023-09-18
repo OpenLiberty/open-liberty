@@ -17,8 +17,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
-import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfo;
-import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfoImpl;
+import io.openliberty.microprofile.telemetry.internal.common.info.ErrorOpenTelemetryInfo;
+import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryInfoFactory;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.baggage.Baggage;
@@ -55,7 +55,7 @@ public class OpenTelemetryProducer {
             OpenTelemetryInfoFactory factory = OSGIHelpers.getService(OpenTelemetryInfoFactory.class, OpenTelemetryProducer.class);
             return factory.getOpenTelemetryInfo(metaData);
         } catch (Exception e) {
-            return new OpenTelemetryInfoImpl(false, OpenTelemetry.noop(), "unknown");
+            return new ErrorOpenTelemetryInfo();
         }
     }
 
