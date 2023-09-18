@@ -13,9 +13,9 @@
 package io.openliberty.microprofile.telemetry.internal_fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertEquals;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -31,12 +31,12 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.tracingdisabled.TracingDisabledServlet;
-
-import componenttest.rules.repeater.MicroProfileActions;
-import componenttest.rules.repeater.RepeatTests;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -44,13 +44,14 @@ public class TelemetryDisabledTest extends FATServletClient {
 
     public static final String SERVER_NAME = "Telemetry10DisabledTracing";
     public static final String APP_NAME = "TelemetryDisabledTracingApp";
-    
+
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61);
-    
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
+                    .andWith(FeatureReplacementAction.BETA_OPTION().fullFATOnly());
+
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
@@ -68,9 +69,9 @@ public class TelemetryDisabledTest extends FATServletClient {
         runTest(server, APP_NAME + "/TracingDisabledServlet", "testTelemetryDisabled");
         assertNotNull(server.waitForStringInLogUsingMark("CWMOT5100I: The MicroProfile Telemetry Tracing feature is enabled but not configured to generate traces for the "
                                                          + APP_NAME + " application."));
-        
-        //Checks 
-        assertEquals(1, server.waitForMultipleStringsInLogUsingMark(2,"CWMOT5100I",1000,server.getDefaultLogFile()));
+
+        //Checks
+        assertEquals(1, server.waitForMultipleStringsInLogUsingMark(2, "CWMOT5100I", 1000, server.getDefaultLogFile()));
 
         server.setMarkToEndOfLog();
         runTest(server, APP_NAME + "/TracingDisabledServlet", "testTelemetryDisabled");

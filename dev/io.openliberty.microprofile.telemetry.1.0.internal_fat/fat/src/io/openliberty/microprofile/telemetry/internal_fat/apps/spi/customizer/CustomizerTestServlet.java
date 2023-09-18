@@ -55,8 +55,7 @@ public class CustomizerTestServlet extends FATServlet {
         // Check that the other customizers added were called
         // Note: propagator listed twice since by default there are two propagators (W3C trace and W3C baggage)
         assertThat(TestCustomizer.loggedEvents,
-                   containsInAnyOrder("properties", "sampler", "exporter", "tracer", "propagator", "propagator",
-                                      "properties", "sampler", "exporter", "tracer", "propagator", "propagator"));
+                   containsInAnyOrder("properties", "sampler", "exporter", "tracer", "propagator", "propagator"));
     }
 
 }
