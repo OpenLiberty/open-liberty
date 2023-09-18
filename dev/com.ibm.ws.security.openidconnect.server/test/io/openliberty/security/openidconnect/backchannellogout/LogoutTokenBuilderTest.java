@@ -589,6 +589,8 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 one(accessToken1).getTokenString();
                 will(returnValue(accessTokenString));
                 one(tokenCache).remove(accessTokenString);
+                one(refreshToken).getScope();
+                will(returnValue(new String[] { "openid" }));
                 one(refreshToken).getTokenString();
                 will(returnValue(refreshTokenString));
                 one(tokenCache).remove(refreshTokenString);
@@ -620,6 +622,8 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 one(accessToken1).getTokenString();
                 will(returnValue(accessTokenString));
                 one(tokenCache).remove(accessTokenString);
+                one(refreshToken).getScope();
+                will(returnValue(new String[] { "openid" }));
                 one(refreshToken).getTokenString();
                 will(returnValue(refreshTokenString));
                 one(tokenCache).remove(refreshTokenString);
@@ -647,6 +651,8 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 one(accessToken).getTokenString();
                 will(returnValue(accessTokenString));
                 one(tokenCache).remove(accessTokenString);
+                one(refreshToken).getScope();
+                will(returnValue(new String[] { "openid" }));
                 one(refreshToken).getTokenString();
                 will(returnValue(refreshTokenString));
                 one(tokenCache).remove(refreshTokenString);
@@ -668,9 +674,12 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 one(accessToken).getTokenString();
                 will(returnValue(accessTokenString));
                 one(tokenCache).remove(accessTokenLookupString);
+                one(refreshToken).getScope();
+                will(returnValue(new String[] { "openid" }));
                 one(refreshToken).getTokenString();
                 will(returnValue(refreshTokenString));
                 one(tokenCache).remove(refreshTokenString);
+
             }
         });
         builder.removeAccessTokenAndAssociatedRefreshTokenFromCache(accessToken);
@@ -697,9 +706,24 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         OAuth20Token refreshToken = getRefreshTokenExpectations(accessToken, OIDCConstants.TOKENTYPE_ACCESS_TOKEN);
         mockery.checking(new Expectations() {
             {
+                one(refreshToken).getScope();
+                will(returnValue(new String[] { "openid" }));
                 one(refreshToken).getTokenString();
                 will(returnValue(refreshTokenString));
                 one(tokenCache).remove(refreshTokenString);
+            }
+        });
+        builder.removeRefreshTokenAssociatedWithOAuthTokenFromCache(accessToken);
+    }
+
+    @Test
+    public void test_removeRefreshTokenAssociatedWithOAuthTokenFromCache_accessToken_withMatchingRefreshToken_refreshTokenHasOfflineAccess() throws Exception {
+        OAuth20TokenImpl accessToken = mockery.mock(OAuth20TokenImpl.class);
+        OAuth20Token refreshToken = getRefreshTokenExpectations(accessToken, OIDCConstants.TOKENTYPE_ACCESS_TOKEN);
+        mockery.checking(new Expectations() {
+            {
+                one(refreshToken).getScope();
+                will(returnValue(new String[] { "openid", "offline_access" }));
             }
         });
         builder.removeRefreshTokenAssociatedWithOAuthTokenFromCache(accessToken);
@@ -746,12 +770,79 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         OAuth20Token refreshToken = getRefreshTokenExpectations(idToken, OIDCConstants.TOKENTYPE_ID_TOKEN);
         mockery.checking(new Expectations() {
             {
+                one(refreshToken).getScope();
+                will(returnValue(new String[] { "openid" }));
                 one(refreshToken).getTokenString();
                 will(returnValue(refreshTokenString));
                 one(tokenCache).remove(refreshTokenString);
             }
         });
         builder.removeRefreshTokenAssociatedWithOAuthTokenFromCache(idToken);
+    }
+
+    @Test
+    public void test_removeRefreshTokenAssociatedWithOAuthTokenFromCache_idToken_withMatchingRefreshToken_refreshTokenHasOfflineAccess() throws Exception {
+        OAuth20TokenImpl idToken = mockery.mock(OAuth20TokenImpl.class, "idToken-impl");
+        OAuth20Token refreshToken = getRefreshTokenExpectations(idToken, OIDCConstants.TOKENTYPE_ID_TOKEN);
+        mockery.checking(new Expectations() {
+            {
+                one(refreshToken).getScope();
+                will(returnValue(new String[] { "openid", "offline_access" }));
+            }
+        });
+        builder.removeRefreshTokenAssociatedWithOAuthTokenFromCache(idToken);
+    }
+
+    @Test
+    public void test_refreshTokenHasOfflineAccessScope_nullScopes() {
+        OAuth20Token refreshToken = mockery.mock(OAuth20Token.class, "refreshToken");
+        mockery.checking(new Expectations() {
+            {
+                one(refreshToken).getScope();
+                will(returnValue(null));
+            }
+        });
+        boolean result = builder.refreshTokenHasOfflineAccessScope(refreshToken);
+        assertFalse("Refresh token was not issued with the offline_access scope, but the method returned true.", result);
+    }
+
+    @Test
+    public void test_refreshTokenHasOfflineAccessScope_noScopes() {
+        OAuth20Token refreshToken = mockery.mock(OAuth20Token.class, "refreshToken");
+        mockery.checking(new Expectations() {
+            {
+                one(refreshToken).getScope();
+                will(returnValue(new String[] {}));
+            }
+        });
+        boolean result = builder.refreshTokenHasOfflineAccessScope(refreshToken);
+        assertFalse("Refresh token was not issued with the offline_access scope, but the method returned true.", result);
+    }
+
+    @Test
+    public void test_refreshTokenHasOfflineAccessScope_doesNotHaveOfflineAccessScope() {
+        OAuth20Token refreshToken = mockery.mock(OAuth20Token.class, "refreshToken");
+        mockery.checking(new Expectations() {
+            {
+                one(refreshToken).getScope();
+                will(returnValue(new String[] { "openid" }));
+            }
+        });
+        boolean result = builder.refreshTokenHasOfflineAccessScope(refreshToken);
+        assertFalse("Refresh token was not issued with the offline_access scope, but the method returned true.", result);
+    }
+
+    @Test
+    public void test_refreshTokenHasOfflineAccessScope_hasOfflineAccessScope() {
+        OAuth20Token refreshToken = mockery.mock(OAuth20Token.class, "refreshToken");
+        mockery.checking(new Expectations() {
+            {
+                one(refreshToken).getScope();
+                will(returnValue(new String[] { "openid", "offline_access" }));
+            }
+        });
+        boolean result = builder.refreshTokenHasOfflineAccessScope(refreshToken);
+        assertTrue("Refresh token was issued with the offline_access scope, but the method returned false.", result);
     }
 
     @Test
