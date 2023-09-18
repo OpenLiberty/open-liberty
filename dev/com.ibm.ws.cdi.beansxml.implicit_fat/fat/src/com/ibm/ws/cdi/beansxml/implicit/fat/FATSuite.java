@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,6 +24,9 @@ import com.ibm.ws.cdi.beansxml.implicit.fat.implicitWar.ImplicitWarTest;
 import com.ibm.ws.cdi.beansxml.implicit.fat.implicitWarLibJars.ImplicitWarLibJarsTest;
 import com.ibm.ws.cdi.beansxml.implicit.fat.noAnnotations.ImplicitBeanArchiveNoAnnotationsTest;
 import com.ibm.ws.fat.util.FatLogHandler;
+
+import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.RepeatTests;
 
 /**
  * Tests specific to cdi-1.2
@@ -45,6 +48,11 @@ public class FATSuite {
     @BeforeClass
     public static void generateHelpFile() {
         FatLogHandler.generateHelpFile();
+    }
+
+    public static RepeatTests defaultRepeat(String serverName) {
+        //not bothering to repeat with EE8 ... the EE9 version is mostly a transformed version of the EE8 code
+        return EERepeatActions.repeat(serverName, EERepeatActions.EE10, EERepeatActions.EE11, EERepeatActions.EE9, EERepeatActions.EE7);
     }
 
 }
