@@ -25,6 +25,7 @@ import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.optenliberty.microprofile.telemetry.internal.common.helpers.OSGIHelpers;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 
@@ -33,7 +34,12 @@ public class OpenTelemetryProducer {
 
     private static final TraceComponent tc = Tr.register(OpenTelemetryProducer.class);
 
-    ApplicationMetaData metaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData().getApplicationMetaData();
+    private ApplicationMetaData metaData = null;
+
+    @PostConstruct
+    private void init() {
+        metaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData().getApplicationMetaData();
+    }
 
     //See https://github.com/open-telemetry/opentelemetry-java-docs/blob/main/otlp/src/main/java/io/opentelemetry/example/otlp/ExampleConfiguration.java
     /**

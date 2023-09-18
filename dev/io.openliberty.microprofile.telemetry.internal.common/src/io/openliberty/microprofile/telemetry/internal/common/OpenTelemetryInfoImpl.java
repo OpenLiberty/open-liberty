@@ -39,8 +39,6 @@ public class OpenTelemetryInfoImpl implements OpenTelemetryInfo {
     private final OpenTelemetry openTelemetry;
     private final Tracer tracer;
 
-    private final String APP_NAME;
-
     /**
      * @param enabled
      * @param openTelemetry
@@ -50,7 +48,6 @@ public class OpenTelemetryInfoImpl implements OpenTelemetryInfo {
         this.enabled = enabled;
         this.openTelemetry = openTelemetry;
         tracer = openTelemetry.getTracer(INSTRUMENTATION_NAME);
-        this.APP_NAME = appName;
     }
 
     /**
@@ -60,7 +57,6 @@ public class OpenTelemetryInfoImpl implements OpenTelemetryInfo {
         this.enabled = false;
         this.openTelemetry = null;
         tracer = null;
-        this.APP_NAME = "unkown";
     }
 
     /**

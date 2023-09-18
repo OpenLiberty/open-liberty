@@ -27,8 +27,7 @@ public class DisposedOpenTelemetryInfo implements OpenTelemetryInfo {
 
     private String appName = "Unkown";
 
-    public DisposedOpenTelemetryInfo() {
-    }
+    public DisposedOpenTelemetryInfo() {}
 
     public DisposedOpenTelemetryInfo(String appName) {
         this.appName = appName;
@@ -67,8 +66,7 @@ public class DisposedOpenTelemetryInfo implements OpenTelemetryInfo {
             PrintStream stackPrintStream = new PrintStream(stackStream);
             e.printStackTrace(stackPrintStream);
 
-            Tr.event(tc, "OpenTelemetryInfoFactory", "The stack that led to OpenTelemetryInfoFactory being called after " + appName + " has shutdown is:.");
-            Tr.event(tc, stackStream.toString());
+            Tr.event(tc, "OpenTelemetryInfoFactory", "The stack that led to OpenTelemetryInfoFactory being called after " + appName + " has shutdown is:.", stackStream.toString());
         }
     }
 }

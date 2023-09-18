@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.eclipse.microprofile.config.Config;
@@ -108,18 +109,16 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
     @Override
     public OpenTelemetryInfo getOpenTelemetryInfo(ApplicationMetaData metaData) {
         try {
-
-            //!!!!
-            //TODO Check if this is valid.
-            //Run io.openliberty.microprofile41.internal_fat to reproduce examples of liberty internal apps reaching this
-            //for "applications" that never went through application started.
-            //
-            String j2EEName = metaData.getJ2EEName().toString();
-            if (j2EEName.startsWith("io.openliberty") || j2EEName.startsWith("com.ibm.ws")) {
-                return new OpenTelemetryInfoImpl(false, OpenTelemetry.noop(), "Liberty internals");
-            }
-
             OpenTelemetryInfoReference atomicRef = (OpenTelemetryInfoReference) metaData.getMetaData(slotForOpenTelemetryInfoHolder);
+            if (atomicRef == null) {
+                //If this is triggered by internal code that isn't supposed to call ApplicationStateListener.applicationStarting() don't throw an error
+                String j2EEName = metaData.getJ2EEName().toString();
+                if (j2EEName.startsWith("io.openliberty") || j2EEName.startsWith("com.ibm.ws")) {
+                    return new OpenTelemetryInfoImpl(false, OpenTelemetry.noop(), "Liberty internals");
+                }
+                //If it isn't throw something nicer than an NPE.
+                throw new IllegalStateException("Attempted to create openTelemetaryInfo for application " + j2EEName + " which has not gone through ApplicationStarting");
+            }
             OpenTelemetryInfoWrappedSupplier supplier = atomicRef.get();
             return supplier.get();
         } catch (Exception e) {
@@ -145,8 +144,8 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
             if (!checkDisabled(telemetryProperties)) {
                 OpenTelemetry openTelemetry = AccessController.doPrivileged((PrivilegedAction<OpenTelemetry>) () -> {
                     return openTelemetrySdkBuilderSupplier.getPartiallyConfiguredOpenTelemetrySDKBuilder().addPropertiesCustomizer(x -> telemetryProperties) //Overrides OpenTelemetry's property order
-                                    .addResourceCustomizer(OpenTelemetryInfoFactoryImpl::customizeResource) //Defaults service name to application name
-                                    .setServiceClassLoader(Thread.currentThread().getContextClassLoader()).build().getOpenTelemetrySdk();
+                                                          .addResourceCustomizer(OpenTelemetryInfoFactoryImpl::customizeResource) //Defaults service name to application name
+                                                          .setServiceClassLoader(Thread.currentThread().getContextClassLoader()).build().getOpenTelemetrySdk();
                 });
 
                 if (openTelemetry != null) {
@@ -218,7 +217,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
         OpenTelemetryInfoReference oTelRef = (OpenTelemetryInfoReference) extAppInfo.getMetaData().getMetaData(slotForOpenTelemetryInfoHolder);
 
-        OpenTelemetryInfoWrappedSupplier newSupplier = new OpenTelemetryInfoWrappedSupplier(this::createOpenTelemetryInfo);
+        OpenTelemetryInfoWrappedSupplier newSupplier = new OpenTelemetryInfoWrappedSupplier(openTelemetryInfo -> openTelemetryInfo.dispose(), this::createOpenTelemetryInfo);
 
         if (oTelRef == null) {
             oTelRef = new OpenTelemetryInfoReference();
@@ -228,26 +227,23 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
     }
 
     @Override
-    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
-    } //no-op
+    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {} //no-op
 
     @Override
-    public void applicationStopping(ApplicationInfo appInfo) {
-    } //no-op
+    public void applicationStopping(ApplicationInfo appInfo) {} //no-op
 
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
         OpenTelemetryInfoReference oTelRef = (OpenTelemetryInfoReference) extAppInfo.getMetaData().getMetaData(slotForOpenTelemetryInfoHolder);
 
-        OpenTelemetryInfoWrappedSupplier newSupplier = new OpenTelemetryInfoWrappedSupplier(OpenTelemetryInfoFactoryImpl::createDisposedOpenTelemetryInfo);
+        OpenTelemetryInfoWrappedSupplier newSupplier = new OpenTelemetryInfoWrappedSupplier(openTelemetryInfo -> {
+        }, OpenTelemetryInfoFactoryImpl::createDisposedOpenTelemetryInfo);
 
         OpenTelemetryInfoWrappedSupplier oldSupplier = oTelRef.getAndSet(newSupplier);
 
         try {
-            if (oldSupplier.lock()) {
-                oldSupplier.get().dispose();
-            }
+            oldSupplier.closeAndDisposeIfCreated();
         } catch (Exception e) {
             Tr.warning(tc, "applicationStopped", "failed to dispose of OpenTelemetry");//TODO better message
         }
@@ -294,11 +290,12 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
     }
 
     private class OpenTelemetryInfoWrappedSupplier {
+        private final Consumer<OpenTelemetryInfo> consumer;
         private Supplier<OpenTelemetryInfo> supplier;
-        private volatile boolean hasRun = false;
-        private OpenTelemetryInfo openTelemetryInfo = null;
+        private volatile OpenTelemetryInfo openTelemetryInfo = null;
 
-        public OpenTelemetryInfoWrappedSupplier(Supplier<OpenTelemetryInfo> supplier) {
+        public OpenTelemetryInfoWrappedSupplier(Consumer<OpenTelemetryInfo> consumer, Supplier<OpenTelemetryInfo> supplier) {
+            this.consumer = consumer;
             this.supplier = supplier;
         }
 
@@ -308,7 +305,6 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
             }
 
             synchronized (this) {
-                hasRun = true;
                 if (openTelemetryInfo != null) {
                     return openTelemetryInfo;
                 }
@@ -318,10 +314,14 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
             }
         }
 
-        public boolean lock() {
+        public boolean closeAndDisposeIfCreated() {
             synchronized (this) {
                 supplier = OpenTelemetryInfoFactoryImpl::createDisposedOpenTelemetryInfo;
-                return hasRun;
+                if (openTelemetryInfo != null) {
+                    consumer.accept(openTelemetryInfo);
+                    return true;
+                }
+                return false;
             }
         }
 
