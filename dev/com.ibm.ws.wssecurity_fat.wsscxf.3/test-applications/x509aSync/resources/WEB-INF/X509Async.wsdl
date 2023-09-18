@@ -61,7 +61,7 @@
              </sp:RecipientSignatureToken>
              <sp:AlgorithmSuite>
                 <wsp:Policy>
-                   <sp:Basic128/>
+                   <sp:Basic256Sha256/>
                 </wsp:Policy>
              </sp:AlgorithmSuite>
              <sp:Layout>

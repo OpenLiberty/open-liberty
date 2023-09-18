@@ -50,8 +50,9 @@
 		id="default"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
 		ws-security.signature.username="soapprovider"
-	>
+	>       <!--issue 30353 -->
 		<signatureProperties
+                        signatureAlgorithm="sha256"
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
 			org.apache.ws.security.crypto.merlin.keystore.password="server"
 			org.apache.ws.security.crypto.merlin.keystore.alias="soapprovider"
@@ -64,8 +65,9 @@
 		ws-security.username="user1"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
 		ws-security.signature.username="wsfpexpreq"
-	>
+	>       <!--issue 30353 -->
 		<signatureProperties
+                        signatureAlgorithm="sha256"
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
 			org.apache.ws.security.crypto.merlin.keystore.password="client"
 			org.apache.ws.security.crypto.merlin.keystore.alias="wsfpexpreq"
