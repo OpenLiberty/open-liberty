@@ -227,7 +227,7 @@ jakarta.batch:jakarta.batch-api:2.0.0
 jakarta.batch:jakarta.batch-api:2.1.1
 jakarta.ejb:jakarta.ejb-api:4.0.1
 jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:2.0.0
-jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:3.0.2
+jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:3.0.3
 jakarta.enterprise:jakarta.enterprise.cdi-api:3.0.1
 jakarta.enterprise:jakarta.enterprise.cdi-api:4.0.1
 jakarta.enterprise:jakarta.enterprise.lang-model:4.0.1
