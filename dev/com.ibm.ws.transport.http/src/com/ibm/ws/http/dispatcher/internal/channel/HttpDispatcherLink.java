@@ -737,37 +737,48 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         String s = HttpDispatcher.getContextRootNotFoundMessage();
         boolean addAddress = false;
         if ((s == null) || (s.isEmpty())) {
+
+            MSP.log("send404 1");
+
             if (HttpDispatcher.isWelcomePageEnabled()) {
                 InputStream notFoundPage = getNotFoundStream();
                 try {
+                    MSP.log("send404 2");
                     displayPage(notFoundPage, StatusCodes.NOT_FOUND);
                 } catch (Throwable t) {
                     // no FFDC required
+                    MSP.log("send404 3");
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                         Tr.event(tc, "Exception displaying error page; " + t);
                     }
 
                     if (t instanceof Exception) {
+                        MSP.log("send404 4");
                         sendResponse(StatusCodes.INTERNAL_ERROR, (Exception) t, true);
                     } else {
+                        MSP.log("send404 5");
                         sendResponse(StatusCodes.INTERNAL_ERROR, new Exception("Error page", t), true);
                     }
                 }
                 return;
             } else {
+                MSP.log("send404 6");
                 String safeUrl = URLEscapingUtils.toSafeString(url);
                 s = Tr.formatMessage(tc, "Missing.App.Or.Context.Root.No.Error.Code", safeUrl);
             }
         } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            MSP.log("send404 1");
             Tr.debug(tc, "send error with following string: " + s);
         }
 
         if (s != null && HttpDispatcher.padContextRootNotFoundMessage()) {
+            MSP.log("send404 7");
             //There is a problem with some IE browsers that won't display a 404 error page if it is less than 512 bytes.
             //append some characters in a comment to make sure that this message is displayed.
             int difference = 513 - s.length();
             if (difference > 0) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    MSP.log("send404 1");
                     Tr.debug(tc, "404 message is not 512 so pad it. Length = " + s.length());
                 }
                 StringBuffer sb = new StringBuffer(s);
@@ -784,6 +795,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         // If we got here, we didn't write the page yet.. last parameter is false
+        MSP.log("send404 1");
         sendResponse(StatusCodes.NOT_FOUND, s, null, addAddress);
     }
 
