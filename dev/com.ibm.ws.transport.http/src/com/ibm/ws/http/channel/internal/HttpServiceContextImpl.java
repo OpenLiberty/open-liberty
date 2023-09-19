@@ -3046,9 +3046,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             Tr.debug(tc, "sendFullOutgoing : " + isOutgoingBodyValid() + ", " + wsbb + ", " + this);
         }
 
-        setMessageSent();
         this.addBytesWritten(GenericUtils.sizeOf(wsbb));
         this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_BYTES_WRITTEN).set(numBytesWritten);
+
+        MSP.log("headers sent? " + headersSent());
         if (!headersSent()) {
             this.sendHeaders(nettyResponse);
         }
@@ -3061,8 +3062,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
             }
             this.nettyContext.channel().flush();
-        }
 
+        }
+        MSP.log("set message sent");
+        setMessageSent();
     }
 
     /**
@@ -5578,7 +5581,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "HttpError returned body of length=" + body.length);
             }
-            getVC().getStateMap().put(EPS_KEY, body);
+            if (Objects.nonNull(getVC())) {
+                getVC().getStateMap().put(EPS_KEY, body);
+            }
             return body;
         }
         HttpErrorPageService eps = (HttpErrorPageService) HttpDispatcher.getFramework().lookupService(HttpErrorPageService.class);
@@ -5608,7 +5613,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Received body of length=" + body.length);
                 }
-                getVC().getStateMap().put(EPS_KEY, body);
+                if (Objects.nonNull(getVC())) {
+                    getVC().getStateMap().put(EPS_KEY, body);
+                }
             }
         }
         return body;

@@ -12,6 +12,7 @@ package com.ibm.ws.http.netty.message;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -579,33 +580,73 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public byte[] getCookieValue(String name) {
-        // TODO Auto-generated method stub
+//        if (null == name) {
+//            return null;
+//        }
+//        byte[] val = getCookieValue(name, HttpHeaderKeys.HDR_SET_COOKIE);
+//        if (null == val) {
+//            val = getCookieValue(name, HttpHeaderKeys.HDR_SET_COOKIE2);
+//        }
+//        return val;
+        //TODO:
         return null;
     }
 
     @Override
     public List<String> getAllCookieValues(String name) {
 
-        // TODO Auto-generated method stub
-        return null;
+        List<String> list = new LinkedList<String>();
+        if (null != name) {
+            getAllCookieValues(name, HttpHeaderKeys.HDR_SET_COOKIE, list);
+            getAllCookieValues(name, HttpHeaderKeys.HDR_SET_COOKIE2, list);
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getAllCookieValues: Found " + list.size() + " instances of " + name);
+        }
+        return list;
     }
 
     @Override
     public HttpCookie getCookie(String name) {
-        // TODO Auto-generated method stub
-        return null;
+        if (null == name) {
+            return null;
+        }
+        HttpCookie cookie = getCookie(name, HttpHeaderKeys.HDR_SET_COOKIE);
+        if (null == cookie) {
+            cookie = getCookie(name, HttpHeaderKeys.HDR_SET_COOKIE2);
+        }
+        // Note: return a clone to avoid corruption by the caller
+        return (null == cookie) ? null : cookie.clone();
     }
 
+    /**
+     * @see com.ibm.wsspi.http.channel.cookies.CookieHandler#getAllCookies()
+     */
     @Override
     public List<HttpCookie> getAllCookies() {
-        // TODO Auto-generated method stub
-        return null;
+        List<HttpCookie> list = new LinkedList<HttpCookie>();
+        getAllCookies(HttpHeaderKeys.HDR_SET_COOKIE, list);
+        getAllCookies(HttpHeaderKeys.HDR_SET_COOKIE2, list);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getAllCookies: Found " + list.size() + " instances");
+        }
+        return list;
     }
 
+    /**
+     * @see com.ibm.wsspi.http.channel.cookies.CookieHandler#getAllCookies(java.lang.String)
+     */
     @Override
     public List<HttpCookie> getAllCookies(String name) {
-        // TODO Auto-generated method stub
-        return null;
+        List<HttpCookie> list = new LinkedList<HttpCookie>();
+        if (null != name) {
+            getAllCookies(name, HttpHeaderKeys.HDR_SET_COOKIE, list);
+            getAllCookies(name, HttpHeaderKeys.HDR_SET_COOKIE2, list);
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getAllCookies: Found " + list.size() + " instances of " + name);
+        }
+        return list;
     }
 
     @Override
