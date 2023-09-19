@@ -23,8 +23,8 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
 
 
 @SecurityScheme(securitySchemeName = "oauth", type = SecuritySchemeType.OAUTH2,
-        flows = @OAuthFlows(authorizationCode = @OAuthFlow(authorizationUrl = "https://host.testcontainers.internal:8020/oauth2/endpoint/TestProvider/authorize",
-                tokenUrl = "https://host.testcontainers.internal:8020/oauth2/endpoint/TestProvider/token",
+        flows = @OAuthFlows(authorizationCode = @OAuthFlow(authorizationUrl = "/oauth2/endpoint/TestProvider/authorize",
+                tokenUrl = "/oauth2/endpoint/TestProvider/token",
                 scopes = @OAuthScope(name = "test"))))
 @SecurityRequirement(name = "oauth", scopes = "test")
 @RolesAllowed("restricted")
