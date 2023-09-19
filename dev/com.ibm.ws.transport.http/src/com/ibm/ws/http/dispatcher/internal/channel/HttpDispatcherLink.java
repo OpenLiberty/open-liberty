@@ -30,6 +30,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
 import com.ibm.ws.http.channel.h2internal.H2InboundLink;
@@ -44,11 +45,13 @@ import com.ibm.ws.http.internal.VirtualHostImpl;
 import com.ibm.ws.http.internal.VirtualHostMap;
 import com.ibm.ws.http.internal.VirtualHostMap.RequestHelper;
 import com.ibm.ws.http.netty.MSP;
+import com.ibm.ws.http.netty.message.NettyRequestMessage;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.channelfw.base.InboundApplicationLink;
+import com.ibm.wsspi.genericbnf.exception.MessageSentException;
 import com.ibm.wsspi.http.EncodingUtils;
 import com.ibm.wsspi.http.HttpDateFormat;
 import com.ibm.wsspi.http.HttpOutputStream;
@@ -261,14 +264,18 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 //                nettyContext.channel().read();
 //            }
 
-//            try {
+            try {
 //                closeFuture = this.nettyContext.channel().close();
 //                closeFuture.sync();
-//            } catch (InterruptedException exception) {
-//                exception.printStackTrace();
-//            } finally {
-//                return;
-//            }
+                // Hopefully should close after write finishes
+                System.out.println("ON close before sync");
+                this.nettyContext.channel().closeFuture().sync();
+                System.out.println("ON close after sync");
+            } catch (InterruptedException exception) {
+                exception.printStackTrace();
+            } finally {
+                return;
+            }
 
         } else {
             if (this.vc == null) {
@@ -457,7 +464,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     /*
      * @see com.ibm.wsspi.channelfw.ConnectionReadyCallback#ready(com.ibm.wsspi.channelfw.VirtualConnection)
      */
-    @FFDCIgnore(Throwable.class)
+    @FFDCIgnore({ Throwable.class, IllegalArgumentException.class, MessageSentException.class })
     public void ready() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Received HTTP connection, hc: " + this.hashCode() + " , this link: " + this);
@@ -488,6 +495,69 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             sendResponse(StatusCodes.UNAVAILABLE, null, false);
             return;
         }
+
+        boolean completed;
+
+        try {
+//            completed = isc.parseMessage();
+//            this.isc.setNettyRequest(this.nettyRequest);
+            NettyRequestMessage.verifyRequest(isc.getRequest());
+//        } catch (UnsupportedMethodException meth) {
+//            // no FFDC required
+//            sendResponse(StatusCodes.NOT_IMPLEMENTED, null, false);
+//            return;
+//        } catch (UnsupportedProtocolVersionException ver) {
+//            // no FFDC required
+//            sendResponse(StatusCodes.UNSUPPORTED_VERSION, null, false);
+//            return;
+//        } catch (MessageTooLargeException mtle) {
+//            // no FFDC required
+//            sendResponse(StatusCodes.ENTITY_TOO_LARGE, null, false);
+//            return;
+//        } catch (MalformedMessageException mme) {
+//            //no FFDC required
+//            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                Tr.debug(tc, "parseMessage encountered a MalformedMessageException : " + mme);
+//            }
+//            sendResponse(StatusCodes.BAD_REQUEST, null, false);
+//            return;
+        } catch (IllegalArgumentException iae) {
+            //no FFDC required
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "parseMessage encountered an IllegalArgumentException : " + iae);
+            }
+//            sendResponse(StatusCodes.BAD_REQUEST, null, false);
+            isc.setHeadersParsed();
+            try {
+                isc.sendError(StatusCodes.BAD_REQUEST.getHttpError());
+            } catch (MessageSentException mse) {
+                // no FFDC required
+                finish(new Exception("HTTP Message failure"));
+            }
+            return;
+//        } catch (Http2Exception h2e) {
+//            //no FFDC required
+//            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                Tr.debug(tc, "parseMessage encountered an Http2Exception : " + h2e);
+//            }
+////            close(vc, h2e);
+//            finish(h2e);
+//            return;
+        } catch (Throwable t) {
+            FFDCFilter.processException(t,
+                                        "HttpInboundLink.handleNewInformation",
+                                        "2", this);
+//            sendResponse(StatusCodes.BAD_REQUEST, null, false);
+            isc.setHeadersParsed();
+            try {
+                isc.sendError(StatusCodes.BAD_REQUEST.getHttpError());
+            } catch (MessageSentException mse) {
+                // no FFDC required
+                finish(new Exception("HTTP Message failure"));
+            }
+            return;
+        }
+
         // Try to find a virtual host for the requested host/port..
         //VirtualHostImpl vhost = VirtualHostMap.findVirtualHost(this.myChannel.getEndpointPid(), this);
         VirtualHostImpl vhost = VirtualHostMap.findVirtualHost(null, this);
