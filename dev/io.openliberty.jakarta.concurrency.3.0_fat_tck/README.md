@@ -37,7 +37,7 @@ cd concurrency-api
 mvn clean install
 ```
 
-The API and TCK libraries will be tagged with the `3.0.2` version. Keep this in mind if you plan to follow the [Running the TCK for Verification](#Running-the-TCK-for-Verification) section. 
+The API and TCK libraries will be tagged with the `3.0.3` version. Keep this in mind if you plan to follow the [Running the TCK for Verification](#Running-the-TCK-for-Verification) section. 
 
 ### Getting Open Liberty
 
@@ -118,11 +118,11 @@ mvn clean test -B \
 ```
 
 By default the TCK will run against a staged version of Jakarta API and TCK uploaded to sonatype.
-If you want to test against a local `3.0.2-SNAPSHOT` then set these properties on the command above: 
+If you want to test against a local `3.0.3-SNAPSHOT` then set these properties on the command above: 
 
 ```txt
 -Djakarta.concurrent.tck.groupid=jakarta.enterprise.concurrent \
--Djakarta.concurrent.tck.version=3.0.2-SNAPSHOT
+-Djakarta.concurrent.tck.version=3.0.3-SNAPSHOT
 ```
 
 Finally, remember to stop the running server
