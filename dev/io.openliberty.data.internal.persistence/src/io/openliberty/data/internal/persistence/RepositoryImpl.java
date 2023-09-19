@@ -86,6 +86,7 @@ import jakarta.data.exceptions.EntityExistsException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
+import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Limit;
@@ -1184,23 +1185,99 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
-     * Handles both Query by Method Name and Query by Parameters patterns. // TODO add this second pattern one piece at a time
+     * Handles Methods with Entity Parameter, Query by Method Name, and Query by Parameters patterns.
+     * // TODO add the first and third patterns one piece at a time
      *
      * @param queryInfo  query information to populate.
      * @param countPages whether to generate a count query (for Page.totalElements and Page.totalPages).
      * @return the generated query written to a StringBuilder.
      */
     private StringBuilder generateQueryFromMethod(QueryInfo queryInfo, boolean countPages) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         EntityInfo entityInfo = queryInfo.entityInfo;
-        String o = queryInfo.entityVar;
         String methodName = queryInfo.method.getName();
+        Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
+
+        // Methods with Entity Parameter: save, insert
+        if (methodName.startsWith("save")) {
+            queryInfo.type = QueryInfo.Type.SAVE;
+            if (paramTypes.length != 1)
+                throw new UnsupportedOperationException("Repository " + "save" + " operations must have exactly 1 parameter," +
+                                                        " which can be the entity or a collection or array of entities. The " + methodName +
+                                                        " method has " + paramTypes.length + " parameters."); // TODO NLS
+            queryInfo.entityParamType = paramTypes[0];
+        } else if (methodName.startsWith("insert")) {
+            queryInfo.type = QueryInfo.Type.INSERT;
+            if (paramTypes.length != 1)
+                throw new UnsupportedOperationException("Repository " + "insert" + " operations must have exactly 1 parameter," +
+                                                        " which can be the entity or a collection or array of entities. The " + methodName +
+                                                        " method has " + paramTypes.length + " parameters."); // TODO NLS
+            queryInfo.entityParamType = paramTypes[0];
+        }
+        // Methods with Entity Parameter: delete, update
+        if (queryInfo.type == null && paramTypes.length == 1) {
+            if (defaultEntityClass.equals(paramTypes[0])) {
+                queryInfo.entityParamType = paramTypes[0];
+            } else if (CrudRepository.class.equals(queryInfo.method.getDeclaringClass())) {
+                if ("delete".equals(methodName) || "deleteAll".equals(methodName)) {
+                    queryInfo.type = QueryInfo.Type.DELETE_WITH_ENTITY_PARAM;
+                    queryInfo.entityParamType = paramTypes[0];
+                }
+            } else if (paramTypes[0].isArray()) {
+                if (defaultEntityClass.equals(paramTypes[0].getComponentType()))
+                    queryInfo.entityParamType = paramTypes[0];
+            } else if (Iterable.class.isAssignableFrom(paramTypes[0]) || Stream.class.isAssignableFrom(paramTypes[0])) {
+                Type paramType = queryInfo.method.getGenericParameterTypes()[0];
+                if (paramType instanceof ParameterizedType) {
+                    Type[] typeVars = ((ParameterizedType) paramType).getActualTypeArguments();
+                    Type typeVar = typeVars.length == 1 ? typeVars[0] : null;
+                    if (defaultEntityClass.equals(typeVar)) {
+                        queryInfo.entityParamType = paramTypes[0];
+                    }
+                }
+            }
+        }
+        if (queryInfo.type == null && queryInfo.entityParamType != null) {
+            if (methodName.startsWith("delete") || methodName.startsWith("remove")) {
+                queryInfo.type = QueryInfo.Type.DELETE_WITH_ENTITY_PARAM;
+            } else if (methodName.startsWith("update")) {
+                queryInfo.type = QueryInfo.Type.UPDATE_WITH_ENTITY_PARAM;
+            } else {
+                throw new UnsupportedOperationException("The " + methodName + " method of the " + repositoryInterface.getName() +
+                                                        " repository interface must have a name that begins with one of " +
+                                                        "(delete, insert, save, update)" +
+                                                        " because the method's parameter accepts entity instances.");
+            }
+        }
+        if (queryInfo.type == QueryInfo.Type.DELETE_WITH_ENTITY_PARAM) {
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "Method with Entity Parameter identified as " + QueryInfo.Type.DELETE_WITH_ENTITY_PARAM);
+            if (defaultEntityClass.equals(paramTypes[0])) { // delete with single entity parameter
+                methodName = entityInfo.versionAttributeName == null ? "deleteById" : ("deleteByIdAnd" + entityInfo.versionAttributeName);
+            } else { // delete with multiple entity parameters, delete one at a time
+                if (entityInfo.idClassAttributeAccessors == null)
+                    methodName = entityInfo.versionAttributeName == null ? "deleteById" : ("deleteByIdAnd" + entityInfo.versionAttributeName);
+                else
+                    throw new MappingException("The deleteAll operation cannot be used on entities with composite IDs."); // TODO NLS
+            }
+        } else if (queryInfo.type == QueryInfo.Type.UPDATE_WITH_ENTITY_PARAM) {
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "Method with Entity Parameter identified as " + QueryInfo.Type.UPDATE_WITH_ENTITY_PARAM);
+            throw new UnsupportedOperationException("TODO: implement update with entity parameter"); // TODO
+        }
+
+        String o = queryInfo.entityVar;
         StringBuilder q = null;
-        if (methodName.startsWith("find")) {
+        if (queryInfo.type == QueryInfo.Type.SAVE || queryInfo.type == QueryInfo.Type.INSERT) {
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "Method with Entity Parameter identified as " + queryInfo.type);
+        } else if (methodName.startsWith("find")) {
             Select select = queryInfo.method.getAnnotation(Select.class);
             List<String> selections = select == null ? new ArrayList<>() : null;
             int by = methodName.indexOf("By", 4);
             int c = by < 0 ? methodName.length() : by + 2;
-            if (by > 4 && "findAllById".equals(methodName) && Iterable.class.equals(queryInfo.method.getParameterTypes()[0]))
+            if (by > 4 && "findAllById".equals(methodName) && Iterable.class.equals(paramTypes[0]))
                 methodName = "findAllByIdIn"; // CrudRepository.findAllById(Iterable)
             else
                 parseFindBy(queryInfo, methodName, by, selections);
@@ -1216,48 +1293,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (orderBy >= c)
                 parseOrderBy(queryInfo, orderBy, q);
             queryInfo.type = QueryInfo.Type.FIND;
-        } else if (queryInfo.method.getName().startsWith("save")) {
-            queryInfo.type = QueryInfo.Type.MERGE;
-            Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-            if (paramTypes.length != 1)
-                throw new UnsupportedOperationException("Repository " + "save" + " operations must have exactly 1 parameter," +
-                                                        " which can be the entity or a collection or array of entities. The " + queryInfo.method.getName() +
-                                                        " method has " + paramTypes.length + " parameters."); // TODO NLS
-            queryInfo.saveParamType = paramTypes[0];
-        } else if (methodName.startsWith("insert")) {
-            queryInfo.type = QueryInfo.Type.INSERT;
-            Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-            if (paramTypes.length != 1)
-                throw new UnsupportedOperationException("Repository " + "insert" + " operations must have exactly 1 parameter," +
-                                                        " which can be the entity or a collection or array of entities. The " + queryInfo.method.getName() +
-                                                        " method has " + paramTypes.length + " parameters."); // TODO NLS
-            queryInfo.saveParamType = paramTypes[0];
         } else if (methodName.startsWith("delete") || methodName.startsWith("remove")) {
             int by = methodName.indexOf("By", 6);
             int c = by < 0 ? methodName.length() : by + 2;
             if (by > 6) {
-                if ("deleteAllById".equals(methodName) && Iterable.class.isAssignableFrom(queryInfo.method.getParameterTypes()[0]))
+                if ("deleteAllById".equals(methodName) && Iterable.class.isAssignableFrom(paramTypes[0]))
                     if (entityInfo.idClassAttributeAccessors == null)
                         methodName = "deleteAllByIdIn"; // CrudRepository.deleteAllById(Iterable)
                     else
                         throw new MappingException("The deleteAllById operation cannot be used on entities with composite IDs."); // TODO NLS
-            } else if (methodName.length() == 6) {
-                Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-                if (paramTypes.length == 1 && (Object.class.equals(paramTypes[0]) || entityInfo.getType().equals(paramTypes[0]))) {
-                    methodName = entityInfo.versionAttributeName == null ? "deleteById" : ("deleteByIdAnd" + entityInfo.versionAttributeName);
-                    queryInfo.type = QueryInfo.Type.DELETE_WITH_ENTITY_PARAM; // CrudRepository.delete(entity)
-                    c = 8;
-                }
-            } else if (methodName.length() == 9 && methodName.endsWith("All")) {
-                Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-                if (paramTypes.length == 1 && Iterable.class.isAssignableFrom(paramTypes[0]))
-                    if (entityInfo.idClassAttributeAccessors == null) {
-                        methodName = entityInfo.versionAttributeName == null ? "deleteById" : ("deleteByIdAnd" + entityInfo.versionAttributeName);
-                        queryInfo.type = QueryInfo.Type.DELETE_WITH_ENTITY_PARAM; // CrudRepository.deleteAll(Iterable), one at a time
-                        c = 8;
-                    } else {
-                        throw new MappingException("The deleteAll operation cannot be used on entities with composite IDs."); // TODO NLS
-                    }
             }
             boolean isFindAndDelete = queryInfo.isFindAndDelete();
             if (isFindAndDelete) {
@@ -1929,18 +1973,18 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
 
                 switch (queryInfo.type) {
-                    case MERGE: {
+                    case SAVE: {
                         em = entityInfo.persister.createEntityManager();
 
                         List<Object> results;
-                        if (queryInfo.saveParamType.isArray()) {
+                        if (queryInfo.entityParamType.isArray()) {
                             results = new ArrayList<>();
                             Object a = args[0];
                             int length = Array.getLength(a);
                             for (int i = 0; i < length; i++)
                                 results.add(em.merge(toEntity(Array.get(a, i))));
                             em.flush();
-                        } else if (Iterable.class.isAssignableFrom(queryInfo.saveParamType)) {
+                        } else if (Iterable.class.isAssignableFrom(queryInfo.entityParamType)) {
                             results = new ArrayList<>();
                             for (Object e : ((Iterable<?>) args[0]))
                                 results.add(em.merge(toEntity(e)));
@@ -1979,12 +2023,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     case INSERT: {
                         em = entityInfo.persister.createEntityManager();
 
-                        if (queryInfo.saveParamType.isArray()) {
+                        if (queryInfo.entityParamType.isArray()) {
                             Object a = args[0];
                             int length = Array.getLength(a);
                             for (int i = 0; i < length; i++)
                                 em.persist(toEntity(Array.get(a, i)));
-                        } else if (Iterable.class.isAssignableFrom(queryInfo.saveParamType)) {
+                        } else if (Iterable.class.isAssignableFrom(queryInfo.entityParamType)) {
                             for (Object e : ((Iterable<?>) args[0]))
                                 em.persist(toEntity(e));
                         } else {

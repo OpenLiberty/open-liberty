@@ -41,7 +41,8 @@ class QueryInfo {
     private static final TraceComponent tc = Tr.register(QueryInfo.class);
 
     static enum Type {
-        COUNT, DELETE, DELETE_WITH_ENTITY_PARAM, EXISTS, FIND, FIND_AND_DELETE, INSERT, MERGE, RESOURCE_ACCESS, UPDATE
+        COUNT, DELETE, DELETE_WITH_ENTITY_PARAM, EXISTS, FIND, FIND_AND_DELETE, INSERT, SAVE, RESOURCE_ACCESS,
+        UPDATE, UPDATE_WITH_ENTITY_PARAM
     }
 
     /**
@@ -70,6 +71,12 @@ class QueryInfo {
      * Information about the type of entity to which the query pertains.
      */
     EntityInfo entityInfo;
+
+    /**
+     * Type of the first method parameter if its type is the entity,
+     * an array of entity, an Iterable of entity, or a Stream of entity.
+     */
+    Class<?> entityParamType;
 
     /**
      * Entity variable name. "o" is used as the default in generated queries.
@@ -165,11 +172,6 @@ class QueryInfo {
      * which resolves to { CompletionStage.class, Product[].class, Product.class }
      */
     final List<Class<?>> returnTypeAtDepth;
-
-    /**
-     * Type of the first parameter to a save operation. Null if not a save operation.
-     */
-    Class<?> saveParamType;
 
     /**
      * Ordered list of Sort criteria, which can be defined statically via the OrderBy annotation or keyword,
@@ -672,7 +674,7 @@ class QueryInfo {
         q.paramCount = paramCount;
         q.paramAddedCount = paramAddedCount;
         q.paramNames = paramNames;
-        q.saveParamType = saveParamType;
+        q.entityParamType = entityParamType;
         q.sorts = sorts;
         q.type = type;
         q.validateParams = validateParams;
