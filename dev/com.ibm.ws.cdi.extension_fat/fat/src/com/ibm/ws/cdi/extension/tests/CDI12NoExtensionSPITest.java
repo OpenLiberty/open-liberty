@@ -46,14 +46,11 @@ public class CDI12NoExtensionSPITest extends FATServletClient {
 
     @Server(SERVER_NAME)
     @TestServlets({
-                    @TestServlet(servlet = SPIExtensionServlet.class, contextRoot = APP_NAME)})
+                    @TestServlet(servlet = SPIExtensionServlet.class, contextRoot = APP_NAME) })
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = CDIExtensionRepeatActions.repeat(SERVER_NAME,
-                                                                   CDIExtensionRepeatActions.EE10_PLUS,
-                                                                   CDIExtensionRepeatActions.EE9_PLUS,
-                                                                   CDIExtensionRepeatActions.EE7_PLUS);
+    public static RepeatTests r = CDIExtensionRepeatActions.defaultRepeat(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -72,7 +69,7 @@ public class CDI12NoExtensionSPITest extends FATServletClient {
     public static void cleanup() throws Exception {
         try {
             final String METHOD_NAME = "cleanup";
-           Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Stopping the server.");
+            Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Stopping the server.");
             if (server.isStarted()) {
                 server.stopServer();
             }

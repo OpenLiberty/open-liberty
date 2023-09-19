@@ -6,7 +6,7 @@ Subsystem-Content:
   cdi.spi.extension.with.internals.jakarta; version="[1.0,1.100)",
   cdi.spi.misplaced.jakarta; version="[1.0,1.100)",
   cdi.internals-4.0; type="osgi.subsystem.feature",
-  io.openliberty.cdi-4.0; type="osgi.subsystem.feature"
+  io.openliberty.cdi-4.0; ibm.tolerates:="4.1"; type="osgi.subsystem.feature"
 Subsystem-Type: osgi.subsystem.feature
 IBM-API-Package: com.ibm.ws.cdi.extension.spi.test.bundle.with.internals,
   com.ibm.ws.cdi.extension.spi.test.bundle.with.internals.getclass.beaninjection,

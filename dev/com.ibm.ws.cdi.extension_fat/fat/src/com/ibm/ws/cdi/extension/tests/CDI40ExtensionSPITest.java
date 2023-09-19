@@ -39,7 +39,7 @@ import componenttest.topology.utils.FATServletClient;
 /**
  * Test the runtime extension to function correctly
  *
- * This is split from CDI12ExtensionSPITest because the test-bundle needs access to CDI internals. 
+ * This is split from CDI12ExtensionSPITest because the test-bundle needs access to CDI internals.
  * getBuildCompatibleExtensions() is only avaialbe to internal components.
  * Rather than enable access to internals for everything I split the test so we can test with and without that access.
  */
@@ -59,7 +59,8 @@ public class CDI40ExtensionSPITest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = CDIExtensionRepeatActions.repeat(SERVER_NAME,
-                                                                   CDIExtensionRepeatActions.EE10_PLUS);
+                                                                   CDIExtensionRepeatActions.EE10_PLUS,
+                                                                   CDIExtensionRepeatActions.EE11_PLUS);
 
     @BeforeClass
     public static void setUp() throws Exception {

@@ -43,10 +43,7 @@ public class ObserverTest extends FATServletClient {
     public static final String SERVER_NAME = "observerServer";
 
     @ClassRule
-    public static RepeatTests r = CDIExtensionRepeatActions.repeat(SERVER_NAME,
-                                                                   CDIExtensionRepeatActions.EE10_PLUS,
-                                                                   CDIExtensionRepeatActions.EE9_PLUS,
-                                                                   CDIExtensionRepeatActions.EE7_PLUS);
+    public static RepeatTests r = CDIExtensionRepeatActions.defaultRepeat(SERVER_NAME);
 
     @Server("observerServer")
     @TestServlet(servlet = ObserverTestServlet.class, contextRoot = APP_NAME)

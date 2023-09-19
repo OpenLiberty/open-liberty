@@ -69,10 +69,7 @@ public class CDI12ExtensionTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = CDIExtensionRepeatActions.repeat(SERVER_NAME,
-                                                                   CDIExtensionRepeatActions.EE10_PLUS,
-                                                                   CDIExtensionRepeatActions.EE9_PLUS,
-                                                                   CDIExtensionRepeatActions.EE7_PLUS);
+    public static RepeatTests r = CDIExtensionRepeatActions.defaultRepeat(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {
