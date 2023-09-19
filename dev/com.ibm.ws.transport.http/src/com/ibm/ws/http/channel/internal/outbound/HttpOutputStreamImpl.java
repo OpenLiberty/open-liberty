@@ -167,9 +167,13 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
      */
     @Override
     public void clear() {
+        // CLear the output buffers if Netty is not in use. Netty will clear when buffer conversion is used
+//        if (null != this.output && !((HttpInboundServiceContextImpl) isc).getHttpConfig().useNetty()) {
         if (null != this.output) {
             for (int i = 0; i < this.output.length; i++) {
                 if (null != this.output[i]) {
+                    // Will only release the buffers if Netty is not in use
+//                    if (!((HttpInboundServiceContextImpl) isc).getHttpConfig().useNetty())
                     this.output[i].release();
                     this.output[i] = null;
                 }
@@ -582,7 +586,9 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             this.bufferedCount = 0;
             this.outputIndex = 0;
             // Note: this logic only works for sync writes
+//            if (writingBody && !((HttpInboundServiceContextImpl) isc).getHttpConfig().useNetty()) {
             if (writingBody) {
+                System.out.println("In here, marking as having content!");
                 this.output[0].clear();
                 for (int i = 1; i < this.output.length; i++) {
                     if (null != this.output[i]) {

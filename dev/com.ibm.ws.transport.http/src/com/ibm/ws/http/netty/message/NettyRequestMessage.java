@@ -28,6 +28,7 @@ import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.netty.MSP;
+import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.wsspi.genericbnf.HeaderStorage;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedMethodException;
@@ -81,6 +82,12 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     private ChannelHandlerContext nettyContext;
 
+    /** Default URI is just a slash */
+    private static final byte[] SLASH = { '/' };
+
+    /** Request-Resource as a byte[] */
+    private final byte[] myURIBytes = SLASH;
+
     public NettyRequestMessage(FullHttpRequest request, HttpInboundServiceContext isc, ChannelHandlerContext nettyContext) {
         init(request, isc, nettyContext);
 
@@ -107,6 +114,20 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         HttpChannelConfig config = isc instanceof HttpInboundServiceContextImpl ? ((HttpInboundServiceContextImpl) isc).getHttpConfig() : null;
 
         super.init(request, isc, config);
+//        verifyRequest();
+    }
+
+    /**
+     *
+     */
+    public static void verifyRequest(HttpRequestMessage message) {
+        // TODO Add check for verifying request integrity
+        // Method check possibly handled by Netty. Need to verify
+        // Path check need to add some for ourselves
+        if (!message.getMethod().equalsIgnoreCase(HttpMethod.CONNECT.toString()))
+            message.setRequestURI(message.getRequestURI());
+        // Need to check if Scheme is also verified by Netty coded or add that ourselves
+        // Probably need to add check of authority ourselves as well
     }
 
     @Override
@@ -188,7 +209,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             method = MethodValues.find(request.method().name());
 
         }
-
+        System.out.println("Returning method: " + method.getName());
         return method.getName();
     }
 
@@ -225,7 +246,10 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     @Override
     public String getRequestURI() {
         MSP.log("getRequestURI: query.path()" + query.path() + "query uri: " + query.uri());
-
+        if (getMethod().equalsIgnoreCase(HttpMethod.CONNECT.toString())) {
+            System.out.println("Found connect method, returning slash");
+            return GenericUtils.getEnglishString(SLASH);
+        }
         return query.path();
     }
 
@@ -299,25 +323,49 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     @Override
     public void setRequestURL(String url) {
         //TODO
-
+        setRequestURL(GenericUtils.getEnglishBytes(url));
     }
 
     @Override
     public void setRequestURL(byte[] url) {
         // TODO Auto-generated method stub
-
+        System.out.println("setRequestURL Netty called but nothing was done");
     }
 
     @Override
     public void setRequestURI(String uri) {
         // TODO Auto-generated method stub
-
+        setRequestURI(GenericUtils.getEnglishBytes(uri));
     }
 
     @Override
     public void setRequestURI(byte[] uri) {
+        System.out.println("setRequestURI Netty called but limited work done");
         // TODO Auto-generated method stub
+        // Just check for validity of URI
+        if (null == uri || 0 == uri.length) {
+            throw new IllegalArgumentException("setRequestURI: null input");
+        }
 
+        if ('*' == uri[0]) {
+            // URI of "*" can only be one character long to be valid
+            if (1 != uri.length && '?' != uri[1]) {
+                String value = GenericUtils.getEnglishString(uri);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "setRequestURI: invalid uri [" + value + "]");
+                }
+                throw new IllegalArgumentException("Invalid uri: " + value);
+            }
+        } else if ('/' != uri[0]) {
+            String value = GenericUtils.getEnglishString(uri);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "setRequestURI: invalid uri [" + value + "]");
+            }
+            throw new IllegalArgumentException("Invalid uri: " + value);
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setRequestURI: finished parsing " + getRequestURI());
+        }
     }
 
     @Override
@@ -410,8 +458,16 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public boolean isPushSupported() {
-        boolean canPush = this.nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class).connection().remote().allowPushTo();
-        System.out.println("Can I push? " + canPush);
+        this.nettyContext.channel().pipeline().names().forEach(handler -> System.out.println(handler));
+        HttpToHttp2ConnectionHandler handler = this.nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
+        if (Objects.isNull(handler)) {
+            System.out.println("Could NOT find handler for push!");
+            return false;
+        }
+        boolean canPush = handler.connection().remote().allowPushTo();
+        System.out.println("Can I push remote? " + canPush);
+//        canPush = handler.connection().local().allowPushTo();
+//        System.out.println("Can I push local? " + canPush);
         return canPush;
     }
 
@@ -430,6 +486,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "HTTPRequestMessageImpl pbPath = " + pbPath);
         }
+        this.nettyContext.channel().pipeline().names().forEach(handler -> System.out.println(handler));
         HttpToHttp2ConnectionHandler handler = this.nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
         Http2Connection connection = handler.connection();
 
@@ -490,7 +547,10 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
                 @Override
                 public void run() {
                     try {
-                        nettyContext.pipeline().get(HttpDispatcherHandler.class).channelRead(nettyContext, newRequest);
+                        nettyContext.channel().pipeline().names().forEach(handler -> System.out.println(handler));
+                        ((HttpDispatcherHandler) nettyContext.channel().pipeline().get(HttpPipelineInitializer.HTTP_DISPATCHER_HANDLER_NAME)).channelRead(nettyContext,
+                                                                                                                                                          newRequest);;
+//                        nettyContext.pipeline().get(HttpDispatcherHandler.class).channelRead(nettyContext, newRequest);
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
                         // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
