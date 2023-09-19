@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.cdi.jee;
 
@@ -25,6 +22,9 @@ import com.ibm.ws.cdi.jee.jsp.SimpleJSPTest;
 import com.ibm.ws.cdi.jee.servlet.ServletStartupTest;
 import com.ibm.ws.cdi.jee.webservices.CDI12WebServicesTest;
 
+import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.RepeatTests;
+
 /**
  * Tests specific to JEE integration
  */
@@ -40,5 +40,10 @@ import com.ibm.ws.cdi.jee.webservices.CDI12WebServicesTest;
                 Faces40CDISessionPersistence.class,
 })
 public class FATSuite {
+
+    //not bothering to repeat with EE8 ... the EE9 version is mostly a transformed version of the EE8 code
+    public static RepeatTests defaultRepeat(String serverName) {
+        return EERepeatActions.repeat(serverName, EERepeatActions.EE10, EERepeatActions.EE11, EERepeatActions.EE9, EERepeatActions.EE7);
+    }
 
 }

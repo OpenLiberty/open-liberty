@@ -43,8 +43,7 @@ public class SimpleJSPTest {
     public static final String APP_NAME = "simpleJSPApp";
     public static final String SERVER_NAME = "cdi12BasicServer";
 
-    //not bothering to repeat with EE8 ... the EE9 version is mostly a transformed version of the EE8 code
-    @ClassRule
+    @ClassRule //This test currently causes J2S errors when running with EE11
     public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE9, EERepeatActions.EE7);
 
     @Server(SERVER_NAME)

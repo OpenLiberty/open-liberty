@@ -25,13 +25,13 @@ import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
+import com.ibm.ws.cdi.jee.FATSuite;
 import com.ibm.ws.cdi.jee.ShrinkWrapUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -43,9 +43,8 @@ public class SimpleJSFWithSharedLibTest {
     public static final String APP_NAME = "simpleJSFWithSharedLib";
     public static final String SERVER_NAME = "cdi12JSFWithSharedLibServer";
 
-    //not bothering to repeat with EE8 ... the EE9 version is mostly a transformed version of the EE8 code
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE9, EERepeatActions.EE7);
+    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

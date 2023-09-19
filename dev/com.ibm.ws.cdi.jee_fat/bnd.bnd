@@ -58,7 +58,17 @@ tested.features: \
         restfulwsclient-3.1,\
         concurrent-3.0,\
         jsonp-2.1,\
-        restfulws-3.1
+        restfulws-3.1,\
+        noship-1.0,\
+        cdi-4.1,\
+        servlet-6.1,\
+        restfulwsclient-4.0,\
+        restfulws-4.0,\
+        expressionlanguage-6.0,\
+        faces-5.0,\
+        websocket-2.2,\
+        beanvalidation-3.1,\
+        pages-4.0
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}

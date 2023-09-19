@@ -46,8 +46,7 @@ public class JEEInjectionTargetTest extends FATServletClient {
     public static final String APP_NAME = "jeeInjectionTargetTest";
     public static final String SERVER_NAME = "cdi12JEEInjectionTargetTestServer";
 
-    //not bothering to repeat with EE8 ... the EE9 version is mostly a transformed version of the EE8 code
-    @ClassRule
+    @ClassRule //This Test uses ManagedBeans which is not in EE11
     public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE9, EERepeatActions.EE7);
 
     @Server(SERVER_NAME)
