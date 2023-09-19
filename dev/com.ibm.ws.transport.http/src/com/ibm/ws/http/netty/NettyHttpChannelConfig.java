@@ -74,7 +74,42 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
     }
 
     public void updateConfig(ConfigElement element, Map<String, Object> config) {
-        //TODO
+        MSP.log("updating samesite config");
+
+        switch (element) {
+
+            case COMPRESSION: {
+                this.useCompressionOptions = Boolean.TRUE;
+                this.parseCompressionOptions(config);
+                break;
+            }
+
+            case HEADERS: {
+                this.useHeadersOptions = Boolean.TRUE;
+                this.parseHeaderOptions(config);
+                break;
+            }
+
+            case HTTP_OPTIONS: {
+                this.parseHttpOptions(config);
+                break;
+            }
+
+            case REMOTE_IP: {
+                this.useRemoteIpOptions = Boolean.TRUE;
+                this.parseRemoteIpOptions(config);
+                break;
+            }
+
+            case SAMESITE: {
+                this.useSameSiteOptions = Boolean.TRUE;
+                this.parseSameSiteOptions(config);
+                break;
+            }
+
+            default:
+                break;
+        }
     }
 
     private void parseCompressionOptions(Map<String, Object> options) {
