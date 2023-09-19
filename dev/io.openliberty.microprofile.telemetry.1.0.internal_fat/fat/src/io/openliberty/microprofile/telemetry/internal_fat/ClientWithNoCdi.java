@@ -25,7 +25,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.CDIArchiveHelper;
-import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
@@ -60,10 +59,6 @@ public class ClientWithNoCdi {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        PropertiesAsset appConfig = new PropertiesAsset()
-                        .addProperty("otel.sdk.disabled", "false")
-                        .addProperty("otel.traces.exporter", "in-memory")
-                        .addProperty("otel.bsp.schedule.delay", "100");
 
         WebArchive noCDIApp = ShrinkWrap.create(WebArchive.class, NO_CDI_APP_NAME + ".war")
                         .addPackage(ClientTriggeringServlet.class.getPackage());
