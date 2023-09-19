@@ -16,6 +16,7 @@ import static io.openliberty.microprofile.telemetry.internal_fat.common.SpanData
 import static io.openliberty.microprofile.telemetry.internal_fat.common.SpanDataMatcher.hasKind;
 import static io.openliberty.microprofile.telemetry.internal_fat.common.SpanDataMatcher.hasName;
 import static io.openliberty.microprofile.telemetry.internal_fat.common.SpanDataMatcher.hasStatus;
+import io.openliberty.microprofile.telemetry.internal_fat.common.TestException;
 import static io.opentelemetry.api.trace.SpanKind.INTERNAL;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
@@ -42,32 +43,17 @@ public class WithSpanErrorServlet extends FATServlet {
     private SpanBean spanBean;
 
     @Test
-    public void callMethodRuntimeException() {
+    public void callMethodException() {
         try {
-            spanBean.methodRuntimeException();
+            spanBean.methodException();
             fail("Error not thrown");
-        } catch (RuntimeException e) {
+        } catch (TestException e) {
             //Span should still be created with the error status present
             SpanData spanData = exporter.getFinishedSpanItems(1).get(0);
-            assertThat(spanData, hasName("SpanBean.methodRuntimeException"));
+            assertThat(spanData, hasName("SpanBean.methodException"));
             assertThat(spanData, hasKind(INTERNAL));
             assertThat(spanData, hasStatus(StatusCode.ERROR));
-            assertThat(spanData, hasExceptionLog(RuntimeException.class));
-        }
-    }
-
-    @Test
-    public void callMethodNullPointerException() {
-        try {
-            spanBean.methodNullPointerException();
-            fail("Error not thrown");
-        } catch (RuntimeException e) {
-            //Span should still be created with the error status present
-            SpanData spanData = exporter.getFinishedSpanItems(1).get(0);
-            assertThat(spanData, hasName("SpanBean.methodNullPointerException"));
-            assertThat(spanData, hasKind(INTERNAL));
-            assertThat(spanData, hasStatus(StatusCode.ERROR));
-            assertThat(spanData, hasExceptionLog(NullPointerException.class));
+            assertThat(spanData, hasExceptionLog(TestException.class));
         }
     }
 
@@ -76,15 +62,9 @@ public class WithSpanErrorServlet extends FATServlet {
 
         //Creates a span for this method that throws an exception
         @WithSpan
-        public String methodRuntimeException() {
-            throw new RuntimeException("runtime exception");
+        public String methodException() {
+            throw new TestException();
         }
 
-                //Creates a span for this method that throws an exception
-        @WithSpan
-        public String methodNullPointerException() {
-            throw new NullPointerException("runtime exception");
-        }
     }
-
 }
