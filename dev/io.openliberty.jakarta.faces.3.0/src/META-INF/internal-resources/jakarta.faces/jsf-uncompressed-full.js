@@ -582,7 +582,7 @@ if (!myfaces._impl.core._Runtime) {
             xhr.open("GET", src, false);
 
             if (charSet) {
-                xhr.setRequestHeader("Content-Type", "application/x-javascript; charset:" + charSet);
+                xhr.setRequestHeader("Content-Type", "text/javascript; charset:" + charSet);
             }
 
             xhr.send(null);
@@ -3445,10 +3445,10 @@ _MF_CLS(_PFX_UTIL+"_ListenerQueue", myfaces._impl._util._Queue,
 
     /**
      * generic broadcast with a number of arguments being passed down
-     * @param {Object} argument the arguments passed down which are broadcast
+     * @param {Object} args the arguments passed down which are broadcast
      */
-    broadcastEvent : function(argument) {
-        var _args = myfaces._impl._util._Lang.objToArray(arguments);
+    broadcastEvent : function(args) {
+        var _args = myfaces._impl._util._Lang.objToArray(arguments); // XXX arguments vs. args?
 
         var broadCastFunc = function(element) {
             element.apply(null, _args);
@@ -3470,7 +3470,7 @@ _MF_CLS(_PFX_UTIL+"_ListenerQueue", myfaces._impl._util._Queue,
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,©
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -3602,7 +3602,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                         //we have to move this into an inner if because chrome otherwise chokes
                         //due to changing the and order instead of relying on left to right
                         //if jsf.js is already registered we do not replace it anymore
-                        if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=javax.faces") == -1) || (src.indexOf("/jsf.js") == -1
+                        if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=jakarta.faces") == -1) || (src.indexOf("/jsf.js") == -1
                                 && src.indexOf("/jsf-uncompressed.js") == -1)) {
                             if (finalScripts.length) {
                                 //script source means we have to eval the existing
@@ -3715,7 +3715,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                 elementId = elem.name;
 
                 //last check for uniqueness
-                if (this.getElementsByName(elementId).length > 1) {
+                if (document.getElementsByName(elementId).length > 1) {
                     //no unique element name so we need to perform
                     //a return null to let the caller deal with this issue
                     return null;
@@ -4063,6 +4063,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
      */
     outerHTML : function(item, markup, preserveFocus) {
         this._assertStdParams(item, markup, "outerHTML");
+        markup = this._Lang.trim(markup);
         // we can work on a single element in a cross browser fashion
         // regarding the focus thanks to the
         // icefaces team for providing the code
@@ -4071,7 +4072,6 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             this.cloneAttributes(item, replacingInput);
             return item;
         } else {
-            markup = this._Lang.trim(markup);
             if (markup !== "") {
                 var ret = null;
 
@@ -4111,35 +4111,6 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             // and remove the old item, in case of an empty newtag and do nothing else
             this._removeNode(item, false);
             return null;
-        }
-    },
-
-    isFunctionNative: function(func) {
-        return /^\s*function[^{]+{\s*\[native code\]\s*}\s*$/.test(String(func));
-    },
-
-    detectAttributes: function(element) {
-        //test if 'hasAttribute' method is present and its native code is intact
-        //for example, Prototype can add its own implementation if missing
-        if (element.hasAttribute && this.isFunctionNative(element.hasAttribute)) {
-            return function(name) {
-                return element.hasAttribute(name);
-            }
-        } else {
-            try {
-                //when accessing .getAttribute method without arguments does not throw an error then the method is not available
-                element.getAttribute;
-
-                var html = element.outerHTML;
-                var startTag = html.match(/^<[^>]*>/)[0];
-                return function(name) {
-                    return startTag.indexOf(name + '=') > -1;
-                }
-            } catch (ex) {
-                return function(name) {
-                    return element.getAttribute(name);
-                }
-            }
         }
     },
 
@@ -5177,14 +5148,18 @@ if (_MF_SINGLTN) {
                 return v.value;	//	string
             }
 
-            // this should work on Opera 7, but it's a little on the crashy side
-            if ((node.getAttributeNode) && (node.getAttributeNode(ta))) {
-                return (node.getAttributeNode(ta)).value;	//	string
-            } else if (node.getAttribute(ta)) {
+
+
+            if (node.getAttribute(ta)) {
                 return node.getAttribute(ta);	//	string
             } else if (node.getAttribute(ta.toLowerCase())) {
                 return node.getAttribute(ta.toLowerCase());	//	string
+
             }
+            //there used to be a getAttributeNode check here for really old
+            //browsers, I had to remove it because of a firefox warning
+            //which uses a regexp scan for this method to be deprecated
+
             return null;	//	string
         },
 
@@ -5564,7 +5539,7 @@ if (!myfaces.oam) {
             if (typeof form == 'undefined') {
                 form = document.getElementById(formname);
             }
-    
+
             if (typeof form.elements[name] != 'undefined' && (form.elements[name].nodeName == 'INPUT' || form.elements[name].nodeName == 'input')) {
                 form.elements[name].value = value;
             }
@@ -5577,7 +5552,7 @@ if (!myfaces.oam) {
                 form.appendChild(newInput);
             }
         };
-        
+
         /**
          * clears a hidden input field
          *
@@ -5587,17 +5562,17 @@ if (!myfaces.oam) {
          */
         this.clearHiddenInput = function(formname, name, value) {
             var form = document.forms[formname];
-    
+
             if (typeof form == 'undefined') {
                 form = document.getElementById(formname);
             }
-    
+
             var hInput = form.elements[name];
             if (typeof hInput != 'undefined') {
                 form.removeChild(hInput);
             }
         };
-        
+
         /**
          * does special form submit remapping
          * remaps the issuing command link into something
@@ -5609,22 +5584,22 @@ if (!myfaces.oam) {
          * @param params
          */
         this.submitForm = function(formName, linkId, target, params) {
-    
+
             var clearFn = 'clearFormHiddenParams_' + formName.replace(/-/g, '\$:').replace(/:/g, '_');
             if (typeof window[clearFn] == 'function') {
                 window[clearFn](formName);
             }
-    
+
             var form = document.forms[formName];
             if (typeof form == 'undefined') {
                 form = document.getElementById(formName);
             }
-    
+
             //autoscroll code
             if (myfaces.core.config.autoScroll && typeof window.getScrolling != 'undefined') {
                 myfaces.oam.setHiddenInput(formName, 'autoScroll', getScrolling());
             }
-    
+
             if (myfaces.core.config.ieAutoSave) {
                 var agentString = navigator.userAgent.toLowerCase();
                 var version = navigator.appVersion;
@@ -5634,7 +5609,7 @@ if (!myfaces.oam) {
                     }
                 }
             }
-    
+
             var oldTarget = form.target;
             if (target != null) {
                 form.target = target;
@@ -5643,11 +5618,11 @@ if (!myfaces.oam) {
                 for (var i = 0, param; (param = params[i]); i++) {
                     myfaces.oam.setHiddenInput(formName, param[0], param[1]);
                 }
-    
+
             }
-    
+
             myfaces.oam.setHiddenInput(formName, formName + ':' + '_idcl', linkId);
-    
+
             if (form.onsubmit) {
                 var result = form.onsubmit();
                 if ((typeof result == 'undefined') || result) {
@@ -5655,27 +5630,33 @@ if (!myfaces.oam) {
                         form.submit();
                     }
                     catch(e) {
+                        if (window.console) {
+                            console.error(e);
+                        }
                     }
                 }
-    
+
             }
             else {
                 try {
                     form.submit();
                 }
                 catch(e) {
+                    if (window.console) {
+                        console.error(e);
+                    }
                 }
             }
-    
+
             form.target = oldTarget;
             if ((typeof params != 'undefined') && params != null) {
-    
+
                 for (var i = 0, param; (param = params[i]); i++) {
                     myfaces.oam.clearHiddenInput(formName, param[0], param[1]);
                 }
-    
+
             }
-    
+
             myfaces.oam.clearHiddenInput(formName, formName + ':' + '_idcl', linkId);
             return false;
         };
@@ -6401,19 +6382,19 @@ _MF_CLS(_PFX_XHR + "engine.IFrame", myfaces._impl.xhrCore.engine.BaseRequest,
              * constructor which shifts the arguments
              * to the protected properties of this clas
              *
-             * @param arguments
+             * @param args
              */
-            constructor_: function (arguments) {
+            constructor_: function (args) {
                 //we fetch in the standard arguments
 
-                this._callSuper("constructor", arguments);
+                this._callSuper("constructor", args);
 
                 this._initDefaultFinalizableFields();
                 //this._requestHeader = {};
 
                 this._XHRConst = myfaces._impl.xhrCore.engine.XhrConst;
 
-                this._Lang.applyArgs(this, arguments);
+                this._Lang.applyArgs(this, args);
                 this.readyState = this._XHRConst.READY_STATE_UNSENT;
                 this._startTimeout();
             },
@@ -6722,7 +6703,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
     _ajaxType:"POST",
 
     //CONSTANTS
-    ENCODED_URL:"javax.faces.encodedURL",
+    ENCODED_URL:"jakarta.faces.encodedURL",
     /*
      * constants used internally
      */
@@ -6836,7 +6817,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
     },
 
     _applyClientWindowId:function () {
-        var clientWindow = this._Dom.getNamedElementFromForm(this._sourceForm, "javax.faces.ClientWindow");
+        var clientWindow = this._Dom.getNamedElementFromForm(this._sourceForm, "jakarta.faces.ClientWindow");
         //pass through if exists already set by _Impl
         if ('undefined' != typeof this._context._mfInternal._clientWindow) {
             this._context._mfInternal._clientWindowOld = clientWindow.value;
@@ -6852,7 +6833,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
     _restoreClientWindowId:function () {
         //we have to reset the client window back to its original state
 
-        var clientWindow = this._Dom.getNamedElementFromForm(this._sourceForm, "javax.faces.ClientWindow");
+        var clientWindow = this._Dom.getNamedElementFromForm(this._sourceForm, "jakarta.faces.ClientWindow");
         if(!clientWindow) {
             return;
         }
@@ -6980,7 +6961,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
     /**
      * Spec. 13.3.1
      * Collect and encode input elements.
-     * Additionally the hidden element javax.faces.ViewState
+     * Additionally the hidden element jakarta.faces.ViewState
      *
      *
      * @return  an element of formDataWrapper
@@ -7062,8 +7043,8 @@ _MF_CLS(_PFX_XHR + "_MultipartAjaxRequestLevel2", myfaces._impl.xhrCore._AjaxReq
 
     _sourceForm:null,
 
-    constructor_:function (arguments) {
-        this._callSuper("constructor_", arguments);
+    constructor_:function (args) {
+        this._callSuper("constructor_", args);
         //TODO xhr level2 can deal with real props
 
     },
@@ -7111,8 +7092,8 @@ _MF_CLS(_PFX_XHR + "_AjaxRequestLevel2", myfaces._impl.xhrCore._AjaxRequest, {
 
     _sourceForm:null,
 
-    constructor_:function (arguments) {
-        this._callSuper("constructor_", arguments);
+    constructor_:function (args) {
+        this._callSuper("constructor_", args);
         //TODO xhr level2 can deal with real props
 
     },
@@ -7159,18 +7140,18 @@ _MF_CLS(_PFX_XHR+"_IFrameRequest", myfaces._impl.xhrCore._AjaxRequest,
      * @constant
      * @description request marker that the request is an iframe based request
      */
-    //JX_PART_IFRAME: "javax.faces.partial.iframe",
+    //JX_PART_IFRAME: "jakarta.faces.partial.iframe",
     /**
      * @constant
      * @description request marker that the request is an apache myfaces iframe request based request
      */
-    MF_PART_IFRAME: "javax.faces.transport.iframe",
+    MF_PART_IFRAME: "jakarta.faces.transport.iframe",
 
-    MF_PART_FACES_REQUEST: "javax.faces.request",
+    MF_PART_FACES_REQUEST: "jakarta.faces.request",
 
 
-    constructor_: function(arguments) {
-        this._callSuper("constructor_", arguments);
+    constructor_: function(args) {
+        this._callSuper("constructor_", args);
     },
 
     getFormData: function() {
@@ -7241,28 +7222,29 @@ _MF_CLS(_PFX_XHR+"_IFrameRequest", myfaces._impl.xhrCore._AjaxRequest,
 _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhrCore._AjaxResponse.prototype */ {
 
     /*partial response types*/
-    RESP_PARTIAL:"partial-response",
-    RESP_TYPE_ERROR:"error",
-    RESP_TYPE_REDIRECT:"redirect",
-    RESP_TYPE_CHANGES:"changes",
+    RESP_PARTIAL: "partial-response",
+    RESP_TYPE_ERROR: "error",
+    RESP_TYPE_REDIRECT: "redirect",
+    RESP_TYPE_CHANGES: "changes",
 
     /*partial commands*/
-    CMD_CHANGES:"changes",
-    CMD_UPDATE:"update",
-    CMD_DELETE:"delete",
-    CMD_INSERT:"insert",
-    CMD_EVAL:"eval",
-    CMD_ERROR:"error",
-    CMD_ATTRIBUTES:"attributes",
-    CMD_EXTENSION:"extension",
-    CMD_REDIRECT:"redirect",
+    CMD_CHANGES: "changes",
+    CMD_UPDATE: "update",
+    CMD_DELETE: "delete",
+    CMD_INSERT: "insert",
+    CMD_EVAL: "eval",
+    CMD_ERROR: "error",
+    CMD_ATTRIBUTES: "attributes",
+    CMD_EXTENSION: "extension",
+    CMD_REDIRECT: "redirect",
 
     /*other constants*/
-    P_VIEWSTATE:"javax.faces.ViewState",
-    P_CLIENTWINDOW: "javax.faces.ClientWindow",
-    P_VIEWROOT:"javax.faces.ViewRoot",
-    P_VIEWHEAD:"javax.faces.ViewHead",
-    P_VIEWBODY:"javax.faces.ViewBody",
+    P_VIEWSTATE: "jakarta.faces.ViewState",
+    P_CLIENTWINDOW: "jakarta.faces.ClientWindow",
+    P_VIEWROOT: "jakarta.faces.ViewRoot",
+    P_VIEWHEAD: "jakarta.faces.ViewHead",
+    P_VIEWBODY: "jakarta.faces.ViewBody",
+    P_RESOURCE: "jakarta.faces.Resource",
 
     /**
      * uses response to start Html element replacement
@@ -7276,7 +7258,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
      * and if the CDATA block contains a body section the document body must be replaced!
      *
      */
-    processResponse:function (request, context) {
+    processResponse: function (request, context) {
         //mfinternal handling, note, the mfinternal is only optional
         //according to the spec
         context._mfInternal = context._mfInternal || {};
@@ -7287,6 +7269,8 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         mfInternal._updateForms = [];
         mfInternal.appliedViewState = null;
         mfInternal.appliedClientWindow = null;
+        mfInternal.namingModeId = null;
+
 
         try {
             var _Impl = this.attr("impl"), _Lang = this._Lang;
@@ -7322,6 +7306,18 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                 }
             }
 
+
+            /**
+             * jsf 2.3 naming mode partial response,
+             * we either viewstate all forms (non id mode)
+             * or the forms under the viewroot defined by id
+             *
+             * @type {string} ... the naming mode id is set or an empty string
+             * definitely not a null value to avoid type confusions later on
+             */
+            mfInternal.namingModeId = (partials.id || "");
+
+
             var childNodesLength = partials.childNodes.length;
 
             for (var loop = 0; loop < childNodesLength; loop++) {
@@ -7349,21 +7345,28 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             }
 
             //fixup missing viewStates due to spec deficiencies
-            if(mfInternal.appliedViewState) {
+            if (mfInternal.appliedViewState) {
                 this.fixViewStates(context);
             }
-            if(mfInternal.appliedClientWindow) {
+            if (mfInternal.appliedClientWindow) {
                 this.fixClientWindows(context);
             }
 
             //spec jsdoc, the success event must be sent from response
             _Impl.sendEvent(request, context, _Impl["SUCCESS"]);
+        } catch (e) {
 
+            if (window.console && window.console.error) {
+                //any error should be logged
+                console.error(e);
+            }
+            throw e;
         } finally {
             delete mfInternal._updateElems;
             delete mfInternal._updateForms;
             delete mfInternal.appliedViewState;
             delete mfInternal.appliedClientWindow;
+            delete mfInternal.namingModeId;
         }
     },
 
@@ -7372,7 +7375,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
      *
      * @param context
      */
-    fixViewStates:function (context) {
+    fixViewStates: function (context) {
         var _Lang = this._Lang;
         var mfInternal = context._mfInternal;
 
@@ -7380,82 +7383,73 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             return;
         }
 
-        //if we set our no portlet env we safely can update all forms with
-        //the new viewstate
-        if (this._RT.getLocalOrGlobalConfig(context, "no_portlet_env", false)) {
-            for (var cnt = document.forms.length - 1; cnt >= 0; cnt--) {
-                this._setVSTCWForm(context, document.forms[cnt], mfInternal.appliedViewState, this.P_VIEWSTATE);
-            }
-            return;
-        }
-
-        // Now update the forms that were not replaced but forced to be updated, because contains child ajax tags
-        // we should only update forms with view state hidden field. If by some reason, the form was set to be
-        // updated but the form was replaced, it does not have hidden view state, so later in changeTrace processing the
-        // view state is updated.
-
-        //set the viewstates of all outer forms parents of our updated elements
-
-        _Lang.arrForEach(mfInternal._updateForms, function (elem) {
-            this._setVSTCWForm(context, elem, mfInternal.appliedViewState, this.P_VIEWSTATE);
-        }, 0, this);
-
-        //set the viewstate of all forms within our updated elements
-        _Lang.arrForEach(mfInternal._updateElems, function (elem) {
-            this._setVSTCWInnerForms(context, elem, mfInternal.appliedViewState, this.P_VIEWSTATE);
-        }, 0, this);
+        /**
+         * JSF 2.3 we set all the viewstates under a given declared viewRoot or all forms
+         * if none is given
+         */
+        this._updateJSFClientArtifacts(context,  mfInternal.appliedViewState, this.P_VIEWSTATE);
     },
 
-    fixClientWindows:function (context, theForm) {
+
+    fixClientWindows: function (context, theForm) {
         var _Lang = this._Lang;
         var mfInternal = context._mfInternal;
 
         if (null == mfInternal.appliedClientWindow) {
             return;
         }
-         //if we set our no portlet env we safely can update all forms with
-        //the new viewstate
-        if (this._RT.getLocalOrGlobalConfig(context, "no_portlet_env", false)) {
-            for (var cnt = document.forms.length - 1; cnt >= 0; cnt--) {
-                this._setVSTCWForm(context, document.forms[cnt], mfInternal.appliedClientWindow, this.P_CLIENTWINDOW);
-            }
-            return;
-        }
-        //set the client window of all outer form of updated elements
 
-        _Lang.arrForEach(mfInternal._updateForms, function (elem) {
-            this._setVSTCWForm(context, elem, mfInternal.appliedClientWindow, this.P_CLIENTWINDOW);
-        }, 0, this);
+        /**
+         * JSF 2.3 we set all the viewstates under a given declared viewRoot or all forms
+         * if none is given
+         */
 
-        //set the client window of all forms within our updated elements
-        _Lang.arrForEach(mfInternal._updateElems, function (elem) {
-            this._setVSTCWInnerForms(context, elem, mfInternal.appliedClientWindow, this.P_CLIENTWINDOW);
-        }, 0, this);
+        this._updateJSFClientArtifacts(context, mfInternal.appliedClientWindow, this.P_CLIENTWINDOW);
+
     },
 
+
     /**
-     * sets the viewstate element in a given form
+     * sets the a jsf artifact element with a given identifier to a new value or adds this element
      *
-     * @param theForm the form to which the element has to be set to
+     * @param theForm {Node} the form to which the element has to be set to
      * @param context the current request context
      */
-    _setVSTCWForm:function (context, theForm, value, identifier) {
-        theForm = this._Lang.byId(theForm);
-        var mfInternal = context._mfInternal;
+    _applyJSFArtifactValueToForm: function (context, theForm, value, identifier) {
 
         if (!theForm) return;
+        var _Lang = this._Lang;
+        var _Dom = this._Dom;
+        var prefix = this._getPrefix(context);
 
-        //in IE7 looking up form elements with complex names (such as 'javax.faces.ViewState') fails in certain cases
+        //in IE7 looking up form elements with complex names (such as 'jakarta.faces.ViewState') fails in certain cases
         //iterate through the form elements to find the element, instead
-        var fieldToApply = this._Dom.getNamedElementFromForm(theForm, identifier);
+        var fieldsFound = [];
 
-        if (fieldToApply) {
-            this._Dom.setAttribute(fieldToApply, "value", value);
-        } else if (!fieldToApply) {
+        var elements = theForm.elements;
+        for (var i = 0, l = elements.length; i < l; i++) {
+            var e = elements[i];
+            //https://issues.apache.org/jira/browse/MYFACES-4230
+            //ie11 has a deviation from the standard behavior, we have to remap the null/undefined name
+            //to an empty string
+            var eName = e.name || "";
+
+            if (eName.indexOf(identifier) != -1) {
+                fieldsFound.push(e);
+            }
+        }
+
+        if (fieldsFound.length) {
+            _Lang.arrForEach(fieldsFound, function (fieldFound) {
+                _Dom.setAttribute(fieldFound, "value", value);
+            });
+        } else {
             var element = this._Dom.getDummyPlaceHolder();
-            //spec error, two elements with the same id should not be there, TODO recheck the space if the name does not suffice alone
-            element.innerHTML = ["<input type='hidden'", "id='", identifier+jsf.separatorchar+Math.random() , "' name='", identifier , "' value='" , value , "' />"].join("");
-            //now we go to proper dom handling after having to deal with another ie screwup
+
+            //per JSF 2.3 spec the identifier of the element must be unique in the dom tree
+            //otherwise we will break the html spec here
+            element.innerHTML = ["<input type='hidden'", "id='", this._fetchUniqueId(prefix, identifier), "' name='", identifier, "' value='", value, "' />"].join("");
+            //now we go to proper dom handling after having to deal with another ie screw-up
             try {
                 theForm.appendChild(element.childNodes[0]);
             } finally {
@@ -7464,25 +7458,125 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         }
     },
 
-    _setVSTCWInnerForms:function (context, elem, value, identifier) {
+    _fetchUniqueId: function(prefix, identifier) {
+        var cnt = 0;
+        var retVal = prefix + identifier + jsf.separatorchar + cnt;
+        while(this._Dom.byId(retVal) != null) {
+            cnt++;
+            retVal = prefix + identifier + jsf.separatorchar + cnt;
+        }
+        return retVal;
+    },
 
-        var _Lang = this._Lang, _Dom = this._Dom;
-        elem = _Dom.byIdOrName(elem);
+    /**
+     * updates/inserts the jsf client artifacts under a given viewroot element
+     *
+     * @param context the client context holding all request context data and some internal data
+     * @param elem the root to start with, must be a dom node not an identifier
+     * @param value the new value
+     * @param identifier the identifier for the client artifact aka jakarta.faces.ViewState, ClientWindowId etc...
+     *
+     * @private
+     */
+    _updateJSFClientArtifacts: function (context, value, identifier) {
+
         //elem not found for whatever reason
         //https://issues.apache.org/jira/browse/MYFACES-3544
-        if (!elem) return;
 
-        var replacedForms = _Dom.findByTagName(elem, "form", false);
+        var prefix = this._getPrefix(context);
 
-        var applyVST = _Lang.hitch(this, function (elem) {
-            this._setVSTCWForm(context, elem, value, identifier);
-        });
-
-        try {
-            _Lang.arrForEach(replacedForms, applyVST, 0, this);
-        } finally {
-            applyVST = null;
+        //do we still need the issuing form update? I guess it is needed.
+        //jsf spec 2.3 and earlier all issuing forms must update
+        var sourceForm = (context._mfInternal._mfSourceFormId) ? this._Dom.byId(context._mfInternal._mfSourceFormId) : null;
+        if (sourceForm) {
+            sourceForm = this._Dom.byId(sourceForm);
+            if (sourceForm) {
+                //some cases where the source form cannot be updated
+                //because it is gone
+                this._applyJSFArtifactValueToForm(context, sourceForm, value, identifier);
+            }
         }
+
+
+
+        var viewRoot = this._getViewRoot(context);
+        var forms = this._Dom.findByTagNames(viewRoot, {"form": 1}) || [];
+
+        //since the spec thanks to the over intrusive portlet api still is broken
+        //we need our old fallback hack for proper handling without having
+        //to deal with multiple render targets.
+
+
+        if(this._RT.getLocalOrGlobalConfig(context, "no_portlet_env", false)) {
+
+            //We update all elements under viewroot
+            //this clearly violates the jsf 2.3 jsdocs
+            //however I think that the jsdocs were sloppily updated
+            //because just updating the render targets under one viewroot and the issuing form
+            //again would leave broken viewstates, in the end the portlet spec is at fault here
+            //which came late to the game and expected all frameworks to adapt to their needs.
+            //instead of properly adapting to the frameworks
+            //now the viewroot mechanism per se would work, but people are dropping
+            //jsf 2.3 into old portlet containers which then expose the legacy behavior
+            //of having just one view root.
+            this._Lang.arrForEach(forms, this._Lang.hitch(this, function (elem) {
+                //update all forms which start with prefix (all render and execute targets
+                this._applyJSFArtifactValueToForm(context, elem, value, identifier);
+            }));
+        } else {
+
+
+            //check for a portlet condition a present viewroot
+
+            var viewRootId = viewRoot.id || "";
+
+            for(var cnt = 0; cnt < context._mfInternal._updateForms.length; cnt++) {
+                var updateForm = context._mfInternal._updateForms[cnt];
+
+                //follow the spec 2.3 path 1:1 we update the forms hosting the render targets which start
+                //with the viewroot
+                //if there is a viewroot present, however we seem to have a bug in myfaces
+                //even if we have a naming container response we
+                //cannot rely on the naming container being prefixed
+
+                //This atm is not bad, because we safely can assume
+                //that if no viewroot can be found we are under
+                //one single viewroot and can omit the prefix check
+                //(aka fallback into the old behavior)
+
+
+                if(updateForm.indexOf(viewRootId) != 0) {
+                    continue;
+                } else { //either an empty viewroot, or a namespace match
+                    this._applyJSFArtifactValueToForm(context, this._Dom.byId(updateForm), value, identifier);
+                }
+            }
+
+        }
+
+    },
+
+    _getViewRoot: function (context) {
+        var prefix = this._getPrefix(context);
+        if (prefix == "") {
+            return document.getElementsByTagName("body")[0];
+        }
+        prefix = prefix.substr(0, prefix.length - 1);
+        var viewRoot = document.getElementById(prefix);
+        if (viewRoot) {
+            return viewRoot;
+        }
+        return document.getElementsByTagName("body")[0];
+    },
+
+
+    _getPrefix: function (context) {
+        var mfInternal = context._mfInternal;
+        var prefix = mfInternal.namingModeId;
+        if (prefix != "") {
+            prefix = prefix + jsf.separatorchar;
+        }
+        return prefix;
     },
 
     /**
@@ -7492,7 +7586,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
      * @param context the contect object
      * @param node the node in the xml hosting the error message
      */
-    processError:function (request, context, node) {
+    processError: function (request, context, node) {
         /**
          * <error>
          *      <error-name>String</error-name>
@@ -7500,7 +7594,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
          * <error>
          */
         var errorName = node.firstChild.textContent || node.firstChild.text || "",
-                errorMessage = node.childNodes[1].firstChild.data || "";
+            errorMessage = node.childNodes[1].firstChild.data || "";
 
         this.attr("impl").sendError(request, context, this.attr("impl").SERVER_ERROR, errorName, errorMessage, "myfaces._impl.xhrCore._AjaxResponse", "processError");
     },
@@ -7511,7 +7605,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
      * @param context the context
      * @param node the node hosting the redirect data
      */
-    processRedirect:function (request, context, node) {
+    processRedirect: function (request, context, node) {
         /**
          * <redirect url="url to redirect" />
          */
@@ -7526,7 +7620,8 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         }
         window.location = redirectUrl;
         return true;
-    },
+    }
+    ,
 
     /**
      * main entry point for processing the changes
@@ -7537,7 +7632,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
      * @param context the context map
      * @param node the changes node to be processed
      */
-    processChanges:function (request, context, node) {
+    processChanges: function (request, context, node) {
         var changes = node.childNodes;
         var _Lang = this._Lang;
         //note we need to trace the changes which could affect our insert update or delete
@@ -7565,6 +7660,9 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                     break;
                 case this.CMD_EXTENSION:
                     break;
+                case undefined:
+                    // ignoring white spaces
+                    break;
                 default:
                     throw this._raiseError(new Error(), "_AjaxResponse.processChanges: Illegal Command Issued", "processChanges");
             }
@@ -7580,45 +7678,20 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
      * @param context the context map
      * @param node the changes node to be processed
      */
-    processUpdate:function (request, context, node) {
-        if ( (node.getAttribute('id').indexOf(this.P_VIEWSTATE) != -1) || (node.getAttribute('id').indexOf(this.P_CLIENTWINDOW) != -1) ) {
-            //update the submitting forms viewstate to the new value
-            // The source form has to be pulled out of the CURRENT document first because the context object
-            // may refer to an invalid document if an update of the entire body has occurred before this point.
-            var mfInternal = context._mfInternal,
-                    fuzzyFormDetection = this._Lang.hitch(this._Dom, this._Dom.fuzzyFormDetection);
-            var elemId = (mfInternal._mfSourceControlId) ? mfInternal._mfSourceControlId :
-                    ((context.source) ? context.source.id : null);
-
-            //theoretically a source of null can be given, then our form detection fails for
-            //the source element case and hence updateviewstate is skipped for the source
-            //form, but still render targets still can get the viewstate
-            var sourceForm = (mfInternal && mfInternal["_mfSourceFormId"] &&
-                    document.forms[mfInternal["_mfSourceFormId"]]) ?
-                    document.forms[mfInternal["_mfSourceFormId"]] : ((elemId) ? fuzzyFormDetection(elemId) : null);
-
-            if(node.getAttribute('id').indexOf(this.P_VIEWSTATE) != -1) {
+    processUpdate: function (request, context, node) {
+        var mfInternal = context._mfInternal;
+        if ((node.getAttribute('id').indexOf(this.P_VIEWSTATE) != -1) || (node.getAttribute('id').indexOf(this.P_CLIENTWINDOW) != -1)) {
+            if (node.getAttribute('id').indexOf(this.P_VIEWSTATE) != -1) {
                 mfInternal.appliedViewState = this._Dom.concatCDATABlocks(node);//node.firstChild.nodeValue;
-            } else if(node.getAttribute('id').indexOf(this.P_CLIENTWINDOW) != -1) {
+            } else if (node.getAttribute('id').indexOf(this.P_CLIENTWINDOW) != -1) {
                 mfInternal.appliedClientWindow = node.firstChild.nodeValue;
             }
-            //source form could not be determined either over the form identifer or the element
-            //we now skip this phase and just add everything we need for the fixup code
-
-            if (!sourceForm) {
-                //no source form found is not an error because
-                //we might be able to recover one way or the other
-                return true;
-            }
-
-            mfInternal._updateForms.push(sourceForm.id);
-
         }
         else {
             // response may contain several blocks
             var cDataBlock = this._Dom.concatCDATABlocks(node),
-                    resultNode = null,
-                    pushOpRes = this._Lang.hitch(this, this._pushOperationResult);
+                resultNode = null,
+                pushOpRes = this._Lang.hitch(this, this._pushOperationResult);
 
             switch (node.getAttribute('id')) {
                 case this.P_VIEWROOT:
@@ -7627,10 +7700,8 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
                     var parsedData = this._replaceHead(request, context, cDataBlock);
 
-                    resultNode = ('undefined' != typeof parsedData && null != parsedData) ? this._replaceBody(request, context, cDataBlock, parsedData) : this._replaceBody(request, context, cDataBlock);
-                    if (resultNode) {
-                        pushOpRes(context, resultNode);
-                    }
+                    ('undefined' != typeof parsedData && null != parsedData) ? this._replaceBody(request, context, cDataBlock, parsedData) : this._replaceBody(request, context, cDataBlock);
+
                     break;
                 case this.P_VIEWHEAD:
                     //we cannot replace the head, almost no browser allows this, some of them throw errors
@@ -7645,8 +7716,12 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                         pushOpRes(context, resultNode);
                     }
                     break;
+                case this.P_RESOURCE:
 
+                    this._addResourceToHead(request, context, cDataBlock);
+                    break;
                 default:
+
                     resultNode = this.replaceHtmlItem(request, context, node.getAttribute('id'), cDataBlock);
                     if (resultNode) {
                         pushOpRes(context, resultNode);
@@ -7658,9 +7733,9 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         return true;
     },
 
-    _pushOperationResult:function (context, resultNode) {
+    _pushOperationResult: function(context, resultNode) {
         var mfInternal = context._mfInternal;
-        var pushSubnode = this._Lang.hitch(this, function (currNode) {
+        var pushSubnode = this._Lang.hitch(this, function(currNode) {
             var parentForm = this._Dom.getParent(currNode, "form");
             //if possible we work over the ids
             //so that elements later replaced are referenced
@@ -7672,16 +7747,39 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                 mfInternal._updateElems.push(currNode.id || currNode);
             }
         });
+
+        var pushEmbedded = this._Lang.hitch(this, function(currNode) {
+            if(currNode.tagName && this._Lang.equalsIgnoreCase(currNode.tagName, "form")) {
+                if(currNode.id)  { //should not happen but just in case someone manipulates the html
+                    mfInternal._updateForms.push(currNode.id);
+                }
+            } else {
+                var childForms = this._Dom.findByTagName(currNode, "form");
+                if(childForms && childForms.length) {
+                    for(var cnt = 0; cnt < childForms.length; cnt++) {
+                        if(childForms[cnt].id) {
+                            mfInternal._updateForms.push(childForms[cnt].id);
+                        }
+                    }
+                }
+            }
+
+        });
+
+
         var isArr = 'undefined' != typeof resultNode.length && 'undefined' == typeof resultNode.nodeType;
         if (isArr && resultNode.length) {
             for (var cnt = 0; cnt < resultNode.length; cnt++) {
                 pushSubnode(resultNode[cnt]);
+                pushEmbedded(resultNode[cnt]);
             }
         } else if (!isArr) {
             pushSubnode(resultNode);
+            pushEmbedded(resultNode);
         }
 
     },
+
 
     /**
      * replaces a current head theoretically,
@@ -7694,15 +7792,15 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
      *
      * @return an xml representation of the page for further processing if possible
      */
-    _replaceHead:function (request, context, newData) {
+    _replaceHead: function (request, context, newData) {
 
         var _Lang = this._Lang,
-                _Dom = this._Dom,
-                isWebkit = this._RT.browser.isWebKit,
-        //we have to work around an xml parsing bug in Webkit
-        //see https://issues.apache.org/jira/browse/MYFACES-3061
-                doc = (!isWebkit) ? _Lang.parseXML(newData) : null,
-                newHead = null;
+            _Dom = this._Dom,
+            isWebkit = this._RT.browser.isWebKit,
+            //we have to work around an xml parsing bug in Webkit
+            //see https://issues.apache.org/jira/browse/MYFACES-3061
+            doc = (!isWebkit) ? _Lang.parseXML(newData) : null,
+            newHead = null;
 
         if (!isWebkit && _Lang.isXMLParseError(doc)) {
             doc = _Lang.parseXML(newData.replace(/<!\-\-[\s\n]*<!\-\-/g, "<!--").replace(/\/\/-->[\s\n]*\/\/-->/g, "//-->"));
@@ -7731,7 +7829,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             newHead = doc.getElementsByTagName("head")[0];
         }
 
-        var oldTags = _Dom.findByTagNames(document.getElementsByTagName("head")[0], {"link":true, "style":true});
+        var oldTags = _Dom.findByTagNames(document.getElementsByTagName("head")[0], {"link": true, "style": true});
         _Dom.runCss(newHead, true);
         _Dom.deleteItems(oldTags);
 
@@ -7740,6 +7838,13 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         _Dom.runScripts(newHead, true);
 
         return doc;
+    },
+
+    _addResourceToHead: function (request, context, newData) {
+        var lastHeadChildTag = document.getElementsByTagName("head")[0].lastChild;
+
+        this._Dom.insertAfter(lastHeadChildTag, newData);
+
     },
 
     /**
@@ -7753,14 +7858,14 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
      * @param {String} newData the markup which replaces the old dom node!
      * @param {Node} parsedData (optional) preparsed XML representation data of the current document
      */
-    _replaceBody:function (request, context, newData /*varargs*/) {
+    _replaceBody: function (request, context, newData /*varargs*/) {
         var _RT = this._RT,
-                _Dom = this._Dom,
-                _Lang = this._Lang,
+            _Dom = this._Dom,
+            _Lang = this._Lang,
 
-                oldBody = document.getElementsByTagName("body")[0],
-                placeHolder = document.createElement("div"),
-                isWebkit = _RT.browser.isWebKit;
+            oldBody = document.getElementsByTagName("body")[0],
+            placeHolder = document.createElement("div"),
+            isWebkit = _RT.browser.isWebKit;
 
         placeHolder.id = "myfaces_bodyplaceholder";
 
@@ -7826,11 +7931,11 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
      * @param {Object} itemIdToReplace (String|Node) - ID of the element to replace
      * @param {String} markup - the new tag
      */
-    replaceHtmlItem:function (request, context, itemIdToReplace, markup) {
+    replaceHtmlItem: function (request, context, itemIdToReplace, markup) {
         var _Lang = this._Lang, _Dom = this._Dom;
 
         var item = (!_Lang.isString(itemIdToReplace)) ? itemIdToReplace :
-                _Dom.byIdOrName(itemIdToReplace);
+            _Dom.byIdOrName(itemIdToReplace);
 
         if (!item) {
             throw this._raiseError(new Error(), _Lang.getMessage("ERR_ITEM_ID_NOTFOUND", null, "_AjaxResponse.replaceHtmlItem", (itemIdToReplace) ? itemIdToReplace.toString() : "undefined"), "replaceHtmlItem");
@@ -7847,12 +7952,12 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
      * @return true upon successful completion, false otherwise
      *
      **/
-    processInsert:function (request, context, node) {
+    processInsert: function (request, context, node) {
         /*remapping global namespaces for speed and readability reasons*/
         var _Dom = this._Dom,
-                _Lang = this._Lang,
-        //determine which path to go:
-                insertData = this._parseInsertData(request, context, node);
+            _Lang = this._Lang,
+            //determine which path to go:
+            insertData = this._parseInsertData(request, context, node);
 
         if (!insertData) return false;
 
@@ -7886,18 +7991,18 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
      * TODO we have to find a mechanism to replace the direct sendError calls with a javascript exception
      * which we then can use for cleaner error code handling
      */
-    _parseInsertData:function (request, context, node) {
+    _parseInsertData: function (request, context, node) {
         var _Lang = this._Lang,
-                _Dom = this._Dom,
-                concatCDATA = _Dom.concatCDATABlocks,
+            _Dom = this._Dom,
+            concatCDATA = _Dom.concatCDATABlocks,
 
-                INSERT_TYPE_BEFORE = "insertBefore",
-                INSERT_TYPE_AFTER = "insertAfter",
+            INSERT_TYPE_BEFORE = "insertBefore",
+            INSERT_TYPE_AFTER = "insertAfter",
 
-                id = node.getAttribute("id"),
-                beforeId = node.getAttribute("before"),
-                afterId = node.getAttribute("after"),
-                ret = {};
+            id = node.getAttribute("id"),
+            beforeId = node.getAttribute("before"),
+            afterId = node.getAttribute("after"),
+            ret = {};
 
         //now we have to make a distinction between two different parsing paths
         //due to a spec malalignment
@@ -7930,18 +8035,18 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             ret.cDataBlock = concatCDATA(node.childNodes[0]);
         } else {
             throw this._raiseError(new Error(), [_Lang.getMessage("ERR_PPR_IDREQ"),
-                                                 "\n ",
-                                                 _Lang.getMessage("ERR_PPR_INSERTBEFID")].join(""), "_parseInsertData");
+                "\n ",
+                _Lang.getMessage("ERR_PPR_INSERTBEFID")].join(""), "_parseInsertData");
         }
         ret.opId = _Lang.trim(ret.opId);
         return ret;
     },
 
-    processDelete:function (request, context, node) {
+    processDelete: function (request, context, node) {
 
         var _Lang = this._Lang,
-                _Dom = this._Dom,
-                deleteId = node.getAttribute('id');
+            _Dom = this._Dom,
+            deleteId = node.getAttribute('id');
 
         if (!deleteId) {
             throw this._raiseError(new Error(), _Lang.getMessage("ERR_PPR_UNKNOWNCID", null, "_AjaxResponse.processDelete", ""), "processDelete");
@@ -7961,7 +8066,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         return true;
     },
 
-    processAttributes:function (request, context, node) {
+    processAttributes: function (request, context, node) {
         //we now route into our attributes function to bypass
         //IE quirks mode incompatibilities to the biggest possible extent
         //most browsers just have to do a setAttributes but IE
@@ -7969,8 +8074,8 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         //myfaces._impl._util.this._Dom.setAttribute(domNode, attribute, value;
 
         var _Lang = this._Lang,
-        //<attributes id="id of element"> <attribute name="attribute name" value="attribute value" />* </attributes>
-                elemId = node.getAttribute('id');
+            //<attributes id="id of element"> <attribute name="attribute name" value="attribute value" />* </attributes>
+            elemId = node.getAttribute('id');
 
         if (!elemId) {
             throw this._raiseError(new Error(), "Error in attributes, id not in xml markup", "processAttributes");
@@ -7982,8 +8087,8 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         }
         for (var loop2 = 0; loop2 < childNodes.length; loop2++) {
             var attributesNode = childNodes[loop2],
-                    attrName = attributesNode.getAttribute("name"),
-                    attrValue = attributesNode.getAttribute("value");
+                attrName = attributesNode.getAttribute("name"),
+                attrValue = attributesNode.getAttribute("value");
 
             if (!attrName) {
                 continue;
@@ -8024,7 +8129,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
      * @param title the title of the error (optional)
      * @param name the name of the error (optional)
      */
-    _raiseError:function (error, message, caller, title, name) {
+    _raiseError: function (error, message, caller, title, name) {
         var _Impl = this.attr("impl");
         var finalTitle = title || _Impl.MALFORMEDXML;
         var finalName = name || _Impl.MALFORMEDXML;
@@ -8451,15 +8556,15 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      * [STATIC] constants
      */
 
-    P_PARTIAL_SOURCE:"javax.faces.source",
-    P_VIEWSTATE:"javax.faces.ViewState",
-    P_CLIENTWINDOW:"javax.faces.ClientWindow",
-    P_AJAX:"javax.faces.partial.ajax",
-    P_EXECUTE:"javax.faces.partial.execute",
-    P_RENDER:"javax.faces.partial.render",
-    P_EVT:"javax.faces.partial.event",
-    P_WINDOW_ID:"javax.faces.ClientWindow",
-    P_RESET_VALUES:"javax.faces.partial.resetValues",
+    P_PARTIAL_SOURCE:"jakarta.faces.source",
+    P_VIEWSTATE:"jakarta.faces.ViewState",
+    P_CLIENTWINDOW:"jakarta.faces.ClientWindow",
+    P_AJAX:"jakarta.faces.partial.ajax",
+    P_EXECUTE:"jakarta.faces.partial.execute",
+    P_RENDER:"jakarta.faces.partial.render",
+    P_EVT:"jakarta.faces.partial.event",
+    P_WINDOW_ID:"jakarta.faces.ClientWindow",
+    P_RESET_VALUES:"jakarta.faces.partial.resetValues",
 
     /* message types */
     ERROR:"error",
@@ -8487,7 +8592,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
 
     /**
      * collect and encode data for a given form element (must be of type form)
-     * find the javax.faces.ViewState element and encode its value as well!
+     * find the jakarta.faces.ViewState element and encode its value as well!
      * return a concatenated string of the encoded values!
      *
      * @throws Error in case of the given element not being of type form!
@@ -8644,18 +8749,18 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         */
 
         /**
-         * binding contract the javax.faces.source must be set
+         * binding contract the jakarta.faces.source must be set
          */
         passThrgh[this.P_PARTIAL_SOURCE] = elementId;
 
         /**
-         * javax.faces.partial.ajax must be set to true
+         * jakarta.faces.partial.ajax must be set to true
          */
         passThrgh[this.P_AJAX] = true;
 
         /**
          * if resetValues is set to true
-         * then we have to set javax.faces.resetValues as well
+         * then we have to set jakarta.faces.resetValues as well
          * as pass through parameter
          * the value has to be explicitly true, according to
          * the specs jsdoc
@@ -8878,8 +8983,8 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      * @param {Object} request the request object which comes from the xhr cycle
      * @param {Object} context (Map) the context object being pushed over the xhr cycle keeping additional metadata
      * @param {String} name the error name
-     * @param {String} serverErrorName the server error name in case of a server error
-     * @param {String} serverErrorMessage the server error message in case of a server error
+     * @param {String} errorName the server error name in case of a server error
+     * @param {String} errorMessage the server error message in case of a server error
      * @param {String} caller optional caller reference for extended error messages
      * @param {String} callFunc optional caller Function reference for extended error messages
      *
@@ -8892,12 +8997,12 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      *
      *
      */
-    sendError:function sendError(/*Object*/request, /*Object*/ context, /*String*/ name, /*String*/ serverErrorName, /*String*/ serverErrorMessage, caller, callFunc) {
+    sendError:function sendError(/*Object*/request, /*Object*/ context, /*String*/ name, /*String*/ errorName, /*String*/ errorMessage, caller, callFunc) {
         var _Lang = myfaces._impl._util._Lang;
         var UNKNOWN = _Lang.getMessage("UNKNOWN");
 
         var eventData = {};
-        //we keep this in a closure because we might reuse it for our serverErrorMessage
+        //we keep this in a closure because we might reuse it for our errorMessage
         var malFormedMessage = function () {
             return (name && name === myfaces._impl.core.Impl.MALFORMEDXML) ? _Lang.getMessage("ERR_MALFORMEDXML") : "";
         };
@@ -8907,8 +9012,8 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         eventData.type = this.ERROR;
 
         eventData.status = name || UNKNOWN;
-        eventData.serverErrorName = serverErrorName || UNKNOWN;
-        eventData.serverErrorMessage = serverErrorMessage || UNKNOWN;
+        eventData.errorName = errorName || UNKNOWN;
+        eventData.errorMessage = errorMessage || UNKNOWN;
 
         try {
             eventData.source = context.source || UNKNOWN;
@@ -8920,9 +9025,9 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         }
         //extended error message only in dev mode
         if (jsf.getProjectStage() === "Development") {
-            eventData.serverErrorMessage = eventData.serverErrorMessage || "";
-            eventData.serverErrorMessage = (caller) ? eventData.serverErrorMessage + "\nCalling class: " + caller : eventData.serverErrorMessage;
-            eventData.serverErrorMessage = (callFunc) ? eventData.serverErrorMessage + "\n Calling function: " + callFunc : eventData.serverErrorMessage;
+            eventData.errorMessage = eventData.errorMessage || "";
+            eventData.errorMessage = (caller) ? eventData.errorMessage + "\nCalling class: " + caller : eventData.errorMessage;
+            eventData.errorMessage = (callFunc) ? eventData.errorMessage + "\n Calling function: " + callFunc : eventData.errorMessage;
         }
 
         /**/
@@ -8940,14 +9045,14 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             //we remap the function to achieve a better compressability
                     pushMsg = _Lang.hitch(finalMessage, finalMessage.push);
 
-            (serverErrorMessage) ? pushMsg(_Lang.getMessage("MSG_ERROR_MESSAGE") + " " + serverErrorMessage + "\n") : null;
+            (errorMessage) ? pushMsg(_Lang.getMessage("MSG_ERROR_MESSAGE") + " " + errorMessage + "\n") : null;
 
             pushMsg(DIVIDER);
 
             (caller) ? pushMsg("Calling class:" + caller) : null;
             (callFunc) ? pushMsg("Calling function:" + callFunc) : null;
             (name) ? pushMsg(_Lang.getMessage("MSG_ERROR_NAME") + " " + name) : null;
-            (serverErrorName && name != serverErrorName) ? pushMsg("Server error name: " + serverErrorName) : null;
+            (errorName && name != errorName) ? pushMsg("Server error name: " + errorName) : null;
 
             pushMsg(malFormedMessage());
             pushMsg(DIVIDER);
@@ -9030,7 +9135,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
                 getConfig = myfaces._impl.core._Runtime.getGlobalConfig,
                 scriptTags = document.getElementsByTagName("script");
         for (var i = 0; i < scriptTags.length && !found; i++) {
-            if (scriptTags[i].src.search(/\/javax\.faces\.resource.*\/jsf\.js.*separator/) != -1) {
+            if (scriptTags[i].src.search(/\/jakarta\.faces\.resource.*\/jsf\.js.*separator/) != -1) {
                 found = true;
                 var result = scriptTags[i].src.match(/separator=([^&;]*)/);
                 this._separator = decodeURIComponent(result[1]);
@@ -9060,7 +9165,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
 
             /* run through all script tags and try to find the one that includes jsf.js */
             for (var i = 0; i < scriptTags.length && !found; i++) {
-                if (scriptTags[i].src.search(/\/javax\.faces\.resource\/jsf\.js.*ln=javax\.faces/) != -1) {
+                if (scriptTags[i].src.search(/\/jakarta\.faces\.resource\/jsf\.js.*ln=jakarta\.faces/) != -1) {
                     var result = scriptTags[i].src.match(/stage=([^&;]*)/);
                     found = true;
                     if (result) {
@@ -9353,7 +9458,7 @@ if (!window.jsf) {
          * </li>
          *
          * @return {String} the current project state emitted by the server side method:
-         * <i>javax.faces.application.Application.getProjectStage()</i>
+         * <i>jakarta.faces.application.Application.getProjectStage()</i>
          */
         this.getProjectStage = function() {
             var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
@@ -9362,7 +9467,7 @@ if (!window.jsf) {
 
         /**
          * collect and encode data for a given form element (must be of type form)
-         * find the javax.faces.ViewState element and encode its value as well!
+         * find the jakarta.faces.ViewState element and encode its value as well!
          * return a concatenated string of the encoded values!
          *
          * @throws an exception in case of the given element not being of type form!
@@ -9392,7 +9497,7 @@ if (!window.jsf) {
         }
 
     };
-	//jsdoc helper to avoid warnings, we map later 
+	//jsdoc helper to avoid warnings, we map later
 	window.jsf = jsf;
 }
 
@@ -9440,8 +9545,8 @@ if (!jsf.ajax) {
 		* <ul>
          *     <li> errorData.type : &quot;error&quot;</li>
          *     <li> errorData.status : the error status message</li>
-         *     <li> errorData.serverErrorName : the server error name in case of a server error</li>
-         *     <li> errorData.serverErrorMessage : the server error message in case of a server error</li>
+         *     <li> errorData.errorName : the server error name in case of a server error</li>
+         *     <li> errorData.errorMessage : the server error message in case of a server error</li>
          *     <li> errorData.source  : the issuing source element which triggered the request </li>
          *     <li> eventData.responseCode: the response code (aka http request response code, 401 etc...) </li>
          *     <li> eventData.responseText: the request response text </li>
@@ -9501,5 +9606,233 @@ if (!jsf.util) {
     }
 }
 
+if (!jsf.push) {
 
+  /**
+  * @namespace jsf.push
+  */
+  jsf.push = new function() {
+
+    // "Constant" fields ----------------------------------------------------------------------------------------------
+    var URL_PROTOCOL = window.location.protocol.replace("http", "ws") + "//";
+    var RECONNECT_INTERVAL = 500;
+    var MAX_RECONNECT_ATTEMPTS = 25;
+    var REASON_EXPIRED = "Expired";
+
+    // Private static fields ------------------------------------------------------------------------------------------
+
+    /* socket map by token */
+    var sockets = {};
+    /* component attributes by clientId */
+    var components = {};
+    /* client ids by token (share websocket connection) */
+    var clientIdsByTokens = {};
+    var self = {};
+
+    // Private constructor functions ----------------------------------------------------------------------------------
+    /**
+     * Creates a reconnecting web socket. When the web socket successfully connects on first attempt, then it will
+     * automatically reconnect on timeout with cumulative intervals of 500ms with a maximum of 25 attempts (~3 minutes).
+     * The <code>onclose</code> function will be called with the error code of the last attempt.
+     * @constructor
+     * @param {string} channelToken the channel token associated with this websocket connection
+     * @param {string} url The URL of the web socket
+     * @param {string} channel The name of the web socket channel.
+     */
+    function Socket(channelToken, url, channel) {
+
+        // Private fields -----------------------------------------------------------------------------------------
+
+        var socket;
+        var reconnectAttempts = 0;
+        var self = this;
+
+        // Public functions ---------------------------------------------------------------------------------------
+
+        /**
+         * Opens the reconnecting web socket.
+         */
+        self.open = function() {
+            if (socket && socket.readyState == 1) {
+                return;
+            }
+
+            socket = new WebSocket(url);
+
+            socket.onopen = function(event) {
+                if (!reconnectAttempts) {
+                    var clientIds = clientIdsByTokens[channelToken];
+                    for (var i = clientIds.length - 1; i >= 0; i--){
+                        var socketClientId = clientIds[i];
+                        components[socketClientId]['onopen'](channel);
+                    }
+                }
+                reconnectAttempts = 0;
+            };
+
+            socket.onmessage = function(event) {
+                var message = JSON.parse(event.data);
+                for (var i = clientIdsByTokens[channelToken].length - 1; i >= 0; i--){
+                    var socketClientId = clientIdsByTokens[channelToken][i];
+                    if(document.getElementById(socketClientId)) {
+                        try{
+                            components[socketClientId]['onmessage'](message, channel, event);
+                        }catch(e){
+                            //Ignore
+                        }
+                        var behaviors = components[socketClientId]['behaviors'];
+                        var functions = behaviors[message];
+                        if (functions && functions.length) {
+                            for (var j = 0; j < functions.length; j++) {
+                                try{
+                                    functions[j](null);
+                                }catch(e){
+                                    //Ignore
+                                }
+                            }
+                        }
+                    } else {
+                        clientIdsByTokens[channelToken].splice(i,1);
+                    }
+                }
+                if (clientIdsByTokens[channelToken].length == 0){
+                    //tag dissapeared
+                    self.close();
+                }
+
+            };
+
+            socket.onclose = function(event) {
+                if (!socket
+                    || (event.code == 1000 && event.reason == REASON_EXPIRED)
+                    || (event.code == 1008)
+                    || (!reconnectAttempts)
+                    || (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS))
+                {
+                    var clientIds = clientIdsByTokens[channelToken];
+                    for (var i = clientIds.length - 1; i >= 0; i--){
+                        var socketClientId = clientIds[i];
+                        components[socketClientId]['onclose'](event.code, channel, event);
+                    }
+                }
+                else {
+                    setTimeout(self.open, RECONNECT_INTERVAL * reconnectAttempts++);
+                }
+            };
+        };
+
+        /**
+         * Closes the reconnecting web socket.
+         */
+        self.close = function() {
+            if (socket) {
+                var s = socket;
+                socket = null;
+                s.close();
+            }
+        }
+
+    }
+
+    // Public static functions ----------------------------------------------------------------------------------------
+
+    /**
+     *
+     * @param {function} onopen The function to be invoked when the web socket is opened.
+     * @param {function} onmessage The function to be invoked when a message is received.
+     * @param {function} onclose The function to be invoked when the web socket is closed.
+     * @param {boolean} autoconnect Whether or not to immediately open the socket. Defaults to <code>false</code>.
+     */
+    this.init = function(socketClientId, uri, channel, onopen, onmessage, onclose, behaviorScripts, autoconnect) {
+
+        onclose = resolveFunction(onclose);
+
+        if (!window.WebSocket) { // IE6-9.
+            onclose(-1, channel);
+            return;
+        }
+
+        var channelToken = uri.substr(uri.indexOf('?')+1);
+
+        if (!components[socketClientId]) {
+            components[socketClientId] = {
+                'channelToken': channelToken,
+                'onopen': resolveFunction(onopen),
+                'onmessage' : resolveFunction(onmessage),
+                'onclose': onclose,
+                'behaviors': behaviorScripts,
+                'autoconnect': autoconnect};
+            if (!clientIdsByTokens[channelToken]) {
+                clientIdsByTokens[channelToken] = [];
+            }
+            clientIdsByTokens[channelToken].push(socketClientId);
+            if (!sockets[channelToken]){
+                sockets[channelToken] = new Socket(channelToken,
+                                    getBaseURL(uri), channel);
+            }
+        }
+
+        if (autoconnect) {
+            this.open(socketClientId);
+        }
+    }
+
+    /**
+     * Open the web socket on the given channel.
+     * @param {string} channel The name of the web socket channel.
+     * @throws {Error} When channel is unknown.
+     */
+    this.open = function(socketClientId) {
+        getSocket(components[socketClientId]['channelToken']).open();
+    }
+
+    /**
+     * Close the web socket on the given channel.
+     * @param {string} channel The name of the web socket channel.
+     * @throws {Error} When channel is unknown.
+     */
+    this.close = function(socketClientId) {
+        getSocket(components[socketClientId]['channelToken']).close();
+    }
+
+    // Private static functions ---------------------------------------------------------------------------------------
+
+    /**
+     *
+     */
+    function getBaseURL(url) {
+        if (url.indexOf("://") < 0)
+        {
+            var base = window.location.hostname+":"+window.location.port
+            return URL_PROTOCOL + base + url;
+        }else
+        {
+            return url;
+        }
+    }
+
+    /**
+     * Get socket associated with given channelToken.
+     * @param {string} channelToken The name of the web socket channelToken.
+     * @return {Socket} Socket associated with given channelToken.
+     * @throws {Error} When channelToken is unknown, you may need to initialize
+     *                 it first via <code>init()</code> function.
+     */
+    function getSocket(channelToken) {
+        var socket = sockets[channelToken];
+        if (socket) {
+            return socket;
+        } else {
+            throw new Error("Unknown channelToken: " + channelToken);
+        }
+    }
+
+    function resolveFunction(fn) {
+        return (typeof fn !== "function") && (fn = window[fn] || function(){}), fn;
+    }
+    // Expose self to public ------------------------------------------------------------------------------------------
+
+    //return self;
+  }
+}
 
