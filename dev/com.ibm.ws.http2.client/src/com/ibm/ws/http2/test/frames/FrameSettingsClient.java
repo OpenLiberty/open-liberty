@@ -49,7 +49,8 @@ public class FrameSettingsClient extends com.ibm.ws.http.channel.h2internal.fram
         urlEncoder = Base64.getUrlEncoder();
 
         // Get the local settings for the handler.
-        Http2Settings settings = Http2Settings.defaultSettings();
+//        Http2Settings settings = Http2Settings.defaultSettings();
+        Http2Settings settings = new Http2Settings();
 
         // Serialize the payload of the SETTINGS frame
         int payloadLength = 6 * settings.size();

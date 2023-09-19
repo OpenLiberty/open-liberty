@@ -32,18 +32,14 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.SimpleUserEventChannelHandler;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler;
-import io.netty.handler.codec.http.HttpServerUpgradeHandler.UpgradeEvent;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
-import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
-import io.netty.handler.stream.ChunkedWriteHandler;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
 
 /**
@@ -80,6 +76,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     public static final String NETTY_HTTP_SERVER_CODEC = "HTTP_SERVER_HANDLER";
     public static final String HTTP_DISPATCHER_HANDLER_NAME = "HTTP_DISPATCHER";
     public static final String HTTP_SSL_HANDLER_NAME = "SSL_HANDLER";
+    public static final String HTTP_KEEP_ALIVE_HANDLER_NAME = "httpKeepAlive";
 
     private HttpPipelineInitializer(HttpPipelineBuilder builder) {
         Objects.requireNonNull(builder);
@@ -164,6 +161,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         }
 
+//        pipeline.remove(NettyConstants.INACTIVITY_TIMEOUT_HANDLER_NAME);
+
         Tr.exit(tc, "initChannel");
     }
 
@@ -182,10 +181,11 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
      * @param pipeline ChannelPipeline to update as necessary
      */
     private void setupH2cPipeline(ChannelPipeline pipeline) {
+//        pipeline.addLast(NETTY_HTTP_SERVER_CODEC, new HttpServerCodec());
+        pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));
         addH2CCodecHandlers(pipeline);
         addPreHttpCodecHandlers(pipeline);
-        pipeline.addLast(new ByteBufferCodec());
-        pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));
+        addPreDispatcherHandlers(pipeline);
     }
 
     /**
@@ -229,45 +229,49 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
      * @param pipeline ChannelPipeline to update as necessary
      */
     private void addH2CCodecHandlers(ChannelPipeline pipeline) {
-        final CleartextHttp2ServerUpgradeHandler cleartextHttp2ServerUpgradeHandler = LibertyUpgradeCodec.createCleartextUpgradeHandler(httpConfig);
+        final CleartextHttp2ServerUpgradeHandler cleartextHttp2ServerUpgradeHandler = LibertyUpgradeCodec.createCleartextUpgradeHandler(httpConfig, pipeline.channel());
 
-        pipeline.addLast(cleartextHttp2ServerUpgradeHandler);
+        if (pipeline.names().contains(NETTY_HTTP_SERVER_CODEC))
+            pipeline.addAfter(NETTY_HTTP_SERVER_CODEC, "H2C_UPGRADE_HANDLER", cleartextHttp2ServerUpgradeHandler);
+        else
+            pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, "H2C_UPGRADE_HANDLER", cleartextHttp2ServerUpgradeHandler);
 
         // TODO: Remove this, temp to see how upgrades are going
-        pipeline.addLast("Upgrade Detector", new SimpleUserEventChannelHandler<UpgradeEvent>() {
-
-            @Override
-            protected void eventReceived(ChannelHandlerContext ctx, UpgradeEvent evt) throws Exception {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Got upgrade event for channel " + ctx.channel(), evt);
-                }
-                ctx.fireUserEventTriggered(evt.retain());
-            }
-        });
-        pipeline.addLast("Prior Knowledge Upgrade Detector", new SimpleUserEventChannelHandler<PriorKnowledgeUpgradeEvent>() {
-
-            @Override
-            protected void eventReceived(ChannelHandlerContext ctx, PriorKnowledgeUpgradeEvent evt) throws Exception {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Got priorKnowledge upgrade event for channel " + ctx.channel(), evt);
-                }
-                ctx.fireUserEventTriggered(evt);
-            }
-        });
+//        pipeline.addAfter("H2C_UPGRADE_HANDLER", "Upgrade Detector", new SimpleUserEventChannelHandler<UpgradeEvent>() {
+//
+//            @Override
+//            protected void eventReceived(ChannelHandlerContext ctx, UpgradeEvent evt) throws Exception {
+//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                    Tr.debug(this, tc, "Got upgrade event for channel " + ctx.channel(), evt);
+//                }
+//                ctx.fireUserEventTriggered(evt.retain());
+//            }
+//        });
+//        pipeline.addAfter("Upgrade Detector", "Prior Knowledge Upgrade Detector", new SimpleUserEventChannelHandler<PriorKnowledgeUpgradeEvent>() {
+//
+//            @Override
+//            protected void eventReceived(ChannelHandlerContext ctx, PriorKnowledgeUpgradeEvent evt) throws Exception {
+//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                    Tr.debug(this, tc, "Got priorKnowledge upgrade event for channel " + ctx.channel(), evt);
+//                }
+//                ctx.fireUserEventTriggered(evt);
+//            }
+//        });
 
         // Handler to decide if an upgrade occurred or not and to add HTTP1 handlers on top
-        pipeline.addLast(NO_UPGRADE_OCURRED_HANDLER_NAME, new SimpleChannelInboundHandler<HttpMessage>() {
+        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, NO_UPGRADE_OCURRED_HANDLER_NAME, new SimpleChannelInboundHandler<HttpMessage>() {
             @Override
             protected void channelRead0(ChannelHandlerContext ctx, HttpMessage msg) throws Exception {
                 // If this handler is hit then no upgrade has been attempted and the client is just talking HTTP 1.1.
                 // TODO Check if we need to add common handlers here
-                addPreDispatcherHandlers(ctx.pipeline());
+//                addPreDispatcherHandlers(ctx.pipeline());
                 System.out.println("Firing channel read from " + NO_UPGRADE_OCURRED_HANDLER_NAME + " to pipeline: ");
                 pipeline.names().forEach(handler -> System.out.println(handler));
+//                ctx.pipeline().remove("H2C_UPGRADE_HANDLER");
+                ctx.pipeline().remove(HttpServerUpgradeHandler.class);
                 // TODO Check if we need to retain this before passing to dispatcher
                 ctx.fireChannelRead(msg);
                 // Remove unused handlers
-                ctx.pipeline().remove(HttpServerUpgradeHandler.class);
                 ctx.pipeline().remove(NO_UPGRADE_OCURRED_HANDLER_NAME);
             }
         });
@@ -280,7 +284,10 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
      */
     private void addPreHttpCodecHandlers(ChannelPipeline pipeline) {
         if (httpConfig.isAccessLoggingEnabled()) {
-            pipeline.addBefore(NETTY_HTTP_SERVER_CODEC, null, new AccessLoggerHandler(httpConfig));
+            if (pipeline.names().contains(NETTY_HTTP_SERVER_CODEC))
+                pipeline.addBefore(NETTY_HTTP_SERVER_CODEC, null, new AccessLoggerHandler(httpConfig));
+            else
+                pipeline.addLast(new AccessLoggerHandler(httpConfig));
         }
     }
 
@@ -290,9 +297,9 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
      * @param pipeline ChannelPipeline to update as necessary
      */
     private void addPreDispatcherHandlers(ChannelPipeline pipeline) {
-        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, "httpKeepAlive", new HttpServerKeepAliveHandler());
+        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new HttpObjectAggregator(64 * 1024));
-        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new ChunkedWriteHandler());
+//        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new ChunkedWriteHandler());
         // if (httpConfig.useAutoCompression()) {
         //   pipeline.addLast(new NettyHttpContentCompressor());
         //}
