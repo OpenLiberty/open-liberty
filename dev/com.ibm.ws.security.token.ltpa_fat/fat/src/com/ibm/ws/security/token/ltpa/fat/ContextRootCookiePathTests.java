@@ -670,7 +670,7 @@ public class ContextRootCookiePathTests {
             ServerConfiguration configuration = server.getServerConfiguration();
             waSecurity = configuration.getWebAppSecurity();
             waSecurity.useContextRootForSSOCookiePath = useContextRootForSSOCookiePath;
-            updateConfigDynamically(server, configuration, true);
+            updateConfigDynamically(server, configuration);
             return waSecurity;
         } catch (Exception e) {
             e.printStackTrace();
@@ -680,7 +680,7 @@ public class ContextRootCookiePathTests {
     }
 
     // Function to update the server configuration dynamically
-    public static void updateConfigDynamically(LibertyServer server, ServerConfiguration config, boolean waitForAppToStart) throws Exception {
+    public static void updateConfigDynamically(LibertyServer server, ServerConfiguration config) throws Exception {
         server.setMarkToEndOfLog(server.getDefaultLogFile());
         server.setMarkToEndOfLog(server.getMostRecentTraceFile());
 
@@ -688,9 +688,9 @@ public class ContextRootCookiePathTests {
         //CWWKG0017I: The server configuration was successfully updated in {0} seconds.
         //CWWKG0018I: The server configuration was not updated. No functional changes were detected.
         String logLine = server.waitForStringInLogUsingMark("CWWKG001[7-8]I");
-        if (waitForAppToStart && !logLine.contains("CWWKG0018I")) {
-            server.waitForStringInLogUsingMark("CWWKZ0003I", 10000); //CWWKZ0003I: The application userRegistry updated in 0.020 seconds.
-        }
+
+        // Wait for feature update to be completed or LTPA configuration to get ready 
+        Thread.sleep(200);
     }
 
     /**

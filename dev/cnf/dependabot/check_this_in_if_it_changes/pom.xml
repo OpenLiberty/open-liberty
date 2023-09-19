@@ -1159,7 +1159,7 @@
     <dependency>
       <groupId>jakarta.enterprise.concurrent</groupId>
       <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-      <version>3.0.2</version>
+      <version>3.0.3</version>
     </dependency>
     <dependency>
       <groupId>jakarta.enterprise</groupId>
@@ -2354,7 +2354,7 @@
     <dependency>
       <groupId>org.crac</groupId>
       <artifactId>crac</artifactId>
-      <version>1.3.0</version>
+      <version>1.4.0</version>
     </dependency>
     <dependency>
       <groupId>org.cryptacular</groupId>

@@ -13,7 +13,7 @@
     <featureManager>
         <feature>servlet-4.0</feature>
         <feature>componenttest-1.0</feature>
-        <feature>crac-1.3</feature>
+        <feature>crac-1.4</feature>
     </featureManager>
 
     <webApplication location="testApp.war"/>

@@ -60,7 +60,7 @@ public class SingleRecoveryTest {
 	}
 	
 	@Before
-	public void before() throws IOException {
+	public void before() throws Exception {
 		WSATTest.callClearResourcesServlet("recoveryServer", server1);
 	}
 
@@ -98,8 +98,9 @@ public class SingleRecoveryTest {
 		// Some tests kill the server twice so we need an extra restart here
 		if (id.equals("42") || id.equals("41")) {
 			try {
-				po = server1.startServerAndValidate(false, false, false, true);
-				System.out.println("Start server return code: " + po.getReturnCode());
+		        server1.startServerExpectFailure("expected-start-fail.log", false, false);
+				Log.info(this.getClass(), method, server1.getServerName() + " failed to start. As expected.");
+				server1.resetLogMarks();
 			} catch (TopologyException e) {
 				e.printStackTrace(System.out);
 			}

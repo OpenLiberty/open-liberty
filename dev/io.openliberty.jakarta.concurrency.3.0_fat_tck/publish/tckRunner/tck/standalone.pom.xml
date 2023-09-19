@@ -22,8 +22,8 @@
     <properties>
     	<!-- These properties can be overwritten by users if they want to test against a snapshot version-->
         <jakarta.concurrent.tck.groupid>jakarta.enterprise.concurrent</jakarta.concurrent.tck.groupid>
-        <jakarta.concurrent.tck.version>3.0.2</jakarta.concurrent.tck.version>
-        <jakarta.concurrent.version>3.0.2</jakarta.concurrent.version>
+        <jakarta.concurrent.tck.version>3.0.3</jakarta.concurrent.tck.version>
+        <jakarta.concurrent.version>3.0.3</jakarta.concurrent.version>
         
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
         <arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>

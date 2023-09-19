@@ -5746,8 +5746,11 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
      */
     appendIssuingItem: function (item, targetBuf) {
         // if triggered by a Button send it along
-        if (item && item.type && item.type.toLowerCase() == "submit") {
-            targetBuf.append(item.name, item.value);
+        if (item && item.type &&
+            (item.type.toLowerCase() == "submit" ||
+             item.type.toLowerCase() == "button" )) {
+            //buttons not always have a name unlike inputs
+            targetBuf.append(item.id || item.name, item.value);
         }
     },
 
@@ -6984,8 +6987,9 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
      * which keeps the final Send Representation of the
      */
     getFormData:function () {
-        var _AJAXUTIL = this._AJAXUTIL, myfacesOptions = this._context.myfaces;
-        return this._Lang.createFormDataDecorator(jsf.getViewState(this._sourceForm));
+        var formDataDecorator = this._Lang.createFormDataDecorator(jsf.getViewState(this._sourceForm));
+        this._AJAXUTIL.appendIssuingItem(this._source, formDataDecorator);
+        return formDataDecorator;
     },
 
     /**

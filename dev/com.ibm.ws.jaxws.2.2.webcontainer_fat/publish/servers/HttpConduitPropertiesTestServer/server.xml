@@ -14,6 +14,12 @@
 	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read" />
 	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks" />
 	<javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*" />
-
-	<include optional="true" location="include/httpConduitProperties.xml" />
+	
+		<webApplication id="httpConduitProperties" name="httpConduitProperties" location="httpConduitProperties.war">
+		<webservices-bnd>
+		  <service-ref name="service/SimpleEchoService" port-address="http://localhost:${bvt.prop.HTTP_default}/httpConduitProperties/SimpleEchoService">
+		          <port name="SimpleEchoPort"/>
+		  </service-ref>
+		</webservices-bnd>
+	</webApplication>
 </server>

@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.rules.repeater;
 
@@ -42,7 +39,7 @@ public class EERepeatActions {
     public static final FeatureSet LATEST = EE10;
 
     //All EE FeatureSets - must be descending order
-    private static final FeatureSet[] ALL_SETS_ARRAY = { EE10, EE9, EE8, EE7, EE6 };
+    private static final FeatureSet[] ALL_SETS_ARRAY = { EE11, EE10, EE9, EE8, EE7, EE6 };
     private static final List<FeatureSet> ALL = Collections.unmodifiableList(Arrays.asList(ALL_SETS_ARRAY));
 
     /**
