@@ -40,6 +40,7 @@ import com.ibm.ws.security.oauth20.plugins.OidcBaseClientValidator;
 import com.ibm.ws.security.oauth20.plugins.jose4j.JWTData;
 import com.ibm.ws.security.oauth20.plugins.jose4j.JwsSigner;
 import com.ibm.ws.security.oauth20.util.CacheUtil;
+import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutException;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
@@ -214,9 +215,22 @@ public class LogoutTokenBuilder {
     void removeRefreshTokenAssociatedWithOAuthTokenFromCache(OAuth20Token cachedToken) {
         CacheUtil cu = new CacheUtil(tokenCache);
         OAuth20Token refreshToken = cu.getRefreshToken(cachedToken);
-        if (refreshToken != null) {
+        if (refreshToken != null && !refreshTokenHasOfflineAccessScope(refreshToken)) {
             tokenCache.remove(refreshToken.getTokenString());
         }
+    }
+
+    boolean refreshTokenHasOfflineAccessScope(OAuth20Token refreshToken) {
+        String[] scopes = refreshToken.getScope();
+        if (scopes == null) {
+            return false;
+        }
+        for (String scope : scopes) {
+            if (OIDCConstants.OIDC_DISC_SCOPES_SUPP_OFFLINE_ACC.equals(scope)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
