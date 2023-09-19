@@ -1064,13 +1064,18 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                     Tr.debug(tc, "finishMessage() setting partial body false");
                 }
                 setPartialBody(false);
+                if (getHttpConfig().useNetty()) {
+                    MSP.log("Bytes to write: " + GenericUtils.sizeOf(body));
+                    response.setContentLength(GenericUtils.sizeOf(body));
+
+                }
                 // MSP.log("Bytes to write: " + GenericUtils.sizeOf(body));
                 //HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(body));
             }
 
         }
 
-        if (getHttpConfig().runningOnZOS()) {
+        if (getHttpConfig().runningOnZOS() && Objects.isNull(nettyContext)) {
             // @311734 - add this to notify the xmem channel of our final write
             getVC().getStateMap().put(HttpConstants.FINAL_WRITE_MARK, "true");
         }
@@ -1295,15 +1300,27 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             // PK30169 - some "error" status codes do not disable persistence
             setPersistent(false);
         }
-        getVC().getStateMap().put(HTTP_ERROR_IDENTIFIER, error);
+        if (Objects.nonNull(getVC())) {
+            getVC().getStateMap().put(HTTP_ERROR_IDENTIFIER, error);
+        }
         if (getHttpConfig().getDebugLog().isEnabled(DebugLog.Level.ERROR)) {
             getHttpConfig().getDebugLog().log(DebugLog.Level.ERROR, HttpMessages.MSG_CONN_SENDERROR + error.getErrorCode(), this);
         }
         // now figure out what buffers, if any, to send as the response body
-        WsByteBuffer[] body = loadErrorBody(error, getMyRequest(), getResponse());
-        VirtualConnection rc = finishResponseMessage(body, HttpISCWriteErrorCallback.getRef(), false);
-        if (null != rc) {
-            finishSendError(error.getClosingException());
+        WsByteBuffer[] body = loadErrorBody(error, getRequest(), getResponse());
+        if (Objects.isNull(nettyContext)) {
+            VirtualConnection rc = finishResponseMessage(body, HttpISCWriteErrorCallback.getRef(), false);
+            if (null != rc) {
+                finishSendError(error.getClosingException());
+            }
+        } else {
+            try {
+                finishResponseMessage(body);
+            } catch (IOException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "finishResponseMessage failed with: " + e);
+                }
+            }
         }
     }
 

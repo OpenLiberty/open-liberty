@@ -391,10 +391,13 @@ public class NettyBaseMessage implements HttpBaseMessage {
         return null;
     }
 
-    @Override
-    public List<String> getAllCookieValues(String name) {
-        // TODO Auto-generated method stub
-        return null;
+    protected void getAllCookieValues(String name, HttpHeaderKeys header, List<String> list) {
+        if (!cookieCacheExists(header) && !containsHeader(header)) {
+            return;
+        }
+        CookieCacheData cache = getCookieCache(header);
+        parseAllCookies(cache, header);
+        cache.getAllCookieValues(name, list);
     }
 
     @Override
@@ -447,7 +450,6 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public List<HttpCookie> getAllCookies() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -455,6 +457,39 @@ public class NettyBaseMessage implements HttpBaseMessage {
     public List<HttpCookie> getAllCookies(String name) {
 
         return null;
+    }
+
+    /**
+     * Add all cookies from this message under the input header into the input
+     * list.
+     *
+     * @param header
+     * @param list
+     */
+    protected void getAllCookies(HttpHeaderKeys header, List<HttpCookie> list) {
+        if (!cookieCacheExists(header) && !containsHeader(header)) {
+            return;
+        }
+        CookieCacheData cache = getCookieCache(header);
+        parseAllCookies(cache, header);
+        cache.getAllCookies(list);
+    }
+
+    /**
+     * Find all instances of a cookie under the given header with the input name
+     * and place a clone of that object into the input list.
+     *
+     * @param name
+     * @param header
+     * @param list
+     */
+    protected void getAllCookies(String name, HttpHeaderKeys header, List<HttpCookie> list) {
+        if (!cookieCacheExists(header) && !containsHeader(header)) {
+            return;
+        }
+        CookieCacheData cache = getCookieCache(header);
+        parseAllCookies(cache, header);
+        cache.getAllCookies(name, list);
     }
 
     @Override
@@ -1003,5 +1038,11 @@ public class NettyBaseMessage implements HttpBaseMessage {
     @Override
     public HttpServiceContext getServiceContext() {
         return this.serviceContext;
+    }
+
+    @Override
+    public List<String> getAllCookieValues(String name) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

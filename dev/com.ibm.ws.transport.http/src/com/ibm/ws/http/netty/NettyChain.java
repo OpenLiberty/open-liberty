@@ -294,7 +294,7 @@ public class NettyChain extends HttpChain {
 
             // httpPipeline.updateConfig(ConfigElement.COMPRESSION, this.owner.getCompressionConfig());
             // httpPipeline.updateConfig(ConfigElement.HTTP_OPTIONS, owner.getHttpOptions());
-            // httpPipeline.updateConfig(ConfigElement.HEADERS, httpOptions);
+            httpPipeline.updateConfig(ConfigElement.HEADERS, this.owner.getHeadersConfig());
             //  httpPipeline.updateConfig(ConfigElement.REMOTE_IP, owner.getRemoteIpConfig());
             httpPipeline.updateConfig(ConfigElement.SAMESITE, this.owner.getSamesiteConfig());
 

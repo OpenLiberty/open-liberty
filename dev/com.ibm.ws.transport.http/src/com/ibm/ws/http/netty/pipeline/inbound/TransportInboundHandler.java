@@ -40,7 +40,7 @@ public class TransportInboundHandler extends SimpleChannelInboundHandler<FullHtt
             MSP.log("Found Accept-Encoding: " + request.headers().get(HttpHeaderKeys.HDR_ACCEPT_ENCODING.getName()));
             context.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).set(request.headers().get(HttpHeaderKeys.HDR_ACCEPT_ENCODING.getName()));
         }
-        context.fireChannelRead(request);
+        context.fireChannelRead(request.retain());
 
     }
 

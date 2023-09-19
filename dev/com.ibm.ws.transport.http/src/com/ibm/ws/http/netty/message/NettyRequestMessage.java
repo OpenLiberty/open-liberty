@@ -13,9 +13,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -27,6 +29,7 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.netty.MSP;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedMethodException;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedSchemeException;
+import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.HttpConstants;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
@@ -36,6 +39,8 @@ import com.ibm.wsspi.http.channel.values.SchemeValues;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 import com.ibm.wsspi.http.ee8.Http2PushBuilder;
 
+import io.netty.handler.codec.http.Cookie;
+import io.netty.handler.codec.http.CookieDecoder;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
@@ -451,6 +456,23 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             MSP.log("Total parameters: " + parameters.size());
 
         }
+    }
+
+    @Override
+    public List<HttpCookie> getAllCookies() {
+        List<HttpCookie> list = new LinkedList<HttpCookie>();
+        String cookieString = headers.get(HttpHeaders.Names.COOKIE);
+        if (Objects.nonNull(cookieString)) {
+            Set<Cookie> cookies = CookieDecoder.decode(cookieString);
+            if (!cookies.isEmpty()) {
+                for (Cookie cookie : cookies) {
+                    list.add(new HttpCookie(cookie.getName(), cookie.getValue()));
+                }
+
+            }
+        }
+
+        return list;
     }
 
 }
