@@ -1058,8 +1058,8 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                 setPartialBody(false);
                 if (getHttpConfig().useNetty()) {
                     MSP.log("Bytes to write: " + GenericUtils.sizeOf(body));
-
-                    response.setContentLength(GenericUtils.sizeOf(body));
+                    // TODO Need to check if we should set the content length here or not
+                    // response.setContentLength(GenericUtils.sizeOf(body));
                     nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(Long.valueOf(GenericUtils.sizeOf(body)));
 
                 }
@@ -1313,6 +1313,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                 }
             }
         }
+
     }
 
     /**

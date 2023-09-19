@@ -12,9 +12,12 @@ package com.ibm.ws.http.netty.pipeline.inbound;
 import java.util.Objects;
 
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.http.netty.MSP;
 
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -22,13 +25,14 @@ import io.netty.handler.codec.http2.Http2Connection;
 import io.netty.handler.codec.http2.Http2Exception;
 import io.netty.handler.codec.http2.Http2Exception.StreamException;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
+import io.netty.util.ReferenceCountUtil;
 
 /**
  *
  */
 public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
-    HttpDispatcherLink link;
+//    HttpDispatcherLink link;
     HttpChannelConfig config;
 
     public HttpDispatcherHandler(HttpChannelConfig config) {
@@ -39,7 +43,38 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
 
     @Override
     protected void channelRead0(ChannelHandlerContext context, FullHttpRequest request) throws Exception {
-        newRequest(context, request);
+        // TODO Need to see if we need to check decoder result from request to ensure data is properly parsed as expected
+        if (request.decoderResult().isFinished() && request.decoderResult().isSuccess()) {
+//          FullHttpRequest msg = request.duplicate();
+//          newRequest(context, request);
+            FullHttpRequest msg = ReferenceCountUtil.retain(request, 1);
+            HttpDispatcher.getExecutorService().execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+//                        DefaultFullHttpRequest req = new DefaultFullHttpRequest(request.protocolVersion(), request.method(), request.uri(), request.content(), request.headers(), request.trailingHeaders());
+                        System.out.println("New request on pipeline for : " + context + " channel: " + context.channel());
+                        context.channel().pipeline().names().forEach(handler -> System.out.println(handler));
+                        newRequest(context, msg);
+                    } catch (Throwable t) {
+                        try {
+                            exceptionCaught(context, t);
+                        } catch (Exception e) {
+                            // TODO Auto-generated catch block
+                            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+                            e.printStackTrace();
+                            context.close();
+                        }
+                    } finally {
+                        ReferenceCountUtil.release(msg);
+                    }
+                }
+            });
+        } else {
+            System.out.println("Caught an unsuccesful decode while decoding result! " + request.decoderResult().cause() + " so will ignore message: " + request);
+            if (request.decoderResult().cause() != null)
+                request.decoderResult().cause().printStackTrace();
+        }
 
     }
 
@@ -60,10 +95,23 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
 
     public void newRequest(ChannelHandlerContext context, FullHttpRequest request) {
         MSP.log("Shiny new dispatcher link");
+        HttpDispatcherLink link = new HttpDispatcherLink();
+        context.channel().closeFuture().addListener(new ChannelFutureListener() {
 
-        link = new HttpDispatcherLink();
+            @Override
+            public void operationComplete(ChannelFuture arg0) throws Exception {
+                System.out.println("Closing link because channel was closed!! " + arg0.channel() + " future: " + arg0 + " done? " + arg0.isDone() + " cancelled? "
+                                   + arg0.isCancelled() + " success? "
+                                   + arg0.isSuccess());
+                link.close(null, null);
+            }
+        });
         link.init(context, request, config);
         link.ready();
+
+//        link = new HttpDispatcherLink();
+//        link.init(context, request, config);
+//        link.ready();
     }
 
 }
