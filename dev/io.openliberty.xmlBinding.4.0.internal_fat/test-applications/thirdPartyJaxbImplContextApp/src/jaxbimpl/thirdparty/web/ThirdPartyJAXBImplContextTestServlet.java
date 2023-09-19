@@ -42,19 +42,23 @@ import jaxb.web.utils.StringSchemaOutputResolver;
 @WebServlet("/JAXBContextTestServlet")
 public class ThirdPartyJAXBImplContextTestServlet extends FATServlet {
 
-    private JAXBContext thirdPartySystemPropertyContext = null;
-    private JAXBContext thirdPartyPropertyMapContext = null;
+    private static JAXBContext thirdPartyPropertyMapContext = null;
+    private static JAXBContext thirdPartySystemPropertyContext = null;
 
-    private static ClassLoader classLoader = jaxb.web.dataobjects.ObjectFactory.class.getClassLoader();
+    @Override
+    protected void before() throws Exception {
+        super.before();
+        ClassLoader cl = jaxb.web.dataobjects.ObjectFactory.class.getClassLoader();
+        // This context setups located here for error handling and better performance
+        thirdPartyPropertyMapContext = JAXBContextUtils.setupJAXBContextWithPropertyMap(JAXBContextUtils.MOXY_JAXB_CONTEXT_FACTORY, cl);
+        thirdPartySystemPropertyContext = JAXBContextUtils.setupJAXBContextWithSystemProperty(JAXBContextUtils.MOXY_JAXB_CONTEXT_FACTORY, cl);
+    }
 
     /*
     *
     */
     @Test
     public void testJAXBContextThirdPartyImplLoadedWithPropertyMap() throws Exception {
-        if (thirdPartyPropertyMapContext == null)
-            thirdPartyPropertyMapContext = JAXBContextUtils.setupJAXBContextWithPropertyMap(JAXBContextUtils.MOXY_JAXB_CONTEXT_FACTORY,
-                                                                                            jaxb.web.dataobjects.ObjectFactory.class.getClassLoader());
 
         Class<?> clazz = thirdPartyPropertyMapContext.getClass();
 
@@ -69,9 +73,6 @@ public class ThirdPartyJAXBImplContextTestServlet extends FATServlet {
     */
     @Test
     public void testJAXBContextThirdPartyImplLoadedWithSystemProperty() throws Exception {
-        if (thirdPartySystemPropertyContext == null)
-            thirdPartySystemPropertyContext = JAXBContextUtils.setupJAXBContextWithSystemProperty(JAXBContextUtils.MOXY_JAXB_CONTEXT_FACTORY,
-                                                                                                  classLoader);
 
         Class<?> clazz = thirdPartySystemPropertyContext.getClass();
 
@@ -81,42 +82,42 @@ public class ThirdPartyJAXBImplContextTestServlet extends FATServlet {
         assertEquals("org.eclipse.persistence.jaxb.JAXBContext", clazz.getName());
     }
 
-    // Checking the functionality of third party XML Binding marshalling implementations. Detailed test of third party implementations are
-    // out of IBM's test scope
+    // Checking the functionality of third party XML Binding marshall implementations. Detailed test of third party implementations are
+    // out of IBM's test scope. Marshall and Unmarshall PurchaseOrderType object tests are merged in the test below.
     @Test
-    public void testEE10PropertyMapContextMarshalling() throws Exception {
-
-        if (thirdPartyPropertyMapContext == null)
-            thirdPartyPropertyMapContext = JAXBContextUtils.setupJAXBContextWithPropertyMap(JAXBContextUtils.MOXY_JAXB_CONTEXT_FACTORY,
-                                                                                            jaxb.web.dataobjects.ObjectFactory.class.getClassLoader());
+    public void testEE10PropertyMapContextMarshallingUnmarshalling() throws Exception {
 
         String purchaseOrderTypeMarshalledResult = JAXBContextUtils.marshallForTest(thirdPartyPropertyMapContext);
 
         assertNotNull("Property map context marshalling operation using third party XML Binding implementation failed", purchaseOrderTypeMarshalledResult);
         assertFalse("Property map context marshalling operation using third party XML Binding implementation failed", purchaseOrderTypeMarshalledResult.isBlank());
+
+        System.out.println("PropertyMapContextMarshalling operation is successful.");
+
+        Unmarshaller unmarshaller = thirdPartyPropertyMapContext.createUnmarshaller();
+
+        JAXBContextUtils.comparePurchaseOrderType(unmarshaller);
     }
 
-    // Checking the functionality of third party XML Binding marshalling implementations. Detailed test of third party implementations are
-    // out of IBM's test scope
+    // Checking the functionality of third party XML Binding marshall implementations. Detailed test of third party implementations are
+    // out of IBM's test scope. Marshall and Unmarshall PurchaseOrderType object tests are merged in the test below.
     @Test
-    public void testEE10SystemPropertyContextMarshalling() throws Exception {
-
-        if (thirdPartySystemPropertyContext == null)
-            thirdPartySystemPropertyContext = JAXBContextUtils.setupJAXBContextWithSystemProperty(JAXBContextUtils.MOXY_JAXB_CONTEXT_FACTORY,
-                                                                                                  classLoader);
+    public void testEE10SystemPropertyContextMarshallingUnmarshalling() throws Exception {
 
         String purchaseOrderTypeMarshalledResult = JAXBContextUtils.marshallForTest(thirdPartySystemPropertyContext);
 
         assertNotNull("System property context marshalling operation using third party XML Binding implementation failed", purchaseOrderTypeMarshalledResult);
         assertFalse("System property context marshalling operation using third party XML Binding implementation failed", purchaseOrderTypeMarshalledResult.isBlank());
+
+        System.out.println("SystemPropertyContextMarshalling operation is successful.");
+
+        Unmarshaller unmarshaller = thirdPartySystemPropertyContext.createUnmarshaller();
+
+        JAXBContextUtils.comparePurchaseOrderType(unmarshaller);
     }
 
     @Test
     public void testEE10SystemPropertyContextUnmarshallItemsObject() throws Exception {
-
-        if (thirdPartySystemPropertyContext == null)
-            thirdPartySystemPropertyContext = JAXBContextUtils.setupJAXBContextWithSystemProperty(JAXBContextUtils.MOXY_JAXB_CONTEXT_FACTORY,
-                                                                                                  jaxb.web.dataobjects.ObjectFactory.class.getClassLoader());
 
         Unmarshaller unmarshaller = thirdPartySystemPropertyContext.createUnmarshaller();
 
@@ -130,9 +131,6 @@ public class ThirdPartyJAXBImplContextTestServlet extends FATServlet {
     @Test
     public void testEE10PropertyMapContextUnmarshallItemsObject() throws Exception {
 
-        if (thirdPartyPropertyMapContext == null)
-            thirdPartyPropertyMapContext = JAXBContextUtils.setupJAXBContextWithPropertyMap(JAXBContextUtils.MOXY_JAXB_CONTEXT_FACTORY, this.getClass().getClassLoader());
-
         Unmarshaller unmarshaller = thirdPartyPropertyMapContext.createUnmarshaller();
 
         Items unmarshalledItems = (Items) unmarshaller.unmarshal(new StringReader(JAXBXMLSchemaConstants.EXPECTED_ITEM_MARSHALLED_RESULT));
@@ -144,9 +142,6 @@ public class ThirdPartyJAXBImplContextTestServlet extends FATServlet {
 
     @Test
     public void testEE10PropertyMapContextUnmarshallShippingAddressObject() throws Exception {
-
-        if (thirdPartyPropertyMapContext == null)
-            thirdPartyPropertyMapContext = JAXBContextUtils.setupJAXBContextWithPropertyMap(JAXBContextUtils.MOXY_JAXB_CONTEXT_FACTORY, this.getClass().getClassLoader());
 
         Unmarshaller unmarshaller = thirdPartyPropertyMapContext.createUnmarshaller();
 
@@ -162,10 +157,6 @@ public class ThirdPartyJAXBImplContextTestServlet extends FATServlet {
     @Test
     public void testEE10SystemPropertyContextUnmarshallShippingAddressObject() throws Exception {
 
-        if (thirdPartySystemPropertyContext == null)
-            thirdPartySystemPropertyContext = JAXBContextUtils.setupJAXBContextWithSystemProperty(JAXBContextUtils.MOXY_JAXB_CONTEXT_FACTORY,
-                                                                                                  jaxb.web.dataobjects.ObjectFactory.class.getClassLoader());
-
         Unmarshaller unmarshaller = thirdPartySystemPropertyContext.createUnmarshaller();
 
         JAXBElement<ShippingAddress> shippingAddressElement = (JAXBElement<ShippingAddress>) unmarshaller
@@ -177,39 +168,12 @@ public class ThirdPartyJAXBImplContextTestServlet extends FATServlet {
 
     }
 
-    @Test
-    public void testEE10PropertyMapContextUnmarshallPurchaseOrderTypeObject() throws Exception {
-
-        if (thirdPartyPropertyMapContext == null)
-            thirdPartyPropertyMapContext = JAXBContextUtils.setupJAXBContextWithPropertyMap(JAXBContextUtils.MOXY_JAXB_CONTEXT_FACTORY, this.getClass().getClassLoader());
-
-        Unmarshaller unmarshaller = thirdPartyPropertyMapContext.createUnmarshaller();
-
-        JAXBContextUtils.comparePurchaseOrderType(unmarshaller);
-
-    }
-
-    @Test
-    public void testEE10SystemPropertyContextUnmarshallPurchaseOrderTypeObject() throws Exception {
-
-        if (thirdPartySystemPropertyContext == null)
-            thirdPartySystemPropertyContext = JAXBContextUtils.setupJAXBContextWithSystemProperty(JAXBContextUtils.MOXY_JAXB_CONTEXT_FACTORY,
-                                                                                                  jaxb.web.dataobjects.ObjectFactory.class.getClassLoader());
-
-        Unmarshaller unmarshaller = thirdPartySystemPropertyContext.createUnmarshaller();
-
-        JAXBContextUtils.comparePurchaseOrderType(unmarshaller);
-    }
-
     /*
     *
     */
     @Test
     public void testEE10PropertyMapContextSchemaOutputResolver() throws Exception {
         SchemaOutputResolver ssor = new StringSchemaOutputResolver();
-
-        if (thirdPartyPropertyMapContext == null)
-            thirdPartyPropertyMapContext = JAXBContextUtils.setupJAXBContextWithPropertyMap(JAXBContextUtils.MOXY_JAXB_CONTEXT_FACTORY, this.getClass().getClassLoader());
 
         thirdPartyPropertyMapContext.generateSchema(ssor);
         String schemaString = ((StringSchemaOutputResolver) ssor).getSchema();
@@ -224,10 +188,6 @@ public class ThirdPartyJAXBImplContextTestServlet extends FATServlet {
     @Test
     public void testEE10SystemPropertyContextSchemaOutputResolver() throws Exception {
         SchemaOutputResolver ssor = new StringSchemaOutputResolver();
-
-        if (thirdPartySystemPropertyContext == null)
-            thirdPartySystemPropertyContext = JAXBContextUtils.setupJAXBContextWithSystemProperty(JAXBContextUtils.MOXY_JAXB_CONTEXT_FACTORY,
-                                                                                                  jaxb.web.dataobjects.ObjectFactory.class.getClassLoader());
 
         thirdPartySystemPropertyContext.generateSchema(ssor);
         String schemaString = ((StringSchemaOutputResolver) ssor).getSchema();
