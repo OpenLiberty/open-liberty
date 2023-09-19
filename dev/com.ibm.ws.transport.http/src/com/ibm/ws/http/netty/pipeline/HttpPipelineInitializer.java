@@ -17,7 +17,6 @@ import javax.net.ssl.SSLEngine;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.netty.MSP;
@@ -66,7 +65,7 @@ public class HttpPipelineInitializer extends ChannelInitializer<Channel> {
     Map<String, Object> headers;
     Map<String, Object> endpointOptions;
 
-    HttpChannelConfig httpConfig;
+    NettyHttpChannelConfig httpConfig;
 
     private HttpPipelineInitializer(HttpPipelineBuilder builder) {
         Objects.requireNonNull(builder);
@@ -80,14 +79,40 @@ public class HttpPipelineInitializer extends ChannelInitializer<Channel> {
         Tr.entry(tc, "updateConfig");
 
         switch (config) {
+            case COMPRESSION: {
+                if (!HttpConfigConstants.DEFAULT_COMPRESSION.equalsIgnoreCase(String.valueOf(options.get(HttpConfigConstants.ID)))) {
+                    this.httpConfig.updateConfig(config, options);
+
+                }
+                break;
+
+            }
+            case HEADERS: {
+                if (!HttpConfigConstants.DEFAULT_HEADERS.equalsIgnoreCase(String.valueOf(options.get(HttpConfigConstants.ID)))) {
+                    this.httpConfig.updateConfig(config, options);
+
+                }
+                break;
+            }
             case HTTP_OPTIONS: {
-                this.httpConfig.updateConfig(options);
+                this.httpConfig.updateConfig(config, options);
 
                 break;
             }
             case REMOTE_IP: {
-                this.httpConfig.updateConfig(options);
+                if (!HttpConfigConstants.DEFAULT_REMOTE_IP.equalsIgnoreCase(String.valueOf(options.get(HttpConfigConstants.ID)))) {
 
+                    this.httpConfig.updateConfig(config, options);
+                }
+                break;
+            }
+            case SAMESITE: {
+
+                if (!HttpConfigConstants.DEFAULT_SAMESITE.equalsIgnoreCase(String.valueOf(options.get(HttpConfigConstants.ID)))) {
+                    MSP.log("updating samesite config");
+                    this.httpConfig.updateConfig(config, options);
+                }
+                break;
             }
             default:
                 break;
@@ -150,7 +175,7 @@ public class HttpPipelineInitializer extends ChannelInitializer<Channel> {
         private Map<String, Object> remoteIp;
         private Map<String, Object> samesite;
 
-        HttpChannelConfig httpConfig;
+        NettyHttpChannelConfig httpConfig;
 
         private boolean useCompression;
         private boolean useHeaders;
@@ -215,7 +240,7 @@ public class HttpPipelineInitializer extends ChannelInitializer<Channel> {
             return this;
         }
 
-        private HttpChannelConfig generateHttpOptions() {
+        private NettyHttpChannelConfig generateHttpOptions() {
             Tr.entry(tc, "generateHttpOptions");
 
             NettyConfigBuilder builder = new NettyHttpChannelConfig.NettyConfigBuilder();
