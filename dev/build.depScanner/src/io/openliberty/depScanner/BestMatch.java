@@ -14,6 +14,7 @@ package io.openliberty.depScanner;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -47,7 +48,7 @@ public class BestMatch {
 
     public static void main(String[] args) throws Exception {
         Repository repo = new Repository(new File(System.getProperty("user.home"), ".ibmartifactory/repository"));
-        Repository gradleRepo = new Repository(new File(System.getProperty("user.home"), ".gradle/caches"));
+        Repository gradleRepo = findGradleCacheRepo();
         String wlpDir = args[0];
         String outputDir = args[1];
         LibertyInstall liberty = new LibertyInstall(new File(wlpDir));
@@ -132,6 +133,34 @@ public class BestMatch {
         manageWSJars(matched, outputDir);
         writePom(matched, outputDir);
 
+    }
+
+    /**
+     * @return
+     */
+    private static Repository findGradleCacheRepo() {
+        File cacheFolder = new File(System.getProperty("user.home"), ".gradle/caches");
+        File modulesFolder = null;
+        File filesFolder = null;
+        String[] moduleFiles = cacheFolder.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return (name.startsWith("modules-"));
+            }
+        });
+        if (moduleFiles.length > 0)
+            modulesFolder = new File(cacheFolder.getPath(), moduleFiles[0]);
+
+        String[] files = modulesFolder.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return (name.startsWith("files-"));
+            }
+        });
+        if (files.length > 0)
+            filesFolder = new File(modulesFolder.getPath(), files[0]);
+
+        return new Repository(filesFolder);
     }
 
     /**
