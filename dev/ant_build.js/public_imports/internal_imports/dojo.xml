@@ -516,6 +516,8 @@
 
     <!-- Runtime launcher specific targets -->
     <target name="dojo-release" depends="dojo-release-execute, dojo-release-post" />
+    <target name="dojo-release-rhino" depends="dojo-release-rhino-execute,  dojo-release-post" />
+    <target name="dojo-release-nodejs" depends="dojo-release-nodejs-execute, dojo-release-post" />
 
     <!-- DOH properties & targets -->
     <property name="dojo.build.output.doh" location="${dojo.home}/build/build-doh" />
