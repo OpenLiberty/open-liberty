@@ -43,6 +43,8 @@ import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.http.channel.values.TransferEncodingValues;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
@@ -135,23 +137,41 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     }
 
     @Override
+    public void setContentLength(long length) {
+        // TODO Auto-generated method stub
+        super.setContentLength(length);
+        HttpUtil.setContentLength(nettyResponse, length);
+    }
+
+    @Override
     public void setConnection(ConnectionValues value) {
         //TODO Netty already sets this, no op?
+        // Wrong need to set this on occasions like 404s
         MSP.log("Attempt to set connection to: " + value);
-
+        if (value.getName().equalsIgnoreCase(HttpHeaderValues.CLOSE.toString()))
+            nettyResponse.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+        else if (value.getName().equalsIgnoreCase(HttpHeaderValues.KEEP_ALIVE.toString()))
+            nettyResponse.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
     }
 
     @Override
     public void setConnection(ConnectionValues[] values) {
         ///TODO Netty already sets this, no op?
         MSP.log("Attempt to set connection to: " + values.toString());
-
+        nettyResponse.headers().set(HttpHeaderNames.CONNECTION, values);
     }
 
     @Override
     public ConnectionValues[] getConnection() {
         // TODO Auto-generated method stub
-        return null;
+        List<String> test = nettyResponse.headers().getAll(HttpHeaderNames.CONNECTION);
+        System.out.println("Processing Connection values: " + test);
+        List<ConnectionValues> values = new ArrayList<ConnectionValues>();
+        for (String header : test) {
+            values.add(ConnectionValues.match(header, 0, header.length()));
+        }
+        System.out.println("Returning: " + values);
+        return (ConnectionValues[]) values.toArray();
     }
 
     @Override
