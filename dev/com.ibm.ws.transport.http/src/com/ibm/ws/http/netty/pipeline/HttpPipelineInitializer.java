@@ -89,6 +89,7 @@ public class HttpPipelineInitializer extends ChannelInitializer<Channel> {
             }
             case HEADERS: {
                 if (!HttpConfigConstants.DEFAULT_HEADERS.equalsIgnoreCase(String.valueOf(options.get(HttpConfigConstants.ID)))) {
+                    MSP.log("updating headers config...");
                     this.httpConfig.updateConfig(config, options);
 
                 }
