@@ -44,7 +44,7 @@ import junit.framework.AssertionFailedError;
 public class PasswordUtilsTest extends FATServletClient {
     private static final String APP_NAME = "DefaultPrincipalMappingApp";
     private static final String APP_PACKAGE = "io.openliberty.checkpoint.fat.passwordutil.web";
-    private static final String SERVER_NAME = "com.ibm.ws.security.auth.data.fat.dpm.pu11";
+    private static final String SERVER_NAME = "checkpointPasswordUtilities";
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = DefaultPrincipalMappingServlet.class, contextRoot = APP_NAME)
