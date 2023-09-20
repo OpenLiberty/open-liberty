@@ -33,7 +33,8 @@ dependencies {
                'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
                'xalan:xalan:2.7.2',
                project(':io.openliberty.org.apache.xercesImpl'),
-               'xml-apis:xml-apis:1.4.01' 
+               'com.unboundid:unboundid-ldapsdk:5.1.0',
+               project(':com.ibm.ws.com.unboundid') 
                         
 }
 

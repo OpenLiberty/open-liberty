@@ -88,6 +88,8 @@ tested.features:\
   com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
   com.ibm.ws.wssecurity.3.4.1;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
-  com.ibm.ws.org.apache.directory.server;version=latest
+  com.ibm.ws.org.apache.directory.server;version=latest,\
+  com.ibm.ws.com.unboundid;version=latest,\
+  com.unboundid:unboundid-ldapsdk;version=latest
 
   

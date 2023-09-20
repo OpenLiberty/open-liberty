@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,32 +18,36 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
-import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
+import com.ibm.ws.security.fat.common.actions.LargeProjectRepeatActions;
+import com.ibm.ws.security.fat.common.utils.ldaputils.CommonLocalLDAPServerSuite;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
         AlwaysPassesTest.class,
-        BasicBCLTests.class
+        // HttpMethodsTests.class,  doesn't need to run with SAML as this is a client only test
+        // LogoutTokenValidationTests.class,  doesn't need to run with SAML as this is a client only test
+        BasicBCLTests.class,
+//        MultiServerBCLTests.class
 
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.
  */
-public class FATSuite {
+public class FATSuite extends CommonLocalLDAPServerSuite {
 
     /*
-     * Run EE9 tests in only FULL mode and run EE7/EE8 tests only in LITE mode.
+     * On Windows, always run the default/empty/EE7/EE8 tests.
+     * On other Platforms:
+     * - if Java 8, run default/empty/EE7/EE8 tests.
+     * - All other Java versions
+     * -- If LITE mode, run EE9
+     * -- If FULL mode, run EE10
      *
-     * This was done to increase coverage of EE9 while not adding a large amount of of test runtime.
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
-            .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
-            .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().alwaysAddFeature("servlet-5.0").fullFATOnly());
+    public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10Repeats("servlet-5.0", "servlet-6.0");
 
 }
