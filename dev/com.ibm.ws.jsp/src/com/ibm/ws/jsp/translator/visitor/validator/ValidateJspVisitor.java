@@ -213,7 +213,7 @@ public class ValidateJspVisitor extends ValidateVisitor {
                         }
                     }
                 }
-                else if (directiveName.equals("isThreadSafe")) {
+                else if (directiveName.equals("isThreadSafe") && PagesVersionHandler.isPages31OrLowerLoaded()) { // Removed in 4.0
                     valid = true;
                     if (directiveValue.equalsIgnoreCase("true"))
                         jspResult.setSingleThreaded(false);
