@@ -1930,6 +1930,100 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Insert and delete multiple entities.
+     */
+    // @AllowedFFDC("jakarta.data.exceptions.EntityExistsException")
+    @Test
+    public void testInsertAndDeleteMultiple() throws Exception {
+        people.deleteByIdBetween(0L, 999999999L);
+
+        // insert multiple:
+
+        Person david = new Person();
+        david.firstName = "David";
+        david.lastName = "TestInsertAndDeleteMultiple";
+        david.ssn_id = 999009999;
+
+        Person daniel = new Person();
+        daniel.firstName = "Daniel";
+        daniel.lastName = "TestInsertAndDeleteMultiple";
+        daniel.ssn_id = 999009998;
+
+        Person dorothy = new Person();
+        dorothy.firstName = "Dorothy";
+        dorothy.lastName = "TestInsertAndDeleteMultiple";
+        dorothy.ssn_id = 999009997;
+
+        Person dianne = new Person();
+        dianne.firstName = "Dianne";
+        dianne.lastName = "TestInsertAndDeleteMultiple";
+        dianne.ssn_id = 999009996;
+
+        Person dominic = new Person();
+        dominic.firstName = "Dominic";
+        dominic.lastName = "TestInsertAndDeleteMultiple";
+        dominic.ssn_id = 999009995;
+
+        assertEquals(null, personnel.insertAll(david, daniel, dorothy, dianne, dominic).join());
+
+        assertEquals(List.of("Daniel", "David", "Dianne", "Dominic", "Dorothy"),
+                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
+
+        Person dennis = new Person();
+        dennis.firstName = "Dennis";
+        dennis.lastName = "TestInsertAndDeleteMultiple";
+        dennis.ssn_id = 999009994;
+
+        // attempted insert where one is duplicate:
+
+        CompletableFuture<Void> future = personnel.insertAll(dennis, daniel);
+
+        try {
+            future.join();
+            fail("Did not detect duplicate insert of id within varags array.");
+        } catch (CompletionException x) {
+            if ((x.getCause() instanceof EntityExistsException))
+                ; // pass
+            else
+                throw x;
+        }
+
+        assertEquals(List.of("Daniel", "David", "Dianne", "Dominic", "Dorothy"),
+                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
+
+        // delete multiple entities at once
+
+        assertEquals(null, personnel.deleteMultiple(daniel, david).join());
+
+        assertEquals(List.of("Dianne", "Dominic", "Dorothy"),
+                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
+
+        // attempt deletion where one is not found:
+
+        future = personnel.deleteMultiple(dianne, dorothy, david);
+
+        try {
+            future.join();
+            fail("Deletion did not detect missing entity.");
+        } catch (CompletionException x) {
+            if ((x.getCause() instanceof OptimisticLockingFailureException))
+                ; // pass
+            else
+                throw x;
+        }
+
+        assertEquals(List.of("Dianne", "Dominic", "Dorothy"),
+                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
+
+        // delete remaining:
+
+        assertEquals(Integer.valueOf(3), personnel.deleteSeveral(Stream.of(dianne, dorothy, dominic)).join());
+
+        assertEquals(List.of(),
+                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
+    }
+
+    /**
      * Repository method that returns IntStream.
      */
     @Test

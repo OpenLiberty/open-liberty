@@ -53,6 +53,7 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.BaseStream;
+import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -764,6 +765,32 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
+     * Generates JPQL for deletion by entity id and version (if versioned).
+     */
+    private StringBuilder generateDeleteEntity(QueryInfo queryInfo) {
+        EntityInfo entityInfo = queryInfo.entityInfo;
+        String o = queryInfo.entityVar;
+        queryInfo.type = QueryInfo.Type.DELETE_WITH_ENTITY_PARAM;
+        queryInfo.hasWhere = true;
+
+        String idName = queryInfo.entityInfo.getAttributeName("id", true);
+        if (idName == null && queryInfo.entityInfo.idClassAttributeAccessors != null) {
+            // TODO consider if we should use generateConditionsForIdClass
+            throw new MappingException("Delete operations cannot be used on entities with composite IDs."); // TODO NLS
+        }
+
+        StringBuilder q = new StringBuilder(100) //
+                        .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o) //
+                        .append(" WHERE (").append(o).append('.').append(idName).append("=?").append(++queryInfo.paramCount);
+
+        if (entityInfo.versionAttributeName != null)
+            q.append(" AND ").append(o).append('.').append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
+
+        q.append(')');
+        return q;
+    }
+
+    /**
      * Generates JPQL for a *By condition such as MyColumn[IgnoreCase][Not]Like
      */
     private void generateCondition(QueryInfo queryInfo, String methodName, int start, int endBefore, StringBuilder q) {
@@ -1198,6 +1225,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
         EntityInfo entityInfo = queryInfo.entityInfo;
         String methodName = queryInfo.method.getName();
         Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
+        String o = queryInfo.entityVar;
+        StringBuilder q = null;
 
         // Methods with Entity Parameter: save, insert
         if (methodName.startsWith("save")) {
@@ -1221,8 +1250,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 queryInfo.entityParamType = paramTypes[0];
             } else if (CrudRepository.class.equals(queryInfo.method.getDeclaringClass())) {
                 if ("delete".equals(methodName) || "deleteAll".equals(methodName)) {
-                    queryInfo.type = QueryInfo.Type.DELETE_WITH_ENTITY_PARAM;
                     queryInfo.entityParamType = paramTypes[0];
+                    q = generateDeleteEntity(queryInfo);
                 }
             } else if (paramTypes[0].isArray()) {
                 if (defaultEntityClass.equals(paramTypes[0].getComponentType()))
@@ -1237,39 +1266,17 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     }
                 }
             }
-        }
-        if (queryInfo.type == null && queryInfo.entityParamType != null) {
-            if (methodName.startsWith("delete") || methodName.startsWith("remove")) {
-                queryInfo.type = QueryInfo.Type.DELETE_WITH_ENTITY_PARAM;
-            } else if (methodName.startsWith("update")) {
-                queryInfo.type = QueryInfo.Type.UPDATE_WITH_ENTITY_PARAM;
-            } else {
-                throw new UnsupportedOperationException("The " + methodName + " method of the " + repositoryInterface.getName() +
-                                                        " repository interface must have a name that begins with one of " +
-                                                        "(delete, insert, save, update)" +
-                                                        " because the method's parameter accepts entity instances.");
-            }
-        }
-        if (queryInfo.type == QueryInfo.Type.DELETE_WITH_ENTITY_PARAM) {
-            if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, "Method with Entity Parameter identified as " + QueryInfo.Type.DELETE_WITH_ENTITY_PARAM);
-            if (defaultEntityClass.equals(paramTypes[0])) { // delete with single entity parameter
-                methodName = entityInfo.versionAttributeName == null ? "deleteById" : ("deleteByIdAnd" + entityInfo.versionAttributeName);
-            } else { // delete with multiple entity parameters, delete one at a time
-                if (entityInfo.idClassAttributeAccessors == null)
-                    methodName = entityInfo.versionAttributeName == null ? "deleteById" : ("deleteByIdAnd" + entityInfo.versionAttributeName);
+            if (queryInfo.type == null && queryInfo.entityParamType != null)
+                if (methodName.startsWith("delete") || methodName.startsWith("remove"))
+                    q = generateDeleteEntity(queryInfo);
                 else
-                    throw new MappingException("The deleteAll operation cannot be used on entities with composite IDs."); // TODO NLS
-            }
-        } else if (queryInfo.type == QueryInfo.Type.UPDATE_WITH_ENTITY_PARAM) {
-            if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, "Method with Entity Parameter identified as " + QueryInfo.Type.UPDATE_WITH_ENTITY_PARAM);
-            throw new UnsupportedOperationException("TODO: implement update with entity parameter"); // TODO
+                    throw new UnsupportedOperationException("The " + methodName + " method of the " + repositoryInterface.getName() +
+                                                            " repository interface must have a name that begins with one of " +
+                                                            "(delete, insert, save, update)" +
+                                                            " because the method's parameter accepts entity instances.");
         }
 
-        String o = queryInfo.entityVar;
-        StringBuilder q = null;
-        if (queryInfo.type == QueryInfo.Type.SAVE || queryInfo.type == QueryInfo.Type.INSERT) {
+        if (queryInfo.type != null) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "Method with Entity Parameter identified as " + queryInfo.type);
         } else if (methodName.startsWith("find")) {
@@ -2291,12 +2298,32 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         em = entityInfo.persister.createEntityManager();
                         TypedQuery<?> delete = em.createQuery(queryInfo.jpql, entityInfo.entityClass);
 
+                        Object arg = args[0] instanceof Stream //
+                                        ? ((Stream<?>) args[0]).sequential().collect(Collectors.toList()) //
+                                        : args[0];
                         int updateCount = 0;
-                        if (args[0] instanceof Iterable && Iterable.class.equals(queryInfo.method.getParameterTypes()[0]))
-                            for (Object e : ((Iterable<?>) args[0]))
+                        int numExpected = 0;
+
+                        if (arg instanceof Iterable) {
+                            for (Object e : ((Iterable<?>) arg)) {
+                                numExpected++;
                                 updateCount += remove(e, queryInfo, delete);
-                        else
-                            updateCount = remove(args[0], queryInfo, delete);
+                            }
+                        } else if (arg.getClass().isArray()) {
+                            numExpected = Array.getLength(arg);
+                            for (int i = 0; i < numExpected; i++)
+                                updateCount += remove(Array.get(arg, i), queryInfo, delete);
+                        } else {
+                            numExpected = 1;
+                            updateCount = remove(arg, queryInfo, delete);
+                        }
+
+                        if (updateCount < numExpected) {
+                            Class<?> singleType = queryInfo.getSingleResultType();
+                            if (void.class.equals(singleType) || Void.class.equals(singleType))
+                                throw new OptimisticLockingFailureException((numExpected - updateCount) + " of the " +
+                                                                            numExpected + " entities were not found for deletion."); // TODO NLS
+                        }
 
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;
