@@ -153,7 +153,7 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'publish/files/bundles/')
   }
   copy {
-    from new File(project(':com.ibm.ws.fat.wssecurity.fat.example.cbh').buildDir, 'com.ibm.ws.wssecurity.example.cbhwss4j.jar')
+    from new File(project(':com.ibm.ws.wssecurity.fat.example.cbh').buildDir, 'com.ibm.ws.wssecurity.example.cbhwss4j.jar')
     into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles/')
   }
     
