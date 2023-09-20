@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2021 IBM Corporation and others.
+# Copyright (c) 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -14,12 +14,10 @@
 bVersion=1.0.0
 
 src: \
-  test-bundles/com.ibm.ws.wssecurity.cbhwss4j/src
+  test-bundles/com.ibm.ws.wssecurity.cbh/src
 
-test.project: true
-
-Bundle-Name: wssecuritycbhwss4j
-Bundle-SymbolicName: com.ibm.ws.wssecurity.example.cbhwss4j
+Bundle-Name: wssecuritycbh
+Bundle-SymbolicName: com.ibm.ws.wssecurity.example.cbh
 Bundle-Version: ${bVersion}
 Bundle-Description: An PasswordCallbackHandler; version=${bVersion}
 
@@ -27,14 +25,10 @@ WS-TraceGroup: \
   WSSecurity
 
 Export-Package: \
- com.ibm.ws.wssecurity.example.cbhwss4j;version=${bVersion}
+ com.ibm.ws.wssecurity.example.cbh;version=${bVersion}
 
 #Include-Resource: \
 #  @./resources!/META-INF/**, \
 #  OSGI-INF=resources/OSGI-INF
 
 allow.bundle-version.override=true
-
--buildpath: \
-  com.ibm.ws.org.apache.wss4j.ws.security.common;version=latest,\
-  com.ibm.ws.wssecurity.fat.utils.common;version=latest
