@@ -13,7 +13,6 @@
 package io.openliberty.checkpoint.fat;
 
 import static io.openliberty.checkpoint.fat.FATSuite.configureEnvVariable;
-import static java.util.Collections.singletonMap;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
@@ -24,6 +23,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.mail.Message;
 import javax.mail.internet.InternetAddress;
@@ -120,8 +121,13 @@ public class IMAPTest {
 
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();
-        // Update the mailSession config with correct password
-        configureEnvVariable(server, singletonMap("imap_password", "imapPa$$word"));
+        // Update the mailSession config with host, user and password before restore.
+        Map<String, String> imapProps = new HashMap<>();
+        imapProps.put("imap_host", "localhost");
+        imapProps.put("imap_user", "imap@testserver.com");
+        imapProps.put("imap_password", "imapPa$$word");
+
+        configureEnvVariable(server, imapProps);
 
         server.checkpointRestore();
         // Pause for application to start properly and server to say it's listening on ports

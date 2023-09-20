@@ -10,11 +10,10 @@
     <jndiName>IMAPTestingApp/IMAPMailSessionServlet/testIMAPMailSession</jndiName>
     <description>mailSession for testing IMAP protocol</description>
     <storeProtocol>imap</storeProtocol>
-    <host>localhost</host>
-    <user>imap@testserver.com</user>
+    <host>${imap_host}</host>
+    <user>${imap_user}</user>
     <password>${imap_password}</password>
     <from>smtp@testserver.com</from>
-    <property name="mail.imap.host" value="localhost" />
     <property name="mail.imap.port" value="${bvt.prop.imap_port}" />
   </mailSession>
 
@@ -23,6 +22,4 @@
   <application id="IMAPTestingApp" name="IMAPTestingApp" type="war" location="IMAPTestingApp.war">
     <classloader apiTypeVisibility="+third-party"/>
   </application>
-  
-  <variable name="imap_password" defaultValue="wrong_password" />
 </server>
