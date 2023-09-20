@@ -29,8 +29,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -52,8 +51,10 @@ public class PasswordUtilsTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly())
-                    .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
+                    .andWith(new FeatureReplacementAction("appSecurity-3.0", "appSecurity-1.0").removeFeature("passwordUtilities-1.1")
+                                    .addFeature("passwordUtilities-1.0")
+                                    .withID("version1.0")
+                                    .fullFATOnly());
 
     @BeforeClass
     public static void setUp() throws Exception {
