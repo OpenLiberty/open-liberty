@@ -122,9 +122,9 @@ public class XMLTxBean implements XMLTxLocal {
             svLogger.entering(CLASSNAME, "createTimer", info);
         }
 
+        svNextTimeoutLatch = new CountDownLatch(1);
         Timer t = TimerHelper.createTimer(ivTS, DURATION, null, info, false, null);
         svTimer = t;
-        svNextTimeoutLatch = new CountDownLatch(1);
 
         if (svLogger.isLoggable(Level.FINER)) {
             svLogger.exiting(CLASSNAME, "createTimer - created timer: " + t);
@@ -138,9 +138,9 @@ public class XMLTxBean implements XMLTxLocal {
             svLogger.entering(CLASSNAME, "createIntervalTimer", info);
         }
 
+        svNextTimeoutLatch = new CountDownLatch(1);
         Timer t = TimerHelper.createTimer(ivTS, DURATION, null, info, false, INTERVAL);
         svTimer = t;
-        svNextTimeoutLatch = new CountDownLatch(1);
 
         if (svLogger.isLoggable(Level.FINER)) {
             svLogger.exiting(CLASSNAME, "createIntervalTimer - created timer: " + t);
