@@ -20,7 +20,7 @@ import java.net.URI;
 import java.util.List;
 
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
-import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfo;
+import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTelemetryContainerFilter;
 import io.openliberty.microprofile.telemetry.internal.common.rest.RestRouteCache;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;

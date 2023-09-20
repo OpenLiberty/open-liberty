@@ -13,6 +13,8 @@ import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
 import org.osgi.service.component.annotations.Component;
 
+import com.ibm.websphere.ras.Tr;
+
 import io.openliberty.restfulWS.client.ClientBuilderListener;
 import jakarta.ws.rs.client.ClientBuilder;
 
@@ -26,9 +28,13 @@ public class TelemetryClientBuilderListener implements ClientBuilderListener {
 
     @Override
     public void building(ClientBuilder clientBuilder) {
-        TelemetryClientFilter currentFilter = new TelemetryClientFilter();
-        if (currentFilter.isEnabled()) {
-            clientBuilder.register(currentFilter);
+        try {
+            TelemetryClientFilter currentFilter = new TelemetryClientFilter();
+            if (currentFilter.isEnabled()) {
+                clientBuilder.register(currentFilter);
+            }
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
         }
     }
 }

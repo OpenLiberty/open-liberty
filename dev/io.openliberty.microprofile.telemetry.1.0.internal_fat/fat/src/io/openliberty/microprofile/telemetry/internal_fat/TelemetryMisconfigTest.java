@@ -220,11 +220,11 @@ public class TelemetryMisconfigTest extends FATServletClient {
 
     private static void deployAndWaitForApp(WebArchive app, String appName) throws Exception {
         server.setMarkToEndOfLog();
-        ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);//This will set the mark for us in
+        ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWMOT5002E", "CWWKZ0014W"); //Exception thrown in OpenTelemetryProducer. Warnings thrown because apps defined in server.xml will be added dynamically
+        server.stopServer("CWMOT5002E", "CWWKZ0014W"); //CWMOT5002E thrown in OpenTelemetryProducer. CWWKZ0014W thrown because apps defined in server.xml will be added dynamically
     }
 }

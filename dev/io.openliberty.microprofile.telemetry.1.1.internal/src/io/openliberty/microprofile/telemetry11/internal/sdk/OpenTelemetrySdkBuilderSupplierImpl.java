@@ -11,7 +11,7 @@ package io.openliberty.microprofile.telemetry11.internal.sdk;
 
 import org.osgi.service.component.annotations.Component;
 
-import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfoFactory;
+import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfoFactoryImpl;
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk;
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdkBuilder;
 
@@ -19,7 +19,7 @@ import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdkBuilder;
  * This class contains version specific API calls to AutoConfiguredOpenTelemetrySdk.builder()
  */
 @Component
-public class OpenTelemetrySdkBuilderSupplierImpl implements OpenTelemetryInfoFactory.OpenTelemetrySdkBuilderSupplier {
+public class OpenTelemetrySdkBuilderSupplierImpl implements OpenTelemetryInfoFactoryImpl.OpenTelemetrySdkBuilderSupplier {
 
     @Override
     public AutoConfiguredOpenTelemetrySdkBuilder getPartiallyConfiguredOpenTelemetrySDKBuilder() {
