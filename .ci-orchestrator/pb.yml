@@ -108,7 +108,7 @@ triggers:
     - stepName: Distributed Full FATs
   # Omit in order to cause these steps to be skipped.
   - name: fat.buckets.to.run
-    defaultValue: !omit!
+    defaultValue: "!omit!"
     steps:
     - stepName: Determine FATs Needed
     - stepName: Distributed Lite FATs
@@ -135,7 +135,7 @@ triggers:
     - stepName: Distributed Full FATs
   # Omit in order to cause these steps to be skipped.
   - name: fat.buckets.to.run
-    defaultValue: !omit!
+    defaultValue: "!omit!"
     steps:
     - stepName: Determine FATs Needed
     - stepName: Distributed Lite FATs
