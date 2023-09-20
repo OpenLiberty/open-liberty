@@ -141,10 +141,10 @@ public class CoorContextOutInterceptor extends AbstractPhaseInterceptor<Message>
         WSCoorUtil.checkHandlerServiceReady();
         try {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(
-                         tc,
+                Tr.debug(tc,
                          "handleFault",
-                         "Execute handleClientFault for transaction");
+                         message,
+                         new Exception("Stack trace for CoorContextOutInterceptor.handleFault()"));
             }
             WSATOSGIService.getInstance().getHandlerService().handleClientFault();
         } catch (WSATException e) {
