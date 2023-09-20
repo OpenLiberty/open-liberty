@@ -9,7 +9,8 @@ triggers:
   triggerMonitored: false
   keyword: "#pbbeta"
   propertyDefinitions:
-  # If a user defines this property, set it for all steps that use it except the "Distributed Full FATs" step.
+  # If a user defines this property, set it for all steps that use it except the "Distributed Full FATs" step
+  # because those steps are set to use a value calculated by the PR Changes step.
   - name: fat.buckets.to.run
     defaultValue: ${PR Changes:fat.buckets.to.run}
     steps:
@@ -24,7 +25,8 @@ triggers:
   triggerMonitored: false
   keyword: "!pbbeta"
   propertyDefinitions:
-  # If a user defines this property, set it for all steps that use it except the "Distributed Full FATs" step.
+  # If a user defines this property, set it for all steps that use it except the "Distributed Full FATs" step
+  # because those steps are set to use a value calculated by the PR Changes step.
   - name: fat.buckets.to.run
     defaultValue: ${PR Changes:fat.buckets.to.run}
     steps:
@@ -39,7 +41,8 @@ triggers:
 #  triggerMonitored: false
 #  keyword: "#build"
 #  propertyDefinitions:
-#  # If a user defines this property, set it for all steps that use it except the "Distributed Full FATs" step.
+#  # If a user defines this property, set it for all steps that use it except the "Distributed Full FATs" step
+#  # because those steps are set to use a value calculated by the PR Changes step.
 #  - name: fat.buckets.to.run
 #    defaultValue: ${PR Changes:fat.buckets.to.run}
 #    steps:
@@ -60,12 +63,13 @@ triggers:
       isRequired: true
       description: "Name of branch to checkout"
     - name: github_pr_api
-      default: "https://github.ibm.com/api/v3/repos/websphere/WS-CD-Open/pulls/${github_pr_number}"
+      default: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${github_pr_number}"
     - name: github_pr_number
       isRequired: true
-      description: "PR Number in WS-CD-Open"
+      description: "PR Number in open-liberty"
   propertyDefinitions:
-  # If a user defines this property, set it for all steps that use it except the "Distributed Full FATs" step.
+  # If a user defines this property, set it for all steps that use it except the "Distributed Full FATs" step
+  # because those steps are set to use a value calculated by the PR Changes step.
   - name: fat.buckets.to.run
     defaultValue: ${PR Changes:fat.buckets.to.run}
     steps:
@@ -80,7 +84,8 @@ triggers:
   triggerMonitored: false
   keyword: "!build"
   propertyDefinitions:
-  # If a user defines this property, set it for all steps that use it except the "Distributed Full FATs" step.
+  # If a user defines this property, set it for all steps that use it except the "Distributed Full FATs" step
+  # because those steps are set to use a value calculated by the PR Changes step.
   - name: fat.buckets.to.run
     defaultValue: ${PR Changes:fat.buckets.to.run}
     steps:
@@ -95,11 +100,13 @@ triggers:
   triggerMonitored: false
   keyword: "#fullpbbeta"
   propertyDefinitions:
+  # Run all buckets in full mode in the "Distributed Full FATs" step.
   - name: fat.buckets.to.run
     defaultValue: all
     steps:
     - stepName: Compile FATs
     - stepName: Distributed Full FATs
+  # Omit in order to cause these steps to be skipped.
   - name: fat.buckets.to.run
     defaultValue: !omit!
     steps:
@@ -120,11 +127,13 @@ triggers:
   triggerMonitored: false
   keyword: "!fullpbbeta"
   propertyDefinitions:
+  # Run all buckets in full mode in the "Distributed Full FATs" step.
   - name: fat.buckets.to.run
     defaultValue: all
     steps:
     - stepName: Compile FATs
     - stepName: Distributed Full FATs
+  # Omit in order to cause these steps to be skipped.
   - name: fat.buckets.to.run
     defaultValue: !omit!
     steps:
