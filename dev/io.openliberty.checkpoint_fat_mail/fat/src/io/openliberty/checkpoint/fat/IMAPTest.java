@@ -12,7 +12,8 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
-import static io.openliberty.checkpoint.fat.FATSuite.updateVariableConfig;
+import static io.openliberty.checkpoint.fat.FATSuite.configureEnvVariable;
+import static java.util.Collections.singletonMap;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
@@ -23,10 +24,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.util.Map;
 
 import javax.mail.Message;
-import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -118,27 +117,19 @@ public class IMAPTest {
     @BeforeClass
     public static void startGreenMail() throws Exception {
         setupApp();
-        if (server.isStarted() != true) {
-            server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
-            server.startServer();
-            // Update the mailSession config with correct password
-            updateVariableConfig(server, "imap_password", "imapPa$$word");
 
-            server.checkpointRestore();
-            // Pause for application to start properly and server to say it's listening on ports
-            server.waitForStringInLog("port " + server.getHttpDefaultPort());
-        }
-        // Get the current JVM options and add to it.
-        Map<String, String> jvmOptions = server.getJvmOptionsAsMap();
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
+        server.startServer();
+        // Update the mailSession config with correct password
+        configureEnvVariable(server, singletonMap("imap_password", "imapPa$$word"));
 
-        // Set the e-mail subject string that will be used in MimeMessage stored on the imapServer
-        String testSubjectString = "Sent from Liberty JavaMail";
-        // Set the e-mail body string for the same MimeMessage
-        String testBodyString = "Test mail sent by GreenMail";
+        server.checkpointRestore();
+        // Pause for application to start properly and server to say it's listening on ports
+        server.waitForStringInLog("port " + server.getHttpDefaultPort());
+
         // Create a ServerSetup with a port and host name and protocol type passed to it
         // which is then used to create the actual GreenMail server.
         int imapPort = Integer.getInteger("imap_port"); // As per server.xml
-        // Need to add -D to the start of the property name
         System.out.println("Starting IMAP server on port " + imapPort);
         ServerSetup imapSetup = new ServerSetup(imapPort, "localhost", "imap");
         imapServer = new GreenMail(imapSetup);
@@ -156,14 +147,10 @@ public class IMAPTest {
         // After the server and user are setup, a MimeMessage is used to
         // to store a message under the user's inbox folder on the GreenMail server
         MimeMessage message = new MimeMessage((javax.mail.Session) null);
-        try {
-            message.setFrom(new InternetAddress("imaps@testserver.com"));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress("imaps@testserver.com"));
-            message.setSubject("Sent from Liberty JavaMail");
-            message.setText("Test mail sent by GreenMail");
-        } catch (MessagingException e) {
-            e.printStackTrace(System.out);
-        }
+        message.setFrom(new InternetAddress("imaps@testserver.com"));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress("imaps@testserver.com"));
+        message.setSubject("Sent from Liberty JavaMail");
+        message.setText("Test mail sent by GreenMail");
 
         // Now that the MimeMessage is created the user delivers it to imapServer
         setupTestUser.deliver(message);

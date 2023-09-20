@@ -12,14 +12,15 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
-import java.util.Iterator;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.Map;
+import java.util.Properties;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.websphere.simplicity.config.Variable;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.topology.impl.LibertyServer;
@@ -34,21 +35,13 @@ import componenttest.topology.impl.LibertyServer;
 
 public class FATSuite {
 
-    static void updateVariableConfig(LibertyServer server, String name, String value) throws Exception {
-        // change config of variable for restore
-        ServerConfiguration config = removeTestKeyVar(server.getServerConfiguration(), name);
-        config.getVariables().add(new Variable(name, value));
-        server.updateServerConfiguration(config);
-    }
-
-    static ServerConfiguration removeTestKeyVar(ServerConfiguration config, String key) {
-        for (Iterator<Variable> iVars = config.getVariables().iterator(); iVars.hasNext();) {
-            Variable var = iVars.next();
-            if (var.getName().equals(key)) {
-                iVars.remove();
-            }
+    static void configureEnvVariable(LibertyServer server, Map<String, String> newEnv) throws Exception {
+        Properties serverEnvProperties = new Properties();
+        serverEnvProperties.putAll(newEnv);
+        File serverEnvFile = new File(server.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
+        try (OutputStream out = new FileOutputStream(serverEnvFile)) {
+            serverEnvProperties.store(out, "");
         }
-        return config;
     }
 
 }
