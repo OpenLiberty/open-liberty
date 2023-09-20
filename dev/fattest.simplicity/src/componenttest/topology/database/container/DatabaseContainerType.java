@@ -37,47 +37,56 @@ import com.ibm.websphere.simplicity.log.Log;
  */
 @SuppressWarnings("rawtypes")
 public enum DatabaseContainerType {
-    DB2("jcc.jar", Db2Container.class.getCanonicalName(), Properties_db2_jcc.class, //
+    DB2(DatabaseDriver.DB2, Db2Container.class, Properties_db2_jcc.class, //
         DockerImageName.parse("kyleaure/db2:1.0").asCompatibleSubstituteFor("ibmcom/db2")),
-    Derby("derby.jar", DerbyNoopContainer.class.getCanonicalName(), Properties_derby_embedded.class, DockerImageName.parse("")),
-    DerbyClient("derbyclient.jar", DerbyClientContainer.class.getCanonicalName(), Properties_derby_client.class, DockerImageName.parse("")),
-    Oracle("ojdbc8_g.jar", OracleContainer.class.getCanonicalName(), Properties_oracle.class, //
+    Derby(DatabaseDriver.Derby, DerbyNoopContainer.class, Properties_derby_embedded.class, //
+          DockerImageName.parse("")),
+    DerbyClient(DatabaseDriver.DerbyClient, DerbyClientContainer.class, Properties_derby_client.class, //
+                DockerImageName.parse("")),
+    Oracle(DatabaseDriver.Oracle, OracleContainer.class, Properties_oracle.class, //
            DockerImageName.parse("gvenzl/oracle-free:23.3-full-faststart")),
-    Postgres("postgresql.jar", PostgreSQLContainer.class.getCanonicalName(), Properties_postgresql.class, //
+    Postgres(DatabaseDriver.Postgres, PostgreSQLContainer.class, Properties_postgresql.class, //
              DockerImageName.parse("postgres:14.1-alpine")),
-    SQLServer("mssql-jdbc.jar", MSSQLServerContainer.class.getCanonicalName(), Properties_microsoft_sqlserver.class, //
+    SQLServer(DatabaseDriver.SQLServer, MSSQLServerContainer.class, Properties_microsoft_sqlserver.class, //
               DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04"));
 
-    private final String driverName;
-    private final Class<DataSourceProperties> dsPropsClass;
+    private final DatabaseDriver driver;
     private final Class<? extends JdbcDatabaseContainer> containerClass;
+    private final Class<DataSourceProperties> dsPropsClass;
     private final DockerImageName imageName;
 
     @SuppressWarnings("unchecked")
-    DatabaseContainerType(final String driverName, final String containerClassName, final Class dsPropsClass, final DockerImageName imageName) {
-        this.driverName = driverName;
+    DatabaseContainerType(final DatabaseDriver driver, final Class containerClass,
+                          final Class dsPropsClass, final DockerImageName imageName) {
 
-        //Use reflection to get classes at runtime.
-        Class containerClass = null;
-        try {
-            containerClass = Class.forName(containerClassName);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Could not find the container class: " + containerClassName + " for testconatiner type: " + this.name(), e);
-        }
-
+        this.driver = driver;
         this.containerClass = containerClass;
         this.dsPropsClass = dsPropsClass;
         this.imageName = imageName;
+
     }
 
     /**
+     * Deprecated - instead use:
+     * DatabaseContainerType.getDrvier.getName();
+     *
      * Returns the common JDBC Driver name for this testcontainer type.
      * Example: 'ojdbc8_g.jar'
      *
      * @return String - JDBC Driver Name
      */
+    @Deprecated
     public String getDriverName() {
-        return driverName;
+        return driver.getName();
+    }
+
+    /**
+     * Returns the DatabaseDriver enum for this testcontainer type.
+     *
+     * @return DatabaseDriver - the DatabaseDriver enum
+     */
+    public DatabaseDriver getDriver() {
+        return driver;
     }
 
     /**

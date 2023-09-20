@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
@@ -30,6 +29,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
+import componenttest.topology.database.container.DatabaseDriver;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -39,7 +39,6 @@ import test.jakarta.data.jpa.web.DataJPATestServlet;
 @MinimumJavaLevel(javaLevel = 17)
 @CheckpointTest
 public class DataJPATestCheckpoint extends FATServletClient {
-    private static String jdbcJarName;
 
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
@@ -52,7 +51,19 @@ public class DataJPATestCheckpoint extends FATServletClient {
     public static void setUp() throws Exception {
         // Get driver type
         DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
-        jdbcJarName = type.getDriverName();
+        server.addEnvVar("DB_DRIVER", type.getDriver().getName());
+
+        // For DataSourceDefinition java:module/jdbc/RepositoryDataStore
+        server.addEnvVar("DB_CLASS_NAME", type.getDriver().getDatasourceClass(DatabaseDriver.XA_DATASOURCE));
+
+        server.addEnvVar("DB_URL", testContainer.getJdbcUrl());
+        server.addEnvVar("DB_NAME", testContainer.getDatabaseName());
+        server.addEnvVar("DB_USER", testContainer.getUsername());
+        server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
+
+        server.addEnvVar("DATA_CREATE", "true");
+        server.addEnvVar("DATA_DROP", "false");
+        server.addEnvVar("DATA_PREFIX", "TEST");
 
         // Set up server DataSource properties
         DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
@@ -71,24 +82,11 @@ public class DataJPATestCheckpoint extends FATServletClient {
         // TODO if we decide to add the ability to put Jakarta Data properties onto DataSourceDefinition properties,
         // then an update will be needed to com.ibm.ws.jdbc.internal.JDBCDriverService.create to ignore them for the data source:
         // W DSRA8020E: Warning: The property 'data.createTables' does not exist on the DataSource class ...
-        server.stopServer("DSRA8020E.*data.createTables",
+        server.stopServer("DSRA8020E.*URL", //ignore URL does not exist on Derby datasource
+                          "DSRA8020E.*createDatabase", //ignore createDatabase does not exist on non derby datasources
+                          "DSRA8020E.*data.createTables",
                           "DSRA8020E.*data.dropTables",
                           "DSRA8020E.*data.tablePrefix");
     }
 
-    /**
-     * This test has conditional logic based on the JDBC driver/database.
-     */
-    @Test
-    public void testFindAndDeleteEntityThatHasAnIdClass() throws Exception {
-        runTest(server, "DataJPATestApp", "testFindAndDeleteEntityThatHasAnIdClass&jdbcJarName=" + jdbcJarName);
-    }
-
-    /**
-     * This test has conditional logic based on the JDBC driver/database.
-     */
-    @Test
-    public void testUnannotatedCollection() throws Exception {
-        runTest(server, "DataJPATestApp", "testUnannotatedCollection&jdbcJarName=" + jdbcJarName);
-    }
 }

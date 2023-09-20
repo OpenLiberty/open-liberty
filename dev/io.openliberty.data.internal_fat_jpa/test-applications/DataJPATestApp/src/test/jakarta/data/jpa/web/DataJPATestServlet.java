@@ -12,7 +12,8 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
-import static com.ibm.websphere.simplicity.config.DataSourceProperties.DERBY_EMBEDDED;
+import static componenttest.annotation.SkipIfSysProp.DB_Not_Default;
+import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
 import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.assertEquals;
@@ -81,23 +82,23 @@ import jakarta.transaction.UserTransaction;
 
 import org.junit.Test;
 
-import com.ibm.websphere.simplicity.config.dsprops.testrules.SkipIfDataSourceProperties;
-
+import componenttest.annotation.OnlyIfSysProp;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import test.jakarta.data.jpa.web.CreditCard.CardId;
 import test.jakarta.data.jpa.web.CreditCard.Issuer;
 
 @DataSourceDefinition(name = "java:module/jdbc/RepositoryDataStore",
-                      className = "${repository.datasource.class.name}",
-                      databaseName = "${repository.database.name}",
-                      user = "${repository.database.user}",
-                      password = "${repository.database.password}",
+                      className = "${env.DB_CLASS_NAME}",
+                      databaseName = "${env.DB_NAME}",
+                      user = "${env.DB_USER}",
+                      password = "${env.DB_PASSWORD}",
                       properties = {
-                                     "createDatabase=create",
-                                     "data.createTables=${repository.database.tables.create}",
-                                     "data.dropTables=${repository.database.tables.drop}",
-                                     "data.tablePrefix=${repository.database.tables.prefix}"
+                                     "data.createTables=${env.DATA_CREATE}",
+                                     "data.dropTables=${env.DATA_DROP}",
+                                     "data.tablePrefix=${env.DATA_PREFIX}",
+                                     "createDatabase=create", //ignored by non-derby databases
+                                     "URL=${env.DB_URL}" //ignored by derby database
                       })
 @SuppressWarnings("serial")
 @WebServlet("/*")
@@ -566,9 +567,9 @@ public class DataJPATestServlet extends FATServlet {
      * Query-by-method name repository operation to remove and return one or more entities
      * where the entity has an IdClass.
      */
-    // Test annotation is present on corresponding method in DataTest
-    public void testFindAndDeleteEntityThatHasAnIdClass(HttpServletRequest request, HttpServletResponse response) {
-        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+    @Test
+    public void testFindAndDeleteEntityThatHasAnIdClass() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
 
         cities.save(new City("Milwaukee", "Wisconsin", 577222, Set.of(414)));
@@ -623,12 +624,6 @@ public class DataJPATestServlet extends FATServlet {
         Iterator<CityId> ids = cities.deleteFirst3ByStateName("South Dakota", orderByCityName).iterator();
         CityId id;
 
-        //FIXME oracle fails here
-        //JPQL query:         SELECT NEW test.jakarta.data.jpa.web.CityId(o.name, o.stateName) FROM City o WHERE (o.stateName=?1) ORDER BY o.name
-        //SQL query:          SELECT NAME AS a1, STATENAME AS a2 FROM WLPCity WHERE (STATENAME = ?)
-        //   UNNECESSARY? --> AND (STATENAME,NAME) IN (SELECT null,null FROM (SELECT null,null, ROWNUM rnum  FROM (SELECT NAME AS a1, STATENAME AS a2 FROM WLPCity WHERE (STATENAME = ?) ORDER BY null,null) WHERE ROWNUM <= ?) WHERE rnum > ? )
-        //                    ORDER BY NAME FOR UPDATE
-        //Resulting in an empty iterator being returned
         assertEquals(true, ids.hasNext());
         id = ids.next();
         assertEquals("South Dakota", id.stateName);
@@ -659,7 +654,7 @@ public class DataJPATestServlet extends FATServlet {
         id = cities.deleteFirstByStateName("South Dakota", orderByPopulation).orElseThrow();
         assertEquals("South Dakota", id.stateName);
         if (supportsOrderByForUpdate)
-            assertEquals("Spearfish", id.name);
+            assertEquals("Pierre", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
@@ -1115,12 +1110,14 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Tests CrudRepository methods that supply entities as parameters.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp({
+                     DB_Postgres, //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+                     // JPA Feature does not include the Oracle extension and thus cannot map oracle.sql.TIMESTAMPTZ to java.time.OffsetDateTime
+                     // This support is currently under feature review here: https://github.com/OpenLiberty/open-liberty/issues/14894
+                     // No customer workaround is available (so far as I can tell)
+                     DB_Oracle
+    })
     @Test
-    // JPA Feature does not include the Oracle extension and thus cannot map oracle.sql.TIMESTAMPTZ to java.time.OffsetDateTime
-    // This support is currently under feature review here: https://github.com/OpenLiberty/open-liberty/issues/14894
-    // No customer workaround is available (so far as I can tell)
-    @SkipIfDataSourceProperties(ORACLE_JDBC)
     public void testEntitiesAsParameters() throws Exception {
         orders.deleteAll();
 
@@ -1410,7 +1407,7 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Verify WithWeek Function to compare the week-of-year part of a date.
      */
-    @SkipIfDataSourceProperties(DERBY_EMBEDDED) // Derby doesn't support a WEEK function in SQL
+    @OnlyIfSysProp(DB_Not_Default) // Derby doesn't support a WEEK function in SQL
     @Test
     public void testExtractWeekFromDateFunction() {
 
@@ -1422,7 +1419,7 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Verify WithWeek in query-by-method-name to compare the week-of-year part of a date.
      */
-    @SkipIfDataSourceProperties(DERBY_EMBEDDED) // Derby doesn't support a WEEK function in SQL
+    @OnlyIfSysProp(DB_Not_Default) // Derby doesn't support a WEEK function in SQL
     @Test
     public void testExtractWeekFromDateKeyword() {
 
@@ -1572,12 +1569,14 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Avoid specifying a primary key value and let it be generated.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp({
+                     DB_Postgres, //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+                     // JPA Feature does not include the Oracle extension and thus cannot map oracle.sql.TIMESTAMPTZ to java.time.OffsetDateTime
+                     // This support is currently under feature review here: https://github.com/OpenLiberty/open-liberty/issues/14894
+                     // No customer workaround is available (so far as I can tell)
+                     DB_Oracle
+    })
     @Test
-    // JPA Feature does not include the Oracle extension and thus cannot map oracle.sql.TIMESTAMPTZ to java.time.OffsetDateTime
-    // This support is currently under feature review here: https://github.com/OpenLiberty/open-liberty/issues/14894
-    // No customer workaround is available (so far as I can tell)
-    @SkipIfDataSourceProperties(ORACLE_JDBC)
     public void testGeneratedKey() {
         ZoneOffset MDT = ZoneOffset.ofHours(-6);
 
@@ -3216,8 +3215,8 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Use an Entity which has an attribute which is a collection that is not annotated with the JPA ElementCollection annotation.
      */
-    // Test annotation is present on corresponding method in DataJPATest
-    public void testUnannotatedCollection(HttpServletRequest request, HttpServletResponse response) {
+    @Test
+    public void testUnannotatedCollection() {
         assertEquals(0, counties.deleteByNameIn(List.of("Olmsted", "Fillmore", "Winona", "Wabasha")));
 
         int[] olmstedZipCodes = new int[] { 55901, 55902, 55903, 55904, 55905, 55906, 55920, 55923, 55929, 55932, 55934, 55940, 55960, 55963, 55964, 55972, 55976 };
@@ -3251,7 +3250,7 @@ public class DataJPATestServlet extends FATServlet {
         // Derby JDBC Jar Name : derby.jar
         // Oracle JDBC Jar Name : ojdbc8_g.jar
         // This value is passed as HTTP request Parameter(eg: http://{host}/DataJPATestApp?testMethod=testUnannotatedCollection&jdbcJarName=ojdbc8_g.jar)
-        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         if (!(jdbcJarName.startsWith("derby") || jdbcJarName.startsWith("ojdbc8_g"))) {
             // find one entity by zipcodes as Optional
             c = counties.findByZipCodes(wabashaZipCodes).orElseThrow();

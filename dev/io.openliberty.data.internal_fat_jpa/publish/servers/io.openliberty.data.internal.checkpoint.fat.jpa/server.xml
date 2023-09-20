@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2022,2023 IBM Corporation and others.
+    Copyright (c) 2022, 2024 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -25,30 +25,18 @@
   <applicationManager startTimeout="60s"/>
 
   <application location="DataJPATestApp.war">
-    <classloader commonLibraryRef="DerbyLib"/>
+    <classloader commonLibraryRef="JDBCLibrary"/>
   </application>
 
-  <library id="DerbyLib">
-    <file name="${shared.resource.dir}/derby/derby.jar"/>
-  </library>
-
-  <!-- For DataSourceDefinition java:module/jdbc/RepositoryDataStore which is used by Customers and CreditCards repositories -->
-  <variable name="repository.datasource.class.name" value="org.apache.derby.jdbc.EmbeddedXADataSource"/>
-  <variable name="repository.database.name" value="memory:testdb"/>
-  <variable name="repository.database.user" value="dbuser1"/>
-  <variable name="repository.database.password" value="dbpwd1"/>
-  <variable name="repository.database.tables.create" value="true"/>
-  <variable name="repository.database.tables.drop" value="false"/>
-  <variable name="repository.database.tables.prefix" value="TEST"/>
-
-  <!-- For all other repositories: -->
   <dataSource id="DefaultDataSource" fat.modify="true">
     <jdbcDriver libraryRef="JDBCLibrary"/>
-    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb" user="dbuser1" password="dbpwd1"/>
+    <properties.derby.embedded createDatabase="create" databaseName="${env.DB_NAME}" user="${env.DB_USER}" password="${env.DB_PASSWORD}"/>
   </dataSource>
 
   <library id="JDBCLibrary">
-    <fileset dir="${shared.resource.dir}/jdbc" includes="derby.jar"/>
+    <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
   </library>
+
+  <javaPermission codeBase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
 
 </server>
