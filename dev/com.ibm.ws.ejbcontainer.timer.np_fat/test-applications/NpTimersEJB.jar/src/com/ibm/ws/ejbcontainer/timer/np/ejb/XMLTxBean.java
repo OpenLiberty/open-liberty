@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -82,7 +82,6 @@ public class XMLTxBean implements XMLTxLocal {
 
         svLogger.info("svNextTimeout = " + svNextTimeout);
         svNextTimeoutLatch.countDown();
-        svNextTimeoutLatch = new CountDownLatch(1);
     }
 
     @Override
@@ -125,6 +124,7 @@ public class XMLTxBean implements XMLTxLocal {
 
         Timer t = TimerHelper.createTimer(ivTS, DURATION, null, info, false, null);
         svTimer = t;
+        svNextTimeoutLatch = new CountDownLatch(1);
 
         if (svLogger.isLoggable(Level.FINER)) {
             svLogger.exiting(CLASSNAME, "createTimer - created timer: " + t);
@@ -140,6 +140,7 @@ public class XMLTxBean implements XMLTxLocal {
 
         Timer t = TimerHelper.createTimer(ivTS, DURATION, null, info, false, INTERVAL);
         svTimer = t;
+        svNextTimeoutLatch = new CountDownLatch(1);
 
         if (svLogger.isLoggable(Level.FINER)) {
             svLogger.exiting(CLASSNAME, "createIntervalTimer - created timer: " + t);
