@@ -296,7 +296,7 @@ public abstract class JspVisitor {
                         visitJspParamsStart(jspElement);
                         processChildren(jspElement);
                         visitJspParamsEnd(jspElement);
-                    } else {
+                    } else if(PagesVersionHandler.isPages30Loaded()) { //only check in 3.0 since jsp:params was removed in 4.0
                         // Changed for Page 3.1. jsp:params is a no-op (as it must be a child of jsp:plugin)
                         // JSP must still valid contents/syntax within (3.1 Spec, section 5.8 <jsp:params>)
                         if(this.getClass().equals(com.ibm.ws.jsp.translator.visitor.validator.ValidateJspVisitor.class)){
@@ -318,7 +318,7 @@ public abstract class JspVisitor {
                         visitJspFallbackStart(jspElement);
                         processChildren(jspElement);
                         visitJspFallbackEnd(jspElement);
-                    } else {
+                    } else if(PagesVersionHandler.isPages30Loaded()) { //only check in 3.0 since jsp:fallback was removed in 4.0
                         // Changed for Page 3.1. jsp:fallback is a no-op (as it must be a child of jsp:plugin)
                         // JSP must still valid contents/syntax within (3.1 Spec, section 5.9 <jsp:fallback>)
                         if(this.getClass().equals(com.ibm.ws.jsp.translator.visitor.validator.ValidateJspVisitor.class)){
@@ -361,11 +361,11 @@ public abstract class JspVisitor {
                     visitJspSetPropertyEnd(jspElement);
                 }
                 else if (jspElementType.equals(Constants.JSP_PLUGIN_TYPE)) {
-                    if(PagesVersionHandler.isPages30OrLowerLoaded()){
+                    if(PagesVersionHandler.isPages30OrLowerLoaded()) {
                         visitJspPluginStart(jspElement);
                         processChildren(jspElement);
                         visitJspPluginEnd(jspElement);
-                    } else {
+                    } else if(PagesVersionHandler.isPages30Loaded()) { //only check in 3.0 since jsp:plugin was removed in 4.0
                         // Changed for Page 3.1. jsp:plugin is a no-op, but JSP must still valid contents within (3.1 Spec, section 5.7 <jsp:plugin>)
                         if(this.getClass().equals(com.ibm.ws.jsp.translator.visitor.validator.ValidateJspVisitor.class)){
                             if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)){
