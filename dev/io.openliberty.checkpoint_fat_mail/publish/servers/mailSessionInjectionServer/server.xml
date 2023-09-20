@@ -11,11 +11,4 @@
   <variable name="onError" value="FAIL"/>
 
   <application type="ear" id="JavaMailApp" name="JavaMailApp" location="JavaMailApp.ear"/>
-  
-  <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
-
-  <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
-  <!-- Needed due to missing doPriv in javax.mail.Session.loadFile(), and we have no idea of the actual base paths -->
-  <javaPermission className="java.io.FilePermission" name="/-" actions="read"/>
-
 </server>

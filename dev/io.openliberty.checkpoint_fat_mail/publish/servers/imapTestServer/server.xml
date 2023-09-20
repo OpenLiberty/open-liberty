@@ -25,13 +25,4 @@
   </application>
   
   <variable name="imap_password" defaultValue="wrong_password" />
-
-  <!-- Needed due to missing doPriv in javax.mail.Session.getService() -->
-  <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
-  <!-- Needed due to missing doPriv in javax.mail.Service.connect() -->
-  <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
-  <!-- Needed due to missing doPriv in com.sun.mail.util.PropUtil.getBooleanSystemProperty() -->
-  <javaPermission className="java.util.PropertyPermission" name="*" actions="read,write"/>
-  <!-- Needed due to missing doPriv in javax.mail.Session.loadFile(), and we have no idea of the actual base paths -->
-  <javaPermission className="java.io.FilePermission" name="/-" actions="read"/>
 </server>

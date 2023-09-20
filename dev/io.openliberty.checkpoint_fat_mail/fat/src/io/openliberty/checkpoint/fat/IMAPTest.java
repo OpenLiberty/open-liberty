@@ -103,8 +103,7 @@ public class IMAPTest {
     private static void setupApp() throws Exception {
         WebArchive testingApp = ShrinkWrap.create(WebArchive.class, "IMAPTestingApp.war")
                         .addPackages(true, "IMAPTestingApp")
-                        .addAsWebInfResource(new File("test-applications/IMAPTestingApp/resources/META-INF/MANIFEST.MF"))
-                        .addAsWebInfResource(new File("test-applications/IMAPTestingApp/resources/META-INF/permissions.xml"));
+                        .addAsWebInfResource(new File("test-applications/IMAPTestingApp/resources/META-INF/MANIFEST.MF"));
         ShrinkHelper.exportAppToServer(server, testingApp);
 
     }
