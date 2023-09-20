@@ -1,0 +1,113 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.cdi.ee10
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
+resteasy-version=6.2.3.Final
+
+src: src, resources
+
+-cdiannotations:
+
+-dsannotations: \
+  io.openliberty.org.jboss.resteasy.common.component.ResteasyCDIExtensionMetadata, \
+  io.openliberty.org.jboss.resteasy.common.component.ResteasyInjectionClassListCollaborator
+-dsannotations-inherit: true
+
+Export-Package: \
+  io.openliberty.org.jboss.resteasy.common.cdi;thread-context=true, \
+  org.jboss.resteasy.cdi;version=${resteasy-version};thread-context=true, \
+  org.jboss.resteasy.cdi.i18n;version=${resteasy-version}
+
+Import-Package: \
+  com.ibm.websphere.csi;version="[4.0,5)", \
+  com.ibm.websphere.jaxrs20.multipart;version="[10.0,11)", \
+  com.ibm.websphere.ras;version="[1.2,2)", \
+  com.ibm.websphere.ras.annotation;version="[1.0,2)", \
+  com.ibm.ws.cdi;version="[2.0,3)", \
+  com.ibm.ws.container.service.annocache;version="[1.0,2)", \
+  com.ibm.ws.container.service.annotations;version="[2.0,3)", \
+  com.ibm.ws.container.service.app.deploy;version="[2.2,3)", \
+  com.ibm.ws.runtime.metadata;version="[1.1,2)", \
+  com.ibm.ws.threadContext;version="[1.1,2)", \
+  com.ibm.wsspi.adaptable.module;version="[1.0,2)", \
+  com.ibm.wsspi.anno.info;version="[1.0,2)", \
+  com.ibm.wsspi.anno.targets;version="[1.0,2)", \
+  com.ibm.wsspi.webcontainer.collaborator;version="[10.0,11)", \
+  io.openliberty.cdi.spi;version="[10.0,11)", \
+  io.openliberty.org.jboss.resteasy.common.cdi;version="[1.0,2)", \
+  jakarta.annotation;version="[2.0,3)", \
+  jakarta.decorator;version="[3.0,5.0)", \
+  jakarta.enterprise.context;version="[3.0,5.0)", \
+  jakarta.enterprise.context.spi;version="[3.0,5.0)", \
+  jakarta.enterprise.event;version="[3.0,5.0)", \
+  jakarta.enterprise.inject;version="[3.0,5.0)", \
+  jakarta.enterprise.inject.spi;version="[3.0,5.0)", \
+  jakarta.enterprise.util;version="[3.0,5.0)", \
+  jakarta.interceptor;version="[2.0,3.0)", \
+  javax.naming, \
+  jakarta.servlet;version="[5.0,7)", \
+  jakarta.ws.rs;version="[3.0,4.0)", \
+  jakarta.ws.rs.client;version="[3.0,4.0)", \
+  jakarta.ws.rs.container;version="[3.0,4.0)", \
+  jakarta.ws.rs.core;version="[3.0,4.0)", \
+  jakarta.ws.rs.ext;version="[3.0,4.0)", \
+  jakarta.ws.rs.sse;version="[3.0,4.0)", \
+  org.jboss.logging;version="[3.5,4)", \
+  org.jboss.resteasy.cdi;version="[6.2,7)", \
+  org.jboss.resteasy.cdi.i18n;version="[6.2,7)", \
+  org.jboss.resteasy.core;version="[6.2,7)", \
+  org.jboss.resteasy.plugins.providers.multipart;version="[6.2,7)", \
+  org.jboss.resteasy.spi;version="[6.2,7)", \
+  org.jboss.resteasy.spi.metadata;version="[6.2,7)", \
+  org.jboss.resteasy.spi.util;version="[6.2,7)", \
+  org.jboss.resteasy.spi.validation;version="[6.2,7)", \
+  org.jboss.resteasy.util;version="[6.2,7)", \
+  org.jboss.weld.proxy, \
+  *
+
+Private-Package: \
+  io.openliberty.org.jboss.resteasy.common.component
+
+instrument.ffdc: false
+instrument.disabled: false
+
+Include-Resource:\
+  @${repo;org.jboss.resteasy:resteasy-cdi;${resteasy-version};EXACT}, \
+  io/openliberty=${bin}/io/openliberty, \
+  org/jboss/resteasy/cdi=${bin}/org/jboss/resteasy/cdi, \
+  META-INF=resources/META-INF
+
+-buildpath: \
+  org.jboss.resteasy:resteasy-cdi;strategy=exact;version='${resteasy-version}',\
+  com.ibm.ws.adaptable.module;version=latest,\
+  com.ibm.ws.anno;version=latest,\
+  com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
+  com.ibm.ws.container.service;version=latest,\
+  com.ibm.ws.container.service.compat;version=latest,\
+  com.ibm.ws.logging.core,\
+  io.openliberty.org.jboss.logging35,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.webcontainer.jakarta;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+  io.openliberty.org.jboss.resteasy.common.ee10,\
+  io.openliberty.jakarta.restfulWS.3.1,\
+  io.openliberty.jakarta.cdi.4.0,\
+  io.openliberty.jakarta.annotation.2.1
