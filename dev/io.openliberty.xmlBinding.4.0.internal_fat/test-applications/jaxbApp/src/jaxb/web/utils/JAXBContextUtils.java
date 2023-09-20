@@ -217,34 +217,6 @@ public class JAXBContextUtils {
     }
 
     /**
-     * This method does line by line comparison removing tab, whitespace or new line kind of characters
-     * since they cause negative comparison result
-     *
-     * @param expectedResultArrray String array that should match resultString
-     * @param resultString         XML String returned after the process to compare
-     * @return boolean true if all element in expectedResultArrray find in resultString with same order
-     */
-    public static boolean compareMarshalledXML(String[] expectedResultArrray, String result) {
-        String[] resultStringArray = result.split("\n");
-        int i = 0;
-        if (resultStringArray[0].contains("<?xml")) {
-            i = 1;
-        }
-        try {
-            for (String expectedResultString : expectedResultArrray) {
-                if (!expectedResultString.equals(resultStringArray[i].trim())) {
-                    return false;
-                }
-                ++i;
-            }
-        } catch (IndexOutOfBoundsException e) {
-            // If result is shorter than expected. Then, they are not equal.
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * @param unmarshalledItems
      * @param items
      * @return
