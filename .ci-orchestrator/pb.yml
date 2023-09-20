@@ -52,7 +52,7 @@ triggers:
 #    - stepName: Distributed Lite FATs
     
 - type: manual
-  triggerName: "ol-pbbeta-build-maunal"
+  triggerName: "ol-pbbeta-manual"
   triggerRank: 50
   triggerMonitored: false
   propertyDefinitions:
