@@ -1,17 +1,16 @@
-package com.ibm.tx.jta.impl;
-
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.impl;
 
 import java.io.Serializable;
 import java.security.PrivilegedAction;
@@ -200,11 +199,7 @@ public class XidImpl implements Xid, Serializable {
      */
     public XidImpl(Xid oldXid, int sequenceNumber) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "XidImpl", new Object[] {
-                                                   oldXid,
-                                                   sequenceNumber });
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "Creating XID for a resource branch");
+            Tr.entry(tc, "XidImpl", oldXid, sequenceNumber);
 
         this._formatId = oldXid.getFormatId();
         this._gtrid = Util.duplicateByteArray(oldXid.getGlobalTransactionId());
