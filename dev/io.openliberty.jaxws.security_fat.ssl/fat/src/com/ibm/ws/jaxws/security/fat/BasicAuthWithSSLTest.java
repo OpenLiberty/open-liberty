@@ -49,7 +49,7 @@ public class BasicAuthWithSSLTest extends AbstractJaxWsTransportSecuritySSLTest 
     @AfterClass
     public static void afterAllTests() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CWWKO0801E");
         }
     }
 
