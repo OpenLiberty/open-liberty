@@ -5154,6 +5154,60 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use update methods with an entity parameter to make updates.
+     */
+    @Test
+    public void testUpdateWithEntityParameter() {
+        people.deleteByIdBetween(0L, 999999999L);
+
+        Person ursula = new Person();
+        ursula.firstName = "Ursula";
+        ursula.lastName = "TestUpdateWithEntityParameter";
+        ursula.ssn_id = 987001001;
+
+        Person ulysses = new Person();
+        ulysses.firstName = "Ulysses";
+        ulysses.lastName = "TestUpdateWithEntityParameter";
+        ulysses.ssn_id = 987001002;
+
+        Person uriel = new Person();
+        uriel.firstName = "Uriel";
+        uriel.lastName = "TestUpdateWithEntityParameter";
+        uriel.ssn_id = 987001003;
+
+        Person uriah = new Person();
+        uriah.firstName = "Uriah";
+        uriah.lastName = "TestUpdateWithEntityParameter";
+        uriah.ssn_id = 987001004;
+
+        Person urban = new Person();
+        urban.firstName = "Urban";
+        urban.lastName = "TestUpdateWithEntityParameter";
+        urban.ssn_id = 987001005;
+
+        people.save(List.of(ursula, ulysses, uriel, uriah));
+
+        // update single entity:
+
+        ulysses.lastName = "Test-UpdateWithEntityParameter";
+        assertEquals(true, persons.updateOne(ulysses));
+
+        assertEquals(false, persons.updateOne(urban)); // not in database
+
+        // update multiple entities:
+
+        ulysses.lastName = "TestUpdate-WithEntityParameter";
+        ursula.lastName = "TestUpdate-WithEntityParameter";
+        uriah.lastName = "TestUpdate-WithEntityParameter";
+
+        assertEquals(3, persons.updateSome(ulysses, urban, ursula, uriah)); // one is not in the database
+
+        assertEquals(0, persons.updateSome());
+
+        assertEquals(4, people.deleteByIdBetween(0L, 999999999L));
+    }
+
+    /**
      * Use JPQL query to update based on version.
      */
     @Test
