@@ -12,9 +12,9 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.util;
 
-import static com.ibm.ws.app.manager.springboot.util.SpringBootThinUtil.getArtifactId;
-import static com.ibm.ws.app.manager.springboot.util.SpringBootThinUtil.getStarterFilter;
-import static com.ibm.ws.app.manager.springboot.util.SpringBootThinUtil.stringStream;
+import static com.ibm.ws.app.manager.springboot.thin.util.SpringBootThinUtil.getArtifactId;
+import static com.ibm.ws.app.manager.springboot.thin.util.SpringBootThinUtil.getStarterFilter;
+import static com.ibm.ws.app.manager.springboot.thin.util.SpringBootThinUtil.stringStream;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -47,8 +47,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.ibm.ws.app.manager.springboot.util.SpringBootThinUtil.EmbeddedContainer;
-import com.ibm.ws.app.manager.springboot.util.SpringBootThinUtil.StarterFilter;
+import com.ibm.ws.app.manager.springboot.thin.util.SpringBootThinUtil;
+import com.ibm.ws.app.manager.springboot.thin.util.SpringBootThinUtil.EmbeddedContainer;
+import com.ibm.ws.app.manager.springboot.thin.util.SpringBootThinUtil.StarterFilter;
 
 /**
  * Verify the Liberty SpringBoot runtime excludes, from thinned applications and library caches,

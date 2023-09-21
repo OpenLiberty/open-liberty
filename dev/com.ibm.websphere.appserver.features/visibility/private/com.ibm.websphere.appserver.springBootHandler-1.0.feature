@@ -4,6 +4,7 @@ WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 -features=com.ibm.websphere.appserver.javaeePlatform-7.0
 -bundles=\
+ com.ibm.ws.app.manager.springboot.thin, \
  com.ibm.ws.app.manager.springboot, \
  com.ibm.ws.springboot.support.shutdown, \
  com.ibm.ws.springboot.utility

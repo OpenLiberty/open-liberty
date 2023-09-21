@@ -12,20 +12,20 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.internal;
 
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.ID_HTTP_ENDPOINT;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.ID_SSL;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.ID_VIRTUAL_HOST;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_APP_TYPE;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_BOOT_CONFIG_BUNDLE_PREFIX;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_BOOT_CONFIG_NAMESPACE;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_THIN_APPS_DIR;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XMI_BND_NAME;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XMI_VIRTUAL_HOST_END;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XMI_VIRTUAL_HOST_START;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XML_BND_NAME;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XML_VIRTUAL_HOST_END;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XML_VIRTUAL_HOST_START;
-import static com.ibm.ws.app.manager.springboot.util.SpringBootThinUtil.SPRING_LIB_INDEX_FILE;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.ID_HTTP_ENDPOINT;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.ID_SSL;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.ID_VIRTUAL_HOST;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.SPRING_APP_TYPE;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.SPRING_BOOT_CONFIG_BUNDLE_PREFIX;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.SPRING_BOOT_CONFIG_NAMESPACE;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.SPRING_THIN_APPS_DIR;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.XMI_BND_NAME;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.XMI_VIRTUAL_HOST_END;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.XMI_VIRTUAL_HOST_START;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.XML_BND_NAME;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.XML_VIRTUAL_HOST_END;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.XML_VIRTUAL_HOST_START;
+import static com.ibm.ws.app.manager.springboot.thin.util.SpringBootThinUtil.SPRING_LIB_INDEX_FILE;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -95,9 +95,10 @@ import com.ibm.ws.app.manager.springboot.container.config.SpringConfiguration;
 import com.ibm.ws.app.manager.springboot.container.config.VirtualHost;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory.Instance;
+import com.ibm.ws.app.manager.springboot.thin.container.SpringConstants;
+import com.ibm.ws.app.manager.springboot.thin.util.SpringBootManifest;
+import com.ibm.ws.app.manager.springboot.thin.util.SpringBootThinUtil;
 import com.ibm.ws.app.manager.springboot.support.SpringBootApplication;
-import com.ibm.ws.app.manager.springboot.util.SpringBootManifest;
-import com.ibm.ws.app.manager.springboot.util.SpringBootThinUtil;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo.Type;

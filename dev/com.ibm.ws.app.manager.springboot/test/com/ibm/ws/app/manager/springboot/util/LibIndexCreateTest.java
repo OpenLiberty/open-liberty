@@ -41,6 +41,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import com.ibm.ws.app.manager.springboot.thin.util.SpringBootThinUtil;
+
 /**
  *
  */

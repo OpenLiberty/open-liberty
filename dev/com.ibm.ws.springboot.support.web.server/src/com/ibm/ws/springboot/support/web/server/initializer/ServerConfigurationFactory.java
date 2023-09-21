@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,11 +12,11 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.web.server.initializer;
 
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.ID_HTTP_ENDPOINT;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.ID_KEY_STORE;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.ID_SSL;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.ID_TRUST_STORE;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.ID_VIRTUAL_HOST;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.ID_HTTP_ENDPOINT;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.ID_KEY_STORE;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.ID_SSL;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.ID_TRUST_STORE;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.ID_VIRTUAL_HOST;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,8 +32,6 @@ import java.util.function.Function;
 import org.osgi.framework.Version;
 import org.osgi.framework.VersionRange;
 
-import com.ibm.ws.app.manager.springboot.container.ApplicationError;
-import com.ibm.ws.app.manager.springboot.container.ApplicationTr.Type;
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory;
 import com.ibm.ws.app.manager.springboot.container.config.ConfigElementList;
 import com.ibm.ws.app.manager.springboot.container.config.HttpEndpoint;
@@ -42,6 +40,8 @@ import com.ibm.ws.app.manager.springboot.container.config.KeyStore;
 import com.ibm.ws.app.manager.springboot.container.config.SSLConfig;
 import com.ibm.ws.app.manager.springboot.container.config.ServerConfiguration;
 import com.ibm.ws.app.manager.springboot.container.config.VirtualHost;
+import com.ibm.ws.app.manager.springboot.thin.container.ApplicationError;
+import com.ibm.ws.app.manager.springboot.thin.container.ApplicationTr.Type;
 
 /**
  *

@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.app.manager.springboot.container.ApplicationError;
+import com.ibm.ws.app.manager.springboot.thin.container.ApplicationError;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ModuleRuntimeContainer;

@@ -12,8 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.internal;
 
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_SHARED_LIB_CACHE_DIR;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_WORKAREA_LIB_CACHE_DIR;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.SPRING_SHARED_LIB_CACHE_DIR;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.SPRING_WORKAREA_LIB_CACHE_DIR;
 
 import java.io.File;
 import java.util.Map;

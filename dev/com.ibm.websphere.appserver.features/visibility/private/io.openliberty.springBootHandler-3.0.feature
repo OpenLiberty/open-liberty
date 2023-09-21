@@ -4,6 +4,7 @@ WLP-DisableAllFeatures-OnConflict: true
 visibility=private
 -features=io.openliberty.jakartaeePlatform-10.0
 -bundles=\
+ com.ibm.ws.app.manager.springboot.thin, \
  com.ibm.ws.app.manager.springboot.jakarta, \
  com.ibm.ws.springboot.support.shutdown, \
  com.ibm.ws.springboot.utility
