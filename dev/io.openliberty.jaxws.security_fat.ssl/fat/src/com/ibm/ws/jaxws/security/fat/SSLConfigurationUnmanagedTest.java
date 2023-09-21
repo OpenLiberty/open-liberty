@@ -70,7 +70,7 @@ public class SSLConfigurationUnmanagedTest extends AbstractJaxWsTransportSecurit
     public static void afterAllTests() throws Exception {
         if (dynamicUpdate) {
             if (server != null && server.isStarted()) {
-                server.stopServer(); // trust stop server to ensure server is stopped
+                server.stopServer("CWWKO0801E"); // trust stop server to ensure server is stopped
             }
         }
     }
@@ -79,7 +79,7 @@ public class SSLConfigurationUnmanagedTest extends AbstractJaxWsTransportSecurit
     public void afterTest() throws Exception {
         if (!dynamicUpdate) {
             if (server != null && server.isStarted()) {
-                server.stopServer(); // trust stop server to make sure the server is stopped.
+                server.stopServer("CWWKO0801E"); // trust stop server to make sure the server is stopped.
             }
         }
     }

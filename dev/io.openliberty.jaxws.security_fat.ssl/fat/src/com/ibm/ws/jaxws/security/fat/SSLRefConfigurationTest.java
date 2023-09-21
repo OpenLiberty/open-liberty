@@ -57,7 +57,7 @@ public class SSLRefConfigurationTest extends AbstractJaxWsTransportSecuritySSLTe
     public static void afterAllTests() throws Exception {
         if (dynamicUpdate) {
             if (server != null && server.isStarted()) {
-                server.stopServer("CWPKI0823E"); // trust stop server to ensure server is stopped
+                server.stopServer("CWPKI0823E", "CWWKO0801E"); // trust stop server to ensure server is stopped
             }
         }
     }
@@ -66,7 +66,7 @@ public class SSLRefConfigurationTest extends AbstractJaxWsTransportSecuritySSLTe
     public void afterTest() throws Exception {
         if (!dynamicUpdate) {
             if (server != null && server.isStarted()) {
-                server.stopServer("CWPKI0823E"); // trust stop server to make sure the server is stopped.
+                server.stopServer("CWPKI0823E", "CWWKO0801E"); // trust stop server to make sure the server is stopped.
             }
         }
     }
