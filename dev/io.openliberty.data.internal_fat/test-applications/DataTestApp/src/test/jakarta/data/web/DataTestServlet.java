@@ -5208,6 +5208,46 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use update methods with a versioned entity parameter to make updates.
+     */
+    @Test
+    public void testUpdateWithVersionedEntityParameter() {
+        Product prod1 = new Product();
+        prod1.pk = UUID.nameUUIDFromBytes("UPD-VER-EP-1".getBytes());
+        prod1.name = "testUpdateWithVersionedEntityParameter Product 1";
+        prod1.price = 10.99f;
+
+        Product prod2 = new Product();
+        prod2.pk = UUID.nameUUIDFromBytes("UPD-VER-EP-2".getBytes());
+        prod2.name = "testUpdateWithVersionedEntityParameter Product 2";
+        prod2.price = 12.99f;
+
+        Product prod3 = new Product();
+        prod3.pk = UUID.nameUUIDFromBytes("UPD-VER-EP-3".getBytes());
+        prod3.name = "testUpdateWithVersionedEntityParameter Product 3";
+        prod3.price = 13.99f;
+
+        Product[] p = products.saveMultiple(prod1, prod2, prod3);
+        prod1 = p[0];
+        prod2 = p[1];
+        prod3 = p[2];
+
+        // versioned update to 1 entity:
+
+        prod1.price = 10.79f;
+        assertEquals(Boolean.TRUE, products.update(prod1)); // current version
+
+        prod1.price = 10.89f;
+        assertEquals(Boolean.FALSE, products.update(prod1)); // old version
+
+        // versioned update to multiple entities:
+
+        prod2.price = 12.89f;
+        prod3.price = 13.89f;
+        assertEquals(Long.valueOf(2), products.update(Stream.of(prod1, prod2, prod3))); // 1 with old version
+    }
+
+    /**
      * Use JPQL query to update based on version.
      */
     @Test
