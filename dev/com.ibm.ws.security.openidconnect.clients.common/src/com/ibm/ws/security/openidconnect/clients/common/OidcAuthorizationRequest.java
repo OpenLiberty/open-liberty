@@ -226,17 +226,13 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
             addPkceParameters(pkceCodeChallengeMethod, state, authzParameters);
         }
 
-        // LIBERTY-I-61: START
         if (isImplicit) {
             addImplicitParameters(authzParameters);
         }
         String resources = getResourcesParameter();
-        System.out.println("Resources: " + resources);
         if (resources != null) {
             authzParameters.addParameter("resource", resources);
-            System.out.println("Adding resouces parameter no matter it is implcit or not. (isImplicit=" + isImplicit + ")");
         }
-        // LIBERTY-I-61: END
 
         // look for custom params in the configuration to send to the authorization ep
         addCustomParams(authzParameters);
@@ -261,11 +257,6 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
 
     void addImplicitParameters(AuthorizationRequestParameters authzParameters) throws UnsupportedEncodingException {
         authzParameters.addParameter("response_mode", "form_post");
-        // add resource
-        //        String resources = getResourcesParameter();
-        //        if (resources != null) {
-        //            authzParameters.addParameter("resource", resources);
-        //        }
     }
 
     String getResourcesParameter() throws UnsupportedEncodingException {
