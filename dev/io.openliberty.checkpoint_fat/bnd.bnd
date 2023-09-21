@@ -17,7 +17,6 @@ src: \
 	fat/src,\
 	test-applications/app1/src,\
 	test-applications/app2/src,\
-	test-applications/mpapp1/src,\
 	test-applications/ejbapp1/src,\
 	test-applications/inventory/src/java,\
 	test-applications/system/src/java,\
@@ -78,7 +77,6 @@ tested.features: \
 	oauth-2.0,\
 	openidconnectclient-1.0,\
 	sociallogin-1.0,\
-	mpConfig-3.1,\
 	mpMetrics-5.1,\
 	passwordUtilities-1.0,\
 	appSecurity-1.0

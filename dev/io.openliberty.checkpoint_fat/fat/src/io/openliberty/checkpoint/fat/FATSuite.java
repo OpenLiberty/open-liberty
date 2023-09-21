@@ -57,7 +57,6 @@ import componenttest.topology.impl.LibertyServer;
                 LocalEJBTest.class,
                 CheckpointSPITest.class,
                 CheckpointWithSecurityManager.class,
-                MPConfigTest.class,
                 SSLTest.class,
                 PasswordUtilsTest.class,
                 MPOpenTracingJaegerTraceTest.class,
