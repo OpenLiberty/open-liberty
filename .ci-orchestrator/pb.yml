@@ -100,18 +100,14 @@ triggers:
   triggerMonitored: false
   keyword: "#fullpbbeta"
   propertyDefinitions:
-  # Run all buckets in full mode in the "Distributed Full FATs" step.
+  # Run all buckets in full mode.
   - name: fat.buckets.to.run
     defaultValue: all
     steps:
     - stepName: Compile FATs
-    - stepName: Distributed Full FATs
-  # Omit in order to cause these steps to be skipped.
-  - name: fat.buckets.to.run
-    defaultValue: "!omit!"
-    steps:
     - stepName: Determine FATs Needed
     - stepName: Distributed Lite FATs
+    - stepName: Distributed Full FATs
   - name: create.im.repo
     defaultValue: true
     steps:
@@ -127,18 +123,14 @@ triggers:
   triggerMonitored: false
   keyword: "!fullpbbeta"
   propertyDefinitions:
-  # Run all buckets in full mode in the "Distributed Full FATs" step.
+  # Run all buckets in full mode.
   - name: fat.buckets.to.run
     defaultValue: all
     steps:
     - stepName: Compile FATs
-    - stepName: Distributed Full FATs
-  # Omit in order to cause these steps to be skipped.
-  - name: fat.buckets.to.run
-    defaultValue: "!omit!"
-    steps:
     - stepName: Determine FATs Needed
     - stepName: Distributed Lite FATs
+    - stepName: Distributed Full FATs
   - name: create.im.repo
     defaultValue: true
     steps:
