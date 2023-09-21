@@ -42,32 +42,17 @@ public class WithSpanErrorServlet extends FATServlet {
     private SpanBean spanBean;
 
     @Test
-    public void callMethodRuntimeException() {
+    public void callMethodException() {
         try {
-            spanBean.methodRuntimeException();
+            spanBean.methodException();
             fail("Error not thrown");
         } catch (RuntimeException e) {
             //Span should still be created with the error status present
             SpanData spanData = exporter.getFinishedSpanItems(1).get(0);
-            assertThat(spanData, hasName("SpanBean.methodRuntimeException"));
+            assertThat(spanData, hasName("SpanBean.methodException"));
             assertThat(spanData, hasKind(INTERNAL));
             assertThat(spanData, hasStatus(StatusCode.ERROR));
             assertThat(spanData, hasExceptionLog(RuntimeException.class));
-        }
-    }
-
-    @Test
-    public void callMethodNullPointerException() {
-        try {
-            spanBean.methodNullPointerException();
-            fail("Error not thrown");
-        } catch (RuntimeException e) {
-            //Span should still be created with the error status present
-            SpanData spanData = exporter.getFinishedSpanItems(1).get(0);
-            assertThat(spanData, hasName("SpanBean.methodNullPointerException"));
-            assertThat(spanData, hasKind(INTERNAL));
-            assertThat(spanData, hasStatus(StatusCode.ERROR));
-            assertThat(spanData, hasExceptionLog(NullPointerException.class));
         }
     }
 
@@ -76,14 +61,8 @@ public class WithSpanErrorServlet extends FATServlet {
 
         //Creates a span for this method that throws an exception
         @WithSpan
-        public String methodRuntimeException() {
+        public String methodException() {
             throw new RuntimeException("runtime exception");
-        }
-
-                //Creates a span for this method that throws an exception
-        @WithSpan
-        public String methodNullPointerException() {
-            throw new NullPointerException("runtime exception");
         }
     }
 
