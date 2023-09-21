@@ -111,7 +111,7 @@ public class VerboseLogTest {
 
         Writer isw = new OutputStreamWriter(new FileOutputStream(jvmoptionsserverroot), "UTF-8");
         BufferedWriter bw = new BufferedWriter(isw);
-        bw.write("-Dnogclog\n");
+        bw.write("-Dverbosegc=false\n");
         bw.close();
 
         Properties envVars = new Properties();
