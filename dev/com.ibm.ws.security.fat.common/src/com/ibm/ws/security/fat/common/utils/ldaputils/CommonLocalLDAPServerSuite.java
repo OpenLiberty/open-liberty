@@ -33,8 +33,8 @@ public class CommonLocalLDAPServerSuite {
     public static void ldapSetUp() throws Exception {
 
         // We prefer to use in-memory LDAP to avoid network issues, but, the Apache LDAP servers are not running on z/OS
-        // the old unbounded LDAP server works, so, we'll try to use that on z/OS - attempt to use the Apache tooling for 
-        // distributed and z/OS with java 17 - that path will result in distributed using Apache in memory and z/OS 
+        // the old unbounded LDAP server works, so, we'll try to use that on z/OS - attempt to use the Apache tooling for
+        // distributed and z/OS with java 17 - that path will result in distributed using Apache in memory and z/OS
         // with Java 17 using the remote servers.
         String os = System.getProperty("os.name").toLowerCase();
 
@@ -58,11 +58,10 @@ public class CommonLocalLDAPServerSuite {
                 LocalLDAPServerSuite.setUpUsingServers(testServers);
             } catch (Exception e) {
                 Log.info(c, "setUp", "######################################################");
-                Log.info(c, "setUp", "##### Failed setting up LDAP Servers for FAT     #####");
-                Log.info(c, "setUp", "##### The Failure is being logged, but the       #####");
-                Log.info(c, "setUp", "##### FAT will continue - expect other failures. #####");
+                Log.info(c, "setUp", "##### Failed setting up LDAP Servers for FAT.    #####");
                 Log.info(c, "setUp", "######################################################");
                 Log.info(c, "setUp", e.getMessage());
+                throw e;
             }
         } else {
             Log.info(c, "setUp", "Calling CommonZOSLocalLDAP.ldapSetUp()");
@@ -70,11 +69,10 @@ public class CommonLocalLDAPServerSuite {
                 CommonZOSLocalLDAP.ldapSetUp();
             } catch (Exception e) {
                 Log.info(c, "setUp", "######################################################");
-                Log.info(c, "setUp", "##### Failed setting up LDAP Servers for FAT     #####");
-                Log.info(c, "setUp", "##### The Failure is being logged, but the       #####");
-                Log.info(c, "setUp", "##### FAT will continue - expect other failures. #####");
+                Log.info(c, "setUp", "##### Failed setting up LDAP Servers for FAT.    #####");
                 Log.info(c, "setUp", "######################################################");
                 Log.info(c, "setUp", e.getMessage());
+                throw e;
             }
 
         }

@@ -32,8 +32,7 @@ dependencies {
                 project(':com.ibm.ws.com.meterware.httpunit.1.7'),
                 'jtidy:jtidy:4aug2000r7-dev',
                 'rhino:js:1.5R4.1',  // See NOTE below
-                project(':com.ibm.ws.com.unboundid'),
-               'com.unboundid:unboundid-ldapsdk:5.1.0' 
+                project(':com.ibm.ws.com.unboundid')
 
   // NOTE: More current js versions have a bug that prevents multiple redirects - this causes
   // a couple of our tests to fail.
