@@ -39,7 +39,8 @@ tested.features: \
 	servlet-5.0,\
 	cdi-4.0,\
 	servlet-6.0,\
-	connectors-2.0
+	cdi-4.1,\
+        servlet-6.1
 
 -buildpath: \
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
