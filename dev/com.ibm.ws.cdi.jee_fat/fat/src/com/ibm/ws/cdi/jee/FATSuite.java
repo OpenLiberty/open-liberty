@@ -17,6 +17,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.cdi.jee.ejbWithJsp.JEEInjectionTargetTest;
+import com.ibm.ws.cdi.jee.faces40.Faces40CDISessionPersistence;
 import com.ibm.ws.cdi.jee.jaxrs.inject.InjectIntoPathTest;
 import com.ibm.ws.cdi.jee.jsf.SimpleJSFTest;
 import com.ibm.ws.cdi.jee.jsf.SimpleJSFWithSharedLibTest;
@@ -36,6 +37,7 @@ import com.ibm.ws.cdi.jee.webservices.CDI12WebServicesTest;
                 SimpleJSFTest.class,
                 SimpleJSFWithSharedLibTest.class,
                 SimpleJSPTest.class,
+                Faces40CDISessionPersistence.class,
 })
 public class FATSuite {
 
