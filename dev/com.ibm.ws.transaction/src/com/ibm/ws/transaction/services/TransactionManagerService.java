@@ -49,6 +49,7 @@ import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.TMService;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.Transaction.UOWCallback;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
@@ -75,6 +76,7 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
     private final AtomicBoolean isStarted = new AtomicBoolean();
     boolean xaFlowCallbacksInitialised;
 
+    @Trivial
     private EmbeddableWebSphereTransactionManager etm() {
         return EmbeddableTransactionManagerFactory.getTransactionManager();
     }

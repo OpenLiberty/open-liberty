@@ -440,13 +440,16 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     @Trivial
     public boolean isAcceptHeuristicHazard() {
-        return (Boolean) _props.get("acceptHeuristicHazard");
+        final Boolean ahh = (Boolean) _props.get("acceptHeuristicHazard");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "isAcceptHeuristicHazard {0}", ahh);
+        return ahh;
     }
 
     @Override
     @Trivial
     public boolean isRecoverOnStartup() {
-        Boolean isRoS = (Boolean) _props.get("recoverOnStartup");
+        final Boolean isRoS = (Boolean) _props.get("recoverOnStartup");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "isRecoverOnStartup {0}", isRoS);
         if (isRoS && checkpointWaitForConfig()) {
@@ -459,7 +462,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
     @Override
     public boolean isShutdownOnLogFailure() {
-        Boolean isSoLF = (Boolean) _props.get("shutdownOnLogFailure");
+        final Boolean isSoLF = (Boolean) _props.get("shutdownOnLogFailure");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "isShutdownOnLogFailure set to " + isSoLF);
         return isSoLF;
@@ -468,7 +471,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     @Trivial
     public boolean isOnePCOptimization() {
-        Boolean is1PC = (Boolean) _props.get("OnePCOptimization");
+        final Boolean is1PC = (Boolean) _props.get("OnePCOptimization");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "OnePCOptimization set to {0}", is1PC);
         return is1PC;
@@ -477,7 +480,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     @Trivial
     public boolean isForcePrepare() {
-        Boolean forcePrepare = (Boolean) _props.get("forcePrepare");
+        final Boolean forcePrepare = (Boolean) _props.get("forcePrepare");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "forcePrepare set to {0}", forcePrepare);
         return forcePrepare;
@@ -486,7 +489,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     @Trivial
     public boolean isWaitForRecovery() {
-        Boolean isWfR = (Boolean) _props.get("waitForRecovery");
+        final Boolean isWfR = (Boolean) _props.get("waitForRecovery");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "isWaitForRecovery {0}", isWfR);
         if (!isWfR && checkpointWaitForConfig()) {
@@ -515,6 +518,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public RuntimeMetaDataProvider getRuntimeMetaDataProvider() {
         return _runtimeMetaDataProvider;
     }
@@ -889,8 +893,12 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @see com.ibm.tx.config.ConfigurationProvider#enableLogRetries()
      */
     @Override
+    @Trivial
     public boolean enableLogRetries() {
-        return (Boolean) _props.get("enableLogRetries");
+        final Boolean elr = (Boolean) _props.get("enableLogRetries");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "enableLogRetries {0}", elr);
+        return elr;
     }
 
     /*
