@@ -54,6 +54,7 @@ public class PasswordUtilsTest extends FATServletClient {
                     .andWith(new FeatureReplacementAction("appSecurity-3.0", "appSecurity-1.0").removeFeature("passwordUtilities-1.1")
                                     .addFeature("passwordUtilities-1.0")
                                     .withID("version1.0")
+                                    .forServers(SERVER_NAME)
                                     .fullFATOnly());
 
     @BeforeClass
