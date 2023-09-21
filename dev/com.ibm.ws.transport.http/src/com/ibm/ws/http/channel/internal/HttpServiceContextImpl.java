@@ -31,6 +31,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.zip.DataFormatException;
 
@@ -100,6 +101,7 @@ import com.ibm.wsspi.tcpchannel.TCPRequestContext;
 import com.ibm.wsspi.tcpchannel.TCPWriteCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultHttpContent;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -2248,7 +2250,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
             ((NettyResponseMessage) getResponse()).processCookies();
         }
-        this.nettyContext.channel().write(this.nettyResponse);
+
+        MSP.log("should write netty response");
+
+        this.nettyContext.channel().writeAndFlush(this.nettyResponse);
         this.setHeadersSent();
         //setupCompressionHandler();
 
@@ -3054,10 +3059,20 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             this.sendHeaders(nettyResponse);
         }
         DefaultHttpContent content;
+        ChannelFuture future;
         if (Objects.nonNull(wsbb)) {
             for (WsByteBuffer buffer : wsbb) {
                 if (Objects.nonNull(buffer)) {
-                    this.nettyContext.channel().write(buffer);
+
+                    future = this.nettyContext.channel().write(buffer);
+                    try {
+                        //TODO: need to find a way to slow down and ensure things are sent up the pipeline
+                        future.await(1, TimeUnit.SECONDS);
+                    } catch (InterruptedException e) {
+                        //TODO: swallow?
+                        e.printStackTrace();
+                    }
+
                     //content = new DefaultHttpContent(Unpooled.wrappedBuffer(buffer.getWrappedByteBuffer()));
                 }
             }

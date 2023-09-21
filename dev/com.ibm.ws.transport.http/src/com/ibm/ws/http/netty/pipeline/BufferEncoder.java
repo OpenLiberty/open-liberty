@@ -40,7 +40,7 @@ public class BufferEncoder extends MessageToMessageEncoder<WsByteBuffer> {
 
             bytesWritten += message.remaining();
 
-            doLastHttpContent = context.channel().attr(NettyHttpConstants.CONTENT_LENGTH).get() == bytesWritten;
+            doLastHttpContent = context.channel().attr(NettyHttpConstants.CONTENT_LENGTH).get() <= bytesWritten;
 
         }
 
