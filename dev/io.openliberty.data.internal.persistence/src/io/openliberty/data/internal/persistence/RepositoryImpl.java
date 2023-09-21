@@ -773,15 +773,25 @@ public class RepositoryImpl<R> implements InvocationHandler {
         queryInfo.type = QueryInfo.Type.DELETE_WITH_ENTITY_PARAM;
         queryInfo.hasWhere = true;
 
-        String idName = queryInfo.entityInfo.getAttributeName("id", true);
-        if (idName == null && queryInfo.entityInfo.idClassAttributeAccessors != null) {
-            // TODO consider if we should use generateConditionsForIdClass
-            throw new MappingException("Delete operations cannot be used on entities with composite IDs."); // TODO NLS
-        }
-
         StringBuilder q = new StringBuilder(100) //
                         .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o) //
-                        .append(" WHERE (").append(o).append('.').append(idName).append("=?").append(++queryInfo.paramCount);
+                        .append(" WHERE (");
+
+        String idName = entityInfo.getAttributeName("id", true);
+        if (idName == null && entityInfo.idClassAttributeAccessors != null) {
+            boolean first = true;
+            for (String name : entityInfo.idClassAttributeAccessors.keySet()) {
+                if (first)
+                    first = false;
+                else
+                    q.append(" AND ");
+
+                name = entityInfo.attributeNames.get(name);
+                q.append(o).append('.').append(name).append("=?").append(++queryInfo.paramCount);
+            }
+        } else {
+            q.append(o).append('.').append(idName).append("=?").append(++queryInfo.paramCount);
+        }
 
         if (entityInfo.versionAttributeName != null)
             q.append(" AND ").append(o).append('.').append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
@@ -1269,6 +1279,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (queryInfo.type == null && queryInfo.entityParamType != null)
                 if (methodName.startsWith("delete") || methodName.startsWith("remove"))
                     q = generateDeleteEntity(queryInfo);
+                else if (methodName.startsWith("update"))
+                    q = generateUpdateEntity(queryInfo);
                 else
                     throw new UnsupportedOperationException("The " + methodName + " method of the " + repositoryInterface.getName() +
                                                             " repository interface must have a name that begins with one of " +
@@ -1670,6 +1682,48 @@ public class RepositoryImpl<R> implements InvocationHandler {
             }
             first = false;
         }
+
+        return q;
+    }
+
+    /**
+     * Generates JPQL for updates of an entity by entity id and version (if versioned).
+     */
+    private StringBuilder generateUpdateEntity(QueryInfo queryInfo) {
+        EntityInfo entityInfo = queryInfo.entityInfo;
+        String o = queryInfo.entityVar;
+        queryInfo.type = QueryInfo.Type.UPDATE_WITH_ENTITY_PARAM;
+        queryInfo.hasWhere = true;
+
+        String idName = queryInfo.entityInfo.getAttributeName("id", true);
+        if (idName == null && queryInfo.entityInfo.idClassAttributeAccessors != null) {
+            // TODO support this similar to what generateDeleteEntity does
+            throw new MappingException("Update operations cannot be used on entities with composite IDs."); // TODO NLS
+        }
+
+        if (!entityInfo.relationAttributeNames.isEmpty()) {
+            // TODO is there any way to support this?
+            throw new MappingException("Update operations cannot be used on entities with relationship attributes."); // TODO NLS
+        }
+
+        StringBuilder q = new StringBuilder(100) //
+                        .append("UPDATE ").append(entityInfo.name).append(' ').append(o) //
+                        .append(" SET ");
+
+        boolean first = true;
+        for (String name : entityInfo.getAttributeNamesForEntityUpdate()) {
+            if (first)
+                first = false;
+            else
+                q.append(", ");
+
+            q.append(o).append('.').append(name).append("=?").append(++queryInfo.paramCount);
+        }
+
+        q.append(" WHERE ").append(o).append('.').append(idName).append("=?").append(++queryInfo.paramCount);
+
+        if (entityInfo.versionAttributeName != null)
+            q.append(" AND ").append(o).append('.').append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
 
         return q;
     }
@@ -2328,6 +2382,29 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;
                     }
+                    case UPDATE_WITH_ENTITY_PARAM: {
+                        em = entityInfo.persister.createEntityManager();
+                        TypedQuery<?> update = em.createQuery(queryInfo.jpql, entityInfo.entityClass);
+
+                        Object arg = args[0] instanceof Stream //
+                                        ? ((Stream<?>) args[0]).sequential().collect(Collectors.toList()) //
+                                        : args[0];
+                        int updateCount = 0;
+
+                        if (arg instanceof Iterable) {
+                            for (Object e : ((Iterable<?>) arg))
+                                updateCount += update(e, queryInfo, update);
+                        } else if (arg.getClass().isArray()) {
+                            int length = Array.getLength(arg);
+                            for (int i = 0; i < length; i++)
+                                updateCount += update(Array.get(arg, i), queryInfo, update);
+                        } else {
+                            updateCount = update(arg, queryInfo, update);
+                        }
+
+                        returnValue = toReturnValue(updateCount, returnType, queryInfo);
+                        break;
+                    }
                     case COUNT: {
                         em = entityInfo.persister.createEntityManager();
 
@@ -2580,20 +2657,34 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @throws Exception if an error occurs or if the repository method return type is void and
      *                       the entity (or correct version of the entity) was not found.
      */
-    private static int remove(Object e, QueryInfo queryInfo, TypedQuery<?> delete) throws Exception {
+    private int remove(Object e, QueryInfo queryInfo, TypedQuery<?> delete) throws Exception {
+
+        if (e == null)
+            throw new NullPointerException("The entity parameter cannot have a null value."); // TODO NLS // required by spec
+
+        if (!defaultEntityClass.isInstance(e))
+            throw new DataException("The " + (e == null ? null : e.getClass().getName()) +
+                                    " parameter does not match the " + defaultEntityClass.getName() +
+                                    " entity type that is expected for this repository."); // TODO NLS
 
         Object v = e;
         if (queryInfo.entityInfo.versionAttributeName == null) {
-            queryInfo.setParameters(delete, e);
+            if (queryInfo.entityInfo.idClassAttributeAccessors == null)
+                queryInfo.setParameters(delete, e);
+            else
+                queryInfo.setParametersFromIdClassAndVersion(delete, e, null);
         } else {
-            String name = queryInfo.entityInfo.attributeNames.get(queryInfo.entityInfo.versionAttributeName.toLowerCase());
-            List<Member> accessors = queryInfo.entityInfo.attributeAccessors.get(name);
+            List<Member> accessors = queryInfo.entityInfo.attributeAccessors.get(queryInfo.entityInfo.versionAttributeName);
             if (accessors == null || accessors.isEmpty())
                 throw new MappingException("Unable to find the " + queryInfo.entityInfo.versionAttributeName +
                                            " attribute on the " + queryInfo.entityInfo.name + " entity."); // should never occur
             for (Member accessor : accessors)
                 v = accessor instanceof Method ? ((Method) accessor).invoke(v) : ((Field) accessor).get(v);
-            queryInfo.setParameters(delete, e, v);
+
+            if (queryInfo.entityInfo.idClassAttributeAccessors == null)
+                queryInfo.setParameters(delete, e, v);
+            else
+                queryInfo.setParametersFromIdClassAndVersion(delete, e, v);
         }
 
         int numDeleted = delete.executeUpdate();
@@ -2607,7 +2698,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     throw new OptimisticLockingFailureException("Version " + v + " of the entity was not found."); // TODO NLS
             }
         } else if (numDeleted > 1) {
-            throw new DataException("Found " + numDeleted + " entities matching the delete query."); // ought to be unreachable
+            throw new DataException("Found " + numDeleted + " matching entities."); // ought to be unreachable
         }
 
         return numDeleted;
@@ -2800,6 +2891,54 @@ public class RepositoryImpl<R> implements InvocationHandler {
             throw new UnsupportedOperationException("Return update count as " + returnType);
 
         return result;
+    }
+
+    /**
+     * Updates the entity (or record) from the database if its attributes match the database.
+     *
+     * @param e         the entity or record.
+     * @param queryInfo query information that is prepopulated for update by id (and possibly version).
+     * @param update    update query.
+     * @return the number of entities updated (1 or 0).
+     * @throws Exception if an error occurs.
+     */
+    private int update(Object e, QueryInfo queryInfo, TypedQuery<?> update) throws Exception {
+        if (e == null)
+            throw new NullPointerException("The entity parameter cannot have a null value."); // TODO NLS // required by spec
+
+        if (!defaultEntityClass.isInstance(e))
+            throw new DataException("The " + (e == null ? null : e.getClass().getName()) +
+                                    " parameter does not match the " + defaultEntityClass.getName() +
+                                    " entity type that is expected for this repository."); // TODO NLS
+
+        EntityInfo entityInfo = queryInfo.entityInfo;
+
+        // parameters for entity attributes to update:
+
+        int p = 0;
+        for (String attrName : entityInfo.getAttributeNamesForEntityUpdate())
+            QueryInfo.setParameter(++p, update, e,
+                                   entityInfo.attributeAccessors.get(attrName));
+
+        // id parameter(s)
+
+        if (entityInfo.idClassAttributeAccessors == null)
+            QueryInfo.setParameter(++p, update, e,
+                                   entityInfo.attributeAccessors.get(entityInfo.getAttributeName("id", true)));
+        else
+            throw new UnsupportedOperationException(); // TODO
+
+        // version parameter
+
+        if (entityInfo.versionAttributeName != null)
+            QueryInfo.setParameter(++p, update, e,
+                                   entityInfo.attributeAccessors.get(entityInfo.versionAttributeName));
+
+        int numUpdated = update.executeUpdate();
+
+        if (numUpdated > 1)
+            throw new DataException("Found " + numUpdated + " matching entities."); // ought to be unreachable
+        return numUpdated;
     }
 
     /**

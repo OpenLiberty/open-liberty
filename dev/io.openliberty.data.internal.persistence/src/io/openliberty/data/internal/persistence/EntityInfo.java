@@ -13,6 +13,7 @@
 package io.openliberty.data.internal.persistence;
 
 import java.lang.reflect.Member;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -117,6 +118,25 @@ class EntityInfo {
 
     Collection<String> getAttributeNames() {
         return attributeNames.values();
+    }
+
+    /**
+     * Returns the list of entity attribute names, suitable for use in JPQL, when updating an entity.
+     * This excludes the id and version.
+     *
+     * @return list of entity attribute names.
+     */
+    List<String> getAttributeNamesForEntityUpdate() {
+        List<String> names = new ArrayList<>(attributeNames.size());
+        String idName = attributeNames.get("id");
+
+        for (String name : attributeTypes.keySet())
+            // TODO avoid updating both the embeddable attribute and the attributes of the embeddable. Choose one or the other.
+            // TODO probably skip attributes with . in the name
+            if (!name.equals("id") && !name.equals(idName) && !name.equals(versionAttributeName))
+                names.add(name);
+
+        return names;
     }
 
     /**

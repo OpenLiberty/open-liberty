@@ -516,6 +516,28 @@ class QueryInfo {
     }
 
     /**
+     * Sets the query parameter at the specified position to a value from the entity,
+     * obtained via the accessor methods.
+     *
+     * @param p         parameter position.
+     * @param query     the query.
+     * @param entity    the entity.
+     * @param accessors accessor methods to obtain the entity attribute value.
+     * @throws Exception if an error occurs.
+     */
+    @Trivial
+    static void setParameter(int p, Query query, Object entity, List<Member> accessors) throws Exception {
+        Object v = entity;
+        for (Member accessor : accessors)
+            v = accessor instanceof Method ? ((Method) accessor).invoke(v) : ((Field) accessor).get(v);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "set ?" + p + ' ' + (v == null ? null : v.getClass().getSimpleName()));
+
+        query.setParameter(p, v);
+    }
+
+    /**
      * Sets query parameters from repository method arguments.
      *
      * @param query the query
@@ -531,63 +553,59 @@ class QueryInfo {
                                        " parameters, but requires " + methodParamForQueryCount +
                                        " method parameters. The generated JPQL query is: " + jpql + "."); // TODO NLS
 
-        if (entityInfo.idClassAttributeAccessors == null || type != Type.DELETE_WITH_ENTITY_PARAM) {
-            int namedParamCount = paramNames == null ? 0 : paramNames.size();
-            for (int i = 0, p = 0; i < methodParamForQueryCount; i++) {
-                Object arg = type == Type.DELETE_WITH_ENTITY_PARAM && i == 0 //
-                                ? toEntityId(args[i]) //
-                                : args[i];
+        int namedParamCount = paramNames == null ? 0 : paramNames.size();
+        for (int i = 0, p = 0; i < methodParamForQueryCount; i++) {
+            Object arg = type == Type.DELETE_WITH_ENTITY_PARAM && i == 0 //
+                            ? toEntityId(args[i]) //
+                            : args[i];
 
-                if (arg == null || entityInfo.idClassAttributeAccessors == null || !entityInfo.idType.isInstance(arg)) {
+            if (arg == null || entityInfo.idClassAttributeAccessors == null || !entityInfo.idType.isInstance(arg)) {
+                if (p < namedParamCount) {
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "set :" + paramNames.get(p) + ' ' + (arg == null ? null : arg.getClass().getSimpleName()));
+                    query.setParameter(paramNames.get(p++), arg);
+                } else { // positional parameter
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + (arg == null ? null : arg.getClass().getSimpleName()));
+                    query.setParameter(++p, arg);
+                }
+            } else { // split IdClass argument into parameters
+                for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
+                    Object param = accessor instanceof Method ? ((Method) accessor).invoke(arg) : ((Field) accessor).get(arg);
                     if (p < namedParamCount) {
                         if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "set :" + paramNames.get(p) + ' ' + (arg == null ? null : arg.getClass().getSimpleName()));
-                        query.setParameter(paramNames.get(p++), arg);
+                            Tr.debug(this, tc, "set :" + paramNames.get(p) + ' ' + (param == null ? null : param.getClass().getSimpleName()));
+                        query.setParameter(paramNames.get(p++), param);
                     } else { // positional parameter
                         if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + (arg == null ? null : arg.getClass().getSimpleName()));
-                        query.setParameter(++p, arg);
-                    }
-                } else { // split IdClass argument into parameters
-                    for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
-                        Object param = accessor instanceof Method ? ((Method) accessor).invoke(arg) : ((Field) accessor).get(arg);
-                        if (p < namedParamCount) {
-                            if (trace && tc.isDebugEnabled())
-                                Tr.debug(this, tc, "set :" + paramNames.get(p) + ' ' + (param == null ? null : param.getClass().getSimpleName()));
-                            query.setParameter(paramNames.get(p++), param);
-                        } else { // positional parameter
-                            if (trace && tc.isDebugEnabled())
-                                Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + (param == null ? null : param.getClass().getSimpleName()));
-                            query.setParameter(++p, param);
-                        }
+                            Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + (param == null ? null : param.getClass().getSimpleName()));
+                        query.setParameter(++p, param);
                     }
                 }
             }
-        } else { // Special case: CrudRepository.delete(entity) where entity has IdClass
-            Object arg = args == null || args.length == 0 ? null : args[0];
-            if (arg == null || !entityInfo.entityClass.isAssignableFrom(arg.getClass()))
-                throw new DataException("The " + (arg == null ? null : arg.getClass().getName()) +
-                                        " parameter does not match the " + entityInfo.getType().getName() +
-                                        " entity type that is expected for this repository.");
-            int p = 0;
-            for (String idClassAttr : entityInfo.idClassAttributeAccessors.keySet()) {
-                List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.getAttributeName(idClassAttr, true));
-                Object param = arg;
-                for (Member accessor : accessors)
-                    if (accessor instanceof Method)
-                        param = ((Method) accessor).invoke(param);
-                    else
-                        param = ((Field) accessor).get(param);
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + (param == null ? null : param.getClass().getSimpleName()));
-                query.setParameter(++p, param);
-            }
+        }
+    }
 
-            if (args.length == 2) { // entity has a version attribute
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + args[1]);
-                query.setParameter(++p, args[1]);
-            }
+    /**
+     * Sets query parameters for DELETE_WITH_ENTITY_PARAM where the entity has an IdClass.
+     *
+     * @param query   the query
+     * @param entity  the entity
+     * @param version the version if versioned, otherwise null.
+     * @throws Exception if an error occurs
+     */
+    void setParametersFromIdClassAndVersion(Query query, Object entity, Object version) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        int p = 0;
+        for (String idClassAttr : entityInfo.idClassAttributeAccessors.keySet())
+            setParameter(++p, query, entity,
+                         entityInfo.attributeAccessors.get(entityInfo.getAttributeName(idClassAttr, true)));
+
+        if (version != null) {
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + version);
+            query.setParameter(++p, version);
         }
     }
 
