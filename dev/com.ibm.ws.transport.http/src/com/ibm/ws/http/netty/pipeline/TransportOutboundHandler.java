@@ -13,12 +13,14 @@ import java.util.Objects;
 
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.netty.MSP;
+import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.pipeline.outbound.HeaderHandler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpUtil;
 
 /**
  *
@@ -34,6 +36,9 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+
+        MSP.log(Thread.currentThread().getStackTrace().toString());
+
         MSP.log("Writing outbound, msg is: " + msg);
         //TODO: only if first time running through here (persist needs to clear)
 
@@ -41,6 +46,13 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
             HttpResponse response = (HttpResponse) msg;
             HeaderHandler headerHandler = new HeaderHandler(config, response);
             headerHandler.complianceCheck();
+
+            if (HttpUtil.isContentLengthSet(response)) {
+                if (HttpUtil.isContentLengthSet(response)) {
+                    MSP.log("Setting content length attribute");
+                    ctx.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(Long.valueOf(HttpUtil.getContentLength(response)));
+                }
+            }
 
 //            if (ctx.channel().hasAttr(NettyHttpConstants.ACCEPT_ENCODING)) {
 //                String acceptEncoding = ctx.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).get();
