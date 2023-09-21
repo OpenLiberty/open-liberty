@@ -1,17 +1,12 @@
 ###############################################################################
-# Copyright (c) 2002, 2022 IBM Corporation and others.
+# Copyright (c) 2002, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
-#
-
 
 #COMPONENTPREFIX CWWKH
 #COMPONENTNAMEFOR CWWKH WebSphere WebSocket
@@ -228,8 +223,8 @@ missingslashornull.uri=CWWKH0052E: An exception occurred during deployment/start
 missingslashornull.uri.explanation=ServerEndpoint is invalid because Endpoint URI is either null or does not start with / in endpoint class. WebSocket application is not available for requests.
 missingslashornull.uri.useraction=Define non null Endpoint URI beginning with /. After you resolve the problem, deploy the application again.
 
-wsoc.feature.not.loaded.correctly=CWWKH0053E: The websocket feature did not load with an acceptable version.
-wsoc.feature.not.loaded.correctly.explanation=The websocket feature is loaded with a version that corresponds to the Java [Jakarta] EE specification of that websocket feature. The feature was loaded with no version defined.
+wsoc.feature.not.loaded.correctly=CWWKH0053E: The websocket container did not load with an acceptable version.
+wsoc.feature.not.loaded.correctly.explanation=The websocket container loaded without an acceptable version. The application might behave differently than expected.
 wsoc.feature.not.loaded.correctly.useraction=Check the server.xml file for the existence of multiple websocket features. Only one should be specified.
 
 scheme.incorrect.error=CWWKH0054E: An unidentified scheme was used in the {0} URI.
