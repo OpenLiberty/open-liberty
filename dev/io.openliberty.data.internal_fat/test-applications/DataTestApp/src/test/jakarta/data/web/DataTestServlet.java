@@ -1930,6 +1930,100 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Insert and delete multiple entities.
+     */
+    // @AllowedFFDC("jakarta.data.exceptions.EntityExistsException")
+    @Test
+    public void testInsertAndDeleteMultiple() throws Exception {
+        people.deleteByIdBetween(0L, 999999999L);
+
+        // insert multiple:
+
+        Person david = new Person();
+        david.firstName = "David";
+        david.lastName = "TestInsertAndDeleteMultiple";
+        david.ssn_id = 999009999;
+
+        Person daniel = new Person();
+        daniel.firstName = "Daniel";
+        daniel.lastName = "TestInsertAndDeleteMultiple";
+        daniel.ssn_id = 999009998;
+
+        Person dorothy = new Person();
+        dorothy.firstName = "Dorothy";
+        dorothy.lastName = "TestInsertAndDeleteMultiple";
+        dorothy.ssn_id = 999009997;
+
+        Person dianne = new Person();
+        dianne.firstName = "Dianne";
+        dianne.lastName = "TestInsertAndDeleteMultiple";
+        dianne.ssn_id = 999009996;
+
+        Person dominic = new Person();
+        dominic.firstName = "Dominic";
+        dominic.lastName = "TestInsertAndDeleteMultiple";
+        dominic.ssn_id = 999009995;
+
+        assertEquals(null, personnel.insertAll(david, daniel, dorothy, dianne, dominic).join());
+
+        assertEquals(List.of("Daniel", "David", "Dianne", "Dominic", "Dorothy"),
+                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
+
+        Person dennis = new Person();
+        dennis.firstName = "Dennis";
+        dennis.lastName = "TestInsertAndDeleteMultiple";
+        dennis.ssn_id = 999009994;
+
+        // attempted insert where one is duplicate:
+
+        CompletableFuture<Void> future = personnel.insertAll(dennis, daniel);
+
+        try {
+            future.join();
+            fail("Did not detect duplicate insert of id within varags array.");
+        } catch (CompletionException x) {
+            if ((x.getCause() instanceof EntityExistsException))
+                ; // pass
+            else
+                throw x;
+        }
+
+        assertEquals(List.of("Daniel", "David", "Dianne", "Dominic", "Dorothy"),
+                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
+
+        // delete multiple entities at once
+
+        assertEquals(null, personnel.deleteMultiple(daniel, david).join());
+
+        assertEquals(List.of("Dianne", "Dominic", "Dorothy"),
+                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
+
+        // attempt deletion where one is not found:
+
+        future = personnel.deleteMultiple(dianne, dorothy, david);
+
+        try {
+            future.join();
+            fail("Deletion did not detect missing entity.");
+        } catch (CompletionException x) {
+            if ((x.getCause() instanceof OptimisticLockingFailureException))
+                ; // pass
+            else
+                throw x;
+        }
+
+        assertEquals(List.of("Dianne", "Dominic", "Dorothy"),
+                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
+
+        // delete remaining:
+
+        assertEquals(Integer.valueOf(3), personnel.deleteSeveral(Stream.of(dianne, dorothy, dominic)).join());
+
+        assertEquals(List.of(),
+                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
+    }
+
+    /**
      * Repository method that returns IntStream.
      */
     @Test
@@ -5057,6 +5151,100 @@ public class DataTestServlet extends FATServlet {
         Product p4 = products.findItem(prod4.pk);
         assertEquals(16.00f, p4.price, 0.001f);
         assertEquals(p[3].version + 1, p4.version); // updated
+    }
+
+    /**
+     * Use update methods with an entity parameter to make updates.
+     */
+    @Test
+    public void testUpdateWithEntityParameter() {
+        people.deleteByIdBetween(0L, 999999999L);
+
+        Person ursula = new Person();
+        ursula.firstName = "Ursula";
+        ursula.lastName = "TestUpdateWithEntityParameter";
+        ursula.ssn_id = 987001001;
+
+        Person ulysses = new Person();
+        ulysses.firstName = "Ulysses";
+        ulysses.lastName = "TestUpdateWithEntityParameter";
+        ulysses.ssn_id = 987001002;
+
+        Person uriel = new Person();
+        uriel.firstName = "Uriel";
+        uriel.lastName = "TestUpdateWithEntityParameter";
+        uriel.ssn_id = 987001003;
+
+        Person uriah = new Person();
+        uriah.firstName = "Uriah";
+        uriah.lastName = "TestUpdateWithEntityParameter";
+        uriah.ssn_id = 987001004;
+
+        Person urban = new Person();
+        urban.firstName = "Urban";
+        urban.lastName = "TestUpdateWithEntityParameter";
+        urban.ssn_id = 987001005;
+
+        people.save(List.of(ursula, ulysses, uriel, uriah));
+
+        // update single entity:
+
+        ulysses.lastName = "Test-UpdateWithEntityParameter";
+        assertEquals(true, persons.updateOne(ulysses));
+
+        assertEquals(false, persons.updateOne(urban)); // not in database
+
+        // update multiple entities:
+
+        ulysses.lastName = "TestUpdate-WithEntityParameter";
+        ursula.lastName = "TestUpdate-WithEntityParameter";
+        uriah.lastName = "TestUpdate-WithEntityParameter";
+
+        assertEquals(3, persons.updateSome(ulysses, urban, ursula, uriah)); // one is not in the database
+
+        assertEquals(0, persons.updateSome());
+
+        assertEquals(4, people.deleteByIdBetween(0L, 999999999L));
+    }
+
+    /**
+     * Use update methods with a versioned entity parameter to make updates.
+     */
+    @Test
+    public void testUpdateWithVersionedEntityParameter() {
+        Product prod1 = new Product();
+        prod1.pk = UUID.nameUUIDFromBytes("UPD-VER-EP-1".getBytes());
+        prod1.name = "testUpdateWithVersionedEntityParameter Product 1";
+        prod1.price = 10.99f;
+
+        Product prod2 = new Product();
+        prod2.pk = UUID.nameUUIDFromBytes("UPD-VER-EP-2".getBytes());
+        prod2.name = "testUpdateWithVersionedEntityParameter Product 2";
+        prod2.price = 12.99f;
+
+        Product prod3 = new Product();
+        prod3.pk = UUID.nameUUIDFromBytes("UPD-VER-EP-3".getBytes());
+        prod3.name = "testUpdateWithVersionedEntityParameter Product 3";
+        prod3.price = 13.99f;
+
+        Product[] p = products.saveMultiple(prod1, prod2, prod3);
+        prod1 = p[0];
+        prod2 = p[1];
+        prod3 = p[2];
+
+        // versioned update to 1 entity:
+
+        prod1.price = 10.79f;
+        assertEquals(Boolean.TRUE, products.update(prod1)); // current version
+
+        prod1.price = 10.89f;
+        assertEquals(Boolean.FALSE, products.update(prod1)); // old version
+
+        // versioned update to multiple entities:
+
+        prod2.price = 12.89f;
+        prod3.price = 13.89f;
+        assertEquals(Long.valueOf(2), products.update(Stream.of(prod1, prod2, prod3))); // 1 with old version
     }
 
     /**

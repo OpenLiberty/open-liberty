@@ -52,6 +52,12 @@ public interface Personnel {
     CompletableFuture<Void> deleteById(long ssn);
 
     @Asynchronous
+    CompletableFuture<Void> deleteMultiple(Person... people);
+
+    @Asynchronous
+    CompletableFuture<Integer> deleteSeveral(Stream<Person> people);
+
+    @Asynchronous
     CompletionStage<List<Person>> findByLastNameOrderByFirstName(String lastName);
 
     @Asynchronous
@@ -60,6 +66,9 @@ public interface Personnel {
     @Asynchronous
     @Query("SELECT o.firstName FROM Person o WHERE o.lastName=?1 ORDER BY o.firstName")
     CompletableFuture<Stream<String>> firstNames(String lastName);
+
+    @Asynchronous
+    CompletableFuture<Void> insertAll(Person... people);
 
     @Asynchronous
     @Query("SELECT DISTINCT o.lastName FROM Person o ORDER BY o.lastName")

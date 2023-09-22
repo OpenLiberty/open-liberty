@@ -53,6 +53,7 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.BaseStream;
+import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -86,6 +87,7 @@ import jakarta.data.exceptions.EntityExistsException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
+import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Limit;
@@ -763,6 +765,42 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
+     * Generates JPQL for deletion by entity id and version (if versioned).
+     */
+    private StringBuilder generateDeleteEntity(QueryInfo queryInfo) {
+        EntityInfo entityInfo = queryInfo.entityInfo;
+        String o = queryInfo.entityVar;
+        queryInfo.type = QueryInfo.Type.DELETE_WITH_ENTITY_PARAM;
+        queryInfo.hasWhere = true;
+
+        StringBuilder q = new StringBuilder(100) //
+                        .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o) //
+                        .append(" WHERE (");
+
+        String idName = entityInfo.getAttributeName("id", true);
+        if (idName == null && entityInfo.idClassAttributeAccessors != null) {
+            boolean first = true;
+            for (String name : entityInfo.idClassAttributeAccessors.keySet()) {
+                if (first)
+                    first = false;
+                else
+                    q.append(" AND ");
+
+                name = entityInfo.attributeNames.get(name);
+                q.append(o).append('.').append(name).append("=?").append(++queryInfo.paramCount);
+            }
+        } else {
+            q.append(o).append('.').append(idName).append("=?").append(++queryInfo.paramCount);
+        }
+
+        if (entityInfo.versionAttributeName != null)
+            q.append(" AND ").append(o).append('.').append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
+
+        q.append(')');
+        return q;
+    }
+
+    /**
      * Generates JPQL for a *By condition such as MyColumn[IgnoreCase][Not]Like
      */
     private void generateCondition(QueryInfo queryInfo, String methodName, int start, int endBefore, StringBuilder q) {
@@ -1184,23 +1222,81 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
-     * Handles both Query by Method Name and Query by Parameters patterns. // TODO add this second pattern one piece at a time
+     * Handles Methods with Entity Parameter, Query by Method Name, and Query by Parameters patterns.
+     * // TODO add the first and third patterns one piece at a time
      *
      * @param queryInfo  query information to populate.
      * @param countPages whether to generate a count query (for Page.totalElements and Page.totalPages).
      * @return the generated query written to a StringBuilder.
      */
     private StringBuilder generateQueryFromMethod(QueryInfo queryInfo, boolean countPages) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         EntityInfo entityInfo = queryInfo.entityInfo;
-        String o = queryInfo.entityVar;
         String methodName = queryInfo.method.getName();
+        Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
+        String o = queryInfo.entityVar;
         StringBuilder q = null;
-        if (methodName.startsWith("find")) {
+
+        // Methods with Entity Parameter: save, insert
+        if (methodName.startsWith("save")) {
+            queryInfo.type = QueryInfo.Type.SAVE;
+            if (paramTypes.length != 1)
+                throw new UnsupportedOperationException("Repository " + "save" + " operations must have exactly 1 parameter," +
+                                                        " which can be the entity or a collection or array of entities. The " + methodName +
+                                                        " method has " + paramTypes.length + " parameters."); // TODO NLS
+            queryInfo.entityParamType = paramTypes[0];
+        } else if (methodName.startsWith("insert")) {
+            queryInfo.type = QueryInfo.Type.INSERT;
+            if (paramTypes.length != 1)
+                throw new UnsupportedOperationException("Repository " + "insert" + " operations must have exactly 1 parameter," +
+                                                        " which can be the entity or a collection or array of entities. The " + methodName +
+                                                        " method has " + paramTypes.length + " parameters."); // TODO NLS
+            queryInfo.entityParamType = paramTypes[0];
+        }
+        // Methods with Entity Parameter: delete, update
+        if (queryInfo.type == null && paramTypes.length == 1) {
+            if (defaultEntityClass.equals(paramTypes[0])) {
+                queryInfo.entityParamType = paramTypes[0];
+            } else if (CrudRepository.class.equals(queryInfo.method.getDeclaringClass())) {
+                if ("delete".equals(methodName) || "deleteAll".equals(methodName)) {
+                    queryInfo.entityParamType = paramTypes[0];
+                    q = generateDeleteEntity(queryInfo);
+                }
+            } else if (paramTypes[0].isArray()) {
+                if (defaultEntityClass.equals(paramTypes[0].getComponentType()))
+                    queryInfo.entityParamType = paramTypes[0];
+            } else if (Iterable.class.isAssignableFrom(paramTypes[0]) || Stream.class.isAssignableFrom(paramTypes[0])) {
+                Type paramType = queryInfo.method.getGenericParameterTypes()[0];
+                if (paramType instanceof ParameterizedType) {
+                    Type[] typeVars = ((ParameterizedType) paramType).getActualTypeArguments();
+                    Type typeVar = typeVars.length == 1 ? typeVars[0] : null;
+                    if (defaultEntityClass.equals(typeVar)) {
+                        queryInfo.entityParamType = paramTypes[0];
+                    }
+                }
+            }
+            if (queryInfo.type == null && queryInfo.entityParamType != null)
+                if (methodName.startsWith("delete") || methodName.startsWith("remove"))
+                    q = generateDeleteEntity(queryInfo);
+                else if (methodName.startsWith("update"))
+                    q = generateUpdateEntity(queryInfo);
+                else
+                    throw new UnsupportedOperationException("The " + methodName + " method of the " + repositoryInterface.getName() +
+                                                            " repository interface must have a name that begins with one of " +
+                                                            "(delete, insert, save, update)" +
+                                                            " because the method's parameter accepts entity instances.");
+        }
+
+        if (queryInfo.type != null) {
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "Method with Entity Parameter identified as " + queryInfo.type);
+        } else if (methodName.startsWith("find")) {
             Select select = queryInfo.method.getAnnotation(Select.class);
             List<String> selections = select == null ? new ArrayList<>() : null;
             int by = methodName.indexOf("By", 4);
             int c = by < 0 ? methodName.length() : by + 2;
-            if (by > 4 && "findAllById".equals(methodName) && Iterable.class.equals(queryInfo.method.getParameterTypes()[0]))
+            if (by > 4 && "findAllById".equals(methodName) && Iterable.class.equals(paramTypes[0]))
                 methodName = "findAllByIdIn"; // CrudRepository.findAllById(Iterable)
             else
                 parseFindBy(queryInfo, methodName, by, selections);
@@ -1216,48 +1312,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (orderBy >= c)
                 parseOrderBy(queryInfo, orderBy, q);
             queryInfo.type = QueryInfo.Type.FIND;
-        } else if (queryInfo.method.getName().startsWith("save")) {
-            queryInfo.type = QueryInfo.Type.MERGE;
-            Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-            if (paramTypes.length != 1)
-                throw new UnsupportedOperationException("Repository " + "save" + " operations must have exactly 1 parameter," +
-                                                        " which can be the entity or a collection or array of entities. The " + queryInfo.method.getName() +
-                                                        " method has " + paramTypes.length + " parameters."); // TODO NLS
-            queryInfo.saveParamType = paramTypes[0];
-        } else if (methodName.startsWith("insert")) {
-            queryInfo.type = QueryInfo.Type.INSERT;
-            Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-            if (paramTypes.length != 1)
-                throw new UnsupportedOperationException("Repository " + "insert" + " operations must have exactly 1 parameter," +
-                                                        " which can be the entity or a collection or array of entities. The " + queryInfo.method.getName() +
-                                                        " method has " + paramTypes.length + " parameters."); // TODO NLS
-            queryInfo.saveParamType = paramTypes[0];
         } else if (methodName.startsWith("delete") || methodName.startsWith("remove")) {
             int by = methodName.indexOf("By", 6);
             int c = by < 0 ? methodName.length() : by + 2;
             if (by > 6) {
-                if ("deleteAllById".equals(methodName) && Iterable.class.isAssignableFrom(queryInfo.method.getParameterTypes()[0]))
+                if ("deleteAllById".equals(methodName) && Iterable.class.isAssignableFrom(paramTypes[0]))
                     if (entityInfo.idClassAttributeAccessors == null)
                         methodName = "deleteAllByIdIn"; // CrudRepository.deleteAllById(Iterable)
                     else
                         throw new MappingException("The deleteAllById operation cannot be used on entities with composite IDs."); // TODO NLS
-            } else if (methodName.length() == 6) {
-                Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-                if (paramTypes.length == 1 && (Object.class.equals(paramTypes[0]) || entityInfo.getType().equals(paramTypes[0]))) {
-                    methodName = entityInfo.versionAttributeName == null ? "deleteById" : ("deleteByIdAnd" + entityInfo.versionAttributeName);
-                    queryInfo.type = QueryInfo.Type.DELETE_WITH_ENTITY_PARAM; // CrudRepository.delete(entity)
-                    c = 8;
-                }
-            } else if (methodName.length() == 9 && methodName.endsWith("All")) {
-                Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-                if (paramTypes.length == 1 && Iterable.class.isAssignableFrom(paramTypes[0]))
-                    if (entityInfo.idClassAttributeAccessors == null) {
-                        methodName = entityInfo.versionAttributeName == null ? "deleteById" : ("deleteByIdAnd" + entityInfo.versionAttributeName);
-                        queryInfo.type = QueryInfo.Type.DELETE_WITH_ENTITY_PARAM; // CrudRepository.deleteAll(Iterable), one at a time
-                        c = 8;
-                    } else {
-                        throw new MappingException("The deleteAll operation cannot be used on entities with composite IDs."); // TODO NLS
-                    }
             }
             boolean isFindAndDelete = queryInfo.isFindAndDelete();
             if (isFindAndDelete) {
@@ -1624,6 +1687,48 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
+     * Generates JPQL for updates of an entity by entity id and version (if versioned).
+     */
+    private StringBuilder generateUpdateEntity(QueryInfo queryInfo) {
+        EntityInfo entityInfo = queryInfo.entityInfo;
+        String o = queryInfo.entityVar;
+        queryInfo.type = QueryInfo.Type.UPDATE_WITH_ENTITY_PARAM;
+        queryInfo.hasWhere = true;
+
+        String idName = queryInfo.entityInfo.getAttributeName("id", true);
+        if (idName == null && queryInfo.entityInfo.idClassAttributeAccessors != null) {
+            // TODO support this similar to what generateDeleteEntity does
+            throw new MappingException("Update operations cannot be used on entities with composite IDs."); // TODO NLS
+        }
+
+        if (!entityInfo.relationAttributeNames.isEmpty()) {
+            // TODO is there any way to support this?
+            throw new MappingException("Update operations cannot be used on entities with relationship attributes."); // TODO NLS
+        }
+
+        StringBuilder q = new StringBuilder(100) //
+                        .append("UPDATE ").append(entityInfo.name).append(' ').append(o) //
+                        .append(" SET ");
+
+        boolean first = true;
+        for (String name : entityInfo.getAttributeNamesForEntityUpdate()) {
+            if (first)
+                first = false;
+            else
+                q.append(", ");
+
+            q.append(o).append('.').append(name).append("=?").append(++queryInfo.paramCount);
+        }
+
+        q.append(" WHERE ").append(o).append('.').append(idName).append("=?").append(++queryInfo.paramCount);
+
+        if (entityInfo.versionAttributeName != null)
+            q.append(" AND ").append(o).append('.').append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
+
+        return q;
+    }
+
+    /**
      * Generates JPQL to assign the entity properties of which the IdClass consists.
      */
     private void generateUpdatesForIdClass(QueryInfo queryInfo, Update update, boolean firstOperation, StringBuilder q) {
@@ -1929,18 +2034,18 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
 
                 switch (queryInfo.type) {
-                    case MERGE: {
+                    case SAVE: {
                         em = entityInfo.persister.createEntityManager();
 
                         List<Object> results;
-                        if (queryInfo.saveParamType.isArray()) {
+                        if (queryInfo.entityParamType.isArray()) {
                             results = new ArrayList<>();
                             Object a = args[0];
                             int length = Array.getLength(a);
                             for (int i = 0; i < length; i++)
                                 results.add(em.merge(toEntity(Array.get(a, i))));
                             em.flush();
-                        } else if (Iterable.class.isAssignableFrom(queryInfo.saveParamType)) {
+                        } else if (Iterable.class.isAssignableFrom(queryInfo.entityParamType)) {
                             results = new ArrayList<>();
                             for (Object e : ((Iterable<?>) args[0]))
                                 results.add(em.merge(toEntity(e)));
@@ -1979,12 +2084,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     case INSERT: {
                         em = entityInfo.persister.createEntityManager();
 
-                        if (queryInfo.saveParamType.isArray()) {
+                        if (queryInfo.entityParamType.isArray()) {
                             Object a = args[0];
                             int length = Array.getLength(a);
                             for (int i = 0; i < length; i++)
                                 em.persist(toEntity(Array.get(a, i)));
-                        } else if (Iterable.class.isAssignableFrom(queryInfo.saveParamType)) {
+                        } else if (Iterable.class.isAssignableFrom(queryInfo.entityParamType)) {
                             for (Object e : ((Iterable<?>) args[0]))
                                 em.persist(toEntity(e));
                         } else {
@@ -2247,12 +2352,55 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         em = entityInfo.persister.createEntityManager();
                         TypedQuery<?> delete = em.createQuery(queryInfo.jpql, entityInfo.entityClass);
 
+                        Object arg = args[0] instanceof Stream //
+                                        ? ((Stream<?>) args[0]).sequential().collect(Collectors.toList()) //
+                                        : args[0];
                         int updateCount = 0;
-                        if (args[0] instanceof Iterable && Iterable.class.equals(queryInfo.method.getParameterTypes()[0]))
-                            for (Object e : ((Iterable<?>) args[0]))
+                        int numExpected = 0;
+
+                        if (arg instanceof Iterable) {
+                            for (Object e : ((Iterable<?>) arg)) {
+                                numExpected++;
                                 updateCount += remove(e, queryInfo, delete);
-                        else
-                            updateCount = remove(args[0], queryInfo, delete);
+                            }
+                        } else if (arg.getClass().isArray()) {
+                            numExpected = Array.getLength(arg);
+                            for (int i = 0; i < numExpected; i++)
+                                updateCount += remove(Array.get(arg, i), queryInfo, delete);
+                        } else {
+                            numExpected = 1;
+                            updateCount = remove(arg, queryInfo, delete);
+                        }
+
+                        if (updateCount < numExpected) {
+                            Class<?> singleType = queryInfo.getSingleResultType();
+                            if (void.class.equals(singleType) || Void.class.equals(singleType))
+                                throw new OptimisticLockingFailureException((numExpected - updateCount) + " of the " +
+                                                                            numExpected + " entities were not found for deletion."); // TODO NLS
+                        }
+
+                        returnValue = toReturnValue(updateCount, returnType, queryInfo);
+                        break;
+                    }
+                    case UPDATE_WITH_ENTITY_PARAM: {
+                        em = entityInfo.persister.createEntityManager();
+                        TypedQuery<?> update = em.createQuery(queryInfo.jpql, entityInfo.entityClass);
+
+                        Object arg = args[0] instanceof Stream //
+                                        ? ((Stream<?>) args[0]).sequential().collect(Collectors.toList()) //
+                                        : args[0];
+                        int updateCount = 0;
+
+                        if (arg instanceof Iterable) {
+                            for (Object e : ((Iterable<?>) arg))
+                                updateCount += update(e, queryInfo, update);
+                        } else if (arg.getClass().isArray()) {
+                            int length = Array.getLength(arg);
+                            for (int i = 0; i < length; i++)
+                                updateCount += update(Array.get(arg, i), queryInfo, update);
+                        } else {
+                            updateCount = update(arg, queryInfo, update);
+                        }
 
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;
@@ -2509,20 +2657,34 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @throws Exception if an error occurs or if the repository method return type is void and
      *                       the entity (or correct version of the entity) was not found.
      */
-    private static int remove(Object e, QueryInfo queryInfo, TypedQuery<?> delete) throws Exception {
+    private int remove(Object e, QueryInfo queryInfo, TypedQuery<?> delete) throws Exception {
+
+        if (e == null)
+            throw new NullPointerException("The entity parameter cannot have a null value."); // TODO NLS // required by spec
+
+        if (!defaultEntityClass.isInstance(e))
+            throw new DataException("The " + (e == null ? null : e.getClass().getName()) +
+                                    " parameter does not match the " + defaultEntityClass.getName() +
+                                    " entity type that is expected for this repository."); // TODO NLS
 
         Object v = e;
         if (queryInfo.entityInfo.versionAttributeName == null) {
-            queryInfo.setParameters(delete, e);
+            if (queryInfo.entityInfo.idClassAttributeAccessors == null)
+                queryInfo.setParameters(delete, e);
+            else
+                queryInfo.setParametersFromIdClassAndVersion(delete, e, null);
         } else {
-            String name = queryInfo.entityInfo.attributeNames.get(queryInfo.entityInfo.versionAttributeName.toLowerCase());
-            List<Member> accessors = queryInfo.entityInfo.attributeAccessors.get(name);
+            List<Member> accessors = queryInfo.entityInfo.attributeAccessors.get(queryInfo.entityInfo.versionAttributeName);
             if (accessors == null || accessors.isEmpty())
                 throw new MappingException("Unable to find the " + queryInfo.entityInfo.versionAttributeName +
                                            " attribute on the " + queryInfo.entityInfo.name + " entity."); // should never occur
             for (Member accessor : accessors)
                 v = accessor instanceof Method ? ((Method) accessor).invoke(v) : ((Field) accessor).get(v);
-            queryInfo.setParameters(delete, e, v);
+
+            if (queryInfo.entityInfo.idClassAttributeAccessors == null)
+                queryInfo.setParameters(delete, e, v);
+            else
+                queryInfo.setParametersFromIdClassAndVersion(delete, e, v);
         }
 
         int numDeleted = delete.executeUpdate();
@@ -2536,7 +2698,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     throw new OptimisticLockingFailureException("Version " + v + " of the entity was not found."); // TODO NLS
             }
         } else if (numDeleted > 1) {
-            throw new DataException("Found " + numDeleted + " entities matching the delete query."); // ought to be unreachable
+            throw new DataException("Found " + numDeleted + " matching entities."); // ought to be unreachable
         }
 
         return numDeleted;
@@ -2729,6 +2891,54 @@ public class RepositoryImpl<R> implements InvocationHandler {
             throw new UnsupportedOperationException("Return update count as " + returnType);
 
         return result;
+    }
+
+    /**
+     * Updates the entity (or record) from the database if its attributes match the database.
+     *
+     * @param e         the entity or record.
+     * @param queryInfo query information that is prepopulated for update by id (and possibly version).
+     * @param update    update query.
+     * @return the number of entities updated (1 or 0).
+     * @throws Exception if an error occurs.
+     */
+    private int update(Object e, QueryInfo queryInfo, TypedQuery<?> update) throws Exception {
+        if (e == null)
+            throw new NullPointerException("The entity parameter cannot have a null value."); // TODO NLS // required by spec
+
+        if (!defaultEntityClass.isInstance(e))
+            throw new DataException("The " + (e == null ? null : e.getClass().getName()) +
+                                    " parameter does not match the " + defaultEntityClass.getName() +
+                                    " entity type that is expected for this repository."); // TODO NLS
+
+        EntityInfo entityInfo = queryInfo.entityInfo;
+
+        // parameters for entity attributes to update:
+
+        int p = 0;
+        for (String attrName : entityInfo.getAttributeNamesForEntityUpdate())
+            QueryInfo.setParameter(++p, update, e,
+                                   entityInfo.attributeAccessors.get(attrName));
+
+        // id parameter(s)
+
+        if (entityInfo.idClassAttributeAccessors == null)
+            QueryInfo.setParameter(++p, update, e,
+                                   entityInfo.attributeAccessors.get(entityInfo.getAttributeName("id", true)));
+        else
+            throw new UnsupportedOperationException(); // TODO
+
+        // version parameter
+
+        if (entityInfo.versionAttributeName != null)
+            QueryInfo.setParameter(++p, update, e,
+                                   entityInfo.attributeAccessors.get(entityInfo.versionAttributeName));
+
+        int numUpdated = update.executeUpdate();
+
+        if (numUpdated > 1)
+            throw new DataException("Found " + numUpdated + " matching entities."); // ought to be unreachable
+        return numUpdated;
     }
 
     /**
