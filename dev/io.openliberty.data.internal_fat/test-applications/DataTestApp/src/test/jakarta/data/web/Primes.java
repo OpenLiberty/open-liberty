@@ -64,7 +64,7 @@ public interface Primes {
     @Asynchronous
     CompletableFuture<Short> countByIdBetweenAndEvenNot(long first, long last, boolean isOdd);
 
-    Integer countNumberIdBetween(long first, long last);
+    Integer countByNumberIdBetween(long first, long last);
 
     @Query("SELECT p.numberId FROM Prime p WHERE p.numberId >= ?1 AND p.numberId <= ?2")
     long findAsLongBetween(long min, long max);
@@ -175,7 +175,7 @@ public interface Primes {
     @OrderBy("name")
     Slice<Prime> findByRomanNumeralStartsWithAndIdLessThan(String prefix, long max, Pageable pagination);
 
-    Prime findFirst(Sort sort);
+    Prime findFirst(Sort sort, Limit limitOf1);
 
     Stream<Prime> findFirst2147483648ByIdGreaterThan(long min); // Exceeds Integer.MAX_VALUE by 1
 
@@ -184,7 +184,7 @@ public interface Primes {
 
     Prime findFirstByNameLikeOrderByNumberId(String namePattern);
 
-    List<Object[]> findIdAndName(Sort... sort);
+    List<Object[]> findIdAndNameBy(Sort... sort);
 
     @OrderBy(value = "id", descending = true)
     Set<Long> findIdByIdBetween(long min, long max);
@@ -194,7 +194,7 @@ public interface Primes {
 
     boolean existsByNumberId(long number);
 
-    Boolean existsIdBetween(Long first, Long last);
+    Boolean existsByIdBetween(Long first, Long last);
 
     @Count
     @Filter(by = "id", op = Compare.GreaterThanEqual)

@@ -1288,85 +1288,128 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                             " because the method's parameter accepts entity instances.");
         }
 
-        if (queryInfo.type != null) {
+        int by = queryInfo.type == null ? methodName.indexOf("By") : -1;
+
+        if (by >= 0) {
+            // Query by method name
+
+            if (methodName.startsWith("find")) {
+                Select select = queryInfo.method.getAnnotation(Select.class);
+                List<String> selections = select == null ? new ArrayList<>() : null;
+                int c = by + 2;
+                if (by > 4 && "findAllById".equals(methodName) && Iterable.class.equals(paramTypes[0]))
+                    methodName = "findAllByIdIn"; // CrudRepository.findAllById(Iterable)
+                else
+                    parseFindBy(queryInfo, methodName, by, selections);
+                q = generateSelectClause(queryInfo, select, selections == null ? null : selections.toArray(new String[selections.size()]));
+
+                int orderBy = methodName.indexOf("OrderBy", by + 2);
+                if (orderBy > c || orderBy == -1 && methodName.length() > c) {
+                    int where = q.length();
+                    generateWhereClause(queryInfo, methodName, c, orderBy > 0 ? orderBy : methodName.length(), q);
+                    if (countPages)
+                        generateCount(queryInfo, q.substring(where));
+                }
+                if (orderBy >= c)
+                    parseOrderBy(queryInfo, orderBy, q);
+                queryInfo.type = QueryInfo.Type.FIND;
+            } else if (methodName.startsWith("delete") || methodName.startsWith("remove")) {
+                int c = by + 2;
+                if (by > 6) {
+                    if ("deleteAllById".equals(methodName) && Iterable.class.isAssignableFrom(paramTypes[0]))
+                        if (entityInfo.idClassAttributeAccessors == null)
+                            methodName = "deleteAllByIdIn"; // CrudRepository.deleteAllById(Iterable)
+                        else
+                            throw new MappingException("The deleteAllById operation cannot be used on entities with composite IDs."); // TODO NLS
+                }
+                boolean isFindAndDelete = queryInfo.isFindAndDelete();
+                if (isFindAndDelete) {
+                    if (queryInfo.type != null)
+                        throw new UnsupportedOperationException("The " + queryInfo.method.getGenericReturnType() +
+                                                                " return type is not supported for the " + methodName +
+                                                                " repository method."); // TODO NLS
+                    queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
+                    parseDeleteBy(queryInfo, by);
+                    Select select = null; // queryInfo.method.getAnnotation(Select.class); // TODO This would be limited by collision with update count/boolean
+                    q = generateSelectClause(queryInfo, select);
+                    queryInfo.jpqlDelete = generateDeleteById(queryInfo);
+                } else { // DELETE
+                    queryInfo.type = queryInfo.type == null ? QueryInfo.Type.DELETE : queryInfo.type;
+                    q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
+                }
+
+                int orderBy = isFindAndDelete && by > 0 ? methodName.indexOf("OrderBy", by + 2) : -1;
+                if (orderBy > c || orderBy == -1 && methodName.length() > c)
+                    generateWhereClause(queryInfo, methodName, c, orderBy > 0 ? orderBy : methodName.length(), q);
+                if (orderBy >= c)
+                    parseOrderBy(queryInfo, orderBy, q);
+
+                queryInfo.type = queryInfo.type == null ? QueryInfo.Type.DELETE : queryInfo.type;
+            } else if (methodName.startsWith("update")) {
+                q = generateUpdateClause(queryInfo, methodName, by + 2);
+                queryInfo.type = QueryInfo.Type.UPDATE;
+            } else if (methodName.startsWith("count")) {
+                int c = by + 2;
+                q = new StringBuilder(150).append("SELECT COUNT(").append(o).append(") FROM ").append(entityInfo.name).append(' ').append(o);
+                if (methodName.length() > c)
+                    generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
+                queryInfo.type = QueryInfo.Type.COUNT;
+            } else if (methodName.startsWith("exists")) {
+                int c = by + 2;
+                String name = entityInfo.idClassAttributeAccessors == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
+                String attrName = entityInfo.getAttributeName(name, true);
+                q = new StringBuilder(200).append("SELECT ").append(o).append('.').append(attrName) //
+                                .append(" FROM ").append(entityInfo.name).append(' ').append(o);
+                if (methodName.length() > c)
+                    generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
+                queryInfo.type = QueryInfo.Type.EXISTS;
+            }
+        } else if (queryInfo.type == null) {
+            // Might be Query by Parameters
+
+            if (methodName.startsWith("find")) {
+                q = generateSelectClause(queryInfo, queryInfo.method.getAnnotation(Select.class));
+                if (queryInfo.method.getParameterCount() > 0)
+                    ; // TODO
+                queryInfo.type = QueryInfo.Type.FIND;
+            } else if (methodName.startsWith("delete") || methodName.startsWith("remove")) {
+                boolean isFindAndDelete = queryInfo.isFindAndDelete();
+                if (isFindAndDelete) {
+                    if (queryInfo.type != null)
+                        throw new UnsupportedOperationException("The " + queryInfo.method.getGenericReturnType() +
+                                                                " return type is not supported for the " + methodName +
+                                                                " repository method."); // TODO NLS
+                    queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
+                    parseDeleteBy(queryInfo, by);
+                    Select select = null; // queryInfo.method.getAnnotation(Select.class); // TODO This would be limited by collision with update count/boolean
+                    q = generateSelectClause(queryInfo, select);
+                    queryInfo.jpqlDelete = generateDeleteById(queryInfo);
+                } else { // DELETE
+                    queryInfo.type = queryInfo.type == null ? QueryInfo.Type.DELETE : queryInfo.type;
+                    q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
+                }
+                if (queryInfo.method.getParameterCount() > 0)
+                    ; // TODO
+                queryInfo.type = queryInfo.type == null ? QueryInfo.Type.DELETE : queryInfo.type;
+            } else if (methodName.startsWith("count")) {
+                q = new StringBuilder(150).append("SELECT COUNT(").append(o).append(") FROM ").append(entityInfo.name).append(' ').append(o);
+                if (queryInfo.method.getParameterCount() > 0)
+                    ; // TODO
+                queryInfo.type = QueryInfo.Type.COUNT;
+            } else if (methodName.startsWith("exists")) {
+                String name = entityInfo.idClassAttributeAccessors == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
+                String attrName = entityInfo.getAttributeName(name, true);
+                q = new StringBuilder(200).append("SELECT ").append(o).append('.').append(attrName) //
+                                .append(" FROM ").append(entityInfo.name).append(' ').append(o);
+                if (queryInfo.method.getParameterCount() > 0)
+                    ; // TODO
+                queryInfo.type = QueryInfo.Type.EXISTS;
+            }
+        } else {
+            // Method with Entity Parameters - already processed
+
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "Method with Entity Parameter identified as " + queryInfo.type);
-        } else if (methodName.startsWith("find")) {
-            Select select = queryInfo.method.getAnnotation(Select.class);
-            List<String> selections = select == null ? new ArrayList<>() : null;
-            int by = methodName.indexOf("By", 4);
-            int c = by < 0 ? methodName.length() : by + 2;
-            if (by > 4 && "findAllById".equals(methodName) && Iterable.class.equals(paramTypes[0]))
-                methodName = "findAllByIdIn"; // CrudRepository.findAllById(Iterable)
-            else
-                parseFindBy(queryInfo, methodName, by, selections);
-            q = generateSelectClause(queryInfo, select, selections == null ? null : selections.toArray(new String[selections.size()]));
-
-            int orderBy = by < 0 ? -1 : methodName.indexOf("OrderBy", by + 2);
-            if (orderBy > c || orderBy == -1 && methodName.length() > c) {
-                int where = q.length();
-                generateWhereClause(queryInfo, methodName, c, orderBy > 0 ? orderBy : methodName.length(), q);
-                if (countPages)
-                    generateCount(queryInfo, q.substring(where));
-            }
-            if (orderBy >= c)
-                parseOrderBy(queryInfo, orderBy, q);
-            queryInfo.type = QueryInfo.Type.FIND;
-        } else if (methodName.startsWith("delete") || methodName.startsWith("remove")) {
-            int by = methodName.indexOf("By", 6);
-            int c = by < 0 ? methodName.length() : by + 2;
-            if (by > 6) {
-                if ("deleteAllById".equals(methodName) && Iterable.class.isAssignableFrom(paramTypes[0]))
-                    if (entityInfo.idClassAttributeAccessors == null)
-                        methodName = "deleteAllByIdIn"; // CrudRepository.deleteAllById(Iterable)
-                    else
-                        throw new MappingException("The deleteAllById operation cannot be used on entities with composite IDs."); // TODO NLS
-            }
-            boolean isFindAndDelete = queryInfo.isFindAndDelete();
-            if (isFindAndDelete) {
-                if (queryInfo.type != null)
-                    throw new UnsupportedOperationException("The " + queryInfo.method.getGenericReturnType() +
-                                                            " return type is not supported for the " + methodName +
-                                                            " repository method."); // TODO NLS
-                queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
-                parseDeleteBy(queryInfo, by);
-                Select select = null; // queryInfo.method.getAnnotation(Select.class); // TODO This would be limited by collision with update count/boolean
-                q = generateSelectClause(queryInfo, select);
-                queryInfo.jpqlDelete = generateDeleteById(queryInfo);
-            } else { // DELETE
-                queryInfo.type = queryInfo.type == null ? QueryInfo.Type.DELETE : queryInfo.type;
-                q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
-            }
-
-            int orderBy = isFindAndDelete && by > 0 ? methodName.indexOf("OrderBy", by + 2) : -1;
-            if (orderBy > c || orderBy == -1 && methodName.length() > c)
-                generateWhereClause(queryInfo, methodName, c, orderBy > 0 ? orderBy : methodName.length(), q);
-            if (orderBy >= c)
-                parseOrderBy(queryInfo, orderBy, q);
-
-            queryInfo.type = queryInfo.type == null ? QueryInfo.Type.DELETE : queryInfo.type;
-        } else if (methodName.startsWith("update")) {
-            int by = methodName.indexOf("By", 6);
-            int c = by < 0 ? 6 : by + 2;
-            q = generateUpdateClause(queryInfo, methodName, c);
-            queryInfo.type = QueryInfo.Type.UPDATE;
-        } else if (methodName.startsWith("count")) {
-            int by = methodName.indexOf("By", 5);
-            int c = by < 0 ? 5 : by + 2;
-            q = new StringBuilder(150).append("SELECT COUNT(").append(o).append(") FROM ").append(entityInfo.name).append(' ').append(o);
-            if (methodName.length() > c)
-                generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
-            queryInfo.type = QueryInfo.Type.COUNT;
-        } else if (methodName.startsWith("exists")) {
-            int by = methodName.indexOf("By", 6);
-            int c = by < 0 ? 6 : by + 2;
-            String name = entityInfo.idClassAttributeAccessors == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
-            String attrName = entityInfo.getAttributeName(name, true);
-            q = new StringBuilder(200).append("SELECT ").append(o).append('.').append(attrName) //
-                            .append(" FROM ").append(entityInfo.name).append(' ').append(o);
-            if (methodName.length() > c)
-                generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
-            queryInfo.type = QueryInfo.Type.EXISTS;
         }
 
         return q;

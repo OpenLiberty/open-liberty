@@ -46,9 +46,9 @@ public interface Packages extends PageableRepository<Package, Integer> {
 
     Package[] deleteByDescriptionEndsWith(String ending, Sort... sorts);
 
-    Optional<Integer> deleteFirst(Sort sort);
+    Optional<Integer> deleteFirstBy(Sort sort);
 
-    int[] deleteFirst2(Sort... sorts);
+    int[] deleteFirst2By(Sort... sorts);
 
     LinkedList<?> deleteFirst2ByHeightLessThan(float maxHeight, Sort... sorts);
 

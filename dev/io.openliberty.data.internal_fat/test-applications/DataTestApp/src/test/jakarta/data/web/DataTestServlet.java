@@ -563,9 +563,9 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(15, primes.countByIdLessThan(50));
 
-        assertEquals(Integer.valueOf(0), primes.countNumberIdBetween(32, 36));
+        assertEquals(Integer.valueOf(0), primes.countByNumberIdBetween(32, 36));
 
-        assertEquals(Integer.valueOf(3), primes.countNumberIdBetween(40, 50));
+        assertEquals(Integer.valueOf(3), primes.countByNumberIdBetween(40, 50));
 
         assertEquals(Short.valueOf((short) 14), primes.countByIdBetweenAndEvenNot(0, 50, true).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
     }
@@ -1072,8 +1072,8 @@ public class DataTestServlet extends FATServlet {
         assertEquals(true, primes.existsByNumberId(19));
         assertEquals(false, primes.existsByNumberId(9));
 
-        assertEquals(Boolean.TRUE, primes.existsIdBetween(Long.valueOf(14), Long.valueOf(18)));
-        assertEquals(Boolean.FALSE, primes.existsIdBetween(Long.valueOf(24), Long.valueOf(28)));
+        assertEquals(Boolean.TRUE, primes.existsByIdBetween(Long.valueOf(14), Long.valueOf(18)));
+        assertEquals(Boolean.FALSE, primes.existsByIdBetween(Long.valueOf(24), Long.valueOf(28)));
     }
 
     /**
@@ -1313,13 +1313,13 @@ public class DataTestServlet extends FATServlet {
         remaining.addAll(Set.of(80008, 80080, 80081, 80088));
 
         Sort sort = supportsOrderByForUpdate ? Sort.desc("width") : null;
-        Integer id = packages.deleteFirst(sort).orElseThrow();
+        Integer id = packages.deleteFirstBy(sort).orElseThrow();
         if (supportsOrderByForUpdate)
             assertEquals(Integer.valueOf(80080), id);
         assertEquals("Found " + id + "; expected one of " + remaining, true, remaining.remove(id));
 
         Sort[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.desc("height"), Sort.asc("length") } : null;
-        int[] ids = packages.deleteFirst2(sorts);
+        int[] ids = packages.deleteFirst2By(sorts);
         assertEquals(Arrays.toString(ids), 2, ids.length);
         if (supportsOrderByForUpdate) {
             assertEquals(80081, ids[0]);
@@ -1329,7 +1329,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Found " + ids[1] + "; expected one of " + remaining, true, remaining.remove(ids[1]));
 
         // should have only 1 remaining
-        ids = packages.deleteFirst2(sorts);
+        ids = packages.deleteFirst2By(sorts);
         assertEquals(Arrays.toString(ids), 1, ids.length);
         assertEquals(remaining.iterator().next(), Integer.valueOf(ids[0]));
     }
@@ -1478,7 +1478,7 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindFirstWithoutBy() {
-        Prime first = primes.findFirst(Sort.asc("numberId"));
+        Prime first = primes.findFirst(Sort.asc("numberId"), Limit.of(1));
         assertEquals(2, first.numberId);
     }
 
@@ -1605,7 +1605,7 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindSubsetOfAttributes() {
-        List<Object[]> all = primes.findIdAndName(Sort.asc("numberId"));
+        List<Object[]> all = primes.findIdAndNameBy(Sort.asc("numberId"));
 
         Object[] idAndName = all.get(5);
         assertEquals(13L, idAndName[0]);
