@@ -10,14 +10,15 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry10.internal.cdi;
 
+import jakarta.annotation.Priority;
+import jakarta.inject.Inject;
+import jakarta.interceptor.Interceptor;
+
 import io.openliberty.microprofile.telemetry.internal.common.cdi.AbstractWithSpanInterceptor;
 import io.openliberty.microprofile.telemetry.internal.common.cdi.MethodRequest;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import io.opentelemetry.instrumentation.api.annotation.support.MethodSpanAttributesExtractor;
-import jakarta.annotation.Priority;
-import jakarta.inject.Inject;
-import jakarta.interceptor.Interceptor;
 
 @WithSpan
 @Interceptor

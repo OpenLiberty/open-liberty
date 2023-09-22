@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.websphere.ras.Tr;
 
 import io.openliberty.restfulWS.client.ClientBuilderListener;
-import jakarta.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.ClientBuilder;
 
 /**
  * Adds the Telemetry client filter when a rest client is built.

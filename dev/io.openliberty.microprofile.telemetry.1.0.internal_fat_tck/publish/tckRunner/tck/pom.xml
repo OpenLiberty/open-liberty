@@ -64,7 +64,7 @@
         <dependency>
             <groupId>org.eclipse.microprofile.telemetry.tracing</groupId>
             <artifactId>microprofile-telemetry-tracing-tck</artifactId>
-            <version>${mptelemetry.version}</version>
+            <version>${mptelemetry.version}-RC2</version>
         </dependency>
         
         <dependency>
