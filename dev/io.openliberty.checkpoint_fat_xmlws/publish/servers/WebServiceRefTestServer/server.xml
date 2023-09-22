@@ -1,0 +1,10 @@
+<server>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>jndi-1.0</feature>
+        <feature>jaxws-2.2</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+</server>

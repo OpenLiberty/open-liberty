@@ -1,0 +1,39 @@
+<server>
+	<featureManager>
+		<feature>servlet-4.0</feature>
+		<feature>jndi-1.0</feature>
+		<feature>jaxws-2.2</feature>
+		<feature>wsSecurity-1.1</feature>
+		<feature>componenttest-1.0</feature>
+	</featureManager>
+
+	<include location="../fatTestPorts.xml" />
+
+	<basicRegistry id="basic" realm="customRealm">
+		<user name="user1" password="{xor}LDo8Ki02KyY=" />
+		<user name="user2" password="{xor}LDo8Ki02KyY=" />
+	</basicRegistry>
+	<wsSecurityClient id="default"
+		ws-security.password="{xor}LDo8Ki02KyY=" ws-security.username="user2">
+	</wsSecurityClient>
+
+	<sslDefault sslRef="DefaultSSLSettings" />
+	<ssl id="DefaultSSLSettings" keyStoreRef="defaultKeyStore" />
+	<keyStore id="defaultKeyStore" password="yourPassword" />
+
+	<javaPermission className="java.security.AllPermission"
+		name="*" actions="*" />
+		
+	<webApplication id="" name="libertyCXFProperty" cotext-root="libertyCXFProperty" location="libertyCXFProperty.war">
+		<webservices-bnd>
+			<webservice-endpoint-properties enableLoggingInOutInterceptor="true"/>  		
+			<service-ref name="services/ImageServicePropertyImplService"
+				port-address="https://${TEST_HOST}:${bvt.prop.HTTP_default.secure}/libertyCXFProperty/ImageServiceImplService"
+				wsdl-location="https://${TEST_HOST}:${bvt.prop.HTTP_default.secure}/libertyCXFProperty/ImageServiceImplService?wsdl" />
+			<service-ref name="services/ImageServicePropertyImplServiceTwo"
+				port-address="https://${TEST_HOST}:${bvt.prop.HTTP_default.secure}/libertyCXFProperty/ImageServiceImplServiceTwo"
+				wsdl-location="https://${TEST_HOST}:${bvt.prop.HTTP_default.secure}/libertyCXFProperty/ImageServiceImplServiceTwo?wsdl" />
+		</webservices-bnd>
+    </webApplication>
+    
+</server>
