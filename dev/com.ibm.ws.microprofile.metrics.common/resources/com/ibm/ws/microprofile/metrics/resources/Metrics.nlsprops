@@ -110,6 +110,9 @@ memory.committedHeap.description=Displays the amount of memory in bytes that is 
 #Memory maxHeap message
 memory.maxHeap.description=Displays the maximum amount of heap memory in bytes that can be used for memory management. This attribute displays -1 if the maximum heap memory size is undefined. This amount of memory is not guaranteed to be available for memory management if it is greater than the amount of committed memory. The Java virtual machine may fail to allocate memory even if the amount of used memory does not exceed this maximum size.
 
+#Memory heapUtilization message
+memory.heapUtilization.description=The portion of the maximum heap memory that is currently in use. This metric displays -1 if the maximum heap memory size is undefined.
+
 #Jvm uptime message
 jvm.uptime.description=Displays the start time of the Java virtual machine in milliseconds. This attribute displays the approximate time when the Java virtual machine started.
 
@@ -143,11 +146,17 @@ cpu.processCpuLoad.description=Displays the 'recent cpu usage' for the Java Virt
 #Cpu processCpuTime message
 cpu.processCpuTime.description=Displays the CPU time used by the process on which the Java virtual machine is running.
 
+#Cpu processCpuUtilization message
+cpu.processCpuUtilization.description=The recent CPU time that is used by the JVM process from all processors that are available to the JVM.
+
 #Garbage collection count message
 garbageCollectionCount.description=Displays the total number of collections that have occurred. This attribute lists -1 if the collection count is undefined for this collector.
 
 #Garbage collection time message
 garbageCollectionTime.description=Displays the approximate accumulated collection elapsed time in milliseconds. This attribute displays -1 if the collection elapsed time is undefined for this collector. The Java virtual machine implementation may use a high resolution timer to measure the elapsed time. This attribute may display the same value even if the collection count has been incremented if the collection elapsed time is very short.
+
+#Garbage collection time per garbage collection cycle message
+gc.time.per.cycle.description=The recent average time spent per garbage collection cycle. This metric displays -1 if the garbage collection elapsed time or count is undefined for this collector.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
@@ -157,6 +166,7 @@ threadpool.size.description=The size of the thread pool.
 
 servlet.request.total.description=The number of visits to this servlet since the start of the server.
 servlet.responseTime.total.description=The total response time of this servlet since the start of the server.
+servlet.request.elapsedTime.per.request.description=The recent average elapsed response time per servlet request.
 
 connectionpool.create.total.description=The total number of managed connections that have been created since the pool creation.
 connectionpool.destroy.total.description=The total number of managed connections that have been destroyed since the pool creation.
@@ -167,6 +177,8 @@ connectionpool.waitTime.total.description=The total wait time on all connection 
 connectionpool.inUseTime.total.description=The total time that all connections are in use since the start of the server.
 connectionpool.usedConnections.total.description=The total number of connection requests that waited because of a full connection pool or did not have to wait since the start of the server. Any connections that are currently in use are not included in this total.
 connectionpool.queuedRequests.total.description=The total number of connection requests that had to wait for a connection because of a full connection pool since the start of the server.
+connectionpool.inUseTime.per.usedConnection.description=The recent average time that connections are in use.
+connectionpool.waitTime.per.queuedRequest.description=The recent average wait time for queued connection requests.
 
 session.create.total.description=The number of sessions that have logged in since this metric was enabled.
 session.liveSessions.description=The number of users that are currently logged in.
@@ -188,6 +200,7 @@ grpc.client.responseTime.total.description=The total response time of completed 
 
 REST.request.description=The number of invocations and total response time of this RESTful resource method since the start of the server. The metric will not record the elapsed time nor count of a REST request if it resulted in an unmapped exception. Also tracks the highest recorded time duration within the previous completed full minute and lowest recorded time duration within the previous completed full minute.
 REST.request.unmappedException.description=The total number of unmapped exceptions that occur from this RESTful resource method since the start of the server.
+REST.request.elapsedTime.per.request.description: The recent average elapsed response time per RESTful resource method request.
 
 requestTiming.requestCount.description=The number of servlet requests since the server started.
 requestTiming.activeRequestCount.description=The number of servlet requests currently running.

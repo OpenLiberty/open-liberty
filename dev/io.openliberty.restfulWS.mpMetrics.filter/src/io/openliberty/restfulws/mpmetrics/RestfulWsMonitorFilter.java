@@ -21,6 +21,21 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.MetricID;
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.Tag;
+import org.eclipse.microprofile.metrics.Timer;
+
+import com.ibm.websphere.csi.J2EEName;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.ModuleMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+
+import io.openliberty.microprofile.metrics.internal.monitor.computed.internal.ComputedMonitorMetricsHandler;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.ws.rs.container.ContainerRequestContext;
@@ -30,20 +45,6 @@ import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.container.ResourceInfo;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.ext.Provider;
-
-import org.eclipse.microprofile.metrics.Metadata;
-import org.eclipse.microprofile.metrics.MetricID;
-import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.Tag;
-import org.eclipse.microprofile.metrics.Timer;
-
-import com.ibm.websphere.csi.J2EEName;
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.runtime.metadata.ComponentMetaData;
-import com.ibm.ws.runtime.metadata.ModuleMetaData;
-import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 @Provider
 public class RestfulWsMonitorFilter implements ContainerRequestFilter, ContainerResponseFilter {
@@ -163,6 +164,23 @@ public class RestfulWsMonitorFilter implements ContainerRequestFilter, Container
                      */
                     MetricsRestfulWsEMCallbackImpl.registerOrRetrieveRESTUnmappedExceptionMetric(className, methodName,
                             appName);
+                    
+                    if (ProductInfo.getBetaEdition()) {
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc,
+                                    "Running beta edition, enable computed REST metrics calculation.");
+                        }
+
+                        // Register the computed REST.elapsedTime metric.
+                        ComputedMonitorMetricsHandler cmmh = MonitorAppStateListener.monitorMetricsHandler
+                                .getComputedMonitorMetricsHandler();
+                        cmmh.createRESTComputedMetrics("RESTStats", metricID, appName);
+                    } else {
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc,
+                                    "Running product build, computed REST metrics are NOT calculated.");
+                        }
+                    }
                 }
 
                 monitorKeyCache.putMonitorKey(resourceClass, resourceMethod, key);

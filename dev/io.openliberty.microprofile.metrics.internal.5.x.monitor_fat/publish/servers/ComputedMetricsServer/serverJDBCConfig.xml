@@ -1,0 +1,17 @@
+<server>
+    <!-- JDBC and Data Sources -->
+    <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib"/>
+    <library filesetRef="DerbyFileset" id="DerbyLib"/>
+    <fileset dir="." id="DerbyFileset" includes="derby.jar"/>
+    <dataSource id="ds1" jdbcDriverRef="DerbyEmbedded" jndiName="jdbc/exampleDS1">
+        <properties createDatabase="create" databaseName="exampleDS1"/>
+        <connectionManager maxIdleTime="1s" maxPoolSize="100" minPoolSize="1" reapTime="2s"/>
+    </dataSource>
+    <dataSource id="ds2" jdbcDriverRef="DerbyEmbedded" jndiName="jdbc/exampleDS2">
+        <properties createDatabase="create" databaseName="exampleDS2"/>
+        <connectionManager maxIdleTime="1s" maxPoolSize="100" minPoolSize="1" reapTime="2s"/>
+    </dataSource>
+    
+    <!-- Java2 security -->
+    <javaPermission codebase="${server.config.dir}/derby.jar" className="java.security.AllPermission"/>
+</server>
