@@ -112,7 +112,7 @@ public class LTPAKeyCreateTaskTest {
                 one(locationService).resolveResource(TEST_FILE_NAME);
                 will(returnValue(keysFileInServerConfig));
 
-                one(keysFileInServerConfig).getParent();
+                exactly(2).of(keysFileInServerConfig).getParent();
                 will(returnValue(parentResource));
 
                 one(parentResource).toRepositoryPath();
