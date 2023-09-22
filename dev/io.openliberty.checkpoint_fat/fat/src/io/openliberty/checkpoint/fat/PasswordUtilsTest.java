@@ -29,8 +29,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -44,7 +43,7 @@ import junit.framework.AssertionFailedError;
 public class PasswordUtilsTest extends FATServletClient {
     private static final String APP_NAME = "DefaultPrincipalMappingApp";
     private static final String APP_PACKAGE = "io.openliberty.checkpoint.fat.passwordutil.web";
-    private static final String SERVER_NAME = "com.ibm.ws.security.auth.data.fat.dpm.pu11";
+    private static final String SERVER_NAME = "checkpointPasswordUtilities";
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = DefaultPrincipalMappingServlet.class, contextRoot = APP_NAME)
@@ -52,8 +51,11 @@ public class PasswordUtilsTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly())
-                    .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
+                    .andWith(new FeatureReplacementAction("appSecurity-3.0", "appSecurity-1.0").removeFeature("passwordUtilities-1.1")
+                                    .addFeature("passwordUtilities-1.0")
+                                    .withID("version1.0")
+                                    .forServers(SERVER_NAME)
+                                    .fullFATOnly());
 
     @BeforeClass
     public static void setUp() throws Exception {
