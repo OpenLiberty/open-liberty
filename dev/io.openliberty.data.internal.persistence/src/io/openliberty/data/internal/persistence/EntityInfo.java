@@ -13,8 +13,8 @@
 package io.openliberty.data.internal.persistence;
 
 import java.lang.reflect.Member;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -122,19 +122,31 @@ class EntityInfo {
 
     /**
      * Returns the list of entity attribute names, suitable for use in JPQL, when updating an entity.
-     * This excludes the id and version.
+     * This excludes the id and version. It also excludes embeddable and relation attribute names,
+     * but leaves the outermost name (for example, removes location.address, but preserves location.address.cityName).
+     * TODO The above is for embeddables. Decide what to do for relations other than embeddable.
+     * TODO It's inefficient to keep recomputing this. Consider doing it just once, maybe in EntityDefiner
+     * where we can build the list correctly from the start rather than later excluding. Maybe the pre-computed list
+     * can be null when there are relation attributes to indicate that update by entity isn't supported for that type of entity.
+     * TODO updates (and probably deletes) to entities with an embeddable id is not implemented yet.
      *
      * @return list of entity attribute names.
      */
-    List<String> getAttributeNamesForEntityUpdate() {
-        List<String> names = new ArrayList<>(attributeNames.size());
-        String idName = attributeNames.get("id");
+    LinkedHashSet<String> getAttributeNamesForEntityUpdate() {
+        LinkedHashSet<String> names = new LinkedHashSet<>(attributeNames.size());
 
         for (String name : attributeTypes.keySet())
-            // TODO avoid updating both the embeddable attribute and the attributes of the embeddable. Choose one or the other.
-            // TODO probably skip attributes with . in the name
-            if (!name.equals("id") && !name.equals(idName) && !name.equals(versionAttributeName))
-                names.add(name);
+            names.add(name);
+
+        names.remove("id");
+        names.remove(attributeNames.get("id"));
+        names.remove(versionAttributeName);
+
+        for (String name : attributeTypes.keySet()) {
+            int ldot = name.lastIndexOf('.');
+            if (ldot > 0)
+                names.remove(name.substring(0, ldot));
+        }
 
         return names;
     }
