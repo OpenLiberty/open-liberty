@@ -243,7 +243,7 @@ final class ServletServerStream extends AbstractServerStream {
         cancel(Status.fromThrowable(e));
       }
     }
-    
+
     @Override
     public void writeFrame(
     		@Nullable 
@@ -285,7 +285,7 @@ final class ServletServerStream extends AbstractServerStream {
             "[{0}] writeTrailers: {1}, headersSent = {2}, status = {3}",
             new Object[] {logId, trailers, headersSent, status});
       }
-     
+      
       if (!headersSent) {
         writeHeadersToServletResponse(trailers);
       } else {
@@ -297,15 +297,15 @@ final class ServletServerStream extends AbstractServerStream {
           trailerSupplier.get().putIfAbsent(key, newValue);
         }
       }
+
+      writer.complete();
       
       try {
-          writer.flush();
+        writer.flush();
       } catch (IOException e) {
-          logger.log(WARNING, String.format("[{%s}] Exception when flushBuffer", logId), e);
-          cancel(Status.fromThrowable(e));
+    	logger.log(WARNING, String.format("[{%s}] Exception when flushBuffer", logId), e);
       }
-      
-      writer.complete();
+
     }
 
     @Override
