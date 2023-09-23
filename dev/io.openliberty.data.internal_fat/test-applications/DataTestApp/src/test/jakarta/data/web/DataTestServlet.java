@@ -571,6 +571,17 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Count method that uses the query-by-parameters pattern.
+     */
+    @Test
+    public void testCountQueryByParameters() {
+        assertEquals(1, primes.count(1, true));
+        assertEquals(0, primes.count(1, false));
+        assertEquals(0, primes.count(2, true));
+        assertEquals(3, primes.count(2, false));
+    }
+
+    /**
      * Count the number of matching entries in the database using annotatively defined queries.
      */
     @Test
@@ -898,6 +909,25 @@ public class DataTestServlet extends FATServlet {
 
         // Query and order by embeddable attributes
 
+        List<House> list = houses.findWithGarageDoorDimensions(12, 8);
+        assertEquals(1, list.size());
+        h = list.get(0);
+        assertEquals("TestEmbeddable-204-2992-20", h.parcelId);
+        assertEquals(2000, h.area);
+        assertNotNull(h.garage);
+        assertEquals(220, h.garage.area);
+        assertEquals(Garage.Type.Detached, h.garage.type);
+        assertNotNull(h.garage.door);
+        assertEquals(8, h.garage.door.getHeight());
+        assertEquals(12, h.garage.door.getWidth());
+        assertNotNull(h.kitchen);
+        assertEquals(16, h.kitchen.length);
+        assertEquals(13, h.kitchen.width);
+        assertEquals(0.18f, h.lotSize, 0.001f);
+        assertEquals(4, h.numBedrooms);
+        assertEquals(188000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2020), h.sold);
+
         List<House> found = houses.findByGarageTypeOrderByGarageDoorWidthDesc(Garage.Type.Detached);
         assertEquals(found.toString(), 2, found.size());
 
@@ -1084,6 +1114,16 @@ public class DataTestServlet extends FATServlet {
         assertEquals(true, primes.anyLessThanEndingWithBitPattern(25L, "1101"));
         assertEquals(false, primes.anyLessThanEndingWithBitPattern(25L, "1111"));
         assertEquals(false, primes.anyLessThanEndingWithBitPattern(12L, "1101"));
+    }
+
+    /**
+     * Exists method that uses the query-by-parameters pattern.
+     */
+    @Test
+    public void testExistsQueryByParameters() {
+        assertEquals(true, primes.existsWith(47, "2F"));
+        assertEquals(false, primes.existsWith(41, "2F")); // 2F is not hex for 41 decimal
+        assertEquals(false, primes.existsWith(15, "F")); // not prime
     }
 
     /**

@@ -52,6 +52,8 @@ public interface Houses {
     @OrderBy("area")
     DoubleStream findPurchasePriceByLotSizeGreaterThan(float minLotSize);
 
+    List<House> findWithGarageDoorDimensions(int garage_door_width, int garage_door_height);
+
     List<House> save(House... h);
 
     boolean updateByIdSetGarageAddAreaAddKitchenLengthSetNumBedrooms(String parcel, Garage updatedGarage, int addedArea, int addedKitchenLength, int newNumBedrooms);

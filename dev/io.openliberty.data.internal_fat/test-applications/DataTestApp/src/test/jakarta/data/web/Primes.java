@@ -59,12 +59,16 @@ public interface Primes {
     @Filter(by = "numberId", op = Compare.LessThan, param = "max")
     boolean anyLessThanEndingWithBitPattern(@Param("max") long upperLimit, @Param("bits") String pattern);
 
+    int count(int sumOfBits, boolean even);
+
     long countByIdLessThan(long number);
 
     @Asynchronous
     CompletableFuture<Short> countByIdBetweenAndEvenNot(long first, long last, boolean isOdd);
 
     Integer countByNumberIdBetween(long first, long last);
+
+    boolean existsWith(long id, String hex);
 
     Stream<Prime> find(boolean even, int sumOfBits, Limit limit, Sort... sorts);
 

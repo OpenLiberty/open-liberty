@@ -1962,6 +1962,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private void generateWhereClause(QueryInfo queryInfo, StringBuilder q) {
         Parameter[] params = queryInfo.method.getParameters();
 
+        // TODO reject special parameters on methods other than find with a meaningful error
         int numQueryConditions = params.length;
         while (numQueryConditions > 0 && SPECIAL_PARAM_TYPES.contains(params[numQueryConditions - 1].getType()))
             numQueryConditions--;
