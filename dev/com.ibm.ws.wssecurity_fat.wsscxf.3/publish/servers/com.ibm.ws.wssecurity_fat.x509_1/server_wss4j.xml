@@ -87,9 +87,8 @@
 		ws-security.username="user1"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
 	>
-	        <!--issue 30353 -->
+	
 		<signatureProperties
-                        signatureAlgorithm="sha256"
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
 			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client"
 			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefault"
@@ -108,10 +107,10 @@
 		id="default"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
 		ws-security.return.security.error="true"
-	>
-	        <!--issue 30353 -->
+		ws-security.asymmetric.signature.algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
+	>       <!-- issue 30353 add ws-security.asymmetric.signature.algorithm -->
+	
 		<signatureProperties
-                        signatureAlgorithm="sha256"
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
 			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server2"
 			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerSecond"
