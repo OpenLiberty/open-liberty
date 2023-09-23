@@ -66,6 +66,8 @@ public interface Primes {
 
     Integer countByNumberIdBetween(long first, long last);
 
+    Stream<Prime> find(boolean even, int sumOfBits, Limit limit, Sort... sorts);
+
     @Query("SELECT p.numberId FROM Prime p WHERE p.numberId >= ?1 AND p.numberId <= ?2")
     long findAsLongBetween(long min, long max);
 
@@ -183,6 +185,8 @@ public interface Primes {
     Prime[] findFirst5ByIdLessThanEqual(long maxNumber);
 
     Prime findFirstByNameLikeOrderByNumberId(String namePattern);
+
+    Optional<Prime> findHexadecimal(String hex);
 
     List<Object[]> findIdAndNameBy(Sort... sort);
 

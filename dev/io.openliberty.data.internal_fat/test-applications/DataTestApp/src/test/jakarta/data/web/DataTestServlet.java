@@ -1601,6 +1601,28 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Find method that uses the query-by-parameter name pattern.
+     */
+    @Test
+    public void testFindQueryByParameters() {
+        Prime prime = primes.findHexadecimal("2B").orElseThrow();
+        assertEquals(43, prime.numberId);
+        assertEquals(false, prime.even);
+        assertEquals("2B", prime.hex);
+        assertEquals("forty-three", prime.name);
+        assertEquals("XLIII", prime.romanNumeral);
+        assertEquals(List.of("X", "L", "I", "I", "I"), prime.romanNumeralSymbols);
+        assertEquals(4, prime.sumOfBits);
+
+        assertEquals(false, primes.findHexadecimal("2A").isPresent());
+
+        assertEquals(List.of("thirty-seven", "thirteen", "seven", "nineteen"),
+                     primes.find(false, 3, Limit.of(4), Sort.asc("even"), Sort.desc("name"))
+                                     .map(p -> p.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
      * Find a subset of attributes of the entity.
      */
     @Test

@@ -1370,7 +1370,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (methodName.startsWith("find")) {
                 q = generateSelectClause(queryInfo, queryInfo.method.getAnnotation(Select.class));
                 if (queryInfo.method.getParameterCount() > 0)
-                    ; // TODO
+                    generateWhereClause(queryInfo, q);
                 queryInfo.type = QueryInfo.Type.FIND;
             } else if (methodName.startsWith("delete") || methodName.startsWith("remove")) {
                 boolean isFindAndDelete = queryInfo.isFindAndDelete();
@@ -1389,12 +1389,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
                 }
                 if (queryInfo.method.getParameterCount() > 0)
-                    ; // TODO
+                    generateWhereClause(queryInfo, q);
                 queryInfo.type = queryInfo.type == null ? QueryInfo.Type.DELETE : queryInfo.type;
             } else if (methodName.startsWith("count")) {
                 q = new StringBuilder(150).append("SELECT COUNT(").append(o).append(") FROM ").append(entityInfo.name).append(' ').append(o);
                 if (queryInfo.method.getParameterCount() > 0)
-                    ; // TODO
+                    generateWhereClause(queryInfo, q);
                 queryInfo.type = QueryInfo.Type.COUNT;
             } else if (methodName.startsWith("exists")) {
                 String name = entityInfo.idClassAttributeAccessors == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
@@ -1402,7 +1402,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 q = new StringBuilder(200).append("SELECT ").append(o).append('.').append(attrName) //
                                 .append(" FROM ").append(entityInfo.name).append(' ').append(o);
                 if (queryInfo.method.getParameterCount() > 0)
-                    ; // TODO
+                    generateWhereClause(queryInfo, q);
                 queryInfo.type = QueryInfo.Type.EXISTS;
             }
         } else {
@@ -1951,6 +1951,44 @@ public class RepositoryImpl<R> implements InvocationHandler {
         }
 
         return q.append(')');
+    }
+
+    /**
+     * Generates the JPQL WHERE clause based on method parameters.
+     *
+     * @param queryInfo query information
+     * @param q         JPQL query to which to append the WHERE clause.
+     */
+    private void generateWhereClause(QueryInfo queryInfo, StringBuilder q) {
+        Parameter[] params = queryInfo.method.getParameters();
+
+        int numQueryConditions = params.length;
+        while (numQueryConditions > 0 && SPECIAL_PARAM_TYPES.contains(params[numQueryConditions - 1].getType()))
+            numQueryConditions--;
+
+        if (numQueryConditions == 0)
+            return; // all parameters have special parameter types
+
+        if (!params[0].isNamePresent())
+            throw new MappingException("To use the Queries by Parameter name pattern for repository methods, " +
+                                       " you must compile the application with the -parameters compiler option " +
+                                       " that preserves the parameter names."); // TODO NLS
+
+        queryInfo.hasWhere = true;
+        for (int i = 0; i < numQueryConditions; i++) {
+            q.append(i == 0 ? " WHERE (" : " AND ");
+
+            String name = queryInfo.entityInfo.getAttributeName(params[i].getName(), true);
+            if (name == null) {
+                // TODO generateConditionsForIdClass(...); continue;
+                throw new UnsupportedOperationException("Query by Parameters with IdClass"); // TODO NLS
+            }
+
+            String o = queryInfo.entityVar;
+            q.append(o).append('.').append(name).append("=?").append(++queryInfo.paramCount);
+        }
+
+        q.append(')');
     }
 
     /**
