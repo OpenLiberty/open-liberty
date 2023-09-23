@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,9 +16,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.namespace.QName; //issue 30353
+
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.ws.policy.AssertionInfo;
 import org.apache.cxf.ws.policy.AssertionInfoMap;
+import org.apache.wss4j.policy.SP11Constants;   //issue 30353
 //import org.apache.cxf.ws.security.policy.SP12Constants;
 import org.apache.wss4j.policy.SP12Constants;
 //import org.apache.cxf.ws.security.policy.model.AlgorithmSuite;
@@ -81,9 +84,56 @@ public class SignatureAlgorithms {
         }
     }
 
+    //issue 30353
+    public static AbstractBinding getAbstractBinding(AssertionInfoMap aim, String binding) {
+        Collection<AssertionInfo> ais = null;
+        AbstractBinding absBinding = null;
+        if ("transport".equals(binding)) {
+            ais = getMatchingAssertionInfo(aim, SP12Constants.TRANSPORT_BINDING);
+            if (ais == null) {
+                ais = getMatchingAssertionInfo(aim, SP11Constants.TRANSPORT_BINDING);
+            }
+        } else if("asymmetric".equals(binding)) {
+            ais = getMatchingAssertionInfo(aim, SP12Constants.ASYMMETRIC_BINDING);
+            if (ais == null) {
+                ais = getMatchingAssertionInfo(aim, SP11Constants.ASYMMETRIC_BINDING);
+            }
+        } else if ("symmetric".equals(binding)) {
+            ais = getMatchingAssertionInfo(aim, SP12Constants.SYMMETRIC_BINDING);
+            if (ais == null) {
+                ais = getMatchingAssertionInfo(aim, SP11Constants.SYMMETRIC_BINDING);
+            }
+        }
+        if (ais != null) {
+            for (AssertionInfo ai : ais) {
+                absBinding = (AbstractBinding) ai.getAssertion();
+            }
+        }
+        return absBinding;
+    }
+
+    //issue 30353
+    public static Collection<AssertionInfo> getMatchingAssertionInfo(AssertionInfoMap aim, QName qname) {
+        return aim.get(qname);
+
+    }
+
     public static AlgorithmSuite getAlgorithmSuite(AssertionInfoMap aim) {
-        AbstractBinding transport = null;
-        Collection<AssertionInfo> ais = aim.get(SP12Constants.TRANSPORT_BINDING);
+        //issue 30353
+        AbstractBinding binding = null;
+        binding = getAbstractBinding(aim, "transport");
+        if (binding == null) {
+            binding = getAbstractBinding(aim, "asymmetric");
+            if (binding == null) {
+                binding = getAbstractBinding(aim, "symmetric");
+            }
+        }
+        if (binding != null) {
+            return binding.getAlgorithmSuite();
+        }
+
+        //issue 30353 - commented out
+        /*Collection<AssertionInfo> ais = aim.get(SP12Constants.TRANSPORT_BINDING);
         if (ais != null) {
             for (AssertionInfo ai : ais) {
                 transport = (AbstractBinding) ai.getAssertion();
@@ -105,7 +155,8 @@ public class SignatureAlgorithms {
         }
         if (transport != null) {
             return transport.getAlgorithmSuite();
-        }
+        }*/
+
         return null;
     }
 }
