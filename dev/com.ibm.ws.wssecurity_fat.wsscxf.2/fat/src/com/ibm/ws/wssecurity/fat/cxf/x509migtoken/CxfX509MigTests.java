@@ -1076,9 +1076,7 @@ public class CxfX509MigTests {
      *
      */
 
-    //issue 30353 - comment out the test for now while further investigation is needed
-    //why test still failed with wsdl update Basic256ha256
-    //@Test
+    @Test
     public void testCxfX509TransportEndrosingSP11MigServiceHttps() throws Exception {
         String thisMethod = "testCxfX509TransportEndorsingSP11MigService";
         methodFull = "testCxfX509TransportEndorsingSP11MigServiceHttps";
@@ -2362,9 +2360,7 @@ public class CxfX509MigTests {
      *
      */
 
-    //issue 30353 - comment out the test for now while further investigation is needed
-    //why test still failed with wsdl update Basic256ha256
-    //@Test
+    @Test
     public void testCxfX509AsymmetricSignatureSP11MigService() throws Exception {
         String thisMethod = "testCxfX509AsymmetricSignatureSP11MigService";
         methodFull = "testCxfX509AsymmetricSignatureSP11MigService";
@@ -2651,9 +2647,7 @@ public class CxfX509MigTests {
      *
      */
 
-    //issue 30353 - comment out the test for now while further investigation is needed
-    //why test still failed with wsdl update Basic256ha256
-    //@Test
+    @Test
     public void testWsComplexSP11Service() throws Exception {
         String thisMethod = "testWsComplexSP11Service";
         methodFull = "testWsComplexSP11Service";

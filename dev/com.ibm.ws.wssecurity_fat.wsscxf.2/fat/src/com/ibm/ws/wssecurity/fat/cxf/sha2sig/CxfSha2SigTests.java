@@ -293,9 +293,7 @@ public class CxfSha2SigTests extends CommonTests {
      *
      */
 
-    //issue 30353 - remove the test? for negative test, ws sec client didn't supply signatureAlgorithm="sha256" intentionally, but this
-    //will not work with FIPS 140-3
-    //@Test
+    @Test
     //issue 23060
     @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID })
     public void testCxfSha1ToSha2SigAlgorithm() throws Exception {

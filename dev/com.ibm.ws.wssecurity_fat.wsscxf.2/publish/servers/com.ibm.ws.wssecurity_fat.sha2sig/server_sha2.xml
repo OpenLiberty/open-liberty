@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2020, 2022 IBM Corporation and others.
+    Copyright (c) 2020, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -70,15 +70,17 @@
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
 		ws-security.signature.username="soaprequester"
 	>       
+                <!-- issue 30353 -->
 		<signatureProperties
+		    signatureAlgorithm="sha512"
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
 			org.apache.ws.security.crypto.merlin.keystore.password="client"
 			org.apache.ws.security.crypto.merlin.keystore.alias="soaprequester"
 			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/dsig-sender.ks" />
 
 	</wsSecurityClient>
-	<!-- 11/2022 signatureAlgorithm="sha256" is not included in client setting, 
-	which is for negative test to use default sha1 algorithm and fail -->
+	<!-- issue 30353 09/2023 signatureAlgorithm="sha512" in client setting, provider expects sha256
+	this configuration is for negative test. client and provider are using different signature algorithms -->
 	
 	<include location="imports/java2Permissions.xml" />
         
