@@ -678,6 +678,98 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Delete method that uses the query-by-parameters pattern.
+     */
+    @Test
+    public void testDeleteQueryByParameters() {
+        houses.deleteAll();
+
+        House h1 = new House();
+        h1.area = 1600;
+        h1.garage = new Garage();
+        h1.garage.area = 190;
+        h1.garage.door = new GarageDoor();
+        h1.garage.door.setHeight(9);
+        h1.garage.door.setWidth(9);
+        h1.garage.type = Garage.Type.Detached;
+        h1.kitchen = new Kitchen();
+        h1.kitchen.length = 14;
+        h1.kitchen.width = 13;
+        h1.lotSize = 0.16f;
+        h1.numBedrooms = 2;
+        h1.parcelId = "TestDeleteQueryByParameters-1";
+        h1.purchasePrice = 116000;
+        h1.sold = Year.of(2016);
+        houses.insert(h1);
+
+        House h2 = new House();
+        h2.area = 2200;
+        h2.garage = new Garage();
+        h2.garage.area = 230;
+        h2.garage.door = new GarageDoor();
+        h2.garage.door.setHeight(9);
+        h2.garage.door.setWidth(10);
+        h2.garage.type = Garage.Type.Attached;
+        h2.kitchen = new Kitchen();
+        h2.kitchen.length = 14;
+        h2.kitchen.width = 18;
+        h2.lotSize = 0.22f;
+        h2.numBedrooms = 5;
+        h2.parcelId = "TestDeleteQueryByParameters-2";
+        h2.purchasePrice = 212000;
+        h2.sold = Year.of(2022);
+        houses.insert(h2);
+
+        House h3 = new House();
+        h3.area = 1300;
+        h3.kitchen = new Kitchen();
+        h3.kitchen.length = 13;
+        h2.kitchen.width = 12;
+        h3.lotSize = 0.13f;
+        h3.numBedrooms = 2;
+        h3.parcelId = "TestDeleteQueryByParameters-3";
+        h3.purchasePrice = 83000;
+        h3.sold = Year.of(2013);
+        houses.insert(h3);
+
+        House h4 = new House();
+        h4.area = 2400;
+        h4.garage = new Garage();
+        h4.garage.area = 240;
+        h4.garage.door = new GarageDoor();
+        h4.garage.door.setHeight(9);
+        h4.garage.door.setWidth(12);
+        h4.garage.type = Garage.Type.Detached;
+        h4.kitchen = new Kitchen();
+        h4.kitchen.length = 17;
+        h4.kitchen.width = 14;
+        h4.lotSize = 0.24f;
+        h4.numBedrooms = 5;
+        h4.parcelId = "TestDeleteQueryByParameters-4";
+        h4.purchasePrice = 144000;
+        h4.sold = Year.of(2014);
+        houses.insert(h4);
+
+        assertEquals(2, houses.deleteBasedOnGarage(Garage.Type.Detached, 9));
+
+        House h = houses.remove("TestDeleteQueryByParameters-2").orElseThrow();
+        assertEquals(2200, h.area);
+        assertEquals(230, h.garage.area);
+        assertEquals(9, h.garage.door.getHeight());
+        assertEquals(10, h.garage.door.getWidth());
+        assertEquals(Garage.Type.Attached, h.garage.type);
+        assertEquals(14, h.kitchen.length);
+        assertEquals(18, h.kitchen.width);
+        assertEquals(0.22f, h.lotSize, 0.001f);
+        assertEquals(5, h.numBedrooms);
+        assertEquals("TestDeleteQueryByParameters-2", h.parcelId);
+        assertEquals(212000, h.purchasePrice, 0.001);
+        assertEquals(Year.of(2022), h.sold);
+
+        assertEquals(1, houses.deleteAll());
+    }
+
+    /**
      * Query for distinct values of an attribute.
      */
     @Test
