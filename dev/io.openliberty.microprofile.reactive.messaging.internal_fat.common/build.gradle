@@ -20,6 +20,6 @@ configurations {
 }
 
 artifacts {
-  original(file('build/libs/io.openliberty.microprofile.reactive.messaging.internal_fat_common.jar'))
-  transformed(file('build/libs/io.openliberty.microprofile.reactive.messaging.internal_fat_common.jakarta.jar'))
+  original(file('build/libs/io.openliberty.microprofile.reactive.messaging.internal_fat.common.jar'))
+  transformed(file('build/libs/io.openliberty.microprofile.reactive.messaging.internal_fat.common.jakarta.jar'))
 }

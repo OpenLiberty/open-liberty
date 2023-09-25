@@ -12,7 +12,7 @@ dependencies {
     kafkaClient 'org.xerial.snappy:snappy-java:1.1.10.1'
     kafkaClient project(':com.ibm.ws.org.slf4j.api')
     kafkaClient project(':com.ibm.ws.org.slf4j.jdk14')
-    requiredLibs project(path: ':io.openliberty.microprofile.reactive.messaging.internal_fat_common', configuration: 'transformed')
+    requiredLibs project(path: ':io.openliberty.microprofile.reactive.messaging.internal_fat.common', configuration: 'transformed')
 }
 
 task addKafkaClientLibs (type: Copy) {

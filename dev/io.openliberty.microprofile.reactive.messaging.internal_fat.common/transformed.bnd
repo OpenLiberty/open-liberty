@@ -13,5 +13,5 @@
 -include= ~../cnf/resources/bnd/transform.props
 
 Bundle-Name: RM FAT Common Jakarta
-Bundle-SymbolicName: io.openliberty.microprofile.reactive.messaging.internal_fat_common.jakarta
+Bundle-SymbolicName: io.openliberty.microprofile.reactive.messaging.internal_fat.common.jakarta
 Bundle-Description: RM FAT Common Jakarta

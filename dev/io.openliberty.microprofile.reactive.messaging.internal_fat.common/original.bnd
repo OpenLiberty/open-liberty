@@ -12,5 +12,5 @@
 #*******************************************************************************
 
 Bundle-Name: RM FAT Common 
-Bundle-SymbolicName: io.openliberty.microprofile.reactive.messaging.internal_fat_common
+Bundle-SymbolicName: io.openliberty.microprofile.reactive.messaging.internal_fat.common
 Bundle-Description: RM FAT Common

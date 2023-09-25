@@ -30,7 +30,7 @@ tested.features:\
   servlet-6.0
 
 -buildpath: \
-    io.openliberty.microprofile.reactive.messaging.internal_fat_common.jakarta;version=latest,\
+    io.openliberty.microprofile.reactive.messaging.internal_fat.common.jakarta;version=latest,\
     io.openliberty.org.eclipse.microprofile.reactive.messaging.3.0;version=latest,\
     io.openliberty.org.eclipse.microprofile.reactive.streams.operators.3.0;version=latest,\
     com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest,\
