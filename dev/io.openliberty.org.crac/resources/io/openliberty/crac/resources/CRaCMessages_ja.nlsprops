@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.org.crac/resources/io/openliberty/crac/resources/CRaCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0551-600 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551=CWWKC0551E: 1 \u3064\u4ee5\u4e0a\u306e\u30ea\u30bd\u30fc\u30b9\u304c\u30c1\u30a7\u30c3\u30af\u30dd\u30a4\u30f3\u30c8\u8981\u6c42\u306e\u901a\u77e5\u3092\u53d7\u3051\u305f\u3068\u304d\u306b\u4f8b\u5916\u3092\u30b9\u30ed\u30fc\u3057\u305f\u305f\u3081\u3001\u30b5\u30fc\u30d0\u30fc\u30fb\u30c1\u30a7\u30c3\u30af\u30dd\u30a4\u30f3\u30c8\u8981\u6c42\u304c\u5931\u6557\u3057\u307e\u3057\u305f\u3002
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.explanation=1 \u3064\u4ee5\u4e0a\u306e\u767b\u9332\u6e08\u307f\u30ea\u30bd\u30fc\u30b9\u5b9f\u88c5\u304c\u3001\u30c1\u30a7\u30c3\u30af\u30dd\u30a4\u30f3\u30c8\u8981\u6c42\u306e\u901a\u77e5\u3092\u53d7\u3051\u305f\u3068\u304d\u306b\u4f8b\u5916\u3092\u30b9\u30ed\u30fc\u3057\u307e\u3057\u305f\u3002
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.useraction=\u30c1\u30a7\u30c3\u30af\u30dd\u30a4\u30f3\u30c8\u8981\u6c42\u304c\u5931\u6557\u3057\u305f\u539f\u56e0\u3068\u306a\u3063\u305f\u4f8b\u5916\u306e\u30ed\u30b0\u3092\u8abf\u3079\u3066\u304f\u3060\u3055\u3044\u3002
+
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552=CWWKC0552E: \u30c1\u30a7\u30c3\u30af\u30dd\u30a4\u30f3\u30c8\u304b\u3089\u306e\u30b5\u30fc\u30d0\u30fc\u30fb\u30ea\u30b9\u30c8\u30a2\u306b\u3064\u3044\u3066\u901a\u77e5\u3055\u308c\u305f\u3068\u304d\u306b\u30011 \u3064\u4ee5\u4e0a\u306e\u30ea\u30bd\u30fc\u30b9\u304c\u4f8b\u5916\u3092\u30b9\u30ed\u30fc\u3057\u305f\u305f\u3081\u3001\u30b5\u30fc\u30d0\u30fc\u306f\u30ea\u30b9\u30c8\u30a2\u306b\u5931\u6557\u3057\u307e\u3057\u305f\u3002
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.explanation=1 \u3064\u4ee5\u4e0a\u306e\u767b\u9332\u6e08\u307f\u30ea\u30bd\u30fc\u30b9\u5b9f\u88c5\u304c\u3001\u30c1\u30a7\u30c3\u30af\u30dd\u30a4\u30f3\u30c8\u304b\u3089\u306e\u30b5\u30fc\u30d0\u30fc\u30fb\u30ea\u30b9\u30c8\u30a2\u306e\u901a\u77e5\u3092\u53d7\u3051\u305f\u3068\u304d\u306b\u4f8b\u5916\u3092\u30b9\u30ed\u30fc\u3057\u307e\u3057\u305f\u3002
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.useraction=\u30c1\u30a7\u30c3\u30af\u30dd\u30a4\u30f3\u30c8\u304b\u3089\u306e\u30b5\u30fc\u30d0\u30fc\u30fb\u30ea\u30b9\u30c8\u30a2\u304c\u5931\u6557\u3057\u305f\u539f\u56e0\u3068\u306a\u3063\u305f\u4f8b\u5916\u306e\u30ed\u30b0\u3092\u8abf\u3079\u3066\u304f\u3060\u3055\u3044\u3002
+
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553=CWWKC0553E: \u30c1\u30a7\u30c3\u30af\u30dd\u30a4\u30f3\u30c8\u306e\u8981\u6c42\u306f\u3001Liberty \u30b5\u30fc\u30d0\u30fc\u3067\u306f\u30b5\u30dd\u30fc\u30c8\u3055\u308c\u307e\u305b\u3093\u3002
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.explanation=org.crac API \u3092\u4f7f\u7528\u3059\u308b\u30c1\u30a7\u30c3\u30af\u30dd\u30a4\u30f3\u30c8\u306e\u8981\u6c42\u306f\u3001Liberty \u3067\u306f\u30b5\u30dd\u30fc\u30c8\u3055\u308c\u3066\u3044\u307e\u305b\u3093\u3002 
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.useraction=Liberty InstantOn \u306e\u30c1\u30a7\u30c3\u30af\u30dd\u30a4\u30f3\u30c8\u64cd\u4f5c\u304a\u3088\u3073\u30ea\u30b9\u30c8\u30a2\u64cd\u4f5c\u306b\u3064\u3044\u3066\u8a73\u3057\u304f\u306f\u3001\u8cc7\u6599\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002

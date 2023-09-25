@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.org.crac/resources/io/openliberty/crac/resources/CRaCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0551-600 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551=CWWKC0551E: A solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o do servidor falhou porque um ou mais recursos lan\u00e7aram uma exce\u00e7\u00e3o quando foram notificados sobre a solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.explanation=Uma ou mais implementa\u00e7\u00f5es de recursos registrados lan\u00e7aram uma exce\u00e7\u00e3o quando foram notificadas sobre uma solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.useraction=Inspecione os logs em busca da exce\u00e7\u00e3o que causou a falha na solicita\u00e7\u00e3o do ponto de verifica\u00e7\u00e3o.
+
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552=CWWKC0552E: O servidor falhou na restaura\u00e7\u00e3o porque um ou mais recursos lan\u00e7aram uma exce\u00e7\u00e3o quando foram notificados sobre a restaura\u00e7\u00e3o do servidor a partir do ponto de verifica\u00e7\u00e3o.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.explanation=Uma ou mais implementa\u00e7\u00f5es de recursos registrados lan\u00e7aram uma exce\u00e7\u00e3o quando foram notificadas sobre a restaura\u00e7\u00e3o de um servidor a partir do ponto de verifica\u00e7\u00e3o.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.useraction=Inspecione os logs em busca da exce\u00e7\u00e3o que causou a falha na restaura\u00e7\u00e3o do servidor a partir do ponto de verifica\u00e7\u00e3o.
+
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553=CWWKC0553E: As solicita\u00e7\u00f5es de ponto de verifica\u00e7\u00e3o n\u00e3o s\u00e3o suportadas no servidor Liberty.
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.explanation=As solicita\u00e7\u00f5es de ponto de verifica\u00e7\u00e3o que usam as APIs org.crac n\u00e3o s\u00e3o suportadas pelo Liberty. 
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.useraction=Consulte a documenta\u00e7\u00e3o para obter detalhes sobre as opera\u00e7\u00f5es de ponto de verifica\u00e7\u00e3o e restaura\u00e7\u00e3o do Liberty InstantOn.

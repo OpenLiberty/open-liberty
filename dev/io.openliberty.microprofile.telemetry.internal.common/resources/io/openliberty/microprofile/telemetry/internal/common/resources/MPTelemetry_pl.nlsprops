@@ -13,7 +13,7 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
+# 
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
@@ -25,6 +25,7 @@
 # Message prefix block: CWMOT5000 - CWMOT5999
 #-----------------------------------------------------------------------------------------------------------------------------
 # Message prefix block for io.openliberty.microprofile.telemetry.common: CWMOT5000 - CWMOT5199
+# This was previously two files, so the message IDs used are not contiguous but should not be changed.
 
 CWMOT5100.tracing.is.disabled=CWMOT5100I: Funkcja MicroProfile Telemetry Tracing est w\u0142\u0105czona, ale nie zosta\u0142a skonfigurowana w celu generowania danych \u015bledzenia dla aplikacji {0}.
 CWMOT5100.tracing.is.disabled.explanation=Aby mo\u017cna by\u0142o utworzy\u0107 \u015bledzenie i wyeksportowa\u0107 je do systemu \u015bledzenia, nale\u017cy skonfigurowa\u0107 funkcj\u0119 MicroProfile Telemetry Tracing.
@@ -37,3 +38,11 @@ CWMOT5000.cannot.get.globalopentelemetry.useraction=U\u017cyj funkcji CDI, aby w
 CWMOT5001.cannot.set.globalopentelemetry=CWMOT5001E: Ustawianie obiektu GlobalOpenTelemetry nie jest obs\u0142ugiwane.
 CWMOT5001.cannot.set.globalopentelemetry.explanation=Klasa GlobalOpenTelemetry nie jest obs\u0142ugiwana, poniewa\u017c nie istnieje \u017caden globalny obiekt OpenTelemetry. Zamiast tego ka\u017cda aplikacja musi u\u017cy\u0107 funkcji CDI, aby wstrzykn\u0105\u0107 obiekt OpenTelemetry dla tej aplikacji.
 CWMOT5001.cannot.set.globalopentelemetry.useraction=Nie wywo\u0142uj metody GlobalOpenTelemetry.get. Gdy kod aplikacji wymaga uzyskania obiektu OpenTelemetry, u\u017cyj funkcji CDI do przeprowadzenia wstrzykni\u0119cia.
+
+CWMOT5002.telemetry.error=CWMOT5002E: W sk\u0142adniku MicroProfile Telemetry wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. B\u0142\u0105d: {0}.
+CWMOT5002.telemetry.error.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d, kt\u00f3ry uniemo\u017cliwi\u0142 normalne dzia\u0142anie sk\u0142adnika MicroProfile Telemetry.
+CWMOT5002.telemetry.error.useraction=Przejrzyj plik dziennika serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
+CWMOT5003.factory.used.after.shutdown=CWMOT5003W: Aplikacja {0} podj\u0119\u0142a pr\u00f3b\u0119 uzyskania sk\u0142adnika MicroProfile Telemetry po zamkni\u0119ciu aplikacji.
+CWMOT5003.factory.used.after.shutdown.explanation=CWMOT5003.factory.used.after.shutdown.explanation= Po zamkni\u0119ciu aplikacji sk\u0142adnik MicroProfile Telemetry zwraca obiekty, kt\u00f3re w trybie cichym wykonuj\u0105 dzia\u0142ania bez operacji po ich wywo\u0142aniu. Ten proces mo\u017ce prowadzi\u0107 do braku oczekiwanych danych telemetrycznych.
+CWMOT5003.factory.used.after.shutdown.useraction=Przejrzyj aplikacj\u0119, aby sprawdzi\u0107, dlaczego pr\u00f3bowa\u0142a ona u\u017cy\u0107 sk\u0142adnika MicroProfile Telemetry po zamkni\u0119ciu. Dzia\u0142ania, kt\u00f3re mog\u0105 wyzwoli\u0107 u\u017cycie sk\u0142adnika MicroProfile Telemetry, obejmuj\u0105 wywo\u0142anie metody z adnotacj\u0105 @WithSpan lub wykonanie \u017c\u0105dania za pomoc\u0105 klienta JAX-RS lub klienta MP Rest.

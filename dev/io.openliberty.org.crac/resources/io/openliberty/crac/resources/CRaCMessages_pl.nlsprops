@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.org.crac/resources/io/openliberty/crac/resources/CRaCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0551-600 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551=CWWKC0551E: \u017b\u0105danie punktu kontrolnego serwera nie powiod\u0142o si\u0119, poniewa\u017c co najmniej jeden zas\u00f3b zg\u0142osi\u0142 wyj\u0105tek, gdy zosta\u0142 powiadomiony o \u017c\u0105daniu punktu kontrolnego.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.explanation=Co najmniej jedna implementacja zarejestrowanego zasobu zg\u0142osi\u0142a wyj\u0105tek, gdy zosta\u0142a powiadomiona o \u017c\u0105daniu punktu kontrolnego.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.useraction=Sprawd\u017a dzienniki, aby uzyska\u0107 wyj\u0105tek, kt\u00f3ry spowodowa\u0142 niepowodzenie \u017c\u0105dania punktu kontrolnego.
+
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552=CWWKC0552E: Odtworzenie serwera nie powiod\u0142o si\u0119, poniewa\u017c co najmniej jeden zas\u00f3b zg\u0142osi\u0142 wyj\u0105tek, gdy zosta\u0142 powiadomiony o odtwarzaniu serwera z punktu kontrolnego.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.explanation=Co najmniej jedna implementacja zarejestrowanego zasobu zg\u0142osi\u0142a wyj\u0105tek, gdy otrzyma\u0142a powiadomienie o odtwarzaniu serwera z punktu kontrolnego.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.useraction=Poszukaj w dziennikach wyj\u0105tku, kt\u00f3ry spowodowa\u0142 niepowodzenie odtwarzania serwera z punktu kontrolnego.
+
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553=CWWKC0553E: \u017b\u0105dania dotycz\u0105ce punktu kontrolnego nie s\u0105 obs\u0142ugiwane na serwerze Liberty.
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.explanation=\u017b\u0105dania dotycz\u0105ce punktu kontrolnego, kt\u00f3re korzystaj\u0105 z API org.crac, nie s\u0105 obs\u0142ugiwane przez Liberty. 
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.useraction=Szczeg\u00f3\u0142owe informacje na temat operacji punktu kontrolnego i odtwarzania dotycz\u0105cych Liberty InstantOn znajduj\u0105 si\u0119 w dokumentacji.

@@ -13,7 +13,7 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
+# 
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
@@ -25,6 +25,7 @@
 # Message prefix block: CWMOT5000 - CWMOT5999
 #-----------------------------------------------------------------------------------------------------------------------------
 # Message prefix block for io.openliberty.microprofile.telemetry.common: CWMOT5000 - CWMOT5199
+# This was previously two files, so the message IDs used are not contiguous but should not be changed.
 
 CWMOT5100.tracing.is.disabled=CWMOT5100I: Die Telemetrie-Tracefunktion von MicroProfile ist aktiviert, jedoch nicht f\u00fcr die Generierung von Traces f\u00fcr die {0}-Anwendung konfiguriert.
 CWMOT5100.tracing.is.disabled.explanation=Die Telemetrie-Tracefunktion von MicroProfile muss so konfiguriert werden, dass Traces erstellt und in ein Tracesystem exportiert werden.
@@ -37,3 +38,11 @@ CWMOT5000.cannot.get.globalopentelemetry.useraction=Verwenden Sie CDI, um das Op
 CWMOT5001.cannot.set.globalopentelemetry=CWMOT5001E: Das Festlegen des GlobalOpenTelemetry-Objekts wird nicht unterst\u00fctzt.
 CWMOT5001.cannot.set.globalopentelemetry.explanation=Die Klasse GlobalOpenTelemetry wird nicht unterst\u00fctzt, da kein globales OpenTelemetry-Objekt vorhanden ist. Stattdessen muss jede Anwendung CDI zum Einf\u00fcgen des OpenTelemetry-Objekts f\u00fcr diese Anwendung verwenden.
 CWMOT5001.cannot.set.globalopentelemetry.useraction=Rufen Sie die Methode GlobalOpenTelemetry.get nicht auf. Wenn mit dem Anwendungscode ein OpenTelemetry-Objekt abgerufen werden muss, verwenden Sie CDI, um es einzuf\u00fcgen.
+
+CWMOT5002.telemetry.error=CWMOT5002E: In MicroProfile Telemetry ist ein interner Fehler aufgetreten. Der Fehler ist: {0}.
+CWMOT5002.telemetry.error.explanation=Es ist ein Fehler aufgetreten, der den normalen Betrieb von MicroProfile Telemetry verhindert hat.
+CWMOT5002.telemetry.error.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
+CWMOT5003.factory.used.after.shutdown=CWMOT5003W: Die Anwendung {0} hat versucht, MicroProfile Telemetry anzufordern, nachdem die Anwendung beendet wurde.
+CWMOT5003.factory.used.after.shutdown.explanation=CWMOT5003.factory.used.after.shutdown.explanation=Nachdem eine Anwendung beendet wurde, gibt MicroProfile Telemetry Objekte zur\u00fcck, die beim Aufrufen Aktionen mit Nulloperationen im Hintergrund ausf\u00fchren. Dieser Prozess kann dazu f\u00fchren, dass erwartete Telemetriedaten fehlen.
+CWMOT5003.factory.used.after.shutdown.useraction=\u00dcberpr\u00fcfen Sie die Anwendung, um festzustellen, warum die Nutzung von MicroProfile Telemetry nach dem Beenden versucht wurde. Zu den Aktionen, die die Verwendung von MicroProfile Telemetrie ausl\u00f6sen k\u00f6nnen, geh\u00f6rt das Aufrufen einer Methode, die mit @WithSpan annotiert ist, oder das Ausgeben einer Anforderung mit einem JAX-RS-Client oder einem MP-REST-Client.

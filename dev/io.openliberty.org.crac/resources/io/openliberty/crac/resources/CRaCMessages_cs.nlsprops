@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.org.crac/resources/io/openliberty/crac/resources/CRaCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0551-600 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551=CWWKC0551E: Po\u017eadavek kontroln\u00edho bodu serveru selhal, proto\u017ee jeden nebo v\u00edce prost\u0159edk\u016f vygenerovalo v\u00fdjimku p\u0159i ozn\u00e1men\u00ed pro po\u017eadavek kontroln\u00edho bodu.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.explanation=Jedna nebo v\u00edce implementac\u00ed registrovan\u00fdch prost\u0159edk\u016f vygenerovalo v\u00fdjimku p\u0159i ozn\u00e1men\u00ed pro po\u017eadavek kontroln\u00edho bodu.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.useraction=Prozkoumejte protokoly a zjist\u011bte v\u00fdjimku, kter\u00e1 zp\u016fsobila selh\u00e1n\u00ed po\u017eadavku kontroln\u00edho bodu.
+
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552=CWWKC0552E: Server se nezda\u0159ilo obnovit, proto\u017ee jeden nebo v\u00edce prost\u0159edk\u016f vygenerovalo v\u00fdjimku p\u0159i ozn\u00e1men\u00ed pro obnovu serveru z kontroln\u00edho bodu.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.explanation=Jedna nebo v\u00edce implementac\u00ed registrovan\u00fdch prost\u0159edk\u016f vygenerovalo v\u00fdjimku p\u0159i ozn\u00e1men\u00ed pro obnovu serveru z kontroln\u00edho bodu.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.useraction=Prozkoumejte protokoly a zjist\u011bte v\u00fdjimku, kter\u00e1 zp\u016fsobila selh\u00e1n\u00ed obnovy serveru z kontroln\u00edho bodu.
+
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553=CWWKC0553E: Po\u017eadavky na kontroln\u00ed bod nejsou na serveru Liberty podporov\u00e1ny.
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.explanation=Po\u017eadavky na kontroln\u00ed bod, kter\u00e9 pou\u017e\u00edvaj\u00ed rozhran\u00ed API org.crac, nejsou serverem Liberty podporov\u00e1ny. 
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.useraction=Zkontrolujte dokumentaci a zjist\u011bte podrobnosti o kontroln\u00edm bodu a operac\u00edch obnovy pro Liberty InstantOn.
