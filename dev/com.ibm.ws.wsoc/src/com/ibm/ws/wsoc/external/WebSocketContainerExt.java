@@ -91,7 +91,6 @@ public class WebSocketContainerExt implements WebSocketContainer {
      */
     @Override
     public Session connectToServer(Object clazz, URI path) throws DeploymentException, IOException {
-        Tr.debug(tc, "connectToServer 1");
 
         if (clazz == null || path == null) {
             throw new IllegalArgumentException();
@@ -107,7 +106,7 @@ public class WebSocketContainerExt implements WebSocketContainer {
      */
     @Override
     public Session connectToServer(Class<?> clazz, URI path) throws DeploymentException, IOException {
-        Tr.debug(tc, "connectToServer 2");
+
         if (clazz == null || path == null) {
             throw new IllegalArgumentException();
         }
@@ -132,13 +131,11 @@ public class WebSocketContainerExt implements WebSocketContainer {
      */
     @Override
     public Session connectToServer(Endpoint endpoint, ClientEndpointConfig endpointConfig, URI path) throws DeploymentException, IOException {
-        Tr.debug(tc, "connectToServer 3");
+
         if (endpoint == null || path == null) {
             throw new IllegalArgumentException();
         }
-        Tr.debug(tc, "Calling clientconnector instantiator");
         ClientConnector x = new ClientConnector();
-        Tr.debug(tc, "calling connectclass");
         return x.connectClass(endpoint, path, endpointConfig, this);
     }
 
@@ -149,7 +146,7 @@ public class WebSocketContainerExt implements WebSocketContainer {
      */
     @Override
     public Session connectToServer(Class<? extends Endpoint> endpointClass, ClientEndpointConfig endpointConfig, URI path) throws DeploymentException, IOException {
-        Tr.debug(tc, "connectToServer 4");
+
         Object theObject = null;
 
         if (endpointClass == null || path == null) {
@@ -162,7 +159,9 @@ public class WebSocketContainerExt implements WebSocketContainer {
             Tr.error(tc, "client.invalid.endpointclass", endpointClass.toString(), e.getMessage());
             throw new DeploymentException(msg, e);
         }
+
         ClientConnector x = new ClientConnector();
+
         try {
             theObject = getEndpointInstance(endpointClass);
         } catch (DeploymentException e) {
