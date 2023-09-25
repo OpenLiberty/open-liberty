@@ -312,7 +312,7 @@ public final class HtmlRendererUtils
                     Object selectItemValue = itemInfo.getItem().getValue();
                     String convertedValue = SharedRendererUtils.getConvertedStringValue(
                         facesContext,component,((ValueHolder) component).getConverter(), selectItemValue);
-                    if(convertedValue.equals(selectItemValue))
+                    if(convertedValue.equals(submittedValue))
                     {   // disabled value matches submitted value
                         submittedValue = RendererUtils.EMPTY_STRING;
                     }
