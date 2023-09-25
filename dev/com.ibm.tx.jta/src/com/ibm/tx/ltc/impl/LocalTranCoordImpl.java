@@ -1176,9 +1176,8 @@ public class LocalTranCoordImpl implements LocalTransactionCoordinator, UOWCoord
      *
      * @since 1.0
      */
+    @Trivial
     public boolean hasWork() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "hasWork");
         //
         // Defect 116448. Need to change this check so
         // that if cleanupResources is non-null but empty
@@ -1194,8 +1193,8 @@ public class LocalTranCoordImpl implements LocalTransactionCoordinator, UOWCoord
             result = true;
         }
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "hasWork", result);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "hasWork: {0}", result);
         return result;
     }
 

@@ -103,7 +103,7 @@ public final class Configuration {
      */
     public static final void setCurrentEpoch(int number) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "setCurrentEpoch", number);
+            Tr.debug(tc, "setCurrentEpoch: {0}", number);
 
         currentEpoch = number;
     }
@@ -115,7 +115,7 @@ public final class Configuration {
      */
     public static final int getCurrentEpoch() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getCurrentEpoch", currentEpoch);
+            Tr.debug(tc, "getCurrentEpoch: {0}", currentEpoch);
         return currentEpoch;
     }
 
@@ -127,7 +127,7 @@ public final class Configuration {
     @Trivial
     public static final void setApplId(byte[] name) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "setApplId", Util.toHexString(name));
+            Tr.debug(tc, "setApplId: {0}", Util.toHexString(name));
 
         // Store the applId.
         applId = name;
@@ -145,7 +145,7 @@ public final class Configuration {
         final byte[] result = applId;
 
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getApplId", result);
+            Tr.debug(tc, "getApplId: {0}", result);
         return result;
     }
 
