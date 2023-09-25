@@ -15,6 +15,7 @@ import java.io.Writer;
 import java.util.Properties;
 
 import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -49,6 +50,7 @@ public class VerboseLogTest {
     static File verboseLogServerRoot;
     static String serverCommand;
     static File jvmoptionsserverroot;
+    static File serverEnvServerRoot;
 
     @BeforeClass
     public static void before() throws Exception {
@@ -57,14 +59,15 @@ public class VerboseLogTest {
         verboseLog = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/logs/verbosegc.001.log");
         verboseLogServerRoot = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/verbosegc.001.log");
         jvmoptionsserverroot = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/jvm.options");
+        serverEnvServerRoot = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/server.env");
         if (server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS)
             serverCommand = "bin\\server.bat";
         else
             serverCommand = "bin/server";
     }
 
-    @AfterClass
-    public static void after() throws Exception {
+    @After
+    public void after() throws Exception {
         if (server.isStarted()) {
             server.stopServer();
         }
@@ -99,7 +102,7 @@ public class VerboseLogTest {
     }
 
     @Test
-    public void testJvmTurnOfVerbose() throws Exception {
+    public void testJvmTurnOffVerbose() throws Exception {
         // Test with jvm.options to turn off verbose log, no verbose log should appear
         Log.entering(c, testName.getMethodName());
 
@@ -112,6 +115,40 @@ public class VerboseLogTest {
         Writer isw = new OutputStreamWriter(new FileOutputStream(jvmoptionsserverroot), "UTF-8");
         BufferedWriter bw = new BufferedWriter(isw);
         bw.write("-Dverbosegc=false\n");
+        bw.close();
+
+        Properties envVars = new Properties();
+        envVars.put("CDPATH", ".");
+
+        ProgramOutput po = server.getMachine().execute(serverCommand, parms, executionDir, envVars);
+
+        Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
+        Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKF0011I");
+        server.resetStarted();
+
+        assertTrue("the server should have been started", server.isStarted());
+        assertTrue("verbosegc log should not be created", !verboseLog.exists());
+        assertTrue("verbosegc log should not be created in server root", !verboseLogServerRoot.exists());
+
+        server.stopServer();
+    }
+
+    @Test
+    public void testServerEnvTurnOffVerbose() throws Exception {
+        // Test with server.env to turn off verbose log, no verbose log should appear
+        Log.entering(c, testName.getMethodName());
+
+        delJvmOptions();
+
+        String[] parms = new String[2];
+        parms[0] = "start";
+        parms[1] = SERVER_NAME;
+
+        Writer isw = new OutputStreamWriter(new FileOutputStream(serverEnvServerRoot), "UTF-8");
+        BufferedWriter bw = new BufferedWriter(isw);
+        bw.write("VERBOSEGC=false\n");
         bw.close();
 
         Properties envVars = new Properties();
@@ -200,6 +237,9 @@ public class VerboseLogTest {
     private void delJvmOptions() {
         if(jvmoptionsserverroot.exists()){
             jvmoptionsserverroot.delete();
+        }
+        if(serverEnvServerRoot.exists()){
+            serverEnvServerRoot.delete();
         }
     }
 }

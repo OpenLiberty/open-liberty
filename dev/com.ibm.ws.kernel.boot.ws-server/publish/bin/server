@@ -1118,10 +1118,10 @@ serverCmd()
   # Check for any verbose:gc variable set by user
   # By default we set this to be true unless user specifies otherwise
   # if [ ! jvmargs, javaoptions, jvmoptionsquoted contains verbose:gc, verbosegc, etc] then SERVER_IBM_JAVA_OPTIONS += -Xverbosegclog:verbosegc.%seq.log,10,1024
-  if ! [[ $JVM_OPTIONS_QUOTED == *"verbosegc"* || $JVM_OPTIONS_QUOTED == *"verbose:gc"* ]]
+  if ! [[ $JVM_OPTIONS_QUOTED == *"verbosegc"* || $JVM_OPTIONS_QUOTED == *"verbose:gc"* || ! -z "${VERBOSEGC}" ]]
   then
-    IBM_JAVA_OPTIONS+=" -Xverbosegclog:${LOG_DIR}/verbosegc.%seq.log,10,1024"
-    OPENJ9_JAVA_OPTIONS+=" -Xverbosegclog:${LOG_DIR}/verbosegc.%seq.log,10,1024"
+    IBM_JAVA_OPTIONS+=" -Xverbosegclog:${X_LOG_DIR}/verbosegc.%seq.log,10,1024"
+    OPENJ9_JAVA_OPTIONS+=" -Xverbosegclog:${X_LOG_DIR}/verbosegc.%seq.log,10,1024"
   fi
 
   if $os400lib; then
