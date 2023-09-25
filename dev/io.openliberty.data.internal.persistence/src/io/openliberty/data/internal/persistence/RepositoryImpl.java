@@ -1701,11 +1701,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
             throw new MappingException("Update operations cannot be used on entities with composite IDs."); // TODO NLS
         }
 
-        if (!entityInfo.relationAttributeNames.isEmpty()) {
-            // TODO is there any way to support this?
-            throw new MappingException("Update operations cannot be used on entities with relationship attributes."); // TODO NLS
-        }
-
         StringBuilder q = new StringBuilder(100) //
                         .append("UPDATE ").append(entityInfo.name).append(' ').append(o) //
                         .append(" SET ");

@@ -131,7 +131,7 @@ public class DataJPATestServlet extends FATServlet {
         // Some read-only data that is prepopulated for tests:
         businesses.save(new Business(44.02288f, -92.46706f, "Rochester", "MN", 55905, 200, "1st St", "SW", "Mayo Clinic"));
         businesses.save(new Business(44.01225f, -92.46060f, "Rochester", "MN", 55904, 210, "9th St", "SE", "Olmsted Medical"));
-        businesses.save(new Business(44.05938f, -92.50373f, "Rochester", "MN", 55901, 2800, "37st St", "NW", "IBM"));
+        businesses.save(new Business(44.05938f, -92.50373f, "Rochester", "MN", 55901, 2800, "37th St", "NW", "IBM"));
         businesses.save(new Business(44.03876f, -92.46785f, "Rochester", "MN", 55901, 1600, "4th Ave", "NW", "Crenlo"));
         businesses.save(new Business(44.00001f, -92.48735f, "Rochester", "MN", 55902, 1661, "Greenview Dr", "SW", "Custom Alarm"));
         businesses.save(new Business(44.02760f, -92.47810f, "Rochester", "MN", 55901, 1016, "Civic Center Dr", "NW", "Home Federal Savings Bank"));
@@ -742,7 +742,7 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testEmbeddableTypeAsResult() {
         assertIterableEquals(List.of("NW 19th St",
-                                     "NW 37st St",
+                                     "NW 37th St",
                                      "NW 4th Ave",
                                      "NW Civic Center Dr",
                                      "NW Lakeridge Pl",
@@ -2335,6 +2335,83 @@ public class DataJPATestServlet extends FATServlet {
                      Arrays.toString(counties.findZipCodesByName("Wabasha").orElseThrow()));
 
         assertEquals(4, counties.deleteByNameIn(List.of("Olmsted", "Fillmore", "Winona", "Wabasha")));
+    }
+
+    /**
+     * Use an update method with an entity parameter, where the entity has embedded classes.
+     */
+    @Test
+    public void testUpdateMethodWithEntityParamWithEmbeddedClasses() {
+        Business ibm = businesses.findFirstByName("IBM");
+
+        // save these to restore when test completes, so we don't interfere with data used by other tests
+        float originalLatitude = ibm.location.latitude;
+        float originalLongitude = ibm.location.longitude;
+        int originalHouseNum = ibm.location.address.houseNum;
+        String originalStreetName = ibm.location.address.street.name;
+        String originalStreetDir = ibm.location.address.street.direction;
+
+        boolean updated;
+        try {
+            // TODO Uncomment the following 3 lines of code to reproduce this EclipseLink error:
+            // jakarta.persistence.PersistenceException: Exception [EclipseLink-4002] ...
+            // Call: UPDATE WLPBusiness SET LATITUDE = ?, NAME = ? WHERE (ID = ?)
+            // ...
+            // Caused by: java.sql.SQLDataException: An attempt was made to get a data value of type 'DECIMAL' from a data value of type 'test.jakarta.data.jpa.web.Location'.
+            //   ...
+            //   at org.apache.derby.iapi.jdbc.BrokeredPreparedStatement.setObject(Unknown Source)
+            //   at com.ibm.ws.rsadapter.jdbc.WSJdbcPreparedStatement.setObject(WSJdbcPreparedStatement.java:1687)
+            //   at org.eclipse.persistence.internal.databaseaccess.DatabasePlatform.setParameterValueInDatabaseCall(DatabasePlatform.java:2462)
+            //   at org.eclipse.persistence.platform.database.DerbyPlatform.setParameterValueInDatabaseCall(DerbyPlatform.java:985)
+            //   at org.eclipse.persistence.internal.databaseaccess.DatabaseCall.prepareStatement(DatabaseCall.java:799)
+            //   at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.basicExecuteCall(DatabaseAccessor.java:630)
+            //Address newAddress = new Address("Rochester", "MN", 55901, 3605, new Street("US 52", "N"));
+            //Location newLocation = new Location(newAddress, 44.05881f, -92.50556f);
+            //assertEquals(true, businesses.updateWithJPQL(newLocation, "IBM", ibm.id));
+
+            // Jakarta Data was able to avoid the above error by generating a query to set each attribute individually,
+
+            ibm.location.latitude = 44.05881f;
+            ibm.location.longitude = -92.50556f;
+            ibm.location.address.houseNum = 3605;
+            ibm.location.address.street = new Street("US 52", "N");
+
+            assertEquals(true, businesses.update(ibm));
+
+            ibm = businesses.findFirstByName("IBM");
+
+            assertEquals("IBM", ibm.name);
+            assertEquals(44.05881f, ibm.location.latitude, 0.00001f);
+            assertEquals(-92.50556f, ibm.location.longitude, 0.00001f);
+            assertEquals(3605, ibm.location.address.houseNum);
+            assertEquals("US 52", ibm.location.address.street.name);
+            assertEquals("N", ibm.location.address.street.direction);
+            assertEquals("Rochester", ibm.location.address.city);
+            assertEquals("MN", ibm.location.address.state);
+            assertEquals(55901, ibm.location.address.zip);
+        } finally {
+            // restore original values
+            ibm.location.latitude = originalLatitude;
+            ibm.location.longitude = originalLongitude;
+            ibm.location.address.houseNum = originalHouseNum;
+            ibm.location.address.street.name = originalStreetName;
+            ibm.location.address.street.direction = originalStreetDir;
+
+            updated = businesses.update(ibm);
+        }
+        assertEquals(true, updated);
+
+        ibm = businesses.findFirstByName("IBM");
+
+        assertEquals("IBM", ibm.name);
+        assertEquals(originalLatitude, ibm.location.latitude, 0.00001f);
+        assertEquals(originalLongitude, ibm.location.longitude, 0.00001f);
+        assertEquals(2800, ibm.location.address.houseNum);
+        assertEquals("37th St", ibm.location.address.street.name);
+        assertEquals("NW", ibm.location.address.street.direction);
+        assertEquals("Rochester", ibm.location.address.city);
+        assertEquals("MN", ibm.location.address.state);
+        assertEquals(55901, ibm.location.address.zip);
     }
 
     /**
