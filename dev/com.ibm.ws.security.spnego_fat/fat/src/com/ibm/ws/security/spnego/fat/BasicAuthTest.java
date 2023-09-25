@@ -145,7 +145,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * - Authentication should be successful and access to the protected resource should be granted.
      *
      * @throws Exception
-     */
+     *
 
     @Test
     public void testSpnegoUsingRawKerberosTokenSuccessful() throws Exception {
@@ -158,7 +158,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
         Log.info(c, name.getMethodName(), "Accessing SPNEGO servlet using raw Kerberos token");
         successfulSpnegoServletCall(headers, ApacheKDCforSPNEGO.KRB5_USER1, SPNEGOConstants.IS_EMPLOYEE, SPNEGOConstants.IS_NOT_MANAGER);
     }
-
+    */
     /**
      * Test description:
      * - Authenticate with Kerberos to obtain a valid subject. Using and SSL Client.
@@ -169,20 +169,20 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * - Authentication should be successful and access to the protected resource should be granted.
      *
      * @throws Exception
-     */
+     *
     @Test
     public void testSpnegoSuccessfulforSSLClient() throws Exception {
         spnegoTestSetupChecks();
         commonSuccessfulSpnegoServletCallSSLClient();
     }
-
+    */
     /**
      * Test description:
      * - Access a protected resource by including a null SPNEGO token in the request.
      *
      * Expected results:
      * - Authentication should fail, resulting in a 401.
-     */
+     *
 
     @Test
     public void testSpnegoTokenNull() throws Exception {
@@ -190,14 +190,14 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
         Map<String, String> headers = testHelper.setTestHeaders("Negotiate " + null, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
         unsuccessfulSpnegoServletCall(headers);
     }
-
+    */
     /**
      * Test description:
      * - Access a protected resource by including an incomplete SPNEGO token in the request.
      *
      * Expected results:
      * - Authentication should fail, resulting in a 401.
-     */
+     *
 
     @Test
     public void testInCompleteSpnegoToken() throws Exception {
@@ -206,14 +206,14 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
         Map<String, String> headers = testHelper.setTestHeaders("Negotiate " + badSpnegoToken, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
         unsuccessfulSpnegoServletCall(headers);
     }
-
+    */
     /**
      * Test description:
      * - Access a protected resource by including an incomplete raw Kerberos token in the request.
      *
      * Expected results:
      * - Authentication should fail, resulting in a 401.
-     */
+     /
 
     @Test
     public void testInCompleteRawKerberosToken() throws Exception {
@@ -222,7 +222,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
         Map<String, String> headers = testHelper.setTestHeaders("Negotiate " + badSpnegoToken, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
         unsuccessfulSpnegoServletCall(headers);
     }
-
+    */
     /**
      * Test description:
      * - Authenticate one user with Kerberos using RC4 encryption to obtain a subject.
@@ -231,7 +231,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      *
      * Expected results:
      * - Authentication should fail, resulting in a 401.
-     */
+     *
 
     @Test
     public void testSpnego_MismatchedUsers() throws Exception {
@@ -255,7 +255,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
             expectation.spnegoInvalidCredential(e);
         }
     }
-
+    */
     /**
      * Test description:
      * - Update the server configuration to enable SPNEGO.
@@ -267,7 +267,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * - Authentication should fail, and the default error page for "SPNEGO not supported" should be returned.
      *
      * @throws Exception
-     */
+     *
     @Test
     public void testSpnegoNotSupportedDefaultErrorPage() throws Exception {
         setDefaultSpnegoServerConfig();
@@ -275,6 +275,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
         String response = unsuccessfulSpnegoServletCall(headerNotSpnegoToken, SPNEGOConstants.DONT_IGNORE_ERROR_CONTENT);
         expectation.spnegoNotSupported(response);
     }
+    */
 
     /**
      * Test description:
@@ -287,7 +288,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      *
      * Expected results:
      * - 401 authorization failure, and the error page "SPNEGO authentication failed. Contact your system administrator to resolve the problem." should be returned.
-     */
+     *
 
     @Test
     @AllowedFFDC({ "org.ietf.jgss.GSSException", "java.net.MalformedURLException" })
@@ -303,7 +304,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
 
         myClient.resetClientState();
     }
-
+    */
     /**
      * Test description:
      * - Create the header with the SPNEGO token.
@@ -316,7 +317,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * - 401 authorization failure, and the error page "My SPNEGO custom error page." should be returned.
      *
      * @throws Exception
-     */
+     *
 
     @Test
     @AllowedFFDC({ "org.ietf.jgss.GSSException" })
@@ -332,7 +333,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
 
         myClient.resetClientState();
     }
-
+    */
     /**
      * Test description:
      * - Update the server configuration to enable SPNEGO and set the value of the spnegoNotSupportedErrorPageURL attribute with a file.
@@ -344,7 +345,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * - Authentication should fail, and the defined error page for "SPNEGO not supported" should be returned.
      *
      * @throws Exception
-     */
+     *
 
     @Test
     public void testSpnegoNotSupportedFileErrorPage() throws Exception {
@@ -354,7 +355,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
         String response = unsuccessfulSpnegoServletCall(headerNotSpnegoToken, SPNEGOConstants.DONT_IGNORE_ERROR_CONTENT);
         expectation.spnegoNotSupportedCustomErrorPage(response, SPNEGO_NOT_SUPPORTED_CUSTOM_ERROR_PAGE);
     }
-
+    */
     /**
      * Test description:
      * - Update the server configuration to enable SPNEGO and set the value of the spnegoNotSupportedErrorPageURL attribute with a web resource.
@@ -366,7 +367,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * - Authentication should fail, and the defined error page for "SPNEGO not supported" should be returned.
      *
      * @throws Exception
-     */
+     *
 
     @Test
     public void testSpnegoNotSupportedWebErrorPage() throws Exception {
@@ -376,7 +377,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
 
         expectation.spnegoNotSupportedCustomErrorPage(response, SPNEGO_NOT_SUPPORTED_CUSTOM_ERROR_PAGE);
     }
-
+    */
     /**
      * Test description:
      * - Update the server configuration to enable SPNEGO and set the value of the spnegoNotSupportedErrorPageURL attribute with a file that doesn't exist.
@@ -391,7 +392,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * - The message for "SPNEGO load custom error page error" must be included in the messages.log file.
      *
      * @throws Exception
-     */
+     *
 
     @Test
     @AllowedFFDC({ "java.io.FileNotFoundException" })
@@ -406,7 +407,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
         checkMsgs.add(MessageConstants.CANNOT_LOAD_CUSTOM_ERROR_PAGE_CWWKS4318E);
         testHelper.waitForMessages(checkMsgs, true);
     }
-
+    */
     /**
      * Test description:
      * - Update the server configuration to enable SPNEGO and set the value of the spnegoNotSupportedErrorPageURL attribute with a web resource that doesn't exist.
@@ -421,7 +422,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * - The message for "SPNEGO load custom error page error" must be included in the messages.log file.
      *
      * @throws Exception
-     */
+     *
 
     @Test
     @AllowedFFDC({ "java.io.FileNotFoundException" })
@@ -436,7 +437,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
         checkMsgs.add(MessageConstants.CANNOT_LOAD_CUSTOM_ERROR_PAGE_CWWKS4318E);
         testHelper.waitForMessages(checkMsgs, true);
     }
-
+    */
     /**
      * Test description:
      * - Update the server configuration to enable SPNEGO and set the value of the spnegoNotSupportedErrorPageURL attribute with a malformed URL.
@@ -451,7 +452,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * - The message for "SPNEGO custom error page malformed URL" must be included in the messages.log file.
      *
      * @throws Exception
-     */
+     *
 
     @Test
     @AllowedFFDC({ "java.net.MalformedURLException" })
@@ -466,7 +467,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
         checkMsgs.add(MessageConstants.MALFORMED_CUSTOM_ERROR_PAGE_CWWKS4317E);
         testHelper.waitForMessages(checkMsgs, true);
     }
-
+    */
     /**
      * Test description:
      * - Update the server configuration to enable SPNEGO and set the value of the spnegoNotSupportedErrorPageURL attribute with a file.
@@ -482,7 +483,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * - Content type and page encoding must be specified on the defined error page.
      *
      * @throws Exception
-     */
+     *
 
     @Test
     public void testSpnegoNotSupportedErrorPageWithContentTypeAndPageEncoding() throws Exception {
@@ -493,7 +494,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
         expectation.spnegoNotSupportedContentCustomErrorPage(response, true);
         expectation.spnegoNotSupportedCustomErrorPage(response, SPNEGO_NOT_SUPPORTED_CUSTOM_ERROR_PAGE);
     }
-
+    */
     /**
      * Test description:
      * - Update the server configuration to enable SPNEGO and set the value of the spnegoNotSupportedErrorPageURL attribute with a file.
@@ -506,7 +507,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * Expected results:
      * - Authentication should fail, and the default error message for "SPNEGO not supported" should be returned.
      * - The message for "SPNEGO custom error page content type error" must be included in the messages.log file.
-     */
+     *
     //This test is commented out because the content type "text/html" is being set up despite of what content type
     //is specified on the custom error page, therefore the test is always failing.
     ////@Test
@@ -529,7 +530,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
             fail("Exception was thrown: " + message);
         }
     }
-
+    */
     /**
      * Test description:
      * - Update the server configuration to enable SPNEGO.
@@ -541,7 +542,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * - Authentication should fail, and the default error page for "NTLM token received" should be returned.
      *
      * @throws Exception
-     */
+     *
 
     @Test
     public void testNtlmTokenReceivedDefaultErrorPage() throws Exception {
@@ -551,7 +552,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
 
         expectation.ntlmTokenReceivedErrorCode(response);
     }
-
+    */
     /**
      * Test description:
      * - Update the server configuration to enable SPNEGO and set the value of the ntlmTokenReceivedErrorPageURL attribute with a file.
@@ -563,7 +564,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * - Authentication should fail, and the defined error page for "NTLM token received" should be returned.
      *
      * @throws Exception
-     */
+     *
 
     @Test
     public void testNtlmTokenReceivedFileErrorPage() throws Exception {
@@ -573,7 +574,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
 
         expectation.ntlmtokenReceivedCustomErrorPage(response, NTLM_TOKEN_RECEIVED_CUSTOM_ERROR_PAGE);
     }
-
+    */
     /**
      * Test description:
      * - Update the server configuration to enable SPNEGO and set the value of the ntlmTokenReceivedErrorPageURL attribute with a web resource.
@@ -585,7 +586,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * - Authentication should fail, and the defined error page for "NTLM token received" should be returned.
      *
      * @throws Exception
-     */
+     *
 
     @Test
     public void testNtlmTokenReceivedWebErrorPage() throws Exception {
@@ -595,7 +596,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
 
         expectation.ntlmtokenReceivedCustomErrorPage(response, NTLM_TOKEN_RECEIVED_CUSTOM_ERROR_PAGE);
     }
-
+    */
     /**
      * Test description:
      * - Update the server configuration to enable SPNEGO and set the value of the ntlmTokenReceivedErrorPageURL attribute with a file that doesn't exist.
@@ -610,7 +611,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * - The message for "SPNEGO load custom error page error" must be included in the messages.log file.
      *
      * @throws Exception
-     */
+     *
 
     @Test
     @AllowedFFDC({ "java.io.FileNotFoundException" })
@@ -625,7 +626,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
         checkMsgs.add(MessageConstants.CANNOT_LOAD_CUSTOM_ERROR_PAGE_CWWKS4318E);
         testHelper.waitForMessages(checkMsgs, true);
     }
-
+    */
     /**
      * Test description:
      * - Update the server configuration to enable SPNEGO and set the value of the ntlmTokenReceivedErrorPageURL attribute with a web resource that doesn't exist.
@@ -640,7 +641,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * - The message for "SPNEGO load custom error page error" must be included in the messages.log file.
      *
      * @throws Exception
-     */
+     *
 
     @Test
     @AllowedFFDC({ "java.io.FileNotFoundException" })
@@ -653,7 +654,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
 
         testHelper.checkForMessages(true, MessageConstants.CANNOT_LOAD_CUSTOM_ERROR_PAGE_CWWKS4318E);
     }
-
+    */
     /**
      * Test description:
      * - Update the server configuration to enable SPNEGO and set the value of the ntlmTokenReceivedErrorPageURL attribute with a malformed URL.
@@ -668,7 +669,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * - The message for "SPNEGO custom error page malformed URL" must be included in the messages.log file.
      *
      * @throws Exception
-     */
+     *
 
     @Test
     @AllowedFFDC({ "java.net.MalformedURLException" })
@@ -683,7 +684,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
         checkMsgs.add(MessageConstants.MALFORMED_CUSTOM_ERROR_PAGE_CWWKS4317E);
         testHelper.waitForMessages(checkMsgs, true);
     }
-
+    */
     /**
      * Test description:
      * - Update the server configuration to enable SPNEGO and set the value of the ntlmTokenReceivedErrorPageURL attribute with a file.
@@ -699,7 +700,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * - Content type and page encoding must be specified on the defined error page.
      *
      * @throws Exception
-     */
+     *
 
     @Test
     public void testNtlmTokenReceivedErrorPageWithContentTypeAndPageEncoding() throws Exception {
@@ -709,7 +710,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
 
         expectation.ntlmtokenReceivedCustomErrorPage(response, NTLM_TOKEN_RECEIVED_CUSTOM_ERROR_PAGE);
     }
-
+    */
     /**
      * Test description:
      * - Update the server configuration to enable SPNEGO and set the value of the ntlmTokenReceivedErrorPageURL attribute with a file.
@@ -722,7 +723,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * Expected results:
      * - Authentication should fail, and the defined error page for "NTLM token received" should be returned.
      * - The message for "SPNEGO custom error page content type error" must be included in the messages.log file.
-     */
+     *
     //This test is commented out because the content type "text/html" is being set up despite of what content type
     //is specified on the custom error page, therefore the test is always failing.
     ////@Test
@@ -745,7 +746,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
             fail("Exception was thrown: " + message);
         }
     }
-
+    */
     /**
      * Test description:
      * - Set server xml file to have an invalid value for skipForUnprotectedURI.
@@ -755,7 +756,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * - Server should start, but should have a validation message for skipForUnprotectedURI and show it has default value.
      *
      * @throws Exception
-     */
+     *
 
     @Test
     public void testInvalidSkipForUnprotectedURIValue() throws Exception {
@@ -772,7 +773,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
         checkMsgs.add("CWWKG0081E");
         testHelper.waitForMessages(checkMsgs, true);
     }
-
+    */
     /**
      * Test description:
      * canonicalHostName=false.
@@ -783,7 +784,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * Expected results:
      * - Server should start, and should fail to access SPNEGO protected resource with long hostname and
      * canonicalHostName set false.
-     */
+     *
 
     //@AllowedFFDC({ "org.ietf.jgss.GSSException", "com.ibm.ws.security.authentication.AuthenticationException" })
     //@Test
@@ -807,7 +808,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
             fail("Exception was thrown: " + message);
         }
     }
-
+    */
     /**
      * Test description:
      * - Set server xml file to have a true value for canoncialHostName.
@@ -816,7 +817,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * Expected results:
      * - Server should start, and should succeed to access SPNEGO protected resource with long hostname and
      * canonicalHostName set true.
-     */
+     *
 
     //@Test
     public void testcanonicalHostName_True_withLongName() {
@@ -831,7 +832,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
             fail("Exception was thrown: " + message);
         }
     }
-
+    */
     /**
      * Test description:
      * - Configure the server to enable JAAS login to map user1 for user2.
@@ -846,7 +847,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      *
      * @throws Exception
      *
-     */
+     *
 
     @Test
     public void testTrimKerberosRealmNameFromPrincipalUsingCustomJaasLogin() throws Exception {
@@ -867,7 +868,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
                                                  SPNEGOConstants.IS_NOT_EMPLOYEE,
                                                  SPNEGOConstants.IS_MANAGER);
     }
-
+    */
     /**
      * Test description: Checking that SPNEGO complies with specification as to sending back Negotiate in header.
      * - Update the server configuration to enable SPNEGO.
@@ -879,7 +880,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * - and we should verify that the responseCode is 401.
      *
      * @throws Exception
-     */
+     *
 
     @Test
     public void testSpnegoNegotiateReturning401() throws Exception {
@@ -891,7 +892,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
 
         expectation.spnegoNotSupported(response);
     }
-
+    */
     /**
      * Test description:
      * - Update the server configuration to enable SPNEGO.
@@ -906,7 +907,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * Expected results:
      * - Authentication should fail, resulting in a 403.
      * - The message for "SPNEGO can not validate token" and "Defective token"must be included in the messages.log file.
-     */
+     *
     //This test must be run only locally, because it will take a lot of time to run it in Personal Builds.
     //@Test
     public void testSpnegoTokenExpired() throws Exception {
@@ -931,7 +932,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
             fail("Exception was thrown: " + message);
         }
     }
-
+    */
     /**
      * Test description:
      * - Attempt to create an SPN and keytab file using an invalid KDC host name.
@@ -939,7 +940,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      * Expected results:
      * - The connection to the invalid host should fail, resulting in an exception.
      * - The exception message should contain "Unable to make remote connection with specified credentials."
-     */
+     *
 
     //@Test
     public void testInaccessibleKdc() {
@@ -958,7 +959,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
             expectation.KDCErr_InaccessibleKDC(e);
         }
     }
-
+    */
     /**
      * Test description:
      * - Set server xml file to have a true value for allowLocalHost.
@@ -966,7 +967,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
      *
      * Expected results:
      * - Server should start, and should succeed to access SPNEGO protected resource with localHost as SPN.
-     */
+     *
 
     //@Test
     public void testlocalHostforSPN() {
@@ -981,5 +982,5 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
             fail("Exception was thrown: " + message);
         }
     }
-
+    */
 }
