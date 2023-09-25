@@ -36,34 +36,34 @@ import io.openliberty.netty.internal.NettyFramework;
 public class WsocChain {
     private static final TraceComponent tc = Tr.register(WsocChain.class);
 
-    private WsocOutboundChain owner = null;
-    private final boolean isHttps;
+    protected WsocOutboundChain owner = null;
+    protected final boolean isHttps;
     private final boolean useNetty;
 
-    private String endpointName;
+    protected String endpointName;
     private String tcpName;
     private String sslName;
     private String httpName;
-    private String chainName;
-    private ChannelFramework cfw;
+    protected String chainName;
+    protected ChannelFramework cfw;
     private NettyFramework netty;
 
     /**
      * Will set the chain to enabled after a custoemr needs a wsoc outbound chain - so when they use the JSR 356 API
      *
      */
-    private volatile boolean enabled = false;
+    protected volatile boolean enabled = false;
 
     /**
      * We'll use the configured flag to see if ssl is available.
      */
-    private volatile boolean configured = false;
+    protected volatile boolean configured = false;
 
     /**
      * A snapshot of the configuration (collection of properties objects) last used
      * for a start/update operation.
      */
-    private volatile ActiveConfiguration currentConfig = null;
+    protected volatile ActiveConfiguration currentConfig = null;
 
     /**
      * Create the new chain with it's parent endpoint
@@ -408,7 +408,7 @@ public class WsocChain {
                + ",useNetty=" + useNetty + "]";
     }
 
-    private final class ActiveConfiguration {
+    protected class ActiveConfiguration {
         final boolean isHttps;
 
         final Map<String, Object> tcpOptions;
@@ -454,7 +454,6 @@ public class WsocChain {
          * maps: if the map instances are the same, there have been no
          * updates.
          */
-        // LLA TODO
         protected boolean unchanged(ActiveConfiguration other) {
             if (other == null)
                 return false;

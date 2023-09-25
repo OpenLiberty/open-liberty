@@ -22,16 +22,15 @@ import com.ibm.ws.wsoc.WebSocketVersionServiceManager;
 public class HttpRequestorWsoc10FactoryImpl implements HttpRequestorFactory {
     private static final TraceComponent tc = Tr.register(HttpRequestorWsoc10FactoryImpl.class);
 
+    @Override
     public HttpRequestor getHttpRequestor(WsocAddress endpointAddress, ClientEndpointConfig config, ParametersOfInterest things) {
-        // TODO LLA
-        //if (!WebSocketVersionServiceManager.useNetty()) {
-
-        //    return new HttpRequestorWsoc10(endpointAddress, config, things);
-        //} else {
+        if (!WebSocketVersionServiceManager.useNetty()) {
+            return new HttpRequestorWsoc10(endpointAddress, config, things);
+        } else {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Using netty");
             }
-             return new NettyHttpRequestorWsoc10(endpointAddress, config, things);
-        //}
+            return new NettyHttpRequestorWsoc10(endpointAddress, config, things);
+        }
     }
 }

@@ -121,12 +121,13 @@ instrument.classesExcludes: \
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	io.openliberty.wsoc.ssl.internal;version=latest,\
-	io.netty.handler, \
+	io.netty.handler,\
 	io.openliberty.io.netty;version=latest,\
 	io.openliberty.io.netty.ssl,\
 	io.openliberty.netty.internal;version=latest,\
 	io.openliberty.netty.internal.impl;version=latest,\
-	com.ibm.ws.kernel.boot
+	com.ibm.ws.kernel.boot,\
+	com.ibm.ws.wsbytebuffer
 	
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

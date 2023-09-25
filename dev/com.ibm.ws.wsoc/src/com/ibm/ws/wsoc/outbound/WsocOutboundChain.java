@@ -62,9 +62,6 @@ public class WsocOutboundChain {
     private WsocChain wsocChain = null;
     private WsocChain wsocSecureChain = null;
 
-    //private final WsocChain wsocChain = new WsocChain(this, false);
-    //private final WsocChain wsocSecureChain = new WsocChain(this, true);
-
     private volatile boolean outboundCalled = true;
 
     public static final String WS_CHAIN_NAME = "WsocOutboundHttp";
@@ -73,13 +70,21 @@ public class WsocOutboundChain {
     /** Required, static Netty framework reference */
     private static NettyFramework nettyBundle;
     private static BootstrapExtended bootstrap;
-    private final boolean isNetty = true;
-    private boolean useNettyTransport;
+
+    private boolean useNettyTransport = true;
 
     public WsocOutboundChain() {
+        //Map<String, Object> options = new HashMap<String, Object>(tcpOptions.getConfiguration());
+        // LLA TODO
+        //if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+        //    Tr.debug(this, tc, "tcp options = " + options.toString());
 
-        // LLA TODO fix this
-        if (!isNetty) {
+        //useNettyTransport = ProductInfo.getBetaEdition() &&
+        //                    MetatypeUtils.parseBoolean(WS_CHAIN_NAME, "useNettyTransport", options.get("useNettyTransport"), true);
+        useNettyTransport = true;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "useNettyTransport = " + useNettyTransport);
+        if (!useNetty()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "Creating cfw chains");
 
@@ -89,10 +94,20 @@ public class WsocOutboundChain {
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "Creating netty chains");
-            wsocChain = new WsocChain(this, false, true);
-            wsocSecureChain = new WsocChain(this, true, true);
+            wsocChain = new NettyWsocChain(this, false);
+            wsocSecureChain = new NettyWsocChain(this, true);
         }
     }
+
+    //public static Channel getChannelFactory(WsocAddress addr) throws  ChainException, ChannelException {
+
+    //    if (addr.isSecure()) {
+    //        return getCfw().getOutboundVCFactory(WSS_CHAIN_NAME).createConnection();
+    //    } else {
+    //        return getCfw().getOutboundVCFactory(WS_CHAIN_NAME).createConnection();
+    //    }
+
+    //}
 
     public static VirtualConnection getVCFactory(WsocAddress addr) throws ChainException, ChannelException {
 
@@ -321,8 +336,7 @@ public class WsocOutboundChain {
      * @return true if Netty should be used for this endpoint
      */
     public boolean useNetty() {
-        // LLA TODO
-        return true;
+        return useNettyTransport;
     }
 
     private void performAction(Runnable action) {

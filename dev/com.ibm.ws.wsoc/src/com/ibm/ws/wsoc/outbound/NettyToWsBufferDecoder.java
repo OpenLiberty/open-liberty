@@ -14,6 +14,7 @@ import java.util.List;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -36,25 +37,8 @@ public class NettyToWsBufferDecoder extends ByteToMessageDecoder {
             Tr.debug(this, tc, "decode", ctx.channel().remoteAddress() + " decoding message [ " + in.toString(StandardCharsets.UTF_8) + " ] from Netty ByteBuf to WSByteBuffer");
         }
 
-        // TODO: Verify if this is the most effective way to do this. See https://github.com/OpenLiberty/open-liberty/issues/24816
-
-        ByteBuf temp = in.readBytes(in.readableBytes());
-
-        byte[] bytes;
-        int offset;
-        int length = temp.readableBytes();
-
-        if (temp.hasArray()) {
-            bytes = temp.array();
-            offset = temp.arrayOffset();
-        } else {
-            bytes = new byte[length];
-            temp.getBytes(temp.readerIndex(), bytes);
-            offset = 0;
-        }
-
-        // LLA TODO
-        //out.add(WsByteBufferPool.getInstance().wrap(bytes).position(in.readerIndex()));
+        ByteBuf temp = in.readBytes((in.readableBytes()));
+        out.add(ChannelFrameworkFactory.getBufferManager().wrap(temp.nioBuffer()).position(in.readerIndex()));
         temp.release();
 
         if (tc.isEntryEnabled())
