@@ -270,7 +270,7 @@ public class FATSuite {
      */
     private static void addFakeProvider(LibertyServer server) throws Exception {
         if (JakartaEEAction.isEE10OrLaterActive()) {
-            RemoteFile parsson = server.getFileFromLibertySharedDir("resources/parsson/1.1.0/jakarta/parsson.jar");
+            RemoteFile parsson = server.getFileFromLibertySharedDir("resources/parsson/1.1.4/jakarta/parsson.jar");
             Path fakeDestination = Paths.get(server.getServerSharedPath(), "resources", "fakeProvider", "1.0", "jakarta");
 
             JavaArchive fake_json_p = ShrinkWrap.create(ZipImporter.class, "fake-json-p.jar")
