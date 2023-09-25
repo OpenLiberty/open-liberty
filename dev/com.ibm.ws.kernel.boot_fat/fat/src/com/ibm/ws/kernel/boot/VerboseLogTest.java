@@ -170,6 +170,40 @@ public class VerboseLogTest {
     }
 
     @Test
+    public void testServerEnvKeepVerbose() throws Exception {
+        // Test with server.env to keep verbose log, verbose log should appear
+        Log.entering(c, testName.getMethodName());
+
+        delJvmOptions();
+
+        String[] parms = new String[2];
+        parms[0] = "start";
+        parms[1] = SERVER_NAME;
+
+        Writer isw = new OutputStreamWriter(new FileOutputStream(serverEnvServerRoot), "UTF-8");
+        BufferedWriter bw = new BufferedWriter(isw);
+        bw.write("VERBOSEGC=true\n");
+        bw.close();
+
+        Properties envVars = new Properties();
+        envVars.put("CDPATH", ".");
+
+        ProgramOutput po = server.getMachine().execute(serverCommand, parms, executionDir, envVars);
+
+        Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
+        Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKF0011I");
+        server.resetStarted();
+
+        assertTrue("the server should have been started", server.isStarted());
+        assertTrue("verbosegc log should be created", verboseLog.exists());
+        assertTrue("verbosegc log should not be created in server root", !verboseLogServerRoot.exists());
+
+        server.stopServer();
+    }
+
+    @Test
     public void testJvmChangeVerbose() throws Exception {
         // Test with jvm.options, change location or file name, the jvm.options log should be the one shown
         Log.entering(c, testName.getMethodName());
