@@ -228,7 +228,7 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
         }
 
         String tempString = "state " + mcWrapper.getStateString() + " ";
-        if (mcWrapper.getState() == mcWrapper.STATE_ACTIVE_FREE) {
+        if (mcWrapper.getState() == mcWrapper.STATE_ACTIVE_FREE && mcWrapper.getPoolState() != 50) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 if (eve != null)
                     Tr.debug(this, tc, "A connection error occurred for a free mcw listener " +
