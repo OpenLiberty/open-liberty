@@ -850,10 +850,14 @@ public class PageContextImpl extends PageContext {
             for (String _class : directiveInfo.getImportClassList()) {
                 this.elContext.getImportHandler().importClass(_class);
             }
-            // This does not work with importStatic com.example.Math.*
-            // Follow up on #24182 for importing static en masse
+
             for (String _static : directiveInfo.getImportStaticList()) {
-                this.elContext.getImportHandler().importStatic(_static);
+                try {
+                    this.elContext.getImportHandler().importStatic(_static);
+                } catch(ELException e){
+                    // ignore if importing a static field from interface or via someClass.*
+                    // https://github.com/OpenLiberty/open-liberty/issues/25135
+                }
             }
         }
     }
