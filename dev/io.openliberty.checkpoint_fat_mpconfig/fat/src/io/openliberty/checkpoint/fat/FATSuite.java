@@ -16,14 +16,8 @@ import static componenttest.topology.utils.FATServletClient.getTestMethodSimpleN
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -39,7 +33,6 @@ import com.ibm.websphere.simplicity.config.Variable;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
@@ -48,53 +41,12 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                BasicServletTest.class,
-                CheckpointFailTest.class,
-                CheckpointLauncherArgsTest.class,
-                CheckpointPhaseTest.class,
-                LogsVerificationTest.class,
-                OSGiConsoleTest.class,
-                LocalEJBTest.class,
-                CheckpointSPITest.class,
-                CheckpointWithSecurityManager.class,
-                SSLTest.class,
-                PasswordUtilsTest.class,
-                MPOpenTracingJaegerTraceTest.class,
-                MPFaultToleranceTimeoutTest.class,
-                ValidFeaturesTest.class,
-                RESTclientTest.class,
-                JNDITest.class,
-                CRIULogLevelTest.class,
-                AppsecurityTest.class,
-                WebSocketTest.class,
-                FacesTest.class,
-                FacesBeanTest.class,
-                WebProfileJSPWithELTest.class,
-                OpenAPITest.class,
-                MPJWTTest.class,
-                MPMetricsTest.class,
-                MPTelemetryTest.class,
-                WebProfileEARtest.class,
-                MPHealthTest.class,
-                SlowAppStartTest.class,
-                JsonbTest.class,
-                JsonpTest.class,
-                ManagedBeansTest.class,
-                BellsTest.class,
-                JaxWSVirtualHostTest.class,
-                WebAppMessageTest.class,
-                URAPIs_Federation_2LDAPsTest.class,
-                SkipIfCheckpointNotSupportedAnnotationTest.class,
-                RestConnectorTest.class,
-                AuditTest.class,
-                ConcurrencyTest.class,
-                MapCacheTest.class,
-                WebCacheTest.class,
-                XMLbindingsTest.class,
-                WebProfileJSPtest.class
+                MPConfigTest.class
+
 })
 
 public class FATSuite {
+
     public static void copyAppsAppToDropins(LibertyServer server, String appName) throws Exception {
         RemoteFile appFile = server.getFileFromLibertyServerRoot("apps/" + appName + ".war");
         LibertyFileManager.createRemoteFile(server.getMachine(), server.getServerRoot() + "/dropins").mkdir();
@@ -131,20 +83,6 @@ public class FATSuite {
         }
     }
 
-    static public void configureBootStrapProperties(LibertyServer server, Map<String, String> properties) throws Exception, IOException, FileNotFoundException {
-        Properties bootStrapProperties = new Properties();
-        File bootStrapPropertiesFile = new File(server.getFileFromLibertyServerRoot("bootstrap.properties").getAbsolutePath());
-        if (bootStrapPropertiesFile.isFile()) {
-            try (InputStream in = new FileInputStream(bootStrapPropertiesFile)) {
-                bootStrapProperties.load(in);
-            }
-        }
-        bootStrapProperties.putAll(properties);
-        try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
-            bootStrapProperties.store(out, "");
-        }
-    }
-
     static void configureEnvVariable(LibertyServer server, Map<String, String> newEnv) throws Exception {
         Properties serverEnvProperties = new Properties();
         serverEnvProperties.putAll(newEnv);
@@ -171,19 +109,11 @@ public class FATSuite {
         return config;
     }
 
-    public static void transformApps(LibertyServer myServer, String... apps) {
-        if (JakartaEEAction.isEE9OrLaterActive()) {
-            for (String app : apps) {
-                Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + app);
-                JakartaEEAction.transformApp(someArchive);
-            }
-        }
-    }
-
     public static RepeatTests defaultMPRepeat(String serverName) {
         return MicroProfileActions.repeat(serverName,
                                           MicroProfileActions.MP61, // first test in LITE mode
                                           MicroProfileActions.MP41, // rest are FULL mode
                                           MicroProfileActions.MP50);
     }
+
 }
