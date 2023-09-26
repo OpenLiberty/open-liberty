@@ -82,7 +82,7 @@
         heuristicRetryInterval="${TX_RETRY_INT}"
     />
 
-    <application location="transactionservlet.war"/>
+     <application location="transactionservletstartup.war"/>
 
     <!-- See bootstrap.properties
     <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
