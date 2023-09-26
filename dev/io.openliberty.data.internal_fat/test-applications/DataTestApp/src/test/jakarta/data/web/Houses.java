@@ -29,6 +29,8 @@ import jakarta.data.repository.Sort;
 public interface Houses {
     long deleteAll();
 
+    int deleteBasedOnGarage(Garage.Type garage_type, int garage_door_height);
+
     long deleteById(String parcel);
 
     long deleteByKitchenWidthGreaterThan(int widthAbove);
@@ -51,6 +53,12 @@ public interface Houses {
 
     @OrderBy("area")
     DoubleStream findPurchasePriceByLotSizeGreaterThan(float minLotSize);
+
+    List<House> findWithGarageDoorDimensions(int garage_door_width, int garage_door_height);
+
+    void insert(House h);
+
+    Optional<House> remove(String parcelId);
 
     List<House> save(House... h);
 

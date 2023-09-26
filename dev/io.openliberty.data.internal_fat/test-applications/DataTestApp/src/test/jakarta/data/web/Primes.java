@@ -59,12 +59,18 @@ public interface Primes {
     @Filter(by = "numberId", op = Compare.LessThan, param = "max")
     boolean anyLessThanEndingWithBitPattern(@Param("max") long upperLimit, @Param("bits") String pattern);
 
+    int count(int sumOfBits, boolean even);
+
     long countByIdLessThan(long number);
 
     @Asynchronous
     CompletableFuture<Short> countByIdBetweenAndEvenNot(long first, long last, boolean isOdd);
 
-    Integer countNumberIdBetween(long first, long last);
+    Integer countByNumberIdBetween(long first, long last);
+
+    boolean existsWith(long id, String hex);
+
+    Stream<Prime> find(boolean even, int sumOfBits, Limit limit, Sort... sorts);
 
     @Query("SELECT p.numberId FROM Prime p WHERE p.numberId >= ?1 AND p.numberId <= ?2")
     long findAsLongBetween(long min, long max);
@@ -175,7 +181,7 @@ public interface Primes {
     @OrderBy("name")
     Slice<Prime> findByRomanNumeralStartsWithAndIdLessThan(String prefix, long max, Pageable pagination);
 
-    Prime findFirst(Sort sort);
+    Prime findFirst(Sort sort, Limit limitOf1);
 
     Stream<Prime> findFirst2147483648ByIdGreaterThan(long min); // Exceeds Integer.MAX_VALUE by 1
 
@@ -184,7 +190,9 @@ public interface Primes {
 
     Prime findFirstByNameLikeOrderByNumberId(String namePattern);
 
-    List<Object[]> findIdAndName(Sort... sort);
+    Optional<Prime> findHexadecimal(String hex);
+
+    List<Object[]> findIdAndNameBy(Sort... sort);
 
     @OrderBy(value = "id", descending = true)
     Set<Long> findIdByIdBetween(long min, long max);
@@ -194,7 +202,7 @@ public interface Primes {
 
     boolean existsByNumberId(long number);
 
-    Boolean existsIdBetween(Long first, Long last);
+    Boolean existsByIdBetween(Long first, Long last);
 
     @Count
     @Filter(by = "id", op = Compare.GreaterThanEqual)

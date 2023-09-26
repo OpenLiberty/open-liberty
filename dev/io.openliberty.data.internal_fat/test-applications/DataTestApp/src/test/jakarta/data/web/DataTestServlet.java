@@ -563,11 +563,22 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(15, primes.countByIdLessThan(50));
 
-        assertEquals(Integer.valueOf(0), primes.countNumberIdBetween(32, 36));
+        assertEquals(Integer.valueOf(0), primes.countByNumberIdBetween(32, 36));
 
-        assertEquals(Integer.valueOf(3), primes.countNumberIdBetween(40, 50));
+        assertEquals(Integer.valueOf(3), primes.countByNumberIdBetween(40, 50));
 
         assertEquals(Short.valueOf((short) 14), primes.countByIdBetweenAndEvenNot(0, 50, true).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+    }
+
+    /**
+     * Count method that uses the query-by-parameters pattern.
+     */
+    @Test
+    public void testCountQueryByParameters() {
+        assertEquals(1, primes.count(1, true));
+        assertEquals(0, primes.count(1, false));
+        assertEquals(0, primes.count(2, true));
+        assertEquals(3, primes.count(2, false));
     }
 
     /**
@@ -664,6 +675,98 @@ public class DataTestServlet extends FATServlet {
         }
 
         products.clear();
+    }
+
+    /**
+     * Delete method that uses the query-by-parameters pattern.
+     */
+    @Test
+    public void testDeleteQueryByParameters() {
+        houses.deleteAll();
+
+        House h1 = new House();
+        h1.area = 1600;
+        h1.garage = new Garage();
+        h1.garage.area = 190;
+        h1.garage.door = new GarageDoor();
+        h1.garage.door.setHeight(9);
+        h1.garage.door.setWidth(9);
+        h1.garage.type = Garage.Type.Detached;
+        h1.kitchen = new Kitchen();
+        h1.kitchen.length = 14;
+        h1.kitchen.width = 13;
+        h1.lotSize = 0.16f;
+        h1.numBedrooms = 2;
+        h1.parcelId = "TestDeleteQueryByParameters-1";
+        h1.purchasePrice = 116000;
+        h1.sold = Year.of(2016);
+        houses.insert(h1);
+
+        House h2 = new House();
+        h2.area = 2200;
+        h2.garage = new Garage();
+        h2.garage.area = 230;
+        h2.garage.door = new GarageDoor();
+        h2.garage.door.setHeight(9);
+        h2.garage.door.setWidth(10);
+        h2.garage.type = Garage.Type.Attached;
+        h2.kitchen = new Kitchen();
+        h2.kitchen.length = 14;
+        h2.kitchen.width = 18;
+        h2.lotSize = 0.22f;
+        h2.numBedrooms = 5;
+        h2.parcelId = "TestDeleteQueryByParameters-2";
+        h2.purchasePrice = 212000;
+        h2.sold = Year.of(2022);
+        houses.insert(h2);
+
+        House h3 = new House();
+        h3.area = 1300;
+        h3.kitchen = new Kitchen();
+        h3.kitchen.length = 13;
+        h2.kitchen.width = 12;
+        h3.lotSize = 0.13f;
+        h3.numBedrooms = 2;
+        h3.parcelId = "TestDeleteQueryByParameters-3";
+        h3.purchasePrice = 83000;
+        h3.sold = Year.of(2013);
+        houses.insert(h3);
+
+        House h4 = new House();
+        h4.area = 2400;
+        h4.garage = new Garage();
+        h4.garage.area = 240;
+        h4.garage.door = new GarageDoor();
+        h4.garage.door.setHeight(9);
+        h4.garage.door.setWidth(12);
+        h4.garage.type = Garage.Type.Detached;
+        h4.kitchen = new Kitchen();
+        h4.kitchen.length = 17;
+        h4.kitchen.width = 14;
+        h4.lotSize = 0.24f;
+        h4.numBedrooms = 5;
+        h4.parcelId = "TestDeleteQueryByParameters-4";
+        h4.purchasePrice = 144000;
+        h4.sold = Year.of(2014);
+        houses.insert(h4);
+
+        assertEquals(2, houses.deleteBasedOnGarage(Garage.Type.Detached, 9));
+
+        House h = houses.remove("TestDeleteQueryByParameters-2").orElseThrow();
+        assertEquals(2200, h.area);
+        assertEquals(230, h.garage.area);
+        assertEquals(9, h.garage.door.getHeight());
+        assertEquals(10, h.garage.door.getWidth());
+        assertEquals(Garage.Type.Attached, h.garage.type);
+        assertEquals(14, h.kitchen.length);
+        assertEquals(18, h.kitchen.width);
+        assertEquals(0.22f, h.lotSize, 0.001f);
+        assertEquals(5, h.numBedrooms);
+        assertEquals("TestDeleteQueryByParameters-2", h.parcelId);
+        assertEquals(212000, h.purchasePrice, 0.001);
+        assertEquals(Year.of(2022), h.sold);
+
+        assertEquals(1, houses.deleteAll());
     }
 
     /**
@@ -898,6 +1001,25 @@ public class DataTestServlet extends FATServlet {
 
         // Query and order by embeddable attributes
 
+        List<House> list = houses.findWithGarageDoorDimensions(12, 8);
+        assertEquals(1, list.size());
+        h = list.get(0);
+        assertEquals("TestEmbeddable-204-2992-20", h.parcelId);
+        assertEquals(2000, h.area);
+        assertNotNull(h.garage);
+        assertEquals(220, h.garage.area);
+        assertEquals(Garage.Type.Detached, h.garage.type);
+        assertNotNull(h.garage.door);
+        assertEquals(8, h.garage.door.getHeight());
+        assertEquals(12, h.garage.door.getWidth());
+        assertNotNull(h.kitchen);
+        assertEquals(16, h.kitchen.length);
+        assertEquals(13, h.kitchen.width);
+        assertEquals(0.18f, h.lotSize, 0.001f);
+        assertEquals(4, h.numBedrooms);
+        assertEquals(188000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2020), h.sold);
+
         List<House> found = houses.findByGarageTypeOrderByGarageDoorWidthDesc(Garage.Type.Detached);
         assertEquals(found.toString(), 2, found.size());
 
@@ -1072,8 +1194,8 @@ public class DataTestServlet extends FATServlet {
         assertEquals(true, primes.existsByNumberId(19));
         assertEquals(false, primes.existsByNumberId(9));
 
-        assertEquals(Boolean.TRUE, primes.existsIdBetween(Long.valueOf(14), Long.valueOf(18)));
-        assertEquals(Boolean.FALSE, primes.existsIdBetween(Long.valueOf(24), Long.valueOf(28)));
+        assertEquals(Boolean.TRUE, primes.existsByIdBetween(Long.valueOf(14), Long.valueOf(18)));
+        assertEquals(Boolean.FALSE, primes.existsByIdBetween(Long.valueOf(24), Long.valueOf(28)));
     }
 
     /**
@@ -1084,6 +1206,16 @@ public class DataTestServlet extends FATServlet {
         assertEquals(true, primes.anyLessThanEndingWithBitPattern(25L, "1101"));
         assertEquals(false, primes.anyLessThanEndingWithBitPattern(25L, "1111"));
         assertEquals(false, primes.anyLessThanEndingWithBitPattern(12L, "1101"));
+    }
+
+    /**
+     * Exists method that uses the query-by-parameters pattern.
+     */
+    @Test
+    public void testExistsQueryByParameters() {
+        assertEquals(true, primes.existsWith(47, "2F"));
+        assertEquals(false, primes.existsWith(41, "2F")); // 2F is not hex for 41 decimal
+        assertEquals(false, primes.existsWith(15, "F")); // not prime
     }
 
     /**
@@ -1313,13 +1445,13 @@ public class DataTestServlet extends FATServlet {
         remaining.addAll(Set.of(80008, 80080, 80081, 80088));
 
         Sort sort = supportsOrderByForUpdate ? Sort.desc("width") : null;
-        Integer id = packages.deleteFirst(sort).orElseThrow();
+        Integer id = packages.deleteFirstBy(sort).orElseThrow();
         if (supportsOrderByForUpdate)
             assertEquals(Integer.valueOf(80080), id);
         assertEquals("Found " + id + "; expected one of " + remaining, true, remaining.remove(id));
 
         Sort[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.desc("height"), Sort.asc("length") } : null;
-        int[] ids = packages.deleteFirst2(sorts);
+        int[] ids = packages.deleteFirst2By(sorts);
         assertEquals(Arrays.toString(ids), 2, ids.length);
         if (supportsOrderByForUpdate) {
             assertEquals(80081, ids[0]);
@@ -1329,7 +1461,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Found " + ids[1] + "; expected one of " + remaining, true, remaining.remove(ids[1]));
 
         // should have only 1 remaining
-        ids = packages.deleteFirst2(sorts);
+        ids = packages.deleteFirst2By(sorts);
         assertEquals(Arrays.toString(ids), 1, ids.length);
         assertEquals(remaining.iterator().next(), Integer.valueOf(ids[0]));
     }
@@ -1478,7 +1610,7 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindFirstWithoutBy() {
-        Prime first = primes.findFirst(Sort.asc("numberId"));
+        Prime first = primes.findFirst(Sort.asc("numberId"), Limit.of(1));
         assertEquals(2, first.numberId);
     }
 
@@ -1601,11 +1733,33 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Find method that uses the query-by-parameter name pattern.
+     */
+    @Test
+    public void testFindQueryByParameters() {
+        Prime prime = primes.findHexadecimal("2B").orElseThrow();
+        assertEquals(43, prime.numberId);
+        assertEquals(false, prime.even);
+        assertEquals("2B", prime.hex);
+        assertEquals("forty-three", prime.name);
+        assertEquals("XLIII", prime.romanNumeral);
+        assertEquals(List.of("X", "L", "I", "I", "I"), prime.romanNumeralSymbols);
+        assertEquals(4, prime.sumOfBits);
+
+        assertEquals(false, primes.findHexadecimal("2A").isPresent());
+
+        assertEquals(List.of("thirty-seven", "thirteen", "seven", "nineteen"),
+                     primes.find(false, 3, Limit.of(4), Sort.asc("even"), Sort.desc("name"))
+                                     .map(p -> p.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
      * Find a subset of attributes of the entity.
      */
     @Test
     public void testFindSubsetOfAttributes() {
-        List<Object[]> all = primes.findIdAndName(Sort.asc("numberId"));
+        List<Object[]> all = primes.findIdAndNameBy(Sort.asc("numberId"));
 
         Object[] idAndName = all.get(5);
         assertEquals(13L, idAndName[0]);
