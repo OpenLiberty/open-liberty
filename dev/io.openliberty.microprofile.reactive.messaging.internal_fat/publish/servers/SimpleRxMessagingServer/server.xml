@@ -16,9 +16,11 @@
 
     <featureManager>
         <feature>componenttest-2.0</feature>
-        <feature>osgiconsole-1.0</feature>
         <feature>localConnector-1.0</feature>
+        <feature>mpMetrics-4.0</feature>
         <feature>mpReactiveMessaging-3.0</feature>
+        <feature>osgiconsole-1.0</feature>
+        <feature>restfulWS-3.1</feature>
         <feature>servlet-5.0</feature>
         <feature>mpConfig-3.1</feature>
         <feature>mpMetrics-5.0</feature>

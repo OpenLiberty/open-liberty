@@ -32,12 +32,15 @@ import io.openliberty.microprofile.reactive.messaging.fat.telemetry.ReactiveMess
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                KafkaNackTest.class,
-                KafkaValidationTests.class,
-                MetricsTest.class,
-                MultiAppMetricsTest.class,
-                ReactiveMessagingTelemetryTest.class,
-                ReactiveMessagingTelemetryTestWithJAXRS.class
+        KafkaNackTest.class,
+        KafkaValidationTests.class,
+        MetricsTest.class,
+        MultiAppMetricsTest.class,
+        ReactiveMessagingTelemetryTest.class,
+        ReactiveMessagingTelemetryTestWithJAXRS.class
+        KafkaEmitterTest.class,
+        KafkaEmitterRestfulTest.class,
+        KafkaEmitterNackRestfulTest.class
 })
 public class KafkaTests {
 
