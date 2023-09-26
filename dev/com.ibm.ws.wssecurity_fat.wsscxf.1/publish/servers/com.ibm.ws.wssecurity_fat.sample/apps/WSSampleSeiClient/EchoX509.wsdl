@@ -74,7 +74,7 @@
                   </sp:RecipientToken>
                   <sp:AlgorithmSuite>
                      <wsp:Policy>
-                        <sp:Basic128Rsa15/>
+                        <sp:Basic256Sha256Rsa15/>
                      </wsp:Policy>
                   </sp:AlgorithmSuite>
                   <sp:InitiatorToken>
@@ -143,7 +143,7 @@
                   </sp:RecipientToken>
                   <sp:AlgorithmSuite>
                      <wsp:Policy>
-                        <sp:Basic128Rsa15/>
+                        <sp:Basic256Sha256Rsa15/>
                      </wsp:Policy>
                   </sp:AlgorithmSuite>
                   <sp:InitiatorToken>
@@ -236,7 +236,7 @@
                   </sp:RecipientToken>
                   <sp:AlgorithmSuite>
                      <wsp:Policy>
-                        <sp:Basic128Rsa15/>
+                        <sp:Basic256Sha256Rsa15/>
                      </wsp:Policy>
                   </sp:AlgorithmSuite>
                   <sp:InitiatorToken>
@@ -295,7 +295,7 @@
                   </sp:RecipientToken>
                   <sp:AlgorithmSuite>
                      <wsp:Policy>
-                        <sp:Basic128Rsa15/>
+                        <sp:Basic256Sha256Rsa15/>
                      </wsp:Policy>
                   </sp:AlgorithmSuite>
                   <sp:InitiatorToken>
@@ -378,7 +378,7 @@
                   </sp:RecipientToken>
                   <sp:AlgorithmSuite>
                      <wsp:Policy>
-                        <sp:Basic128Rsa15/>
+                        <sp:Basic256Sha256Rsa15/>
                      </wsp:Policy>
                   </sp:AlgorithmSuite>
                   <sp:InitiatorToken>
@@ -442,7 +442,7 @@
                   </sp:RecipientToken>
                   <sp:AlgorithmSuite>
                      <wsp:Policy>
-                        <sp:Basic128Rsa15/>
+                        <sp:Basic256Sha256Rsa15/>
                      </wsp:Policy>
                   </sp:AlgorithmSuite>
                   <sp:InitiatorToken>
