@@ -8,14 +8,14 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
  * </pre>
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.57.2)",
+    value = "by gRPC proto compiler (version 1.43.2)",
     comments = "Source: ProducerStore.proto")
 @io.grpc.stub.annotations.GrpcGenerated
 public final class AppProducerServiceGrpc {
 
   private AppProducerServiceGrpc() {}
 
-  public static final java.lang.String SERVICE_NAME = "test.g3store.grpc.AppProducerService";
+  public static final String SERVICE_NAME = "test.g3store.grpc.AppProducerService";
 
   // Static method descriptors that strictly reflect the proto.
   private static volatile io.grpc.MethodDescriptor<com.ibm.test.g3store.grpc.AppRequest,
@@ -315,7 +315,7 @@ public final class AppProducerServiceGrpc {
    * The service definition.
    * </pre>
    */
-  public interface AsyncService {
+  public static abstract class AppProducerServiceImplBase implements io.grpc.BindableService {
 
     /**
      * <pre>
@@ -324,7 +324,7 @@ public final class AppProducerServiceGrpc {
      *This will add the db or dynacache with one entry
      * </pre>
      */
-    default void createApp(com.ibm.test.g3store.grpc.AppRequest request,
+    public void createApp(com.ibm.test.g3store.grpc.AppRequest request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.AppResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getCreateAppMethod(), responseObserver);
     }
@@ -336,7 +336,7 @@ public final class AppProducerServiceGrpc {
      *This will delete the db or dynacache with one entry
      * </pre>
      */
-    default void deleteApp(com.ibm.test.g3store.grpc.DeleteRequest request,
+    public void deleteApp(com.ibm.test.g3store.grpc.DeleteRequest request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.DeleteResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteAppMethod(), responseObserver);
     }
@@ -348,7 +348,7 @@ public final class AppProducerServiceGrpc {
      *This will delete the apps , the server will respond each success or failure of each delete with the app name.
      * </pre>
      */
-    default void deleteAllApps(com.google.protobuf.Empty request,
+    public void deleteAllApps(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.DeleteResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteAllAppsMethod(), responseObserver);
     }
@@ -361,7 +361,7 @@ public final class AppProducerServiceGrpc {
      *This will be update the db or dynacache with multiple entry
      * </pre>
      */
-    default io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.AppRequest> createApps(
+    public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.AppRequest> createApps(
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.MultiCreateResponse> responseObserver) {
       return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getCreateAppsMethod(), responseObserver);
     }
@@ -374,55 +374,100 @@ public final class AppProducerServiceGrpc {
      *No security
      * </pre>
      */
-    default io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamRequestA> clientStreamA(
+    public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamRequestA> clientStreamA(
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamReplyA> responseObserver) {
       return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getClientStreamAMethod(), responseObserver);
     }
 
     /**
      */
-    default void serverStreamA(com.ibm.test.g3store.grpc.StreamRequestA request,
+    public void serverStreamA(com.ibm.test.g3store.grpc.StreamRequestA request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamReplyA> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getServerStreamAMethod(), responseObserver);
     }
 
     /**
      */
-    default io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamRequestA> twoWayStreamA(
+    public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamRequestA> twoWayStreamA(
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamReplyA> responseObserver) {
       return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getTwoWayStreamAMethod(), responseObserver);
     }
 
     /**
      */
-    default io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamRequestA> twoWayStreamAsyncThread(
+    public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamRequestA> twoWayStreamAsyncThread(
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamReplyA> responseObserver) {
       return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getTwoWayStreamAsyncThreadMethod(), responseObserver);
     }
-  }
-
-  /**
-   * Base class for the server implementation of the service AppProducerService.
-   * <pre>
-   * The service definition.
-   * </pre>
-   */
-  public static abstract class AppProducerServiceImplBase
-      implements io.grpc.BindableService, AsyncService {
 
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
-      return AppProducerServiceGrpc.bindService(this);
+      return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
+          .addMethod(
+            getCreateAppMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                com.ibm.test.g3store.grpc.AppRequest,
+                com.ibm.test.g3store.grpc.AppResponse>(
+                  this, METHODID_CREATE_APP)))
+          .addMethod(
+            getDeleteAppMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                com.ibm.test.g3store.grpc.DeleteRequest,
+                com.ibm.test.g3store.grpc.DeleteResponse>(
+                  this, METHODID_DELETE_APP)))
+          .addMethod(
+            getDeleteAllAppsMethod(),
+            io.grpc.stub.ServerCalls.asyncServerStreamingCall(
+              new MethodHandlers<
+                com.google.protobuf.Empty,
+                com.ibm.test.g3store.grpc.DeleteResponse>(
+                  this, METHODID_DELETE_ALL_APPS)))
+          .addMethod(
+            getCreateAppsMethod(),
+            io.grpc.stub.ServerCalls.asyncClientStreamingCall(
+              new MethodHandlers<
+                com.ibm.test.g3store.grpc.AppRequest,
+                com.ibm.test.g3store.grpc.MultiCreateResponse>(
+                  this, METHODID_CREATE_APPS)))
+          .addMethod(
+            getClientStreamAMethod(),
+            io.grpc.stub.ServerCalls.asyncClientStreamingCall(
+              new MethodHandlers<
+                com.ibm.test.g3store.grpc.StreamRequestA,
+                com.ibm.test.g3store.grpc.StreamReplyA>(
+                  this, METHODID_CLIENT_STREAM_A)))
+          .addMethod(
+            getServerStreamAMethod(),
+            io.grpc.stub.ServerCalls.asyncServerStreamingCall(
+              new MethodHandlers<
+                com.ibm.test.g3store.grpc.StreamRequestA,
+                com.ibm.test.g3store.grpc.StreamReplyA>(
+                  this, METHODID_SERVER_STREAM_A)))
+          .addMethod(
+            getTwoWayStreamAMethod(),
+            io.grpc.stub.ServerCalls.asyncBidiStreamingCall(
+              new MethodHandlers<
+                com.ibm.test.g3store.grpc.StreamRequestA,
+                com.ibm.test.g3store.grpc.StreamReplyA>(
+                  this, METHODID_TWO_WAY_STREAM_A)))
+          .addMethod(
+            getTwoWayStreamAsyncThreadMethod(),
+            io.grpc.stub.ServerCalls.asyncBidiStreamingCall(
+              new MethodHandlers<
+                com.ibm.test.g3store.grpc.StreamRequestA,
+                com.ibm.test.g3store.grpc.StreamReplyA>(
+                  this, METHODID_TWO_WAY_STREAM_ASYNC_THREAD)))
+          .build();
     }
   }
 
   /**
-   * A stub to allow clients to do asynchronous rpc calls to service AppProducerService.
    * <pre>
    * The service definition.
    * </pre>
    */
-  public static final class AppProducerServiceStub
-      extends io.grpc.stub.AbstractAsyncStub<AppProducerServiceStub> {
+  public static final class AppProducerServiceStub extends io.grpc.stub.AbstractAsyncStub<AppProducerServiceStub> {
     private AppProducerServiceStub(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
@@ -527,13 +572,11 @@ public final class AppProducerServiceGrpc {
   }
 
   /**
-   * A stub to allow clients to do synchronous rpc calls to service AppProducerService.
    * <pre>
    * The service definition.
    * </pre>
    */
-  public static final class AppProducerServiceBlockingStub
-      extends io.grpc.stub.AbstractBlockingStub<AppProducerServiceBlockingStub> {
+  public static final class AppProducerServiceBlockingStub extends io.grpc.stub.AbstractBlockingStub<AppProducerServiceBlockingStub> {
     private AppProducerServiceBlockingStub(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
@@ -592,13 +635,11 @@ public final class AppProducerServiceGrpc {
   }
 
   /**
-   * A stub to allow clients to do ListenableFuture-style rpc calls to service AppProducerService.
    * <pre>
    * The service definition.
    * </pre>
    */
-  public static final class AppProducerServiceFutureStub
-      extends io.grpc.stub.AbstractFutureStub<AppProducerServiceFutureStub> {
+  public static final class AppProducerServiceFutureStub extends io.grpc.stub.AbstractFutureStub<AppProducerServiceFutureStub> {
     private AppProducerServiceFutureStub(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
@@ -651,10 +692,10 @@ public final class AppProducerServiceGrpc {
       io.grpc.stub.ServerCalls.ServerStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.ClientStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.BidiStreamingMethod<Req, Resp> {
-    private final AsyncService serviceImpl;
+    private final AppProducerServiceImplBase serviceImpl;
     private final int methodId;
 
-    MethodHandlers(AsyncService serviceImpl, int methodId) {
+    MethodHandlers(AppProducerServiceImplBase serviceImpl, int methodId) {
       this.serviceImpl = serviceImpl;
       this.methodId = methodId;
     }
@@ -707,67 +748,6 @@ public final class AppProducerServiceGrpc {
     }
   }
 
-  public static final io.grpc.ServerServiceDefinition bindService(AsyncService service) {
-    return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
-        .addMethod(
-          getCreateAppMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
-            new MethodHandlers<
-              com.ibm.test.g3store.grpc.AppRequest,
-              com.ibm.test.g3store.grpc.AppResponse>(
-                service, METHODID_CREATE_APP)))
-        .addMethod(
-          getDeleteAppMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
-            new MethodHandlers<
-              com.ibm.test.g3store.grpc.DeleteRequest,
-              com.ibm.test.g3store.grpc.DeleteResponse>(
-                service, METHODID_DELETE_APP)))
-        .addMethod(
-          getDeleteAllAppsMethod(),
-          io.grpc.stub.ServerCalls.asyncServerStreamingCall(
-            new MethodHandlers<
-              com.google.protobuf.Empty,
-              com.ibm.test.g3store.grpc.DeleteResponse>(
-                service, METHODID_DELETE_ALL_APPS)))
-        .addMethod(
-          getCreateAppsMethod(),
-          io.grpc.stub.ServerCalls.asyncClientStreamingCall(
-            new MethodHandlers<
-              com.ibm.test.g3store.grpc.AppRequest,
-              com.ibm.test.g3store.grpc.MultiCreateResponse>(
-                service, METHODID_CREATE_APPS)))
-        .addMethod(
-          getClientStreamAMethod(),
-          io.grpc.stub.ServerCalls.asyncClientStreamingCall(
-            new MethodHandlers<
-              com.ibm.test.g3store.grpc.StreamRequestA,
-              com.ibm.test.g3store.grpc.StreamReplyA>(
-                service, METHODID_CLIENT_STREAM_A)))
-        .addMethod(
-          getServerStreamAMethod(),
-          io.grpc.stub.ServerCalls.asyncServerStreamingCall(
-            new MethodHandlers<
-              com.ibm.test.g3store.grpc.StreamRequestA,
-              com.ibm.test.g3store.grpc.StreamReplyA>(
-                service, METHODID_SERVER_STREAM_A)))
-        .addMethod(
-          getTwoWayStreamAMethod(),
-          io.grpc.stub.ServerCalls.asyncBidiStreamingCall(
-            new MethodHandlers<
-              com.ibm.test.g3store.grpc.StreamRequestA,
-              com.ibm.test.g3store.grpc.StreamReplyA>(
-                service, METHODID_TWO_WAY_STREAM_A)))
-        .addMethod(
-          getTwoWayStreamAsyncThreadMethod(),
-          io.grpc.stub.ServerCalls.asyncBidiStreamingCall(
-            new MethodHandlers<
-              com.ibm.test.g3store.grpc.StreamRequestA,
-              com.ibm.test.g3store.grpc.StreamReplyA>(
-                service, METHODID_TWO_WAY_STREAM_ASYNC_THREAD)))
-        .build();
-  }
-
   private static abstract class AppProducerServiceBaseDescriptorSupplier
       implements io.grpc.protobuf.ProtoFileDescriptorSupplier, io.grpc.protobuf.ProtoServiceDescriptorSupplier {
     AppProducerServiceBaseDescriptorSupplier() {}
@@ -791,9 +771,9 @@ public final class AppProducerServiceGrpc {
   private static final class AppProducerServiceMethodDescriptorSupplier
       extends AppProducerServiceBaseDescriptorSupplier
       implements io.grpc.protobuf.ProtoMethodDescriptorSupplier {
-    private final java.lang.String methodName;
+    private final String methodName;
 
-    AppProducerServiceMethodDescriptorSupplier(java.lang.String methodName) {
+    AppProducerServiceMethodDescriptorSupplier(String methodName) {
       this.methodName = methodName;
     }
 
