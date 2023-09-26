@@ -1210,11 +1210,32 @@ public class LTPAKeyRotationTests {
         Log.info(thisClass, "renameFileIfExists", "\nfilepath: " + filePath + "\nnewFilePath: " + newFilePath);
         if (fileExists(filePath, 2)) {
             Log.info(thisClass, "renameFileIfExists", "file exists, renaming...");
-            server.renameLibertyServerRootFile(filePath, newFilePath);
-
+    
+            // Custom retry mechanism
+            int maxRetries = 3;
+            int retryIntervalMillis = 1000;
+            boolean renamed = false;
+            for (int i = 0; i < maxRetries; i++) {
+                try {
+                    server.renameLibertyServerRootFile(filePath, newFilePath);
+                    renamed = true;
+                    break; // Renaming was successful, exit the loop
+                } catch (Exception e) {
+                    // Log the exception or handle it as needed
+                    Log.error(thisClass, "renameFileIfExists", "Renaming failed: " + e.getMessage());
+    
+                    // Renaming failed, wait for a short duration and then retry
+                    Thread.sleep(retryIntervalMillis);
+                }
+            }
+    
+            if (!renamed) {
+                throw new Exception("Unable to rename file: " + filePath);
+            }
+    
             // Double check to make sure the file is gone
             if (checkFileIsGone && fileExists(filePath, 1))
-                throw new Exception("Unable to rename file: " + filePath);
+                throw new Exception("File still exists after renaming: " + filePath);
         }
     }
 
