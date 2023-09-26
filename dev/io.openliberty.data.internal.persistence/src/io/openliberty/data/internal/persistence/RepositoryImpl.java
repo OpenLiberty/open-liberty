@@ -1297,10 +1297,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 Select select = queryInfo.method.getAnnotation(Select.class);
                 List<String> selections = select == null ? new ArrayList<>() : null;
                 int c = by + 2;
-                if (by > 4 && "findAllById".equals(methodName) && Iterable.class.equals(paramTypes[0]))
-                    methodName = "findAllByIdIn"; // CrudRepository.findAllById(Iterable)
-                else
-                    parseFindBy(queryInfo, methodName, by, selections);
+                parseFindBy(queryInfo, methodName, by, selections);
                 q = generateSelectClause(queryInfo, select, selections == null ? null : selections.toArray(new String[selections.size()]));
 
                 int orderBy = methodName.indexOf("OrderBy", by + 2);
@@ -1315,13 +1312,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 queryInfo.type = QueryInfo.Type.FIND;
             } else if (methodName.startsWith("delete") || methodName.startsWith("remove")) {
                 int c = by + 2;
-                if (by > 6) {
-                    if ("deleteAllById".equals(methodName) && Iterable.class.isAssignableFrom(paramTypes[0]))
-                        if (entityInfo.idClassAttributeAccessors == null)
-                            methodName = "deleteAllByIdIn"; // CrudRepository.deleteAllById(Iterable)
-                        else
-                            throw new MappingException("The deleteAllById operation cannot be used on entities with composite IDs."); // TODO NLS
-                }
                 boolean isFindAndDelete = queryInfo.isFindAndDelete();
                 if (isFindAndDelete) {
                     if (queryInfo.type != null)

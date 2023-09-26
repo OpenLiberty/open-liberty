@@ -2397,7 +2397,7 @@ public class DataTestServlet extends FATServlet {
                              page.stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         // remove some entries that we already read:
-        packages.deleteAllById(List.of(116, 118, 120, 122, 124));
+        packages.deleteByIdIn(List.of(116, 118, 120, 122, 124));
 
         // should appear on next page because length 22.0 matches the keyset value and width 70.0 is beyond the keyset value:
         packages.save(new Package(130, 22.0f, 70.0f, 67.0f, "package#130"));
@@ -2416,7 +2416,7 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(140, 144, 148),
                              page.stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        packages.deleteAllById(List.of(132, 140));
+        packages.deleteByIdIn(List.of(132, 140));
 
         // Page 5
         page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.nextPageable());
@@ -2493,7 +2493,7 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(114, 133, 144, 128, 148, 150),
                              page.stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        packages.deleteAllById(List.of(144, 148, 150));
+        packages.deleteByIdIn(List.of(144, 148, 150));
 
         packages.save(new Package(152, 48.0f, 45.0f, 52.0f, "package#152"));
 
@@ -2847,7 +2847,7 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(370, 350, 351),
                              page.stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        packages.deleteAllById(List.of(350, 333));
+        packages.deleteByIdIn(List.of(350, 333));
 
         // Page 1
         page = packages.findByHeightGreaterThan(20.0f, page.previousPageable());
@@ -2886,7 +2886,7 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(315, 373),
                              page.stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        packages.deleteAllById(List.of(373, 315, 376));
+        packages.deleteByIdIn(List.of(373, 315, 376));
 
         page = packages.whereHeightNotWithin(32.0f, 35.5f, page.previousPageable());
 
@@ -3354,12 +3354,12 @@ public class DataTestServlet extends FATServlet {
         assertEquals(202.40f, receipt.total(), 0.001f);
 
         assertIterableEquals(List.of("C0013-00-031:300", "C0022-00-022:200", "C0045-00-054:500"),
-                             receipts.findAllById(List.of(200L, 300L, 500L))
+                             receipts.findByIdIn(List.of(200L, 300L, 500L))
                                              .map(r -> r.customer() + ":" + r.purchaseId())
                                              .sorted()
                                              .collect(Collectors.toList()));
 
-        receipts.deleteAllById(List.of(200L, 500L));
+        receipts.deleteByIdIn(List.of(200L, 500L));
 
         assertIterableEquals(List.of("C0013-00-031:100", "C0013-00-031:300", "C0045-00-054:400"),
                              receipts.findAll()
@@ -3485,7 +3485,7 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(4, reservations.count());
 
-        Map<Long, Reservation> found = reservations.findAllById(List.of(r4.meetingID, r2.meetingID))
+        Map<Long, Reservation> found = reservations.findByIdIn(List.of(r4.meetingID, r2.meetingID))
                         .collect(Collectors.toMap(rr -> rr.meetingID, Function.identity()));
         assertEquals(found.toString(), 2, found.size());
         assertEquals(true, found.containsKey(r2.meetingID));
@@ -3503,7 +3503,7 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(3, reservations.count());
 
-        reservations.deleteAllById(Set.of(r1.meetingID, r4.meetingID));
+        reservations.deleteByIdIn(Set.of(r1.meetingID, r4.meetingID));
 
         assertEquals(false, reservations.existsById(r4.meetingID));
 
