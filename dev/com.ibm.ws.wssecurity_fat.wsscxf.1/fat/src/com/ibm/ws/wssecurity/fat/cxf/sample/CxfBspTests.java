@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -41,7 +41,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -140,6 +139,9 @@ public class CxfBspTests {
         return;
     }
 
+    //issue 30353 - samples CxfBsp test cases required both client and provider EchoBsp.wsdl update, where
+    //service client wsdl at com.ibm.ws.wssecurity_fat.wsscxf.1\publish\servers\com.ibm.ws.wssecurity_fat.sample\apps\WSSampleSeiClient
+    //service provider wsdl at com.ibm.ws.wssecurity_fat.wsscxf.1\test-applications\WSSampleSei\resources\WEB-INF\wsdl
     @Test
     public void testEcho11Service() throws Exception {
         String thisMethod = "testEcho11Service";

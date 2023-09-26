@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -125,7 +125,7 @@ public class CxfInteropX509Tests {
         Log.info(thisClass, thisMethod, "JDK Vendor Name is: " + vendorName);
 
         ibmJDK = true;
-        
+
         //issue 30353
         JavaInfo info = JavaInfo.forServer(server);
         if ((info.majorVersion() == 8) && (vendorName.contains("IBM"))) {
@@ -139,6 +139,9 @@ public class CxfInteropX509Tests {
         return;
     }
 
+    //issue 30353 - samples CxfInteropX509 test cases required both client and provider EchoX509.wsdl update, where
+    //service client wsdl at com.ibm.ws.wssecurity_fat.wsscxf.1\publish\servers\com.ibm.ws.wssecurity_fat.sample\apps\WSSampleSeiClient
+    //service provider wsdl at com.ibm.ws.wssecurity_fat.wsscxf.1\test-applications\WSSampleSei\resources\WEB-INF\wsdl
     @Test
     public void testEcho21Service() throws Exception {
         String thisMethod = "testEcho21Service";
