@@ -518,25 +518,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
                 // Peer recovery environment
                 if (_leaseLog != null) {
-                    // Release the lock on the lease log. This could be the local server or a peer.
-                    try {
-                        if (localRecovery) {
-                            if (_leaseLog.releaseLocalLease(recoveredServerIdentity)) {
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Have released local lease lock");
-                            }
-                        } else {
-                            if (_leaseLog.releasePeerLease(recoveredServerIdentity)) {
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Have released peer lease lock");
-                            }
-                        }
-                    } catch (Exception e) {
-                        // Note the error but continue
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Caught exception on lock release - " + e);
-                    }
-
                     // If Recovery Failed, then by default we shall bring down the Liberty Server
                     if (fsc != null && fsc.getRecoveryManager().recoveryFailed()) {
                         RecoveryFailedException rex = new RecoveryFailedException("Recovery failed in peer environment");
@@ -859,6 +840,20 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "claimPeerLeaseForRecovery", peerClaimed);
         return peerClaimed;
+    }
+
+    @Override
+    public void releasePeerLeaseForRecovery(String recoveryIdentityToRecover) throws Exception {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "releasePeerLeaseForRecovery", new java.lang.Object[] { recoveryIdentityToRecover, this });
+
+        if (_leaseLog.releasePeerLease(recoveryIdentityToRecover)) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Have released peer lease lock");
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "releasePeerLeaseForRecovery");
     }
 
     /**
@@ -1287,7 +1282,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 }
             }
         } catch (URISyntaxException e) {
-            FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TxRecoveryAgentImpl.initiateRecovery", "1249", this);
+            FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TxRecoveryAgentImpl.logDirectories", "1249", this);
             Tr.error(tc, "WTRN0016_EXC_DURING_RECOVERY", e);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "logDirectories", e);

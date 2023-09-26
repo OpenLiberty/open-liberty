@@ -354,6 +354,17 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         }
     }
 
+    /**
+     * The test checks basic CoordinationLock behaviour.
+     *
+     * Start 2 servers, longLeaseLengthFSFail which is configured with a long (10 minute) leaseTimeout and FSCLOUD002.lease10
+     * which is configured with a 15 second leaseTimeout. FSCLOUD002.lease10 does not know that longLeaseLengthFSFail has a much
+     * longer leaseTimeout configured so it will prematurely (from longLeaseLengthFSFail's point of view) attempt to
+     * acquire longLeaseLengthFSFail's log. In the filesystem case, the takeover will fail because longLeaseLengthFSFail
+     * still holds its coordination lock.
+     *
+     * @throws Exception
+     */
     @Test
     @AllowedFFDC(value = { "java.lang.IllegalStateException" })
     public void testPeerTakeoverFailure() throws Exception {
@@ -372,6 +383,8 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
             throw e;
         }
 
+        // This sleep allows considerable time for the environment to settle and to be "sure" that the longLeaseLengthFSFail server has
+        // started and recovered.
         try {
             Thread.sleep(1000 * 20);
         } catch (Exception ex) {
@@ -387,9 +400,9 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
             throw e;
         }
 
-        // server2 does not know that server1 has a much longer leaseTimeout configured so it will prematurely
-        // (from server1's point of view) attempt to acquire server1's log. In the filesystem case, the takeover will
-        // fail because server1 still holds its coordination lock.
+        // FSCLOUD002.lease10 does not know that longLeaseLengthFSFail has a much longer leaseTimeout configured so it will prematurely
+        // (from longLeaseLengthFSFail's point of view) attempt to acquire longLeaseLengthFSFail's log. In the filesystem case,
+        // the takeover will fail because longLeaseLengthFSFail still holds its coordination lock.
 
         //  Check for key string to see whether peer recovery has failed
         assertNotNull("peer recovery unexpectedly succeeded",
@@ -400,6 +413,16 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         Log.info(this.getClass(), method, "test complete");
     }
 
+    /**
+     * The test checks CoordinationLock behaviour in the presence of multiple servers.
+     *
+     * Start 3 servers, longLeaseLengthFSFail, longLeaseLengthFSFailA and longLeaseLengthFSFailB which are configured with a long (10 minute)
+     * leaseTimeout and then start FSCLOUD002.lease10 which is configured with a 15 second leaseTimeout. FSCLOUD002.lease10 does not know that
+     * the other 3 servers have a much longer leaseTimeout configured so it will prematurely (from the other servers' point of view) attempt to
+     * acquire their logs. In the filesystem case, the takeover will fail because the other 3 servers still hold their coordination locks.
+     *
+     * @throws Exception
+     */
     @Test
     @AllowedFFDC(value = { "java.lang.IllegalStateException" })
     public void testMultiPeerTakeoverFailure() throws Exception {
@@ -420,6 +443,8 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
             throw e;
         }
 
+        // This sleep allows considerable time for the environment to settle and to be "sure" that the 3 servers with long leaseTimeouts have
+        // started and recovered.
         try {
             Thread.sleep(1000 * 20);
         } catch (Exception ex) {
@@ -434,9 +459,10 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
             FATUtils.stopServers(server2lease10);
             throw e;
         }
-        // server2 does not know that server1 has a much longer leaseTimeout configured so it will prematurely
-        // (from server1's point of view) attempt to acquire server1's log. In the filesystem case, the takeover will
-        // fail because server1 still holds its coordination lock.
+
+        // FSCLOUD002.lease10 does not know that the other 3 servers have a much longer leaseTimeout configured so it will prematurely
+        // attempt to acquire the other servers' logs. In the filesystem case, the takeover will fail because the other 3 servers
+        // still holds their coordination locks.
 
         //  Check for key string to see whether peer recovery has failed
         assertNotNull("First peer recovery unexpectedly succeeded",
@@ -447,6 +473,15 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         Log.info(this.getClass(), method, "test complete");
     }
 
+    /**
+     * The test checks CoordinationLock behaviour and recovery in the presence of multiple servers.
+     *
+     * Start 3 servers, longLeaseLengthFSFail, longLeaseLengthFSFailA and longLeaseLengthFSFailB which are configured with a long (10 minute)
+     * leaseTimeout and then crash those servers. Start FSCLOUD002.lease10 which is configured with a 15 second leaseTimeout. FSCLOUD002.lease10
+     * will acquire the logs of the other servers and recover them.
+     *
+     * @throws Exception
+     */
     @Test
     @AllowedFFDC(value = { "java.lang.IllegalStateException" })
     public void testMultiPeerTakeover() throws Exception {
@@ -495,6 +530,8 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
 
         assertNotNull(longLeaseLengthFSFailB.getServerName() + " did not crash properly", longLeaseLengthFSFailB.waitForStringInLog(XAResourceImpl.DUMP_STATE));
 
+        // This sleep allows considerable time for the environment to settle and to be "sure" that the 3 servers with long leaseTimeouts have
+        // started, recovered and then terminated
         try {
             Thread.sleep(1000 * 20);
         } catch (Exception ex) {

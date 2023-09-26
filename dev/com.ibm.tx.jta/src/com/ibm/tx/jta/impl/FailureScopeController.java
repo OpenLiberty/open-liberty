@@ -28,9 +28,7 @@ import com.ibm.ws.Transaction.JTS.Configuration;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.kernel.service.util.CpuInfo;
 import com.ibm.ws.recoverylog.spi.FailureScope;
-import com.ibm.ws.recoverylog.spi.InternalLogException;
 import com.ibm.ws.recoverylog.spi.RecoveryAgent;
-import com.ibm.ws.recoverylog.spi.RecoveryDirectorFactory;
 import com.ibm.ws.recoverylog.spi.RecoveryLog;
 
 public class FailureScopeController {
@@ -245,14 +243,8 @@ public class FailureScopeController {
                         // Renew lease to avoid a peer acquiring the home server's logs just as we are about to delete them.
                         _recoveryManager.updateServerLease(serverName());
 
-                        // Clear local coordination lock in filesystem case
-                        try {
-                            RecoveryDirectorFactory.recoveryDirector().clearLocalCoordinationLock();
-                        } catch (InternalLogException e) {
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Unexpected exception " + e);
-                        }
-
+                        // Release the home lease lock
+                        _recoveryManager.releaseLocalLease(serverName());
                         // If we are operating in a peer recovery environment this method will delete the home server's
                         // recovery logs where it has shutdown cleanly.
                         _recoveryManager.deleteRecoveryLogsIfPeerRecoveryEnv();
@@ -265,13 +257,9 @@ public class FailureScopeController {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Not a clean shutdown", new Object[] { immediate, _localFailureScope });
                     }
-                    // Clear local coordination lock in filesystem case
-                    try {
-                        RecoveryDirectorFactory.recoveryDirector().clearLocalCoordinationLock();
-                    } catch (InternalLogException e) {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Unexpected exception " + e);
-                    }
+
+                    // Release the home lease lock
+                    _recoveryManager.releaseLocalLease(serverName());
                 }
 
                 if ((_tranLog != null && _tranLog.failed()) || (_xaLog != null && _xaLog.failed())) {

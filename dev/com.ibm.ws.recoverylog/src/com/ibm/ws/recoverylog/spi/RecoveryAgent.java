@@ -194,6 +194,8 @@ public interface RecoveryAgent {
 
     public boolean claimPeerLeaseForRecovery(String recoveryIdentityToRecover, String myRecoveryIdentity, LeaseInfo leaseInfo) throws Exception;
 
+    public void releasePeerLeaseForRecovery(String recoveryIdentityToRecover) throws Exception;
+
     /**
      * Returns a flag to indicate if peer server locking is enabled.
      *

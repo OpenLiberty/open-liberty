@@ -12,7 +12,6 @@
  *******************************************************************************/
 package com.ibm.ws.recoverylog.spi;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -626,46 +625,6 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                                 if (tc.isDebugEnabled())
                                     Tr.debug(tc, "LOCAL RECOVERY, filesystem case");
                             }
-
-                            // Define a lock that will manage access to the recovery log files.
-                            String[] dirs = recoveryAgent.logDirectories(failureScope);
-                            String target = null;
-                            if (dirs != null) {
-                                target = dirs[0] + File.separator + "tranlog";
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Lock coordination directory is " + target);
-                            } else {
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Attempt to obtain a file lock failed: No Log Directory Information provided by the Transaction Service");
-                                proceedWithRecovery = false;
-                            }
-
-                            // Take a lock that will manage access to the recovery log files.
-                            int lockState = 0;
-                            if (proceedWithRecovery) {
-                                if (currentFailureScope.equals(failureScope) && recoveryAgent != null) {
-                                    // Local case
-                                    _localFileLock = new CoordinationLock(target, 3); // 3 lock attempts
-                                    // Try and get the lock.
-                                    lockState = _localFileLock.lock();
-                                } else {
-                                    // Peer case
-                                    _peerFileLock = new CoordinationLock(target, 1); // 1 lock attempt
-                                    // Try and get the lock.
-                                    lockState = _peerFileLock.lock();
-                                }
-
-                                if (lockState == CoordinationLock.LOCK_FAILURE) {
-                                    Tr.error(tc, "CWRLS0016_RECOVERY_PROCESSING_FAILED", failureScope.serverName());
-                                    proceedWithRecovery = false;
-                                } else if (lockState == CoordinationLock.LOCK_INTERRUPT) {
-                                    Tr.info(tc, "CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED", failureScope.serverName());
-                                    proceedWithRecovery = false;
-                                } else {
-                                    if (tc.isDebugEnabled())
-                                        Tr.debug(tc, "The file was locked sucessfully");
-                                }
-                            }
                         }
                     }
 
@@ -677,9 +636,6 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                         throw new RecoveryFailedException("FileSystem Peer locking, peer recovery failed");
                     }
                 } catch (RecoveryFailedException exc) {
-                    // Clear peer coordination lock in filesystem case
-                    clearPeerCoordinationLock();
-
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "directInitialization", exc);
                     throw exc;
@@ -1708,19 +1664,19 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
             Tr.entry(tc, "peerRecoverServers", new Object[] { recoveryAgent, myRecoveryIdentity, peersToRecover });
 
         for (String peerRecoveryIdentity : peersToRecover) {
-
+            boolean leaseClaimed = false;
             try {
-                //Read lease check if it is still expired. If so, then update lease and proceed to peer recover
+                // Read lease, check if it is still expired. If so, then update lease and proceed to peer recover
                 // if not still expired (someone else has grabbed it) then bypass peer recover.
                 LeaseInfo leaseInfo = new LeaseInfo();
-                if (recoveryAgent.claimPeerLeaseForRecovery(peerRecoveryIdentity, myRecoveryIdentity, leaseInfo)) {
-
+                leaseClaimed = recoveryAgent.claimPeerLeaseForRecovery(peerRecoveryIdentity, myRecoveryIdentity, leaseInfo);
+                if (leaseClaimed) {
                     FileFailureScope peerFFS = new FileFailureScope(peerRecoveryIdentity, leaseInfo);
 
                     directInitialization(peerFFS);
                 } else {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Failed to claim lease for peer", this);
+                    Tr.audit(tc, "WTRN0108I: " +
+                                 "Peer Recovery failed for server with recovery identity " + peerRecoveryIdentity);
                 }
             } catch (RecoveryFailedException rfexc) {
                 Tr.audit(tc, "WTRN0108I: " +
@@ -1730,6 +1686,17 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                              "Peer Recovery failed for server with recovery identity " + peerRecoveryIdentity + " with exception " + exc);
             }
 
+            // Release the peer lease if it was claimed
+            if (leaseClaimed) {
+                try {
+                    recoveryAgent.releasePeerLeaseForRecovery(peerRecoveryIdentity);
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Have released peer lease lock");
+                } catch (Exception e) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Failed to release peer lease lock for server with recovery identity " + peerRecoveryIdentity + ", exc:  " + e, this);
+                }
+            }
         }
 
         if (tc.isEntryEnabled())
@@ -1753,37 +1720,5 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "RecoveryDirectorImpl", this);
 
-    }
-
-    @Override
-    public void clearLocalCoordinationLock() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "clearLocalCoordinationLock", new Object[] { _enablePeerLocking, _isSQLRecoveryLog, _localFileLock });
-        if (_enablePeerLocking && !_isSQLRecoveryLog) {
-            if (_localFileLock != null) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "release home server file lock");
-                _localFileLock.unlock();
-            }
-        }
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "clearLocalCoordinationLock");
-    }
-
-    @Override
-    public void clearPeerCoordinationLock() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "clearPeerCoordinationLock", new Object[] { _enablePeerLocking, _isSQLRecoveryLog, _peerFileLock });
-        if (_enablePeerLocking && !_isSQLRecoveryLog) {
-            if (_peerFileLock != null) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "release peer server file lock");
-                _peerFileLock.unlock();
-            }
-        }
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "clearPeerCoordinationLock");
     }
 }

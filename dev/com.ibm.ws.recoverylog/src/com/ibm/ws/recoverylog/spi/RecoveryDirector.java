@@ -305,8 +305,4 @@ public interface RecoveryDirector {
     public void directInitialization(FailureScope failureScope) throws RecoveryFailedException;
 
     public void setRecoveryLogFactory(RecoveryLogFactory fac);
-
-    public void clearLocalCoordinationLock();
-
-    public void clearPeerCoordinationLock();
 }

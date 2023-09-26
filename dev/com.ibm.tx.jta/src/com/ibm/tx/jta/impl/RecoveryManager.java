@@ -725,6 +725,26 @@ public class RecoveryManager implements Runnable {
             Tr.exit(tc, "deleteServerLease");
     }
 
+    public void releaseLocalLease(String recoveryIdentity) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "releaseLocalLease", this, recoveryIdentity);
+        try {
+            if (_leaseLog != null) {
+                _leaseLog.releaseLocalLease(recoveryIdentity);
+            }
+        } catch (Exception e) {
+            // Unless server is stopping, FFDC exception but allow processing to continue
+            if (FrameworkState.isStopping()) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Ignoring exception: ", e);
+            } else {
+                FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.releaseLocalLease", "701", this);
+            }
+        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "releaseLocalLease");
+    }
+
     /**
      * Update server lease if peer recovery is enabled
      *
@@ -1672,14 +1692,6 @@ public class RecoveryManager implements Runnable {
                             Tr.debug(tc, "Server with identity " + _localRecoveryIdentity + " has recovered the logs of server " + _failureScopeController.serverName());
 
                         deleteServerLease(_failureScopeController.serverName(), true);
-
-                        // Clear peer coordination lock in filesystem case
-                        try {
-                            RecoveryDirectorFactory.recoveryDirector().clearPeerCoordinationLock();
-                        } catch (InternalLogException e) {
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Unexpected exception, null RecoveryDirector");
-                        }
 
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Should peer recovery logs be retained {0}", _retainPeerLogs);
