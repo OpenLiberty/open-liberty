@@ -15,10 +15,10 @@ package test.jakarta.data.jpa.web;
 import java.util.List;
 import java.util.stream.Stream;
 
+import jakarta.data.page.KeysetAwareSlice;
+import jakarta.data.page.Pageable;
 import jakarta.data.repository.BasicRepository;
-import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.OrderBy;
-import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 

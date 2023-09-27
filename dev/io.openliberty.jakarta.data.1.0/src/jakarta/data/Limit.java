@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data.repository;
+package jakarta.data;
 
 /**
  * Method signatures are copied from the jakarta.data.repository.Limit from the Jakarta Data repo.

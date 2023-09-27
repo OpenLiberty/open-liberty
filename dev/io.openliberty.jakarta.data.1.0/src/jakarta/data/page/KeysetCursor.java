@@ -10,9 +10,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data.repository;
+package jakarta.data.page;
 
 import java.util.Arrays;
+
+import jakarta.data.page.Pageable.Cursor;
 
 /**
  */

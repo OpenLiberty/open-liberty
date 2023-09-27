@@ -28,10 +28,10 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
-import jakarta.data.repository.Pageable;
-import jakarta.data.repository.Sort;
+import jakarta.data.page.Pageable;
 import jakarta.persistence.Query;
 
 /**

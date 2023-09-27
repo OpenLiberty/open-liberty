@@ -16,8 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
+import jakarta.data.page.Pageable;
 import jakarta.data.repository.DataRepository;
-import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Repository;
 
 /**

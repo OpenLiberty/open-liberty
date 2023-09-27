@@ -19,8 +19,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
+import jakarta.data.StaticMetamodel;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.StaticMetamodel;
 
 /**
  * Makes Jakarta Data's Repository annotation into a bean defining annotation.

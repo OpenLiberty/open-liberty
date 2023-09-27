@@ -10,11 +10,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data.repository;
+package jakarta.data.page;
 
 /**
- * Copied from the jakarta.data.repository.Direction from the Jakarta Data repo.
  */
-public enum Direction {
-    ASC, DESC
+public interface KeysetAwarePage<T> extends KeysetAwareSlice<T>, Page<T> {
 }

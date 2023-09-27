@@ -23,8 +23,8 @@ import java.util.concurrent.CompletableFuture;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
+import jakarta.data.Sort;
 import jakarta.data.exceptions.MappingException;
-import jakarta.data.repository.Sort;
 import jakarta.persistence.Inheritance;
 
 /**

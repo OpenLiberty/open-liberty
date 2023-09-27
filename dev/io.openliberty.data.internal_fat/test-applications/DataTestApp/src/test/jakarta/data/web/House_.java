@@ -12,7 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import jakarta.data.repository.StaticMetamodel;
+import jakarta.data.StaticMetamodel;
 
 /**
  * Metamodel for the House entity.
