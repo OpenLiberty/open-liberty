@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.org.crac/resources/io/openliberty/crac/resources/CRaCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0551-600 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551=CWWKC0551E: \ud558\ub098 \uc774\uc0c1\uc758 \uc790\uc6d0\uc774 \uccb4\ud06c\ud3ec\uc778\ud2b8 \uc694\uccad\uc5d0 \ub300\ud55c \uc54c\ub9bc\uc744 \ubc1b\uc744 \ub54c \uc608\uc678\uac00 \ubc1c\uc0dd\ud558\uc5ec \uc11c\ubc84 \uccb4\ud06c\ud3ec\uc778\ud2b8 \uc694\uccad\uc774 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.explanation=\ud558\ub098 \uc774\uc0c1\uc758 \ub4f1\ub85d\ub41c \uc790\uc6d0 \uad6c\ud604\uc774 \uccb4\ud06c\ud3ec\uc778\ud2b8 \uc694\uccad\uc5d0 \ub300\ud55c \uc54c\ub9bc\uc744 \ubc1b\uc744 \ub54c \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.useraction=\ub85c\uadf8\uc5d0\uc11c \uccb4\ud06c\ud3ec\uc778\ud2b8 \uc694\uccad \uc2e4\ud328\uc758 \uc6d0\uc778\uc774 \ub418\ub294 \uc608\uc678\ub97c \uac80\uc0ac\ud558\uc2ed\uc2dc\uc624.
+
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552=CWWKC0552E: \ud558\ub098 \uc774\uc0c1\uc758 \uc790\uc6d0\uc774 \uccb4\ud06c\ud3ec\uc778\ud2b8\uc5d0\uc11c \uc11c\ubc84 \ubcf5\uc6d0\uc744 \uc54c\ub9ac\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud558\uc5ec \uc11c\ubc84\ub97c \ubcf5\uc6d0\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.explanation=\ud558\ub098 \uc774\uc0c1\uc758 \ub4f1\ub85d\ub41c \uc790\uc6d0 \uad6c\ud604\uc774 \uccb4\ud06c\ud3ec\uc778\ud2b8\uc5d0\uc11c \uc11c\ubc84 \ubcf5\uc6d0\uc5d0 \ub300\ud55c \uc54c\ub9bc\uc744 \ubc1b\uc744 \ub54c \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.useraction=\uccb4\ud06c\ud3ec\uc778\ud2b8\uc5d0\uc11c \uc11c\ubc84\ub97c \ubcf5\uc6d0\ud558\ub294 \ub370 \uc2e4\ud328\ud55c \uc608\uc678\uac00 \uc788\ub294\uc9c0 \ub85c\uadf8\ub97c \uac80\uc0ac\ud558\uc2ed\uc2dc\uc624.
+
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553=CWWKC0553E: \uccb4\ud06c\ud3ec\uc778\ud2b8\uc5d0 \ub300\ud55c \uc694\uccad\uc740 Liberty \uc11c\ubc84\uc5d0\uc11c \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.explanation=org.crac API\ub97c \uc0ac\uc6a9\ud558\ub294 \uccb4\ud06c\ud3ec\uc778\ud2b8\uc5d0 \ub300\ud55c \uc694\uccad\uc740 Liberty\uc5d0\uc11c \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. 
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.useraction=Liberty InstantOn\uc758 \uccb4\ud06c\ud3ec\uc778\ud2b8 \ubc0f \ubcf5\uc6d0 \uc870\uc791\uc5d0 \ub300\ud55c \uc138\ubd80\uc0ac\ud56d\uc740 \ubb38\uc11c\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.

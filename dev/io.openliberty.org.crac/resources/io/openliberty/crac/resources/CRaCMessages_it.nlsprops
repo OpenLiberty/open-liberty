@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.org.crac/resources/io/openliberty/crac/resources/CRaCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0551-600 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551=CWWKC0551E: La richiesta di checkpoint del server non \u00e8 riuscita, perch\u00e9 una o pi\u00f9 risorse hanno generato un'eccezione quando hanno ricevuto notifica della richiesta del checkpoint.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.explanation=Una o pi\u00f9 implementazioni di risorse registrate hanno generato un'eccezione quando hanno ricevuto notifica di una richiesta di checkpoint.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.useraction=Esaminare i log per individuare l'eccezione che ha causato l'esito negativo della richiesta di checkpoint.
+
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552=CWWKC0552E: Il ripristino del server non \u00e8 riuscito, in quanto una o pi\u00f9 risorse hanno generato un'eccezione quando hanno ricevuto notifica del ripristino del server dal checkpoint.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.explanation=Una o pi\u00f9 implementazioni di risorse registrate hanno generato un'eccezione quando hanno ricevuto notifica del ripristino di un server dal checkpoint.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.useraction=Esaminare i log per individuare l'eccezione che ha causato l'esito negativo del ripristino del server dal checkpoint.
+
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553=CWWKC0553E: Le richieste di un checkpoint non sono supportate nel server Liberty.
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.explanation=Le richieste di un checkpoint che utilizzano le API org.crac non sono supportate da Liberty. 
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.useraction=Consultare la documentazione per conoscere i dettagli delle operazioni di ripristino e di checkpoint per Liberty InstantOn.

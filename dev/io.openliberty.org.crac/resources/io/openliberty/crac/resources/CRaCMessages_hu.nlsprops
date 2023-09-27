@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.org.crac/resources/io/openliberty/crac/resources/CRaCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0551-600 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551=CWWKC0551E: A kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9s meghi\u00fasult, mert egy vagy t\u00f6bb er\u0151forr\u00e1s kiv\u00e9telt dobott, amikor \u00e9rtes\u00edt\u00e9st kapott az ellen\u0151rz\u00e9si pont k\u00e9r\u00e9s\u00e9r\u0151l.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.explanation=Legal\u00e1bb egy regisztr\u00e1lt er\u0151forr\u00e1s-megval\u00f3s\u00edt\u00e1s kiv\u00e9telt dobott egy ellen\u0151rz\u00e9si pont k\u00e9r\u00e9s \u00e9rtes\u00edt\u00e9sekor.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.useraction=Vizsg\u00e1lja meg az ellen\u0151rz\u00e9si pont k\u00e9r\u00e9st okoz\u00f3 kiv\u00e9tel napl\u00f3it.
+
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552=CWWKC0552E: A kiszolg\u00e1l\u00f3 vissza\u00e1ll\u00edt\u00e1sa meghi\u00fasult, mert egy vagy t\u00f6bb er\u0151forr\u00e1s kiv\u00e9telt dobott, amikor \u00e9rtes\u00edt\u00e9st kapott a kiszolg\u00e1l\u00f3 vissza\u00e1ll\u00edt\u00e1s\u00e1r\u00f3l az ellen\u0151rz\u00e9si pontt\u00f3l.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.explanation=Legal\u00e1bb egy regisztr\u00e1lt er\u0151forr\u00e1s-megval\u00f3s\u00edt\u00e1s kiv\u00e9telt dobott, amikor \u00e9rtes\u00edt\u00e9st kapott a kiszolg\u00e1l\u00f3 vissza\u00e1ll\u00edt\u00e1s\u00e1r\u00f3l az ellen\u0151rz\u00e9si pontt\u00f3l.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.useraction=Keresse meg a napl\u00f3kban azt a kiv\u00e9telt, amely az ellen\u0151rz\u00e9si pontr\u00f3l t\u00f6rt\u00e9n\u0151 kiszolg\u00e1l\u00f3-vissza\u00e1ll\u00edt\u00e1s sikertelens\u00e9g\u00e9t okozta.
+
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553=CWWKC0553E: Az ellen\u0151rz\u00e9si pont k\u00e9r\u00e9sek nem t\u00e1mogatottak a Liberty kiszolg\u00e1l\u00f3n.
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.explanation=Az org.crac API-kat haszn\u00e1l\u00f3 ellen\u0151rz\u00e9si pontra vonatkoz\u00f3 k\u00e9r\u00e9seket a Liberty nem t\u00e1mogatja. 
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.useraction=Ellen\u0151rizze a dokument\u00e1ci\u00f3t a Liberty InstantOnellen\u0151rz\u00e9si pont \u00e9s vissza\u00e1ll\u00edt\u00e1si m\u0171veletek r\u00e9szletei\u00e9rt.

@@ -13,7 +13,7 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
+# 
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
@@ -25,6 +25,7 @@
 # Message prefix block: CWMOT5000 - CWMOT5999
 #-----------------------------------------------------------------------------------------------------------------------------
 # Message prefix block for io.openliberty.microprofile.telemetry.common: CWMOT5000 - CWMOT5199
+# This was previously two files, so the message IDs used are not contiguous but should not be changed.
 
 CWMOT5100.tracing.is.disabled=CWMOT5100I: Funkce trasov\u00e1n\u00ed telemetrie produktu MicroProfile je povolena, ale nen\u00ed nakonfigurov\u00e1na pro generov\u00e1n\u00ed trasov\u00e1n\u00ed pro aplikaci {0}.
 CWMOT5100.tracing.is.disabled.explanation=Funkci trasov\u00e1n\u00ed telemetrie produktu MicroProfile je t\u0159eba nakonfigurovat tak, aby vytv\u00e1\u0159ela trasov\u00e1n\u00ed a exportovala je do syst\u00e9mu trasov\u00e1n\u00ed.
@@ -37,3 +38,11 @@ CWMOT5000.cannot.get.globalopentelemetry.useraction=Pou\u017eijte CDI pro vlo\u0
 CWMOT5001.cannot.set.globalopentelemetry=CWMOT5001E: Nastaven\u00ed objektu GlobalOpenTelemetry nen\u00ed podporov\u00e1no.
 CWMOT5001.cannot.set.globalopentelemetry.explanation=T\u0159\u00edda GlobalOpenTelemetry nen\u00ed podporov\u00e1na, proto\u017ee neexistuje \u017e\u00e1dn\u00fd glob\u00e1ln\u00ed objekt OpenTelemetry. M\u00edsto toho mus\u00ed ka\u017ed\u00e1 aplikace pou\u017e\u00edvat CDI pro vlo\u017een\u00ed objektu OpenTelemetry pro tuto aplikaci.
 CWMOT5001.cannot.set.globalopentelemetry.useraction=Nevolejte metodu GlobalOpenTelemetry.get. Pot\u0159ebuje-li k\u00f3d aplikace z\u00edskat objekt OpenTelemetry, pou\u017eijte CDI a vlo\u017ete jej.
+
+CWMOT5002.telemetry.error=CWMOT5002E: Do\u0161lo k intern\u00ed chyb\u011b ve funkci MicroProfile Telemetry. Chyba je: {0}.
+CWMOT5002.telemetry.error.explanation=Do\u0161lo k chyb\u011b, kter\u00e1 zabr\u00e1nila norm\u00e1ln\u00edmu provozu funkce MicroProfile Telemetry.
+CWMOT5002.telemetry.error.useraction=Zkontrolujte soubor message.log serveru a protokoly FFDC a identifikujte probl\u00e9m.
+
+CWMOT5003.factory.used.after.shutdown=CWMOT5003W: Aplikace {0} se pokusila z\u00edskat funkci MicroProfile Telemetry po vypnut\u00ed aplikace.
+CWMOT5003.factory.used.after.shutdown.explanation=CWMOT5003.factory.used.after.shutdown.explanation=Po vypnut\u00ed aplikace, vrac\u00ed funkce MicroProfile Telemetry objekty, kter\u00e9 p\u0159i vyvol\u00e1n\u00ed bezobslu\u017en\u011b prov\u00e1d\u011bj\u00ed akce bez operac\u00ed. Tento proces m\u016f\u017ee v\u00e9st k nep\u0159\u00edtomnosti o\u010dek\u00e1van\u00fdch dat telemetrie.
+CWMOT5003.factory.used.after.shutdown.useraction=Zkontrolujte aplikaci a zjist\u011bte, pro\u010d se pokusila pou\u017e\u00edt funkci MicroProfile Telemetry po vypnut\u00ed. Akce, kter\u00e9 mohou spustit pou\u017eit\u00ed funkce MicroProfile Telemetry, zahrnuj\u00ed vol\u00e1n\u00ed metody s anotacemi @WithSpan nebo vytvo\u0159en\u00ed po\u017eadavku s klientem JAX-RS nebo klientem MP REST.

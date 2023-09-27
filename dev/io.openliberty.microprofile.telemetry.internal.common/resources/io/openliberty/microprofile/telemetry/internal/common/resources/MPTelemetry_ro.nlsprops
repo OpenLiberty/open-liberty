@@ -13,7 +13,7 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
+# 
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
@@ -25,6 +25,7 @@
 # Message prefix block: CWMOT5000 - CWMOT5999
 #-----------------------------------------------------------------------------------------------------------------------------
 # Message prefix block for io.openliberty.microprofile.telemetry.common: CWMOT5000 - CWMOT5199
+# This was previously two files, so the message IDs used are not contiguous but should not be changed.
 
 CWMOT5100.tracing.is.disabled=CWMOT5100I: Caracteristica MicroProfile Telemetry Tracing este activat\u0103, dar nu este configurat\u0103 pentru a genera urme pentru aplica\u021bia {0}.
 CWMOT5100.tracing.is.disabled.explanation=Caracteristica MicroProfile Telemetry Tracing trebuie s\u0103 fie configurat\u0103 pentru a crea urme \u0219i a le exporta c\u0103tre sistemul de urm\u0103rire.
@@ -37,3 +38,11 @@ CWMOT5000.cannot.get.globalopentelemetry.useraction=Utiliza\u021bi CDI pentru a 
 CWMOT5001.cannot.set.globalopentelemetry=CWMOT5001E: Setarea obiectului GlobalOpenTelemetry nu este suportat\u0103.
 CWMOT5001.cannot.set.globalopentelemetry.explanation=Clasa GlobalOpenTelemetry nu este suportat\u0103, deoarece nu exist\u0103 niciun obiect OpenTelemetry global. \u00cen schimb, fiecare aplica\u021bie trebuie s\u0103 utilizeze CDI pentru a injecta obiectul OpenTelemetry pentru aplica\u021bia respectiv\u0103.
 CWMOT5001.cannot.set.globalopentelemetry.useraction=Nu apela\u021bi la metoda GlobalOpenTelemetry.get. \u00cen cazul \u00een care codul aplica\u021biei trebuie s\u0103 ob\u021bin\u0103 un obiect OpenTelemetry, folosi\u021bi CDI pentru a-l injecta.
+
+CWMOT5002.telemetry.error=CWMOT5002E: A ap\u0103rut o eroare intern\u0103 \u00een MicroProfile Telemetry. Eroarea este: {0}.
+CWMOT5002.telemetry.error.explanation=A ap\u0103rut o eroare care a \u00eempiedicat func\u021bionarea normal\u0103 pentru MicroProfile Telemetry.
+CWMOT5002.telemetry.error.useraction=Examina\u0163i fi\u015fierul message.log \u015fi istoricele FFDC pentru a identifica problema.
+
+CWMOT5003.factory.used.after.shutdown=CWMOT5003W: Aplica\u021bia {0} a \u00eencercat s\u0103 achizi\u021bioneze MicroProfile Telemetry dup\u0103 ce aplica\u021bia a fost oprit\u0103.
+CWMOT5003.factory.used.after.shutdown.explanation=CWMOT5003.factory.used.after.shutdown.explanation=Dup\u0103 ce o aplica\u021bie se opre\u0219te, MicroProfile Telemetry returneaz\u0103 obiecte care realizeaz\u0103 \u00een mod silen\u021bios ac\u021biunile no-op c\u00e2nd acestea sunt invocate. Acest proces poate duce la absen\u021ba unor date de telemetrie a\u0219teptate.
+CWMOT5003.factory.used.after.shutdown.useraction=Examina\u021bi aplica\u021bia pentru a vedea de ce a \u00eencercat s\u0103 foloseasc\u0103 MicroProfile Telemetry dup\u0103 oprire. Ac\u021biuni care pot declan\u0219a utilizarea MicroProfile Telemetry includ apelarea unei metode care este adnotat\u0103 cu @WithSpan sau executarea unei cereri cu un JAX-RS Client sau MP Rest Client.
