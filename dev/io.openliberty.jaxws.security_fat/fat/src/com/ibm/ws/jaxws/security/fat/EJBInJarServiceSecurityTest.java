@@ -134,6 +134,13 @@ public class EJBInJarServiceSecurityTest {
         runTest("user2", "user2pwd", "SecuredSayHelloService", "Hello user2 from secured ejb web service.", true);
         runTest("user3", "user3pwd", "SecuredSayHelloService", "Hello user3 from secured ejb web service.", false);
         runTest("user4", "user4pwd", "SecuredSayHelloService", "Hello user4 from secured ejb web service.", false);
+
+        if (server != null && server.isStarted()) {
+            server.stopServer();
+        }
+        // Adding another deletion here to be sure deletion happens before test_ejbws_in_jar_security_without_bndfile test
+        server.deleteFileFromLibertyServerRoot(
+                                               "apps/EJBInJarServiceSecurity.ear/EJBInJarServiceSecurity.jar/META-INF/ibm-ws-bnd.xml");
     }
 
     @Mode(componenttest.custom.junit.runner.Mode.TestMode.FULL)
