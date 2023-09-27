@@ -66,11 +66,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private boolean _dataSourceFactorySet;
     private static boolean _frameworkShutting;
 
-    private final ConcurrentServiceReferenceSet<TransactionSettingsProvider> _transactionSettingsProviders = new ConcurrentServiceReferenceSet<>("transactionSettingsProvider");
+    private final ConcurrentServiceReferenceSet<TransactionSettingsProvider> _transactionSettingsProviders = new ConcurrentServiceReferenceSet<TransactionSettingsProvider>("transactionSettingsProvider");
     /**
      * Active instance. May be null between deactivate and activate.
      */
-    private static final AtomicServiceReference<ResourceFactory> dataSourceFactoryRef = new AtomicServiceReference<>("dataSourceFactory");
+    private static final AtomicServiceReference<ResourceFactory> dataSourceFactoryRef = new AtomicServiceReference<ResourceFactory>("dataSourceFactory");
 
     private static final int HEURISTIC_RETRY_INTERVAL_DEFAULT = 60;
 
@@ -170,13 +170,13 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         } else {
             getTransactionLogDirectory(); // Set logDir
             if (checkpointRestoreBeforeRunningCondition() && !logDir.equals(_prevLogDir)) {
-                // tranactionLogDir changed at restore
+                // transactionLogDir changed in checkpoint restore. If the checkpoint contains
+                // a recovery log, it also contains active handle(s) to the log files. Deleting
+                // the previous, stale logDir will cause checkpoint restore to fail w/o otherwise
+                // replacing it. Ignore the stale recovery log as a convenience for on-premesis
+                // usage (e.g. testing outside of a container.)
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "logDir changed in checkpoint restore. Delete stale logDir " + _prevLogDir);
-                if (!recursiveDelete(new File(_prevLogDir))) {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Failed to delete stale tranlogdir " + _prevLogDir);
-                }
+                    Tr.debug(tc, "logDir changed in checkpoint restore. Ignore previous logDir " + _prevLogDir);
             }
             if (isStartupEnabled())
                 tmsRef.doStartup(this, _isSQLRecoveryLog);
@@ -995,7 +995,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     private List<Integer> parseSqlCodes(String sqlCodesStr) {
-        List<Integer> sqlCodeList = new ArrayList<>();
+        List<Integer> sqlCodeList = new ArrayList<Integer>();
         if (sqlCodesStr != null && !sqlCodesStr.trim().isEmpty()) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "There are sqlcodes to parse " + sqlCodesStr);

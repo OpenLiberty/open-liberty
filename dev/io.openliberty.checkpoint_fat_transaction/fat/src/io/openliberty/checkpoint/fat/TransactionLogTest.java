@@ -308,8 +308,8 @@ public class TransactionLogTest extends FATServletClient {
 
         serverTranLog.checkpointRestore();
 
-        assertTrue("The restored server should remove directory ${server.output.dir}/tranlog, but did not.",
-                   !serverTranLog.fileExistsInLibertyServerRoot("/tranlog"));
+        assertTrue("The restored server should not remove directory ${server.output.dir}/tranlog, but did.",
+                   serverTranLog.fileExistsInLibertyServerRoot("/tranlog"));
 
         runTest(serverTranLog, "testLTCAfterGlobalTran");
 
