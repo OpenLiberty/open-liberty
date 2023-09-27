@@ -18,12 +18,9 @@ Bundle-Name: WebSphere Spring Boot Thin Support
 Bundle-SymbolicName: com.ibm.ws.app.manager.springboot.thin
 Bundle-Description: WebSphere Spring Boot Thin Support, version ${bVersion}
 
-IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 Export-Package: \
 	com.ibm.ws.app.manager.springboot.thin.util,\
 	com.ibm.ws.app.manager.springboot.thin.container
-
-Include-Resource: OSGI-INF=resources/OSGI-INF
 
 Import-Package: \
     com.ibm.ws.app.manager.module.internal, \
