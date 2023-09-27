@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2020 IBM Corporation and others.
+ * Copyright (c) 2003, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -805,9 +805,8 @@ public class LogFileHeader {
      *
      * @return boolean true if the headers match, otherwise false
      */
+    @Trivial
     private boolean validMagicNumber(byte[] magicNumberBuffer) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "validMagicNumber", new java.lang.Object[] { RLSUtils.toHexString(magicNumberBuffer, RLSUtils.MAX_DISPLAY_BYTES), this });
 
         boolean incorrectByteDetected = false;
         int currentByte = 0;
@@ -819,8 +818,8 @@ public class LogFileHeader {
             currentByte++;
         }
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "validMagicNumber", !incorrectByteDetected);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "validMagicNumber {0} {1} {2}", RLSUtils.toHexString(magicNumberBuffer, RLSUtils.MAX_DISPLAY_BYTES), this, !incorrectByteDetected);
         return !incorrectByteDetected;
     }
 
@@ -1186,6 +1185,7 @@ public class LogFileHeader {
      *
      * @return String A printable form of the status ("ACTIVE","INACTIVE","KEYPOINTING", "INVALID" or "UNKNOWN")
      */
+    @Trivial
     static String statusToString(int status) {
         String result = null;
 

@@ -129,7 +129,7 @@ public class RegistrationImpl {
      * Note: this function is used internally by the implementation - we do not expose
      * the WS-Coor Activation service.
      */
-    public WSATContext activate(String globalId, EndpointReferenceType registration, long timeout, boolean recovery) throws WSATException {
+    public WSATTransaction activate(String globalId, EndpointReferenceType registration, long timeout, boolean recovery) throws WSATException {
         if (timeout < 0) {
             throw new WSATException(Tr.formatMessage(TC, "WSAT_TRAN_EXPIRED_CWLIB0203"));
         }
@@ -144,7 +144,7 @@ public class RegistrationImpl {
         WSATTransaction.putTran(wsatTran);
 
         // Build the context object to return
-        return wsatTran.getContext();
+        return wsatTran;
     }
 
     /*

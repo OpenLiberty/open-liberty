@@ -250,6 +250,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     /*
      * Called by DS to dereference DataSourceFactory
      */
+    @Trivial
     protected void unsetDataSourceFactory(ServiceReference<ResourceFactory> ref) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "unsetDataSourceFactory, ref " + ref);
@@ -276,14 +277,10 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     @Trivial
     public int getClientInactivityTimeout() {
-        // return Integer.valueOf(_props.get("client.inactivity.timeout"));
         Number num = (Number) _props.get("clientInactivityTimeout");
-
-        int timeout = num.intValue();
-
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getClientInactivityTimeout: {0}", timeout);
-        return timeout;
+            Tr.debug(tc, "getClientInactivityTimeout: {0}", num);
+        return num.intValue();
     }
 
     @Override
@@ -309,17 +306,14 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Trivial
     public int getHeuristicRetryLimit() {
         Number num = (Number) _props.get("heuristicRetryLimit");
-
-        int limit = num.intValue();
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getHeuristicRetryLimit: {0}", limit);
-        return limit;
+            Tr.debug(tc, "getHeuristicRetryLimit: {0}", num);
+        return num.intValue();
     }
 
     @Override
     @Trivial
     public int getMaximumTransactionTimeout() {
-        //return ((Integer) _props.get("propogatedOrBMTTranLifetimeTimeout")).intValue();
         Number num = (Number) _props.get("propogatedOrBMTTranLifetimeTimeout");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getMaximumTransactionTimeout: {0}", num);
@@ -327,9 +321,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public int getTotalTransactionLifetimeTimeout() {
-        //return ((Integer) _props.get("totalTranLifetimeTimeout")).intValue();
         Number num = (Number) _props.get("totalTranLifetimeTimeout");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getTotalTransactionLifetimeTimeout: {0}", num);
         return num.intValue();
     }
 
