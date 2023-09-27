@@ -643,7 +643,10 @@ public class SAMLRequestTAI implements TrustAssociationInterceptor, UnprotectedR
     private boolean isDelegatedLogoutInProgress(HttpServletRequest request, HttpServletResponse response, SsoRequest samlRequest) {
         boolean delegated = false;
         SpCookieRetriver spCookieRetriever = new SpCookieRetriver(authCacheServiceRef.getService(), (IExtendedRequest) request, samlRequest);
-        Subject subject = getSubjectFromSPCookieRetriever(spCookieRetriever);
+        Subject subject = spCookieRetriever.getSubjectFromSpCookie();
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "subject from spCookie is:" + subject);
+        }
         String samlServiceProvider = null;
         if (subject != null) {
             samlServiceProvider = getPropertyFromCallerSubjectPrivateCredentials(subject, com.ibm.ws.security.sso.common.Constants.WSCREDENTIAL_SAML_IDP_USED);
@@ -742,15 +745,6 @@ public class SAMLRequestTAI implements TrustAssociationInterceptor, UnprotectedR
     private boolean servletLogoutPerformsSLO(SsoRequest samlRequest) {
         return samlRequest.getSsoConfig().isServletRequestLogoutPerformsSamlLogout();
     }
-    
-    private Subject getSubjectFromSPCookieRetriever(SpCookieRetriver spCookieRetriever) {
-        //SpCookieRetriver spCookieRetriever = new SpCookieRetriver(authCacheServiceRef.getService(), req, samlRequest);
-        Subject subject = spCookieRetriever.getSubjectFromSpCookie();
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "subject from spCookie is:" + subject);
-        }
-        return subject;
-    }
 
     /**
      * When we get a valid SP Cookie, authenticate it
@@ -770,10 +764,10 @@ public class SAMLRequestTAI implements TrustAssociationInterceptor, UnprotectedR
         boolean bSetSubject = false;
         // find a valid spCookie and get its subject, otherwise call SAMLRequestTAI directly
         //SpCookieRetriver spCookieRetriever = new SpCookieRetriver(authCacheServiceRef.getService(), req, samlRequest);
-        Subject subject = getSubjectFromSPCookieRetriever(spCookieRetriever);//spCookieRetriever.getSubjectFromSpCookie();
-        //if (tc.isDebugEnabled()) {
-        //    Tr.debug(tc, "subject from spCookie is:" + subject);
-        //}
+        Subject subject = spCookieRetriever.getSubjectFromSpCookie();
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "subject from spCookie is:" + subject);
+        }
         if (subject == null) {
             String spCookieName = samlRequest.getSpCookieName();
             RequestUtil.removeCookie(req, response, spCookieName);

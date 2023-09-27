@@ -212,7 +212,7 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "SP Initiated SLO Request, removing OIDC_LOGOUT_REDIRECT_URL attribute");
             }
-            req.removeAttribute("OIDC_LOGOUT_REDIRECT_PAGE");
+            req.removeAttribute("OIDC_LOGOUT_REDIRECT_URL");
         } else if (req.getAttribute("OIDC_LOGOUT_REDIRECT_PAGE") != null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "SP Initiated SLO Request, removing OIDC_LOGOUT_REDIRECT_PAGE attribute");
