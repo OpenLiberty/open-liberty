@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ import org.opensaml.xmlsec.signature.support.impl.BaseSignatureTrustEngine;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.saml.TraceConstants;
 import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
 import com.ibm.ws.security.saml.sso20.internal.utils.SignatureMethods;
@@ -145,7 +146,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
         processType = "Profile";
 
         if (!assertion.isSigned()) {
-            return; //caller is resonsible to check if signature is required
+            return; //caller is responsible to check if signature is required
         }
 
         evaluate(samlMsgCtx, assertion);
@@ -228,7 +229,8 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
      * @param samlMsgCtx     the SAML message context being processed
      * @throws SecurityPolicyException thrown if the signature fails validation
      */
-    
+    //ignore NPEs, we see them with certain flavors of java and when the trust store is not configured correctly
+    @FFDCIgnore({NullPointerException.class})
     protected void doEvaluate(Signature signature, SignableSAMLObject signableObject, BasicMessageContext<?, ?> samlMsgCtx) throws MessageHandlerException {
         //String contextIssuer = samlMsgCtx.getInboundMessageIssuer(); //v2
         String contextIssuer = samlMsgCtx.getInboundSamlMessageIssuer();
@@ -267,7 +269,13 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
                     }
                     throw new MessageHandlerException("Validation of " + processType + " message signature failed");
                 }
-            }catch (Exception e){
+            } catch (NullPointerException npe) {
+                throw new MessageHandlerException("Validation of " + processType + " message signature failed");           
+            } catch (Exception e) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Validation of " + processType + " message signature failed for context issuer '" + contextIssuer
+                                 + "', message type: " + msgType + "exception: " + e.getMessage() != null ? e.getMessage() : "exception");
+                }
                 throw new MessageHandlerException("Validation of " + processType + " message signature failed");           
             } finally {
                 Thread.currentThread().setContextClassLoader(originalClassLoader); 
