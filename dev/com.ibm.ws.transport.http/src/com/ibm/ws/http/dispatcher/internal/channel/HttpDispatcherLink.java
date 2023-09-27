@@ -67,6 +67,7 @@ import com.ibm.wsspi.http.ee8.Http2InboundConnection;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -220,25 +221,38 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         if (usingNetty) {
 
-            ChannelFuture closeFuture;
-            if (response.isPersistent()) {
-                MSP.log("Persist clear");
-                isc.clear();
-            }
+            //register what the close will do, let the close be handled by
+            //the persist handler
+
+            ChannelFuture future = nettyContext.channel().closeFuture();
+            future.addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture future) throws Exception {
+                    isc.destroy();
+                }
+
+            });
+
+//
+//            ChannelFuture closeFuture;
+//            if (response.isPersistent()) {
+//                MSP.log("Persist clear");
+//                isc.clear();
+//            }
 
 //            if (response.isPersistent()) {
 //                response.setHeader(HttpHeaderKeys.HDR_CONNECTION.getName(), "keep-alive");
 //                nettyContext.channel().read();
 //            }
 
-            try {
-                closeFuture = this.nettyContext.channel().close();
-                closeFuture.sync();
-            } catch (InterruptedException exception) {
-                exception.printStackTrace();
-            } finally {
-                return;
-            }
+//            try {
+//                closeFuture = this.nettyContext.channel().close();
+//                closeFuture.sync();
+//            } catch (InterruptedException exception) {
+//                exception.printStackTrace();
+//            } finally {
+//                return;
+//            }
 
         } else {
             if (this.vc == null) {
