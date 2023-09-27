@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -74,12 +74,12 @@ public class Http2SecureTests extends FATServletClient {
     /**
      * Test Coverage: Client requests a servlet that will generate a push request
      * Test Outcome: Server pushes a resource to the client
-     * Note: JDK9+ required here for ALPN
+     * Note: JDK9+ was required here for ALPN originally but ALPN support has been
+     * backported to Java 8 for all major JDKs
      *
      * @throws Exception
      */
     @Test
-    @MinimumJavaLevel(javaLevel = 9)
     public void testSimplePushSecure() throws Exception {
         String[] requestUris = new String[] { "/H2TestModule/SimplePushServlet" };
         int port = server.getHttpSecondarySecurePort();
@@ -91,12 +91,12 @@ public class Http2SecureTests extends FATServletClient {
     /**
      * Test Coverage: Client makes multiple requests to a servlet that will generate a push request
      * Test Outcome: Server pushes multiple resources to the client
-     * Note: JDK9+ required here for ALPN
+     * Note: JDK9+ was required here for ALPN originally but ALPN support has been
+     * backported to Java 8 for all major JDKs
      *
      * @throws Exception
      */
     @Test
-    @MinimumJavaLevel(javaLevel = 9)
     public void testMultiplePushesSecure() throws Exception {
         String[] requestUris = new String[] { "/H2TestModule/SimplePushServlet",
                                               "/H2TestModule/SimplePushServlet",
@@ -110,12 +110,12 @@ public class Http2SecureTests extends FATServletClient {
     /**
      * Test Coverage: Client makes a request to a servlet with a simple body
      * Test Outcome: Server responds with the servlet body
-     * Note: JDK9+ required here for ALPN
+     * Note: JDK9+ was required here for ALPN originally but ALPN support has been
+     * backported to Java 8 for all major JDKs
      *
      * @throws Exception
      */
     @Test
-    @MinimumJavaLevel(javaLevel = 9)
     public void testSimpleRequestSecure() throws Exception {
         String[] requestUris = new String[] { "/H2TestModule/H2HeadersAndBody" };
         int port = server.getHttpSecondarySecurePort();
@@ -127,12 +127,12 @@ public class Http2SecureTests extends FATServletClient {
     /**
      * Test Coverage: Client makes multiple requests to a servlet with a simple body
      * Test Outcome: Server responds multiple times
-     * Note: JDK9+ required here for ALPN
+     * Note: JDK9+ was required here for ALPN originally but ALPN support has been
+     * backported to Java 8 for all major JDKs
      *
      * @throws Exception
      */
     @Test
-    @MinimumJavaLevel(javaLevel = 9)
     public void testMultipleRequestsSecure() throws Exception {
         String[] requestUris = new String[] { "/H2TestModule/H2HeadersAndBody",
                                               "/H2TestModule/H2HeadersAndBody",
