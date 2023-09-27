@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018,2022 IBM Corporation and others.
+ * Copyright (c) 2018,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,9 +26,11 @@ import org.eclipse.microprofile.context.spi.ThreadContextSnapshot;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.context.ContainerContextProvider;
 import com.ibm.ws.microprofile.context.DeferredClearedContext;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
@@ -121,13 +123,29 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
      */
     @Override
     @Trivial // traced with greater granularity within method
+    @FFDCIgnore(IllegalStateException.class)
     public ArrayList<com.ibm.wsspi.threadcontext.ThreadContext> taskStarting() throws RejectedExecutionException {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         // EE Concurrency 3.3.4: All invocations to any of the proxied interface methods will fail with a
         // java.lang.IllegalStateException exception if the application component is not started or deployed.
-        if (metadataIdentifier != null && cmProvider.metadataIdentifierService.getMetaData(metadataIdentifier) == null)
-            com.ibm.ws.context.service.serializable.ThreadContextDescriptorImpl.notAvailable(metadataIdentifier, "");
+        if (metadataIdentifier != null) {
+            MetaData mData = null;
+            try {
+                mData = cmProvider.metadataIdentifierService.getMetaData(metadataIdentifier);
+            } catch (IllegalStateException ex) {
+                // IllegalStateException thrown if app is not started or deployed. Although correct
+                // exception type, the message isn't appropriate/helpful. Ignore and throw improved
+                // exception with translated message below.
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "component metadata not available : " + ex);
+            }
+
+            // if metadata not found; provide an IllegalStateException with useful translated message
+            if (mData == null) {
+                com.ibm.ws.context.service.serializable.ThreadContextDescriptorImpl.notAvailable(metadataIdentifier, "");
+            }
+        }
 
         ArrayList<com.ibm.wsspi.threadcontext.ThreadContext> contextAppliedToThread = new ArrayList<com.ibm.wsspi.threadcontext.ThreadContext>(contextSnapshots.size());
         try {
