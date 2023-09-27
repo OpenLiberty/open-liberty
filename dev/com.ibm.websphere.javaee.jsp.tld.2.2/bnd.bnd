@@ -6,14 +6,13 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.2
 -nouses=true
 
+# Contains JSTL Implementation for Tooling
+# Contained within dev/api/spec
 Bundle-SymbolicName: com.ibm.websphere.javaee.jsp.tld.2.2
 
 Export-Package: \
