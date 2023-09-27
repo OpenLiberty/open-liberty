@@ -13,6 +13,7 @@
 package com.ibm.ws.security.token.ltpa.internal;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.config.xml.nester.Nester;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.security.filemonitor.FileBasedActionable;
 import com.ibm.ws.security.filemonitor.LTPAFileMonitor;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
@@ -84,6 +86,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private LTPAKeyInfoManager ltpaKeyInfoManager;
     private String primaryKeyImportFile;
     private String primaryKeyImportDir;
+    private boolean primaryKeyInsideWlpResource = true;
     @Sensitive
     private String primaryKeyPassword;
     private long keyTokenExpiration;
@@ -150,6 +153,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         // If expirationDifferenceAllowed is set to less than 0, then the two expiration values will not be compared in the LTPAToken2.decrypt() method.
         expirationDifferenceAllowed = (Long) props.get(KEY_EXP_DIFF_ALLOWED);
         monitorDirectory = (Boolean) props.get(CFG_KEY_MONITOR_DIRECTORY);
+        primaryKeyInsideWlpResource = true; //init value - will be set in resolveActualPrimaryKeysFileLocation()
 
         resolveActualPrimaryKeysFileLocation();
 
@@ -178,6 +182,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             Tr.debug(tc, "monitorInterval: " + monitorInterval);
             Tr.debug(tc, "authFilterRef: " + authFilterRef);
             Tr.debug(tc, "monitorDirectory: " + monitorDirectory);
+            Tr.debug(tc, "primaryKeyInsideWlpResource: " + primaryKeyInsideWlpResource);
             Tr.debug(tc, "validationKeys: " + (validationKeys == null ? "Null" : validationKeys.toString()));
         }
     }
@@ -211,28 +216,41 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private List<Properties> getNonConfiguredValidationKeys() {
         List<Properties> validationKeysInDirectory = new ArrayList<Properties>();
         WsResource keysFileInDirectory = locationService.getServiceWithException().resolveResource(primaryKeyImportDir);
-        Iterator<String> keysFileNames = keysFileInDirectory.getChildren(".*\\.keys");
+        Iterator<String> keysFileNames = null;
 
-        while (keysFileNames.hasNext()) {
-            Properties properties = new Properties();
-            WsResource kfs = keysFileInDirectory.getChild(keysFileNames.next());
-            String fn = kfs.getName();
-            fn = primaryKeyImportDir.concat(fn);
-
-            // skip the primary LTPA keys file or validationKeys file configured in the valicationKeys element
-            if (primaryKeyImportFile.equals(kfs.getName()) || isConfiguredValidationKeys(fn)) {
-                continue;
-            }
-
-            properties.setProperty(CFG_KEY_VALIDATION_FILE_NAME, fn);
-
-            properties.setProperty(CFG_KEY_VALIDATION_PASSWORD, primaryKeyPassword);
-
+        if (primaryKeyInsideWlpResource) {
+            keysFileNames = keysFileInDirectory.getChildren(".*\\.keys");
+        } else {
+            //TODO: add a new warning message for this scenario.
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Unconfigured validationKeys file name: " + fn);
+                Tr.debug(tc,
+                         "Non-configured validationKeys files will not be loaded because the directory of the primary ltpa keys file is outside of the WLP install root directory.");
             }
+            return validationKeysInDirectory; //empty list
+        }
 
-            validationKeysInDirectory.add(properties);
+        if (keysFileNames != null) {
+            while (keysFileNames.hasNext()) {
+                Properties properties = new Properties();
+                WsResource kfs = keysFileInDirectory.getChild(keysFileNames.next());
+                String fn = kfs.getName();
+                fn = primaryKeyImportDir.concat(fn);
+
+                // skip the primary LTPA keys file or validationKeys file configured in the valicationKeys element
+                if (primaryKeyImportFile.equals(kfs.getName()) || isConfiguredValidationKeys(fn)) {
+                    continue;
+                }
+
+                properties.setProperty(CFG_KEY_VALIDATION_FILE_NAME, fn);
+
+                properties.setProperty(CFG_KEY_VALIDATION_PASSWORD, primaryKeyPassword);
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Non-configured validationKeys file name: " + fn);
+                }
+
+                validationKeysInDirectory.add(properties);
+            }
         }
 
         return validationKeysInDirectory;
@@ -255,9 +273,32 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
     private void resolveActualPrimaryKeysFileLocation() {
         WsResource keysFileInServerConfig = locationService.getServiceWithException().resolveResource(primaryKeyImportFile);
-        String dir = keysFileInServerConfig.getParent().toRepositoryPath();
-        primaryKeyImportDir = locationService.getServiceWithException().resolveString(dir);
-        primaryKeyImportFile = primaryKeyImportDir + keysFileInServerConfig.getName();
+        if (keysFileInServerConfig != null) {
+            if (keysFileInServerConfig.getParent() == null) {
+                // the file must be outside the wlp root dir
+                primaryKeyInsideWlpResource = false;
+                try {
+                    String dir = new File(primaryKeyImportFile).getCanonicalFile().getParent() + '/';
+                    primaryKeyImportDir = locationService.getServiceWithException().resolveString(dir);
+                    primaryKeyImportFile = primaryKeyImportDir + keysFileInServerConfig.getName();
+                } catch (IOException e) {
+                    FFDCFilter.processException(e, getClass().getName(), "resolveActualPrimaryKeysFileLocation");
+                    Tr.error(tc, "LTPA_KEYS_FILE_DOES_NOT_EXIST", primaryKeyImportFile);
+                }
+            } else {
+                // the file must be within the wlp root dir
+                // the directory of the primaryKeyImportFile can be determined using the WsResource
+                primaryKeyInsideWlpResource = true;
+                String dir = keysFileInServerConfig.getParent().toRepositoryPath();
+                primaryKeyImportDir = locationService.getServiceWithException().resolveString(dir);
+                primaryKeyImportFile = primaryKeyImportDir + keysFileInServerConfig.getName();
+            }
+        } else {
+            // should not get here
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Primary Key not resolved because keysFileInServerConfig is null");
+            }
+        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "primaryKeyImportDir: " + primaryKeyImportDir);
