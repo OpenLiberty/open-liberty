@@ -88,8 +88,8 @@ class EntityInfo {
         String lowerName = name.toLowerCase();
         String attributeName = attributeNames.get(lowerName);
         if (attributeName == null)
-            if ("All".equals(name))
-                attributeName = null; // Special case for CrudRepository.deleteAll and CrudRepository.findAll
+            if ("All".equals(name)) // TODO we might be able to remove special case logic like this now that we have the entity parameter pattern
+                attributeName = null; // Special case for BasicRepository.deleteAll and BasicRepository.findAll
             else if ("id".equals(lowerName))
                 if (idClassAttributeAccessors == null && failIfNotFound)
                     throw new MappingException("Entity class " + getType().getName() + " does not have a property named " + name +

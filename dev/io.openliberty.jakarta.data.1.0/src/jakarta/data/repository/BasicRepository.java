@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 /**
  * Interface methods copied from Jakarta Data.
  */
-public interface CrudRepository<T, K> extends DataRepository<T, K> {
+public interface BasicRepository<T, K> extends DataRepository<T, K> {
     long count();
 
     void delete(T entity);

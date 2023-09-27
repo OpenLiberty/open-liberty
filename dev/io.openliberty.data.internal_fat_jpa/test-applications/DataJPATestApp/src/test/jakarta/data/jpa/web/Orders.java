@@ -14,7 +14,7 @@ package test.jakarta.data.jpa.web;
 
 import java.util.List;
 
-import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
@@ -23,7 +23,7 @@ import jakarta.data.repository.Repository;
  * Experiments with auto-generated keys.
  */
 @Repository
-public interface Orders extends CrudRepository<Order, Long> {
+public interface Orders extends BasicRepository<Order, Long> {
 
     @Query("UPDATE Orders o SET o.total = o.total * :rate + :shipping WHERE o.id = :id")
     boolean addTaxAndShipping(@Param("id") long orderId,

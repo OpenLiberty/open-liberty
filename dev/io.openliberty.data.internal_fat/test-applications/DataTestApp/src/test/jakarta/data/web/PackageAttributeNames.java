@@ -10,14 +10,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.config.web;
-
-import jakarta.data.repository.BasicRepository;
-import jakarta.data.repository.Repository;
+package test.jakarta.data.web;
 
 /**
- *
  */
-@Repository
-public interface Students extends BasicRepository<Student, Integer> {
+public interface PackageAttributeNames {
+    public String description();
+
+    public String id();
+
+    public String height();
+
+    public String length();
+
+    public String width();
 }

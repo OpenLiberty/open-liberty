@@ -87,7 +87,7 @@ import jakarta.data.exceptions.EntityExistsException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
-import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Limit;
@@ -965,7 +965,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
         String name = queryInfo.entityInfo.getAttributeName(attribute, true);
         if (name == null) {
             if (attribute.length() == 3) {
-                // Special case for CrudRepository.deleteAll and CrudRepository.findAll
+                // TODO We might be able to remove special cases like this now that we have the entity parameter pattern
+                // Special case for BasicRepository.deleteAll and BasicRepository.findAll
                 int len = q.length(), where = q.lastIndexOf(" WHERE (");
                 if (where + 8 == len)
                     q.delete(where, len); // Remove " WHERE " because there are no conditions
@@ -1258,7 +1259,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (queryInfo.type == null && paramTypes.length == 1) {
             if (defaultEntityClass.equals(paramTypes[0])) {
                 queryInfo.entityParamType = paramTypes[0];
-            } else if (CrudRepository.class.equals(queryInfo.method.getDeclaringClass())) {
+            } else if (BasicRepository.class.equals(queryInfo.method.getDeclaringClass())) {
                 if ("delete".equals(methodName) || "deleteAll".equals(methodName)) {
                     queryInfo.entityParamType = paramTypes[0];
                     q = generateDeleteEntity(queryInfo);
