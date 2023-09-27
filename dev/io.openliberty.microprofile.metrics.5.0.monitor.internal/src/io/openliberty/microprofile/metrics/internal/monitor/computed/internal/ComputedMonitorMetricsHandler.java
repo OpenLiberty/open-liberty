@@ -12,6 +12,9 @@
  *******************************************************************************/
 package io.openliberty.microprofile.metrics.internal.monitor.computed.internal;
 
+import java.lang.management.GarbageCollectorMXBean;
+import java.lang.management.ManagementFactory;
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -138,16 +141,14 @@ public class ComputedMonitorMetricsHandler {
 
                         // Add the duration metrics to the computation set, no appName for base metrics.
                         cmm = new ComputedMonitorMetrics(
-                                MetricRegistry.BASE_SCOPE, mid,
-                                Constants.DURATION, null);
+                                MetricRegistry.BASE_SCOPE, mid, Constants.DURATION, null);
                         computedMonitorMetricsSet.add(cmm);
 
                         // Add the total count metric to the computation set, no appName for base metrics.
                         MetricID totalCountMetricID = new MetricID(
                                 metricTotalCountName, metricTagNames);
                         cmm = new ComputedMonitorMetrics(
-                                MetricRegistry.BASE_SCOPE, totalCountMetricID,
-                                Constants.TOTAL, null);
+                                MetricRegistry.BASE_SCOPE, totalCountMetricID, Constants.TOTAL, null);
                         computedMonitorMetricsSet.add(cmm);
 
                         // Once the existing metrics needed for calculation are cached, register new computed metric in the Metric Registry.
@@ -385,8 +386,8 @@ public class ComputedMonitorMetricsHandler {
     }
 
     public void calculateMetricValue() {
-        double diffDuration = 0.0, diffTotalCount = 0.0;
         MetricRegistry mr;
+        Double metricVal = null, diffDuration = null, diffTotalCount = null;
 
         for (Map.Entry<MetricID, Set<ComputedMonitorMetrics>> entry : computationMetricsMap.entrySet()) {
             MetricID computedMetricID = entry.getKey();
@@ -397,7 +398,6 @@ public class ComputedMonitorMetricsHandler {
             }
 
             String computedMetricName = computedMetricID.getName();
-
             if (computedMetricName.equals("memory.heapUtilization")) {
                 // Do not need to use the EWMA for the heap utilization calculation
                 // memory utilization = usedHeap / maxHeap;
@@ -406,20 +406,63 @@ public class ComputedMonitorMetricsHandler {
                 // Do not need to use the EWMA for the cpu utilization calculation
                 // Can get it directly from com.ibm.ws.kernel.service.util.CpuInfo.getJavaCpuUsage()
                 calculateProcessCpuUsage(computedMetricID);
+            } else if (computedMetricName.equals("gc.time.per.cycle")) {
+                // Need to retrieve the gc.time and gc.total from the GarbageCollectionMXBean directly,
+                // instead of the mpMetrics-5.x API, since there is a known bug, where the gc.time from
+                // the mpMetrics-5.x API returns as a Counter, which drops the decimal in the returned float value,
+                // making the value not useful for computation.
+                calculateEWMAValueForGC(computedMetricID, monitorMetrics);
             } else {
                 for (ComputedMonitorMetrics cmm : monitorMetrics) {
                     mr = getMetricRegistry(cmm.getMonitorMetricScope());
-
-                    if (cmm.getComputationType().equals(Constants.DURATION)) {
-                        diffDuration = getMetricValueDifference(mr, cmm);
-                    } else if (cmm.getComputationType().equals(Constants.TOTAL)) {
-                        diffTotalCount = getMetricValueDifference(mr, cmm);
+                    // Get the metric value.
+                    metricVal = getMetricValue(mr, cmm);
+                    if (metricVal != null) {
+                        if (cmm.getComputationType().equals(Constants.DURATION)) {
+                            diffDuration = cmm.getDifference(metricVal.doubleValue());
+                        } else if (cmm.getComputationType().equals(Constants.TOTAL)) {
+                            diffTotalCount = cmm.getDifference(metricVal.doubleValue());
+                        }
                     }
                 }
-                calculateEWMAValue(computedMetricID, diffDuration, diffTotalCount);
+                if (diffDuration != null && diffTotalCount != null) {
+                    // Only compute the EWMA if we are able to retrieve the metrics for both Duration and Total count.
+                    calculateEWMAValue(computedMetricID, diffDuration, diffTotalCount);
+                }
             }
         }
     }
+    
+    private void calculateEWMAValueForGC(MetricID computedMetricID, Set<ComputedMonitorMetrics> monitorMetrics) {
+        double currValue = 0.0, diffDuration = 0.0, diffTotalCount = 0.0;
+        
+        // Get the collection of Garbage Collection MXBeans
+        List<GarbageCollectorMXBean> gcMXBeansList = ManagementFactory.getGarbageCollectorMXBeans();
+        
+        for (GarbageCollectorMXBean gcMXBean : gcMXBeansList) {
+            for (ComputedMonitorMetrics cmm : monitorMetrics) {
+                String gcName = gcMXBean.getName();
+                String gcMetricsName = cmm.getMonitorMetricID().getTags().get("name");
+                if (gcName.equals(gcMetricsName)) {
+                    if (cmm.getComputationType().equals(Constants.DURATION)) {
+                        currValue = gcMXBean.getCollectionTime() * Constants.MILLISECONDCONVERSION;
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "GarbageCollectionTime for + " + computedMetricID + " = " + currValue);
+                        }
+                        diffDuration = currValue < 0 ? -1.0 : cmm.getDifference(currValue);
+                    } else if (cmm.getComputationType().equals(Constants.TOTAL)) {
+                        currValue = gcMXBean.getCollectionCount();
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "GarbageCollectionCount for + " + computedMetricID + " = " + currValue);
+                        }
+                        diffTotalCount = currValue < 0 ? -1.0 : cmm.getDifference(currValue);
+                    }
+                }
+            }
+            calculateEWMAValue(computedMetricID, diffDuration, diffTotalCount);
+        }
+    }
+
 
     public void calculateHeapUsage(MetricID computedMetricID, Set<ComputedMonitorMetrics> monitorMetrics) {
         double usedHeap = 0.0, maxHeap = 0.0, heapUsage = 0.0;
@@ -459,31 +502,37 @@ public class ComputedMonitorMetricsHandler {
         finalComputedMetricsMap.put(computedMetricID, processCpuUsage);
     }
 
-    public double getMetricValueDifference(MetricRegistry mr, ComputedMonitorMetrics cmm) {
-        double currentValue = 0.0, diff = 0.0;
+    public Double getMetricValue(MetricRegistry mr, ComputedMonitorMetrics cmm) {
+        Number metricNum = null;
+        Double currentValue = null;
 
         Metric metricValue = mr.getMetric(cmm.getMonitorMetricID());
         if (metricValue instanceof Gauge) {
             Gauge<?> currentGauge = (Gauge<?>) metricValue;
-            currentValue = currentGauge.getValue().doubleValue();
+            metricNum = currentGauge.getValue();
         } else if (metricValue instanceof Counter) {
             Counter currentCount = (Counter) metricValue;
-            Long currentLongValue = currentCount.getCount();
-            currentValue = currentLongValue.doubleValue();
+            metricNum = currentCount.getCount();
         } else if (metricValue instanceof org.eclipse.microprofile.metrics.Timer) {
             org.eclipse.microprofile.metrics.Timer currentTimer = (org.eclipse.microprofile.metrics.Timer) metricValue;
             if (cmm.getComputationType().equals(Constants.DURATION)) {
-                Integer currentIntValueInNanos = currentTimer.getElapsedTime()
-                        .getNano();
-                currentValue = (currentIntValueInNanos.doubleValue()) * Constants.NANOSECONDCONVERSION;
+                Duration currentDur = currentTimer.getElapsedTime();
+                if (currentDur != null)  {
+                    metricNum = currentDur.getNano();
+                    currentValue = (metricNum.doubleValue()) * Constants.NANOSECONDCONVERSION; // to seconds.
+                }
             } else {
                 // Get Total Counter Value for Timer
-                Long currentLongValue = currentTimer.getCount();
-                currentValue = currentLongValue.doubleValue();
+                metricNum = currentTimer.getCount();
             }
         }
-        diff = cmm.getDifference(currentValue);
-        return diff;
+        
+        if (metricNum != null && currentValue == null) {
+            // If the metricValue is present and the currentValue is not already set.
+            currentValue = metricNum.doubleValue();
+        }
+
+        return currentValue;
     }
 
     public MetricRegistry getMetricRegistry(String scope) {
@@ -495,7 +544,9 @@ public class ComputedMonitorMetricsHandler {
         double computedVal = 0.0;
 
         // Calculate the new computed metric.
-        computedVal = duration / totalCount;
+        // If the duration or the totalCount is a negative value, set the computedValue to be -1.0
+        // Should only happen when calculating the gc.time.per.cycle.
+        computedVal = ((duration < 0.0) || (totalCount < 0.0)) ? -1.0 : (duration / totalCount);
 
         // Only the computed metricIDs that require EWMA will be passed into this method.
         EWMA ewmaObj = (EWMA) finalComputedMetricsMap.get(computedMetricID);
@@ -505,16 +556,13 @@ public class ComputedMonitorMetricsHandler {
             double alpha = calculateAlpha(EWMA_MOVING_WINDOW_INTERVAL); // 5 min moving window
             ewmaObj = new EWMA(alpha);
 
-            // EWMA[0] will be equal directly to the initially calculated frequency
-            double initialValue = (duration == 0.0 || totalCount == 0.0)
-                    ? 0.0
-                    : computedVal;
+            // EWMA[0] will be equal directly to the initially calculated value.
+            double initialValue = (duration == 0.0 || totalCount == 0.0) ? 0.0 : computedVal;
             ewmaObj.updateNewValue(initialValue);
         } else {
             if ((duration == 0.0 || totalCount == 0.0)) {
                 // If nothing changed during the current sampling period, get the previously calculated EWMA value and feed it into it again.
-                if (TraceComponent.isAnyTracingEnabled()
-                        && tc.isDebugEnabled()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Idling - There were no new data in the sampling period, getting the previously calculated EWMA value to feed into it again.");
                 }
                 ewmaObj.updateNewValue(ewmaObj.getAveragedValue());
