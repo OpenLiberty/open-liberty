@@ -236,14 +236,4 @@ public interface RecoveryAgent {
      * @return the _serverStopping
      */
     public boolean isServerStopping();
-
-    /**
-     * Returns an array of strings such that each string is a fully qualified log
-     * directory that the client intends to use for logging.
-     *
-     * @param failureScope The target failure scope
-     *
-     * @return String[] The log directory set.
-     */
-    public String[] logDirectories(FailureScope failureScope) throws RecoveryFailedException;
 }
