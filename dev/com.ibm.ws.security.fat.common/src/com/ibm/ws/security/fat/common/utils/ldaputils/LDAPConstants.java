@@ -12,9 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.fat.common.utils.ldaputils;
 
-import com.ibm.ws.security.fat.common.Constants;
-
-public class LDAPConstants extends Constants {
+public class LDAPConstants {
 
     public LDAPConstants() {
         super();
