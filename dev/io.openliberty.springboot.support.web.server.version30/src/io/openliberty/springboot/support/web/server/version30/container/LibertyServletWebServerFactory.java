@@ -21,7 +21,7 @@ import org.springframework.boot.web.servlet.server.AbstractServletWebServerFacto
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import io.openliberty.checkpoint.spi.CheckpointPhase;
+import com.ibm.ws.app.manager.springboot.container.SpringBootConfig;
 
 /**
  *
@@ -33,8 +33,7 @@ public class LibertyServletWebServerFactory extends AbstractServletWebServerFact
 
     @Override
     public WebServer getWebServer(ServletContextInitializer... initializers) {
-        CheckpointPhase phase = CheckpointPhase.getPhase();
-        if (!phase.restored()) {
+        if (SpringBootConfig.isBeforeCheckpoint()) {
             // for InstantOn we create a wrapper so that we can recreate the LibertyWebServer on restart
             return new WebServer() {
                 LibertyWebServer webServer = new LibertyWebServer(LibertyServletWebServerFactory.this, LibertyServletWebServerFactory.this, mergeInitializers(initializers));
@@ -42,7 +41,7 @@ public class LibertyServletWebServerFactory extends AbstractServletWebServerFact
                 @Override
                 public synchronized void start() throws WebServerException {
                     if (webServer == null) {
-                        webServer = new LibertyWebServer(LibertyServletWebServerFactory.this, LibertyServletWebServerFactory.this, mergeInitializers(initializers));;
+                        webServer = new LibertyWebServer(LibertyServletWebServerFactory.this, LibertyServletWebServerFactory.this, mergeInitializers(initializers));
                     }
                     webServer.start();
                 }
