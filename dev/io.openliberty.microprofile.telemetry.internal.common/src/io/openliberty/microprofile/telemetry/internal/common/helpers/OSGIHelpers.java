@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.optenliberty.microprofile.telemetry.internal.common.helpers;
+package io.openliberty.microprofile.telemetry.internal.common.helpers;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;

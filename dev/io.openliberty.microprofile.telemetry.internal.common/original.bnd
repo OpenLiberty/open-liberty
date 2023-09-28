@@ -14,3 +14,14 @@
 Bundle-Name: io.openliberty.microprofile.telemetry.internal.common
 Bundle-SymbolicName: io.openliberty.microprofile.telemetry.internal.common
 Bundle-Description: MicroProfile.telemetry, common code
+
+-dsannotations: \
+  io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfoFactoryImpl
+
+Export-Package: \
+	io.openliberty.microprofile.telemetry.internal.interfaces;version='1.0',\
+	io.openliberty.microprofile.telemetry.internal.common;version='1.0',\
+	io.openliberty.microprofile.telemetry.internal.common.cdi;version='1.0',\
+	io.openliberty.microprofile.telemetry.internal.common.info;version='1.0',\
+	io.openliberty.microprofile.telemetry.internal.common.resources;version='1.0',\
+	io.openliberty.microprofile.telemetry.internal.common.rest;version='1.0';thread-context=true

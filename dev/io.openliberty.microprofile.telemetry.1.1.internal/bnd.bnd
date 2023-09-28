@@ -26,12 +26,6 @@ src: src, resources
 
 #-cdiannotations:
 
--dsannotations: \
-  io.openliberty.microprofile.telemetry11.internal.cdi.SPIMetaData,\
-  io.openliberty.microprofile.telemetry11.internal.rest.TelemetryClientBuilderListener,\
-  io.openliberty.microprofile.telemetry11.internal.sdk.OpenTelemetrySdkBuilderSupplierImpl,\
-  io.openliberty.microprofile.telemetry11.internal.rest.TelemetryServletContainerInitializer
-
 -dsannotations-inherit: true
 
 app-resources= \
@@ -53,12 +47,9 @@ Service-Component: \
 Import-Package: \
 	io.opentelemetry.api.common,\
 	io.openliberty.microprofile.telemetry.internal.common.resources,\
+	javax.annotation;version="[1.2,2)",\
 	*
 
-Export-Package: \
-	io.openliberty.microprofile.telemetry11.internal.cdi;version='1.0',\
-	io.openliberty.microprofile.telemetry11.internal.rest;version='1.0';thread-context=true
-	
 Private-Package: io.openliberty.microprofile.telemetry11.internal.helper,\
 	io.openliberty.microprofile.telemetry11.internal.sdk
 
@@ -70,7 +61,7 @@ Private-Package: io.openliberty.microprofile.telemetry11.internal.helper,\
 	io.openliberty.microprofile.telemetry.internal.common;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	io.openliberty.io.opentelemetry.1.29;version=latest,\
-	io.openliberty.org.eclipse.microprofile.config.3.0,\
+	io.openliberty.org.eclipse.microprofile.config.2.0,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\

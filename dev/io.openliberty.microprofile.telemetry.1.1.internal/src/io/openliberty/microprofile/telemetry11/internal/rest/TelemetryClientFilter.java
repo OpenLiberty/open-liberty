@@ -48,7 +48,7 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
 
     private static final HttpClientAttributesGetterImpl HTTP_CLIENT_ATTRIBUTES_GETTER = new HttpClientAttributesGetterImpl();
 
-    TelemetryClientFilter() {
+    public TelemetryClientFilter() {
         final OpenTelemetryInfo openTelemetryInfo = OpenTelemetryAccessor.getOpenTelemetryInfo();
         if (openTelemetryInfo.getEnabled() && !AgentDetection.isAgentActive()) {
             InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(openTelemetryInfo.getOpenTelemetry(),
