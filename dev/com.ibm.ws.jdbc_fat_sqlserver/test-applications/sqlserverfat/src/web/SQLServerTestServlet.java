@@ -74,6 +74,12 @@ public class SQLServerTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/ntlm")
     private DataSource ds_ntlm;
 
+    @Resource(lookup = "jdbc/driver-property-preferred")
+    DataSource driver_property_perferred;
+
+    @Resource(lookup = "jdbc/ds-property-preferred")
+    DataSource ds_property_perferred;
+
     @Resource
     private ExecutorService executor;
 
@@ -465,6 +471,21 @@ public class SQLServerTestServlet extends FATServlet {
             ResultSet result = stmt.executeQuery("SELECT STRVAL FROM MYTABLE WHERE ID=40");
             assertTrue("Query should have returned a result", result.next());
             assertEquals("Unexpected value returned", "fourty", result.getString(1));
+        }
+    }
+
+    @Test
+    public void testVerifyConnectionPrecedence() throws Throwable {
+        try (Connection con = driver_property_perferred.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO MYTABLE VALUES (?, ?)");) {
+            stmt.setInt(1, 41);
+            stmt.setString(2, "fourty-one");
+            stmt.execute();
+        }
+
+        try (Connection con = ds_property_perferred.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO MYTABLE VALUES (?, ?)");) {
+            stmt.setInt(1, 42);
+            stmt.setString(2, "fourty-two");
+            stmt.execute();
         }
     }
 }
