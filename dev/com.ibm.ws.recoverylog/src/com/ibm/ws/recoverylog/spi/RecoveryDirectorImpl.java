@@ -186,8 +186,6 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
 
     private boolean _enablePeerLocking;
     private boolean _isSQLRecoveryLog;
-    private CoordinationLock _localFileLock;
-    private CoordinationLock _peerFileLock;
 
     //------------------------------------------------------------------------------
     // Method: RecoveryDirectorImpl.RecoveryDirectorImpl
@@ -579,7 +577,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                     // Peer Locking is enabled by default but can be disabled through a server.xml enablePeerLocking attribute in the transaction element.
                     //
                     // PR #25374 - The enablePeerLocking element now applies to both the database and the filesystem case. In the
-                    // filesystem case we make use of a Coordination lock to manage exclusive access to recovery logs.
+                    // filesystem case we make use of lease file lock to manage exclusive access to recovery logs.
                     boolean proceedWithRecovery = true;
                     _enablePeerLocking = recoveryAgent.isPeerLockingEnabled();
 
