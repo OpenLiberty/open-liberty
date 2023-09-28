@@ -10,10 +10,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data.repository;
+package jakarta.data.page;
 
 import java.util.Collections;
 import java.util.List;
+
+import jakarta.data.Sort;
 
 /**
  * Method signatures are copied from jakarta.data.repository.Pageable from the Jakarta Data repo.

@@ -10,14 +10,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data.repository;
+package jakarta.data;
+
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
- * Method signatures copied from proposals in the Jakarta Data git repo.
+ * Method signatures copied from the Jakarta Data git repo.
  */
-public interface Page<T> extends Slice<T> {
-
-    long totalElements();
-
-    long totalPages();
+@FunctionalInterface
+public interface Streamable<T> extends Iterable<T> {
+    public default Stream<T> stream() {
+        return StreamSupport.stream(this.spliterator(),
+                                    false /* not parallel */);
+    }
 }

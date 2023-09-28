@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import jakarta.data.repository.Limit;
+import jakarta.data.Limit;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 

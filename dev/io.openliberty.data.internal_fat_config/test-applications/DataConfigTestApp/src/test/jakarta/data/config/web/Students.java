@@ -12,12 +12,12 @@
  *******************************************************************************/
 package test.jakarta.data.config.web;
 
-import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.Repository;
 
 /**
  *
  */
 @Repository
-public interface Students extends CrudRepository<Student, Integer> {
+public interface Students extends BasicRepository<Student, Integer> {
 }

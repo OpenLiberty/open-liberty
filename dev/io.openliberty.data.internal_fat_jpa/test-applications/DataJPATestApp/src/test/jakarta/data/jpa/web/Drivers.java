@@ -15,7 +15,7 @@ package test.jakarta.data.jpa.web;
 import java.time.LocalDate;
 import java.util.stream.Stream;
 
-import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
 
@@ -23,7 +23,7 @@ import jakarta.data.repository.Repository;
  * Repository for testing OneToOne relationship between Driver and DriversLicense entities.
  */
 @Repository
-public interface Drivers extends CrudRepository<Driver, Integer> {
+public interface Drivers extends BasicRepository<Driver, Integer> {
 
     int deleteByFullNameEndsWith(String ending);
 

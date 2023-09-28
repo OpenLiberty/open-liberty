@@ -10,7 +10,7 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
-import jakarta.data.repository.StaticMetamodel;
+import jakarta.data.StaticMetamodel;
 
 /**
  * Static metamodel for the City entity.

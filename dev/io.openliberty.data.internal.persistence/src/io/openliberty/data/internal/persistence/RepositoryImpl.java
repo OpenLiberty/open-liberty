@@ -80,6 +80,9 @@ import io.openliberty.data.repository.Operation;
 import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.Select.Aggregate;
 import io.openliberty.data.repository.Update;
+import jakarta.data.Limit;
+import jakarta.data.Sort;
+import jakarta.data.Streamable;
 import jakarta.data.exceptions.DataConnectionException;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
@@ -87,18 +90,15 @@ import jakarta.data.exceptions.EntityExistsException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
-import jakarta.data.repository.CrudRepository;
-import jakarta.data.repository.KeysetAwarePage;
-import jakarta.data.repository.KeysetAwareSlice;
-import jakarta.data.repository.Limit;
+import jakarta.data.page.KeysetAwarePage;
+import jakarta.data.page.KeysetAwareSlice;
+import jakarta.data.page.Page;
+import jakarta.data.page.Pageable;
+import jakarta.data.page.Slice;
+import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.OrderBy;
-import jakarta.data.repository.Page;
-import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
-import jakarta.data.repository.Slice;
-import jakarta.data.repository.Sort;
-import jakarta.data.repository.Streamable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.LockModeType;
@@ -965,7 +965,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
         String name = queryInfo.entityInfo.getAttributeName(attribute, true);
         if (name == null) {
             if (attribute.length() == 3) {
-                // Special case for CrudRepository.deleteAll and CrudRepository.findAll
+                // TODO We might be able to remove special cases like this now that we have the entity parameter pattern
+                // Special case for BasicRepository.deleteAll and BasicRepository.findAll
                 int len = q.length(), where = q.lastIndexOf(" WHERE (");
                 if (where + 8 == len)
                     q.delete(where, len); // Remove " WHERE " because there are no conditions
@@ -1258,7 +1259,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (queryInfo.type == null && paramTypes.length == 1) {
             if (defaultEntityClass.equals(paramTypes[0])) {
                 queryInfo.entityParamType = paramTypes[0];
-            } else if (CrudRepository.class.equals(queryInfo.method.getDeclaringClass())) {
+            } else if (BasicRepository.class.equals(queryInfo.method.getDeclaringClass())) {
                 if ("delete".equals(methodName) || "deleteAll".equals(methodName)) {
                     queryInfo.entityParamType = paramTypes[0];
                     q = generateDeleteEntity(queryInfo);
@@ -1297,10 +1298,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 Select select = queryInfo.method.getAnnotation(Select.class);
                 List<String> selections = select == null ? new ArrayList<>() : null;
                 int c = by + 2;
-                if (by > 4 && "findAllById".equals(methodName) && Iterable.class.equals(paramTypes[0]))
-                    methodName = "findAllByIdIn"; // CrudRepository.findAllById(Iterable)
-                else
-                    parseFindBy(queryInfo, methodName, by, selections);
+                parseFindBy(queryInfo, methodName, by, selections);
                 q = generateSelectClause(queryInfo, select, selections == null ? null : selections.toArray(new String[selections.size()]));
 
                 int orderBy = methodName.indexOf("OrderBy", by + 2);
@@ -1315,13 +1313,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 queryInfo.type = QueryInfo.Type.FIND;
             } else if (methodName.startsWith("delete") || methodName.startsWith("remove")) {
                 int c = by + 2;
-                if (by > 6) {
-                    if ("deleteAllById".equals(methodName) && Iterable.class.isAssignableFrom(paramTypes[0]))
-                        if (entityInfo.idClassAttributeAccessors == null)
-                            methodName = "deleteAllByIdIn"; // CrudRepository.deleteAllById(Iterable)
-                        else
-                            throw new MappingException("The deleteAllById operation cannot be used on entities with composite IDs."); // TODO NLS
-                }
                 boolean isFindAndDelete = queryInfo.isFindAndDelete();
                 if (isFindAndDelete) {
                     if (queryInfo.type != null)

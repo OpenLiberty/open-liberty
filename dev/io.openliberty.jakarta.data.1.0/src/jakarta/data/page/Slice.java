@@ -10,16 +10,25 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data.repository;
+package jakarta.data.page;
+
+import java.util.List;
+
+import jakarta.data.Streamable;
 
 /**
- * Methods are copied from proposed interfaces in the Jakarta Data repo.
+ * Method signatures copied from the Jakarta Data git repo.
  */
-public interface KeysetAwareSlice<T> extends Slice<T> {
-    Pageable.Cursor getKeysetCursor(int index);
+public interface Slice<T> extends Streamable<T> {
+    List<T> content();
 
-    @Override
+    long number(); // from Spring Data and Micronaut. Not currently in Jakarta Data.
+
+    int numberOfElements();
+
+    Pageable pageable();
+
+    boolean hasContent();
+
     Pageable nextPageable();
-
-    Pageable previousPageable();
 }

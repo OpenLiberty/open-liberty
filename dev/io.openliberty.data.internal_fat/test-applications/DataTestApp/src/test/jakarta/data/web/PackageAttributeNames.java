@@ -10,25 +10,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data.repository;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package test.jakarta.data.web;
 
 /**
- * To propose in Jakarta Data.
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface StaticMetamodel {
-    /**
-     * An entity class.
-     *
-     * @return the entity class.
-     */
-    Class<?> value();
+public interface PackageAttributeNames {
+    public String description();
+
+    public String id();
+
+    public String height();
+
+    public String length();
+
+    public String width();
 }

@@ -17,9 +17,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
+import jakarta.data.Streamable;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Streamable;
 import jakarta.enterprise.concurrent.Asynchronous;
 
 import io.openliberty.data.repository.Compare;

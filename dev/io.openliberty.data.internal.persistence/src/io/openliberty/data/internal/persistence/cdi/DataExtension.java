@@ -51,10 +51,10 @@ import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 import io.openliberty.data.internal.persistence.EntityDefiner;
+import jakarta.data.StaticMetamodel;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.StaticMetamodel;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AfterTypeDiscovery;
