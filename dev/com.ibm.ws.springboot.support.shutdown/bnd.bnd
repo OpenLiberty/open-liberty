@@ -45,6 +45,7 @@ instrument.disabled: true
   org.springframework:spring-core;${springVersion20}, \
   org.springframework:spring-expression;${springExpressionVersion20}, \
 \
+  com.ibm.ws.app.manager.springboot.thin;version=latest, \
   com.ibm.ws.app.manager.springboot;version=latest, \
 \
   com.ibm.ws.logging.core;version=latest, \

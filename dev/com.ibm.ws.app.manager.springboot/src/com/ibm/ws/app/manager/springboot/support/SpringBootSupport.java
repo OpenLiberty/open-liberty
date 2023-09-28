@@ -12,8 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.support;
 
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_BOOT_SUPPORT_CAPABILITY;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_BOOT_SUPPORT_CAPABILITY_JARS;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.SPRING_BOOT_SUPPORT_CAPABILITY;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.SPRING_BOOT_SUPPORT_CAPABILITY_JARS;
 
 import java.net.URL;
 import java.util.ArrayList;

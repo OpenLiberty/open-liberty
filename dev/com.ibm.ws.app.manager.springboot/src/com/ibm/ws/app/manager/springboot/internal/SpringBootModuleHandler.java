@@ -17,6 +17,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.app.manager.module.internal.ModuleHandler;
 import com.ibm.ws.app.manager.module.internal.ModuleHandlerBase;
+import com.ibm.ws.app.manager.springboot.thin.container.SpringConstants;
 import com.ibm.ws.container.service.app.deploy.extended.ModuleRuntimeContainer;
 
 @Component(service = ModuleHandler.class,

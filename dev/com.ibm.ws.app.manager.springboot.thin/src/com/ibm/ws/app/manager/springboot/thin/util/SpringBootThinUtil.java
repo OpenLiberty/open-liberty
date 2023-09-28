@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.app.manager.springboot.util;
+package com.ibm.ws.app.manager.springboot.thin.util;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -47,12 +47,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import org.osgi.framework.Constants;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.app.manager.springboot.container.ApplicationError;
-import com.ibm.ws.app.manager.springboot.container.ApplicationTr.Type;
+import com.ibm.ws.app.manager.springboot.thin.container.ApplicationError;
+import com.ibm.ws.app.manager.springboot.thin.container.ApplicationTr.Type;
+import org.osgi.framework.Constants;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
@@ -320,7 +319,7 @@ public class SpringBootThinUtil implements Closeable {
         byte[] digested = digest.digest();
         return convertToHexString(digested);
     }
-    
+
     @FFDCIgnore(NoSuchAlgorithmException.class)
     private static MessageDigest getDigest(String... algorithms) throws NoSuchAlgorithmException {
         NoSuchAlgorithmException error = null;
@@ -702,7 +701,7 @@ public class SpringBootThinUtil implements Closeable {
     /**
      *
      */
-    static class EmbeddedContainer {
+    public static class EmbeddedContainer {
 
         public static Set<String> getSupportedStarters() {
             return getStartersToDependentArtifactIdsMap().keySet();

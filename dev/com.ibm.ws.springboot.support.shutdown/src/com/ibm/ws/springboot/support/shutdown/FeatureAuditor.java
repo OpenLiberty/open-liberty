@@ -17,8 +17,8 @@ import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-import com.ibm.ws.app.manager.springboot.container.ApplicationTr;
-import com.ibm.ws.app.manager.springboot.container.ApplicationTr.Type;
+import com.ibm.ws.app.manager.springboot.thin.container.ApplicationTr;
+import com.ibm.ws.app.manager.springboot.thin.container.ApplicationTr.Type;
 
 /**
  * Liberty environment verifier. Verify that the liberty environment

@@ -25,7 +25,7 @@ Private-Package: \
 instrument.disabled: true
 
 -buildpath: \
-	com.ibm.ws.app.manager.springboot;version=latest,\
+	com.ibm.ws.app.manager.springboot.thin;version=latest,\
 	com.ibm.ws.kernel.service;version=latest
 
 -testpath: \

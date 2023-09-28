@@ -12,7 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.internal;
 
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_APP_TYPE;
+import static com.ibm.ws.app.manager.springboot.thin.container.SpringConstants.SPRING_APP_TYPE;
 
 import java.io.File;
 import java.io.IOException;

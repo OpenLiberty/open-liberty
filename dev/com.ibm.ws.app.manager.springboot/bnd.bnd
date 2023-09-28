@@ -18,18 +18,20 @@ bVersion=1.0
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 Export-Package: \
- com.ibm.ws.app.manager.springboot.container.config,\
- com.ibm.ws.app.manager.springboot.container,\
- com.ibm.ws.app.manager.springboot.support, \
- com.ibm.ws.app.manager.springboot.util
+	com.ibm.ws.app.manager.springboot.container.config,\
+	com.ibm.ws.app.manager.springboot.container,\
+	com.ibm.ws.app.manager.springboot.support,\
+	com.ibm.ws.app.manager.springboot.thin.util
 
 Private-Package: com.ibm.ws.app.manager.springboot.internal.*
 
 Include-Resource: OSGI-INF=resources/OSGI-INF
 
 Import-Package: \
-    com.ibm.ws.app.manager.module.internal, \
-    *
+	com.ibm.ws.app.manager.module.internal,\
+	com.ibm.ws.app.manager.springboot.thin.container,\
+	com.ibm.ws.app.manager.springboot.thin.util,\
+	*
 
 -dsannotations-inherit: true
 -dsannotations: \
@@ -43,6 +45,7 @@ Import-Package: \
 instrument.classesExcludes: com/ibm/ws/app/manager/springboot/internal/resources/*.class
 
 -buildpath: \
+	com.ibm.ws.app.manager.springboot.thin;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.app.manager;version=latest,\
 	com.ibm.ws.app.manager.module;version=latest,\

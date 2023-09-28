@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.app.manager.springboot.internal;
+package com.ibm.ws.app.manager.springboot.thin.container;
 
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 

@@ -49,6 +49,7 @@ Provide-Capability: spring.boot.support; jars:List<String>=springBoot20Server.ja
   org.springframework:spring-core;${springVersion20}, \
   org.springframework:spring-web;${springVersion20}, \
 \
+  com.ibm.ws.app.manager.springboot.thin;version=latest, \
   com.ibm.ws.app.manager.springboot;version=latest, \
   com.ibm.ws.springboot.support.web.server;version=latest,\
 \

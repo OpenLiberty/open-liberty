@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -53,7 +53,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.ibm.ws.app.manager.springboot.internal.SpringConstants;
+import com.ibm.ws.app.manager.springboot.thin.container.SpringConstants;
 import com.ibm.ws.springboot.utility.IFileUtility;
 import com.ibm.ws.springboot.utility.utils.ConsoleWrapper;
 import com.ibm.ws.springboot.utility.utils.FileUtility;
