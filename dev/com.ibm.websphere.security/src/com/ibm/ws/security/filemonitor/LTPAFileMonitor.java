@@ -32,6 +32,7 @@ public class LTPAFileMonitor extends SecurityFileMonitor {
     /** {@inheritDoc} */
     @Override
     public void onBaseline(Collection<File> baseline) {
+        actionable.performFileBasedAction(baseline);
     }
 
     /** {@inheritDoc} */

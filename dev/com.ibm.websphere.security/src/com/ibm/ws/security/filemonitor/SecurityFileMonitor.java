@@ -67,7 +67,7 @@ public class SecurityFileMonitor implements FileMonitor {
             // Currently MONITOR_DIRECTORIES is only used for the LTPAFileMonitor
             // this is not used for other securityFileMonitors
             fileMonitorProps.put(FileMonitor.MONITOR_DIRECTORIES, dirs);
-            fileMonitorProps.put(FileMonitor.MONITOR_FILTER, "\\.keys");
+            fileMonitorProps.put(FileMonitor.MONITOR_FILTER, ".*\\.keys");
         }
         fileMonitorProps.put(FileMonitor.MONITOR_INTERVAL, monitorInterval);
 
