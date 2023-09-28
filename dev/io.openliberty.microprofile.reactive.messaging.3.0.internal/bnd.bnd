@@ -1,0 +1,36 @@
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+bVersion=1.0
+
+Bundle-Name: io.openliberty.microprofile.reactive.messaging.3.0.internal
+Bundle-SymbolicName: io.openliberty.microprofile.reactive.messaging.3.0.internal
+Bundle-Description: MicroProfile Reactive Messaging 3.0 components
+
+WS-TraceGroup: REACTIVEMESSAGE
+
+Import-Package: *
+
+-dsannotations: \
+    io.openliberty.microprofile.reactive.messaging30.internal.MessageAccess30
+
+-buildpath: \
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	org.eclipse.osgi;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	io.openliberty.io.smallrye.reactive.messaging-api4;version=latest,\
+	io.openliberty.microprofile.reactive.messaging.internal;version=latest

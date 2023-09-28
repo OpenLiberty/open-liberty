@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -57,10 +57,15 @@ public class AbstractDeliveryBean<T> {
      */
     public CompletableFuture<Void> sendMessage(T message) {
         CompletableFuture<Void> ackCf = new CompletableFuture<>();
-        Message<T> msg = Message.of(message, () -> {
-            ackCf.complete(null);
-            return CompletableFuture.completedFuture(null);
-        });
+        Message<T> msg = TestMessageImpl.of(message,
+                                            () -> {
+                                                ackCf.complete(null);
+                                                return CompletableFuture.completedFuture(null);
+                                            },
+                                            t -> {
+                                                ackCf.completeExceptionally(t);
+                                                return CompletableFuture.completedFuture(null);
+                                            });
         synchronized (this) {
             CompletableFuture<Message<T>> nextMessage = incompleteFutures.poll();
             if (nextMessage != null) {

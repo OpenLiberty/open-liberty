@@ -243,7 +243,8 @@ public class KafkaTestClient {
      * @return the committed offset if there is one, otherwise the earliest offset
      */
     private long getOffset(KafkaConsumer<?, ?> kafka, TopicPartition topicPartition) {
-        OffsetAndMetadata committed = kafka.committed(topicPartition);
+        Map<TopicPartition, OffsetAndMetadata> committedMap = kafka.committed(Collections.singleton(topicPartition));
+        OffsetAndMetadata committed = committedMap.get(topicPartition);
         if (committed != null) {
             return committed.offset();
         } else {
