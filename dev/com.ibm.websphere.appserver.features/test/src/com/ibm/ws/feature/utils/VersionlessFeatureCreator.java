@@ -1,9 +1,14 @@
 package com.ibm.ws.feature.utils;
 
 import java.io.BufferedWriter;
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.io.FileReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import java.util.ArrayList;
 
 public class VersionlessFeatureCreator {
 
@@ -45,9 +50,12 @@ public class VersionlessFeatureCreator {
     	if(!f.exists()){
             f.mkdirs();
         }
-
-    	createPrivateVersionlessFeature(feature.getFeatureName(), "jakartaPlatform");
+        ArrayList<String> usedDependencies = new ArrayList<String>();
     	for(String[] features : feature.getFeaturesAndPlatform()) {
+            if(!usedDependencies.contains(features[1].split("-")[0])){
+                createPrivateVersionlessFeature(feature.getFeatureName(), features[1].split("-")[0]);
+                usedDependencies.add(features[1].split("-")[0]);
+            }
     		createPrivateVersionedFeature(feature.getFeatureName(), features[0].split("-")[1], features[1].split("-")[0], features[1].split("-")[1], features[2]);
     	}
     }
@@ -78,6 +86,23 @@ public class VersionlessFeatureCreator {
             
             writer.close();
     	}
+        else {
+            File file = new File(privatePath + "io.openliberty.unversioned." + featureName + "-" + featureNum + ".feature");
+            File temp = File.createTempFile("temp-file-name", ".tmp");
+            BufferedReader br = new BufferedReader(new FileReader( file ));
+            PrintWriter pw =  new PrintWriter(new FileWriter( temp ));
+            String line;
+            while ((line = br.readLine()) != null) {
+                pw.println(line);
+                if(line.contains("-features")){
+                    pw.println("    io.openliberty." + dependsOnName + ".internal-" + dependsOnNum + ", \\");
+                }
+            }
+            br.close();
+            pw.close();
+            file.delete();
+            temp.renameTo(file);
+        }
     }
     
     public void createPublicVersionlessFeature(VersionlessFeatureDefinition feature) throws IOException {
@@ -167,7 +192,9 @@ public class VersionlessFeatureCreator {
             writer.newLine();
             writer.append("singleton=true");
             writer.newLine();
-            writer.append("-features=io.openliberty." + dependsOnName + ".internal-0.0");
+            writer.append("-features= \\");
+            writer.newLine();
+            writer.append("    io.openliberty." + dependsOnName + ".internal-0-0");
             writer.newLine();
             writer.append("kind=noship");
             writer.newLine();
@@ -176,5 +203,22 @@ public class VersionlessFeatureCreator {
             
             writer.close();
     	}
+        else {
+            File file = new File(privatePath + "io.openliberty.unversioned." + featureName + "-0.0.feature");
+            File temp = File.createTempFile("temp-file-name", ".tmp");
+            BufferedReader br = new BufferedReader(new FileReader( file ));
+            PrintWriter pw =  new PrintWriter(new FileWriter( temp ));
+            String line;
+            while ((line = br.readLine()) != null) {
+                pw.println(line);
+                if(line.contains("-features")){
+                    pw.println("    io.openliberty." + dependsOnName + ".internal-0.0, \\");
+                }
+            }
+            br.close();
+            pw.close();
+            file.delete();
+            temp.renameTo(file);
+        }
     }
 }
