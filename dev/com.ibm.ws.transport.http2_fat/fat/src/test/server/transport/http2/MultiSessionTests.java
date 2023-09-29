@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,7 +15,9 @@ package test.server.transport.http2;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -50,10 +52,8 @@ public class MultiSessionTests extends FATServletClient {
 
     private final static LibertyServer runtimeServer = LibertyServerFactory.getLibertyServer("http2ClientRuntime");
     private final static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.transport.http2.fat");
-    String defaultServletPath = "H2FATDriver/H2FATDriverServlet?hostName=";
-
     @Rule
-    public final TestName testName = new TestName();
+    public final TestName testName = new Utils.CustomTestName();
 
     @BeforeClass
     public static void before() throws Exception {
@@ -68,6 +68,32 @@ public class MultiSessionTests extends FATServletClient {
 
         server.startServer(true, true);
         runtimeServer.startServer(true);
+        // Go through Logs and check if Netty is being used
+        boolean runningNetty = false;
+        // Wait for endpoints to finish loading and get the endpoint started messages
+        server.waitForStringInLog("CWWKO0219I.*");
+        runtimeServer.waitForStringInLog("CWWKO0219I.*");
+        List<String> test = server.findStringsInLogs("CWWKO0219I.*");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.logp(Level.INFO, CLASS_NAME, "test()", "Got port list...... " + Arrays.toString(test.toArray()));
+            LOGGER.logp(Level.INFO, CLASS_NAME, "test()", "Looking for port: " + server.getHttpSecondaryPort());
+        }
+        for (String endpoint : test) {
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.logp(Level.INFO, CLASS_NAME, "test()", "Endpoint: " + endpoint);
+            }
+            if (!endpoint.contains("port " + Integer.toString(server.getHttpSecondaryPort())))
+                continue;
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.logp(Level.INFO, CLASS_NAME, "test()", "Netty? " + endpoint.contains("io.openliberty.netty.internal.tcp.TCPUtils"));
+            }
+            runningNetty = endpoint.contains("io.openliberty.netty.internal.tcp.TCPUtils");
+            break;
+        }
+        if (runningNetty)
+            FATServletClient.runTest(runtimeServer,
+                                     Http2FullModeTests.defaultServletPath + server.getHostname() + "&port=" + server.getHttpSecondaryPort() + "&testdir=" + Utils.TEST_DIR,
+                                     "setUsingNetty");
     }
 
     @AfterClass
@@ -88,7 +114,7 @@ public class MultiSessionTests extends FATServletClient {
         }
 
         FATServletClient.runTest(runtimeServer,
-                                 "H2FATDriver/H2FATDriverServlet?hostName=" + server.getHostname() +
+                                 Http2FullModeTests.defaultServletPath + server.getHostname() +
                                                 "&port=" + server.getHttpSecondaryPort() +
                                                 "&testdir=" + Utils.TEST_DIR,
                                  testName);
