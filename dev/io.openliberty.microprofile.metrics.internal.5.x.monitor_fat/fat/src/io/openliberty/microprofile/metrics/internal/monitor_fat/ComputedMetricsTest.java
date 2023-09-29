@@ -31,6 +31,7 @@ import javax.net.ssl.X509TrustManager;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,11 +39,13 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+@AllowedFFDC("javax.management.InstanceNotFoundException")
 public class ComputedMetricsTest {
 
     private static Class<?> c = ComputedMetricsTest.class;
@@ -50,9 +53,11 @@ public class ComputedMetricsTest {
     private static final String[] ALWAYS_EXPECTED_COMPUTED_METRICS = new String[]{
             "cpu_processCpuUtilization_percent{mp_scope=\"vendor\",}",
             "memory_heapUtilization_percent{mp_scope=\"vendor\",}",
-            // "gc_time_per_cycle_seconds{mp_scope=\"vendor\",name=\"global\",}",
-            // "gc_time_per_cycle_seconds{mp_scope=\"vendor\",name=\"scavenge\",}"
+            "gc_time_per_cycle_seconds{mp_scope=\"vendor\",name=\"global\",}",
+            "gc_time_per_cycle_seconds{mp_scope=\"vendor\",name=\"scavenge\",}"
     };
+    
+    private static boolean initialServerStart = true;
 
     @Server("ComputedMetricsServer")
     public static LibertyServer computedMetricsServer;
@@ -62,6 +67,17 @@ public class ComputedMetricsTest {
         trustAll();
         addRequiredApplicationsToServer();
         computedMetricsServer.saveServerConfiguration();
+    }
+    
+    @Before
+    public void startTest() throws Exception {
+        Log.info(c,"startTest", "------- Starting server ------");
+        computedMetricsServer.startServer();
+        waitForSecurityPrerequisites(computedMetricsServer, 60000);
+        computedMetricsServer.setMarkToEndOfLog(computedMetricsServer.getMostRecentTraceFile());
+        
+        // Server already started for the first time.
+        initialServerStart = false;
     }
 
     @After
@@ -91,17 +107,10 @@ public class ComputedMetricsTest {
     @Test
     public void testComputedBaseMetrics() throws Exception {
         String testName = "testComputedBaseMetrics";
-
-        Log.info(c, testName, "------- Starting server ------");
-        computedMetricsServer.startServer();
-        waitForSecurityPrerequisites(computedMetricsServer, 60000);
-        computedMetricsServer
-                .setMarkToEndOfLog(computedMetricsServer.getMostRecentTraceFile());
+        Log.info(c, testName, "Starting Testcase: " + testName);
 
         Log.info(c, testName, "------- Computed Base Metrics should be available ------");
-        checkForExpectedStrings(
-                getHttpsServlet("/metrics?scope=vendor", computedMetricsServer),
-                ALWAYS_EXPECTED_COMPUTED_METRICS);
+        checkForExpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), ALWAYS_EXPECTED_COMPUTED_METRICS);
     }
 
     /*
@@ -111,24 +120,17 @@ public class ComputedMetricsTest {
     @Test
     public void testComputedServletMetrics() throws Exception {
         String testName = "testComputedServletMetrics";
+        
+        Log.info(c, testName, "Starting Testcase: " + testName);
 
         String[] expectedMetrics = new String[]{
                 "servlet_request_elapsedTime_per_request_seconds{mp_scope=\"vendor\",servlet=\"io_openliberty_microprofile_metrics_5_0_private_internal_PrivateMetricsRESTProxyServlet\",}"};
 
-        Log.info(c, testName, "------- Starting server ------");
-        computedMetricsServer.startServer();
-        computedMetricsServer
-                .setMarkToEndOfLog(computedMetricsServer.getMostRecentTraceFile());
-
-        Log.info(c, testName,
-                "------- Hitting the /metrics endpoint for the first time to initialize the Servlet metrics ------");
+        Log.info(c, testName, "------- Hitting the /metrics endpoint for the first time to initialize the Servlet metrics ------");
         getHttpsServlet("/metrics?scope=vendor", computedMetricsServer);
 
-        Log.info(c, testName,
-                "------- Computed Servlet Metrics should be available for the /metrics servlet ------");
-        checkForExpectedStrings(
-                getHttpsServlet("/metrics?scope=vendor", computedMetricsServer),
-                expectedMetrics);
+        Log.info(c, testName, "------- Computed Servlet Metrics should be available for the /metrics servlet ------");
+        checkForExpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), expectedMetrics);
     }
 
     /*
@@ -140,6 +142,8 @@ public class ComputedMetricsTest {
     @Test
     public void testComputedConnectionPoolMetrics() throws Exception {
         String testName = "testComputedConnectionPoolMetrics";
+        
+        Log.info(c, testName, "Starting Testcase: " + testName);
 
         String[] expectedMetrics = new String[]{
                 "connectionpool_inUseTime_per_usedConnection_seconds{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
@@ -148,21 +152,11 @@ public class ComputedMetricsTest {
                 "connectionpool_waitTime_per_queuedRequest_seconds{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
                 "servlet_request_elapsedTime_per_request_seconds{mp_scope=\"vendor\",servlet=\"testJDBCApp_io_openliberty_microprofile_metrics_internal_monitor_fat_jdbc_servlet_TestJDBCServlet\",}"};
 
-        Log.info(c, testName, "------- Starting server ------");
-        computedMetricsServer.startServer();
-        computedMetricsServer
-                .setMarkToEndOfLog(computedMetricsServer.getMostRecentTraceFile());
+        Log.info(c, testName, "------- Hitting the testJDBC application endpoint to initialize the Connection Pool metrics ------");
+        getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", computedMetricsServer);
 
-        Log.info(c, testName,
-                "------- Hitting the testJDBC application endpoint to initialize the Connection Pool metrics ------");
-        getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create",
-                computedMetricsServer);
-
-        Log.info(c, testName,
-                "------- Computed Connection pool and Servlet Metrics should be available for the testJDBCApp ------");
-        checkForExpectedStrings(
-                getHttpsServlet("/metrics?scope=vendor", computedMetricsServer),
-                expectedMetrics);
+        Log.info(c, testName, "------- Computed Connection pool and Servlet Metrics should be available for the testJDBCApp ------");
+        checkForExpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), expectedMetrics);
     }
 
     /*
@@ -173,25 +167,18 @@ public class ComputedMetricsTest {
     @Test
     public void testComputedRESTMetrics() throws Exception {
         String testName = "testComputedRESTMetrics";
+        
+        Log.info(c, testName, "Starting Testcase: " + testName);
 
         String[] expectedMetrics = new String[]{
                 "REST_request_elapsedTime_per_request_seconds{class=\"io.openliberty.microprofile.metrics.internal.monitor_fat.rest.TestRESTMetrics\",method=\"simpleGet\",mp_scope=\"vendor\",}",
                 "servlet_request_elapsedTime_per_request_seconds{mp_scope=\"vendor\",servlet=\"testRESTApp_io_openliberty_microprofile_metrics_internal_monitor_fat_rest_TestApplication\",}"};
 
-        Log.info(c, testName, "------- Starting server ------");
-        computedMetricsServer.startServer();
-        computedMetricsServer
-                .setMarkToEndOfLog(computedMetricsServer.getMostRecentTraceFile());
-
-        Log.info(c, testName,
-                "------- Hitting the testREST application endpoint to initialize the REST metrics ------");
+        Log.info(c, testName, "------- Hitting the testREST application endpoint to initialize the REST metrics ------");
         getHttpServlet("/testRESTApp/test/get", computedMetricsServer);
 
-        Log.info(c, testName,
-                "------- Computed REST and Servlet Metrics should be available for the testRESTApp ------");
-        checkForExpectedStrings(
-                getHttpsServlet("/metrics?scope=vendor", computedMetricsServer),
-                expectedMetrics);
+        Log.info(c, testName, "------- Computed REST and Servlet Metrics should be available for the testRESTApp ------");
+        checkForExpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), expectedMetrics);
     }
 
     /*
@@ -201,12 +188,14 @@ public class ComputedMetricsTest {
     @Test
     public void testAllComputedMetrics() throws Exception {
         String testName = "testAllComputedMetrics";
+        
+        Log.info(c, testName, "Starting Testcase: " + testName);
 
         String[] expectedMetrics = new String[]{
                 "cpu_processCpuUtilization_percent{mp_scope=\"vendor\",}",
                 "memory_heapUtilization_percent{mp_scope=\"vendor\",}",
-                // "gc_time_per_cycle_seconds{mp_scope=\"vendor\",name=\"global\",}",
-                // "gc_time_per_cycle_seconds{mp_scope=\"vendor\",name=\"scavenge\",}",
+                "gc_time_per_cycle_seconds{mp_scope=\"vendor\",name=\"global\",}",
+                "gc_time_per_cycle_seconds{mp_scope=\"vendor\",name=\"scavenge\",}",
                 "connectionpool_inUseTime_per_usedConnection_seconds{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
                 "connectionpool_inUseTime_per_usedConnection_seconds{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
                 "connectionpool_waitTime_per_queuedRequest_seconds{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
@@ -216,28 +205,17 @@ public class ComputedMetricsTest {
                 "servlet_request_elapsedTime_per_request_seconds{mp_scope=\"vendor\",servlet=\"testJDBCApp_io_openliberty_microprofile_metrics_internal_monitor_fat_jdbc_servlet_TestJDBCServlet\",}",
                 "servlet_request_elapsedTime_per_request_seconds{mp_scope=\"vendor\",servlet=\"testRESTApp_io_openliberty_microprofile_metrics_internal_monitor_fat_rest_TestApplication\",}"};
 
-        Log.info(c, testName, "------- Starting server ------");
-        computedMetricsServer.startServer();
-        computedMetricsServer
-                .setMarkToEndOfLog(computedMetricsServer.getMostRecentTraceFile());
-
-        Log.info(c, testName,
-                "------- Hitting the /metrics endpoint for the first time to initialize the Servlet metrics ------");
+        Log.info(c, testName,"------- Hitting the /metrics endpoint for the first time to initialize the Servlet metrics ------");
         getHttpsServlet("/metrics?scope=vendor", computedMetricsServer);
 
-        Log.info(c, testName,
-                "------- Hitting the testJDBC application endpoint to initialize the Connection Pool metrics ------");
-        getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create",
-                computedMetricsServer);
+        Log.info(c, testName, "------- Hitting the testJDBC application endpoint to initialize the Connection Pool metrics ------");
+        getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", computedMetricsServer);
 
-        Log.info(c, testName,
-                "------- Hitting the testREST application endpoint to initialize the REST metrics ------");
+        Log.info(c, testName, "------- Hitting the testREST application endpoint to initialize the REST metrics ------");
         getHttpServlet("/testRESTApp/test/get", computedMetricsServer);
 
-        Log.info(c, testName,
-                "------- Computed REST and Servlet Metrics should be available for the testRESTApp ------");
-        checkForExpectedStrings(getHttpsServlet("/metrics", computedMetricsServer),
-                expectedMetrics);
+        Log.info(c, testName, "------- Computed REST and Servlet Metrics should be available for the testRESTApp ------");
+        checkForExpectedStrings(getHttpsServlet("/metrics", computedMetricsServer), expectedMetrics);
     }
 
     /*
@@ -246,39 +224,26 @@ public class ComputedMetricsTest {
     @Test
     public void testDynamicStopRESTApplication() throws Exception {
         String testName = "testDynamicStopRESTApplication";
+        
+        Log.info(c, testName, "Starting Testcase: " + testName);
 
         String[] computedMetrics = new String[]{
                 "REST_request_elapsedTime_per_request_seconds{class=\"io.openliberty.microprofile.metrics.internal.monitor_fat.rest.TestRESTMetrics\",method=\"simpleGet\",mp_scope=\"vendor\",}",
                 "servlet_request_elapsedTime_per_request_seconds{mp_scope=\"vendor\",servlet=\"testRESTApp_io_openliberty_microprofile_metrics_internal_monitor_fat_rest_TestApplication\",}"};
 
-        Log.info(c, testName, "------- Starting server ------");
-        computedMetricsServer.startServer();
-        computedMetricsServer
-                .setMarkToEndOfLog(computedMetricsServer.getMostRecentTraceFile());
-
-        Log.info(c, testName,
-                "------- Hitting the testREST application endpoint to initialize the REST metrics ------");
+        Log.info(c, testName, "------- Hitting the testREST application endpoint to initialize the REST metrics ------");
         getHttpServlet("/testRESTApp/test/get", computedMetricsServer);
 
-        Log.info(c, testName,
-                "------- Computed REST and Servlet Metrics should be available for the testRESTApp ------");
-        checkForExpectedStrings(
-                getHttpsServlet("/metrics?scope=vendor", computedMetricsServer),
-                computedMetrics);
+        Log.info(c, testName, "------- Computed REST and Servlet Metrics should be available for the testRESTApp ------");
+        checkForExpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), computedMetrics);
 
         Log.info(c, testName, "------- Stopping test REST application... ------");
         computedMetricsServer.getApplicationMBean("testRESTApp").stop();
-        Assert.assertNotNull("CWWKZ0009I was not found, application was stopped.",
-                computedMetricsServer.waitForStringInLog("CWWKZ0009I", 30000));
+        Assert.assertNotNull("CWWKZ0009I was not found, application was stopped.", computedMetricsServer.waitForStringInLog("CWWKZ0009I", 30000));
 
-        Log.info(c, testName,
-                "------- Computed REST and Servlet Metrics should NOT be available in /metrics?scope=vendor ------");
-        checkForExpectedStrings(
-                getHttpsServlet("/metrics?scope=vendor", computedMetricsServer),
-                ALWAYS_EXPECTED_COMPUTED_METRICS);
-        checkForUnexpectedStrings(
-                getHttpsServlet("/metrics?scope=vendor", computedMetricsServer),
-                computedMetrics);
+        Log.info(c, testName, "------- Computed REST and Servlet Metrics should NOT be available in /metrics?scope=vendor ------");
+        checkForExpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), ALWAYS_EXPECTED_COMPUTED_METRICS);
+        checkForUnexpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), computedMetrics);
     }
 
     /*
@@ -288,6 +253,8 @@ public class ComputedMetricsTest {
     @Test
     public void testDynamicNoServletConnectionPoolInMonitorFilter() throws Exception {
         String testName = "testDynamicNoServletConnectionPoolInMonitorFilter";
+        
+        Log.info(c, testName, "Starting Testcase: " + testName);
 
         String[] computedMetrics = new String[]{
                 "connectionpool_inUseTime_per_usedConnection_seconds{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
@@ -296,37 +263,19 @@ public class ComputedMetricsTest {
                 "connectionpool_waitTime_per_queuedRequest_seconds{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
                 "servlet_request_elapsedTime_per_request_seconds{mp_scope=\"vendor\",servlet=\"testJDBCApp_io_openliberty_microprofile_metrics_internal_monitor_fat_jdbc_servlet_TestJDBCServlet\",}"};
 
-        Log.info(c, testName, "------- Starting server ------");
-        computedMetricsServer.startServer();
-        computedMetricsServer
-                .setMarkToEndOfLog(computedMetricsServer.getMostRecentTraceFile());
+        Log.info(c, testName, "------- Hitting the testJDBC application endpoint to initialize the Connection Pool metrics ------");
+        getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", computedMetricsServer);
 
-        Log.info(c, testName,
-                "------- Hitting the testJDBC application endpoint to initialize the Connection Pool metrics ------");
-        getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create",
-                computedMetricsServer);
+        Log.info(c, testName, "------- Computed Connection pool and Servlet Metrics should be available for the testJDBCApp ------");
+        checkForExpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), computedMetrics);
 
-        Log.info(c, testName,
-                "------- Computed Connection pool and Servlet Metrics should be available for the testJDBCApp ------");
-        checkForExpectedStrings(
-                getHttpsServlet("/metrics?scope=vendor", computedMetricsServer),
-                computedMetrics);
-
-        Log.info(c, testName,
-                "------- Set Monitor filter to ThreadPool and Session  ------");
+        Log.info(c, testName, "------- Set Monitor filter to ThreadPool and Session  ------");
         computedMetricsServer.setServerConfigurationFile("server_monitorFilter5.xml");
-        Assert.assertNotNull(
-                "CWWKG0017I was not found, server config did not update properly.",
-                computedMetricsServer.waitForStringInLogUsingMark("CWWKG0017I"));
+        Assert.assertNotNull("CWWKG0017I was not found, server config did not update properly.", computedMetricsServer.waitForStringInLogUsingMark("CWWKG0017I"));
 
-        Log.info(c, testName,
-                "------- The Connection Pool and corresponding Servlet computed metrics should NOT be available ------");
-        checkForExpectedStrings(
-                getHttpsServlet("/metrics?scope=vendor", computedMetricsServer),
-                ALWAYS_EXPECTED_COMPUTED_METRICS);
-        checkForUnexpectedStrings(
-                getHttpsServlet("/metrics?scope=vendor", computedMetricsServer),
-                computedMetrics);
+        Log.info(c, testName,"------- The Connection Pool and corresponding Servlet computed metrics should NOT be available ------");
+        checkForExpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), ALWAYS_EXPECTED_COMPUTED_METRICS);
+        checkForUnexpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), computedMetrics);
     }
 
     /*
@@ -336,6 +285,8 @@ public class ComputedMetricsTest {
     @Test
     public void testOnlyServletConnectionPoolInMonitorFilter() throws Exception {
         String testName = "testOnlyServletConnectionPoolInMonitorFilter";
+        
+        Log.info(c, testName, "Starting Testcase: " + testName);
 
         String[] computedMetrics = new String[]{
                 "connectionpool_inUseTime_per_usedConnection_seconds{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
@@ -344,30 +295,29 @@ public class ComputedMetricsTest {
                 "connectionpool_waitTime_per_queuedRequest_seconds{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
                 "servlet_request_elapsedTime_per_request_seconds{mp_scope=\"vendor\",servlet=\"testJDBCApp_io_openliberty_microprofile_metrics_internal_monitor_fat_jdbc_servlet_TestJDBCServlet\",}",
                 "servlet_request_elapsedTime_per_request_seconds{mp_scope=\"vendor\",servlet=\"io_openliberty_microprofile_metrics_5_0_private_internal_PrivateMetricsRESTProxyServlet\",}"};
-
-        Log.info(c, testName,
-                "------- Set Monitor filter to ConnectionPool and WebContainer ------");
+        
+        Log.info(c, testName, "------- Stopping server to update server configuration. ------");
+        if (computedMetricsServer != null && computedMetricsServer.isStarted()) {
+            computedMetricsServer.stopServer("");
+        }
+        
+        Log.info(c, testName, "------- Set Monitor filter to ConnectionPool and WebContainer ------");
         computedMetricsServer.setServerConfigurationFile("server_monitorFilter6.xml");
 
-        Log.info(c, testName, "------- Starting server ------");
+        Log.info(c, testName, "------- Starting server after server configuration update. ------");
         computedMetricsServer.startServer();
-        computedMetricsServer
-                .setMarkToEndOfLog(computedMetricsServer.getMostRecentTraceFile());
+        waitForSecurityPrerequisites(computedMetricsServer, 60000);
+        initialServerStart = false;
+        computedMetricsServer.setMarkToEndOfLog(computedMetricsServer.getMostRecentTraceFile());
 
-        Log.info(c, testName,
-                "------- Hitting the testJDBC application endpoint to initialize the Connection Pool metrics ------");
-        getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create",
-                computedMetricsServer);
+        Log.info(c, testName, "------- Hitting the testJDBC application endpoint to initialize the Connection Pool metrics ------");
+        getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", computedMetricsServer);
 
-        Log.info(c, testName,
-                "------- Hitting the /metrics endpoint for the first time to initialize the Servlet metrics ------");
+        Log.info(c, testName, "------- Hitting the /metrics endpoint for the first time to initialize the Servlet metrics ------");
         getHttpsServlet("/metrics?scope=vendor", computedMetricsServer);
 
-        Log.info(c, testName,
-                "------- Computed Connection pool and Servlet Metrics should be available for the testJDBCApp ------");
-        checkForExpectedStrings(
-                getHttpsServlet("/metrics?scope=vendor", computedMetricsServer),
-                computedMetrics);
+        Log.info(c, testName, "------- Computed Connection pool and Servlet Metrics should be available for the testJDBCApp ------");
+        checkForExpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), computedMetrics);
     }
 
     /*
@@ -377,6 +327,8 @@ public class ComputedMetricsTest {
     @Test
     public void testOnlyServletInMonitorFilter() throws Exception {
         String testName = "testOnlyServletInMonitorFilter";
+        
+        Log.info(c, testName, "Starting Testcase: " + testName);
 
         String[] expectedMetrics = new String[]{
                 "servlet_request_elapsedTime_per_request_seconds{mp_scope=\"vendor\",servlet=\"testJDBCApp_io_openliberty_microprofile_metrics_internal_monitor_fat_jdbc_servlet_TestJDBCServlet\",}",
@@ -387,36 +339,32 @@ public class ComputedMetricsTest {
                 "connectionpool_inUseTime_per_usedConnection_seconds{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
                 "connectionpool_waitTime_per_queuedRequest_seconds{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
                 "connectionpool_waitTime_per_queuedRequest_seconds{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}"};
+        
+        Log.info(c, testName, "------- Stopping server to update server configuration. ------");
+        if (computedMetricsServer != null && computedMetricsServer.isStarted()) {
+            computedMetricsServer.stopServer("");
+        }
 
-        Log.info(c, testName,
-                "------- Set Monitor filter to ConnectionPool and WebContainer ------");
+        Log.info(c, testName, "------- Set Monitor filter to ConnectionPool and WebContainer ------");
         computedMetricsServer.setServerConfigurationFile("server_monitorFilter7.xml");
 
-        Log.info(c, testName, "------- Starting server ------");
+        Log.info(c, testName, "------- Starting server after server configuration update. ------");
         computedMetricsServer.startServer();
-        computedMetricsServer
-                .setMarkToEndOfLog(computedMetricsServer.getMostRecentTraceFile());
+        waitForSecurityPrerequisites(computedMetricsServer, 60000);
+        initialServerStart = false;
+        computedMetricsServer.setMarkToEndOfLog(computedMetricsServer.getMostRecentTraceFile());
 
-        Log.info(c, testName,
-                "------- Hitting the testJDBC application endpoint to initialize the Connection Pool metrics ------");
-        getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create",
-                computedMetricsServer);
+        Log.info(c, testName, "------- Hitting the testJDBC application endpoint to initialize the Connection Pool metrics ------");
+        getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", computedMetricsServer);
 
-        Log.info(c, testName,
-                "------- Hitting the /metrics endpoint for the first time to initialize the Servlet metrics ------");
+        Log.info(c, testName, "------- Hitting the /metrics endpoint for the first time to initialize the Servlet metrics ------");
         getHttpsServlet("/metrics?scope=vendor", computedMetricsServer);
 
-        Log.info(c, testName,
-                "------- Only computed Servlet Metrics should be available for the testJDBCApp ------");
-        checkForExpectedStrings(
-                getHttpsServlet("/metrics?scope=vendor", computedMetricsServer),
-                expectedMetrics);
+        Log.info(c, testName, "------- Only computed Servlet Metrics should be available for the testJDBCApp ------");
+        checkForExpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), expectedMetrics);
 
-        Log.info(c, testName,
-                "------- The Connection Pool metrics should NOT be available ------");
-        checkForUnexpectedStrings(
-                getHttpsServlet("/metrics?scope=vendor", computedMetricsServer),
-                unexpectedMetrics);
+        Log.info(c, testName, "------- The Connection Pool metrics should NOT be available ------");
+        checkForUnexpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), unexpectedMetrics);
     }
 
     /*
@@ -426,6 +374,8 @@ public class ComputedMetricsTest {
     @Test
     public void testOnlyConnectionPoolInMonitorFilter() throws Exception {
         String testName = "testOnlyConnectionPoolInMonitorFilter";
+        
+        Log.info(c, testName, "Starting Testcase: " + testName);
 
         String[] expectedMetrics = new String[]{
                 "connectionpool_inUseTime_per_usedConnection_seconds{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
@@ -437,31 +387,29 @@ public class ComputedMetricsTest {
                 "servlet_request_elapsedTime_per_request_seconds{mp_scope=\"vendor\",servlet=\"testJDBCApp_io_openliberty_microprofile_metrics_internal_monitor_fat_jdbc_servlet_TestJDBCServlet\",}",
                 "servlet_request_elapsedTime_per_request_seconds{mp_scope=\"vendor\",servlet=\"io_openliberty_microprofile_metrics_5_0_private_internal_PrivateMetricsRESTProxyServlet\",}"};
 
+        Log.info(c, testName, "------- Stopping server to update server configuration. ------");
+        if (computedMetricsServer != null && computedMetricsServer.isStarted()) {
+            computedMetricsServer.stopServer("");
+        }
+        
         Log.info(c, testName,
                 "------- Set Monitor filter to ConnectionPool and WebContainer ------");
         computedMetricsServer.setServerConfigurationFile("server_monitorFilter8.xml");
 
-        Log.info(c, testName, "------- Starting server ------");
+        Log.info(c, testName, "------- Starting server after server configuration update. ------");
         computedMetricsServer.startServer();
-        computedMetricsServer
-                .setMarkToEndOfLog(computedMetricsServer.getMostRecentTraceFile());
+        waitForSecurityPrerequisites(computedMetricsServer, 60000);
+        initialServerStart = false;
+        computedMetricsServer.setMarkToEndOfLog(computedMetricsServer.getMostRecentTraceFile());
 
-        Log.info(c, testName,
-                "------- Hitting the testJDBC application endpoint to initialize the Connection Pool metrics ------");
-        getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create",
-                computedMetricsServer);
+        Log.info(c, testName, "------- Hitting the testJDBC application endpoint to initialize the Connection Pool metrics ------");
+        getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", computedMetricsServer);
 
-        Log.info(c, testName,
-                "------- Only computed Connection pool should be available for the testJDBCApp ------");
-        checkForExpectedStrings(
-                getHttpsServlet("/metrics?scope=vendor", computedMetricsServer),
-                expectedMetrics);
+        Log.info(c, testName, "------- Only computed Connection pool should be available for the testJDBCApp ------");
+        checkForExpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), expectedMetrics);
 
-        Log.info(c, testName,
-                "------- The Servlet metrics should NOT be available. ------");
-        checkForUnexpectedStrings(
-                getHttpsServlet("/metrics?scope=vendor", computedMetricsServer),
-                unexpectedMetrics);
+        Log.info(c, testName, "------- The Servlet metrics should NOT be available. ------");
+        checkForUnexpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), unexpectedMetrics);
     }
 
     private static void trustAll() throws Exception {
@@ -490,18 +438,15 @@ public class ComputedMetricsTest {
     }
 
     private void waitForSecurityPrerequisites(LibertyServer server, int timeout) {
-        // Need to ensure LTPA keys and configuration are created before hitting a secure endpoint.
-        Assert.assertNotNull(
-                "LTPA keys are not created within timeout period of " + timeout + "ms.",
-                server.waitForStringInLog("CWWKS4104A", timeout));
-        Assert.assertNotNull("LTPA configuration is not ready within timeout period of "
-                + timeout + "ms.", server.waitForStringInLog("CWWKS4105I", timeout));
+        // We only need to wait for LTPA keys if this is the first time using this server.
+       if (initialServerStart) {
+            // Need to ensure LTPA keys and configuration are created before hitting a secure endpoint.
+            Assert.assertNotNull("LTPA keys are not created within timeout period of " + timeout + "ms.", server.waitForStringInLog("CWWKS4104A", timeout));
+            Assert.assertNotNull("LTPA configuration is not ready within timeout period of " + timeout + "ms.", server.waitForStringInLog("CWWKS4105I", timeout));
+       }
 
         // Ensure defaultHttpEndpoint-ssl TCP Channel is started
-        Assert.assertNotNull(
-                "TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",
-                server.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl",
-                        timeout));
+        Assert.assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)", server.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", timeout));
     }
 
     private String getHttpServlet(String servletPath, LibertyServer server) throws Exception {
@@ -587,8 +532,7 @@ public class ComputedMetricsTest {
         }
     }
 
-    private void checkForUnexpectedStrings(String metricsText,
-            String[] unexpectedStrings) {
+    private void checkForUnexpectedStrings(String metricsText, String[] unexpectedStrings) {
         Log.info(c, "checkForUnexpectedStrings", "metricsText:\n" + metricsText);
 
         for (String m : unexpectedStrings) {
