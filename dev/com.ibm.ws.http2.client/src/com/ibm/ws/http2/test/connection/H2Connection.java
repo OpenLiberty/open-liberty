@@ -114,7 +114,7 @@ public class H2Connection {
     private static String sendBackWinUpdate1 = "SEND.BACK.WINDOW.UPDATE.1";
     private static String sendBackPing1 = "SEND.BACK.PING.1";
 
-    private static final String CLASS_NAME = "H2Connection";
+    private static final String CLASS_NAME = H2Connection.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     public H2Connection(String hostName, int httpDefaultPort, FramesListener framesListener, CountDownLatch blockUntilConnectionIsDone) {
@@ -291,14 +291,14 @@ public class H2Connection {
         return frameByteBuffer;
     }
 
-    public long processRead() {
+    public long processRead(int timeout) {
 
         WsByteBuffer readBuffer = bufferMgr.allocate(utils.IO_DEFAULT_BUFFER_SIZE);
         readConn.setBuffer(readBuffer);
 
         long bytesRead = 0L;
         try {
-            bytesRead = readConn.read(1, utils.IO_DEFAULT_TIMEOUT);
+            bytesRead = readConn.read(1, timeout);
         } catch (IOException e) {
             bytesRead = -1L;
         }
@@ -310,23 +310,27 @@ public class H2Connection {
         return bytesRead;
     }
 
+    public long processRead() {
+        return processRead(utils.IO_DEFAULT_TIMEOUT);
+    }
+
     public void startAsyncRead() {
 
         if (closeCalled)
             return;
 
-        if (wasServer101ResponseReceived()) {
-            int count = 0;
-            // don't read until we have sent the client preface
-            // wait up to 5 seconds for preface to be received after the 101 is received, before reading for the first Settings frame
-            while ((!getPrefaceSent() && count < 50)) {
-                count++;
-                try {
-                    Thread.sleep(10);
-                } catch (Exception x) {
-                }
-            }
-        }
+//        if (wasServer101ResponseReceived()) {
+//            int count = 0;
+//            // don't read until we have sent the client preface
+//            // wait up to 5 seconds for preface to be received after the 101 is received, before reading for the first Settings frame
+//            while ((!getPrefaceSent() && count < 50)) {
+//                count++;
+//                try {
+//                    Thread.sleep(10);
+//                } catch (Exception x) {
+//                }
+//            }
+//        }
 
         if (slicedBuffer == null) {
             if (LOGGER.isLoggable(Level.FINEST)) {
@@ -464,8 +468,10 @@ public class H2Connection {
 
         int frameReadStatus = 0;
 
+        boolean server101ResponseReceived = wasServer101ResponseReceived();
+
         try {
-            if (wasServer101ResponseReceived()) {
+            if (server101ResponseReceived) {
 
                 if (LOGGER.isLoggable(Level.FINEST)) {
                     LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "currentBuffer hc: " + currentBuffer.hashCode()
@@ -538,7 +544,7 @@ public class H2Connection {
             reportedExceptions.add(e);
         } finally {
             //Reset frame read processor here if a complete frame was processed
-            if (frameReadStatus != Constants.BP_FRAME_IS_NOT_COMPLETE) {
+            if (server101ResponseReceived && frameReadStatus != Constants.BP_FRAME_IS_NOT_COMPLETE) {
                 if (LOGGER.isLoggable(Level.FINEST)) {
                     LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "Calling frameReadProcessor.reset(true) on frameReadProcessor: " + frameReadProcessor);
                 }
@@ -744,7 +750,7 @@ public class H2Connection {
         //Channel wants to be one to close the connection.
         reportedExceptions.addAll(streamResultManager.compareAllStreamResults());
 
-        if (processRead() >= 0) {
+        if (processRead(1000) >= 0) {
             if (LOGGER.isLoggable(Level.FINEST))
                 LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "Server has not closed the connection yet. Checking again in 2 seconds.");
             try {
@@ -752,7 +758,7 @@ public class H2Connection {
             } catch (InterruptedException e) {
             }
         }
-        if (processRead() >= 0) {
+        if (processRead(1000) >= 0) {
             reportedExceptions.add(new ConnectionNotClosedAfterGoAwayException("Connection has not been closed by the server after it sent GOAWAY frame"));
         }
     }
@@ -859,6 +865,10 @@ public class H2Connection {
      */
     public boolean didFrameArrive(Frame expectedFrame) {
         return streamResultManager.didframeArrive(expectedFrame);
+    }
+
+    public boolean receivedAllFrames() {
+        return streamResultManager.receivedAllFrames();
     }
 
     public AtomicBoolean getWaitingForACK() {

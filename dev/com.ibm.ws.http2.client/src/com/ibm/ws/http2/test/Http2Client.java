@@ -35,6 +35,7 @@ import com.ibm.ws.http2.test.connection.H2Connection;
 import com.ibm.ws.http2.test.exceptions.ClientPrefaceTimeoutException;
 import com.ibm.ws.http2.test.exceptions.ExpectedPushPromiseDoesNotIncludeLinkHeaderException;
 import com.ibm.ws.http2.test.exceptions.FATTimeoutException;
+import com.ibm.ws.http2.test.exceptions.ReceivedFrameAfterEndOfStream;
 import com.ibm.ws.http2.test.exceptions.StreamDidNotReceivedEndOfStreamException;
 import com.ibm.ws.http2.test.exceptions.UnableToSendFrameException;
 import com.ibm.ws.http2.test.frames.FrameSettingsClient;
@@ -54,7 +55,9 @@ public class Http2Client {
     private final CountDownLatch blockUntilConnectionIsDone;
     private final AtomicBoolean isTestDone = new AtomicBoolean(false);
     private final AtomicBoolean didTimeout = new AtomicBoolean(false);
-    private final AtomicBoolean lockWaitFor = new AtomicBoolean(true);
+    static final AtomicBoolean lockWaitFor = new AtomicBoolean(false);
+    private boolean allowFramesAfterEndOfStream = false;
+    private boolean receivedExpectedGoAway = false;
     private boolean waitForAck = true;
 
     private final Map<Frame, Frame> sendFrameConditional = new HashMap<Frame, Frame>();
@@ -201,14 +204,17 @@ public class Http2Client {
             LOGGER.logp(Level.INFO, CLASS_NAME, "sendClientPreface", "Start time (Millis): " + startTime);
         }
         while ((System.currentTimeMillis() - startTime) < timeout) {
-            try {
-                Thread.sleep(100);
-            } catch (Exception x) {
-            }
             if (wasUpgradeHeaderReceived()) {
                 sendClientPreface();
                 h2Connection.setPrefaceSent(true);
                 return;
+            }
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.logp(Level.INFO, CLASS_NAME, "sendClientPreface", "Haven't received upgrade header yet, waiting to send client preface.");
+            }
+            try {
+                Thread.sleep(10);
+            } catch (Exception x) {
             }
         }
         if (LOGGER.isLoggable(Level.SEVERE)) {
@@ -282,6 +288,22 @@ public class Http2Client {
         }
     }
 
+    public void sendClientPrefaceFollowedBySettingsBytes(byte[] bytes, long timeout) throws ClientPrefaceTimeoutException {
+        sendClientPreface(timeout);
+        try {
+            sendBytesAfterPreface(bytes, timeout, true);
+            h2Connection.setFirstConnectSent(true);
+        } catch (UnableToSendFrameException e) {
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.logp(Level.INFO, CLASS_NAME, "sendClientPreface", "caught exception: " + e);
+            }
+        }
+    }
+
+    public long sendBytesAfterPreface(byte[] bytes) throws UnableToSendFrameException {
+        return sendBytesAfterPreface(bytes, defaultTimeOutToSendFrame, false);
+    }
+
     /**
      * Send bytes iff the server preface has been received.
      *
@@ -290,8 +312,7 @@ public class Http2Client {
      * @return
      * @throws Exception
      */
-    public long sendBytesAfterPreface(byte[] bytes) throws UnableToSendFrameException {
-        long timeout = defaultTimeOutToSendFrame;
+    public long sendBytesAfterPreface(byte[] bytes, long timeout, boolean bypassPreface) throws UnableToSendFrameException {
         long startTime = System.currentTimeMillis();
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, CLASS_NAME, "sendBytesAfterPreface", "Sending bytes with timeout of: " + timeout);
@@ -300,7 +321,7 @@ public class Http2Client {
         //loop until the time is over
         do {
             //if we are waiting for a settings ACK, this will loop
-            if (((wasUpgradeHeaderReceived() && wasServerPrefaceReceived())) && !h2Connection.getWaitingForACK().get()) {
+            if (((wasUpgradeHeaderReceived() && wasServerPrefaceReceived()) || bypassPreface) && !h2Connection.getWaitingForACK().get()) {
                 return h2Connection.sendBytesSync(bytes);
             } else {
                 try {
@@ -365,16 +386,27 @@ public class Http2Client {
 
     public Http2Client waitFor(Frame expectedFrame) {
         //check once if the same already arrived... then we will use the listener to avoid doing the search.
+        // This is not Thread safe
+        lockWaitFor.set(true);
         do {
-            if (h2Connection.didFrameArrive(expectedFrame))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "waitFor", "Waiting for frame: " + expectedFrame);
+            if (h2Connection.didFrameArrive(expectedFrame)) {
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "waitFor", "Found matching frame for: " + expectedFrame);
+                lockWaitFor.set(false);
+                if (h2Connection.receivedAllFrames())
+                    isTestDone.set(true);
                 return this;
+            }
             LOGGER.logp(Level.FINEST, CLASS_NAME, "waitFor", "looping");
             try {
                 Thread.sleep(100);
             } catch (Exception x) {
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "waitFor", "Caught exception while looping. Finishing");
+                x.printStackTrace();
+                lockWaitFor.set(false);
             }
         } while (lockWaitFor.get() && !didTimeout.get());
-        lockWaitFor.set(true); //set to true in case we call waitFor again.
+        lockWaitFor.set(false); //set to true in case we call waitFor again.
         return this;
     }
 
@@ -413,6 +445,10 @@ public class Http2Client {
      */
     public H2StreamResult addExpectedFrame(FrameTypes type, int stream) throws CompressionException, IOException, ExpectedPushPromiseDoesNotIncludeLinkHeaderException {
         return h2Connection.addExpectedFrame(type, stream);
+    }
+
+    public void allowFramesAfterEndOfStream() {
+        this.allowFramesAfterEndOfStream = true;
     }
 
     public boolean wasUpgradeHeaderReceived() {
@@ -455,7 +491,8 @@ public class Http2Client {
                     }
                 }
                 isTestDone.set(true);
-                blockUntilConnectionIsDone.countDown();
+//                h2Connection.close();
+//                blockUntilConnectionIsDone.countDown();
             }
         }
 
@@ -471,11 +508,11 @@ public class Http2Client {
                             "Received FrameGoAway from server. Calling blockUntilConnectionIsDone.countDown() and 'closing' connection.");
             }
             // this is our best way to predict the test finished
-            isTestDone.set(true);
-            h2Connection.close();
             // if we've received a GOAWAY from the server, we shouldn't care about incomplete streams
-            h2Connection.getReportedExceptions().removeIf(e -> e instanceof StreamDidNotReceivedEndOfStreamException);
-            blockUntilConnectionIsDone.countDown();
+            receivedExpectedGoAway = true;
+            isTestDone.set(true);
+//            h2Connection.close();
+//            blockUntilConnectionIsDone.countDown();
 
         }
 
@@ -589,6 +626,16 @@ public class Http2Client {
                 } catch (Exception x) {
                 }
             }
+            while (lockWaitFor.get() && (System.currentTimeMillis() - startTime) < timeoutToFinishTest && !isTestDone.get()) {
+                try {
+                    if (LOGGER.isLoggable(Level.INFO)) {
+                        LOGGER.logp(Level.INFO, CLASS_NAME + "$TimeoutHelper", "run", "Waiting for waitFor lock to finish!");
+                    }
+
+                    Thread.sleep(10);
+                } catch (Exception x) {
+                }
+            }
             didTimeout.set(true);
             if (LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.logp(Level.INFO, CLASS_NAME + "$TimeoutHelper", "run",
@@ -603,11 +650,15 @@ public class Http2Client {
 
                 //add a timeout exception to the list of exceptions as the test did not complete on time!
                 getReportedExceptions().add(new FATTimeoutException("The test didn't finish. Timeout: " + timeoutToFinishTest));
-                h2Connection.close();
 
-                //On timeout, call countDown() to make the test finish.
-                countDownLatch.countDown();
             }
+            h2Connection.close();
+            //On timeout, call countDown() to make the test finish.
+            if (allowFramesAfterEndOfStream)
+                getReportedExceptions().removeIf(e -> e instanceof ReceivedFrameAfterEndOfStream);
+            if (receivedExpectedGoAway)
+                getReportedExceptions().removeIf(e -> e instanceof StreamDidNotReceivedEndOfStreamException);
+            countDownLatch.countDown();
         }
 
     }
