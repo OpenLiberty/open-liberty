@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,6 +20,9 @@ import java.util.concurrent.ExecutorService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.ws.threading.internal.ExecutorServiceImpl;
 import com.ibm.ws.threading.internal.PolicyExecutorImpl;
@@ -57,6 +60,14 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
     private final ConcurrentHashMap<String, PolicyExecutorImpl> policyExecutors = new ConcurrentHashMap<String, PolicyExecutorImpl>();
 
     /**
+     * Virtual thread operations that are only available when a Java 21+ feature includes the io.openliberty.threading.internal.java21 bundle.
+     */
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected volatile VirtualThreadOps virtualThreadOps;
+
+    /**
      * Creates a new policy executor instance and initializes it per the specified OSGi service component properties.
      * The config.displayId of the OSGi service component properties is used as the unique identifier.
      *
@@ -66,7 +77,7 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
      * @throws NullPointerException  if the specified identifier is null
      */
     public PolicyExecutor create(Map<String, Object> props) {
-        PolicyExecutor executor = new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, (String) props.get("config.displayId"), null, policyExecutors);
+        PolicyExecutor executor = new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, (String) props.get("config.displayId"), null, policyExecutors, virtualThreadOps);
         executor.updateConfig(props);
         return executor;
     }
@@ -81,7 +92,7 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
      * @throws NullPointerException  if the specified identifier is null
      */
     public PolicyExecutor create(String identifier) {
-        return new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, "PolicyExecutorProvider-" + identifier, null, policyExecutors);
+        return new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, "PolicyExecutorProvider-" + identifier, null, policyExecutors, virtualThreadOps);
     }
 
     /**
@@ -95,7 +106,7 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
      * @throws NullPointerException  if the specified identifier is null
      */
     public PolicyExecutor create(String fullIdentifier, String owner) {
-        return new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, fullIdentifier, owner, policyExecutors);
+        return new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, fullIdentifier, owner, policyExecutors, virtualThreadOps);
     }
 
     public void introspectPolicyExecutors(PrintWriter out) {
