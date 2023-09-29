@@ -26,8 +26,8 @@ src: \
     test-applications/MultipleInputFileTest.war/src,\
     test-applications/ProgrammaticFaceletTests.war/src,\
     test-applications/SubscribeToEventTest.war/src,\
-    test-applications/Faces40URN.war/src,\
-    test-applications/WebSocket.war/src
+    test-applications/WebSocket.war/src,\
+    test-applications/MYFACES-4628.war/src
 
 fat.project: true
 
