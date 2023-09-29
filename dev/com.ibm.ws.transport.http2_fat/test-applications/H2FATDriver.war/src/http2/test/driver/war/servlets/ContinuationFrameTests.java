@@ -4,11 +4,8 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package http2.test.driver.war.servlets;
 
@@ -22,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
 import com.ibm.ws.http.channel.h2internal.frames.FrameGoAway;
-import com.ibm.ws.http.channel.h2internal.frames.FrameRstStream;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
 import com.ibm.ws.http2.test.Http2Client;
@@ -48,8 +44,13 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         // add the GOAWAY we expect after sending a continuation incorrectly
-        byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
+        byte[] nettyDebugData = "Received 9 frame but not currently processing headers.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);
@@ -86,8 +87,13 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         // add the GOAWAY we expect after sending a continuation incorrectly
-        byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
+        byte[] nettyDebugData = "Received 9 frame but not currently processing headers.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);
@@ -131,8 +137,13 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         // add the GOAWAY we expect after sending a continuation incorrectly
-        byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
+        byte[] nettyDebugData = "Received 9 frame but not currently processing headers.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);
@@ -211,8 +222,8 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        for (int i = 1; i<= 50; i++) {
-            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("header"+i, ""+i), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        for (int i = 1; i <= 50; i++) {
+            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("header" + i, "" + i), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         }
         FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
@@ -243,8 +254,8 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        for (int i = 1; i<= 50; i++) {
-            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("testHeader"+i, "This is test header"+i), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        for (int i = 1; i <= 50; i++) {
+            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("testHeader" + i, "This is test header" + i), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         }
         FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, false, false, false, false, false, false);
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
@@ -280,8 +291,8 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
 
         // create the first continuation frame to send over; note that end_headers IS set
         List<HeaderEntry> continuationHeadersToSend = new ArrayList<HeaderEntry>();
-        for (int i = 1; i<= 50; i++) {
-            continuationHeadersToSend.add(new HeaderEntry(new H2HeaderField("testHeader"+i, "This is test header"+i), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        for (int i = 1; i <= 50; i++) {
+            continuationHeadersToSend.add(new HeaderEntry(new H2HeaderField("testHeader" + i, "This is test header" + i), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         }
         FrameContinuationClient frameContinuationHeaders = new FrameContinuationClient(3, null, false, false, false);
         frameContinuationHeaders.setHeaderEntries(continuationHeadersToSend);

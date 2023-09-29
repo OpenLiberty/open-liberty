@@ -10,6 +10,8 @@
 package test.server.transport.http2;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,15 +46,15 @@ public class Http2FullModeTests extends FATServletClient {
 
     private final static LibertyServer runtimeServer = LibertyServerFactory.getLibertyServer("http2ClientRuntime");
 
-    String defaultServletPath = "H2FATDriver/H2FATDriverServlet?hostName=";
-    String genericServletPath = "H2FATDriver/GenericFrameTests?hostName=";
-    String continuationServletPath = "H2FATDriver/ContinuationFrameTests?hostName=";
-    String dataServletPath = "H2FATDriver/DataFrameTests?hostName=";
-    String methodServletPath = "H2FATDriver/HttpMethodTests?hostName=";
-    String pushPromisePath = "H2FATDriver/PushPromiseTests?hostName=";
+    public static final String defaultServletPath = "H2FATDriver/H2FATDriverServlet?hostName=";
+    public static final String genericServletPath = "H2FATDriver/GenericFrameTests?hostName=";
+    public static final String continuationServletPath = "H2FATDriver/ContinuationFrameTests?hostName=";
+    public static final String dataServletPath = "H2FATDriver/DataFrameTests?hostName=";
+    public static final String methodServletPath = "H2FATDriver/HttpMethodTests?hostName=";
+    public static final String pushPromisePath = "H2FATDriver/PushPromiseTests?hostName=";
 
     @Rule
-    public TestName testName = new TestName();
+    public TestName testName = new Utils.CustomTestName();
 
     @BeforeClass
     public static void before() throws Exception {
@@ -66,6 +68,32 @@ public class Http2FullModeTests extends FATServletClient {
 
         server.startServer(true, true);
         runtimeServer.startServer(true, true);
+        // Go through Logs and check if Netty is being used
+        boolean runningNetty = false;
+        // Wait for endpoints to finish loading and get the endpoint started messages
+        server.waitForStringInLog("CWWKO0219I.*");
+        runtimeServer.waitForStringInLog("CWWKO0219I.*");
+        List<String> test = server.findStringsInLogs("CWWKO0219I.*");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.logp(Level.INFO, CLASS_NAME, "test()", "Got port list...... " + Arrays.toString(test.toArray()));
+            LOGGER.logp(Level.INFO, CLASS_NAME, "test()", "Looking for port: " + server.getHttpSecondaryPort());
+        }
+        for (String endpoint : test) {
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.logp(Level.INFO, CLASS_NAME, "test()", "Endpoint: " + endpoint);
+            }
+            if (!endpoint.contains("port " + Integer.toString(server.getHttpSecondaryPort())))
+                continue;
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.logp(Level.INFO, CLASS_NAME, "test()", "Netty? " + endpoint.contains("io.openliberty.netty.internal.tcp.TCPUtils"));
+            }
+            runningNetty = endpoint.contains("io.openliberty.netty.internal.tcp.TCPUtils");
+            break;
+        }
+        if (runningNetty)
+            FATServletClient.runTest(runtimeServer,
+                                     defaultServletPath + server.getHostname() + "&port=" + server.getHttpSecondaryPort() + "&testdir=" + Utils.TEST_DIR,
+                                     "setUsingNetty");
     }
 
     @AfterClass
