@@ -1198,8 +1198,8 @@
  <OCD id="com.ibm.ws.jdbc.dataSource.properties.microsoft.sqlserver" name="%properties.microsoft.sqlserver" description="%properties.microsoft.sqlserver.desc" ibm:extendsAlias="microsoft.sqlserver" ibm:extends="com.ibm.ws.jdbc.dataSource.properties.supertype" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
   <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseNameOverrides.desc"/>
   <AD id="instanceName"                       required="false" type="String"  name="%instanceName" description="%instanceNameOverrides.desc"/>
-  <AD id="serverName"                         required="false" type="String"  default="localhost" name="%serverName" description="%serverNameOverrides.desc"/>
-  <AD id="portNumber"                         required="false" type="Integer" name="%portNumber" description="%portNumberOverrides.desc"/>
+  <AD id="serverName"                         required="false" type="String"  name="%serverName"   description="%serverNameOverrides.desc"/>
+  <AD id="portNumber"                         required="false" type="Integer" name="%portNumber"   description="%portNumberOverrides.desc"/>
   <!-- Advanced properties for properties.microsoft.sqlserver -->
   <AD id="accessToken"                        ibmui:group="Advanced" required="false" type="String"  ibm:type="password" name="%accessToken" description="%accessToken.desc"/>
   <AD id="applicationIntent"                  ibmui:group="Advanced" required="false" type="String"  name="%applicationIntent" description="%applicationIntent.desc">
