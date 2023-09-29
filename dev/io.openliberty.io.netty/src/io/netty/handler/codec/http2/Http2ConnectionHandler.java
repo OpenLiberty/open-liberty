@@ -392,6 +392,7 @@ public class Http2ConnectionHandler extends ByteToMessageDecoder implements Http
             try {
                 decoder.decodeFrame(ctx, in, out);
             } catch (Throwable e) {
+            	e.printStackTrace();
                 onError(ctx, false, e);
             }
         }
