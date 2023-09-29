@@ -16,6 +16,7 @@
 package io.netty.handler.codec.http2;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
@@ -354,10 +355,15 @@ public class DefaultHttp2FrameWriter implements Http2FrameWriter, Http2FrameSize
             verifyStreamId(streamId, STREAM_ID);
             verifyStreamId(promisedStreamId, "Promised Stream ID");
             verifyPadding(padding);
-
-            // Encode the entire header block into an intermediate buffer.
+            System.out.println("Push Headers received: "+headers);
             headerBlock = ctx.alloc().buffer();
-            headersEncoder.encodeHeaders(streamId, headers, headerBlock);
+            // Encode the entire header block into an intermediate buffer.
+            synchronized (headersEncoder) {
+                headersEncoder.encodeHeaders(streamId, headers, headerBlock);
+			}
+            
+            System.out.println("Push Headers after: "+headers);
+            System.out.println("Push Headers block: " + ByteBufUtil.getBytes(headerBlock));
 
             // Read the first fragment (possibly everything).
             Http2Flags flags = new Http2Flags().paddingPresent(padding > 0);
@@ -496,9 +502,15 @@ public class DefaultHttp2FrameWriter implements Http2FrameWriter, Http2FrameSize
                 verifyWeight(weight);
             }
 
+            System.out.println("Internal Headers received: "+headers);
             // Encode the entire header block.
             headerBlock = ctx.alloc().buffer();
-            headersEncoder.encodeHeaders(streamId, headers, headerBlock);
+            synchronized (headersEncoder) {
+                headersEncoder.encodeHeaders(streamId, headers, headerBlock);
+			}
+            
+            System.out.println("Internal Headers after: "+headers);
+            System.out.println("Internal Headers block: " + ByteBufUtil.getBytes(headerBlock));
 
             Http2Flags flags =
                     new Http2Flags().endOfStream(endStream).priorityPresent(hasPriority).paddingPresent(padding > 0);
@@ -536,8 +548,12 @@ public class DefaultHttp2FrameWriter implements Http2FrameWriter, Http2FrameSize
                 writeContinuationFrames(ctx, streamId, headerBlock, promiseAggregator);
             }
         } catch (Http2Exception e) {
+        	System.out.println("Got H2Exception: ");
+        	e.printStackTrace();
             promiseAggregator.setFailure(e);
         } catch (Throwable t) {
+        	System.out.println("Got Throwable: ");
+        	t.printStackTrace();
             promiseAggregator.setFailure(t);
             promiseAggregator.doneAllocatingPromises();
             PlatformDependent.throwException(t);
