@@ -134,7 +134,12 @@ public class HttpToHttp2ConnectionHandler extends Http2ConnectionHandler {
                 // Write the data
                 final ByteBuf content = ((HttpContent) msg).content();
                 endStream = isLastContent && trailers.isEmpty();
-                encoder.writeData(ctx, currentStreamId, content, 0, endStream, promiseAggregator.newPromise());
+                if(msg instanceof StreamSpecificHttpContent)
+                	encoder.writeData(ctx, ((StreamSpecificHttpContent)msg).streamId, content, 0, endStream, promiseAggregator.newPromise());
+                else if(msg instanceof LastStreamSpecificHttpContent)
+                	encoder.writeData(ctx, ((LastStreamSpecificHttpContent)msg).streamId, content, 0, endStream, promiseAggregator.newPromise());
+                else
+                	encoder.writeData(ctx, currentStreamId, content, 0, endStream, promiseAggregator.newPromise());
                 release = false;
 
                 if (!trailers.isEmpty()) {
