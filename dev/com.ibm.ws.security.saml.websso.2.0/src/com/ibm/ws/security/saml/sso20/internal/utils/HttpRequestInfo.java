@@ -67,6 +67,7 @@ public class HttpRequestInfo implements Serializable {
     @SuppressWarnings("rawtypes")
     Map savedPostParams = null;
     String redirectAfterSPLogout = null;
+    String redirectPageAfterSPLogout = null;
 
     // same package can access to it
     HttpRequestInfo() {
@@ -87,9 +88,11 @@ public class HttpRequestInfo implements Serializable {
         // bFromRequest = true;
         this.method = request.getMethod();
         this.strInResponseToId = SamlUtil.generateRandomID();
+        //@AV999-092821
+        boolean delegatedLogout = processDelegatedLogoutRequest(request);
         // if FormLogoutExtensionProcessor has specified a logout page, save it off. Stream has already been read.
         formLogoutExitPage = (String) request.getAttribute("FormLogoutExitPage");
-        if (METHOD_POST.equalsIgnoreCase(this.method) && formLogoutExitPage == null) {
+        if (METHOD_POST.equalsIgnoreCase(this.method) && formLogoutExitPage == null && !delegatedLogout) {
             // let's save the parameters for restore
             IServletRequest extRequest = (IServletRequest) request;
             try {
@@ -99,19 +102,40 @@ public class HttpRequestInfo implements Serializable {
                     Tr.debug(tc, "An exception getting InputStreamData : ", new Object[] { e });
                 }
                 // this should not happen. Let the SamlException handle it
-                throw new SamlException(e);
+                throw new SamlException(e);   
             }
         }
-        //@AV999-092821
+
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Request: method (" + this.method + ") savedParams:" + this.savedPostParams);
+        }
+    }
+
+    /**
+     * @param request
+     * @return 
+     */
+    private boolean processDelegatedLogoutRequest(HttpServletRequest request) {
+        boolean isDelegatedLogout = false;
         if (request.getAttribute("OIDC_END_SESSION_REDIRECT") != null) {
             redirectAfterSPLogout = (String) request.getAttribute("OIDC_END_SESSION_REDIRECT");
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "SP Initiated SLO Request, save OIDC_END_SESSION_REDIRECT uri : " + redirectAfterSPLogout);
             }
+        } else if (request.getAttribute("OIDC_LOGOUT_REDIRECT_URL") != null) {
+            redirectAfterSPLogout = (String) request.getAttribute("OIDC_LOGOUT_REDIRECT_URL");
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "SP Initiated SLO Request, save OIDC_LOGOUT_REDIRECT_URL uri : " + redirectAfterSPLogout);
+            }
+        } else if (request.getAttribute("OIDC_LOGOUT_REDIRECT_PAGE") != null) {
+            redirectPageAfterSPLogout = (String) request.getAttribute("OIDC_LOGOUT_REDIRECT_PAGE");
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "SP Initiated SLO Request, save OIDC_LOGOUT_REDIRECT_PAGE  : " + redirectPageAfterSPLogout);
+            }
         }
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Request: method (" + this.method + ") savedParams:" + this.savedPostParams);
-        }
+        isDelegatedLogout = redirectAfterSPLogout != null || redirectPageAfterSPLogout != null;
+        return isDelegatedLogout;
     }
 
     public HttpRequestInfo(String reqUrl, String requestURL, String method, String strInResponseToId, String formlogout, HashMap postParams) {
@@ -139,6 +163,10 @@ public class HttpRequestInfo implements Serializable {
 
     public String getRedirectAfterSPLogout() {
         return this.redirectAfterSPLogout;
+    }
+    
+    public String getRedirectPageAfterSPLogout() {
+        return this.redirectPageAfterSPLogout;
     }
 
     /**
