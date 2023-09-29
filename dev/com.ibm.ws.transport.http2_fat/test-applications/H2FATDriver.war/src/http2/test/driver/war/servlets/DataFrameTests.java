@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package http2.test.driver.war.servlets;
 
@@ -22,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
 import com.ibm.ws.http.channel.h2internal.frames.FrameGoAway;
+import com.ibm.ws.http.channel.h2internal.frames.FrameHeaders;
+import com.ibm.ws.http.channel.h2internal.frames.FrameSettings;
 import com.ibm.ws.http.channel.h2internal.frames.FrameWindowUpdate;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
@@ -51,8 +50,13 @@ public class DataFrameTests extends H2FATDriverServlet {
         String testName = "testDataOnIdleStream";
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "DATA Frame Received in the wrong state of: IDLE".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "DATA Frame Received in the wrong state of: IDLE".getBytes();
+        byte[] nettyDebugData = "Stream 3 does not exist".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);
@@ -82,7 +86,11 @@ public class DataFrameTests extends H2FATDriverServlet {
         // cannot assume language of test machine
         secondHeadersReceived.add(new H2HeaderField("content-language", ".*"));
 
-        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
+        FrameHeadersClient secondFrameHeaders;
+        if (USING_NETTY)
+            secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 15, false, true, false, true, false, false);
+        else
+            secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
         h2Client.addExpectedFrame(new FrameData(3, dataString.getBytes(), 0, false, false, false));
@@ -124,8 +132,13 @@ public class DataFrameTests extends H2FATDriverServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         // Add expected goaway before the init sequence.
-        byte[] debugData = "Error processing the payload for DATA frame on stream 5".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "Error processing the payload for DATA frame on stream 5".getBytes();
+        byte[] nettyDebugData = "Frame payload too small for padding.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);
@@ -158,9 +171,13 @@ public class DataFrameTests extends H2FATDriverServlet {
         String testName = "testDataFrameExceedingMaxFrameSize";
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        int ERROR_CODE = 0x6; // FRAME_SIZE_ERROR
-        byte[] debugData = "DATA payload greater than allowed by the max frame size".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ERROR_CODE, 1, false);
+        byte[] chfwDebugData = "DATA payload greater than allowed by the max frame size".getBytes();
+        byte[] nettyDebugData = "Frame length: 57601 exceeds maximum: 57344".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, FRAME_SIZE_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, FRAME_SIZE_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);
@@ -324,12 +341,30 @@ public class DataFrameTests extends H2FATDriverServlet {
 
         // expect window updates on streams 0 (connection) and 3 (stream)
         FrameWindowUpdate streamUpdateFrame = new FrameWindowUpdate(3, 502, false);
-        // This one should be sent just after the preface is processed to add 2 to the existing connection window size
-        FrameWindowUpdate connectionUpdateFrame = new FrameWindowUpdate(0, 2, false);
         h2Client.addExpectedFrame(streamUpdateFrame);
-        h2Client.addExpectedFrame(connectionUpdateFrame);
 
-        setupDefaultUpgradedConnection(h2Client);
+//        if (USING_NETTY) {
+//            h2Client.addExpectedFrame(new FrameSettings(0, -1, -1, 200, 1000, 57344, -1, false));
+//            FrameHeaders headers = addFirstExpectedHeaders(h2Client);
+//            h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
+//            h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+//            h2Client.waitFor(headers);
+//        } else {
+//            FrameWindowUpdate connectionUpdateFrame = new FrameWindowUpdate(0, 2, false);
+//            h2Client.addExpectedFrame(connectionUpdateFrame);
+//            setupDefaultUpgradedConnection(h2Client);
+//        }
+
+        if (!USING_NETTY) {
+            FrameWindowUpdate connectionUpdateFrame = new FrameWindowUpdate(0, 2, false);
+            h2Client.addExpectedFrame(connectionUpdateFrame);
+        }
+
+        h2Client.addExpectedFrame(new FrameSettings(0, -1, -1, 200, 1000, 57344, -1, false));
+        FrameHeaders headers = addFirstExpectedHeaders(h2Client);
+        h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
+        h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+        h2Client.waitFor(headers);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
@@ -381,7 +416,21 @@ public class DataFrameTests extends H2FATDriverServlet {
         h2Client.addExpectedFrame(stream7UpdateFrame);
         // connection window size is large, so no window_udpates are expected on stream 0
 
-        setupDefaultUpgradedConnection(h2Client);
+//        if (USING_NETTY) {
+//            h2Client.addExpectedFrame(new FrameSettings(0, -1, -1, 200, 1000, 57344, -1, false));
+//            FrameHeaders headers = addFirstExpectedHeaders(h2Client);
+//            h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
+//            h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+//            h2Client.waitFor(headers);
+//        } else {
+//            setupDefaultUpgradedConnection(h2Client);
+//        }
+
+        h2Client.addExpectedFrame(new FrameSettings(0, -1, -1, 200, 1000, 57344, -1, false));
+        FrameHeaders headers = addFirstExpectedHeaders(h2Client);
+        h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
+        h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+        h2Client.waitFor(headers);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
@@ -444,7 +493,12 @@ public class DataFrameTests extends H2FATDriverServlet {
         List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
         secondHeadersReceived.add(new H2HeaderField(":status", "200"));
         secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(5, null, 0, 0, 0, false, true, false, false, false, false);
+        FrameHeadersClient secondFrameHeaders;
+        if (USING_NETTY)
+            secondFrameHeaders = new FrameHeadersClient(5, null, 0, 0, 15, false, true, false, true, false, false);
+        else
+            secondFrameHeaders = new FrameHeadersClient(5, null, 0, 0, 0, false, true, false, false, false, false);
+
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 
