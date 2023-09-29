@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,15 +29,18 @@ import org.junit.runner.RunWith;
 import com.ibm.ws.http2.client.SecureHttp2Client;
 
 import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
+@SkipForRepeat(FeatureReplacementAction.BETA_ID)
 public class Http2SecureTests extends FATServletClient {
 
     private static final String CLASS_NAME = Http2LiteModeTests.class.getName();
@@ -51,7 +54,6 @@ public class Http2SecureTests extends FATServletClient {
 
     @BeforeClass
     public static void before() throws Exception {
-
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, CLASS_NAME, "before()", "Starting servers...");
         }

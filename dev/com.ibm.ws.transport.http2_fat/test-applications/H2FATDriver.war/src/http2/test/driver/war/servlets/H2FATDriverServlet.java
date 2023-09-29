@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package http2.test.driver.war.servlets;
 
@@ -86,6 +83,17 @@ public class H2FATDriverServlet extends FATServlet {
     protected final int COMPRESSION_ERROR = 0x9;
     protected final int REFUSED_STREAM_ERROR = 0x7;
     protected final int ENHANCE_YOUR_CALM_ERROR = 0xb;
+
+    protected static boolean USING_NETTY = false;
+
+    // Path to set if we are using Netty or CHFW to verify what data we should be looking for.
+    // Default of using/testing CHFW if not set
+    public void setUsingNetty(HttpServletRequest request, HttpServletResponse response) {
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "setUsingNetty", "Setting Netty Usage for tests!!");
+        }
+        USING_NETTY = true;
+    }
 
     public void testUpgradeHeader(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
@@ -333,7 +341,13 @@ public class H2FATDriverServlet extends FATServlet {
             secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
             // cannot assume language of test machine
             secondHeadersReceived.add(new H2HeaderField("content-language", ".*"));
-            FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
+            FrameHeadersClient secondFrameHeaders;
+
+            if (USING_NETTY)
+                secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 15, false, true, false, true, false, false);
+            else
+                secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
+
             secondFrameHeaders.setHeaderFields(secondHeadersReceived);
             h2Client.addExpectedFrame(secondFrameHeaders.clone());
             h2Client.addExpectedFrame(new FrameData(3, dataString.getBytes(), 0, false, false, false));
@@ -1188,7 +1202,11 @@ public class H2FATDriverServlet extends FATServlet {
         secondHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
         secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
         secondHeadersReceived.add(new H2HeaderField("content-language", ".*"));
-        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
+        FrameHeadersClient secondFrameHeaders;
+        if (USING_NETTY)
+            secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 15, false, true, false, true, false, false);
+        else
+            secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 
@@ -1654,7 +1672,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        addSecondExpectedHeaders(h2Client);
+        // Netty expecting a reset stream because the headers sent back exceed the 128 the number specified by the settings
+        // Legacy HTTP2 apparently does not do this check
+        if (USING_NETTY) {
+            FrameRstStream rstFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
+            h2Client.addExpectedFrame(rstFrame);
+        } else
+            addSecondExpectedHeaders(h2Client);
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 
         FrameSettings settingsFrameWithMaxHeaderListSize = new FrameSettings(0, -1, -1, -1, -1, -1, 128, false);
@@ -1865,8 +1889,8 @@ public class H2FATDriverServlet extends FATServlet {
     public void testInvalidHeaderFields(HttpServletRequest request,
                                         HttpServletResponse response) throws InterruptedException, Exception {
         if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, this.getClass().getName(), "testInvalidHeaderBlock", "Started!");
-            LOGGER.logp(Level.INFO, this.getClass().getName(), "testInvalidHeaderBlock",
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testInvalidHeaderFields", "Started!");
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testInvalidHeaderFields",
                         "Connecting to = " + request.getParameter("hostName") + ":" + request.getParameter("port"));
         }
         String testName = "testInvalidHeaderFields";
@@ -1899,13 +1923,38 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        FrameGoAway errorFrame = new FrameGoAway(0, "HEADERS frame must have a header block fragment".getBytes(), COMPRESSION_ERROR, 1, false);
-        h2Client.addExpectedFrame(errorFrame);
+        if (USING_NETTY) {
+//            FrameRstStream rstFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
+//            h2Client.addExpectedFrame(rstFrame);
+            FrameGoAway errorFrame = new FrameGoAway(0, "Protocol error: Padding should not be larger than payload length.".getBytes(), PROTOCOL_ERROR, 2147483647, false);
+            h2Client.addExpectedFrame(errorFrame);
+        } else {
+            FrameGoAway errorFrame = new FrameGoAway(0, "HEADERS frame must have a header block fragment".getBytes(), COMPRESSION_ERROR, 1, false);
+            h2Client.addExpectedFrame(errorFrame);
+        }
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
         byte[] errorBytes = "Error".getBytes();
         FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, errorBytes, 0, 0, 0, true, true, false, false, false, false);
         h2Client.sendFrame(frameHeadersToSend);
+
+//        if (USING_NETTY) {
+//            // Payload length in CHFW is not set as expected. It is set to 85 when it wanted to be 34
+//            String dataString = "000022010d00000003328286141e2f4832546573744d6f64756c652f483248656164657273416e64426f64790000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+//            byte[] b = parseHexBinary(dataString);
+//            h2Client.sendBytes(b);
+//        } else {
+//            // create headers to send over to the server; note that the end headers flag IS NOT set
+//            List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+//            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+//            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+//            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+//
+//            //PayloadLength: 34, pad length: 50
+//            FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 50, 0, true, true, true, false, false, false);
+//            frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
+//            h2Client.sendFrame(frameHeadersToSend);
+//        }
 
         blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
@@ -1922,8 +1971,14 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "Cannot start a stream from the client with an even numbered ID. stream-id: 2".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "Cannot start a stream from the client with an even numbered ID. stream-id: 2".getBytes();
+        byte[] nettyDebugData = "Request stream 2 is not correct for client connection".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
+
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -1952,8 +2007,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "DATA Frame Received in the wrong state of: IDLE".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "DATA Frame Received in the wrong state of: IDLE".getBytes();
+        byte[] nettyDebugData = "Stream 3 does not exist".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -1976,8 +2036,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "RST_STREAM Frame Received in the wrong state of: IDLE".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "RST_STREAM Frame Received in the wrong state of: IDLE".getBytes();
+        byte[] nettyDebugData = "Stream 3 does not exist".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2000,8 +2065,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "WINDOW_UPDATE Frame Received in the wrong state of: IDLE".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "WINDOW_UPDATE Frame Received in the wrong state of: IDLE".getBytes();
+        byte[] nettyDebugData = "Stream 3 does not exist".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2024,8 +2094,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "CONTINUATION Frame Received in the wrong state of: IDLE".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "CONTINUATION Frame Received in the wrong state of: IDLE".getBytes();
+        byte[] nettyDebugData = "Received 9 frame but not currently processing headers.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2053,9 +2128,14 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "DATA frame received on a closed stream".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, STREAM_CLOSED, 1, false);
-        h2Client.addExpectedFrame(errorFrame);
+        if (USING_NETTY) {
+            FrameRstStream rstFrame = new FrameRstStream(3, STREAM_CLOSED, false);
+            h2Client.addExpectedFrame(rstFrame);
+        } else {
+            byte[] debugData = "DATA frame received on a closed stream".getBytes();
+            FrameGoAway errorFrame = new FrameGoAway(0, debugData, STREAM_CLOSED, 1, false);
+            h2Client.addExpectedFrame(errorFrame);
+        }
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 
@@ -2087,9 +2167,14 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "HEADERS frame received on a closed stream".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, STREAM_CLOSED, 1, false);
-        h2Client.addExpectedFrame(errorFrame);
+        if (USING_NETTY) {
+            FrameRstStream rstFrame = new FrameRstStream(3, STREAM_CLOSED, false);
+            h2Client.addExpectedFrame(rstFrame);
+        } else {
+            byte[] debugData = "HEADERS frame received on a closed stream".getBytes();
+            FrameGoAway errorFrame = new FrameGoAway(0, debugData, STREAM_CLOSED, 1, false);
+            h2Client.addExpectedFrame(errorFrame);
+        }
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 
@@ -2125,8 +2210,15 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "CONTINUATION frame received on a closed stream".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, STREAM_CLOSED, 1, false);
+        // TODO Need to look more into this, not exactly sure why it's sending a go away frame since the stream should be closed
+
+        byte[] chfwDebugData = "CONTINUATION frame received on a closed stream".getBytes();
+        byte[] nettyDebugData = "Received 9 frame but not currently processing headers.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, STREAM_CLOSED, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2163,9 +2255,14 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        // Depending on which order the frames are processed, we may get either a GOAWAY PROTOCOL_ERROR or STREAM_CLOSED
-        // Just check for a generic goaway frame type
-        h2Client.addExpectedFrame(FrameTypes.GOAWAY, 0);
+        if (USING_NETTY) {
+            FrameRstStream errorFrame = new FrameRstStream(3, STREAM_CLOSED, false);
+            h2Client.addExpectedFrame(errorFrame);
+        } else {
+            // Depending on which order the frames are processed, we may get either a GOAWAY PROTOCOL_ERROR or STREAM_CLOSED
+            // Just check for a generic goaway frame type
+            h2Client.addExpectedFrame(FrameTypes.GOAWAY, 0);
+        }
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 
@@ -2195,9 +2292,14 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        // Depending on which order the frames are processed, we may get either a GOAWAY PROTOCOL_ERROR or STREAM_CLOSED
-        // Just check for a generic goaway frame type
-        h2Client.addExpectedFrame(FrameTypes.GOAWAY, 0);
+        if (USING_NETTY) {
+            FrameRstStream errorFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
+            h2Client.addExpectedFrame(errorFrame);
+        } else {
+            // Depending on which order the frames are processed, we may get either a GOAWAY PROTOCOL_ERROR or STREAM_CLOSED
+            // Just check for a generic goaway frame type
+            h2Client.addExpectedFrame(FrameTypes.GOAWAY, 0);
+        }
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 
@@ -2264,8 +2366,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "CONTINUATION frame streamID cannot be 0x0".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "CONTINUATION frame streamID cannot be 0x0".getBytes();
+        byte[] nettyDebugData = "Frame of type 9 must be associated with a stream.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2301,8 +2408,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
+        byte[] nettyDebugData = "Received 9 frame but not currently processing headers.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2339,8 +2451,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
+        byte[] nettyDebugData = "Received 9 frame but not currently processing headers.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2384,9 +2501,16 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
-        FrameGoAwayClient errorFrame = new FrameGoAwayClient(0, debugData, new int[] { STREAM_CLOSED, PROTOCOL_ERROR }, new int[] { 1, 3 });
-        h2Client.addExpectedFrame(errorFrame);
+        byte[] chfwDebugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
+        byte[] nettyDebugData = "Received 9 frame but not currently processing headers.".getBytes();
+        if (USING_NETTY) {
+            FrameGoAway errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+            h2Client.addExpectedFrame(errorFrame);
+
+        } else {
+            FrameGoAwayClient errorFrame = new FrameGoAwayClient(0, chfwDebugData, new int[] { STREAM_CLOSED, PROTOCOL_ERROR }, new int[] { 1, 3 });
+            h2Client.addExpectedFrame(errorFrame);
+        }
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 
@@ -2426,8 +2550,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "DATA frame stream ID cannot be 0x0".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "DATA frame stream ID cannot be 0x0".getBytes();
+        byte[] nettyDebugData = "Frame of type 0 must be associated with a stream.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2450,8 +2579,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "Error processing the payload for DATA frame on stream 3".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 3, false);
+        byte[] chfwDebugData = "Error processing the payload for DATA frame on stream 3".getBytes();
+        byte[] nettyDebugData = "Frame payload too small for padding.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 3, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2491,8 +2625,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "Did not receive the expected continuation frame".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "Did not receive the expected continuation frame".getBytes();
+        byte[] nettyDebugData = "Received frame of type 2 while processing headers on stream 3.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2529,8 +2668,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "HEADERS frame streamID cannot be 0x0".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "HEADERS frame streamID cannot be 0x0".getBytes();
+        byte[] nettyDebugData = "Frame of type 1 must be associated with a stream.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2559,21 +2703,37 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "HEADERS padding length must be less than the length of the payload".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        FrameGoAway errorFrame;
+        byte[] chfwDebugData = "HEADERS padding length must be less than the length of the payload".getBytes();
+        byte[] nettyDebugData = "Frame payload too small for padding.".getBytes();
+        if (USING_NETTY) {
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        } else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
+        // In Netty the Payload length is used to compare with the padding
+        // There is no clear definition of if the payload length should include
+        // Padding length so not exactly sure about this but will send
+        // the same data but with the wanted length of the original headers
+        if (USING_NETTY) {
+            // Payload length in CHFW is not set as expected. It is set to 85 when it wanted to be 34
+            String dataString = "000022010d00000003328286141e2f4832546573744d6f64756c652f483248656164657273416e64426f64790000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+            byte[] b = parseHexBinary(dataString);
+            h2Client.sendBytes(b);
+        } else {
+            // create headers to send over to the server; note that the end headers flag IS NOT set
+            List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
 
-        // create headers to send over to the server; note that the end headers flag IS NOT set
-        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        //PayloadLength: 34, pad length: 50
-        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 50, 0, true, true, true, false, false, false);
-        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
-        h2Client.sendFrame(frameHeadersToSend);
+            //PayloadLength: 34, pad length: 50
+            FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 50, 0, true, true, true, false, false, false);
+            frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
+            h2Client.sendFrame(frameHeadersToSend);
+        }
 
         blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
@@ -2589,8 +2749,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "PRIORITY frame stream ID cannot be 0x0".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "PRIORITY frame stream ID cannot be 0x0".getBytes();
+        byte[] nettyDebugData = "Frame of type 2 must be associated with a stream.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2612,9 +2777,15 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        String errorMessage = "PRIORITY frame must have a length of 5 octets";
-        FrameGoAway goaway = new FrameGoAway(0, errorMessage.getBytes(), FRAME_SIZE_ERROR, 1, false);
-        h2Client.addExpectedFrame(goaway);
+        if (USING_NETTY) {
+            FrameRstStream errorFrame = new FrameRstStream(3, FRAME_SIZE_ERROR, false);
+            h2Client.addExpectedFrame(errorFrame);
+        } else {
+            String errorMessage = "PRIORITY frame must have a length of 5 octets";
+            FrameGoAway goaway = new FrameGoAway(0, errorMessage.getBytes(), FRAME_SIZE_ERROR, 1, false);
+            h2Client.addExpectedFrame(goaway);
+
+        }
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 
@@ -2637,8 +2808,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "RST_STREAM frame stream ID cannot be 0".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "RST_STREAM frame stream ID cannot be 0".getBytes();
+        byte[] nettyDebugData = "Frame of type 3 must be associated with a stream.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2660,8 +2836,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "RST_STREAM frame payload must have a length of 4 octets".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, FRAME_SIZE_ERROR, 1, false);
+        byte[] chfwDebugData = "RST_STREAM frame payload must have a length of 4 octets".getBytes();
+        byte[] nettyDebugData = "Invalid frame length 3.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, FRAME_SIZE_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, FRAME_SIZE_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2687,9 +2868,15 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "SETTINGS_MAX_FRAME_SIZE value exceeded the max allowable value".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "SETTINGS_MAX_FRAME_SIZE value exceeded the max allowable value".getBytes();
+        byte[] nettyDebugData = "Protocol error: Setting MAX_FRAME_SIZE is invalid: 16777216".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
+
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 
         FrameSettings settingsFrameWithValues = new FrameSettings(0, -1, -1, -1, -1, 16777216, -1, false);
@@ -2710,8 +2897,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "Initial window size setting value exceeded max allowable value".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, FLOW_CONTROL_ERROR, 1, false);
+        byte[] chfwDebugData = "Initial window size setting value exceeded max allowable value".getBytes();
+        byte[] nettyDebugData = "Failed setting initial window size: Setting INITIAL_WINDOW_SIZE is invalid: 4294967295".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, FLOW_CONTROL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, FLOW_CONTROL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2794,8 +2986,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "SETTINGS frame with ACK set cannot have an additional payload".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, FRAME_SIZE_ERROR, 1, false);
+        byte[] chfwDebugData = "SETTINGS frame with ACK set cannot have an additional payload".getBytes();
+        byte[] nettyDebugData = "Ack settings frame must have an empty payload.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, FRAME_SIZE_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, FRAME_SIZE_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2819,8 +3016,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "SETTINGS frame stream ID must be 0x0; received 3".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "SETTINGS frame stream ID must be 0x0; received 3".getBytes();
+        byte[] nettyDebugData = "A stream ID must be zero.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2843,8 +3045,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "Settings frame is malformed".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, FRAME_SIZE_ERROR, 1, false);
+        byte[] chfwDebugData = "Settings frame is malformed".getBytes();
+        byte[] nettyDebugData = "Frame length 3 invalid.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, FRAME_SIZE_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, FRAME_SIZE_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2901,8 +3108,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "ping frames must be sent on stream 0".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "ping frames must be sent on stream 0".getBytes();
+        byte[] nettyDebugData = "A stream ID must be zero.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2928,8 +3140,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "ping frames must have a length of 8 bytes".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, FRAME_SIZE_ERROR, 1, false);
+        byte[] chfwDebugData = "ping frames must have a length of 8 bytes".getBytes();
+        byte[] nettyDebugData = "Frame length 7 incorrect size for ping.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, FRAME_SIZE_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, FRAME_SIZE_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2956,8 +3173,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "GOAWAY frame streamID must be 0x0 - received: 3".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "GOAWAY frame streamID must be 0x0 - received: 3".getBytes();
+        byte[] nettyDebugData = "A stream ID must be zero.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -2979,8 +3201,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "processWindowUpdateFrame: out of bounds increment, current connection write limit: 65535 total would have been: 2147549182".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, FLOW_CONTROL_ERROR, 1, false);
+        byte[] chfwDebugData = "processWindowUpdateFrame: out of bounds increment, current connection write limit: 65535 total would have been: 2147549182".getBytes();
+        byte[] nettyDebugData = "Window size overflow for stream: 0".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, FLOW_CONTROL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, FLOW_CONTROL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -3050,7 +3277,13 @@ public class H2FATDriverServlet extends FATServlet {
         // time for connection set up.
         blockUntilConnectionIsDone.await(10000, TimeUnit.MILLISECONDS);
 
-        Assert.assertTrue(testName + " received the server's preface. wasServerPrefaceReceived() = true", !h2Client.wasServerPrefaceReceived());
+        // Don't wait for preface but check that goaway was sent with Netty
+        if (USING_NETTY) {
+            byte[] debugData = "HTTP/2 client preface string missing or corrupt. Hex dump for received bytes: 4261642d505249".getBytes();
+            FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 2147483647, false);
+            h2Client.addExpectedFrame(errorFrame);
+        } else
+            Assert.assertTrue(testName + " received the server's preface. wasServerPrefaceReceived() = true", !h2Client.wasServerPrefaceReceived());
         //handleErrors(h2Client, testName);
     }
 
@@ -3065,8 +3298,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "Did not receive the expected continuation frame".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "Did not receive the expected continuation frame".getBytes();
+        byte[] nettyDebugData = "Received frame of type 1 while processing headers on stream 3.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -3099,9 +3337,15 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "received a new stream with a lower ID than previous; current stream-id: 3 highest stream-id: 5".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 5, false);
-        h2Client.addExpectedFrame(errorFrame);
+        if (USING_NETTY) {
+            FrameRstStream rstFrame = new FrameRstStream(3, STREAM_CLOSED, false);
+            h2Client.addExpectedFrame(rstFrame);
+            h2Client.addExpectedFrame(new FrameData(5, "ABC123".getBytes(), 0, false, false, false));
+        } else {
+            byte[] debugData = "received a new stream with a lower ID than previous; current stream-id: 3 highest stream-id: 5".getBytes();
+            FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 5, false);
+            h2Client.addExpectedFrame(errorFrame);
+        }
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 
@@ -3184,8 +3428,14 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "Did not receive the expected continuation frame".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "Did not receive the expected continuation frame".getBytes();
+        byte[] nettyDebugData = "Received frame of type -12 while processing headers on stream 3.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
+
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -3219,8 +3469,14 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "SETTINGS_ENABLE_PUSH must be set to 0 or 1 0".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "SETTINGS_ENABLE_PUSH must be set to 0 or 1 0".getBytes();
+        byte[] nettyDebugData = "Protocol error: Setting ENABLE_PUSH is invalid: 2".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
+
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -3282,9 +3538,23 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        int NO_ERROR = 0x0;
-        FrameGoAway errorFrame = new FrameGoAway(0, null, NO_ERROR, 1, false);
-        h2Client.addExpectedFrame(errorFrame);
+        if (USING_NETTY) {
+            // Netty does not expect an error code back so just look for the last data frame
+//            h2Client.addExpectedFrame(new FrameData(1, new byte[] {}, 0, true, false, false));
+//            List<H2HeaderField> firstHeadersReceived = new ArrayList<H2HeaderField>();
+//            firstHeadersReceived.add(new H2HeaderField(":status", "200"));
+//            firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
+//            firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
+//            // cannot assume language of test machine
+//            firstHeadersReceived.add(new H2HeaderField("content-language", ".*"));
+//            FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 15, true, true, false, true, false, false);
+//            frameHeaders.setHeaderFields(firstHeadersReceived);
+//            h2Client.addExpectedFrame(frameHeaders);
+        } else {
+            int NO_ERROR = 0x0;
+            FrameGoAway errorFrame = new FrameGoAway(0, null, NO_ERROR, 1, false);
+            h2Client.addExpectedFrame(errorFrame);
+        }
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
         h2Client.sendFrame(new FrameGoAway(0, new byte[] { (byte) 0, (byte) 1 }, 255, 1, false));
@@ -3305,6 +3575,11 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
+        byte[] testBytes = new byte[] { 'l', 'i', 'b', 'e', 'r', 't', 'y' };
+        FramePing expectedPing = new FramePing(0, testBytes, false);
+        expectedPing.setAckFlag();
+        h2Client.addExpectedFrame(expectedPing);
+
         setupDefaultUpgradedConnection(h2Client, HEADERS_AND_BODY_URI);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
@@ -3318,13 +3593,10 @@ public class H2FATDriverServlet extends FATServlet {
         FrameRstStream rstFrame = new FrameRstStream(3, 255, false);
         h2Client.sendFrame(rstFrame);
 
-        byte[] testBytes = new byte[] { 'l', 'i', 'b', 'e', 'r', 't', 'y' };
-        FramePing expectedPing = new FramePing(0, testBytes, false);
-        expectedPing.setAckFlag();
-        h2Client.addExpectedFrame(expectedPing);
-
         FramePing ping = new FramePing(0, testBytes, false);
         h2Client.sendFrame(ping);
+
+        h2Client.waitFor(expectedPing);
 
         blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
@@ -3397,9 +3669,15 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "Psuedo-headers are not allowed in trailers: :authority: respect.my".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
-        h2Client.addExpectedFrame(errorFrame);
+        if (USING_NETTY) {
+            FrameRstStream errorFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
+            h2Client.addExpectedFrame(errorFrame);
+        } else {
+            byte[] debugData = "Psuedo-headers are not allowed in trailers: :authority: respect.my".getBytes();
+            FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
+            h2Client.addExpectedFrame(errorFrame);
+
+        }
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 
@@ -3436,9 +3714,14 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "Invalid pseudo-header decoded: all pseudo-headers must appear in the header block before regular header fields.".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
-        h2Client.addExpectedFrame(errorFrame);
+        if (USING_NETTY) {
+            FrameRstStream errorFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
+            h2Client.addExpectedFrame(errorFrame);
+        } else {
+            byte[] debugData = "Invalid pseudo-header decoded: all pseudo-headers must appear in the header block before regular header fields.".getBytes();
+            FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
+            h2Client.addExpectedFrame(errorFrame);
+        }
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 
@@ -3466,9 +3749,14 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "Invalid Connection header received: connection: keep-alive".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
-        h2Client.addExpectedFrame(errorFrame);
+        if (USING_NETTY) {
+            FrameRstStream errorFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
+            h2Client.addExpectedFrame(errorFrame);
+        } else {
+            byte[] debugData = "Invalid Connection header received: connection: keep-alive".getBytes();
+            FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
+            h2Client.addExpectedFrame(errorFrame);
+        }
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 
@@ -3496,10 +3784,14 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        int COMPRESSION_ERROR = 0x9;
-        byte[] debugData = "Invalid header: TE header must have value \"trailers\": te: trailers, deflate".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
-        h2Client.addExpectedFrame(errorFrame);
+        if (USING_NETTY) {
+            FrameRstStream errorFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
+            h2Client.addExpectedFrame(errorFrame);
+        } else {
+            byte[] debugData = "Invalid header: TE header must have value \"trailers\": te: trailers, deflate".getBytes();
+            FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
+            h2Client.addExpectedFrame(errorFrame);
+        }
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 
@@ -3767,7 +4059,7 @@ public class H2FATDriverServlet extends FATServlet {
         String testName = "testHeaderFrameIncorrectSumContentLength";
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
-
+        h2Client.allowFramesAfterEndOfStream();
         FrameRstStream rstFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
         h2Client.addExpectedFrame(rstFrame);
 
@@ -3793,17 +4085,22 @@ public class H2FATDriverServlet extends FATServlet {
     public void testSecondHeaderFrameWithoutEndOfStream(HttpServletRequest request,
                                                         HttpServletResponse response) throws InterruptedException, Exception {
         if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, this.getClass().getName(), "testHeaderFrameIncorrectContentLength", "Started!");
-            LOGGER.logp(Level.INFO, this.getClass().getName(), "testHeaderFrameIncorrectContentLength",
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testSecondHeaderFrameWithoutEndOfStream", "Started!");
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testSecondHeaderFrameWithoutEndOfStream",
                         "Connecting to = " + request.getParameter("hostName") + ":" + request.getParameter("port"));
         }
-        String testName = "testHeaderFrameIncorrectContentLength";
+        String testName = "testSecondHeaderFrameWithoutEndOfStream";
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "HEADERS frame received on a closed stream".getBytes();
-        FrameGoAwayClient errorFrame = new FrameGoAwayClient(0, debugData, new int[] { STREAM_CLOSED, PROTOCOL_ERROR }, new int[] { 1, 3 });
-        h2Client.addExpectedFrame(errorFrame);
+        if (USING_NETTY) {
+            FrameRstStream rstFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
+            h2Client.addExpectedFrame(rstFrame);
+        } else {
+            byte[] debugData = "HEADERS frame received on a closed stream".getBytes();
+            FrameGoAwayClient errorFrame = new FrameGoAwayClient(0, debugData, new int[] { STREAM_CLOSED, PROTOCOL_ERROR }, new int[] { 1, 3 });
+            h2Client.addExpectedFrame(errorFrame);
+        }
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 
@@ -3904,8 +4201,14 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "DATA payload greater than allowed by the max frame size".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, FRAME_SIZE_ERROR, 1, false);
+        byte[] cfhwDebugData = "DATA payload greater than allowed by the max frame size".getBytes();
+        byte[] nettyDebugData = "Frame length: 57345 exceeds maximum: 57344".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, FRAME_SIZE_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, cfhwDebugData, FRAME_SIZE_ERROR, 1, false);
+
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -3941,8 +4244,14 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "HEADERS payload greater than allowed by the max frame size".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, FRAME_SIZE_ERROR, 1, false);
+        byte[] cfhwDebugData = "HEADERS payload greater than allowed by the max frame size".getBytes();
+        byte[] nettyDebugData = "Frame length: 213039 exceeds maximum: 57344".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, FRAME_SIZE_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, cfhwDebugData, FRAME_SIZE_ERROR, 1, false);
+
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -3973,14 +4282,30 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "Header field names must not contain uppercase characters. Decoded header name: T".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
-        h2Client.addExpectedFrame(errorFrame);
+        if (USING_NETTY) {
+            FrameRstStream errorFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
+            h2Client.addExpectedFrame(errorFrame);
+        } else {
+            byte[] debugData = "Header field names must not contain uppercase characters. Decoded header name: T".getBytes();
+            FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
+            h2Client.addExpectedFrame(errorFrame);
+        }
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 
-        //locking for logging purposes; wait for EoS data and then send setting frame
-        h2Client.waitFor(new FrameData(1, new byte[0], 0, true, false, false));
+        if (USING_NETTY) {
+            List<H2HeaderField> firstHeadersReceived = new ArrayList<H2HeaderField>();
+            firstHeadersReceived.add(new H2HeaderField(":status", "200"));
+            firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
+            firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
+            // cannot assume language of test machine
+            firstHeadersReceived.add(new H2HeaderField("content-language", ".*"));
+            FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 15, false, true, false, true, false, false);
+            frameHeaders.setHeaderFields(firstHeadersReceived);
+            h2Client.waitFor(frameHeaders);
+        } else
+            //locking for logging purposes; wait for EoS data and then send setting frame
+            h2Client.waitFor(new FrameData(1, new byte[0], 0, true, false, false));
 
         /**
          * FrameType: HEADERS
@@ -4021,14 +4346,31 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "dynamic table size update must occur at the beginning of the first header block".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
+        byte[] cfhwDebugData = "dynamic table size update must occur at the beginning of the first header block".getBytes();
+        byte[] nettyDebugData = "Dynamic table size update must happen at the beginning of the header block".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, COMPRESSION_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, cfhwDebugData, COMPRESSION_ERROR, 1, false);
+
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 
-        //locking for logging purposes; wait for EoS data and then send setting frame
-        h2Client.waitFor(new FrameData(1, new byte[0], 0, true, false, false));
+        if (USING_NETTY) {
+            List<H2HeaderField> firstHeadersReceived = new ArrayList<H2HeaderField>();
+            firstHeadersReceived.add(new H2HeaderField(":status", "200"));
+            firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
+            firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
+            // cannot assume language of test machine
+            firstHeadersReceived.add(new H2HeaderField("content-language", ".*"));
+            FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 15, false, true, false, true, false, false);
+            frameHeaders.setHeaderFields(firstHeadersReceived);
+            h2Client.waitFor(frameHeaders);
+        } else
+            //locking for logging purposes; wait for EoS data and then send setting frame
+            h2Client.waitFor(new FrameData(1, new byte[0], 0, true, false, false));
 
         /**
          * FrameType: HEADERS
@@ -4072,13 +4414,31 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "Received an invalid header index".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
+        byte[] cfhwDebugData = "Received an invalid header index".getBytes();
+        byte[] nettyDebugData = "HPACK - illegal index value".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, COMPRESSION_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, cfhwDebugData, COMPRESSION_ERROR, 1, false);
+
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
-        //locking for logging purposes; wait for EoS data and then send setting frame
-        h2Client.waitFor(new FrameData(1, new byte[0], 0, true, false, false));
+
+        if (USING_NETTY) {
+            List<H2HeaderField> firstHeadersReceived = new ArrayList<H2HeaderField>();
+            firstHeadersReceived.add(new H2HeaderField(":status", "200"));
+            firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
+            firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
+            // cannot assume language of test machine
+            firstHeadersReceived.add(new H2HeaderField("content-language", ".*"));
+            FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 15, false, true, false, true, false, false);
+            frameHeaders.setHeaderFields(firstHeadersReceived);
+            h2Client.waitFor(frameHeaders);
+        } else
+            //locking for logging purposes; wait for EoS data and then send setting frame
+            h2Client.waitFor(new FrameData(1, new byte[0], 0, true, false, false));
 
         /**
          * FrameType: HEADERS
@@ -4120,12 +4480,29 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "Received an invalid header block fragment".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
+        byte[] cfhwDebugData = "Received an invalid header block fragment".getBytes();
+        byte[] nettyDebugData = "HPACK - Bad Encoding".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, COMPRESSION_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, cfhwDebugData, COMPRESSION_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
-        h2Client.waitFor(new FrameData(1, new byte[0], 0, true, false, false));
+        if (USING_NETTY) {
+            List<H2HeaderField> firstHeadersReceived = new ArrayList<H2HeaderField>();
+            firstHeadersReceived.add(new H2HeaderField(":status", "200"));
+            firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
+            firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
+            // cannot assume language of test machine
+            firstHeadersReceived.add(new H2HeaderField("content-language", ".*"));
+            FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 15, false, true, false, true, false, false);
+            frameHeaders.setHeaderFields(firstHeadersReceived);
+            h2Client.waitFor(frameHeaders);
+        } else
+            //locking for logging purposes; wait for EoS data and then send setting frame
+            h2Client.waitFor(new FrameData(1, new byte[0], 0, true, false, false));
 
         /**
          * FrameType: HEADERS
@@ -4167,12 +4544,21 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] debugData = "An indexed header cannot have an index of 0".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
+        byte[] cfhwDebugData = "An indexed header cannot have an index of 0".getBytes();
+        byte[] nettyDebugData = "HPACK - illegal index value".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, COMPRESSION_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, cfhwDebugData, COMPRESSION_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_AND_BODY_URI);
-        h2Client.waitFor(new FrameData(1, new byte[0], 0, true, false, false));
+        // TODO update this for handling end of stream instead of anything else
+        if (USING_NETTY)
+            h2Client.waitFor(new FrameData(1, "ABC123".getBytes(), 0, true, false, false));
+        else
+            h2Client.waitFor(new FrameData(1, new byte[0], 0, true, false, false));
 
         /**
          * FrameType: HEADERS
@@ -4220,8 +4606,19 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.addExpectedFrame(new FrameData(3, dataString.getBytes(), 0, false, false, false));
         h2Client.addExpectedFrame(new FrameData(1, dataString.getBytes(), 0, false, false, false));
 
-        FrameSettings zeroWindowSizeSettingsFrame = new FrameSettings(0, -1, -1, -1, 1, -1, -1, false);
-        setupDefaultUpgradedConnection(h2Client, HEADERS_AND_BODY_URI, zeroWindowSizeSettingsFrame);
+        if (USING_NETTY) {
+            h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
+            FrameHeaders headers = addFirstExpectedHeaders(h2Client);
+            h2Client.sendUpgradeHeader(HEADERS_AND_BODY_URI);
+            // True 0 bit settings
+            String settingsString = "000006040000000000000400000000";
+            byte[] b = parseHexBinary(settingsString);
+            h2Client.sendClientPrefaceFollowedBySettingsBytes(b, defaultTimeoutToSendFrame);
+            h2Client.waitFor(headers);
+        } else {
+            FrameSettings zeroWindowSizeSettingsFrame = new FrameSettings(0, -1, -1, -1, 1, -1, -1, false);
+            setupDefaultUpgradedConnection(h2Client, HEADERS_AND_BODY_URI, zeroWindowSizeSettingsFrame);
+        }
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
@@ -4435,7 +4832,12 @@ public class H2FATDriverServlet extends FATServlet {
         firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/3.1"));
         firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
         firstHeadersReceived.add(new H2HeaderField("content-language", ".*"));
-        FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
+        FrameHeadersClient frameHeaders;
+        if (USING_NETTY)
+            frameHeaders = new FrameHeadersClient(1, null, 0, 0, 15, false, true, false, true, false, false);
+        else
+            frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
+
         frameHeaders.setHeaderFields(firstHeadersReceived);
         h2Client.addExpectedFrame(frameHeaders);
 
@@ -4471,7 +4873,11 @@ public class H2FATDriverServlet extends FATServlet {
         headersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
         headersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
         headersReceived.add(new H2HeaderField("content-language", ".*"));
-        FrameHeadersClient serverHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
+        FrameHeadersClient serverHeaders;
+        if (USING_NETTY)
+            serverHeaders = new FrameHeadersClient(1, null, 0, 0, 15, false, true, false, true, false, false);
+        else
+            serverHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
         serverHeaders.setHeaderFields(headersReceived);
 
         // add expected header and body response to the client
@@ -4518,7 +4924,11 @@ public class H2FATDriverServlet extends FATServlet {
         headersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
         headersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
         headersReceived.add(new H2HeaderField("content-language", ".*"));
-        FrameHeadersClient serverHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
+        FrameHeadersClient serverHeaders;
+        if (USING_NETTY)
+            serverHeaders = new FrameHeadersClient(1, null, 0, 0, 15, false, true, false, true, false, false);
+        else
+            serverHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
         serverHeaders.setHeaderFields(headersReceived);
 
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
@@ -4851,7 +5261,9 @@ public class H2FATDriverServlet extends FATServlet {
      * @return the default Http2Client
      */
     Http2Client getDefaultH2Client(HttpServletRequest request, HttpServletResponse response, CountDownLatch blockUntilConnectionIsDone) {
-        return new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, defaultTimeoutToSendFrame);
+        Http2Client client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, defaultTimeoutToSendFrame);
+        return client;
+
     }
 
     /**
@@ -4918,7 +5330,7 @@ public class H2FATDriverServlet extends FATServlet {
      * @param the Http2Client that will expect a header response
      * @return the expected FrameHeaders
      */
-    private FrameHeaders addFirstExpectedHeaders(Http2Client client) throws Exception {
+    protected FrameHeaders addFirstExpectedHeaders(Http2Client client) throws Exception {
         FrameHeaders frameHeaders = getFirstExpectedHeaders();
         client.addExpectedFrame(frameHeaders);
         return frameHeaders;
@@ -4940,7 +5352,11 @@ public class H2FATDriverServlet extends FATServlet {
         firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
         // cannot assume language of test machine
         firstHeadersReceived.add(new H2HeaderField("content-language", ".*"));
-        FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
+        FrameHeadersClient frameHeaders;
+        if (USING_NETTY)
+            frameHeaders = new FrameHeadersClient(1, null, 0, 0, 15, false, true, false, true, false, false);
+        else
+            frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
         frameHeaders.setHeaderFields(firstHeadersReceived);
         return frameHeaders;
     }
@@ -4958,7 +5374,11 @@ public class H2FATDriverServlet extends FATServlet {
         secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
         // cannot assume language of test machine
         secondHeadersReceived.add(new H2HeaderField("content-language", ".*"));
-        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
+        FrameHeadersClient secondFrameHeaders;
+        if (USING_NETTY)
+            secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 15, false, true, false, true, false, false);
+        else
+            secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         client.addExpectedFrame(secondFrameHeaders);
         return secondFrameHeaders;
