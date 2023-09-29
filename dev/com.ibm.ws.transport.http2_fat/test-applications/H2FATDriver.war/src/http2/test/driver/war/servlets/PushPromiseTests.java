@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -94,7 +94,11 @@ public class PushPromiseTests extends H2FATDriverServlet {
         firstHeadersReceived.add(new H2HeaderField(":status", "200"));
         firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
         firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-        FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, true, true, false, false, false, false);
+        FrameHeadersClient frameHeaders;
+        if (USING_NETTY)
+            frameHeaders = new FrameHeadersClient(1, null, 0, 0, 15, true, true, false, true, false, false);
+        else
+            frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, true, true, false, false, false, false);
         frameHeaders.setHeaderFields(firstHeadersReceived);
         h2Client.addExpectedFrame(frameHeaders);
 
@@ -103,7 +107,11 @@ public class PushPromiseTests extends H2FATDriverServlet {
         secondHeadersReceived.add(new H2HeaderField(":status", "200"));
         secondHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
         secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(2, null, 0, 0, 0, true, true, false, false, false, false);
+        FrameHeadersClient secondFrameHeaders;
+        if (USING_NETTY)
+            secondFrameHeaders = new FrameHeadersClient(2, null, 0, 0, 15, true, true, false, true, false, false);
+        else
+            secondFrameHeaders = new FrameHeadersClient(2, null, 0, 0, 0, true, true, false, false, false, false);
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 
@@ -112,7 +120,11 @@ public class PushPromiseTests extends H2FATDriverServlet {
         thirdHeadersReceived.add(new H2HeaderField(":status", "200"));
         thirdHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
         thirdHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-        FrameHeadersClient thirdFrameHeaders = new FrameHeadersClient(4, null, 0, 0, 0, true, true, false, false, false, false);
+        FrameHeadersClient thirdFrameHeaders;
+        if (USING_NETTY)
+            thirdFrameHeaders = new FrameHeadersClient(6, null, 0, 0, 15, true, true, false, true, false, false);
+        else
+            thirdFrameHeaders = new FrameHeadersClient(4, null, 0, 0, 0, true, true, false, false, false, false);
         thirdFrameHeaders.setHeaderFields(thirdHeadersReceived);
         h2Client.addExpectedFrame(thirdFrameHeaders);
 
@@ -168,7 +180,11 @@ public class PushPromiseTests extends H2FATDriverServlet {
         firstHeadersReceived.add(new H2HeaderField(":status", "200"));
         firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
         firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-        FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, true, true, false, false, false, false);
+        FrameHeadersClient frameHeaders;
+        if (USING_NETTY)
+            frameHeaders = new FrameHeadersClient(1, null, 0, 0, 15, true, true, false, true, false, false);
+        else
+            frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, true, true, false, false, false, false);
         frameHeaders.setHeaderFields(firstHeadersReceived);
         h2Client.addExpectedFrame(frameHeaders);
 
@@ -177,7 +193,11 @@ public class PushPromiseTests extends H2FATDriverServlet {
         secondHeadersReceived.add(new H2HeaderField(":status", "200"));
         secondHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
         secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(2, null, 0, 0, 0, true, true, false, false, false, false);
+        FrameHeadersClient secondFrameHeaders;
+        if (USING_NETTY)
+            secondFrameHeaders = new FrameHeadersClient(2, null, 0, 0, 15, true, true, false, true, false, false);
+        else
+            secondFrameHeaders = new FrameHeadersClient(2, null, 0, 0, 0, true, true, false, false, false, false);
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 
@@ -220,7 +240,11 @@ public class PushPromiseTests extends H2FATDriverServlet {
         firstHeadersReceived.add(new H2HeaderField(":status", "200"));
         firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
         firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-        FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, true, true, false, false, false, false);
+        FrameHeadersClient frameHeaders;
+        if (USING_NETTY)
+            frameHeaders = new FrameHeadersClient(1, null, 0, 0, 15, true, true, false, true, false, false);
+        else
+            frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, true, true, false, false, false, false);
         frameHeaders.setHeaderFields(firstHeadersReceived);
         h2Client.addExpectedFrame(frameHeaders);
 
@@ -264,7 +288,11 @@ public class PushPromiseTests extends H2FATDriverServlet {
         firstHeadersReceived.add(new H2HeaderField(":status", "200"));
         firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
         firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-        FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, true, true, false, false, false, false);
+        FrameHeadersClient frameHeaders;
+        if (USING_NETTY)
+            frameHeaders = new FrameHeadersClient(1, null, 0, 0, 15, true, true, false, true, false, false);
+        else
+            frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, true, true, false, false, false, false);
         frameHeaders.setHeaderFields(firstHeadersReceived);
         h2Client.addExpectedFrame(frameHeaders);
 
@@ -297,9 +325,14 @@ public class PushPromiseTests extends H2FATDriverServlet {
         // Connection Error of type Protocol Error
 
         // Expect a gowaway frame from the server with this error
-        int PROTOCOL_ERROR = 0x1;
-        byte[] debugData = "PUSH_PROMISE Frame Received on server side".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        // Expect a gowaway frame from the server with this error
+        byte[] chfwDebugData = "PUSH_PROMISE Frame Received on server side".getBytes();
+        byte[] nettyDebugData = "A client cannot push.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         List<H2HeaderField> pushPromiseHeaders = new ArrayList<H2HeaderField>();
