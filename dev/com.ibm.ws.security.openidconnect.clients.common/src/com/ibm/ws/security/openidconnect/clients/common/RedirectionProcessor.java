@@ -32,6 +32,7 @@ public class RedirectionProcessor {
     private final HttpServletRequest request;
     private final HttpServletResponse response;
     private final TraceComponent tc;
+    private final TraceComponent tcLocal = Tr.register(UserInfoHelper.class, TraceConstants.TRACE_GROUP, TraceConstantsCommonMessages.MESSAGE_BUNDLE);
 
     public RedirectionProcessor(HttpServletRequest request, HttpServletResponse response, TraceComponent tc) {
         this.request = request;
@@ -115,7 +116,7 @@ public class RedirectionProcessor {
         String requestUrl = getOriginalRequestUrl(state);
 
         if (requestUrl == null || requestUrl.isEmpty()) {
-            String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_BAD_REQUEST_NO_COOKIE", request.getRequestURL()); // CWWKS1750E
+            String errorMsg = Tr.formatMessage(tcLocal, "OIDC_CLIENT_BAD_REQUEST_NO_COOKIE", request.getRequestURL()); // CWWKS1750E
             Tr.error(tc, errorMsg);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
