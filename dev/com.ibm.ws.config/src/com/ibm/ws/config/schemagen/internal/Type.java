@@ -28,7 +28,8 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 public enum Type {
     STRING(AttributeDefinition.STRING, "xsd:string", "xsd:string", MinMaxWriter.STRING) {
         @Override
-        public void writeGlobalType(XMLStreamWriter writer) throws XMLStreamException {}
+        public void writeGlobalType(XMLStreamWriter writer) throws XMLStreamException {
+        }
     },
     BOOLEAN(AttributeDefinition.BOOLEAN, "booleanType", "xsd:boolean", null) {
         @Override
@@ -64,7 +65,8 @@ public enum Type {
     PASSWORD(AttributeDefinition.PASSWORD, "password", "xsd:string", MinMaxWriter.STRING) {
         // Don't write this here, we write it as a part of the PASSWORD_IBM type. We are treating these as identical
         @Override
-        public void writeGlobalType(XMLStreamWriter writer) throws XMLStreamException {}
+        public void writeGlobalType(XMLStreamWriter writer) throws XMLStreamException {
+        }
     },
     PASSWORD_IBM(MetaTypeFactory.PASSWORD_TYPE, "password", "xsd:string", MinMaxWriter.STRING),
     PASSWORD_HASH(MetaTypeFactory.HASHED_PASSWORD_TYPE, "passwordHash", "xsd:string", MinMaxWriter.STRING),
@@ -75,13 +77,15 @@ public enum Type {
     ON_ERROR(MetaTypeFactory.ON_ERROR_TYPE, "xsd:string", "xsd:string", null) {
         // Don't write this here. It is just an xsd:string so we don't need a global type for this.
         @Override
-        public void writeGlobalType(XMLStreamWriter writer) throws XMLStreamException {}
+        public void writeGlobalType(XMLStreamWriter writer) throws XMLStreamException {
+        }
     },
     LOCATION(MetaTypeFactory.LOCATION_TYPE, "location", "xsd:string", null),
     LOCATION_DIR(MetaTypeFactory.LOCATION_DIR_TYPE, "dirLocation", "xsd:string", null),
     LOCATION_FILE(MetaTypeFactory.LOCATION_FILE_TYPE, "fileLocation", "xsd:string", null),
     LOCATION_URL(MetaTypeFactory.LOCATION_URL_TYPE, "urlLocation", "xsd:string", null),
     TOKEN(MetaTypeFactory.TOKEN_TYPE, "tokenType", "xsd:token", MinMaxWriter.STRING),
+    SCHEDULE(MetaTypeFactory.SCHEDULE_TYPE, "schedule", "xsd:string", MinMaxWriter.STRING),
     PID(MetaTypeFactory.PID_TYPE, "pidType", "singlePidType", null) {
         @Override
         public void writeGlobalType(XMLStreamWriter writer) throws XMLStreamException {

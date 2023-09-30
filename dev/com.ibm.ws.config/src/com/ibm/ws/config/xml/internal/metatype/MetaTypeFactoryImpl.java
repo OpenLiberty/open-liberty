@@ -47,6 +47,7 @@ public class MetaTypeFactoryImpl implements MetaTypeFactory {
     static final String LOCATION_URL_TYPE_NAME = "location(url)";
     static final String ON_ERROR_TYPE_NAME = "onError";
     static final String TOKEN_NAME = "token";
+    static final String SCHEDULE_TYPE_NAME = "schedule";
 
     static final Map<String, Integer> IBM_TYPES;
 
@@ -66,10 +67,12 @@ public class MetaTypeFactoryImpl implements MetaTypeFactory {
         types.put(HASHED_PASSWORD_TYPE_NAME, MetaTypeFactory.HASHED_PASSWORD_TYPE);
         types.put(ON_ERROR_TYPE_NAME, MetaTypeFactory.ON_ERROR_TYPE);
         types.put(TOKEN_NAME, MetaTypeFactory.TOKEN_TYPE);
+        types.put(SCHEDULE_TYPE_NAME, MetaTypeFactory.SCHEDULE_TYPE);
         IBM_TYPES = Collections.unmodifiableMap(types);
     }
 
-    protected void activate(ComponentContext ctxt) throws Exception {}
+    protected void activate(ComponentContext ctxt) throws Exception {
+    }
 
     @Override
     public Integer getIBMType(String typeName) {
