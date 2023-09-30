@@ -78,7 +78,7 @@ fi
 
 #echo "Setting up the systemd openliberty service"
 if [ -x "/usr/bin/systemctl" ] && [ -x "/usr/libexec/openliberty" ] && [ -r "/usr/lib/systemd/system/openliberty@.service" ]; then
-    #only enable defaultServer service if any openliberty@ services exist. 
+    #only enable defaultServer service if no openliberty@ services exist. 
     NUM_EXISTING_SERVICE=`ls /etc/systemd/system/multi-user.target.wants/ |grep openliberty@ | wc -l`
     if [ "${NUM_EXISTING_SERVICE}" -eq "0" ]; then
         systemctl daemon-reload
