@@ -143,7 +143,7 @@ public class Krb5Helper {
         String jaasLoginConfig = server.getServerRoot() + jaasConfFile;
 
         if (realm != null && !realm.isEmpty()) {
-            Log.info(thisClass, thisMethod, "Setting system properties java.security.krb5.realm and java.security.krb5.kdc");
+            Log.info(thisClass, thisMethod, "1. Setting system properties java.security.krb5.realm and java.security.krb5.kdc");
             System.setProperty("java.security.krb5.realm", realm);
             System.setProperty("java.security.krb5.kdc", (kdcHostName == null) ? InitClass.KDC_HOSTNAME : kdcHostName);
         } else if (krb5Config != null) {
@@ -153,6 +153,7 @@ public class Krb5Helper {
 
         if (!IBM_KRB5_LOGIN_MODULE_AVAILABLE) {
             loginContextEntry = SUN_JDK_KRB5_LOGIN;
+            Log.info(thisClass, thisMethod, "2. Setting system properties java.security.krb5.realm and java.security.krb5.kdc");
             System.setProperty("javax.security.auth.useSubjectCredsOnly", "false");
             System.setProperty("java.security.krb5.realm", (realm == null) ? InitClass.KDC_REALM : realm);
             System.setProperty("java.security.krb5.kdc", (kdcHostName == null) ? InitClass.KDC_HOSTNAME : kdcHostName);
