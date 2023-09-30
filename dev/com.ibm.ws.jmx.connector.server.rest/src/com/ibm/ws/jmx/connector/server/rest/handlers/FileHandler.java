@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -40,6 +40,7 @@ import com.ibm.ws.jmx.connector.server.rest.helpers.OutputHelper;
 import com.ibm.ws.jmx.connector.server.rest.helpers.RESTHelper;
 import com.ibm.ws.rest.handler.helper.ServletRESTRequestWithParams;
 import com.ibm.ws.rest.handler.helper.ServletRESTResponseWithWriter;
+import com.ibm.ws.security.audit.Audit;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.rest.handler.RESTHandler;
 import com.ibm.wsspi.rest.handler.RESTRequest;
@@ -87,13 +88,35 @@ public class FileHandler implements RESTHandler {
 
     @Override
     public void handleRequest(RESTRequest request, RESTResponse response) {
+        System.out.println("EFT: in FileHandler.java, in handleRequest");
         String method = request.getMethod();
         if (RESTHelper.isGetMethod(method)) {
             download(request, response);
+            System.out.println("EFT:  in get method");
         } else if (RESTHelper.isPostMethod(method)) {
             upload(request, response);
+            try {
+                System.out.println("file: " + URLDecoder.decode(request.getContextPath() + request.getPath(), "UTF-8"));
+                if (URLDecoder.decode(request.getContextPath() + request.getPath(), "UTF-8").equals("/IBMJMXConnectorREST/file/${server.config.dir}/server.xml")) {
+                    
+                    System.out.println("EFT: AUDIT  in post  method, updating server.xml");
+                    Audit.audit(Audit.EventID.FILE_TRANSFER_UPDATE_01, request, response, response.getStatus());
+                    System.out.println("EFT: >> transfer update for server.xml");
+                } else {
+
+                    System.out.println("EFT: AUDIT  in post  method, updating some other file");
+                    Audit.audit(Audit.EventID.FILE_TRANSFER_ADD_01, request, response, response.getStatus());
+                    System.out.println("EFT:  >> transfer add");
+                }
+            } catch (IOException e) {
+
+            }
         } else if (RESTHelper.isDeleteMethod(method)) {
             delete(request, response);
+            System.out.println("EFT: AUDIT  in delete  method");
+            Audit.audit(Audit.EventID.FILE_TRANSFER_DELETE_01, request, response, response.getStatus());
+            System.out.println("EFT: >> transfer delete");
+
         } else {
             throw new RESTHandlerMethodNotAllowedError("GET,POST,DELETE");
         }

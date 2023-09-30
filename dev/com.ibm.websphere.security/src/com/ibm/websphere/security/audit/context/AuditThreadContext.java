@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -44,6 +44,42 @@ public class AuditThreadContext {
     private String localPort;
     private String sessionId;
     private String httpType;
+    private String configDeltaType;
+    private String configDeltaElement;
+    private String originalFileContents;
+    private String updatedFileContents;
+
+    public String getOriginalFileContents() {
+        return originalFileContents;
+    }
+
+    public void setOriginalFileContents(String originalFileContents) {
+        this.originalFileContents = originalFileContents;
+    }
+
+    public String getUpdatedFileContents() {
+        return updatedFileContents;
+    }
+
+    public void setUpdatedFileContents(String updateFileContents) {
+        this.updatedFileContents = updateFileContents;
+    }
+
+    public String getConfigDeltaType() {
+        return configDeltaType;
+    }
+
+    public void setConfigDeltaType(String configDeltaType) {
+        this.configDeltaType = configDeltaType;
+    }
+
+    public String getConfigDeltaElement() {
+        return configDeltaElement;
+    }
+
+    public void setConfigDeltaElement(String configDeltaElement) {
+        this.configDeltaElement = configDeltaElement;
+    }
 
     public String getRemoteAddr() {
         return remoteAddr;
