@@ -54,6 +54,7 @@ import org.jboss.resteasy.spi.ResteasyUriBuilder;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.microprofile.rest.client30.internal.OsgiServices;
 import io.openliberty.restfulWS.client.AsyncClientExecutorService;
 
@@ -79,6 +80,7 @@ import java.io.Closeable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -311,9 +313,6 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
 
         ClassLoader classLoader = getClassLoader(aClass);
 
-        T actualClient;
-        ResteasyClient client;
-
         ResteasyClientBuilder resteasyClientBuilder;
         if (this.proxyHost != null) {
             resteasyClientBuilder = builderDelegate.defaultProxy(proxyHost, this.proxyPort);
@@ -394,15 +393,6 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
             resteasyClientBuilder.trustStore(null);
             resteasyClientBuilder.keyStore(null, "");
         }
-        client = resteasyClientBuilder
-                .build();
-        ((MpClient)client).setQueryParamStyle(queryParamStyle);
-        client.register(AsyncInterceptorRxInvokerProvider.class);
-        actualClient = client.target(baseURI)
-                .proxyBuilder(aClass)
-                .classloader(classLoader)
-                .defaultConsumes(MediaType.APPLICATION_JSON)
-                .defaultProduces(MediaType.APPLICATION_JSON).build();
 
         Class<?>[] interfaces = new Class<?>[3];
         interfaces[0] = aClass;
@@ -412,10 +402,36 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
         final BeanManager beanManager = getBeanManager();
         Map<Method, List<InterceptorInvoker>> interceptorInvokers = initInterceptorInvokers(beanManager, aClass);
         T proxy = (T) Proxy.newProxyInstance(classLoader, interfaces,
-                new LibertyProxyInvocationHandler(aClass, actualClient, getLocalProviderInstances(), client, beanManager, interceptorInvokers));
+                createHandler(resteasyClientBuilder, aClass, classLoader, beanManager, interceptorInvokers));
         ClientHeaderProviders.registerForClass(aClass, proxy, beanManager);
         return proxy;
     }
+
+    <T> InvocationHandler createHandler(final ResteasyClientBuilder resteasyClientBuilder, final Class<T> aClass, final ClassLoader classLoader, final BeanManager beanManager, final Map<Method, List<InterceptorInvoker>> interceptorInvokers) {
+        CheckpointPhase phase = CheckpointPhase.getPhase();
+        if (phase != null && !phase.restored()) {
+            LibertyProxyInvocationHandlerCheckpoint checkpointHander = new LibertyProxyInvocationHandlerCheckpoint(this, resteasyClientBuilder, aClass, classLoader, beanManager, interceptorInvokers);
+            if (phase.addSingleThreadedHook(checkpointHander)) {
+                return checkpointHander;
+            }
+        }
+        return createLibertyProxyInvocationHandler(resteasyClientBuilder, aClass, classLoader, beanManager, interceptorInvokers);
+    }
+
+    <T> LibertyProxyInvocationHandler createLibertyProxyInvocationHandler(final ResteasyClientBuilder resteasyClientBuilder, final Class<T> aClass, final ClassLoader classLoader, final BeanManager beanManager, final Map<Method, List<InterceptorInvoker>> interceptorInvokers) {
+        ResteasyClient client = resteasyClientBuilder
+                        .build();
+                ((MpClient)client).setQueryParamStyle(queryParamStyle);
+                client.register(AsyncInterceptorRxInvokerProvider.class);
+        T actualClient = client.target(baseURI)
+                        .proxyBuilder(aClass)
+                        .classloader(classLoader)
+                        .defaultConsumes(MediaType.APPLICATION_JSON)
+                        .defaultProduces(MediaType.APPLICATION_JSON).build();
+        return new LibertyProxyInvocationHandler(aClass, actualClient, localProviderInstances, client, beanManager, interceptorInvokers);
+
+    }
+
     // added via https://github.com/resteasy/resteasy-microprofile/pull/9
     /**
      * Get the users list of proxy hosts. Translate list to regex format
