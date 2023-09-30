@@ -180,6 +180,16 @@ define(["dojo/parser",
       focusFirstVisibleElement(prefViewButtons);
       return;
     }
+
+    var identityView = document.getElementById("identityContentContainer");
+    var isIdentityView = isVisible(identityView);
+    if(isIdentityView) {
+      var idView = document.getElementById("identityContentContainer");
+      var idViewButtons = idView.querySelectorAll('[role="button"]');
+      // place focus on first button in the preference view
+      //focusFirstVisibleElement(prefViewButtons);
+      return;
+    }
   }
 
   function handleExplore() {

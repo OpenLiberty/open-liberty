@@ -16,6 +16,7 @@ define({
     LIBERTY_HEADER_TITLE: "Liberty Admin Center",
     LIBERTY_HEADER_PROFILE: "Preferences",
     LIBERTY_HEADER_LOGOUT: "Log out",
+    LIBERTY_HEADER_IDENTITY: "Identity",
     LIBERTY_HEADER_LOGOUT_USERNAME: "Log out {0}",
     TOOLBOX_BANNER_LABEL: "{0} banner",  // TOOLBOX_TITLE
     TOOLBOX_TITLE: "Toolbox",
@@ -65,6 +66,15 @@ define({
     PREFERENCES_BIDI_TEXTDIR_RTL: "Right to left",
     PREFERENCES_BIDI_TEXTDIR_CONTEXTUAL: "Contextual",
     PREFERENCES_SET_ERROR_MESSAGE: "An error occurred setting the user preferences in the toolbox: {0}",
+    IDENTITY_TITLE: "Identity",
+    IDENTITY_DESC: "You can use Admin Center identity to help users distinguish this Admin Center from other Admin Center instances. The Admin Center identity string information is placed in the login page. The Admin Center identity color enables users to choose the color of the text to more easily identify the Admin Center environment. Changes take effect next time users log on to the Admin Center.", 
+    IDENTITY_NONE: "None",
+    IDENTITY_CUSTOM: "Custom",
+    IDENTITY_CUSTOM_STRING: "Custom identity string",
+    IDENTITY_CUSTOM_STRING_TRUNCATE: "Truncate string at (Characters):",
+    IDENTITY_SAVE: "Save",
+    IDENTITY_CANCEL: "Cancel",
+    IDENTITY_COLOR: "RGB hexidecimal color code:",
     BGTASKS_PAGE_LABEL: "Background Tasks",
     BGTASKS_DEPLOYMENT_INSTALLATION_POPUP: "Deploy Installation {0}", // {0} is the token number associated with the deployment
     BGTASKS_DEPLOYMENT_INSTALLATION: "Deploy Installation {0} - {1}", // {0} is the token number associated with the deployment, {1} is the server name

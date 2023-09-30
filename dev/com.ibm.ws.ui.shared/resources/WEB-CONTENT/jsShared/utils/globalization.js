@@ -34,6 +34,11 @@ var globalization = (function() {
                               "zh-tw"
                              ];
     
+    var identityEnabled = false;
+    var identityString = 'none';
+    var identityColor = '#FFFFFF';
+    var identityMaxChar = 27;
+
     /**
      * Check if we support the browser language
      */
@@ -136,6 +141,21 @@ var globalization = (function() {
                 if(data) {
                     bidiEnabled = data.bidiEnabled;
                     bidiTextDirection = data.bidiTextDirection;
+                }
+            }
+        });
+    };
+
+
+    var retrieveIdentity = function() {
+        return $.ajax({
+            url: "/ibm/api/adminCenter/v1/toolbox/identity",
+            success: function(data) {
+                if (data) {
+                    identityEnabled = data.identintyEnabled;
+                    identityString = data.identityString;
+                    identityColor = data.identityColor;
+                    identityMaxChar = data.identityMaxChar;
                 }
             }
         });
