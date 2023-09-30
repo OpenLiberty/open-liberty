@@ -29,21 +29,25 @@ import componenttest.app.FATServlet;
 public class ProviderTestServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
 
-    // TODO @Inject
+    @Inject
     Composites composites;
 
     @Inject
     Palindromes palindromes;
 
-    // TODO @Test
+    /**
+     * Uses a repository from a mock Jakarta Data provider that is based on the
+     * CDI build compatible extension to query for entities.
+     */
+    @Test
     public void testDataProviderWithBuildCompatibleExtension() {
-        assertEquals(List.of(6, 9, 12, 15),
+        assertEquals(List.of(6L, 9L, 12L, 15L),
                      composites.findByFactorsContainsOrderByIdAsc(3, Limit.of(4))
                                      .stream()
                                      .map(c -> c.id)
                                      .collect(Collectors.toList()));
 
-        assertEquals(List.of(4, 9, 25),
+        assertEquals(List.of(4L, 9L, 25L),
                      composites.findByNumUniqueFactorsOrderByIdAsc(3, Limit.of(3))
                                      .stream()
                                      .map(c -> c.id)
@@ -51,7 +55,8 @@ public class ProviderTestServlet extends FATServlet {
     }
 
     /**
-     * Uses a repository from a mock Jakarta Data provider to insert, update, find, and delete entities.
+     * Uses a repository from a mock Jakarta Data provider that is based on the CDI extension
+     * to insert, update, find, and delete entities.
      */
     @Test
     public void testDataProviderWithExtension() {
