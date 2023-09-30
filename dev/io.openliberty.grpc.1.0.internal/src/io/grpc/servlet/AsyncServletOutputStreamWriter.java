@@ -173,6 +173,9 @@ final class AsyncServletOutputStreamWriter {
     // thread during that call.  We should get rid of that requirement.
     if (curState.readyAndEmpty && outputStream.isReady()) { // write to the outputStream directly
       actionItem.run();
+      if (actionItem == completeAction) {
+          return;
+      }
       if (!outputStream.isReady()) {
         logger.log(FINEST, "[{0}] the servlet output stream becomes not ready", logId);
         boolean successful = writeState.compareAndSet(curState, curState.withReadyAndEmpty(false));
@@ -180,13 +183,23 @@ final class AsyncServletOutputStreamWriter {
         LockSupport.unpark(parkingThread);
       }
     } else { // buffer to the writeChain
-      writeChain.offer(actionItem);
+      if(!curState.readyAndEmpty) {
+        logger.log(FINEST, "[{0}] buffering to write chain as readyAndEmpty is false", logId);
+      }else{
+        logger.log(FINEST, "[{0}] buffering to write chain as outputStream.isReady is false", logId);
+      }
+      if(!writeChain.offer(actionItem)) {
+    	  logger.log(INFO, "[{0}] offering data to writeChain failed due to capacity constraint", logId);
+      }
+      
       if (!writeState.compareAndSet(curState, curState.newItemBuffered())) {
         // state changed by another thread (onWritePossible)
+        logger.log(FINEST, "[{0}]  state changed by another thread (onWritePossible)", logId);
         assert writeState.get().readyAndEmpty;
         ActionItem lastItem = writeChain.poll();
         if (lastItem != null) {
           assert lastItem == actionItem;
+          logger.log(FINEST, "[{0}]  runOrBufferActionItem'ing polled action from writeChain", logId);
           runOrBufferActionItem(lastItem);
         }
       } // state has not changed since
