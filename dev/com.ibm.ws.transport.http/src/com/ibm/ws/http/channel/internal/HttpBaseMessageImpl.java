@@ -206,6 +206,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
             this.myTrailers.destroy();
             this.myTrailers = null;
         }
+
     }
 
     /*
