@@ -89,6 +89,10 @@ public class ServerStartJavaEnvironmentVariablesTest {
         Log.entering(c, testName.getMethodName());
 
         try {
+
+            Log.info(c, testName.getMethodName(), IBM_JAVA_OPTIONS + ":" + System.getenv(IBM_JAVA_OPTIONS));
+            Log.info(c, testName.getMethodName(), OPENJ9_JAVA_OPTIONS + ":" + System.getenv(OPENJ9_JAVA_OPTIONS));
+
             Properties envVars = new Properties();
             envVars.put("CDPATH", ".");
             envVars.put(IBM_JAVA_OPTIONS, XDUMP_OPTION);
@@ -124,6 +128,9 @@ public class ServerStartJavaEnvironmentVariablesTest {
     public void testServerStartIBMJavaOptionsSet() throws Exception {
         Log.entering(c, testName.getMethodName());
         try {
+
+            Log.info(c, testName.getMethodName(), IBM_JAVA_OPTIONS + ":" + System.getenv(IBM_JAVA_OPTIONS));
+            Log.info(c, testName.getMethodName(), OPENJ9_JAVA_OPTIONS + ":" + System.getenv(OPENJ9_JAVA_OPTIONS));
 
             Properties envVars = new Properties();
             envVars.put("CDPATH", ".");
@@ -191,6 +198,7 @@ public class ServerStartJavaEnvironmentVariablesTest {
      */
     private File runServerAndDump(Properties envVars) throws Exception {
         String[] parms = new String[] { "start", SERVER_NAME };
+        Log.info(c, testName.getMethodName(), envVars + ":" + envVars.toString());
         ProgramOutput po = server.getMachine().execute(serverCommand, parms, executionDir, envVars);
         Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
         Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
