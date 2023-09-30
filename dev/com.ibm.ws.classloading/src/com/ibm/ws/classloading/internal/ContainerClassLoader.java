@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
@@ -76,8 +77,10 @@ import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;
 import com.ibm.wsspi.classloading.ClassLoaderIdentity;
+import com.ibm.wsspi.config.Fileset;
 import com.ibm.wsspi.kernel.service.utils.CompositeEnumeration;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
+import com.ibm.wsspi.library.Library;
 
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
@@ -117,6 +120,10 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
      * coordinating lookups to the Container classpath.
      */
     private volatile SmartClassPath smartClassPath;
+
+    private volatile List<Library> privateLibraries;
+
+    private final List<File> nativeLibraryFiles = new ArrayList<File>();
 
     private final List<UniversalContainer> nativeLibraryContainers = new ArrayList<UniversalContainer>();
 
@@ -695,6 +702,7 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         @Override
         public String toString() {
             if (debugString == null) {
+                @SuppressWarnings("deprecation")
                 String physicalPath = this.container.getPhysicalPath();
                 if (physicalPath == null) {
                     physicalPath = this.container.getPath();
@@ -941,18 +949,20 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
 
     private interface SmartClassPath {
         /**
-         * Add an adaptable Container to the classpath.
+         * Add a collection of adaptable Container to the classpath.
          *
-         * @param container the container to add.
+         * @param containers the container to add.
+         * @param synchronous whether to update the package map inline or in a separate thread.
          */
-        void addContainer(Container container);
+        void addContainers(Collection<Container> containers, boolean synchronous);
 
         /**
-         * Add an ArtifactContainer to the classpath.
+         * Add a collection of ArtifactContainer to the classpath.
          *
-         * @param container the container to add.
+         * @param containers the containers to add.
+         * @param synchronous whether to update the package map inline or in a separate thread.
          */
-        void addArtifactContainer(ArtifactContainer container);
+        void addArtifactContainers(Collection<ArtifactContainer> containers, boolean synchronous);
 
         ByteResourceInformation getByteResourceInformation(String className, String path, ClassLoaderHook hook) throws IOException;
 
@@ -1080,64 +1090,89 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
          * @param uc
          */
         @SuppressWarnings("deprecation")
-        private synchronized void addUniversalContainers(final UniversalContainer uc) {
+        private synchronized void addUniversalContainers(final Collection<UniversalContainer> ucs, boolean synchronous) {
             if (tc.isDebugEnabled()) {
                 // Debug info for classpath elements as they are added.. candidate for Trace.debug.
-                if (uc instanceof ArtifactContainerUniversalContainer) {
-                    Tr.debug(tc, "CCL: " + this.hashCode() + " cpelt idx " + classPath.size() + "wraps " + ((ArtifactContainerUniversalContainer) uc).container);
-                    Tr.debug(tc, "CCL: " + this.hashCode() + " cpelt idx " + classPath.size() + " ART url "
-                                 + ((ArtifactContainerUniversalContainer) uc).container.getPhysicalPath());
-                } else {
-                    Tr.debug(tc, "CCL: " + this.hashCode() + " cpelt idx " + classPath.size() + " wraps " + ((ContainerUniversalContainer) uc).container);
-                    Tr.debug(tc, "CCL: " + this.hashCode() + " cpelt idx " + classPath.size() + " CON url " + ((ContainerUniversalContainer) uc).container.getPhysicalPath());
+                for (UniversalContainer uc : ucs) {
+                    if (uc instanceof ArtifactContainerUniversalContainer) {
+                        Tr.debug(tc, "CCL: " + this.hashCode() + " cpelt idx " + classPath.size() + "wraps " + ((ArtifactContainerUniversalContainer) uc).container);
+                        Tr.debug(tc, "CCL: " + this.hashCode() + " cpelt idx " + classPath.size() + " ART url "
+                                     + ((ArtifactContainerUniversalContainer) uc).container.getPhysicalPath());
+                    } else {
+                        Tr.debug(tc, "CCL: " + this.hashCode() + " cpelt idx " + classPath.size() + " wraps " + ((ContainerUniversalContainer) uc).container);
+                        Tr.debug(tc, "CCL: " + this.hashCode() + " cpelt idx " + classPath.size() + " CON url " + ((ContainerUniversalContainer) uc).container.getPhysicalPath());
+                    }
                 }
             }
 
             if (usePackageMap) {
                 outstandingContainers.incrementAndGet();
-                mapCreationQueue.submit(new Runnable() {
+                Runnable r = new Runnable() {
                     @Override
                     public void run() {
-                        if (tc.isDebugEnabled()) {
-                            if (uc instanceof ArtifactContainerUniversalContainer) {
-                                Tr.debug(tc, "CCL: " + this.hashCode() + " building package map for " + ((ArtifactContainerUniversalContainer) uc).container.getPhysicalPath());
-                            } else {
-                                Tr.debug(tc, "CCL: " + this.hashCode() + " building package map for " + ((ContainerUniversalContainer) uc).container.getPhysicalPath());
-                            }
-                        }
-                        //perform the update of the map inside the write lock
-                        //to prevent the classloader using the map in an inconsistent state.
-                        WriteLock write = rwLock.writeLock();
-                        write.lock();
                         try {
-                            uc.updatePackageMap(packageMap);
-                            outstandingContainers.decrementAndGet();
+                            for (UniversalContainer uc : ucs) {
+                                if (tc.isDebugEnabled()) {
+                                    if (uc instanceof ArtifactContainerUniversalContainer) {
+                                        Tr.debug(tc, "CCL: " + this.hashCode() + " building package map for " + ((ArtifactContainerUniversalContainer) uc).container.getPhysicalPath());
+                                    } else {
+                                        Tr.debug(tc, "CCL: " + this.hashCode() + " building package map for " + ((ContainerUniversalContainer) uc).container.getPhysicalPath());
+                                    }
+                                }
+                                //perform the update of the map inside the write lock
+                                //to prevent the classloader using the map in an inconsistent state.
+                                WriteLock write = rwLock.writeLock();
+                                write.lock();
+                                try {
+                                    uc.updatePackageMap(packageMap);
+                                } finally {
+                                    write.unlock();
+                                }
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "CCL: " + this.hashCode() + " done building package map.");
+                            }
                         } finally {
-                            write.unlock();
+                            outstandingContainers.decrementAndGet();
                         }
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "CCL: " + this.hashCode() + " done building package map.");
                     }
-                });
-
+                };
+                if (synchronous) {
+                    r.run();
+                } else {
+                    mapCreationQueue.submit(r);
+                }
             }
 
             //Note method is synchronized to attempt to keep these two always executing together,
             //although the implementation is written so it wont matter if the 'wrong' lastNotFound
             //set is used with a given cp entry. They all start empty, and are equiv at this stage.
-            classPath.add(uc);
-            lastNotFound.add(Collections.synchronizedSet(new LinkedHashSet<String>()));
+            for (UniversalContainer uc : ucs) {
+                classPath.add(uc);
+                lastNotFound.add(Collections.synchronizedSet(new LinkedHashSet<String>()));
+            }
         }
 
         @Override
-        public void addContainer(Container container) {
-            containers.add(container);
-            addUniversalContainers(new ContainerUniversalContainer(container));
+        public void addContainers(Collection<Container> _containers, boolean synchronous) {
+            if (!_containers.isEmpty()) {
+                List<UniversalContainer> ucs = new ArrayList<>();
+                for (Container container : _containers) {
+                    this.containers.add(container);
+                    ucs.add(new ContainerUniversalContainer(container));
+                }
+                addUniversalContainers(ucs, synchronous);
+            }
         }
 
         @Override
-        public void addArtifactContainer(ArtifactContainer container) {
-            addUniversalContainers(new ArtifactContainerUniversalContainer(container));
+        public void addArtifactContainers(Collection<ArtifactContainer> _containers, boolean synchronous) {
+            if (!_containers.isEmpty()) {
+                List<UniversalContainer> ucs = new ArrayList<>();
+                for (ArtifactContainer container : _containers) {
+                    ucs.add(new ArtifactContainerUniversalContainer(container));
+                }
+                addUniversalContainers(ucs, synchronous);
+            }
         }
 
         private List<UniversalContainer> getUniversalContainersForPath(String path, List<UniversalContainer> classpath) {
@@ -1384,13 +1419,13 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         }
 
         @Override
-        public void addContainer(Container container) {
-            delegate.addContainer(container);
+        public void addContainers(Collection<Container> containers, boolean synchronous) {
+            delegate.addContainers(containers, synchronous);
         }
 
         @Override
-        public void addArtifactContainer(ArtifactContainer container) {
-            delegate.addArtifactContainer(container);
+        public void addArtifactContainers(Collection<ArtifactContainer> containers, boolean synchronous) {
+            delegate.addArtifactContainers(containers, synchronous);
         }
 
         @Override
@@ -1427,7 +1462,7 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
                     try {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, methodName + "First read operation on class loader: perform lazy initialisation");
-                        ContainerClassLoader.this.lazyInit();
+                        ContainerClassLoader.this.lazyInit(false);
                     } finally {
                         ContainerClassLoader.this.smartClassPath = delegate;
                     }
@@ -1520,23 +1555,35 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
 
     /**
      * Main constructor.. build a container loader with the specified adaptable Container classpath.<p>
-     * Additional classpath entries are only addable via addLibraryFile.
+     * Additional classpath entries are only addable via addLibraryFiles.
      *
      * @param classpath Containers to use as classpath entries.
      * @param parent classloader to act as parent.
      */
-    public ContainerClassLoader(List<Container> classpath, ClassLoader parent, ClassRedefiner redefiner, GlobalClassloadingConfiguration config) {
+    public ContainerClassLoader(List<Container> classpath, ClassLoader parent, ClassRedefiner redefiner, GlobalClassloadingConfiguration config, List<Library> privateLibraries, List<File> sharedLibPath) {
         super(parent);
         this.jarProtocol = config.useJarUrls() ? "jar:" : "wsjar:";
         //Temporary, reintroduced until WSJAR is implemented.
         JarCacheDisabler.disableJarCaching();
 
-        smartClassPath = new UnreadSmartClassPath();
+        // If doing checkpiont we want to process the classpath fully during checkpoint phase
+        // instead of using a background thread that could still be running on restore.
+        boolean isCheckpoint = !checkpointPhase.restored();
+
+        smartClassPath = isCheckpoint ? new SmartClassPathImpl() : new UnreadSmartClassPath();
 
         if (classpath != null) {
-            for (Container c : classpath) {
-                smartClassPath.addContainer(c);
-            }
+            smartClassPath.addContainers(classpath, isCheckpoint);
+        }
+
+        this.privateLibraries = privateLibraries;
+
+        if (isCheckpoint) {
+            lazyInit(true);
+        }
+
+        if (sharedLibPath != null) {
+            addLibraryFiles(sharedLibPath, isCheckpoint);
         }
 
         this.redefiner = redefiner;
@@ -1597,9 +1644,44 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         return enumerations;
     }
 
+    /**
+     * Determine if it's a windows library file name (ends with ".dll").
+     *
+     * @param basename The file name.
+     *
+     * @return true if it's a windows library name (ends with ".dll").
+     */
+    private static boolean isWindows(String basename) {
+        return (basename.endsWith(".dll") || basename.endsWith(".DLL"));
+    }
+
+    /**
+     * Check if the given file's name matches the given library basename.
+     *
+     * @param f The file to check.
+     * @param basename The basename to compare the file against.
+     *
+     * @return true if the file exists and its name matches the given basename.
+     *         false otherwise.
+     */
+    private static boolean checkLib(final File f, String basename) {
+        boolean fExists = System.getSecurityManager() == null ? f.exists() : AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            @Override
+            public Boolean run() {
+                return f.exists();
+            }
+        });
+        return fExists &&
+                        (f.getName().equals(basename) || (isWindows(basename) && f.getName().equalsIgnoreCase(basename)));
+    }
+
     @Override
-    protected String findLibrary(String libName) {
-        String mappedName = System.mapLibraryName(libName);
+    protected String findLibrary(String libname) {
+        if (libname == null || libname.length() == 0) {
+            return null;
+        }
+
+        String mappedName = System.mapLibraryName(libname); // platform specific.
         for (UniversalContainer uc : nativeLibraryContainers) {
             UniversalContainer.UniversalResource ur = uc.getResource(mappedName);
             if (ur != null) {
@@ -1610,7 +1692,18 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
             }
         }
 
-        return null;
+        Object token = ThreadIdentityManager.runAsServer();
+        try {
+            for (File f : nativeLibraryFiles) {
+                if (checkLib(f, mappedName)) {
+                    return f.getAbsolutePath();
+                }
+            }
+        } finally {
+            ThreadIdentityManager.reset(token);
+        }
+
+        return null; // not found.
     }
 
     protected ByteResourceInformation findClassBytes(String className, String resourceName, ClassLoaderHook hook) throws IOException {
@@ -1623,58 +1716,65 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
     }
 
     /**
-     * Add all the artifact containers to the class path
-     */
-    protected void addToClassPath(Iterable<ArtifactContainer> artifacts) {
-
-        for (ArtifactContainer art : artifacts) {
-            smartClassPath.addArtifactContainer(art);
-        }
-    }
-
-    /**
      * Method to allow adding shared libraries to this classloader, currently using File.
      *
      * @param f the File to add as a shared lib.. can be a dir or a jar (or a loose xml ;p)
      */
     @FFDCIgnore(NullPointerException.class)
-    protected void addLibraryFile(File f) {
-
-        if (!!!f.exists()) {
-            if (tc.isWarningEnabled()) {
-                Tr.warning(tc, "cls.library.archive", f, new FileNotFoundException(f.getName()));
+    protected void addLibraryFiles(List<File> files, boolean synchronous) {
+        List<ArtifactContainer> artifactContainers = new ArrayList<>(files.size());
+        BundleContext bc = null;
+        ArtifactContainerFactory acf = null;
+        for (File f : files) {
+            if (!!!f.exists()) {
+                if (tc.isWarningEnabled()) {
+                    Tr.warning(tc, "cls.library.archive", f, new FileNotFoundException(f.getName()));
+                }
+                continue;
             }
-            return;
-        }
 
-        // Skip files that are not archives of some sort.
-        if (!f.isDirectory() && !isArchive(f))
-            return;
+            // Skip files that are not archives of some sort.
+            if (!f.isDirectory() && !isArchive(f))
+                continue;
 
-        //this area subject to refactor following shared lib rework..
-        //ideally the shared lib code will start passing us ArtifactContainers, and it
-        //will own the management of the ACF via DS.
+            //this area subject to refactor following shared lib rework..
+            //ideally the shared lib code will start passing us ArtifactContainers, and it
+            //will own the management of the ACF via DS.
 
-        //NASTY.. need to use DS to get the ACF, not OSGi backdoor ;p
-        BundleContext bc = FrameworkUtil.getBundle(ContainerClassLoader.class).getBundleContext();
-        ServiceReference<ArtifactContainerFactory> acfsr = bc.getServiceReference(ArtifactContainerFactory.class);
-        if (acfsr != null) {
-            ArtifactContainerFactory acf = bc.getService(acfsr);
-            if (acf != null) {
-                //NASTY.. using this bundle as the cache dir location for the data file..
-                try {
-                    ArtifactContainer ac = acf.getContainer(bc.getBundle().getDataFile(""), f);
-                    smartClassPath.addArtifactContainer(ac);
-                } catch (NullPointerException e) {
-                    // TODO completed under task 74097
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Exception while adding files to classpath", e);
-                    }
+            //NASTY.. need to use DS to get the ACF, not OSGi backdoor ;p
+            if (acf == null) {
+                bc = FrameworkUtil.getBundle(ContainerClassLoader.class).getBundleContext();
+                ServiceReference<ArtifactContainerFactory> acfsr = bc.getServiceReference(ArtifactContainerFactory.class);
+                if (acfsr != null) {
+                    acf = bc.getService(acfsr);
+                }
+                if (acf == null) {
+                    break;
+                }
+            }
+
+            //NASTY.. using this bundle as the cache dir location for the data file..
+            try {
+                ArtifactContainer ac = acf.getContainer(bc.getBundle().getDataFile(""), f);
+                if (ac != null) {
+                    artifactContainers.add(ac);
+                } else {
                     if (tc.isInfoEnabled()) {
                         Tr.info(tc, "cls.library.file.forbidden", f);
                     }
                 }
+            } catch (NullPointerException e) {
+                // TODO completed under task 74097
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Exception while adding files to classpath", e);
+                }
+                if (tc.isInfoEnabled()) {
+                    Tr.info(tc, "cls.library.file.forbidden", f);
+                }
             }
+        }
+        if (!artifactContainers.isEmpty()) {
+            smartClassPath.addArtifactContainers(artifactContainers, synchronous);
         }
     }
 
@@ -1709,12 +1809,40 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
     }
 
     /**
-     * Subclasses should override this method to do any late initialization.
-     * It will be invoked at most once, before the first lookup operation.
+     * This method will be invoked at most once, before the first lookup operation.
      * Any other lookup operations will see the effects of this method.
      */
-    protected void lazyInit() {
+    private void lazyInit(boolean synchronous) {
+        // process all the libraries
+        if (privateLibraries != null)
+            for (Library lib : privateLibraries)
+                copyLibraryElementsToClasspath(lib, synchronous);
+        // nullify the field - it's not needed any more
+        privateLibraries = null;
+    }
 
+    /**
+     * Takes the Files and Folders from the Library
+     * and adds them to the various classloader classpaths
+     *
+     * @param library
+     */
+    private void copyLibraryElementsToClasspath(Library library, boolean synchronous) {
+        smartClassPath.addArtifactContainers(library.getContainers(), synchronous);
+        Collection<File> files = library.getFiles();
+        if (files != null && !!!files.isEmpty()) {
+            for (File file : files) {
+
+                nativeLibraryFiles.add(file);
+            }
+        }
+
+        for (Fileset fileset : library.getFilesets()) {
+            for (File file : fileset.getFileset()) {
+
+                nativeLibraryFiles.add(file);
+            }
+        }
     }
 
     /**
