@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -32,11 +35,13 @@ import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
-import com.ibm.json.java.JSONArray;
-import com.ibm.json.java.JSONObject;
-import com.ibm.websphere.jaxrs.providers.json4j.JSON4JArrayProvider;
-import com.ibm.websphere.jaxrs.providers.json4j.JSON4JJAXBProvider;
-import com.ibm.websphere.jaxrs.providers.json4j.JSON4JObjectProvider;
+//import com.ibm.json.java.JSONArray;
+//import com.ibm.json.java.JSONObject;
+//import com.ibm.websphere.jaxrs.providers.json4j.JSON4JArrayProvider;
+//import com.ibm.websphere.jaxr//import com.ibm.websphere.jaxrs.providers.json4j.JSON4JArrayProvider;
+//import com.ibm.websphere.jaxrs.providers.json4j.JSON4JJAXBProvider;
+//import com.ibm.websphere.jaxrs.providers.json4j.JSON4JObjectProvider;s.providers.json4j.JSON4JJAXBProvider;
+//import com.ibm.websphere.jaxrs.providers.json4j.JSON4JObjectProvider;
 import com.ibm.ws.jaxrs20.client.fat.ibmjson4j.service.Book;
 
 @WebServlet("/ClientTestServlet")
@@ -135,10 +140,10 @@ public class ClientTestServlet extends HttpServlet {
 
         ClientBuilder cb = ClientBuilder.newBuilder();
         Client c = cb.newClient();
-        c.register(JSON4JObjectProvider.class);
+//        c.register(JSON4JObjectProvider.class);
         WebTarget t = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/user/listusers");
         Builder ib = t.request();
-        JSONObject res = ib.accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
+        JsonObject res = ib.accept(MediaType.APPLICATION_JSON).get(JsonObject.class);
         c.close();
         ret.append(res);
     }
@@ -148,15 +153,16 @@ public class ClientTestServlet extends HttpServlet {
         String serverIP = param.get("serverIP");
         String serverPort = param.get("serverPort");
 
-        JSONObject newJsonObj = new JSONObject();
-        newJsonObj.put("Ellen", "30");
+//        JsonObject newJsonObj = new JsonObject();
+//        newJsonObj.put("Ellen", "30");
+        JsonObject newJsonObj = Json.createObjectBuilder().add("Ellen", "30").build();
 
         ClientBuilder cb = ClientBuilder.newBuilder();
         Client c = cb.newClient();
-        c.register(JSON4JObjectProvider.class);
+//        c.register(JSON4JObjectProvider.class);
         WebTarget t = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/user/listusers");
         Builder ib = t.request();
-        JSONObject res = ib.accept(MediaType.APPLICATION_JSON).post(Entity.json(newJsonObj), JSONObject.class);
+        JsonObject res = ib.accept(MediaType.APPLICATION_JSON).post(Entity.json(newJsonObj), JsonObject.class);
         c.close();
         ret.append(res);
     }
@@ -169,10 +175,10 @@ public class ClientTestServlet extends HttpServlet {
         ClientBuilder cb = ClientBuilder.newBuilder();
         Client c = cb.newClient();
         WebTarget t = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/user/listusers/array");
-        t.register(JSON4JArrayProvider.class);
-        t.register(JSON4JObjectProvider.class);
+//        t.register(JSON4JArrayProvider.class);
+//        t.register(JSON4JObjectProvider.class);
         Builder ib = t.request();
-        JSONArray res = ib.accept(MediaType.APPLICATION_JSON).get(JSONArray.class);
+        JsonArray res = ib.accept(MediaType.APPLICATION_JSON).get(JsonArray.class);
         c.close();
         ret.append(res);
     }
@@ -182,20 +188,26 @@ public class ClientTestServlet extends HttpServlet {
         String serverIP = param.get("serverIP");
         String serverPort = param.get("serverPort");
 
-        JSONArray newJsonArr = new JSONArray();
-        JSONObject obj1 = new JSONObject();
-        obj1.put("Apache", "10");
-        obj1.put("CXF", "3");
-        newJsonArr.add(0, obj1);
+//        JsonArray newJsonArr = new JsonArray();
+//        JsonObject obj1 = new JsonObject();
+//        obj1.put("Apache", "10");
+//        obj1.put("CXF", "3");
+        JsonObject obj1 = Json.createObjectBuilder()
+                        .add("Apache", "10")
+                        .add("CXF", "3").build();
+//        newJsonArr.add(0, obj1);
+        JsonArray newJsonArr = Json.createArrayBuilder()
+                        .add(obj1)
+                        .build();
 
         ClientBuilder cb = ClientBuilder.newBuilder();
         Client c = cb.newClient();
         WebTarget t = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/user/listusers/array");
-        t.register(JSON4JArrayProvider.class);
-        t.register(JSON4JObjectProvider.class);
-        t.register(JSON4JJAXBProvider.class);
+//        t.register(JSON4JArrayProvider.class);
+//        t.register(JSON4JObjectProvider.class);
+//        t.register(JSON4JJAXBProvider.class);
         Builder ib = t.request();
-        JSONArray res = ib.accept(MediaType.APPLICATION_JSON).post(Entity.json(newJsonArr), JSONArray.class);
+        JsonArray res = ib.accept(MediaType.APPLICATION_JSON).post(Entity.json(newJsonArr), JsonArray.class);
         c.close();
         ret.append(res);
     }

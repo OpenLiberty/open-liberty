@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,18 +17,18 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
-import com.ibm.websphere.jaxrs.providers.json4j.JSON4JArrayProvider;
-import com.ibm.websphere.jaxrs.providers.json4j.JSON4JJAXBProvider;
-import com.ibm.websphere.jaxrs.providers.json4j.JSON4JObjectProvider;
+//import com.ibm.websphere.jaxrs.providers.json4j.JSON4JArrayProvider;
+//import com.ibm.websphere.jaxrs.providers.json4j.JSON4JJAXBProvider;
+//import com.ibm.websphere.jaxrs.providers.json4j.JSON4JObjectProvider;
 
 public class UserListApplication extends Application {
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<Class<?>>();
         classes.add(UserListResource.class);
-        classes.add(JSON4JArrayProvider.class);
-        classes.add(JSON4JObjectProvider.class);
-        classes.add(JSON4JJAXBProvider.class);
+//        classes.add(JSON4JArrayProvider.class);
+//        classes.add(JSON4JObjectProvider.class);
+//        classes.add(JSON4JJAXBProvider.class);
         return classes;
     }
 }
