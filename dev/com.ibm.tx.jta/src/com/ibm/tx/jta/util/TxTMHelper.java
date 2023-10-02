@@ -508,11 +508,11 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
                         if (postStatus == Status.STATUS_ROLLEDBACK ||
                             postStatus == Status.STATUS_NO_TRANSACTION) {
-                            Tr.warning(tc, "WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED", tx.getLocalTID());
+                            Tr.warning(tc, "WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED", Long.toString(tx.getLocalTID()));
                         } else if (postStatus == Status.STATUS_MARKED_ROLLBACK) {
-                            Tr.warning(tc, "WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY", tx.getLocalTID());
+                            Tr.warning(tc, "WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY", Long.toString(tx.getLocalTID()));
                         } else {
-                            Tr.warning(tc, "WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED", tx.getLocalTID());
+                            Tr.warning(tc, "WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED", Long.toString(tx.getLocalTID()));
                         }
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
