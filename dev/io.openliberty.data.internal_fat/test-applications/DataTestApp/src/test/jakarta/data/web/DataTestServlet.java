@@ -3147,6 +3147,16 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository query with named parameters, where the parameters are obtained from
+     * the corresponding method parameters based on the method's parameter names.
+     */
+    @Test
+    public void testNamedParametersFromMethodParameterNames() {
+        assertArrayEquals(new long[] { 19, 29, 43, 47 },
+                          primes.matchAny(19, "XLVII", "2B", "twenty-nine"));
+    }
+
+    /**
      * Test NotBetween in a filter.
      */
     @Test

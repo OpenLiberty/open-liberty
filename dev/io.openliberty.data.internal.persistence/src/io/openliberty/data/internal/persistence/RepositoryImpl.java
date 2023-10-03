@@ -454,6 +454,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 int select = upper.length() - upperTrimmed.length();
                 int from = find("FROM", upper, select + 9);
                 if (from > 0) {
+                    // TODO support for multiple entity types
                     int entityName = find(entityInfo.name.toUpperCase(), upper, from + 5);
                     if (entityName > 0) {
                         String entityVar = findEntityVariable(queryInfo.jpql, entityName + entityInfo.name.length() + 1);
@@ -489,22 +490,42 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (query != null || queryInfo.paramNames != null) {
             int initialParamCount = queryInfo.paramCount;
             Parameter[] params = queryInfo.method.getParameters();
+            List<Integer> paramPositions = null;
             Class<?> paramType;
+            boolean hasParamAnnotation = false;
             for (int i = 0; i < params.length && !SPECIAL_PARAM_TYPES.contains(paramType = params[i].getType()); i++) {
                 Param param = params[i].getAnnotation(Param.class);
-                if (param != null) {
+                hasParamAnnotation |= param != null;
+                String paramName = param == null ? null : param.value();
+                if (param == null && queryInfo.jpql != null && params[i].isNamePresent()) {
+                    String name = params[i].getName();
+                    if (paramPositions == null)
+                        paramPositions = getParameterPositions(queryInfo.jpql);
+                    for (int p = 0; p < paramPositions.size() && paramName == null; p++) {
+                        int pos = paramPositions.get(p); // position at which the named parameter name must appear
+                        int next = pos + name.length(); // the next character must not be alphanumeric for the name to be a match
+                        if (queryInfo.jpql.regionMatches(paramPositions.get(p), name, 0, name.length())
+                            && (next >= queryInfo.jpql.length() || !Character.isLetterOrDigit(queryInfo.jpql.charAt(next)))) {
+                            paramName = name;
+                            paramPositions.remove(p);
+                        } else if (p == paramPositions.size() - 1 && queryInfo.paramNames != null && !hasParamAnnotation) {
+                            queryInfo.paramNames = null; // did not find a named parameter, consider the query to use positional parameters
+                        }
+                    }
+                }
+                if (paramName != null) {
                     if (queryInfo.paramNames == null)
                         queryInfo.paramNames = new ArrayList<>();
                     if (entityInfo.idClassAttributeAccessors != null && paramType.equals(entityInfo.idType))
                         for (int p = 1, numIdClassParams = entityInfo.idClassAttributeAccessors.size(); p <= numIdClassParams; p++) {
-                            queryInfo.paramNames.add(new StringBuilder(param.value()).append('_').append(p).toString());
+                            queryInfo.paramNames.add(new StringBuilder(paramName).append('_').append(p).toString());
                             if (p > 1) {
                                 queryInfo.paramCount++;
                                 queryInfo.paramAddedCount++;
                             }
                         }
                     else
-                        queryInfo.paramNames.add(param.value());
+                        queryInfo.paramNames.add(paramName);
                 }
                 queryInfo.paramCount++;
                 if (initialParamCount != 0)
@@ -1981,6 +2002,20 @@ public class RepositoryImpl<R> implements InvocationHandler {
         }
 
         q.append(')');
+    }
+
+    /**
+     * Identifies possible positions of named parameters within the JPQL.
+     *
+     * @param jpql JPQL
+     * @return possible positions of named parameters within the JPQL.
+     */
+    @Trivial
+    private List<Integer> getParameterPositions(String jpql) {
+        List<Integer> positions = new ArrayList<>();
+        for (int index = 0; (index = jpql.indexOf(':', index)) >= 0;)
+            positions.add(++index);
+        return positions;
     }
 
     /**
