@@ -47,7 +47,7 @@ public class BestMatch {
     private static final Map<String, List<String>> depVersionMap = new HashMap<>();
 
     public static void main(String[] args) throws Exception {
-        Repository repo = new Repository(new File(System.getProperty("user.home"), ".ibmartifactory/repository"));
+        Repository repo = new Repository(new File(System.getProperty("user.home"), ".ibmartifactory/repository"), false);
         Repository gradleRepo = findGradleCacheRepo();
         String wlpDir = args[0];
         String outputDir = args[1];
@@ -160,7 +160,7 @@ public class BestMatch {
         if (files.length > 0)
             filesFolder = new File(modulesFolder.getPath(), files[0]);
 
-        return new Repository(filesFolder);
+        return new Repository(filesFolder, true);
     }
 
     /**
