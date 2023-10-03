@@ -84,7 +84,11 @@ Private-Package: \
 	com.ibm.ws.config;version=latest,\
 	io.openliberty.security.oidcclientcore.internal;version=latest,\
 	io.openliberty.security.common.jwt;version=latest,\
-	com.ibm.ws.security.oauth.2.0;version=latest
+	com.ibm.ws.security.oauth.2.0;version=latest,\
+	jakarta.security.enterprise-api,\
+	jakarta.security.enterprise-api,\
+	jakarta.security.enterprise-api,\
+	jakarta.security.enterprise-api
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\

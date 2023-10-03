@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -48,4 +48,5 @@ public class Constants {
     public static final String TOKEN_TYPE_ID_TOKEN = "IDToken";
     public static final String TOKEN_TYPE_ACCESS_TOKEN = "AccessToken";
     public static final String TOKEN_TYPE_JWT = "JsonWebToken";
+    public static final String TOKEN_TYPE_USER_INFO = "Userinfo"; // added t o support tokenOrderToFetchCallerClaims
 }
