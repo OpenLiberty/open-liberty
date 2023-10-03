@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -42,9 +42,13 @@ public class H2TCPReadCallback implements TCPReadCompletedCallback {
      */
     @Override
     public void complete(VirtualConnection arg0, TCPReadRequestContext tcpReadRequestContext) {
+        if (h2connetion.isClosedCalled()) {
+            if (LOGGER.isLoggable(Level.FINEST))
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "complete", "H2TCPReadCallback.complete: Recevied callback after connection was closed. Will ignore callback");
+            return;
+        }
         if (LOGGER.isLoggable(Level.FINEST))
             LOGGER.logp(Level.FINEST, CLASS_NAME, "complete", "H2TCPReadCallback.complete: Calling processData from callback");
-
         h2connetion.processData();
     }
 
