@@ -46,14 +46,23 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 import servlets.simple.SimpleServlet;
 
 /**
- * Verify servlets have JNDI access to transaction mgmt APIs and can perform basic
- * transaction operations upon restoring a server checkpointed at=applications.
+ * ServletTest is a basic bringup test for transaction management services
+ * and the JTA provider for checkpoint and restore.
  *
- * The test also verifies changes to the datasource configuration are picked up at
- * restore time before the datasource is injected into the test servlet.
+ * The test verifies that...
  *
- * Essentially, this is a bringup test for transaction management services and the
- * JTA provider for checkpoint and restore.
+ * Servlets have JNDI access to transaction mgmt APIs and can perform basic
+ * tx operations upon restoring a server checkpointed AFTER_APP_START.
+ *
+ * Changes to the datasource configuration update during restore before the
+ * datasource is injected into the test servlet.
+ *
+ * Changes to the transaction configuration and transaction mgmt services update
+ * at restore.
+ *
+ * Initial recovery executes during checkpoint, where the logs created in the
+ * default directory (${server.output.dir}/tranlog) are used during restore.
+ *
  */
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
@@ -75,7 +84,8 @@ public class ServletTest extends FATServletClient {
 
     // Overrides for config vars in server.xml
     static final String DERBY_DS_JNDINAME = "jdbc/derby";
-    static final String TRANLOG_DIR = "${server.output.dir}TRANLOG_DIR";
+    static final String TX_LOG_DIR = "${server.output.dir}TRANLOG_DIR";
+    static final int TX_RETRY_INT = 15;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -85,11 +95,12 @@ public class ServletTest extends FATServletClient {
 
         Consumer<LibertyServer> preRestoreLogic = checkpointServer -> {
             // Env vars that override the application datasource and transaction
-            // configurations at restore
+            // configurations at restore; use the default tx log dir
             File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
             try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
                 serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME);
-                serverEnvWriter.println("TRANLOG_DIR=" + TRANLOG_DIR);
+                serverEnvWriter.println("TX_RETRY_INT =" + TX_RETRY_INT);
+                //serverEnvWriter.println("TX_LOG_DIR=" + TX_LOG_DIR);
             } catch (FileNotFoundException e) {
                 throw new UncheckedIOException(e);
             }

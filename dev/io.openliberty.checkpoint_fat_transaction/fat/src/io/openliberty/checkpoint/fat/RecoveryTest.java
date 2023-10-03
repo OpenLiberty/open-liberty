@@ -52,6 +52,7 @@ public class RecoveryTest extends RecoveryTestBase {
     public static LibertyServer server;
 
     static final String TX_RETRY_INT = "11";
+    static final String TX_LOG_DIR = "${server.output.dir}RESTORE_TRANLOG";
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -66,11 +67,12 @@ public class RecoveryTest extends RecoveryTestBase {
             File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
             try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
                 serverEnvWriter.println("TX_RETRY_INT=" + TX_RETRY_INT);
+                serverEnvWriter.println("TX_LOG_DIR=" + TX_LOG_DIR);
             } catch (FileNotFoundException e) {
                 throw new UncheckedIOException(e);
             }
             // Verify the application starts during checkpoint
-            assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log before rerstore",
+            assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log before restore",
                           checkpointServer.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));
             assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
                           checkpointServer.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));

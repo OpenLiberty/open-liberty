@@ -43,6 +43,7 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.DerbyNetworkUtilities;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.fat.util.FATUtils;
@@ -74,6 +75,7 @@ public class Simple2PCCloudTest extends FATServletClient {
     static final String HOSTNAME001 = "HOSTNAME001";
     static final String TX_RETRY_INT = "10";
     static final String TRANLOG_DS_JNDINAME = "jdbc/tranlogDataSource";
+    static final int TRANLOG_DS_PORT = 1619;
     static final String APP_DS_JNDINAME = "jdbc/derby";
 
     @BeforeClass
@@ -92,6 +94,8 @@ public class Simple2PCCloudTest extends FATServletClient {
         cleanupSharedResources();
         ShrinkHelper.cleanAllExportedArchives();
 
+        DerbyNetworkUtilities.startDerbyNetwork(TRANLOG_DS_PORT);
+
         testMethod = getTestMethod(TestMethod.class, testName);
         try {
             Log.info(getClass(), testName.getMethodName(), "Configuring: " + testMethod);
@@ -102,12 +106,13 @@ public class Simple2PCCloudTest extends FATServletClient {
                     cloud1ServerInstantOn.restoreServerConfiguration();
                     ShrinkHelper.defaultApp(cloud1ServerInstantOn, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.cloud.*");
                     Consumer<LibertyServer> preRestoreLogic1 = checkpointServer -> {
-                        // Env vars that override the application datasource and transaction
-                        // configurations at restore
+                        // Env vars that override the application datasource, tranlog datasource,
+                        // and transaction configurations at restore
                         File serverEnvFile = new File(cloud1ServerInstantOn.getServerRoot() + "/server.env");
                         try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
                             serverEnvWriter.println("HOSTNAME=" + HOSTNAME001);
                             serverEnvWriter.println("APP_DS_JNDINAME=" + APP_DS_JNDINAME);
+                            serverEnvWriter.println("TRANLOG_DS_PORT=" + TRANLOG_DS_PORT);
                         } catch (FileNotFoundException e) {
                             throw new UncheckedIOException(e);
                         }
@@ -126,6 +131,7 @@ public class Simple2PCCloudTest extends FATServletClient {
                         // Use the server's built-in HOSTNAME env var
                         //serverEnvWriter.println("HOSTNAME=" + HOSTNAME001);
                         serverEnvWriter.println("APP_DS_JNDINAME=" + APP_DS_JNDINAME);
+                        serverEnvWriter.println("TRANLOG_DS_PORT=" + TRANLOG_DS_PORT);
                     } catch (FileNotFoundException e) {
                         throw new UncheckedIOException(e);
                     }
@@ -140,6 +146,7 @@ public class Simple2PCCloudTest extends FATServletClient {
                         File serverEnvFile2 = new File(checkpointServer.getServerRoot() + "/server.env");
                         try (PrintWriter serverEnvWriter2 = new PrintWriter(new FileOutputStream(serverEnvFile2))) {
                             serverEnvWriter2.println("TRANLOG_DS_JNDINAME=" + TRANLOG_DS_JNDINAME);
+                            serverEnvWriter2.println("TRANLOG_DS_PORT=" + TRANLOG_DS_PORT);
                             serverEnvWriter2.println("TX_RETRY_INT=" + TX_RETRY_INT);
                         } catch (FileNotFoundException e) {
                             throw new UncheckedIOException(e);
@@ -181,14 +188,18 @@ public class Simple2PCCloudTest extends FATServletClient {
                 case testLeaseTableAccess:
                 case testDBBaseRecovery:
                     stopServer(cloud1ServerInstantOn);
+                    DerbyNetworkUtilities.stopDerbyNetwork(TRANLOG_DS_PORT);
                     break;
                 case testDBRecoveryTakeover:
                     stopServer(cloud1Server);
                     stopServer(cloud2ServerInstantOn);
+                    DerbyNetworkUtilities.stopDerbyNetwork(TRANLOG_DS_PORT);
+                    break;
                 case testDBRecoveryCompeteForLog:
                     stopServer(cloud1Server);
                     stopServer(cloud1LongLeaseServer);
                     stopServer(cloud2ServerInstantOn);
+                    DerbyNetworkUtilities.stopDerbyNetwork(TRANLOG_DS_PORT);
                     break;
                 default:
                     break;
@@ -206,6 +217,7 @@ public class Simple2PCCloudTest extends FATServletClient {
      * @throws Exception
      */
     @Test
+    @ExpectedFFDC({ "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", "javax.resource.spi.ResourceAllocationException" })
     public void testLeaseTableAccess() throws Exception {
         final String method = "testLeaseTableAccess";
         StringBuilder sb = null;
@@ -232,6 +244,7 @@ public class Simple2PCCloudTest extends FATServletClient {
      * @throws Exception
      */
     @Test
+    @ExpectedFFDC({ "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", "javax.resource.spi.ResourceAllocationException" })
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
     public void testDBBaseRecovery() throws Exception {
         final String method = "testDBBaseRecovery";
@@ -279,6 +292,7 @@ public class Simple2PCCloudTest extends FATServletClient {
      * @throws Exception
      */
     @Test
+    @ExpectedFFDC({ "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", "javax.resource.spi.ResourceAllocationException" })
     @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
     public void testDBRecoveryTakeover() throws Exception {
         final String method = "testDBRecoveryTakeover";
@@ -333,7 +347,8 @@ public class Simple2PCCloudTest extends FATServletClient {
      * @throws Exception
      */
     @Test
-    @ExpectedFFDC(value = { "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
+    @ExpectedFFDC(value = { "com.ibm.ws.recoverylog.spi.RecoveryFailedException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException",
+                            "javax.resource.spi.ResourceAllocationException" })
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.tx.jta.XAResourceNotAvailableException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException",
                            "java.lang.IllegalStateException" })
     // If cloud002 starts slowly, then access to cloud001's indoubt tx XAResources
