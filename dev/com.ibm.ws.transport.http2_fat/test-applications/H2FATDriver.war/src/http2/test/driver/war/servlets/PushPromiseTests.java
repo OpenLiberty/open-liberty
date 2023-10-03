@@ -12,12 +12,14 @@
  *******************************************************************************/
 package http2.test.driver.war.servlets;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,12 +27,17 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
 import com.ibm.ws.http.channel.h2internal.frames.FrameGoAway;
+import com.ibm.ws.http.channel.h2internal.frames.FramePing;
+import com.ibm.ws.http.channel.h2internal.frames.FramePushPromise;
 import com.ibm.ws.http.channel.h2internal.frames.FrameSettings;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
 import com.ibm.ws.http2.test.Http2Client;
+import com.ibm.ws.http2.test.exceptions.ExpectedPushPromiseDoesNotIncludeLinkHeaderException;
 import com.ibm.ws.http2.test.frames.FrameHeadersClient;
 import com.ibm.ws.http2.test.frames.FramePushPromiseClient;
+import com.ibm.ws.http2.test.listeners.PushPromiseListener;
 
 /**
  * Test servlet for http2 push promise
@@ -102,37 +109,93 @@ public class PushPromiseTests extends H2FATDriverServlet {
         frameHeaders.setHeaderFields(firstHeadersReceived);
         h2Client.addExpectedFrame(frameHeaders);
 
-        // Headers frame with results from pushed resource request on stream 2
-        List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
-        secondHeadersReceived.add(new H2HeaderField(":status", "200"));
-        secondHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
-        secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-        FrameHeadersClient secondFrameHeaders;
-        if (USING_NETTY)
-            secondFrameHeaders = new FrameHeadersClient(2, null, 0, 0, 15, true, true, false, true, false, false);
-        else
-            secondFrameHeaders = new FrameHeadersClient(2, null, 0, 0, 0, true, true, false, false, false, false);
-        secondFrameHeaders.setHeaderFields(secondHeadersReceived);
-        h2Client.addExpectedFrame(secondFrameHeaders);
+        CountDownLatch blockUntilPushPromiseReceived = new CountDownLatch(2);
 
-        // Headers frame with results from pushed resource request on stream 4
-        List<H2HeaderField> thirdHeadersReceived = new ArrayList<H2HeaderField>();
-        thirdHeadersReceived.add(new H2HeaderField(":status", "200"));
-        thirdHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
-        thirdHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-        FrameHeadersClient thirdFrameHeaders;
-        if (USING_NETTY)
-            thirdFrameHeaders = new FrameHeadersClient(6, null, 0, 0, 15, true, true, false, true, false, false);
-        else
-            thirdFrameHeaders = new FrameHeadersClient(4, null, 0, 0, 0, true, true, false, false, false, false);
-        thirdFrameHeaders.setHeaderFields(thirdHeadersReceived);
-        h2Client.addExpectedFrame(thirdFrameHeaders);
+        PushPromiseListener pushPromiseListener = new PushPromiseListener() {
+
+            @Override
+            public void onPushPromiseReceived(FramePushPromise receivedFrame) {
+                int promisedStreamId = receivedFrame.getPromisedStreamId();
+                // First time
+                if (blockUntilPushPromiseReceived.getCount() > 1) {
+                    // Headers frame with results from pushed resource request on specified StreamID
+                    List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
+                    secondHeadersReceived.add(new H2HeaderField(":status", "200"));
+                    secondHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
+                    secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
+                    FrameHeadersClient secondFrameHeaders;
+                    secondFrameHeaders = new FrameHeadersClient(promisedStreamId, null, 0, 0, 15, true, true, false, true, false, false);
+                    secondFrameHeaders.setHeaderFields(secondHeadersReceived);
+                    try {
+                        h2Client.addExpectedFrame(secondFrameHeaders);
+                        blockUntilPushPromiseReceived.countDown();
+                    } catch (CompressionException | IOException | ExpectedPushPromiseDoesNotIncludeLinkHeaderException e) {
+                        if (LOGGER.isLoggable(Level.INFO)) {
+                            LOGGER.logp(Level.INFO, this.getClass().getName(), testName, "Caught exception attempting to add expected Push Promise Headers!" + e);
+                        }
+                    }
+                } else if (blockUntilPushPromiseReceived.getCount() == 1) {
+                    // Headers frame with results from pushed resource request on specified StreamID
+                    List<H2HeaderField> thirdHeadersReceived = new ArrayList<H2HeaderField>();
+                    thirdHeadersReceived.add(new H2HeaderField(":status", "200"));
+                    thirdHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
+                    thirdHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
+                    FrameHeadersClient thirdFrameHeaders = new FrameHeadersClient(promisedStreamId, null, 0, 0, 15, true, true, false, true, false, false);
+                    thirdFrameHeaders.setHeaderFields(thirdHeadersReceived);
+                    try {
+                        h2Client.addExpectedFrame(thirdFrameHeaders);
+                        blockUntilPushPromiseReceived.countDown();
+                    } catch (CompressionException | IOException | ExpectedPushPromiseDoesNotIncludeLinkHeaderException e) {
+                        if (LOGGER.isLoggable(Level.INFO)) {
+                            LOGGER.logp(Level.INFO, this.getClass().getName(), testName, "Caught exception attempting to add expected Push Promise Headers!" + e);
+                        }
+                    }
+                } else {
+                    throw new IllegalArgumentException("Should not already be count down!!");
+                }
+            }
+        };
+
+        byte[] testBytes = new byte[] { 'l', 'i', 'b', 'e', 'r', 't', 'y' };
+        FramePing expectedPing = new FramePing(0, testBytes, false);
+        expectedPing.setAckFlag();
+        h2Client.addExpectedFrame(expectedPing);
+
+        if (USING_NETTY) {
+            h2Client.setPushPromiseListener(pushPromiseListener);
+        } else {
+            // Headers frame with results from pushed resource request on stream 2
+            List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
+            secondHeadersReceived.add(new H2HeaderField(":status", "200"));
+            secondHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
+            secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
+            FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(2, null, 0, 0, 0, true, true, false, false, false, false);
+            secondFrameHeaders.setHeaderFields(secondHeadersReceived);
+            h2Client.addExpectedFrame(secondFrameHeaders);
+
+            // Headers frame with results from pushed resource request on stream 4
+            List<H2HeaderField> thirdHeadersReceived = new ArrayList<H2HeaderField>();
+            thirdHeadersReceived.add(new H2HeaderField(":status", "200"));
+            thirdHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
+            thirdHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
+            FrameHeadersClient thirdFrameHeaders = new FrameHeadersClient(4, null, 0, 0, 0, true, true, false, false, false, false);
+            thirdFrameHeaders.setHeaderFields(thirdHeadersReceived);
+            h2Client.addExpectedFrame(thirdFrameHeaders);
+        }
 
         h2Client.sendUpgradeHeader(SERVLET_PUSH_PROMISE + new String("?test=preload"));
 
         //Since this is a conditional send, this will block the thread until the preface is sent.
         //If the this fails, the test needs to fail as well because the H2 protocol was not established successfully.
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+
+        if (USING_NETTY)
+            blockUntilPushPromiseReceived.await(defaultTimeoutToSendFrame, TimeUnit.MILLISECONDS);
+
+        FramePing ping = new FramePing(0, testBytes, false);
+        h2Client.sendFrame(ping);
+
+        h2Client.waitFor(expectedPing);
 
         blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
@@ -324,8 +387,7 @@ public class PushPromiseTests extends H2FATDriverServlet {
         // Clients are not allowed to send pp frames, this should generate a
         // Connection Error of type Protocol Error
 
-        // Expect a gowaway frame from the server with this error
-        // Expect a gowaway frame from the server with this error
+        // Expect a go away frame from the server with this error
         byte[] chfwDebugData = "PUSH_PROMISE Frame Received on server side".getBytes();
         byte[] nettyDebugData = "A client cannot push.".getBytes();
         FrameGoAway errorFrame;
