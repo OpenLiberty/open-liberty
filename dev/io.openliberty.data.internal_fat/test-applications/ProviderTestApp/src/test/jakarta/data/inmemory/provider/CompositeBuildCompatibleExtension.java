@@ -54,7 +54,7 @@ public class CompositeBuildCompatibleExtension implements BuildCompatibleExtensi
         AnnotationMember providerMember = java.security.AccessController.doPrivileged((java.security.PrivilegedAction<AnnotationMember>) () -> //
         repositoryAnnotationInfo.member("provider"));
 
-        String provider = providerMember.toString();
+        String provider = providerMember.asString();
         boolean provideRepository = "Composites Mock Data Provider".equals(provider);
 
         // Otherwise, if the provider is not explicitly specified,
