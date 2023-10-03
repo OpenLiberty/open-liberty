@@ -38,9 +38,11 @@ import com.ibm.ws.http2.test.exceptions.FATTimeoutException;
 import com.ibm.ws.http2.test.exceptions.ReceivedFrameAfterEndOfStream;
 import com.ibm.ws.http2.test.exceptions.StreamDidNotReceivedEndOfStreamException;
 import com.ibm.ws.http2.test.exceptions.UnableToSendFrameException;
+import com.ibm.ws.http2.test.frames.FramePushPromiseClient;
 import com.ibm.ws.http2.test.frames.FrameSettingsClient;
 import com.ibm.ws.http2.test.helpers.HTTPUtils;
 import com.ibm.ws.http2.test.listeners.FramesListener;
+import com.ibm.ws.http2.test.listeners.PushPromiseListener;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 /**
@@ -62,6 +64,8 @@ public class Http2Client {
 
     private final Map<Frame, Frame> sendFrameConditional = new HashMap<Frame, Frame>();
     private final List<SimpleEntry<Frame, Frame>> sendFrameConditionalList = new LinkedList<AbstractMap.SimpleEntry<Frame, Frame>>();
+
+    private PushPromiseListener pushPromiseListener;
 
     private static final String CLASS_NAME = Http2Client.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
@@ -112,6 +116,10 @@ public class Http2Client {
      */
     public void doNotWaitForAck() {
         waitForAck = false;
+    }
+
+    public void setPushPromiseListener(PushPromiseListener listener) {
+        this.pushPromiseListener = listener;
     }
 
     public void sendUpgradeHeader(String requestUri) {
@@ -204,6 +212,10 @@ public class Http2Client {
             LOGGER.logp(Level.INFO, CLASS_NAME, "sendClientPreface", "Start time (Millis): " + startTime);
         }
         while ((System.currentTimeMillis() - startTime) < timeout) {
+            try {
+                Thread.sleep(100);
+            } catch (Exception x) {
+            }
             if (wasUpgradeHeaderReceived()) {
                 sendClientPreface();
                 h2Connection.setPrefaceSent(true);
@@ -211,10 +223,6 @@ public class Http2Client {
             }
             if (LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.logp(Level.INFO, CLASS_NAME, "sendClientPreface", "Haven't received upgrade header yet, waiting to send client preface.");
-            }
-            try {
-                Thread.sleep(10);
-            } catch (Exception x) {
             }
         }
         if (LOGGER.isLoggable(Level.SEVERE)) {
@@ -560,6 +568,20 @@ public class Http2Client {
                         LOGGER.logp(Level.FINEST, CLASS_NAME + "$FATFramesListener", "receivedFrame",
                                     ":Next Frame: :Read In: " + receivedFrame.getFrameType() + " H2Conn hc: " + h2Connection.hashCode() + " " + receivedFrame);
                     }
+                }
+            } else if (receivedFrame.getFrameType() == FrameTypes.PUSH_PROMISE) {
+                // If we receive a push promise then check if we have headers to expect
+                if (LOGGER.isLoggable(Level.FINEST)) {
+                    LOGGER.logp(Level.FINEST, CLASS_NAME + "$FATFramesListener", "receivedFrame",
+                                ":Next Frame: :Read In PushPromise: " + receivedFrame.getFrameType() + " H2Conn hc: " + h2Connection.hashCode() + " " + receivedFrame);
+                }
+                if (pushPromiseListener != null) {
+                    if (LOGGER.isLoggable(Level.FINEST)) {
+                        LOGGER.logp(Level.FINEST, CLASS_NAME + "$FATFramesListener", "receivedFrame",
+                                    ":Next Frame: :Calling PushPromiseListener: " + pushPromiseListener);
+                    }
+                    pushPromiseListener.onPushPromiseReceived((FramePushPromiseClient) receivedFrame);
+
                 }
             } else {
 
