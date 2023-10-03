@@ -64,6 +64,7 @@ DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
 
 -buildpath: \
 	com.ibm.ws.classloading,\
+	io.openliberty.org.eclipse.microprofile.config.3.0;version=latest,\
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
 	com.ibm.ws.monitor,\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
