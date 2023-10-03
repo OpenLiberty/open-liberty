@@ -361,6 +361,13 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
+     * @return the installRootParent
+     */
+    public String getInstallRootParent() {
+        return installRootParent;
+    }
+
+    /**
      * @return the release micro version
      */
     public String getMicroVersion() {
@@ -3747,7 +3754,7 @@ public class LibertyServer implements LogMonitorClient {
      * @param fromDir  The directory of the file to copy.
      * @param toDir    Any extra path beyond ${server.config.dir} for the destination.
      *                     For example, for a destination of ${server.config.dir}/test/ you would use toServerDir=test
-     * @param fileName The name of the file to copy. The file name will be unchanged form source to dest
+     * @param fileName The name of the file to copy. The file name will be unchanged from source to dest
      */
     public void copyFileToLibertyServerRoot(String fromDir, String toDir, String fileName) throws Exception {
         if (toDir == null)
@@ -3755,8 +3762,34 @@ public class LibertyServer implements LogMonitorClient {
         copyFileToLibertyServerRootUsingTmp(serverRoot + "/" + toDir, (fromDir + "/" + fileName));
     }
 
+    /**
+     * Copies a file from the oldAbsolutePath to the newAbsolutePath in the Liberty server.
+     * 
+     * @param oldAbsolutePath The absolute path of the file to copy.
+     * @param newAbsolutePath The absolute path of the destination.
+     * @param fileName        The name of the file to copy. The file name will be unchanged from source to dest
+     * 
+     * @throws Exception
+     */
+    public void copyFileToAbsolutePathInLibertyServer(String oldAbsolutePath, String newAbsolutePath, String fileName) throws Exception {
+        copyFileToLibertyServerRootUsingTmp(newAbsolutePath, (oldAbsolutePath + "/" + fileName));
+    }
+
     public void renameLibertyServerRootFile(String oldFileName, String newFileName) throws Exception {
         LibertyFileManager.renameLibertyFile(machine, serverRoot + "/" + oldFileName, serverRoot + "/" + newFileName);
+    }
+
+    /**
+     * Renames a file from the oldAbsolutePath to the newAbsolutePath in the Liberty server.
+     * 
+     * @param oldAbsolutePath The absolute path of the file to copy.
+     * @param newAbsolutePath The absolute path of the destination.
+     * @param fileName        The name of the file to rename. The file name will be unchanged from source to dest
+     * 
+     * @throws Exception
+     */
+    public void renameFileToAbsolutePathInLibertyServerRootFile(String oldAbsolutePath, String newAbsolutePath, String fileName) throws Exception {
+        LibertyFileManager.renameLibertyFile(machine, (oldAbsolutePath + "/" + fileName), (newAbsolutePath + "/" + fileName));
     }
 
     public void renameLibertyInstallRootFile(String oldFileName, String newFileName) throws Exception {
@@ -3773,6 +3806,12 @@ public class LibertyServer implements LogMonitorClient {
         final String method = "getFileFromLibertyServerRoot";
         Log.entering(c, method);
         return getFileFromLiberty(serverRoot + "/" + filePath);
+    }
+
+    public RemoteFile getFileFromLibertyServerWithAbsoluteFilePath(String absoluteFilePath) throws Exception {
+        final String method = "getFileFromLibertyServerWithAbsoluteFilePath";
+        Log.entering(c, method);
+        return getFileFromLiberty(absoluteFilePath);
     }
 
     /* not called */public RemoteFile getFileFromLibertySharedDir(String filePath) throws Exception {
