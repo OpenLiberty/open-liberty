@@ -13,15 +13,22 @@
 
 dependencies {
   requiredLibs 'io.openliberty.springboot.test:io.openliberty.checkpoint.springboot.fat30.app:1.0.0'
+  requiredLibs 'io.openliberty.springboot.test:io.openliberty.checkpoint.springboot.fat30.webflux.app:1.0.0'
 }
 
 autoFVT.doLast {
   
   def server = 'checkpointSpringBoot'
   def appsDir = new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+  
 
   copy {
     from new File(autoFvtDir, 'lib/io.openliberty.checkpoint.springboot.fat30.app-1.0.0.jar')
+    into appsDir
+  }
+  
+  copy {
+    from new File(autoFvtDir, 'lib/io.openliberty.checkpoint.springboot.fat30.webflux.app-1.0.0.jar')
     into appsDir
   }
 }

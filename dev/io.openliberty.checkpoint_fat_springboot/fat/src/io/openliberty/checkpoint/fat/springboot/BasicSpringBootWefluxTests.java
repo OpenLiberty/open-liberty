@@ -33,12 +33,12 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
 @MinimumJavaLevel(javaLevel = 17)
-public class BasicSpringBootTests extends FATServletClient {
+public class BasicSpringBootWefluxTests extends FATServletClient {
 
     @Server("checkpointSpringBoot")
     public static LibertyServer server;
 
-    public static final String APP_NAME = "io.openliberty.checkpoint.springboot.fat30.app-1.0.0.jar";
+    public static final String APP_NAME = "io.openliberty.checkpoint.springboot.fat30.webflux.app-1.0.0.jar";
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -55,7 +55,7 @@ public class BasicSpringBootTests extends FATServletClient {
                                  assertNotNull("Spring-managed lifecycle beans not stopped",
                                                server.waitForStringInLogUsingMark("Stopping Spring-managed lifecycle beans before JVM checkpoint", 0));
                              });
-        server.startServer("BasicSpringBootTests.log");
+        server.startServer("BasicSpringBootWefluxTests.log");
         assertNotNull("Spring-managed lifecycle beans not restarted after JVM restore",
                       server.waitForStringInLogUsingMark("Restarting Spring-managed lifecycle beans after JVM restore"));
         // make sure the web app URL is logged on restore side

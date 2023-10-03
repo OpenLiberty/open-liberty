@@ -99,15 +99,19 @@ public class ServerConfigurationFactory {
         VersionRange range = null;
         Version vActual = null;
         try {
-            vActual = Version.valueOf(actual);
             if (max == null) {
                 range = new VersionRange(min);
             } else {
                 range = new VersionRange('[' + min + ',' + max + ')');
             }
+            if (actual.contains("-")) {
+                actual = actual.substring(0, actual.indexOf('-'));
+            }
+            vActual = Version.valueOf(actual);          
         } catch (IllegalArgumentException e) {
             // version parsing issues; auto-FFDC here
         }
+        
         if ((vActual == null) || (range == null) || !range.includes(vActual)) {
             throw new ApplicationError(Type.ERROR_UNSUPPORTED_SPRING_BOOT_VERSION, actual, range.toString());
         }
