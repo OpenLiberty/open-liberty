@@ -184,7 +184,6 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      */
     protected HashMap<String, RecoveryLogFactory> _customLogFactories = new HashMap<String, RecoveryLogFactory>();
 
-    private boolean _enablePeerLocking;
     private boolean _isSQLRecoveryLog;
 
     //------------------------------------------------------------------------------
@@ -570,47 +569,46 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                     // Notify the listeners we're about to make the call
                     _eventListeners.clientRecoveryInitiated(failureScope, recoveryAgent.clientIdentifier()); /* @MD19638A */
 
-                    // HADB Peer Locking function is provided in tWAS to handle the case where a network is partitioned
+                    // DB Peer Locking function is provided in tWAS to handle the case where a network is partitioned
                     // and transaction recovery logs are stored in an RDBMS. This function, while not strictly required in
                     // Liberty is included in Liberty in order to maintain compatibility and allow testing.
                     //
-                    // Peer Locking is enabled by default but can be disabled through a server.xml enablePeerLocking attribute in the transaction element.
-                    //
-                    // PR #25374 - The enablePeerLocking element now applies to both the database and the filesystem case. In the
-                    // filesystem case we make use of lease file lock to manage exclusive access to recovery logs.
+                    // Peer Locking is enabled by default for DB Logs but can be disabled through a server.xml enableDBLogPeerLocking
+                    // attribute in the transaction element.
                     boolean proceedWithRecovery = true;
-                    _enablePeerLocking = recoveryAgent.isPeerLockingEnabled();
 
-                    if (Configuration.HAEnabled() && _enablePeerLocking) {
+                    if (Configuration.HAEnabled()) {
                         // Differentiate between the RDBMS and FileSystem implementations
                         _isSQLRecoveryLog = recoveryAgent.isSQLRecoveryLog();
                         if (_isSQLRecoveryLog) {
-                            // We need to acquire a Heartbeat Recovery Log reference whether we are recovering a local
-                            // or peer server. In each case we get a reference to the appropriate Recovery Log.
-                            HeartbeatLog heartbeatLog = recoveryAgent.getHeartbeatLog(failureScope);
+                            if (recoveryAgent.isDBLogPeerLockingEnabled()) {
+                                // We need to acquire a Heartbeat Recovery Log reference whether we are recovering a local
+                                // or peer server. In each case we get a reference to the appropriate Recovery Log.
+                                HeartbeatLog heartbeatLog = recoveryAgent.getHeartbeatLog(failureScope);
 
-                            if (heartbeatLog != null) {
-                                // Set the ThreadLocal to show that this is the thread that will replay the recovery logs
-                                recoveryAgent.setReplayThread();
-                                if (currentFailureScope.equals(failureScope)) {
-                                    if (tc.isDebugEnabled())
-                                        Tr.debug(tc, "LOCAL RECOVERY, claim local logs");
-                                    proceedWithRecovery = heartbeatLog.claimLocalRecoveryLogs();
-                                    if (!proceedWithRecovery) {
-                                        // Cannot recover the home server, throw exception
-                                        RecoveryFailedException rfex = new RecoveryFailedException("HADB Peer locking, local recovery failed");
+                                if (heartbeatLog != null) {
+                                    // Set the ThreadLocal to show that this is the thread that will replay the recovery logs
+                                    recoveryAgent.setReplayThread();
+                                    if (currentFailureScope.equals(failureScope)) {
+                                        if (tc.isDebugEnabled())
+                                            Tr.debug(tc, "LOCAL RECOVERY, claim local logs");
+                                        proceedWithRecovery = heartbeatLog.claimLocalRecoveryLogs();
+                                        if (!proceedWithRecovery) {
+                                            // Cannot recover the home server, throw exception
+                                            RecoveryFailedException rfex = new RecoveryFailedException("HADB Peer locking, local recovery failed");
 
-                                        throw rfex;
-                                    }
+                                            throw rfex;
+                                        }
 
-                                } else {
-                                    if (tc.isDebugEnabled())
-                                        Tr.debug(tc, "PEER RECOVERY, take lock, ie check staleness");
-                                    proceedWithRecovery = heartbeatLog.claimPeerRecoveryLogs();
-                                    if (!proceedWithRecovery) {
-                                        // Cannot recover peer server, throw exception
-                                        RecoveryFailedException rfex = new RecoveryFailedException("HADB Peer locking, peer recovery failed");
-                                        throw rfex;
+                                    } else {
+                                        if (tc.isDebugEnabled())
+                                            Tr.debug(tc, "PEER RECOVERY, take lock, ie check staleness");
+                                        proceedWithRecovery = heartbeatLog.claimPeerRecoveryLogs();
+                                        if (!proceedWithRecovery) {
+                                            // Cannot recover peer server, throw exception
+                                            RecoveryFailedException rfex = new RecoveryFailedException("HADB Peer locking, peer recovery failed");
+                                            throw rfex;
+                                        }
                                     }
                                 }
                             }

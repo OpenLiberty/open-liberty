@@ -197,13 +197,13 @@ public interface RecoveryAgent {
     public void releasePeerLeaseForRecovery(String recoveryIdentityToRecover) throws Exception;
 
     /**
-     * Returns a flag to indicate if peer server locking is enabled.
+     * Returns a flag to indicate if peer server locking is enabled where transaction logs are stored in a database.
      *
      * by default, peer server locking is ENABLED.
      *
      * @return boolean
      */
-    public boolean isPeerLockingEnabled();
+    public boolean isDBLogPeerLockingEnabled();
 
     /**
      * Returns a flag to indicate whether recovery logs are to be written to an RDBMS or a FileSystem.

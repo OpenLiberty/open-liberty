@@ -28,7 +28,6 @@ import java.util.logging.Level;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
@@ -40,6 +39,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.Transaction.JTA.Util;
+import com.ibm.ws.classloading.java2sec.Constants;
 import com.ibm.ws.kernel.launch.service.ForcedServerStop;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
@@ -865,11 +865,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#enablePeerLocking()
+     * @see com.ibm.tx.config.ConfigurationProvider#enableDBLogPeerLocking()
      */
     @Override
-    public boolean enablePeerLocking() {
-        return (Boolean) _props.get("enablePeerLocking");
+    public boolean enableDBLogPeerLocking() {
+        return (Boolean) _props.get("enableDBLogPeerLocking");
     }
 
     /*

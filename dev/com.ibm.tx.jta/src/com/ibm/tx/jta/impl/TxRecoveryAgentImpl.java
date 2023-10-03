@@ -1108,17 +1108,17 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.recoverylog.spi.RecoveryAgent#enablePeerLocking()
+     * @see com.ibm.ws.recoverylog.spi.RecoveryAgent#isDBLogPeerLockingEnabled()
      */
     @Override
-    public boolean isPeerLockingEnabled() {
+    public boolean isDBLogPeerLockingEnabled() {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "isPeerLockingEnabled");
+            Tr.entry(tc, "isDBLogPeerLockingEnabled");
 
         ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
-        boolean enableLocking = cp.enablePeerLocking();
+        boolean enableLocking = cp.enableDBLogPeerLocking();
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "isPeerLockingEnabled", enableLocking);
+            Tr.exit(tc, "isDBLogPeerLockingEnabled", enableLocking);
 
         return enableLocking;
     }

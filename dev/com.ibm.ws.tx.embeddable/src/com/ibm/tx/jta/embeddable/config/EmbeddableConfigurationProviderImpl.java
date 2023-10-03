@@ -459,10 +459,10 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#enablePeerLocking()
+     * @see com.ibm.tx.config.ConfigurationProvider#enableDBLogPeerLocking()
      */
     @Override
-    public boolean enablePeerLocking() {
+    public boolean enableDBLogPeerLocking() {
         // TODO Auto-generated method stub
         return false;
     }

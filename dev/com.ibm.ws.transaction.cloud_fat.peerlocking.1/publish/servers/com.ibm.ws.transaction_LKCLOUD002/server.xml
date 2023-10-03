@@ -29,7 +29,7 @@
       heuristicRetryInterval="10"
       recoveryIdentity="cloud002-1"
       recoveryGroup="defaultGroup"
-      enablePeerLocking="true"
+      enableDBLogPeerLocking="true"
       timeBetweenHeartbeats="10"
       peerTimeBeforeStale="30"
       leaseLength="20"

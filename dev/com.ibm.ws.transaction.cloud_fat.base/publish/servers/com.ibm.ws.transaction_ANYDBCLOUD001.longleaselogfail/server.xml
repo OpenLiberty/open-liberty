@@ -8,7 +8,7 @@
       recoveryGroup="defaultGroup"
       leaseLength="300"
       leaseCheckInterval="25"
-      enablePeerLocking="false"
+      enableDBLogPeerLocking="false"
     />
 
     <featureManager>
