@@ -56,8 +56,10 @@ public class BackchannelLogoutRequestHelper {
      * Uses the provided ID token string to build logout tokens and sends back-channel logout requests to all of the necessary
      * RPs. If the ID token contains multiple audiences, logout tokens are created for each client audience. Logout tokens are
      * also created for all RPs that the OP is aware of having active or recently valid sessions.
+     *
+     * @throws BackchannelLogoutRequestException
      */
-    public void sendBackchannelLogoutRequests(String user, String idTokenString) {
+    public void sendBackchannelLogoutRequests(String user, String idTokenString) throws BackchannelLogoutRequestException {
         if (!shouldSendLogoutRequests(user, idTokenString)) {
             return;
         }
@@ -70,8 +72,9 @@ public class BackchannelLogoutRequestHelper {
                 logoutTokens = tokenBuilder.buildLogoutTokensFromIdTokenString(idTokenString);
             }
         } catch (LogoutTokenBuilderException e) {
-            Tr.error(tc, "OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR", oidcServerConfig.getProviderId(), e.getMessage());
-            return;
+            String errorMsg = Tr.formatMessage(tc, "OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR", oidcServerConfig.getProviderId(), e.getMessage());
+            Tr.error(tc, errorMsg);
+            throw new BackchannelLogoutRequestException(errorMsg);
         }
         sendBackchannelLogoutRequestsToClients(logoutTokens);
     }
