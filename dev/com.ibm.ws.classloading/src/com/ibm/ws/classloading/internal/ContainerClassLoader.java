@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -257,6 +257,15 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
                     path = path.substring(0, path.length() - resourceName.length());
                     if (path.endsWith(".jar!/") || path.endsWith(".zip!/")) {
                         path = path.substring(0, path.length() - 2);
+                    } else {
+                        // If the archive file name does not end with jar or zip file extension and the URL ends with !/, 
+                        // the !/ will get stripped off by the shared classes cache logic and will not be recognized 
+                        // correctly as a jar file when it is a RAR for instance so add an extra character to the end of the URL.
+                        // Without this extra character, RAR files were not being recognized as being updated leading to 
+                        // stale classes being returned after the RAR file was updated.
+                        if (path.endsWith("!/")) {
+                            path += "l";
+                        }
                     }
                 }
                 try {
