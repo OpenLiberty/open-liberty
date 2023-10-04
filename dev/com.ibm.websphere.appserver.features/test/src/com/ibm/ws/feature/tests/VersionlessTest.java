@@ -91,6 +91,10 @@ public class VersionlessTest {
                             System.out.println("        [ " + depName + " ** NOT FOUND ** ]");
                         } else if (depInfo.isPublic()) {
                             System.out.println("        [ " + depInfo.getBaseName() + " - " + depInfo.getVersion() + " ]");
+
+                            if (depInfo.isSetAlsoKnownAs()){
+                                System.out.println("            [ AKA: " + depInfo.getAlsoKnownAs() + " ]");
+                            }
                             
                             String featureTitle = depInfo.getShortName().split("-")[0]; //Just the name not the version
                             if(versionlessFeatures.containsKey(featureTitle)){

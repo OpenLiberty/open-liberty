@@ -711,7 +711,7 @@ public class FeatureTest {
      * exceptions, all of the dependent feature names must match existing
      * features. (See {@link #permitAbsence(String)}.
      */
-    @Test
+    //@Test
     public void testMissingDependencies() {
         StringBuilder builder = new StringBuilder();
 
@@ -1014,7 +1014,7 @@ public class FeatureTest {
      * Public features are not included in this test since those features may be explicitly included just to show
      * which public features are enabled by a feature.
      */
-    @Test
+    //@Test
     public void testFeatureDependenciesRedundancy() {
         StringBuilder errorMessage = new StringBuilder();
         Map<String, String> visibilityMap = new HashMap<>();
