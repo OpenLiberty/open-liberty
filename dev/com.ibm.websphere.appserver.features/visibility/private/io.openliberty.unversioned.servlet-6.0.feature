@@ -3,7 +3,8 @@ symbolicName=io.openliberty.unversioned.servlet-6.0
 visibility=private
 singleton=true
 -features= \
-  io.openliberty.jakartaPlatform.internal-10.0, \
-  com.ibm.websphere.appserver.servlet-6.0
+    io.openliberty.webProfile.internal-10.0, \
+    io.openliberty.jakartaee.internal-10.0, \
+    com.ibm.websphere.appserver.servlet-6.0
 kind=noship
 edition=full
