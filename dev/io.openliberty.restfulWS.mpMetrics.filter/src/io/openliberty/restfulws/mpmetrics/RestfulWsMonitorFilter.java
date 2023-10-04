@@ -18,9 +18,11 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricRegistry;
@@ -172,9 +174,12 @@ public class RestfulWsMonitorFilter implements ContainerRequestFilter, Container
                         }
 
                         // Register the computed REST.elapsedTime metric.
-                        ComputedMonitorMetricsHandler cmmh = MonitorAppStateListener.monitorMetricsHandler
-                                .getComputedMonitorMetricsHandler();
-                        cmmh.createRESTComputedMetrics("RESTStats", metricID, appName);
+                        ComputedMonitorMetricsHandler cmmh = MonitorAppStateListener.monitorMetricsHandler.getComputedMonitorMetricsHandler();
+                        
+                        //Save mp app name value from the MP Config property (if available) for unregistering the metric.
+                        String mpAppNameConfigValue = resolveMPAppNameFromMPConfig();
+                        
+                        cmmh.createRESTComputedMetrics("RESTStats", metricID, appName, mpAppNameConfigValue);
                     } else {
                         if (tc.isDebugEnabled()) {
                             Tr.debug(tc,
@@ -315,6 +320,22 @@ public class RestfulWsMonitorFilter implements ContainerRequestFilter, Container
             }
             appMetricInfos.remove(appName);
         }
+    }
+    
+    protected String resolveMPAppNameFromMPConfig() {
+        Optional<String> applicationName = null;
+        String mpAppName = null;
+        
+        if ((applicationName = ConfigProvider.getConfig().getOptionalValue("mp.metrics.appName", String.class)).isPresent() 
+                && !applicationName.get().isEmpty()) {
+            mpAppName = applicationName.get();
+        }
+        else if ((applicationName = ConfigProvider.getConfig().getOptionalValue("mp.metrics.defaultAppName", String.class)).isPresent() 
+                && !applicationName.get().isEmpty()) {
+            mpAppName = applicationName.get();
+        }
+        
+        return mpAppName;
     }
 
     static class RestMetricInfo {

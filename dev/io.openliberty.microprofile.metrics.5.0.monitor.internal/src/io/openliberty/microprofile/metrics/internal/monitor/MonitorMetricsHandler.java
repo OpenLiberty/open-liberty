@@ -245,7 +245,8 @@ public class MonitorMetricsHandler {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Unregistering computed metric for " + metricIDSet);
             }
-            cmmh.unregister(metricIDSet);
+            String mpAppName = monMetrics.getMpAppName();
+            cmmh.unregister(metricIDSet, mpAppName);
         }
     }
 

@@ -16,12 +16,15 @@ import java.lang.management.ManagementFactory;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.AbstractMap;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.management.MBeanServer;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricRegistry;
@@ -45,6 +48,7 @@ public class MonitorMetrics {
     protected MBeanServer mbs;
     protected Set<MetricID> vendorMetricIDs;
     protected Set<MetricID> baseMetricIDs;
+    protected String mpAppName = null;
 
     public MonitorMetrics(String objectName) {
         this.mbs = AccessController
@@ -60,6 +64,9 @@ public class MonitorMetrics {
 
     public void createMetrics(SharedMetricRegistries sharedMetricRegistry, String[][] data) {
         MetricRegistry metricRegistry = sharedMetricRegistry.getOrCreate(MetricRegistry.VENDOR_SCOPE);
+        
+        //Save mp app name value from MP Config for unregistering the metric.
+        resolveMPAppNameFromMPConfig();
         
         /*
          * metricRegistry is null due to failed initialization of the MP Metrics runtime.
@@ -252,7 +259,7 @@ public class MonitorMetrics {
         MetricRegistry vendorRegistry = sharedMetricRegistry.getOrCreate(MetricRegistry.VENDOR_SCOPE);
 
         for (MetricID metricID : vendorMetricIDs) {
-            boolean rc = vendorRegistry.remove(metricID);
+            boolean rc = vendorRegistry.remove(withMPAppNameTag(metricID));
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Unregistered " + metricID.toString() + " " + (rc ? "successfully" : "unsuccessfully"));
             }
@@ -262,6 +269,39 @@ public class MonitorMetrics {
     
     public Set<MetricID> getVendorMetricIDSet() {
     	return this.vendorMetricIDs;
+    }
+    
+    protected void resolveMPAppNameFromMPConfig() {
+        Optional<String> applicationName = null;
+        
+        if ((applicationName = ConfigProvider.getConfig().getOptionalValue("mp.metrics.appName", String.class)).isPresent() 
+                && !applicationName.get().isEmpty()) {
+            mpAppName = applicationName.get();
+        }
+        else if ((applicationName = ConfigProvider.getConfig().getOptionalValue("mp.metrics.defaultAppName", String.class)).isPresent() 
+                && !applicationName.get().isEmpty()) {
+            mpAppName = applicationName.get();
+        }
+    }
+    
+    protected MetricID withMPAppNameTag(MetricID mid) {
+        if (mpAppName != null && !mpAppName.isEmpty()) {
+            return mergeMPAppTag(mid,mpAppName);
+        } 
+        return mid;
+    }
+    
+    private MetricID mergeMPAppTag(MetricID mid, String appNameValue) {
+        Tag appTag = new Tag("mp_app", appNameValue);
+        
+        Tag[] tempArr = Arrays.copyOf(mid.getTagsAsArray(), mid.getTagsAsArray().length + 1);
+        tempArr[tempArr.length - 1] = appTag;
+        
+        return new MetricID(mid.getName(), tempArr);
+    }
+    
+    public String getMpAppName() {
+        return mpAppName;
     }
 
     protected Map.Entry<String, Double> resolveBaseUnitAndConversionFactor(String unit) {

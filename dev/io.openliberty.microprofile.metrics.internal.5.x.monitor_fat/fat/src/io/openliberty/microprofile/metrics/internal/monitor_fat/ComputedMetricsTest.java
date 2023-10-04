@@ -42,6 +42,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -53,8 +55,13 @@ public class ComputedMetricsTest {
     private static final String[] ALWAYS_EXPECTED_COMPUTED_METRICS = new String[]{
             "cpu_processCpuUtilization_percent{mp_scope=\"vendor\",}",
             "memory_heapUtilization_percent{mp_scope=\"vendor\",}",
-            "gc_time_per_cycle_seconds{mp_scope=\"vendor\",name=\"global\",}",
-            "gc_time_per_cycle_seconds{mp_scope=\"vendor\",name=\"scavenge\",}"
+            "gc_time_per_cycle_seconds{mp_scope=\"vendor\","
+    };
+    
+    private static final String[] ALWAYS_EXPECTED_COMPUTED_METRICS_WITH_APPNAME = new String[]{
+            "cpu_processCpuUtilization_percent{mp_app=\"myserver\",mp_scope=\"vendor\",}",
+            "memory_heapUtilization_percent{mp_app=\"myserver\",mp_scope=\"vendor\",}",
+            "gc_time_per_cycle_seconds{mp_app=\"myserver\",mp_scope=\"vendor\","
     };
     
     private static boolean initialServerStart = true;
@@ -194,8 +201,7 @@ public class ComputedMetricsTest {
         String[] expectedMetrics = new String[]{
                 "cpu_processCpuUtilization_percent{mp_scope=\"vendor\",}",
                 "memory_heapUtilization_percent{mp_scope=\"vendor\",}",
-                "gc_time_per_cycle_seconds{mp_scope=\"vendor\",name=\"global\",}",
-                "gc_time_per_cycle_seconds{mp_scope=\"vendor\",name=\"scavenge\",}",
+                "gc_time_per_cycle_seconds{mp_scope=\"vendor\",",
                 "connectionpool_inUseTime_per_usedConnection_seconds{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
                 "connectionpool_inUseTime_per_usedConnection_seconds{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
                 "connectionpool_waitTime_per_queuedRequest_seconds{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
@@ -283,6 +289,7 @@ public class ComputedMetricsTest {
      * the "/metrics?scope=vendor" output should show both those metrics.
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testOnlyServletConnectionPoolInMonitorFilter() throws Exception {
         String testName = "testOnlyServletConnectionPoolInMonitorFilter";
         
@@ -325,6 +332,7 @@ public class ComputedMetricsTest {
      * those metrics, not Connection Pool.
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testOnlyServletInMonitorFilter() throws Exception {
         String testName = "testOnlyServletInMonitorFilter";
         
@@ -372,6 +380,7 @@ public class ComputedMetricsTest {
      * show only those metrics, not Servlet.
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testOnlyConnectionPoolInMonitorFilter() throws Exception {
         String testName = "testOnlyConnectionPoolInMonitorFilter";
         
@@ -411,6 +420,161 @@ public class ComputedMetricsTest {
         Log.info(c, testName, "------- The Servlet metrics should NOT be available. ------");
         checkForUnexpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), unexpectedMetrics);
     }
+    
+    /*
+     * Tests when the MP Config property "mp.metrics.appName" is set as an ENV variable,  the "/metrics?scope=vendor" output should show all the computed metrics, 
+     * with the correct tags, including the mp config property value.
+     */
+    @Test
+    public void testMPConfigAppNameProperty() throws Exception {
+        String testName = "testMPConfigAppNameProperty";
+        
+        Log.info(c, testName, "Starting Testcase: " + testName);
+
+        String[] expectedMetrics = new String[]{
+                "cpu_processCpuUtilization_percent{mp_app=\"myserver\",mp_scope=\"vendor\",}",
+                "memory_heapUtilization_percent{mp_app=\"myserver\",mp_scope=\"vendor\",}",
+                "gc_time_per_cycle_seconds{mp_app=\"myserver\",mp_scope=\"vendor\",",
+                "connectionpool_inUseTime_per_usedConnection_seconds{datasource=\"jdbc_exampleDS1\",mp_app=\"myserver\",mp_scope=\"vendor\",}",
+                "connectionpool_inUseTime_per_usedConnection_seconds{datasource=\"jdbc_exampleDS2\",mp_app=\"myserver\",mp_scope=\"vendor\",}",
+                "connectionpool_waitTime_per_queuedRequest_seconds{datasource=\"jdbc_exampleDS1\",mp_app=\"myserver\",mp_scope=\"vendor\",}",
+                "connectionpool_waitTime_per_queuedRequest_seconds{datasource=\"jdbc_exampleDS2\",mp_app=\"myserver\",mp_scope=\"vendor\",}",
+                "REST_request_elapsedTime_per_request_seconds{class=\"io.openliberty.microprofile.metrics.internal.monitor_fat.rest.TestRESTMetrics\",method=\"simpleGet\",mp_app=\"myserver\",mp_scope=\"vendor\",}",
+                "servlet_request_elapsedTime_per_request_seconds{mp_app=\"myserver\",mp_scope=\"vendor\",servlet=\"io_openliberty_microprofile_metrics_5_0_private_internal_PrivateMetricsRESTProxyServlet\",}",
+                "servlet_request_elapsedTime_per_request_seconds{mp_app=\"myserver\",mp_scope=\"vendor\",servlet=\"testJDBCApp_io_openliberty_microprofile_metrics_internal_monitor_fat_jdbc_servlet_TestJDBCServlet\",}",
+                "servlet_request_elapsedTime_per_request_seconds{mp_app=\"myserver\",mp_scope=\"vendor\",servlet=\"testRESTApp_io_openliberty_microprofile_metrics_internal_monitor_fat_rest_TestApplication\",}"};
+        
+        Log.info(c, testName, "------- Stopping server to update MP Config property. ------");
+        if (computedMetricsServer != null && computedMetricsServer.isStarted()) {
+            computedMetricsServer.stopServer("");
+        }
+
+        Log.info(c, testName, "------- Setting MP Config ENV variable : mp.metrics.appName=myserver ------");
+        computedMetricsServer.addEnvVar("MP_METRICS_APPNAME", "myserver");
+        
+        Log.info(c, testName, "------- Starting server after MP Config update. ------");
+        computedMetricsServer.startServer();
+        waitForSecurityPrerequisites(computedMetricsServer, 60000);
+        initialServerStart = false;
+        computedMetricsServer.setMarkToEndOfLog(computedMetricsServer.getMostRecentTraceFile());
+
+        Log.info(c, testName,"------- Hitting the /metrics endpoint for the first time to initialize the Servlet metrics ------");
+        getHttpsServlet("/metrics?scope=vendor", computedMetricsServer);
+
+        Log.info(c, testName, "------- Hitting the testJDBC application endpoint to initialize the Connection Pool metrics ------");
+        getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", computedMetricsServer);
+
+        Log.info(c, testName, "------- Hitting the testREST application endpoint to initialize the REST metrics ------");
+        getHttpServlet("/testRESTApp/test/get", computedMetricsServer);
+
+        Log.info(c, testName, "------- Make sure all the expected metrics have the \"mp_app=myserver\" tag ------");
+        checkForExpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), expectedMetrics);
+    }
+    
+    /*
+     * Tests when the MP Config property "mp.metrics.defaultAppName" is set as an ENV variable,  the "/metrics?scope=vendor" output should show all the computed metrics, 
+     * with the correct tags, including the mp config property value.
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testMPConfigDefaultAppNameProperty() throws Exception {
+        String testName = "testMPConfigDefaultAppNameProperty";
+        
+        Log.info(c, testName, "Starting Testcase: " + testName);
+
+        String[] expectedMetrics = new String[]{
+                "cpu_processCpuUtilization_percent{mp_app=\"myserver\",mp_scope=\"vendor\",}",
+                "memory_heapUtilization_percent{mp_app=\"myserver\",mp_scope=\"vendor\",}",
+                "gc_time_per_cycle_seconds{mp_app=\"myserver\",mp_scope=\"vendor\",",
+                "connectionpool_inUseTime_per_usedConnection_seconds{datasource=\"jdbc_exampleDS1\",mp_app=\"myserver\",mp_scope=\"vendor\",}",
+                "connectionpool_inUseTime_per_usedConnection_seconds{datasource=\"jdbc_exampleDS2\",mp_app=\"myserver\",mp_scope=\"vendor\",}",
+                "connectionpool_waitTime_per_queuedRequest_seconds{datasource=\"jdbc_exampleDS1\",mp_app=\"myserver\",mp_scope=\"vendor\",}",
+                "connectionpool_waitTime_per_queuedRequest_seconds{datasource=\"jdbc_exampleDS2\",mp_app=\"myserver\",mp_scope=\"vendor\",}",
+                "REST_request_elapsedTime_per_request_seconds{class=\"io.openliberty.microprofile.metrics.internal.monitor_fat.rest.TestRESTMetrics\",method=\"simpleGet\",mp_app=\"myserver\",mp_scope=\"vendor\",}",
+                "servlet_request_elapsedTime_per_request_seconds{mp_app=\"myserver\",mp_scope=\"vendor\",servlet=\"io_openliberty_microprofile_metrics_5_0_private_internal_PrivateMetricsRESTProxyServlet\",}",
+                "servlet_request_elapsedTime_per_request_seconds{mp_app=\"myserver\",mp_scope=\"vendor\",servlet=\"testJDBCApp_io_openliberty_microprofile_metrics_internal_monitor_fat_jdbc_servlet_TestJDBCServlet\",}",
+                "servlet_request_elapsedTime_per_request_seconds{mp_app=\"myserver\",mp_scope=\"vendor\",servlet=\"testRESTApp_io_openliberty_microprofile_metrics_internal_monitor_fat_rest_TestApplication\",}"};
+        
+        Log.info(c, testName, "------- Stopping server to update MP Config property. ------");
+        if (computedMetricsServer != null && computedMetricsServer.isStarted()) {
+            computedMetricsServer.stopServer("");
+        }
+
+        Log.info(c, testName, "------- Setting MP Config ENV variable : mp.metrics.appName=myserver ------");
+        computedMetricsServer.addEnvVar("MP_METRICS_DEFAULTAPPNAME", "myserver");
+        
+        Log.info(c, testName, "------- Starting server after MP Config update. ------");
+        computedMetricsServer.startServer();
+        waitForSecurityPrerequisites(computedMetricsServer, 60000);
+        initialServerStart = false;
+        computedMetricsServer.setMarkToEndOfLog(computedMetricsServer.getMostRecentTraceFile());
+
+        Log.info(c, testName,"------- Hitting the /metrics endpoint for the first time to initialize the Servlet metrics ------");
+        getHttpsServlet("/metrics?scope=vendor", computedMetricsServer);
+
+        Log.info(c, testName, "------- Hitting the testJDBC application endpoint to initialize the Connection Pool metrics ------");
+        getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", computedMetricsServer);
+
+        Log.info(c, testName, "------- Hitting the testREST application endpoint to initialize the REST metrics ------");
+        getHttpServlet("/testRESTApp/test/get", computedMetricsServer);
+
+        Log.info(c, testName, "------- Make sure all the expected metrics have the \"mp_app=myserver\" tag ------");
+        checkForExpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), expectedMetrics);
+    }
+    
+    /*
+     * Tests when dynamically stopping the deployed REST application, the computed REST and corresponding Servlet metrics should NOT be shown, when the MP Config appName property is set.
+     */
+   @Test
+   @Mode(TestMode.FULL)
+   public void testDynamicApplicationStopWithMpConfigPropSet() throws Exception {
+       String testName = "testDynamicApplicationStopWithMpConfigPropSet";
+       
+       Log.info(c, testName, "Starting Testcase: " + testName);
+
+       String[] expectedMetrics = new String[]{
+               "cpu_processCpuUtilization_percent{mp_app=\"myserver\",mp_scope=\"vendor\",}",
+               "memory_heapUtilization_percent{mp_app=\"myserver\",mp_scope=\"vendor\",}",
+               "gc_time_per_cycle_seconds{mp_app=\"myserver\",mp_scope=\"vendor\",",
+               "REST_request_elapsedTime_per_request_seconds{class=\"io.openliberty.microprofile.metrics.internal.monitor_fat.rest.TestRESTMetrics\",method=\"simpleGet\",mp_app=\"myserver\",mp_scope=\"vendor\",}",
+               "servlet_request_elapsedTime_per_request_seconds{mp_app=\"myserver\",mp_scope=\"vendor\",servlet=\"io_openliberty_microprofile_metrics_5_0_private_internal_PrivateMetricsRESTProxyServlet\",}",
+               "servlet_request_elapsedTime_per_request_seconds{mp_app=\"myserver\",mp_scope=\"vendor\",servlet=\"testRESTApp_io_openliberty_microprofile_metrics_internal_monitor_fat_rest_TestApplication\",}"};
+       
+       String[] unexpectedMetrics = new String[]{
+               "REST_request_elapsedTime_per_request_seconds{class=\"io.openliberty.microprofile.metrics.internal.monitor_fat.rest.TestRESTMetrics\",method=\"simpleGet\",mp_app=\"myserver\",mp_scope=\"vendor\",}",
+               "servlet_request_elapsedTime_per_request_seconds{mp_app=\"myserver\",mp_scope=\"vendor\",servlet=\"testRESTApp_io_openliberty_microprofile_metrics_internal_monitor_fat_rest_TestApplication\",}"};
+       
+       Log.info(c, testName, "------- Stopping server to update MP Config property. ------");
+       if (computedMetricsServer != null && computedMetricsServer.isStarted()) {
+           computedMetricsServer.stopServer("");
+       }
+
+       Log.info(c, testName, "------- Setting MP Config ENV variable : mp.metrics.appName=myserver ------");
+       computedMetricsServer.addEnvVar("MP_METRICS_APPNAME", "myserver");
+       
+       Log.info(c, testName, "------- Starting server after MP Config update. ------");
+       computedMetricsServer.startServer();
+       waitForSecurityPrerequisites(computedMetricsServer, 60000);
+       initialServerStart = false;
+       computedMetricsServer.setMarkToEndOfLog(computedMetricsServer.getMostRecentTraceFile());
+
+       Log.info(c, testName,"------- Hitting the /metrics endpoint for the first time to initialize the Servlet metrics ------");
+       getHttpsServlet("/metrics?scope=vendor", computedMetricsServer);
+
+       Log.info(c, testName, "------- Hitting the testREST application endpoint to initialize the REST metrics ------");
+       getHttpServlet("/testRESTApp/test/get", computedMetricsServer);
+
+       Log.info(c, testName, "------- Make sure all the expected metrics have the \"mp_app=myserver\" tag ------");
+       checkForExpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), expectedMetrics);
+       
+       Log.info(c, testName, "------- Stopping test application... ------");
+       computedMetricsServer.getApplicationMBean("testRESTApp").stop();
+       Assert.assertNotNull("CWWKZ0009I was not found, application was stopped.", computedMetricsServer.waitForStringInLog("CWWKZ0009I", 30000));
+       
+       Log.info(c, testName, "------- The REST and Servlet metrics for the stopped application should NOT be available. ------");
+       checkForExpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), ALWAYS_EXPECTED_COMPUTED_METRICS_WITH_APPNAME);
+       checkForUnexpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), unexpectedMetrics);
+   }
 
     private static void trustAll() throws Exception {
         try {
