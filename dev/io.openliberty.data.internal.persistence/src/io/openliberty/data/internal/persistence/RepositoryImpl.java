@@ -508,8 +508,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             && (next >= queryInfo.jpql.length() || !Character.isLetterOrDigit(queryInfo.jpql.charAt(next)))) {
                             paramName = name;
                             paramPositions.remove(p);
-                        } else if (p == paramPositions.size() - 1 && queryInfo.paramNames != null && !hasParamAnnotation) {
-                            queryInfo.paramNames = null; // did not find a named parameter, consider the query to use positional parameters
                         }
                     }
                 }
@@ -517,6 +515,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     if (queryInfo.paramNames == null)
                         queryInfo.paramNames = new ArrayList<>();
                     if (entityInfo.idClassAttributeAccessors != null && paramType.equals(entityInfo.idType))
+                        // TODO is this correct to do when @Query has a named parameter with type of the IdClass?
+                        // It seems like the JPQL would not be consistent.
                         for (int p = 1, numIdClassParams = entityInfo.idClassAttributeAccessors.size(); p <= numIdClassParams; p++) {
                             queryInfo.paramNames.add(new StringBuilder(paramName).append('_').append(p).toString());
                             if (p > 1) {
@@ -528,9 +528,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         queryInfo.paramNames.add(paramName);
                 }
                 queryInfo.paramCount++;
+
                 if (initialParamCount != 0)
                     throw new MappingException("Cannot mix positional and named parameters on repository method " +
                                                queryInfo.method.getDeclaringClass().getName() + '.' + queryInfo.method.getName()); // TODO NLS
+
+                int numParamNames = queryInfo.paramNames == null ? 0 : queryInfo.paramNames.size();
+                if (numParamNames > 0 && numParamNames != queryInfo.paramCount)
+                    if (hasParamAnnotation) {
+                        throw new MappingException("Cannot mix positional and named parameters on repository method " +
+                                                   queryInfo.method.getDeclaringClass().getName() + '.' + queryInfo.method.getName()); // TODO NLS
+                    } else { // we might have mistaken a literal value for a named parameter
+                        queryInfo.paramNames = null;
+                        queryInfo.paramCount -= queryInfo.paramAddedCount;
+                        queryInfo.paramAddedCount = 0;
+                    }
             }
         }
 
