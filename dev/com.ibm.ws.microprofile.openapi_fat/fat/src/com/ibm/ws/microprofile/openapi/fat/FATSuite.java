@@ -45,7 +45,8 @@ import componenttest.rules.repeater.RepeatTests;
     FilterConfigTest.class,
     ProxySupportTest.class,
     EndpointAvailabilityTest.class,
-    UICustomizationTest.class
+    UICustomizationTest.class,
+    OpenAPICorsTest.class
 })
 public class FATSuite {
     public static RepeatTests defaultRepeat(String serverName) {
