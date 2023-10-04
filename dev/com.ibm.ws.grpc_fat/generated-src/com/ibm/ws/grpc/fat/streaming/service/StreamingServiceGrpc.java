@@ -8,14 +8,14 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
  * </pre>
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.57.2)",
+    value = "by gRPC proto compiler (version 1.43.2)",
     comments = "Source: Streaming.proto")
 @io.grpc.stub.annotations.GrpcGenerated
 public final class StreamingServiceGrpc {
 
   private StreamingServiceGrpc() {}
 
-  public static final java.lang.String SERVICE_NAME = "streaming.StreamingService";
+  public static final String SERVICE_NAME = "streaming.StreamingService";
 
   // Static method descriptors that strictly reflect the proto.
   private static volatile io.grpc.MethodDescriptor<com.ibm.ws.grpc.fat.streaming.service.StreamRequest,
@@ -160,52 +160,62 @@ public final class StreamingServiceGrpc {
    * The streaming service definition.
    * </pre>
    */
-  public interface AsyncService {
+  public static abstract class StreamingServiceImplBase implements io.grpc.BindableService {
 
     /**
      */
-    default io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.streaming.service.StreamRequest> clientStream(
+    public io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.streaming.service.StreamRequest> clientStream(
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.streaming.service.StreamReply> responseObserver) {
       return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getClientStreamMethod(), responseObserver);
     }
 
     /**
      */
-    default void serverStream(com.ibm.ws.grpc.fat.streaming.service.StreamRequest request,
+    public void serverStream(com.ibm.ws.grpc.fat.streaming.service.StreamRequest request,
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.streaming.service.StreamReply> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getServerStreamMethod(), responseObserver);
     }
 
     /**
      */
-    default void hello(com.ibm.ws.grpc.fat.streaming.service.StreamRequest request,
+    public void hello(com.ibm.ws.grpc.fat.streaming.service.StreamRequest request,
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.streaming.service.StreamReply> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getHelloMethod(), responseObserver);
     }
-  }
-
-  /**
-   * Base class for the server implementation of the service StreamingService.
-   * <pre>
-   * The streaming service definition.
-   * </pre>
-   */
-  public static abstract class StreamingServiceImplBase
-      implements io.grpc.BindableService, AsyncService {
 
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
-      return StreamingServiceGrpc.bindService(this);
+      return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
+          .addMethod(
+            getClientStreamMethod(),
+            io.grpc.stub.ServerCalls.asyncClientStreamingCall(
+              new MethodHandlers<
+                com.ibm.ws.grpc.fat.streaming.service.StreamRequest,
+                com.ibm.ws.grpc.fat.streaming.service.StreamReply>(
+                  this, METHODID_CLIENT_STREAM)))
+          .addMethod(
+            getServerStreamMethod(),
+            io.grpc.stub.ServerCalls.asyncServerStreamingCall(
+              new MethodHandlers<
+                com.ibm.ws.grpc.fat.streaming.service.StreamRequest,
+                com.ibm.ws.grpc.fat.streaming.service.StreamReply>(
+                  this, METHODID_SERVER_STREAM)))
+          .addMethod(
+            getHelloMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                com.ibm.ws.grpc.fat.streaming.service.StreamRequest,
+                com.ibm.ws.grpc.fat.streaming.service.StreamReply>(
+                  this, METHODID_HELLO)))
+          .build();
     }
   }
 
   /**
-   * A stub to allow clients to do asynchronous rpc calls to service StreamingService.
    * <pre>
    * The streaming service definition.
    * </pre>
    */
-  public static final class StreamingServiceStub
-      extends io.grpc.stub.AbstractAsyncStub<StreamingServiceStub> {
+  public static final class StreamingServiceStub extends io.grpc.stub.AbstractAsyncStub<StreamingServiceStub> {
     private StreamingServiceStub(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
@@ -243,13 +253,11 @@ public final class StreamingServiceGrpc {
   }
 
   /**
-   * A stub to allow clients to do synchronous rpc calls to service StreamingService.
    * <pre>
    * The streaming service definition.
    * </pre>
    */
-  public static final class StreamingServiceBlockingStub
-      extends io.grpc.stub.AbstractBlockingStub<StreamingServiceBlockingStub> {
+  public static final class StreamingServiceBlockingStub extends io.grpc.stub.AbstractBlockingStub<StreamingServiceBlockingStub> {
     private StreamingServiceBlockingStub(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
@@ -278,13 +286,11 @@ public final class StreamingServiceGrpc {
   }
 
   /**
-   * A stub to allow clients to do ListenableFuture-style rpc calls to service StreamingService.
    * <pre>
    * The streaming service definition.
    * </pre>
    */
-  public static final class StreamingServiceFutureStub
-      extends io.grpc.stub.AbstractFutureStub<StreamingServiceFutureStub> {
+  public static final class StreamingServiceFutureStub extends io.grpc.stub.AbstractFutureStub<StreamingServiceFutureStub> {
     private StreamingServiceFutureStub(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
@@ -314,10 +320,10 @@ public final class StreamingServiceGrpc {
       io.grpc.stub.ServerCalls.ServerStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.ClientStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.BidiStreamingMethod<Req, Resp> {
-    private final AsyncService serviceImpl;
+    private final StreamingServiceImplBase serviceImpl;
     private final int methodId;
 
-    MethodHandlers(AsyncService serviceImpl, int methodId) {
+    MethodHandlers(StreamingServiceImplBase serviceImpl, int methodId) {
       this.serviceImpl = serviceImpl;
       this.methodId = methodId;
     }
@@ -353,32 +359,6 @@ public final class StreamingServiceGrpc {
     }
   }
 
-  public static final io.grpc.ServerServiceDefinition bindService(AsyncService service) {
-    return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
-        .addMethod(
-          getClientStreamMethod(),
-          io.grpc.stub.ServerCalls.asyncClientStreamingCall(
-            new MethodHandlers<
-              com.ibm.ws.grpc.fat.streaming.service.StreamRequest,
-              com.ibm.ws.grpc.fat.streaming.service.StreamReply>(
-                service, METHODID_CLIENT_STREAM)))
-        .addMethod(
-          getServerStreamMethod(),
-          io.grpc.stub.ServerCalls.asyncServerStreamingCall(
-            new MethodHandlers<
-              com.ibm.ws.grpc.fat.streaming.service.StreamRequest,
-              com.ibm.ws.grpc.fat.streaming.service.StreamReply>(
-                service, METHODID_SERVER_STREAM)))
-        .addMethod(
-          getHelloMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
-            new MethodHandlers<
-              com.ibm.ws.grpc.fat.streaming.service.StreamRequest,
-              com.ibm.ws.grpc.fat.streaming.service.StreamReply>(
-                service, METHODID_HELLO)))
-        .build();
-  }
-
   private static abstract class StreamingServiceBaseDescriptorSupplier
       implements io.grpc.protobuf.ProtoFileDescriptorSupplier, io.grpc.protobuf.ProtoServiceDescriptorSupplier {
     StreamingServiceBaseDescriptorSupplier() {}
@@ -402,9 +382,9 @@ public final class StreamingServiceGrpc {
   private static final class StreamingServiceMethodDescriptorSupplier
       extends StreamingServiceBaseDescriptorSupplier
       implements io.grpc.protobuf.ProtoMethodDescriptorSupplier {
-    private final java.lang.String methodName;
+    private final String methodName;
 
-    StreamingServiceMethodDescriptorSupplier(java.lang.String methodName) {
+    StreamingServiceMethodDescriptorSupplier(String methodName) {
       this.methodName = methodName;
     }
 

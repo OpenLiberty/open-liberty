@@ -30,10 +30,10 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
-import jakarta.data.repository.KeysetAwarePage;
-import jakarta.data.repository.Pageable;
-import jakarta.data.repository.Sort;
+import jakarta.data.page.KeysetAwarePage;
+import jakarta.data.page.Pageable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 

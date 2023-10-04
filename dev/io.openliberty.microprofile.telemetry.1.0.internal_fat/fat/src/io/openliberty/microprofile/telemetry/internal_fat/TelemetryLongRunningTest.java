@@ -31,6 +31,9 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.longrunning.LongRunningTask;
@@ -38,8 +41,6 @@ import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.In
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporterProvider;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
 
-import componenttest.rules.repeater.MicroProfileActions;
-import componenttest.rules.repeater.RepeatTests;
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class TelemetryLongRunningTest extends FATServletClient {
@@ -52,8 +53,9 @@ public class TelemetryLongRunningTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61);
-    
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
+                    .andWith(FeatureReplacementAction.BETA_OPTION().fullFATOnly());
+
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")

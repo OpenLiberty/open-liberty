@@ -13,11 +13,9 @@
 package io.openliberty.microprofile.metrics.internal.monitor.internal;
 
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.AbstractMap;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -32,10 +30,10 @@ import org.eclipse.microprofile.metrics.Tag;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import io.openliberty.microprofile.metrics50.helper.Constants;
 
-import io.openliberty.microprofile.metrics50.helper.Util;
 import io.openliberty.microprofile.metrics50.SharedMetricRegistries;
+import io.openliberty.microprofile.metrics50.helper.Constants;
+import io.openliberty.microprofile.metrics50.helper.Util;
 import io.openliberty.smallrye.metrics.adapters.SRMetricRegistryAdapter;
 
 public class MonitorMetrics {
@@ -260,6 +258,10 @@ public class MonitorMetrics {
             }
         }
         vendorMetricIDs.clear();
+    }
+    
+    public Set<MetricID> getVendorMetricIDSet() {
+    	return this.vendorMetricIDs;
     }
 
     protected Map.Entry<String, Double> resolveBaseUnitAndConversionFactor(String unit) {

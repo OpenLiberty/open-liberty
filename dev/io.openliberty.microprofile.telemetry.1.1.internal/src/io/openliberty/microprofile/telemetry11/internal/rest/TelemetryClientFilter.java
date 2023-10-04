@@ -20,7 +20,7 @@ import java.security.PrivilegedAction;
 import java.util.List;
 
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
-import io.openliberty.microprofile.telemetry.internal.common.OpenTelemetryInfo;
+import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTelemetryClientFilter;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
 import io.opentelemetry.context.Context;

@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.org.crac/resources/io/openliberty/crac/resources/CRaCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0551-600 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551=CWWKC0551E: La solicitud de punto de comprobaci\u00f3n del servidor ha fallado porque uno o varios recursos han emitido una excepci\u00f3n cuando se les ha notificado para la solicitud de punto de comprobaci\u00f3n.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.explanation=Una o varias implementaciones de recursos registrados han emitido una excepci\u00f3n cuando se les ha notificado una solicitud de punto de comprobaci\u00f3n.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.useraction=Inspeccione los registros para ver la excepci\u00f3n que ha hecho que falle la solicitud de punto de comprobaci\u00f3n.
+
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552=CWWKC0552E: El servidor no se ha podido restaurar porque uno o varios recursos han emitido una excepci\u00f3n cuando se les ha notificado para la restauraci\u00f3n del servidor desde el punto de comprobaci\u00f3n.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.explanation=Una o varias implementaciones de recursos registradas han generado una excepci\u00f3n cuando se les ha notificado para una restauraci\u00f3n de servidor desde punto de comprobaci\u00f3n.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.useraction=Inspeccione los registros para ver la excepci\u00f3n que ha hecho que la restauraci\u00f3n del servidor desde el punto de comprobaci\u00f3n falle.
+
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553=CWWKC0553E: Las solicitudes de punto de comprobaci\u00f3n no est\u00e1n admitidas en el servidor Liberty.
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.explanation=Las solicitudes de punto de comprobaci\u00f3n que utilizan las API org.crac no est\u00e1n admitidas en Liberty. 
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.useraction=Consulte la documentaci\u00f3n para obtener detalles de las operaciones de punto de comprobaci\u00f3n y restauraci\u00f3n para Liberty InstantOn.

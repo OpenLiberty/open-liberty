@@ -227,8 +227,19 @@ public class InMemorySpanExporter implements SpanExporter {
         Iterator<SpanData> iter = lSpans.listIterator();
         while (iter.hasNext()) {
             SpanData span = iter.next();
-            // Remove readspans and FAT servlet spans
-            if (span.getName().contains("readspans") || span.getName().matches("^/.*/test.*$")) {
+            /*
+             * Remove readspans and FAT servlet spans.
+             *
+             * REGEX breakdown:
+             * Match start of line.
+             * Match 0 or 1 of the string "GET " (note whitespace) using a non-capturing group.
+             * Match a literal "/"
+             * Match anything
+             * Match a literal /
+             * match the string "test"
+             * Match anything until the end of the line.
+             */
+            if (span.getName().contains("readspans") || span.getName().matches("^(?:GET )?/.*/test.*$")) {
                 iter.remove();
             }
         }

@@ -21,6 +21,7 @@ import java.time.Instant;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,6 +29,7 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.LTPA;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
@@ -39,6 +41,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -86,6 +89,8 @@ public class LTPAKeyRotationTests {
     private static final String VALIDATION_KEY3_PATH = "resources/security/validation3.keys";
     private static final String VALIDATION_KEYS_PATH = "resources/security/";
 
+    private static RemoteFile messagesLogFile = null;
+
     @Rule
     public final TestWatcher logger = new TestWatcher() {
         @Override
@@ -93,6 +98,12 @@ public class LTPAKeyRotationTests {
         public void starting(Description description) {
             Log.info(thisClass, description.getMethodName(), "\n@@@@@@@@@@@@@@@@@\nEntering test " + description.getMethodName() + "\n@@@@@@@@@@@@@@@@@");
         }
+
+        @Override
+        public void finished(Description description) {
+            Log.info(thisClass, description.getMethodName(), "\n@@@@@@@@@@@@@@@@@\nExiting test " + description.getMethodName() + "\n@@@@@@@@@@@@@@@@@");
+        }
+
     };
 
     @BeforeClass
@@ -103,14 +114,29 @@ public class LTPAKeyRotationTests {
         server.startServer(true);
 
         assertNotNull("Featurevalid did not report update was complete",
-                      server.waitForStringInLog("CWWKF0008I", 100000));
+                      server.waitForStringInLog("CWWKF0008I"));
         assertNotNull("Security service did not report it was ready",
-                      server.waitForStringInLog("CWWKS0008I", 100000));
+                      server.waitForStringInLog("CWWKS0008I"));
         assertNotNull("The application did not report is was started",
-                      server.waitForStringInLog("CWWKZ0001I", 100000));
+                      server.waitForStringInLog("CWWKZ0001I"));
+        // Wait for the LTPA configuration to be ready
+        assertNotNull("Expected LTPA configuration ready message not found in the log.",
+                      server.waitForStringInLog("CWWKS4105I"));
+
+        messagesLogFile = server.getDefaultLogFile();
+    }
+
+    @Before
+    public void moveLogMark() throws Exception {
+        server.setMarkToEndOfLog(messagesLogFile);
     }
 
     @After
+    public void after() throws Exception {
+        resetConnection();
+        resetServer();
+    }
+
     public void resetConnection() {
         flClient1.resetClientState();
         flClient2.resetClientState();
@@ -181,9 +207,6 @@ public class LTPAKeyRotationTests {
         assertNotNull("Expected SSO Cookie 2 is missing.", cookie2);
         assertFalse("The new cookie is the same as the old cookie. Cookie1 = " + cookie1 + ". Cookie2 = " + cookie2 + ".",
                     cookie1.equals(cookie2));
-
-        // Reset the server to the default configuration
-        resetServer();
     }
 
     /**
@@ -207,11 +230,15 @@ public class LTPAKeyRotationTests {
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testLTPAFileReplacement_newValidKey_monitorDirectory_true_monitorInterval_5() throws Exception {
+        // Configure the server
+        configureServer("true", "5", true);
+
         // Copy validation key file (validation2.keys) to the server
         copyFileToServerResourcesSecurityDir("alternate/validation2.keys");
 
-        // Configure the server
-        configureServer("true", "5", true);
+        // Wait for the LTPA configuration to be ready after the change
+        assertNotNull("Expected LTPA configuration ready message not found in the log.",
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -221,7 +248,7 @@ public class LTPAKeyRotationTests {
         assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
 
         // Replace the primary key with a different valid key
-        renameFileIfExists(VALIDATION_KEY2_PATH, DEFAULT_KEY_PATH, true);
+        renameFileIfExists(VALIDATION_KEY2_PATH, DEFAULT_KEY_PATH, false);
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
@@ -239,9 +266,6 @@ public class LTPAKeyRotationTests {
         assertNotNull("Expected SSO Cookie 2 is missing.", cookie2);
         assertFalse("The new cookie is the same as the old cookie. Cookie1 = " + cookie1 + ". Cookie2 = " + cookie2 + ".",
                     cookie1.equals(cookie2));
-
-        // Reset the server to the default configuration
-        resetServer();
     }
 
     /**
@@ -263,11 +287,15 @@ public class LTPAKeyRotationTests {
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testLTPAFileReplacement_newInvalidKey_monitorDirectory_true_monitorInterval_5() throws Exception {
+        // Configure the server
+        configureServer("true", "5", true);
+
         // Copy validation keys file(validation3.keys) to the server. This file has garbage values in the private key.
         copyFileToServerResourcesSecurityDir("alternate/validation3.keys");
 
-        // Configure the server
-        configureServer("true", "5", true);
+        // Check for the following exception message in the log
+        assertNotNull("Expected LTPA configuration error message not found in the log.",
+                      server.waitForStringInLog("CWWKS4106E", 5000));
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -285,9 +313,6 @@ public class LTPAKeyRotationTests {
 
         // Attempt to access the simple servlet again with the same ltpa cookie1 and assert it works
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
-
-        // Reset the server to the default configuration
-        resetServer();
     }
 
     /**
@@ -337,9 +362,6 @@ public class LTPAKeyRotationTests {
         String response3 = flClient2.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
         String cookie2 = flClient2.getCookieFromLastLogin();
         assertNotNull("Expected SSO Cookie 2 is missing.", cookie2);
-
-        // Reset the server to the default configuration
-        resetServer();
     }
 
     /**
@@ -363,11 +385,11 @@ public class LTPAKeyRotationTests {
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testLTPAFileReplacement_newValidKey_monitorDirectory_false_monitorInterval_0() throws Exception {
-        // Copy validation key file (validation2.keys) to the server
-        copyFileToServerResourcesSecurityDir("alternate/validation2.keys");
-
         // Configure the server
         configureServer("false", "0", true);
+
+        // Copy validation key file (validation2.keys) to the server
+        copyFileToServerResourcesSecurityDir("alternate/validation2.keys");
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -386,9 +408,6 @@ public class LTPAKeyRotationTests {
         String response3 = flClient2.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
         String cookie2 = flClient2.getCookieFromLastLogin();
         assertNotNull("Expected SSO Cookie 2 is missing.", cookie2);
-
-        // Reset the server to the default configuration
-        resetServer();
     }
 
     /**
@@ -446,9 +465,6 @@ public class LTPAKeyRotationTests {
         assertNotNull("Expected SSO Cookie 2 is missing.", cookie2);
         assertFalse("The new cookie is the same as the old cookie. Cookie1 = " + cookie1 + ". Cookie2 = " + cookie2 + ".",
                     cookie1.equals(cookie2));
-
-        // Reset the server to the default configuration
-        resetServer();
     }
 
     /**
@@ -472,11 +488,11 @@ public class LTPAKeyRotationTests {
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testLTPAFileReplacement_newValidKey_monitorDirectory_false_monitorInterval_5() throws Exception {
-        // Copy validation key file (validation2.keys) to the server
-        copyFileToServerResourcesSecurityDir("alternate/validation2.keys");
-
         // Configure the server
         configureServer("false", "5", true);
+
+        // Copy validation key file (validation2.keys) to the server
+        copyFileToServerResourcesSecurityDir("alternate/validation2.keys");
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -504,9 +520,6 @@ public class LTPAKeyRotationTests {
         assertNotNull("Expected SSO Cookie 2 is missing.", cookie2);
         assertFalse("The new cookie is the same as the old cookie. Cookie1 = " + cookie1 + ". Cookie2 = " + cookie2 + ".",
                     cookie1.equals(cookie2));
-
-        // Reset the server to the default configuration
-        resetServer();
     }
 
     /**
@@ -534,11 +547,7 @@ public class LTPAKeyRotationTests {
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testLTPAFileCreationDeletion_monitorDirectory_true_monitorInterval_0() throws Exception {
         // Configure the server
-        configureServer("true", "0", false);
-
-        // Wait for configuration error message to be logged
-        assertNotNull("Expected LTPA configuration error message not found in the log.",
-                      server.waitForStringInLog("CWWKS4113W", 5000));
+        configureServer("true", "0", true);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -560,9 +569,6 @@ public class LTPAKeyRotationTests {
         String response3 = flClient2.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
         String cookie2 = flClient2.getCookieFromLastLogin();
         assertNotNull("Expected SSO Cookie 2 is missing.", cookie2);
-
-        // Reset the server to the default configuration
-        resetServer();
     }
 
     /**
@@ -586,11 +592,15 @@ public class LTPAKeyRotationTests {
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testLTPAFileReplacement_newValidKey_monitorDirectory_true_monitorInterval_0() throws Exception {
+        // Configure the server
+        configureServer("true", "0", true, false);
+
+        // Wait for configuration error message to be logged
+        assertNotNull("Expected LTPA configuration error message not found in the log.",
+                      server.waitForStringInLog("CWWKS4113W", 5000));
+
         // Copy validation key file (validation2.keys) to the server
         copyFileToServerResourcesSecurityDir("alternate/validation2.keys");
-
-        // Configure the server
-        configureServer("true", "0", true);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -609,9 +619,6 @@ public class LTPAKeyRotationTests {
         String response3 = flClient2.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
         String cookie2 = flClient2.getCookieFromLastLogin();
         assertNotNull("Expected SSO Cookie 2 is missing.", cookie2);
-
-        // Reset the server to the default configuration
-        resetServer();
     }
 
     /**
@@ -729,9 +736,6 @@ public class LTPAKeyRotationTests {
 
         // Successful authentication to simple servlet
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
-
-        // Reset the server to the default configuration
-        resetServer();
     }
 
     /**
@@ -819,9 +823,6 @@ public class LTPAKeyRotationTests {
 
         // Successful authentication to simple servlet
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
-
-        // Reset the server to the default configuration
-        resetServer();
     }
 
     /**
@@ -918,9 +919,6 @@ public class LTPAKeyRotationTests {
 
         // Successful authentication to simple servlet
         String response3 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
-
-        // Reset the server to the default configuration
-        resetServer();
     }
 
     /**
@@ -995,9 +993,6 @@ public class LTPAKeyRotationTests {
         // Delete the validation2.keys element
         validationKeys.remove(validationKey);
         updateConfigDynamically(server, serverConfiguration);
-
-        // Reset the server to the default configuration
-        resetServer();
     }
 
     /**
@@ -1067,9 +1062,10 @@ public class LTPAKeyRotationTests {
         // Delete the validation2.keys element
         validationKeys.remove(validationKey);
         updateConfigDynamically(server, serverConfiguration);
+    }
 
-        // Reset the server to the default configuration
-        resetServer();
+    public void configureServer(String monitorDirectory, String monitorInterval, Boolean waitForLTPAConfigReadyMessage) throws Exception {
+        configureServer(monitorDirectory, monitorInterval, waitForLTPAConfigReadyMessage, true);
     }
 
     /**
@@ -1082,7 +1078,7 @@ public class LTPAKeyRotationTests {
      *
      * @throws Exception
      */
-    public void configureServer(String monitorDirectory, String monitorInterval, Boolean waitForLTPAConfigReadyMessage) throws Exception {
+    public void configureServer(String monitorDirectory, String monitorInterval, Boolean waitForLTPAConfigReadyMessage, boolean setLogMarkToEnd) throws Exception {
         // Get the server configuration
         ServerConfiguration serverConfiguration = server.getServerConfiguration();
         LTPA ltpa = serverConfiguration.getLTPA();
@@ -1106,6 +1102,9 @@ public class LTPAKeyRotationTests {
 
         // Assert that a default ltpa.keys file is generated
         assertFileWasCreated(DEFAULT_KEY_PATH);
+
+        if (setLogMarkToEnd)
+            server.setMarkToEndOfLog(messagesLogFile);
     }
 
     // Function to set the monitorDirectory to true or false
@@ -1208,14 +1207,16 @@ public class LTPAKeyRotationTests {
      */
     private static void renameFileIfExists(String filePath, String newFilePath, boolean checkFileIsGone) throws Exception {
         Log.info(thisClass, "renameFileIfExists", "\nfilepath: " + filePath + "\nnewFilePath: " + newFilePath);
-        if (fileExists(filePath, 2)) {
-            Log.info(thisClass, "renameFileIfExists", "file exists, renaming...");
+        server.setMarkToEndOfLog(server.getDefaultLogFile());
+        if (fileExists(newFilePath, 1)) {
+            LibertyFileManager.moveLibertyFile(server.getFileFromLibertyServerRoot(filePath), server.getFileFromLibertyServerRoot(newFilePath));
+        } else {
             server.renameLibertyServerRootFile(filePath, newFilePath);
-
-            // Double check to make sure the file is gone
-            if (checkFileIsGone && fileExists(filePath, 1))
-                throw new Exception("Unable to rename file: " + filePath);
         }
+
+        // Double check to make sure the file is gone
+        if (checkFileIsGone && fileExists(filePath, 1))
+            throw new Exception("Unable to rename file: " + filePath);
     }
 
     /**
@@ -1228,7 +1229,7 @@ public class LTPAKeyRotationTests {
      */
     private static void deleteFileIfExists(String filePath, boolean checkFileIsGone) throws Exception {
         Log.info(thisClass, "deleteFileIfExists", "filepath: " + filePath);
-        if (fileExists(filePath, 2)) {
+        if (fileExists(filePath, 1)) {
             Log.info(thisClass, "deleteFileIfExists", "file exists, deleting...");
             server.deleteFileFromLibertyServerRoot(filePath);
 
@@ -1288,12 +1289,15 @@ public class LTPAKeyRotationTests {
         int count = 0;
         do {
             // Sleep 2 seconds
-            Thread.sleep(2000);
+            if (count != 0) {
+                Thread.sleep(2000);
+                Log.info(thisClass, "fileExists", "waiting 2s...");
+            }
             try {
                 exists = server.getFileFromLibertyServerRoot(filePath).exists();
             } catch (Exception e) {
                 // The file does not exist if there's an exception
-                Log.info(thisClass, "fileExists", "The file does not exist yet, waiting 2s...");
+                Log.info(thisClass, "fileExists", "The file does not exist");
                 exists = false;
                 // We don't want to print the same exception over and over again... so we'll only print it one time.
                 if (!exceptionHasBeenPrinted) {
@@ -1330,7 +1334,11 @@ public class LTPAKeyRotationTests {
      *
      * @throws Exception
      */
-    private static void resetServer() throws Exception {
+    private void resetServer() throws Exception {
+        Log.info(thisClass, "resetServer", "entering");
+        //we need to put the base config back, otherwise the waits below will timeout on some tests
+        configureServer("true", "5", true);
+
         // Delete all ltpa keys files in the security directory
         deleteFileIfExists(DEFAULT_KEY_PATH, false);
         deleteFileIfExists(VALIDATION_KEY1_PATH, true);
@@ -1351,9 +1359,5 @@ public class LTPAKeyRotationTests {
             // Will not occur monitor interval is set to 0
             server.waitForStringInLog("CWWKS4105I", 5000);
         }
-
-        // Set the mark offset to the end of the default trace
-        server.setMarkToEndOfLog(server.getDefaultLogFile());
-        server.setMarkToEndOfLog(server.getMostRecentTraceFile());
     }
 }

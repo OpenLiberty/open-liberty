@@ -20,8 +20,6 @@
 		<feature>servlet-6.0</feature>
 		<feature>crac-1.4</feature>
 	</featureManager>
-
-	<springBootApplication location="io.openliberty.checkpoint.springboot.fat30.app-1.0.0.jar"/>
     
 	<include location="../fatTestPorts.xml" />
 </server>

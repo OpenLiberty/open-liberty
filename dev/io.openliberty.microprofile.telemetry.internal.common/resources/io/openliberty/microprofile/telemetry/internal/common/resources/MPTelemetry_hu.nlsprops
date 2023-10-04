@@ -13,7 +13,7 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
+# 
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
@@ -25,6 +25,7 @@
 # Message prefix block: CWMOT5000 - CWMOT5999
 #-----------------------------------------------------------------------------------------------------------------------------
 # Message prefix block for io.openliberty.microprofile.telemetry.common: CWMOT5000 - CWMOT5199
+# This was previously two files, so the message IDs used are not contiguous but should not be changed.
 
 CWMOT5100.tracing.is.disabled=CWMOT5100I: A MicroProfile Telemetry nyomk\u00f6vet\u00e9si szolg\u00e1ltat\u00e1s enged\u00e9lyezve van, de nincs be\u00e1ll\u00edtva a {0} alkalmaz\u00e1s nyomk\u00f6vet\u00e9s\u00e9nek el\u0151\u00e1ll\u00edt\u00e1s\u00e1ra.
 CWMOT5100.tracing.is.disabled.explanation=A MicroProfile Telemetria nyomk\u00f6vet\u00e9si szolg\u00e1ltat\u00e1st be kell \u00e1ll\u00edtani nyomk\u00f6vet\u00e9sek l\u00e9trehoz\u00e1s\u00e1hoz \u00e9s egy nyomk\u00f6vet\u00e9si rendszerbe val\u00f3 export\u00e1l\u00e1s\u00e1hoz.
@@ -37,3 +38,11 @@ CWMOT5000.cannot.get.globalopentelemetry.useraction=A CDI seg\u00edts\u00e9g\u00
 CWMOT5001.cannot.set.globalopentelemetry=CWMOT5001E: A GlobalOpenTelemetry objektum be\u00e1ll\u00edt\u00e1sa nem t\u00e1mogatott.
 CWMOT5001.cannot.set.globalopentelemetry.explanation=A GlobalOpenTelemetry oszt\u00e1ly nem t\u00e1mogatott, mert nincs glob\u00e1lis OpenTelemetry objektum. Ehelyett minden alkalmaz\u00e1snak CDI-t kell haszn\u00e1lnia az adott alkalmaz\u00e1shoz OpenTelemetry objektum besz\u00far\u00e1s\u00e1hoz.
 CWMOT5001.cannot.set.globalopentelemetry.useraction=Ne h\u00edvja a GlobalOpenTelemetry.get met\u00f3dust. Ha az alkalmaz\u00e1sk\u00f3dnak egy OpenTelemetry objektumot kell beszereznie, haszn\u00e1lja a CDI-t a besz\u00far\u00e1shoz.
+
+CWMOT5002.telemetry.error=CWMOT5002E: Bels\u0151 hiba t\u00f6rt\u00e9nt a MicroProfile telemetri\u00e1ban. A hiba: {0}
+CWMOT5002.telemetry.error.explanation=Hiba t\u00f6rt\u00e9nt, amely megakad\u00e1lyozta a MicroProfile telemetria norm\u00e1l m\u0171k\u00f6d\u00e9s\u00e9t.
+CWMOT5002.telemetry.error.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+
+CWMOT5003.factory.used.after.shutdown=CWMOT5003W: A(z) {0} alkalmaz\u00e1s megk\u00eds\u00e9relte megszerezni a MicroProfile telemetri\u00e1t az alkalmaz\u00e1s le\u00e1ll\u00edt\u00e1sa ut\u00e1n.
+CWMOT5003.factory.used.after.shutdown.explanation=CWMOT5003.factory.used.after.shutdown.explanation=After egy alkalmaz\u00e1s le\u00e1ll, a MicroProfile telemetria olyan objektumokat ad vissza, amelyek csendes m\u00f3dban nem hajtanak v\u00e9gre m\u0171veleteket. Ez a folyamat a v\u00e1rt telemetriai adatok hi\u00e1ny\u00e1hoz vezethet.
+CWMOT5003.factory.used.after.shutdown.useraction=Tekintse \u00e1t az alkalmaz\u00e1st, hogy mi\u00e9rt pr\u00f3b\u00e1lta meg le\u00e1ll\u00edtani a MicroProfile telemetri\u00e1t. A MicroProfile Telemetria haszn\u00e1lat\u00e1t aktiv\u00e1l\u00f3 m\u0171veletek k\u00f6z\u00e9 tartozik a @WithSpan annot\u00e1ci\u00f3val ell\u00e1tott met\u00f3dus megh\u00edv\u00e1sa vagy egy JAX-RS \u00fcgyf\u00e9l vagy MP REST \u00fcgyf\u00e9l k\u00e9r\u00e9se.

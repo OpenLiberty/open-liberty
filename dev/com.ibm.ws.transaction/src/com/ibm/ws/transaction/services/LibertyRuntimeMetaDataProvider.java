@@ -17,6 +17,7 @@ import com.ibm.tx.jta.embeddable.GlobalTransactionSettings;
 import com.ibm.tx.jta.embeddable.TransactionSettingsProvider;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  *
@@ -78,6 +79,7 @@ public class LibertyRuntimeMetaDataProvider implements RuntimeMetaDataProvider {
      * @see com.ibm.tx.config.RuntimeMetaDataProvider#isHeuristicHazardAccepted()
      */
     @Override
+    @Trivial
     public boolean isHeuristicHazardAccepted() {
         return _serverWideConfigProvider.isAcceptHeuristicHazard();
     }

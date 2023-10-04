@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -146,17 +146,21 @@ public class LocalLdapServer {
         String method = "stop";
         Log.entering(c, method);
         // Stop the ldap instance started.
-        Log.info(c, method, "Stopping the " + instanceName + " instance of Apache DS");
-        localLdapInstance.destroy();
-        int retry = 0;
-        while (localLdapInstance.isAlive() && retry < STOP_RETRY_COUNT) {
-            Log.info(c, method, instanceName + " instance of Apache DS is stopping via the proc.destroy() method.  Retry = " + retry);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        if (localLdapInstance != null) {
+            Log.info(c, method, "Stopping the " + instanceName + " instance of Apache DS");
+            localLdapInstance.destroy();
+            int retry = 0;
+            while (localLdapInstance.isAlive() && retry < STOP_RETRY_COUNT) {
+                Log.info(c, method, instanceName + " instance of Apache DS is stopping via the proc.destroy() method.  Retry = " + retry);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                retry++;
             }
-            retry++;
+        } else {
+            Log.info(c, method, "Nothing to stop - instance was null");
         }
         Log.exiting(c, method);
     }

@@ -12,14 +12,19 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt21.fat.sharedTests;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
+import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.mp.jwt.MPJwt21FatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwtFatConstants;
 import com.ibm.ws.security.fat.common.mp.jwt.sharedTests.MPJwt21MPConfigTests;
 import com.ibm.ws.security.fat.common.mp.jwt.utils.MP21ConfigSettings;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -33,11 +38,24 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class GenericEnvVarsAndSystemPropertiesTests extends MPJwt21MPConfigTests {
 
+    @ClassRule
+    public static RepeatTests rr = createRepeats();
+
     public static LibertyServer resourceServer;
 
     protected static int tokenAge = 0;
     protected static int clockSkew = 300;
     protected static String keyManagementKeyAlias = "";
+
+    public static RepeatTests createRepeats() {
+
+        if (RepeatTestFilter.getRepeatActionsAsString().contains(MPJwtFatConstants.MP_JWT_21)) {
+            return RepeatTests.withoutModification().andWith(new SecurityTestRepeatAction(mpConfigExtension));
+        } else {
+            return RepeatTests.withoutModification();
+        }
+
+    }
 
     public static void commonMpJwt21Setup(LibertyServer requestedServer, String config, int inTokenAge, int inClockSkew, String inKeyMgmtKeyAlias, MPConfigLocation where) throws Exception {
 

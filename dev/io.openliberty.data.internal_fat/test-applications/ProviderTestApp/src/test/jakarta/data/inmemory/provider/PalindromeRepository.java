@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import jakarta.data.repository.Limit;
+import jakarta.data.Limit;
 
 import test.jakarta.data.inmemory.web.Palindrome;
 import test.jakarta.data.inmemory.web.Palindromes;

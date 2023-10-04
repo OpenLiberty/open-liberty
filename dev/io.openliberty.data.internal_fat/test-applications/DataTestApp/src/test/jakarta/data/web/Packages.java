@@ -17,16 +17,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import jakarta.data.repository.KeysetAwarePage;
-import jakarta.data.repository.KeysetAwareSlice;
-import jakarta.data.repository.Limit;
+import jakarta.data.Limit;
+import jakarta.data.Sort;
+import jakarta.data.page.KeysetAwarePage;
+import jakarta.data.page.KeysetAwareSlice;
+import jakarta.data.page.Pageable;
 import jakarta.data.repository.OrderBy;
-import jakarta.data.repository.Pageable;
 import jakarta.data.repository.PageableRepository;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Sort;
 
 import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Delete;
@@ -46,9 +46,9 @@ public interface Packages extends PageableRepository<Package, Integer> {
 
     Package[] deleteByDescriptionEndsWith(String ending, Sort... sorts);
 
-    Optional<Integer> deleteFirst(Sort sort);
+    Optional<Integer> deleteFirstBy(Sort sort);
 
-    int[] deleteFirst2(Sort... sorts);
+    int[] deleteFirst2By(Sort... sorts);
 
     LinkedList<?> deleteFirst2ByHeightLessThan(float maxHeight, Sort... sorts);
 

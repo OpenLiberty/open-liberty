@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,8 @@ package com.ibm.ws.app.manager.springboot.container;
 import com.ibm.ws.app.manager.springboot.container.config.ServerConfiguration;
 import com.ibm.ws.app.manager.springboot.container.config.SpringConfiguration;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory;
+
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * Spring Boot configuration that configures a embedded container such as a
@@ -60,4 +62,9 @@ public interface SpringBootConfig {
      * @return Spring boot config id
      */
     String getId();
+
+    public static boolean isBeforeCheckpoint() {
+        CheckpointPhase phase = CheckpointPhase.getPhase();
+        return !phase.restored();
+    }
 }

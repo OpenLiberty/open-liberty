@@ -34,7 +34,14 @@ tested.features:\
         persistence-3.1,\
         pages-3.1,\
         servlet-6.0,\
-        xmlBinding-4.0
+        xmlBinding-4.0,\
+        persistencecontainer-3.2,\
+        noship-1.0,\
+        cdi-4.1,\
+        servlet-6.1,\
+        expressionlanguage-6.0,\
+        persistence-3.2,\
+        pages-4.0
 	
 test.project: true
 

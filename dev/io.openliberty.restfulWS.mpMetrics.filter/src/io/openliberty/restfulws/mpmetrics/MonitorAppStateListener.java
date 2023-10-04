@@ -19,6 +19,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 
+import io.openliberty.microprofile.metrics.internal.monitor.MonitorMetricsHandler;
 import io.openliberty.microprofile.metrics50.SharedMetricRegistries;
 import io.openliberty.restfulws.mpmetrics.RestfulWsMonitorFilter.RestMetricInfo;
 
@@ -28,7 +29,9 @@ public class MonitorAppStateListener implements ApplicationStateListener {
 
     static SharedMetricRegistries sharedMetricRegistries;
 
-    @Override
+	static MonitorMetricsHandler monitorMetricsHandler;
+
+	@Override
     public void applicationStarting(ApplicationInfo appInfo) {
         /*
          * When the application is starting we will create the application's metrics
@@ -61,16 +64,27 @@ public class MonitorAppStateListener implements ApplicationStateListener {
 
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
+        String appName = appInfo.getDeploymentName();
         /*
          * Allow the RestfulWsMonitorFilter instance to clean up when the application is
          * stopped.
          */
-        RestfulWsMonitorFilter.cleanApplication(appInfo.getDeploymentName());
+        RestfulWsMonitorFilter.cleanApplication(appName);
+
+        /*
+         * Clean up the computed REST metric, when the application is stopped.
+         */
+        monitorMetricsHandler.unregisterComputedRESTMetrics(appName);
     }
 
     @Reference
     public void setSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistryService) {
         sharedMetricRegistries = sharedMetricRegistryService;
+    }
+
+    @Reference
+    public void setMonitorMetricsHandler(MonitorMetricsHandler monitorMetricsHandlerService) {
+        monitorMetricsHandler = monitorMetricsHandlerService;
     }
 
 }

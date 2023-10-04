@@ -1,21 +1,21 @@
-package com.ibm.tx.jta.impl;
-
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.impl;
 
 import com.ibm.tx.TranConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.Transaction.JTA.Util;
 
 /**
@@ -88,12 +88,8 @@ public final class TxPrimaryKey {
     /**
      * Alternate mainline constructor.
      */
+    @Trivial
     TxPrimaryKey(byte[] keyData, int offset) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "<init>", new Object[] {
-                                                  keyData,
-                                                  new Integer(offset) });
-
         final byte[] _keyData = keyData;
 
         _epochNumber = Util.getIntFromBytes(_keyData, 8, 4);
@@ -101,8 +97,8 @@ public final class TxPrimaryKey {
         _timestamp = (((Util.getIntFromBytes(_keyData, 0, 4) & 0xFFFFFFFFL) << 32) |
                       (Util.getIntFromBytes(_keyData, 4, 4) & 0xFFFFFFFFL));
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "<init>", this);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "TxPrimaryKey({0}, {1}): {2}", keyData, offset, this);
     }
 
     /**
@@ -115,18 +111,15 @@ public final class TxPrimaryKey {
     /**
      * Alternate mainline constructor for distributed.
      */
+    @Trivial
     TxPrimaryKey(int sequence, int epoch) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "<init>", new Object[] {
-                                                  new Integer(sequence),
-                                                  new Integer(epoch) });
 
         _epochNumber = epoch;
         _sequenceNumber = sequence;
         _timestamp = System.currentTimeMillis();
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "<init>", this);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "TxPrimaryKey(" + sequence + ", {0}): {1}", epoch, this);
     }
 
     /**
@@ -170,9 +163,8 @@ public final class TxPrimaryKey {
      * };
      * </pre>
      */
+    @Trivial
     public byte[] toBytes() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "toBytes");
 
         final byte[] result = new byte[16];
 
@@ -183,8 +175,8 @@ public final class TxPrimaryKey {
         Util.setBytesFromInt(result, 8, 4, _epochNumber);
         Util.setBytesFromInt(result, 12, 4, _sequenceNumber);
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "toBytes", Util.toHexString(result));
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "toBytes: {0}", Util.toHexString(result));
         return result;
     }
 

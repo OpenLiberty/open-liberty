@@ -20,16 +20,22 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtContext;
 
+import com.ibm.oauth.core.api.error.OidcServerException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.security.oauth20.ProvidersService;
+import com.ibm.ws.security.oauth20.api.OAuth20Provider;
+import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 
@@ -42,9 +48,11 @@ public class BackchannelLogoutRequestHelper {
 
     private final PrivilegedAction<ExecutorService> getExecutorServiceAction = new GetExecutorServiceAction();
 
+    private final HttpServletRequest request;
     private final OidcServerConfig oidcServerConfig;
 
-    public BackchannelLogoutRequestHelper(OidcServerConfig oidcServerConfig) {
+    public BackchannelLogoutRequestHelper(HttpServletRequest request, OidcServerConfig oidcServerConfig) {
+        this.request = request;
         this.oidcServerConfig = oidcServerConfig;
     }
 
@@ -59,7 +67,7 @@ public class BackchannelLogoutRequestHelper {
         }
         Map<OidcBaseClient, Set<String>> logoutTokens = null;
         try {
-            LogoutTokenBuilder tokenBuilder = new LogoutTokenBuilder(oidcServerConfig);
+            LogoutTokenBuilder tokenBuilder = new LogoutTokenBuilder(request, oidcServerConfig);
             if (idTokenString == null || idTokenString.isEmpty()) {
                 logoutTokens = tokenBuilder.buildLogoutTokensFromUserName(user);
             } else {
@@ -85,7 +93,44 @@ public class BackchannelLogoutRequestHelper {
             }
             return false;
         }
+        if (!hasClientWithBackchannelLogoutUri()) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "No client has a back-channel logout uri set up, so back-channel logout will not be performed.");
+            }
+            return false;
+        }
         return true;
+    }
+
+    boolean hasClientWithBackchannelLogoutUri() {
+        String oauthProviderName = oidcServerConfig.getOauthProviderName();
+        OAuth20Provider provider = ProvidersService.getOAuth20Provider(oauthProviderName);
+        if (provider == null) {
+            return false;
+        }
+        return hasClientWithBackchannelLogoutUri(provider);
+    }
+
+    @FFDCIgnore(OidcServerException.class)
+    boolean hasClientWithBackchannelLogoutUri(OAuth20Provider provider) {
+        OidcOAuth20ClientProvider clientProvider = provider.getClientProvider();
+        if (clientProvider == null) {
+            return false;
+        }
+        try {
+            for (OidcBaseClient client : clientProvider.getAll()) {
+                String backchannelLogoutUri = client.getBackchannelLogoutUri();
+                if (backchannelLogoutUri != null && !backchannelLogoutUri.isEmpty()) {
+                    return true;
+                }
+            }
+        } catch (OidcServerException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "There was an issue getting all the OIDC OAuth20 clients.");
+            }
+            return false;
+        }
+        return false;
     }
 
     void sendBackchannelLogoutRequestsToClients(Map<OidcBaseClient, Set<String>> clientsAndLogoutTokens) {

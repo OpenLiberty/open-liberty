@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2021 IBM Corporation and others.
+ * Copyright (c) 2004, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,14 +12,12 @@
  *******************************************************************************/
 /*
  * Created on Jan 1, 2004
- *
- * To change the template for this generated file go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 package com.ibm.ws.webcontainer.osgi;
 
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +28,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.servlet.request.IRequest;
@@ -50,6 +49,7 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.webcontainer.RequestProcessor;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
+import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 
 /**
  * Thin shim over the base webcontainer VirtualHost to satisfy the HttpContainer
@@ -60,6 +60,8 @@ import com.ibm.wsspi.webcontainer.WCCustomProperties;
  */
 public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost implements HttpContainer {
     private static final TraceComponent tc = Tr.register(DynamicVirtualHost.class, WebContainerConstants.TR_GROUP, WebContainerConstants.NLS_PROPS);
+    private static final TraceNLS nls = TraceNLS.getTraceNLS(DynamicVirtualHost.class, "com.ibm.ws.webcontainer.resources.Messages");
+
 
 // logger is defined in com.ibm.ws.webcontainer.VirtualHost
 //  protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.ws.webcontainer.osgi");
@@ -126,8 +128,16 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
                     WebApp originalWebApp = (WebApp) list.get(0);
                     originalName = originalWebApp.getWebAppName();
                 }
-                logger.logp(Level.SEVERE, CLASS_NAME, "addWebApplication", "context.root.already.in.use", new Object[] { displayName, contextRoot, originalName, displayName });
-                throw new WebAppNotLoadedException("Context root " + contextRoot + " is already bound. Cannot start application " + displayName);
+               
+                //Use container's attribute to skip the stopModule.         
+                WebContainerRequestState reqState = WebContainerRequestState.getInstance(true);
+                reqState.setAttribute("com.ibm.ws.webcontainer.contextRootAlreadyInUse", true); 
+
+
+                String s = MessageFormat.format(nls.getString("context.root.already.in.use"), new Object[] { displayName, contextRoot, originalName, displayName });
+                logger.logp(Level.SEVERE, CLASS_NAME, "addWebApplication", s);
+
+                throw new WebAppNotLoadedException(s); 
                 // end 296368 Nested exceptions lost for problems during application
                 // startup WAS.webcontainer
             }

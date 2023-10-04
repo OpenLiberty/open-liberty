@@ -140,7 +140,7 @@ public class LTPAConfigurationImplTest {
                 exactly(numberOfInvocations).of(locateService).resolveResource(DEFAULT_CONFIG_LOCATION);
                 will(returnValue(keysFileInServerConfig));
 
-                exactly(numberOfInvocations).of(keysFileInServerConfig).getParent();
+                exactly(numberOfInvocations * 2).of(keysFileInServerConfig).getParent();
                 will(returnValue(parentResource));
 
                 exactly(numberOfInvocations).of(parentResource).toRepositoryPath();
@@ -239,7 +239,7 @@ public class LTPAConfigurationImplTest {
                 one(locateService).resolveResource(PATH_TO_ANOTHER_FILE);
                 will(returnValue(keysFileInServerConfig));
 
-                one(keysFileInServerConfig).getParent();
+                exactly(2).of(keysFileInServerConfig).getParent();
                 will(returnValue(parentResource));
 
                 one(parentResource).toRepositoryPath();
@@ -478,7 +478,7 @@ public class LTPAConfigurationImplTest {
                 one(locateService).resolveResource(RESOLVED_DEFAULT_OUTPUT_LOCATION);
                 will(returnValue(keysFileInServerConfig));
 
-                one(keysFileInServerConfig).getParent();
+                exactly(2).of(keysFileInServerConfig).getParent();
                 will(returnValue(parentResource));
 
                 one(parentResource).toRepositoryPath();
@@ -507,7 +507,7 @@ public class LTPAConfigurationImplTest {
                 one(locateService).resolveResource(RESOLVED_DEFAULT_OUTPUT_LOCATION);
                 will(returnValue(keysFileInServerConfig));
 
-                one(keysFileInServerConfig).getParent();
+                exactly(2).of(keysFileInServerConfig).getParent();
                 will(returnValue(parentResource));
 
                 one(parentResource).toRepositoryPath();

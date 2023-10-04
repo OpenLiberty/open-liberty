@@ -96,6 +96,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
+import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 import com.ibm.wsspi.webcontainer.cache.CacheManager;
 import com.ibm.wsspi.webcontainer.extension.ExtensionFactory;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
@@ -1018,9 +1019,18 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "startModule: " + webModule.getName() + "; " + e);
             }
-            
-            //PI58875
-            this.stopModule(moduleInfo);
+           
+            //Issue 25855
+            WebContainerRequestState reqState = WebContainerRequestState.getInstance(false);
+            if (reqState != null && reqState.getAttribute("com.ibm.ws.webcontainer.contextRootAlreadyInUse") != null) {
+                reqState.removeAttribute("com.ibm.ws.webcontainer.contextRootAlreadyInUse"); 
+                this.stopModule(moduleInfo, false);
+            }
+            else {
+                //PI58875
+                this.stopModule(moduleInfo);
+            }
+
             throw new StateChangeException(e);
         } finally {
             starting = modulesStarting.decrementAndGet();
@@ -1209,6 +1219,14 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
      * This will stop a web module in the web container
      */
     public void stopModule(ExtendedModuleInfo moduleInfo) {
+        stopModule(moduleInfo, true); 
+    }
+    
+    /*
+     * issue 25855, removeContextRoot = false only when there is a duplicated context root in multiple apps.  
+     * There should be SRVE0164E in that case. 
+    */
+    private void stopModule(ExtendedModuleInfo moduleInfo, boolean removeContextRoot) {
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "stopModule()",((WebModuleInfo)moduleInfo).getName());
@@ -1225,14 +1243,21 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
             }
             
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "stopModule: " + webModule.getName() + " " + webModule.getContextRoot());
+                Tr.debug(tc, "stopModule: " + webModule.getName() + " " + webModule.getContextRoot() + " , removeContextRoot [" +removeContextRoot+ "]");
             }
 
-            removeContextRootRequirement(dMod);
-            removeModule(dMod);
+            /*
+             * 25855, since startModule never succeeds adding any contextRoot or start a module, there is no need
+             * to remove the context root or cleanup the module
+             * 
+             * Majority/normal operation (i.e shutdown/stop/dynamic reload...) should go into this block
+             */
+            if (removeContextRoot) {
+                removeContextRootRequirement(dMod);
+                removeModule(dMod);
+                this.vhostManager.purgeHost(dMod.getVirtualHostName());
+            }
             
-            this.vhostManager.purgeHost(dMod.getVirtualHostName());
-
             WebModuleMetaData wmmd = (WebModuleMetaData) ((ExtendedModuleInfo)webModule).getMetaData();
             
             deregisterMBeans((WebModuleMetaDataImpl) wmmd);

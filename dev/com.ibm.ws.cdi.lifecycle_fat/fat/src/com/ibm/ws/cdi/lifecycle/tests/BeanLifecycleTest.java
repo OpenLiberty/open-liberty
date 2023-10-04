@@ -31,7 +31,6 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -53,10 +52,7 @@ public class BeanLifecycleTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME,
-                                                         EERepeatActions.EE10,
-                                                         EERepeatActions.EE9,
-                                                         EERepeatActions.EE7);
+    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
 
     /*
      * Response one - the first hit on the servlet - this occurs after sending the application started method from application two.

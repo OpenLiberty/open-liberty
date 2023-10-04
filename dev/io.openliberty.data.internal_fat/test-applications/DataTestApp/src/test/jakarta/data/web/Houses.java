@@ -17,9 +17,9 @@ import java.util.Optional;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
+import jakarta.data.Sort;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Sort;
 
 /**
  * Repository for operations on the unannotated House entity,
@@ -28,6 +28,8 @@ import jakarta.data.repository.Sort;
 @Repository
 public interface Houses {
     long deleteAll();
+
+    int deleteBasedOnGarage(Garage.Type garage_type, int garage_door_height);
 
     long deleteById(String parcel);
 
@@ -51,6 +53,12 @@ public interface Houses {
 
     @OrderBy("area")
     DoubleStream findPurchasePriceByLotSizeGreaterThan(float minLotSize);
+
+    List<House> findWithGarageDoorDimensions(int garage_door_width, int garage_door_height);
+
+    void insert(House h);
+
+    Optional<House> remove(String parcelId);
 
     List<House> save(House... h);
 

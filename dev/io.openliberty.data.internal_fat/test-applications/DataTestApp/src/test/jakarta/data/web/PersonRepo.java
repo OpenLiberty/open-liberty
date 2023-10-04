@@ -77,4 +77,8 @@ public interface PersonRepo {
     @Update(attr = "firstName")
     @Transactional(TxType.NOT_SUPPORTED)
     boolean setFirstNameWithCurrentTransactionSuspended(Long ssn, String newFirstName);
+
+    boolean updateOne(Person person);
+
+    long updateSome(Person... people);
 }

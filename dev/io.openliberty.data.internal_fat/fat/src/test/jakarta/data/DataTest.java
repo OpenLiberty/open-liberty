@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data;
 
+import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -68,6 +69,8 @@ public class DataTest extends FATServletClient {
 
         JavaArchive providerJar = ShrinkWrap.create(JavaArchive.class, "palindrome-data-provider.jar")
                         .addPackage("test.jakarta.data.inmemory.provider")
+                        .addAsServiceProvider(BuildCompatibleExtension.class.getName(),
+                                              "test.jakarta.data.inmemory.provider.CompositeBuildCompatibleExtension")
                         .addAsServiceProvider(Extension.class.getName(),
                                               "test.jakarta.data.inmemory.provider.PalindromeExtension");
 

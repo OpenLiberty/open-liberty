@@ -42,7 +42,12 @@ tested.features:\
         enterprisebeanshome-4.0,\
         xmlbinding-3.0,\
         xmlbinding-4.0,\
-        enterprisebeanspersistenttimer-4.0
+        enterprisebeanspersistenttimer-4.0,\
+        expressionlanguage-6.0,\
+        faces-5.0,\
+        noship-1.0,\
+        cdi-4.1,\
+        servlet-6.1
         
 fat.project: true
 

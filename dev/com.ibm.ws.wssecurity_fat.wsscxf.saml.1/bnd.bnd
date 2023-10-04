@@ -88,4 +88,6 @@ tested.features:\
   com.ibm.ws.org.apache.wss4j.ws.security.stax;version=latest,\
   com.ibm.ws.org.apache.wss4j.ws.security.web;version=latest,\
   com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
-  com.ibm.ws.org.apache.directory.server;version=latest
+  com.ibm.ws.org.apache.directory.server;version=latest,\
+  com.ibm.ws.com.unboundid;version=latest,\
+  com.unboundid:unboundid-ldapsdk;version=latest

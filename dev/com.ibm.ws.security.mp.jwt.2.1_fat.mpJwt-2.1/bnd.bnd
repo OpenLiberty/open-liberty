@@ -13,7 +13,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-tested.features: expressionlanguage-5.0, appsecurity-5.0, pages-3.1, servlet-6.0, restfulwsclient-3.1, restfulws-3.1
+tested.features: expressionlanguage-5.0, appsecurity-5.0, pages-3.1, servlet-6.0, restfulwsclient-3.1, restfulws-3.1, mpConfig-3.1
 
 src: \
     fat/src    

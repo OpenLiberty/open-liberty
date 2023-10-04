@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2020, 2022 IBM Corporation and others.
+    Copyright (c) 2020, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -60,12 +60,14 @@
 		ws-security.password="security"
 		ws-security.username="user1"
 	>
-        <!-- 2/2021 EE8 Callbackhandler -->
 
 		<!-- **Do not need the private key password in Symmetric tests ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"> -->
 		<!-- **Do not need Signature properties in Symmetric. But put back for 
 			EndorsingSupportingToken -->
+
+                 <!-- issue 30353 -->
 		<signatureProperties
+                        signatureAlgorithm="sha256"
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
 			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client"
 			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefault"
@@ -82,11 +84,13 @@
 		id="default"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
 	>
-         <!-- 2/2021 EE8 Callbackhandler -->
 
 		<!-- **Do not need Signature properties in Symmetric. But put back for 
 			EndorsingSupportingToken -->
+
+                 <!-- issue 30353 -->
 		<signatureProperties
+                        signatureAlgorithm="sha256"
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
 			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server"
 			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefaultCert"

@@ -15,7 +15,15 @@
         <feature>appSecurity-5.0</feature>
     </featureManager>
 
-    <include location="../fatTestPorts.xml" />
+    <include location="../fatTestCommon.xml"/>
+
+    <!-- HTTP port disabled so that redirects always go to HTTPS port -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="-1"
+                  httpsPort="${bvt.prop.HTTP_default.secure}"/>
+
+    <tcpOptions id="defaultTCPOptions" portOpenRetries="60"/>
 
     <keyStore password="testpass" />
 

@@ -13,7 +13,7 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
+# 
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
@@ -25,6 +25,7 @@
 # Message prefix block: CWMOT5000 - CWMOT5999
 #-----------------------------------------------------------------------------------------------------------------------------
 # Message prefix block for io.openliberty.microprofile.telemetry.common: CWMOT5000 - CWMOT5199
+# This was previously two files, so the message IDs used are not contiguous but should not be changed.
 
 CWMOT5100.tracing.is.disabled=CWMOT5100I: La funzione di traccia della telemetria MicroProfile \u00e8 abilitata, ma non configurata per generare tracce per l'applicazione {0}.
 CWMOT5100.tracing.is.disabled.explanation=La funzione di traccia della telemetria MicroProfile deve essere configurata per creare tracce ed esportarle in un sistema di traccia.
@@ -37,3 +38,11 @@ CWMOT5000.cannot.get.globalopentelemetry.useraction=Utilizzare CDI per inserire 
 CWMOT5001.cannot.set.globalopentelemetry=CWMOT5001E: L'impostazione dell'oggetto GlobalOpenTelemetry non \u00e8 supportata.
 CWMOT5001.cannot.set.globalopentelemetry.explanation=La classe GlobalOpenTelemetry non \u00e8 supportata, poich\u00e9 non esiste alcun oggetto OpenTelemetry globale. Invece, ogni applicazione deve utilizzare CDI per inserire l'oggetto OpenTelemetry relativo a quell'applicazione.
 CWMOT5001.cannot.set.globalopentelemetry.useraction=Non richiamare il metodo GlobalOpenTelemetry.get. Laddove il codice dell'applicazione debba ottenere un oggetto OpenTelemetry, utilizzare CDI per l'inserimento.
+
+CWMOT5002.telemetry.error=CWMOT5002E: Si \u00e8 verificato un errore interno nella telemetria MicroProfile. L'errore \u00e8: {0}.
+CWMOT5002.telemetry.error.explanation=Si \u00e8 verificato un errore che ha impedito il normale funzionamento della telemetria MicroProfile.
+CWMOT5002.telemetry.error.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.
+
+CWMOT5003.factory.used.after.shutdown=CWMOT5003W: L'applicazione {0} ha tentato di acquisire la telemetria MicroProfile dopo la chiusura dell'applicazione.
+CWMOT5003.factory.used.after.shutdown.explanation=CWMOT5003.factory.used.after.shutdown.explanation=Dopo la chiusura di un'applicazione, la telemetria MicroProfile restituisce oggetti che eseguono in modalit\u00e0 non presidiata azioni no-op, quando vengono richiamati. Questo processo potrebbe portare all'assenza di dati di telemetria previsti.
+CWMOT5003.factory.used.after.shutdown.useraction=Esaminare l'applicazione per capire perch\u00e9 ha tentato di utilizzare la telemetria MicroProfile dopo la chiusura. Le azioni che possono attivare l'utilizzo della telemetria MicroProfile includono il richiamo di un metodo con annotazione @WithSpan o l'esecuzione di una richiesta con un client JAX-RS o un client Rest MP.

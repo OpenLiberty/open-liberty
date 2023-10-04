@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
@@ -90,6 +91,8 @@ public interface Products {
 
     void save(Product p);
 
+    Product[] saveMultiple(Product... p);
+
     @Filter(by = "pk")
     @Filter(by = "version")
     @Update(attr = "price")
@@ -108,4 +111,8 @@ public interface Products {
     @Update(attr = "price", op = Operation.Divide)
     @Update(attr = "version", op = Operation.Subtract, value = "1")
     long undoPriceIncrease(Iterable<UUID> productIds, float divisor);
+
+    Boolean update(Product product);
+
+    Long update(Stream<Product> products);
 }

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import jakarta.data.repository.Streamable;
+import jakarta.data.Streamable;
 
 /**
  * Enables Streamable to be used as a return type for repository methods.

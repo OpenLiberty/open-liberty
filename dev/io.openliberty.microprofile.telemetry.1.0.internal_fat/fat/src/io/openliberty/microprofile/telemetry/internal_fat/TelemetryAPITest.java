@@ -11,7 +11,6 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -25,6 +24,9 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.api.BaggageAPIServlet;
@@ -32,8 +34,6 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.api.CommonSDKServ
 import io.openliberty.microprofile.telemetry.internal_fat.apps.api.ContextAPIServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.api.TraceAPIServlet;
 
-import componenttest.rules.repeater.MicroProfileActions;
-import componenttest.rules.repeater.RepeatTests;
 /**
  * Test use of the Open Telemetry APIs:
  *
@@ -61,8 +61,9 @@ public class TelemetryAPITest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61);
-    
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
+                    .andWith(FeatureReplacementAction.BETA_OPTION().fullFATOnly());
+
     @BeforeClass
     public static void setup() throws Exception {
 
@@ -79,6 +80,6 @@ public class TelemetryAPITest extends FATServletClient {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer("CWMOT5100I"); 
+        server.stopServer("CWMOT5100I");
     }
 }

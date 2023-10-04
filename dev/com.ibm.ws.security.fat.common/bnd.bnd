@@ -68,7 +68,9 @@ generate.replacement: true
 	org.glassfish:javax.json;version=1.0,\
 	com.ibm.ws.org.jose4j;version=latest,\
 	com.ibm.json4j;version=latest,\
-	org.bitbucket.b_c.jose4j
+	org.bitbucket.b_c.jose4j,\
+	com.unboundid:unboundid-ldapsdk;version=latest,\
+    com.ibm.ws.com.unboundid;version=latest
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
     com.ibm.ws.junit.extensions;version=latest, \

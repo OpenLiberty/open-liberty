@@ -45,6 +45,7 @@ import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.ws.threading.PolicyTaskFuture;
 import com.ibm.ws.threading.StartTimeoutException;
+import com.ibm.ws.threading.VirtualThreadOps;
 import com.ibm.ws.threading.internal.PolicyTaskFutureImpl.InvokeAnyLatch;
 
 /**
@@ -145,6 +146,11 @@ public class PolicyExecutorImpl implements PolicyExecutor {
      * Policy executor state, which transitions in one direction only. See constants for possible states.
      */
     private final AtomicReference<State> state = new AtomicReference<State>(State.ACTIVE);
+
+    /**
+     * Operations related to virtual threads that are only available on Java 21+.
+     */
+    private final VirtualThreadOps virtualThreadOps;
 
     /**
      * Counter of tasks for which we didn't submit a GlobalPoolTask in order to honor maxConcurrency.
@@ -253,20 +259,22 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     /**
      * This constructor is used by PolicyExecutorProvider.
      *
-     * @param globalExecutor  the Liberty global executor, which was obtained by the PolicyExecutorProvider via declarative services.
-     * @param identifier      unique identifier for this instance, to be used for monitoring and problem determination.
-     * @param owner           application that owns the policy executor instance. Null if not owned by a single application.
-     * @param policyExecutors list of policy executor instances created by the PolicyExecutorProvider.
-     *                            Each instance is responsible for adding and removing itself from the list per its life cycle.
+     * @param globalExecutor   the Liberty global executor, which was obtained by the PolicyExecutorProvider via declarative services.
+     * @param identifier       unique identifier for this instance, to be used for monitoring and problem determination.
+     * @param owner            application that owns the policy executor instance. Null if not owned by a single application.
+     * @param policyExecutors  list of policy executor instances created by the PolicyExecutorProvider.
+     *                             Each instance is responsible for adding and removing itself from the list per its life cycle.
+     * @param virtualThreadOps virtual thread operations that are only available on Java 21+.
      * @throws IllegalStateException if an instance with the specified unique identifier already exists and has not been shut down.
      * @throws NullPointerException  if the specified identifier is null
      */
     public PolicyExecutorImpl(ExecutorServiceImpl globalExecutor, String identifier, String owner,
-                              ConcurrentHashMap<String, PolicyExecutorImpl> policyExecutors) {
+                              ConcurrentHashMap<String, PolicyExecutorImpl> policyExecutors, VirtualThreadOps virtualThreadOps) {
         this.globalExecutor = globalExecutor;
         this.identifier = identifier;
         this.owner = owner;
         this.policyExecutors = policyExecutors;
+        this.virtualThreadOps = virtualThreadOps;
 
         maxConcurrencyConstraint.release(maxConcurrency = Integer.MAX_VALUE);
         maxQueueSizeConstraint.release(maxQueueSize = Integer.MAX_VALUE);

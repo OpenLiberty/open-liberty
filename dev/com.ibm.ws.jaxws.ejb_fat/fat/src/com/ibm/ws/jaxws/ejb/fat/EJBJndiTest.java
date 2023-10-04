@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -73,7 +73,9 @@ public class EJBJndiTest {
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, ejbjndiwebejbwar + ".war").addPackage("com.ibm.ws.jaxws.ejbjndi.webejb");
         ShrinkHelper.addDirectory(war2, "test-applications/EJBJndiWebEJB/resources/");
 
-        JavaArchive jar2 = ShrinkHelper.buildJavaArchive(ejbjndicommon + ".jar", "com.ibm.ws.jaxws.ejbjndi.*");
+        JavaArchive jar2 = ShrinkHelper.buildJavaArchive(ejbjndicommon + ".jar", "com.ibm.ws.jaxws.ejbjndi.ejb", "com.ibm.ws.jaxws.ejbjndi.common",
+                                                         "com.ibm.ws.jaxws.ejbjndi.webejb", "com.ibm.ws.jaxws.ejbjndi.ejb.client", "com.ibm.ws.jaxws.ejbjndi.webejb.client",
+                                                         "com.ibm.ws.jaxws.ejbjndi.web.client");
         ShrinkHelper.addDirectory(jar2, "test-applications/EJBJndiCommon/resources/");
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, ejbjndiear + ".ear").addAsModule(jar).addAsModule(war).addAsModule(war2).addAsLibraries(jar2);

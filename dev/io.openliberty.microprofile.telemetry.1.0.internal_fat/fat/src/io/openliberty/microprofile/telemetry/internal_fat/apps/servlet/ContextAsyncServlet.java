@@ -52,12 +52,12 @@ public class ContextAsyncServlet extends HttpServlet {
                     Thread.sleep(2000); // 2 second sleep
                     out.println("ContextAsyncServlet");
                     out.flush();
-                    asyncContext.complete();
                 } catch (IOException | InterruptedException e) {
                     throw new RuntimeException(e);
                 } finally {
                     span.end();
                 }
+                asyncContext.complete();
             }
         };
 

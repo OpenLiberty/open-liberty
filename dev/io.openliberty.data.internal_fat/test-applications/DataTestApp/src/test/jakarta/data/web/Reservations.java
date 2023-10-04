@@ -28,13 +28,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import jakarta.data.repository.CrudRepository;
-import jakarta.data.repository.Limit;
+import jakarta.data.Limit;
+import jakarta.data.Sort;
+import jakarta.data.page.Page;
+import jakarta.data.page.Pageable;
+import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.OrderBy;
-import jakarta.data.repository.Page;
-import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Sort;
 
 import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Filter;
@@ -45,7 +45,7 @@ import io.openliberty.data.repository.Select;
  * Uses the Repository interface that is copied from Jakarta NoSQL
  */
 @Repository
-public interface Reservations extends CrudRepository<Reservation, Long> {
+public interface Reservations extends BasicRepository<Reservation, Long> {
     boolean deleteByHostIn(List<String> hosts);
 
     long deleteByHostNot(String host);

@@ -63,6 +63,7 @@ public class EL60ArrayLengthTestServlet extends FATServlet {
         int arrayLength;
         int expectedLength = 0;
 
+        elp.eval("arrayBean.setTestArray([].toArray())");
         arrayLength = elp.eval("arrayBean.getTestArray().length");
         assertTrue("The testArray length was: " + arrayLength + " but was expected to be: " + expectedLength, arrayLength == expectedLength);
     }

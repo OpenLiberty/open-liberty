@@ -31,6 +31,7 @@ import com.ibm.tx.jta.XAResourceFactory;
 import com.ibm.tx.jta.XAResourceNotAvailableException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.Transaction.JTA.JTAResource;
 import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.JTA.XAReturnCodeHelper;
@@ -798,6 +799,7 @@ public class XARecoveryData extends PartnerLogData {
         return _recoveryClassLoader;
     }
 
+    @Trivial
     public boolean supportsIsSameRM() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "supportsIsSameRM: {0}", _supportsIsSameRM);

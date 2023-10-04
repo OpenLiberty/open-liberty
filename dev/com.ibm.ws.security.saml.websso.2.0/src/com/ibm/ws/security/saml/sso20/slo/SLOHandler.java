@@ -158,16 +158,23 @@ public class SLOHandler implements SsoHandler {
         //@AV999-092821
         HttpRequestInfo httpRequestInfo = msgCtx.getCachedRequestInfo();
         String redirectAfterSPLogout = null;
+        String redirectPageAfterSPLogout = null;
         if (httpRequestInfo != null) {
             redirectAfterSPLogout = httpRequestInfo.getRedirectAfterSPLogout();
+            redirectPageAfterSPLogout = httpRequestInfo.getRedirectPageAfterSPLogout();
             if (redirectAfterSPLogout != null) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "SP Initiated SLO Request's Response, Request has OIDC END SESSION REDIRECT set : " + redirectAfterSPLogout);
+                    Tr.debug(tc, "SP Initiated SLO Request's Response, Request has OIDC END SESSION or LOGOUT REDIRECT URL set to : " + redirectAfterSPLogout);
                 }      
                 response.sendRedirect(redirectAfterSPLogout);
+            } else if (redirectPageAfterSPLogout != null) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "SP Initiated SLO Request's Response, Request has OIDC LOGOUT default page");
+                }  
+                response.getOutputStream().print(redirectPageAfterSPLogout);
             }
         }
-        if (redirectAfterSPLogout == null) {
+        if (redirectAfterSPLogout == null && redirectPageAfterSPLogout == null) {
             SLOPostLogoutHandler postLogoutHandler = new SLOPostLogoutHandler(request, ssoService.getConfig(), msgCtx);
             postLogoutHandler.sendToPostLogoutPage(response);
         }

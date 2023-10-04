@@ -159,7 +159,7 @@ compileJava {
   options.fork = true
 }
 
-if (!parseBoolean(bnd.get('instrument.disabled', 'false'))) {
+if (!bnd.project.isNoBundles() && !parseBoolean(bnd.get('instrument.disabled', 'false'))) {
   task instrument {
     dependsOn compileJava
     inputs.files { rasInstrumentationInputFiles() }

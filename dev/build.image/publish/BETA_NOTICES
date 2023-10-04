@@ -12,7 +12,8 @@ BSD-3-CLAUSE
 BSD-EQUIVALENT  
 CDDL V1  
 CPL  
-EPL V2  
+EPL V2
+GPL-2.0-WITH-CLASSPATH-EXCEPTION  
 LGPL V2.1 
 MIT
 
@@ -789,6 +790,26 @@ ORG.ECLIPSE.PERSISTENCE.ANTLR
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+GPL-2.0-WITH-CLASSPATH-EXCEPTION
+
+The Program includes some or all of the following that IBM obtained
+under a GPL-2.0-with-classpath-exception license:
+
+
+JBOSS-ANNOTATIONS-API_SPEC | Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+JAXB-IMPL | Copyright (c)  2014 Oracle and/or its affiliates. All rights reserved.
+CHECKER-COMPAT-QUAL | Copyright (C) 1989, 1991 Free Software Foundation, Inc. All rights reserved.
+
+
+The Program includes some or all of the following available
+under the GNU General Public License. For copies of the source
+code for this software, send an email to identifying the IBM
+product and the GPL-licensed program for which you are
+requesting the source code.
+
+END OF GPL-2.0-WITH-CLASSPATH-EXCEPTION NON-IBM-LICENSE INFORMATION
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 MODIFIABLE THIRD PARTY CODE
 
@@ -1262,7 +1283,8 @@ under the MIT License:
 
 SLF4J-API (Copyright (c) 2004-2017 QOS.ch), SLF4J-JDK14 (Copyright (c)
 2004-2017 QOS.ch), SLF4J-JDK14 (Copyright (c) 2004-2011 QOS.ch),
-GRAPHQL-JAVA (Copyright (c) 2015 Andreas Marek and Contributors)
+GRAPHQL-JAVA (Copyright (c) 2015 Andreas Marek and Contributors),
+CHECKER-COMPAT-QUAL (Copyright (c) 2004-present by the Checker Framework developers)
 
 Permission is hereby granted, free of charge, to any person obtaining a 
 copy of this software and associated documentation files (the 

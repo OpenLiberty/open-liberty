@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -60,9 +60,10 @@ public class EJBWSBasicTest {
     @BeforeClass
     public static void beforeAllTests() throws Exception {
 
-        JavaArchive jar = ShrinkHelper.buildJavaArchive(ejbwsbasicjar + ".jar", "com.ibm.ws.jaxws.ejbbasic.*");
+        JavaArchive jar = ShrinkHelper.buildJavaArchive(ejbwsbasicjar + ".jar", "com.ibm.ws.jaxws.ejbbasic", "com.ibm.ws.jaxws.ejbbasic.view");
 
-        WebArchive war = ShrinkWrap.create(WebArchive.class, ejbwsbasicclientwar + ".war").addPackages(true, "com.ibm.ws.jaxws.ejbbasic");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, ejbwsbasicclientwar + ".war").addPackages(true, "com.ibm.ws.jaxws.ejbbasic.client",
+                                                                                                       "com.ibm.ws.jaxws.ejbbasic.view.client");
         ShrinkHelper.addDirectory(war, "test-applications/EJBWSBasicClient/resources/");
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, ejbwsbasicear + ".ear").addAsModule(jar).addAsModule(war);
@@ -140,11 +141,7 @@ public class EJBWSBasicTest {
 
     protected void runTest(String responseString) throws Exception {
 
-        // Strip the Test Rerun id's out of the method name
-        String testMethod = testName.getMethodName().replace("_EE9_FEATURES", "");
-
-        // Remove automatically added extension to match proper method name
-        testMethod = testMethod.replace("_EE10_FEATURES", "");
+        String testMethod = testName.getMethodName();
 
         StringBuilder sBuilder = new StringBuilder("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH).append("?testMethod=").append(testMethod);
         String urlStr = sBuilder.toString();

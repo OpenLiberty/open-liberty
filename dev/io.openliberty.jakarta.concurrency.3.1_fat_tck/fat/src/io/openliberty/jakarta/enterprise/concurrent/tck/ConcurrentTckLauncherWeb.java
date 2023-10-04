@@ -20,8 +20,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.log.Log;
-
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
@@ -55,10 +53,7 @@ public class ConcurrentTckLauncherWeb {
         //Jakarta TCK platform
         additionalProps.put("jakarta.tck.platform", "web");
 
-        // Skip signature testing on Windows.
-        // So far as I can tell the signature test plugin is not supported on this configuration
-        if (System.getProperty("os.name").contains("Windows")) {
-            Log.info(ConcurrentTckLauncherWeb.class, "setUp", "Skipping Jakarta Concurrency Signature Test on Windows");
+        if (!FATSuite.shouldRunSignatureTests(ConcurrentTckLauncherWeb.class)) {
             additionalProps.put("jakarta.tck.platform", "web & !signature");
         }
 

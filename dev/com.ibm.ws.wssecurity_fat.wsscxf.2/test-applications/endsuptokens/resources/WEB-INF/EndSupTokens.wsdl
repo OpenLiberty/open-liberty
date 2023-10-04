@@ -248,7 +248,7 @@
                   <sp:OnlySignEntireHeadersAndBody/>
                   <sp:AlgorithmSuite>
                      <wsp:Policy>
-                        <sp:Basic128Sha256/> 
+                        <sp:Basic256Sha256/> 
                      </wsp:Policy>
                   </sp:AlgorithmSuite>
                </wsp:Policy>
@@ -304,7 +304,7 @@
                   <sp:OnlySignEntireHeadersAndBody/>
                   <sp:AlgorithmSuite>
                      <wsp:Policy>
-                        <sp:Basic128Sha256/> 
+                        <sp:Basic256Sha256/> 
                      </wsp:Policy>
                   </sp:AlgorithmSuite>
                </wsp:Policy>
@@ -363,7 +363,7 @@
                   <sp:OnlySignEntireHeadersAndBody/>
                   <sp:AlgorithmSuite>
                      <wsp:Policy>
-                        <sp:Basic128Sha256/> 
+                        <sp:Basic256Sha256/> 
                      </wsp:Policy>
                   </sp:AlgorithmSuite>
                </wsp:Policy>
@@ -475,7 +475,7 @@
                   <sp:OnlySignEntireHeadersAndBody/>
                   <sp:AlgorithmSuite>
                      <wsp:Policy>
-                        <sp:Basic128Sha256/> 
+                        <sp:Basic256Sha256/> 
                      </wsp:Policy>
                   </sp:AlgorithmSuite>
                </wsp:Policy>
@@ -537,7 +537,7 @@
                   <sp:OnlySignEntireHeadersAndBody/>
                   <sp:AlgorithmSuite>
                      <wsp:Policy>
-                        <sp:Basic128Sha256/> 
+                        <sp:Basic256Sha256/> 
                      </wsp:Policy>
                   </sp:AlgorithmSuite>
                </wsp:Policy>
@@ -599,7 +599,7 @@
                   <sp:OnlySignEntireHeadersAndBody/>
                   <sp:AlgorithmSuite>
                      <wsp:Policy>
-                        <sp:Basic128Sha256/> 
+                        <sp:Basic256Sha256/> 
                      </wsp:Policy>
                   </sp:AlgorithmSuite>
                </wsp:Policy>

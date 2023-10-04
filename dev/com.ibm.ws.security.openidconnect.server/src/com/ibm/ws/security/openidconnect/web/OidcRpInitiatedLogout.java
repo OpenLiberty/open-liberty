@@ -222,7 +222,7 @@ public class OidcRpInitiatedLogout {
     }
 
     void sendBackchannelLogoutRequests(String userName, String idTokenString) {
-        BackchannelLogoutRequestHelper bclRequestCreator = new BackchannelLogoutRequestHelper(oidcServerConfig);
+        BackchannelLogoutRequestHelper bclRequestCreator = new BackchannelLogoutRequestHelper(request, oidcServerConfig);
         bclRequestCreator.sendBackchannelLogoutRequests(userName, idTokenString);
     }
 
