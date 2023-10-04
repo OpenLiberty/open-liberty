@@ -12,9 +12,12 @@
  *******************************************************************************/
 package com.ibm.ws.config.xml.internal;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Hashtable;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
@@ -22,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
 import com.ibm.websphere.config.ConfigUpdateException;
@@ -58,7 +63,8 @@ public class ConfigRefresher {
     private long configStartTime = 0;
     private Collection<Future<?>> futuresForChanges = null;
 
-    private ChangesEndedHook changesEndedHook = null;
+    private final ChangesEndedHook changesEndedHook;
+    private final ServiceRegistration<CheckpointHook> checkpointHookRegistration;
 
     ConfigRefresher(BundleContext bundleContext,
                     ChangeHandler changeHandler, ServerXMLConfiguration serverXMLConfig, ConfigVariableRegistry variableRegistry) {
@@ -76,11 +82,13 @@ public class ConfigRefresher {
         metatypeTracker = new ServiceTracker<MetaTypeRegistry, MetaTypeRegistry>(bundleContext, MetaTypeRegistry.class.getName(), null);
         metatypeTracker.open();
 
-        final CheckpointPhase checkpoint = CheckpointPhase.getPhase();
-        if (!checkpoint.restored()) {
-            changesEndedHook = new ChangesEndedHook();
-            checkpoint.addMultiThreadedHook(changesEndedHook);
-        }
+        changesEndedHook = new ChangesEndedHook();
+        Hashtable<String, Object> hookProps = new Hashtable<>();
+        // Lesser ranking ensures changesEnded() executes ASAP after the SystemConfiguration
+        // single-threaded restore hook
+        hookProps.put(Constants.SERVICE_RANKING, Integer.MIN_VALUE + 10000);
+        hookProps.put(CheckpointHook.MULTI_THREADED_HOOK, Boolean.TRUE);
+        checkpointHookRegistration = bundleContext.registerService(CheckpointHook.class, changesEndedHook, hookProps);
     }
 
     void start() {
@@ -90,6 +98,10 @@ public class ConfigRefresher {
     void stop() {
         configurationMonitor.stopConfigurationMonitoring();
         runtimeUpdateManagerTracker.close();
+
+        if (checkpointHookRegistration != null) {
+            checkpointHookRegistration.unregister();
+        }
     }
 
     public void refreshConfiguration() {
@@ -147,10 +159,14 @@ public class ConfigRefresher {
             // Let the notification show that we got an error while making the configuration changes
             configUpdatesDelivered.setResult(e);
         } finally {
-
             if (CheckpointPhase.getPhase().restored() && changesEndedHook.runMultiThreaded) {
-                // The hook will invoke changesEnded(configUpdatesDelivered)
-                changesEndedHook.configUpdatesDelivered = configUpdatesDelivered;
+                synchronized (changesEndedHook) {
+                    if (changesEndedHook.runMultiThreaded) {
+                        changesEndedHook.configUpdatesToDeliver.add(configUpdatesDelivered);
+                    } else {
+                        changesEnded(configUpdatesDelivered);
+                    }
+                }
             } else {
                 changesEnded(configUpdatesDelivered);
             }
@@ -283,16 +299,15 @@ public class ConfigRefresher {
 
     }
 
-    // Register as a multi-threaded hook to invoke changesEnded() in
-    // multi-threaded mode when restoring from checkpoint. Invoking
-    // changesEnded() in single-threaded mode may fail restore as it
-    // performs a blocking operation.
+    // Register as a multi-threaded hook to invoke changesEnded() when
+    // restoring from checkpoint. Invoking changesEnded() in single-threaded
+    // mode may fail restore as it performs a blocking operation.
     private class ChangesEndedHook implements CheckpointHook {
 
-        private boolean runMultiThreaded = false;
+        volatile boolean runMultiThreaded = false;
 
-        // Set before restore is called
-        private RuntimeUpdateNotification configUpdatesDelivered = null;
+        // FIFO queue of deferred config update notifications
+        Queue<RuntimeUpdateNotification> configUpdatesToDeliver = new ArrayDeque<RuntimeUpdateNotification>();
 
         @Override
         public void prepare() {
@@ -302,8 +317,10 @@ public class ConfigRefresher {
         @Override
         public void restore() {
             if (runMultiThreaded) {
-                changesEnded(configUpdatesDelivered);
-                configUpdatesDelivered = null;
+                runMultiThreaded = false;
+                while (!configUpdatesToDeliver.isEmpty()) {
+                    changesEnded(configUpdatesToDeliver.remove());
+                }
             }
         }
     }
