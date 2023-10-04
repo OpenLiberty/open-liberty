@@ -73,11 +73,11 @@ public class BestMatch {
                             matched.addAll(modules);
 
                             List<Module> gradleModules = gradleRepo.stream()
-                                            .map(moduleInfo -> {
-                                                List<Module> moduleInfoList = moduleInfo.getValue();
-                                                moduleInfoList.sort((o1, o2) -> o2.containsCount(jar) - o1.containsCount(jar));
+                                            .map(gradleModuleInfo -> {
+                                                List<Module> gradleModuleInfoList = gradleModuleInfo.getValue();
+                                                gradleModuleInfoList.sort((o1, o2) -> o2.containsCount(jar) - o1.containsCount(jar));
 
-                                                return moduleInfoList.get(0);
+                                                return gradleModuleInfoList.get(0);
                                             })
                                             .filter(jar::contains)
                                             .collect(Collectors.toList());
@@ -89,12 +89,16 @@ public class BestMatch {
                                             .sorted()
                                             .collect(Collectors.toList());
                             List<String> gradleModuleNames = gradleModules.stream()
-                                            .map(module -> "\t" + module + "\t" + jar.getPackages(module))
+                                            .map(gradleModule -> "\t" + gradleModule + "\t" + jar.getPackages(gradleModule))
                                             .sorted()
                                             .collect(Collectors.toList());
 
+                            Set<String> matchedNames = new TreeSet<>();
+                            matchedNames.addAll(moduleNames);
+                            matchedNames.addAll(gradleModuleNames);
+
                             List<String> foundPackages = modules.stream().flatMap(module -> jar.getPackages(module).stream()).collect(Collectors.toList());
-                            List<String> foundGradlePackages = gradleModules.stream().flatMap(module -> jar.getPackages(module).stream()).collect(Collectors.toList());
+                            List<String> foundGradlePackages = gradleModules.stream().flatMap(gradleModule -> jar.getPackages(gradleModule).stream()).collect(Collectors.toList());
 
                             Collection<String> missingPackages = jar.getPackages();
 
@@ -119,10 +123,12 @@ public class BestMatch {
                                             .collect(Collectors.toList());
 
                             uniqueMissingPackages.addAll(missingPackages);
-                            if (!moduleNames.isEmpty()) {
+
+                            if (!matchedNames.isEmpty()) {
                                 modOut.println(jar.getOriginalFile().getAbsolutePath());
-                                moduleNames.forEach(modOut::println);
+                                matchedNames.forEach(modOut::println);
                             }
+                            matchedNames = new TreeSet<>();
 
                             if (!missingPackages.isEmpty()) {
                                 mpOut.println(jar.getOriginalFile().getAbsolutePath());
@@ -285,7 +291,7 @@ public class BestMatch {
      * @return
      */
     private static boolean filteredLibraries(Module library) {
-        return (library.getGroupId().equals("org.glassfish") && (library.getArtifactId().equals("javax.faces")));
+        return (library.getGroupId().equals("org.glassfish") && (library.getArtifactId().equals("javax.faces"))) || (library.getArtifactId().equals("tomcat-embed-core"));
     }
 
     /**
