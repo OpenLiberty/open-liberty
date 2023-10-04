@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -36,6 +36,9 @@ import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 /**
  *
  */
@@ -55,6 +58,8 @@ public class ConfigRefresher {
     private long configStartTime = 0;
     private Collection<Future<?>> futuresForChanges = null;
 
+    private ChangesEndedHook changesEndedHook = null;
+
     ConfigRefresher(BundleContext bundleContext,
                     ChangeHandler changeHandler, ServerXMLConfiguration serverXMLConfig, ConfigVariableRegistry variableRegistry) {
         this.changeHandler = changeHandler;
@@ -70,6 +75,12 @@ public class ConfigRefresher {
 
         metatypeTracker = new ServiceTracker<MetaTypeRegistry, MetaTypeRegistry>(bundleContext, MetaTypeRegistry.class.getName(), null);
         metatypeTracker.open();
+
+        final CheckpointPhase checkpoint = CheckpointPhase.getPhase();
+        if (!checkpoint.restored()) {
+            changesEndedHook = new ChangesEndedHook();
+            checkpoint.addMultiThreadedHook(changesEndedHook);
+        }
     }
 
     void start() {
@@ -136,7 +147,13 @@ public class ConfigRefresher {
             // Let the notification show that we got an error while making the configuration changes
             configUpdatesDelivered.setResult(e);
         } finally {
-            changesEnded(configUpdatesDelivered);
+
+            if (CheckpointPhase.getPhase().restored() && changesEndedHook.runMultiThreaded) {
+                // The hook will invoke changesEnded(configUpdatesDelivered)
+                changesEndedHook.configUpdatesDelivered = configUpdatesDelivered;
+            } else {
+                changesEnded(configUpdatesDelivered);
+            }
         }
     }
 
@@ -265,4 +282,30 @@ public class ConfigRefresher {
         doRefresh(deltaMap);
 
     }
+
+    // Register as a multi-threaded hook to invoke changesEnded() in
+    // multi-threaded mode when restoring from checkpoint. Invoking
+    // changesEnded() in single-threaded mode may fail restore as it
+    // performs a blocking operation.
+    private class ChangesEndedHook implements CheckpointHook {
+
+        private boolean runMultiThreaded = false;
+
+        // Set before restore is called
+        private RuntimeUpdateNotification configUpdatesDelivered = null;
+
+        @Override
+        public void prepare() {
+            runMultiThreaded = true;
+        }
+
+        @Override
+        public void restore() {
+            if (runMultiThreaded) {
+                changesEnded(configUpdatesDelivered);
+                configUpdatesDelivered = null;
+            }
+        }
+    }
+
 }
