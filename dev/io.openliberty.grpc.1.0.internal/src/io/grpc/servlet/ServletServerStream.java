@@ -115,6 +115,7 @@ final class ServletServerStream extends AbstractServerStream {
 
   @Override
   protected Sink abstractServerStreamSink() {
+	  System.out.println("GDH stream.ready" + writer.outputStream.isReady());
     return sink;
   }
 

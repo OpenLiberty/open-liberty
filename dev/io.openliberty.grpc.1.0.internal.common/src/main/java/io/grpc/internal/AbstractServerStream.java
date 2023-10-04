@@ -22,6 +22,8 @@ import io.grpc.Decompressor;
 import io.grpc.InternalStatus;
 import io.grpc.Metadata;
 import io.grpc.Status;
+import io.grpc.internal.WritableBuffer;
+
 import javax.annotation.Nullable;
 
 /**
@@ -114,9 +116,16 @@ public abstract class AbstractServerStream extends AbstractStream
     }
     if (endOfStream) {
     	StackTraceElement[] stackTraces = Thread.currentThread().getStackTrace();
+         Sink sink = abstractServerStreamSink();
+         
+        System.out.println("GDH==========================================================");
+    	System.out.println("GDH frame: " + frame + " bytes: " + frame.readableBytes());
+    	System.out.println("GDH flush: " + flush );
+    	System.out.println("GDH numMessages: " + numMessages );
+    	
     	for (int i = 1; i < stackTraces.length; i++) {
-    	     System.out.println("GDH flush was " + flush + " at " + stackTraces[i]);
-    	     if( i > 2 ) break;
+    	     System.out.println("GDH at " + stackTraces[i]);
+    	     if( i > 3 ) break;
     	}
         // flush = false;
     }

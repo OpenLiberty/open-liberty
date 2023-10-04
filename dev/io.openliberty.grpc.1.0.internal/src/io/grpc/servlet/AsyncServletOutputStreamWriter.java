@@ -66,8 +66,8 @@ final class AsyncServletOutputStreamWriter {
    */
   private final AtomicReference<WriteState> writeState = new AtomicReference<>(WriteState.DEFAULT);
 
-  private final ServletOutputStream outputStream;
-  private final ServletTransportState transportState;
+  public final ServletOutputStream outputStream;
+  public final ServletTransportState transportState;
   private final InternalLogId logId;
   private final ActionItem flushAction;
   private final ActionItem completeAction;
