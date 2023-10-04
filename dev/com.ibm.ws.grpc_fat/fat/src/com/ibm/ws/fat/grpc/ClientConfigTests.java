@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -111,7 +111,7 @@ public class ClientConfigTests extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         Exception excep = null;
-        
+
         LOG.info("ClientConfigTests : tearDown() : serverConfigurationFile set to null");
         // Setting serverConfigurationFile to null forces a server.xml update (when GrpcTestUtils.setServerConfiguration() is first called) on the repeat run
         // If not set to null, test failures may occur (since the incorrect server.xml could be used)
@@ -142,7 +142,7 @@ public class ClientConfigTests extends FATServletClient {
 
     private static void stopClientServer() throws Exception {
         if (GrpcClientOnly != null && GrpcClientOnly.isStarted()) {
-            
+
             /*
              * CWWKG0083W: expected by testInvalidMaxInboundMessageSize due to invalid message size config
              * CWWKG0076W: expected when a previous config is still in use because an invalid config was rejected
@@ -165,6 +165,12 @@ public class ClientConfigTests extends FATServletClient {
      * @throws Exception
      *
      **/
+
+    @Test
+    public void testAlwaysFails() throws Exception {
+        Assert.fail("This test will always fail and cause the logs to be saved");
+    }
+
     @Test
     public void testAddGrpcClientElement() throws Exception {
 
