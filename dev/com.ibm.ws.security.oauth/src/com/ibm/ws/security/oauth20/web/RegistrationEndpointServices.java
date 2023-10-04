@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -245,7 +245,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
         }
 
         // Validate client
-        OidcBaseClient validatedClient = OidcBaseClientValidator.getInstance(newClient).validateCreateUpdate();
+        OidcBaseClient validatedClient = OidcBaseClientValidator.getInstance(newClient).validateCreateUpdate(provider);
 
         OidcOAuth20ClientProvider clientProvider = provider.getClientProvider();
 
@@ -308,7 +308,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
         newClient.setClientId(clientId);
 
         // Validate client and set defaults if necessary
-        OidcBaseClient validatedClient = OidcBaseClientValidator.getInstance(newClient).validateCreateUpdate();
+        OidcBaseClient validatedClient = OidcBaseClientValidator.getInstance(newClient).validateCreateUpdate(provider);
 
         // Copy applicable output params from existing client back to new client
         // client_id_issued_at && client_secret_expires_at

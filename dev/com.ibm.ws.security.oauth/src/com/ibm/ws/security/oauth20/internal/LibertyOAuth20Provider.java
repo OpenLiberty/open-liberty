@@ -1213,7 +1213,7 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
                 OidcBaseClient validatedClient = newClient;
 
                 try {
-                    validatedClient = OidcBaseClientValidator.getInstance(validatedClient).validateCreateUpdate();
+                    validatedClient = OidcBaseClientValidator.getInstance(validatedClient).validateCreateUpdate(this);
                 } catch (OidcServerException e) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         String errorPrefix = "ClientId: " + (OidcOAuth20Util.isNullEmpty(validatedClient.getClientId()) ? "Unknown" : validatedClient.getClientId()) + ", Provider: " + providerId + ", ";

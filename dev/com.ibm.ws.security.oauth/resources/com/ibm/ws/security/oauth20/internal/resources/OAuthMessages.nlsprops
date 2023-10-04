@@ -474,6 +474,10 @@ OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL=CWWKS230
 OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.explanation=The URI value for the metadata field that is specified in the message may use the HTTP scheme only if the OAuth client is a confidential client. Otherwise, the HTTPS scheme must be used.
 OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.useraction=Update the URI to use the HTTPS scheme, or update the OAuth client to be a confidential client.
 
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTPS_REQUIRED=CWWKS2301E: The [{0}] URI for the {1} client registration metadata field is not valid because it uses the HTTP scheme but the [{2}] oauthProvider requires the HTTPS scheme to be used.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTPS_REQUIRED.explanation=The URI value in the metadata field must use the HTTPS scheme because the oauthProvider requires the HTTPS scheme to be used.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTPS_REQUIRED.useraction=Update the URI to use the HTTPS scheme, or update the httpsRequired attribute in the oauthProvider to false.
+
 # html title of logout page
 LOGOUT_PAGE_TITLE=Logout
 # html body of logout page

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,18 +18,21 @@ import static org.junit.Assert.fail;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.jmock.Expectations;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonPrimitive;
 import com.ibm.oauth.core.api.error.OidcServerException;
+import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
+import com.ibm.ws.security.test.common.CommonTestClass;
 
 /**
  *
  */
-public class OidcBaseClientValidatorTest {
+public class OidcBaseClientValidatorTest extends CommonTestClass {
 
     private final String clientId = "b0a376ec4b694b67b6baeb0604a312d8";
     private final String clientSecret = "secret";
@@ -40,6 +43,8 @@ public class OidcBaseClientValidatorTest {
     private final JsonArray redirectUris = new JsonArray();
     private OidcBaseClient client;
     private OidcBaseClient publicClient;
+
+    private final OAuth20Provider oauth20provider = mockery.mock(OAuth20Provider.class);
 
     @Before
     public void setUp() {
@@ -84,7 +89,7 @@ public class OidcBaseClientValidatorTest {
         client.setIntrospectTokens(true);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateCreateUpdate();
+            validator.validateCreateUpdate(oauth20provider);
         } catch (OidcServerException e) {
             fail("Threw OIDCServerException!");
         }
@@ -96,7 +101,7 @@ public class OidcBaseClientValidatorTest {
         client.setApplicationType("mobile");
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateCreateUpdate();
+            validator.validateCreateUpdate(oauth20provider);
             fail("Did not throw OIDCServerException as expected!");
         } catch (OidcServerException e) {
             assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
@@ -116,7 +121,7 @@ public class OidcBaseClientValidatorTest {
         client.setResponseTypes(responseTypes);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateCreateUpdate();
+            validator.validateCreateUpdate(oauth20provider);
             fail("Did not throw OIDCServerException as expected!");
         } catch (OidcServerException e) {
             assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
@@ -137,7 +142,7 @@ public class OidcBaseClientValidatorTest {
         client.setResponseTypes(responseTypes);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateCreateUpdate();
+            validator.validateCreateUpdate(oauth20provider);
             fail("Did not throw OIDCServerException as expected!");
         } catch (OidcServerException e) {
             assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
@@ -157,7 +162,7 @@ public class OidcBaseClientValidatorTest {
         client.setGrantTypes(grantTypes);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateCreateUpdate();
+            validator.validateCreateUpdate(oauth20provider);
             fail("Did not throw OIDCServerException as expected!");
         } catch (OidcServerException e) {
             assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
@@ -177,7 +182,7 @@ public class OidcBaseClientValidatorTest {
         client.setGrantTypes(grantTypes);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateCreateUpdate();
+            validator.validateCreateUpdate(oauth20provider);
             fail("Did not throw OIDCServerException as expected!");
         } catch (OidcServerException e) {
             assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
@@ -198,7 +203,7 @@ public class OidcBaseClientValidatorTest {
         client.setGrantTypes(grantTypes);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateCreateUpdate();
+            validator.validateCreateUpdate(oauth20provider);
             fail("Did not throw OIDCServerException as expected!");
         } catch (OidcServerException e) {
             assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
@@ -219,7 +224,7 @@ public class OidcBaseClientValidatorTest {
         client.setGrantTypes(grantTypes);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateCreateUpdate();
+            validator.validateCreateUpdate(oauth20provider);
             fail("Did not throw OIDCServerException as expected!");
         } catch (OidcServerException e) {
             assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
@@ -236,7 +241,7 @@ public class OidcBaseClientValidatorTest {
         client.setRedirectUris(redirectUris);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateCreateUpdate();
+            validator.validateCreateUpdate(oauth20provider);
             fail("Did not throw OIDCServerException as expected!");
         } catch (OidcServerException e) {
             assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
@@ -254,7 +259,7 @@ public class OidcBaseClientValidatorTest {
         client.setApplicationType("web");
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateCreateUpdate();
+            validator.validateCreateUpdate(oauth20provider);
             fail("Did not throw OIDCServerException as expected!");
         } catch (OidcServerException e) {
             assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
@@ -272,7 +277,7 @@ public class OidcBaseClientValidatorTest {
         client.setRedirectUris(redirectUris);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateCreateUpdate();
+            validator.validateCreateUpdate(oauth20provider);
             fail("Did not throw OIDCServerException as expected!");
         } catch (OidcServerException e) {
             assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
@@ -287,7 +292,7 @@ public class OidcBaseClientValidatorTest {
         client.setClientIdIssuedAt(4000);// non zero value
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateCreateUpdate();
+            validator.validateCreateUpdate(oauth20provider);
             fail("Did not throw OIDCServerException as expected!");
         } catch (OidcServerException e) {
             assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
@@ -302,7 +307,7 @@ public class OidcBaseClientValidatorTest {
         client.setClientSecretExpiresAt(5000);// non zero value
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateCreateUpdate();
+            validator.validateCreateUpdate(oauth20provider);
             fail("Did not throw OIDCServerException as expected!");
         } catch (OidcServerException e) {
             assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
@@ -317,7 +322,7 @@ public class OidcBaseClientValidatorTest {
         client.setRegistrationClientUri("https://localhost:8999/resource/registration/abcd1234");
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateCreateUpdate();
+            validator.validateCreateUpdate(oauth20provider);
             fail("Did not throw OIDCServerException as expected!");
         } catch (OidcServerException e) {
             assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
@@ -332,7 +337,7 @@ public class OidcBaseClientValidatorTest {
         client.setBackchannelLogoutUri(null);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateBackchannelLogoutUri();
+            validator.validateBackchannelLogoutUri(oauth20provider);
         } catch (OidcServerException e) {
             fail("Threw OidcServerException but didn't expect to: " + e.getErrorDescription());
         }
@@ -344,7 +349,7 @@ public class OidcBaseClientValidatorTest {
         client.setBackchannelLogoutUri(uri);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateBackchannelLogoutUri();
+            validator.validateBackchannelLogoutUri(oauth20provider);
             fail("Did not throw OidcServerException as expected.");
         } catch (OidcServerException e) {
             assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
@@ -361,7 +366,7 @@ public class OidcBaseClientValidatorTest {
         client.setBackchannelLogoutUri(uri);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateBackchannelLogoutUri();
+            validator.validateBackchannelLogoutUri(oauth20provider);
             fail("Did not throw OidcServerException as expected.");
         } catch (OidcServerException e) {
             assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
@@ -378,7 +383,7 @@ public class OidcBaseClientValidatorTest {
         client.setBackchannelLogoutUri(uri);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateBackchannelLogoutUri();
+            validator.validateBackchannelLogoutUri(oauth20provider);
             fail("Did not throw OidcServerException as expected.");
         } catch (OidcServerException e) {
             assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
@@ -395,7 +400,7 @@ public class OidcBaseClientValidatorTest {
         client.setBackchannelLogoutUri(uri);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateBackchannelLogoutUri();
+            validator.validateBackchannelLogoutUri(oauth20provider);
             fail("Did not throw OidcServerException as expected.");
         } catch (OidcServerException e) {
             assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
@@ -412,7 +417,7 @@ public class OidcBaseClientValidatorTest {
         client.setBackchannelLogoutUri(uri);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateBackchannelLogoutUri();
+            validator.validateBackchannelLogoutUri(oauth20provider);
             fail("Did not throw OidcServerException as expected.");
         } catch (OidcServerException e) {
             assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
@@ -428,8 +433,14 @@ public class OidcBaseClientValidatorTest {
         String uri = "http://localhost/some/path";
         publicClient.setBackchannelLogoutUri(uri);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(publicClient);
+        mockery.checking(new Expectations() {
+            {
+                one(oauth20provider).isHttpsRequired();
+                will(returnValue(false));
+            }
+        });
         try {
-            validator.validateBackchannelLogoutUri();
+            validator.validateBackchannelLogoutUri(oauth20provider);
             fail("Did not throw OidcServerException as expected.");
         } catch (OidcServerException e) {
             assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
@@ -445,8 +456,14 @@ public class OidcBaseClientValidatorTest {
         String uri = "http://localhost/some/path";
         client.setBackchannelLogoutUri(uri);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
+        mockery.checking(new Expectations() {
+            {
+                one(oauth20provider).isHttpsRequired();
+                will(returnValue(false));
+            }
+        });
         try {
-            validator.validateBackchannelLogoutUri();
+            validator.validateBackchannelLogoutUri(oauth20provider);
         } catch (OidcServerException e) {
             fail("Threw OidcServerException but didn't expect to: " + e.getErrorDescription());
         }
@@ -457,8 +474,14 @@ public class OidcBaseClientValidatorTest {
         String uri = "HTTP://LOCALHOST/SOME/PATH";
         client.setBackchannelLogoutUri(uri);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
+        mockery.checking(new Expectations() {
+            {
+                one(oauth20provider).isHttpsRequired();
+                will(returnValue(false));
+            }
+        });
         try {
-            validator.validateBackchannelLogoutUri();
+            validator.validateBackchannelLogoutUri(oauth20provider);
         } catch (OidcServerException e) {
             fail("Threw OidcServerException but didn't expect to: " + e.getErrorDescription());
         }
@@ -470,7 +493,7 @@ public class OidcBaseClientValidatorTest {
         client.setBackchannelLogoutUri(uri);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateBackchannelLogoutUri();
+            validator.validateBackchannelLogoutUri(oauth20provider);
         } catch (OidcServerException e) {
             fail("Threw OidcServerException but didn't expect to: " + e.getErrorDescription());
         }
@@ -482,9 +505,34 @@ public class OidcBaseClientValidatorTest {
         client.setBackchannelLogoutUri(uri);
         OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
         try {
-            validator.validateBackchannelLogoutUri();
+            validator.validateBackchannelLogoutUri(oauth20provider);
         } catch (OidcServerException e) {
             fail("Threw OidcServerException but didn't expect to: " + e.getErrorDescription());
+        }
+    }
+
+    @Test
+    public void testValidateBackchannelLogoutUri_httpUri_httpsUriRequired() {
+        String uri = "http://localhost/some/path";
+        client.setBackchannelLogoutUri(uri);
+        OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
+        mockery.checking(new Expectations() {
+            {
+                one(oauth20provider).isHttpsRequired();
+                will(returnValue(true));
+                one(oauth20provider).getID();
+                will(returnValue("SampleOAuthProvider"));
+            }
+        });
+        try {
+            validator.validateBackchannelLogoutUri(oauth20provider);
+            fail("Did not throw OidcServerException as expected.");
+        } catch (OidcServerException e) {
+            assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
+            assertEquals(OIDCConstants.ERROR_INVALID_CLIENT_METADATA, e.getErrorCode());
+            String expectedRegex = "CWWKS2301E" + ".*" + uri + ".*";
+            String errorDescription = e.getErrorDescription();
+            assertTrue("Did not find error message \"" + expectedRegex + "\" in error description \"" + errorDescription + "\".", errorDescription.matches(expectedRegex));
         }
     }
 

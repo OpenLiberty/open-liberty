@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.error.impl.BrowserAndServerLogMessage;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
@@ -76,7 +77,7 @@ public class OidcBaseClientValidator {
      * @return copy of approved client, with some fields normalized
      * @throws OidcServerException
      */
-    public OidcBaseClient validateCreateUpdate() throws OidcServerException {
+    public OidcBaseClient validateCreateUpdate(OAuth20Provider provider) throws OidcServerException {
         detectIllegalChars();
         validateAppType();
 
@@ -106,7 +107,7 @@ public class OidcBaseClientValidator {
 
         validateOutputParameters();
 
-        validateBackchannelLogoutUri();
+        validateBackchannelLogoutUri(provider);
 
         return this.client;
     }
@@ -669,15 +670,15 @@ public class OidcBaseClientValidator {
      * 3. The back-channel logout URI MUST NOT include a fragment component.
      * 4. This URL SHOULD use the https scheme and MAY contain port, path, and query parameter components; however, it MAY use the http scheme, provided that the Client Type is confidential, as defined in Section 2.1 of OAuth 2.0 [RFC6749], and provided the OP allows the use of http RP URIs.
      */
-    void validateBackchannelLogoutUri() throws OidcServerException {
+    void validateBackchannelLogoutUri(OAuth20Provider provider) throws OidcServerException {
         String logoutUri = client.getBackchannelLogoutUri();
         if (logoutUri == null) {
             return;
         }
-        validateBackchannelLogoutUri(client, logoutUri);
+        validateBackchannelLogoutUri(provider, client, logoutUri);
     }
 
-    public static void validateBackchannelLogoutUri(OidcBaseClient client, String logoutUri) throws OidcServerException {
+    public static void validateBackchannelLogoutUri(OAuth20Provider provider, OidcBaseClient client, String logoutUri) throws OidcServerException {
         URI uri;
         try {
             uri = new URI(logoutUri);
@@ -696,6 +697,10 @@ public class OidcBaseClientValidator {
         String scheme = uri.getScheme();
         if (scheme == null || (!scheme.equalsIgnoreCase("http") && !scheme.equalsIgnoreCase("https"))) {
             throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME", new Object[] { logoutUri, OidcBaseClient.SN_BACKCHANNEL_LOGOUT_URI }),
+                    OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+        }
+        if (scheme.equalsIgnoreCase("http") && provider.isHttpsRequired()) {
+            throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTPS_REQUIRED", new Object[] { logoutUri, OidcBaseClient.SN_BACKCHANNEL_LOGOUT_URI, provider.getID() }),
                     OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
         }
         if (scheme.equalsIgnoreCase("http") && client.isPublicClient()) {

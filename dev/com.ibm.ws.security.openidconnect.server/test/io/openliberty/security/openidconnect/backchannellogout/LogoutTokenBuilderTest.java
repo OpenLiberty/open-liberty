@@ -1179,6 +1179,8 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             {
                 one(client1).getBackchannelLogoutUri();
                 will(returnValue("http://localhost"));
+                one(oauth20provider).isHttpsRequired();
+                will(returnValue(false));
                 one(client1).isPublicClient();
                 will(returnValue(true));
             }
@@ -1192,6 +1194,8 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             {
                 one(client1).getBackchannelLogoutUri();
                 will(returnValue("http://localhost"));
+                one(oauth20provider).isHttpsRequired();
+                will(returnValue(false));
                 one(client1).isPublicClient();
                 will(returnValue(false));
             }
@@ -1208,6 +1212,21 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             }
         });
         assertTrue("HTTPS back-channel logout URI should be considered valid for BCL.", builder.isValidClientForBackchannelLogout(client1));
+    }
+
+    @Test
+    public void test_isValidClientForBackchannelLogout_httpUri_httpsRequired() {
+        mockery.checking(new Expectations() {
+            {
+                one(client1).getBackchannelLogoutUri();
+                will(returnValue("http://localhost"));
+                one(oauth20provider).isHttpsRequired();
+                will(returnValue(true));
+                one(oauth20provider).getID();
+                will(returnValue("sampleOAuthProvider"));
+            }
+        });
+        assertFalse("HTTP back-channel logout URI should not be considered valid for BCL when HTTPS is required by the OAuth20 provider.", builder.isValidClientForBackchannelLogout(client1));
     }
 
     @Test
