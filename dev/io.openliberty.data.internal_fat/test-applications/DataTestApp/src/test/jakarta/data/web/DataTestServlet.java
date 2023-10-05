@@ -3147,6 +3147,43 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository query with named parameters, where the parameters are obtained from
+     * the corresponding method parameters based on the method's parameter names.
+     */
+    @Test
+    public void testNamedParametersFromMethodParameterNames() {
+        assertArrayEquals(new long[] { 19, 29, 43, 47 },
+                          primes.matchAny(19, "XLVII", "2B", "twenty-nine"));
+    }
+
+    /**
+     * Use a repository query with both named parameters and positional parameters. Expect this to be rejected.
+     */
+    @Test
+    public void testNamedParametersMixedWithPositionalParameters() {
+        try {
+            Collection<Long> found = primes.matchAnyWithMixedUsageOfPositionalAndNamed("three", 23);
+            fail("Should not be able to mix positional and named parameters. Found: " + found);
+        } catch (MappingException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Use a repository query with named parameters, where the parameters are
+     * sometimes obtained from the Param annotation and other times obtained from
+     * the corresponding method parameters based on the method's parameter names.
+     */
+    @Test
+    public void testNamedParametersMixingAnnotationAndParameterNames() {
+        assertEquals(List.of(5L, 13L, 29L, 31L),
+                     primes.matchAnyWithMixedUsageOfParamAnnotation(31, "thirteen", "V", "1D")
+                                     .stream()
+                                     .sorted()
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
      * Test NotBetween in a filter.
      */
     @Test
@@ -3320,6 +3357,18 @@ public class DataTestServlet extends FATServlet {
         assertEquals(2, shipments.removeCanceled());
 
         assertEquals(3, shipments.removeEverything());
+    }
+
+    /**
+     * Use a repository query with positional parameters and a literal value that looks like a named parameter, but isn't.
+     */
+    @Test
+    public void testPositionalParameterWithLiteralThatLooksLikeANamedParameter() {
+        assertEquals(List.of("thirty-seven", "forty-one"), // ordered by numeric value
+                     primes.matchAnyExceptLiteralValueThatLooksLikeANamedParameter(41, "thirty-seven"));
+
+        assertEquals(List.of("forty-one", "thirty-seven"), // ordered by name
+                     primes.matchAnyExceptLiteralValueThatLooksLikeANamedParameter("thirty-seven", 41));
     }
 
     /**
