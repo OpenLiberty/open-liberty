@@ -86,7 +86,6 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private LTPAKeyInfoManager ltpaKeyInfoManager;
     private String primaryKeyImportFile;
     private String primaryKeyImportDir;
-    private boolean primaryKeyInsideWlpResource = true;
     @Sensitive
     private String primaryKeyPassword;
     private long keyTokenExpiration;
@@ -132,6 +131,10 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         ltpaKeysChangeNotifierService.unsetReference(ref);
     }
 
+    /*
+     * When FileMonitor is enabled, its onBaseline method will call performFileBasedAction(baselineFiles)
+     * to process key files after loadConfig(props), but before submitTaskToCreateLTPAKeys().
+     */
     protected void activate(ComponentContext context, Map<String, Object> props) {
         cc = context;
         locationService.activate(context);
@@ -154,7 +157,6 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         // If expirationDifferenceAllowed is set to less than 0, then the two expiration values will not be compared in the LTPAToken2.decrypt() method.
         expirationDifferenceAllowed = (Long) props.get(KEY_EXP_DIFF_ALLOWED);
         monitorDirectory = (Boolean) props.get(CFG_KEY_MONITOR_DIRECTORY);
-        primaryKeyInsideWlpResource = true; //init value - will be set in resolveActualPrimaryKeysFileLocation()
 
         resolveActualPrimaryKeysFileLocation();
 
@@ -185,7 +187,6 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             Tr.debug(tc, "monitorInterval: " + monitorInterval);
             Tr.debug(tc, "authFilterRef: " + authFilterRef);
             Tr.debug(tc, "monitorDirectory: " + monitorDirectory);
-            Tr.debug(tc, "primaryKeyInsideWlpResource: " + primaryKeyInsideWlpResource);
             Tr.debug(tc, "validationKeys: " + (validationKeys == null ? "Null" : validationKeys.toString()));
         }
     }
@@ -214,16 +215,17 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      * Use the primary LTPA keys password for these validation keys flie
      *
      **/
-    @SuppressWarnings("unlikely-arg-type")
+    @SuppressWarnings({ "static-access" })
     @Sensitive
     private List<Properties> getNonConfiguredValidationKeys() {
         List<Properties> validationKeysInDirectory = new ArrayList<Properties>();
         Iterator<File> keysFiles = this.allKeysFiles.iterator();
+        Properties properties = new Properties();
 
         if (keysFiles != null) {
             while (keysFiles.hasNext()) {
                 File keyFile = keysFiles.next();
-                Properties properties = new Properties();
+
                 String fileName = keyFile.getName();
                 String fullFileName = primaryKeyImportDir.concat(fileName);
 
@@ -262,38 +264,31 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     }
 
     private void resolveActualPrimaryKeysFileLocation() {
-        WsResource keysFileInServerConfig = locationService.getServiceWithException().resolveResource(primaryKeyImportFile);
-        if (keysFileInServerConfig != null) {
-            if (keysFileInServerConfig.getParent() == null) {
-                // the file must be outside the wlp root dir
-                primaryKeyInsideWlpResource = false;
-                try {
-                    String dir = new File(primaryKeyImportFile).getCanonicalFile().getParent() + '/';
-                    primaryKeyImportDir = locationService.getServiceWithException().resolveString(dir);
-                    primaryKeyImportFile = primaryKeyImportDir + keysFileInServerConfig.getName();
-                } catch (IOException e) {
-                    FFDCFilter.processException(e, getClass().getName(), "resolveActualPrimaryKeysFileLocation");
-                    Tr.error(tc, "LTPA_KEYS_FILE_DOES_NOT_EXIST", primaryKeyImportFile);
-                }
-            } else {
-                // the file must be within the wlp root dir
-                // the directory of the primaryKeyImportFile can be determined using the WsResource
-                primaryKeyInsideWlpResource = true;
-                String dir = keysFileInServerConfig.getParent().toRepositoryPath();
-                primaryKeyImportDir = locationService.getServiceWithException().resolveString(dir);
-                primaryKeyImportFile = primaryKeyImportDir + keysFileInServerConfig.getName();
+        if (isInDefaultOutputLocation()) {
+            WsResource keysFileInServerConfig = locationService.getServiceWithException().resolveResource(DEFAULT_CONFIG_LOCATION);
+            if (keysFileInServerConfig != null && keysFileInServerConfig.exists()) {
+                String expandedKeysFileInServerConfig = locationService.getServiceWithException().resolveString(DEFAULT_CONFIG_LOCATION);
+                primaryKeyImportFile = expandedKeysFileInServerConfig;
             }
-        } else {
-            // should not get here
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Primary Key not resolved because keysFileInServerConfig is null");
-            }
+        }
+
+        try {
+            // primaryKeyImportFile has already been resolved when the server loads the config, this includes variable and .. being resolved.
+            primaryKeyImportDir = new File(primaryKeyImportFile).getCanonicalFile().getParent() + File.separator;
+        } catch (IOException e) {
+            FFDCFilter.processException(e, getClass().getName(), "resolveActualPrimaryKeysFileLocation");
+            Tr.error(tc, "LTPA_KEYS_FILE_DOES_NOT_EXIST", primaryKeyImportFile);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "primaryKeyImportDir: " + primaryKeyImportDir);
             Tr.debug(tc, "primaryKeyImportFile: " + primaryKeyImportFile);
         }
+    }
+
+    protected boolean isInDefaultOutputLocation() {
+        String expandedKeysFileInServerOutput = locationService.getServiceWithException().resolveString(DEFAULT_OUTPUT_LOCATION);
+        return primaryKeyImportFile.equals(expandedKeysFileInServerOutput);
     }
 
     /**
