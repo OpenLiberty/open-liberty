@@ -10,6 +10,7 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import jakarta.data.model.Attribute;
 import jakarta.data.model.StaticMetamodel;
 
 /**
@@ -17,7 +18,7 @@ import jakarta.data.model.StaticMetamodel;
  */
 @StaticMetamodel(java.time.Period.class)
 public class EntityModelUnknown_ {
-    public static volatile String days;
-    public static volatile String months;
-    public static volatile String years = "do-not-replace-this";
+    public static final Attribute days = Attribute.get();
+    public static final Attribute months = Attribute.get();
+    public static final Attribute years = null;
 }

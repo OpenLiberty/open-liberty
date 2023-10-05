@@ -10,6 +10,7 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import jakarta.data.model.Attribute;
 import jakarta.data.model.StaticMetamodel;
 
 /**
@@ -17,10 +18,10 @@ import jakarta.data.model.StaticMetamodel;
  */
 @StaticMetamodel(City.class)
 public class CityAttrNames2 {
-    public static volatile String areaCodes;
-    public static volatile String changeCount;
-    public static volatile String id;
-    public static volatile String ignore = "do-not-replace";
+    public static final Attribute areaCodes = Attribute.get();
+    public static final Attribute changeCount = Attribute.get();
+    public static final Attribute id = Attribute.get();
+    public static final Attribute ignore = Attribute.get();
     public static volatile long population; // ignored due to data type
-    public static final String name = "do-not-replace-final";
+    public static final Attribute name = null;
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import jakarta.data.model.Attribute;
 import jakarta.data.model.StaticMetamodel;
 
 /**
@@ -17,7 +18,7 @@ import jakarta.data.model.StaticMetamodel;
  */
 @StaticMetamodel(City.class)
 public class CityAttrNames1 {
-    public static volatile String name = "replace-this-with-the-field-name";
-    public static volatile String stateName;
-    public static volatile String population;
+    public static final Attribute name = Attribute.get();
+    public static final Attribute stateName = Attribute.get();
+    public static final Attribute population = Attribute.get();
 }
