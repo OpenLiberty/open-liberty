@@ -78,7 +78,9 @@ public class ComputedMetricsTest {
     
     @Before
     public void startTest() throws Exception {
-        Log.info(c,"startTest", "------- Starting server ------");
+        String testName = "startTest";
+
+        Log.info(c, testName, "------- Starting server ------");
         computedMetricsServer.startServer();
         waitForSecurityPrerequisites(computedMetricsServer, 60000);
         computedMetricsServer.setMarkToEndOfLog(computedMetricsServer.getMostRecentTraceFile());
@@ -89,9 +91,19 @@ public class ComputedMetricsTest {
 
     @After
     public void tearDown() throws Exception {
+        String testName = "tearDown";
+        
         if (computedMetricsServer != null && computedMetricsServer.isStarted()) {
+            Log.info(c, testName, "------- Stopping server ------");
             computedMetricsServer.stopServer("");
         }
+        
+        // Remove the created data sources after each test
+        Log.info(c, testName, "------- Removing Data sources. ------");
+        computedMetricsServer.deleteDirectoryFromLibertyServerRoot("exampleDS1");
+        computedMetricsServer.deleteDirectoryFromLibertyServerRoot("exampleDS2");
+
+        Log.info(c, testName, "------- Restoring server configuration. ------");
         computedMetricsServer.restoreServerConfiguration();
     }
 
@@ -276,8 +288,14 @@ public class ComputedMetricsTest {
         checkForExpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), computedMetrics);
 
         Log.info(c, testName, "------- Set Monitor filter to ThreadPool and Session  ------");
+        computedMetricsServer.setMarkToEndOfLog();
         computedMetricsServer.setServerConfigurationFile("server_monitorFilter5.xml");
+        
+        // Ensure the server configuration is completed.
         Assert.assertNotNull("CWWKG0017I was not found, server config did not update properly.", computedMetricsServer.waitForStringInLogUsingMark("CWWKG0017I"));
+        
+        Log.info(c, testName, "------- Hitting the testJDBC application endpoint again for the Connection Pool metrics ------");
+        getHttpServlet("/testJDBCApp/testJDBCServlet?operation=select&city=city1&id=id1", computedMetricsServer);
 
         Log.info(c, testName,"------- The Connection Pool and corresponding Servlet computed metrics should NOT be available ------");
         checkForExpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), ALWAYS_EXPECTED_COMPUTED_METRICS);
@@ -664,8 +682,7 @@ public class ComputedMetricsTest {
             String sep = System.getProperty("line.separator");
             String line = null;
             StringBuilder lines = new StringBuilder();
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
+            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
             while ((line = br.readLine()) != null && line.length() > 0) {
                 if (!line.startsWith("#"))
