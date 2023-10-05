@@ -53,6 +53,8 @@ public class DBRotationTest extends FATServletClient {
     public static final String SERVLET_NAME = APP_NAME + "/Simple2PCCloudServlet";
     private static final String APP_PATH = "../com.ibm.ws.transaction.cloud_fat.base/";
     protected static final int cloud2ServerPort = 9992;
+    protected static final int longLeaseServerPortB = 9993;
+    protected static final int longLeaseServerPortC = 9994;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001")
     public static LibertyServer server1;
@@ -71,6 +73,15 @@ public class DBRotationTest extends FATServletClient {
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.noShutdown")
     public static LibertyServer noShutdownServer1;
+
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleaseA")
+    public static LibertyServer longLeaseServerA;
+
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleaseB")
+    public static LibertyServer longLeaseServerB;
+
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleaseC")
+    public static LibertyServer longLeaseServerC;
 
     public static String[] serverNames = new String[] {
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001",
@@ -104,6 +115,9 @@ public class DBRotationTest extends FATServletClient {
         ShrinkHelper.exportAppToServer(longLeaseLogFailServer1, app, dO);
         ShrinkHelper.exportAppToServer(noShutdownServer1, app, dO);
         ShrinkHelper.exportAppToServer(server2nopeerlocking, app, dO);
+        ShrinkHelper.exportAppToServer(longLeaseServerA, app, dO);
+        ShrinkHelper.exportAppToServer(longLeaseServerB, app, dO);
+        ShrinkHelper.exportAppToServer(longLeaseServerC, app, dO);
     }
 
     public static void setUp(LibertyServer server) throws Exception {
@@ -321,6 +335,18 @@ public class DBRotationTest extends FATServletClient {
         assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
     }
 
+    /**
+     * The test is the inverse of testPeerTakeoverFailure() and checks recovery log locking in a peer server environment when the
+     * enableDBLogPeerLocking attribute has been set to FALSE.
+     *
+     * Start 2 servers, com.ibm.ws.transaction_ANYDBCLOUD001.longleaselogfail which is configured with a long (5 minute) leaseTimeout
+     * and com.ibm.ws.transaction_ANYDBCLOUD002 which is configured with a 20 second leaseTimeout. com.ibm.ws.transaction_ANYDBCLOUD002
+     * does not know that com.ibm.ws.transaction_ANYDBCLOUD001.longleaselogfail has a much longer leaseTimeout configured so it will prematurely
+     * (from com.ibm.ws.transaction_ANYDBCLOUD001.longleaselogfail's point of view) attempt to
+     * acquire com.ibm.ws.transaction_ANYDBCLOUD001.longleaselogfail's logs. In this case, the takeover will succeed.
+     *
+     * @throws Exception
+     */
     @Test
     @AllowedFFDC(value = { "java.lang.IllegalStateException" })
     public void testLogFailure() throws Exception {
@@ -407,7 +433,6 @@ public class DBRotationTest extends FATServletClient {
     public void testBackwardCompatibility() throws Exception {
         final String method = "testBackwardCompatibility";
 
-
         serversToCleanup = new LibertyServer[] { server1 };
 
         FATUtils.startServers(runner, server1);
@@ -423,6 +448,133 @@ public class DBRotationTest extends FATServletClient {
 
         // Now tidy up after test
         runTest(server1, SERVLET_NAME, "tidyupV1LeaseLog");
+    }
+
+    /**
+     * The test is the inverse of testLogFailure() and checks recovery log locking in a peer server environment.
+     *
+     * Start 2 servers, com.ibm.ws.transaction_ANYDBCLOUD001.longleaseA which is configured with a long (5 minute) leaseTimeout
+     * and com.ibm.ws.transaction_ANYDBCLOUD002 which is configured with a 20 second leaseTimeout. com.ibm.ws.transaction_ANYDBCLOUD002
+     * does not know that com.ibm.ws.transaction_ANYDBCLOUD001.longleaseA has a much longer leaseTimeout configured so it will prematurely
+     * (from com.ibm.ws.transaction_ANYDBCLOUD001.longleaseA's point of view) attempt to
+     * acquire com.ibm.ws.transaction_ANYDBCLOUD001.longleaseA's logs. In the database case, the takeover will fail because peer database log
+     * locking is enabled by default and com.ibm.ws.transaction_ANYDBCLOUD001.longleaseA "still holds its lock" on its logs.
+     *
+     * @throws Exception
+     */
+    @Test
+    @AllowedFFDC(value = { "java.lang.IllegalStateException" })
+    public void testPeerTakeoverFailure() throws Exception {
+        final String method = "testPeerTakeoverFailure";
+        //Servers are concurrent, disable for standalone Derby database which will fail
+        if (DatabaseContainerType.valueOf(TxTestContainerSuite.testContainer) == DatabaseContainerType.Derby) {
+            return;
+        }
+        serversToCleanup = new LibertyServer[] { longLeaseServerA, server2 };
+
+        longLeaseServerA.setFFDCChecking(false);
+        server2.setHttpDefaultPort(cloud2ServerPort);
+        try {
+            FATUtils.startServers(runner, longLeaseServerA);
+        } catch (Exception e) {
+            Log.error(this.getClass(), method, e);
+            // If we're here, the test will fail but we need to make sure the server has stopped so the next test has a chance
+            FATUtils.stopServers(longLeaseServerA);
+            throw e;
+        }
+
+        // This sleep allows considerable time for the environment to settle and to be "sure" that the longLeaseLengthFSFail server has
+        // started and recovered.
+        try {
+            Thread.sleep(1000 * 20);
+        } catch (Exception ex) {
+            Log.info(this.getClass(), method, "sleep ended early");
+        }
+
+        try {
+            FATUtils.startServers(runner, server2);
+        } catch (Exception e) {
+            Log.error(this.getClass(), method, e);
+            // If we're here, the test will fail but we need to make sure the server has stopped so the next test has a chance
+            FATUtils.stopServers(server2);
+            throw e;
+        }
+
+        // FSCLOUD002.lease10 does not know that longLeaseLengthFSFail has a much longer leaseTimeout configured so it will prematurely
+        // (from longLeaseLengthFSFail's point of view) attempt to acquire longLeaseLengthFSFail's log. In the filesystem case,
+        // the takeover will fail because longLeaseLengthFSFail still holds its coordination lock.
+
+        //  Check for key string to see whether peer recovery has failed
+        assertNotNull("peer recovery unexpectedly succeeded",
+                      server2.waitForStringInTrace("Peer Recovery failed for server with recovery identity cloud0011", LOG_SEARCH_TIMEOUT));
+
+        FATUtils.stopServers(longLeaseServerA, server2);
+
+        Log.info(this.getClass(), method, "test complete");
+    }
+
+    /**
+     * The test checks recovery log locking in a peer server environment in the presence of multiple servers.
+     *
+     * Start 3 servers, longleaseA, longleaseB and longleaseC which are configured with a long (5 minute)
+     * leaseTimeout and then start server2 which is configured with a 20 second leaseTimeout. server2 does not know that
+     * the other 3 servers have a much longer leaseTimeout configured so it will prematurely (from the other servers' point of view) attempt to
+     * acquire their logs. In the database case, the takeover will fail because peer database log
+     * locking is enabled by default longleaseA, longleaseB and longleaseC "still holds their locks" on their logs.
+     *
+     * @throws Exception
+     */
+    @Test
+    @AllowedFFDC(value = { "java.lang.IllegalStateException" })
+    public void testMultiPeerTakeoverFailure() throws Exception {
+        final String method = "testMultiPeerTakeoverFailure";
+        //Servers are concurrent, disable for standalone Derby database which will fail
+        if (DatabaseContainerType.valueOf(TxTestContainerSuite.testContainer) == DatabaseContainerType.Derby) {
+            return;
+        }
+        serversToCleanup = new LibertyServer[] { longLeaseServerA, server2, longLeaseServerB, longLeaseServerC };
+
+        longLeaseServerA.setFFDCChecking(false);
+        server2.setHttpDefaultPort(cloud2ServerPort);
+        longLeaseServerB.setHttpDefaultPort(longLeaseServerPortB);
+        longLeaseServerC.setHttpDefaultPort(longLeaseServerPortC);
+        try {
+            FATUtils.startServers(runner, longLeaseServerA, longLeaseServerB, longLeaseServerC);
+        } catch (Exception e) {
+            Log.error(this.getClass(), method, e);
+            // If we're here, the test will fail but we need to make sure the server has stopped so the next test has a chance
+            FATUtils.stopServers(longLeaseServerA, longLeaseServerB, longLeaseServerC);
+            throw e;
+        }
+
+        // This sleep allows considerable time for the environment to settle and to be "sure" that the 3 servers with long leaseTimeouts have
+        // started and recovered.
+        try {
+            Thread.sleep(1000 * 20);
+        } catch (Exception ex) {
+            Log.info(this.getClass(), method, "sleep ended early");
+        }
+
+        try {
+            FATUtils.startServers(runner, server2);
+        } catch (Exception e) {
+            Log.error(this.getClass(), method, e);
+            // If we're here, the test will fail but we need to make sure the server has stopped so the next test has a chance
+            FATUtils.stopServers(server2);
+            throw e;
+        }
+
+        // FSCLOUD002.lease10 does not know that the other 3 servers have a much longer leaseTimeout configured so it will prematurely
+        // attempt to acquire the other servers' logs. In the filesystem case, the takeover will fail because the other 3 servers
+        // still holds their coordination locks.
+
+        //  Check for key string to see whether peer recovery has failed
+        assertNotNull("First peer recovery unexpectedly succeeded",
+                      server2.waitForStringInTrace("Peer Recovery failed for server with recovery identity cloud001", LOG_SEARCH_TIMEOUT));
+
+        FATUtils.stopServers(longLeaseServerA, longLeaseServerB, longLeaseServerC, server2);
+
+        Log.info(this.getClass(), method, "test complete");
     }
 
     // Returns false if the server is alive, throws Exception otherwise
