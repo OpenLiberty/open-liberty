@@ -538,6 +538,7 @@ public class DBRotationTest extends FATServletClient {
         server2.setHttpDefaultPort(cloud2ServerPort);
         longLeaseServerB.setHttpDefaultPort(longLeaseServerPortB);
         longLeaseServerC.setHttpDefaultPort(longLeaseServerPortC);
+
         try {
             FATUtils.startServers(runner, longLeaseServerA, longLeaseServerB, longLeaseServerC);
         } catch (Exception e) {
