@@ -10,7 +10,7 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
-import jakarta.data.StaticMetamodel;
+import jakarta.data.model.StaticMetamodel;
 
 /**
  * Static metamodel for an non-JPA entity type to ignore.

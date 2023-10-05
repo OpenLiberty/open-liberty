@@ -10,25 +10,21 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data;
+package jakarta.data.model;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import jakarta.data.Sort;
 
 /**
- * To propose in Jakarta Data.
+ * Method signatures are copied from Jakarta Data.
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface StaticMetamodel {
-    /**
-     * An entity class.
-     *
-     * @return the entity class.
-     */
-    Class<?> value();
+public interface AttributeInfo {
+    Sort asc();
+
+    Sort ascIgnoreCase();
+
+    Sort desc();
+
+    Sort descIgnoreCase();
+
+    String name();
 }
