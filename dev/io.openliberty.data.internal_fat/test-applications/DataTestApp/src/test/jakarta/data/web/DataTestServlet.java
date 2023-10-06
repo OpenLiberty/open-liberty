@@ -3384,10 +3384,10 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Tests all CrudRepository methods with a record as the entity.
+     * Tests all BasicRepository methods with a record as the entity.
      */
     @Test
-    public void testRecordCrudRepositoryMethods() {
+    public void testRecordBasicRepositoryMethods() {
         receipts.deleteAll();
 
         receipts.save(new Receipt(100L, "C0013-00-031", 101.90f));
@@ -3432,6 +3432,75 @@ public class DataTestServlet extends FATServlet {
                                    new Receipt(700L, "C0067-00-076", 17.99f)));
 
         assertEquals(2L, receipts.count());
+
+        receipts.deleteAll();
+
+        assertEquals(0L, receipts.count());
+    }
+
+    /**
+     * Tests all BasicRepository methods with a record as the entity.
+     */
+    @Test
+    public void testRecordCrudRepositoryMethods() {
+        receipts.deleteAll();
+
+        receipts.insert(new Receipt(1200L, "C0002-12-002", 102.20f));
+
+        receipts.insertAll(Set.of(new Receipt(1300L, "C0033-13-003", 130.13f),
+                                  new Receipt(1400L, "C0040-14-004", 14.40f),
+                                  new Receipt(1500L, "C0005-15-005", 105.50f),
+                                  new Receipt(1600L, "C0006-16-006", 600.16f)));
+
+        try {
+            receipts.insert(new Receipt(1200L, "C0002-10-002", 22.99f));
+            fail("Inserted an entity with an Id that already exists.");
+        } catch (EntityExistsException x) {
+            // expected
+        }
+
+        // Ensure that the entity that already exists was not modified by insert
+        Receipt r = receipts.findById(1200L).orElseThrow();
+        assertEquals(1200L, r.purchaseId());
+        assertEquals("C0002-12-002", r.customer());
+        assertEquals(102.20f, r.total(), 0.001f);
+
+        try {
+            receipts.insertAll(Set.of(new Receipt(1700L, "C0017-17-007", 177.70f),
+                                      new Receipt(1500L, "C0055-15-005", 55.55f),
+                                      new Receipt(1800L, "C0008-18-008", 180.18f)));
+            fail("insertAll must fail when one of the entities has an Id that already exists.");
+        } catch (EntityExistsException x) {
+            // expected
+        }
+
+        // Ensure that insertAll inserted no entities when one had an Id that already exists
+        assertEquals(false, receipts.update(new Receipt(1700L, "C0017-17-007", 77.70f)));
+        assertEquals(false, receipts.update(new Receipt(1800L, "C0018-18-008", 88.80f)));
+
+        // Ensure that the entity that already exists was not modified by insertAll
+        r = receipts.findById(1500L).orElseThrow();
+        assertEquals(1500L, r.purchaseId());
+        assertEquals("C0005-15-005", r.customer());
+        assertEquals(105.50f, r.total(), 0.001f);
+
+        // Update single entity that exists
+        assertEquals(true, receipts.update(new Receipt(1600L, "C0060-16-006", 600.16f)));
+
+        // Update multiple entities, if they exist
+        assertEquals(2, receipts.updateAll(List.of(new Receipt(1400L, "C0040-14-044", 14.41f),
+                                                   new Receipt(1900L, "C0009-19-009", 199.99f),
+                                                   new Receipt(1200L, "C0002-12-002", 112.20f))));
+
+        // Verify the updates
+        assertEquals(List.of(new Receipt(1200L, "C0002-12-002", 112.20f), // updated by updateAll
+                             new Receipt(1300L, "C0033-13-003", 130.13f),
+                             new Receipt(1400L, "C0040-14-044", 14.41f), // updated by updateAll
+                             new Receipt(1500L, "C0005-15-005", 105.50f),
+                             new Receipt(1600L, "C0060-16-006", 600.16f)), // updated by update
+                     receipts.findAll()
+                                     .sorted(Comparator.comparing(Receipt::purchaseId))
+                                     .collect(Collectors.toList()));
 
         receipts.deleteAll();
 

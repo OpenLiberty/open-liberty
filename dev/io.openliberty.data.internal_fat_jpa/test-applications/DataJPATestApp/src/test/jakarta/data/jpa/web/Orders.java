@@ -13,8 +13,11 @@
 package test.jakarta.data.jpa.web;
 
 import java.util.List;
+import java.util.Optional;
 
-import jakarta.data.repository.BasicRepository;
+import jakarta.data.Sort;
+import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
@@ -23,12 +26,15 @@ import jakarta.data.repository.Repository;
  * Experiments with auto-generated keys.
  */
 @Repository
-public interface Orders extends BasicRepository<Order, Long> {
+public interface Orders extends CrudRepository<Order, Long> {
 
     @Query("UPDATE Orders o SET o.total = o.total * :rate + :shipping WHERE o.id = :id")
     boolean addTaxAndShipping(@Param("id") long orderId,
                               @Param("rate") float taxRate,
                               @Param("shipping") float shippingCost);
 
-    List<Float> findTotalByPurchasedByIn(Iterable<String> purchasers);
+    @OrderBy("id")
+    Optional<Order> findFirstByPurchasedBy(String purchaser);
+
+    List<Float> findTotalByPurchasedByIn(Iterable<String> purchasers, Sort... sorts);
 }

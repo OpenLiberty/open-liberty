@@ -47,6 +47,7 @@ import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.data.Limit;
 import jakarta.data.Sort;
 import jakarta.data.Streamable;
+import jakarta.data.exceptions.EntityExistsException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.page.KeysetAwarePage;
@@ -886,7 +887,8 @@ public class DataJPATestServlet extends FATServlet {
         o3.purchasedBy = "testEntitiesAsParameters-Customer3";
         o3.purchasedOn = OffsetDateTime.now();
         o3.total = 30.99f;
-        o3 = orders.save(o3);
+        orders.insert(o3);
+        o3 = orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer3").orElseThrow();
 
         Order o4 = new Order();
         o4.purchasedBy = "testEntitiesAsParameters-Customer4";
@@ -984,6 +986,60 @@ public class DataJPATestServlet extends FATServlet {
         assertNotNull(o = map.get("testEntitiesAsParameters-Customer5"));
         assertEquals(50.99f, o.total, 0.001f);
         assertEquals(o5_v1, o.versionNum); // never updated
+
+        Order o7 = new Order();
+        o7.purchasedBy = "testEntitiesAsParameters-Customer7";
+        o7.purchasedOn = OffsetDateTime.now();
+        o7.total = 70.99f;
+
+        try {
+            orders.insertAll(List.of(o7, o5));
+            fail("Should not be able insert an entity with an Id that is already present.");
+        } catch (EntityExistsException x) {
+            // expected
+        }
+
+        assertEquals(false, orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer7").isPresent());
+
+        Order o8 = new Order();
+        o8.purchasedBy = "testEntitiesAsParameters-Customer8";
+        o8.purchasedOn = OffsetDateTime.now();
+        o8.total = 80.99f;
+
+        orders.insertAll(Set.of(o7, o8));
+
+        o7 = orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer7").orElseThrow();
+        o8 = orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer8").orElseThrow();
+
+        o7.total = 77.99f;
+        o8.total = 88.99f;
+        o1.total = 1.99f;
+        o1.versionNum = o1_v1;
+
+        assertEquals(2, orders.updateAll(List.of(o8, o1, o7)));
+
+        List<Float> totals = orders.findTotalByPurchasedByIn(Set.of("testEntitiesAsParameters-Customer8",
+                                                                    "testEntitiesAsParameters-Customer7",
+                                                                    "testEntitiesAsParameters-Customer1"),
+                                                             Sort.desc("total"));
+        assertEquals(totals.toString(), 3, totals.size());
+        assertEquals(88.99f, totals.get(0), 0.001f);
+        assertEquals(77.99f, totals.get(1), 0.001f);
+        assertEquals(11.99f, totals.get(2), 0.001f); // not updated due to version mismatch
+
+        assertEquals(false, orders.update(o1));
+
+        assertEquals(11.99f, totals.get(2), 0.001f); // still not updated due to version mismatch
+
+        // use correct version for update:
+        o1 = orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer1").orElseThrow();
+        o1.total = 0.99f;
+
+        assertEquals(true, orders.update(o1));
+
+        totals = orders.findTotalByPurchasedByIn(Set.of("testEntitiesAsParameters-Customer1"));
+        assertEquals(totals.toString(), 1, totals.size());
+        assertEquals(0.99f, totals.get(0), 0.001f);
 
         orders.deleteAll();
     }
