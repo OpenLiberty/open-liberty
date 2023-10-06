@@ -30,7 +30,7 @@ import javax.enterprise.inject.spi.Extension;
  * <p>
  * Classes returned from {@code getExtensions()} must implement {@link javax.enterprise.inject.spi.Extension}. They do <b>not</b> and should not be listed in a
  * {@code META-INF/services} file. It is best practice not to put CDIExtensionMetaData and {@code javax.enterprise.inject.spi.Extension} on the same class
- * as that will result in CDI and OSGI independently instantiating the class. Even though it is unlikely for the two instances to conflict,
+ * as that will result in CDI and OSGi independently instantiating the class. Even though it is unlikely for the two instances to conflict,
  * it is best to keep the OSGI service and CDI extension separate.
  * <p>
  * The class that implements this interface should be registered as an OSGi service, for example by annotating it with
