@@ -48,6 +48,7 @@ import javax.enterprise.inject.spi.Extension;
  *         Set&lt;Class&lt;?&gt;&gt; beans = new HashSet&lt;Class&lt;?&gt;&gt;();
  *         //This will register a producer class and expose it's produced beans to applications
  *         beans.add(ClassSPIRegisteredProducer.class);
+ *         return beans;
  *     }
  * }
  * </pre>
