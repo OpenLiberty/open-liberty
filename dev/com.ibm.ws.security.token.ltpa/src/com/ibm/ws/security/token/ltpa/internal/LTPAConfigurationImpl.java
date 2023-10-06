@@ -106,6 +106,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private List<Properties> nonConfigValidationKeys = null;
     private final Collection<File> currentlyDeletedFiles = new HashSet<File>();
     private static final Collection<File> allKeysFiles = new HashSet<File>();
+    boolean isValidationKeysFileConfigured = false;
 
     protected void setExecutorService(ServiceReference<ExecutorService> ref) {
         executorService.setReference(ref);
@@ -158,13 +159,19 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         expirationDifferenceAllowed = (Long) props.get(KEY_EXP_DIFF_ALLOWED);
         monitorDirectory = (Boolean) props.get(CFG_KEY_MONITOR_DIRECTORY);
 
-        resolveActualPrimaryKeysFileLocation();
-
         //get all validationKeys elements
         Map<String, List<Map<String, Object>>> validationKeysElements = Nester.nest(props, CFG_KEY_VALIDATION_KEYS);
         if (!validationKeysElements.isEmpty()) {
+            isValidationKeysFileConfigured = !validationKeysElements.get(CFG_KEY_VALIDATION_KEYS).isEmpty();
+        }
+
+        resolveActualPrimaryKeysFileLocation();
+
+        if (isValidationKeysFileConfigured) {
             configValidationKeys = getConfigValidationKeys(validationKeysElements, CFG_KEY_VALIDATION_KEYS, CFG_KEY_VALIDATION_FILE_NAME, CFG_KEY_VALIDATION_PASSWORD,
                                                            CFG_KEY_VALIDATION_NOT_USE_AFTER_DATE);
+        } else {
+            configValidationKeys = null;
         }
 
         if (monitorDirectory) {
@@ -272,12 +279,14 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             }
         }
 
-        try {
-            // primaryKeyImportFile has already been resolved when the server loads the config, this includes variable and .. being resolved.
-            primaryKeyImportDir = new File(primaryKeyImportFile).getCanonicalFile().getParent() + File.separator;
-        } catch (IOException e) {
-            FFDCFilter.processException(e, getClass().getName(), "resolveActualPrimaryKeysFileLocation");
-            Tr.error(tc, "LTPA_KEYS_FILE_DOES_NOT_EXIST", primaryKeyImportFile);
+        if (monitorDirectory || isValidationKeysFileConfigured) {
+            try {
+                // primaryKeyImportFile has already been resolved when the server loads the config, this includes variable and .. being resolved.
+                primaryKeyImportDir = new File(primaryKeyImportFile).getCanonicalFile().getParent() + File.separator;
+            } catch (IOException e) {
+                FFDCFilter.processException(e, getClass().getName(), "resolveActualPrimaryKeysFileLocation");
+                Tr.error(tc, "LTPA_KEYS_FILE_DOES_NOT_EXIST", primaryKeyImportFile);
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
