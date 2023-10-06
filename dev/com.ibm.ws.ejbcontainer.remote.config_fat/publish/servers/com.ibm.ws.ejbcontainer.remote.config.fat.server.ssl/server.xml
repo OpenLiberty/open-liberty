@@ -1,0 +1,40 @@
+<server>
+    <featureManager>
+        <feature>appSecurity-2.0</feature>
+        <feature>ejbHome-3.2</feature>
+        <feature>ejbRemote-3.2</feature>
+        <feature>servlet-3.1</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestCommon.xml" />
+
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}"/>
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}" >
+        <iiopsOptions iiopsPort="${bvt.prop.IIOP.secure}"  sslRef="defaultSSLConfig"/>
+    </iiopEndpoint>
+
+    <orb id="defaultOrb">
+        <serverPolicy.csiv2>
+            <layers>
+                <authenticationLayer establishTrustInClient="Supported" mechanisms="GSSUP"/>
+                <transportLayer sslRef="defaultSSLConfig"/>
+            </layers>
+        </serverPolicy.csiv2>
+        <clientPolicy.csiv2>
+            <layers>
+                <authenticationLayer establishTrustInClient="Supported" mechanisms="GSSUP" />
+                <transportLayer sslRef="defaultSSLConfig"/>
+            </layers>
+        </clientPolicy.csiv2>
+    </orb>
+
+    <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" clientAuthenticationSupported="true" />
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires1/4/2099 -->
+    <quickStartSecurity userName="bob" userPassword="mypwd" />
+
+</server>
