@@ -2117,16 +2117,28 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testStaticMetamodel() {
-        assertEquals("name", CityAttrNames1.name);
-        assertEquals("population", CityAttrNames1.population);
-        assertEquals("stateName", CityAttrNames1.stateName);
+        assertEquals("name", CityAttrNames1.name.name());
+        assertEquals(Sort.asc("population"), CityAttrNames1.population.asc());
+        assertEquals(Sort.ascIgnoreCase("stateName"), CityAttrNames1.stateName.ascIgnoreCase());
 
-        assertEquals("areaCodes", CityAttrNames2.areaCodes);
-        assertEquals("changeCount", CityAttrNames2.changeCount);
-        assertEquals(null, CityAttrNames2.id);
-        assertEquals("do-not-replace", CityAttrNames2.ignore);
+        assertEquals("areaCodes", CityAttrNames2.areaCodes.name());
+        assertEquals(Sort.desc("changeCount"), CityAttrNames2.changeCount.desc());
         assertEquals(0L, CityAttrNames2.population);
-        assertEquals("do-not-replace-final", CityAttrNames2.name);
+        assertEquals(null, CityAttrNames2.name);
+
+        try {
+            String name = CityAttrNames2.id.name();
+            fail("Metamodel should not initialize an id field when the entity has a compound unique identifier (IdClass): " + name);
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            Sort sort = CityAttrNames2.ignore.asc();
+            fail("Metamodel should not initialize fields that do not correspond to entity attributes: " + sort);
+        } catch (MappingException x) {
+            // expected
+        }
     }
 
     /**
@@ -2134,9 +2146,21 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testStaticMetamodelIgnoresNonJPAEntity() {
-        assertEquals(null, EntityModelUnknown_.days);
-        assertEquals(null, EntityModelUnknown_.months);
-        assertEquals("do-not-replace-this", EntityModelUnknown_.years);
+        try {
+            Sort sort = EntityModelUnknown_.days.desc();
+            fail("Metamodel should not initialize fields for a non-entity or unrecognized entity: " + sort);
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            String name = EntityModelUnknown_.months.name();
+            fail("Metamodel should not initialize fields for a non-entity or unrecognized entity: " + name);
+        } catch (MappingException x) {
+            // expected
+        }
+
+        assertEquals(null, EntityModelUnknown_.years);
     }
 
     /**

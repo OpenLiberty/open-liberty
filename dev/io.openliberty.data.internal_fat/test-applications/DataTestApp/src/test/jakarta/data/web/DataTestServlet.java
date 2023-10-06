@@ -1064,8 +1064,8 @@ public class DataTestServlet extends FATServlet {
                              "TestEmbeddable-104-2288-60",
                              "TestEmbeddable-304-3655-30"),
                      houses.findByAreaGreaterThan(1500,
-                                                  Sort.desc(House_.numBedrooms),
-                                                  Sort.asc(House_.LotSize))
+                                                  Sort.desc(House_.numBedrooms.name()),
+                                                  Sort.asc(House_.LotSize.name()))
                                      .map(house -> house.parcelId)
                                      .collect(Collectors.toList()));
 
@@ -1074,9 +1074,9 @@ public class DataTestServlet extends FATServlet {
                              "TestEmbeddable-104-2288-60",
                              "TestEmbeddable-204-2992-20"),
                      houses.findByAreaGreaterThan(1400,
-                                                  Sort.desc(House_.garage_door_height),
-                                                  Sort.asc(House_.kitchen_width),
-                                                  Sort.asc(House_.AREA))
+                                                  House_.garage_door_height.desc(),
+                                                  House_.kitchen_width.asc(),
+                                                  House_.AREA.asc())
                                      .map(house -> house.parcelId)
                                      .collect(Collectors.toList()));
 
@@ -1085,7 +1085,7 @@ public class DataTestServlet extends FATServlet {
                              "TestEmbeddable-204-2992-20",
                              "TestEmbeddable-104-2288-60"),
                      houses.findByAreaGreaterThan(1300,
-                                                  Sort.desc(House_.parcelid))
+                                                  House_.parcelid.descIgnoreCase())
                                      .map(house -> house.parcelId)
                                      .collect(Collectors.toList()));
 
@@ -1094,7 +1094,7 @@ public class DataTestServlet extends FATServlet {
                              "TestEmbeddable-304-3655-30",
                              "TestEmbeddable-404-4418-40"),
                      houses.findByAreaGreaterThan(1200,
-                                                  Sort.asc(House_.id))
+                                                  House_.id.ascIgnoreCase())
                                      .map(house -> house.parcelId)
                                      .collect(Collectors.toList()));
 
