@@ -55,7 +55,7 @@ public class DefaultHistogramBucketsTest {
 
 	private static Class<?> c = LibraryRefTest.class;
 
-	@Server("defaultBucketServer")
+	@Server("DefaultBucketServer")
 	public static LibertyServer server;
 
 	@BeforeClass
