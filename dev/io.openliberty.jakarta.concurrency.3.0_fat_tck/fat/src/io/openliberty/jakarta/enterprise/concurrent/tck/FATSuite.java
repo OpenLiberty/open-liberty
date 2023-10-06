@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -112,6 +112,9 @@ public class FATSuite {
             Log.info(ConcurrentTckLauncherFull.class, "createSuiteXML", "Skipping Signature Tests on unsupported JDK");
             specExcludes.add("ee.jakarta.tck.concurrent.spec.signature");
         }
+
+        // Skip LastExecutionTests due to bug in TCK: https://github.com/jakartaee/concurrency/issues/258
+        apiExcludes.add("ee.jakarta.tck.concurrent.api.LastExecution");
 
         apiPackage.setExclude(new ArrayList<String>(apiExcludes));
         specPackage.setExclude(new ArrayList<String>(specExcludes));
