@@ -1,14 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2021, 2022 IBM Corporation and others.
+# Copyright (c) 2021, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -22,6 +19,7 @@ Bundle-Description: gRPC Client Monitor, version ${bVersion}
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
   !*.internal.*, \
+  !com.google.errorprone.*,\
   com.ibm.websphere.monitor.meters;version="1.0.0", \
   com.ibm.websphere.monitor.annotation;version="1.0.0", \
   com.ibm.websphere.monitor.jmx;version="1.0.0", \
