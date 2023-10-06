@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.objectweb.asm.ClassReader;
@@ -42,43 +43,43 @@ import com.ibm.ws.ras.instrument.internal.xml.TraceConfigFileParser;
  * class files and class files in jars with trace.
  */
 public class StaticTraceInstrumentation extends AbstractInstrumentation {
-	public static final String CLASS_NAME = "StaticInstrumentation";
+    public static final String CLASS_NAME = "StaticInstrumentation";
 
-	public static boolean isLoggable(String className) {
-		return FileLogger.isLoggable(className);
-	}
+    public static boolean isLoggable(String className) {
+        return FileLogger.isLoggable(className);
+    }
 
-	public PrintWriter fileWriter() {
-		return FileLogger.fileWriter();
-	}
+    public PrintWriter fileWriter() {
+        return FileLogger.fileWriter();
+    }
 
-	public byte[] read(InputStream inputStream) throws IOException {
-		return FileLogger.read(inputStream);
-	}
+    public byte[] read(InputStream inputStream) throws IOException {
+        return FileLogger.read(inputStream);
+    }
 
-	public static void fileLog(String methodName, String text) {
-		FileLogger.fileLog(CLASS_NAME, methodName, text);
-	}
-	
-	public static void fileLog(String methodName, String text, Object value) {
-		FileLogger.fileLog(CLASS_NAME, methodName, text, value);
-	}
-	
-	public static void fileDump(String methodName, String text, byte[] bytes) {
-		FileLogger.fileDump(CLASS_NAME, methodName, text, bytes);
-	}	
-	
-	public static void fileStack(String methodName, String text, Throwable th) {
-		FileLogger.fileStack(CLASS_NAME, methodName, text, th);
-	}	
+    public static void fileLog(String methodName, String text) {
+        FileLogger.fileLog(CLASS_NAME, methodName, text);
+    }
+    
+    public static void fileLog(String methodName, String text, Object value) {
+        FileLogger.fileLog(CLASS_NAME, methodName, text, value);
+    }
+    
+    public static void fileDump(String methodName, String text, byte[] bytes) {
+        FileLogger.fileDump(CLASS_NAME, methodName, text, bytes);
+    }   
+    
+    public static void fileStack(String methodName, String text, Throwable th) {
+        FileLogger.fileStack(CLASS_NAME, methodName, text, th);
+    }   
 
-	static {
-		fileLog("<init>", "Initializing");
-	}
+    static {
+        fileLog("<init>", "Initializing");
+    }
 
-	//
+    //
 
-	protected boolean introspectAnnotations = true;
+    protected boolean introspectAnnotations = true;
     protected boolean instrumentWithFFDC = false;
     protected boolean computeFrames = false;
     protected TraceType traceType = TraceType.TR;
@@ -89,7 +90,9 @@ public class StaticTraceInstrumentation extends AbstractInstrumentation {
     /**
      * Public default constructor to allow for programmatic use of the class.
      */
-    public StaticTraceInstrumentation() {}
+    public StaticTraceInstrumentation() {
+        // EMPTY
+    }
 
     /**
      * Enable or disable the generation of calls to FFDC.
@@ -154,126 +157,125 @@ public class StaticTraceInstrumentation extends AbstractInstrumentation {
      *         been instrumented.
      * 
      * @throws IOException if an error is encountered while reading from
-     *             the <code>InputStream</code>
+     *         the <code>InputStream</code>
      */
     @Override
     final protected byte[] transform(String className, InputStream classStream) throws IOException {
-    	String methodName = "transform";
-    	boolean isLoggable = isLoggable(className);
-    	
-    	if ( isLoggable ) {        	            	
-    		fileLog(methodName, "Class", className);
-    	}
+        String methodName = "transform";
+        boolean isLoggable = isLoggable(className);
+        
+        if ( isLoggable ) {                         
+            fileLog(methodName, "Class", className);
+        }
 
-    	// To keep the processing simple, read in the entire class stream
-    	// initially, then re-use it for the read of the class data and
-    	// for the actual transformation.
-    	//
-    	// The class bytes should be 'reasonably' small.  Also, doing this
-    	// read early puts the read overhead all in one spot.
+        // To keep the processing simple, read in the entire class stream
+        // initially, then re-use it for the read of the class data and
+        // for the actual transformation.
+        //
+        // The class bytes should be 'reasonably' small.  Also, doing this
+        // read early puts the read overhead all in one spot.
 
-    	byte[] initialBytes;
-    	try {
-    		initialBytes = read(classStream);
-    	} catch ( IOException e ) {
-        	fileStack(methodName, "Read failure [ " + className + " ]", e);
-        	return null;
-    	}
+        byte[] initialBytes;
+        try {
+            initialBytes = read(classStream);
+        } catch ( IOException e ) {
+            fileStack(methodName, "Read failure [ " + className + " ]", e);
+            return null;
+        }
 
-        ClassInfo classInfo = readConfig(initialBytes);
+        ClassInfo classInfo = readConfig(className, initialBytes);
 
-        if ( !getInstrumentationOptions().isPackageIncluded(classInfo.getPackageName()) ) {
-        	if ( isLoggable ) {        	            	
-        		fileLog(methodName, "Ignore: Package not included", classInfo.getClassName());
-        	}
+        // Merging the class information does not change whether the class is enabled
+        // for instrumentation.
+
+        if ( !getInstrumentationOptions().isPackageIncluded( classInfo.getPackageName() ) ) {
+            if ( isLoggable ) {
+                fileLog(methodName, "Ignore: Package not included", classInfo.getClassName());
+            }
             return null;
         }
 
         classInfo = mergeClassConfigInfo(classInfo);
+
+        if ( isLoggable ) {
+            fileDump(methodName, "Initial bytes", initialBytes);
+        }
 
         // The reader is created early and is provided to the class writer
         // as a write optimization which helps when the writer is optimized
         // for 'mostly add' transformations.  See the ASM ClassWriter JavaDoc.
 
         ClassReader classReader = new ClassReader(initialBytes);
+        ClassWriter classWriter = createWriter(classReader);
+        ClassVisitor classVisitor = createVisitor( classInfo, classWriter, isDebug() || isLoggable );
 
-        // A class writer is at the bottom of the stack, as it receives all
-        // visit perturbations from the other visitors.  The writer must be
-        // remembered, as it provides the final, transformed class bytes.
+        int readOptions = ( isComputeFrames() ? ClassReader.EXPAND_FRAMES : 0 );
 
-        int writeOptions = isComputeFrames() ? ClassWriter.COMPUTE_FRAMES : ClassWriter.COMPUTE_MAXS;
-        ClassWriter classWriter = new ClassWriter(classReader, writeOptions);
+        try {
+            classReader.accept(classVisitor, readOptions);
 
-        ClassVisitor visitor = classWriter;
-
-        // The check and trace visitors are next to last: They validate and display
-        // the perturbed class just before it reaches the writer.
-
-        if ( isDebug() || isLoggable ) {
-            visitor = new CheckClassAdapter(visitor);
-
-            PrintWriter traceWriter = ( isLoggable ? fileWriter() : null );
-            if ( traceWriter == null ) {
-            	traceWriter = new PrintWriter(System.out);
-            }
-            visitor = new TraceClassVisitor(visitor, traceWriter);
-        }
-
-        // Two trace injection adapters may be used: One for usual enter/exit
-        // trace injection and one to inject FFDC handling.
-        //
-        // There is (mostly) no point to running trace injection if neither
-        // adapter is in use.  That is probably never the case.
-
-        TraceType useTraceType = getTraceType();
-        if ( useTraceType == TraceType.JAVA_LOGGING ) {
-        	visitor = new JSR47TracingClassAdapter(visitor, classInfo);
-        } else if ( useTraceType == TraceType.TR ) {
-        	visitor = new WebSphereTrTracingClassAdapter(visitor, classInfo);
-        } else {
-        	// Don't inject entry/exit trace
-        }
-        if ( getInstrumentWithFFDC() ) {
-            visitor = new FFDCClassAdapter(visitor, classInfo);
-        }
-
-        // The SerialVersionUIDAdder adder must be the first visitor in
-        // the chain in order to calculate the serialVersionUID before
-        // the tracing class adapter mucks around and (possibly) adds a
-        // class static initializer.
-
-        visitor = new SerialVersionUIDAdder(visitor);
-
-        // Finally, visit the class.  Perturbed bytes are available from
-        // the class writer.
-        
-    	if ( isLoggable ) {
-    		fileDump(methodName, "Initial bytes", initialBytes);
-    	}
-
-    	int readOptions = ( isComputeFrames() ? ClassReader.EXPAND_FRAMES : 0 );
-    	try {
-            classReader.accept(visitor, readOptions);
         } catch ( Throwable t ) {
-        	fileStack(methodName, "Instrumentation failure [ " + className + " ]", t);
+            fileStack(methodName, "Instrumentation failure [ " + className + " ]", t);
+
+            if ( !isDebug() && !isLoggable ) {
+                classReader = new ClassReader(initialBytes);
+                classWriter = createWriter(classReader);
+                classVisitor = createVisitor(classInfo, classWriter, true);
+
+                try {
+                    classReader.accept(classVisitor, readOptions);
+                } catch ( Throwable innerThrowable ) {
+                    // Ignore
+                }
+            }
+
             throw new IOException("Unable to instrument class stream with trace", t);
         }
 
-    	byte[] finalBytes = classWriter.toByteArray();
-    	if ( isLoggable ) {
-    		fileDump(methodName, "Final bytes", initialBytes);
-    	}
+        byte[] finalBytes = classWriter.toByteArray();
+        if ( isLoggable ) {
+            fileDump(methodName, "Final bytes", initialBytes);
+        }
         return finalBytes;
     }
 
-    private ClassInfo readConfig(byte[] classBytes) throws IOException {
-    	// TFB: Returning null would cause an NPE when the
-    	//      caller attempted to obtain the package name.
-    	//
+    private ClassInfo readConfig(String className, byte[] classBytes) throws IOException {
+        String methodName = "readConfig";
+
+        ClassReader classReader = new ClassReader(classBytes);
+        ClassWriter classWriter = new ClassWriter(classReader, 0);
+
+        // Sets the ASM version opcode.  See the initializer.
+        TraceConfigClassVisitor classVisitor = new TraceConfigClassVisitor(classWriter);
+
+        classReader.accept(classVisitor, 0);
+
+        byte[] updatedClassBytes = classWriter.toByteArray();
+        if ( !Arrays.equals(classBytes, updatedClassBytes) ) {
+            fileLog(methodName, "Class [ " + className + " ] Change detected:");
+            fileDump(methodName, "Old bytes:", classBytes);
+            fileDump(methodName, "New bytes:", updatedClassBytes);
+        } else {
+            fileLog(methodName, "Class [ " + className + " ] Unchanged");
+        }
+
+        return classVisitor.getClassInfo();
+    }
+
+    // Updated step of reading class information.
+    // Note the step of rewriting the class bytes has been
+    // removed.  The trace configuration visitor is a read-only
+    // visitor.  There is no need to rewrite the class bytes.
+
+    private ClassInfo readConfig_new(byte[] classBytes) throws IOException {
+        // TFB: Returning null would cause an NPE when the
+        //      caller attempted to obtain the package name.
+        //
         // if ( !introspectAnnotations ) {
-    	//     return null;
+        //     return null;
         // }
 
+        // Sets the ASM version opcode.  See the initializer.
         TraceConfigClassVisitor classVisitor = new TraceConfigClassVisitor();
 
         ClassReader classReader = new ClassReader(classBytes);
@@ -281,6 +283,52 @@ public class StaticTraceInstrumentation extends AbstractInstrumentation {
 
         return classVisitor.getClassInfo();
     }
+
+    // Old step of reading class information.  Note the replacement of the
+    // class bytes with the class writer bytes.
+    //
+    // Per ClassWriter JavaDoc, the replaced bytes should be exactly the same,
+    // since no changes were made.
+    //
+    // See: https://asm.ow2.io/javadoc/org/objectweb/asm/ClassWriter.html#%3Cinit%3E(org.objectweb.asm.ClassReader,int), 
+    //
+    // Constructs a new ClassWriter object and enables optimizations
+    // for "mostly add" bytecode transformations. These optimizations
+    // are the following:
+    //
+    // The constant pool and bootstrap methods from the original class
+    // are copied as is in the new class, which saves time. New
+    // constant pool entries and new bootstrap methods will be added
+    // at the end if necessary, but unused constant pool entries or
+    // bootstrap methods won't be removed.
+    //
+    // Methods that are not transformed are copied as is in the new
+    // class, directly from the original class bytecode (i.e. without
+    // emitting visit events for all the method instructions), which
+    // saves a lot of time. Untransformed methods are detected by the
+    // fact that the ClassReader receives MethodVisitor objects that
+    // come from a ClassWriter (and not from any other ClassVisitor
+    // instance).
+    //
+    // TFB: I can't tell if the use of the trace config class visitor
+    //      breaks the "untransformed methods" detection strategy.
+    //
+    //    private ClassInfo readConfig_old(byte[] classBytes) throws IOException {
+    //        ClassReader classReader = new ClassReader(inputStream);
+    //        ClassWriter classWriter = new ClassWriter(classReader, 0);
+    //
+    //        // Sets the ASM version opcode.  See the initializer.
+    //        TraceConfigClassVisitor classVisitor = new TraceConfigClassVisitor(classWriter);
+    //
+    //        classReader.accept(classVisitor, 0);
+    //
+    //        ClassInfo classInfo = classVisitor.getClassInfo();
+    //
+    //        byte[] updatedClassBytes = classWriter.toByteArray();
+    //        InputStream classInputStream = new ByteArrayInputStream(updatedClassBytes);
+    //
+    //        return new ClassConfigData(classInputStream, classInfo);
+    //    }
 
     /**
      * Find process the package annotations present in the jars
@@ -313,6 +361,59 @@ public class StaticTraceInstrumentation extends AbstractInstrumentation {
         }
 
         return classInfo;
+    }
+
+    private ClassWriter createWriter(ClassReader classReader) {
+        int writeOptions = isComputeFrames() ? ClassWriter.COMPUTE_FRAMES : ClassWriter.COMPUTE_MAXS;
+        return new ClassWriter(classReader, writeOptions);
+    }
+
+    private ClassVisitor createVisitor(ClassInfo classInfo, ClassWriter classWriter, boolean isLoggable) {
+        // A class writer is at the bottom of the stack, as it receives all
+        // visit perturbations from the other visitors.  The writer must be
+        // remembered, as it provides the final, transformed class bytes.
+
+        ClassVisitor visitor = classWriter;
+
+        // The check and trace visitors are next to last: They validate and display
+        // the perturbed class just before it reaches the writer.
+
+        if ( isLoggable ) {
+            visitor = new CheckClassAdapter(visitor);
+
+            PrintWriter traceWriter = ( isLoggable ? fileWriter() : null );
+            if ( traceWriter == null ) {
+                traceWriter = new PrintWriter(System.out);
+            }
+            visitor = new TraceClassVisitor(visitor, traceWriter);
+        }
+
+        // Two trace injection adapters may be used: One for usual enter/exit
+        // trace injection and one to inject FFDC handling.
+        //
+        // There is (mostly) no point to running trace injection if neither
+        // adapter is in use.  That is probably never the case.
+
+        TraceType useTraceType = getTraceType();
+        if ( useTraceType == TraceType.JAVA_LOGGING ) {
+            visitor = new JSR47TracingClassAdapter(visitor, classInfo);
+        } else if ( useTraceType == TraceType.TR ) {
+            visitor = new WebSphereTrTracingClassAdapter(visitor, classInfo);
+        } else {
+            // Don't inject entry/exit trace
+        }
+        if ( getInstrumentWithFFDC() ) {
+            visitor = new FFDCClassAdapter(visitor, classInfo);
+        }
+
+        // The SerialVersionUIDAdder adder must be the first visitor in
+        // the chain in order to calculate the serialVersionUID before
+        // the tracing class adapter mucks around and (possibly) adds a
+        // class static initializer.
+
+        visitor = new SerialVersionUIDAdder(visitor);
+
+        return visitor;
     }
 
     /**
