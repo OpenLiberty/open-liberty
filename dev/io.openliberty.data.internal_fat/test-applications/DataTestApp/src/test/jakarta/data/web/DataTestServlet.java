@@ -3439,7 +3439,7 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Tests all BasicRepository methods with a record as the entity.
+     * Tests all CrudRepository methods (apart from those inherited from BasicRepository) with a record as the entity.
      */
     @Test
     public void testRecordCrudRepositoryMethods() {
