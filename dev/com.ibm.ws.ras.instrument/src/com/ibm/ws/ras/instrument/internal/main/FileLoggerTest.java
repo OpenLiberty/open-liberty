@@ -14,13 +14,13 @@ public class FileLoggerTest {
 	public static final String LOG_PREFIX_3 = "test3: ";
 	
 	public static void main(String[] args) {
-		FileLogger logger_1 = FileLogger.create( new File(LOG_NAME_1), LOG_PREFIX_1, FileLogger.AUTOFLUSH);
+		FileLogger logger_1 = FileLogger.FileLoggerProperties.create( new File(LOG_NAME_1), LOG_PREFIX_1, FileLogger.AUTOFLUSH);
 		test(logger_1, !SHORT_TEST);
 		
-		FileLogger logger_2 = FileLogger.create( new File(LOG_NAME_2), LOG_PREFIX_2, !FileLogger.AUTOFLUSH);
+		FileLogger logger_2 = FileLogger.FileLoggerProperties.create( new File(LOG_NAME_2), LOG_PREFIX_2, !FileLogger.AUTOFLUSH);
 		test(logger_2, !SHORT_TEST);
 
-		FileLogger logger_3 = FileLogger.create( new File(LOG_NAME_3), LOG_PREFIX_3, FileLogger.AUTOFLUSH);
+		FileLogger logger_3 = FileLogger.FileLoggerProperties.create( new File(LOG_NAME_3), LOG_PREFIX_3, FileLogger.AUTOFLUSH);
 		multiTest(logger_3);		
 	}
 
