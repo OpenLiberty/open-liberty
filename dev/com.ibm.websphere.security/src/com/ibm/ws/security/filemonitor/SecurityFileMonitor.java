@@ -64,7 +64,10 @@ public class SecurityFileMonitor implements FileMonitor {
         final Hashtable<String, Object> fileMonitorProps = new Hashtable<String, Object>();
         fileMonitorProps.put(FileMonitor.MONITOR_FILES, paths);
         if (dirs != null && !dirs.isEmpty()) {
+            // Currently MONITOR_DIRECTORIES is only used for the LTPAFileMonitor
+            // this is not used for other securityFileMonitors
             fileMonitorProps.put(FileMonitor.MONITOR_DIRECTORIES, dirs);
+            fileMonitorProps.put(FileMonitor.MONITOR_FILTER, ".*\\.keys");
         }
         fileMonitorProps.put(FileMonitor.MONITOR_INTERVAL, monitorInterval);
 
@@ -112,8 +115,7 @@ public class SecurityFileMonitor implements FileMonitor {
 
     /** {@inheritDoc} */
     @Override
-    public void onBaseline(Collection<File> baseline) {
-    }
+    public void onBaseline(Collection<File> baseline) {}
 
     /** {@inheritDoc} */
     @Override
