@@ -10,25 +10,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.web;
-
-import java.util.Collection;
-import java.util.Optional;
-
-import jakarta.data.repository.CrudRepository;
-import jakarta.data.repository.Repository;
-
-import io.openliberty.data.repository.Delete;
-import io.openliberty.data.repository.Filter;
+package jakarta.data.repository;
 
 /**
- * Repository interface for the Receipt entity which is a record
+ * Interface methods copied from Jakarta Data.
  */
-@Repository
-public interface Receipts extends CrudRepository<Receipt, Long> {
-    Optional<Receipt> deleteByPurchaseId(long purchaseId);
+public interface CrudRepository<T, K> extends BasicRepository<T, K> {
+    void insert(T entity);
 
-    @Delete
-    @Filter(by = "customer")
-    Collection<Receipt> deleteFor(String customer);
+    void insertAll(Iterable<T> entities);
+
+    boolean update(T entity);
+
+    int updateAll(Iterable<T> entities);
 }

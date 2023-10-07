@@ -96,6 +96,7 @@ import jakarta.data.page.Page;
 import jakarta.data.page.Pageable;
 import jakarta.data.page.Slice;
 import jakarta.data.repository.BasicRepository;
+import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
@@ -1297,6 +1298,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     queryInfo.entityParamType = paramTypes[0];
                     q = generateDeleteEntity(queryInfo);
                 }
+            } else if (CrudRepository.class.equals(queryInfo.method.getDeclaringClass())) {
+                if ("update".equals(methodName) || "updateAll".equals(methodName)) {
+                    queryInfo.entityParamType = paramTypes[0];
+                    q = generateUpdateEntity(queryInfo);
+                }
             } else if (paramTypes[0].isArray()) {
                 if (defaultEntityClass.equals(paramTypes[0].getComponentType()))
                     queryInfo.entityParamType = paramTypes[0];
@@ -1310,6 +1316,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     }
                 }
             }
+
             if (queryInfo.type == null && queryInfo.entityParamType != null)
                 if (methodName.startsWith("delete") || methodName.startsWith("remove"))
                     q = generateDeleteEntity(queryInfo);
