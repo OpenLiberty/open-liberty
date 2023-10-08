@@ -53,7 +53,7 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class DefaultHistogramBucketsTest {
 
-	private static Class<?> c = LibraryRefTest.class;
+	private static Class<?> c = DefaultHistogramBucketsTest.class;
 
 	@Server("DefaultBucketServer")
 	public static LibertyServer server;
