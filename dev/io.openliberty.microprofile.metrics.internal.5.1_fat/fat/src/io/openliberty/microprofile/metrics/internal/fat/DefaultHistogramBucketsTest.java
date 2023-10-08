@@ -83,7 +83,16 @@ public class DefaultHistogramBucketsTest {
 
 		String res = getHttpsServlet("/testDefaultBuckets/test/histogram");
 
+		Log.info(c, method, "REST return " + res);
+
 		String metrics = getHttpsServlet("/metrics?scope=application&name=testHistogram");
+
+		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
+
+		metrics = getHttpsServlet("/metrics");
+
+		Log.info(c, method, "[ALL METRICS]: " + metrics);
+
 		int count = 0;
 		try (Scanner sc = new Scanner(metrics)) {
 			while (sc.hasNextLine()) {
@@ -95,8 +104,6 @@ public class DefaultHistogramBucketsTest {
 		}
 		assertThat("Count is: " + count, count, greaterThan(5));
 
-		Log.info(c, method, metrics);
-
 	}
 
 	@Test
@@ -107,7 +114,16 @@ public class DefaultHistogramBucketsTest {
 
 		String res = getHttpsServlet("/testDefaultBuckets/test/timer");
 
+		Log.info(c, method, "REST return " + res);
+
 		String metrics = getHttpsServlet("/metrics?scope=application&name=testTimer");
+
+		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
+
+		metrics = getHttpsServlet("/metrics");
+
+		Log.info(c, method, "[ALL METRICS]: " + metrics);
+
 		int count = 0;
 		try (Scanner sc = new Scanner(metrics)) {
 			while (sc.hasNextLine()) {
@@ -120,8 +136,6 @@ public class DefaultHistogramBucketsTest {
 
 		assertThat("Count is: " + count, count, greaterThan(5));
 
-		Log.info(c, method, metrics);
-
 	}
 
 	@Test
@@ -132,7 +146,16 @@ public class DefaultHistogramBucketsTest {
 
 		String res = getHttpsServlet("/testDefaultBuckets/test/histogramMinMax");
 
+		Log.info(c, method, "REST return " + res);
+
 		String metrics = getHttpsServlet("/metrics?scope=application&name=testHistogramMinMax");
+
+		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
+
+		metrics = getHttpsServlet("/metrics");
+
+		Log.info(c, method, "[ALL METRICS]: " + metrics);
+
 		int count = 0;
 		try (Scanner sc = new Scanner(metrics)) {
 			while (sc.hasNextLine()) {
@@ -150,8 +173,6 @@ public class DefaultHistogramBucketsTest {
 
 		assertThat("Count is: " + count, count, greaterThan(5));
 
-		Log.info(c, method, metrics);
-
 	}
 
 	@Test
@@ -163,7 +184,15 @@ public class DefaultHistogramBucketsTest {
 
 		String res = getHttpsServlet("/testDefaultBuckets/test/timerMinMax");
 
+		Log.info(c, method, "REST return " + res);
+
 		String metrics = getHttpsServlet("/metrics?scope=application&name=testTimerMinMax");
+
+		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
+
+		metrics = getHttpsServlet("/metrics");
+
+		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
 		int count = 0;
 		try (Scanner sc = new Scanner(metrics)) {
@@ -182,8 +211,6 @@ public class DefaultHistogramBucketsTest {
 
 		assertThat("Count is: " + count, count, greaterThan(5));
 
-		Log.info(c, method, metrics);
-
 	}
 
 	@Test
@@ -195,7 +222,15 @@ public class DefaultHistogramBucketsTest {
 
 		String res = getHttpsServlet("/testDefaultBuckets/test/histogramBadEnableConfig");
 
+		Log.info(c, method, "REST return " + res);
+
 		String metrics = getHttpsServlet("/metrics?scope=application&name=histogram.bad.enable.config");
+
+		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
+
+		metrics = getHttpsServlet("/metrics");
+
+		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
 		int count = 0;
 		try (Scanner sc = new Scanner(metrics)) {
@@ -209,8 +244,6 @@ public class DefaultHistogramBucketsTest {
 
 		assertThat("Count is: " + count, count, equalTo(0));
 
-		Log.info(c, method, metrics);
-
 	}
 
 	@Test
@@ -222,7 +255,15 @@ public class DefaultHistogramBucketsTest {
 
 		String res = getHttpsServlet("/testDefaultBuckets/test/timerBadMaxGoodMinConfig");
 
+		Log.info(c, method, "REST return " + res);
+
 		String metrics = getHttpsServlet("/metrics?scope=application&name=timer.bad.max.good.min.config");
+
+		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
+
+		metrics = getHttpsServlet("/metrics");
+
+		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
 		int count = 0;
 		try (Scanner sc = new Scanner(metrics)) {
@@ -241,8 +282,6 @@ public class DefaultHistogramBucketsTest {
 
 		assertThat("Count is: " + count, count, greaterThan(5));
 
-		Log.info(c, method, metrics);
-
 	}
 
 	@Test
@@ -254,7 +293,15 @@ public class DefaultHistogramBucketsTest {
 
 		String res = getHttpsServlet("/testDefaultBuckets/test/timerBadMinGoodMaxConfig");
 
+		Log.info(c, method, "REST return " + res);
+
 		String metrics = getHttpsServlet("/metrics?scope=application&name=timer.bad.min.good.max.config");
+
+		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
+
+		metrics = getHttpsServlet("/metrics");
+
+		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
 		int count = 0;
 		try (Scanner sc = new Scanner(metrics)) {
@@ -273,8 +320,6 @@ public class DefaultHistogramBucketsTest {
 
 		assertThat("Count is: " + count, count, greaterThan(5));
 
-		Log.info(c, method, metrics);
-
 	}
 
 	@Test
@@ -286,7 +331,15 @@ public class DefaultHistogramBucketsTest {
 
 		String res = getHttpsServlet("/testDefaultBuckets/test/histogramBadMinGoodMaxConfig");
 
+		Log.info(c, method, "REST return " + res);
+
 		String metrics = getHttpsServlet("/metrics?scope=application&name=histogram.bad.min.good.max.config");
+
+		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
+
+		metrics = getHttpsServlet("/metrics");
+
+		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
 		int count = 0;
 		try (Scanner sc = new Scanner(metrics)) {
@@ -305,8 +358,6 @@ public class DefaultHistogramBucketsTest {
 
 		assertThat("Count is: " + count, count, greaterThan(5));
 
-		Log.info(c, method, metrics);
-
 	}
 
 	@Test
@@ -318,7 +369,15 @@ public class DefaultHistogramBucketsTest {
 
 		String res = getHttpsServlet("/testDefaultBuckets/test/histogramBadMaxGoodMinConfig");
 
+		Log.info(c, method, "REST return " + res);
+
 		String metrics = getHttpsServlet("/metrics?scope=application&name=histogram.bad.max.good.min.config");
+
+		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
+
+		metrics = getHttpsServlet("/metrics");
+
+		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
 		int count = 0;
 		try (Scanner sc = new Scanner(metrics)) {
@@ -337,8 +396,6 @@ public class DefaultHistogramBucketsTest {
 
 		assertThat("Count is: " + count, count, greaterThan(5));
 
-		Log.info(c, method, metrics);
-
 	}
 
 	@Test
@@ -350,7 +407,15 @@ public class DefaultHistogramBucketsTest {
 
 		String res = getHttpsServlet("/testDefaultBuckets/test/timerGoodMinGoodMaxConfig");
 
+		Log.info(c, method, "REST return " + res);
+
 		String metrics = getHttpsServlet("/metrics?scope=application&name=timer.good.min.good.max.config");
+
+		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
+
+		metrics = getHttpsServlet("/metrics");
+
+		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
 		int count = 0;
 		try (Scanner sc = new Scanner(metrics)) {
@@ -369,8 +434,6 @@ public class DefaultHistogramBucketsTest {
 
 		assertThat("Count is: " + count, count, greaterThan(5));
 
-		Log.info(c, method, metrics);
-
 	}
 
 	@Test
@@ -382,7 +445,15 @@ public class DefaultHistogramBucketsTest {
 
 		String res = getHttpsServlet("/testDefaultBuckets/test/histogramGoodMaxGoodMinConfig");
 
+		Log.info(c, method, "REST return " + res);
+
 		String metrics = getHttpsServlet("/metrics?scope=application&name=histogram.good.max.good.min.config");
+
+		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
+
+		metrics = getHttpsServlet("/metrics");
+
+		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
 		int count = 0;
 		try (Scanner sc = new Scanner(metrics)) {
@@ -400,8 +471,6 @@ public class DefaultHistogramBucketsTest {
 		}
 
 		assertThat("Count is: " + count, count, greaterThan(5));
-
-		Log.info(c, method, metrics);
 
 	}
 
