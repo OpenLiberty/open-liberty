@@ -144,6 +144,17 @@ pluginManagement {
           }
       }
       maven {
+          credentials {
+              username gradle.userProps.getProperty("artifactory.download.user")
+              password gradle.userProps.getProperty("artifactory.download.token")
+          }
+          url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty-release-maven-local")
+          metadataSources {
+            mavenPom()
+            artifact()
+          }
+      }
+      maven {
         url uri(bnd_repourl)
         metadataSources {
           mavenPom()

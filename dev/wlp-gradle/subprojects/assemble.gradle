@@ -17,11 +17,16 @@ def fatProject = parseBoolean(bnd.get('fat.project', 'false'))
 
 def publishWlpJarDefault = testProject ? 'true' : 'false'
 
+// Publish a zip file to be extracted in the build.image project if one or more of the conditions below are met.
+boolean publishBuildImageDist = false
+def tmpBuildImage = new File(project.buildDir, 'tmp/buildImage')
+
 if (bnd.get('publish.tool.jar', '').empty && !parseBoolean(bnd.get('publish.wlp.jar.disabled', publishWlpJarDefault))) {
+    publishBuildImageDist = true
     task publishWLPJars(type: Copy) {
         dependsOn jar
         from project.buildDir
-        into buildImage.file('wlp/' + bnd.get('publish.wlp.jar.suffix', 'lib'))
+        into new File(tmpBuildImage, 'wlp/' + bnd.get('publish.wlp.jar.suffix', 'lib'))
         include bnd.get('publish.wlp.jar.include', '*.jar')
         def hasIFIXHeaders = [:]
         def fullVersions = [:]
@@ -107,6 +112,7 @@ if (bnd.get('publish.tool.jar', '').empty && !parseBoolean(bnd.get('publish.wlp.
 }
 
 if (bnd.get('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd.get('publish.wlp.jar.suffix', 'lib').contains('spi/ibm')) {
+    publishBuildImageDist = true
     task publishJavadoc(type: Copy) {
         dependsOn zipJavadoc
         from new File(project.buildDir, 'distributions')
@@ -118,11 +124,12 @@ if (bnd.get('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd.get('pub
 }
 
 if (!bnd.get('publish.tool.jar', '').empty) {
+    publishBuildImageDist = true
     task publishToolScripts(type: Copy) {
         enabled !bnd.get('publish.tool.script', '').empty
         dependsOn jar
         from cnf.file('resources/bin')
-        into buildImage.file('wlp/bin/' + bnd.get('publish.tool.script.subdir', ''))
+        into new File(tmpBuildImage, 'wlp/bin/' + bnd.get('publish.tool.script.subdir', ''))
         fileMode 0755
         rename 'tool(.*)', bnd.get('publish.tool.script') + '$1'
         filter(org.apache.tools.ant.filters.ReplaceTokens,
@@ -136,26 +143,28 @@ if (!bnd.get('publish.tool.jar', '').empty) {
         dependsOn jar
         dependsOn publishToolScripts
         from project.buildDir
-        into buildImage.file('wlp/bin/' + bnd.get('publish.tool.script.subdir', '') + 'tools')
+        into new File(tmpBuildImage, 'wlp/bin/' + bnd.get('publish.tool.script.subdir', '') + 'tools')
         include bnd.get('publish.tool.jar', '')
     }
     assemble.dependsOn publishToolJars
 }
 
 if (project.file('resources/schemas').exists()) {
+    publishBuildImageDist = true
     task publishSchemaResources(type: Copy) {
         dependsOn jar
         from project.file('resources/schemas')
-        into buildImage.file('wlp/dev/api/ibm/schema')
+        into new File(tmpBuildImage, 'wlp/dev/api/ibm/schema')
     }
     assemble.dependsOn publishSchemaResources
 }
 
 if (project.file('publish/platform').exists()) {
+    publishBuildImageDist = true
     task publishPlatformManifests(type: Copy) {
         dependsOn jar
         from project.file('publish/platform')
-        into buildImage.file('wlp/lib/platform')
+        into new File(tmpBuildImage, 'wlp/lib/platform')
         include '*.mf'
         filter(org.apache.tools.ant.filters.ConcatFilter,
                 append: file(cnf.file('resources/IBM-ProductID.txt')))
@@ -165,45 +174,72 @@ if (project.file('publish/platform').exists()) {
     task publishPlatformFiles(type: Copy) {
         dependsOn publishPlatformManifests
         from project.file('publish/platform')
-        into buildImage.file('wlp/lib/platform')
+        into new File(tmpBuildImage, 'wlp/lib/platform')
         exclude '*.mf'
     }
     assemble.dependsOn publishPlatformFiles
 }
 
 if (project.file('publish/templates').exists()) {
+    publishBuildImageDist = true
     task publishTemplates(type: Copy) {
         dependsOn jar
         from project.file('publish/templates')
-        into buildImage.file('wlp/templates')
+        into new File(tmpBuildImage, 'wlp/templates')
     }
     assemble.dependsOn publishTemplates
 }
 
 if (project.file('publish/bin').exists()) {
+    publishBuildImageDist = true
     task publishBinScripts(type: Copy) {
         dependsOn jar
         from project.file('publish/bin')
-        into buildImage.file('wlp/bin')
+        into new File(tmpBuildImage, 'wlp/bin')
         fileMode 0755
     }
     assemble.dependsOn publishBinScripts
 }
 
 if (parseBoolean(bnd.get('publish.wlp.clients', 'false'))) {
+    publishBuildImageDist = true
     task publishClientScripts(type: Copy) {
         dependsOn jar
         from project.file('publish/clients')
-        into buildImage.file('wlp/clients')
+        into new File(tmpBuildImage, 'wlp/clients')
     }
     assemble.dependsOn publishClientScripts
 }
 
 if (project.file('lib/native').exists()) {
+    publishBuildImageDist = true
     task publishLibNative(type: Copy) {
         dependsOn jar
         from project.file('lib/native')
-        into buildImage.file('wlp/lib/native')
+        into new File(tmpBuildImage, 'wlp/lib/native')
     }
     assemble.dependsOn publishLibNative
+}
+
+if (publishBuildImageDist) {
+    if (!rootProject.ext.has('buildImageDists')) {
+        rootProject.ext.buildImageDists = new ArrayList<String>()
+    }
+    rootProject.buildImageDists.add(project.group+':'+project.name)
+    task zipBuildImageDist(type: Zip) {
+        dependsOn assemble
+        from tmpBuildImage
+        into new File(project.buildDir, 'distributions')
+    }
+    publish.dependsOn zipBuildImageDist
+
+    publishing {
+        publications {
+            buildImageDist(MavenPublication) {
+                artifactId project.name
+                version project.version
+                artifact zipBuildImageDist
+            }
+        }
+    }
 }

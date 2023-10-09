@@ -51,6 +51,7 @@ def setProperties = { props ->
     boolean isContinuousBuild   = props.getProperty('is.continuous.build') == null      ? false : 'true'.equalsIgnoreCase(props.getProperty('is.continuous.build'))
     boolean isRelease           = props.getProperty('is.release') == null               ? false : 'true'.equalsIgnoreCase(props.getProperty('is.release'))
     boolean isPublicPublishing  = props.getProperty('is.public.publishing') == null     ? false : 'true'.equalsIgnoreCase(props.getProperty('is.public.publishing'))
+    boolean isArtifactoryPublishing = props.getProperty('is.artifactory.publishing') == null ? false : 'true'.equalsIgnoreCase(props.getProperty('is.artifactory.publishing'))
     boolean isUnittestsDisabled = props.getProperty('disable.run.runUnitTests') == null ? false : 'true'.equalsIgnoreCase(props.getProperty('disable.run.runUnitTests'))
     boolean isIFIXBuild         = props.getProperty('ghe.build.type') == null           ? false : props.getProperty('ghe.build.type').toLowerCase().contains("ifix")
 
@@ -73,6 +74,7 @@ def setProperties = { props ->
         rootProject.ext.isIFIXBuild         = isIFIXBuild
         rootProject.ext.isRelease           = isRelease
         rootProject.ext.isPublicPublishing  = isPublicPublishing
+        rootProject.ext.isArtifactoryPublishing = isArtifactoryPublishing
         rootProject.ext.isUnittestsDisabled = isUnittestsDisabled
         rootProject.ext.isBuildOsNativePackages = isBuildOsNativePackages
         rootProject.ext.betaVersionOverride = betaVersionOverride

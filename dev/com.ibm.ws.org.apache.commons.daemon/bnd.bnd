@@ -13,3 +13,5 @@
 -include= ~../cnf/resources/bnd/liberty-release.props
 
 -nobundles=true
+
+publish.wlp.jar.disabled: true

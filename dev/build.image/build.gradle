@@ -23,6 +23,28 @@ import java.nio.file.Paths
 
 apply plugin: 'maven-publish'
 
+configurations {
+    buildDists
+}
+
+dependencies {
+    rootProject.buildImageDists.each {
+        buildDists("$it:latest.integration@zip")
+    }
+}
+
+assemble {
+    dependsOn parent.subprojects.minus(cnf).publish
+    doLast {
+        configurations.buildDists.each {
+            copy {
+                from zipTree(it[0])
+                into file('build.image')
+            }
+        }
+    }
+}
+
 def releaseVersion = "${bnd.libertyRelease}-" + rootProject.userProps.getProperty("version.qualifier")
 
 def getBetaVersion() {
@@ -162,7 +184,6 @@ assemble {
     dependsOn copySwidFixpackTagToBuildImage
     dependsOn copyPublicKeyToBuildImage
 }
-
 
 def failOnError = false
 
@@ -391,6 +412,7 @@ def getFeaturePath(feature, suffix) {
     }
     file
 }
+
 def removeFeature(feature) {
     def file = getFeaturePath(feature)
     def bakfile = new File(file.getPath()+".bak")
@@ -623,7 +645,6 @@ task zipOpenLibertyDev(type: Zip) {
 publish.dependsOn zipOpenLibertyDev
 
 if (isAutomatedBuild && !isIFIXBuild) {
-
     // NOSHIP: Includes all features except excluded features.
     task zipOpenLibertyAll(type: Zip) {
         dependsOn packageOpenLibertyAll

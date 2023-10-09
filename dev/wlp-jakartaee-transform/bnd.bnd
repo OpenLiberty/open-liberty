@@ -16,3 +16,5 @@
 tool.project: true
 
 generate.replacement: true
+
+publish.wlp.jar.disabled: true

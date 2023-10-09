@@ -22,5 +22,18 @@ publishing {
         maven {
             url uri(cnf.file("release"))
         }
+        if (isUsingArtifactory && isArtifactoryPublishing) {
+            maven {
+                credentials {
+                    username gradle.userProps.getProperty("artifactory.download.user")
+                    password gradle.userProps.getProperty("artifactory.download.token")
+                }
+                url ("https://" + gradle.userProps.getProperty("artifactory.upload.server") + "/artifactory/wasliberty-open-liberty-release-maven-local")
+                metadataSources {
+                    mavenPom()
+                    artifact()
+                }
+            }
+        }
     }
 }

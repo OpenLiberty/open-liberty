@@ -19,7 +19,6 @@ task testmarker(type: War, dependsOn: classes) {
   destinationDirectory = file("${appBuildDir}")
   archiveFileName = "${appName}.war"
 
- println "In testmarker"
   from("test-applications/${appName}/resources") {
     include "**/*"
   }
@@ -34,7 +33,6 @@ task tokenEndpoint(type: War, dependsOn: classes) {
   destinationDirectory = file("${appBuildDir}")
   archiveFileName = "${appName}.war"
 
- println "In tokenEndpoint"
   from("test-applications/${appName}/resources") {
     include "**/*"
   }
@@ -44,8 +42,6 @@ task tokenEndpoint(type: War, dependsOn: classes) {
   }
 }
 assemble {
-
-   println "In assemble"
   dependsOn \
     testmarker,\
     tokenEndpoint

@@ -15,3 +15,5 @@
 -nobundles=true
 
 instrument.disabled: true
+
+publish.wlp.jar.disabled: true

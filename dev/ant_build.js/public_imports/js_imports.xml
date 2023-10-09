@@ -11,7 +11,6 @@
         IBM Corporation - initial API and implementation
  -->
 <project name="ui_imports" basedir="../../com.ibm.ws.ui">
-	<echo> importing libraries </echo>
 	<import file="internal_imports/closure.xml" />
 	<import file="internal_imports/dojo.xml" />
 	<import file="internal_imports/jshint.xml" />
