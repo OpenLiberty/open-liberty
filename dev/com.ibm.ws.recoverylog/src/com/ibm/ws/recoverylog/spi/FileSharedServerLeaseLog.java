@@ -94,6 +94,9 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
     private LeaseLock _peerLeaseLock;
     private LeaseLock _localLeaseLock;
 
+    public final static int LOCK_SUCCESS = 1;
+    public final static int LOCK_FAILURE = 2;
+
     // Singleton instance of the FileSystem Lease Log class
     private static final FileSharedServerLeaseLog _fileLeaseLog = new FileSharedServerLeaseLog();
 
@@ -659,7 +662,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
             return false;
         }
 
-        _peerLeaseLock = lock(leaseFile);
+        _peerLeaseLock = lock(leaseFile, false, 0, 0); // No Retries
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "lockPeerLease", _peerLeaseLock != null);
@@ -671,8 +674,11 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
      * @return
      */
     @FFDCIgnore({ OverlappingFileLockException.class })
-    private LeaseLock lock(File leaseFile) {
-
+    private LeaseLock lock(File leaseFile, boolean allowRetries, int numberLockRetries, int lockRetryDelay) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "lock", leaseFile.getPath(), allowRetries, numberLockRetries, lockRetryDelay, this);
+        int lockResult = LOCK_FAILURE;
+        LeaseLock result = null;
         // At this point we are ready to acquire a lock on the lease file prior to attempting to read it.
         FileChannel fChannel = AccessController.doPrivileged(new PrivilegedAction<FileChannel>() {
             @Override
@@ -695,12 +701,45 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
             // Try acquiring the lock without blocking. This method returns
             // null or throws an exception if the file is already locked.
             if (fChannel != null) {
-                fLock = fChannel.tryLock();
 
-                if (fLock != null) {
+                boolean halt = false;
+                int lockAttempt = 0;
+
+                while (!halt) {
+                    lockAttempt++;
+
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "We have claimed the lock for {0}", leaseFile.getPath());
-                    return new LeaseLock(fLock, fChannel, leaseFile);
+                        Tr.debug(tc, "Lock attempt #" + lockAttempt + " on {0}" + leaseFile.getPath());
+
+                    fLock = fChannel.tryLock();
+
+                    if (fLock != null) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "We have claimed the lock for {0}", leaseFile.getPath());
+                        halt = true;
+                        lockResult = LOCK_SUCCESS;
+                    } else {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Unable to obtain an exclusive access lock on {0}" + leaseFile.getPath());
+                        // Should we allow a retry on this lock.
+                        if (allowRetries && lockAttempt < numberLockRetries) {
+                            if (lockRetryDelay > 0) {
+                                // TBD: Output a message if we cannot get a lock - delay the message for the
+                                // first pass through...
+                                try {
+                                    if (tc.isDebugEnabled())
+                                        Tr.debug(tc, "Sleeping for " + lockRetryDelay + " seconds before re-try");
+                                    Thread.sleep(lockRetryDelay * 1000);
+                                } catch (Exception exc) {
+                                    // No FFDC code needed
+                                }
+                            }
+                        } else {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Retry count exceeded, aborting lock attempt on {0}", leaseFile.getPath());
+                            halt = true;
+                        }
+                    }
                 }
             }
         } catch (OverlappingFileLockException e) {
@@ -713,16 +752,22 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                 Tr.debug(tc, "Caught an IOException", e);
         }
 
-        if (fChannel != null) {
-            try {
-                fChannel.close();
-            } catch (IOException e) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Caught an IOException on channel close", e);
+        if (lockResult == LOCK_SUCCESS) {
+            result = new LeaseLock(fLock, fChannel, leaseFile);
+        } else {
+            // Tidy up
+            if (fChannel != null) {
+                try {
+                    fChannel.close();
+                } catch (IOException e) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Caught an IOException on channel close", e);
+                }
             }
         }
-
-        return null;
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "lock", result);
+        return result;
     }
 
     /*
@@ -799,7 +844,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Attempting to lock {0}", leaseFile.getPath());
 
-        _localLeaseLock = lock(leaseFile);
+        _localLeaseLock = lock(leaseFile, true, 3, 10); // allow 3 Retries 10 seconds apart
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "lockLocalLease", _localLeaseLock != null);
