@@ -31,8 +31,10 @@ import org.jboss.weld.metadata.TypeStore;
  *
  * @author Jozef Hartinger
  *
- */
+ */ 
 public class HotspotReflectionCache extends DefaultReflectionCache {
+
+    static FileLogger logger = FileLogger.FileLoggerProperties.create();
 
     private final Class<?> annotationTypeLock;
 
@@ -47,6 +49,7 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
 
     @Override
     protected Annotation[] internalGetAnnotations(AnnotatedElement element) {
+        try{
         if (element instanceof Class<?>) {
             Class<?> clazz = (Class<?>) element;
             if (clazz.isAnnotation()) {
@@ -56,6 +59,15 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
             }
         }
         return element.getAnnotations();
+        
+        } catch (IllegalArgumentException e) {
+            String className = "HotspotReflectionCache";
+            String methodName = "internalGetAnnotations";
+
+            Object o = (Object) element;
+            String text = ("Constant Pool GREP " + o.getClass().getCanonicalName());
+            logger.log(className, methodName, text, element);
+        }
     }
 }
 
