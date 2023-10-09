@@ -78,6 +78,8 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
     @Override
     protected Annotation[] internalGetAnnotations(AnnotatedElement element) {
         try {
+
+            String text = "Constant Pool GREP try:";
             if ( element instanceof Class<?> ) {
                 Class<?> clazz = (Class<?>) element;
                 if ( clazz.isAnnotation() ) {

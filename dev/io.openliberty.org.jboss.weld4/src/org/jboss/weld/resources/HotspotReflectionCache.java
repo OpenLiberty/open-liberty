@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.resources;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.util.Properties;
 
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.metadata.TypeStore;
@@ -38,6 +40,7 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
 
     public HotspotReflectionCache(TypeStore store) {
         super(store);
+            System.out.println("Constant Pool GREP init:");
         try {
             this.annotationTypeLock = Class.forName("sun.reflect.annotation.AnnotationType");
         } catch (ClassNotFoundException e) {
@@ -45,17 +48,70 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
         }
     }
 
+    protected static final Properties loggerProperties = new Properties();
+    static {
+        loggerProperties.setProperty(FileLogger.FileLoggerProperties.FILE_PROPERTY_NAME, "LTI_W");
+        loggerProperties.setProperty(FileLogger.FileLoggerProperties.PREFIX_PROPERTY_NAME, "WELD: ");
+    }
+
+    protected static final FileLogger logger = (new FileLogger.FileLoggerProperties(loggerProperties)).create();
+
+    protected static final void dump(Class<?> targetClass) {
+        String className = "HotspotReflectionCache";
+        String methodName = "dump";
+
+        String resourceName = FileLogger.getClassResourceName(targetClass);
+
+        String text = "Class [ " + targetClass.getName() + " ] as [ " + resourceName + " ]";
+        logger.log(className, methodName, text);
+
+        byte[] classBytes;
+        try {
+            classBytes = FileLogger.read(targetClass.getClassLoader(), resourceName);
+        } catch ( IOException e ) {
+            logger.logStack(className, methodName, "Failed to read [ " + resourceName + " ]", e);
+            return;
+        }
+
+        logger.dump(className, methodName, text, classBytes);
+    }
+
     @Override
     protected Annotation[] internalGetAnnotations(AnnotatedElement element) {
-        if (element instanceof Class<?>) {
-            Class<?> clazz = (Class<?>) element;
-            if (clazz.isAnnotation()) {
-                synchronized (annotationTypeLock) {
-                    return element.getAnnotations();
+        try {
+
+System.out.println("GREP GREP GREP");
+            String text = "Constant Pool GREP try:";
+            if ( element instanceof Class<?> ) {
+                Class<?> clazz = (Class<?>) element;
+                if ( clazz.isAnnotation() ) {
+                    synchronized ( annotationTypeLock ) {
+                        return element.getAnnotations();
+                    }
                 }
             }
-        }
-        return element.getAnnotations();
-    }
-}
+            return element.getAnnotations();
 
+        } catch ( IllegalArgumentException e ) {
+            String className = "HotspotReflectionCache";
+            String methodName = "internalGetAnnotations";
+
+            String text = "Constant Pool GREP:";
+            Class<?> clazz = null;
+
+            if ( element instanceof Class<?> ) {
+                clazz = (Class<?>) element;
+                text += " Class [ " + clazz.getName() + " ]:";
+            }
+
+            logger.log(className, methodName, text, element);
+            if ( clazz != null ) {
+                dump(clazz);
+            }
+            logger.logStack(className, methodName, text);
+
+            throw e;
+        }
+    }
+
+}
