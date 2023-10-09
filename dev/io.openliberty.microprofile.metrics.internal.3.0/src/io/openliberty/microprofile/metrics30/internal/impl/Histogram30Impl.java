@@ -5,7 +5,7 @@
 * are made available under the terms of the Eclipse Public License 2.0
 * which accompanies this distribution, and is available at
 * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
 *
 *******************************************************************************
@@ -25,12 +25,17 @@
 *******************************************************************************/
 package io.openliberty.microprofile.metrics30.internal.impl;
 
+import java.util.Map;
+
 import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.Snapshot;
 
 import com.ibm.ws.microprofile.metrics.impl.LongAdderAdapter;
 import com.ibm.ws.microprofile.metrics.impl.LongAdderProxy;
 import com.ibm.ws.microprofile.metrics.impl.Reservoir;
+
+import io.openliberty.microprofile.metrics30.internal.helper.BucketManager;
+import io.openliberty.microprofile.metrics30.internal.helper.BucketManager.BucketValue;
 
 /**
  * A metric which calculates the distribution of a value.
@@ -42,6 +47,7 @@ public class Histogram30Impl implements Histogram {
     private final Reservoir reservoir;
     private final LongAdderAdapter count;
     private final LongAdderAdapter sum;
+    private final BucketManager manager;
 
     /**
      * Creates a new {@link Histogram30Impl} with the given reservoir.
@@ -52,6 +58,7 @@ public class Histogram30Impl implements Histogram {
         this.reservoir = reservoir;
         this.count = LongAdderProxy.create();
         this.sum = LongAdderProxy.create();
+        this.manager = new BucketManager(new Double[] { 1.0, 2.0, 3.0, 4.0, 5.0 }); //read config here for buckets and perce
     }
 
     /**
@@ -74,6 +81,7 @@ public class Histogram30Impl implements Histogram {
         count.increment();
         sum.add(value);
         reservoir.update(value);
+        manager.update(value);
     }
 
     /**
@@ -88,7 +96,16 @@ public class Histogram30Impl implements Histogram {
 
     @Override
     public Snapshot getSnapshot() {
+
         return reservoir.getSnapshot();
+    }
+
+    public Map<Double, BucketValue> getBuckets() {
+        return manager.getBuckets();
+    }
+
+    public BucketManager getManager() {
+        return manager;
     }
 
     /** {@inheritDoc} */

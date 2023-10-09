@@ -5,7 +5,7 @@
 * are made available under the terms of the Eclipse Public License 2.0
 * which accompanies this distribution, and is available at
 * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
 *
 *******************************************************************************
@@ -26,6 +26,7 @@
 package io.openliberty.microprofile.metrics30.internal.impl;
 
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.eclipse.microprofile.metrics.Histogram;
@@ -39,6 +40,9 @@ import com.ibm.ws.microprofile.metrics.impl.HistogramImpl;
 import com.ibm.ws.microprofile.metrics.impl.MeterImpl;
 import com.ibm.ws.microprofile.metrics.impl.Reservoir;
 import com.ibm.ws.microprofile.metrics.impl.TimerImpl;
+
+import io.openliberty.microprofile.metrics30.internal.helper.BucketManager;
+import io.openliberty.microprofile.metrics30.internal.helper.BucketManager.BucketValue;
 
 /**
  * A timer metric which aggregates timing durations and provides duration statistics, plus
@@ -84,6 +88,7 @@ public class Timer30Impl implements Timer {
     protected Duration elapsedTime;
     protected final Meter meter;
     protected final Histogram histogram;
+    protected final BucketManager manager;
     protected final Clock clock;
 
     /**
@@ -113,6 +118,7 @@ public class Timer30Impl implements Timer {
         this.meter = new MeterImpl(clock);
         this.clock = clock;
         this.histogram = new HistogramImpl(reservoir);
+        this.manager = new BucketManager(null);
         this.elapsedTime = Duration.ZERO;
     }
 
@@ -127,6 +133,7 @@ public class Timer30Impl implements Timer {
         synchronized (this) {
             if (duration.toNanos() >= 0) {
                 histogram.update(duration.toNanos());
+                manager.update(duration.toNanos());
                 meter.mark();
                 elapsedTime = elapsedTime.plus(duration);
             }
@@ -214,6 +221,10 @@ public class Timer30Impl implements Timer {
     @Override
     public Duration getElapsedTime() {
         return elapsedTime;
+    }
+
+    public Map<Double, BucketValue> getBuckets() {
+        return manager.getBuckets();
     }
 
 }
