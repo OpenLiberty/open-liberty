@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -1107,7 +1107,9 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
                 ret.append("Timeout as expected");
             } else {
                 ret.append("throwable");
-                throwable.printStackTrace();
+                if (throwable != null && throwable.getCause() != null) {
+                    throwable.getCause().printStackTrace();
+                }
             }
             countDownLatch.countDown();
         }, () -> ret.append("OnCompleted") // OnCompleted
@@ -1154,7 +1156,9 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
                 ret.append("Timeout as expected");
             } else {
                 ret.append("throwable");
-                throwable.printStackTrace();
+                if (throwable != null && throwable.getCause() != null) {
+                    throwable.getCause().printStackTrace();
+                }
             }
             countDownLatch.countDown();
         }, () -> ret.append("OnCompleted") // OnCompleted
@@ -1201,7 +1205,9 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
                 ret.append("Timeout as expected");
             } else {
                 ret.append("throwable");
-                throwable.printStackTrace();
+                if (throwable != null && throwable.getCause() != null) {
+                    throwable.getCause().printStackTrace();
+                }
             }
             countDownLatch.countDown();
         }, () -> ret.append("OnCompleted") // OnCompleted
@@ -1248,7 +1254,9 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
                 ret.append("Timeout as expected");
             } else {
                 ret.append("throwable");
-                throwable.printStackTrace();
+                if (throwable != null && throwable.getCause() != null) {
+                    throwable.getCause().printStackTrace();
+                }
             }
             countDownLatch.countDown();
         }, () -> ret.append("OnCompleted") // OnCompleted
@@ -1310,7 +1318,9 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
                 ret.append("Timeout as expected");
             } else {
                 ret.append("throwable");
-                throwable.printStackTrace();
+                if (throwable != null && throwable.getCause() != null) {
+                    throwable.getCause().printStackTrace();
+                }
             }
             countDownLatch.countDown();
         }, () -> ret.append("OnCompleted") // OnCompleted
@@ -1372,7 +1382,9 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
                 ret.append("Timeout as expected");
             } else {
                 ret.append("throwable");
-                throwable.printStackTrace();
+                if (throwable != null && throwable.getCause() != null) {
+                    throwable.getCause().printStackTrace();
+                }
             }
             countDownLatch.countDown();
         }, () -> ret.append("OnCompleted") // OnCompleted
@@ -1434,7 +1446,9 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
                 ret.append("Timeout as expected");
             } else {
                 ret.append("throwable");
-                throwable.printStackTrace();
+                if (throwable != null && throwable.getCause() != null) {
+                    throwable.getCause().printStackTrace();
+                }
             }
             countDownLatch.countDown();
         }, () -> ret.append("OnCompleted") // OnCompleted
@@ -1496,7 +1510,9 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
                 ret.append("Timeout as expected");
             } else {
                 ret.append("throwable");
-                throwable.printStackTrace();
+                if (throwable != null && throwable.getCause() != null) {
+                    throwable.getCause().printStackTrace();
+                }
             }
             countDownLatch.countDown();
         }, () -> ret.append("OnCompleted") // OnCompleted
@@ -1543,7 +1559,9 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
                 ret.append("Timeout as expected");
             } else {
                 ret.append("throwable");
-                throwable.printStackTrace();
+                if (throwable != null && throwable.getCause() != null) {
+                    throwable.getCause().printStackTrace();
+                }
             }
             countDownLatch.countDown();
         }, () -> ret.append("OnCompleted") // OnCompleted
@@ -1590,7 +1608,9 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
                 ret.append("Timeout as expected");
             } else {
                 ret.append("throwable");
-                throwable.printStackTrace();
+                if (throwable != null && throwable.getCause() != null) {
+                    throwable.getCause().printStackTrace();
+                }
             }
             countDownLatch.countDown();
         }, () -> ret.append("OnCompleted") // OnCompleted
@@ -1637,7 +1657,9 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
                 ret.append("Timeout as expected");
             } else {
                 ret.append("throwable");
-                throwable.printStackTrace();
+                if (throwable != null && throwable.getCause() != null) {
+                    throwable.getCause().printStackTrace();
+                }
             }
             countDownLatch.countDown();
         }, () -> ret.append("OnCompleted") // OnCompleted
@@ -1684,7 +1706,9 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
                 ret.append("Timeout as expected");
             } else {
                 ret.append("throwable");
-                throwable.printStackTrace();
+                if (throwable != null && throwable.getCause() != null) {
+                    throwable.getCause().printStackTrace();
+                }
             }
             countDownLatch.countDown();
         }, () -> ret.append("OnCompleted") // OnCompleted
@@ -1746,7 +1770,9 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
                 ret.append("Timeout as expected");
             } else {
                 ret.append("throwable");
-                throwable.printStackTrace();
+                if (throwable != null && throwable.getCause() != null) {
+                    throwable.getCause().printStackTrace();
+                }
             }
             countDownLatch.countDown();
         }, () -> ret.append("OnCompleted") // OnCompleted
@@ -1808,7 +1834,9 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
                 ret.append("Timeout as expected");
             } else {
                 ret.append("throwable");
-                throwable.printStackTrace();
+                if (throwable != null && throwable.getCause() != null) {
+                    throwable.getCause().printStackTrace();
+                }
             }
             countDownLatch.countDown();
         }, () -> ret.append("OnCompleted") // OnCompleted
@@ -1870,7 +1898,9 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
                 ret.append("Timeout as expected");
             } else {
                 ret.append("throwable");
-                throwable.printStackTrace();
+                if (throwable != null && throwable.getCause() != null) {
+                    throwable.getCause().printStackTrace();
+                }
             }
             countDownLatch.countDown();
         }, () -> ret.append("OnCompleted") // OnCompleted
@@ -1932,7 +1962,9 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
                 ret.append("Timeout as expected");
             } else {
                 ret.append("throwable");
-                throwable.printStackTrace();
+                if (throwable != null && throwable.getCause() != null) {
+                    throwable.getCause().printStackTrace();
+                }
             }
             countDownLatch.countDown();
         }, () -> ret.append("OnCompleted") // OnCompleted
