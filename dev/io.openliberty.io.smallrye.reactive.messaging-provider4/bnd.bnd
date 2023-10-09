@@ -67,4 +67,10 @@ Private-Package: \
   io.openliberty.io.smallrye.common2;version=latest,\
   io.openliberty.io.smallrye.reactive.converter-api3;version=latest,\
   io.openliberty.org.jboss.logging35;version=latest,\
-  jakarta.enterprise.cdi-api;version=latest
+  jakarta.enterprise.cdi-api;version=latest,\
+  io.openliberty.jakarta.cdi.4.0,\
+  jakarta.enterprise.cdi-api,\
+  com.ibm.websphere.org.osgi.core;version=latest,\
+  com.ibm.websphere.org.osgi.service.component;version=latest,\
+  com.ibm.ws.kernel.boot,\
+  com.ibm.ws.cdi.internal.jakarta

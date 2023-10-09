@@ -24,12 +24,26 @@ public class ContextBeginnerEnderImpl implements ContextBeginnerEnder {
 
     private static final TraceComponent tc = Tr.register(ContextBeginnerEnderImpl.class);
 
+    private static ThreadLocal<ContextBeginnerEnderImpl> currentlyActive = new ThreadLocal<ContextBeginnerEnderImpl>();
+
     private ClassLoader newTheadContextClassLoader = null;
     private ClassLoader oldTheadContextClassLoader = null;
     private JndiHelperComponentMetaData cmd = null;
     private boolean began = false;
     private String cmdLogStringSuffix = "";
     private String tcclLogStringSuffix = "";
+
+    public ContextBeginnerEnderImpl() {
+
+    }
+
+    private ContextBeginnerEnderImpl(ClassLoader newTheadContextClassLoader, JndiHelperComponentMetaData cmd,
+                                     String cmdLogStringSuffix, String tcclLogStringSuffix) {
+        this.newTheadContextClassLoader = newTheadContextClassLoader;
+        this.cmd = cmd;
+        this.cmdLogStringSuffix = cmdLogStringSuffix;
+        this.tcclLogStringSuffix = tcclLogStringSuffix;
+    }
 
     @Override
     public ContextBeginnerEnder extractTCCL(Application application) {
@@ -87,7 +101,12 @@ public class ContextBeginnerEnderImpl implements ContextBeginnerEnder {
         if (began) {
             throw new IllegalStateException("beginContext cannot be called twice");
         }
+        if (currentlyActive.get() != null) {
+            throw new IllegalStateException("Annother ContextBeginnerEnder is already active");
+        }
+
         began = true;
+        currentlyActive.set(this);
 
         if (cmd != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -113,6 +132,7 @@ public class ContextBeginnerEnderImpl implements ContextBeginnerEnder {
         if (!began) {
             throw new IllegalStateException("close invoked without beginContext");
         }
+        currentlyActive.set(null);
 
         if (cmd != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -130,6 +150,15 @@ public class ContextBeginnerEnderImpl implements ContextBeginnerEnder {
             CDIUtils.getAndSetLoader(oldTheadContextClassLoader);
             oldTheadContextClassLoader = null;
         }
+    }
+
+    @Override
+    public ContextBeginnerEnder clone() {
+        return new ContextBeginnerEnderImpl(newTheadContextClassLoader, cmd, cmdLogStringSuffix, tcclLogStringSuffix);
+    }
+
+    public static ContextBeginnerEnderImpl getCurrentlyActive() {
+        return currentlyActive.get();
     }
 
 }

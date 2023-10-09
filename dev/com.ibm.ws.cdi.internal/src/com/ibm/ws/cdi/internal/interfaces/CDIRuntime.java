@@ -218,4 +218,16 @@ public interface CDIRuntime extends CDIService {
      */
     public WeldDevelopmentMode getWeldDevelopmentMode();
 
+    /**
+     * creates a ContextBeginnerEnder that will do the same thing as the currently
+     * active ContextBeginnerEnder, or returns null if none are active.
+     *
+     * This is useful if you need to record which thread context classloader and
+     * component metadata are currently active so you can re-establish that state
+     * after a checkpoint restore.
+     *
+     * Remember to always close a ContextBeginnerEnder before starting a new one.
+     */
+    public ContextBeginnerEnder cloneActiveContextBeginnerEnder();
+
 }
