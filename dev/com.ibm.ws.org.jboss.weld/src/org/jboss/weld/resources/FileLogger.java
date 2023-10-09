@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.ras.instrument.internal.main;
+package org.jboss.weld.resources;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
