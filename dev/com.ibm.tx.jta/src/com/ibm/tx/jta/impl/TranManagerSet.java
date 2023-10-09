@@ -1,12 +1,12 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2023 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -192,23 +192,19 @@ public class TranManagerSet implements ExtendedTransactionManager, UOWCurrent {
 
         int index = -1;
         if (xaResFactoryClassName != null && xaResFactoryClassName.length() != 0 && TxTMHelper.ready()) {
-            if (Configuration.getFailureScopeController().getRecoveryManager() != null &&
-                !Configuration.getFailureScopeController().getRecoveryManager().recoveryFailed()) {
+            final PartnerLogTable plt = Configuration.getFailureScopeController().getPartnerLogTable();
 
-                final PartnerLogTable plt = Configuration.getFailureScopeController().getPartnerLogTable();
+            if (plt != null) // ie if the core TM is not stopped
+            {
+                final XARecoveryWrapper xaWrapper = new XARecoveryWrapper(xaResFactoryClassName, xaResInfo, null, priority);
 
-                if (plt != null) // ie if the core TM is not stopped
-                {
-                    final XARecoveryWrapper xaWrapper = new XARecoveryWrapper(xaResFactoryClassName, xaResInfo, null, priority);
+                // Ensure this wrapper is in the cache
+                final PartnerLogData pld = plt.findEntry(xaWrapper);
 
-                    // Ensure this wrapper is in the cache
-                    final PartnerLogData pld = plt.findEntry(xaWrapper);
+                // Could have been set terminating if this is an unregistered activationspec
+                pld._terminating = false;
 
-                    // Could have been set terminating if this is an unregistered activationspec
-                    pld._terminating = false;
-
-                    index = pld.getIndex();
-                }
+                index = pld.getIndex();
             }
         }
 
