@@ -18,6 +18,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import jakarta.data.repository.Delete;
+
 /**
  * <p>Annotates a repository method to specify a find operation
  * or provide conditions for a {@link Count}, {@link Delete}, {@link Exists},
@@ -46,6 +48,21 @@ import java.lang.annotation.Target;
  * <pre>
  * pagination = Pageable.size(10).sortBy(Sort.desc("price"), Sort.asc("name"), Sort.asc("id"));
  * page1 = products.pricedWithin(20.0f, 40.0f, "trackball%mouse", pagination);
+ * </pre>
+ *
+ * <p>Example delete query:</p>
+ *
+ * <pre>
+ * {@literal @Delete}
+ * {@literal @Filter}(by = "expiresOn", op = Compare.LessThanEqual)
+ * {@literal @Filter}(by = "balanceDue", value = "0")
+ * long removeExpired(LocalDate mostRecentExpiry);
+ * </pre>
+ *
+ * <p>Example usage:</p>
+ *
+ * <pre>
+ * numRemoved = creditCards.removeExpired(LocalDate.now().minusYears(2));
  * </pre>
  *
  * <p>Do not use in combination with the {@link jakarta.data.repository.Query Query} annotation.</p>
