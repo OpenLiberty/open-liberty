@@ -91,6 +91,7 @@ import componenttest.topology.impl.LibertyServer;
                 MapCacheTest.class,
                 WebCacheTest.class,
                 XMLbindingsTest.class,
+                LocalConnectorTest.class,
                 WebProfileJSPtest.class
 })
 
