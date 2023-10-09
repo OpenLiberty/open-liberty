@@ -60,6 +60,13 @@ public class FATSuite {
     }
 
     static {
+        /*
+         * Set property to allow the use of the 'Origin' header in CORS tests This
+         * property is read one time only when the 'HttpURLConnection' class is first
+         * instantiated and cannot be changed. Setting this property before the tests
+         * run ensures that the value is not defaulted to 'False' when non-CORS tests
+         * run
+         */
         System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
     }
 }

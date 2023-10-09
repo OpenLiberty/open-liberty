@@ -20,9 +20,10 @@
     
     <cors domain="/openapi"
     allowedOrigins="openliberty.io"
-    allowedMethods="GET"
+    allowedMethods="GET, OPTIONS"
     allowCredentials="true"
-    exposeHeaders="TestHeader"/>
+    exposeHeaders="TestHeader"
+    allowedHeaders="TestHeader2"/>
     
     <include location="../fatTestPorts.xml"/>
 

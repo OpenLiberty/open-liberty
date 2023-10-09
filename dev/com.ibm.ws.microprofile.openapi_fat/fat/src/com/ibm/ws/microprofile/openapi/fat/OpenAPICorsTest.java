@@ -27,6 +27,8 @@ import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -35,13 +37,18 @@ import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
 /**
  *
  */
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class OpenAPICorsTest {
     private static final String SERVER_NAME = "CorsServer";
     private static String REQUEST_HEADER_ORIGIN = "Origin";
+    private static String REQUEST_HEADER_ACCESS_CONTROL_REQUEST_HEADERS = "Access-Control-Request-Headers";
+    private static String REQUEST_HEADER_ACCESS_CONTROL_REQUEST_METHOD = "Access-Control-Request-Method";
     private static String RESPONSE_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
     private static String RESPONSE_HEADER_ACCESS_CONTROL_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
     private static String RESPONSE_HEADER_ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
+    private static String RESPONSE_HEADER_ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";
+    private static String RESPONSE_HEADER_ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headers";
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -51,7 +58,6 @@ public class OpenAPICorsTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
         server.startServer();
     }
 
@@ -74,7 +80,6 @@ public class OpenAPICorsTest {
         conn.header(REQUEST_HEADER_ORIGIN, "openliberty.io");
         HttpURLConnection response = conn.getConnection();
 
-        // check that CORS response headers are same as those defined in server.xml
         assertEquals(RESPONSE_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN + " response header is incorrect or missing",
             "openliberty.io", response.getHeaderField(RESPONSE_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN));
         assertEquals(RESPONSE_HEADER_ACCESS_CONTROL_ALLOW_CREDENTIALS + " response header is incorrect or missing",
@@ -104,6 +109,29 @@ public class OpenAPICorsTest {
         HttpURLConnection response = conn.getConnection();
 
         checkAbsentResponseHeaders(response);
+    }
+
+    @Test
+    public void testPreflightCorsRequest() throws Exception {
+        OpenAPIConnection conn = OpenAPIConnection.openAPIDocsConnection(server, false);
+        conn.method(HTTPRequestMethod.OPTIONS);
+        conn.header(REQUEST_HEADER_ORIGIN, "openliberty.io");
+        conn.header(REQUEST_HEADER_ACCESS_CONTROL_REQUEST_METHOD, "GET");
+        conn.header(REQUEST_HEADER_ACCESS_CONTROL_REQUEST_HEADERS, "TestHeader2");
+        HttpURLConnection response = conn.getConnection();
+
+        assertEquals(RESPONSE_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN + " response header is incorrect or missing",
+            "openliberty.io", response.getHeaderField(RESPONSE_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN));
+        assertEquals(RESPONSE_HEADER_ACCESS_CONTROL_ALLOW_CREDENTIALS + " response header is incorrect or missing",
+            "true", response.getHeaderField(RESPONSE_HEADER_ACCESS_CONTROL_ALLOW_CREDENTIALS));
+        checkPreflightHeaders(response);
+    }
+
+    private void checkPreflightHeaders(HttpURLConnection response) throws Exception {
+        assertEquals(RESPONSE_HEADER_ACCESS_CONTROL_ALLOW_METHODS + " response header is incorrect or missing",
+            "GET, OPTIONS", response.getHeaderField(RESPONSE_HEADER_ACCESS_CONTROL_ALLOW_METHODS));
+        assertEquals(RESPONSE_HEADER_ACCESS_CONTROL_ALLOW_HEADERS + " response header is incorrect or missing",
+            "TestHeader2", response.getHeaderField(RESPONSE_HEADER_ACCESS_CONTROL_ALLOW_HEADERS));
     }
 
     private void checkAbsentResponseHeaders(HttpURLConnection response) throws Exception {
