@@ -163,6 +163,7 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
             String hostName = "";
             hostName = AccessController.doPrivileged(new PrivilegedAction<String>() {
                 @Override
+                @Trivial
                 public String run() {
 
                     String theHost = "";
