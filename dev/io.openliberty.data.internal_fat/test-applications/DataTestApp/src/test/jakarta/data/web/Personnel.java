@@ -18,12 +18,12 @@ import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
 import jakarta.data.Streamable;
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.enterprise.concurrent.Asynchronous;
 
 import io.openliberty.data.repository.Compare;
-import io.openliberty.data.repository.Delete;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.Update;
