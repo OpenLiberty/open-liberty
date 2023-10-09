@@ -15,10 +15,15 @@ bVersion=1.0
 
 
 src: \
-	fat/src
+	fat/src,\
+	test-applications/testDefaultBucketsApp/src
 
 fat.project: true
 
 javac.source: 11
-javac.target: 11	
-	
+javac.target: 11
+
+-buildpath: \
+	io.openliberty.org.eclipse.microprofile.metrics.5.0;version=latest,\
+	io.openliberty.jakarta.restfulWS.3.0;version=latest,\
+	io.openliberty.jakarta.cdi.4.0;version=latest
