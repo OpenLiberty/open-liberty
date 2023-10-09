@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.el.fat;
 
@@ -79,12 +76,19 @@ public class FATSuite {
     public static RepeatTests repeat;
 
     static {
-        // EE10 requires Java 11.  If we only specify EE10 for lite mode it will cause no tests to run which causes an error.
+        // EE10 requires Java 11.
+        // EE11 requires Java 17 (Update to Java 21 when available).
+        // If we only specify EE10/EE11 for lite mode it will cause no tests to run which causes an error.
         // If we are running on Java 8 have EE9 be the lite mode test to run.
-        if (JavaInfo.JAVA_VERSION >= 11) {
+        if ((JavaInfo.JAVA_VERSION >= 11) && (JavaInfo.JAVA_VERSION < 17)) {
             repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
                             .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
                             .andWith(FeatureReplacementAction.EE10_FEATURES());
+        } else if (JavaInfo.JAVA_VERSION >= 17) {
+            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                            .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
+                            .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly())
+                            .andWith(FeatureReplacementAction.EE11_FEATURES());
         } else {
             repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES());
         }
