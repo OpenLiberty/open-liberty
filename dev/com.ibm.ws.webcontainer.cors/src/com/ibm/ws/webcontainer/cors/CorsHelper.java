@@ -14,7 +14,6 @@ package com.ibm.ws.webcontainer.cors;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -126,14 +125,6 @@ public class CorsHelper {
 
         // 6.1.1 and 6.2.1: If the Origin header is not present terminate this set of steps. The request is outside the scope of the CORS specification.
         String originHeader = ISRTServletRequest.getHeader(request, HttpHeaderKeys.HDR_ORIGIN);
-        String testHeaders = request.getClass().getCanonicalName();
-        Tr.error(tc, testHeaders);
-        if (request instanceof io.openliberty.webcontainer60.srt.SRTServletRequest60) {
-            io.openliberty.webcontainer60.srt.SRTServletRequest60 srt = (io.openliberty.webcontainer60.srt.SRTServletRequest60) request;
-
-            for (Enumeration e = srt.getHeaderNames(); e.hasMoreElements();)
-                System.out.println("" + e.nextElement());
-        }
         if (originHeader != null) {
             logCorsRequestInfo(request);
 
