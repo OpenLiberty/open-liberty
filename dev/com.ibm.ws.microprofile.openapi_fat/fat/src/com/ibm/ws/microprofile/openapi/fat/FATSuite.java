@@ -48,6 +48,7 @@ import componenttest.rules.repeater.RepeatTests;
     UICustomizationTest.class,
     OpenAPICorsTest.class
 })
+
 public class FATSuite {
     public static RepeatTests defaultRepeat(String serverName) {
         return MicroProfileActions.repeat(serverName,
@@ -56,5 +57,9 @@ public class FATSuite {
             MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
             MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL
             MicroProfileActions.MP22);// mpOpenAPI-1.0, FULL
+    }
+
+    static {
+        System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
     }
 }

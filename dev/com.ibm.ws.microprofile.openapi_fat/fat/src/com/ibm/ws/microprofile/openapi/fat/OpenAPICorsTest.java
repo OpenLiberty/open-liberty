@@ -68,7 +68,7 @@ public class OpenAPICorsTest {
     }
 
     @Test
-    public void testHeadersCorrectEndpoiant() throws Exception {
+    public void testHeadersCorrectEndpoint() throws Exception {
         // test CORS request to "http://localhost:8010/openapi" which is in CORS domain
         OpenAPIConnection conn = OpenAPIConnection.openAPIDocsConnection(server, false);
         conn.header(REQUEST_HEADER_ORIGIN, "openliberty.io");

@@ -44,6 +44,7 @@ instrument.classesExcludes: com/ibm/ws/webcontainer/cors/internal/resources/*.cl
 
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	io.openliberty.webcontainer.servlet.6.0.internal,\
 	com.ibm.ws.logging.core,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
