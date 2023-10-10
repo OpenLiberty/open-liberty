@@ -583,4 +583,40 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
     public String getBackendURL() {
         return null;
     }
+
+    @Override
+    public boolean enableHomeLeaseLockRetries() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public int getHomeLeaseLockRetryDelay() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int getHomeNumberOfLeaseLockRetries() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public boolean enablePeerLeaseLockRetries() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public int getPeerLeaseLockRetryDelay() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int getPeerNumberOfLeaseLockRetries() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 }

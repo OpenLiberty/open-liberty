@@ -113,6 +113,24 @@
             
         <AD name="internal" description="internal use only"
             id="nonRetriableSqlCodes" required="false" type="String" default="" />                    
+
+        <AD name="internal" description="internal use only"
+            id="enableHomeLeaseLockRetries" required="false" type="Boolean" default="false" />
+            
+        <AD name="internal" description="internal use only"
+            id="homeLeaseLockRetryDelay" required="false" type="Integer" default="0" />
+
+        <AD name="internal" description="internal use only"
+            id="homeNumberOfLeaseLockRetries" required="false" type="Integer" default="0" /> 
+            
+        <AD name="internal" description="internal use only"
+            id="enablePeerLeaseLockRetries" required="false" type="Boolean" default="false" />
+            
+        <AD name="internal" description="internal use only"
+            id="peerLeaseLockRetryDelay" required="false" type="Integer" default="0" />
+
+        <AD name="internal" description="internal use only"
+            id="peerNumberOfLeaseLockRetries" required="false" type="Integer" default="0" /> 
                                                                    
         <AD name="%logging.for.heuristic.reporting.enabled" description="%logging.for.heuristic.reporting.enabled.desc" 
             id="enableLoggingForHeuristicReporting" required="false" type="Boolean" default="false" />

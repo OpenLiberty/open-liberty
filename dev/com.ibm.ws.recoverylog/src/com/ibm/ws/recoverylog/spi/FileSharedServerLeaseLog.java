@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.util.Utils;
 import com.ibm.websphere.ras.Tr;
@@ -661,8 +662,12 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                 Tr.exit(tc, "lockPeerLease", false);
             return false;
         }
+        ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
+        boolean enableRetries = cp.enablePeerLeaseLockRetries();
+        int numberRetries = cp.getPeerNumberOfLeaseLockRetries();
+        int delay = cp.getPeerLeaseLockRetryDelay();
 
-        _peerLeaseLock = lock(leaseFile, false, 0, 0); // No Retries
+        _peerLeaseLock = lock(leaseFile, enableRetries, numberRetries, delay); // by default there are no retries
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "lockPeerLease", _peerLeaseLock != null);
@@ -670,7 +675,12 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
     }
 
     /**
+     * Lock the specified lease file with the configured retry characteristics
+     *
      * @param leaseFile
+     * @param allowRetries
+     * @param numberLockRetries
+     * @param lockRetryDelay
      * @return
      */
     @FFDCIgnore({ OverlappingFileLockException.class })
@@ -724,7 +734,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                         // Should we allow a retry on this lock.
                         if (allowRetries && lockAttempt < numberLockRetries) {
                             if (lockRetryDelay > 0) {
-                                // TBD: Output a message if we cannot get a lock - delay the message for the
+                                // TODO: Output a message if we cannot get a lock - delay the message for the
                                 // first pass through...
                                 try {
                                     if (tc.isDebugEnabled())
@@ -843,8 +853,12 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
         final File leaseFile = new File(_serverInstallLeaseLogDir + File.separator + recoveryIdentity);
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Attempting to lock {0}", leaseFile.getPath());
+        ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
+        boolean enableRetries = cp.enableHomeLeaseLockRetries();
+        int numberRetries = cp.getHomeNumberOfLeaseLockRetries();
+        int delay = cp.getHomeLeaseLockRetryDelay();
 
-        _localLeaseLock = lock(leaseFile, true, 3, 10); // allow 3 Retries 10 seconds apart
+        _localLeaseLock = lock(leaseFile, enableRetries, numberRetries, delay); // by default there are no retries
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "lockLocalLease", _localLeaseLock != null);

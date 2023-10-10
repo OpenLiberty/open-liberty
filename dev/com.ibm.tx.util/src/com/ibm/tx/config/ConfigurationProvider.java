@@ -337,6 +337,48 @@ public interface ConfigurationProvider {
     public List<Integer> getNonRetriableSqlCodes();
 
     /**
+     * Return true when the acquiring of the Home Server's lease lock should be retried.
+     *
+     * @return
+     */
+    public boolean enableHomeLeaseLockRetries();
+
+    /**
+     * Configures the length of time between retries to acquire the Home Server's lease lock.
+     *
+     * @return
+     */
+    public int getHomeLeaseLockRetryDelay();
+
+    /**
+     * Configures the number of retries to acquire the Home Server's lease lock.
+     *
+     * @return
+     */
+    public int getHomeNumberOfLeaseLockRetries();
+
+    /**
+     * Return true when the acquiring of Peer Servers' lease locks should be retried.
+     *
+     * @return
+     */
+    public boolean enablePeerLeaseLockRetries();
+
+    /**
+     * Configures the length of time between retries to acquire Peer Servers' lease locks.
+     *
+     * @return
+     */
+    public int getPeerLeaseLockRetryDelay();
+
+    /**
+     * Configures the number of retries to acquire Peer Servers' lease locks.
+     *
+     * @return
+     */
+    public int getPeerNumberOfLeaseLockRetries();
+
+    /**
      * Returns true if a DataSourceFactory reference has been set through Declarative Services
      *
      * @return

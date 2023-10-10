@@ -466,4 +466,34 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     public String getBackendURL() {
         return null;
     }
+
+    @Override
+    public boolean enableHomeLeaseLockRetries() {
+        return false;
+    }
+
+    @Override
+    public int getHomeLeaseLockRetryDelay() {
+        return 0;
+    }
+
+    @Override
+    public int getHomeNumberOfLeaseLockRetries() {
+        return 0;
+    }
+
+    @Override
+    public boolean enablePeerLeaseLockRetries() {
+        return false;
+    }
+
+    @Override
+    public int getPeerLeaseLockRetryDelay() {
+        return 0;
+    }
+
+    @Override
+    public int getPeerNumberOfLeaseLockRetries() {
+        return 0;
+    }
 }
