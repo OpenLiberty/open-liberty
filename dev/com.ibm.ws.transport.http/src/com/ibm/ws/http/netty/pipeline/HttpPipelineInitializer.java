@@ -15,6 +15,7 @@ import java.util.Objects;
 
 import javax.net.ssl.SSLEngine;
 
+import com.ibm.websphere.channelfw.EndPointInfo;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
@@ -24,6 +25,7 @@ import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig.NettyConfigBuilder;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.pipeline.http2.LibertyNettyALPNHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyUpgradeCodec;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.TransportInboundHandler;
@@ -38,9 +40,12 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
+import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
+import io.openliberty.netty.internal.exception.NettyException;
+import io.openliberty.netty.internal.tls.NettyTlsProvider;
 
 /**
  * Initializes a Netty Pipeline for an HTTP Endpoint. Configuration options may be
@@ -76,7 +81,9 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     public static final String NETTY_HTTP_SERVER_CODEC = "HTTP_SERVER_HANDLER";
     public static final String HTTP_DISPATCHER_HANDLER_NAME = "HTTP_DISPATCHER";
     public static final String HTTP_SSL_HANDLER_NAME = "SSL_HANDLER";
+    public static final String HTTP_ALPN_HANDLER_NAME = "ALPN_HANDLER";
     public static final String HTTP_KEEP_ALIVE_HANDLER_NAME = "httpKeepAlive";
+    public static final String HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME = "H2C_UPGRADE_HANDLER";
 
     private HttpPipelineInitializer(HttpPipelineBuilder builder) {
         Objects.requireNonNull(builder);
@@ -170,9 +177,30 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
      * Utility method for building an H2 pipeline
      *
      * @param pipeline ChannelPipeline to update as necessary
+     * @throws NettyException
      */
-    private void setupH2Pipeline(ChannelPipeline pipeline) {
-        throw new UnsupportedOperationException("H2 not yet configured!!");
+    private void setupH2Pipeline(ChannelPipeline pipeline) throws NettyException {
+        NettyTlsProvider tlsProvider = this.chain.getOwner().getNettyTlsProvider();
+        if (tlsProvider == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Configuration requires SSL and TLS Provider is not yet loaded: " + this.chain);
+            }
+            return;
+        }
+        // Needs appropriate ciphers and ALPN negotiator
+        EndPointInfo ep = this.chain.getEndpointInfo();
+        String host = ep.getHost();
+        String port = Integer.toString(ep.getPort());
+        SslContext context = tlsProvider.getInboundALPNSSLContext(chain.getOwner().getSslOptions(), host, port);
+        if (context == null) {
+            throw new NettyException("Problems creating SSL context for endpoint: " + ep.getHost() + ":" + ep.getPort() + " - " + ep);
+        }
+        pipeline.addFirst(HTTP_SSL_HANDLER_NAME, context.newHandler(pipeline.channel().alloc()));
+        addPreHttpCodecHandlers(pipeline);
+        pipeline.addLast(HTTP_ALPN_HANDLER_NAME, new LibertyNettyALPNHandler(httpConfig));
+        pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));
+        addPreDispatcherHandlers(pipeline, true);
+        pipeline.channel().attr(NettyHttpConstants.IS_SECURE).set(Boolean.TRUE);
     }
 
     /**
@@ -181,11 +209,10 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
      * @param pipeline ChannelPipeline to update as necessary
      */
     private void setupH2cPipeline(ChannelPipeline pipeline) {
-//        pipeline.addLast(NETTY_HTTP_SERVER_CODEC, new HttpServerCodec());
         pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));
-        addH2CCodecHandlers(pipeline);
         addPreHttpCodecHandlers(pipeline);
-        addPreDispatcherHandlers(pipeline);
+        addH2CCodecHandlers(pipeline);
+        addPreDispatcherHandlers(pipeline, true);
     }
 
     /**
@@ -197,7 +224,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         pipeline.addLast(NETTY_HTTP_SERVER_CODEC, new HttpServerCodec());
         pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));
         addPreHttpCodecHandlers(pipeline);
-        addPreDispatcherHandlers(pipeline);
+        addPreDispatcherHandlers(pipeline, false);
     }
 
     /**
@@ -206,14 +233,21 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
      * @param pipeline ChannelPipeline to update as necessary
      */
     private void setupHttpsPipeline(ChannelPipeline pipeline) {
-        SslContext context = chain.getOwner().getNettyTlsProvider().getInboundSSLContext(chain.getOwner().getSslOptions(), chain.getActiveHost(),
-                                                                                         Integer.toString(chain.getActivePort()));
+        NettyTlsProvider tlsProvider = this.chain.getOwner().getNettyTlsProvider();
+        if (tlsProvider == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Configuration requires SSL and TLS Provider is not yet loaded: " + this.chain);
+            }
+            return;
+        }
+        EndPointInfo ep = this.chain.getEndpointInfo();
+        String host = ep.getHost();
+        String port = Integer.toString(ep.getPort());
+        SslContext context = tlsProvider.getInboundSSLContext(chain.getOwner().getSslOptions(), host, port);
         Channel channel = pipeline.channel();
         if (context == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                Tr.entry(this, tc, "initChannel", "Error adding TLS Support");
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                Tr.exit(this, tc, "initChannel");
+                Tr.entry(this, tc, "setupHttpsPipeline", "Error adding TLS Support, found null context");
             channel.close();
             return;
         }
@@ -231,48 +265,25 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     private void addH2CCodecHandlers(ChannelPipeline pipeline) {
         final CleartextHttp2ServerUpgradeHandler cleartextHttp2ServerUpgradeHandler = LibertyUpgradeCodec.createCleartextUpgradeHandler(httpConfig, pipeline.channel());
 
-        if (pipeline.names().contains(NETTY_HTTP_SERVER_CODEC))
-            pipeline.addAfter(NETTY_HTTP_SERVER_CODEC, "H2C_UPGRADE_HANDLER", cleartextHttp2ServerUpgradeHandler);
-        else
-            pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, "H2C_UPGRADE_HANDLER", cleartextHttp2ServerUpgradeHandler);
-
-        // TODO: Remove this, temp to see how upgrades are going
-//        pipeline.addAfter("H2C_UPGRADE_HANDLER", "Upgrade Detector", new SimpleUserEventChannelHandler<UpgradeEvent>() {
-//
-//            @Override
-//            protected void eventReceived(ChannelHandlerContext ctx, UpgradeEvent evt) throws Exception {
-//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                    Tr.debug(this, tc, "Got upgrade event for channel " + ctx.channel(), evt);
-//                }
-//                ctx.fireUserEventTriggered(evt.retain());
-//            }
-//        });
-//        pipeline.addAfter("Upgrade Detector", "Prior Knowledge Upgrade Detector", new SimpleUserEventChannelHandler<PriorKnowledgeUpgradeEvent>() {
-//
-//            @Override
-//            protected void eventReceived(ChannelHandlerContext ctx, PriorKnowledgeUpgradeEvent evt) throws Exception {
-//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                    Tr.debug(this, tc, "Got priorKnowledge upgrade event for channel " + ctx.channel(), evt);
-//                }
-//                ctx.fireUserEventTriggered(evt);
-//            }
-//        });
+        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME, cleartextHttp2ServerUpgradeHandler);
 
         // Handler to decide if an upgrade occurred or not and to add HTTP1 handlers on top
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, NO_UPGRADE_OCURRED_HANDLER_NAME, new SimpleChannelInboundHandler<HttpMessage>() {
             @Override
             protected void channelRead0(ChannelHandlerContext ctx, HttpMessage msg) throws Exception {
                 // If this handler is hit then no upgrade has been attempted and the client is just talking HTTP 1.1.
-                // TODO Check if we need to add common handlers here
-//                addPreDispatcherHandlers(ctx.pipeline());
-                System.out.println("Firing channel read from " + NO_UPGRADE_OCURRED_HANDLER_NAME + " to pipeline: ");
-                pipeline.names().forEach(handler -> System.out.println(handler));
-//                ctx.pipeline().remove("H2C_UPGRADE_HANDLER");
                 ctx.pipeline().remove(HttpServerUpgradeHandler.class);
-                // TODO Check if we need to retain this before passing to dispatcher
                 ctx.fireChannelRead(msg);
                 // Remove unused handlers
                 ctx.pipeline().remove(NO_UPGRADE_OCURRED_HANDLER_NAME);
+            }
+
+            @Override
+            public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+                if (evt instanceof PriorKnowledgeUpgradeEvent) {
+                    ctx.pipeline().remove(NO_UPGRADE_OCURRED_HANDLER_NAME);
+                }
+                super.userEventTriggered(ctx, evt);
             }
         });
     }
@@ -296,8 +307,9 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
      *
      * @param pipeline ChannelPipeline to update as necessary
      */
-    private void addPreDispatcherHandlers(ChannelPipeline pipeline) {
-        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+    private void addPreDispatcherHandlers(ChannelPipeline pipeline, boolean isHttp2) {
+        if (!isHttp2)
+            pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new HttpObjectAggregator(64 * 1024));
 //        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new ChunkedWriteHandler());
         // if (httpConfig.useAutoCompression()) {
