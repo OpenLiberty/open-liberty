@@ -1,0 +1,13 @@
+-include= ~${workspace}/cnf/resources/bnd/feature.props
+symbolicName=io.openliberty.unversioned.jaxrs-2.0
+visibility=private
+singleton=true
+-features= \
+    io.openliberty.webProfile.internal-7.0, \
+    io.openliberty.microProfile.internal-1.4, \
+    io.openliberty.microProfile.internal-1.3, \
+    io.openliberty.microProfile.internal-1.2, \
+    io.openliberty.microProfile.internal-1.0, \
+    com.ibm.websphere.appserver.jaxrs-2.0
+kind=noship
+edition=full
