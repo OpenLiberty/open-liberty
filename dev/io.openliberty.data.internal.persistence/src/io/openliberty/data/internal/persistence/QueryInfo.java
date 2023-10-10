@@ -583,9 +583,7 @@ class QueryInfo {
 
         int namedParamCount = paramNames == null ? 0 : paramNames.size();
         for (int i = 0, p = 0; i < methodParamForQueryCount; i++) {
-            Object arg = type == Type.DELETE_WITH_ENTITY_PARAM && i == 0 //
-                            ? toEntityId(args[i]) //
-                            : args[i];
+            Object arg = args[i];
 
             if (arg == null || entityInfo.idClassAttributeAccessors == null || !entityInfo.idType.isInstance(arg)) {
                 if (p < namedParamCount) {
@@ -635,50 +633,6 @@ class QueryInfo {
                 Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + version);
             query.setParameter(++p, version);
         }
-    }
-
-    /**
-     * Converts a repository method parameter that is an entity or iterable of entities
-     * into an entity id or list of entity ids.
-     *
-     * @param value value of the repository method parameter.
-     * @return entity id or list of entity ids.
-     */
-    private Object toEntityId(Object value) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        List<Member> keyAccessors = entityInfo.attributeAccessors.get(entityInfo.getAttributeName("id", true));
-
-        if (value instanceof Iterable) {
-            List<Object> list = new ArrayList<>();
-            for (Object v : (Iterable<?>) value) {
-                for (Member keyAccessor : keyAccessors) {
-                    Class<?> type = keyAccessor.getDeclaringClass();
-                    if (type.isInstance(v)) {
-                        if (keyAccessor instanceof Method)
-                            v = ((Method) keyAccessor).invoke(v);
-                        else // Field
-                            v = ((Field) keyAccessor).get(v);
-                    } else {
-                        throw new MappingException("Value of type " + v.getClass().getName() + " is incompatible with attribute type " + type.getName()); // TODO NLS
-                    }
-                }
-                list.add(v);
-            }
-            value = list;
-        } else { // single value
-            for (Member keyAccessor : keyAccessors) {
-                Class<?> type = keyAccessor.getDeclaringClass();
-                if (type.isInstance(value)) {
-                    if (keyAccessor instanceof Method)
-                        value = ((Method) keyAccessor).invoke(value);
-                    else // Field
-                        value = ((Field) keyAccessor).get(value);
-                } else {
-                    throw new MappingException("Value of type " + value.getClass().getName() + " is incompatible with attribute type " + type.getName()); // TODO NLS
-                }
-            }
-        }
-
-        return value;
     }
 
     @Override

@@ -2502,7 +2502,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     }
                     case DELETE_WITH_ENTITY_PARAM: {
                         em = entityInfo.persister.createEntityManager();
-                        TypedQuery<?> delete = em.createQuery(queryInfo.jpql, entityInfo.entityClass);
 
                         Object arg = args[0] instanceof Stream //
                                         ? ((Stream<?>) args[0]).sequential().collect(Collectors.toList()) //
@@ -2513,15 +2512,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         if (arg instanceof Iterable) {
                             for (Object e : ((Iterable<?>) arg)) {
                                 numExpected++;
-                                updateCount += remove(e, queryInfo, delete);
+                                updateCount += remove(e, queryInfo, em);
                             }
                         } else if (arg.getClass().isArray()) {
                             numExpected = Array.getLength(arg);
                             for (int i = 0; i < numExpected; i++)
-                                updateCount += remove(Array.get(arg, i), queryInfo, delete);
+                                updateCount += remove(Array.get(arg, i), queryInfo, em);
                         } else {
                             numExpected = 1;
-                            updateCount = remove(arg, queryInfo, delete);
+                            updateCount = remove(arg, queryInfo, em);
                         }
 
                         if (updateCount < numExpected) {
@@ -2803,12 +2802,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
      *
      * @param e         the entity or record.
      * @param queryInfo query information that is prepopulated for deleteById.
-     * @param delete    deletion query.
+     * @param em        the entity manager.
      * @return the number of entities deleted (1 or 0).
      * @throws Exception if an error occurs or if the repository method return type is void and
      *                       the entity (or correct version of the entity) was not found.
      */
-    private int remove(Object e, QueryInfo queryInfo, TypedQuery<?> delete) throws Exception {
+    private int remove(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
 
         if (e == null)
             throw new NullPointerException("The entity parameter cannot have a null value."); // TODO NLS // required by spec
@@ -2818,24 +2817,46 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                     " parameter does not match the " + defaultEntityClass.getName() +
                                     " entity type that is expected for this repository."); // TODO NLS
 
-        Object v = e;
-        if (queryInfo.entityInfo.versionAttributeName == null) {
-            if (queryInfo.entityInfo.idClassAttributeAccessors == null)
-                queryInfo.setParameters(delete, e);
-            else
-                queryInfo.setParametersFromIdClassAndVersion(delete, e, null);
-        } else {
-            List<Member> accessors = queryInfo.entityInfo.attributeAccessors.get(queryInfo.entityInfo.versionAttributeName);
-            if (accessors == null || accessors.isEmpty())
-                throw new MappingException("Unable to find the " + queryInfo.entityInfo.versionAttributeName +
-                                           " attribute on the " + queryInfo.entityInfo.name + " entity."); // should never occur
-            for (Member accessor : accessors)
-                v = accessor instanceof Method ? ((Method) accessor).invoke(v) : ((Field) accessor).get(v);
+        EntityInfo entityInfo = queryInfo.entityInfo;
+        String jpql = queryInfo.jpql;
 
-            if (queryInfo.entityInfo.idClassAttributeAccessors == null)
-                queryInfo.setParameters(delete, e, v);
-            else
-                queryInfo.setParametersFromIdClassAndVersion(delete, e, v);
+        int versionParamIndex = (entityInfo.idClassAttributeAccessors == null ? 1 : entityInfo.idClassAttributeAccessors.size()) + 1;
+        Object version = null;
+        if (entityInfo.versionAttributeName != null) {
+            version = entityInfo.getAttribute(e, entityInfo.versionAttributeName);
+            if (version == null)
+                jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
+        }
+
+        Object id = null;
+        if (entityInfo.idClassAttributeAccessors == null) {
+            id = entityInfo.getAttribute(e, entityInfo.getAttributeName("id", true));
+            if (id == null) {
+                jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
+                if (version != null)
+                    jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && jpql != queryInfo.jpql)
+            Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
+
+        TypedQuery<?> delete = em.createQuery(jpql, entityInfo.entityClass);
+
+        if (entityInfo.idClassAttributeAccessors == null) {
+            int p = 1;
+            if (id != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + id.getClass().getSimpleName());
+                delete.setParameter(p++, id);
+            }
+            if (version != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + version.getClass().getSimpleName());
+                delete.setParameter(p, version);
+            }
+        } else {
+            queryInfo.setParametersFromIdClassAndVersion(delete, e, version);
         }
 
         int numDeleted = delete.executeUpdate();
@@ -2843,10 +2864,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (numDeleted == 0) {
             Class<?> returnType = queryInfo.method.getReturnType();
             if (void.class.equals(returnType) || Void.class.equals(returnType)) {
-                if (queryInfo.entityInfo.versionAttributeName == null)
+                if (entityInfo.versionAttributeName == null)
                     throw new OptimisticLockingFailureException("Entity was not found."); // TODO NLS
                 else
-                    throw new OptimisticLockingFailureException("Version " + v + " of the entity was not found."); // TODO NLS
+                    throw new OptimisticLockingFailureException("Version " + version + " of the entity was not found."); // TODO NLS
             }
         } else if (numDeleted > 1) {
             throw new DataException("Found " + numDeleted + " matching entities."); // ought to be unreachable
@@ -3054,7 +3075,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @throws Exception if an error occurs.
      */
     private int update(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
-        String jpql = queryInfo.jpql;
 
         if (e == null)
             throw new NullPointerException("The entity parameter cannot have a null value."); // TODO NLS // required by spec
@@ -3064,25 +3084,19 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                     " parameter does not match the " + defaultEntityClass.getName() +
                                     " entity type that is expected for this repository."); // TODO NLS
 
+        String jpql = queryInfo.jpql;
         EntityInfo entityInfo = queryInfo.entityInfo;
-
         LinkedHashSet<String> attrsToUpdate = entityInfo.getAttributeNamesForEntityUpdate();
 
         int versionParamIndex = attrsToUpdate.size() + 2;
         Object version = null;
         if (entityInfo.versionAttributeName != null) {
-            List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.versionAttributeName);
-            version = e;
-            for (Member accessor : accessors)
-                version = accessor instanceof Method ? ((Method) accessor).invoke(version) : ((Field) accessor).get(version);
+            version = entityInfo.getAttribute(e, entityInfo.versionAttributeName);
             if (version == null)
                 jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
         }
 
-        List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.getAttributeName("id", true));
-        Object id = e;
-        for (Member accessor : accessors)
-            id = accessor instanceof Method ? ((Method) accessor).invoke(id) : ((Field) accessor).get(id);
+        Object id = entityInfo.getAttribute(e, entityInfo.getAttributeName("id", true));
         if (id == null) {
             jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
             if (version != null)

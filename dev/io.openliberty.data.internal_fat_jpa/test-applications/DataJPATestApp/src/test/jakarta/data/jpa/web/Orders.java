@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import jakarta.data.Sort;
 import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
@@ -33,6 +34,9 @@ public interface Orders extends CrudRepository<Order, Long> {
     boolean addTaxAndShipping(@Param("id") long orderId,
                               @Param("rate") float taxRate,
                               @Param("shipping") float shippingCost);
+
+    @Delete
+    int cancel(Order... order);
 
     @OrderBy("id")
     Optional<Order> findFirstByPurchasedBy(String purchaser);

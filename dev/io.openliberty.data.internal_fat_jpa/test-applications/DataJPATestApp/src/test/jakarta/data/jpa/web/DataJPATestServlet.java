@@ -2495,6 +2495,66 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Test that @Delete requires the entity to exist with the same version as the database for successful removal.
+     */
+    @Test
+    public void testVersionedDelete() {
+        orders.deleteAll();
+
+        Order o1 = new Order();
+        o1.purchasedBy = "testVersionedDelete-Customer1";
+        o1.purchasedOn = OffsetDateTime.now();
+        o1.total = 1.09f;
+        assertEquals(0, orders.cancel(o1)); // doesn't exist yet
+
+        o1 = orders.save(o1);
+
+        int oldVersion = o1.versionNum;
+
+        o1.total = 1.19f;
+        assertEquals(true, orders.modify(o1));
+
+        o1 = orders.findById(o1.id).orElseThrow();
+        int newVersion = o1.versionNum;
+        Long id = o1.id;
+
+        // Attempt deletion at old version
+        o1 = new Order();
+        o1.id = id;
+        o1.purchasedBy = "testVersionedDelete-Customer1";
+        o1.purchasedOn = OffsetDateTime.now();
+        o1.total = 1.19f;
+        o1.versionNum = oldVersion;
+        assertEquals(0, orders.cancel(o1));
+
+        Order o2 = new Order();
+        o2.purchasedBy = "testVersionedDelete-Customer2";
+        o2.purchasedOn = OffsetDateTime.now();
+        o2.total = 2.09f;
+        o2 = orders.save(o2);
+
+        Order o3 = new Order();
+        o3.purchasedBy = "testVersionedDelete-Customer3";
+        o3.purchasedOn = OffsetDateTime.now();
+        o3.total = 3.09f;
+        o3 = orders.save(o3);
+
+        // Attempt deletion at correct version
+        o1.versionNum = newVersion;
+        assertEquals(2, orders.cancel(o1, o2));
+
+        // Entities o1 and o2 should no longer be in the database:
+        assertEquals(0, orders.cancel(o1, o2));
+
+        // Entity o3 should still be there:
+        o3 = orders.findById(o3.id).orElseThrow();
+        assertEquals(3.09f, o3.total, 0.001f);
+
+        // Deletion where only 1 is found:
+        assertEquals(1, orders.cancel(o1, o3, o2));
+    }
+
+    /**
      * Test that remove(entity) requires the entity to be at the same version as the database for successful removal.
      * This tests covers an entity type with an IdClass.
      */
