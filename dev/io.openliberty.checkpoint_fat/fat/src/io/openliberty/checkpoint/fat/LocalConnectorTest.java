@@ -35,12 +35,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.checkpoint.fat.jmx.LocalConnector;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
+@SkipIfCheckpointNotSupported
 public class LocalConnectorTest {
 
     @Server("checkpointLocalConnector")
