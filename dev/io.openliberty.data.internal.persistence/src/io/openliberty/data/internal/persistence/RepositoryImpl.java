@@ -2536,7 +2536,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     }
                     case UPDATE_WITH_ENTITY_PARAM: {
                         em = entityInfo.persister.createEntityManager();
-                        TypedQuery<?> update = em.createQuery(queryInfo.jpql, entityInfo.entityClass);
 
                         Object arg = args[0] instanceof Stream //
                                         ? ((Stream<?>) args[0]).sequential().collect(Collectors.toList()) //
@@ -2545,13 +2544,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                         if (arg instanceof Iterable) {
                             for (Object e : ((Iterable<?>) arg))
-                                updateCount += update(e, queryInfo, update);
+                                updateCount += update(e, queryInfo, em);
                         } else if (arg.getClass().isArray()) {
                             int length = Array.getLength(arg);
                             for (int i = 0; i < length; i++)
-                                updateCount += update(Array.get(arg, i), queryInfo, update);
+                                updateCount += update(Array.get(arg, i), queryInfo, em);
                         } else {
-                            updateCount = update(arg, queryInfo, update);
+                            updateCount = update(arg, queryInfo, em);
                         }
 
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
@@ -3050,11 +3049,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
      *
      * @param e         the entity or record.
      * @param queryInfo query information that is prepopulated for update by id (and possibly version).
-     * @param update    update query.
+     * @param em        the entity manager.
      * @return the number of entities updated (1 or 0).
      * @throws Exception if an error occurs.
      */
-    private int update(Object e, QueryInfo queryInfo, TypedQuery<?> update) throws Exception {
+    private int update(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
+        String jpql = queryInfo.jpql;
+
         if (e == null)
             throw new NullPointerException("The entity parameter cannot have a null value."); // TODO NLS // required by spec
 
@@ -3065,6 +3066,34 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         EntityInfo entityInfo = queryInfo.entityInfo;
 
+        LinkedHashSet<String> attrsToUpdate = entityInfo.getAttributeNamesForEntityUpdate();
+
+        int versionParamIndex = attrsToUpdate.size() + 2;
+        Object version = null;
+        if (entityInfo.versionAttributeName != null) {
+            List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.versionAttributeName);
+            version = e;
+            for (Member accessor : accessors)
+                version = accessor instanceof Method ? ((Method) accessor).invoke(version) : ((Field) accessor).get(version);
+            if (version == null)
+                jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
+        }
+
+        List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.getAttributeName("id", true));
+        Object id = e;
+        for (Member accessor : accessors)
+            id = accessor instanceof Method ? ((Method) accessor).invoke(id) : ((Field) accessor).get(id);
+        if (id == null) {
+            jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
+            if (version != null)
+                jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && jpql != queryInfo.jpql)
+            Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
+
+        TypedQuery<?> update = em.createQuery(jpql, entityInfo.entityClass);
+
         // parameters for entity attributes to update:
 
         int p = 0;
@@ -3074,17 +3103,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         // id parameter(s)
 
-        if (entityInfo.idClassAttributeAccessors == null)
-            QueryInfo.setParameter(++p, update, e,
-                                   entityInfo.attributeAccessors.get(entityInfo.getAttributeName("id", true)));
-        else
+        if (entityInfo.idClassAttributeAccessors != null) {
             throw new UnsupportedOperationException(); // TODO
+        } else if (id != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "set ?" + (p + 1) + ' ' + id.getClass().getSimpleName());
+            update.setParameter(++p, id);
+        }
 
         // version parameter
 
-        if (entityInfo.versionAttributeName != null)
-            QueryInfo.setParameter(++p, update, e,
-                                   entityInfo.attributeAccessors.get(entityInfo.versionAttributeName));
+        if (entityInfo.versionAttributeName != null && version != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "set ?" + (p + 1) + ' ' + version.getClass().getSimpleName());
+            update.setParameter(++p, version);
+        }
 
         int numUpdated = update.executeUpdate();
 

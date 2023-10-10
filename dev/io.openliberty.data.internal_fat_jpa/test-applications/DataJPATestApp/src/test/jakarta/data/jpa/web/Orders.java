@@ -21,6 +21,7 @@ import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Update;
 
 /**
  * Experiments with auto-generated keys.
@@ -37,4 +38,7 @@ public interface Orders extends CrudRepository<Order, Long> {
     Optional<Order> findFirstByPurchasedBy(String purchaser);
 
     List<Float> findTotalByPurchasedByIn(Iterable<String> purchasers, Sort... sorts);
+
+    @Update
+    boolean modify(Order order);
 }
