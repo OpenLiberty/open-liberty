@@ -5,7 +5,6 @@ singleton=true
 -features= \
     io.openliberty.webProfile.internal-0.0, \
     io.openliberty.microProfile.internal-0.0, \
-    io.openliberty.javaee.internal-0.0, \
     io.openliberty.jakartaee.internal-0.0
 kind=noship
 edition=full
