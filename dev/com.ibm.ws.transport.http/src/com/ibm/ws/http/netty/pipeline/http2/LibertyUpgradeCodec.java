@@ -73,7 +73,7 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
         return new CleartextHttp2ServerUpgradeHandler(sourceCodec, upgradeHandler, codec.buildHttp2ConnectionHandler(httpConfig, channel));
     }
 
-    private LibertyUpgradeCodec(HttpChannelConfig httpConfig, Channel channel) {
+    LibertyUpgradeCodec(HttpChannelConfig httpConfig, Channel channel) {
         super();
         this.httpConfig = httpConfig;
         this.channel = channel;
@@ -95,8 +95,6 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
                     ctx.channel().pipeline().names().forEach(handler -> System.out.println(handler));
                     // Remove http1 handler adder
                     ctx.pipeline().remove(HttpPipelineInitializer.NO_UPGRADE_OCURRED_HANDLER_NAME);
-                    ctx.pipeline().remove(HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME);
-//                    ctx.pipeline().remove(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC);
                     // Call upgrade
                     super.upgradeTo(ctx, request);
                     System.out.println("After upgrade!");
@@ -139,7 +137,7 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
         }
     }
 
-    private HttpToHttp2ConnectionHandler buildHttp2ConnectionHandler(HttpChannelConfig httpConfig, Channel channel) {
+    HttpToHttp2ConnectionHandler buildHttp2ConnectionHandler(HttpChannelConfig httpConfig, Channel channel) {
         DefaultHttp2Connection connection = new DefaultHttp2Connection(true);
         int maxContentlength = (int) httpConfig.getMessageSizeLimit();
         InboundHttp2ToHttpAdapterBuilder builder = new InboundHttp2ToHttpAdapterBuilder(connection).propagateSettings(false).validateHttpHeaders(false);
