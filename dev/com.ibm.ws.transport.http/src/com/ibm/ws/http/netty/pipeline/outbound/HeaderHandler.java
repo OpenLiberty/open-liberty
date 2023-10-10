@@ -25,6 +25,8 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http2.HttpConversionUtil;
 
 /**
  *
@@ -60,6 +62,10 @@ public class HeaderHandler {
 
             headers.set(HttpHeaderKeys.HDR_DATE.getName(),
                         new String(HttpDispatcher.getDateFormatter().getRFC1123TimeAsBytes(config.getDateHeaderRange()), StandardCharsets.UTF_8));
+        }
+
+        if (!HttpUtil.isContentLengthSet(response) && !headers.contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+            HttpUtil.setTransferEncodingChunked(response, true);
         }
 
         if (config.removeServerHeader()) {
