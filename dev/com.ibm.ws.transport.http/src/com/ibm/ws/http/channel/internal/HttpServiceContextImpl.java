@@ -32,7 +32,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.zip.DataFormatException;
 
@@ -2899,7 +2898,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             System.out.println("Checking and sending headers!");
             if (!isPartialBody() && !getRequest().getMethod().equals(MethodValues.HEAD.getName())) {
 //                complete = true;
-                getResponse().setContentLength(GenericUtils.sizeOf(buffers));
+                System.out.println("Setting content length!!");
+                msg.setContentLength(GenericUtils.sizeOf(buffers));
             }
 
             if (msg.isBodyExpected()) {

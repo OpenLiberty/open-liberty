@@ -552,9 +552,9 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             Tr.event(this, tc, "enable ssl support " + ref.getProperty("type"), this);
         }
         sslFactoryProvider.setReference(ref);
-        httpSecureChain.enable();
 
         if (endpointConfig != null) {
+            httpSecureChain.enable();
             // If this is post-activate, drive the update action
             performAction(updateAction);
         }

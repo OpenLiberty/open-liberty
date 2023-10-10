@@ -17,4 +17,6 @@ public interface NettyTlsProvider {
     public SslContext getOutboundSSLContext(Map<String, Object> sslOptions, String host, String port);
 
     public SslContext getInboundSSLContext(Map<String, Object> sslOptions, String host, String port);
+    
+    public SslContext getInboundALPNSSLContext(Map<String, Object> sslOptions, String host, String port);
 }

@@ -44,6 +44,8 @@ public class InactivityTimeoutHandler extends IdleStateHandler {
            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                Tr.debug(tc, "connection closed due to idle timeout: " + ctx.channel());
            }
+           return;
        }
+       ctx.fireUserEventTriggered(evt);
    }
 }
