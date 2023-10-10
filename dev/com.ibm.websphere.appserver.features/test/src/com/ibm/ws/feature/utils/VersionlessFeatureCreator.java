@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 public class VersionlessFeatureCreator {
 
-    private String privatePath = "temp/visibility/private/";
-    private String publicPath = "temp/visibility/public/";
+    private String privatePath = "visibility/private/";
+    private String publicPath = "visibility/public/";
 
     /** Private/Internal versioned/versionless Jakarta
     
@@ -51,6 +51,10 @@ public class VersionlessFeatureCreator {
             f.mkdirs();
         }
         ArrayList<String> usedDependencies = new ArrayList<String>();
+        //features array:
+        //  features[0] == the name of the feature ex. servlet-4.0
+        //  features[1] == the name of the platform it depends on ex. jakartaPlatform-8.0
+        //  features[2] == the full name of the feature ex. com.ibm.ws.servlet-4.0
     	for(String[] features : feature.getFeaturesAndPlatform()) {
             if(!usedDependencies.contains(features[1].split("-")[0])){
                 createPrivateVersionlessFeature(feature.getFeatureName(), features[1].split("-")[0]);
@@ -93,7 +97,9 @@ public class VersionlessFeatureCreator {
             PrintWriter pw =  new PrintWriter(new FileWriter( temp ));
             String line;
             while ((line = br.readLine()) != null) {
-                pw.println(line);
+                if(!line.contains("io.openliberty." + dependsOnName + ".internal-" + dependsOnNum)){
+                    pw.println(line);
+                }
                 if(line.contains("-features")){
                     pw.println("    io.openliberty." + dependsOnName + ".internal-" + dependsOnNum + ", \\");
                 }
@@ -194,7 +200,7 @@ public class VersionlessFeatureCreator {
             writer.newLine();
             writer.append("-features= \\");
             writer.newLine();
-            writer.append("    io.openliberty." + dependsOnName + ".internal-0-0");
+            writer.append("    io.openliberty." + dependsOnName + ".internal-0.0");
             writer.newLine();
             writer.append("kind=noship");
             writer.newLine();
@@ -210,7 +216,9 @@ public class VersionlessFeatureCreator {
             PrintWriter pw =  new PrintWriter(new FileWriter( temp ));
             String line;
             while ((line = br.readLine()) != null) {
-                pw.println(line);
+                if(!line.contains("io.openliberty." + dependsOnName + ".internal-0.0")){
+                    pw.println(line);
+                }
                 if(line.contains("-features")){
                     pw.println("    io.openliberty." + dependsOnName + ".internal-0.0, \\");
                 }

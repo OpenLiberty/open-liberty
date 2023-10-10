@@ -12,7 +12,6 @@ singleton=true
     io.openliberty.microProfile.internal-2.2, \
     io.openliberty.microProfile.internal-2.1, \
     io.openliberty.microProfile.internal-2.0, \
-    io.openliberty.javaee.internal-8.0, \
     io.openliberty.jakartaee.internal-8.0, \
     com.ibm.websphere.appserver.servlet-4.0
 kind=noship
