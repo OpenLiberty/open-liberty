@@ -234,7 +234,14 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
                 File keyFile = keysFiles.next();
 
                 String fileName = keyFile.getName();
-                String fullFileName = primaryKeyImportDir.concat(fileName);
+                String fullFileName = null;
+
+                if (primaryKeyImportDir != null) {
+                    fullFileName = primaryKeyImportDir.concat(fileName);
+                } else {
+                    Tr.debug(tc, "primaryKeyImportDir is null. Validation keys will not be loaded.");
+                    return validationKeysInDirectory;
+                }
 
                 // skip the primary LTPA keys file or validationKeys file configured in the valicationKeys element
                 if (primaryKeyImportFile.equals(fileName) || isConfiguredValidationKeys(fullFileName)) {
@@ -283,9 +290,9 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             try {
                 // primaryKeyImportFile has already been resolved when the server loads the config, this includes variable and .. being resolved.
                 primaryKeyImportDir = new File(primaryKeyImportFile).getCanonicalFile().getParent() + File.separator;
+                Tr.debug(tc, "primaryKeyImportDir: " + primaryKeyImportDir);
             } catch (IOException e) {
-                FFDCFilter.processException(e, getClass().getName(), "resolveActualPrimaryKeysFileLocation");
-                Tr.error(tc, "LTPA_KEYS_FILE_DOES_NOT_EXIST", primaryKeyImportFile);
+                Tr.debug(tc, "An exception occurred in resolveActualPrimaryKeysFileLocation method", e);
             }
         }
 
@@ -325,8 +332,11 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private void createFileMonitor() {
         try {
             ltpaFileMonitor = new LTPAFileMonitor(this);
-            if (monitorDirectory) { // monitor directory and file
+            if (monitorDirectory && primaryKeyImportDir != null) { // monitor directory and file
                 setFileMonitorRegistration(ltpaFileMonitor.monitorFiles(Arrays.asList(primaryKeyImportDir), Arrays.asList(primaryKeyImportFile), monitorInterval));
+            } else if(monitorDirectory && primaryKeyImportDir == null) { // monitor directory only
+                Tr.debug(tc, "Since primaryKeyImportDir is null, monitor the primaryKeyImportFile, and not the directory.");
+                setFileMonitorRegistration(ltpaFileMonitor.monitorFiles(Arrays.asList(primaryKeyImportFile), monitorInterval));
             } else { // monitor only files
                 setFileMonitorRegistration(ltpaFileMonitor.monitorFiles(Arrays.asList(primaryKeyImportFile), monitorInterval));
             }
@@ -765,6 +775,11 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     @Sensitive
     private Properties getValidationKeysProps(Map<String, Object> configProps, String elementName, String... attrKeys) {
         Properties properties = new Properties();
+        if (primaryKeyImportDir != null){
+            Tr.debug(tc, "primaryKeyImportDir is null. Validation keys will not be loaded.");
+            return properties;
+        }
+
         for (String attrKey : attrKeys) {
             String value = null;
 
