@@ -55,6 +55,7 @@ public class SleepTest extends DBTestBase {
 
 	@BeforeClass
 	public static void beforeTests() throws Exception {
+		System.getProperties().entrySet().stream().forEach(e -> Log.info(SleepTest.class, "beforeTests", e.getKey() + " -> " + e.getValue()));
 
 		BASE_URL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
 		server2.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_secondary")));
