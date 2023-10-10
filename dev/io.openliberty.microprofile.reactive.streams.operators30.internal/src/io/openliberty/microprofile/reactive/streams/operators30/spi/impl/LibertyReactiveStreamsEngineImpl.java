@@ -9,10 +9,9 @@
  *******************************************************************************/
 package io.openliberty.microprofile.reactive.streams.operators30.spi.impl;
 
+import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutorService;
 
 import org.eclipse.microprofile.reactive.streams.operators.core.ReactiveStreamsEngineResolver;
 import org.eclipse.microprofile.reactive.streams.operators.core.ReactiveStreamsFactoryImpl;
@@ -25,20 +24,13 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
 import org.reactivestreams.Processor;
 import org.reactivestreams.Publisher;
-
-import com.ibm.wsspi.threadcontext.WSContextService;
 
 import io.smallrye.mutiny.jakarta.streams.Engine;
 
 @Component(name = "io.openliberty.microprofile.reactive.streams.operators30.spi.impl.LibertyReactiveStreamsEngineImpl", service = { ReactiveStreamsEngine.class }, property = { "service.vendor=IBM" }, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class LibertyReactiveStreamsEngineImpl extends Engine implements ReactiveStreamsEngine {
-
-    private ExecutorService executorService;
-
-    private WSContextService wsContextService;
 
     @Activate
     public void activate() {
@@ -52,43 +44,11 @@ public class LibertyReactiveStreamsEngineImpl extends Engine implements Reactive
         ReactiveStreamsFactoryResolver.setInstance(null);
     }
 
-    @Reference
-    public void setExecutorService(ExecutorService executorService) {
-        this.executorService = executorService;
-    }
-
-    @Reference
-    public void setContextService(WSContextService wsContextService) {
-        this.wsContextService = wsContextService;
-    }
-
-    /**
-     * Get the executor service for getting threads from.
-     *
-     * @return the executor
-     */
-    public ExecutorService getExecutor() {
-        return this.executorService;
-    }
-
     /** {@inheritDoc} */
     @Override
     public <T> CompletionStage<T> buildCompletion(Graph graph) throws UnsupportedStageException {
-
-        PrivilegedAction<CompletionStage<T>> action = new PrivilegedAction<CompletionStage<T>>() {
-            @Override
-            public CompletionStage<T> run() {
-                return LibertyReactiveStreamsEngineImpl.super.buildCompletion(graph);
-            }
-        };
-
-        StreamRunner<T> runner = new StreamRunner<>(getExecutor(), this.wsContextService, action);
-
-        StreamTask<T> streamTask = runner.startStream();
-
-        CompletableFuture<T> wrapper = streamTask.getWrapperCompletableFuture();
-
-        return wrapper;
+        PrivilegedAction<CompletionStage<T>> action = () -> super.buildCompletion(graph);
+        return AccessController.doPrivileged(action);
     }
 
     /** {@inheritDoc} */
