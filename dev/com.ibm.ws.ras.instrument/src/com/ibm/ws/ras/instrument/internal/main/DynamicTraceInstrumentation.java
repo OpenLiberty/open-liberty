@@ -60,32 +60,32 @@ public class DynamicTraceInstrumentation {
  */
 class Transformer extends StaticTraceInstrumentation implements ClassFileTransformer {
 
-	public static final String CLASS_NAME = "StaticTransformer";
+    public static final String CLASS_NAME = "StaticTransformer";
 
-	public static boolean isLoggable(String className) {
-		return FileLogger.isLoggable(className);
-	}
+    public static boolean isLoggable(String className) {
+        return FileLogger.isLoggable(className);
+    }
 
-	public static void fileLog(String methodName, String text) {
-		FileLogger.fileLog(CLASS_NAME, methodName, text);
-	}
-	
-	public static void fileLog(String methodName, String text, Object value) {
-		FileLogger.fileLog(CLASS_NAME, methodName, text, value);
-	}
-	
-	public static void fileDump(String methodName, String text, byte[] bytes) {
-		FileLogger.fileDump(CLASS_NAME, methodName, text, bytes);
-	}	
-	
-	public static void fileStack(String methodName, String text, Throwable th) {
-		FileLogger.fileStack(CLASS_NAME, methodName, text, th);
-	}	
+    public static void fileLog(String methodName, String text) {
+        FileLogger.fileLog(CLASS_NAME, methodName, text);
+    }
+    
+    public static void fileLog(String methodName, String text, Object value) {
+        FileLogger.fileLog(CLASS_NAME, methodName, text, value);
+    }
+    
+    public static void fileDump(String methodName, String text, byte[] bytes) {
+        FileLogger.fileDump(CLASS_NAME, methodName, text, bytes);
+    }   
+    
+    public static void fileStack(String methodName, String text, Throwable th) {
+        FileLogger.fileStack(CLASS_NAME, methodName, text, th);
+    }   
 
-	static {
-		fileLog("<init>", "Initializing");
-	}
-	
+    static {
+        fileLog("<init>", "Initializing");
+    }
+    
     List<String> includesList = new ArrayList<String>();
     List<String> excludesList = new ArrayList<String>();
 
@@ -182,17 +182,17 @@ class Transformer extends StaticTraceInstrumentation implements ClassFileTransfo
                             ProtectionDomain protectionDomain,
                             byte[] classBytes) throws IllegalClassFormatException {
 
-    	String methodName = "transform";
-    	
+        String methodName = "transform";
+        
         // Don't modify our own package
         if (className.startsWith(Transformer.class.getPackage().getName().replaceAll("\\.", "/"))) {
-        	fileLog(methodName, "Ignore 'com.ibm.ws.ras.instrument.internal' class", className);
+            fileLog(methodName, "Ignore 'com.ibm.ws.ras.instrument.internal' class", className);
             return null;
         }
 
         // Don't modify the java.util.logging classes
         if (className.startsWith("java/util/logging/")) {
-        	fileLog(methodName, "Ignore 'java.util.logging' class", className);        	
+            fileLog(methodName, "Ignore 'java.util.logging' class", className);         
             return null;
         }
 
@@ -204,13 +204,13 @@ class Transformer extends StaticTraceInstrumentation implements ClassFileTransfo
             }
         }
         if ( !include ) {
-        	fileLog(methodName, "Ignore: Class is not included", className);
-        	return null;
+            fileLog(methodName, "Ignore: Class is not included", className);
+            return null;
         }
         
         for (String s : excludesList) {
             if (className.startsWith(s) || s.equals("/")) {
-            	fileLog(methodName, "Ignore: Class is excluded", className);            	
+                fileLog(methodName, "Ignore: Class is excluded", className);                
                 return null;
             }
         }
@@ -227,7 +227,7 @@ class Transformer extends StaticTraceInstrumentation implements ClassFileTransfo
         try {
             return transform(className, new ByteArrayInputStream(classBytes));
         } catch (Throwable t) {
-        	fileStack(methodName, "Transform failure [ " + className + " ]", t);         	
+            fileStack(methodName, "Transform failure [ " + className + " ]", t);            
             t.printStackTrace();
             return null;
         }

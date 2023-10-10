@@ -30,6 +30,33 @@ import java.util.WeakHashMap;
 public class FileLogger {
     public static final String CLASS_NAME = FileLogger.class.getSimpleName();
 
+    // Time utility ...
+    //
+    // Initialization performed here must occur before the creation of the
+    // file logger singleton.  That initialization calls back to 'getTime'.
+    // If the initialization happens after the creation of the singleton,
+    // the call to create the singleton calls back to retrieve the formatted
+    // time before 'current' is assigned, leading to a NPE.
+
+    public static long getTime() {
+        return System.currentTimeMillis();
+    }
+
+    private static final SimpleDateFormat formatter =
+        new SimpleDateFormat("MM/dd/yy HH:mm:ss:SSS z");  // 03/22/16 12:01:13:654 ESD
+
+    private static final Date current = new Date( getTime() );
+    private static String currentFormatted = formatter.format(current);
+
+    public static String getFormattedTime() {
+        long currentMs = System.currentTimeMillis();
+        if ((currentMs - current.getTime()) > 10)  {
+            current.setTime(currentMs);
+            currentFormatted = formatter.format(current);
+        }
+        return currentFormatted;
+    }
+
     //
 
     public static String getClassResourceName(Class<?> targetClass) {
@@ -320,27 +347,6 @@ public class FileLogger {
                 return ( className.contains(usePattern) );
             }
         }
-    }
-
-    //
-
-    public static long getTime() {
-        return System.currentTimeMillis();
-    }
-
-    private static final SimpleDateFormat formatter =
-        new SimpleDateFormat("MM/dd/yy HH:mm:ss:SSS z");  // 03/22/16 12:01:13:654 ESD
-
-    private static final Date current = new Date( getTime() );
-    private static String currentFormatted = formatter.format(current);
-
-    public static String getFormattedTime() {
-        long currentMs = System.currentTimeMillis();
-        if ((currentMs - current.getTime()) > 10)  {
-            current.setTime(currentMs);
-            currentFormatted = formatter.format(current);
-        }
-        return currentFormatted;
     }
 
     //

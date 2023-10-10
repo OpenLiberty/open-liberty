@@ -93,7 +93,7 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
                     return classAnno;
                 }
             }
-
+             
             Annotation[] anno = element.getAnnotations();
             Integer numAnno = ( (anno == null) ? null : Integer.valueOf(anno.length) );
             logger.log(className, methodName, "Element [ " + element + " ] [ " + numAnno + " ]");
