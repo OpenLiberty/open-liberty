@@ -43,6 +43,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.boot.internal.KernelUtils;
 import com.ibm.ws.kernel.service.util.AvailableProcessorsListener;
 import com.ibm.ws.kernel.service.util.CpuInfo;
 import com.ibm.ws.threading.ThreadQuiesce;
@@ -80,6 +81,12 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
      * are replaced with this value.
      */
     final static int MINIMUM_POOL_SIZE = 4;
+
+    /**
+     * Amount of time to wait for quiesce work to complete before continuing with shutdown.
+     */
+    final static int MINIMUM_QUIESCE_TIMEOUT = 30;
+    protected long quiesceTimeout = MINIMUM_QUIESCE_TIMEOUT;
 
     /**
      * The most recently provided component config for the executor.
@@ -197,6 +204,8 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
 
         int coreThreads = Integer.parseInt(String.valueOf(componentConfig.get("coreThreads")));
         int maxThreads = Integer.parseInt(String.valueOf(componentConfig.get("maxThreads")));
+        String quiesceTimeoutString = (String) (componentConfig.get("quiesceTimeout"));
+        quiesceTimeout = Long.valueOf(KernelUtils.parseDuration(quiesceTimeoutString, TimeUnit.SECONDS));
 
         if (maxThreads <= 0) {
             maxThreads = Integer.MAX_VALUE;
@@ -204,6 +213,10 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
 
         if (coreThreads < 0) {
             coreThreads = 2 * CpuInfo.getAvailableProcessors().get();
+        }
+
+        if (quiesceTimeout < MINIMUM_QUIESCE_TIMEOUT) {
+            quiesceTimeout = MINIMUM_QUIESCE_TIMEOUT;
         }
 
         // Make sure coreThreads is not bigger than maxThreads, subject to MINIMUM_POOL_SIZE limit
@@ -523,9 +536,9 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
         this.serverStopping = true;
 
         try {
-            // Wait 30 seconds for all pre-quiesce work to complete
+            // Wait for all pre-quiesce work to complete
             phaser.arriveAndDeregister();
-            phaser.awaitAdvanceInterruptibly(0, 30, TimeUnit.SECONDS);
+            phaser.awaitAdvanceInterruptibly(0, quiesceTimeout, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             //FFDC and fail quiesce notification
             return false;
