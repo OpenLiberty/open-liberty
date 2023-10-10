@@ -46,35 +46,35 @@ import com.ibm.ws.ras.instrument.internal.bci.LibertyTracingClassAdapter;
  */
 public class LibertyRuntimeTransformer implements ClassFileTransformer {
 
-	public static final String CLASS_NAME = "RuntimeTransformer";
+    public static final String CLASS_NAME = "RuntimeTransformer";
 
-	public static boolean isLoggable(String className) {
-		return FileLogger.isLoggable(className);
-	}
+    public static boolean isLoggable(String className) {
+        return FileLogger.isLoggable(className);
+    }
 
-	public static PrintWriter fileWriter() {
-		return FileLogger.fileWriter();
-	}
+    public static PrintWriter fileWriter() {
+        return FileLogger.fileWriter();
+    }
 
-	public static void fileLog(String methodName, String text) {
-		FileLogger.fileLog(CLASS_NAME, methodName, text);
-	}
-	
-	public static void fileLog(String methodName, String text, Object value) {
-		FileLogger.fileLog(CLASS_NAME, methodName, text, value);
-	}
-	
-	public static void fileDump(String methodName, String text, byte[] bytes) {
-		FileLogger.fileDump(CLASS_NAME, methodName, text, bytes);
-	}	
-	
-	public static void fileStack(String methodName, String text, Throwable th) {
-		FileLogger.fileStack(CLASS_NAME, methodName, text, th);
-	}	
+    public static void fileLog(String methodName, String text) {
+        FileLogger.fileLog(CLASS_NAME, methodName, text);
+    }
+    
+    public static void fileLog(String methodName, String text, Object value) {
+        FileLogger.fileLog(CLASS_NAME, methodName, text, value);
+    }
+    
+    public static void fileDump(String methodName, String text, byte[] bytes) {
+        FileLogger.fileDump(CLASS_NAME, methodName, text, bytes);
+    }   
+    
+    public static void fileStack(String methodName, String text, Throwable th) {
+        FileLogger.fileStack(CLASS_NAME, methodName, text, th);
+    }   
 
-	static {
-		fileLog("<init>", "Initializing");
-	}
+    static {
+        fileLog("<init>", "Initializing");
+    }
 
     /**
      * TraceComponent for this class. This is required for debug.
@@ -208,9 +208,9 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
      * @param bytes the class bytes
      * @return true if the class can be transformed
      */
-    private static boolean isTransformPossible(byte[] bytes) {
+    private static String isTransformPossible(byte[] bytes) {
         if (bytes.length < 8) {
-            return false;
+            return "Incomplete class bytes [ " + bytes.length + " ]";
         }
 
         // The transform method will be called for all classes, but ASM is only
@@ -225,10 +225,19 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
         //Limit bytecode that we transform based on JDK retransform compatibility
         //If we have issues here, 1.8 classes will be instead handled by a separate
         //transformer that only does those classes.
-        if (isJDK8WithHotReplaceBug)
-            return classFileVersion <= Opcodes.V1_7;
-        else
-            return classFileVersion <= Opcodes.V22;
+        if (isJDK8WithHotReplaceBug) {
+            if ( classFileVersion > Opcodes.V1_7 ) {
+                return "HotReplaceBug: Class version [ " + classFileVersion + " ] Maximum [ " + Opcodes.V1_7 + " ]";
+            } else {
+                return null;
+            }
+        } else {
+            if ( classFileVersion > Opcodes.V22 ) {
+                return "Class version [ " + classFileVersion + " ] Maximum [ " + Opcodes.V22 + " ]";
+            } else {
+                return null;
+            }
+        }
     }
 
     /**
@@ -275,15 +284,15 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
     }
     
     public static byte[] transform(String className, byte[] bytes) throws IOException {
-    	return transform(className, bytes, true);
+        return transform(className, bytes, true);
     }
 
     protected static boolean visit(
-    		ClassReader reader,
-    		ClassVisitor visitor,
-    		boolean throwComputeFrames,
-    		boolean skipIfNotPreprocessed) {
-    	
+            ClassReader reader,
+            ClassVisitor visitor,
+            boolean throwComputeFrames,
+            boolean skipIfNotPreprocessed) {
+        
         LibertyTracingClassAdapter tracingVisitor =
             new LibertyTracingClassAdapter(visitor, throwComputeFrames, skipIfNotPreprocessed);
 
@@ -305,13 +314,13 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
         if (detailedTransformTrace && tc.isEntryEnabled())
             Tr.entry(tc, "transform");
 
-		// Occasionally, frames must be computed.  This is not known until
-		// the class is visited, as the circumstances depend on encountering
-		// variable manipulating byte-codes before invoking the superclass
-		// initializer.
-		//
-		// The (hopefully rare) occasions are communicated by throwing
-    	// 'ComputeRequiredException'.
+        // Occasionally, frames must be computed.  This is not known until
+        // the class is visited, as the circumstances depend on encountering
+        // variable manipulating byte-codes before invoking the superclass
+        // initializer.
+        //
+        // The (hopefully rare) occasions are communicated by throwing
+        // 'ComputeRequiredException'.
                 
         // First try: Use COMPUTE_MAXS and THROW_COMPUTE_FRAMES in case
         // the flag must be reset.
@@ -329,40 +338,40 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
             stringWriter = new StringWriter();            
             visitor = new TraceClassVisitor(visitor, new PrintWriter(stringWriter));
         } else {
-        	stringWriter = null;
-        	visitor = classWriter;
+            stringWriter = null;
+            visitor = classWriter;
         }
 
         boolean isModified = false;
         boolean computeFrames = false;
         
         try {
-        	try {
-        		// Note the combination of COMPUTE_MAX with THROW_COMPUTE_FRAMES.
-        		isModified = visit(reader, visitor,
-        				AbstractRasClassAdapter.THROW_COMPUTE_FRAMES,
-        				skipIfNotPreprocessed);
+            try {
+                // Note the combination of COMPUTE_MAX with THROW_COMPUTE_FRAMES.
+                isModified = visit(reader, visitor,
+                        AbstractRasClassAdapter.THROW_COMPUTE_FRAMES,
+                        skipIfNotPreprocessed);
 
-        	} catch ( ComputeRequiredException e ) {
-        		computeFrames = true;
+            } catch ( ComputeRequiredException e ) {
+                computeFrames = true;
                 // Second try: Use COMPUTE_FRAMES.  Don't throw an exception:
                 // This second try should be successful.
 
-        		reader = new ClassReader(bytes);
-        		classWriter = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES);
-        		if (tc.isDumpEnabled()) {
-        			stringWriter = new StringWriter();
-        			visitor = new CheckClassAdapter(visitor, false);
-        			visitor = new TraceClassVisitor(visitor, new PrintWriter(stringWriter));
-        		} else {
-        			visitor = classWriter;
-        		}
+                reader = new ClassReader(bytes);
+                classWriter = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES);
+                if (tc.isDumpEnabled()) {
+                    stringWriter = new StringWriter();
+                    visitor = new CheckClassAdapter(visitor, false);
+                    visitor = new TraceClassVisitor(visitor, new PrintWriter(stringWriter));
+                } else {
+                    visitor = classWriter;
+                }
 
-        		// Note the combination of COMPUTE_FRAMES with !THROW_COMPUTE_FRAMES.        		
-        		isModified = visit(reader, visitor,
-        				!AbstractRasClassAdapter.THROW_COMPUTE_FRAMES,
-        				skipIfNotPreprocessed);        		
-        	}
+                // Note the combination of COMPUTE_FRAMES with !THROW_COMPUTE_FRAMES.               
+                isModified = visit(reader, visitor,
+                        !AbstractRasClassAdapter.THROW_COMPUTE_FRAMES,
+                        skipIfNotPreprocessed);             
+            }
 
         } catch ( Throwable t ) {
             throw new IOException("Trace instrumentation failure: " + t.getMessage(), t);
@@ -373,7 +382,7 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
         }
 
         if ( computeFrames ) {
-        	Tr.info(tc, "COMPUTE_FRAMES detected on [ " + reader.getClassName() + " ]");
+            Tr.info(tc, "COMPUTE_FRAMES detected on [ " + reader.getClassName() + " ]");
         }
 
         byte[] result = isModified ? classWriter.toByteArray() : null;
@@ -385,10 +394,10 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
     }
 
     public static byte[] transform(String className, byte[] classBytes, boolean skipIfNotPreprocessed) throws IOException {
-    	String methodName = "transform";
+        String methodName = "transform";
 
-    	boolean isLoggable = isLoggable(className);
-    	boolean isDumpable = tc.isDumpEnabled();
+        boolean isLoggable = isLoggable(className);
+        boolean isDumpable = tc.isDumpEnabled();
 
         // The reader is created early and is provided to the class writer
         // as a write optimization which helps when the writer is optimized
@@ -410,17 +419,17 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
             classVisitor = new CheckClassAdapter(classVisitor, false);
         }
         if ( isLoggable ) {
-        	PrintWriter traceWriter = fileWriter();
-        	if ( traceWriter != null ) {
-        		classVisitor = new TraceClassVisitor(classVisitor, traceWriter);
-        	}
+            PrintWriter traceWriter = fileWriter();
+            if ( traceWriter != null ) {
+                classVisitor = new TraceClassVisitor(classVisitor, traceWriter);
+            }
         }
         StringWriter sw;
         if ( isDumpable ) {
-        	sw = new StringWriter();
-        	classVisitor = new TraceClassVisitor(classVisitor, new PrintWriter(sw));            
+            sw = new StringWriter();
+            classVisitor = new TraceClassVisitor(classVisitor, new PrintWriter(sw));            
         } else {
-        	sw = null;
+            sw = null;
         }
 
         // Just one trace injection class adapter is used.
@@ -431,7 +440,7 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
         try {
             classReader.accept(tracingClassAdapter, skipDebugData ? ClassReader.SKIP_DEBUG : 0);
         } catch (Throwable t) {
-        	fileStack(methodName, "Class read failure [ " + className + " ]", t);
+            fileStack(methodName, "Class read failure [ " + className + " ]", t);
             throw new IOException("Unable to instrument class stream with trace: " + t.getMessage(), t);
         }
 
@@ -440,7 +449,7 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
             Tr.dump(tc, "Transformed class", sw);
         }
         if ( isLoggable ) {
-        	fileLog(methodName, "IsModified", Boolean.valueOf(isModified));
+            fileLog(methodName, "IsModified", Boolean.valueOf(isModified));
         }
         return ( !isModified ? null : classWriter.toByteArray() );
     }
@@ -460,48 +469,50 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
                             ProtectionDomain protectionDomain,
                             byte[] initialBytes) throws IllegalClassFormatException {
 
-    	String methodName = "transform";
+        String methodName = "transform";
 
-    	boolean isLoggable = isLoggable(className);
-    	
-    	if ( !isTransformPossible(initialBytes) ) {
-    		if ( isLoggable ) {
-    			fileLog(methodName, "Ignore: Unsupported class version", className);
-    		}
-        	return null;
+        boolean isLoggable = isLoggable(className);
+        
+        String failureReason = isTransformPossible(initialBytes);
+
+        if ( failureReason != null ) {
+            if ( isLoggable ) {
+                fileLog(methodName, "Ignore [ " + className + " ]: " + failureReason);
+            }
+            return null;
         }
-        	
+            
         boolean traceEnabledForClass = injectAtTransform;
         if (!injectAtTransform && classBeingRedefined != null) {
-        	WeakReference<TraceComponent> tcReference = traceComponentByClass.get(classBeingRedefined);
-        	TraceComponent traceComponent = tcReference == null ? null : tcReference.get();
-        	traceEnabledForClass |= (traceComponent != null && traceComponent.isEntryEnabled());
+            WeakReference<TraceComponent> tcReference = traceComponentByClass.get(classBeingRedefined);
+            TraceComponent traceComponent = tcReference == null ? null : tcReference.get();
+            traceEnabledForClass |= (traceComponent != null && traceComponent.isEntryEnabled());
         }
 
         if ( !traceEnabledForClass ) {
-    		if ( isLoggable ) {        	
-    			fileLog(methodName, "Ignore: Trace not enabled for class", className);
-    		}
-        	return null;
+            if ( isLoggable ) {         
+                fileLog(methodName, "Ignore: Trace not enabled for class", className);
+            }
+            return null;
         }
 
-		if ( isLoggable ) {        	        
-			fileLog(methodName, "Class", className);    		
-    		fileDump(methodName, "Initial bytes", initialBytes);
-    	}
+        if ( isLoggable ) {                 
+            fileLog(methodName, "Class", className);            
+            fileDump(methodName, "Initial bytes", initialBytes);
+        }
 
-    	byte[] finalBytes;
+        byte[] finalBytes;
         try {
-        	finalBytes = transform(className, initialBytes);
+            finalBytes = transform(className, initialBytes);
         } catch (Throwable t) {
-        	fileStack(methodName, "Transform failure [ " + className + " ]", t); 
-        	Tr.error(tc, "INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2", className, t);
-        	return null;
+            fileStack(methodName, "Transform failure [ " + className + " ]", t); 
+            Tr.error(tc, "INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2", className, t);
+            return null;
         }
         
-    	if ( isLoggable && (finalBytes != null) ) {
-    		fileDump(methodName, "Final bytes", finalBytes);
-    	}
-    	return finalBytes;        
+        if ( isLoggable && (finalBytes != null) ) {
+            fileDump(methodName, "Final bytes", finalBytes);
+        }
+        return finalBytes;        
     }
 }
