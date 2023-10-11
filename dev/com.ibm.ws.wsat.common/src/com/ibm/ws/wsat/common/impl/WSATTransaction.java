@@ -100,7 +100,7 @@ public class WSATTransaction {
      * Returns a timeout (in milliseconds) of the time remaining
      * before this transaction expires.
      */
-
+    @Trivial
     public long getTimeout() {
         return expiryTime;
     }
@@ -109,11 +109,12 @@ public class WSATTransaction {
      * Registration endpoint is the EPR for the service to be used by a
      * remote system to register as a participant in the transaction.
      */
-
+    @Trivial
     public WSATCoordinator setRegistration(EndpointReferenceType epr) {
         return registration = new WSATCoordinator(globalId, epr);
     }
 
+    @Trivial
     public WSATCoordinator getRegistration() {
         return registration;
     }
@@ -122,7 +123,7 @@ public class WSATTransaction {
      * Coordinator endpoint is the EPR for the service used by participants
      * to return responses to the 2PC protocol calls.
      */
-
+    @Trivial
     public WSATCoordinator setCoordinator(EndpointReferenceType epr) {
         synchronized (coordinatorLock) {
             return coordinator = new WSATCoordinator(globalId, epr);
@@ -132,12 +133,14 @@ public class WSATTransaction {
     /*
      * Reset coordinator during recovery processing
      */
+    @Trivial
     public WSATCoordinator setCoordinator(WSATCoordinator coord) {
         synchronized (coordinatorLock) {
             return coordinator = coord;
         }
     }
 
+    @Trivial
     public WSATCoordinator getCoordinator() {
         synchronized (coordinatorLock) {
             return coordinator;
