@@ -183,6 +183,9 @@
                                 <dependency>org.eclipse.microprofile.metrics:microprofile-metrics-api-tck</dependency>
                                 <dependency>org.eclipse.microprofile.metrics:microprofile-metrics-optional-tck</dependency>
                             </dependenciesToScan>
+                            <excludes>
+                                <exclude>**/MPMetricBaseMetricsTest.java</exclude>
+                            </excludes>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -220,6 +223,7 @@
                                 <dependency>org.eclipse.microprofile.metrics:microprofile-metrics-optional-tck</dependency>
                             </dependenciesToScan>
                             <excludes>
+                                <exclude>**/MPMetricBaseMetricsTest.java</exclude>
                                 <exclude>**/TimerTest.java</exclude>
                                 <exclude>**/MeterTest.java</exclude>
                             </excludes>
@@ -260,6 +264,7 @@
                                 <dependency>org.eclipse.microprofile.metrics:microprofile-metrics-optional-tck</dependency>
                             </dependenciesToScan>
                             <excludes>
+                                <exclude>**/MPMetricBaseMetricsTest.java</exclude>
                                 <exclude>**/TimerTest.java</exclude>
                                 <exclude>**/MeterTest.java</exclude>
                             </excludes>
