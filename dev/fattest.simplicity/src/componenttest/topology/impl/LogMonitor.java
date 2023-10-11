@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -99,8 +99,6 @@ public class LogMonitor {
             logFiles = new RemoteFile[] { client.lmcGetDefaultLogFile() };
 
         for (RemoteFile logFile : logFiles) {
-            String path = logFile.getAbsolutePath();
-
             long offset = 0;
             BufferedInputStream input = new BufferedInputStream(logFile.openForReading());
             try {
@@ -113,8 +111,8 @@ public class LogMonitor {
                 input.close();
             }
 
-            Long oldMarkOffset = logMarks.put(path, offset);
-            Log.info(c, "setMarkToEndOfLog", path + ", old mark offset=" + oldMarkOffset + ", new mark offset=" + offset + " for " + logFile);
+            Long oldMarkOffset = logMarks.put(logFile.getAbsolutePath(), offset);
+            Log.info(c, "setMarkToEndOfLog", "old:" + oldMarkOffset + ", new:" + offset + ", " + logFile);
         }
     }
 
@@ -131,7 +129,7 @@ public class LogMonitor {
             logMarks.put(logFile, 0L);
         }
 
-        Log.info(c, "getMarkOffset", "Mark offset for " + logFile + "=" + logMarks.get(logFile) + " for " + logFile);
+        Log.info(c, "getMarkOffset", "offset:" + logMarks.get(logFile) + ", " + logFile);
         return logMarks.get(logFile);
     }
 

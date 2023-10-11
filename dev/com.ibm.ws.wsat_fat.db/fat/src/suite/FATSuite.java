@@ -28,7 +28,7 @@ import tests.DBTestDisabled;
 	DBTestDisabled.class,
 })
 public class FATSuite {
-    @ClassRule
+    //@ClassRule
 	public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
 	.andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
 	.andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))

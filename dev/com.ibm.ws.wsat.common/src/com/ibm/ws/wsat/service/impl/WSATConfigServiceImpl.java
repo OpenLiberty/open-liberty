@@ -111,9 +111,31 @@ public class WSATConfigServiceImpl implements WSATConfigService {
         if (TC.isDebugEnabled()) {
             Tr.debug(TC, "SSLEnabled = [{0}], SSLRefId = [{1}], proxy = [{2}], clientAuth = [{3}]", enabled, sslId, proxy, clientAuth);
         }
+
+        String host = getWSATUrl();
+
         if (enabled) {
             Tr.info(TC, "WSAT_SECURITY_CWLIB0206", sslId);
+
+            if (host.startsWith("http://")) {
+                // Let's see how long this takes to rectify
+                do {
+                    if (TC.isDebugEnabled()) {
+                        Tr.debug(TC, "SSL is enabled but the WSAT URL we got is {0}", host);
+                    }
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                    }
+                } while ((host = getWSATUrl()).startsWith("http://"));
+
+                if (TC.isDebugEnabled()) {
+                    Tr.debug(TC, "SSL is enabled and the WSAT URL we now have is {0}", host);
+                }
+            }
         }
+
         if (proxy != null && !proxy.equals("")) {
             Tr.info(TC, "WSAT_PROXY_CWLIB0207", proxy);
 
@@ -128,13 +150,18 @@ public class WSATConfigServiceImpl implements WSATConfigService {
             }
         }
 
-        String regHost = resolveHost()
+        setEndpoints(handlerService.getService(), host);
+    }
+
+    public void setEndpoints(Handler handler, String host) {
+
+        String regHost = host
                          + "/"
                          + Constants.COORDINATION_REGISTRATION_ENDPOINT;
-        String coorHost = resolveHost()
+        String coorHost = host
                           + "/"
                           + Constants.COORDINATION_ENDPOINT;
-        String partHost = resolveHost()
+        String partHost = host
                           + "/"
                           + Constants.PARTICIPANT_ENDPOINT;
 
@@ -143,9 +170,9 @@ public class WSATConfigServiceImpl implements WSATConfigService {
         EndpointReferenceType localPartEpr = WSATUtil.createEpr(partHost);
 
         //set into HandlerService will always self coor...
-        handlerService.getService().setCoordinatorEndpoint(localCoorEpr);
-        handlerService.getService().setRegistrationEndpoint(localRegEpr);
-        handlerService.getService().setParticipantEndpoint(localPartEpr);
+        handler.setCoordinatorEndpoint(localCoorEpr);
+        handler.setRegistrationEndpoint(localRegEpr);
+        handler.setParticipantEndpoint(localPartEpr);
     }
 
     /*
@@ -171,25 +198,6 @@ public class WSATConfigServiceImpl implements WSATConfigService {
             return proxy + WSATContextRoot;
         else
             return httpOptions.getService().getUrlString(WSATContextRoot, enabled);
-    }
-
-    @Trivial
-    private String resolveHost() {
-        String host = "";
-        if (TraceComponent.isAnyTracingEnabled() && TC.isDebugEnabled())
-            Tr.debug(
-                     TC,
-                     "resolveHost",
-                     "Checking if enable SSL for WS-AT",
-                     enabled);
-        host = getWSATUrl();
-        if (TraceComponent.isAnyTracingEnabled() && TC.isDebugEnabled())
-            Tr.debug(
-                     TC,
-                     "resolveHost",
-                     "Checking which url is using for WS-AT",
-                     host);
-        return host;
     }
 
     /*

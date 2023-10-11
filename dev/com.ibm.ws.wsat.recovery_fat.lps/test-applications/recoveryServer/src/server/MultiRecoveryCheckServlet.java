@@ -60,8 +60,8 @@ public class MultiRecoveryCheckServlet extends HttpServlet {
 			case 110102:
 				if (XAResourceImpl.resourceCount() != 3) {
 					System.out.println("!!!!!!!!!!!" + 
-							"XARerouce number is not as expected."
-							+ " Exoepted 3 but get " + 
+							"XAResource count is not as expected."
+							+ " Expected 3 but got " + 
 							XAResourceImpl.resourceCount()
 							+ " !!!!!!!!!!!!!");
 				}

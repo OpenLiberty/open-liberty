@@ -36,7 +36,6 @@ import com.ibm.ws.jaxws.wsat.Constants.AssertionStatus;
 import com.ibm.ws.wsat.service.WSATContext;
 import com.ibm.ws.wsat.service.WSATException;
 import com.ibm.ws.wsat.service.WSATUtil;
-import com.ibm.ws.wsat.utils.WSATOSGIService;
 import com.ibm.ws.wsat.utils.WSCoorConstants;
 import com.ibm.ws.wsat.utils.WSCoorUtil;
 import com.ibm.ws.wsat.webservice.client.wscoor.CoordinationContext;
@@ -75,7 +74,7 @@ public class CoorContextOutInterceptor extends AbstractPhaseInterceptor<Message>
 
         WSCoorUtil.checkHandlerServiceReady();
 
-        inTrans = WSATOSGIService.getInstance().getHandlerService().isTranActive();
+        inTrans = WSCoorUtil.getHandlerService().isTranActive();
         if (inTrans) {
             SoapHeader header = null;
             JAXBDataBinding dataBinding = null;
@@ -85,13 +84,13 @@ public class CoorContextOutInterceptor extends AbstractPhaseInterceptor<Message>
             }
 
             try {
-                String regHost = WSCoorUtil.resolveHost()
+                String regHost = WSCoorUtil.getConfigService().getWSATUrl()
                                  + "/"
                                  + WSCoorConstants.COORDINATION_REGISTRATION_ENDPOINT;
 
                 EndpointReferenceType localRegEpr = WSATUtil.createEpr(regHost);
 
-                WSATContext ctx = WSATOSGIService.getInstance().getHandlerService().handleClientRequest();
+                WSATContext ctx = WSCoorUtil.getHandlerService().handleClientRequest();
                 EndpointReferenceType regEpr = ctx.getRegistration();
                 if (regEpr == null)
                     regEpr = localRegEpr; //regEpr is NULL so it is itself.
@@ -146,7 +145,7 @@ public class CoorContextOutInterceptor extends AbstractPhaseInterceptor<Message>
                          message,
                          new Exception("Stack trace for CoorContextOutInterceptor.handleFault()"));
             }
-            WSATOSGIService.getInstance().getHandlerService().handleClientFault();
+            WSCoorUtil.getHandlerService().handleClientFault();
         } catch (WSATException e) {
             FFDCFilter.processException(e, "com.ibm.ws.wsat.interceptor.CoorContextOutInterceptor", "201");
         }

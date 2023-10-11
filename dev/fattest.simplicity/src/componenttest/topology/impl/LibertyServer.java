@@ -5571,7 +5571,6 @@ public class LibertyServer implements LogMonitorClient {
      * @param log files to mark. If none are specified, the default log file is marked.
      */
     public void setMarkToEndOfLog(RemoteFile... logFiles) throws Exception {
-        Log.info(c, "setMarkToEndOfLog", "Setting mark to the end of logs (if null, messages.log): " + logFiles);
         logMonitor.setMarkToEndOfLog(logFiles);
     }
 
@@ -5581,7 +5580,6 @@ public class LibertyServer implements LogMonitorClient {
      * @throws Exception
      */
     public void setTraceMarkToEndOfDefaultTrace() throws Exception {
-        Log.info(c, "setTraceMarkToEndOfDefaultTrace", "Setting mark to the end of trace.log");
         setMarkToEndOfLog(getDefaultTraceFile());
     }
 
@@ -6299,7 +6297,7 @@ public class LibertyServer implements LogMonitorClient {
             return null;
         }
 
-        Log.info(c, "waitForStringInTrace", "Waiting for " + regexp + " to be found in " + f.getAbsolutePath());
+        Log.info(c, "waitForStringInTrace", "Waiting for \"" + regexp + "\" to be found in " + f);
 
         if (timeout > 0) {
             return waitForStringInLog(regexp, timeout, f);

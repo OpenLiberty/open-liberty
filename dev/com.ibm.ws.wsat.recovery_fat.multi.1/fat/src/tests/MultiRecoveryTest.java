@@ -134,12 +134,14 @@ public class MultiRecoveryTest {
 
 		// Wait for the relevant server to have done its stuff
 		if (crashingServers.equals(restartingServers)) {
-			// This is traditional recovery
+			// This is traditional recovery and it might have already happened so clear the log marks
 			if ("both".equals(crashingServers) || crashingServers.equals("server1")) {
-				assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
+				server.clearLogMarks();
+				assertNotNull(server.getServerName()+failMsg+server.getServerName(), server.waitForStringInTrace(str+server.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
 			}
 			if ("both".equals(crashingServers) || crashingServers.equals("server2")) {
-				assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
+				server2.clearLogMarks();
+				assertNotNull(server2.getServerName()+failMsg+server2.getServerName(), server2.waitForStringInTrace(str+server2.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
 			}
 
 			try {
