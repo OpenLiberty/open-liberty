@@ -4,6 +4,6 @@ visibility=public
 IBM-ShortName: beanValidation
 Subsystem-Name: beanValidation
 -features=io.openliberty.unversioned.beanValidation-0.0; ibm.tolerates:="1.1,2.0,3.0,3.1"
-WLP-Required-Feature: jakartaPlatform, javaeePlatform, mpPlatform
+WLP-Required-Feature: jakartaPlatform, mpPlatform
 kind=noship
 edition=full

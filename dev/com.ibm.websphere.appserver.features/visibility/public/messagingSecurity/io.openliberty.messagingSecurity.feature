@@ -4,6 +4,6 @@ visibility=public
 IBM-ShortName: messagingSecurity
 Subsystem-Name: messagingSecurity
 -features=io.openliberty.unversioned.messagingSecurity-0.0; ibm.tolerates:="3.0"
-WLP-Required-Feature: jakartaPlatform, javaeePlatform, mpPlatform
+WLP-Required-Feature: jakartaPlatform, mpPlatform
 kind=noship
 edition=full

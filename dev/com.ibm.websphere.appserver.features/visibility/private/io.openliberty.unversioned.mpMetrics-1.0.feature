@@ -4,7 +4,6 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.microProfile.internal-1.2, \
-    com.ibm.websphere.appserver.eeCompatible-7.0
     com.ibm.websphere.appserver.mpMetrics-1.0
 kind=noship
 edition=full

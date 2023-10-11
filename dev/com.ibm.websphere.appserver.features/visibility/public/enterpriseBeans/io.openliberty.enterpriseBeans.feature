@@ -4,6 +4,6 @@ visibility=public
 IBM-ShortName: enterpriseBeans
 Subsystem-Name: enterpriseBeans
 -features=io.openliberty.unversioned.enterpriseBeans-0.0; ibm.tolerates:="4.0"
-WLP-Required-Feature: jakartaPlatform, javaeePlatform, mpPlatform
+WLP-Required-Feature: jakartaPlatform, mpPlatform
 kind=noship
 edition=full
