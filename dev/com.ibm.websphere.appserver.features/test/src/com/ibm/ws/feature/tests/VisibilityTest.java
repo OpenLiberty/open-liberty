@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -26,6 +27,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.ws.feature.utils.FeatureInfo;
+import com.ibm.ws.feature.utils.FeatureInfo.ExternalPackageInfo;
 import com.ibm.ws.feature.utils.FeatureMapFactory;
 import com.ibm.ws.feature.utils.FeatureVerifier;
 
@@ -671,4 +673,301 @@ public class VisibilityTest {
         }
         return toleratedFeatures;
     }
+
+    enum ExternalPackageType {
+        IBM_API("ibm-api", false), SPEC("spec", false), STABLE("stable", false), THIRD_PARTY("third-party", false), IBM_SPI("ibm-spi", true);
+
+        final String type;
+        final boolean isSPI;
+
+        ExternalPackageType(String type, boolean isSPI) {
+            this.type = type;
+            this.isSPI = isSPI;
+        }
+    }
+
+    /**
+     * For documentation features APIs and SPIs need to be in a public feature for them to be exposed in the documentation for that public feature.
+     * If the APIs and SPIs are listed in a private feature the documentation auto gen logic will not add them to the public feature even when
+     * the public feature depends on the private feature. This test makes sure that APIs and SPIs listed in private features are also included
+     * in the public features that depend on those private features.
+     *
+     * To help keep ibm-api, spec, stable, third-party, and spi separated, there is a test for each one of them.
+     */
+    @Test
+    public void testIBMAPIsInPublicFeatures() {
+        testAPIandSPIsInPublicFeatures(ExternalPackageType.IBM_API);
+    }
+
+    @Test
+    public void testSpecAPIsInPublicFeatures() {
+        testAPIandSPIsInPublicFeatures(ExternalPackageType.SPEC);
+    }
+
+    @Test
+    public void testStableAPIsInPublicFeatures() {
+        testAPIandSPIsInPublicFeatures(ExternalPackageType.STABLE);
+    }
+
+    @Test
+    public void testThirdPartyAPIsInPublicFeatures() {
+        testAPIandSPIsInPublicFeatures(ExternalPackageType.THIRD_PARTY);
+    }
+
+    @Test
+    public void testSPIsInPublicFeatures() {
+        testAPIandSPIsInPublicFeatures(ExternalPackageType.IBM_SPI);
+    }
+
+    private void testAPIandSPIsInPublicFeatures(ExternalPackageType type) {
+        Map<FeatureInfo, Set<FeatureInfo>> ancestors = new HashMap<>();
+        Map<Set<FeatureInfo>, Set<FeatureInfo>> toleratesAncestors = new HashMap<>();
+        for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+            FeatureInfo featureInfo = entry.getValue();
+            if (featureInfo.isAutoFeature()) {
+                continue;
+            }
+
+            Map<String, Attrs> dependentFeatures = featureInfo.getDependentFeatures();
+
+            for (Entry<String, Attrs> depFeatureEntry : dependentFeatures.entrySet()) {
+                String depFeatureName = depFeatureEntry.getKey();
+                Attrs depFeatureAttr = depFeatureEntry.getValue();
+                String tolerates = depFeatureAttr.get("ibm.tolerates:");
+                if (tolerates == null) {
+                    FeatureInfo depFeatureInfo = features.get(depFeatureName);
+                    if (depFeatureInfo != null) {
+                        Set<FeatureInfo> ancestorSet = ancestors.get(depFeatureInfo);
+                        if (ancestorSet == null) {
+                            ancestorSet = new HashSet<>();
+                            ancestors.put(depFeatureInfo, ancestorSet);
+                        }
+                        ancestorSet.add(featureInfo);
+                    }
+                } else {
+                    Set<FeatureInfo> tolerateDepFeatureInfo = new LinkedHashSet<>();
+                    FeatureInfo depFeatureInfo = features.get(depFeatureName);
+                    if (depFeatureInfo != null) {
+                        tolerateDepFeatureInfo.add(depFeatureInfo);
+                    }
+                    String[] tolerateArr = tolerates.split(",");
+                    String baseDepFeatureName = depFeatureName.substring(0, depFeatureName.lastIndexOf('-') + 1);
+                    for (String tolerateVer : tolerateArr) {
+                        String tolerateCandate = baseDepFeatureName + (tolerateVer.trim());
+                        depFeatureInfo = features.get(tolerateCandate);
+                        if (depFeatureInfo != null) {
+                            tolerateDepFeatureInfo.add(depFeatureInfo);
+                        }
+                    }
+                    Set<FeatureInfo> ancestorSet = toleratesAncestors.get(tolerateDepFeatureInfo);
+                    if (ancestorSet == null) {
+                        ancestorSet = new HashSet<>();
+                        toleratesAncestors.put(tolerateDepFeatureInfo, ancestorSet);
+                    }
+                    ancestorSet.add(featureInfo);
+                }
+            }
+        }
+
+        Map<String, Set<MissingExternalPackageInfo>> missingExternalPackages = new HashMap<>();
+        for (Entry<FeatureInfo, Set<FeatureInfo>> entry : ancestors.entrySet()) {
+            FeatureInfo key = entry.getKey();
+            if (!"private".equals(key.getVisibility())) {
+                continue;
+            }
+
+            Set<ExternalPackageInfo> featureExternalPackages = null;
+
+            if (type.isSPI) {
+                featureExternalPackages = key.getSPIs();
+            } else {
+                Set<ExternalPackageInfo> featureAPIs = key.getAPIs();
+
+                if (featureAPIs != null) {
+                    featureExternalPackages = new LinkedHashSet<>();
+                    for (ExternalPackageInfo featureAPI : featureAPIs) {
+                        if (type.type.equals(featureAPI.getType())) {
+                            featureExternalPackages.add(featureAPI);
+                        }
+                    }
+                    if (featureExternalPackages.size() == 0) {
+                        featureExternalPackages = null;
+                    }
+                }
+            }
+
+            if (featureExternalPackages != null) {
+                Set<FeatureInfo> featureAncestors = entry.getValue();
+                String privateFeatureName = key.getName();
+                findMissingFeatures(ancestors, missingExternalPackages, type, featureExternalPackages, featureAncestors, privateFeatureName);
+            }
+        }
+
+        /*
+         * For the feature dependences with tolerates, only include the APIs that are common in all of
+         * the tolerated features. If one of the tolerated features doesn't include an API or SPI do not include
+         * it in the list of missing features.
+         */
+        for (Entry<Set<FeatureInfo>, Set<FeatureInfo>> entry : toleratesAncestors.entrySet()) {
+            Set<FeatureInfo> key = entry.getKey();
+            boolean isPrivate = true;
+            Set<ExternalPackageInfo> featureExtPackages = null;
+            for (FeatureInfo tolerateFeature : key) {
+                if (!"private".equals(tolerateFeature.getVisibility())) {
+                    isPrivate = false;
+                    break;
+                }
+
+                Set<ExternalPackageInfo> tolerateFeatureExtPackages = type.isSPI ? tolerateFeature.getSPIs() : tolerateFeature.getAPIs();
+                if (tolerateFeatureExtPackages == null) {
+                    if (featureExtPackages == null) {
+                        featureExtPackages = new HashSet<>();
+                    } else {
+                        featureExtPackages.clear();
+                    }
+                } else {
+                    if (featureExtPackages == null) {
+                        featureExtPackages = new HashSet<>();
+                        featureExtPackages.addAll(tolerateFeatureExtPackages);
+                    } else if (featureExtPackages.size() != 0) {
+                        featureExtPackages.retainAll(tolerateFeatureExtPackages);
+                    }
+                }
+            }
+
+            if (!isPrivate) {
+                continue;
+            }
+
+            if (!type.isSPI && featureExtPackages != null) {
+                for (Iterator<ExternalPackageInfo> it = featureExtPackages.iterator(); it.hasNext();) {
+                    ExternalPackageInfo featureExtPackage = it.next();
+                    if (!type.type.equals(featureExtPackage)) {
+                        it.remove();
+                    }
+                }
+            }
+
+            if (featureExtPackages != null && featureExtPackages.size() == 0) {
+                featureExtPackages = null;
+            }
+
+            if (featureExtPackages != null) {
+                Set<FeatureInfo> featureAncestors = entry.getValue();
+                StringBuilder sb = new StringBuilder();
+                for (FeatureInfo toleratedFeature : key) {
+                    String toleratedFeatureName = toleratedFeature.getName();
+                    if (sb.length() == 0) {
+                        sb.append(toleratedFeatureName);
+                    } else {
+                        sb.append(',');
+                        sb.append(toleratedFeatureName.substring(toleratedFeatureName.lastIndexOf('-') + 1));
+                    }
+                }
+                String privateFeatureName = sb.toString();
+                findMissingFeatures(ancestors, missingExternalPackages, type, featureExtPackages, featureAncestors, privateFeatureName);
+            }
+        }
+
+        if (missingExternalPackages.size() > 0) {
+            StringBuilder errorMessage = new StringBuilder();
+            int packageCount = 0;
+            for (Entry<String, Set<MissingExternalPackageInfo>> entry : missingExternalPackages.entrySet()) {
+                errorMessage.append(entry.getKey()).append(" is missing the following packages:\n");
+                for (MissingExternalPackageInfo missingInfo : entry.getValue()) {
+                    errorMessage.append("    ").append(missingInfo).append('\n');
+                    packageCount++;
+                }
+            }
+            Assert.fail("Found " + packageCount + " external packages in private features that are not also included in " +
+                        missingExternalPackages.size() + " public features: " + '\n' + errorMessage.toString());
+        }
+    }
+
+    private static class MissingExternalPackageInfo {
+
+        String privateFeatureName;
+        final String packageName;
+
+        MissingExternalPackageInfo(String privateFeatureName, String packageName) {
+            this.privateFeatureName = privateFeatureName;
+            this.packageName = packageName;
+        }
+
+        @Override
+        public int hashCode() {
+            return packageName.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            MissingExternalPackageInfo other = (MissingExternalPackageInfo) obj;
+            return packageName.equals(other.packageName);
+        }
+
+        public void updatePrivateFeature(String newPrivateFeature) {
+            privateFeatureName = privateFeatureName.replace(" and ", ", ");
+            privateFeatureName += (" and " + newPrivateFeature);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public String toString() {
+            return packageName + " from private feature " + privateFeatureName;
+        }
+    }
+
+    private void findMissingFeatures(Map<FeatureInfo, Set<FeatureInfo>> ancestors, Map<String, Set<MissingExternalPackageInfo>> missingExternalPackages,
+                                     ExternalPackageType type, Set<ExternalPackageInfo> featureExternalPackages,
+                                     Set<FeatureInfo> featureAncestors, String privateFeatureName) {
+        Set<FeatureInfo> publicAncestors = getPublicFeatureAncestors(featureAncestors, ancestors);
+        for (FeatureInfo publicAncestor : publicAncestors) {
+            Set<MissingExternalPackageInfo> missingExtPackages = new LinkedHashSet<>();
+            Set<ExternalPackageInfo> ancestorExternalPackages = type.isSPI ? publicAncestor.getSPIs() : publicAncestor.getAPIs();
+            for (ExternalPackageInfo featureExternalPackage : featureExternalPackages) {
+                if (ancestorExternalPackages == null || !ancestorExternalPackages.contains(featureExternalPackage)) {
+                    MissingExternalPackageInfo missingPackage = new MissingExternalPackageInfo(privateFeatureName, featureExternalPackage.getPackageName());
+                    missingExtPackages.add(missingPackage);
+                }
+            }
+            if (missingExtPackages.size() > 0) {
+                Set<MissingExternalPackageInfo> missingPackages = missingExternalPackages.get(publicAncestor.getName());
+                if (missingPackages == null) {
+                    missingPackages = new LinkedHashSet<>();
+                    missingExternalPackages.put(publicAncestor.getName(), missingPackages);
+                }
+                for (MissingExternalPackageInfo missingPackage : missingExtPackages) {
+                    if (!missingPackages.add(missingPackage)) {
+                        for (MissingExternalPackageInfo missing : missingPackages) {
+                            if (missing.equals(missingPackage)) {
+                                missing.updatePrivateFeature(missingPackage.privateFeatureName);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private Set<FeatureInfo> getPublicFeatureAncestors(Set<FeatureInfo> ancestors, Map<FeatureInfo, Set<FeatureInfo>> ancestorsMap) {
+        Set<FeatureInfo> publicFeatures = new HashSet<>();
+        if (ancestors != null) {
+            for (FeatureInfo ancestor : ancestors) {
+                if (ancestor.getVisibility().equals("public")) {
+                    publicFeatures.add(ancestor);
+                } else if (ancestor.getVisibility().equals("private")) {
+                    publicFeatures.addAll(getPublicFeatureAncestors(ancestorsMap.get(ancestor), ancestorsMap));
+                }
+            }
+        }
+        return publicFeatures;
+    }
+
 }

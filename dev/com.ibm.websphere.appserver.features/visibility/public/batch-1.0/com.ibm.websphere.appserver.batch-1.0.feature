@@ -14,7 +14,8 @@ IBM-API-Package: \
   javax.batch.operations; type="spec", \
   javax.batch.runtime; type="spec", \
   javax.batch.runtime.context; type="spec", \
-  javax.inject;  type="spec"
+  javax.inject;  type="spec", \
+  com.ibm.websphere.persistence.mbean; type="ibm-api"
 IBM-ShortName: batch-1.0
 Subsystem-Name: Batch API 1.0
 -features=com.ibm.websphere.appserver.internal.optional.jaxb-2.2, \

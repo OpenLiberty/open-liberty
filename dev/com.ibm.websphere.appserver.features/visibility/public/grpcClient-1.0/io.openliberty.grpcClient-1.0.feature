@@ -7,7 +7,12 @@ IBM-App-ForceRestart: install, \
 IBM-API-Package: \
   io.grpc.netty; type="third-party", \
   io.netty.handler.ssl; type="third-party", \
-  io.openliberty.grpc.internal.client; type="internal"
+  io.openliberty.grpc.internal.client; type="internal", \
+  com.ibm.websphere.endpoint; type="ibm-api", \
+  io.grpc;  type="stable"
+IBM-SPI-Package: \
+  com.ibm.wsspi.http, \
+  com.ibm.wsspi.http.ee8
 IBM-ShortName: grpcClient-1.0
 Subsystem-Version: 1.0.0
 Subsystem-Name: gRPC Client 1.0

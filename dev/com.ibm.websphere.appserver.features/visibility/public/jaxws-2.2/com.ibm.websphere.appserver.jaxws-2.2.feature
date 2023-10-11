@@ -7,7 +7,20 @@ WLP-Activation-Type: parallel
 IBM-App-ForceRestart: uninstall, \
  install
 IBM-ShortName: jaxws-2.2
-IBM-SPI-Package: com.ibm.wsspi.webservices.handler
+IBM-SPI-Package: com.ibm.wsspi.webservices.handler, \
+ com.ibm.wsspi.adaptable.module, \
+ com.ibm.ws.adaptable.module.structure, \
+ com.ibm.wsspi.adaptable.module.adapters, \
+ com.ibm.wsspi.artifact, \
+ com.ibm.wsspi.artifact.factory, \
+ com.ibm.wsspi.artifact.factory.contributor, \
+ com.ibm.wsspi.artifact.overlay, \
+ com.ibm.wsspi.artifact.equinox.module, \
+ com.ibm.wsspi.anno.classsource, \
+ com.ibm.wsspi.anno.info, \
+ com.ibm.wsspi.anno.service, \
+ com.ibm.wsspi.anno.targets, \
+ com.ibm.wsspi.anno.util
 IBM-API-Package:  \
  javax.jws.soap; type="spec"; require-java:="9", \
  javax.wsdl; type="spec", \
@@ -30,7 +43,10 @@ IBM-API-Package:  \
  javax.xml.ws.wsaddressing; type="spec", \
  org.apache.cxf.binding.soap.wsdl.extensions;type="internal", \
  org.apache.cxf.databinding;type="internal", \
- javax.jws; type="spec"; require-java:="9"
+ javax.jws; type="spec"; require-java:="9", \
+ javax.annotation; type="spec", \
+ javax.annotation.security; type="spec", \
+ javax.annotation.sql; type="spec"
 Subsystem-Name: Java Web Services 2.2
 -features=\
   io.openliberty.servlet.api-3.0; apiJar=false; ibm.tolerates:="3.1,4.0", \

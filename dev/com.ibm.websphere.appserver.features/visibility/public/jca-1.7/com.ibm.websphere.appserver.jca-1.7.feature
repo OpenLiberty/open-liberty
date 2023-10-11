@@ -3,7 +3,14 @@ symbolicName=com.ibm.websphere.appserver.jca-1.7
 WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
-IBM-API-Package: com.ibm.ws.jca.service; type="internal"
+IBM-API-Package: com.ibm.ws.jca.service; type="internal", \
+  com.ibm.ws.jca.cm.mbean; type="ibm-api", \
+  javax.resource; type="spec", \
+  javax.resource.cci; type="spec", \
+  javax.resource.spi; type="spec", \
+  javax.resource.spi.endpoint; type="spec", \
+  javax.resource.spi.security; type="spec", \
+  javax.resource.spi.work; type="spec"
 IBM-ShortName: jca-1.7
 Subsystem-Name: Java Connector Architecture 1.7
 Subsystem-Category: JavaEE7Application

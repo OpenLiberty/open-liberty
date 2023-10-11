@@ -9,7 +9,12 @@ IBM-API-Package: javax.security.enterprise; type="spec", \
  javax.security.auth.message; type="spec", \
  javax.security.auth.message.callback; type="spec", \
  javax.security.auth.message.config; type="spec", \
- javax.security.auth.message.module; type="spec"
+ javax.security.auth.message.module; type="spec", \
+ com.ibm.wsspi.security.tai; type="ibm-api", \
+ com.ibm.wsspi.security.token; type="ibm-api", \
+ com.ibm.wsspi.security.auth.callback; type="ibm-api", \
+ com.ibm.wsspi.security.common.auth.module; type="ibm-api", \
+ com.ibm.websphere.security.auth.callback; type="ibm-api"
 
 IBM-ShortName: appSecurity-3.0
 Subsystem-Name: Application Security 3.0
