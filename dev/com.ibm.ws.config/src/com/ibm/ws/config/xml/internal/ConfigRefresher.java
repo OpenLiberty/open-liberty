@@ -15,9 +15,9 @@ package com.ibm.ws.config.xml.internal;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
@@ -42,7 +42,6 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
 
 import io.openliberty.checkpoint.spi.CheckpointHook;
-import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  *
@@ -159,15 +158,7 @@ public class ConfigRefresher {
             // Let the notification show that we got an error while making the configuration changes
             configUpdatesDelivered.setResult(e);
         } finally {
-            if (CheckpointPhase.getPhase().restored() && changesEndedHook.runMultiThreaded) {
-                synchronized (changesEndedHook) {
-                    if (changesEndedHook.runMultiThreaded) {
-                        changesEndedHook.configUpdatesToDeliver.add(configUpdatesDelivered);
-                    } else {
-                        changesEnded(configUpdatesDelivered);
-                    }
-                }
-            } else {
+            if (!changesEndedHook.queueNotification(configUpdatesDelivered)) {
                 changesEnded(configUpdatesDelivered);
             }
         }
@@ -299,28 +290,40 @@ public class ConfigRefresher {
 
     }
 
-    // Register as a multi-threaded hook to invoke changesEnded() when
-    // restoring from checkpoint. Invoking changesEnded() in single-threaded
-    // mode may fail restore as it performs a blocking operation.
+    // Method changesEnded() performs a blocking operation. Defer the execution
+    // of changesEnded() until the JVM enters multi-threaded mode during checkpoint
+    // restore.
     private class ChangesEndedHook implements CheckpointHook {
 
-        volatile boolean runMultiThreaded = false;
+        private final ThreadLocal<Boolean> checkpointThread = new ThreadLocal<Boolean>() {
+            @Override
+            protected Boolean initialValue() {
+                return Boolean.FALSE;
+            }
+        };
 
         // FIFO queue of deferred config update notifications
-        Queue<RuntimeUpdateNotification> configUpdatesToDeliver = new ArrayDeque<RuntimeUpdateNotification>();
+        final Deque<RuntimeUpdateNotification> configUpdatesToDeliver = new ArrayDeque<RuntimeUpdateNotification>();
+
+        boolean queueNotification(RuntimeUpdateNotification notification) {
+            if (!checkpointThread.get()) {
+                return false;
+            }
+            configUpdatesToDeliver.add(notification);
+            return true;
+        }
 
         @Override
         public void prepare() {
-            runMultiThreaded = true;
+            checkpointThread.set(true);
         }
 
         @Override
         public void restore() {
-            if (runMultiThreaded) {
-                runMultiThreaded = false;
-                while (!configUpdatesToDeliver.isEmpty()) {
-                    changesEnded(configUpdatesToDeliver.remove());
-                }
+            checkpointThread.set(false);
+            RuntimeUpdateNotification notification = null;
+            while ((notification = configUpdatesToDeliver.pollFirst()) != null) {
+                changesEnded(notification);
             }
         }
     }
