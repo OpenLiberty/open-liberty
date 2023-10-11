@@ -127,7 +127,8 @@ instrument.classesExcludes: \
 	io.openliberty.netty.internal;version=latest,\
 	io.openliberty.netty.internal.impl;version=latest,\
 	com.ibm.ws.kernel.boot,\
-	com.ibm.ws.wsbytebuffer
+	com.ibm.ws.wsbytebuffer,\
+	io.netty.transport
 	
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

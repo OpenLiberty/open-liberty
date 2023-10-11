@@ -9,13 +9,14 @@
  *******************************************************************************/
 package com.ibm.ws.wsoc.outbound;
 
+import java.sql.Connection;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 
 /**
@@ -30,6 +31,7 @@ public class NettyWsocClientHandler extends SimpleChannelInboundHandler<WsByteBu
     private static final TraceComponent tc = Tr.register(NettyWsocClientHandler.class);
 
     protected final static AttributeKey<String> CHAIN_ATTR_KEY = AttributeKey.valueOf("CHAIN_NAME");
+    public final AttributeKey<Connection> CONNECTION = AttributeKey.valueOf("CONNECTION");
 
     /** Called when a new connection is established */
     @Override
@@ -48,9 +50,11 @@ public class NettyWsocClientHandler extends SimpleChannelInboundHandler<WsByteBu
         if (tc.isEntryEnabled())
             Tr.entry(this, tc, "channelRead0", ctx.channel());
 
-        Attribute<HttpRequestor> attr = ctx.channel().attr(HttpRequestorWsoc10FactoryImpl.CONNECTION);
-        HttpRequestor connection = attr.get();
+        HttpRequestor connection = null;
         // LLA TODO
+        //Attribute<HttpRequestor> attr = ctx.channel().attr(HttpRequestorWsoc10FactoryImpl.CONNECTION);
+        //HttpRequestor connection = attr.get();
+
         if (connection != null) {
             if (tc.isEntryEnabled())
                 Tr.entry(this, tc, "connection is not null");

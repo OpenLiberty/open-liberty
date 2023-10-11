@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLEngine;
 import javax.websocket.ClientEndpointConfig;
@@ -51,6 +53,7 @@ import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.ssl.SslContext;
 import io.openliberty.netty.internal.BootstrapExtended;
@@ -124,42 +127,54 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
         access = new ClientTransportAccess();
 
         try {
-            nettyBundle = WsocOutboundChain.getNetty();
+            nettyBundle = WsocOutboundChain.getNettyBundle();
 
             bootstrap = WsocOutboundChain.getOutboundBootstrap();
 
             bootstrap.handler(new NettyWsocClientInitializer(bootstrap.getBaseInitializer(), endpointAddress, null));
 
             NettyHttpRequestorWsoc10 parent = this;
+            int PORT_BIND_TIMEOUT_MS = 60 * 1000;
             Tr.debug(this, tc, "Netty connecting to " + endpointAddress.getRemoteAddress().getAddress().getHostAddress() + ":" + endpointAddress.getRemoteAddress().getPort());
 
-            nettyBundle.startOutbound(this.bootstrap,
-                                      endpointAddress.getRemoteAddress().getAddress().getHostAddress(),
-                                      endpointAddress.getRemoteAddress().getPort(), f -> {
-                                          if (f.isCancelled() || !f.isSuccess()) {
-                                              Tr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());
-                                              if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                                                  Tr.entry(parent, tc, "destroy", f.cause());
-                                              //listener.connectRequestFailedNotification((Exception) f.cause());
-                                              if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                                                  Tr.exit(parent, tc, "destroy");
-                                          } else {
-                                              if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                                                  Tr.entry(parent, tc, "ready", f);
-                                              //parent.chan = f.channel();
-                                              //listener.connectRequestSucceededNotification(readyConnection);
-                                              if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                                                  Tr.exit(parent, tc, "ready");
-                                          }
+            FutureTask<ChannelFuture> startFuture = nettyBundle.startOutbound(this.bootstrap,
+                                                                              endpointAddress.getRemoteAddress().getAddress().getHostAddress(),
+                                                                              endpointAddress.getRemoteAddress().getPort(),
+                                                                              callback -> {
+                                                                                  if (callback.isSuccess()) {
+                                                                                      chan = callback.channel();
+                                                                                  } else {
 
-                                      });
+                                                                                      throw new Exception(callback.cause());
+                                                                                  }
+                                                                              });
+
+            startFuture.get(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS).await(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+
+            //nettyBundle.startOutbound(this.bootstrap,
+            //                          endpointAddress.getRemoteAddress().getAddress().getHostAddress(),
+            //                          endpointAddress.getRemoteAddress().getPort(), f -> {
+            //                              if (f.isCancelled() || !f.isSuccess()) {
+            //                                  Tr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());
+            //                                  if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            //                                      Tr.entry(parent, tc, "destroy", f.cause());
+            //                                  //listener.connectRequestFailedNotification((Exception) f.cause());
+            //                                  if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            //                                      Tr.exit(parent, tc, "destroy");
+            //                              } else {
+            //                                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            //                                      Tr.entry(parent, tc, "ready", f);
+            //                                  //parent.chan = f.channel();
+            //                                  //listener.connectRequestSucceededNotification(readyConnection);
+            //                                  if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            //                                      Tr.exit(parent, tc, "ready");
+            //                              }
+            //
+            //                          });
 
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                Tr.entry(this, tc, "destroy", e);
-            //listener.connectRequestFailedNotification(e);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                Tr.exit(this, tc, "destroy");
+                Tr.entry(this, tc, "netty connect failed ", e);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
