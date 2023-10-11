@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -43,6 +43,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -3565,6 +3566,7 @@ public class DataSourceTestServlet extends FATServlet {
     public void testInterruptedWaiters() throws Throwable {
         Connection con1 = ds22.getConnection();
         Connection con2 = null;
+        final CountDownLatch asyncFinallyLatch = new CountDownLatch(1);
         try {
             con2 = ds22.getConnection(); // connection pool should now be full
             //Need to request the third connection async since the getConnection request should hang
@@ -3572,11 +3574,13 @@ public class DataSourceTestServlet extends FATServlet {
             Future<Boolean> future = executor.submit(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
-                    Connection con = ds22.getConnection();
+                    Connection con = null;
                     try {
+                        con = ds22.getConnection();
                         con.getMetaData();
                         return true;
                     } finally {
+                        asyncFinallyLatch.countDown();
                         if (con != null)
                             con.close();
                     }
@@ -3594,6 +3598,9 @@ public class DataSourceTestServlet extends FATServlet {
             future.cancel(true);
 
             assertTrue("Future should have been canceled", future.isCancelled());
+
+            //Wait 20 seconds to give time for the waiting thread to be interrupted
+            assertTrue("Async connection should have been interrupted", asyncFinallyLatch.await(20, TimeUnit.SECONDS));
         } finally {
             con1.close();
             con2.close();
