@@ -2270,50 +2270,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 switch (queryInfo.type) {
                     case SAVE: {
                         em = entityInfo.persister.createEntityManager();
-
-                        List<Object> results;
-                        if (queryInfo.entityParamType.isArray()) {
-                            results = new ArrayList<>();
-                            Object a = args[0];
-                            int length = Array.getLength(a);
-                            for (int i = 0; i < length; i++)
-                                results.add(em.merge(toEntity(Array.get(a, i))));
-                            em.flush();
-                        } else if (Iterable.class.isAssignableFrom(queryInfo.entityParamType)) {
-                            results = new ArrayList<>();
-                            for (Object e : ((Iterable<?>) args[0]))
-                                results.add(em.merge(toEntity(e)));
-                            em.flush();
-                        } else {
-                            results = List.of(em.merge(toEntity(args[0])));
-                            em.flush();
-                        }
-                        // TODO convert entity back to record if entityInfo.recordClass is not null
-
-                        if (queryInfo.returnArrayType != null) {
-                            Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
-                            returnValue = results.toArray(newArray);
-                        } else {
-                            Class<?> multiType = queryInfo.getMultipleResultType();
-                            if (multiType == null)
-                                returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results?
-                            else if (multiType.isInstance(results))
-                                returnValue = results;
-                            else if (Stream.class.equals(multiType))
-                                returnValue = results.stream();
-                            else if (Iterable.class.isAssignableFrom(multiType))
-                                returnValue = toIterable(multiType, null, results);
-                            else if (Iterator.class.equals(multiType))
-                                returnValue = results.iterator();
-                            else
-                                throw new UnsupportedOperationException(multiType + " is an unsupported return type."); // TODO NLS
-                        }
-
-                        if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
-                            returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
-                        } else {
-                            returnValue = returnType.isInstance(returnValue) ? returnValue : null;
-                        }
+                        returnValue = save(args[0], queryInfo, em);
                         break;
                     }
                     case INSERT: {
@@ -3128,6 +3085,77 @@ public class RepositoryImpl<R> implements InvocationHandler {
             throw new UnsupportedOperationException("Return update count as " + returnType);
 
         return result;
+    }
+
+    /**
+     * Saves entities (or records) to the database, which can involve an update or an insert,
+     * depending on whether the entity already exists.
+     *
+     * @param arg       the entity or record, or array or Iterable of entity or record.
+     * @param queryInfo query information.
+     * @param em        the entity manager.
+     * @return the updated entities, using the return type that is required by the repository Save method signature.
+     * @throws Exception if an error occurs.
+     */
+    private Object save(Object arg, QueryInfo queryInfo, EntityManager em) throws Exception {
+        Class<?> singleType = queryInfo.getSingleResultType();
+        boolean resultVoid = void.class.equals(singleType) || Void.class.equals(singleType);
+        List<Object> results;
+
+        if (queryInfo.entityParamType.isArray()) {
+            results = new ArrayList<>();
+            int length = Array.getLength(arg);
+            for (int i = 0; i < length; i++)
+                results.add(em.merge(toEntity(Array.get(arg, i))));
+            em.flush();
+            // TODO convert entity back to record if entityInfo.recordClass is not null
+        } else if (Iterable.class.isAssignableFrom(queryInfo.entityParamType)) {
+            results = new ArrayList<>();
+            for (Object e : ((Iterable<?>) arg))
+                results.add(em.merge(toEntity(e)));
+            em.flush();
+            // TODO convert entity back to record if entityInfo.recordClass is not null
+        } else {
+            Object entity = em.merge(toEntity(arg));
+            results = resultVoid ? null : List.of(entity);
+            em.flush();
+            // TODO convert entity back to record if entityInfo.recordClass is not null
+        }
+
+        Object returnValue;
+        if (resultVoid) {
+            returnValue = null;
+        } else if (queryInfo.returnArrayType != null) {
+            Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
+            returnValue = results.toArray(newArray);
+        } else {
+            Class<?> multiType = queryInfo.getMultipleResultType();
+            if (multiType == null)
+                returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results? Detect earlier?
+            else if (multiType.isInstance(results))
+                returnValue = results;
+            else if (Stream.class.equals(multiType))
+                returnValue = results.stream();
+            else if (Iterable.class.isAssignableFrom(multiType))
+                returnValue = toIterable(multiType, null, results);
+            else if (Iterator.class.equals(multiType))
+                returnValue = results.iterator();
+            else
+                throw new UnsupportedOperationException(multiType + " is an unsupported return type."); // TODO NLS
+        }
+
+        Class<?> returnType = queryInfo.method.getReturnType();
+        if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+            returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
+        } else if (!resultVoid && !returnType.isInstance(returnValue)) {
+            throw new MappingException("The " + returnType.getName() + " return type of the " +
+                                       queryInfo.method.getName() + " method of the " +
+                                       queryInfo.method.getDeclaringClass().getName() +
+                                       " class is not a valid return type for a repository " +
+                                       "@Save" + " method."); // TODO NLS
+        }
+
+        return returnValue;
     }
 
     /**
