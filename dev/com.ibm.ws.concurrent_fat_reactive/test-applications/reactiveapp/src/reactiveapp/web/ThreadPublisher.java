@@ -14,6 +14,7 @@ package reactiveapp.web;
 
 import static org.junit.Assert.fail;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.SubmissionPublisher;
@@ -25,14 +26,14 @@ import javax.naming.NamingException;
 /**
  *
  */
-public class ThreadPublisher extends SubmissionPublisher<ThreadSnapshot> {
+public class ThreadPublisher extends SubmissionPublisher<CountDownLatch> {
 
     public ThreadPublisher(Executor ex) {
         super(ex, 3);
     }
 
     @Override
-    public int offer(ThreadSnapshot item, BiPredicate<Subscriber<? super ThreadSnapshot>, ? super ThreadSnapshot> onDrop) {
+    public int offer(CountDownLatch item, BiPredicate<Subscriber<? super CountDownLatch>, ? super CountDownLatch> onDrop) {
         try {
             new InitialContext().lookup("java:comp/env/entry1");
         } catch (NamingException e) {

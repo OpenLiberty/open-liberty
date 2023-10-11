@@ -14,6 +14,7 @@ package reactiveapp.web;
 
 import static org.junit.Assert.fail;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscription;
 
@@ -23,7 +24,7 @@ import javax.naming.NamingException;
 /**
  *
  */
-public class ThreadSubscriber implements Flow.Subscriber<ThreadSnapshot> {
+public class ThreadSubscriber implements Flow.Subscriber<CountDownLatch> {
 
     Flow.Subscription subscription = null;
 
@@ -34,12 +35,13 @@ public class ThreadSubscriber implements Flow.Subscriber<ThreadSnapshot> {
     }
 
     @Override
-    public void onNext(ThreadSnapshot ts) {
+    public void onNext(CountDownLatch latch) {
         try {
             new InitialContext().lookup("java:comp/env/entry1");
         } catch (NamingException e) {
             fail("Could not lookup context on subscriber thread");
         }
+        latch.countDown();
         subscription.request(1);
     }
 

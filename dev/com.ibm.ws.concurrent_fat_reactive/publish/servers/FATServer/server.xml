@@ -22,10 +22,6 @@
     
     <include location="../fatTestPorts.xml"/>
     
-    <managedExecutorService jndiName="concurrent/sampleExecutor">
-        <concurrencyPolicy max="2" maxQueueSize="2"/>
-    </managedExecutorService>
-    
     <application location="reactiveapp.war" />
 
 </server>

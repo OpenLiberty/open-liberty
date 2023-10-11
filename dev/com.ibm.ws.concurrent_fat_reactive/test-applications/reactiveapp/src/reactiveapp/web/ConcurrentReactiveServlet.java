@@ -12,6 +12,11 @@
  *******************************************************************************/
 package reactiveapp.web;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import javax.naming.InitialContext;
 
 import org.junit.Test;
@@ -24,6 +29,7 @@ import jakarta.servlet.annotation.WebServlet;
 @SuppressWarnings("serial")
 @WebServlet("/ConcurrentReactiveServlet")
 public class ConcurrentReactiveServlet extends FATServlet {
+    private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
     @Resource(name = "java:comp/env/concurrent/executorRef")
     private ManagedExecutorService executor;
@@ -34,12 +40,14 @@ public class ConcurrentReactiveServlet extends FATServlet {
      */
     @Test
     public void basicFlowTest() throws Exception {
-
+        final CountDownLatch continueLatch = new CountDownLatch(1);
         new InitialContext().lookup("java:comp/env/entry1");
 
         ThreadPublisher publisher = new ThreadPublisher(executor);
         publisher.subscribe(new ThreadSubscriber());
+        publisher.offer(continueLatch, null);
 
+        assertTrue("Timeout occurred waiting for CountDownLatch", continueLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         publisher.close();
     }
 
