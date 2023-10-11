@@ -28,14 +28,13 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServer.CheckpointInfo;
 import io.openliberty.checkpoint.jaxws.fat.util.ExplodedShrinkHelper;
 import io.openliberty.checkpoint.jaxws.fat.util.TestUtils;
+import io.openliberty.checkpoint.jaxws.suite.FATSuite;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.checkpoint.testapp.jaxws.props.servlet.LibertyCXFPositivePropertiesTestServlet;
 
@@ -81,9 +80,7 @@ public class LibertyCXFPositivePropertiesTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly())
-                    .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
+    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {

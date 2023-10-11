@@ -37,11 +37,10 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
+import io.openliberty.checkpoint.jaxws.suite.FATSuite;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
@@ -50,7 +49,7 @@ public class EJBWSBasicTest {
 
     private static final String SERVER_NAME = "EJBWSBasicServer";
 
-    @Server("EJBWSBasicServer")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     private static final String ejbwsbasicjar = "EJBWSBasic";
@@ -63,9 +62,7 @@ public class EJBWSBasicTest {
     public final TestName testName = new TestName();
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly())
-                    .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
+    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
 
     @BeforeClass
     public static void beforeAllTests() throws Exception {
