@@ -4,6 +4,6 @@ visibility=public
 IBM-ShortName: cdi
 Subsystem-Name: cdi
 -features=io.openliberty.unversioned.cdi-0.0; ibm.tolerates:="1.2,2.0,3.0,4.0,4.1"
-WLP-Required-Feature: jakartaPlatform, javaeePlatform, mpPlatform
+WLP-Required-Feature: jakartaPlatform, mpPlatform
 kind=noship
 edition=full

@@ -4,6 +4,6 @@ visibility=public
 IBM-ShortName: ejbLite
 Subsystem-Name: ejbLite
 -features=io.openliberty.unversioned.ejbLite-0.0; ibm.tolerates:="3.2"
-WLP-Required-Feature: jakartaPlatform, javaeePlatform, mpPlatform
+WLP-Required-Feature: jakartaPlatform, mpPlatform
 kind=noship
 edition=full

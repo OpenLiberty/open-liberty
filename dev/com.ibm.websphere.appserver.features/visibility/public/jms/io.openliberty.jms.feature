@@ -4,6 +4,6 @@ visibility=public
 IBM-ShortName: jms
 Subsystem-Name: jms
 -features=io.openliberty.unversioned.jms-0.0; ibm.tolerates:="2.0"
-WLP-Required-Feature: jakartaPlatform, javaeePlatform, mpPlatform
+WLP-Required-Feature: jakartaPlatform, mpPlatform
 kind=noship
 edition=full

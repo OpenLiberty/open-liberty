@@ -4,7 +4,6 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.webProfile.internal-0.0, \
-    io.openliberty.jakartaeeClient.internal-0.0, \
-    io.openliberty.javaeeClient.internal-0.0
+    io.openliberty.jakartaeeClient.internal-0.0
 kind=noship
 edition=full

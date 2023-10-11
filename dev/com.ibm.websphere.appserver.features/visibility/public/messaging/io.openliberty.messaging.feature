@@ -4,6 +4,6 @@ visibility=public
 IBM-ShortName: messaging
 Subsystem-Name: messaging
 -features=io.openliberty.unversioned.messaging-0.0; ibm.tolerates:="3.0,3.1"
-WLP-Required-Feature: jakartaPlatform, javaeePlatform, mpPlatform
+WLP-Required-Feature: jakartaPlatform, mpPlatform
 kind=noship
 edition=full

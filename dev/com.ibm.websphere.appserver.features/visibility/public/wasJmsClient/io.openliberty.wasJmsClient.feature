@@ -4,6 +4,6 @@ visibility=public
 IBM-ShortName: wasJmsClient
 Subsystem-Name: wasJmsClient
 -features=io.openliberty.unversioned.wasJmsClient-0.0; ibm.tolerates:="2.0"
-WLP-Required-Feature: jakartaPlatform, javaeePlatform, mpPlatform
+WLP-Required-Feature: jakartaPlatform, mpPlatform
 kind=noship
 edition=full

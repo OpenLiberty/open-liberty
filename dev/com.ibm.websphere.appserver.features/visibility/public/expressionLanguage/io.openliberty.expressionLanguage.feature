@@ -4,6 +4,6 @@ visibility=public
 IBM-ShortName: expressionLanguage
 Subsystem-Name: expressionLanguage
 -features=io.openliberty.unversioned.expressionLanguage-0.0; ibm.tolerates:="4.0,5.0,6.0"
-WLP-Required-Feature: jakartaPlatform, javaeePlatform, mpPlatform
+WLP-Required-Feature: jakartaPlatform, mpPlatform
 kind=noship
 edition=full

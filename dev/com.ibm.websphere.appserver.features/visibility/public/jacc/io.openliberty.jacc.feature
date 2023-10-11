@@ -4,6 +4,6 @@ visibility=public
 IBM-ShortName: jacc
 Subsystem-Name: jacc
 -features=io.openliberty.unversioned.jacc-0.0; ibm.tolerates:="1.5"
-WLP-Required-Feature: jakartaPlatform, javaeePlatform, mpPlatform
+WLP-Required-Feature: jakartaPlatform, mpPlatform
 kind=noship
 edition=full

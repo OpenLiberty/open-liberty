@@ -4,6 +4,6 @@ visibility=public
 IBM-ShortName: jaxrs
 Subsystem-Name: jaxrs
 -features=io.openliberty.unversioned.jaxrs-0.0; ibm.tolerates:="2.0,2.1"
-WLP-Required-Feature: jakartaPlatform, javaeePlatform, mpPlatform
+WLP-Required-Feature: jakartaPlatform, mpPlatform
 kind=noship
 edition=full

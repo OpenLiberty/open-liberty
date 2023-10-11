@@ -8,7 +8,6 @@ singleton=true
     io.openliberty.microProfile.internal-2.0, \
     io.openliberty.microProfile.internal-1.4, \
     io.openliberty.microProfile.internal-1.3, \
-    com.ibm.websphere.appserver.eeCompatible-8.0, \
     com.ibm.websphere.appserver.mpMetrics-1.1
 kind=noship
 edition=full
