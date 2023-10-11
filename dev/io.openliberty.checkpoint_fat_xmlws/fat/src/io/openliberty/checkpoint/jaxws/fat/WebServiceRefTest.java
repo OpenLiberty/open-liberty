@@ -21,6 +21,7 @@ import java.net.URL;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,6 +30,9 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -40,10 +44,17 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @SkipIfCheckpointNotSupported
 public class WebServiceRefTest {
 
-    @Server("WebServiceRefTestServer")
+    private static final String SERVER_NAME = "WebServiceRefTestServer";
+    
+    @Server(SERVER_NAME)
     public static LibertyServer server;
     private static String BASE_URL;
     private static final int CONN_TIMEOUT = 5;
+    
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly())
+                    .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
 
     @BeforeClass
     public static void setUp() throws Exception {
