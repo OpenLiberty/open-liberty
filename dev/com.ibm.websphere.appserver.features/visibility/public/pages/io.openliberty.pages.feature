@@ -4,6 +4,6 @@ visibility=public
 IBM-ShortName: pages
 Subsystem-Name: pages
 -features=io.openliberty.unversioned.pages-0.0; ibm.tolerates:="3.0,3.1,4.0"
-WLP-Required-Feature: jakartaPlatform, javaeePlatform, mpPlatform
+WLP-Required-Feature: jakartaPlatform, mpPlatform
 kind=noship
 edition=full
