@@ -165,6 +165,7 @@ public class WSATConfigServiceImpl implements WSATConfigService {
      * @see com.ibm.ws.jaxws.wsat.components.WSATConfigService#getWSATUrl(boolean)
      */
     @Override
+    @Trivial
     public String getWSATUrl() {
         if (proxy != null && proxy.length() > 0)
             return proxy + WSATContextRoot;
@@ -172,6 +173,7 @@ public class WSATConfigServiceImpl implements WSATConfigService {
             return httpOptions.getService().getUrlString(WSATContextRoot, enabled);
     }
 
+    @Trivial
     private String resolveHost() {
         String host = "";
         if (TraceComponent.isAnyTracingEnabled() && TC.isDebugEnabled())
