@@ -7,3 +7,4 @@ Subsystem-Name: Admin Local Connector 1.0
 -bundles=com.ibm.ws.jmx.connector.local
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true
