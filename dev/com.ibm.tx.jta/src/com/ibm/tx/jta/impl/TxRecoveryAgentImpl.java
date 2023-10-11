@@ -498,7 +498,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             // Peer recovery may be interrupted by shutdown of the home server in which case we stop recovery processing.
             if (!localRecovery) {
                 if (!_serverStopping) {
-                    if (fsc != null && !recoveryFailed)
+                    if (fsc != null)
                         fsc.getRecoveryManager().waitForRecoveryCompletion(localRecovery);
                 } else {
                     if (tc.isEntryEnabled())
