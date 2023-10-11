@@ -617,9 +617,20 @@ public class DataTestServlet extends FATServlet {
         p3.lastName = "TestCustomRepositoryInterface";
         p3.ssn_id = 432446688;
 
-        people.save(Set.of(p1, p2, p3));
+        people.updateOrAdd(Set.of(p1, p2, p3));
 
         assertEquals(3L, people.countByIdBetween(400000000L, 499999999L));
+
+        Person p4 = new Person();
+        p4.firstName = "Cathy";
+        p4.lastName = "TestCustomRepositoryInterface";
+        p4.ssn_id = p1.ssn_id;
+        people.updateOrAdd(List.of(p4));
+
+        assertEquals(List.of("Cathy", "Charles", "Claire"),
+                     Arrays.stream(people.findByLastName("TestCustomRepositoryInterface"))
+                                     .map(p -> p.firstName)
+                                     .collect(Collectors.toList()));
 
         assertEquals(1L, people.deleteByIdBetween(400000000L, 449999999L));
 
@@ -1813,7 +1824,7 @@ public class DataTestServlet extends FATServlet {
         p4.lastName = "TestGenericArrayReturnType";
         p4.ssn_id = 100101004l;
 
-        people.save(List.of(p1, p2, p3, p4));
+        people.updateOrAdd(List.of(p1, p2, p3, p4));
 
         Person[] found = people.findByLastName("TestGenericArrayReturnType");
 
@@ -5457,7 +5468,7 @@ public class DataTestServlet extends FATServlet {
         urban.lastName = "TestUpdateWithEntityParameter";
         urban.ssn_id = 987001005;
 
-        people.save(List.of(ursula, ulysses, uriel, uriah));
+        people.updateOrAdd(List.of(ursula, ulysses, uriel, uriah));
 
         // update single entity:
 
@@ -5528,18 +5539,32 @@ public class DataTestServlet extends FATServlet {
         prod1.pk = UUID.nameUUIDFromBytes("Q6008-U8-21001".getBytes());
         prod1.name = "testVersionedUpdateViaQuery Product 1";
         prod1.price = 82.99f;
-        products.save(prod1);
+        prod1 = products.upsert(prod1);
 
-        Product p = products.findItem(prod1.pk);
-        long initialVersion = p.version;
+        long initialVersion = prod1.version;
 
         assertEquals(true, products.setPrice(prod1.pk, initialVersion, 84.99f));
         assertEquals(false, products.setPrice(prod1.pk, initialVersion, 83.99f));
         assertEquals(true, products.setPrice(prod1.pk, initialVersion + 1, 88.99f));
 
-        p = products.findItem(prod1.pk);
-        assertEquals(88.99f, p.price, 0.001f);
-        assertEquals(initialVersion + 2, p.version);
+        prod1 = products.findItem(prod1.pk);
+        assertEquals(88.99f, prod1.price, 0.001f);
+        assertEquals(initialVersion + 2, prod1.version);
+
+        prod1.version = initialVersion + 1;
+        prod1.price = 89.99f;
+        try {
+            prod1 = products.upsert(prod1);
+            fail("Should not be able to save an update at an old version.");
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
+
+        prod1.version = initialVersion + 2;
+        prod1.price = 90.99f;
+        prod1 = products.upsert(prod1);
+        assertEquals(90.99f, prod1.price, 0.001f);
+        assertEquals(initialVersion + 3, prod1.version);
     }
 
     /**
