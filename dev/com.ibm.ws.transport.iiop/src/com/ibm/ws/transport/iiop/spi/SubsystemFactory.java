@@ -14,13 +14,8 @@ package com.ibm.ws.transport.iiop.spi;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
-import org.omg.CORBA.ORB;
-import org.omg.CORBA.Policy;
-
-public interface SubsystemFactory {
-
+public interface SubsystemFactory extends OrbConfigurator {
     default void register(ReadyListener listener, Map<String, Object> properties, List<IIOPEndpoint> endpoints) {
         listener.readyChanged(this, true);
     }
@@ -28,25 +23,4 @@ public interface SubsystemFactory {
     default void unregister(ReadyListener listener) {
         listener.readyChanged(this, false);
     }
-
-    default Policy getTargetPolicy(ORB orb, Map<String, Object> properties, Map<String, Object> extraConfig) throws Exception {
-        return null;
-    }
-
-    default Policy getClientPolicy(ORB orb, Map<String, Object> properties) throws Exception {
-        return null;
-    }
-
-    default String getInitializerClassName(boolean endpoint) {
-        return null;
-    }
-
-    default void addTargetORBInitProperties(Properties initProperties, Map<String, Object> orbProperties, List<IIOPEndpoint> endpoints, Map<String, Object> extraProperties) {}
-
-    default void addTargetORBInitArgs(Map<String, Object> targetProperties, List<String> args) {}
-
-    default void addClientORBInitProperties(Properties initProperties, Map<String, Object> orbProperties) {}
-
-    default void addClientORBInitArgs(Map<String, Object> clientProperties, List<String> args) {}
-
 }
