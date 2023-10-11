@@ -30,11 +30,12 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
 
+//@Mode(TestMode.FULL) TODO switch to full mode after feature is beta
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
-public class DataCoreTckLauncher {
+public class DataFullTckLauncher {
 
-    @Server("io.openliberty.org.jakarta.data.1.0.core")
+    @Server("io.openliberty.org.jakarta.data.1.0.full")
     public static LibertyServer server;
 
     @BeforeClass
@@ -56,23 +57,23 @@ public class DataCoreTckLauncher {
      */
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
-    public void launchDataTckCore() throws Exception {
+    public void launchDataTckFull() throws Exception {
         // Test groups to run
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("jimage.dir", server.getServerSharedPath() + "jimage/output/");
-        additionalProps.put("tck_protocol", "rest");
-        additionalProps.put("jakarta.tck.profile", "core");
-        //FIXME Always skip signature tests since our implementation has experimental API
-        additionalProps.put("included.groups", "core & persistence & !signature");
+        additionalProps.put("tck_protocol", "servlet");
+        additionalProps.put("jakarta.tck.profile", "full");
+        //Always skip signature tests on full profile (already tested in core profile)
+        additionalProps.put("included.groups", "full & persistence & !signature");
 
         //TODO Remove once TCK is available from stagging repo
 //        additionalProps.put("jakarta.data.groupid", "io.openliberty.jakarta.data");
 //        additionalProps.put("jakarta.data.tck.version", "1.0.0-20230802");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
-        String testName = this.getClass() + ":launchDataTckCore";
+        String testName = this.getClass() + ":launchDataTckFull";
         Type type = Type.JAKARTA;
-        String specName = "Data (Core)";
+        String specName = "Data (Full)";
         String relativeTckRunner = "publish/tckRunner/platform/";
         TCKRunner.runTCK(server, bucketName, testName, type, specName, null, relativeTckRunner, additionalProps);
     }

@@ -24,9 +24,8 @@
 			<property name="appDeployTimeout">${tck_appDeployTimeout}</property>
 			<property name="appUndeployTimeout">${tck_appUndeployTimeout}</property>
 			
-			
-			<!-- Specific to web/full profiles -->
-			<property name="testProtocol">servlet</property>
+			<!-- Specific to core profiles -->
+			<property name="testProtocol">${tck_protocol}</property>
 			<property name="allowConnectingToRunningServer">true</property>
 		</configuration>
 	</container>
