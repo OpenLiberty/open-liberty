@@ -2804,7 +2804,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.metrics</groupId>
       <artifactId>microprofile-metrics-api</artifactId>
-      <version>5.1.0-RC1</version>
+      <version>5.1.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.openapi</groupId>
