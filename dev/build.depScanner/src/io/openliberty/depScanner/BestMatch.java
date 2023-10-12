@@ -291,7 +291,8 @@ public class BestMatch {
      * @return
      */
     private static boolean filteredLibraries(Module library) {
-        return (library.getGroupId().equals("org.glassfish") && (library.getArtifactId().equals("javax.faces"))) || (library.getArtifactId().equals("tomcat-embed-core"));
+        return (library.getGroupId().equals("org.glassfish") && (library.getArtifactId().equals("javax.faces"))) || (library.getArtifactId().equals("tomcat-embed-core"))
+               || (library.getArtifactId().equals("wlp-docGen"));
     }
 
     /**
