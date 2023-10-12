@@ -40,7 +40,8 @@ IBM-SPI-Package: \
   com.ibm.wsspi.anno.info, \
   com.ibm.wsspi.anno.service, \
   com.ibm.wsspi.anno.targets, \
-  com.ibm.wsspi.anno.util
+  com.ibm.wsspi.anno.util, \
+  com.ibm.ws.anno.classsource.specification
 -features=com.ibm.websphere.appserver.eeCompatible-9.0, \
   com.ibm.websphere.appserver.classloading-1.0, \
   io.openliberty.jakarta.mail-2.0, \

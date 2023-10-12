@@ -81,7 +81,8 @@ IBM-SPI-Package: \
  com.ibm.wsspi.anno.info, \
  com.ibm.wsspi.anno.service, \
  com.ibm.wsspi.anno.targets, \
- com.ibm.wsspi.anno.util
+ com.ibm.wsspi.anno.util, \
+ com.ibm.ws.anno.classsource.specification
 Subsystem-Category: JakartaEE9Application
 -features=com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0, 11.0", \
   com.ibm.websphere.appserver.contextService-1.0, \

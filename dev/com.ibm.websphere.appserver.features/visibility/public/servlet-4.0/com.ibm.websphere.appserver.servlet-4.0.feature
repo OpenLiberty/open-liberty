@@ -51,7 +51,8 @@ IBM-SPI-Package: com.ibm.wsspi.webcontainer, \
  com.ibm.wsspi.anno.info, \
  com.ibm.wsspi.anno.service, \
  com.ibm.wsspi.anno.targets, \
- com.ibm.wsspi.anno.util
+ com.ibm.wsspi.anno.util, \
+ com.ibm.ws.anno.classsource.specification
 Subsystem-Category: JavaEE8Application
 -features=io.openliberty.servlet.api-4.0, \
   com.ibm.websphere.appserver.javaeeddSchema-1.0, \

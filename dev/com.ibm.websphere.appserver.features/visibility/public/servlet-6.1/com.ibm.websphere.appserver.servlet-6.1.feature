@@ -50,7 +50,8 @@ IBM-SPI-Package: com.ibm.wsspi.webcontainer, \
  com.ibm.wsspi.anno.info, \
  com.ibm.wsspi.anno.service, \
  com.ibm.wsspi.anno.targets, \
- com.ibm.wsspi.anno.util
+ com.ibm.wsspi.anno.util, \
+ com.ibm.ws.anno.classsource.specification
 Subsystem-Category: JakartaEE11Application
 -features=com.ibm.websphere.appserver.eeCompatible-11.0, \
   io.openliberty.servlet.internal-6.1, \

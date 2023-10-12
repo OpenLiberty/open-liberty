@@ -25,7 +25,8 @@ IBM-SPI-Package: \
   com.ibm.wsspi.anno.info, \
   com.ibm.wsspi.anno.service, \
   com.ibm.wsspi.anno.targets, \
-  com.ibm.wsspi.anno.util
+  com.ibm.wsspi.anno.util, \
+  com.ibm.ws.anno.classsource.specification
 Subsystem-Name: MicroProfile JSON Web Token 2.1
 -features=io.openliberty.servlet.internal-6.0, \
   com.ibm.websphere.appserver.jwt-1.0, \

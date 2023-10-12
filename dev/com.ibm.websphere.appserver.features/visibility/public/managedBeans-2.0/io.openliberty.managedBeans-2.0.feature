@@ -74,7 +74,8 @@ IBM-SPI-Package: \
   com.ibm.wsspi.anno.info, \
   com.ibm.wsspi.anno.service, \
   com.ibm.wsspi.anno.targets, \
-  com.ibm.wsspi.anno.util
+  com.ibm.wsspi.anno.util, \
+  com.ibm.ws.anno.classsource.specification
 IBM-ShortName: managedBeans-2.0
 Subsystem-Name: Jakarta Managed Beans 2.0
 -features=com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0", \

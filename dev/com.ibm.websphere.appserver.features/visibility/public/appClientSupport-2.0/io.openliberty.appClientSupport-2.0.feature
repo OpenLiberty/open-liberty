@@ -72,7 +72,8 @@ IBM-SPI-Package: \
   com.ibm.wsspi.anno.info, \
   com.ibm.wsspi.anno.service, \
   com.ibm.wsspi.anno.targets, \
-  com.ibm.wsspi.anno.util
+  com.ibm.wsspi.anno.util, \
+  com.ibm.ws.anno.classsource.specification
 IBM-ShortName: appClientSupport-2.0
 Subsystem-Name: Jakarta Application Client Support for Server 2.0
 -features=io.openliberty.appclient.appClient-2.0, \

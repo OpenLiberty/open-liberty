@@ -34,7 +34,8 @@ IBM-SPI-Package: \
  com.ibm.wsspi.anno.info, \
  com.ibm.wsspi.anno.service, \
  com.ibm.wsspi.anno.targets, \
- com.ibm.wsspi.anno.util
+ com.ibm.wsspi.anno.util, \
+ com.ibm.ws.anno.classsource.specification
 IBM-ShortName: javaMail-1.5
 Subsystem-Version: 1.5
 Subsystem-Name: JavaMail 1.5

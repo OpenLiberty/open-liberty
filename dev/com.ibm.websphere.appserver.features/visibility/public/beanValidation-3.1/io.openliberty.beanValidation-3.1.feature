@@ -32,7 +32,8 @@ IBM-SPI-Package: \
   com.ibm.wsspi.anno.info,\
   com.ibm.wsspi.anno.service,\
   com.ibm.wsspi.anno.targets,\
-  com.ibm.wsspi.anno.util
+  com.ibm.wsspi.anno.util,\
+  com.ibm.ws.anno.classsource.specification
 -features=com.ibm.websphere.appserver.eeCompatible-11.0, \
   io.openliberty.jakarta.validation-3.1, \
   io.openliberty.beanValidationCore-2.0, \

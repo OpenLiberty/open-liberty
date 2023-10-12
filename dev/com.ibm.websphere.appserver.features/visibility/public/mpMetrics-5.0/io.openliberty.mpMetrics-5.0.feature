@@ -28,7 +28,8 @@ IBM-SPI-Package: \
  com.ibm.wsspi.anno.info, \
  com.ibm.wsspi.anno.service, \
  com.ibm.wsspi.anno.targets, \
- com.ibm.wsspi.anno.util
+ com.ibm.wsspi.anno.util, \
+ com.ibm.ws.anno.classsource.specification
 IBM-ShortName: mpMetrics-5.0
 Subsystem-Name: MicroProfile Metrics 5.0
 -features=io.openliberty.restHandler.internal-1.0, \

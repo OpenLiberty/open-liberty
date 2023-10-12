@@ -15,17 +15,6 @@ IBM-API-Package: \
  javax.cache.management; type="spec", \
  javax.cache.processor; type="spec", \
  javax.cache.spi; type="spec"
-IBM-SPI-Package: \
- javax.cache, \
- javax.cache.annotation, \
- javax.cache.configuration, \
- javax.cache.event, \
- javax.cache.expiry, \
- javax.cache.integration, \
- javax.cache.management, \
- javax.cache.processor, \
- javax.cache.spi, \
- io.openliberty.jcache
 -features=com.ibm.websphere.appserver.sessionStore-1.0.0.JCache, \
   com.ibm.websphere.appserver.appLifecycle-1.0, \
   com.ibm.websphere.appserver.transaction-1.2; ibm.tolerates:="1.1,2.0", \

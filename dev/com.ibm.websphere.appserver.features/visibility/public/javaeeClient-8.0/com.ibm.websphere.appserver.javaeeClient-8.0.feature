@@ -106,7 +106,8 @@ IBM-SPI-Package: \
   com.ibm.wsspi.anno.info, \
   com.ibm.wsspi.anno.service, \
   com.ibm.wsspi.anno.targets, \
-  com.ibm.wsspi.anno.util
+  com.ibm.wsspi.anno.util, \
+  com.ibm.ws.anno.classsource.specification
 -features=com.ibm.websphere.appserver.jsonp-1.1, \
   com.ibm.websphere.appserver.jndiClient-1.0, \
   com.ibm.websphere.appserver.beanValidation-2.0, \
@@ -123,5 +124,7 @@ IBM-SPI-Package: \
   com.ibm.websphere.appserver.ejbRemoteClient-1.0, \
   com.ibm.websphere.appserver.javaMail-1.6, \
   com.ibm.websphere.appserver.managedBeans-1.0
+-jars=com.ibm.websphere.appserver.api.ejbcontainer; location:=dev/api/ibm/
+-files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.ejbcontainer_1.0-javadoc.zip
 kind=ga
 edition=base

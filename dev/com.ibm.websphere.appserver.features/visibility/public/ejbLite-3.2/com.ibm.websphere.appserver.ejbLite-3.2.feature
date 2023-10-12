@@ -81,7 +81,8 @@ IBM-SPI-Package: \
  com.ibm.wsspi.anno.info, \
  com.ibm.wsspi.anno.service, \
  com.ibm.wsspi.anno.targets, \
- com.ibm.wsspi.anno.util
+ com.ibm.wsspi.anno.util, \
+ com.ibm.ws.anno.classsource.specification
 Subsystem-Category: JavaEE7Application
 -features=com.ibm.websphere.appserver.transaction-1.2, \
   com.ibm.websphere.appserver.ejbLiteCore-1.0, \

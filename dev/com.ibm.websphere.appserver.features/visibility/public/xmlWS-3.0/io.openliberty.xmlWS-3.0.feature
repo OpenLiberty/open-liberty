@@ -38,6 +38,7 @@ IBM-SPI-Package: \
  com.ibm.wsspi.anno.service, \
  com.ibm.wsspi.anno.targets, \
  com.ibm.wsspi.anno.util, \
+ com.ibm.ws.anno.classsource.specification, \
  com.ibm.wsspi.webservices.handler
 -features=com.ibm.websphere.appserver.eeCompatible-9.0, \
   com.ibm.websphere.appserver.servlet-5.0, \

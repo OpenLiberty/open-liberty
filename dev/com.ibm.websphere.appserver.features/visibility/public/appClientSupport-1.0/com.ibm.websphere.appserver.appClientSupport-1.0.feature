@@ -73,7 +73,8 @@ IBM-SPI-Package: \
   com.ibm.wsspi.anno.info, \
   com.ibm.wsspi.anno.service, \
   com.ibm.wsspi.anno.targets, \
-  com.ibm.wsspi.anno.util
+  com.ibm.wsspi.anno.util, \
+  com.ibm.ws.anno.classsource.specification
 IBM-ShortName: appClientSupport-1.0
 Subsystem-Name: Application Client Support for Server 1.0
 -features=\

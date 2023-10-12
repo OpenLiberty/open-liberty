@@ -231,8 +231,8 @@ public class FeatureInfo {
             String ibmAPIsString = builder.getProperty("IBM-API-Package");
             String ibmSPIsString = builder.getProperty("IBM-SPI-Package");
 
-            this.APIs = parseExternalPackages(ibmAPIsString);
-            this.SPIs = parseExternalPackages(ibmSPIsString);
+            this.APIs = parseExternalPackages(ibmAPIsString, null);
+            this.SPIs = parseExternalPackages(ibmSPIsString, "ibm-spi");
 
             for (String autoFeature : builder.getAutoFeatures()) {
                 this.autoFeatures.add(autoFeature);
@@ -294,9 +294,13 @@ public class FeatureInfo {
             return Objects.equals(packageName, other.packageName) && Objects.equals(type, other.type);
         }
 
+        @Override
+        public String toString() {
+            return packageName + " [" + type + "]";
+        }
     }
 
-    private Set<ExternalPackageInfo> parseExternalPackages(String packageList) {
+    private Set<ExternalPackageInfo> parseExternalPackages(String packageList, String defaultType) {
         if (packageList == null) {
             return null;
         }
@@ -321,6 +325,9 @@ public class FeatureInfo {
                         break;
                     }
                 }
+            }
+            if (type == null) {
+                type = defaultType;
             }
             extPackageInfoSet.add(new ExternalPackageInfo(externalPackage, type));
         }

@@ -20,7 +20,8 @@ IBM-SPI-Package: com.ibm.wsspi.webservices.handler, \
  com.ibm.wsspi.anno.info, \
  com.ibm.wsspi.anno.service, \
  com.ibm.wsspi.anno.targets, \
- com.ibm.wsspi.anno.util
+ com.ibm.wsspi.anno.util, \
+ com.ibm.ws.anno.classsource.specification
 IBM-API-Package:  \
  javax.jws.soap; type="spec"; require-java:="9", \
  javax.wsdl; type="spec", \

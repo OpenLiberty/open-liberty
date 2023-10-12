@@ -89,7 +89,8 @@ IBM-SPI-Package: \
   com.ibm.wsspi.anno.info, \
   com.ibm.wsspi.anno.service, \
   com.ibm.wsspi.anno.targets, \
-  com.ibm.wsspi.anno.util
+  com.ibm.wsspi.anno.util, \
+  com.ibm.ws.anno.classsource.specification
 IBM-ShortName: jakartaeeClient-11.0
 Subsystem-Name: Jakarta EE 11.0 Application Client
 -features=io.openliberty.cdi-4.1, \
@@ -108,5 +109,7 @@ Subsystem-Name: Jakarta EE 11.0 Application Client
   com.ibm.websphere.appserver.transaction-2.0, \
   io.openliberty.jsonp-2.1, \
   io.openliberty.expressionLanguage-6.0
+-jars=io.openliberty.ejbcontainer; location:=dev/api/ibm/
+-files=dev/api/ibm/javadoc/io.openliberty.ejbcontainer_1.0-javadoc.zip
 kind=noship
 edition=full

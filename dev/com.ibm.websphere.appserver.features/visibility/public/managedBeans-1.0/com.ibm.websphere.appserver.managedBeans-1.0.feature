@@ -75,7 +75,8 @@ IBM-SPI-Package: \
   com.ibm.wsspi.anno.info, \
   com.ibm.wsspi.anno.service, \
   com.ibm.wsspi.anno.targets, \
-  com.ibm.wsspi.anno.util
+  com.ibm.wsspi.anno.util, \
+  com.ibm.ws.anno.classsource.specification
 IBM-ShortName: managedBeans-1.0
 Subsystem-Name: Java EE Managed Bean 1.0
 -features=com.ibm.websphere.appserver.javax.ejb-3.1; apiJar=false; ibm.tolerates:="3.2", \
