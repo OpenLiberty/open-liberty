@@ -1,3 +1,1 @@
 -Dio.opentelemetry.context.enableStrictContext=true
-# beta fence for HTTP tracing as this server has tests that require it
--Dcom.ibm.ws.beta.edition=true
