@@ -778,16 +778,16 @@ public class DataJPATestServlet extends FATServlet {
         // Clear out data before test
         accounts.deleteByOwnerEndsWith("TestEmbeddedId");
 
-        accounts.save(new Account(1005380, 70081, "Think Bank", true, 552.18, "Ellen TestEmbeddedId"));
-        accounts.save(new Account(1004470, 70081, "Think Bank", true, 443.94, "Erin TestEmbeddedId"));
-        accounts.save(new Account(1006380, 70081, "Think Bank", true, 160.63, "Edward TestEmbeddedId"));
-        accounts.save(new Account(1007590, 70081, "Think Bank", true, 793.30, "Elizabeth TestEmbeddedId"));
+        accounts.create(new Account(1005380, 70081, "Think Bank", true, 552.18, "Ellen TestEmbeddedId"));
+        accounts.create(new Account(1004470, 70081, "Think Bank", true, 443.94, "Erin TestEmbeddedId"));
+        accounts.create(new Account(1006380, 70081, "Think Bank", true, 160.63, "Edward TestEmbeddedId"));
+        accounts.create(new Account(1007590, 70081, "Think Bank", true, 793.30, "Elizabeth TestEmbeddedId"));
         accounts.save(new Account(1008410, 22158, "Home Federal Savings Bank", true, 829.91, "Elizabeth TestEmbeddedId"));
         accounts.save(new Account(1006380, 22158, "Home Federal Savings Bank", true, 261.66, "Elliot TestEmbeddedId"));
         accounts.save(new Account(1004470, 22158, "Home Federal Savings Bank", false, 416.14, "Emma TestEmbeddedId"));
-        accounts.save(new Account(1009130, 30372, "Mayo Credit Union", true, 945.20, "Elizabeth TestEmbeddedId"));
-        accounts.save(new Account(1004470, 30372, "Mayo Credit Union", true, 423.15, "Eric TestEmbeddedId"));
-        accounts.save(new Account(1008200, 30372, "Mayo Credit Union", true, 103.04, "Evan TestEmbeddedId"));
+        accounts.createAll(new Account(1009130, 30372, "Mayo Credit Union", true, 945.20, "Elizabeth TestEmbeddedId"),
+                           new Account(1004470, 30372, "Mayo Credit Union", true, 423.15, "Eric TestEmbeddedId"),
+                           new Account(1008200, 30372, "Mayo Credit Union", true, 103.04, "Evan TestEmbeddedId"));
 
         assertIterableEquals(List.of("Emma TestEmbeddedId", "Eric TestEmbeddedId", "Erin TestEmbeddedId"),
                              accounts.findByAccountIdAccountNum(1004470)
@@ -2495,6 +2495,66 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Test that @Delete requires the entity to exist with the same version as the database for successful removal.
+     */
+    @Test
+    public void testVersionedDelete() {
+        orders.deleteAll();
+
+        Order o1 = new Order();
+        o1.purchasedBy = "testVersionedDelete-Customer1";
+        o1.purchasedOn = OffsetDateTime.now();
+        o1.total = 1.09f;
+        assertEquals(0, orders.cancel(o1)); // doesn't exist yet
+
+        o1 = orders.save(o1);
+
+        int oldVersion = o1.versionNum;
+
+        o1.total = 1.19f;
+        assertEquals(true, orders.modify(o1));
+
+        o1 = orders.findById(o1.id).orElseThrow();
+        int newVersion = o1.versionNum;
+        Long id = o1.id;
+
+        // Attempt deletion at old version
+        o1 = new Order();
+        o1.id = id;
+        o1.purchasedBy = "testVersionedDelete-Customer1";
+        o1.purchasedOn = OffsetDateTime.now();
+        o1.total = 1.19f;
+        o1.versionNum = oldVersion;
+        assertEquals(0, orders.cancel(o1));
+
+        Order o2 = new Order();
+        o2.purchasedBy = "testVersionedDelete-Customer2";
+        o2.purchasedOn = OffsetDateTime.now();
+        o2.total = 2.09f;
+        o2 = orders.save(o2);
+
+        Order o3 = new Order();
+        o3.purchasedBy = "testVersionedDelete-Customer3";
+        o3.purchasedOn = OffsetDateTime.now();
+        o3.total = 3.09f;
+        o3 = orders.save(o3);
+
+        // Attempt deletion at correct version
+        o1.versionNum = newVersion;
+        assertEquals(2, orders.cancel(o1, o2));
+
+        // Entities o1 and o2 should no longer be in the database:
+        assertEquals(0, orders.cancel(o1, o2));
+
+        // Entity o3 should still be there:
+        o3 = orders.findById(o3.id).orElseThrow();
+        assertEquals(3.09f, o3.total, 0.001f);
+
+        // Deletion where only 1 is found:
+        assertEquals(1, orders.cancel(o1, o3, o2));
+    }
+
+    /**
      * Test that remove(entity) requires the entity to be at the same version as the database for successful removal.
      * This tests covers an entity type with an IdClass.
      */
@@ -2513,5 +2573,50 @@ public class DataJPATestServlet extends FATServlet {
 
         duluth.changeCount = newVersion;
         assertEquals(true, cities.remove(duluth));
+    }
+
+    /**
+     * Test that @Update requires the entity to exist with the same version as the database for successful update.
+     * This tests covers an entity type with an IdClass.
+     */
+    @Test
+    public void testVersionedUpdate() {
+        orders.deleteAll();
+
+        Order o1 = new Order();
+        o1.purchasedBy = "testVersionedUpdate-Customer1";
+        o1.purchasedOn = OffsetDateTime.now();
+        o1.total = 10.09f;
+        assertEquals(false, orders.modify(o1)); // doesn't exist yet
+
+        o1 = orders.save(o1);
+
+        int oldVersion = o1.versionNum;
+
+        o1.total = 10.19f;
+        assertEquals(true, orders.modify(o1));
+
+        o1 = orders.findById(o1.id).orElseThrow();
+        assertEquals(10.19f, o1.total, 0.001f);
+        int newVersion = o1.versionNum;
+        Long id = o1.id;
+
+        o1 = new Order();
+        o1.id = id;
+        o1.purchasedBy = "testVersionedUpdate-Customer1";
+        o1.purchasedOn = OffsetDateTime.now();
+        o1.total = 10.29f;
+        o1.versionNum = oldVersion;
+        assertEquals(false, orders.update(o1));
+
+        o1.versionNum = newVersion;
+        assertEquals(true, orders.update(o1));
+        o1 = orders.findById(o1.id).orElseThrow();
+        assertEquals(10.29f, o1.total, 0.001f);
+
+        orders.delete(o1);
+
+        o1.total = 10.39f;
+        assertEquals(false, orders.modify(o1)); // doesn't exist anymore
     }
 }

@@ -12,7 +12,10 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -82,6 +85,34 @@ class EntityInfo {
         this.versionAttributeName = versionAttributeName;
 
         inheritance = entityClass.getAnnotation(Inheritance.class) != null;
+    }
+
+    /**
+     * Obtains the value of an entity attribute.
+     *
+     * @param entity        the entity from which to obtain the value.
+     * @param attributeName name of the entity attribute.
+     * @return the value of the attribute.
+     */
+    Object getAttribute(Object entity, String attributeName) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        List<Member> accessors = attributeAccessors.get(attributeName);
+        if (accessors == null)
+            throw new IllegalArgumentException(attributeName); // should never occur
+
+        Object value = entity;
+        for (Member accessor : accessors) {
+            Class<?> type = accessor.getDeclaringClass();
+            if (type.isInstance(value)) {
+                if (accessor instanceof Method)
+                    value = ((Method) accessor).invoke(value);
+                else // Field
+                    value = ((Field) accessor).get(value);
+            } else {
+                throw new MappingException("Value of type " + value.getClass().getName() + " is incompatible with attribute type " + type.getName()); // TODO NLS
+            }
+        }
+
+        return value;
     }
 
     String getAttributeName(String name, boolean failIfNotFound) {

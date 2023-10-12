@@ -18,15 +18,16 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
 import jakarta.transaction.Transactional;
 
 import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Count;
-import io.openliberty.data.repository.Delete;
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Operation;
@@ -115,4 +116,7 @@ public interface Products {
     Boolean update(Product product);
 
     Long update(Stream<Product> products);
+
+    @Save
+    Product upsert(Product p);
 }

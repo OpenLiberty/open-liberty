@@ -15,12 +15,12 @@ package test.jakarta.data.web;
 import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Repository;
 
 import io.openliberty.data.repository.Compare;
-import io.openliberty.data.repository.Delete;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.Update;

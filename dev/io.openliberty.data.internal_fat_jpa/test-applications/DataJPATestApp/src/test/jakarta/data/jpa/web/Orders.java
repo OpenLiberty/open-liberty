@@ -17,10 +17,12 @@ import java.util.Optional;
 
 import jakarta.data.Sort;
 import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Update;
 
 /**
  * Experiments with auto-generated keys.
@@ -33,8 +35,14 @@ public interface Orders extends CrudRepository<Order, Long> {
                               @Param("rate") float taxRate,
                               @Param("shipping") float shippingCost);
 
+    @Delete
+    int cancel(Order... order);
+
     @OrderBy("id")
     Optional<Order> findFirstByPurchasedBy(String purchaser);
 
     List<Float> findTotalByPurchasedByIn(Iterable<String> purchasers, Sort... sorts);
+
+    @Update
+    boolean modify(Order order);
 }

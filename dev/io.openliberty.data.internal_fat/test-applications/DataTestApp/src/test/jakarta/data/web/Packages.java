@@ -22,6 +22,7 @@ import jakarta.data.Sort;
 import jakarta.data.page.KeysetAwarePage;
 import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Pageable;
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.PageableRepository;
 import jakarta.data.repository.Param;
@@ -29,7 +30,6 @@ import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 import io.openliberty.data.repository.Compare;
-import io.openliberty.data.repository.Delete;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Function;
 import io.openliberty.data.repository.Operation;

@@ -16,11 +16,15 @@ package jakarta.data.repository;
  * Interface methods copied from Jakarta Data.
  */
 public interface CrudRepository<T, K> extends BasicRepository<T, K> {
+    @Insert
     void insert(T entity);
 
+    @Insert
     void insertAll(Iterable<T> entities);
 
+    @Update
     boolean update(T entity);
 
+    @Update
     int updateAll(Iterable<T> entities);
 }

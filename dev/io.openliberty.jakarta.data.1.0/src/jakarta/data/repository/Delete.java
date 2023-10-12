@@ -10,23 +10,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.web;
+package jakarta.data.repository;
 
-import jakarta.data.repository.OrderBy;
-import jakarta.data.repository.Save;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Custom repository interface that provides entity and key type parameters.
+ * Copied from Jakarta Data.
  */
-public interface CustomRepository<T, K> {
-    long countByIdBetween(K minId, K maxId);
-
-    long deleteByIdBetween(K minId, K maxId);
-
-    @OrderBy("firstName")
-    @OrderBy("id")
-    T[] findByLastName(String lastName);
-
-    @Save
-    void updateOrAdd(Iterable<T> entities);
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Delete {
 }
