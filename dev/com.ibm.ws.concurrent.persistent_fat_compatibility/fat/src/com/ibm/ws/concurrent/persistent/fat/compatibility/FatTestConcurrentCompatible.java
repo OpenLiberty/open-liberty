@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +84,7 @@ public class FatTestConcurrentCompatible extends CommonUtils {
         } else {
             server.setMarkToEndOfLog();
             server.setServerConfigurationFile("/config/disableTaskExecuteServer.xml");
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
         }
 
         // set default props
