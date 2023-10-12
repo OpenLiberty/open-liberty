@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,8 +12,11 @@
  *******************************************************************************/
 package com.ibm.ws.config.xml.internal;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -22,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
 import com.ibm.websphere.config.ConfigUpdateException;
@@ -35,6 +40,8 @@ import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
+
+import io.openliberty.checkpoint.spi.CheckpointHook;
 
 /**
  *
@@ -55,6 +62,9 @@ public class ConfigRefresher {
     private long configStartTime = 0;
     private Collection<Future<?>> futuresForChanges = null;
 
+    private final ChangesEndedHook changesEndedHook;
+    private final ServiceRegistration<CheckpointHook> checkpointHookRegistration;
+
     ConfigRefresher(BundleContext bundleContext,
                     ChangeHandler changeHandler, ServerXMLConfiguration serverXMLConfig, ConfigVariableRegistry variableRegistry) {
         this.changeHandler = changeHandler;
@@ -70,6 +80,14 @@ public class ConfigRefresher {
 
         metatypeTracker = new ServiceTracker<MetaTypeRegistry, MetaTypeRegistry>(bundleContext, MetaTypeRegistry.class.getName(), null);
         metatypeTracker.open();
+
+        changesEndedHook = new ChangesEndedHook();
+        Hashtable<String, Object> hookProps = new Hashtable<>();
+        // Lesser ranking ensures changesEnded() executes ASAP after the SystemConfiguration
+        // single-threaded restore hook
+        hookProps.put(Constants.SERVICE_RANKING, Integer.MIN_VALUE + 10000);
+        hookProps.put(CheckpointHook.MULTI_THREADED_HOOK, Boolean.TRUE);
+        checkpointHookRegistration = bundleContext.registerService(CheckpointHook.class, changesEndedHook, hookProps);
     }
 
     void start() {
@@ -79,6 +97,10 @@ public class ConfigRefresher {
     void stop() {
         configurationMonitor.stopConfigurationMonitoring();
         runtimeUpdateManagerTracker.close();
+
+        if (checkpointHookRegistration != null) {
+            checkpointHookRegistration.unregister();
+        }
     }
 
     public void refreshConfiguration() {
@@ -136,7 +158,9 @@ public class ConfigRefresher {
             // Let the notification show that we got an error while making the configuration changes
             configUpdatesDelivered.setResult(e);
         } finally {
-            changesEnded(configUpdatesDelivered);
+            if (!changesEndedHook.queueNotification(configUpdatesDelivered)) {
+                changesEnded(configUpdatesDelivered);
+            }
         }
     }
 
@@ -265,4 +289,43 @@ public class ConfigRefresher {
         doRefresh(deltaMap);
 
     }
+
+    // Method changesEnded() performs a blocking operation. Defer the execution
+    // of changesEnded() until the JVM enters multi-threaded mode during checkpoint
+    // restore.
+    private class ChangesEndedHook implements CheckpointHook {
+
+        private final ThreadLocal<Boolean> checkpointThread = new ThreadLocal<Boolean>() {
+            @Override
+            protected Boolean initialValue() {
+                return Boolean.FALSE;
+            }
+        };
+
+        // FIFO queue of deferred config update notifications
+        final Deque<RuntimeUpdateNotification> configUpdatesToDeliver = new ArrayDeque<RuntimeUpdateNotification>();
+
+        boolean queueNotification(RuntimeUpdateNotification notification) {
+            if (!checkpointThread.get()) {
+                return false;
+            }
+            configUpdatesToDeliver.add(notification);
+            return true;
+        }
+
+        @Override
+        public void prepare() {
+            checkpointThread.set(true);
+        }
+
+        @Override
+        public void restore() {
+            checkpointThread.set(false);
+            RuntimeUpdateNotification notification = null;
+            while ((notification = configUpdatesToDeliver.pollFirst()) != null) {
+                changesEnded(notification);
+            }
+        }
+    }
+
 }
