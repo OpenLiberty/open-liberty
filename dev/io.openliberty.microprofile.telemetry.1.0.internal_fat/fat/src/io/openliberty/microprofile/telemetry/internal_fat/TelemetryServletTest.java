@@ -17,6 +17,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PropertiesAsset;
@@ -30,6 +31,9 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.servlet.HttpTraceTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.servlet.SimpleServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
@@ -49,9 +53,13 @@ public class TelemetryServletTest extends FATServletClient {
     @TestServlets({
                     @TestServlet(contextRoot = APP_NAME, servlet = HttpTraceTestServlet.class),
     })
-
+    
     @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().withBeta().fullFATOnly());
 
     @BeforeClass
     public static void setUp() throws Exception {

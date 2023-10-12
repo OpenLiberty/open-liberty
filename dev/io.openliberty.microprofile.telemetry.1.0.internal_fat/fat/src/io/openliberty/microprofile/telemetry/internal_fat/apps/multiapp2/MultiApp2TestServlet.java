@@ -23,8 +23,8 @@ import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.semconv.resource.attributes.ResourceAttributes;
-import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebServlet;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/testMultiapp2")

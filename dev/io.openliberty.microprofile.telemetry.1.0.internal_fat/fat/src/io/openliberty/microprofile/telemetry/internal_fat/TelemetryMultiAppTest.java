@@ -34,6 +34,9 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.multiapp1.MultiApp1TestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.multiapp2.MultiApp2TargetResource;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.multiapp2.MultiApp2TestServlet;
@@ -61,7 +64,7 @@ public class TelemetryMultiAppTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
-                    .andWith(FeatureReplacementAction.BETA_OPTION().fullFATOnly());
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().withBeta().fullFATOnly());
 
     @BeforeClass
     public static void setup() throws Exception {

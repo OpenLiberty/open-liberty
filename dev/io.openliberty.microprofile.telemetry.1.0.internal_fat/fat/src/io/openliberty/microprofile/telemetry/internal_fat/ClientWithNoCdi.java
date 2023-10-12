@@ -49,7 +49,7 @@ public class ClientWithNoCdi {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
-                    .andWith(FeatureReplacementAction.BETA_OPTION().fullFATOnly());
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().withBeta().fullFATOnly());
 
     @TestServlets({
                     @TestServlet(contextRoot = NO_CDI_APP_NAME, servlet = ClientTriggeringServlet.class),

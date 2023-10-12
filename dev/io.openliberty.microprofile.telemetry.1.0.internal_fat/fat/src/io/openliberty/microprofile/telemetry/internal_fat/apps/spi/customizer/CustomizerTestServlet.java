@@ -24,8 +24,8 @@ import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.data.SpanData;
-import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebServlet;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
 
 /**
  * Test that an AutoConfigurationCustomizerProvider can be provided by the SPI

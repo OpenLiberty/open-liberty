@@ -19,6 +19,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.junit.ClassRule;
 
 import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -29,6 +30,9 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.spi.customizer.CustomizerTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.spi.customizer.TestCustomizer;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.spi.exporter.ExporterTestServlet;
@@ -71,6 +75,10 @@ public class TelemetrySpiTest extends FATServletClient {
     })
     @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().withBeta().fullFATOnly());
 
     @BeforeClass
     public static void setup() throws Exception {

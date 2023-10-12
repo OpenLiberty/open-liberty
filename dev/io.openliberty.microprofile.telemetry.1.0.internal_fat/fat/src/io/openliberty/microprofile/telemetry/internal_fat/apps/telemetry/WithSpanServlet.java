@@ -19,6 +19,10 @@ import static org.hamcrest.Matchers.not;
 
 import java.util.ArrayList;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
+
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -28,9 +32,6 @@ import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.instrumentation.annotations.SpanAttribute;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import io.opentelemetry.sdk.trace.ReadableSpan;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/testWithSpan")

@@ -47,7 +47,7 @@ public class TelemetryGlobalOpenTelemetryTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
-                    .andWith(FeatureReplacementAction.BETA_OPTION().fullFATOnly());
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().withBeta().fullFATOnly());
 
     @BeforeClass
     public static void setUp() throws Exception {

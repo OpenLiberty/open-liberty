@@ -31,6 +31,8 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.JakartaEEAction;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -57,13 +59,15 @@ public class TelemetryMisconfigTest extends FATServletClient {
     public static final String INVALID_ZIPKIN_ENDPOINT = "INVALID_ZIPKIN_ENDPOINT";
     public static final String NOT_KNOWN_ENDPOINT = "http://" + INVALID_JAEGER_ENDPOINT;
     public static final String DOES_NOT_EXIST_ENDPOINT = "http://localhost:10000";
+    public static final String BETA_ID = MicroProfileActions.MP61_ID + "_BETA";
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
-                    .andWith(FeatureReplacementAction.BETA_OPTION().fullFATOnly());
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().withBeta().fullFATOnly().withID(BETA_ID));
 
     private static WebArchive invalidExporterApp = null;
     private static WebArchive invalidJaegerEndpointApp = null;
@@ -136,8 +140,8 @@ public class TelemetryMisconfigTest extends FATServletClient {
     @Test
     @ExpectedFFDC(repeatAction = MicroProfileActions.MP60_ID, value = { "java.lang.IllegalArgumentException" })
     @ExpectedFFDC(repeatAction = MicroProfileActions.MP61_ID, value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
-    @ExpectedFFDC(repeatAction = FeatureReplacementAction.BETA_ID, value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
     public void testInvalidJaegerExporterEndpoint() throws Exception {
+        System.out.println("THIS IS JAEGER");
         deployAndWaitForApp(invalidJaegerEndpointApp, INVALID_JAEGER_ENDPOINT_APP_NAME);
         new HttpRequest(server, "/" + INVALID_JAEGER_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
                         .expectCode(200)
@@ -152,8 +156,8 @@ public class TelemetryMisconfigTest extends FATServletClient {
     @Test
     @ExpectedFFDC(repeatAction = MicroProfileActions.MP60_ID, value = { "java.lang.IllegalArgumentException" })
     @ExpectedFFDC(repeatAction = MicroProfileActions.MP61_ID, value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
-    @ExpectedFFDC(repeatAction = FeatureReplacementAction.BETA_ID, value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
     public void testInvalidZipkinExporterEndpoint() throws Exception {
+        System.out.println("THIS IS ZIPKIN");
         deployAndWaitForApp(invalidZipkinEndpointApp, INVALID_ZIPKIN_ENDPOINT_APP_NAME);
         new HttpRequest(server, "/" + INVALID_ZIPKIN_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
                         .expectCode(200)
