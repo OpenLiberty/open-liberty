@@ -874,14 +874,16 @@ public class DataJPATestServlet extends FATServlet {
         o1.purchasedBy = "testEntitiesAsParameters-Customer1";
         o1.purchasedOn = OffsetDateTime.now();
         o1.total = 10.99f;
-        o1 = orders.save(o1);
-        int o1_v1 = o1.versionNum;
 
         Order o2 = new Order();
         o2.purchasedBy = "testEntitiesAsParameters-Customer2";
         o2.purchasedOn = OffsetDateTime.now();
         o2.total = 20.99f;
-        o2 = orders.save(o2);
+
+        Order[] created = orders.create(o1, o2);
+        o1 = created[0];
+        o2 = created[1];
+        int o1_v1 = o1.versionNum;
 
         Order o3 = new Order();
         o3.purchasedBy = "testEntitiesAsParameters-Customer3";
@@ -894,13 +896,13 @@ public class DataJPATestServlet extends FATServlet {
         o4.purchasedBy = "testEntitiesAsParameters-Customer4";
         o4.purchasedOn = OffsetDateTime.now();
         o4.total = 40.99f;
-        o4 = orders.save(o4);
+        o4 = orders.create(o4);
 
         Order o5 = new Order();
         o5.purchasedBy = "testEntitiesAsParameters-Customer5";
         o5.purchasedOn = OffsetDateTime.now();
         o5.total = 50.99f;
-        o5 = orders.save(o5);
+        o5 = orders.create(o5);
         int o5_v1 = o5.versionNum;
 
         // delete even though a property doesn't match
@@ -2507,7 +2509,7 @@ public class DataJPATestServlet extends FATServlet {
         o1.total = 1.09f;
         assertEquals(0, orders.cancel(o1)); // doesn't exist yet
 
-        o1 = orders.save(o1);
+        o1 = orders.create(o1);
 
         int oldVersion = o1.versionNum;
 
@@ -2531,13 +2533,15 @@ public class DataJPATestServlet extends FATServlet {
         o2.purchasedBy = "testVersionedDelete-Customer2";
         o2.purchasedOn = OffsetDateTime.now();
         o2.total = 2.09f;
-        o2 = orders.save(o2);
 
         Order o3 = new Order();
         o3.purchasedBy = "testVersionedDelete-Customer3";
         o3.purchasedOn = OffsetDateTime.now();
         o3.total = 3.09f;
-        o3 = orders.save(o3);
+
+        LinkedList<Order> created = orders.create(List.of(o2, o3));
+        o2 = created.get(0);
+        o3 = created.get(1);
 
         // Attempt deletion at correct version
         o1.versionNum = newVersion;
@@ -2589,7 +2593,7 @@ public class DataJPATestServlet extends FATServlet {
         o1.total = 10.09f;
         assertEquals(false, orders.modify(o1)); // doesn't exist yet
 
-        o1 = orders.save(o1);
+        o1 = orders.create(o1);
 
         int oldVersion = o1.versionNum;
 

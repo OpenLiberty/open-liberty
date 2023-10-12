@@ -12,12 +12,14 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 import jakarta.data.Sort;
 import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
@@ -36,7 +38,16 @@ public interface Orders extends CrudRepository<Order, Long> {
                               @Param("shipping") float shippingCost);
 
     @Delete
-    int cancel(Order... order);
+    int cancel(Order... orders);
+
+    @Insert
+    LinkedList<Order> create(Iterable<Order> order);
+
+    @Insert
+    Order create(Order order);
+
+    @Insert
+    Order[] create(Order... orders);
 
     @OrderBy("id")
     Optional<Order> findFirstByPurchasedBy(String purchaser);
