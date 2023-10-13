@@ -31,3 +31,4 @@ kind=ga
 edition=base
 WLP-AlsoKnownAs: jaxws-4.0
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true; type:=beta
