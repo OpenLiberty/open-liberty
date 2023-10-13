@@ -45,9 +45,13 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.AvailableProcessorsListener;
 import com.ibm.ws.kernel.service.util.CpuInfo;
+import com.ibm.ws.threading.CallableWithContext;
+import com.ibm.ws.threading.RunnableWithContext;
 import com.ibm.ws.threading.ThreadQuiesce;
 import com.ibm.wsspi.threading.ExecutorServiceTaskInterceptor;
 import com.ibm.wsspi.threading.WSExecutorService;
+import com.ibm.wsspi.threading.WorkContext;
+import com.ibm.wsspi.threading.WorkContextService;
 
 /**
  * Component implementation for the threading component.
@@ -55,8 +59,8 @@ import com.ibm.wsspi.threading.WSExecutorService;
 @Component(name = "com.ibm.ws.threading",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            property = "service.vendor=IBM",
-           service = { java.util.concurrent.ExecutorService.class, com.ibm.wsspi.threading.WSExecutorService.class })
-public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuiesce, AvailableProcessorsListener {
+           service = { java.util.concurrent.ExecutorService.class, com.ibm.wsspi.threading.WSExecutorService.class, com.ibm.wsspi.threading.WorkContextService.class })
+public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuiesce, AvailableProcessorsListener, WorkContextService {
 
     /**
      * The target ExecutorService.
@@ -91,6 +95,13 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
      * reasons, to avoid getting an iterator over an empty set for every task that is submitted.
      */
     boolean interceptorsActive = false;
+
+    private final ThreadLocal<WorkContext> workThreadLocal = new ThreadLocal<WorkContext>() {
+        @Override
+        protected WorkContext initialValue() {
+            return null;
+        }
+    };
 
     /**
      * A Set of interceptors that are all given a chance to wrap tasks that are submitted
@@ -347,6 +358,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
     @Override
     public <T> Future<T> submit(Callable<T> task) {
         threadPoolController.resumeIfPaused();
+
         return threadPool.submit(createWrappedCallable(task));
     }
 
@@ -354,6 +366,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
     @Override
     public Future<?> submit(Runnable task) {
         threadPoolController.resumeIfPaused();
+
         return threadPool.submit(createWrappedRunnable(task));
     }
 
@@ -361,6 +374,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
     @Override
     public <T> Future<T> submit(Runnable task, T result) {
         threadPoolController.resumeIfPaused();
+
         return threadPool.submit(createWrappedRunnable(task), result);
     }
 
@@ -473,35 +487,54 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
     }
 
     Runnable wrap(Runnable r) {
-        Iterator<ExecutorServiceTaskInterceptor> i = interceptors.iterator();
-        while (i.hasNext()) {
-            r = i.next().wrap(r);
-        }
 
-        return r;
+        try {
+            Iterator<ExecutorServiceTaskInterceptor> i = interceptors.iterator();
+            if (i.hasNext() && r instanceof RunnableWithContext) {
+                workThreadLocal.set(((RunnableWithContext) r).getWorkContext());
+            }
+
+            while (i.hasNext()) {
+                r = i.next().wrap(r);
+            }
+
+            return r;
+        } finally {
+            workThreadLocal.remove();
+        }
     }
 
     private <T> Callable<T> createWrappedCallable(Callable<T> in) {
 
         Callable<T> c = interceptorsActive ? wrap(in) : in;
+
         if (serverStopping)
             return c;
         return new CallableWrapper<T>(c);
     }
 
     <T> Callable<T> wrap(Callable<T> c) {
-        Iterator<ExecutorServiceTaskInterceptor> i = interceptors.iterator();
-        while (i.hasNext()) {
-            c = i.next().wrap(c);
-        }
+        try {
+            Iterator<ExecutorServiceTaskInterceptor> i = interceptors.iterator();
+            if (i.hasNext() && c instanceof CallableWithContext) {
+                workThreadLocal.set(((CallableWithContext<T>) c).getWorkContext());
+            }
 
-        return c;
+            while (i.hasNext()) {
+                c = i.next().wrap(c);
+            }
+
+            return c;
+        } finally {
+            workThreadLocal.remove();
+        }
     }
 
     // This is private, so handling both interceptors and wrapping in this method for simplicity
     private <T> Collection<? extends Callable<T>> wrap(Collection<? extends Callable<T>> tasks) {
         List<Callable<T>> wrappedTasks = new ArrayList<Callable<T>>();
         Iterator<? extends Callable<T>> i = tasks.iterator();
+
         while (i.hasNext()) {
             Callable<T> c = wrap(i.next());
             if (serverStopping)
@@ -561,5 +594,10 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
                 createExecutor();
             }
         }
+    }
+
+    @Override
+    public WorkContext getWorkContext() {
+        return workThreadLocal.get();
     }
 }

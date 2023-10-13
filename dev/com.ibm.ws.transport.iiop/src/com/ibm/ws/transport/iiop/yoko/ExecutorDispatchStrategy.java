@@ -12,6 +12,9 @@
  *******************************************************************************/
 package com.ibm.ws.transport.iiop.yoko;
 
+import java.io.Serializable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 
 import org.apache.yoko.orb.OB.DispatchRequest;
@@ -19,12 +22,18 @@ import org.apache.yoko.orb.OB.DispatchStrategy;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.LocalObject;
 
+import com.ibm.ws.threading.RunnableWithContext;
+import com.ibm.wsspi.threading.WorkContext;
+import com.ibm.ws.transport.iiop.internal.IIOPWorkContext;
+import com.ibm.ws.transport.iiop.workcontext.IIOPWorkContextInterceptor;
+
 /**
  *
  */
 public class ExecutorDispatchStrategy extends LocalObject implements DispatchStrategy {
 
     private final Executor executor;
+    final IIOPWorkContext wc = new IIOPWorkContext();
 
     /**
      * @param executor
@@ -34,16 +43,40 @@ public class ExecutorDispatchStrategy extends LocalObject implements DispatchStr
     }
 
     /** {@inheritDoc} */
-    @Override
+	@Override
     public void dispatch(final DispatchRequest req) {
 
-        executor.execute(new Runnable() {
+		// empty then skip
+		if ( IIOPWorkContextInterceptor.getWorkInfoMap().isEmpty()) {
+			
+			executor.execute(new Runnable() {
+
+                @Override
+                public void run() {
+                    req.invoke();
+                }
+
+            });
+		}
+		else
+		{
+		
+		wc.putAll(IIOPWorkContextInterceptor.getWorkInfoMap());
+
+		executor.execute(new RunnableWithContext() {
 
             @Override
             public void run() {
                 req.invoke();
             }
-        });
+
+            @Override
+            public WorkContext getWorkContext() {
+                return wc;
+            }
+
+            });
+		}
     }
 
     /** {@inheritDoc} */

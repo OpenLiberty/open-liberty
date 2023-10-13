@@ -40,6 +40,7 @@ import junit.framework.AssertionFailedError;
     IIOPClientEJBTest.class,
     IIOPClientServletTest.class,
     IORTest.class,
+    IIOPWorkContextTest.class,
 })
 public class FATSuite {
     private static final JavaArchive INTERFACES_JAR;
@@ -85,6 +86,9 @@ public class FATSuite {
         server.installSystemBundle("test.iiop");
         server.installSystemFeature("test.iiop-1.0");
         server.installSystemFeature("test.iiop.client-1.0");
+        // WorkContext
+        server.installSystemFeature("threadingTestFeature-1.0");
+        server.installSystemBundle("test.bundle.threading");
     }
 
     @AfterClass
@@ -95,6 +99,9 @@ public class FATSuite {
         server.uninstallSystemBundle("test.iiop");
         server.uninstallSystemFeature("test.iiop-1.0");
         server.uninstallSystemFeature("test.iiop.client-1.0");
+        // WorkContext
+        server.uninstallSystemFeature("threadingTestFeature-1.0");
+        server.uninstallSystemBundle("test.bundle.threading");
     }
 
 }
