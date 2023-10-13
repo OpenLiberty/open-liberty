@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,6 +46,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.LibertyProcess;
+import com.ibm.ws.kernel.boot.internal.KernelUtils;
 import com.ibm.ws.kernel.launch.service.ForcedServerStop;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
@@ -62,7 +63,8 @@ import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
  *
  */
 @Component(service = { RuntimeUpdateManager.class },
-           configurationPolicy = ConfigurationPolicy.IGNORE,
+           configurationPolicy = ConfigurationPolicy.REQUIRE,
+           configurationPid = "com.ibm.ws.threading",
            immediate = true,
            property = { "service.vendor=IBM" })
 public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, SynchronousBundleListener {
@@ -95,11 +97,16 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
 
     private ExecutorService executorService;
 
+    /**
+     * The most recently provided component config for the executor (we need the quiesceTimeout from the executor config).
+     */
+    Map<String, Object> componentConfig = null;
+
     @Activate
-    protected void activate(BundleContext ctx) {
+    protected void activate(BundleContext ctx, Map<String, Object> componentConfig) {
         bundleCtx = ctx;
         bundleCtx.addBundleListener(this);
-
+        this.componentConfig = componentConfig;
     }
 
     @Reference(service = ExecutorService.class,
@@ -339,10 +346,18 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         if (listenerRefs.isEmpty() && existingNotifications.isEmpty())
             return;
 
+        // Amount of time to wait for quiesce work to complete before continuing with shutdown.
+        String quiesceTimeoutString = (String) (componentConfig.get("quiesceTimeout"));
+        int quiesceTimeout = Integer.valueOf(KernelUtils.parseDuration(quiesceTimeoutString, TimeUnit.SECONDS));
+        int MINIMUM_QUIESCE_TIMEOUT = 30;
+        if (quiesceTimeout < MINIMUM_QUIESCE_TIMEOUT) {
+            quiesceTimeout = MINIMUM_QUIESCE_TIMEOUT;
+        }
+
         if (isServer())
-            Tr.audit(tc, "quiesce.begin");
+            Tr.audit(tc, "quiesce.begin", quiesceTimeout);
         else
-            Tr.audit(tc, "client.quiesce.begin");
+            Tr.audit(tc, "client.quiesce.begin", quiesceTimeout);
 
         // If there are RuntimeUpdateNotifications outstanding, submit a thread to wait on them
         if (!existingNotifications.isEmpty()) {
@@ -401,7 +416,7 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         // Notify the executor service that we are quiescing
 
         long startTime = System.currentTimeMillis();
-        if (tq.quiesceThreads() && quiesceListenerFutures.isComplete(startTime)) {
+        if (tq.quiesceThreads() && quiesceListenerFutures.isComplete(startTime, quiesceTimeout)) {
             if (isServer())
                 Tr.info(tc, "quiesce.end");
             else
@@ -467,10 +482,17 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             quiesceListenerFutures.add(f);
         }
 
+        /**
+         *
+         * @param startTime      - time now in milliseconds
+         * @param quiesceTimeout - timeout in seconds
+         * @return
+         */
         @FFDCIgnore(TimeoutException.class)
-        boolean isComplete(long startTime) {
-            // We will wait 30 seconds past the start time for tasks to complete
-            long endTime = startTime + 30000;
+        boolean isComplete(long startTime, int quiesceTimeout) {
+            // We will wait quiesceTimeout seconds past the start time for tasks to complete
+            // Configured in the <executor> element of server.xml.  Default 30 seconds.
+            long endTime = startTime + quiesceTimeout * 1000;
 
             for (Future<?> f : quiesceListenerFutures) {
                 long waitTime = endTime - System.currentTimeMillis();
