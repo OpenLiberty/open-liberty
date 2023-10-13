@@ -12,9 +12,11 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Vector;
 
 import jakarta.data.Sort;
 import jakarta.data.repository.CrudRepository;
@@ -56,4 +58,16 @@ public interface Orders extends CrudRepository<Order, Long> {
 
     @Update
     boolean modify(Order order);
+
+    @Update
+    Order[] modifyAll(Order... orders);
+
+    @Update
+    Optional<Order> modifyIfMatching(Order orders);
+
+    @Update
+    Vector<Order> modifyMultiple(Collection<Order> orders);
+
+    @Update
+    Order modifyOne(Order orders);
 }
