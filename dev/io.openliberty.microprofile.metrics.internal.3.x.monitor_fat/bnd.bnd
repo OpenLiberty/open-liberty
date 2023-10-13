@@ -18,7 +18,8 @@ src: \
 	fat/src,\
 	test-applications/testSessionApp/src,\
 	test-applications/testJDBCApp/src,\
-	test-applications/testJaxWsApp/src
+	test-applications/testJaxWsApp/src,\
+	test-applications/testRESTApp/src
 
 fat.project: true
 
@@ -37,13 +38,14 @@ tested.features:\
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
-	org.jmock:jmock-junit4;strategy=exact;version=2.5.1,\
-	org.jmock:jmock;strategy=exact;version=2.5.1,\
-	org.apache.commons:commons-compress;version=1.21,\
+	org.jmock:jmock-junit4;strategy=exact;version='2.5.1',\
+	org.jmock:jmock;strategy=exact;version='2.5.1',\
+	org.apache.commons:commons-compress;version='1.21',\
 	com.ibm.websphere.rest.handler;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
 	com.ibm.websphere.javaee.jws.1.0;version=latest,\
-	io.openliberty.org.eclipse.microprofile.metrics.3.0;version=latest
+	io.openliberty.org.eclipse.microprofile.metrics.3.0;version=latest,\
+	com.ibm.websphere.javaee.jaxrs.2.1

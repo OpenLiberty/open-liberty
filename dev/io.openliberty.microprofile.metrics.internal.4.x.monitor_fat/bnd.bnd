@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2021, 2022 IBM Corporation and others.
+# Copyright (c) 2021, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -18,7 +18,8 @@ src: \
 	fat/src,\
 	test-applications/testSessionApp/src,\
 	test-applications/testJDBCApp/src,\
-	test-applications/testJaxWsApp/src
+	test-applications/testJaxWsApp/src,\
+	test-applications/testRESTApp/src
 
 fat.project: true
 
@@ -36,15 +37,16 @@ tested.features:\
 # fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-	io.openliberty.jakarta.jws.3.0;version=latest, \
-	io.openliberty.jakarta.xmlBinding.3.0;version=latest, \
-	io.openliberty.jakarta.xmlWS.3.0;version=latest, \
+	io.openliberty.jakarta.jws.3.0;version=latest,\
+	io.openliberty.jakarta.xmlBinding.3.0;version=latest,\
+	io.openliberty.jakarta.xmlWS.3.0;version=latest,\
 	io.openliberty.jakarta.annotation.2.0;version=latest,\
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
-	org.jmock:jmock-junit4;strategy=exact;version=2.5.1,\
-	org.jmock:jmock;strategy=exact;version=2.5.1,\
-	org.apache.commons:commons-compress;version=1.21,\
+	org.jmock:jmock-junit4;strategy=exact;version='2.5.1',\
+	org.jmock:jmock;strategy=exact;version='2.5.1',\
+	org.apache.commons:commons-compress;version='1.21',\
 	com.ibm.websphere.rest.handler;version=latest,\
-    io.openliberty.jakarta.servlet.5.0;version=latest,\
+	io.openliberty.jakarta.servlet.5.0;version=latest,\
 	io.openliberty.jakarta.cdi.3.0;version=latest,\
-	io.openliberty.org.eclipse.microprofile.metrics.4.0;version=latest
+	io.openliberty.org.eclipse.microprofile.metrics.4.0;version=latest,\
+	io.openliberty.jakarta.restfulWS.3.0
