@@ -51,4 +51,25 @@ public class ConcurrentReactiveServlet extends FATServlet {
         publisher.close();
     }
 
+    /*
+     * Test that context is available using a Managed Executor in a more complicated flow:
+     * Publisher -> Processor -> Subscriber
+     */
+    @Test
+    public void processorFlowTest() throws Exception {
+        final CountDownLatch continueLatch = new CountDownLatch(2);
+        new InitialContext().lookup("java:comp/env/entry1");
+
+        ThreadPublisher publisher = new ThreadPublisher(executor);
+        ThreadProcessor processor = new ThreadProcessor(executor);
+        publisher.subscribe(processor);
+        processor.subscribe(new ThreadSubscriber());
+        publisher.offer(continueLatch, null);
+
+        assertTrue("Timeout occurred waiting for CountDownLatch", continueLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        publisher.close();
+        processor.close();
+
+    }
+
 }
