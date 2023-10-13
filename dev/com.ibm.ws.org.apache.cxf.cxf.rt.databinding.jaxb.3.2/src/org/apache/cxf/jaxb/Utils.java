@@ -59,7 +59,8 @@ final class Utils {
     private static Collection<Field> getFieldsInternal(Class<?> cls, XmlAccessType accessType) {
         Set<Field> fields = new HashSet<>();
         Class<?> superClass = cls.getSuperclass();
-        if (superClass != null && !superClass.equals(Object.class) && !superClass.equals(Throwable.class)) {
+        
+        if (superClass != null && !superClass.equals(Object.class)) { // Liberty Change: Remove the "&& !superClass.equals(Throwable.class)" check to make sure we honor JAX-WS 2.2 spec
             // process super class until java.lang.Object or java.lang.Throwable is not reached
             fields.addAll(getFieldsInternal(superClass, accessType));
         }
@@ -80,7 +81,7 @@ final class Utils {
             boolean acceptSetters) {
         Set<Method> methods = new HashSet<>();
         Class<?> superClass = cls.getSuperclass();
-        if (superClass != null && !superClass.equals(Object.class) && !superClass.equals(Throwable.class)) {
+        if (superClass != null && !superClass.equals(Object.class)) { // Liberty Change: Remove the "&& !superClass.equals(Throwable.class)" check to make sure we honor JAX-WS 2.2 spec
             // process super class until java.lang.Object or java.lang.Throwable is not reached
             methods.addAll(getMethodsInternal(superClass, accessType, acceptSetters));
         }

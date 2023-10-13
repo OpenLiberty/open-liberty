@@ -371,7 +371,7 @@ public final class JAXBEncoderDecoder {
                 }
             }
             List<Member> combinedMembers = new ArrayList<>();
-
+            
             for (Field f : Utils.getFields(cls, accessType)) {
                 XmlAttribute at = f.getAnnotation(XmlAttribute.class);
                 if (at == null) {
@@ -442,6 +442,7 @@ public final class JAXBEncoderDecoder {
                     }
                 });
             }
+            Object hasGetMessage = null; // Liberty Change: use this object to track if more than one getMessage method exists associated value.
             for (Member member : combinedMembers) {
                 if (member instanceof Field) {
                     Field f = (Field)member;
@@ -462,8 +463,24 @@ public final class JAXBEncoderDecoder {
                     if (JAXBSchemaInitializer.isArray(m.getGenericReturnType())) {
                         writeArrayObject(marshaller, writer, mname, m.invoke(elValue));
                     } else {
-                        Object o = Utils.getMethodValue(m, elValue);
-                        writeObject(marshaller, writer, newJAXBElement(mname, String.class, o));
+                        
+                        Object o = Utils.getMethodValue(m, elValue);  
+                        // Liberty Change Start: Prevent duplicate or null message elements from appearing in SOAPFaults when Throwable.getMessage() is added to the list of methods to be marshalled
+                        if(m.getName().equals("getMessage") && o != null) { // Only write getMessage element once and as long as o is not null.
+                            LOG.finest("method m: " + m +  " is equal to getMessage and Object o is not null");
+                            if(!o.equals(hasGetMessage)) { // Don't write a second message element if getMessage has already been processed for the same value
+                                LOG.finest("Object value wasn't equal to hasGetMessage, writing Object o: " + o);
+                                writeObject(marshaller, writer, newJAXBElement(mname, String.class, o));
+                            }
+                            hasGetMessage = o; // track that one getMessage method and value has already been written
+                        } else if (!m.getName().equals("getMessage")){ // if the method is not getMessage write any value. 
+                            LOG.finest("method m: " + m +  " is not equal to getMessage, writing Object o:" + o);
+                            writeObject(marshaller, writer, newJAXBElement(mname, String.class, o));
+                        } else if (o == null && !m.getDeclaringClass().equals(Throwable.class)) { // Add getMessage if the value is null, but it's not a Throwable.class. 
+                            LOG.finest("method m: " + m +  " is not from Throwable.class. Writing Object o:" + o);
+                            writeObject(marshaller, writer, newJAXBElement(mname, String.class, o));
+                        }
+                        // Liberty Change End
                     }
                 }
             }
