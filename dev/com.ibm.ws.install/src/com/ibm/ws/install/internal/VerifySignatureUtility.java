@@ -296,6 +296,7 @@ public class VerifySignatureUtility {
                 progressBar.updateProgress(increment);
 
             } catch (IOException | PGPException e) {
+                logger.fine(e.getMessage());
                 failedFeatures.add(f);
             }
         }
@@ -368,7 +369,7 @@ public class VerifySignatureUtility {
      * @throws FileNotFoundException
      */
     private boolean verifySignature(String fileName, PGPSignature sig, PGPPublicKey pubKey) throws IOException, FileNotFoundException, PGPException {
-        sig.init(new JcaPGPContentVerifierBuilderProvider().setProvider("BC"), pubKey);
+        sig.init(new JcaPGPContentVerifierBuilderProvider().setProvider(new BouncyCastleProvider()), pubKey);
 
         // Read file to verify
         try (InputStream dIn = new BufferedInputStream(new FileInputStream(fileName))) {
