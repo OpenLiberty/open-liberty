@@ -140,6 +140,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private static final Set<Compare> SUPPORTS_COLLECTIONS = Set.of //
     (Compare.Equal, Compare.Contains, Compare.Empty, Compare.Not, Compare.NotContains, Compare.NotEmpty);
 
+    // Valid types for when a repository method computes an update count
+    private static final Set<Class<?>> UPDATE_COUNT_TYPES = new HashSet<>(Arrays.asList //
+    (boolean.class, Boolean.class, int.class, Integer.class, long.class, Long.class, void.class, Void.class, Number.class));
+
     private static final ThreadLocal<Deque<EntityManager>> defaultMethodResources = new ThreadLocal<>();
 
     private final Class<?> defaultEntityClass; // entity class as specified by the user (not generated for records)
@@ -401,9 +405,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         // Lifecycle annotations
         if (save != null) { // @Save annotation
-            queryInfo.init(save, QueryInfo.Type.SAVE);
+            queryInfo.init(Save.class, QueryInfo.Type.SAVE);
         } else if (insert != null) { // @Insert annotation
-            queryInfo.init(insert, QueryInfo.Type.INSERT);
+            queryInfo.init(Insert.class, QueryInfo.Type.INSERT);
         } else if (update != null) { // @Update annotation
             q = generateUpdateEntity(queryInfo); // TODO are these sufficient?
         } else if (delete != null && filters.length == 0) { // @Delete annotation with no @Filter annotations
@@ -763,6 +767,155 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
+     * Finds and updates entities (or records) in the database.
+     * Entities that are not found are ignored.
+     *
+     * @param arg       the entity or record, or array or Iterable or Stream of entity or record.
+     * @param queryInfo query information.
+     * @param em        the entity manager.
+     * @return the updated entities, using the return type that is required by the repository Update method signature.
+     * @throws Exception if an error occurs.
+     */
+    private Object findAndUpdate(Object arg, QueryInfo queryInfo, EntityManager em) throws Exception {
+        List<Object> results;
+
+        if (queryInfo.entityParamType.isArray()) {
+            int length = Array.getLength(arg);
+            results = new ArrayList<>(length);
+            for (int i = 0; i < length; i++) {
+                Object entity = findAndUpdateOne(Array.get(arg, i), queryInfo, em);
+                if (entity != null) {
+                    results.add(entity);
+                }
+            }
+        } else {
+            arg = arg instanceof Stream //
+                            ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
+                            : arg;
+
+            results = new ArrayList<>();
+            if (arg instanceof Iterable) {
+                for (Object e : ((Iterable<?>) arg)) {
+                    Object entity = findAndUpdateOne(e, queryInfo, em);
+                    if (entity != null) {
+                        results.add(entity);
+                    }
+                }
+            } else {
+                results = new ArrayList<>(1);
+                Object entity = findAndUpdateOne(arg, queryInfo, em);
+                if (entity != null) {
+                    results.add(entity);
+                }
+            }
+        }
+        em.flush();
+        // TODO when records are used, convert the entities back to records
+
+        Object returnValue;
+        if (queryInfo.returnArrayType != null) {
+            Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
+            returnValue = results.toArray(newArray);
+        } else {
+            Class<?> multiType = queryInfo.getMultipleResultType();
+            if (multiType == null)
+                returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results? Detect earlier?
+            else if (multiType.isInstance(results))
+                returnValue = results;
+            else if (Stream.class.equals(multiType))
+                returnValue = results.stream();
+            else if (Iterable.class.isAssignableFrom(multiType))
+                returnValue = toIterable(multiType, null, results);
+            else if (Iterator.class.equals(multiType))
+                returnValue = results.iterator();
+            else
+                throw new UnsupportedOperationException(multiType + " is an unsupported return type."); // TODO NLS
+        }
+
+        Class<?> returnType = queryInfo.method.getReturnType();
+        if (Optional.class.equals(returnType)) {
+            returnValue = returnValue == null ? Optional.empty() : Optional.of(returnValue);
+        } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+            returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
+        } else if (returnValue != null && !returnType.isInstance(returnValue)) {
+            throw new MappingException("The " + returnType.getName() + " return type of the " +
+                                       queryInfo.method.getName() + " method of the " +
+                                       queryInfo.method.getDeclaringClass().getName() +
+                                       " class is not a valid return type for a repository " +
+                                       "@Update" + " method."); // TODO NLS
+        }
+
+        return returnValue;
+    }
+
+    /**
+     * Finds an entity (or record) in the database, locks it for subsequent update,
+     * and updates the entity found in the database to match the desired state of the supplied entity.
+     *
+     * @param e         the entity or record.
+     * @param queryInfo query information.
+     * @param em        the entity manager.
+     * @return the entity that is written to the database. Null if not found.
+     * @throws Exception if an error occurs.
+     */
+    private Object findAndUpdateOne(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
+        Class<?> singleType = queryInfo.getSingleResultType();
+        String jpql = queryInfo.jpql;
+        EntityInfo entityInfo = queryInfo.entityInfo;
+
+        int versionParamIndex = 2;
+        Object version = null;
+        if (entityInfo.versionAttributeName != null) {
+            version = entityInfo.getAttribute(e, entityInfo.versionAttributeName);
+            if (version == null)
+                jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
+        }
+
+        Object id = entityInfo.getAttribute(e, entityInfo.getAttributeName("id", true));
+        if (id == null) {
+            jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
+            if (version != null)
+                jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && jpql != queryInfo.jpql)
+            Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
+
+        TypedQuery<?> query = em.createQuery(jpql, singleType); // TODO for records, use the entity class, not the record class
+        query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+
+        // id parameter(s)
+
+        int p = 0;
+        if (entityInfo.idClassAttributeAccessors != null) {
+            throw new UnsupportedOperationException(); // TODO
+        } else if (id != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "set ?" + (p + 1) + ' ' + id.getClass().getSimpleName());
+            query.setParameter(++p, id);
+        }
+
+        // version parameter
+
+        if (entityInfo.versionAttributeName != null && version != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "set ?" + (p + 1) + ' ' + version.getClass().getSimpleName());
+            query.setParameter(++p, version);
+        }
+
+        List<?> results = query.getResultList();
+
+        Object entity;
+        if (results.isEmpty()) {
+            entity = null;
+        } else {
+            entity = results.get(0);
+            entity = em.merge(e);
+        }
+        return entity;
+    }
+
+    /**
      * Finds the entity variable name after the start of the entity name.
      * Examples of JPQL:
      * ... FROM Order o, Product p ...
@@ -834,7 +987,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             queryInfo.type = QueryInfo.Type.DELETE;
             queryInfo.hasWhere = false;
         } else {
-            queryInfo.type = QueryInfo.Type.DELETE_WITH_ENTITY_PARAM;
+            queryInfo.init(Delete.class, QueryInfo.Type.DELETE_WITH_ENTITY_PARAM);
             queryInfo.hasWhere = true;
 
             q.append(" WHERE (");
@@ -1796,8 +1949,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private StringBuilder generateUpdateEntity(QueryInfo queryInfo) {
         EntityInfo entityInfo = queryInfo.entityInfo;
         String o = queryInfo.entityVar;
-        queryInfo.type = QueryInfo.Type.UPDATE_WITH_ENTITY_PARAM;
-        queryInfo.hasWhere = true;
+        StringBuilder q;
 
         String idName = queryInfo.entityInfo.getAttributeName("id", true);
         if (idName == null && queryInfo.entityInfo.idClassAttributeAccessors != null) {
@@ -1805,24 +1957,41 @@ public class RepositoryImpl<R> implements InvocationHandler {
             throw new MappingException("Update operations cannot be used on entities with composite IDs."); // TODO NLS
         }
 
-        StringBuilder q = new StringBuilder(100) //
-                        .append("UPDATE ").append(entityInfo.name).append(' ').append(o) //
-                        .append(" SET ");
+        Class<?> singleType = queryInfo.getSingleResultType();
+        if (UPDATE_COUNT_TYPES.contains(singleType)) {
+            queryInfo.init(Update.class, QueryInfo.Type.UPDATE_WITH_ENTITY_PARAM);
+            queryInfo.hasWhere = true;
 
-        boolean first = true;
-        for (String name : entityInfo.getAttributeNamesForEntityUpdate()) {
-            if (first)
-                first = false;
-            else
-                q.append(", ");
+            q = new StringBuilder(100) //
+                            .append("UPDATE ").append(entityInfo.name).append(' ').append(o) //
+                            .append(" SET ");
 
-            q.append(o).append('.').append(name).append("=?").append(++queryInfo.paramCount);
+            boolean first = true;
+            for (String name : entityInfo.getAttributeNamesForEntityUpdate()) {
+                if (first)
+                    first = false;
+                else
+                    q.append(", ");
+
+                q.append(o).append('.').append(name).append("=?").append(++queryInfo.paramCount);
+            }
+
+            q.append(" WHERE ").append(o).append('.').append(idName).append("=?").append(++queryInfo.paramCount);
+
+            if (entityInfo.versionAttributeName != null)
+                q.append(" AND ").append(o).append('.').append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
+        } else {
+            // Update that returns an entity - perform a find operation first so that em.merge can be used
+            queryInfo.init(Update.class, QueryInfo.Type.UPDATE_WITH_ENTITY_PARAM_AND_RESULT);
+            queryInfo.hasWhere = true;
+
+            q = new StringBuilder(100) //
+                            .append("SELECT ").append(o).append(" FROM ").append(entityInfo.name).append(' ').append(o) //
+                            .append(" WHERE ").append(o).append('.').append(idName).append("=?").append(++queryInfo.paramCount);
+
+            if (entityInfo.versionAttributeName != null)
+                q.append(" AND ").append(o).append('.').append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
         }
-
-        q.append(" WHERE ").append(o).append('.').append(idName).append("=?").append(++queryInfo.paramCount);
-
-        if (entityInfo.versionAttributeName != null)
-            q.append(" AND ").append(o).append('.').append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
 
         return q;
     }
@@ -2096,7 +2265,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * Inserts entities (or records) into the database.
      * An error is raised if any of the entities (or records) already exist in the database.
      *
-     * @param arg       the entity or record, or array or Iterable of entity or record.
+     * @param arg       the entity or record, or array or Iterable or Stream of entity or record.
      * @param queryInfo query information.
      * @param em        the entity manager.
      * @return the updated entities, using the return type that is required by Insert method signature.
@@ -2118,24 +2287,30 @@ public class RepositoryImpl<R> implements InvocationHandler {
             }
             em.flush();
             // TODO convert entity back to record if entityInfo.recordClass is not null
-        } else if (Iterable.class.isAssignableFrom(queryInfo.entityParamType)) {
-            results = resultVoid ? null : new ArrayList<>();
-            for (Object e : ((Iterable<?>) arg)) {
-                Object entity = toEntity(e);
+        } else {
+            arg = arg instanceof Stream //
+                            ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
+                            : arg;
+
+            if (arg instanceof Iterable) {
+                results = resultVoid ? null : new ArrayList<>();
+                for (Object e : ((Iterable<?>) arg)) {
+                    Object entity = toEntity(e);
+                    em.persist(entity);
+                    if (results != null)
+                        results.add(entity);
+                }
+                em.flush();
+                // TODO convert entity back to record if entityInfo.recordClass is not null
+            } else {
+                results = resultVoid ? null : new ArrayList<>(1);
+                Object entity = toEntity(arg);
                 em.persist(entity);
+                em.flush();
+                // TODO convert entity back to record if entityInfo.recordClass is not null
                 if (results != null)
                     results.add(entity);
             }
-            em.flush();
-            // TODO convert entity back to record if entityInfo.recordClass is not null
-        } else {
-            results = resultVoid ? null : new ArrayList<>(1);
-            Object entity = toEntity(arg);
-            em.persist(entity);
-            em.flush();
-            // TODO convert entity back to record if entityInfo.recordClass is not null
-            if (results != null)
-                results.add(entity);
         }
 
         Object returnValue;
@@ -2536,7 +2711,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 numExpected++;
                                 updateCount += remove(e, queryInfo, em);
                             }
-                        } else if (arg.getClass().isArray()) {
+                        } else if (queryInfo.entityParamType.isArray()) {
                             numExpected = Array.getLength(arg);
                             for (int i = 0; i < numExpected; i++)
                                 updateCount += remove(Array.get(arg, i), queryInfo, em);
@@ -2566,7 +2741,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         if (arg instanceof Iterable) {
                             for (Object e : ((Iterable<?>) arg))
                                 updateCount += update(e, queryInfo, em);
-                        } else if (arg.getClass().isArray()) {
+                        } else if (queryInfo.entityParamType.isArray()) {
                             int length = Array.getLength(arg);
                             for (int i = 0; i < length; i++)
                                 updateCount += update(Array.get(arg, i), queryInfo, em);
@@ -2575,6 +2750,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         }
 
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
+                        break;
+                    }
+                    case UPDATE_WITH_ENTITY_PARAM_AND_RESULT: {
+                        em = entityInfo.persister.createEntityManager();
+                        returnValue = findAndUpdate(args[0], queryInfo, em);
                         break;
                     }
                     case COUNT: {
@@ -3091,7 +3271,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * Saves entities (or records) to the database, which can involve an update or an insert,
      * depending on whether the entity already exists.
      *
-     * @param arg       the entity or record, or array or Iterable of entity or record.
+     * @param arg       the entity or record, or array or Iterable or Stream of entity or record.
      * @param queryInfo query information.
      * @param em        the entity manager.
      * @return the updated entities, using the return type that is required by the repository Save method signature.
@@ -3109,17 +3289,23 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 results.add(em.merge(toEntity(Array.get(arg, i))));
             em.flush();
             // TODO convert entity back to record if entityInfo.recordClass is not null
-        } else if (Iterable.class.isAssignableFrom(queryInfo.entityParamType)) {
-            results = new ArrayList<>();
-            for (Object e : ((Iterable<?>) arg))
-                results.add(em.merge(toEntity(e)));
-            em.flush();
-            // TODO convert entity back to record if entityInfo.recordClass is not null
         } else {
-            Object entity = em.merge(toEntity(arg));
-            results = resultVoid ? null : List.of(entity);
-            em.flush();
-            // TODO convert entity back to record if entityInfo.recordClass is not null
+            arg = arg instanceof Stream //
+                            ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
+                            : arg;
+
+            if (Iterable.class.isAssignableFrom(queryInfo.entityParamType)) {
+                results = new ArrayList<>();
+                for (Object e : ((Iterable<?>) arg))
+                    results.add(em.merge(toEntity(e)));
+                em.flush();
+                // TODO convert entity back to record if entityInfo.recordClass is not null
+            } else {
+                Object entity = em.merge(toEntity(arg));
+                results = resultVoid ? null : List.of(entity);
+                em.flush();
+                // TODO convert entity back to record if entityInfo.recordClass is not null
+            }
         }
 
         Object returnValue;

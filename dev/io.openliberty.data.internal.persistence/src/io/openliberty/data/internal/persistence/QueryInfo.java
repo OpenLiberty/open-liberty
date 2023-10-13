@@ -53,7 +53,7 @@ class QueryInfo {
 
     static enum Type {
         COUNT, DELETE, DELETE_WITH_ENTITY_PARAM, EXISTS, FIND, FIND_AND_DELETE, INSERT, SAVE, RESOURCE_ACCESS,
-        UPDATE, UPDATE_WITH_ENTITY_PARAM
+        UPDATE, UPDATE_WITH_ENTITY_PARAM, UPDATE_WITH_ENTITY_PARAM_AND_RESULT
     }
 
     /**
@@ -407,14 +407,14 @@ class QueryInfo {
     /**
      * Initialize this query information for the specified type of annotated repository operation.
      *
-     * @param anno          Insert, Update, Save, or Delete annotation.
+     * @param annoClass     Insert, Update, Save, or Delete annotation class.
      * @param operationType corresponding operation type.
      */
-    void init(Annotation anno, Type operationType) {
+    void init(Class<? extends Annotation> annoClass, Type operationType) {
         type = operationType;
         Class<?>[] paramTypes = method.getParameterTypes();
         if (paramTypes.length != 1)
-            throw new UnsupportedOperationException("Repository " + '@' + anno.getClass().getSimpleName() +
+            throw new UnsupportedOperationException("Repository " + '@' + annoClass.getSimpleName() +
                                                     " operations must have exactly 1 parameter, which can be the entity" +
                                                     " or a collection or array of entities. The " + method.getDeclaringClass().getName() +
                                                     '.' + method.getName() + " method has " + paramTypes.length + " parameters."); // TODO NLS
