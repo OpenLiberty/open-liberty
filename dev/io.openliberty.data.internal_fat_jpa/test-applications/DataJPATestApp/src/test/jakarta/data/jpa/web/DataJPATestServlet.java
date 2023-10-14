@@ -36,6 +36,7 @@ import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.TreeSet;
+import java.util.Vector;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -2494,6 +2495,133 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals("Rochester", ibm.location.address.city);
         assertEquals("MN", ibm.location.address.state);
         assertEquals(55901, ibm.location.address.zip);
+    }
+
+    /**
+     * Test that a method that is annotated with the Update annotation can return entity results,
+     * and the resulting entities match the updated values that were written to the database.
+     */
+    @Test
+    public void testUpdateWithEntityResults() {
+        orders.deleteAll();
+
+        Order o1 = new Order();
+        o1.purchasedBy = "testUpdateWithEntityResults-Customer1";
+        o1.purchasedOn = OffsetDateTime.now();
+        o1.total = 1.00f;
+        o1 = orders.create(o1);
+
+        Order o2 = new Order();
+        o2.purchasedBy = "testUpdateWithEntityResults-Customer2";
+        o2.purchasedOn = OffsetDateTime.now();
+        o2.total = 2.00f;
+        o2 = orders.create(o2);
+
+        Order o3 = new Order();
+        o3.purchasedBy = "testUpdateWithEntityResults-Customer3";
+        o3.purchasedOn = OffsetDateTime.now();
+        o3.total = 3.00f;
+        o3 = orders.create(o3);
+
+        Order o4 = new Order();
+        o4.purchasedBy = "testUpdateWithEntityResults-Customer4";
+        o4.purchasedOn = OffsetDateTime.now();
+        o4.total = 4.00f;
+        o4 = orders.create(o4);
+
+        Order o5 = new Order();
+        o5.purchasedBy = "testUpdateWithEntityResults-Customer5";
+        o5.purchasedOn = OffsetDateTime.now();
+        o5.total = 5.00f;
+        o5 = orders.create(o5);
+
+        Order o6 = new Order();
+        o6.purchasedBy = "testUpdateWithEntityResults-Customer6";
+        o6.purchasedOn = OffsetDateTime.now();
+        o6.total = 6.00f;
+        // o6 is intentionally not written to the database so that it will not be found for update
+
+        int o1_initialVersion = o1.versionNum;
+        int o2_initialVersion = o2.versionNum;
+        int o3_initialVersion = o3.versionNum;
+        int o4_initialVersion = o4.versionNum;
+        int o5_initialVersion = o5.versionNum;
+
+        // update multiple in a variable arguments array
+        o1.total = 1.01f;
+        o3.total = 3.01f;
+        Order[] modified = orders.modifyAll(o3, o1);
+        assertEquals("testUpdateWithEntityResults-Customer3", modified[0].purchasedBy);
+        assertEquals(3.01f, modified[0].total, 0.001f);
+        assertEquals(o3_initialVersion + 1, modified[0].versionNum);
+        // o3 is intentionally left at its original version so that it will not be found for update
+
+        o1 = modified[1];
+        assertEquals("testUpdateWithEntityResults-Customer1", o1.purchasedBy);
+        assertEquals(1.01f, o1.total, 0.001f);
+        assertEquals(o1_initialVersion + 1, o1.versionNum);
+
+        // update multiple in an Iterable where the first entity is non-matching due to its version
+        o1.total = 1.02f;
+        o3.versionNum = o3_initialVersion;
+        o3.total = 3.02f;
+        o5.total = 5.02f;
+        Vector<Order> results = orders.modifyMultiple(List.of(o3, o5, o1));
+        assertEquals(2, results.size());
+
+        o5 = results.get(0);
+        assertEquals("testUpdateWithEntityResults-Customer5", o5.purchasedBy);
+        assertEquals(5.02f, o5.total, 0.001f);
+        assertEquals(o5_initialVersion + 1, o5.versionNum);
+
+        o1 = results.get(1);
+        assertEquals("testUpdateWithEntityResults-Customer1", o1.purchasedBy);
+        assertEquals(1.02f, o1.total, 0.001f);
+        assertEquals(o1_initialVersion + 2, o1.versionNum);
+
+        // update multiple in a variable arguments array where the second entry is not found in the database
+        o2.total = 2.03f;
+        o4.total = 4.03f;
+        o5.total = 5.03f;
+        o6.total = 6.03f;
+        modified = orders.modifyAll(o5, o6, o4, o2);
+        assertEquals(3, modified.length);
+
+        o5 = modified[0];
+        assertEquals("testUpdateWithEntityResults-Customer5", o5.purchasedBy);
+        assertEquals(5.03f, o5.total, 0.001f);
+        assertEquals(o5_initialVersion + 2, o5.versionNum);
+
+        o4 = modified[1];
+        assertEquals("testUpdateWithEntityResults-Customer4", o4.purchasedBy);
+        assertEquals(4.03f, o4.total, 0.001f);
+        assertEquals(o4_initialVersion + 1, o4.versionNum);
+
+        o2 = modified[2];
+        assertEquals("testUpdateWithEntityResults-Customer2", o2.purchasedBy);
+        assertEquals(2.03f, o2.total, 0.001f);
+        assertEquals(o1_initialVersion + 1, o2.versionNum);
+
+        // update returning one entity
+        o4.total = 4.04f;
+        o4 = orders.modifyOne(o4);
+        assertEquals("testUpdateWithEntityResults-Customer4", o4.purchasedBy);
+        assertEquals(4.04f, o4.total, 0.001f);
+        assertEquals(o4_initialVersion + 2, o4.versionNum);
+
+        // update where no entities match, returning empty array
+        modified = orders.modifyAll(o3, o6);
+        assertEquals(0, modified.length);
+
+        // update where no entities match, returning empty iterable
+        results = orders.modifyMultiple(List.of(o6, o3));
+        assertEquals(true, results.isEmpty());
+
+        // update where the only entity does not match, returning null
+        assertEquals(null, orders.modifyOne(o6));
+
+        // update where the only entity does not match, returning an empty optional
+        assertEquals(false, orders.modifyIfMatching(o3).isPresent());
     }
 
     /**
