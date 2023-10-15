@@ -27,9 +27,9 @@ Export-Package: \
   org.eclipse.microprofile.metrics.annotation;version=5.1
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.metrics:microprofile-metrics-api;5.1.0.RC1;EXACT}
+  @${repo;org.eclipse.microprofile.metrics:microprofile-metrics-api;5.1.0;EXACT}
 
 -maven-dependencies: \
-   dep1;groupId=org.eclipse.microprofile.metrics;artifactId=microprofile-metrics-api;version=5.1.0-RC1;scope=runtime
+   dep1;groupId=org.eclipse.microprofile.metrics;artifactId=microprofile-metrics-api;version=5.1.0;scope=runtime
 
 WS-TraceGroup: METRICS
