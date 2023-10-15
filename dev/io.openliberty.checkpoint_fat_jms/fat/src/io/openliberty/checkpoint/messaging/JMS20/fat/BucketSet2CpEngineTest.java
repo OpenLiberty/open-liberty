@@ -31,12 +31,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.SkipForRepeat;
+import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
+@SkipIfCheckpointNotSupported
 public class BucketSet2CpEngineTest {
 
     private static LibertyServer clientServer = LibertyServerFactory.getLibertyServer("LiteSet2Client");

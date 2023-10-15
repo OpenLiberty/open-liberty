@@ -32,6 +32,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -43,6 +44,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
 // Bucket 1 checkpoint JMS Client
+@SkipIfCheckpointNotSupported
 public class BucketSet1CpClientTest {
 
     private static LibertyServer clientServer = LibertyServerFactory.getLibertyServer("LiteSet1Client");
@@ -81,7 +83,7 @@ public class BucketSet1CpClientTest {
         // This will drive a post restore config update, updating ports unspecified at checkpoint 
         // to those of the runtime environment.
         Consumer<LibertyServer> postCheckpointLogic = checkpointServer -> {
-        	FATSuite.PortSetting setting = new FATSuite.PortSetting("bvt.prop.jms.1",17010,"jms_port_1");
+        	FATSuite.PortSetting setting = new FATSuite.PortSetting("jms.1",17011,"jms_port_1");
             FATSuite.addServerEnvPorts(checkpointServer, new ArrayList<>(Collections.singletonList(setting))); 
         };
 

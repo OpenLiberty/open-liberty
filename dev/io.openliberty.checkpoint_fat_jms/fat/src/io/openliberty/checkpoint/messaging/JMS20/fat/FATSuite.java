@@ -23,11 +23,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.topology.impl.LibertyServer;
 
 
-@SkipIfCheckpointNotSupported
 @RunWith(Suite.class)
 @SuiteClasses({
                   DummyTest.class,
@@ -46,15 +44,23 @@ public class FATSuite {
 		try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile, true))) {
 			portSettings.forEach((setting) -> {
                Integer port = Integer.getInteger(setting.lookupName, setting.defaultValue); 
+			   System.out.println("Setting port " + setting.newEnvName + "="  +  port + " for lookup name " +
+                   setting.lookupName + " defaults to " +setting.defaultValue);	
                serverEnvWriter.println(setting.newEnvName+"="+port);
 	        });
 		} catch (FileNotFoundException e) {
 			throw new UncheckedIOException(e);
 		}
 	}
-	
+
+	/** Data transfer object to associated ports with property names */
 	public static class PortSetting {
-		
+		/**
+		 * 
+		 * @param name lookup por configured in testports.properties
+		 * @param def default value if lookup fails
+		 * @param newName Property name to define in server.env
+		 */
 		PortSetting(String name, int def, String newName) {
 			lookupName=name;
 			defaultValue=def;
