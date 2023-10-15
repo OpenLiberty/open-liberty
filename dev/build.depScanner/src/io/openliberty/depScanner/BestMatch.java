@@ -300,7 +300,7 @@ public class BestMatch {
      * @return
      */
     private static boolean wsLibraries(Module library) {
-        return library.getGroupId().startsWith("com.ibm.ws");
+        return (library.getGroupId().startsWith("com.ibm.ws") && !(library.getArtifactId().equals("wlp-docGen")));
     }
 
     private static String toMavenCoords(String coords) {
