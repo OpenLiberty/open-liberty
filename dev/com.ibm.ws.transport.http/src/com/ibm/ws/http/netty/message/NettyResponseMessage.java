@@ -132,8 +132,17 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public boolean isBodyAllowed() {
-        //Compatibility to implement the interface, processing is delegated to the Netty server codec
-        return false;
+        if (super.isBodyAllowed()) {
+
+            // sending a body with the response is not valid for a HEAD request
+            //TODO:Set false if request is HEAD
+
+            // if that worked, then check the status code flag
+            //can status code send body?
+        }
+
+        // no body allowed on this message
+        return true;
     }
 
     @Override
