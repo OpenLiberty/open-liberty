@@ -39,10 +39,11 @@ public class ThreadProcessor extends SubmissionPublisher<ContextCDL> implements 
         System.out.println("processor offer");
         try {
             latch.checkContext();
+            return super.offer(latch, onDrop);
         } catch (NamingException e) {
             closeExceptionally(e);
         }
-        return super.offer(latch, onDrop);
+        return -1;
     }
 
     //Publisher methods

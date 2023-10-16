@@ -32,10 +32,11 @@ public class ThreadPublisher extends SubmissionPublisher<ContextCDL> {
     public int offer(ContextCDL item, BiPredicate<Subscriber<? super ContextCDL>, ? super ContextCDL> onDrop) {
         try {
             item.checkContext();
+            return super.offer(item, onDrop);
         } catch (NamingException e) {
             closeExceptionally(e);
         }
-        return super.offer(item, onDrop);
+        return -1;
     }
 
 }
