@@ -24,7 +24,6 @@ import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.Security;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,11 +65,6 @@ public class VerifySignatureUtility {
     private String defaultKeyID = null;
 
     private final ProgressBar progressBar = ProgressBar.getInstance();
-
-    VerifySignatureUtility() {
-        Security.addProvider(new BouncyCastleProvider());
-
-    }
 
     private String getLibertyKeyID() throws InstallException {
         if (defaultKeyID != null) {
