@@ -96,7 +96,7 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
     private ExecutorService executorService;
 
     @Activate
-    protected void activate(BundleContext ctx, Map<String, Object> componentConfig) {
+    protected void activate(BundleContext ctx) {
         bundleCtx = ctx;
         bundleCtx.addBundleListener(this);
     }

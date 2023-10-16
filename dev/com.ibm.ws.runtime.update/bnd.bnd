@@ -43,7 +43,7 @@ instrument.classesExcludes: com/ibm/ws/runtime/update/internal/resources/*.class
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.ws.threading;version=latest,\
+	com.ibm.ws.threading;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \
