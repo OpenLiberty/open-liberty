@@ -21,6 +21,8 @@ import static test.jakarta.data.jpa.web.Assertions.assertIterableEquals;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -115,6 +117,9 @@ public class DataJPATestServlet extends FATServlet {
 
     @Inject
     Orders orders;
+
+    @Inject
+    Rebates rebates;
 
     @Inject
     ShippingAddresses shippingAddresses;
@@ -2169,6 +2174,73 @@ public class DataJPATestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         drivers.deleteByFullNameEndsWith(" TestOneToOne");
+    }
+
+    /**
+     * Tests lifecycle methods returning a single record.
+     */
+    @Test
+    public void testRecordReturnedByLifecycleMethods() {
+        // Insert
+        Rebate r1 = new Rebate(1, 1.00, "TestRecordReturned-Customer1", //
+                        LocalTime.of(11, 31, 0), //
+                        LocalDate.of(2023, Month.OCTOBER, 16), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 16, 11, 32, 0), //
+                        null);
+        r1 = rebates.add(r1);
+        assertEquals(Integer.valueOf(1), r1.id());
+        assertEquals(1.00, r1.amount(), 0.001f);
+        assertEquals(LocalTime.of(11, 31, 0), r1.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 16), r1.purchaseMadeOn());
+        assertEquals(Rebate.Status.SUBMITTED, r1.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 16, 11, 32, 0), r1.updatedAt());
+        Integer initialVersion = r1.version();
+        assertNotNull(initialVersion);
+
+        // Update
+        r1 = new Rebate(r1.id(), r1.amount(), r1.customerId(), //
+                        r1.purchaseMadeAt(), //
+                        r1.purchaseMadeOn(), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 16, 11, 41, 0), //
+                        r1.version());
+        r1 = rebates.modify(r1);
+        assertEquals(Integer.valueOf(1), r1.id());
+        assertEquals(1.00, r1.amount(), 0.001f);
+        assertEquals(LocalTime.of(11, 31, 0), r1.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 16), r1.purchaseMadeOn());
+        assertEquals(Rebate.Status.VERIFIED, r1.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 16, 11, 41, 0), r1.updatedAt());
+        assertEquals(Integer.valueOf(initialVersion + 1), r1.version());
+
+        // Save
+        r1 = new Rebate(r1.id(), r1.amount(), r1.customerId(), //
+                        r1.purchaseMadeAt(), //
+                        r1.purchaseMadeOn(), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 16, 11, 44, 0), //
+                        r1.version());
+        r1 = rebates.process(r1);
+        assertEquals(Integer.valueOf(1), r1.id());
+        assertEquals(1.00, r1.amount(), 0.001f);
+        assertEquals(LocalTime.of(11, 31, 0), r1.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 16), r1.purchaseMadeOn());
+        assertEquals(Rebate.Status.PAID, r1.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 16, 11, 44, 0), r1.updatedAt());
+        assertEquals(Integer.valueOf(initialVersion + 2), r1.version());
+
+        // Delete
+        assertEquals(true, rebates.remove(r1));
+        // TODO allow entity return type on delete?
+        //r1 = rebates.remove(r1);
+        //assertEquals(Integer.valueOf(1), r1.id());
+        //assertEquals(1.00, r1.amount(), 0.001f);
+        //assertEquals(LocalTime.of(11, 31, 0), r1.purchaseMadeAt());
+        //assertEquals(LocalDate.of(2023, Month.OCTOBER, 16), r1.purchaseMadeOn());
+        //assertEquals(Rebate.Status.PAID, r1.status());
+        //assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 16, 11, 44, 0), r1.updatedAt());
+        //assertEquals(Integer.valueOf(initialVersion + 2), r1.version());
     }
 
     /**
