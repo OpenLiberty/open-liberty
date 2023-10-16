@@ -12,21 +12,18 @@
  *******************************************************************************/
 package reactiveapp.web;
 
-import static org.junit.Assert.fail;
-
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscription;
 
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 /**
  *
  */
-public class ThreadSubscriber implements Flow.Subscriber<CountDownLatch> {
+public class ThreadSubscriber implements Flow.Subscriber<ContextCDL> {
 
-    Flow.Subscription subscription = null;
+    private Flow.Subscription subscription = null;
+    private Throwable closedException = null;
 
     @Override
     public void onSubscribe(Subscription subscription) {
@@ -35,24 +32,39 @@ public class ThreadSubscriber implements Flow.Subscriber<CountDownLatch> {
     }
 
     @Override
-    public void onNext(CountDownLatch latch) {
+    public void onNext(ContextCDL latch) {
+        System.out.println("subscriber onNext");
+
         try {
-            new InitialContext().lookup("java:comp/env/entry1");
+            latch.checkContext();
+            latch.countDown();
+            subscription.request(1);
         } catch (NamingException e) {
-            fail("Could not lookup context on subscriber thread");
+            closeExceptionally(e);
         }
-        latch.countDown();
-        subscription.request(1);
     }
 
     @Override
     public void onError(Throwable throwable) {
-        fail("onError should not have occured, see Log for Stack Trace");
+        closeExceptionally(throwable);
         throwable.printStackTrace(System.out);
     }
 
     @Override
     public void onComplete() {
+    }
+
+    public void closeExceptionally(Throwable t) {
+        closedException = t;
+    }
+
+    /**
+     * Returns the exception associated with closeExceptionally, or null if not closed or if closed normally.
+     *
+     * @return the exception, or null if none
+     */
+    public Throwable getClosedException() {
+        return closedException;
     }
 
 }

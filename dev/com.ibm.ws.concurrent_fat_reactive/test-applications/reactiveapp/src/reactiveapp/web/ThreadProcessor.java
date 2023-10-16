@@ -13,9 +13,6 @@
 
 package reactiveapp.web;
 
-import static org.junit.Assert.fail;
-
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscriber;
@@ -23,13 +20,12 @@ import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.function.BiPredicate;
 
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 /**
  *
  */
-public class ThreadProcessor extends SubmissionPublisher<CountDownLatch> implements Flow.Processor<CountDownLatch, CountDownLatch> {
+public class ThreadProcessor extends SubmissionPublisher<ContextCDL> implements Flow.Processor<ContextCDL, ContextCDL> {
 
     Flow.Subscription subscription = null;
 
@@ -39,13 +35,14 @@ public class ThreadProcessor extends SubmissionPublisher<CountDownLatch> impleme
     }
 
     @Override
-    public int offer(CountDownLatch item, BiPredicate<Subscriber<? super CountDownLatch>, ? super CountDownLatch> onDrop) {
+    public int offer(ContextCDL latch, BiPredicate<Subscriber<? super ContextCDL>, ? super ContextCDL> onDrop) {
+        System.out.println("processor offer");
         try {
-            new InitialContext().lookup("java:comp/env/entry1");
+            latch.checkContext();
         } catch (NamingException e) {
-            fail("Could not lookup context on publisher thread");
+            closeExceptionally(e);
         }
-        return super.offer(item, onDrop);
+        return super.offer(latch, onDrop);
     }
 
     //Publisher methods
@@ -56,20 +53,21 @@ public class ThreadProcessor extends SubmissionPublisher<CountDownLatch> impleme
     }
 
     @Override
-    public void onNext(CountDownLatch latch) {
+    public void onNext(ContextCDL latch) {
+        System.out.println("processor onNext");
         try {
-            new InitialContext().lookup("java:comp/env/entry1");
+            latch.checkContext();
+            latch.countDown();
+            offer(latch, null);
+            subscription.request(1);
         } catch (NamingException e) {
-            fail("Could not lookup context on subscriber thread");
+            closeExceptionally(e);
         }
-        latch.countDown();
-        offer(latch, null);
-        subscription.request(1);
     }
 
     @Override
     public void onError(Throwable throwable) {
-        fail("onError should not have occured, see Log for Stack Trace");
+        closeExceptionally(throwable);
         throwable.printStackTrace(System.out);
     }
 

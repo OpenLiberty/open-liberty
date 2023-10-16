@@ -10,32 +10,39 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 package reactiveapp.web;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Flow.Subscriber;
-import java.util.concurrent.SubmissionPublisher;
-import java.util.function.BiPredicate;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 /**
  *
  */
-public class ThreadPublisher extends SubmissionPublisher<ContextCDL> {
+public class ContextCDLImpl implements ContextCDL {
 
-    public ThreadPublisher(Executor ex) {
-        super(ex, 3);
+    private final CountDownLatch cdl;
+
+    public ContextCDLImpl(int count) {
+        cdl = new CountDownLatch(count);
     }
 
     @Override
-    public int offer(ContextCDL item, BiPredicate<Subscriber<? super ContextCDL>, ? super ContextCDL> onDrop) {
-        try {
-            item.checkContext();
-        } catch (NamingException e) {
-            closeExceptionally(e);
-        }
-        return super.offer(item, onDrop);
+    public void countDown() {
+        cdl.countDown();
+    }
+
+    @Override
+    public void checkContext() throws NamingException {
+        new InitialContext().lookup("java:comp/env/entry1");
+    }
+
+    @Override
+    public boolean await(long timeout, TimeUnit unit) throws InterruptedException {
+        return cdl.await(timeout, unit);
     }
 
 }
