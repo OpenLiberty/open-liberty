@@ -41,6 +41,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.boot.internal.KernelUtils;
@@ -58,6 +60,8 @@ import com.ibm.wsspi.threading.WSExecutorService;
            property = "service.vendor=IBM",
            service = { java.util.concurrent.ExecutorService.class, com.ibm.wsspi.threading.WSExecutorService.class })
 public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuiesce, AvailableProcessorsListener {
+
+    private static final TraceComponent tc = Tr.register(ExecutorServiceImpl.class);
 
     /**
      * The target ExecutorService.
@@ -86,7 +90,15 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
      * Amount of time to wait for quiesce work to complete before continuing with shutdown.
      */
     final static int MINIMUM_QUIESCE_TIMEOUT = 30;
-    protected long quiesceTimeout = MINIMUM_QUIESCE_TIMEOUT;
+    protected int quiesceTimeout = MINIMUM_QUIESCE_TIMEOUT;
+
+    /**
+     * @return the quiesceTimeout
+     */
+    @Override
+    public int getQuiesceTimeout() {
+        return quiesceTimeout;
+    }
 
     /**
      * The most recently provided component config for the executor.
@@ -182,6 +194,8 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
         return threadPool;
     }
 
+    public static boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
+
     /**
      * Create a thread pool executor with the configured attributes from this
      * component config.
@@ -204,8 +218,14 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
 
         int coreThreads = Integer.parseInt(String.valueOf(componentConfig.get("coreThreads")));
         int maxThreads = Integer.parseInt(String.valueOf(componentConfig.get("maxThreads")));
-        String quiesceTimeoutString = (String) (componentConfig.get("quiesceTimeout"));
-        quiesceTimeout = Long.valueOf(KernelUtils.parseDuration(quiesceTimeoutString, TimeUnit.SECONDS));
+        if (isBeta) {
+            String quiesceTimeoutString = (String) (componentConfig.get("quiesceTimeout"));
+            try {
+                quiesceTimeout = Integer.valueOf(KernelUtils.parseDuration(quiesceTimeoutString, TimeUnit.SECONDS));
+            } catch (NumberFormatException nfe) {
+                Tr.warning(tc, "CWWKE1206.quiesce.timeout.not.valid", quiesceTimeoutString);
+            }
+        }
 
         if (maxThreads <= 0) {
             maxThreads = Integer.MAX_VALUE;
@@ -536,7 +556,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
         this.serverStopping = true;
 
         try {
-            // Wait for all pre-quiesce work to complete
+            // Wait for all pre-quiesce work to complete.
             phaser.arriveAndDeregister();
             phaser.awaitAdvanceInterruptibly(0, quiesceTimeout, TimeUnit.SECONDS);
         } catch (InterruptedException e) {

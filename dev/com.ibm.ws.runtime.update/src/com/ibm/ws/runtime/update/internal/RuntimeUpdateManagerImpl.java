@@ -46,7 +46,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.LibertyProcess;
-import com.ibm.ws.kernel.boot.internal.KernelUtils;
 import com.ibm.ws.kernel.launch.service.ForcedServerStop;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
@@ -63,8 +62,7 @@ import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
  *
  */
 @Component(service = { RuntimeUpdateManager.class },
-           configurationPolicy = ConfigurationPolicy.REQUIRE,
-           configurationPid = "com.ibm.ws.threading",
+           configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
            property = { "service.vendor=IBM" })
 public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, SynchronousBundleListener {
@@ -97,16 +95,10 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
 
     private ExecutorService executorService;
 
-    /**
-     * The most recently provided component config for the executor (we need the quiesceTimeout from the executor config).
-     */
-    Map<String, Object> componentConfig = null;
-
     @Activate
     protected void activate(BundleContext ctx, Map<String, Object> componentConfig) {
         bundleCtx = ctx;
         bundleCtx.addBundleListener(this);
-        this.componentConfig = componentConfig;
     }
 
     @Reference(service = ExecutorService.class,
@@ -346,13 +338,8 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         if (listenerRefs.isEmpty() && existingNotifications.isEmpty())
             return;
 
-        // Amount of time to wait for quiesce work to complete before continuing with shutdown.
-        String quiesceTimeoutString = (String) (componentConfig.get("quiesceTimeout"));
-        int quiesceTimeout = Integer.valueOf(KernelUtils.parseDuration(quiesceTimeoutString, TimeUnit.SECONDS));
-        int MINIMUM_QUIESCE_TIMEOUT = 30;
-        if (quiesceTimeout < MINIMUM_QUIESCE_TIMEOUT) {
-            quiesceTimeout = MINIMUM_QUIESCE_TIMEOUT;
-        }
+        ThreadQuiesce tq = (ThreadQuiesce) executorService;
+        int quiesceTimeout = tq.getQuiesceTimeout();
 
         if (isServer())
             Tr.audit(tc, "quiesce.begin", quiesceTimeout);
@@ -375,8 +362,6 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
                 }
             });
         }
-
-        ThreadQuiesce tq = (ThreadQuiesce) executorService;
 
         FutureCollection quiesceListenerFutures = new FutureCollection();
 
