@@ -104,8 +104,7 @@ import com.ibm.ws.container.Container;
 import com.ibm.ws.container.DeployedModule;
 import com.ibm.ws.container.ErrorPage;
 import com.ibm.ws.container.MimeFilter;
-import com.ibm.ws.container.service.annotations.WebAnnotations;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
+import com.ibm.ws.container.service.annocache.WebAnnotations;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
@@ -150,7 +149,7 @@ import com.ibm.ws.webcontainer.util.MetaInfResourceFinder;
 import com.ibm.ws.webcontainer.util.UnsynchronizedStack;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
+import com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.http.HttpInboundConnection;
 import com.ibm.wsspi.http.ee7.HttpInboundConnectionExtended;
 import com.ibm.wsspi.injectionengine.InjectionException;
@@ -759,7 +758,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
      * jars not listed are excluded from annotation processing.
      * 
      * Control parameters are provided to allow testing for the several usage cases.
-     * See {@link com.ibm.wsspi.anno.classsource.ClassSource_Aggregate} for detailed
+     * See {@link com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate} for detailed
      * documentation.
      * 
      * Caution: Extra testing is necessary for annotations on inherited methods.
@@ -820,8 +819,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
      */
     private AnnotationTargets_Targets getAnnotationTargets() {
         try {
-            // Conditionally use the cache enabled implementation.
-            WebAnnotations webAnnotations = AnnotationsBetaHelper.getWebAnnotations( getModuleContainer() );
+            WebAnnotations webAnnotations = getModuleContainer().adapt(WebAnnotations.class);
             return webAnnotations.getAnnotationTargets();
         } catch ( UnableToAdaptException e ) {
             return null; // FFDC

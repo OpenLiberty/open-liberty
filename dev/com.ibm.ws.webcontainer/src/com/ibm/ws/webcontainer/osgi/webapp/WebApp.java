@@ -54,8 +54,7 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.csi.J2EENameFactory;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
-import com.ibm.ws.container.service.annotations.WebAnnotations;
+import com.ibm.ws.container.service.annocache.WebAnnotations;
 import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.container.service.metadata.MetaDataService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -80,9 +79,9 @@ import com.ibm.ws.webcontainer.util.MetaInfResourcesFileUtils;
 import com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.info.ClassInfo;
-import com.ibm.wsspi.anno.info.InfoStore;
-import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
+import com.ibm.wsspi.annocache.info.ClassInfo;
+import com.ibm.wsspi.annocache.info.InfoStore;
+import com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.injectionengine.ComponentNameSpaceConfiguration;
 import com.ibm.wsspi.injectionengine.ComponentNameSpaceConfigurationProvider;
 import com.ibm.wsspi.injectionengine.InjectionException;
@@ -884,7 +883,7 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
   }
 
   private WebAnnotations getWebAnnotations() throws UnableToAdaptException {
-      return AnnotationsBetaHelper.getWebAnnotations( getModuleContainer() );
+      return getModuleContainer().adapt(WebAnnotations.class);
   }
 
   /*
@@ -995,11 +994,7 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
                                   }
 
                                   if ( !didOpen ) {
-                                      try {
-                                          webAppAnnos.openInfoStore();
-                                      } catch ( UnableToAdaptException e ) {
-                                          return; // FFDC
-                                      }
+                                      webAppAnnos.openInfoStore();
                                       didOpen = true;
                                   }
 
@@ -1033,7 +1028,7 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
                         }
                       }
                       // if @HandlesTypes param is an interface look for implementors, otherwise look for subclasses
-                      if ( ((com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets) annoTargets).isInterface(handledTypeName) ) {
+                      if ( ((AnnotationTargets_Targets) annoTargets).isInterface(handledTypeName) ) {
                           String interfaceReason = "Selection on interface [ " + handledTypeName + " ]";
                           Set<String> implementerClassNames = annoTargets.getAllImplementorsOf(handledTypeName);
                           for ( String implementerClassName : implementerClassNames ) {
@@ -1051,11 +1046,7 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
 
       } finally {
           if ( didOpen ) {
-              try {
-                  webAppAnnos.closeInfoStore();
-              } catch ( UnableToAdaptException e ) {
-                  // FFDC
-              }
+              webAppAnnos.closeInfoStore();
           }
       }
   }

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,15 +22,14 @@ import java.util.stream.Collectors;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
-import com.ibm.ws.container.service.annotations.WebAnnotations;
+import com.ibm.ws.container.service.annocache.WebAnnotations;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.info.AnnotationInfo;
-import com.ibm.wsspi.anno.info.ClassInfo;
-import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
+import com.ibm.wsspi.annocache.info.AnnotationInfo;
+import com.ibm.wsspi.annocache.info.ClassInfo;
+import com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
@@ -58,7 +57,7 @@ public class AnnotationScanner {
     private final WebAppConfig appConfig;
 
     public AnnotationScanner(ClassLoader classLoader, Container containerToAdapt) throws UnableToAdaptException {
-        webAnnotations = AnnotationsBetaHelper.getWebAnnotations(containerToAdapt);
+        webAnnotations = containerToAdapt.adapt(WebAnnotations.class);
         appConfig = containerToAdapt.adapt(WebModuleMetaData.class).getConfiguration();
     }
 
@@ -186,34 +185,24 @@ public class AnnotationScanner {
         return getUrlMappingFromApp(appClassName);
     }
 
-    @FFDCIgnore(UnableToAdaptException.class)
     public synchronized Set<String> getAnnotatedClassesNames() {
-        AnnotationTargets_Targets annotationTargets;
-        Set<String> restAPIClasses = null;
+        AnnotationTargets_Targets annotationTargets = webAnnotations.getAnnotationTargets();
+        Set<String> restAPIClasses =
+            ANNOTATION_CLASS_NAMES.stream()
+                .flatMap(anno -> annotationTargets.getAnnotatedClasses(anno, AnnotationTargets_Targets.POLICY_SEED).stream())
+                .collect(Collectors.toSet());
 
-        try {
-            annotationTargets = webAnnotations.getAnnotationTargets();
-            restAPIClasses = ANNOTATION_CLASS_NAMES.stream()//
-                            .flatMap(anno -> annotationTargets.getAnnotatedClasses(anno, AnnotationTargets_Targets.POLICY_SEED).stream())//
-                            .collect(Collectors.toSet());
+        // Remove any MP Rest Client interfaces from the OpenAPI view
+        Set<String> mpRestClientClasses = annotationTargets.getAnnotatedClasses(MP_REGISTER_REST_CLIENT);
+        restAPIClasses.removeAll(mpRestClientClasses);
 
-            // Remove any MP Rest Client interfaces from the OpenAPI view
-            Set<String> mpRestClientClasses = annotationTargets.getAnnotatedClasses(MP_REGISTER_REST_CLIENT);
-            restAPIClasses.removeAll(mpRestClientClasses);
-        } catch (UnableToAdaptException e) {
-            if (OpenAPIUtils.isEventEnabled(tc)) {
-                Tr.event(tc, "Unable to get annotated class names");
-            }
-        }
         return Collections.unmodifiableSet(restAPIClasses);
     }
 
     public String getURLMapping(Set<String> classesToScan) {
         this.urlMapping = null;
         try {
-            Set<String> appClassNames = getAllApplicationClasses().stream()
-                    .filter(classesToScan::contains)
-                    .collect(Collectors.toSet());
+            Set<String> appClassNames = getAllApplicationClasses().stream().filter(classesToScan::contains).collect(Collectors.toSet());
 
             if (OpenAPIUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Application classes after filtering: ", appClassNames);

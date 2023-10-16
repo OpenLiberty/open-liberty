@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,8 +24,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
-import com.ibm.ws.container.service.annotations.WebAnnotations;
+import com.ibm.ws.container.service.annocache.WebAnnotations;
 import com.ibm.ws.container.service.config.ServletConfigurator;
 import com.ibm.ws.container.service.config.ServletConfiguratorHelper;
 import com.ibm.ws.container.service.config.WebFragmentInfo;
@@ -85,7 +84,7 @@ public class WebAppConfigurator implements ServletConfigurator {
     private WebAnnotations webAnnotations;
 
     private void setWebAnnotations() throws UnableToAdaptException {
-        webAnnotations = AnnotationsBetaHelper.getWebAnnotations(moduleContainer);
+        webAnnotations = moduleContainer.adapt(WebAnnotations.class);
     }
 
     @Override

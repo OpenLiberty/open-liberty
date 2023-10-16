@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,9 +24,8 @@ import org.apache.cxf.common.util.PackageUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
-import com.ibm.ws.container.service.annotations.ModuleAnnotations;
-import com.ibm.ws.container.service.annotations.WebAnnotations;
+import com.ibm.ws.container.service.annocache.ModuleAnnotations;
+import com.ibm.ws.container.service.annocache.WebAnnotations;
 import com.ibm.ws.container.service.app.deploy.EJBModuleInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
@@ -36,11 +35,11 @@ import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.info.AnnotationInfo;
-import com.ibm.wsspi.anno.info.AnnotationValue;
-import com.ibm.wsspi.anno.info.ClassInfo;
-import com.ibm.wsspi.anno.info.InfoStore;
-import com.ibm.wsspi.anno.info.PackageInfo;
+import com.ibm.wsspi.annocache.info.AnnotationInfo;
+import com.ibm.wsspi.annocache.info.AnnotationValue;
+import com.ibm.wsspi.annocache.info.ClassInfo;
+import com.ibm.wsspi.annocache.info.InfoStore;
+import com.ibm.wsspi.annocache.info.PackageInfo;
 
 public class JaxWsUtils {
 
@@ -676,9 +675,9 @@ public class JaxWsUtils {
 
     public static InfoStore getInfoStore(Container container) throws UnableToAdaptException {
         if ( JaxWsUtils.isEJBModule(container) ) {
-            return AnnotationsBetaHelper.getModuleAnnotations(container).getInfoStore();
+            return container.adapt(ModuleAnnotations.class).getInfoStore();
         } else if ( JaxWsUtils.isWebModule(container) ) {
-            return AnnotationsBetaHelper.getWebAnnotations(container).getInfoStore();
+            return container.adapt(WebAnnotations.class).getInfoStore();
         }
         return null;
     }

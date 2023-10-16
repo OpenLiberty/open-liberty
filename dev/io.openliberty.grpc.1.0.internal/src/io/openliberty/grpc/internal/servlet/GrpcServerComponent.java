@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,8 +37,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
-import com.ibm.ws.container.service.annotations.WebAnnotations;
+import com.ibm.ws.container.service.annocache.WebAnnotations;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
@@ -51,7 +50,7 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.osgi.webapp.WebApp;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
+import com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.webcontainer.facade.ServletContextFacade;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
@@ -229,7 +228,7 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
     @FFDCIgnore(UnableToAdaptException.class)
     private GrpcServletApplication initGrpcServices(Container container, String appName)  {
         try {
-            WebAnnotations webAnno = AnnotationsBetaHelper.getWebAnnotations(container);
+            WebAnnotations webAnno = container.adapt(WebAnnotations.class);
             AnnotationTargets_Targets annoTargets = webAnno.getAnnotationTargets();
             Set<String> services = annoTargets.getAllImplementorsOf("io.grpc.BindableService");
             if (services != null && !services.isEmpty()) {

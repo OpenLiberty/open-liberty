@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,8 +22,7 @@ import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annotations.WebAnnotations;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
+import com.ibm.ws.container.service.annocache.WebAnnotations;
 import com.ibm.ws.jaxws.JaxWsConstants;
 import com.ibm.ws.jaxws.endpoint.EndpointPublisher;
 import com.ibm.ws.jaxws.endpoint.EndpointPublisherManager;
@@ -42,7 +41,7 @@ import com.ibm.wsspi.webcontainer.extension.ExtensionFactory;
 import com.ibm.wsspi.webcontainer.extension.ExtensionProcessor;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
-import com.ibm.wsspi.anno.info.InfoStore;
+import com.ibm.wsspi.annocache.info.InfoStore;
 
 public class JaxWsExtensionFactory implements ExtensionFactory {
 
@@ -112,12 +111,12 @@ public class JaxWsExtensionFactory implements ExtensionFactory {
         WebApp webApp = (WebApp) servletContext;
         publisherContext.setAttribute(JaxWsWebContainerConstants.NAMESPACE_COLLABORATOR, webApp.getCollaboratorHelper().getWebAppNameSpaceCollaborator());
 
-        WebAnnotations webAnnotations = AnnotationsBetaHelper.getWebAnnotations(servletContext.getModuleContainer());
+        WebAnnotations webAnnotations = servletContext.getModuleContainer().adapt(WebAnnotations.class);
         InfoStore infoStore = webAnnotations.getInfoStore();
 
         publisherContext.setAttribute(
-            JaxWsConstants.ENDPOINT_INFO_BUILDER_CONTEXT,
-            new EndpointInfoBuilderContext(infoStore, servletContext.getModuleContainer()));
+                                      JaxWsConstants.ENDPOINT_INFO_BUILDER_CONTEXT,
+                                      new EndpointInfoBuilderContext(infoStore, servletContext.getModuleContainer()));
 
         // get endpoint publisher and do publish
         EndpointPublisher endpointPublisher = endpointPublisherManagerRef.getServiceWithException().getEndpointPublisher(JaxWsConstants.WEB_ENDPOINT_PUBLISHER_TYPE);

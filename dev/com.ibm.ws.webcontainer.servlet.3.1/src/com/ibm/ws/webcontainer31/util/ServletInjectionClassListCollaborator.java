@@ -27,15 +27,14 @@ import javax.servlet.annotation.WebListener;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annotations.WebAnnotations;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
+import com.ibm.ws.container.service.annocache.WebAnnotations;
 import com.ibm.ws.webcontainer31.osgi.osgi.WebContainerConstants;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
-import com.ibm.wsspi.anno.info.InfoStore;
-import com.ibm.wsspi.anno.info.InfoStoreException;
-import com.ibm.wsspi.anno.info.ClassInfo;
+import com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets;
+import com.ibm.wsspi.annocache.info.InfoStore;
+import com.ibm.wsspi.annocache.info.InfoStoreException;
+import com.ibm.wsspi.annocache.info.ClassInfo;
 import com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollaborator;
 import com.ibm.wsspi.webcontainer.filter.IFilterConfig;
 import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
@@ -99,22 +98,13 @@ public class ServletInjectionClassListCollaborator implements WebAppInjectionCla
             if ( !didInit ) {
                 didInit = true;
 
+                infoStore = webAnnotations.getInfoStore(); // throws UnableToAdaptException
+                
                 try {
-                    infoStore = webAnnotations.getInfoStore(); // throws UnableToAdaptException
-                } catch ( UnableToAdaptException e ) {
-                    if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                        Tr.warning(tc, CLASS_NAME, "Failed to obtain web info store", e);
-                    }
+                    infoStore.open();
+                } catch ( InfoStoreException e ) {
                     infoStore = null;
-                }
-
-                if ( infoStore != null ) {
-                    try {
-                        infoStore.open();
-                    } catch ( InfoStoreException e ) {
-                        infoStore = null;
-                        Tr.warning(tc, CLASS_NAME, "Failed to open web info store", e);
-                    }
+                    Tr.warning(tc, CLASS_NAME, "Failed to open web info store", e);
                 }
             }
 
@@ -186,7 +176,7 @@ public class ServletInjectionClassListCollaborator implements WebAppInjectionCla
         DeferredInfoStore deferredInfoStore = null;
 
         try {
-            WebAnnotations webAnnotations = AnnotationsBetaHelper.getWebAnnotations(moduleContainer); // throws UnableToAdaptException
+            WebAnnotations webAnnotations = moduleContainer.adapt(WebAnnotations.class); // throws UnableToAdaptException
             if ( !webDD.isMetadataComplete() ) {
                 annotationTargets = webAnnotations.getAnnotationTargets(); // throws UnableToAdaptException
             } else {

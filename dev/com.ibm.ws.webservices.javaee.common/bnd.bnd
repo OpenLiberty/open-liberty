@@ -36,6 +36,7 @@ instrument.classesExcludes: com/ibm/ws/webservices/javaee/common/internal/resour
 	com.ibm.websphere.appserver.spi.anno;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+        com.ibm.ws.anno;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.javaee.dd;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\
