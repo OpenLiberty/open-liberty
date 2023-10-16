@@ -10,10 +10,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.metrics.internal.monitor.computed.internal;
+package io.openliberty.microprofile.metrics.internal.monitor.computed;
 
-import java.lang.management.GarbageCollectorMXBean;
-import java.lang.management.ManagementFactory;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,14 +32,15 @@ import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.MetricType;
+import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.Tag;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.service.util.CpuInfo;
+import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 
-import io.openliberty.microprofile.metrics50.SharedMetricRegistries;
-import io.openliberty.microprofile.metrics50.helper.Constants;
 
 public class ComputedMonitorMetricsHandler {
 
@@ -50,6 +49,19 @@ public class ComputedMonitorMetricsHandler {
     public static final long COMPUTED_METRICS_TIMER_INTERVAL = 15000; // 15000 milliseconds = 15 seconds
 
     public static final long EWMA_MOVING_WINDOW_INTERVAL = 5; // 5 minute moving window
+    
+    public final static String DURATION = "DURATION";
+    
+    public final static String TOTAL = "TOTAL";
+    
+    public static final String GAUGE = MetricType.GAUGE.toString().toUpperCase();
+    
+    // Conversion factors
+    public final static double MILLISECOND_CONVERSION = 0.001;
+   
+    public final static double NANOSECOND_CONVERSION = 0.000000001;
+    
+    public final static double MINUTE_CONVERSION = 60;
 
     public static Map<MetricID, Set<ComputedMonitorMetrics>> computationMetricsMap;
 
@@ -99,7 +111,7 @@ public class ComputedMonitorMetricsHandler {
 
     public void createComputedBaseMetrics() {
         // Get the Base scoped Metric Registry.
-        MetricRegistry metricRegistry = getMetricRegistry(MetricRegistry.BASE_SCOPE);
+        MetricRegistry metricRegistry = getMetricRegistry(MetricRegistry.Type.BASE.getName());
 
         /*
          * metricRegistry is null due to failed initialization of the MP Metrics runtime.
@@ -128,6 +140,8 @@ public class ComputedMonitorMetricsHandler {
             for (String[] metricData : data) {
                 String metricDurationName = metricData[ComputedMappingTable.MONITOR_METRIC_DURATION];
                 String metricTotalCountName = metricData[ComputedMappingTable.MONITOR_METRIC_TOTAL_COUNT];
+                String metricDurationUnit = metricData[ComputedMappingTable.MONITOR_METRIC_DURATION_UNIT];
+                String metricTotalUnit = metricData[ComputedMappingTable.MONITOR_METRIC_TOTAL_UNIT];
 
                 for (MetricID mid : baseMetricsIDSet) {
                     ComputedMonitorMetrics cmm = null;
@@ -143,21 +157,19 @@ public class ComputedMonitorMetricsHandler {
 
                         // Add the duration metrics to the computation set, no appName for base metrics.
                         MetricID durationMetricID = new MetricID(metricDurationName, metricTagNames);
-                        cmm = new ComputedMonitorMetrics(MetricRegistry.BASE_SCOPE, durationMetricID, Constants.DURATION);
+                        cmm = new ComputedMonitorMetrics(MetricRegistry.Type.BASE.getName(), durationMetricID, DURATION, metricDurationUnit);
                         computedMonitorMetricsSet.add(cmm);
 
                         // Add the total count metric to the computation set, no appName for base metrics.
                         MetricID totalCountMetricID = new MetricID(metricTotalCountName, metricTagNames);
-                        cmm = new ComputedMonitorMetrics(MetricRegistry.BASE_SCOPE, totalCountMetricID, Constants.TOTAL);
+                        cmm = new ComputedMonitorMetrics(MetricRegistry.Type.BASE.getName(), totalCountMetricID, TOTAL, metricTotalUnit);
                         computedMonitorMetricsSet.add(cmm);
 
                         // Once the existing metrics needed for calculation are cached, register new computed metric in the Metric Registry.
-                        MetricID computedMetricID = registerNewComputedMetricWithExistingMetricTag(
-                                metricData, metricTagNames);
+                        MetricID computedMetricID = registerNewComputedMetricWithExistingMetricTag(metricData, metricTagNames);
 
                         // Populating map with newly registered computed metric and corresponding metrics set needed for computation.
-                        computationMetricsMap.put(computedMetricID,
-                                computedMonitorMetricsSet);
+                        computationMetricsMap.put(computedMetricID, computedMonitorMetricsSet);
 
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "Created computed metric for base computation : " + computedMetricID.toString());
@@ -168,7 +180,7 @@ public class ComputedMonitorMetricsHandler {
         }
     }
 
-    public void createComputedMetrics(String objectName, Set<MetricID> monitorMetricsIDSet) {
+    public void createComputedMetrics(String objectName, Set<MetricID> monitorMetricsIDSet, String appName, String mpAppNameConfigValue) {
         String[][] data = mappingTable.getData(objectName);
 
         for (String[] metricData : data) {
@@ -180,19 +192,36 @@ public class ComputedMonitorMetricsHandler {
                 ComputedMonitorMetrics cmm = null;
                 String metricDurationName = metricData[ComputedMappingTable.MONITOR_METRIC_DURATION];
                 String metricTotalCountName = metricData[ComputedMappingTable.MONITOR_METRIC_TOTAL_COUNT];
+                String metricDurationUnit = metricData[ComputedMappingTable.MONITOR_METRIC_DURATION_UNIT];
+                String metricTotalUnit = metricData[ComputedMappingTable.MONITOR_METRIC_TOTAL_UNIT];
                 String metricName = mID.getName();
 
-                if (metricDurationName.equals(metricName)) {
-                    // cache the metrics tag for the new computed metric name.
+                if (objectName.contains("REST_Stats")) {
+                    // Cache the metrics tag for the new computed metric name.
                     computedMetricTagNames = getComputedMetricsTags(mID);
-                    cmm = new ComputedMonitorMetrics(MetricRegistry.VENDOR_SCOPE, mID, Constants.DURATION);
-
-                } else if (metricTotalCountName.equals(metricName)) {
-                    cmm = new ComputedMonitorMetrics(MetricRegistry.VENDOR_SCOPE, mID, Constants.TOTAL);
-                }
-
-                if (cmm != null) {
+                    
+                    // Add the duration metrics to the computation set.
+                    cmm = new ComputedMonitorMetrics(MetricRegistry.Type.BASE.getName(), mID, DURATION, metricDurationUnit, appName, mpAppNameConfigValue);
                     computedMonitorMetricsSet.add(cmm);
+
+                    // Add the total count metric to the computation set, using the previous MetricID, 
+                    // since REST is a SimpleTimer, it has the same metricID.
+                    cmm = new ComputedMonitorMetrics(MetricRegistry.Type.BASE.getName(), mID, TOTAL, metricTotalUnit, appName, mpAppNameConfigValue);
+                    computedMonitorMetricsSet.add(cmm);
+                }
+                else {
+                    if (metricDurationName.equals(metricName)) {
+                        // cache the metrics tag for the new computed metric name.
+                        computedMetricTagNames = getComputedMetricsTags(mID);
+                        cmm = new ComputedMonitorMetrics(MetricRegistry.Type.VENDOR.getName(), mID, DURATION, metricDurationUnit);
+
+                    } else if (metricTotalCountName.equals(metricName)) {
+                        cmm = new ComputedMonitorMetrics(MetricRegistry.Type.VENDOR.getName(), mID, TOTAL, metricTotalUnit);
+                    }
+                    
+                    if (cmm != null) {
+                        computedMonitorMetricsSet.add(cmm);
+                    }
                 }
             }
 
@@ -204,59 +233,21 @@ public class ComputedMonitorMetricsHandler {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc,
-                        "Created computed metric for vendor computation :  "
-                                + computedMetricID.toString());
+                        "Created computed metric for vendor computation :  " + computedMetricID.toString());
             }
         }
     }
 
-    public void createRESTComputedMetrics(String objectName, MetricID restMetricID, String appName, String mpAppNameConfigValue) {
-        String[][] data = mappingTable.getData(objectName);
-
-        // Loop through each base REST metric data.
-        for (String[] metricData : data) {
-            ComputedMonitorMetrics cmm = null;
-            Tag[] metricTagNames = null;
-
-            // Create a new set for every new computed metric.
-            Set<ComputedMonitorMetrics> computedMonitorMetricsSet = new HashSet<ComputedMonitorMetrics>();
-
-            metricTagNames = getComputedMetricsTags(restMetricID);
-
-            // Add the duration metrics to the computation set.
-            cmm = new ComputedMonitorMetrics(MetricRegistry.BASE_SCOPE, restMetricID, Constants.DURATION, appName, mpAppNameConfigValue);
-            computedMonitorMetricsSet.add(cmm);
-
-            // Add the total count metric to the computation set, using the previous MetricID, 
-            // since REST is a Timer, it has the same metricID.
-            cmm = new ComputedMonitorMetrics(MetricRegistry.BASE_SCOPE, restMetricID, Constants.TOTAL, appName, mpAppNameConfigValue);
-            computedMonitorMetricsSet.add(cmm);
-
-            // Once the existing metrics needed for calculation are cached, register new
-            // computed metric in the Metric Registry.
-            MetricID computedMetricID = registerNewComputedMetricWithExistingMetricTag(metricData, metricTagNames);
-
-            // Populating map with newly registered computed metric and corresponding
-            // metrics set needed for computation
-            computationMetricsMap.put(computedMetricID, computedMonitorMetricsSet);
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc,
-                        "Created computed metric for base REST computation : " + computedMetricID.toString());
-            }
-        }
-    }
-    
     private Tag[] getComputedMetricsTags(MetricID metricId) {
         Map<String, String> metricTagMap = metricId.getTags();
         Tag[] metricsTagsArr = null;
         
-        // The mp_app tag is a reserved tag in mpMetrics, we cannot register or retrieve a metric with
-        // a metricID that contains the mp_app tag. Need to remove it from the metricID 
+        // The _app tag is a reserved tag in mpMetrics, we cannot register or retrieve a metric with
+        // a metricID that contains the _app tag. Need to remove it from the metricID 
         // before registering or retrieving a metric.
-        if (metricTagMap.containsKey("mp_app")) {
+        if (metricTagMap.containsKey("_app")) {
             Map<String, String> tempTagMaps = new HashMap<>(metricTagMap);
-            tempTagMaps.remove("mp_app");
+            tempTagMaps.remove("_app");
             
             List<Tag> metricsTagList = new ArrayList<>();
             for (Map.Entry<String, String> entry : tempTagMaps.entrySet()) {
@@ -265,16 +256,17 @@ public class ComputedMonitorMetricsHandler {
             metricsTagsArr = metricsTagList.toArray(new Tag[metricsTagList.size()]);
         }
         else {
-            // If no mp_app tag is present in the metricID, just return tags as-is.
+            // If no _app tag is present in the metricID, just return tags as-is.
             metricsTagsArr = metricId.getTagsAsArray();
         }
         return metricsTagsArr;
     }
 
     public MetricID registerNewComputedMetricWithExistingMetricTag(String[] metricData, Tag[] existingMetricTags) {
-        MetricRegistry metricRegistry = getMetricRegistry(MetricRegistry.VENDOR_SCOPE);
+        MetricRegistry metricRegistry = getMetricRegistry(MetricRegistry.Type.VENDOR.getName());
         String computedMetricName = metricData[ComputedMappingTable.COMPUTED_METRIC_NAME];
-        String metricType = metricData[ComputedMappingTable.COMPUTED_METRIC_TYPE];
+        String computedMetricDisplayName = metricData[ComputedMappingTable.COMPUTED_METRIC_DISPLAYNAME];
+        MetricType metricType = MetricType.valueOf(metricData[ComputedMappingTable.COMPUTED_METRIC_TYPE]);
 
         MetricID computedMetricID = new MetricID(computedMetricName, existingMetricTags);
 
@@ -282,9 +274,9 @@ public class ComputedMonitorMetricsHandler {
         String description = Tr.formatMessage(tc, metricData[ComputedMappingTable.COMPUTED_METRIC_DESCRIPTION]);
         String unit = metricData[ComputedMappingTable.COMPUTED_METRIC_UNIT];
 
-        Metadata metadata = Metadata.builder().withName(computedMetricName).withDescription(description).withUnit(unit).build();
+        Metadata metadata = Metadata.builder().withName(computedMetricName).withDisplayName(computedMetricDisplayName).withDescription(description).withUnit(unit).build();
 
-        if (Constants.GAUGE.equalsIgnoreCase(metricType)) {
+        if (MetricType.GAUGE.equals(metricType)) {
             ComputedMonitorGauge<Number> cmg = new ComputedMonitorGauge<Number>(this, computedMetricID);
             if (existingMetricTags == null) {
                 metricRegistry.gauge(metadata, cmg, x -> (x.getValue().doubleValue()));
@@ -305,7 +297,7 @@ public class ComputedMonitorMetricsHandler {
     }
 
     public void unregisterAllComputedMetrics() {
-        MetricRegistry baseRegistry = getMetricRegistry(MetricRegistry.VENDOR_SCOPE);
+        MetricRegistry baseRegistry = getMetricRegistry(MetricRegistry.Type.VENDOR.getName());
 
         for (MetricID metricIDToRemove : computationMetricsMap.keySet()) {
             boolean rc = baseRegistry.remove(metricIDToRemove);
@@ -330,7 +322,7 @@ public class ComputedMonitorMetricsHandler {
             }
         }
     }
-
+    
     public void unregisterComputedRESTMetricsByAppName(String appName) {
         for (Entry<MetricID, Set<ComputedMonitorMetrics>> entry : computationMetricsMap.entrySet()) {
             MetricID computedMetricID = entry.getKey();
@@ -357,7 +349,7 @@ public class ComputedMonitorMetricsHandler {
             computedMetricID = mergeMPAppTag(computedMetricID, mpAppName);
         }
 
-        MetricRegistry vendorRegistry = getMetricRegistry(MetricRegistry.VENDOR_SCOPE);
+        MetricRegistry vendorRegistry = getMetricRegistry(MetricRegistry.Type.VENDOR.getName());
         boolean rc = vendorRegistry.remove(computedMetricID);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc,
@@ -380,7 +372,7 @@ public class ComputedMonitorMetricsHandler {
     }
     
     private MetricID mergeMPAppTag(MetricID mid, String appNameValue) {
-        Tag appTag = new Tag("mp_app", appNameValue);
+        Tag appTag = new Tag("_app", appNameValue);
         
         Tag[] tempArr = Arrays.copyOf(mid.getTagsAsArray(), mid.getTagsAsArray().length + 1);
         tempArr[tempArr.length - 1] = appTag;
@@ -434,21 +426,15 @@ public class ComputedMonitorMetricsHandler {
                 // Do not need to use the EWMA for the cpu utilization calculation
                 // Can get it directly from com.ibm.ws.kernel.service.util.CpuInfo.getJavaCpuUsage()
                 calculateProcessCpuUsage(computedMetricID);
-            } else if (computedMetricName.equals("gc.time.per.cycle")) {
-                // Need to retrieve the gc.time and gc.total from the GarbageCollectionMXBean directly,
-                // instead of the mpMetrics-5.x API, since there is a known bug, where the gc.time from
-                // the mpMetrics-5.x API returns as a Counter, which drops the decimal in the returned float value,
-                // making the value not useful for computation.
-                calculateEWMAValueForGC(computedMetricID, monitorMetrics);
             } else {
                 for (ComputedMonitorMetrics cmm : monitorMetrics) {
                     mr = getMetricRegistry(cmm.getMonitorMetricScope());
                     // Get the metric value.
                     metricVal = getMetricValue(mr, cmm);
                     if (metricVal != null) {
-                        if (cmm.getComputationType().equals(Constants.DURATION)) {
+                        if (cmm.getComputationType().equals(DURATION)) {
                             diffDuration = cmm.getDifference(metricVal);
-                        } else if (cmm.getComputationType().equals(Constants.TOTAL)) {
+                        } else if (cmm.getComputationType().equals(TOTAL)) {
                             diffTotalCount = cmm.getDifference(metricVal);
                         }
                     }
@@ -460,45 +446,14 @@ public class ComputedMonitorMetricsHandler {
             }
         }
     }
-    
-    public void calculateEWMAValueForGC(MetricID computedMetricID, Set<ComputedMonitorMetrics> monitorMetrics) {
-        double currValue = 0.0, diffDuration = 0.0, diffTotalCount = 0.0;
-        
-        // Get the collection of Garbage Collection MXBeans
-        List<GarbageCollectorMXBean> gcMXBeansList = ManagementFactory.getGarbageCollectorMXBeans();
-        
-        for (GarbageCollectorMXBean gcMXBean : gcMXBeansList) {
-            for (ComputedMonitorMetrics cmm : monitorMetrics) {
-                String gcName = gcMXBean.getName();
-                String gcMetricsName = cmm.getMonitorMetricID().getTags().get("name");
-                if (gcName.equals(gcMetricsName)) {
-                    if (cmm.getComputationType().equals(Constants.DURATION)) {
-                        currValue = gcMXBean.getCollectionTime() * Constants.MILLISECONDCONVERSION;
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "GarbageCollectionTime for + " + computedMetricID + " = " + currValue);
-                        }
-                        diffDuration = currValue < 0 ? -1.0 : cmm.getDifference(currValue);
-                    } else if (cmm.getComputationType().equals(Constants.TOTAL)) {
-                        currValue = gcMXBean.getCollectionCount();
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "GarbageCollectionCount for + " + computedMetricID + " = " + currValue);
-                        }
-                        diffTotalCount = currValue < 0 ? -1.0 : cmm.getDifference(currValue);
-                    }
-                }
-            }
-            calculateEWMAValue(computedMetricID, diffDuration, diffTotalCount);
-        }
-    }
-
 
     public void calculateHeapUsage(MetricID computedMetricID, Set<ComputedMonitorMetrics> monitorMetrics) {
         double usedHeap = 0.0, maxHeap = 0.0, heapUsage = 0.0;
-        MetricRegistry mr = getMetricRegistry(MetricRegistry.BASE_SCOPE);
+        MetricRegistry mr = getMetricRegistry(MetricRegistry.Type.BASE.getName());
         for (ComputedMonitorMetrics cmm : monitorMetrics) {
             MetricID metricId = cmm.getMonitorMetricID();
             Gauge<?> currentGauge = mr.getGauge(metricId);
-            double currentValue = currentGauge.getValue().doubleValue();
+            double currentValue = ((Number) currentGauge.getValue()).doubleValue();
             if (metricId.getName().equals("memory.usedHeap")) {
                 usedHeap = currentValue;
             } else if (metricId.getName().equals("memory.maxHeap")) {
@@ -537,17 +492,17 @@ public class ComputedMonitorMetricsHandler {
         Metric metricValue = mr.getMetric(cmm.getMonitorMetricID());
         if (metricValue instanceof Gauge) {
             Gauge<?> currentGauge = (Gauge<?>) metricValue;
-            metricNum = currentGauge.getValue();
+            metricNum = (Number) currentGauge.getValue();
         } else if (metricValue instanceof Counter) {
             Counter currentCount = (Counter) metricValue;
             metricNum = currentCount.getCount();
-        } else if (metricValue instanceof org.eclipse.microprofile.metrics.Timer) {
-            org.eclipse.microprofile.metrics.Timer currentTimer = (org.eclipse.microprofile.metrics.Timer) metricValue;
-            if (cmm.getComputationType().equals(Constants.DURATION)) {
+        } else if (metricValue instanceof org.eclipse.microprofile.metrics.SimpleTimer) {
+            org.eclipse.microprofile.metrics.SimpleTimer currentTimer = (org.eclipse.microprofile.metrics.SimpleTimer) metricValue;
+            if (cmm.getComputationType().equals(DURATION)) {
                 Duration currentDur = currentTimer.getElapsedTime();
                 if (currentDur != null)  {
                     metricNum = currentDur.getNano();
-                    currentValue = (metricNum.doubleValue()) * Constants.NANOSECONDCONVERSION; // to seconds.
+                    currentValue = (metricNum.doubleValue()) * NANOSECOND_CONVERSION; // to seconds.
                 }
             } else {
                 // Get Total Counter Value for Timer
@@ -556,11 +511,29 @@ public class ComputedMonitorMetricsHandler {
         }
         
         if (metricNum != null && currentValue == null) {
-            // If the metricValue is present and the currentValue is not already set.
-            currentValue = metricNum.doubleValue();
+            // If the metricValue is present and the currentValue is not already set. Should not be the case for REST_stats.
+            if (cmm.getComputationType().equals(DURATION)) {
+                // Check if the retrieved metric needed to be converted to seconds.
+                final double unitConversionFactor = getUnitConversionFactor(cmm.getMetricUnit());
+                currentValue = metricNum.doubleValue() * unitConversionFactor;
+            }
+            else {
+                currentValue = metricNum.doubleValue();
+            }
         }
-
+        
         return currentValue;
+    }
+
+    private double getUnitConversionFactor(String metricUnit) {
+        double convFactor = 1.0;
+        if (metricUnit.equals(MetricUnits.NANOSECONDS)) {
+            convFactor = NANOSECOND_CONVERSION;
+        } 
+        else if (metricUnit.equals(MetricUnits.MILLISECONDS)) {
+            convFactor = MILLISECOND_CONVERSION;
+        }
+        return convFactor;
     }
 
     public MetricRegistry getMetricRegistry(String scope) {
@@ -615,10 +588,10 @@ public class ComputedMonitorMetricsHandler {
         double alpha, movingWindowInSecs, numOfDataSamplesInMovingWindow;
 
         // Get the moving window duration in seconds.
-        movingWindowInSecs = movingWindowInMins * Constants.MINUTECONVERSION;
+        movingWindowInSecs = movingWindowInMins * MINUTE_CONVERSION;
 
         // Calculate the number of data samples in the moving window, during the sampling period.
-        numOfDataSamplesInMovingWindow = movingWindowInSecs / (COMPUTED_METRICS_TIMER_INTERVAL * Constants.MILLISECONDCONVERSION); // Data is retrieved every 15 seconds.
+        numOfDataSamplesInMovingWindow = movingWindowInSecs / (COMPUTED_METRICS_TIMER_INTERVAL * MILLISECOND_CONVERSION); // Data is retrieved every 15 seconds.
 
         alpha = 2 / (numOfDataSamplesInMovingWindow + 1);
 
