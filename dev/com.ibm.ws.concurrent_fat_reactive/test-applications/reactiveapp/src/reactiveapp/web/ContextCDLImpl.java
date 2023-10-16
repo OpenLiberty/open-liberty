@@ -20,7 +20,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 /**
- *
+ * A CountDownLatch that can check if it has access to JNDI Context
  */
 public class ContextCDLImpl implements ContextCDL {
 

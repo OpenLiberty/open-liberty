@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 import javax.naming.NamingException;
 
 /**
- *
+ * A CountDownLatch that can check if it has access to JNDI Context
  */
 public interface ContextCDL {
 
