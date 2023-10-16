@@ -33,7 +33,7 @@ Import-Package: \
 	zipkin2.reporter,\
 	zipkin2.reporter.okhttp3,\
 	javax.interceptor,\
-	javax.enterprise.util,\
+	javax.enterprise.util;version="[1.1.0,3.0.0)",\
 	com.ibm.wsspi.classloading,\
 	org.osgi.framework,\
 	com.ibm.websphere.ras,\
@@ -102,6 +102,6 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
-	com.ibm.websphere.javaee.cdi.2.0
+	com.ibm.websphere.javaee.cdi.1.2
 
 WS-TraceGroup: TELEMETRY

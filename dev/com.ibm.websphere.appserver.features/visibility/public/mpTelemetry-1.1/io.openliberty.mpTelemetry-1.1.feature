@@ -26,7 +26,9 @@ IBM-API-Package: \
   io.opentelemetry.sdk.resources;type="third-party",\
   io.opentelemetry.instrumentation.annotations;type="third-party"
 -features=\
-  io.openliberty.mpTelemetry-1.1.ee-7.0; ibm.tolerates:="9.0, 10.0, 11.0"
+  io.openliberty.mpTelemetry1.1.ee-7.0; ibm.tolerates:="7.0, 8.0, 9.0", \
+  com.ibm.websphere.appserver.jaxrsClient-2.0; ibm.tolerates:="2.1",\
+  com.ibm.websphere.appserver.jsonp-1.0; ibm.tolerates:="1.1"
 -bundles=\
   io.openliberty.com.squareup.okhttp,\
   io.openliberty.com.squareup.okio-jvm,\
@@ -36,5 +38,5 @@ IBM-API-Package: \
 -jars=io.openliberty.mpTelemetry.1.1.thirdparty; location:="dev/api/third-party/,lib/"
 kind=beta
 edition=core
-WLP-Activation-Type: parallel 
+WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

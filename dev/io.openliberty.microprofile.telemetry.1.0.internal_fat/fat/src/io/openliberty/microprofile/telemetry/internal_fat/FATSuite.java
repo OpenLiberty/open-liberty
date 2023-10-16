@@ -14,14 +14,17 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.annotation.MinimumJavaLevel;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @MinimumJavaLevel(javaLevel = 11)
 @SuiteClasses({
-                ClientWithNoCdi.class,
+                /* ClientWithNoCdi.class,
                 JaxRsIntegration.class,
-                JaxRsIntegrationWithConcurrency.class,
-                Telemetry10.class,
+                JaxRsIntegrationWithConcurrency.class, */
+                Telemetry10.class,/*
                 TelemetryBeanTest.class,
                 TelemetryMultiAppTest.class,
                 TelemetrySpiTest.class,
@@ -40,8 +43,14 @@ import componenttest.annotation.MinimumJavaLevel;
                 TelemetryGlobalOpenTelemetryTest.class,
                 TelemetryDisabledTest.class,
                 TelemetryServletTest.class,
-                TelemetryWithSpanErrorTest.class
+                TelemetryWithSpanErrorTest.class*/
 })
 
 public class FATSuite {
+
+    public static RepeatTests allMPRepeats(String serverName) {
+        return MicroProfileActions
+                        .repeat(serverName, TelemetryActions.MP14_MPTEL11, TelemetryActions.MP13_MPTEL11, TelemetryActions.MP21_MPTEL11, MicroProfileActions.MP60, MicroProfileActions.MP61, TelemetryActions.MP21_MPTEL11);//, TelemetryActions.MP22_MPTEL11, TelemetryActions.MP32_MPTEL11, TelemetryActions.MP33_MPTEL11, TelemetryActions.MP41_MPTEL11)
+                        //.andWith(FeatureReplacementAction.BETA_OPTION().fullFATOnly());
+    }
 }

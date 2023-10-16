@@ -21,10 +21,18 @@ src: \
 fat.project: true
 
 tested.features:\
+  jsonp-1.1,\
+  mprestclient-1.2,\
+  mprestclient-1.1,\
+  jaxrsclient-2.1,\
   mpTelemetry-1.0,\
   mpTelemetry-1.1,\
+  mpconfig-1.3,\
   mpConfig-3.1,\
+  cdi-2.0,\
+  restfulWS-3.0,\
   restfulWS-3.1,\
+  servlet-4.0,\
   servlet-6.0
 
 -buildpath: \
@@ -33,10 +41,9 @@ tested.features:\
 	io.openliberty.mpTelemetry.1.0.thirdparty;version=latest,\
 	io.opentelemetry:opentelemetry-opentracing-shim;version='1.19.0.alpha',\
 	io.opentracing:opentracing-api;version='0.33.0',\
-	com.ibm.websphere.javaee.cdi.2.0,\
-	com.ibm.websphere.javaee.servlet.4.0,\
+	com.ibm.websphere.javaee.cdi.1.2,\
+	com.ibm.websphere.javaee.servlet.3.1,\
 	com.ibm.websphere.javaee.jaxrs.2.1,\
 	com.ibm.websphere.javaee.annotation.1.3,\
-	com.ibm.websphere.javaee.jaxrs.2.1,\
 	com.ibm.websphere.javaee.concurrent.1.0,\
 	io.openliberty.org.eclipse.microprofile.rest.client.2.0;version=latest

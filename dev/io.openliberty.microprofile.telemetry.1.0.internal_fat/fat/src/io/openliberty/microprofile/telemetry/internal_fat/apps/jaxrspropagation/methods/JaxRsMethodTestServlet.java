@@ -198,6 +198,7 @@ public class JaxRsMethodTestServlet extends FATServlet {
     }
 
     @Test
+    //@SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     public void testPatch() {
         URI testUri = getUri();
         Span span = utils.withTestSpan(() -> {
