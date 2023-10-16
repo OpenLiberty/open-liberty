@@ -17,13 +17,12 @@ import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageEncoder;
 import io.netty.handler.codec.http2.LastStreamSpecificHttpContent;
-//import io.netty.handler.codec.http.DefaultHttpContent;
-//import io.netty.handler.codec.http.DefaultLastHttpContent;
-import io.netty.handler.codec.http2.StreamSpecificHttpContent;
+import io.netty.handler.stream.ChunkedInput;
 
 /**
  *
@@ -41,11 +40,12 @@ public class BufferEncoder extends MessageToMessageEncoder<AbstractMap.SimpleEnt
         boolean doLastHttpContent = Boolean.FALSE;
 
         MSP.log("Encode: bytes written: " + bytesWritten + ", bytes to write: " + message.remaining());
+        this.bytesWritten += message.remaining();
+
         System.out.println("Encode Got content: " + WsByteBufferUtils.asString(message));
 
         if (context.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
 
-            bytesWritten += message.remaining();
             // TODO Should this be <= or >=?
             // doLastHttpContent = context.channel().attr(NettyHttpConstants.CONTENT_LENGTH).get() <= bytesWritten;
             doLastHttpContent = context.channel().attr(NettyHttpConstants.CONTENT_LENGTH).get() == bytesWritten;
@@ -61,7 +61,13 @@ public class BufferEncoder extends MessageToMessageEncoder<AbstractMap.SimpleEnt
         if (!doLastHttpContent) {
             System.out.println("Sending chunked input");
 //            out.add(new DefaultHttpContent(Unpooled.wrappedBuffer(message.getWrappedByteBuffer())));
-            out.add(new StreamSpecificHttpContent(streamId, Unpooled.wrappedBuffer(message.getWrappedByteBuffer())));
+            // out.add(new StreamSpecificHttpContent(streamId, Unpooled.wrappedBuffer(message.getWrappedByteBuffer())));
+
+            ChunkedInput<ByteBuf> chunkedInput = new WsByteBufferChunkedInput(message);
+            MSP.log("Should be writing a chunk of size: " + chunkedInput.length());
+
+            context.writeAndFlush(chunkedInput);
+
         } else {
             // Do Content Length
             // TODO Check if should be full http message

@@ -43,6 +43,7 @@ import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
+import io.netty.handler.stream.ChunkedWriteHandler;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.exception.NettyException;
 import io.openliberty.netty.internal.tls.NettyTlsProvider;
@@ -311,7 +312,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         if (!isHttp2)
             pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new HttpObjectAggregator(64 * 1024));
-//        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new ChunkedWriteHandler());
+        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new ChunkSizeLoggingHandler());
+        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new ChunkedWriteHandler());
         // if (httpConfig.useAutoCompression()) {
         //   pipeline.addLast(new NettyHttpContentCompressor());
         //}

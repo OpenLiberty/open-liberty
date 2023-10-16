@@ -37,6 +37,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
 
     public HttpDispatcherHandler(HttpChannelConfig config) {
 
+        super(false);
+
         Objects.requireNonNull(config);
         this.config = config;
     }
