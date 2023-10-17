@@ -45,7 +45,7 @@ public interface Rebates extends DataRepository<Rebate, Integer> {
     Rebate[] modifyAll(Rebate... r);
 
     @Update
-    List<Rebate> modifyMultple(List<Rebate> r);
+    List<Rebate> modifyMultiple(List<Rebate> r);
 
     @Save
     Rebate process(Rebate r);
