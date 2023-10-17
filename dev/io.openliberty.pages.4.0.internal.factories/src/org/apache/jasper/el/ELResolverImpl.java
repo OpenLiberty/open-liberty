@@ -119,12 +119,6 @@ public final class ELResolverImpl extends ELResolver {
         return elResolver.isReadOnly(context, base, property);
     }
 
-    @Deprecated
-    @Override
-    public Iterator<java.beans.FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-        return elResolver.getFeatureDescriptors(context, base);
-    }
-
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
         if (base == null) {
