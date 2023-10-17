@@ -24,7 +24,6 @@ public interface BasicRepository<T, K> extends DataRepository<T, K> {
     @Delete
     void delete(T entity);
 
-    @Delete
     void deleteAll();
 
     @Delete
