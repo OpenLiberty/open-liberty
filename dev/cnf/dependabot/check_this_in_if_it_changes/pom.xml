@@ -3659,7 +3659,7 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20080701</version>
+      <version>20231013</version>
     </dependency>
     <dependency>
       <groupId>org.jsoup</groupId>
