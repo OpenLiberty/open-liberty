@@ -225,7 +225,7 @@ missingslashornull.uri.useraction=Define non null Endpoint URI beginning with /.
 
 wsoc.feature.not.loaded.correctly=CWWKH0053E: The websocket container did not load with an acceptable version.
 wsoc.feature.not.loaded.correctly.explanation=The websocket container loaded without an acceptable version. The application might behave differently than expected.
-wsoc.feature.not.loaded.correctly.useraction=Check the server.xml file for the existence of multiple websocket features. Only one should be specified.
+wsoc.feature.not.loaded.correctly.useraction=Check the server.xml file for the existence of multiple websocket features. The file must specify no more than one websocket feature.
 
 scheme.incorrect.error=CWWKH0054E: An unidentified scheme was used in the {0} URI.
 scheme.incorrect.error.explanation=An unidentified scheme was found during the handling of the request. 

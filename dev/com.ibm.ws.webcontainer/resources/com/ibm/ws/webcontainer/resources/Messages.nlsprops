@@ -1558,7 +1558,7 @@ servlet.with.same.name.already.exists.useraction=No action necessary.  Check for
 
 servlet.feature.not.loaded.correctly=SRVE8501E: The servlet container did not load with an acceptable version.
 servlet.feature.not.loaded.correctly.explanation=The servlet container loaded without an acceptable version. The application might behave differently than expected.
-servlet.feature.not.loaded.correctly.useraction=Check the server.xml file for existence of multiple servlet features.  Only one should be specified.
+servlet.feature.not.loaded.correctly.useraction=Check the server.xml file for existence of multiple servlet features.  The file must specify no more than one servlet feature.
 
 filter.failed.app.destroyed=SRVE8502W: The request for {0} cannot complete because the application has stopped.
 filter.failed.app.destroyed.explanation=The web application is being stopped and the request cannot complete. This action might be caused by the server being shut down while the request is being handled.

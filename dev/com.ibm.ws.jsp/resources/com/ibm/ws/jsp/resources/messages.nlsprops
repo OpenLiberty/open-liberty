@@ -1261,9 +1261,9 @@ system.java.compiler.not.found=JSPG0304W: The JSP attribute, useJDKCompiler, is 
 system.java.compiler.not.found.explanation=The JSP container was unable to find the system compiler, which usually indicates that the Java SDK jar file, tools.jar, was not found in the class path.
 system.java.compiler.not.found.useraction=Ensure that the Java SDK jar file, tools.jar, is in the class path and verify that the Java SDK supports the Java Compiler API. See Java Specification Request 199 for more information.
 
-jsp.feature.not.loaded.correctly=CWWJS0001E: The pages container did not load with an acceptable version.
+jsp.feature.not.loaded.correctly=CWWJS0001E: The pages (JSP) container did not load with an acceptable version.
 jsp.feature.not.loaded.correctly.explanation=The pages (JSP) container loaded without an acceptable version. The application might behave differently than expected.
-jsp.feature.not.loaded.correctly.useraction=Check the server.xml file for existence of multiple pages (JSP) features. Only one should be specified.
+jsp.feature.not.loaded.correctly.useraction=Check the server.xml file for existence of multiple pages (JSP) features. The file must specify no more than one pages (JSP) feature.
 
 jsp.error.page.invalid.erroronelnotfound=CWWJS0002E: Invalid value for errorOnELNotFound attribute
 jsp.error.page.invalid.erroronelnotfound.explanation=
