@@ -10,21 +10,43 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 package reactiveapp.web;
 
+import java.util.concurrent.Executor;
 import java.util.concurrent.Flow;
+import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
+import java.util.concurrent.SubmissionPublisher;
+import java.util.function.BiPredicate;
 
 import javax.naming.NamingException;
 
 /**
  *
  */
-public class ThreadSubscriber implements Flow.Subscriber<ContextCDL> {
+public class ThreadProcessor extends SubmissionPublisher<ContextCDL> implements Flow.Processor<ContextCDL, ContextCDL> {
 
-    private Flow.Subscription subscription = null;
-    private Throwable closedException = null;
+    Flow.Subscription subscription = null;
 
+    //Subscriber methods
+    public ThreadProcessor(Executor ex) {
+        super(ex, 3);
+    }
+
+    @Override
+    public int offer(ContextCDL latch, BiPredicate<Subscriber<? super ContextCDL>, ? super ContextCDL> onDrop) {
+        System.out.println("processor offer");
+        try {
+            latch.checkContext();
+            return super.offer(latch, onDrop);
+        } catch (NamingException e) {
+            closeExceptionally(e);
+        }
+        return -1;
+    }
+
+    //Publisher methods
     @Override
     public void onSubscribe(Subscription subscription) {
         this.subscription = subscription;
@@ -33,11 +55,11 @@ public class ThreadSubscriber implements Flow.Subscriber<ContextCDL> {
 
     @Override
     public void onNext(ContextCDL latch) {
-        System.out.println("subscriber onNext");
-
+        System.out.println("processor onNext");
         try {
             latch.checkContext();
             latch.countDown();
+            offer(latch, null);
             subscription.request(1);
         } catch (NamingException e) {
             closeExceptionally(e);
@@ -52,19 +74,6 @@ public class ThreadSubscriber implements Flow.Subscriber<ContextCDL> {
 
     @Override
     public void onComplete() {
-    }
-
-    public void closeExceptionally(Throwable t) {
-        closedException = t;
-    }
-
-    /**
-     * Returns the exception associated with closeExceptionally, or null if not closed or if closed normally.
-     *
-     * @return the exception, or null if none
-     */
-    public Throwable getClosedException() {
-        return closedException;
     }
 
 }

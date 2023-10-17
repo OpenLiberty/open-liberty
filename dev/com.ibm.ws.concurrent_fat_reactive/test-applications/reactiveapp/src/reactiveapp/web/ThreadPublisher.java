@@ -12,33 +12,31 @@
  *******************************************************************************/
 package reactiveapp.web;
 
-import static org.junit.Assert.fail;
-
 import java.util.concurrent.Executor;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.function.BiPredicate;
 
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 /**
  *
  */
-public class ThreadPublisher extends SubmissionPublisher<ThreadSnapshot> {
+public class ThreadPublisher extends SubmissionPublisher<ContextCDL> {
 
     public ThreadPublisher(Executor ex) {
         super(ex, 3);
     }
 
     @Override
-    public int offer(ThreadSnapshot item, BiPredicate<Subscriber<? super ThreadSnapshot>, ? super ThreadSnapshot> onDrop) {
+    public int offer(ContextCDL item, BiPredicate<Subscriber<? super ContextCDL>, ? super ContextCDL> onDrop) {
         try {
-            new InitialContext().lookup("java:comp/env/entry1");
+            item.checkContext();
+            return super.offer(item, onDrop);
         } catch (NamingException e) {
-            fail("Could not lookup context on publisher thread");
+            closeExceptionally(e);
         }
-        return super.offer(item, onDrop);
+        return -1;
     }
 
 }

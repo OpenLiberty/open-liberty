@@ -10,18 +10,21 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 package reactiveapp.web;
 
+import java.util.concurrent.TimeUnit;
+
+import javax.naming.NamingException;
+
 /**
- *
+ * A CountDownLatch that can check if it has access to JNDI Context
  */
-public class ThreadSnapshot {
+public interface ContextCDL {
 
-    public ThreadSnapshot() {
+    public void countDown();
 
-    }
+    public void checkContext() throws NamingException;
 
-    public long getId() {
-        return Thread.currentThread().getId();
-    }
+    boolean await(long timeout, TimeUnit unit) throws InterruptedException;
 }
