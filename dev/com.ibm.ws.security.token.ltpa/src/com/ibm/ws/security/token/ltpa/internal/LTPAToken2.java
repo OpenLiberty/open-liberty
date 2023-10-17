@@ -128,12 +128,12 @@ public class LTPAToken2 implements Token, Serializable {
         this.cipher = AES_CBC_CIPHER;
         this.expirationDifferenceAllowed = expDiffAllowed;
         decrypt();
-        if (attributes != null && attributes.length > 0) {
+        isValid();
+        if (attributes != null) {
             //Reset signature, encryptedBytes and remove attributes
             this.signature = null;
             this.encryptedBytes = null;
             userData.removeAttributes(attributes);
-            isValid();
         }
     }
 
