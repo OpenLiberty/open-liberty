@@ -12,10 +12,12 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.RecordComponent;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -221,6 +223,29 @@ class EntityInfo {
     static CompletableFuture<EntityInfo> newFuture(Class<?> entityClass) {
         // It's okay to use Java SE's CompletableFuture here given that *Async methods are never invoked on it
         return new CompletableFuture<>();
+    }
+
+    /**
+     * Converts a generated entity back to its record equivalent.
+     *
+     * @param entity generated entity.
+     * @return record.
+     * @throws Exception if an error occurs.
+     */
+    @Trivial
+    final Object toRecord(Object entity) throws Exception {
+        // TODO replace this method by including a toRecord method on an interface that is implemented
+        // by the generated entity, then cast to the interface and invoke it to get the record.
+        RecordComponent[] components = recordClass.getRecordComponents();
+        Class<?>[] argTypes = new Class<?>[components.length];
+        Object[] args = new Object[components.length];
+        int a = 0;
+        for (RecordComponent component : components) {
+            PropertyDescriptor desc = new PropertyDescriptor(component.getName(), entity.getClass());
+            argTypes[a] = component.getType();
+            args[a++] = desc.getReadMethod().invoke(entity);
+        }
+        return recordClass.getConstructor(argTypes).newInstance(args);
     }
 
     @Override

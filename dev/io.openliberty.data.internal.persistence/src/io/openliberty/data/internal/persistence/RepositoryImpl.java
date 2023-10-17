@@ -409,9 +409,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
         } else if (insert != null) { // @Insert annotation
             queryInfo.init(Insert.class, QueryInfo.Type.INSERT);
         } else if (update != null) { // @Update annotation
-            q = generateUpdateEntity(queryInfo); // TODO are these sufficient?
+            q = generateUpdateEntity(queryInfo);
         } else if (delete != null && filters.length == 0) { // @Delete annotation with no @Filter annotations
-            q = generateDeleteEntity(queryInfo); // TODO are these sufficient?
+            q = generateDeleteEntity(queryInfo);
         } else if (query == null) {
             // Query by annotations
             StringBuilder whereClause = filters.length > 0 ? generateWhereClause(queryInfo, filters) : null;
@@ -810,7 +810,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
             }
         }
         em.flush();
-        // TODO when records are used, convert the entities back to records
+
+        if (queryInfo.entityInfo.recordClass != null)
+            for (int i = 0; i < results.size(); i++)
+                results.set(i, queryInfo.entityInfo.toRecord(results.get(i)));
 
         Object returnValue;
         if (queryInfo.returnArrayType != null) {
@@ -910,7 +913,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             entity = null;
         } else {
             entity = results.get(0);
-            entity = em.merge(e);
+            entity = em.merge(toEntity(e));
         }
         return entity;
     }
@@ -2286,7 +2289,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     results.add(entity);
             }
             em.flush();
-            // TODO convert entity back to record if entityInfo.recordClass is not null
         } else {
             arg = arg instanceof Stream //
                             ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
@@ -2301,13 +2303,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         results.add(entity);
                 }
                 em.flush();
-                // TODO convert entity back to record if entityInfo.recordClass is not null
             } else {
                 results = resultVoid ? null : new ArrayList<>(1);
                 Object entity = toEntity(arg);
                 em.persist(entity);
                 em.flush();
-                // TODO convert entity back to record if entityInfo.recordClass is not null
                 if (results != null)
                     results.add(entity);
             }
@@ -2316,23 +2316,29 @@ public class RepositoryImpl<R> implements InvocationHandler {
         Object returnValue;
         if (resultVoid) {
             returnValue = null;
-        } else if (queryInfo.returnArrayType != null) {
-            Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
-            returnValue = results.toArray(newArray);
         } else {
-            Class<?> multiType = queryInfo.getMultipleResultType();
-            if (multiType == null)
-                returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results? Detect earlier?
-            else if (multiType.isInstance(results))
-                returnValue = results;
-            else if (Stream.class.equals(multiType))
-                returnValue = results.stream();
-            else if (Iterable.class.isAssignableFrom(multiType))
-                returnValue = toIterable(multiType, null, results);
-            else if (Iterator.class.equals(multiType))
-                returnValue = results.iterator();
-            else
-                throw new UnsupportedOperationException(multiType + " is an unsupported return type."); // TODO NLS
+            if (queryInfo.entityInfo.recordClass != null)
+                for (int i = 0; i < results.size(); i++)
+                    results.set(i, queryInfo.entityInfo.toRecord(results.get(i)));
+
+            if (queryInfo.returnArrayType != null) {
+                Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
+                returnValue = results.toArray(newArray);
+            } else {
+                Class<?> multiType = queryInfo.getMultipleResultType();
+                if (multiType == null)
+                    returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results? Detect earlier?
+                else if (multiType.isInstance(results))
+                    returnValue = results;
+                else if (Stream.class.equals(multiType))
+                    returnValue = results.stream();
+                else if (Iterable.class.isAssignableFrom(multiType))
+                    returnValue = toIterable(multiType, null, results);
+                else if (Iterator.class.equals(multiType))
+                    returnValue = results.iterator();
+                else
+                    throw new UnsupportedOperationException(multiType + " is an unsupported return type."); // TODO NLS
+            }
         }
 
         Class<?> returnType = queryInfo.method.getReturnType();
@@ -3288,7 +3294,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
             for (int i = 0; i < length; i++)
                 results.add(em.merge(toEntity(Array.get(arg, i))));
             em.flush();
-            // TODO convert entity back to record if entityInfo.recordClass is not null
         } else {
             arg = arg instanceof Stream //
                             ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
@@ -3299,35 +3304,41 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 for (Object e : ((Iterable<?>) arg))
                     results.add(em.merge(toEntity(e)));
                 em.flush();
-                // TODO convert entity back to record if entityInfo.recordClass is not null
             } else {
+                results = resultVoid ? null : new ArrayList<>(1);
                 Object entity = em.merge(toEntity(arg));
-                results = resultVoid ? null : List.of(entity);
+                if (results != null)
+                    results.add(entity);
                 em.flush();
-                // TODO convert entity back to record if entityInfo.recordClass is not null
             }
         }
 
         Object returnValue;
         if (resultVoid) {
             returnValue = null;
-        } else if (queryInfo.returnArrayType != null) {
-            Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
-            returnValue = results.toArray(newArray);
         } else {
-            Class<?> multiType = queryInfo.getMultipleResultType();
-            if (multiType == null)
-                returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results? Detect earlier?
-            else if (multiType.isInstance(results))
-                returnValue = results;
-            else if (Stream.class.equals(multiType))
-                returnValue = results.stream();
-            else if (Iterable.class.isAssignableFrom(multiType))
-                returnValue = toIterable(multiType, null, results);
-            else if (Iterator.class.equals(multiType))
-                returnValue = results.iterator();
-            else
-                throw new UnsupportedOperationException(multiType + " is an unsupported return type."); // TODO NLS
+            if (queryInfo.entityInfo.recordClass != null)
+                for (int i = 0; i < results.size(); i++)
+                    results.set(i, queryInfo.entityInfo.toRecord(results.get(i)));
+
+            if (queryInfo.returnArrayType != null) {
+                Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
+                returnValue = results.toArray(newArray);
+            } else {
+                Class<?> multiType = queryInfo.getMultipleResultType();
+                if (multiType == null)
+                    returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results? Detect earlier?
+                else if (multiType.isInstance(results))
+                    returnValue = results;
+                else if (Stream.class.equals(multiType))
+                    returnValue = results.stream();
+                else if (Iterable.class.isAssignableFrom(multiType))
+                    returnValue = toIterable(multiType, null, results);
+                else if (Iterator.class.equals(multiType))
+                    returnValue = results.iterator();
+                else
+                    throw new UnsupportedOperationException(multiType + " is an unsupported return type."); // TODO NLS
+            }
         }
 
         Class<?> returnType = queryInfo.method.getReturnType();
