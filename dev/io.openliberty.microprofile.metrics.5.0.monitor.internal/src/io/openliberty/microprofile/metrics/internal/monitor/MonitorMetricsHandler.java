@@ -36,7 +36,6 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.microprofile.metrics.internal.monitor.computed.internal.ComputedMonitorMetricsHandler;
 import io.openliberty.microprofile.metrics.internal.monitor.internal.MappingTable;
@@ -44,7 +43,7 @@ import io.openliberty.microprofile.metrics.internal.monitor.internal.MonitorMetr
 import io.openliberty.microprofile.metrics50.SharedMetricRegistries;
 
 @Component(service = MonitorMetricsHandler.class, name = "io.openliberty.microprofile.metrics.internal.monitor.MonitorMetricsHandler", property = {
-        "service.vendor=IBM"}, immediate = true)
+"service.vendor=IBM"}, immediate = true)
 public class MonitorMetricsHandler {
 
     private static final TraceComponent tc = Tr.register(MonitorMetricsHandler.class);
@@ -56,14 +55,10 @@ public class MonitorMetricsHandler {
     protected NotificationListener listener;
     protected ComputedMonitorMetricsHandler cmmh;
 
-    private boolean issuedBetaMessage = false;
-
     @Activate
     protected void activate(ComponentContext context) {
         this.mappingTable = MappingTable.getInstance();
-        if (isBetaModeCheck()) {
-            this.cmmh = new ComputedMonitorMetricsHandler(sharedMetricRegistry);
-        }
+        this.cmmh = new ComputedMonitorMetricsHandler(sharedMetricRegistry);
         register();
         addMBeanListener();
         Tr.info(tc, "FEATURE_REGISTERED");
@@ -103,9 +98,7 @@ public class MonitorMetricsHandler {
         }
 
         // Un-register all the computed metrics
-        if (isBetaModeCheck()) {
-            cmmh.unregisterAllComputedMetrics();
-        }
+        cmmh.unregisterAllComputedMetrics();
 
         Tr.info(tc, "FEATURE_UNREGISTERED");
     }
@@ -147,10 +140,8 @@ public class MonitorMetricsHandler {
         Set<MonitorMetrics> removeSet = new HashSet<MonitorMetrics>();
         for (MonitorMetrics mm : metricsSet) {
             if (mm.getObjectName().equals(objectName)) {
-                if (isBetaModeCheck()) {
-                    // Un-register the computed metrics
-                    unregisterComputedMetrics(objectName, mm);
-                }
+                // Un-register the computed metrics
+                unregisterComputedMetrics(objectName, mm);
                 removeSet.add(mm);
                 mm.unregisterMetrics(sharedMetricRegistry);
                 Tr.debug(tc, "Monitoring MXBean " + objectName + " was unregistered from mpMetrics.");
@@ -218,10 +209,8 @@ public class MonitorMetricsHandler {
             metrics = new MonitorMetrics(objectName);
             metrics.createMetrics(sharedMetricRegistry, data);
             metricsSet.add(metrics);
-            if (isBetaModeCheck()) {
-                // Register vendor computed metrics
-                registerComputedMetrics(objectName, metrics);
-            }
+            // Register vendor computed metrics
+            registerComputedMetrics(objectName, metrics);
             Tr.debug(tc, "Monitoring MXBean " + objectName + " is registered to mpMetrics.");
         } else {
             Tr.debug(tc, objectName + " is already registered.");
@@ -251,9 +240,7 @@ public class MonitorMetricsHandler {
     }
 
     public void unregisterComputedRESTMetrics(String appName) {
-        if (isBetaModeCheck()) {
-            cmmh.unregisterComputedRESTMetricsByAppName(appName);
-        }
+        cmmh.unregisterComputedRESTMetricsByAppName(appName);
     }
 
     protected boolean containMetrics(String objectName) {
@@ -267,23 +254,5 @@ public class MonitorMetricsHandler {
     public ComputedMonitorMetricsHandler getComputedMonitorMetricsHandler() {
         // Return the ComputedMonitorMetricsHandler object reference.
         return cmmh;
-    }
-
-    boolean isBetaModeCheck() {
-        if (!ProductInfo.getBetaEdition()) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Not running Beta Edition, the new computed metrics will NOT be calculated.");
-            }
-            return false;
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for this class.
-            if (!issuedBetaMessage) {
-                Tr.info(tc,
-                        "BETA: A beta method has been invoked for the addition of new computed metrics for class "
-                                + this.getClass().getName() + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-            return true;
-        }
     }
 }

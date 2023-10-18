@@ -60,6 +60,5 @@ WS-TraceGroup: METRICS
 	io.openliberty.jakarta.restfulWS.3.1;version=latest,\
 	com.ibm.ws.microprofile.metrics.common;version=latest,\
 	com.ibm.ws.microprofile.metrics,\
-	com.ibm.ws.kernel.service,\
-	com.ibm.ws.kernel.boot.core;version=latest
+	com.ibm.ws.kernel.service
 	
