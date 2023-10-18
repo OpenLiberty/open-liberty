@@ -78,13 +78,9 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
 
     @Override
     public boolean logout(HttpServletRequest request, HttpServletResponse response, String userName) throws ServletException {
-        if (userName == null || userName.isEmpty()) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "The userName is null or empty, so logout will not be performed.");
-            }
-            return false;
+        if (userName != null && !userName.isEmpty()) {
+            userName = normalizeUserName(userName);
         }
-        userName = normalizeUserName(userName);
         String requestUri = request.getRequestURI();
         OidcServerConfig oidcServerConfig = getMatchingConfig(requestUri);
         if (oidcServerConfig == null) {
