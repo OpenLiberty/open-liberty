@@ -19,6 +19,8 @@ fat.project: true
 javac.source: 17
 javac.target: 17
 
+fat.minimum.java.level: 21
+
 -buildpath: \
     io.openliberty.jakarta.servlet.6.0;version=latest,\
     com.ibm.ws.componenttest.2.0;version=latest,\
