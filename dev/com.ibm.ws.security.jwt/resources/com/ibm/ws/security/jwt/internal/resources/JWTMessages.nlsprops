@@ -16,11 +16,11 @@
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS6000 - CWWKS6100
 JWT_BUILDER_CONFIG_PROCESSED=CWWKS6000I: JWT {0} configuration successfully processed.
-JWT_BUILDER_CONFIG_PROCESSED.explanation=The JWT (JSON Web Token builder) configuration has been successfully processed.
+JWT_BUILDER_CONFIG_PROCESSED.explanation=The JSON Web Token (JWT) builder configuration has been successfully processed.
 JWT_BUILDER_CONFIG_PROCESSED.useraction=None
 
 JWT_BUILDER_CONFIG_MODIFIED=CWWKS6001I: JWT {0} configuration change successfully processed.
-JWT_BUILDER_CONFIG_MODIFIED.explanation=The JWT (JSON Web Token builder) configuration has been successfully modified.
+JWT_BUILDER_CONFIG_MODIFIED.explanation=The JSON Web Token (JWT) builder configuration has been successfully modified.
 JWT_BUILDER_CONFIG_MODIFIED.useraction=None.
 
 # Do not translate "JSON Web Token", "JWT"
