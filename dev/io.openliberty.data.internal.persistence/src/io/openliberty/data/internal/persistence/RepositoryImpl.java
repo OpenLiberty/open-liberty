@@ -25,7 +25,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Type;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
@@ -2530,10 +2529,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                                 Tr.debug(this, tc, "createQuery", queryInfo.jpql, entityInfo.entityClass.getName());
 
-                            // TODO remove doPriv once switched to Java 21 only or EclipseLink bug is fixed
+                            
                             final QueryInfo qi = queryInfo;
                             final EntityManager eMgr = em;
-                            TypedQuery<?> query = AccessController.doPrivileged((PrivilegedAction<TypedQuery<?>>) () -> eMgr.createQuery(qi.jpql, qi.entityInfo.entityClass));
+                            TypedQuery<?> query = eMgr.createQuery(qi.jpql, qi.entityInfo.entityClass);
                             queryInfo.setParameters(query, args);
 
                             if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE)
