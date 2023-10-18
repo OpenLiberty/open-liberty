@@ -109,18 +109,17 @@ import org.apache.cxf.message.MessageUtils;
 // Liberty Change Start - Imports
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annotations.WebAnnotations;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
+import com.ibm.ws.container.service.annocache.WebAnnotations;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.api.JaxRsFactoryBeanCustomizer;
 import com.ibm.ws.jaxrs20.injection.InjectionRuntimeContextHelper;
 import com.ibm.ws.jaxrs20.injection.metadata.InjectionRuntimeContext;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.info.ClassInfo;
-import com.ibm.wsspi.anno.info.FieldInfo;
-import com.ibm.wsspi.anno.info.MethodInfo;
-import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
+import com.ibm.wsspi.annocache.info.ClassInfo;
+import com.ibm.wsspi.annocache.info.FieldInfo;
+import com.ibm.wsspi.annocache.info.MethodInfo;
+import com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets;
 // Liberty Change End
 
 public final class InjectionUtils {
@@ -1956,18 +1955,9 @@ public final class InjectionUtils {
     }
 
     public static List<String> getJaxRsInjectionClasses(Container moduleContainer) {
-        if ( AnnotationsBetaHelper.getLibertyBeta() ) {
-            return getJaxRsInjectionClassesPostBeta(moduleContainer);
-        } else {
-            return getJaxRsInjectionClassesPreBeta(moduleContainer);
-        }
-    }
-
-    public static List<String> getJaxRsInjectionClassesPreBeta(Container moduleContainer) {
         WebAnnotations webAnnotations;
         try {
             webAnnotations = moduleContainer.adapt(WebAnnotations.class);
-            webAnnotations.openInfoStore();
         } catch ( Exception e ) { 
             // FFDC
             return Collections.<String> emptyList();
@@ -1975,109 +1965,6 @@ public final class InjectionUtils {
 
         try {
             AnnotationTargets_Targets annotationTargets = webAnnotations.getAnnotationTargets();
-
-            Set<String> componentsClassNames = new HashSet<String>();
-
-            componentsClassNames.addAll( annotationTargets.getAllInheritedAnnotatedClasses(Provider.class.getName()) );
-            componentsClassNames.addAll( annotationTargets.getAllInheritedAnnotatedClasses(Path.class.getName()) );
-            componentsClassNames.addAll( annotationTargets.getAllInheritedAnnotatedClasses(ApplicationPath.class.getName()) );
-            for ( String interfaceName : JAXRS_COMPONENTS_INTERFACE ) {
-                componentsClassNames.addAll( annotationTargets.getAllImplementorsOf(interfaceName) );
-            }
-            for ( String abstractClassName : JAXRS_COMPONENTS_ABSTRACTCLASS) {
-                componentsClassNames.addAll(annotationTargets.getSubclassNames(abstractClassName) );
-            }
-
-            Set<String> injectionClassNames = new HashSet<String>();
-
-            for ( String componentClassName : componentsClassNames ) {
-                ClassInfo componentClass = webAnnotations.getClassInfo(componentClassName);
-
-                Set<String> implementorNames = annotationTargets.getAllImplementorsOf(componentClassName);
-                if ( !implementorNames.isEmpty() ) {
-                    if ( shouldConsiderInjection(componentClass) ) {
-                        injectionClassNames.addAll(implementorNames);
-                    }
-
-                } else {
-                    if ( !componentClass.isInterface() ) {
-                        if (shouldConsiderInjection(componentClass)) {
-                            injectionClassNames.add(componentClassName);
-                        }
-                    }
-                }
-            }
-
-            return new ArrayList<String>(injectionClassNames);
-
-        } catch ( Exception e ) {
-            // FFDC
-            return Collections.<String> emptyList();
-
-        } finally {
-            try {
-                webAnnotations.closeInfoStore();
-            } catch ( Exception e ) {
-                // FFDC
-            }
-        }
-    }
-
-    /**
-     * Tell if injection is possible on a target class.
-     *
-     * Injection is possible if the class or one of its superclasses has
-     * an {@link javax.inject.Inject} annotation, except, ignore the class
-     * annotation if the class has a lifecycle class annotation.
-     *
-     * @param classInfo Class information which is to be tested.
-     *
-     * @return True or false telling if injection is possible on a target
-     *     class.
-     */
-    private static boolean shouldConsiderInjection(ClassInfo classInfo) {
-        if ( classInfo.isAnnotationPresent("javax.inject.Inject") &&
-             !classInfo.isAnnotationWithin(LIFECYCLE_CLASSES) ) {
-            return true;
-        }
-        for ( FieldInfo fieldInfo : classInfo.getDeclaredFields() ) {
-            if ( fieldInfo.isAnnotationPresent("javax.inject.Inject") ) {
-                return true;
-            }
-        }
-        for ( MethodInfo methodInfo : classInfo.getDeclaredMethods() ) {
-            if ( methodInfo.isAnnotationPresent("javax.inject.Inject") ) {
-                return true;
-            }
-        }
-        for ( MethodInfo constructorInfo : classInfo.getDeclaredConstructors() ) {
-            if ( constructorInfo.isAnnotationPresent("javax.inject.Inject") ) {
-                return true;
-            }
-        }
-
-        ClassInfo superClassInfo = classInfo.getSuperclass();
-        if ( superClassInfo != null ) {
-            return shouldConsiderInjection(superClassInfo);
-        } else {
-            return false;
-        }
-    }
-
-    //
-
-    public static List<String> getJaxRsInjectionClassesPostBeta(Container moduleContainer) {
-        com.ibm.ws.container.service.annocache.WebAnnotations webAnnotations;
-        try {
-            webAnnotations = moduleContainer.adapt(com.ibm.ws.container.service.annocache.WebAnnotations.class);
-        } catch ( Exception e ) { 
-            // FFDC
-            return Collections.<String> emptyList();
-        }
-
-        try {
-            com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets annotationTargets =
-                webAnnotations.getAnnotationTargets();
 
             Set<String> componentsClassNames = new HashSet<String>();
 
@@ -2129,6 +2016,49 @@ public final class InjectionUtils {
             return Collections.<String> emptyList();
         }
     }
+    
+    /**
+     * Tell if injection is possible on a target class.
+     *
+     * Injection is possible if the class or one of its superclasses has
+     * an {@link javax.inject.Inject} annotation, except, ignore the class
+     * annotation if the class has a lifecycle class annotation.
+     *
+     * @param classInfo Class information which is to be tested.
+     *
+     * @return True or false telling if injection is possible on a target
+     *     class.
+     */
+    private static boolean shouldConsiderInjection(ClassInfo classInfo) {
+        if ( classInfo.isAnnotationPresent("javax.inject.Inject") &&
+             !classInfo.isAnnotationWithin(LIFECYCLE_CLASSES) ) {
+            return true;
+        }
+        for ( FieldInfo fieldInfo : classInfo.getDeclaredFields() ) {
+            if ( fieldInfo.isAnnotationPresent("javax.inject.Inject") ) {
+                return true;
+            }
+        }
+        for ( MethodInfo methodInfo : classInfo.getDeclaredMethods() ) {
+            if ( methodInfo.isAnnotationPresent("javax.inject.Inject") ) {
+                return true;
+            }
+        }
+        for ( MethodInfo constructorInfo : classInfo.getDeclaredConstructors() ) {
+            if ( constructorInfo.isAnnotationPresent("javax.inject.Inject") ) {
+                return true;
+            }
+        }
+
+        ClassInfo superClassInfo = classInfo.getSuperclass();
+        if ( superClassInfo != null ) {
+            return shouldConsiderInjection(superClassInfo);
+        } else {
+            return false;
+        }
+    }
+
+    //
 
     private static class InjectionTargets {
 

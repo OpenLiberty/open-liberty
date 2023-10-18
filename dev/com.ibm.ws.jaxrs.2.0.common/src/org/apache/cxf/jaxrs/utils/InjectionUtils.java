@@ -104,8 +104,7 @@ import org.apache.cxf.message.MessageUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annotations.WebAnnotations;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
+import com.ibm.ws.container.service.annocache.WebAnnotations;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.api.JaxRsFactoryBeanCustomizer;
@@ -113,9 +112,10 @@ import com.ibm.ws.jaxrs20.injection.InjectionRuntimeContextHelper;
 import com.ibm.ws.jaxrs20.injection.metadata.InjectionRuntimeContext;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.info.ClassInfo;
-import com.ibm.wsspi.anno.info.MethodInfo;
-import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
+import com.ibm.wsspi.annocache.info.ClassInfo;
+import com.ibm.wsspi.annocache.info.FieldInfo;
+import com.ibm.wsspi.annocache.info.MethodInfo;
+import com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets;
 
 public final class InjectionUtils {
     private static final TraceComponent tc = Tr.register(InjectionUtils.class);
@@ -1840,7 +1840,7 @@ public final class InjectionUtils {
         WebAnnotations webAnnotations;
         AnnotationTargets_Targets annotationTargets;
         try {
-            webAnnotations = AnnotationsBetaHelper.getWebAnnotations(moduleContainer);
+            webAnnotations = moduleContainer.adapt(WebAnnotations.class);
             annotationTargets = webAnnotations.getAnnotationTargets();
         } catch ( Exception e ) {
             // Detection cannot be done without annotations information.
@@ -1972,7 +1972,7 @@ public final class InjectionUtils {
             // which are overridden by the target class are not masked
             // because the method is overridden.
 
-            for ( com.ibm.wsspi.anno.info.FieldInfo fieldInfo : classInfo.getDeclaredFields() ) {
+            for ( FieldInfo fieldInfo : classInfo.getDeclaredFields() ) {
                 if ( fieldInfo.isAnnotationPresent(INJECT_CLASS_NAME) || fieldInfo.isAnnotationPresent(RESOURCE_CLASS_NAME) ) {
                     return true;
                 }

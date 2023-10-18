@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,9 +41,9 @@ import com.ibm.ws.jaxws.metadata.MTOMFeatureInfo;
 import com.ibm.ws.jaxws.metadata.RespectBindingFeatureInfo;
 import com.ibm.ws.jaxws.metadata.ServiceModeInfo;
 import com.ibm.ws.jaxws.utils.JaxWsUtils;
-import com.ibm.wsspi.anno.info.AnnotationInfo;
-import com.ibm.wsspi.anno.info.ClassInfo;
-import com.ibm.wsspi.anno.info.InfoStore;
+import com.ibm.wsspi.annocache.info.AnnotationInfo;
+import com.ibm.wsspi.annocache.info.ClassInfo;
+import com.ibm.wsspi.annocache.info.InfoStore;
 
 /**
  * Scan the annotations and configure the EndpointInfo

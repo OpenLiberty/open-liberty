@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,11 +26,10 @@ import java.util.logging.Logger;
 import org.apache.myfaces.spi.AnnotationProvider;
 import org.apache.myfaces.util.lang.ClassUtils;
 
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
-import com.ibm.ws.container.service.annotations.WebAnnotations;
+import com.ibm.ws.container.service.annocache.WebAnnotations;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
+import com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.webcontainer.facade.ServletContextFacade;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 
@@ -75,7 +74,7 @@ public class WASMyFacesAnnotationProvider extends AnnotationProvider {
         Container moduleContainer = servletContext.getModuleContainer();
 
         try {
-            WebAnnotations webAnno = AnnotationsBetaHelper.getWebAnnotations(moduleContainer);
+            WebAnnotations webAnno = moduleContainer.adapt(WebAnnotations.class);
             AnnotationTargets_Targets annoTargets = webAnno.getAnnotationTargets();
 
             ClassLoader cl = ClassUtils.getContextClassLoader();

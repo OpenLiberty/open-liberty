@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,15 +23,14 @@ import java.util.logging.Logger;
 import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
-import com.ibm.ws.container.service.annotations.WebAnnotations;
+import com.ibm.ws.container.service.annocache.WebAnnotations;
 import com.ibm.ws.javaee.dd.common.ParamValue;
 import com.ibm.ws.javaee.dd.jsf.FacesConfigManagedBean;
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
+import com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollaborator;
 
 /**
@@ -99,7 +98,7 @@ public class JSFInjectionClassListCollaborator implements WebAppInjectionClassLi
 
         // First try and find all classes with @javax.faces.bean.ManagedBean
         try {
-            WebAnnotations webAnno = AnnotationsBetaHelper.getWebAnnotations(moduleContainer);
+            WebAnnotations webAnno = moduleContainer.adapt(WebAnnotations.class);
             AnnotationTargets_Targets annoTargets = webAnno.getAnnotationTargets();
 
             // javax.faces.bean.ManagedBean is inherited: use the 'all' version of the selector.

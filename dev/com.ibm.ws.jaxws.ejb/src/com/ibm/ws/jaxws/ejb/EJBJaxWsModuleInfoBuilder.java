@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,8 +17,7 @@ import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
-import com.ibm.ws.container.service.annotations.ModuleAnnotations;
+import com.ibm.ws.container.service.annocache.ModuleAnnotations;
 import com.ibm.ws.container.service.app.deploy.EJBModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
 import com.ibm.ws.ejbcontainer.EJBEndpoints;
@@ -36,8 +35,8 @@ import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.info.InfoStore;
-import com.ibm.wsspi.anno.info.InfoStoreException;
+import com.ibm.wsspi.annocache.info.InfoStore;
+import com.ibm.wsspi.annocache.info.InfoStoreException;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
@@ -72,7 +71,7 @@ public class EJBJaxWsModuleInfoBuilder extends AbstractJaxWsModuleInfoBuilder {
             return null;
         }
 
-        ModuleAnnotations moduleAnnotations = AnnotationsBetaHelper.getModuleAnnotations(containerToAdapt); // throws UnableToAdaptException
+        ModuleAnnotations moduleAnnotations = containerToAdapt.adapt(ModuleAnnotations.class); // throws UnableToAdaptException
         InfoStore infoStore = moduleAnnotations.getInfoStore(); // throws UnableToAdaptException
 
         try {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2020 IBM Corporation and others.
+ * Copyright (c) 2019,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -47,9 +47,9 @@ import com.ibm.ws.jaxws.metadata.XsdQNameInfo;
 import com.ibm.ws.jaxws.utils.JAXBUtils;
 import com.ibm.ws.jaxws.utils.JaxWsUtils;
 import com.ibm.ws.jaxws.utils.StringUtils;
-import com.ibm.wsspi.anno.info.AnnotationInfo;
-import com.ibm.wsspi.anno.info.ClassInfo;
-import com.ibm.wsspi.anno.info.InfoStore;
+import com.ibm.wsspi.annocache.info.AnnotationInfo;
+import com.ibm.wsspi.annocache.info.ClassInfo;
+import com.ibm.wsspi.annocache.info.InfoStore;
 
 /**
  * Extends the cxf AnnotationHandlerChainBuilder

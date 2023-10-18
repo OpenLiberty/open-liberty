@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014,2022 IBM Corporation and others.
+ * Copyright (c) 2014,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -37,7 +37,7 @@ import javax.resource.spi.work.WorkContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annotations.ModuleAnnotations;
+import com.ibm.ws.container.service.annocache.ModuleAnnotations;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jca.utils.xml.ra.RaActivationSpec;
 import com.ibm.ws.jca.utils.xml.ra.RaAdminObject;
@@ -54,7 +54,7 @@ import com.ibm.ws.jca.utils.xml.ra.RaOutboundResourceAdapter;
 import com.ibm.ws.jca.utils.xml.ra.RaResourceAdapter;
 import com.ibm.ws.jca.utils.xml.ra.RaSecurityPermission;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
+import com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets;
 
 /**
  * Process annotations in the resource adapter classes and combine with the definitions in the
@@ -143,12 +143,7 @@ public class RAAnnotationProcessor {
     }
 
     private void findAnnotatedClassesUsingTargets() throws ResourceAdapterInternalException {
-        AnnotationTargets_Targets targets;
-        try {
-            targets = raAnnotations.getAnnotationTargets();
-        } catch (UnableToAdaptException e) {
-            throw new ResourceAdapterInternalException(e);
-        }
+        AnnotationTargets_Targets targets = raAnnotations.getAnnotationTargets();
 
         findAnnotatedClassesUsingTargets(targets, Connector.class, connectorClasses);
         findAnnotatedClassesUsingTargets(targets, Activation.class, activationClasses);

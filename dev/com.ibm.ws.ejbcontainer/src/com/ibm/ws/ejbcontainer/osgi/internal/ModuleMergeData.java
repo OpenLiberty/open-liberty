@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,17 +19,15 @@ import java.util.Map;
 import java.util.Set;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
-import com.ibm.ws.container.service.annotations.ModuleAnnotations;
-import com.ibm.ws.container.service.annotations.WebAnnotations;
+import com.ibm.ws.container.service.annocache.ModuleAnnotations;
 import com.ibm.ws.ejbcontainer.osgi.MDBRuntime;
 import com.ibm.ws.ejbcontainer.osgi.ManagedBeanRuntime;
 import com.ibm.ws.ejbcontainer.osgi.SessionBeanRuntime;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.info.ClassInfo;
-import com.ibm.wsspi.anno.info.InfoStore;
-import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
+import com.ibm.wsspi.annocache.info.ClassInfo;
+import com.ibm.wsspi.annocache.info.InfoStore;
+import com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets;
 
 /**
  * Data for merging a module that is not needed by on ModuleInitData.
@@ -124,9 +122,9 @@ class ModuleMergeData {
     }
 
     private ModuleAnnotations getModuleAnnotations() {
-        if ( moduleAnno == null ) {
+        if (moduleAnno == null) {
             try {
-            	moduleAnno = AnnotationsBetaHelper.getModuleAnnotations(container);
+                moduleAnno = container.adapt(ModuleAnnotations.class);
             } catch (UnableToAdaptException e) {
                 throw new IllegalStateException(e);
             }
@@ -137,11 +135,7 @@ class ModuleMergeData {
     @Trivial
     AnnotationTargets_Targets getAnnotationTargets() {
         if (annotationTargets == null) {
-            try {
-                annotationTargets = getModuleAnnotations().getAnnotationTargets();
-            } catch (UnableToAdaptException e) {
-                throw new IllegalStateException(e);
-            }
+            annotationTargets = getModuleAnnotations().getAnnotationTargets();
         }
         return annotationTargets;
     }
@@ -149,11 +143,7 @@ class ModuleMergeData {
     @Trivial
     public InfoStore getInfoStore() {
         if (infoStore == null) {
-            try {
-                infoStore = getModuleAnnotations().getInfoStore();
-            } catch (UnableToAdaptException e) {
-                throw new IllegalStateException(e);
-            }
+            infoStore = getModuleAnnotations().getInfoStore();
         }
         return infoStore;
     }

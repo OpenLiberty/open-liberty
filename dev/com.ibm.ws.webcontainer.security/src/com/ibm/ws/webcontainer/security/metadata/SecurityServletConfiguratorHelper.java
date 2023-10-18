@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,8 +24,8 @@ import javax.annotation.security.RolesAllowed;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annotations.FragmentAnnotations;
-import com.ibm.ws.container.service.annotations.WebAnnotations;
+import com.ibm.ws.container.service.annocache.FragmentAnnotations;
+import com.ibm.ws.container.service.annocache.WebAnnotations;
 import com.ibm.ws.container.service.config.ServletConfigurator;
 import com.ibm.ws.container.service.config.ServletConfigurator.ConfigItem;
 import com.ibm.ws.container.service.config.ServletConfigurator.ConfigSource;
@@ -47,12 +47,12 @@ import com.ibm.ws.javaee.dd.webbnd.WebBnd;
 import com.ibm.ws.javaee.dd.webext.WebExt;
 import com.ibm.ws.security.mp.jwt.proxy.MpJwtHelper;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.info.AnnotationInfo;
-import com.ibm.wsspi.anno.info.AnnotationValue;
-import com.ibm.wsspi.anno.info.ClassInfo;
-import com.ibm.wsspi.anno.info.InfoStore;
-import com.ibm.wsspi.anno.info.MethodInfo;
-import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
+import com.ibm.wsspi.annocache.info.AnnotationInfo;
+import com.ibm.wsspi.annocache.info.AnnotationValue;
+import com.ibm.wsspi.annocache.info.ClassInfo;
+import com.ibm.wsspi.annocache.info.InfoStore;
+import com.ibm.wsspi.annocache.info.MethodInfo;
+import com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 
 /**
@@ -171,14 +171,7 @@ public class SecurityServletConfiguratorHelper implements ServletConfiguratorHel
         }
 
         String annoName = "org.eclipse.microprofile.auth.LoginConfig";
-        Set<String> annotatedClasses = null;
-        InfoStore annosInfo = null;
-        try {
-            annotatedClasses = configurator.getWebAnnotations().getAnnotationTargets().getAnnotatedClasses(annoName);
-            annosInfo = configurator.getWebAnnotations().getInfoStore();
-        } catch (UnableToAdaptException e) { // ffdc and return
-            return;
-        }
+        Set<String> annotatedClasses = configurator.getWebAnnotations().getAnnotationTargets().getAnnotatedClasses(annoName);
         if (annotatedClasses.size() == 0) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "no annotated classes found, return");
@@ -192,7 +185,9 @@ public class SecurityServletConfiguratorHelper implements ServletConfiguratorHel
             }
             return;
         }
+
         // we have an annotation and no DD, so check it out
+        InfoStore annosInfo = configurator.getWebAnnotations().getInfoStore();
         String className = annotatedClasses.iterator().next();
         ClassInfo ci = annosInfo.getDelayableClassInfo(className);
         boolean isValid = false;

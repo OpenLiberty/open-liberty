@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,16 +26,18 @@ import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
 /**
+ * This class is obsolete.
+ * 
  * APSFOUND-1 Liberty Annotation Caching Beta Enablement Helper
  *
  * This helper is used to conditionally enable liberty annotation caching.
  *
  * During the beta period, annotation caching is enabled when the product
- * edition is set to "EARLY_ACCESS".  Alternatively, setting the system
+ * edition is set to "EARLY_ACCESS". Alternatively, setting the system
  * property "anno.beta" overrides the product edition test.
  *
  * In addition, the new function can be enabled but with the cache write
- * disabled.  See {@link com.ibm.wsspi.annocache.targets.cache.TargetCache_Options#DISABLED_PROPERTY_NAME}
+ * disabled. See {@link com.ibm.wsspi.annocache.targets.cache.TargetCache_Options#DISABLED_PROPERTY_NAME}
  * ("anno.cache.disabled").
  *
  * <pre>
@@ -75,9 +77,9 @@ public class AnnotationsBetaHelper {
     //
 
     /**
-     * Setting of whether this is a liberty beta product.  That is, if the
-     * product edition is set to "EARLY_ACCESS".  If available, the product
-     * "com.ibm.websphere.appserver" is tested.  If that product is not
+     * Setting of whether this is a liberty beta product. That is, if the
+     * product edition is set to "EARLY_ACCESS". If available, the product
+     * "com.ibm.websphere.appserver" is tested. If that product is not
      * available, the product "io.openliberty" is tested instead.
      *
      * Post beta, the product edition test is no longer used.
@@ -95,20 +97,20 @@ public class AnnotationsBetaHelper {
     public static final String EARLY_ACCESS = "EARLY_ACCESS";
 
     /**
-     * Determine if the current product is a beta edition product.  That is,
-     * if the product edition is set to "EARLY_ACCESS".  If available, the
-     * product "com.ibm.websphere.appserver" is tested.  If that product is
+     * Determine if the current product is a beta edition product. That is,
+     * if the product edition is set to "EARLY_ACCESS". If available, the
+     * product "com.ibm.websphere.appserver" is tested. If that product is
      * not available, the product "io.openliberty" is tested instead.
      *
      * @return True or false telling if the current product is a beta
-     *     edition product.
+     *         edition product.
      */
     public static boolean setIsLibertyBetaProduct() {
         Map<String, ? extends ProductInfo> allProductInfo;
 
         try {
             allProductInfo = ProductInfo.getAllProductInfo();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             allProductInfo = null;
             // FFDC
         }
@@ -116,27 +118,27 @@ public class AnnotationsBetaHelper {
         boolean isBeta;
         String isBetaReason;
 
-        if ( allProductInfo == null ) {
+        if (allProductInfo == null) {
             isBeta = false;
             isBetaReason = "Failed to read any product information";
 
         } else {
             ProductInfo productInfo = allProductInfo.get(OPEN_LIBERTY_CD_PRODUCT_ID);
-            if ( productInfo == null ) {
+            if (productInfo == null) {
                 productInfo = allProductInfo.get(OPEN_LIBERTY_PRODUCT_ID);
             }
 
-            if ( productInfo == null ) {
+            if (productInfo == null) {
                 isBeta = false;
                 isBetaReason = "No product information (" + OPEN_LIBERTY_PRODUCT_ID + " or " + OPEN_LIBERTY_CD_PRODUCT_ID + ")";
 
             } else {
-                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "<static init>", "Using product information [ " + productInfo.getId() + " ]");
                 }
 
                 String productEdition = productInfo.getEdition();
-                if ( productEdition == null ) {
+                if (productEdition == null) {
                     isBeta = false;
                     isBetaReason = "No edition in product information (" + ProductInfo.COM_IBM_WEBSPHERE_PRODUCTEDITION_KEY + ")";
                 } else {
@@ -146,7 +148,7 @@ public class AnnotationsBetaHelper {
             }
         }
 
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "<static init>", "Annotations beta enablement [ " + isBeta + " ]: " + isBetaReason);
         }
         return isBeta;
@@ -161,19 +163,19 @@ public class AnnotationsBetaHelper {
      * Run {@link System#getProperty(String)} as a privileged action.
      *
      * @param propertyName The name of the property which is to be retrieved.
-
-     * @return The string property value.  Null if the property is not set.
+     *
+     * @return The string property value. Null if the property is not set.
      */
     public static String getProperty(final String propertyName) {
         Object token = ThreadIdentityManager.runAsServer();
         try {
-            return AccessController.doPrivileged( new PrivilegedAction<String>() {
+            return AccessController.doPrivileged(new PrivilegedAction<String>() {
                 @Override
                 public String run() {
                     return System.getProperty(propertyName);
                 }
 
-            } );
+            });
         } finally {
             ThreadIdentityManager.reset(token);
         }
@@ -186,15 +188,15 @@ public class AnnotationsBetaHelper {
         String propertyText = AnnotationsBetaHelper.getProperty(propertyName);
 
         Boolean propertyValue;
-        if ( propertyText == null ) {
+        if (propertyText == null) {
             propertyValue = null;
         } else {
             propertyValue = Boolean.valueOf(propertyText);
         }
 
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, methodName +
-                ": Property [ " + propertyName + " ]" + " [ " + propertyValue + " ]");
+                         ": Property [ " + propertyName + " ]" + " [ " + propertyValue + " ]");
         }
         return propertyValue;
     }
@@ -204,25 +206,24 @@ public class AnnotationsBetaHelper {
     /** Property used to override beta enablement, but only for the annotations function. */
     public static final String ANNO_BETA_PROPERTY_NAME = "anno.beta";
 
-    public static final Boolean ANNO_BETA_PROPERTY_VALUE =
-        getProperty("<static init>", ANNO_BETA_PROPERTY_NAME);
+    public static final Boolean ANNO_BETA_PROPERTY_VALUE = getProperty("<static init>", ANNO_BETA_PROPERTY_NAME);
 
     /**
      * Tell if the current product is a liberty beta product.
-     * 
+     *
      * If a property / JVM option has been set, use the value of that property
-     * as an override.  Otherwise, answer the value obtained from the liberty
+     * as an override. Otherwise, answer the value obtained from the liberty
      * product information.
      *
      * @return True or false telling if the current product is a liberty beta product.
      */
     @Trivial
     public static boolean getLibertyBeta() {
-        if ( ANNO_BETA_PROPERTY_VALUE != null ) {
+        if (ANNO_BETA_PROPERTY_VALUE != null) {
             return ANNO_BETA_PROPERTY_VALUE.booleanValue();
         } else {
             // Post beta, this test always answers true.
-           return IS_LIBERTY_BETA_PRODUCT;
+            return IS_LIBERTY_BETA_PRODUCT;
         }
     }
 
@@ -234,8 +235,8 @@ public class AnnotationsBetaHelper {
     //       to consolidate exposed APIs #9215"
 
     /**
-     * Answer module annotations for a container.  Use the caching implementation when enabled
-     * for the beta.  Otherwise, use the non-caching implementation.
+     * Answer module annotations for a container. Use the caching implementation when enabled
+     * for the beta. Otherwise, use the non-caching implementation.
      *
      * @param container The container for which to answer module annotations.
      *
@@ -243,10 +244,11 @@ public class AnnotationsBetaHelper {
      *
      * @throws UnableToAdaptException Thrown if module annotations could not be obtained.
      */
-    public static com.ibm.ws.container.service.annotations.ModuleAnnotations getModuleAnnotations(Container container) 
-        throws UnableToAdaptException {
+    public static com.ibm.ws.container.service.annotations.ModuleAnnotations getModuleAnnotations(Container container) throws UnableToAdaptException {
+        Tr.warning(tc, "Unconverted use of annotations beta helper");
+        (new Throwable("Unconverted use of annotations beta helper")).printStackTrace(System.out);
 
-        if ( AnnotationsBetaHelper.getLibertyBeta() ) {
+        if (AnnotationsBetaHelper.getLibertyBeta()) {
             return container.adapt(com.ibm.ws.container.service.annocache.ModuleAnnotations.class);
         } else {
             return container.adapt(com.ibm.ws.container.service.annotations.ModuleAnnotations.class);
@@ -254,19 +256,20 @@ public class AnnotationsBetaHelper {
     }
 
     /**
-     * Answer web annotations for a container.  Use the caching implementation when enabled
-     * for the beta.  Otherwise, use the non-caching implementation.
+     * Answer web annotations for a container. Use the caching implementation when enabled
+     * for the beta. Otherwise, use the non-caching implementation.
      *
-     * @param container The container for which to answer web  annotations.
+     * @param container The container for which to answer web annotations.
      *
      * @return Web annotations for the container.
      *
      * @throws UnableToAdaptException Thrown if web annotations could not be obtained.
      */
-    public static com.ibm.ws.container.service.annotations.WebAnnotations getWebAnnotations(Container container) 
-        throws UnableToAdaptException {
+    public static com.ibm.ws.container.service.annotations.WebAnnotations getWebAnnotations(Container container) throws UnableToAdaptException {
+        Tr.warning(tc, "Unconverted use of annotations beta helper");
+        (new Throwable("Unconverted use of annotations beta helper")).printStackTrace(System.out);
 
-        if ( AnnotationsBetaHelper.getLibertyBeta() ) {
+        if (AnnotationsBetaHelper.getLibertyBeta()) {
             return container.adapt(com.ibm.ws.container.service.annocache.WebAnnotations.class);
         } else {
             return container.adapt(com.ibm.ws.container.service.annotations.WebAnnotations.class);

@@ -77,13 +77,13 @@ import com.ibm.ws.javaee.dd.managedbean.ManagedBeanBnd;
 import com.ibm.ws.metadata.ejb.BeanInitData;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.info.AnnotationInfo;
-import com.ibm.wsspi.anno.info.AnnotationValue;
-import com.ibm.wsspi.anno.info.ClassInfo;
-import com.ibm.wsspi.anno.info.InfoStore;
-import com.ibm.wsspi.anno.info.MethodInfo;
-import com.ibm.wsspi.anno.service.AnnotationService_Service;
-import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
+import com.ibm.wsspi.annocache.info.AnnotationInfo;
+import com.ibm.wsspi.annocache.info.AnnotationValue;
+import com.ibm.wsspi.annocache.info.ClassInfo;
+import com.ibm.wsspi.annocache.info.InfoStore;
+import com.ibm.wsspi.annocache.info.MethodInfo;
+import com.ibm.wsspi.annocache.service.AnnotationCacheService_Service;
+import com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 @Component(service = ModuleInitDataFactory.class)
@@ -172,7 +172,7 @@ public class ModuleInitDataFactory {
     private static final String REFERENCE_MANAGED_BEAN_RUNTIME = "managedBeanRuntime";
     private static final String MANAGED_BEAN_CLASSNAME = "javax.annotation.ManagedBean";
 
-    private final AtomicServiceReference<AnnotationService_Service> annoServiceSRRef = new AtomicServiceReference<AnnotationService_Service>(REFERENCE_ANNOTATION_SERVICE);
+    private final AtomicServiceReference<AnnotationCacheService_Service> annoServiceSRRef = new AtomicServiceReference<AnnotationCacheService_Service>(REFERENCE_ANNOTATION_SERVICE);
     private final AtomicServiceReference<J2EENameFactory> j2eeNameFactorySRRef = new AtomicServiceReference<J2EENameFactory>(REFERENCE_J2EE_NAME_FACTORY);
     private final AtomicServiceReference<SessionBeanRuntime> sessionBeanRuntimeSRRef = new AtomicServiceReference<SessionBeanRuntime>(REFERENCE_SESSION_BEAN_RUNTIME);
     private final AtomicServiceReference<MDBRuntime> mdbRuntimeSRRef = new AtomicServiceReference<MDBRuntime>(REFERENCE_MDB_RUNTIME);
@@ -209,12 +209,12 @@ public class ModuleInitDataFactory {
         runtimeVersion = DEFAULT_VERSION;
     }
 
-    @Reference(name = REFERENCE_ANNOTATION_SERVICE, service = AnnotationService_Service.class)
-    protected void setAnnoService(ServiceReference<AnnotationService_Service> ref) {
+    @Reference(name = REFERENCE_ANNOTATION_SERVICE, service = AnnotationCacheService_Service.class)
+    protected void setAnnoService(ServiceReference<AnnotationCacheService_Service> ref) {
         annoServiceSRRef.setReference(ref);
     }
 
-    protected void unsetAnnoService(ServiceReference<AnnotationService_Service> ref) {
+    protected void unsetAnnoService(ServiceReference<AnnotationCacheService_Service> ref) {
         annoServiceSRRef.unsetReference(ref);
     }
 
@@ -1170,7 +1170,8 @@ public class ModuleInitDataFactory {
             // exactly one (eligible) interface on its implements clause.  This
             // is consistent with the EJB 3.0 feature pack, which only looked
             // on the implements clause of the bean class.
-            for (ClassInfo superclassInfo = beanMergeData.getClassInfo(); superclassInfo != null && !superclassInfo.getName().equals(Object.class.getName()); superclassInfo = superclassInfo.getSuperclass()) {
+            for (ClassInfo superclassInfo = beanMergeData.getClassInfo(); superclassInfo != null
+                                                                          && !superclassInfo.getName().equals(Object.class.getName()); superclassInfo = superclassInfo.getSuperclass()) {
                 Set<String> eligibleInterfaceNames = getEligibleInterfaceNames(superclassInfo);
                 if (!eligibleInterfaceNames.isEmpty()) {
                     if (eligibleInterfaceNames.size() == 1) {

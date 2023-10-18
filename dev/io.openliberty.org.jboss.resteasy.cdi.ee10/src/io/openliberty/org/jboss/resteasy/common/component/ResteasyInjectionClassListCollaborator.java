@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,15 +26,15 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
-import com.ibm.ws.container.service.annotations.WebAnnotations;
+import com.ibm.ws.container.service.annocache.WebAnnotations;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.info.ClassInfo;
-import com.ibm.wsspi.anno.info.MethodInfo;
-import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
+import com.ibm.wsspi.annocache.info.ClassInfo;
+import com.ibm.wsspi.annocache.info.FieldInfo;
+import com.ibm.wsspi.annocache.info.MethodInfo;
+import com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollaborator;
 
 @Component(name = "com.ibm.ws.resteasy.cdi.component.ResteasyInjectionClassListCollaborator",
@@ -103,7 +103,7 @@ public class ResteasyInjectionClassListCollaborator implements WebAppInjectionCl
         WebAnnotations webAnnotations;
         AnnotationTargets_Targets annotationTargets;
         try {
-            webAnnotations = AnnotationsBetaHelper.getWebAnnotations(moduleContainer);
+            webAnnotations = moduleContainer.adapt(WebAnnotations.class);
             annotationTargets = webAnnotations.getAnnotationTargets();
         } catch ( Exception e ) {
             // Detection cannot be done without annotations information.
@@ -235,7 +235,7 @@ public class ResteasyInjectionClassListCollaborator implements WebAppInjectionCl
             // which are overridden by the target class are not masked
             // because the method is overridden.
 
-            for ( com.ibm.wsspi.anno.info.FieldInfo fieldInfo : classInfo.getDeclaredFields() ) {
+            for ( FieldInfo fieldInfo : classInfo.getDeclaredFields() ) {
                 if ( fieldInfo.isAnnotationPresent(INJECT_CLASS_NAME) || fieldInfo.isAnnotationPresent(RESOURCE_CLASS_NAME) ) {
                     return true;
                 }
