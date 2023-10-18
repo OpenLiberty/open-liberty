@@ -60,7 +60,13 @@ public class VersionlessFeatureCreator {
                 createPrivateVersionlessFeature(feature.getFeatureName(), features[1].split("-")[0]);
                 usedDependencies.add(features[1].split("-")[0]);
             }
-    		createPrivateVersionedFeature(feature.getFeatureName(), features[0].split("-")[1], features[1].split("-")[0], features[1].split("-")[1], features[2]);
+            String[] dependencyVersions = feature.getAllDependencyVersions(features[0], features[1].split("-")[0]);
+            if(dependencyVersions[1].equals("")){
+                createPrivateVersionedFeature(feature.getFeatureName(), features[0].split("-")[1], features[1].split("-")[0], features[1].split("-")[1], features[2]);
+            }
+            else{
+                createPrivateVersionedFeature(feature.getFeatureName(), features[0].split("-")[1], features[1].split("-")[0], dependencyVersions[0]+"; ibm.tolerates:=\"" + dependencyVersions[1] + "\"", features[2]);
+            }
     	}
     }
     
@@ -130,7 +136,7 @@ public class VersionlessFeatureCreator {
             writer.newLine();
             writer.append("-features=io.openliberty.unversioned." + feature.getFeatureName() + "-0.0; ibm.tolerates:=\"" + feature.getAllVersions() + "\"");
             writer.newLine();
-            writer.append("WLP-Required-Feature: jakartaPlatform, javaeePlatform, mpPlatform");
+            writer.append("WLP-Required-Feature: jakartaPlatform, mpPlatform");
             writer.newLine();
             writer.append("kind=noship");
             writer.newLine();
