@@ -47,34 +47,10 @@ public class SecurityFileMonitor implements FileMonitor {
      * @return the <code>FileMonitor</code> service registration.
      */
     public ServiceRegistration<FileMonitor> monitorFiles(Collection<String> paths, long monitorInterval) {
-        return monitorFiles(null, paths, monitorInterval);
-    }
-
-    /**
-     * Registers this file monitor to start monitoring the specified directory and/or files at the specified interval.
-     *
-     * @param dirs            the dirs to monitor.
-     * @param paths           the paths of the files to monitor.
-     * @param monitorInterval the rate to monitor the directory and/or files.
-     *
-     * @return the <code>FileMonitor</code> service registration.
-     */
-    public ServiceRegistration<FileMonitor> monitorFiles(Collection<String> dirs, Collection<String> paths, long monitorInterval) {
         BundleContext bundleContext = actionable.getBundleContext();
         final Hashtable<String, Object> fileMonitorProps = new Hashtable<String, Object>();
         fileMonitorProps.put(FileMonitor.MONITOR_FILES, paths);
-        if (dirs != null && !dirs.isEmpty()) {
-            // Currently MONITOR_DIRECTORIES is only used for the LTPAFileMonitor
-            // this is not used for other securityFileMonitors
-            fileMonitorProps.put(FileMonitor.MONITOR_DIRECTORIES, dirs);
-            fileMonitorProps.put(FileMonitor.MONITOR_FILTER, ".*\\.keys");
-        }
         fileMonitorProps.put(FileMonitor.MONITOR_INTERVAL, monitorInterval);
-
-        // Don't attempt to register the file monitor if the server is stopping
-        if (FrameworkState.isStopping())
-            return null;
-
         return bundleContext.registerService(FileMonitor.class, this, fileMonitorProps);
     }
 
@@ -142,6 +118,8 @@ public class SecurityFileMonitor implements FileMonitor {
 
     /**
      * Action is needed if a file is modified or if it is recreated after it was deleted.
+     * @param createdFiles
+     * @param modifiedFiles
      */
     private Boolean isActionNeeded(Collection<File> createdFiles, Collection<File> modifiedFiles) {
         boolean actionNeeded = false;

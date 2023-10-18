@@ -67,6 +67,7 @@ public class LTPAConfigurationImplTest {
     private static final String PWD = "pwd";
     private static final String ANOTHER_PWD = "anotherPwd";
     private static final boolean DEFAULT_MONITOR_DIR_VALUE = false;
+    private static final String DEFAULT_UPDATE_TRIGGER = "polled";
 
     private final Mockery mock = new JUnit4Mockery() {
         {
@@ -96,7 +97,7 @@ public class LTPAConfigurationImplTest {
 
     @Before
     public void setUp() {
-        props = createProps(PATH_TO_FILE, PWD, 120L, 0L, DEFAULT_MONITOR_DIR_VALUE, 0L);
+        props = createProps(PATH_TO_FILE, PWD, 120L, 0L, DEFAULT_MONITOR_DIR_VALUE, DEFAULT_UPDATE_TRIGGER, 0L);
 
         mock.checking(new Expectations() {
             {
@@ -118,13 +119,14 @@ public class LTPAConfigurationImplTest {
         ltpaConfig = createActivatedLTPAConfigurationImpl();
     }
 
-    private Map<String, Object> createProps(String filePath, String password, long expiration, long monitorInterval, boolean monitorDirectory, long expDiffAllowed) {
+    private Map<String, Object> createProps(String filePath, String password, long expiration, long monitorInterval, boolean enableDirectoryMonitoring, String updateTrigger, long expDiffAllowed) {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, filePath);
         props.put(LTPAConfiguration.CFG_KEY_PASSWORD, new SerializableProtectedString(password.toCharArray()));
         props.put(LTPAConfiguration.CFG_KEY_TOKEN_EXPIRATION, expiration);
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, monitorInterval);
-        props.put(LTPAConfiguration.CFG_KEY_MONITOR_DIRECTORY, monitorDirectory);
+        props.put(LTPAConfiguration.CFG_KEY_ENABLE_DIRECTORY_MONITORING, enableDirectoryMonitoring);
+        props.put(LTPAConfiguration.CFG_KEY_UPDATE_TRIGGER, updateTrigger);
         props.put(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED, expDiffAllowed);
         return props;
     }

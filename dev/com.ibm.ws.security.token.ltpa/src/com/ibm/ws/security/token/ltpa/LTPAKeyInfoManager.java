@@ -130,25 +130,25 @@ public class LTPAKeyInfoManager {
             //load validationKeys
             Iterator<Properties> validationKeysIterator = validationKeys.iterator();
             while (validationKeysIterator.hasNext()) {
-                OffsetDateTime notUseAfterDateOdt = null;
+                OffsetDateTime validUntilDateOdt = null;
                 Properties vKeys = validationKeysIterator.next();
                 String filename = (String) vKeys.get(LTPAConfiguration.CFG_KEY_VALIDATION_FILE_NAME);
                 if (!this.importFileCache.contains(vKeys.get(LTPAConfiguration.CFG_KEY_VALIDATION_FILE_NAME))) {
-                    String notUseAfterDate = ((String) vKeys.get(LTPAConfiguration.CFG_KEY_VALIDATION_NOT_USE_AFTER_DATE));
-                    if (notUseAfterDate != null) {
+                    String validUntilDate = ((String) vKeys.get(LTPAConfiguration.CFG_KEY_VALIDATION_VALID_UNTIL_DATE));
+                    if (validUntilDate != null) {
                         try {
-                            notUseAfterDateOdt = OffsetDateTime.parse(notUseAfterDate);
-                            if (notUseAfterDateOdt != null && isNotUseAfterDate(filename, notUseAfterDateOdt)) {
+                            validUntilDateOdt = OffsetDateTime.parse(validUntilDate);
+                            if (validUntilDateOdt != null && isValidUntilDate(filename, validUntilDateOdt)) {
                                 continue; //Skip this LTPA validationKeys
                             }
                         } catch (Exception e) {
-                            Tr.error(tc, "LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT", notUseAfterDate, filename);
+                            Tr.error(tc, "LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT", validUntilDate, filename);
                             continue; //Skip this LTPA validationKeys
                         }
                     }
 
                     byte[] password = getKeyPasswordBytes(vKeys);
-                    loadLtpaKeysFile(locService, filename, password, true, notUseAfterDateOdt);
+                    loadLtpaKeysFile(locService, filename, password, true, validUntilDateOdt);
                 }
             }
         }
@@ -161,15 +161,15 @@ public class LTPAKeyInfoManager {
         }
     }
 
-    public boolean isNotUseAfterDate(String filename, OffsetDateTime notUseAfterDateOdt) {
-        OffsetDateTime currentTime = OffsetDateTime.now(notUseAfterDateOdt.getOffset());
+    public boolean isValidUntilDate(String filename, OffsetDateTime validUntilDateOdt) {
+        OffsetDateTime currentTime = OffsetDateTime.now(validUntilDateOdt.getOffset());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "current date: " + currentTime);
         }
 
-        if (currentTime.isAfter(notUseAfterDateOdt)) {
-            Tr.warning(tc, "LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE", notUseAfterDateOdt, filename);
+        if (currentTime.isAfter(validUntilDateOdt)) {
+            Tr.warning(tc, "LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE", validUntilDateOdt, filename);
             return true;
         } else {
             return false;
@@ -187,12 +187,12 @@ public class LTPAKeyInfoManager {
      * @param keyImportFile
      * @param keyPassword
      * @param validationKey
-     * @param notUseAfterDateOdt
+     * @param validUntilDateOdt
      * @throws IOException
      * @throws Exception
      */
     private void loadLtpaKeysFile(WsLocationAdmin locService, String keyImportFile, byte[] keyPassword, boolean validationKey,
-                                  OffsetDateTime notUseAfterDateOdt) throws IOException, Exception {
+                                  OffsetDateTime validUntilDateOdt) throws IOException, Exception {
         // Need to load the key import file
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "Loading LTPA " + (validationKey == true ? "validation" : "primary") + "Keys file: " + keyImportFile);
@@ -277,9 +277,9 @@ public class LTPAKeyInfoManager {
         this.importFileCache.add(keyImportFile);
 
         if (validationKey) {
-            ltpaValidationKeysInfos.add(new LTPAValidationKeysInfo(keyImportFile, secretKey, privateKey, publicKey, notUseAfterDateOdt));
+            ltpaValidationKeysInfos.add(new LTPAValidationKeysInfo(keyImportFile, secretKey, privateKey, publicKey, validUntilDateOdt));
             if (tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "ValidationKeys: " + keyImportFile + " notUseAfterDate: " + notUseAfterDateOdt);
+                Tr.debug(this, tc, "ValidationKeys: " + keyImportFile + " validUntilDate: " + validUntilDateOdt);
                 Tr.debug(this, tc, "LTPAValidationKeysInfo size: " + ltpaValidationKeysInfos.size());
             }
         }

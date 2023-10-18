@@ -29,14 +29,14 @@ public class LTPAValidationKeysInfo {
     private byte[] publicKey = null;
     private LTPAPrivateKey ltpaPrivateKey = null;
     private LTPAPublicKey ltpaPublicKey = null;
-    OffsetDateTime notUseAfterDateOdt = null;
+    OffsetDateTime validUntilDateOdt = null;
 
-    LTPAValidationKeysInfo(String filename, byte[] secretKey, byte[] privateKey, byte[] publicKey, OffsetDateTime notUseAfterDateOdt) {
+    LTPAValidationKeysInfo(String filename, byte[] secretKey, byte[] privateKey, byte[] publicKey, OffsetDateTime validUntilDateOdt) {
         this.filename = filename;
         this.secretKey = secretKey;
         this.privateKey = privateKey;
         this.publicKey = publicKey;
-        this.notUseAfterDateOdt = notUseAfterDateOdt;
+        this.validUntilDateOdt = validUntilDateOdt;
         ltpaPrivateKey = new LTPAPrivateKey(privateKey);
         ltpaPublicKey = new LTPAPublicKey(publicKey);
     }
@@ -61,14 +61,14 @@ public class LTPAValidationKeysInfo {
         return ltpaPublicKey;
     }
 
-    public boolean isNotUseAfterDate() {
-        if (notUseAfterDateOdt == null)
+    public boolean isValidUntilDate() {
+        if (validUntilDateOdt == null)
             return false;
 
-        OffsetDateTime currentTime = OffsetDateTime.now(notUseAfterDateOdt.getOffset());
+        OffsetDateTime currentTime = OffsetDateTime.now(validUntilDateOdt.getOffset());
 
-        if (notUseAfterDateOdt.isBefore(currentTime)) {
-            Tr.warning(tc, "LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE", notUseAfterDateOdt, filename);
+        if (validUntilDateOdt.isBefore(currentTime)) {
+            Tr.warning(tc, "LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE", validUntilDateOdt, filename);
             return true;
         } else {
             return false;
