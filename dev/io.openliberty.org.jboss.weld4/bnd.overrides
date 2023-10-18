@@ -53,3 +53,7 @@ Service-Component: \
         |org.jboss.weld.serialization\
         |org.jboss.weld.util.bean\
         |org.jboss.weld.util.collections"
+
+Include-Resource: \
+  @${repo;org.jboss.weld:weld-osgi-bundle;[4.0.3,4.1.0)}!/!META-INF/maven/*, \
+  org/jboss/weld/resources=${bin}/org/jboss/weld/resources
