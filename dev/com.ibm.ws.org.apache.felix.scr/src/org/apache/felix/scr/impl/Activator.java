@@ -58,6 +58,7 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.namespace.HostNamespace;
 import org.osgi.framework.wiring.BundleRevision;
 import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
@@ -253,10 +254,29 @@ public class Activator extends AbstractExtender
     public void bundleChanged(BundleEvent event)
     {
         super.bundleChanged(event);
-        if (event.getType() == BundleEvent.UPDATED
-            || event.getType() == BundleEvent.UNINSTALLED)
+        int eType = event.getType();
+        if (eType == BundleEvent.UPDATED
+            || eType == BundleEvent.UNINSTALLED
+            || eType == BundleEvent.UNRESOLVED)
         {
             m_componentMetadataStore.remove(event.getBundle().getBundleId());
+        }
+        if (eType == BundleEvent.RESOLVED)
+        {
+            BundleRevision revision = event.getBundle().adapt(BundleRevision.class);
+            if (revision != null && (revision.getTypes() & BundleRevision.TYPE_FRAGMENT) == BundleRevision.TYPE_FRAGMENT)
+            {
+                BundleWiring wiring = revision.getWiring();
+                List<BundleWire> hostWires = wiring != null ? wiring.getRequiredWires(HostNamespace.HOST_NAMESPACE) : null;
+                if (hostWires != null && !hostWires.isEmpty())
+                {
+                    for (BundleWire hostWire : hostWires)
+                    {
+                        // invalidate any hosts of newly resolved fragments
+                        m_componentMetadataStore.remove(hostWire.getProvider().getBundle().getBundleId());
+                    }
+                }
+            }
         }
     }
 
