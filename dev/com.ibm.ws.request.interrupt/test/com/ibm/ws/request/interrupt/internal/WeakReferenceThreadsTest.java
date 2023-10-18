@@ -17,14 +17,10 @@ import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
-
-import com.ibm.websphere.ras.TrConfigurator;
-
 import test.common.SharedOutputManager;
 
 public class WeakReferenceThreadsTest {
@@ -73,7 +69,7 @@ public class WeakReferenceThreadsTest {
 	 * (held by this test) is nullified that the remaining weak-references will
 	 * remove themselves.
 	 */
-	public void testWeakReferenceThread() throws InterruptedException {
+	public void testWeakReferenceThread() {
 
 		final String REQUEST_ID = "requestID1";
 
@@ -119,13 +115,22 @@ public class WeakReferenceThreadsTest {
 
 		// Remove reference to Thread and Invoke a System GC
 		t = null;
-		System.gc();
-		TimeUnit.SECONDS.sleep(5);
-		System.gc();
+		doGarbageCollection();
 
 		Assert.assertEquals("The threadMap size is not zero. The value is " + iti.getThreadsMapSize(), 0,
 				iti.getThreadsMapSize());
 
+	}
+
+	private void doGarbageCollection() {
+		for (int i = 0; i < 10; ++i) {
+			System.gc();
+			try {
+				TimeUnit.MILLISECONDS.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

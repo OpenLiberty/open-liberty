@@ -398,9 +398,7 @@ public class InterruptibleThreadInfrastructureImpl implements InterruptibleThrea
 	 * @return size of threadMap
 	 */
 	public int getThreadsMapSize() {
-		synchronized (threadMap) {
 			return threadMap.size();
-		}
 	}
 
 }

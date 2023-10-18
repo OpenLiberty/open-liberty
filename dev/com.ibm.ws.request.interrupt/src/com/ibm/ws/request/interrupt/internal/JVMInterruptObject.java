@@ -172,7 +172,6 @@ final class JVMInterruptObject implements InterruptObject {
 			if (thread != null) {
 				Tr.debug(tc, "interrupt method stack trace of thread. ", new Object[] { thread, thread.getStackTrace() });
 			}
-			thread = null;
 		}
 
 		/* call the isBlocked method on the lock context.
@@ -198,7 +197,6 @@ final class JVMInterruptObject implements InterruptObject {
 						if (thread != null) {
 							Tr.debug(tc, "calling unblock on lock context", thread);
 						}
-						thread = null;
 					}
 					try {
 						AccessController.doPrivileged(
@@ -245,7 +243,6 @@ final class JVMInterruptObject implements InterruptObject {
 						if (thread != null) {
 							Tr.debug(tc, "calling unblock on IO context", thread);
 						}
-						thread = null;		
 					}
 					try {
 						AccessController.doPrivileged(
