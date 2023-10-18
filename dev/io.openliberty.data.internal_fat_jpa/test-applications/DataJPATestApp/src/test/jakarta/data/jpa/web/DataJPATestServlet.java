@@ -28,6 +28,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -2241,6 +2242,372 @@ public class DataJPATestServlet extends FATServlet {
         //assertEquals(Rebate.Status.PAID, r1.status());
         //assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 16, 11, 44, 0), r1.updatedAt());
         //assertEquals(Integer.valueOf(initialVersion + 2), r1.version());
+    }
+
+    /**
+     * Tests lifecycle methods returning multiple records as an array.
+     */
+    @Test
+    public void testRecordsArrayReturnedByLifecycleMethods() {
+        // Insert
+        Rebate r2 = new Rebate(2, 2.00, "TestRecordsArrayReturned-Customer2", //
+                        LocalTime.of(8, 22, 0), //
+                        LocalDate.of(2023, Month.OCTOBER, 12), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 12, 8, 22, 0), //
+                        null);
+
+        Rebate r3 = new Rebate(3, 3.00, "TestRecordsArrayReturned-Customer3", //
+                        LocalTime.of(9, 33, 0), //
+                        LocalDate.of(2023, Month.OCTOBER, 13), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 13, 9, 33, 0), //
+                        null);
+
+        Rebate r4 = new Rebate(4, 4.00, "TestRecordsArrayReturned-Customer4", //
+                        LocalTime.of(7, 44, 0), //
+                        LocalDate.of(2023, Month.OCTOBER, 14), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 14, 7, 44, 0), //
+                        null);
+
+        // r5 is intentionally not inserted into the database yet so that we can test non-matching
+        Rebate r5 = new Rebate(5, 5.00, "TestRecordsArrayReturned-Customer5", //
+                        LocalTime.of(6, 55, 0), //
+                        LocalDate.of(2023, Month.OCTOBER, 15), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 15, 6, 55, 0), //
+                        null);
+
+        Rebate[] r = rebates.addAll(r4, r3, r2);
+        assertEquals(3, r.length);
+        r2 = r[2];
+        r3 = r[1];
+        r4 = r[0];
+
+        assertEquals(Integer.valueOf(2), r2.id());
+        assertEquals(2.00, r2.amount(), 0.001f);
+        assertEquals("TestRecordsArrayReturned-Customer2", r2.customerId());
+        assertEquals(LocalTime.of(8, 22, 0), r2.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 12), r2.purchaseMadeOn());
+        assertEquals(Rebate.Status.SUBMITTED, r2.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 12, 8, 22, 0), r2.updatedAt());
+        Integer r2_initialVersion = r2.version();
+        assertNotNull(r2_initialVersion);
+
+        assertEquals(Integer.valueOf(3), r3.id());
+        assertEquals("TestRecordsArrayReturned-Customer3", r3.customerId());
+        assertEquals(3.00, r3.amount(), 0.001f);
+        assertEquals(LocalTime.of(9, 33, 0), r3.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 13), r3.purchaseMadeOn());
+        assertEquals(Rebate.Status.SUBMITTED, r3.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 13, 9, 33, 0), r3.updatedAt());
+        Integer r3_initialVersion = r3.version();
+        assertNotNull(r3_initialVersion);
+
+        assertEquals(Integer.valueOf(4), r4.id());
+        assertEquals("TestRecordsArrayReturned-Customer4", r4.customerId());
+        assertEquals(4.00, r4.amount(), 0.001f);
+        assertEquals(LocalTime.of(7, 44, 0), r4.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 14), r4.purchaseMadeOn());
+        assertEquals(Rebate.Status.SUBMITTED, r4.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 14, 7, 44, 0), r4.updatedAt());
+        Integer r4_initialVersion = r4.version();
+        assertNotNull(r4_initialVersion);
+
+        // Update
+        r2 = new Rebate(r2.id(), r2.amount(), r2.customerId(), //
+                        r2.purchaseMadeAt(), //
+                        r2.purchaseMadeOn(), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 17, 8, 45, 0), //
+                        r2.version());
+
+        r4 = new Rebate(r4.id(), r4.amount(), r4.customerId(), //
+                        r4.purchaseMadeAt(), //
+                        r4.purchaseMadeOn(), //
+                        Rebate.Status.DENIED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 17, 8, 47, 0), //
+                        r4.version());
+
+        r = rebates.modifyAll(r2, r5, r4);
+
+        assertEquals(2, r.length);
+        Rebate r4_old = r4;
+        r2 = r[0];
+        r4 = r[1];
+
+        assertEquals(Integer.valueOf(2), r2.id());
+        assertEquals("TestRecordsArrayReturned-Customer2", r2.customerId());
+        assertEquals(2.00, r2.amount(), 0.001f);
+        assertEquals(LocalTime.of(8, 22, 0), r2.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 12), r2.purchaseMadeOn());
+        assertEquals(Rebate.Status.VERIFIED, r2.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 17, 8, 45, 0), r2.updatedAt());
+        assertEquals(Integer.valueOf(r2_initialVersion + 1), r2.version());
+
+        assertEquals(Integer.valueOf(4), r4.id());
+        assertEquals("TestRecordsArrayReturned-Customer4", r4.customerId());
+        assertEquals(4.00, r4.amount(), 0.001f);
+        assertEquals(LocalTime.of(7, 44, 0), r4.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 14), r4.purchaseMadeOn());
+        assertEquals(Rebate.Status.DENIED, r4.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 17, 8, 47, 0), r4.updatedAt());
+        assertEquals(Integer.valueOf(r4_initialVersion + 1), r4.version());
+
+        // Save
+
+        r2 = new Rebate(r2.id(), r2.amount(), r2.customerId(), //
+                        r2.purchaseMadeAt(), //
+                        r2.purchaseMadeOn(), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 22, 10, 28, 0), //
+                        r2.version()); // valid update
+
+        r3 = new Rebate(r3.id(), r3.amount(), r3.customerId(), //
+                        r3.purchaseMadeAt(), //
+                        r3.purchaseMadeOn(), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 22, 10, 36, 0), //
+                        r3.version()); // valid update
+
+        r = rebates.processAll(r5, r3, r2); // new, update, update
+
+        assertEquals(3, r.length);
+        r5 = r[0];
+        r3 = r[1];
+        r2 = r[2];
+
+        assertEquals(Integer.valueOf(2), r2.id());
+        assertEquals("TestRecordsArrayReturned-Customer2", r2.customerId());
+        assertEquals(2.00, r2.amount(), 0.001f);
+        assertEquals(LocalTime.of(8, 22, 0), r2.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 12), r2.purchaseMadeOn());
+        assertEquals(Rebate.Status.PAID, r2.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 22, 10, 28, 0), r2.updatedAt());
+        assertEquals(Integer.valueOf(r2_initialVersion + 2), r2.version());
+
+        assertEquals(Integer.valueOf(3), r3.id());
+        assertEquals("TestRecordsArrayReturned-Customer3", r3.customerId());
+        assertEquals(3.00, r3.amount(), 0.001f);
+        assertEquals(LocalTime.of(9, 33, 0), r3.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 13), r3.purchaseMadeOn());
+        assertEquals(Rebate.Status.VERIFIED, r3.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 22, 10, 36, 0), r3.updatedAt());
+        assertEquals(Integer.valueOf(r3_initialVersion + 1), r3.version());
+
+        assertEquals(Integer.valueOf(5), r5.id());
+        assertEquals("TestRecordsArrayReturned-Customer5", r5.customerId());
+        assertEquals(5.00, r5.amount(), 0.001f);
+        assertEquals(LocalTime.of(6, 55, 0), r5.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 15), r5.purchaseMadeOn());
+        assertEquals(Rebate.Status.SUBMITTED, r5.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 15, 6, 55, 0), r5.updatedAt());
+        assertNotNull(r5.version());
+
+        Rebate r4_nonMatching = new Rebate(r4_old.id(), r4_old.amount(), r4_old.customerId(), //
+                        r4_old.purchaseMadeAt(), //
+                        r4_old.purchaseMadeOn(), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 22, 10, 49, 0), //
+                        r4_old.version()); // invalid update due to old version
+
+        try {
+            r = rebates.processAll(r4_nonMatching);
+            fail("Did not raise OptimisticLockingFailureException when saving a record with an old version. Instead: " +
+                 Arrays.toString(r));
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
+
+        // Delete
+        assertEquals(2, rebates.removeAll(r4_old, r3, r2));
+        assertEquals(2, rebates.removeAll(r2, r3, r4, r5));
+        assertEquals(0, rebates.removeAll(r2, r5));
+        // TODO allow entity return type on delete?
+    }
+
+    /**
+     * Tests lifecycle methods returning multiple records as various types of Iterable.
+     */
+    @Test
+    public void testRecordsIterableReturnedByLifecycleMethods() {
+        // Insert
+        Rebate r6 = new Rebate(6, 6.00, "TestRecordsIterableReturned-Customer6", //
+                        LocalTime.of(6, 36, 0), //
+                        LocalDate.of(2023, Month.OCTOBER, 16), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 16, 6, 36, 0), //
+                        null);
+
+        Rebate r7 = new Rebate(7, 7.00, "TestRecordsIterableReturned-Customer7", //
+                        LocalTime.of(7, 37, 0), //
+                        LocalDate.of(2023, Month.OCTOBER, 17), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 17, 7, 37, 0), //
+                        null);
+
+        Rebate r8 = new Rebate(8, 8.00, "TestRecordsIterableReturned-Customer8", //
+                        LocalTime.of(8, 38, 0), //
+                        LocalDate.of(2023, Month.OCTOBER, 18), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 18, 8, 38, 0), //
+                        null);
+
+        // r9 is intentionally not inserted into the database yet so that we can test non-matching
+        Rebate r9 = new Rebate(9, 9.00, "TestRecordsIterableReturned-Customer9", //
+                        LocalTime.of(9, 39, 0), //
+                        LocalDate.of(2023, Month.OCTOBER, 19), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 19, 9, 39, 0), //
+                        null);
+
+        Iterator<Rebate> it = rebates.addMultiple(List.of(r6, r7, r8)).iterator();
+
+        assertEquals(true, it.hasNext());
+        r6 = it.next();
+        assertEquals(Integer.valueOf(6), r6.id());
+        assertEquals(6.00, r6.amount(), 0.001f);
+        assertEquals("TestRecordsIterableReturned-Customer6", r6.customerId());
+        assertEquals(LocalTime.of(6, 36, 0), r6.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 16), r6.purchaseMadeOn());
+        assertEquals(Rebate.Status.SUBMITTED, r6.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 16, 6, 36, 0), r6.updatedAt());
+        Integer r6_initialVersion = r6.version();
+        assertNotNull(r6_initialVersion);
+
+        assertEquals(true, it.hasNext());
+        r7 = it.next();
+        assertEquals(Integer.valueOf(7), r7.id());
+        assertEquals("TestRecordsIterableReturned-Customer7", r7.customerId());
+        assertEquals(7.00, r7.amount(), 0.001f);
+        assertEquals(LocalTime.of(7, 37, 0), r7.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 17), r7.purchaseMadeOn());
+        assertEquals(Rebate.Status.SUBMITTED, r7.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 17, 7, 37, 0), r7.updatedAt());
+        Integer r7_initialVersion = r7.version();
+        assertNotNull(r7_initialVersion);
+
+        assertEquals(true, it.hasNext());
+        r8 = it.next();
+        assertEquals(Integer.valueOf(8), r8.id());
+        assertEquals("TestRecordsIterableReturned-Customer8", r8.customerId());
+        assertEquals(8.00, r8.amount(), 0.001f);
+        assertEquals(LocalTime.of(8, 38, 0), r8.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 18), r8.purchaseMadeOn());
+        assertEquals(Rebate.Status.SUBMITTED, r8.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 18, 8, 38, 0), r8.updatedAt());
+        Integer r8_initialVersion = r8.version();
+        assertNotNull(r8_initialVersion);
+
+        assertEquals(false, it.hasNext());
+
+        // Save
+        r6 = new Rebate(r6.id(), r6.amount(), r6.customerId(), //
+                        r6.purchaseMadeAt(), //
+                        r6.purchaseMadeOn(), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 26, 6, 46, 0), //
+                        r6.version());
+
+        r8 = new Rebate(r8.id(), r8.amount(), r8.customerId(), //
+                        r8.purchaseMadeAt(), //
+                        r8.purchaseMadeOn(), //
+                        Rebate.Status.DENIED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 28, 8, 48, 0), //
+                        r8.version());
+
+        Collection<Rebate> collection = rebates.processMultiple(List.of(r6, r8, r9)); // update, update, new
+        it = collection.iterator();
+
+        assertEquals(true, it.hasNext());
+        r6 = it.next();
+        assertEquals(Integer.valueOf(6), r6.id());
+        assertEquals("TestRecordsIterableReturned-Customer6", r6.customerId());
+        assertEquals(6.00, r6.amount(), 0.001f);
+        assertEquals(LocalTime.of(6, 36, 0), r6.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 16), r6.purchaseMadeOn());
+        assertEquals(Rebate.Status.VERIFIED, r6.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 26, 6, 46, 0), r6.updatedAt());
+        assertEquals(Integer.valueOf(r6_initialVersion + 1), r6.version());
+
+        assertEquals(true, it.hasNext());
+        Rebate r8_old = r8;
+        r8 = it.next();
+        assertEquals(Integer.valueOf(8), r8.id());
+        assertEquals("TestRecordsIterableReturned-Customer8", r8.customerId());
+        assertEquals(8.00, r8.amount(), 0.001f);
+        assertEquals(LocalTime.of(8, 38, 0), r8.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 18), r8.purchaseMadeOn());
+        assertEquals(Rebate.Status.DENIED, r8.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 28, 8, 48, 0), r8.updatedAt());
+        assertEquals(Integer.valueOf(r8_initialVersion + 1), r8.version());
+
+        assertEquals(true, it.hasNext());
+        r9 = it.next();
+        assertEquals(Integer.valueOf(9), r9.id());
+        assertEquals("TestRecordsIterableReturned-Customer9", r9.customerId());
+        assertEquals(9.00, r9.amount(), 0.001f);
+        assertEquals(LocalTime.of(9, 39, 0), r9.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 19), r9.purchaseMadeOn());
+        assertEquals(Rebate.Status.SUBMITTED, r9.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 19, 9, 39, 0), r9.updatedAt());
+        assertNotNull(r9.version());
+
+        assertEquals(false, it.hasNext());
+
+        // Update
+
+        r6 = new Rebate(r6.id(), r6.amount(), r6.customerId(), //
+                        r6.purchaseMadeAt(), //
+                        r6.purchaseMadeOn(), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 30, 12, 56, 0), //
+                        r6.version()); // valid update
+
+        r7 = new Rebate(r7.id(), r7.amount(), r7.customerId(), //
+                        r7.purchaseMadeAt(), //
+                        r7.purchaseMadeOn(), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 30, 12, 57, 0), //
+                        r7.version()); // valid update
+
+        Rebate r8_nonMatching = new Rebate(r8_old.id(), r8_old.amount(), r8_old.customerId(), //
+                        r8_old.purchaseMadeAt(), //
+                        r8_old.purchaseMadeOn(), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 30, 12, 58, 0), //
+                        r8_old.version()); // invalid update due to old version
+
+        List<Rebate> list = rebates.modifyMultiple(List.of(r7, r8_nonMatching, r6));
+
+        assertEquals(2, list.size());
+        r7 = list.get(0);
+        r6 = list.get(1);
+
+        assertEquals(Integer.valueOf(7), r7.id());
+        assertEquals("TestRecordsIterableReturned-Customer7", r7.customerId());
+        assertEquals(7.00, r7.amount(), 0.001f);
+        assertEquals(LocalTime.of(7, 37, 0), r7.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 17), r7.purchaseMadeOn());
+        assertEquals(Rebate.Status.VERIFIED, r7.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 30, 12, 57, 0), r7.updatedAt());
+        assertEquals(Integer.valueOf(r7_initialVersion + 1), r7.version());
+
+        assertEquals(Integer.valueOf(6), r6.id());
+        assertEquals("TestRecordsIterableReturned-Customer6", r6.customerId());
+        assertEquals(6.00, r6.amount(), 0.001f);
+        assertEquals(LocalTime.of(6, 36, 0), r6.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 16), r6.purchaseMadeOn());
+        assertEquals(Rebate.Status.PAID, r6.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 30, 12, 56, 0), r6.updatedAt());
+        assertEquals(Integer.valueOf(r6_initialVersion + 2), r6.version());
+
+        // Delete
+        assertEquals(3, rebates.removeMultiple(new ArrayList<>(List.of(r9, r8_old, r7, r6))));
+        assertEquals(1, rebates.removeMultiple(new ArrayList<>(List.of(r6, r7, r8))));
+        assertEquals(0, rebates.removeMultiple(new ArrayList<>(List.of(r9, r7))));
+        // TODO allow entity return type on delete?
     }
 
     /**
