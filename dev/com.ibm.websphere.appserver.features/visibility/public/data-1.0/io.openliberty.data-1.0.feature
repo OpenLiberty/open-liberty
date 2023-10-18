@@ -7,6 +7,7 @@ IBM-API-Package: \
   io.openliberty.data.repository; type="ibm-api",\
   jakarta.data; type="spec",\
   jakarta.data.exceptions; type="spec",\
+  jakarta.data.model; type="spec",\
   jakarta.data.page; type="spec",\
   jakarta.data.repository; type="spec"
 Subsystem-Name: Jakarta Data 1.0

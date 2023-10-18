@@ -13,6 +13,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -44,6 +45,7 @@ public class ReactiveStreamsTest extends FATServletClient {
 
     public static final String SERVER_NAME = "ReactiveStreamsTestServer";
 
+    @ClassRule
     public static RepeatTests r = FATSuite.repeatDefault(SERVER_NAME);
 
     public static final String APP_NAME = "ReactiveStreamsTest";

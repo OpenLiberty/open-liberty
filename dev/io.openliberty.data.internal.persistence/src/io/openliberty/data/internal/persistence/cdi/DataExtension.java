@@ -51,8 +51,8 @@ import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 import io.openliberty.data.internal.persistence.EntityDefiner;
-import jakarta.data.StaticMetamodel;
 import jakarta.data.exceptions.MappingException;
+import jakarta.data.model.StaticMetamodel;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Repository;
 import jakarta.enterprise.event.Observes;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -127,10 +127,11 @@ public class CxfX509OverRideTests {
     }
 
     //
-    // The server.xml in this server did not have the appropriate settings.
-    // This test asks the cxf service client to set the properties to
-    // overwrite them.
-    //
+    // The server.xml in this server DOES NOT have the appropriate settings to sign/encrypt the SOAP message
+    // But the Service client (CxfX509SvcClient) uses cxf/wss4j apis to create signature / encryption properties objects using CORRECT configuration and put them in requestConext
+    // The wsSecurityClient element's signatureProperties and encryptionProperties in the server.xml are ignored in this case since the same configuration (signatureProperties and encryptionProperties) is specified in the requestContext by the service client
+    // This is a positive test. The configuration specified in the requestContext by the service client provides appropriate settings to sign/encrypt and that match with the provider
+    // issue 30353
 
     @Test
     public void testCxfX509Service() throws Exception {

@@ -12,11 +12,13 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,10 +30,19 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import io.openliberty.data.repository.Count;
+import io.openliberty.data.repository.Exists;
+import io.openliberty.data.repository.Filter;
+import io.openliberty.data.repository.Select;
 import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.page.Pageable;
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Insert;
+import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
 import jakarta.persistence.Query;
 
 /**
@@ -42,7 +53,7 @@ class QueryInfo {
 
     static enum Type {
         COUNT, DELETE, DELETE_WITH_ENTITY_PARAM, EXISTS, FIND, FIND_AND_DELETE, INSERT, SAVE, RESOURCE_ACCESS,
-        UPDATE, UPDATE_WITH_ENTITY_PARAM
+        UPDATE, UPDATE_WITH_ENTITY_PARAM, UPDATE_WITH_ENTITY_PARAM_AND_RESULT
     }
 
     /**
@@ -394,6 +405,23 @@ class QueryInfo {
     }
 
     /**
+     * Initialize this query information for the specified type of annotated repository operation.
+     *
+     * @param annoClass     Insert, Update, Save, or Delete annotation class.
+     * @param operationType corresponding operation type.
+     */
+    void init(Class<? extends Annotation> annoClass, Type operationType) {
+        type = operationType;
+        Class<?>[] paramTypes = method.getParameterTypes();
+        if (paramTypes.length != 1)
+            throw new UnsupportedOperationException("Repository " + '@' + annoClass.getSimpleName() +
+                                                    " operations must have exactly 1 parameter, which can be the entity" +
+                                                    " or a collection or array of entities. The " + method.getDeclaringClass().getName() +
+                                                    '.' + method.getName() + " method has " + paramTypes.length + " parameters."); // TODO NLS
+        entityParamType = paramTypes[0];
+    }
+
+    /**
      * Determines whether a delete operation is find-and-delete (true) or delete only (false).
      * The determination is made based on the return type, with multiple and Optional results
      * indicating find-and-delete, and void or singular results that are boolean or a numeric
@@ -555,9 +583,7 @@ class QueryInfo {
 
         int namedParamCount = paramNames == null ? 0 : paramNames.size();
         for (int i = 0, p = 0; i < methodParamForQueryCount; i++) {
-            Object arg = type == Type.DELETE_WITH_ENTITY_PARAM && i == 0 //
-                            ? toEntityId(args[i]) //
-                            : args[i];
+            Object arg = args[i];
 
             if (arg == null || entityInfo.idClassAttributeAccessors == null || !entityInfo.idType.isInstance(arg)) {
                 if (p < namedParamCount) {
@@ -609,50 +635,6 @@ class QueryInfo {
         }
     }
 
-    /**
-     * Converts a repository method parameter that is an entity or iterable of entities
-     * into an entity id or list of entity ids.
-     *
-     * @param value value of the repository method parameter.
-     * @return entity id or list of entity ids.
-     */
-    private Object toEntityId(Object value) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        List<Member> keyAccessors = entityInfo.attributeAccessors.get(entityInfo.getAttributeName("id", true));
-
-        if (value instanceof Iterable) {
-            List<Object> list = new ArrayList<>();
-            for (Object v : (Iterable<?>) value) {
-                for (Member keyAccessor : keyAccessors) {
-                    Class<?> type = keyAccessor.getDeclaringClass();
-                    if (type.isInstance(v)) {
-                        if (keyAccessor instanceof Method)
-                            v = ((Method) keyAccessor).invoke(v);
-                        else // Field
-                            v = ((Field) keyAccessor).get(v);
-                    } else {
-                        throw new MappingException("Value of type " + v.getClass().getName() + " is incompatible with attribute type " + type.getName()); // TODO NLS
-                    }
-                }
-                list.add(v);
-            }
-            value = list;
-        } else { // single value
-            for (Member keyAccessor : keyAccessors) {
-                Class<?> type = keyAccessor.getDeclaringClass();
-                if (type.isInstance(value)) {
-                    if (keyAccessor instanceof Method)
-                        value = ((Method) keyAccessor).invoke(value);
-                    else // Field
-                        value = ((Field) keyAccessor).get(value);
-                } else {
-                    throw new MappingException("Value of type " + value.getClass().getName() + " is incompatible with attribute type " + type.getName()); // TODO NLS
-                }
-            }
-        }
-
-        return value;
-    }
-
     @Override
     @Trivial
     public String toString() {
@@ -673,6 +655,69 @@ class QueryInfo {
             b.append(']');
         }
         return b.toString();
+    }
+
+    /**
+     * Ensure that the annotations are valid together on the same repository method.
+     *
+     * @param delete  The Delete annotation if present, otherwise null.
+     * @param insert  The Insert annotation if present, otherwise null.
+     * @param update  The Update annotation if present, otherwise null.
+     * @param save    The Save annotation if present, otherwise null.
+     * @param query   The Query annotation if present, otherwise null.
+     * @param orderBy array of OrderBy annotations if present, otherwise an empty array.
+     * @param filters array of Filter annotations if present, otherwise an empty array.
+     * @param count   The Count annotation if present, otherwise null.
+     * @param exists  The Exists annotation if present, otherwise null.
+     * @param select  The Select annotation if present, otherwise null.
+     * @param updates array of experimental Update annotations if present, otherwise an empty array.
+     * @throws UnsupportedOperationException if the combination of annotations is not valid.
+     */
+    @Trivial
+    void validateAnnotationCombinations(Delete delete, Insert insert, Update update, Save save,
+                                        jakarta.data.repository.Query query, OrderBy[] orderBy,
+                                        Filter[] filters, Count count, Exists exists, Select select,
+                                        io.openliberty.data.repository.Update[] updates) {
+        int f = filters.length == 0 ? 0 : 1;
+        int o = orderBy.length == 0 ? 0 : 1;
+        int u = updates.length == 0 ? 0 : 1;
+        int q = query == null ? 0 : 1;
+        int s = select == null ? 0 : 1;
+
+        int ius = (insert == null ? 0 : 1) +
+                  (update == null ? 0 : 1) +
+                  (save == null ? 0 : 1);
+
+        int iusdce = ius + u +
+                     (delete == null ? 0 : 1) +
+                     (count == null ? 0 : 1) +
+                     (exists == null ? 0 : 1);
+
+        if (ius + f > 1 // more than one of (Insert, Update, Save, Filter)
+            || iusdce > 1 // more than one of (Insert, Update, Save, Delete, Count, Exists)
+            || iusdce + o > 1 // one of (Insert, Update, Save, Delete, Count, Exists) with OrderBy
+            || iusdce + q + s > 1) { // one of (Insert, Update, Save, Delete, Count, Exists) with Query or Select, or both Query and Select
+
+            // Invalid combination of multiple annotations
+
+            List<String> annoClassNames = new ArrayList<String>();
+            for (Annotation anno : Arrays.asList(delete, insert, query, save, update)) // count, exists, select))
+                if (anno != null)
+                    annoClassNames.add(anno.annotationType().getName());
+            if (orderBy.length > 0)
+                annoClassNames.add(OrderBy.class.getName());
+            if (filters.length > 0)
+                annoClassNames.add(Filter.class.getName());
+            for (Annotation anno : Arrays.asList(count, exists, select))
+                if (anno != null)
+                    annoClassNames.add(anno.annotationType().getName());
+            if (updates.length > 0)
+                annoClassNames.add(io.openliberty.data.repository.Update.class.getName());
+
+            throw new UnsupportedOperationException("The " + method.getDeclaringClass().getName() + '.' + method.getName() +
+                                                    " repository method cannot be annotated with the following combination of annotations: " +
+                                                    annoClassNames); // TODO NLS
+        }
     }
 
     /**

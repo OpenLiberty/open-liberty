@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.fat;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Set;
 
 import org.junit.AfterClass;
@@ -82,6 +84,16 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
         }
 
         server.startServer();
+
+        // Check everything went okay
+        server.waitForStringInLog("CWWKE0002I");
+        assertNotNull("FeatureManager should report update is complete",
+                      server.waitForStringInLog("CWWKF0008I"));
+        assertNotNull("Server should report it has started",
+                      server.waitForStringInLog("CWWKF0011I"));
+
+        // Wait for the Derby start messages from DataSource/database creation to avoid servlet init trying to concurrently start Derby.
+        server.waitForStringInLog("DSRA8206I"); // connected to Derby
     }
 
     @AfterClass

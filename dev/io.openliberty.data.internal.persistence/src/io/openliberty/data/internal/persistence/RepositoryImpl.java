@@ -25,7 +25,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Type;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
@@ -72,14 +71,12 @@ import io.openliberty.data.internal.persistence.cdi.DataExtension;
 import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Count;
-import io.openliberty.data.repository.Delete;
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Function;
 import io.openliberty.data.repository.Operation;
 import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.Select.Aggregate;
-import io.openliberty.data.repository.Update;
 import jakarta.data.Limit;
 import jakarta.data.Sort;
 import jakarta.data.Streamable;
@@ -96,9 +93,14 @@ import jakarta.data.page.Page;
 import jakarta.data.page.Pageable;
 import jakarta.data.page.Slice;
 import jakarta.data.repository.BasicRepository;
+import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
+import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.LockModeType;
@@ -136,6 +138,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
     private static final Set<Compare> SUPPORTS_COLLECTIONS = Set.of //
     (Compare.Equal, Compare.Contains, Compare.Empty, Compare.Not, Compare.NotContains, Compare.NotEmpty);
+
+    // Valid types for when a repository method computes an update count
+    private static final Set<Class<?>> UPDATE_COUNT_TYPES = new HashSet<>(Arrays.asList //
+    (boolean.class, Boolean.class, int.class, Integer.class, long.class, Long.class, void.class, Void.class, Number.class));
 
     private static final ThreadLocal<Deque<EntityManager>> defaultMethodResources = new ThreadLocal<>();
 
@@ -371,30 +377,54 @@ public class RepositoryImpl<R> implements InvocationHandler {
             queryInfo.validateResult = v[1];
         }
 
+        Method method = queryInfo.method;
         Class<?> multiType = queryInfo.getMultipleResultType();
         boolean countPages = Page.class.equals(multiType) || KeysetAwarePage.class.equals(multiType);
         StringBuilder q = null;
 
         // TODO would it be more efficient to invoke method.getAnnotations() once?
 
-        Query query = queryInfo.method.getAnnotation(Query.class);
-        if (query == null) {
+        // spec-defined annotation types
+        Delete delete = method.getAnnotation(Delete.class);
+        Insert insert = method.getAnnotation(Insert.class);
+        Update update = method.getAnnotation(Update.class);
+        Save save = method.getAnnotation(Save.class);
+        Query query = method.getAnnotation(Query.class);
+        OrderBy[] orderBy = method.getAnnotationsByType(OrderBy.class);
+
+        // experimental annotation types
+        Filter[] filters = method.getAnnotationsByType(Filter.class);
+        Count count = method.getAnnotation(Count.class);
+        Exists exists = method.getAnnotation(Exists.class);
+        Select select = method.getAnnotation(Select.class);
+        io.openliberty.data.repository.Update[] updates = method.getAnnotationsByType(io.openliberty.data.repository.Update.class);
+
+        queryInfo.validateAnnotationCombinations(delete, insert, update, save, query, orderBy,
+                                                 filters, count, exists, select, updates);
+
+        // Lifecycle annotations
+        if (save != null) { // @Save annotation
+            queryInfo.init(Save.class, QueryInfo.Type.SAVE);
+        } else if (insert != null) { // @Insert annotation
+            queryInfo.init(Insert.class, QueryInfo.Type.INSERT);
+        } else if (update != null) { // @Update annotation
+            q = generateUpdateEntity(queryInfo);
+        } else if (delete != null && filters.length == 0) { // @Delete annotation with no @Filter annotations
+            q = generateDeleteEntity(queryInfo);
+        } else if (query == null) {
             // Query by annotations
-            Filter[] filters = queryInfo.method.getAnnotationsByType(Filter.class);
             StringBuilder whereClause = filters.length > 0 ? generateWhereClause(queryInfo, filters) : null;
             String o = queryInfo.entityVar;
 
-            Update[] updates = queryInfo.method.getAnnotationsByType(Update.class);
             if (updates.length > 0) {
                 queryInfo.type = QueryInfo.Type.UPDATE;
                 q = generateUpdateClause(queryInfo, updates);
                 if (whereClause != null)
                     q.append(whereClause);
-            } else if (queryInfo.method.getAnnotation(Delete.class) != null) {
+            } else if (delete != null) {
                 if (queryInfo.isFindAndDelete()) {
                     queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
-                    Select select = null; // queryInfo.method.getAnnotation(Select.class); // TODO This would be limited by collision with update count/boolean
-                    q = generateSelectClause(queryInfo, select);
+                    q = generateSelectClause(queryInfo, null); // TODO select annotation parameter would be limited by collision with update count/boolean
                     queryInfo.jpqlDelete = generateDeleteById(queryInfo);
                 } else { // DELETE
                     queryInfo.type = QueryInfo.Type.DELETE;
@@ -403,14 +433,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
                 if (whereClause != null)
                     q.append(whereClause);
-            } else if (queryInfo.method.getAnnotation(Count.class) != null) {
+            } else if (count != null) {
                 queryInfo.type = QueryInfo.Type.COUNT;
                 q = new StringBuilder(21 + 2 * o.length() + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
                                 .append("SELECT COUNT(").append(o).append(") FROM ") //
                                 .append(entityInfo.name).append(' ').append(o);
                 if (whereClause != null)
                     q.append(whereClause);
-            } else if (queryInfo.method.getAnnotation(Exists.class) != null) {
+            } else if (exists != null) {
                 queryInfo.type = QueryInfo.Type.EXISTS;
                 String name = entityInfo.idClassAttributeAccessors == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
                 String attrName = entityInfo.getAttributeName(name, true);
@@ -421,7 +451,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     q.append(whereClause);
             } else if (whereClause != null) {
                 queryInfo.type = QueryInfo.Type.FIND;
-                Select select = queryInfo.method.getAnnotation(Select.class);
                 q = generateSelectClause(queryInfo, select).append(whereClause);
                 if (countPages && queryInfo.type == QueryInfo.Type.FIND)
                     generateCount(queryInfo, whereClause.toString());
@@ -431,7 +460,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                 // @Select annotation only
                 if (q == null && queryInfo.type == null) {
-                    Select select = queryInfo.method.getAnnotation(Select.class);
                     if (select != null) {
                         queryInfo.type = QueryInfo.Type.FIND;
                         q = generateSelectClause(queryInfo, select);
@@ -440,20 +468,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     }
                 }
             }
-        } else { // @Query annotation
+        } else if (query != null) { // @Query annotation
             queryInfo.jpql = query.value();
 
             String upper = queryInfo.jpql.toUpperCase();
             String upperTrimmed = upper.stripLeading();
             if (upperTrimmed.startsWith("SELECT")) {
-                int orderBy = upper.lastIndexOf("ORDER BY");
+                int order = upper.lastIndexOf("ORDER BY");
                 queryInfo.type = QueryInfo.Type.FIND;
                 queryInfo.sorts = queryInfo.sorts == null ? new ArrayList<>() : queryInfo.sorts;
                 queryInfo.jpqlCount = query.count().length() > 0 ? query.count() : null;
 
-                int select = upper.length() - upperTrimmed.length();
-                int from = find("FROM", upper, select + 9);
+                int selectIndex = upper.length() - upperTrimmed.length();
+                int from = find("FROM", upper, selectIndex + 9);
                 if (from > 0) {
+                    // TODO support for multiple entity types
                     int entityName = find(entityInfo.name.toUpperCase(), upper, from + 5);
                     if (entityName > 0) {
                         String entityVar = findEntityVariable(queryInfo.jpql, entityName + entityInfo.name.length() + 1);
@@ -463,13 +492,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                     if (countPages && queryInfo.jpqlCount == null) {
                         // Attempt to infer from provided query
-                        String s = queryInfo.jpql.substring(select + 6, from);
+                        String s = queryInfo.jpql.substring(selectIndex + 6, from);
                         int comma = s.indexOf(',');
                         if (comma > 0)
                             s = s.substring(0, comma);
                         queryInfo.jpqlCount = new StringBuilder(queryInfo.jpql.length() + 7) //
                                         .append("SELECT COUNT(").append(s.trim()).append(") ") //
-                                        .append(orderBy > from ? queryInfo.jpql.substring(from, orderBy) : queryInfo.jpql.substring(from)) //
+                                        .append(order > from ? queryInfo.jpql.substring(from, order) : queryInfo.jpql.substring(from)) //
                                         .toString();
                     }
                 }
@@ -488,40 +517,70 @@ public class RepositoryImpl<R> implements InvocationHandler {
         // parameters the JPQL takes and which parameters are named parameters.
         if (query != null || queryInfo.paramNames != null) {
             int initialParamCount = queryInfo.paramCount;
-            Parameter[] params = queryInfo.method.getParameters();
+            Parameter[] params = method.getParameters();
+            List<Integer> paramPositions = null;
             Class<?> paramType;
+            boolean hasParamAnnotation = false;
             for (int i = 0; i < params.length && !SPECIAL_PARAM_TYPES.contains(paramType = params[i].getType()); i++) {
                 Param param = params[i].getAnnotation(Param.class);
-                if (param != null) {
+                hasParamAnnotation |= param != null;
+                String paramName = param == null ? null : param.value();
+                if (param == null && queryInfo.jpql != null && params[i].isNamePresent()) {
+                    String name = params[i].getName();
+                    if (paramPositions == null)
+                        paramPositions = getParameterPositions(queryInfo.jpql);
+                    for (int p = 0; p < paramPositions.size() && paramName == null; p++) {
+                        int pos = paramPositions.get(p); // position at which the named parameter name must appear
+                        int next = pos + name.length(); // the next character must not be alphanumeric for the name to be a match
+                        if (queryInfo.jpql.regionMatches(paramPositions.get(p), name, 0, name.length())
+                            && (next >= queryInfo.jpql.length() || !Character.isLetterOrDigit(queryInfo.jpql.charAt(next)))) {
+                            paramName = name;
+                            paramPositions.remove(p);
+                        }
+                    }
+                }
+                if (paramName != null) {
                     if (queryInfo.paramNames == null)
                         queryInfo.paramNames = new ArrayList<>();
                     if (entityInfo.idClassAttributeAccessors != null && paramType.equals(entityInfo.idType))
+                        // TODO is this correct to do when @Query has a named parameter with type of the IdClass?
+                        // It seems like the JPQL would not be consistent.
                         for (int p = 1, numIdClassParams = entityInfo.idClassAttributeAccessors.size(); p <= numIdClassParams; p++) {
-                            queryInfo.paramNames.add(new StringBuilder(param.value()).append('_').append(p).toString());
+                            queryInfo.paramNames.add(new StringBuilder(paramName).append('_').append(p).toString());
                             if (p > 1) {
                                 queryInfo.paramCount++;
                                 queryInfo.paramAddedCount++;
                             }
                         }
                     else
-                        queryInfo.paramNames.add(param.value());
+                        queryInfo.paramNames.add(paramName);
                 }
                 queryInfo.paramCount++;
+
                 if (initialParamCount != 0)
                     throw new MappingException("Cannot mix positional and named parameters on repository method " +
-                                               queryInfo.method.getDeclaringClass().getName() + '.' + queryInfo.method.getName()); // TODO NLS
+                                               method.getDeclaringClass().getName() + '.' + method.getName()); // TODO NLS
+
+                int numParamNames = queryInfo.paramNames == null ? 0 : queryInfo.paramNames.size();
+                if (numParamNames > 0 && numParamNames != queryInfo.paramCount)
+                    if (hasParamAnnotation) {
+                        throw new MappingException("Cannot mix positional and named parameters on repository method " +
+                                                   method.getDeclaringClass().getName() + '.' + method.getName()); // TODO NLS
+                    } else { // we might have mistaken a literal value for a named parameter
+                        queryInfo.paramNames = null;
+                        queryInfo.paramCount -= queryInfo.paramAddedCount;
+                        queryInfo.paramAddedCount = 0;
+                    }
             }
         }
 
         // The @OrderBy annotation from Jakarta Data provides sort criteria statically
-        OrderBy[] orderBy = queryInfo.method.getAnnotationsByType(OrderBy.class);
         if (orderBy.length > 0) {
             queryInfo.type = queryInfo.type == null ? QueryInfo.Type.FIND : queryInfo.type;
             queryInfo.sorts = queryInfo.sorts == null ? new ArrayList<>(orderBy.length + 2) : queryInfo.sorts;
             if (q == null)
                 if (queryInfo.jpql == null) {
-                    Select select = queryInfo.method.getAnnotation(Select.class); // TODO can this ever be present here and not already handled by other code path?
-                    q = generateSelectClause(queryInfo, select);
+                    q = generateSelectClause(queryInfo, select); // TODO can select ever be present here and not already handled by other code path?
                     if (countPages)
                         generateCount(queryInfo, null);
                 } else {
@@ -538,7 +597,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         queryInfo.jpql = q == null ? queryInfo.jpql : q.toString();
 
         if (queryInfo.type == null)
-            throw new MappingException("Repository method name " + queryInfo.method.getName() +
+            throw new MappingException("Repository method name " + method.getName() +
                                        " does not map to a valid query. Some examples of valid method names are:" +
                                        " save(entity), findById(id), findByPriceLessThanEqual(maxPrice), deleteById(id)," +
                                        " existsById(id), countByPriceBetween(min, max), updateByIdSetPrice(id, newPrice)"); // TODO NLS
@@ -707,6 +766,158 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
+     * Finds and updates entities (or records) in the database.
+     * Entities that are not found are ignored.
+     *
+     * @param arg       the entity or record, or array or Iterable or Stream of entity or record.
+     * @param queryInfo query information.
+     * @param em        the entity manager.
+     * @return the updated entities, using the return type that is required by the repository Update method signature.
+     * @throws Exception if an error occurs.
+     */
+    private Object findAndUpdate(Object arg, QueryInfo queryInfo, EntityManager em) throws Exception {
+        List<Object> results;
+
+        if (queryInfo.entityParamType.isArray()) {
+            int length = Array.getLength(arg);
+            results = new ArrayList<>(length);
+            for (int i = 0; i < length; i++) {
+                Object entity = findAndUpdateOne(Array.get(arg, i), queryInfo, em);
+                if (entity != null) {
+                    results.add(entity);
+                }
+            }
+        } else {
+            arg = arg instanceof Stream //
+                            ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
+                            : arg;
+
+            results = new ArrayList<>();
+            if (arg instanceof Iterable) {
+                for (Object e : ((Iterable<?>) arg)) {
+                    Object entity = findAndUpdateOne(e, queryInfo, em);
+                    if (entity != null) {
+                        results.add(entity);
+                    }
+                }
+            } else {
+                results = new ArrayList<>(1);
+                Object entity = findAndUpdateOne(arg, queryInfo, em);
+                if (entity != null) {
+                    results.add(entity);
+                }
+            }
+        }
+        em.flush();
+
+        if (queryInfo.entityInfo.recordClass != null)
+            for (int i = 0; i < results.size(); i++)
+                results.set(i, queryInfo.entityInfo.toRecord(results.get(i)));
+
+        Object returnValue;
+        if (queryInfo.returnArrayType != null) {
+            Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
+            returnValue = results.toArray(newArray);
+        } else {
+            Class<?> multiType = queryInfo.getMultipleResultType();
+            if (multiType == null)
+                returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results? Detect earlier?
+            else if (multiType.isInstance(results))
+                returnValue = results;
+            else if (Stream.class.equals(multiType))
+                returnValue = results.stream();
+            else if (Iterable.class.isAssignableFrom(multiType))
+                returnValue = toIterable(multiType, null, results);
+            else if (Iterator.class.equals(multiType))
+                returnValue = results.iterator();
+            else
+                throw new UnsupportedOperationException(multiType + " is an unsupported return type."); // TODO NLS
+        }
+
+        Class<?> returnType = queryInfo.method.getReturnType();
+        if (Optional.class.equals(returnType)) {
+            returnValue = returnValue == null ? Optional.empty() : Optional.of(returnValue);
+        } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+            returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
+        } else if (returnValue != null && !returnType.isInstance(returnValue)) {
+            throw new MappingException("The " + returnType.getName() + " return type of the " +
+                                       queryInfo.method.getName() + " method of the " +
+                                       queryInfo.method.getDeclaringClass().getName() +
+                                       " class is not a valid return type for a repository " +
+                                       "@Update" + " method."); // TODO NLS
+        }
+
+        return returnValue;
+    }
+
+    /**
+     * Finds an entity (or record) in the database, locks it for subsequent update,
+     * and updates the entity found in the database to match the desired state of the supplied entity.
+     *
+     * @param e         the entity or record.
+     * @param queryInfo query information.
+     * @param em        the entity manager.
+     * @return the entity that is written to the database. Null if not found.
+     * @throws Exception if an error occurs.
+     */
+    private Object findAndUpdateOne(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
+        Class<?> singleType = queryInfo.getSingleResultType();
+        String jpql = queryInfo.jpql;
+        EntityInfo entityInfo = queryInfo.entityInfo;
+
+        int versionParamIndex = 2;
+        Object version = null;
+        if (entityInfo.versionAttributeName != null) {
+            version = entityInfo.getAttribute(e, entityInfo.versionAttributeName);
+            if (version == null)
+                jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
+        }
+
+        Object id = entityInfo.getAttribute(e, entityInfo.getAttributeName("id", true));
+        if (id == null) {
+            jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
+            if (version != null)
+                jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && jpql != queryInfo.jpql)
+            Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
+
+        TypedQuery<?> query = em.createQuery(jpql, singleType); // TODO for records, use the entity class, not the record class
+        query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+
+        // id parameter(s)
+
+        int p = 0;
+        if (entityInfo.idClassAttributeAccessors != null) {
+            throw new UnsupportedOperationException(); // TODO
+        } else if (id != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "set ?" + (p + 1) + ' ' + id.getClass().getSimpleName());
+            query.setParameter(++p, id);
+        }
+
+        // version parameter
+
+        if (entityInfo.versionAttributeName != null && version != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "set ?" + (p + 1) + ' ' + version.getClass().getSimpleName());
+            query.setParameter(++p, version);
+        }
+
+        List<?> results = query.getResultList();
+
+        Object entity;
+        if (results.isEmpty()) {
+            entity = null;
+        } else {
+            entity = results.get(0);
+            entity = em.merge(toEntity(e));
+        }
+        return entity;
+    }
+
+    /**
      * Finds the entity variable name after the start of the entity name.
      * Examples of JPQL:
      * ... FROM Order o, Product p ...
@@ -770,33 +981,41 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private StringBuilder generateDeleteEntity(QueryInfo queryInfo) {
         EntityInfo entityInfo = queryInfo.entityInfo;
         String o = queryInfo.entityVar;
-        queryInfo.type = QueryInfo.Type.DELETE_WITH_ENTITY_PARAM;
-        queryInfo.hasWhere = true;
 
         StringBuilder q = new StringBuilder(100) //
-                        .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o) //
-                        .append(" WHERE (");
+                        .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
 
-        String idName = entityInfo.getAttributeName("id", true);
-        if (idName == null && entityInfo.idClassAttributeAccessors != null) {
-            boolean first = true;
-            for (String name : entityInfo.idClassAttributeAccessors.keySet()) {
-                if (first)
-                    first = false;
-                else
-                    q.append(" AND ");
-
-                name = entityInfo.attributeNames.get(name);
-                q.append(o).append('.').append(name).append("=?").append(++queryInfo.paramCount);
-            }
+        if (queryInfo.method.getParameterCount() == 0) {
+            queryInfo.type = QueryInfo.Type.DELETE;
+            queryInfo.hasWhere = false;
         } else {
-            q.append(o).append('.').append(idName).append("=?").append(++queryInfo.paramCount);
+            queryInfo.init(Delete.class, QueryInfo.Type.DELETE_WITH_ENTITY_PARAM);
+            queryInfo.hasWhere = true;
+
+            q.append(" WHERE (");
+
+            String idName = entityInfo.getAttributeName("id", true);
+            if (idName == null && entityInfo.idClassAttributeAccessors != null) {
+                boolean first = true;
+                for (String name : entityInfo.idClassAttributeAccessors.keySet()) {
+                    if (first)
+                        first = false;
+                    else
+                        q.append(" AND ");
+
+                    name = entityInfo.attributeNames.get(name);
+                    q.append(o).append('.').append(name).append("=?").append(++queryInfo.paramCount);
+                }
+            } else {
+                q.append(o).append('.').append(idName).append("=?").append(++queryInfo.paramCount);
+            }
+
+            if (entityInfo.versionAttributeName != null)
+                q.append(" AND ").append(o).append('.').append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
+
+            q.append(')');
         }
 
-        if (entityInfo.versionAttributeName != null)
-            q.append(" AND ").append(o).append('.').append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
-
-        q.append(')');
         return q;
     }
 
@@ -1264,6 +1483,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     queryInfo.entityParamType = paramTypes[0];
                     q = generateDeleteEntity(queryInfo);
                 }
+            } else if (CrudRepository.class.equals(queryInfo.method.getDeclaringClass())) {
+                if ("update".equals(methodName) || "updateAll".equals(methodName)) {
+                    queryInfo.entityParamType = paramTypes[0];
+                    q = generateUpdateEntity(queryInfo);
+                }
             } else if (paramTypes[0].isArray()) {
                 if (defaultEntityClass.equals(paramTypes[0].getComponentType()))
                     queryInfo.entityParamType = paramTypes[0];
@@ -1277,6 +1501,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     }
                 }
             }
+
             if (queryInfo.type == null && queryInfo.entityParamType != null)
                 if (methodName.startsWith("delete") || methodName.startsWith("remove"))
                     q = generateDeleteEntity(queryInfo);
@@ -1639,12 +1864,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @param updates   Update annotations
      * @return the JPQL UPDATE clause
      */
-    private StringBuilder generateUpdateClause(QueryInfo queryInfo, Update[] updates) {
+    private StringBuilder generateUpdateClause(QueryInfo queryInfo, io.openliberty.data.repository.Update[] updates) {
         String o = queryInfo.entityVar;
         StringBuilder q = new StringBuilder(400).append("UPDATE ").append(queryInfo.entityInfo.name).append(' ').append(o).append(" SET");
 
         boolean first = true;
-        for (Update update : updates) {
+        for (io.openliberty.data.repository.Update update : updates) {
             String attribute = update.attr();
             Operation op = update.op();
             String name = queryInfo.entityInfo.getAttributeName(attribute, true);
@@ -1726,8 +1951,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private StringBuilder generateUpdateEntity(QueryInfo queryInfo) {
         EntityInfo entityInfo = queryInfo.entityInfo;
         String o = queryInfo.entityVar;
-        queryInfo.type = QueryInfo.Type.UPDATE_WITH_ENTITY_PARAM;
-        queryInfo.hasWhere = true;
+        StringBuilder q;
 
         String idName = queryInfo.entityInfo.getAttributeName("id", true);
         if (idName == null && queryInfo.entityInfo.idClassAttributeAccessors != null) {
@@ -1735,24 +1959,41 @@ public class RepositoryImpl<R> implements InvocationHandler {
             throw new MappingException("Update operations cannot be used on entities with composite IDs."); // TODO NLS
         }
 
-        StringBuilder q = new StringBuilder(100) //
-                        .append("UPDATE ").append(entityInfo.name).append(' ').append(o) //
-                        .append(" SET ");
+        Class<?> singleType = queryInfo.getSingleResultType();
+        if (UPDATE_COUNT_TYPES.contains(singleType)) {
+            queryInfo.init(Update.class, QueryInfo.Type.UPDATE_WITH_ENTITY_PARAM);
+            queryInfo.hasWhere = true;
 
-        boolean first = true;
-        for (String name : entityInfo.getAttributeNamesForEntityUpdate()) {
-            if (first)
-                first = false;
-            else
-                q.append(", ");
+            q = new StringBuilder(100) //
+                            .append("UPDATE ").append(entityInfo.name).append(' ').append(o) //
+                            .append(" SET ");
 
-            q.append(o).append('.').append(name).append("=?").append(++queryInfo.paramCount);
+            boolean first = true;
+            for (String name : entityInfo.getAttributeNamesForEntityUpdate()) {
+                if (first)
+                    first = false;
+                else
+                    q.append(", ");
+
+                q.append(o).append('.').append(name).append("=?").append(++queryInfo.paramCount);
+            }
+
+            q.append(" WHERE ").append(o).append('.').append(idName).append("=?").append(++queryInfo.paramCount);
+
+            if (entityInfo.versionAttributeName != null)
+                q.append(" AND ").append(o).append('.').append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
+        } else {
+            // Update that returns an entity - perform a find operation first so that em.merge can be used
+            queryInfo.init(Update.class, QueryInfo.Type.UPDATE_WITH_ENTITY_PARAM_AND_RESULT);
+            queryInfo.hasWhere = true;
+
+            q = new StringBuilder(100) //
+                            .append("SELECT ").append(o).append(" FROM ").append(entityInfo.name).append(' ').append(o) //
+                            .append(" WHERE ").append(o).append('.').append(idName).append("=?").append(++queryInfo.paramCount);
+
+            if (entityInfo.versionAttributeName != null)
+                q.append(" AND ").append(o).append('.').append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
         }
-
-        q.append(" WHERE ").append(o).append('.').append(idName).append("=?").append(++queryInfo.paramCount);
-
-        if (entityInfo.versionAttributeName != null)
-            q.append(" AND ").append(o).append('.').append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
 
         return q;
     }
@@ -1760,7 +2001,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     /**
      * Generates JPQL to assign the entity properties of which the IdClass consists.
      */
-    private void generateUpdatesForIdClass(QueryInfo queryInfo, Update update, boolean firstOperation, StringBuilder q) {
+    private void generateUpdatesForIdClass(QueryInfo queryInfo, io.openliberty.data.repository.Update update, boolean firstOperation, StringBuilder q) {
         if (update != null && update.value().length != 0)
             throw new MappingException("IdClass parameter cannot be represented as a hard-coded value of the @Update annotation."); // TODO NLS
 
@@ -1984,6 +2225,20 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
+     * Identifies possible positions of named parameters within the JPQL.
+     *
+     * @param jpql JPQL
+     * @return possible positions of named parameters within the JPQL.
+     */
+    @Trivial
+    private List<Integer> getParameterPositions(String jpql) {
+        List<Integer> positions = new ArrayList<>();
+        for (int index = 0; (index = jpql.indexOf(':', index)) >= 0;)
+            positions.add(++index);
+        return positions;
+    }
+
+    /**
      * Request an instance of a resource of the specified type.
      *
      * @param type resource type.
@@ -2006,6 +2261,97 @@ public class RepositoryImpl<R> implements InvocationHandler {
             return t;
         }
         throw new UnsupportedOperationException("The " + type.getName() + " type of resource is not available from the Jakarta Data provider."); // TODO NLS
+    }
+
+    /**
+     * Inserts entities (or records) into the database.
+     * An error is raised if any of the entities (or records) already exist in the database.
+     *
+     * @param arg       the entity or record, or array or Iterable or Stream of entity or record.
+     * @param queryInfo query information.
+     * @param em        the entity manager.
+     * @return the updated entities, using the return type that is required by Insert method signature.
+     * @throws Exception if an error occurs.
+     */
+    private Object insert(Object arg, QueryInfo queryInfo, EntityManager em) throws Exception {
+        Class<?> singleType = queryInfo.getSingleResultType();
+        boolean resultVoid = void.class.equals(singleType) || Void.class.equals(singleType);
+        ArrayList<Object> results;
+
+        if (queryInfo.entityParamType.isArray()) {
+            int length = Array.getLength(arg);
+            results = resultVoid ? null : new ArrayList<>(length);
+            for (int i = 0; i < length; i++) {
+                Object entity = toEntity(Array.get(arg, i));
+                em.persist(entity);
+                if (results != null)
+                    results.add(entity);
+            }
+            em.flush();
+        } else {
+            arg = arg instanceof Stream //
+                            ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
+                            : arg;
+
+            if (arg instanceof Iterable) {
+                results = resultVoid ? null : new ArrayList<>();
+                for (Object e : ((Iterable<?>) arg)) {
+                    Object entity = toEntity(e);
+                    em.persist(entity);
+                    if (results != null)
+                        results.add(entity);
+                }
+                em.flush();
+            } else {
+                results = resultVoid ? null : new ArrayList<>(1);
+                Object entity = toEntity(arg);
+                em.persist(entity);
+                em.flush();
+                if (results != null)
+                    results.add(entity);
+            }
+        }
+
+        Object returnValue;
+        if (resultVoid) {
+            returnValue = null;
+        } else {
+            if (queryInfo.entityInfo.recordClass != null)
+                for (int i = 0; i < results.size(); i++)
+                    results.set(i, queryInfo.entityInfo.toRecord(results.get(i)));
+
+            if (queryInfo.returnArrayType != null) {
+                Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
+                returnValue = results.toArray(newArray);
+            } else {
+                Class<?> multiType = queryInfo.getMultipleResultType();
+                if (multiType == null)
+                    returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results? Detect earlier?
+                else if (multiType.isInstance(results))
+                    returnValue = results;
+                else if (Stream.class.equals(multiType))
+                    returnValue = results.stream();
+                else if (Iterable.class.isAssignableFrom(multiType))
+                    returnValue = toIterable(multiType, null, results);
+                else if (Iterator.class.equals(multiType))
+                    returnValue = results.iterator();
+                else
+                    throw new UnsupportedOperationException(multiType + " is an unsupported return type."); // TODO NLS
+            }
+        }
+
+        Class<?> returnType = queryInfo.method.getReturnType();
+        if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+            returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
+        } else if (!resultVoid && !returnType.isInstance(returnValue)) {
+            throw new MappingException("The " + returnType.getName() + " return type of the " +
+                                       queryInfo.method.getName() + " method of the " +
+                                       queryInfo.method.getDeclaringClass().getName() +
+                                       " class is not a valid return type for a repository " +
+                                       "@Insert" + " method."); // TODO NLS
+        }
+
+        return returnValue;
     }
 
     @FFDCIgnore(Throwable.class)
@@ -2104,72 +2450,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 switch (queryInfo.type) {
                     case SAVE: {
                         em = entityInfo.persister.createEntityManager();
-
-                        List<Object> results;
-                        if (queryInfo.entityParamType.isArray()) {
-                            results = new ArrayList<>();
-                            Object a = args[0];
-                            int length = Array.getLength(a);
-                            for (int i = 0; i < length; i++)
-                                results.add(em.merge(toEntity(Array.get(a, i))));
-                            em.flush();
-                        } else if (Iterable.class.isAssignableFrom(queryInfo.entityParamType)) {
-                            results = new ArrayList<>();
-                            for (Object e : ((Iterable<?>) args[0]))
-                                results.add(em.merge(toEntity(e)));
-                            em.flush();
-                        } else {
-                            results = List.of(em.merge(toEntity(args[0])));
-                            em.flush();
-                        }
-
-                        if (queryInfo.returnArrayType != null) {
-                            Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
-                            returnValue = results.toArray(newArray);
-                        } else {
-                            Class<?> multiType = queryInfo.getMultipleResultType();
-                            if (multiType == null)
-                                returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results?
-                            else if (multiType.isInstance(results))
-                                returnValue = results;
-                            else if (Stream.class.equals(multiType))
-                                returnValue = results.stream();
-                            else if (Iterable.class.isAssignableFrom(multiType))
-                                returnValue = toIterable(multiType, null, results);
-                            else if (Iterator.class.equals(multiType))
-                                returnValue = results.iterator();
-                            else
-                                throw new UnsupportedOperationException(multiType + " is an unsupported return type."); // TODO NLS
-                        }
-
-                        if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
-                            returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
-                        } else {
-                            returnValue = returnType.isInstance(returnValue) ? returnValue : null;
-                        }
+                        returnValue = save(args[0], queryInfo, em);
                         break;
                     }
                     case INSERT: {
                         em = entityInfo.persister.createEntityManager();
-
-                        if (queryInfo.entityParamType.isArray()) {
-                            Object a = args[0];
-                            int length = Array.getLength(a);
-                            for (int i = 0; i < length; i++)
-                                em.persist(toEntity(Array.get(a, i)));
-                        } else if (Iterable.class.isAssignableFrom(queryInfo.entityParamType)) {
-                            for (Object e : ((Iterable<?>) args[0]))
-                                em.persist(toEntity(e));
-                        } else {
-                            em.persist(toEntity(args[0]));
-                        }
-                        em.flush();
-
-                        if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
-                            returnValue = CompletableFuture.completedFuture(null); // useful for @Asynchronous
-                        } else {
-                            returnValue = null;
-                        }
+                        returnValue = insert(args[0], queryInfo, em);
                         break;
                     }
                     case FIND:
@@ -2243,10 +2529,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                                 Tr.debug(this, tc, "createQuery", queryInfo.jpql, entityInfo.entityClass.getName());
 
-                            // TODO remove doPriv once switched to Java 21 only or EclipseLink bug is fixed
+                            
                             final QueryInfo qi = queryInfo;
                             final EntityManager eMgr = em;
-                            TypedQuery<?> query = AccessController.doPrivileged((PrivilegedAction<TypedQuery<?>>) () -> eMgr.createQuery(qi.jpql, qi.entityInfo.entityClass));
+                            TypedQuery<?> query = eMgr.createQuery(qi.jpql, qi.entityInfo.entityClass);
                             queryInfo.setParameters(query, args);
 
                             if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE)
@@ -2418,7 +2704,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     }
                     case DELETE_WITH_ENTITY_PARAM: {
                         em = entityInfo.persister.createEntityManager();
-                        TypedQuery<?> delete = em.createQuery(queryInfo.jpql, entityInfo.entityClass);
 
                         Object arg = args[0] instanceof Stream //
                                         ? ((Stream<?>) args[0]).sequential().collect(Collectors.toList()) //
@@ -2429,15 +2714,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         if (arg instanceof Iterable) {
                             for (Object e : ((Iterable<?>) arg)) {
                                 numExpected++;
-                                updateCount += remove(e, queryInfo, delete);
+                                updateCount += remove(e, queryInfo, em);
                             }
-                        } else if (arg.getClass().isArray()) {
+                        } else if (queryInfo.entityParamType.isArray()) {
                             numExpected = Array.getLength(arg);
                             for (int i = 0; i < numExpected; i++)
-                                updateCount += remove(Array.get(arg, i), queryInfo, delete);
+                                updateCount += remove(Array.get(arg, i), queryInfo, em);
                         } else {
                             numExpected = 1;
-                            updateCount = remove(arg, queryInfo, delete);
+                            updateCount = remove(arg, queryInfo, em);
                         }
 
                         if (updateCount < numExpected) {
@@ -2452,7 +2737,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     }
                     case UPDATE_WITH_ENTITY_PARAM: {
                         em = entityInfo.persister.createEntityManager();
-                        TypedQuery<?> update = em.createQuery(queryInfo.jpql, entityInfo.entityClass);
 
                         Object arg = args[0] instanceof Stream //
                                         ? ((Stream<?>) args[0]).sequential().collect(Collectors.toList()) //
@@ -2461,16 +2745,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                         if (arg instanceof Iterable) {
                             for (Object e : ((Iterable<?>) arg))
-                                updateCount += update(e, queryInfo, update);
-                        } else if (arg.getClass().isArray()) {
+                                updateCount += update(e, queryInfo, em);
+                        } else if (queryInfo.entityParamType.isArray()) {
                             int length = Array.getLength(arg);
                             for (int i = 0; i < length; i++)
-                                updateCount += update(Array.get(arg, i), queryInfo, update);
+                                updateCount += update(Array.get(arg, i), queryInfo, em);
                         } else {
-                            updateCount = update(arg, queryInfo, update);
+                            updateCount = update(arg, queryInfo, em);
                         }
 
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
+                        break;
+                    }
+                    case UPDATE_WITH_ENTITY_PARAM_AND_RESULT: {
+                        em = entityInfo.persister.createEntityManager();
+                        returnValue = findAndUpdate(args[0], queryInfo, em);
                         break;
                     }
                     case COUNT: {
@@ -2720,12 +3009,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
      *
      * @param e         the entity or record.
      * @param queryInfo query information that is prepopulated for deleteById.
-     * @param delete    deletion query.
+     * @param em        the entity manager.
      * @return the number of entities deleted (1 or 0).
      * @throws Exception if an error occurs or if the repository method return type is void and
      *                       the entity (or correct version of the entity) was not found.
      */
-    private int remove(Object e, QueryInfo queryInfo, TypedQuery<?> delete) throws Exception {
+    private int remove(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
 
         if (e == null)
             throw new NullPointerException("The entity parameter cannot have a null value."); // TODO NLS // required by spec
@@ -2735,24 +3024,46 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                     " parameter does not match the " + defaultEntityClass.getName() +
                                     " entity type that is expected for this repository."); // TODO NLS
 
-        Object v = e;
-        if (queryInfo.entityInfo.versionAttributeName == null) {
-            if (queryInfo.entityInfo.idClassAttributeAccessors == null)
-                queryInfo.setParameters(delete, e);
-            else
-                queryInfo.setParametersFromIdClassAndVersion(delete, e, null);
-        } else {
-            List<Member> accessors = queryInfo.entityInfo.attributeAccessors.get(queryInfo.entityInfo.versionAttributeName);
-            if (accessors == null || accessors.isEmpty())
-                throw new MappingException("Unable to find the " + queryInfo.entityInfo.versionAttributeName +
-                                           " attribute on the " + queryInfo.entityInfo.name + " entity."); // should never occur
-            for (Member accessor : accessors)
-                v = accessor instanceof Method ? ((Method) accessor).invoke(v) : ((Field) accessor).get(v);
+        EntityInfo entityInfo = queryInfo.entityInfo;
+        String jpql = queryInfo.jpql;
 
-            if (queryInfo.entityInfo.idClassAttributeAccessors == null)
-                queryInfo.setParameters(delete, e, v);
-            else
-                queryInfo.setParametersFromIdClassAndVersion(delete, e, v);
+        int versionParamIndex = (entityInfo.idClassAttributeAccessors == null ? 1 : entityInfo.idClassAttributeAccessors.size()) + 1;
+        Object version = null;
+        if (entityInfo.versionAttributeName != null) {
+            version = entityInfo.getAttribute(e, entityInfo.versionAttributeName);
+            if (version == null)
+                jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
+        }
+
+        Object id = null;
+        if (entityInfo.idClassAttributeAccessors == null) {
+            id = entityInfo.getAttribute(e, entityInfo.getAttributeName("id", true));
+            if (id == null) {
+                jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
+                if (version != null)
+                    jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && jpql != queryInfo.jpql)
+            Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
+
+        TypedQuery<?> delete = em.createQuery(jpql, entityInfo.entityClass);
+
+        if (entityInfo.idClassAttributeAccessors == null) {
+            int p = 1;
+            if (id != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + id.getClass().getSimpleName());
+                delete.setParameter(p++, id);
+            }
+            if (version != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + version.getClass().getSimpleName());
+                delete.setParameter(p, version);
+            }
+        } else {
+            queryInfo.setParametersFromIdClassAndVersion(delete, e, version);
         }
 
         int numDeleted = delete.executeUpdate();
@@ -2760,10 +3071,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (numDeleted == 0) {
             Class<?> returnType = queryInfo.method.getReturnType();
             if (void.class.equals(returnType) || Void.class.equals(returnType)) {
-                if (queryInfo.entityInfo.versionAttributeName == null)
+                if (entityInfo.versionAttributeName == null)
                     throw new OptimisticLockingFailureException("Entity was not found."); // TODO NLS
                 else
-                    throw new OptimisticLockingFailureException("Version " + v + " of the entity was not found."); // TODO NLS
+                    throw new OptimisticLockingFailureException("Version " + version + " of the entity was not found."); // TODO NLS
             }
         } else if (numDeleted > 1) {
             throw new DataException("Found " + numDeleted + " matching entities."); // ought to be unreachable
@@ -2962,15 +3273,98 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
+     * Saves entities (or records) to the database, which can involve an update or an insert,
+     * depending on whether the entity already exists.
+     *
+     * @param arg       the entity or record, or array or Iterable or Stream of entity or record.
+     * @param queryInfo query information.
+     * @param em        the entity manager.
+     * @return the updated entities, using the return type that is required by the repository Save method signature.
+     * @throws Exception if an error occurs.
+     */
+    private Object save(Object arg, QueryInfo queryInfo, EntityManager em) throws Exception {
+        Class<?> singleType = queryInfo.getSingleResultType();
+        boolean resultVoid = void.class.equals(singleType) || Void.class.equals(singleType);
+        List<Object> results;
+
+        if (queryInfo.entityParamType.isArray()) {
+            results = new ArrayList<>();
+            int length = Array.getLength(arg);
+            for (int i = 0; i < length; i++)
+                results.add(em.merge(toEntity(Array.get(arg, i))));
+            em.flush();
+        } else {
+            arg = arg instanceof Stream //
+                            ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
+                            : arg;
+
+            if (Iterable.class.isAssignableFrom(queryInfo.entityParamType)) {
+                results = new ArrayList<>();
+                for (Object e : ((Iterable<?>) arg))
+                    results.add(em.merge(toEntity(e)));
+                em.flush();
+            } else {
+                results = resultVoid ? null : new ArrayList<>(1);
+                Object entity = em.merge(toEntity(arg));
+                if (results != null)
+                    results.add(entity);
+                em.flush();
+            }
+        }
+
+        Object returnValue;
+        if (resultVoid) {
+            returnValue = null;
+        } else {
+            if (queryInfo.entityInfo.recordClass != null)
+                for (int i = 0; i < results.size(); i++)
+                    results.set(i, queryInfo.entityInfo.toRecord(results.get(i)));
+
+            if (queryInfo.returnArrayType != null) {
+                Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
+                returnValue = results.toArray(newArray);
+            } else {
+                Class<?> multiType = queryInfo.getMultipleResultType();
+                if (multiType == null)
+                    returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results? Detect earlier?
+                else if (multiType.isInstance(results))
+                    returnValue = results;
+                else if (Stream.class.equals(multiType))
+                    returnValue = results.stream();
+                else if (Iterable.class.isAssignableFrom(multiType))
+                    returnValue = toIterable(multiType, null, results);
+                else if (Iterator.class.equals(multiType))
+                    returnValue = results.iterator();
+                else
+                    throw new UnsupportedOperationException(multiType + " is an unsupported return type."); // TODO NLS
+            }
+        }
+
+        Class<?> returnType = queryInfo.method.getReturnType();
+        if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+            returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
+        } else if (!resultVoid && !returnType.isInstance(returnValue)) {
+            throw new MappingException("The " + returnType.getName() + " return type of the " +
+                                       queryInfo.method.getName() + " method of the " +
+                                       queryInfo.method.getDeclaringClass().getName() +
+                                       " class is not a valid return type for a repository " +
+                                       "@Save" + " method."); // TODO NLS
+        }
+
+        return returnValue;
+    }
+
+    /**
      * Updates the entity (or record) from the database if its attributes match the database.
      *
      * @param e         the entity or record.
      * @param queryInfo query information that is prepopulated for update by id (and possibly version).
-     * @param update    update query.
+     * @param em        the entity manager.
      * @return the number of entities updated (1 or 0).
      * @throws Exception if an error occurs.
      */
-    private int update(Object e, QueryInfo queryInfo, TypedQuery<?> update) throws Exception {
+    private int update(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
+
         if (e == null)
             throw new NullPointerException("The entity parameter cannot have a null value."); // TODO NLS // required by spec
 
@@ -2979,7 +3373,29 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                     " parameter does not match the " + defaultEntityClass.getName() +
                                     " entity type that is expected for this repository."); // TODO NLS
 
+        String jpql = queryInfo.jpql;
         EntityInfo entityInfo = queryInfo.entityInfo;
+        LinkedHashSet<String> attrsToUpdate = entityInfo.getAttributeNamesForEntityUpdate();
+
+        int versionParamIndex = attrsToUpdate.size() + 2;
+        Object version = null;
+        if (entityInfo.versionAttributeName != null) {
+            version = entityInfo.getAttribute(e, entityInfo.versionAttributeName);
+            if (version == null)
+                jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
+        }
+
+        Object id = entityInfo.getAttribute(e, entityInfo.getAttributeName("id", true));
+        if (id == null) {
+            jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
+            if (version != null)
+                jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && jpql != queryInfo.jpql)
+            Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
+
+        TypedQuery<?> update = em.createQuery(jpql, entityInfo.entityClass);
 
         // parameters for entity attributes to update:
 
@@ -2990,17 +3406,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         // id parameter(s)
 
-        if (entityInfo.idClassAttributeAccessors == null)
-            QueryInfo.setParameter(++p, update, e,
-                                   entityInfo.attributeAccessors.get(entityInfo.getAttributeName("id", true)));
-        else
+        if (entityInfo.idClassAttributeAccessors != null) {
             throw new UnsupportedOperationException(); // TODO
+        } else if (id != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "set ?" + (p + 1) + ' ' + id.getClass().getSimpleName());
+            update.setParameter(++p, id);
+        }
 
         // version parameter
 
-        if (entityInfo.versionAttributeName != null)
-            QueryInfo.setParameter(++p, update, e,
-                                   entityInfo.attributeAccessors.get(entityInfo.versionAttributeName));
+        if (entityInfo.versionAttributeName != null && version != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "set ?" + (p + 1) + ' ' + version.getClass().getSimpleName());
+            update.setParameter(++p, version);
+        }
 
         int numUpdated = update.executeUpdate();
 

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
@@ -227,6 +228,27 @@ public interface Primes {
     @OrderBy(value = "numberId", descending = true)
     Stream<Prime> lessThanWithSuffixOrBetweenWithSuffix(long numLessThan, String firstSuffix,
                                                         long lowerLimit, long upperLimit, String secondSuffix);
+
+    @OrderBy("id")
+    @Query("SELECT o.numberId FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR o.numberId=:num)")
+    long[] matchAny(long num, String numeral, String hex, String numberName);
+
+    @OrderBy("id")
+    @Query("SELECT o.name FROM Prime o WHERE (o.name <> ':name' AND (o.numberId=?1 OR o.name=?2))")
+    List<String> matchAnyExceptLiteralValueThatLooksLikeANamedParameter(long num, String name);
+
+    @OrderBy("name")
+    @Query("SELECT o.name FROM Prime o WHERE ((o.name=?1 OR o.numberId=?2) AND o.name <> ':name')")
+    ArrayList<String> matchAnyExceptLiteralValueThatLooksLikeANamedParameter(String name, long num);
+
+    @Query("SELECT o.numberId FROM Prime o WHERE (o.name = :numName OR o.romanNumeral=:numeral OR o.hex =:hexadecimal OR o.numberId=:num)")
+    Streamable<Long> matchAnyWithMixedUsageOfParamAnnotation(long num,
+                                                             @Param("numName") String numberName,
+                                                             String numeral,
+                                                             @Param("hexadecimal") String hex);
+
+    @Query("SELECT o.numberId FROM Prime o WHERE (o.name = ?1 OR o.numberId=:num)")
+    Collection<Long> matchAnyWithMixedUsageOfPositionalAndNamed(String name, long num);
 
     @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
     Deque<Double> minMaxSumCountAverageDeque(long numBelow);

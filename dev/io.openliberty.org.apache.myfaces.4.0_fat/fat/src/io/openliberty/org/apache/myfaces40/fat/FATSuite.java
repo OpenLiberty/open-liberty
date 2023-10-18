@@ -41,6 +41,8 @@ import io.openliberty.org.apache.myfaces40.fat.tests.SelectItemTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.SubscribeToEventTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.WebSocketTests;
+import io.openliberty.org.apache.myfaces40.fat.tests.bugfixes.MyFaces4628Test;
+
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -63,7 +65,9 @@ import io.openliberty.org.apache.myfaces40.fat.tests.WebSocketTests;
                 UIViewRootGetDoctypeTest.class,
                 Faces40URNTest.class,
                 WebSocketTests.class,
-                Html5Tests.class
+                Html5Tests.class,
+                MyFaces4628Test.class
+            
 })
 
 public class FATSuite {

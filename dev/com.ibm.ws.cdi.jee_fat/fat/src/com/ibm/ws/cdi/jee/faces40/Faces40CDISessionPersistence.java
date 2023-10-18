@@ -31,6 +31,7 @@ import com.ibm.ws.cdi.jee.ShrinkWrapUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -42,6 +43,7 @@ import junit.framework.Assert;
  *  See https://github.com/OpenLiberty/open-liberty/issues/24631
  *  
  */
+@MinimumJavaLevel(javaLevel = 11)
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class Faces40CDISessionPersistence {

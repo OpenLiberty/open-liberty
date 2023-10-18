@@ -28,12 +28,14 @@ import org.apache.http.util.EntityUtils;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtContext;
 
+import com.ibm.oauth.core.api.error.OidcServerException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.oauth20.ProvidersService;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
+import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.openidconnect.server.internal.JwtUtils;
 import com.ibm.ws.security.openidconnect.token.JWT;
@@ -103,7 +105,44 @@ public class BackchannelLogoutRequestHelper {
             }
             return false;
         }
+        if (!hasClientWithBackchannelLogoutUri()) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "No client has a back-channel logout uri set up, so back-channel logout will not be performed.");
+            }
+            return false;
+        }
         return true;
+    }
+
+    boolean hasClientWithBackchannelLogoutUri() {
+        String oauthProviderName = oidcServerConfig.getOauthProviderName();
+        OAuth20Provider provider = ProvidersService.getOAuth20Provider(oauthProviderName);
+        if (provider == null) {
+            return false;
+        }
+        return hasClientWithBackchannelLogoutUri(provider);
+    }
+
+    @FFDCIgnore(OidcServerException.class)
+    boolean hasClientWithBackchannelLogoutUri(OAuth20Provider provider) {
+        OidcOAuth20ClientProvider clientProvider = provider.getClientProvider();
+        if (clientProvider == null) {
+            return false;
+        }
+        try {
+            for (OidcBaseClient client : clientProvider.getAll()) {
+                String backchannelLogoutUri = client.getBackchannelLogoutUri();
+                if (backchannelLogoutUri != null && !backchannelLogoutUri.isEmpty()) {
+                    return true;
+                }
+            }
+        } catch (OidcServerException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "There was an issue getting all the OIDC OAuth20 clients.");
+            }
+            return false;
+        }
+        return false;
     }
 
     void validateIdTokenHint(String idTokenHint) throws Exception {

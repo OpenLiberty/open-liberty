@@ -772,6 +772,22 @@ error.checkpoint.restore.failed.no.recovery=CWWKE0964E: Restoring the checkpoint
 error.checkpoint.restore.failed.no.recovery.explanation=An error occurred restoring a checkpoint server process. The server did not launch because checkpoint restore recovery is disabled.
 error.checkpoint.restore.failed.no.recovery.useraction=Check the logs to determine why the checkpoint process was not restored. To enable restore failure recovery, set the CRIU_RESTORE_DISABLE_RECOVERY environment variable to true.
 
+warning.serverLockFileNotExist=CWWKE0965W: The {0} server lock file does not exist.
+warning.serverLockFileNotExist.explanation=The warning might indicate that the server is not running or the lock file was unexpectedly deleted.
+warning.serverLockFileNotExist.useraction=Check whether the server is running by using appropriate system monitoring tools. On Windows, you can use the Task Manager. On UNIX-like systems, use the 'ps -ef' command.
+
+warning.serverCommandFileNotExist=CWWKE0966W: The {0} server command file does not exist.
+warning.serverCommandFileNotExist.explanation=The warning suggests that the server command file, which contains essential information for establishing a socket connection with the server, is missing. The server might not be running or the file might have been unexpectedly deleted.
+warning.serverCommandFileNotExist.useraction=Check whether the server is running by using appropriate system monitoring tools. On Windows, you can use the Task Manager. On UNIX-like systems, use the 'ps -ef' command. If the server is running, you must restart it, which involves stopping the process. Use the Task Manager on Windows to stop the process. On UNIX-like systems, use the 'kill' command.
+
+warning.timeoutWaitingForServerToReleaseLock=CWWKE0967W: A timeout occurred while waiting for the server to release the {0} server lock file.
+warning.timeoutWaitingForServerToReleaseLock.explanation=The warning indicates a timeout occurred. The timeout might be due to a slow server shutdown, server hang, or file locking by another program.
+warning.timeoutWaitingForServerToReleaseLock.useraction=If the server is still running, consider increasing the timeout value for the 'server stop' command. If the server is stopped, use file monitoring tools to check whether another program locked the file.
+
+warning.timeoutWaitingForServerProcessToStop=CWWKE0968W: A timeout occurred while waiting for the server process to stop.
+warning.timeoutWaitingForServerProcessToStop.explanation=The server did not stop within the time allowed by the timeout value. This might be due to a slow server shutdown or a server hang.   
+warning.timeoutWaitingForServerProcessToStop.useraction=If the server is still running, consider increasing the timeout value for the 'server stop' command. On UNIX-like systems, the server stop command waits for the server process to stop. On Windows, the command waits to obtain a lock on the console.log file. Use file monitoring tools to check whether another program, such as an editor, locked the console.log file.
+
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
 info.serverStartedWithPID=Server {0} started with process ID {1}.

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package io.openliberty.depScanner;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -46,7 +47,8 @@ public class BestMatch {
     private static final Map<String, List<String>> depVersionMap = new HashMap<>();
 
     public static void main(String[] args) throws Exception {
-        Repository repo = new Repository(new File(System.getProperty("user.home"), ".ibmartifactory/repository"));
+        Repository repo = new Repository(new File(System.getProperty("user.home"), ".ibmartifactory/repository"), false);
+        Repository gradleRepo = findGradleCacheRepo();
         String wlpDir = args[0];
         String outputDir = args[1];
         LibertyInstall liberty = new LibertyInstall(new File(wlpDir));
@@ -70,16 +72,38 @@ public class BestMatch {
 
                             matched.addAll(modules);
 
+                            List<Module> gradleModules = gradleRepo.stream()
+                                            .map(gradleModuleInfo -> {
+                                                List<Module> gradleModuleInfoList = gradleModuleInfo.getValue();
+                                                gradleModuleInfoList.sort((o1, o2) -> o2.containsCount(jar) - o1.containsCount(jar));
+
+                                                return gradleModuleInfoList.get(0);
+                                            })
+                                            .filter(jar::contains)
+                                            .collect(Collectors.toList());
+
+                            matched.addAll(gradleModules);
+
                             List<String> moduleNames = modules.stream()
                                             .map(module -> "\t" + module + "\t" + jar.getPackages(module))
                                             .sorted()
                                             .collect(Collectors.toList());
+                            List<String> gradleModuleNames = gradleModules.stream()
+                                            .map(gradleModule -> "\t" + gradleModule + "\t" + jar.getPackages(gradleModule))
+                                            .sorted()
+                                            .collect(Collectors.toList());
+
+                            Set<String> matchedNames = new TreeSet<>();
+                            matchedNames.addAll(moduleNames);
+                            matchedNames.addAll(gradleModuleNames);
 
                             List<String> foundPackages = modules.stream().flatMap(module -> jar.getPackages(module).stream()).collect(Collectors.toList());
+                            List<String> foundGradlePackages = gradleModules.stream().flatMap(gradleModule -> jar.getPackages(gradleModule).stream()).collect(Collectors.toList());
 
                             Collection<String> missingPackages = jar.getPackages();
 
                             missingPackages.removeAll(foundPackages);
+                            missingPackages.removeAll(foundGradlePackages);
 
                             missingPackages = missingPackages.stream()
                                             .filter(name -> !name.startsWith("com.ibm.ws"))
@@ -99,10 +123,12 @@ public class BestMatch {
                                             .collect(Collectors.toList());
 
                             uniqueMissingPackages.addAll(missingPackages);
-                            if (!moduleNames.isEmpty()) {
+
+                            if (!matchedNames.isEmpty()) {
                                 modOut.println(jar.getOriginalFile().getAbsolutePath());
-                                moduleNames.forEach(modOut::println);
+                                matchedNames.forEach(modOut::println);
                             }
+                            matchedNames = new TreeSet<>();
 
                             if (!missingPackages.isEmpty()) {
                                 mpOut.println(jar.getOriginalFile().getAbsolutePath());
@@ -113,6 +139,34 @@ public class BestMatch {
         manageWSJars(matched, outputDir);
         writePom(matched, outputDir);
 
+    }
+
+    /**
+     * @return
+     */
+    private static Repository findGradleCacheRepo() {
+        File cacheFolder = new File(System.getProperty("user.home"), ".gradle/caches");
+        File modulesFolder = null;
+        File filesFolder = null;
+        String[] moduleFiles = cacheFolder.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return (name.startsWith("modules-"));
+            }
+        });
+        if (moduleFiles.length > 0)
+            modulesFolder = new File(cacheFolder.getPath(), moduleFiles[0]);
+
+        String[] files = modulesFolder.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return (name.startsWith("files-"));
+            }
+        });
+        if (files.length > 0)
+            filesFolder = new File(modulesFolder.getPath(), files[0]);
+
+        return new Repository(filesFolder, true);
     }
 
     /**
@@ -237,7 +291,8 @@ public class BestMatch {
      * @return
      */
     private static boolean filteredLibraries(Module library) {
-        return (library.getGroupId().equals("org.glassfish") && (library.getArtifactId().equals("javax.faces")));
+        return (library.getGroupId().equals("org.glassfish") && (library.getArtifactId().equals("javax.faces"))) || (library.getArtifactId().equals("tomcat-embed-core"))
+               || (library.getArtifactId().equals("wlp-docGen"));
     }
 
     /**
@@ -245,7 +300,7 @@ public class BestMatch {
      * @return
      */
     private static boolean wsLibraries(Module library) {
-        return library.getGroupId().startsWith("com.ibm.ws");
+        return (library.getGroupId().startsWith("com.ibm.ws") && !(library.getArtifactId().equals("wlp-docGen")));
     }
 
     private static String toMavenCoords(String coords) {

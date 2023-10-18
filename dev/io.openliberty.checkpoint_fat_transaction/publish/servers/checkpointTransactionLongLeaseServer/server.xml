@@ -11,6 +11,13 @@
       <feature>cdi-2.0</feature>
     </featureManager>
 
+    <jdbcDriver id="DerbyClientDriver" libraryRef="DerbyClientLib"/>
+    <library id="DerbyClientLib" filesetRef="DerbyClientFileset"/>
+    <fileset id="DerbyClientFileset"
+        dir="${shared.resource.dir}derbyclient"
+        includes="derbyclient.jar"
+    />
+
     <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib" />
     <library id="DerbyLib" filesetRef="DerbyFileset" />
     <fileset
@@ -32,6 +39,20 @@
 
     <application location="transactioncloud.war"/>
 
+    <variable name="TRANLOG_DS_PORT" defaultValue="1619"/>  <!-- No need to override port at restore -->
+
+    <dataSource
+        id="tranlogDataSource"
+        jdbcDriverRef="DerbyClientDriver"
+        jndiName="${TRANLOG_DS_JNDINAME}"
+        transactional="false">
+      <properties.derby.client
+         databaseName="memory:tranlogdb"
+         createDatabase="create"
+         portNumber="${TRANLOG_DS_PORT}"
+         password="userPassword"/>
+    </dataSource>
+<!--
     <dataSource
         id="tranlogDataSource" 
         jdbcDriverRef="DerbyEmbedded"
@@ -42,6 +63,7 @@
           createDatabase="create"
       />
     </dataSource>
+-->
 
     <dataSource
         id="jdbc/derby"

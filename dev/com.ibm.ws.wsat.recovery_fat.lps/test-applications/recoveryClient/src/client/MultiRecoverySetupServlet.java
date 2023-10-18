@@ -86,7 +86,7 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 			//			Defect 200252 arises because webservice calls hang sometimes; usually when the 
 			//			environment is running very slowly. We'll set some timeouts here so that we fail
 			//			fast under these circumstances
-			final int timeout = 30000;
+			final int timeout = 60000;
 
 			//Set timeout until a connection is established
 			// Set timeouts 2 ways to cater for different javas

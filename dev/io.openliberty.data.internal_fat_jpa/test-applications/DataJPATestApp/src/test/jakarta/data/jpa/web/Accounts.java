@@ -13,6 +13,7 @@ package test.jakarta.data.jpa.web;
 import java.util.List;
 import java.util.stream.Stream;
 
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
 
@@ -21,6 +22,12 @@ import jakarta.data.repository.Repository;
  */
 @Repository
 public interface Accounts {
+
+    @Insert
+    void create(Account a);
+
+    @Insert
+    void createAll(Account... a);
 
     // "IN" (which is needed for this) is not supported for embeddables, but EclipseLink generates SQL
     // that leads to an SQLSyntaxErrorException rather than rejecting it outright

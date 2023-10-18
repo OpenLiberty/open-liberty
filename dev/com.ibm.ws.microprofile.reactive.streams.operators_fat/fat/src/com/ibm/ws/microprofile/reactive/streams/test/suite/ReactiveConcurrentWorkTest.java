@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -56,6 +57,7 @@ public class ReactiveConcurrentWorkTest extends FATServletClient {
 
     public static final String SERVER_NAME = "ReactiveStreamsConcurrentWorkServer";
 
+    @ClassRule
     public static RepeatTests r = FATSuite.repeatDefault(SERVER_NAME);
 
     public static final String APP_NAME = "ReactiveConcurrentWorkTest";

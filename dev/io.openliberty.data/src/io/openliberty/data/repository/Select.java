@@ -17,6 +17,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import jakarta.data.repository.Delete;
+
 /**
  * <p>Specifies which entity attribute values are retrieved by a repository method
  * find operation and, in the case of multiple entity attributes, also the ordering

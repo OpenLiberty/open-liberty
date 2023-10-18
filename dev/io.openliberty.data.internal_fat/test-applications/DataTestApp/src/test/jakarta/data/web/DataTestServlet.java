@@ -617,9 +617,20 @@ public class DataTestServlet extends FATServlet {
         p3.lastName = "TestCustomRepositoryInterface";
         p3.ssn_id = 432446688;
 
-        people.save(Set.of(p1, p2, p3));
+        people.updateOrAdd(Set.of(p1, p2, p3));
 
         assertEquals(3L, people.countByIdBetween(400000000L, 499999999L));
+
+        Person p4 = new Person();
+        p4.firstName = "Cathy";
+        p4.lastName = "TestCustomRepositoryInterface";
+        p4.ssn_id = p1.ssn_id;
+        people.updateOrAdd(List.of(p4));
+
+        assertEquals(List.of("Cathy", "Charles", "Claire"),
+                     Arrays.stream(people.findByLastName("TestCustomRepositoryInterface"))
+                                     .map(p -> p.firstName)
+                                     .collect(Collectors.toList()));
 
         assertEquals(1L, people.deleteByIdBetween(400000000L, 449999999L));
 
@@ -1064,8 +1075,8 @@ public class DataTestServlet extends FATServlet {
                              "TestEmbeddable-104-2288-60",
                              "TestEmbeddable-304-3655-30"),
                      houses.findByAreaGreaterThan(1500,
-                                                  Sort.desc(House_.numBedrooms),
-                                                  Sort.asc(House_.LotSize))
+                                                  Sort.desc(House_.numBedrooms.name()),
+                                                  Sort.asc(House_.LotSize.name()))
                                      .map(house -> house.parcelId)
                                      .collect(Collectors.toList()));
 
@@ -1074,9 +1085,9 @@ public class DataTestServlet extends FATServlet {
                              "TestEmbeddable-104-2288-60",
                              "TestEmbeddable-204-2992-20"),
                      houses.findByAreaGreaterThan(1400,
-                                                  Sort.desc(House_.garage_door_height),
-                                                  Sort.asc(House_.kitchen_width),
-                                                  Sort.asc(House_.AREA))
+                                                  House_.garage_door_height.desc(),
+                                                  House_.kitchen_width.asc(),
+                                                  House_.AREA.asc())
                                      .map(house -> house.parcelId)
                                      .collect(Collectors.toList()));
 
@@ -1085,7 +1096,7 @@ public class DataTestServlet extends FATServlet {
                              "TestEmbeddable-204-2992-20",
                              "TestEmbeddable-104-2288-60"),
                      houses.findByAreaGreaterThan(1300,
-                                                  Sort.desc(House_.parcelid))
+                                                  House_.parcelid.descIgnoreCase())
                                      .map(house -> house.parcelId)
                                      .collect(Collectors.toList()));
 
@@ -1094,7 +1105,7 @@ public class DataTestServlet extends FATServlet {
                              "TestEmbeddable-304-3655-30",
                              "TestEmbeddable-404-4418-40"),
                      houses.findByAreaGreaterThan(1200,
-                                                  Sort.asc(House_.id))
+                                                  House_.id.ascIgnoreCase())
                                      .map(house -> house.parcelId)
                                      .collect(Collectors.toList()));
 
@@ -1813,7 +1824,7 @@ public class DataTestServlet extends FATServlet {
         p4.lastName = "TestGenericArrayReturnType";
         p4.ssn_id = 100101004l;
 
-        people.save(List.of(p1, p2, p3, p4));
+        people.updateOrAdd(List.of(p1, p2, p3, p4));
 
         Person[] found = people.findByLastName("TestGenericArrayReturnType");
 
@@ -3147,6 +3158,43 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository query with named parameters, where the parameters are obtained from
+     * the corresponding method parameters based on the method's parameter names.
+     */
+    @Test
+    public void testNamedParametersFromMethodParameterNames() {
+        assertArrayEquals(new long[] { 19, 29, 43, 47 },
+                          primes.matchAny(19, "XLVII", "2B", "twenty-nine"));
+    }
+
+    /**
+     * Use a repository query with both named parameters and positional parameters. Expect this to be rejected.
+     */
+    @Test
+    public void testNamedParametersMixedWithPositionalParameters() {
+        try {
+            Collection<Long> found = primes.matchAnyWithMixedUsageOfPositionalAndNamed("three", 23);
+            fail("Should not be able to mix positional and named parameters. Found: " + found);
+        } catch (MappingException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Use a repository query with named parameters, where the parameters are
+     * sometimes obtained from the Param annotation and other times obtained from
+     * the corresponding method parameters based on the method's parameter names.
+     */
+    @Test
+    public void testNamedParametersMixingAnnotationAndParameterNames() {
+        assertEquals(List.of(5L, 13L, 29L, 31L),
+                     primes.matchAnyWithMixedUsageOfParamAnnotation(31, "thirteen", "V", "1D")
+                                     .stream()
+                                     .sorted()
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
      * Test NotBetween in a filter.
      */
     @Test
@@ -3323,6 +3371,18 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository query with positional parameters and a literal value that looks like a named parameter, but isn't.
+     */
+    @Test
+    public void testPositionalParameterWithLiteralThatLooksLikeANamedParameter() {
+        assertEquals(List.of("thirty-seven", "forty-one"), // ordered by numeric value
+                     primes.matchAnyExceptLiteralValueThatLooksLikeANamedParameter(41, "thirty-seven"));
+
+        assertEquals(List.of("forty-one", "thirty-seven"), // ordered by name
+                     primes.matchAnyExceptLiteralValueThatLooksLikeANamedParameter("thirty-seven", 41));
+    }
+
+    /**
      * Use a repository method that has both AND and OR keywords.
      * The AND keywords should take precedence over OR and be computed first.
      */
@@ -3335,10 +3395,10 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Tests all CrudRepository methods with a record as the entity.
+     * Tests all BasicRepository methods with a record as the entity.
      */
     @Test
-    public void testRecordCrudRepositoryMethods() {
+    public void testRecordBasicRepositoryMethods() {
         receipts.deleteAll();
 
         receipts.save(new Receipt(100L, "C0013-00-031", 101.90f));
@@ -3383,6 +3443,75 @@ public class DataTestServlet extends FATServlet {
                                    new Receipt(700L, "C0067-00-076", 17.99f)));
 
         assertEquals(2L, receipts.count());
+
+        receipts.deleteAll();
+
+        assertEquals(0L, receipts.count());
+    }
+
+    /**
+     * Tests all CrudRepository methods (apart from those inherited from BasicRepository) with a record as the entity.
+     */
+    @Test
+    public void testRecordCrudRepositoryMethods() {
+        receipts.deleteAll();
+
+        receipts.insert(new Receipt(1200L, "C0002-12-002", 102.20f));
+
+        receipts.insertAll(Set.of(new Receipt(1300L, "C0033-13-003", 130.13f),
+                                  new Receipt(1400L, "C0040-14-004", 14.40f),
+                                  new Receipt(1500L, "C0005-15-005", 105.50f),
+                                  new Receipt(1600L, "C0006-16-006", 600.16f)));
+
+        try {
+            receipts.insert(new Receipt(1200L, "C0002-10-002", 22.99f));
+            fail("Inserted an entity with an Id that already exists.");
+        } catch (EntityExistsException x) {
+            // expected
+        }
+
+        // Ensure that the entity that already exists was not modified by insert
+        Receipt r = receipts.findById(1200L).orElseThrow();
+        assertEquals(1200L, r.purchaseId());
+        assertEquals("C0002-12-002", r.customer());
+        assertEquals(102.20f, r.total(), 0.001f);
+
+        try {
+            receipts.insertAll(Set.of(new Receipt(1700L, "C0017-17-007", 177.70f),
+                                      new Receipt(1500L, "C0055-15-005", 55.55f),
+                                      new Receipt(1800L, "C0008-18-008", 180.18f)));
+            fail("insertAll must fail when one of the entities has an Id that already exists.");
+        } catch (EntityExistsException x) {
+            // expected
+        }
+
+        // Ensure that insertAll inserted no entities when one had an Id that already exists
+        assertEquals(false, receipts.update(new Receipt(1700L, "C0017-17-007", 77.70f)));
+        assertEquals(false, receipts.update(new Receipt(1800L, "C0018-18-008", 88.80f)));
+
+        // Ensure that the entity that already exists was not modified by insertAll
+        r = receipts.findById(1500L).orElseThrow();
+        assertEquals(1500L, r.purchaseId());
+        assertEquals("C0005-15-005", r.customer());
+        assertEquals(105.50f, r.total(), 0.001f);
+
+        // Update single entity that exists
+        assertEquals(true, receipts.update(new Receipt(1600L, "C0060-16-006", 600.16f)));
+
+        // Update multiple entities, if they exist
+        assertEquals(2, receipts.updateAll(List.of(new Receipt(1400L, "C0040-14-044", 14.41f),
+                                                   new Receipt(1900L, "C0009-19-009", 199.99f),
+                                                   new Receipt(1200L, "C0002-12-002", 112.20f))));
+
+        // Verify the updates
+        assertEquals(List.of(new Receipt(1200L, "C0002-12-002", 112.20f), // updated by updateAll
+                             new Receipt(1300L, "C0033-13-003", 130.13f),
+                             new Receipt(1400L, "C0040-14-044", 14.41f), // updated by updateAll
+                             new Receipt(1500L, "C0005-15-005", 105.50f),
+                             new Receipt(1600L, "C0060-16-006", 600.16f)), // updated by update
+                     receipts.findAll()
+                                     .sorted(Comparator.comparing(Receipt::purchaseId))
+                                     .collect(Collectors.toList()));
 
         receipts.deleteAll();
 
@@ -5339,7 +5468,7 @@ public class DataTestServlet extends FATServlet {
         urban.lastName = "TestUpdateWithEntityParameter";
         urban.ssn_id = 987001005;
 
-        people.save(List.of(ursula, ulysses, uriel, uriah));
+        people.updateOrAdd(List.of(ursula, ulysses, uriel, uriah));
 
         // update single entity:
 
@@ -5410,18 +5539,32 @@ public class DataTestServlet extends FATServlet {
         prod1.pk = UUID.nameUUIDFromBytes("Q6008-U8-21001".getBytes());
         prod1.name = "testVersionedUpdateViaQuery Product 1";
         prod1.price = 82.99f;
-        products.save(prod1);
+        prod1 = products.upsert(prod1);
 
-        Product p = products.findItem(prod1.pk);
-        long initialVersion = p.version;
+        long initialVersion = prod1.version;
 
         assertEquals(true, products.setPrice(prod1.pk, initialVersion, 84.99f));
         assertEquals(false, products.setPrice(prod1.pk, initialVersion, 83.99f));
         assertEquals(true, products.setPrice(prod1.pk, initialVersion + 1, 88.99f));
 
-        p = products.findItem(prod1.pk);
-        assertEquals(88.99f, p.price, 0.001f);
-        assertEquals(initialVersion + 2, p.version);
+        prod1 = products.findItem(prod1.pk);
+        assertEquals(88.99f, prod1.price, 0.001f);
+        assertEquals(initialVersion + 2, prod1.version);
+
+        prod1.version = initialVersion + 1;
+        prod1.price = 89.99f;
+        try {
+            prod1 = products.upsert(prod1);
+            fail("Should not be able to save an update at an old version.");
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
+
+        prod1.version = initialVersion + 2;
+        prod1.price = 90.99f;
+        prod1 = products.upsert(prod1);
+        assertEquals(90.99f, prod1.price, 0.001f);
+        assertEquals(initialVersion + 3, prod1.version);
     }
 
     /**
