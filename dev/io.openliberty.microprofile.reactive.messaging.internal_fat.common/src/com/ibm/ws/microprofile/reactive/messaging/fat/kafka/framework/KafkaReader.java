@@ -28,6 +28,9 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
  * An interface for reading ConsumerRecords from a Kafka topic. The key and message types are dependent on the KafkaConsumer which is passed in.
  * <p>
  * This reader doesn't commit any offsets so each new reader will start reading from the start of the topic.
+ *
+ * Once an instance of KafkaReader is no longer required. It must be closed by KafkaReader.close()
+ *
  */
 public class KafkaReader<K, V> implements AutoCloseable {
 

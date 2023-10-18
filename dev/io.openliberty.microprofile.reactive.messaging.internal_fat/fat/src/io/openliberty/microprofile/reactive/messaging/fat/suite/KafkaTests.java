@@ -23,9 +23,12 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.ExtendedKafkaContainer;
 
 import componenttest.containers.SimpleLogConsumer;
-import io.openliberty.microprofile.reactive.messaging.fat.apps.kafkanack.KafkaNackTest;
+import io.openliberty.microprofile.reactive.messaging.fat.kafka.emitter.basic.KafkaEmitterTest;
+import io.openliberty.microprofile.reactive.messaging.fat.kafka.emitter.nack.KafkaEmitterNackRestfulTest;
+import io.openliberty.microprofile.reactive.messaging.fat.kafka.emitter.restful.KafkaEmitterRestfulTest;
 import io.openliberty.microprofile.reactive.messaging.fat.kafka.metrics.MetricsTest;
 import io.openliberty.microprofile.reactive.messaging.fat.kafka.metrics.MultiAppMetricsTest;
+import io.openliberty.microprofile.reactive.messaging.fat.kafka.nack.KafkaNackTest;
 import io.openliberty.microprofile.reactive.messaging.fat.kafka.validation.KafkaValidationTests;
 import io.openliberty.microprofile.reactive.messaging.fat.telemetry.ReactiveMessagingTelemetryTest;
 import io.openliberty.microprofile.reactive.messaging.fat.telemetry.ReactiveMessagingTelemetryTestWithJAXRS;
@@ -37,7 +40,7 @@ import io.openliberty.microprofile.reactive.messaging.fat.telemetry.ReactiveMess
         MetricsTest.class,
         MultiAppMetricsTest.class,
         ReactiveMessagingTelemetryTest.class,
-        ReactiveMessagingTelemetryTestWithJAXRS.class
+        ReactiveMessagingTelemetryTestWithJAXRS.class,
         KafkaEmitterTest.class,
         KafkaEmitterRestfulTest.class,
         KafkaEmitterNackRestfulTest.class
