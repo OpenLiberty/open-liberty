@@ -3298,7 +3298,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "sendFullOutgoing : No buffers to write ");
             }
-            this.nettyContext.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+            //this.nettyContext.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+            this.nettyContext.channel().write(new LastStreamSpecificHttpContent(Integer.valueOf(nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(),
+                            "-1"))));
         }
         this.nettyContext.channel().flush();
         MSP.log("set message sent");
