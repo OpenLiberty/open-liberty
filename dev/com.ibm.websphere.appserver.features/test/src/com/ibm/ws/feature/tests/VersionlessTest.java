@@ -98,10 +98,10 @@ public class VersionlessTest {
                             
                             String featureTitle = depInfo.getShortName().split("-")[0]; //Just the name not the version
                             if(versionlessFeatures.containsKey(featureTitle)){
-                                versionlessFeatures.get(featureTitle).addFeaturePlatform(new String[] { depInfo.getShortName(), baseName + "-" + version, depInfo.getName()});
+                                versionlessFeatures.get(featureTitle).addFeaturePlatform(new String[] { depInfo.getShortName(), baseName.replace("javaee", "jakartaee") + "-" + version, depInfo.getName()});
                             }
                             else {
-                                versionlessFeatures.put(featureTitle, new VersionlessFeatureDefinition(featureTitle, featureTitle, new String[] { depInfo.getShortName(), baseName + "-" + version, depInfo.getName()}));
+                                versionlessFeatures.put(featureTitle, new VersionlessFeatureDefinition(featureTitle, featureTitle, new String[] { depInfo.getShortName(), baseName.replace("javaee", "jakartaee") + "-" + version, depInfo.getName()}));
                             }
                         } else {
                             // Ignore
@@ -111,18 +111,18 @@ public class VersionlessTest {
             }
         });
 
-        VersionlessFeatureCreator creator = new VersionlessFeatureCreator();
+        // VersionlessFeatureCreator creator = new VersionlessFeatureCreator();
 
-        for(String title : versionlessFeatures.keySet()) {
-            VersionlessFeatureDefinition feat = versionlessFeatures.get(title);
-			try {
-				creator.createPublicVersionlessFeature(feat);
-				creator.createPrivateFeatures(feat);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+        // for(String title : versionlessFeatures.keySet()) {
+        //     VersionlessFeatureDefinition feat = versionlessFeatures.get(title);
+		// 	try {
+		// 		creator.createPublicVersionlessFeature(feat);
+		// 		creator.createPrivateFeatures(feat);
+		// 	} catch (IOException e) {
+		// 		// TODO Auto-generated catch block
+		// 		e.printStackTrace();
+		// 	}
+		// }
 
     }
 

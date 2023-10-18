@@ -3,8 +3,7 @@ symbolicName=io.openliberty.unversioned.mpFaultTolerance-1.0
 visibility=private
 singleton=true
 -features= \
-    io.openliberty.microProfile.internal-1.3, \
-    io.openliberty.microProfile.internal-1.2, \
+    io.openliberty.microProfile.internal-1.2; ibm.tolerates:="1.3", \
     com.ibm.websphere.appserver.mpFaultTolerance-1.0
 kind=noship
 edition=full
