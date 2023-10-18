@@ -89,7 +89,7 @@ public class RebindConfigUpdateTest extends FATServletClient {
                                                                                                                     "com.ibm.ws.ejbcontainer.remote.config.fat.server.ssl")) //
                     .andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.config.fat.server",
                                                                                 "com.ibm.ws.ejbcontainer.remote.config.fat.server.ssl")) //
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17).forServers("com.ibm.ws.ejbcontainer.remote.config.fat.server",
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_21).forServers("com.ibm.ws.ejbcontainer.remote.config.fat.server",
                                                                                                                                                                "com.ibm.ws.ejbcontainer.remote.config.fat.server.ssl")) //
                     .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.config.fat.server",
                                                                                                "com.ibm.ws.ejbcontainer.remote.config.fat.server.ssl")) //

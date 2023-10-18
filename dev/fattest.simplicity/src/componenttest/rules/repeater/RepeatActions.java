@@ -14,7 +14,6 @@ package componenttest.rules.repeater;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +38,7 @@ public class RepeatActions {
     }
 
     public static enum EEVersion {
-        EE6(SEVersion.JAVA8), EE7(SEVersion.JAVA8), EE8(SEVersion.JAVA8), EE9(SEVersion.JAVA8), EE10(SEVersion.JAVA11), EE11(SEVersion.JAVA17);
+        EE6(SEVersion.JAVA8), EE7(SEVersion.JAVA8), EE8(SEVersion.JAVA8), EE9(SEVersion.JAVA8), EE10(SEVersion.JAVA11), EE11(SEVersion.JAVA21);
 
         private EEVersion(SEVersion minJavaLevel) {
             this.minJavaLevel = minJavaLevel;
@@ -88,7 +87,7 @@ public class RepeatActions {
                                      FeatureSet firstFeatureSet,
                                      List<FeatureSet> otherFeatureSets) {
         // if server is null use an empty array, else return an array with the server as the sole element
-        String[] servers = server != null ? new String[] {server}: new String[] {};
+        String[] servers = server != null ? new String[] { server } : new String[] {};
         return repeat(servers, otherFeatureSetsTestMode, allFeatureSets, firstFeatureSet, otherFeatureSets);
     }
 
