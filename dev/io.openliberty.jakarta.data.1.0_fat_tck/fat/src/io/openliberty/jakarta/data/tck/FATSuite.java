@@ -25,10 +25,9 @@ import componenttest.topology.database.container.DatabaseContainerFactory;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class, //Need to have a passing test for java 8 & 11
-                // TODO re-enable when TCK with refactored package/class/method names is available
                 DataCoreTckLauncher.class,
-                DataWebTckLauncher.class, //full mode
-                DataFullTckLauncher.class
+                DataWebTckLauncher.class,
+                DataFullTckLauncher.class //full mode
 })
 public class FATSuite extends TestContainerSuite {
     @ClassRule
