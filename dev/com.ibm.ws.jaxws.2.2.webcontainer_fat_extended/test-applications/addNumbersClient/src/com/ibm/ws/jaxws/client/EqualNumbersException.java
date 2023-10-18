@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * <p>Java class for AddNumbersException complex type.
+ * <p>Java class for EqualNumbersException complex type.
  *
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
- * &lt;complexType name="AddNumbersException"&gt;
+ * &lt;complexType name="EqualNumbersException"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
@@ -34,11 +34,11 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AddNumbersException", propOrder = {
-                                                     "info",
-                                                     "message"
+@XmlType(name = "EqualNumbersException", propOrder = {
+                                                       "info",
+                                                       "message"
 })
-public class AddNumbersException {
+public class EqualNumbersException {
 
     protected String info;
     protected String message;
@@ -49,7 +49,7 @@ public class AddNumbersException {
      * @return
      *         possible object is
      *         {@link String }
-     *
+     * 
      */
     public String getInfo() {
         return info;
@@ -61,7 +61,7 @@ public class AddNumbersException {
      * @param value
      *                  allowed object is
      *                  {@link String }
-     *
+     * 
      */
     public void setInfo(String value) {
         this.info = value;
@@ -73,7 +73,7 @@ public class AddNumbersException {
      * @return
      *         possible object is
      *         {@link String }
-     *
+     * 
      */
     public String getMessage() {
         return message;
@@ -85,7 +85,7 @@ public class AddNumbersException {
      * @param value
      *                  allowed object is
      *                  {@link String }
-     *
+     * 
      */
     public void setMessage(String value) {
         this.message = value;
