@@ -69,7 +69,6 @@ public class ThreadProcessor extends SubmissionPublisher<ContextCDL> implements 
     @Override
     public void onError(Throwable throwable) {
         closeExceptionally(throwable);
-        throwable.printStackTrace(System.out);
     }
 
     @Override

@@ -33,21 +33,19 @@ public class ThreadSubscriber implements Flow.Subscriber<ContextCDL> {
 
     @Override
     public void onNext(ContextCDL latch) {
-        System.out.println("subscriber onNext");
 
         try {
             latch.checkContext();
             latch.countDown();
             subscription.request(1);
         } catch (NamingException e) {
-            closeExceptionally(e);
+            onError(e);
         }
     }
 
     @Override
     public void onError(Throwable throwable) {
         closeExceptionally(throwable);
-        throwable.printStackTrace(System.out);
     }
 
     @Override
@@ -55,6 +53,7 @@ public class ThreadSubscriber implements Flow.Subscriber<ContextCDL> {
     }
 
     public void closeExceptionally(Throwable t) {
+        System.out.println("closedExceptionally - sub");
         closedException = t;
     }
 
