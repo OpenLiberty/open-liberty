@@ -18,6 +18,7 @@ import java.util.Set;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
 
 /**
  * Repository for testing Inheritance and DiscriminatorColumn/Value.
@@ -40,7 +41,9 @@ public interface ShippingAddresses {
     @Delete
     long removeAll();
 
+    @Save
     void save(ShippingAddress entity);
 
+    @Save
     Set<ShippingAddress> save(Set<ShippingAddress> addresses);
 }

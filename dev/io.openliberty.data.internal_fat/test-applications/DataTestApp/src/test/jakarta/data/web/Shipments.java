@@ -19,6 +19,7 @@ import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
 
 import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Filter;
@@ -66,6 +67,7 @@ public interface Shipments {
     @Delete
     int removeEverything();
 
+    @Save
     void save(Shipment s);
 
     @Filter(by = "id")

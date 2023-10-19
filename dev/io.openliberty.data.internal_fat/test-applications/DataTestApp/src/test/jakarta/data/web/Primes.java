@@ -34,6 +34,7 @@ import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Page;
 import jakarta.data.page.Pageable;
 import jakarta.data.page.Slice;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
@@ -290,10 +291,11 @@ public interface Primes {
     @OrderBy("id")
     List<Long> notWithinButBelow(int rangeMin, int rangeMax, int below);
 
+    @Insert
+    void persist(Prime... primes);
+
     @Query("SELECT DISTINCT LENGTH(p.romanNumeral) FROM Prime p WHERE p.numberId <= ?1 ORDER BY LENGTH(p.romanNumeral) DESC")
     Page<Integer> romanNumeralLengths(long maxNumber, Pageable pagination);
-
-    void save(Prime... primes);
 
     @Query("SELECT prime_ FROM Prime AS prime_ WHERE (prime_.numberId <= ?1)")
     @OrderBy(value = "even", descending = true)
