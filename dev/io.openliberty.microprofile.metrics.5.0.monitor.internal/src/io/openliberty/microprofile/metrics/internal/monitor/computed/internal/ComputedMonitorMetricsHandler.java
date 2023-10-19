@@ -570,9 +570,6 @@ public class ComputedMonitorMetricsHandler {
 
     public void calculateEWMAValue(MetricID computedMetricID, double duration, double totalCount) {
         double computedVal = 0.0;
-        
-        // Only the computed metricIDs that require EWMA will be passed into this method.
-        EWMA ewmaObj = (EWMA) finalComputedMetricsMap.get(computedMetricID);
 
         // Calculate the new computed metric.
         // If the duration or the totalCount is a negative value, set the computedValue to be -1.0
@@ -580,11 +577,20 @@ public class ComputedMonitorMetricsHandler {
         // the JVM. The rest of the metrics needed for computation are monotonically increasing,
         // and will never result in a negative value.
         computedVal = ((duration < 0.0) || (totalCount < 0.0)) ? -1.0 : (duration / totalCount);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "The computed value is " + computedVal);
+        }
         
-        if (computedVal == -1.0) {
+        String computedMetricName = computedMetricID.getName();
+        if (computedMetricName.equals("gc.time.per.cycle") && computedVal == -1.0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "The GC Time was unknown to the JVM, hence updating map for GCTime computed metric to -1.");
+            }
             finalComputedMetricsMap.put(computedMetricID, computedVal);
         }
         else {
+            // Only the computed metricIDs that require EWMA will be passed into this method.
+            EWMA ewmaObj = (EWMA) finalComputedMetricsMap.get(computedMetricID);
             if (ewmaObj == null) {
                 // Initialization of the EWMA object, for the first time.
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -597,8 +603,8 @@ public class ComputedMonitorMetricsHandler {
                 double initialValue = (duration == 0.0 || totalCount == 0.0) ? 0.0 : computedVal;
                 ewmaObj.updateNewValue(initialValue);
             } else {
-                if ((duration == 0.0 || totalCount == 0.0)) {
-                    // If nothing changed during the current sampling period, get the previously calculated EWMA value and feed it into it again.
+                if (duration == 0.0 || totalCount == 0.0 || computedVal < 0.0) {
+                    // If nothing changed during the current sampling period, or if the computed value is negative, get the previously calculated EWMA value and feed it into it again.
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Idling - There were no new data in the sampling period, getting the previously calculated EWMA value to feed into it again.");
                     }
