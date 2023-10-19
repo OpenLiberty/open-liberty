@@ -62,7 +62,7 @@ JWT_BUILDER_INVALID.explanation=A JSON Web Token (JWT) builder with the specifie
 JWT_BUILDER_INVALID.useraction=In the server.xml file, configure a jwtBuilder element with the specified ID.
 
 # Do not translate "JSON Web Token", "JWT"
-JWT_INVALID_CLAIM_VALUE_ERR=CWWKS6009E: The [{1}] value in the JSON Web Token (JWT) claim [{0}] is not valid.
+JWT_INVALID_CLAIM_VALUE_ERR=CWWKS6009E: The [{1}] value in the [{0}] JSON Web Token (JWT) claim is not valid.
 JWT_INVALID_CLAIM_VALUE_ERR.explanation=The specified value in the JSON Web Token (JWT) claim does not meet the JWT specification.
 JWT_INVALID_CLAIM_VALUE_ERR.useraction=Provide a valid value for the specified claim. For additional information, see the JWT specification.
 
@@ -128,13 +128,13 @@ JWT_INVALID_CLAIMS_ERR.useraction=Ensure that the correct set of claims are prov
 
 # Do not translate "JSON Web Token", "JWT"
 # 0=Issuer claim of the token, 1=JWT configuration ID, 2=Trusted issuers specified in server configuration
-JWT_ISSUER_NOT_TRUSTED=CWWKS6022E: The issuer [{0}] of the provided JSON Web Token (JWT) is not listed as a trusted issuer in the [{1}] JWT configuration. The trusted issuers are [{2}].
+JWT_ISSUER_NOT_TRUSTED=CWWKS6022E: The [{0}] issuer of the provided JSON Web Token (JWT) is not listed as a trusted issuer in the [{1}] JWT configuration. The trusted issuers are [{2}].
 JWT_ISSUER_NOT_TRUSTED.explanation=The server configuration specifies which issuers are trusted when validating JWTs. The provided token did not originate from a trusted issuer, so the token cannot be validated.
 JWT_ISSUER_NOT_TRUSTED.useraction=Obtain a new token from one of the trusted issuers specified in your JWT configuration, or add the issuer specified in the message as a trusted issuer in your JWT configuration.
 
 # Do not translate "JSON Web Token", "JWT"
 # 0=Audience claim of the token, 1=JWT configuration ID, 2=Trusted audiences specified in server configuration
-JWT_AUDIENCE_NOT_TRUSTED=CWWKS6023E: The audience [{0}] of the provided JSON Web Token (JWT) is not listed as a trusted audience in the [{1}] JWT configuration. The trusted audiences are [{2}].
+JWT_AUDIENCE_NOT_TRUSTED=CWWKS6023E: The [{0}] audience of the provided JSON Web Token (JWT) is not listed as a trusted audience in the [{1}] JWT configuration. The trusted audiences are [{2}].
 JWT_AUDIENCE_NOT_TRUSTED.explanation=The server configuration specifies which audiences are trusted when validating JWTs. The provided token is not intended for a trusted audience, so the token cannot be validated.
 JWT_AUDIENCE_NOT_TRUSTED.useraction=Obtain a new token intended for one of the trusted audiences specified in your JWT configuration, or add the audience specified in the message as a trusted audience in your JWT configuration.
 
@@ -320,7 +320,7 @@ MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Specify a supported signature 
 
 # Do not translate "JSON Web Token", "AMR", "JWT"
 # 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
-JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: The AMR [{0}] of the provided JSON Web Token (JWT) is not listed as a trusted AMR in the [{1}] JWT configuration. The trusted AMR are [{2}].
+JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: The [{0}] AMR of the provided JSON Web Token (JWT) is not listed as a trusted AMR in the [{1}] JWT configuration. The trusted AMR are [{2}].
 JWT_AMR_CLAIM_NOT_VALID.explanation=The server configuration specifies which AMR are trusted when validating JWTs. The provided token is not intended for a trusted AMR, so the token cannot be validated.
 JWT_AMR_CLAIM_NOT_VALID.useraction=Obtain a new token for one of the trusted AMR specified in your JWT configuration, or add the AMR specified in the message as a trusted AMR in your JWT configuration.
 
