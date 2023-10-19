@@ -13,6 +13,7 @@ import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONL
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -54,7 +55,6 @@ import io.openliberty.microprofile.reactive.messaging.fat.suite.ReactiveMessagin
 public class MetricsTest extends FATServletClient {
 
     public static final String APP_NAME = "MetricsTest";
-
     public static final String SERVER_NAME = "SimpleRxMessagingServer";
 
     @Server(SERVER_NAME)
@@ -98,7 +98,7 @@ public class MetricsTest extends FATServletClient {
         runTest(server, APP_NAME + "/MetricsTest", "emitterDeliverPayload");
         HashMap<String, Integer> metrics = getMetrics();
 
-        assertThat("5 messages not detected on channel", metrics.get("metrics-incoming") == 5);
+        assertThat("5 messages not detected on channel", metrics.get("metrics-incoming"), equalTo(5));
 //      Assertion disabled as emitters currently don't report metrics per spec
 //        assertTrue("Outgoing and incoming channel counts are not the same",
 //                   metrics.get("mp_messaging_message_count_total{channel=\"MetricsEmitter\",mp_scope=\"base\",}") == metrics
@@ -111,10 +111,8 @@ public class MetricsTest extends FATServletClient {
         runTest(server, APP_NAME + "/MetricsTest", "deliverMessage");
         HashMap<String, Integer> metrics = getMetrics();
 
-        assertThat("5 messages not detected on channel", metrics.get("metrics-outgoing") == 5);
-        assertThat("Outgoing and incoming channel counts are not the same",
-                   metrics.get("metrics-outgoing") == metrics
-                                   .get("metrics-message-incoming"));
+        assertThat("5 messages not detected on channel", metrics.get("metrics-outgoing"), equalTo(5));
+        assertThat("Outgoing and incoming channel counts are not the same", metrics.get("metrics-outgoing"), equalTo(metrics.get("metrics-message-incoming")));
     }
 
     @AfterClass
@@ -128,23 +126,27 @@ public class MetricsTest extends FATServletClient {
 
     private HashMap<String, Integer> getMetrics() throws Exception {
         // Returns the MicroProfile Reactive Messaging metrics from the /metrics endpoint
-        HttpURLConnection response = HttpUtils.getHttpConnection(new URL("http", server.getHostname(), 8010, "/metrics"),
-                                                                 200, null, 30, HTTPRequestMethod.GET, null, null);
+        URL url = HttpUtils.createURL(server, "/metrics");
+        HttpURLConnection response = HttpUtils.getHttpConnection(url, 200, null, 30, HTTPRequestMethod.GET, null, null);
         HashMap<String, Integer> metrics = new HashMap<String, Integer>();
         response.setReadTimeout(30 * 1000);
         InputStream result = response.getInputStream();
         BufferedReader in = new BufferedReader(new InputStreamReader(result));
-        String currentLine;
-
-        // filter the /metrics output for reactive messaging metrics
-        while ((currentLine = in.readLine()) != null)
-            if (currentLine.contains("mp_messaging_message_count_total{channel=")) {
-                String channelString = currentLine.split("channel=\"")[1].replace(",mp_scope=\"base\",", "");
-                // the metric counter is always a whole number (int)
-                // extract channel name and counter total from response line
-                metrics.put(channelString.split("\"} ")[0], (int) Float.parseFloat(channelString.split("\"} ")[1]));
+        try {
+            String currentLine;
+    
+            // filter the /metrics output for reactive messaging metrics
+            while ((currentLine = in.readLine()) != null) {
+                if (currentLine.contains("mp_messaging_message_count_total{channel=")) {
+                    String channelString = currentLine.split("channel=\"")[1].replace(",mp_scope=\"base\",", "");
+                    // the metric counter is always a whole number (int)
+                    // extract channel name and counter total from response line
+                    metrics.put(channelString.split("\"} ")[0], (int) Float.parseFloat(channelString.split("\"} ")[1]));
+                }
             }
-        in.close();
+        } finally {
+            in.close();
+        }
 
         return metrics;
     }

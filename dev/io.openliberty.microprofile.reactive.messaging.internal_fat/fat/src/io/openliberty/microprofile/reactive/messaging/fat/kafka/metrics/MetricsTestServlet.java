@@ -26,20 +26,18 @@ import jakarta.servlet.annotation.WebServlet;
 @WebServlet("/MetricsTest")
 public class MetricsTestServlet extends AbstractKafkaTestServlet {
 
-    @Inject
-    MetricsReceptionBean emitterReception;
-
-    @Inject
-    MetricsDeliveryBean deliveryBean;
-
-    @Inject
-    @Channel(EMITTER_OUTGOING_CHANNEL)
-    public Emitter<String> emitter;
-
     public static final String EMITTER_OUTGOING_CHANNEL = "MetricsEmitter";
     public static final String EMITTER_TOPIC = "EmitterTopic";
     public static final String OUTGOING_TOPIC = "OutgoingTopic";
 
+    @Inject
+    private MetricsDeliveryBean deliveryBean;
+
+    @Inject
+    @Channel(EMITTER_OUTGOING_CHANNEL)
+    private Emitter<String> emitter;
+
+    // called manually from MetricsTest
     public void emitterDeliverPayload() {
         // deliver 5 payloads via an emitter
         for (int i = 1; i < 6; i++) {
@@ -50,6 +48,7 @@ public class MetricsTestServlet extends AbstractKafkaTestServlet {
         reader.assertReadMessages(5, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
     }
 
+    // called manually from MetricsTest
     public void deliverMessage() {
         // deliver 5 messages via delivery and reception beans
         for (int i = 1; i < 6; i++) {
