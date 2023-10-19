@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2021 IBM Corporation and others.
+ * Copyright (c) 2015,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -38,12 +38,21 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.ws.transport.iiop.spi.IIOPEndpoint;
 import com.ibm.ws.transport.iiop.spi.ReadyListener;
 import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
+import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 
 /**
  * Provides access to the ORB.
  */
-@Component(configurationPolicy = REQUIRE, service = {}, property = { "service.vendor=IBM", "service.ranking:Integer=5" })
-public final class ORBWrapper {
+@Component(
+		service = ApplicationPrereq.class, 
+		configurationPolicy = REQUIRE, 
+		configurationPid = "com.ibm.ws.transport.iiop.internal.ORBWrapper", 
+		property = { 
+				"service.vendor=IBM", 
+				"service.ranking:Integer=5"
+				}
+		)
+public final class ORBWrapper implements ApplicationPrereq {
     public static final String pid = ORBWrapperInternal.class.getName();
     private final ReadyListenerImpl readyListener;
 
