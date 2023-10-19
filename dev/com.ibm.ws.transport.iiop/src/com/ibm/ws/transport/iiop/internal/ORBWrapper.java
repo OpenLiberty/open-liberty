@@ -49,7 +49,8 @@ import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 		configurationPid = "com.ibm.ws.transport.iiop.internal.ORBWrapper", 
 		property = { 
 				"service.vendor=IBM", 
-				"service.ranking:Integer=5"
+				"service.ranking:Integer=5",
+				"application.prereq.id=orb"
 				}
 		)
 public final class ORBWrapper implements ApplicationPrereq {
