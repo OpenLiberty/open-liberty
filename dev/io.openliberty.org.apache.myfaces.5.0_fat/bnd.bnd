@@ -18,6 +18,8 @@ fat.project: true
 javac.source: 17
 javac.target: 17
 
+fat.minimum.java.level: 21
+
 -buildpath: \
     io.openliberty.jakarta.faces.4.0;version=latest,\
     io.openliberty.jakarta.cdi.4.0;version=latest,\
