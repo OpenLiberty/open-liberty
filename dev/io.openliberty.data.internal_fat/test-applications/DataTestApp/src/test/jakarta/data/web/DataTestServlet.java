@@ -107,6 +107,9 @@ public class DataTestServlet extends FATServlet {
     Houses houses;
 
     @Inject
+    MultiRepository multi;
+
+    @Inject
     Packages packages;
 
     @Inject
@@ -3155,6 +3158,78 @@ public class DataTestServlet extends FATServlet {
         assertEquals(58.0, deque.removeFirst(), 0.01); // sum
         assertEquals(7.0, deque.removeFirst(), 0.01); // count
         assertEquals(8.0, Math.floor(deque.removeFirst()), 0.01); // average
+    }
+
+    /**
+     * Use a repository where methods are for different entities.
+     */
+    @Test
+    public void testMultipleEntitiesInARepository() {
+        // Remove any pre-existing data that could interfere with the test:
+        products.clear();
+        packages.deleteAll();
+        multi.deleteByIdIn(List.of(908070605l, 807060504l, 706050403l));
+
+        Product prod = new Product();
+        prod.pk = UUID.nameUUIDFromBytes("TestMultipleEntitiesInARepository".getBytes());
+        prod.name = "TestMultipleEntitiesInARepository-Product";
+        prod.price = 30.99f;
+
+        prod = multi.create(prod);
+
+        Person p1 = new Person();
+        p1.firstName = "Michael";
+        p1.lastName = "TestMultipleEntitiesInARepository";
+        p1.ssn_id = 908070605;
+
+        Person p2 = new Person();
+        p2.firstName = "Mark";
+        p2.lastName = "TestMultipleEntitiesInARepository";
+        p2.ssn_id = 807060504;
+
+        Person p3 = new Person();
+        p3.firstName = "Maria";
+        p3.lastName = "TestMultipleEntitiesInARepository";
+        p3.ssn_id = 706050403;
+
+        List<Person> added = multi.add(p1, p2, p3);
+        assertEquals(List.of("Michael", "Mark", "Maria"),
+                     added.stream()
+                                     .map(p -> p.firstName)
+                                     .collect(Collectors.toList()));
+
+        Package pkg = multi.upsert(new Package(60504, 30.0f, 20.0f, 10.0f, "TestMultipleEntitiesInARepository-Package"));
+        assertEquals(60504, pkg.id);
+        assertEquals(30.0f, pkg.length, 0.001f);
+        assertEquals(20.0f, pkg.width, 0.001f);
+        assertEquals(10.0f, pkg.height, 0.001f);
+        assertEquals("TestMultipleEntitiesInARepository-Package", pkg.description);
+
+        pkg.length = 33.0f;
+        pkg.width = 22.0f;
+        pkg = multi.upsert(pkg);
+        assertEquals(33.0f, pkg.length, 0.001f);
+        assertEquals(22.0f, pkg.width, 0.001f);
+
+        pkg = multi.findById(60504).orElseThrow();
+        assertEquals(60504, pkg.id);
+        assertEquals(33.0f, pkg.length, 0.001f);
+        assertEquals(22.0f, pkg.width, 0.001f);
+        assertEquals(10.0f, pkg.height, 0.001f);
+        assertEquals("TestMultipleEntitiesInARepository-Package", pkg.description);
+
+        assertEquals(true, multi.remove(added.get(2)));
+
+        Person[] deleted = multi.deleteByIdIn(List.of(908070605l, 807060504l, 706050403l));
+        assertEquals(2, deleted.length);
+
+        prod.name = "Test-Multiple-Entities-In-A-Repository-Product";
+        assertEquals(1, multi.modify(prod));
+
+        prod = products.remove(prod.pk);
+        assertEquals("Test-Multiple-Entities-In-A-Repository-Product", prod.name);
+
+        packages.delete(pkg);
     }
 
     /**
