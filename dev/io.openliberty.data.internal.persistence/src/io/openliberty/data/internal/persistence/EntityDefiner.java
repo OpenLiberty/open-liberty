@@ -88,7 +88,9 @@ public class EntityDefiner implements Runnable {
 
     private final ClassDefiner classDefiner = new ClassDefiner();
     private final String databaseId;
-    private final List<Class<?>> entities = new ArrayList<>();
+    private final Set<Class<?>> entities = new HashSet<>();
+
+    // Mapping of JPA entity class (not record class) to entity information.
     final ConcurrentHashMap<Class<?>, CompletableFuture<EntityInfo>> entityInfoMap = new ConcurrentHashMap<>();
     private final ClassLoader loader;
 

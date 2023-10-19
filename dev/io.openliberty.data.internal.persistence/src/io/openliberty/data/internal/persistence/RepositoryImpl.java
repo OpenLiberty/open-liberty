@@ -15,7 +15,6 @@ package io.openliberty.data.internal.persistence;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
@@ -28,7 +27,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.sql.Connection;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
@@ -46,6 +44,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -58,8 +57,6 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
-
-import javax.sql.DataSource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -146,108 +143,50 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
     private static final ThreadLocal<Deque<EntityManager>> defaultMethodResources = new ThreadLocal<>();
 
-    private final Class<?> defaultEntityClass; // entity class as specified by the user (not generated for records)
-    private final CompletableFuture<EntityInfo> defaultEntityInfoFuture;
     private final AtomicBoolean isDisposed = new AtomicBoolean();
+    private final CompletableFuture<EntityInfo> primaryEntityInfoFuture;
     private final DataExtensionProvider provider;
     final Map<Method, CompletableFuture<QueryInfo>> queries = new HashMap<>();
     private final Class<R> repositoryInterface;
     private final EntityValidator validator;
 
     public RepositoryImpl(DataExtensionProvider provider, DataExtension extension, EntityDefiner definer,
-                          Class<R> repositoryInterface, Class<?> defaultEntityClass) {
-        this.defaultEntityClass = defaultEntityClass;
+                          Class<R> repositoryInterface, Class<?> primaryEntityClass,
+                          Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
+        this.primaryEntityInfoFuture = primaryEntityClass == null ? null : definer.entityInfoMap.computeIfAbsent(primaryEntityClass, EntityInfo::newFuture);
         this.provider = provider;
         this.repositoryInterface = repositoryInterface;
         Object validation = provider.validationService();
         this.validator = validation == null ? null : EntityValidator.newInstance(validation, repositoryInterface);
 
-        boolean inheritance = defaultEntityClass.getAnnotation(Inheritance.class) != null;
-        Class<?> recordClass = null;
-
-        if (defaultEntityClass.isRecord())
-            try {
-                recordClass = defaultEntityClass;
-                defaultEntityClass = recordClass.getClassLoader().loadClass(recordClass.getName() + "Entity");
-            } catch (ClassNotFoundException x) {
-                // TODO figure out how to best report this error to the user
-                throw new MappingException("Unable to load generated entity class for record " + recordClass, x); // TODO NLS
-            }
-
-        defaultEntityInfoFuture = definer.entityInfoMap.computeIfAbsent(defaultEntityClass, EntityInfo::newFuture);
-
-        for (Method method : repositoryInterface.getMethods()) {
-            if (method.isDefault()) // skip default methods
-                continue;
-
-            // Check for resource accessor methods:
-            Class<?> returnType = method.getReturnType();
-            if (method.getParameterCount() == 0 &&
-                (EntityManager.class.equals(returnType)
-                 || DataSource.class.equals(returnType)
-                 || Connection.class.equals(returnType))) {
-                QueryInfo queryInfo = new QueryInfo(method, null, null);
-                queryInfo.type = QueryInfo.Type.RESOURCE_ACCESS;
-                queryInfo.validateResult = validator != null && validator.isValidatable(method)[1];
-                queries.put(method, CompletableFuture.completedFuture(queryInfo));
-                continue;
-            }
-
-            Class<?> returnArrayComponentType = null;
-            List<Class<?>> returnTypeAtDepth = new ArrayList<>(5);
-            Type type = method.getGenericReturnType();
-            for (int depth = 0; depth < 5 && type != null; depth++) {
-                if (type instanceof ParameterizedType) {
-                    returnTypeAtDepth.add((Class<?>) ((ParameterizedType) type).getRawType());
-                    Type[] typeParams = ((ParameterizedType) type).getActualTypeArguments();
-                    type = typeParams.length == 1 ? typeParams[0] : null;
-                } else if (type instanceof Class) {
-                    Class<?> c = (Class<?>) type;
-                    returnTypeAtDepth.add(c);
-                    if (IntStream.class.equals(type)) {
-                        returnTypeAtDepth.add(int.class);
-                        depth++;
-                    } else if (LongStream.class.equals(type)) {
-                        returnTypeAtDepth.add(long.class);
-                        depth++;
-                    } else if (DoubleStream.class.equals(type)) {
-                        returnTypeAtDepth.add(double.class);
-                        depth++;
-                    } else if (returnArrayComponentType == null) {
-                        returnArrayComponentType = c.getComponentType();
-                        if (returnArrayComponentType != null) {
-                            returnTypeAtDepth.add(returnArrayComponentType);
-                            depth++;
-                        }
-                    }
-                    type = null;
-                } else if (type instanceof GenericArrayType) {
-                    // TODO cover the possibility that the generic type could be for something other than the entity, such as the primary key?
-                    Class<?> arrayComponentType = recordClass == null ? defaultEntityClass : recordClass;
-                    returnTypeAtDepth.add(arrayComponentType.arrayType());
-                    if (returnArrayComponentType == null) {
-                        returnTypeAtDepth.add(returnArrayComponentType = arrayComponentType);
-                        depth++;
-                    }
-                    type = null;
+        for (Entry<Class<?>, List<QueryInfo>> entry : queriesPerEntityClass.entrySet()) {
+            Class<?> entityClass = entry.getKey();
+            for (QueryInfo queryInfo : entry.getValue()) {
+                if (queryInfo.type == QueryInfo.Type.RESOURCE_ACCESS) {
+                    queryInfo.validateParams = validator != null && validator.isValidatable(queryInfo.method)[1];
+                    queries.put(queryInfo.method, CompletableFuture.completedFuture(queryInfo));
                 } else {
-                    returnTypeAtDepth.add(recordClass == null ? defaultEntityClass : recordClass);
-                    type = null;
+                    boolean inheritance = entityClass.getAnnotation(Inheritance.class) != null; // TODO what do we need to do this with?
+
+                    Class<?> jpaEntityClass;
+                    Class<?> recordClass = null;
+                    if (entityClass.isRecord())
+                        try {
+                            recordClass = entityClass;
+                            jpaEntityClass = recordClass.getClassLoader().loadClass(recordClass.getName() + "Entity");
+                        } catch (ClassNotFoundException x) {
+                            // TODO figure out how to best report this error to the user
+                            throw new MappingException("Unable to load generated entity class for record " + recordClass, x); // TODO NLS
+                        }
+                    else
+                        jpaEntityClass = entityClass;
+
+                    CompletableFuture<EntityInfo> entityInfoFuture = definer.entityInfoMap.computeIfAbsent(jpaEntityClass, EntityInfo::newFuture);
+
+                    queries.put(queryInfo.method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(queryInfo),
+                                                                               this::completeQueryInfo));
                 }
             }
-
-            Class<?> entityClass = returnTypeAtDepth.get(returnTypeAtDepth.size() - 1);
-
-            if (!inheritance || entityClass == recordClass || !defaultEntityClass.isAssignableFrom(entityClass)) // TODO allow other entity types from model
-                entityClass = defaultEntityClass;
-
-            CompletableFuture<EntityInfo> entityInfoFuture = entityClass.equals(defaultEntityClass) //
-                            ? defaultEntityInfoFuture //
-                            : definer.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
-
-            QueryInfo queryInfo = new QueryInfo(method, returnArrayComponentType, returnTypeAtDepth);
-            queries.put(method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(queryInfo),
-                                                             this::completeQueryInfo));
         }
     }
 
@@ -712,17 +651,17 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (cause == null)
                 x = new MappingException(original);
             else if (DataException.class.equals(cause.getClass()))
-                x = new DataException(cause.getMessage(), cause);
+                x = new DataException(cause.getMessage(), original);
             else if (DataConnectionException.class.equals(cause.getClass()))
-                x = new DataConnectionException(cause.getMessage(), cause);
+                x = new DataConnectionException(cause.getMessage(), original);
             else if (EmptyResultException.class.equals(cause.getClass()))
-                x = new EmptyResultException(cause.getMessage(), cause);
+                x = new EmptyResultException(cause.getMessage(), original);
             else if (MappingException.class.equals(cause.getClass()))
-                x = new MappingException(cause.getMessage(), cause);
+                x = new MappingException(cause.getMessage(), original);
             else if (NonUniqueResultException.class.equals(cause.getClass()))
-                x = new NonUniqueResultException(cause.getMessage(), cause);
+                x = new NonUniqueResultException(cause.getMessage(), original);
             else
-                x = new MappingException(cause);
+                x = new MappingException(original);
         } else if (original instanceof IllegalArgumentException) {
             // Example: Problem compiling [SELECT o FROM Account o WHERE (o.accountId>?1)]. The
             // relationship mapping 'o.accountId' cannot be used in conjunction with the > operator
@@ -1452,6 +1391,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      */
     private StringBuilder generateQueryFromMethod(QueryInfo queryInfo, boolean countPages) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
+        Class<?> entityClass = queryInfo.entityInfo.recordClass == null ? queryInfo.entityInfo.entityClass : queryInfo.entityInfo.recordClass;
 
         EntityInfo entityInfo = queryInfo.entityInfo;
         String methodName = queryInfo.method.getName();
@@ -1477,7 +1417,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         }
         // Methods with Entity Parameter: delete, update
         if (queryInfo.type == null && paramTypes.length == 1) {
-            if (defaultEntityClass.equals(paramTypes[0])) {
+            if (entityClass.equals(paramTypes[0])) {
                 queryInfo.entityParamType = paramTypes[0];
             } else if (BasicRepository.class.equals(queryInfo.method.getDeclaringClass())) {
                 if ("delete".equals(methodName) || "deleteAll".equals(methodName)) {
@@ -1490,14 +1430,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     q = generateUpdateEntity(queryInfo);
                 }
             } else if (paramTypes[0].isArray()) {
-                if (defaultEntityClass.equals(paramTypes[0].getComponentType()))
+                if (entityClass.equals(paramTypes[0].getComponentType()))
                     queryInfo.entityParamType = paramTypes[0];
             } else if (Iterable.class.isAssignableFrom(paramTypes[0]) || Stream.class.isAssignableFrom(paramTypes[0])) {
                 Type paramType = queryInfo.method.getGenericParameterTypes()[0];
                 if (paramType instanceof ParameterizedType) {
                     Type[] typeVars = ((ParameterizedType) paramType).getActualTypeArguments();
                     Type typeVar = typeVars.length == 1 ? typeVars[0] : null;
-                    if (defaultEntityClass.equals(typeVar)) {
+                    if (entityClass.equals(typeVar)) {
                         queryInfo.entityParamType = paramTypes[0];
                     }
                 }
@@ -2249,7 +2189,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private <T> T getResource(Class<T> type) {
         Deque<EntityManager> resources = defaultMethodResources.get();
         if (EntityManager.class.equals(type)) {
-            EntityManager em = defaultEntityInfoFuture.join().persister.createEntityManager();
+            EntityManager em = primaryEntityInfoFuture.join().persister.createEntityManager();
             if (resources == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, type + " accessed outside the scope of repository default method",
@@ -3016,13 +2956,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
      *                       the entity (or correct version of the entity) was not found.
      */
     private int remove(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
+        Class<?> entityClass = queryInfo.entityInfo.recordClass == null ? queryInfo.entityInfo.entityClass : queryInfo.entityInfo.recordClass;
 
         if (e == null)
             throw new NullPointerException("The entity parameter cannot have a null value."); // TODO NLS // required by spec
 
-        if (!defaultEntityClass.isInstance(e))
+        if (!entityClass.isInstance(e))
             throw new DataException("The " + (e == null ? null : e.getClass().getName()) +
-                                    " parameter does not match the " + defaultEntityClass.getName() +
+                                    " parameter does not match the " + entityClass.getName() +
                                     " entity type that is expected for this repository."); // TODO NLS
 
         EntityInfo entityInfo = queryInfo.entityInfo;
@@ -3365,13 +3306,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @throws Exception if an error occurs.
      */
     private int update(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
+        Class<?> entityClass = queryInfo.entityInfo.recordClass == null ? queryInfo.entityInfo.entityClass : queryInfo.entityInfo.recordClass;
 
         if (e == null)
             throw new NullPointerException("The entity parameter cannot have a null value."); // TODO NLS // required by spec
 
-        if (!defaultEntityClass.isInstance(e))
+        if (!entityClass.isInstance(e))
             throw new DataException("The " + (e == null ? null : e.getClass().getName()) +
-                                    " parameter does not match the " + defaultEntityClass.getName() +
+                                    " parameter does not match the " + entityClass.getName() +
                                     " entity type that is expected for this repository."); // TODO NLS
 
         String jpql = queryInfo.jpql;
