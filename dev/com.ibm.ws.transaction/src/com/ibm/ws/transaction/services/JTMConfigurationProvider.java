@@ -635,7 +635,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
                 ServiceReference<ResourceFactory> serviceRef = dataSourceFactoryRef.getReference();
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "retrieved datasourceFactory service ref " + serviceRef);
-                if (isStartupEnabled()) {
+                if (isStartupEnabled() && serviceRef != null) {
                     tmsRef.doStartup(this, _isSQLRecoveryLog);
                 }
             }
