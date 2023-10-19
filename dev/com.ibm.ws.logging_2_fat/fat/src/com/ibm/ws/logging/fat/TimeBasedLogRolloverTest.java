@@ -139,6 +139,12 @@ public class TimeBasedLogRolloverTest {
      */
     @Test
     public void testTimedRolloverEnv() throws Exception {
+        //waits until start of minute before setting up server config
+        //due to the env setup, sometimes the messages log rolls before all the server startup code is validated
+        if (Calendar.getInstance().get(Calendar.SECOND) != 0) {
+            Thread.sleep((60000 - Calendar.getInstance().get(Calendar.SECOND)*1000));
+            Thread.sleep(2000); //padding
+        }
         setUp(server_env, "testTimedRolloverEnv");
         checkForRolledLogsAtTime(getNextRolloverTime(0,1));
     }
