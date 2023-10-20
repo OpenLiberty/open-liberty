@@ -673,5 +673,18 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
         return list;
     }
+    
+    @Override
+    public HttpCookie getCookie(String name) {
+        if (null == name) {
+            return null;
+        }
+        HttpCookie cookie = getCookie(name, HttpHeaderKeys.HDR_COOKIE);
+        if (null == cookie) {
+            cookie = getCookie(name, HttpHeaderKeys.HDR_COOKIE2);
+        }
+        // Note: return a clone to avoid corruption by the caller
+        return (null == cookie) ? null : cookie.clone();
+    }
 
 }
