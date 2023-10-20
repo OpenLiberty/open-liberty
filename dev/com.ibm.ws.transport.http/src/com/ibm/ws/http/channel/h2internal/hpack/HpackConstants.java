@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,11 +12,13 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.h2internal.hpack;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class HpackConstants {
 
-    public static final String HPACK_CHAR_SET = "US-ASCII";
+    public static final Charset HPACK_CHAR_SET = StandardCharsets.US_ASCII;
     public static final int STATIC_TABLE_SIZE = 61;
 
     public static byte MASK_40 = 0x40; // 0100 0000
