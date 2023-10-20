@@ -246,17 +246,17 @@ public class FrameworkManager {
             String j2secNoRethrow = config.get(BootstrapConstants.JAVA_2_SECURITY_NORETHROW);
 
             if (j2secManager) {
-                CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHook() {
-                    @Override
-                    // fail a checkpoint if j2secManager was requested.
-                    public void prepare() {
-                        throw new IllegalStateException(Tr.formatMessage(tc, "error.checkpoint.securitymanager.not.supported"));
-                    }
-                });
                 // OLGH#20289 -- Java 2 Security Manager is no longer supported with Java 18+
                 if (javaVersion() >= 18) {
                     Tr.error(tc, "error.set.securitymanager.jdk18", javaVersion());
                 } else {
+                    CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHook() {
+                        @Override
+                        // fail a checkpoint if j2secManager was requested.
+                        public void prepare() {
+                            throw new IllegalStateException(Tr.formatMessage(tc, "error.checkpoint.securitymanager.not.supported"));
+                        }
+                    });
                     // Initialize the VirtualMachineHelper here.  HotSpot Java's read the sun.jvmstat.monitor.local system property during class initialization
                     // on Java 17 when doing Java dump or attaching for the localConnector-1.0 feature.
                     // The permission cannot be set in security policy due to it being during class initialization.
