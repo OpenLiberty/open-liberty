@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -450,13 +451,27 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public List<HttpCookie> getAllCookies() {
-        return null;
+        List<HttpCookie> list = new LinkedList<HttpCookie>();
+        getAllCookies(HttpHeaderKeys.HDR_SET_COOKIE, list);
+        getAllCookies(HttpHeaderKeys.HDR_SET_COOKIE2, list);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getAllCookies: Found " + list.size() + " instances");
+        }
+        return list;
     }
 
     @Override
     public List<HttpCookie> getAllCookies(String name) {
 
-        return null;
+        List<HttpCookie> list = new LinkedList<HttpCookie>();
+        if (null != name) {
+            getAllCookies(name, HttpHeaderKeys.HDR_SET_COOKIE, list);
+            getAllCookies(name, HttpHeaderKeys.HDR_SET_COOKIE2, list);
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getAllCookies: Found " + list.size() + " instances of " + name);
+        }
+        return list;
     }
 
     /**
