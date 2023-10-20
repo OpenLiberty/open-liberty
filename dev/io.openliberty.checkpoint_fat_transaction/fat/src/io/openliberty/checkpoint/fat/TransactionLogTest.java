@@ -129,15 +129,21 @@ public class TransactionLogTest extends FATServletClient {
                 serverServletStartupDbTranLog.setCheckpoint(new CheckpointInfo(CheckpointPhase.BEFORE_APP_START, false, preRestoreLogic));
                 serverServletStartupDbTranLog.startServer();
                 break;
-            case testCheckpointDoesRosWhenDefaultRecoveryLog:
+            case testCheckpointNoRosWithDefaultRecoveryLog:
                 serverTranLog.restoreServerConfiguration();
 
-                // Set recoverOnStartup to false. Checkpoint should override the setting.
+                ShrinkHelper.defaultApp(serverTranLog, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
+
+                // Set recoverOnStartup to false (default value)
                 ServerConfiguration config = serverTranLog.getServerConfiguration();
                 config.getTransaction().setRecoverOnStartup(false);
                 serverTranLog.updateServerConfiguration(config);
 
-                ShrinkHelper.defaultApp(serverTranLog, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
+                deleteTranlogDir(serverTranLog);
+
+                // Simulate configure.sh: prime the server caches
+                serverTranLog.startServer();
+                stopServer(serverTranLog);
 
                 Consumer<LibertyServer> preRestoreLogic1 = checkpointServer -> {
                     // Override the app datasource, but not the default transactionLogDirectory
@@ -151,20 +157,29 @@ public class TransactionLogTest extends FATServletClient {
                 serverTranLog.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic1));
                 serverTranLog.startServer();
                 break;
-            case testCheckpointPreservesDefaultRecoveryLog:
+            case testCheckpointRosWithDefaultRecoveryLog:
                 serverTranLog.restoreServerConfiguration();
 
                 ShrinkHelper.defaultApp(serverTranLog, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
 
                 deleteTranlogDir(serverTranLog); // clean up
 
-                // Cycling the server will initialize the recovery logs in ${server.output.dir}/tranlog,
+                // Cycling the server with ROS=true will initialize the recovery logs in ${server.output.dir}/tranlog/,
                 // the default transactionLogDirectory. This step simulates a container build optimization
                 // to populate the java SCC and server caches (container layer) before server checkpoint.
                 serverTranLog.startServer();
                 stopServer(serverTranLog);
 
-                serverTranLog.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, null));
+                Consumer<LibertyServer> preRestoreLogic4 = checkpointServer -> {
+                    // Override the app datasource, but not the default transactionLogDirectory
+                    File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
+                    try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
+                        serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME);
+                    } catch (FileNotFoundException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                };
+                serverTranLog.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic4));
                 serverTranLog.startServer();
                 break;
             case testTranactionLogDirectoryUpdatesAtRestore:
@@ -230,10 +245,10 @@ public class TransactionLogTest extends FATServletClient {
                     DerbyNetworkUtilities.stopDerbyNetwork(DERBY_TXLOG_PORT);
                 }
                 break;
-            case testCheckpointDoesRosWhenDefaultRecoveryLog:
+            case testCheckpointNoRosWithDefaultRecoveryLog:
                 stopServer(serverTranLog, "WTRN0017W");
                 break;
-            case testCheckpointPreservesDefaultRecoveryLog:
+            case testCheckpointRosWithDefaultRecoveryLog:
                 stopServer(serverTranLog, "WTRN0017W");
                 break;
             case testTranactionLogDirectoryUpdatesAtRestore:
@@ -268,15 +283,18 @@ public class TransactionLogTest extends FATServletClient {
     }
 
     /**
-     * Verify the TM runs initial local recovery during checkpoint when recoverOnStartup
-     * and transactionLogDirectory are not set. Overriding recoverOnStartup at checkpoint
-     * improves performance when restore performance for the default transaction configuration,
-     * provided the transactionLogDirectory does not update during restore.
+     * Verify the TM does not run initial local recovery during checkpoint for the default
+     * tranlog and recoverOnStartup configuration.
      */
     @Test
-    public void testCheckpointDoesRosWhenDefaultRecoveryLog() throws Exception {
-        assertNotNull("Local recovery must start during checkpoint for the default transaction configuration, but did not",
-                      serverTranLog.waitForStringInLogUsingMark("CWRLS0010I:.*checkpointTransactionServlet"));
+    public void testCheckpointNoRosWithDefaultRecoveryLog() throws Exception {
+        // The test app does not require a TX  at server start, so neither the setup to
+        // start+stop the server nor the server checkpoint should start initial local recovery.
+        assertTrue("The default recovery log should not exist before nor after checkpoint, but does.",
+                   !serverTranLog.fileExistsInLibertyServerRoot("/tranlog"));
+
+        assertNull("Local recovery should not start during checkpoint for the default transaction configuration, but did",
+                   serverTranLog.waitForStringInLogUsingMark("CWRLS0010I:.*checkpointTransactionServlet", 1000));
 
         serverTranLog.checkpointRestore();
 
@@ -284,15 +302,21 @@ public class TransactionLogTest extends FATServletClient {
     }
 
     /**
-     * Verify checkpoint preserves and uses the default recovery log when it already
-     * exists from a previous server run, as it would in a container build.
+     * Verify a server checkpoint preserves and uses the default tranlog when it
+     * already exists from a previous server run, as it would when exercised in a container
+     * build. The TM should run initial local recovery during checkpoint.
      */
     @Test
-    public void testCheckpointPreservesDefaultRecoveryLog() throws Exception {
-        assertTrue("Checkpoint must not delete the default transaction log directory, but did.",
+    public void testCheckpointRosWithDefaultRecoveryLog() throws Exception {
+        assertTrue("The default recovery log should exist before and after checkpoint, but does not.",
                    serverTranLog.fileExistsInLibertyServerRoot("/tranlog"));
 
+        assertNotNull("Local recovery should start during checkpoint for the default transaction configuration, but did not",
+                      serverTranLog.waitForStringInLogUsingMark("CWRLS0010I:.*checkpointTransactionServlet"));
+
         serverTranLog.checkpointRestore();
+
+        runTest(serverTranLog, "testLTCAfterGlobalTran");
     }
 
     /**
@@ -345,8 +369,8 @@ public class TransactionLogTest extends FATServletClient {
 
     static enum TestMethod {
         testCheckpointBasIgnoresRosWhenSqlRecoveryLog,
-        testCheckpointDoesRosWhenDefaultRecoveryLog,
-        testCheckpointPreservesDefaultRecoveryLog,
+        testCheckpointNoRosWithDefaultRecoveryLog,
+        testCheckpointRosWithDefaultRecoveryLog,
         testTranactionLogDirectoryUpdatesAtRestore,
         testSqlRecoveryLogUpdatesUpdatesAtRestore,
         unknown;

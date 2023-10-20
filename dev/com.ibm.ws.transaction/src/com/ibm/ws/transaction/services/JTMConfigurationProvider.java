@@ -42,7 +42,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.kernel.launch.service.ForcedServerStop;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
-import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
@@ -485,29 +484,8 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
                     Tr.debug(tc, "Disable recoverOnStartup during restore until config updates complete");
                 return false;
             }
-        } else {
-            if (checkpoint() && isDefaultRecoveryLog()) {
-                // Optimize restore for default recovery log. Perform initial
-                // local recovery during checkpoint and preserve logs through restore.
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Enable recoverOnStartup during checkpoint for default recovery log");
-                return true;
-            }
         }
         return isRoS;
-    }
-
-    /**
-     * @return true iff the configured transactionLogDirectory is the default path.
-     */
-    private boolean isDefaultRecoveryLog() {
-        String txLogDirProp = (String) _props.get("transactionLogDirectory");
-        try {
-            String defaultLogDir = locationService.resolveString(WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR) + "tranlog";
-            return defaultLogDir.equals(txLogDirProp);
-        } catch (Exception ex) {
-            return false;
-        }
     }
 
     @Override
