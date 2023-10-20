@@ -59,7 +59,7 @@ public class EL30MiscTests {
 
         // Set websphere.java.security.exempt=true because Expression Language 6.0 removed all references
         // to the SecurityManager and related APIs.
-        if (JakartaEEAction.isEE11Active()) {
+        if (JakartaEEAction.isEE11OrLaterActive()) {
             ELUtils.setServerJavaSecurityExempt(server);
         }
 
