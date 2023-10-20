@@ -18,7 +18,7 @@ IBM-API-Package: \
   io.openliberty.microprofile.reactive.streams.operators30.internal, \
   io.openliberty.io.smallrye.reactive.streams-operators-jakarta, \
   io.openliberty.io.smallrye.reactive.mutiny,\
-  io.openliberty.io.smallrye.common.2.1, \
+  io.openliberty.io.smallrye.common2, \
   io.openliberty.org.jboss.logging35
 kind=beta
 edition=core
