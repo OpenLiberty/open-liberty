@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.Repository;
@@ -25,10 +24,9 @@ import jakarta.data.repository.Update;
 
 /**
  * Experiments with auto-generated keys on records.
- * TODO remove DataRepository and have the entity type be inferred from the methods, as the spec claims is possible.
  */
 @Repository
-public interface Rebates extends DataRepository<Rebate, Integer> {
+public interface Rebates { // Do not allow this interface to inherit from other repositories, so that it tests inferring a primary entity class
     @Insert
     Rebate add(Rebate r);
 

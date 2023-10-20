@@ -107,6 +107,9 @@ public class DataTestServlet extends FATServlet {
     Houses houses;
 
     @Inject
+    MultiRepository multi;
+
+    @Inject
     Packages packages;
 
     @Inject
@@ -147,27 +150,27 @@ public class DataTestServlet extends FATServlet {
     public void init(ServletConfig config) throws ServletException {
         // Do not add or remove from this data in tests.
         // Tests must be able to rely on this data always being present.
-        primes.save(new Prime(2, "2", "10", 1, "II", "two"),
-                    new Prime(3, "3", "11", 2, "III", "three"),
-                    new Prime(5, "5", "101", 2, "V", "five"),
-                    new Prime(7, "7", "111", 3, "VII", "seven"),
-                    new Prime(11, "B", "1011", 3, "XI", "eleven"),
-                    new Prime(13, "D", "1101", 3, "XIII", "thirteen"),
-                    new Prime(17, "11", "10001", 2, "XVII", "seventeen"),
-                    new Prime(19, "13", "10011", 3, "XIX", "nineteen"),
-                    new Prime(23, "17", "10111", 4, "XXIII", "twenty-three"),
-                    new Prime(29, "1D", "11101", 4, "XXIX", "twenty-nine"),
-                    new Prime(31, "1F", "11111", 5, "XXXI", "thirty-one"),
-                    new Prime(37, "25", "100101", 3, "XXXVII", "thirty-seven"),
-                    new Prime(41, "29", "101001", 3, "XLI", "forty-one"),
-                    new Prime(43, "2B", "101011", 4, "XLIII", "forty-three"),
-                    new Prime(47, "2F", "101111", 5, "XLVII", "forty-seven"),
-                    new Prime(4001, "FA1", "111110100001", 7, null, "four thousand one"), // romanNumeralSymbols null
-                    new Prime(4003, "FA3", "111110100011", 8, null, "four thousand three"), // romanNumeralSymbols null
-                    new Prime(4007, "Fa7", "111110100111", 9, null, "four thousand seven"), // romanNumeralSymbols null
-                    new Prime(4013, "FAD", "111110101101", 9, "", "Four Thousand Thirteen"), // empty list of romanNumeralSymbols
-                    new Prime(4019, "FB3", "111110110011", 9, "", "four thousand nineteen"), // empty list of romanNumeralSymbols
-                    new Prime(4021, "FB5", "111110110101", 9, "", " Four thousand twenty-one ")); // extra blank space at beginning and end
+        primes.persist(new Prime(2, "2", "10", 1, "II", "two"),
+                       new Prime(3, "3", "11", 2, "III", "three"),
+                       new Prime(5, "5", "101", 2, "V", "five"),
+                       new Prime(7, "7", "111", 3, "VII", "seven"),
+                       new Prime(11, "B", "1011", 3, "XI", "eleven"),
+                       new Prime(13, "D", "1101", 3, "XIII", "thirteen"),
+                       new Prime(17, "11", "10001", 2, "XVII", "seventeen"),
+                       new Prime(19, "13", "10011", 3, "XIX", "nineteen"),
+                       new Prime(23, "17", "10111", 4, "XXIII", "twenty-three"),
+                       new Prime(29, "1D", "11101", 4, "XXIX", "twenty-nine"),
+                       new Prime(31, "1F", "11111", 5, "XXXI", "thirty-one"),
+                       new Prime(37, "25", "100101", 3, "XXXVII", "thirty-seven"),
+                       new Prime(41, "29", "101001", 3, "XLI", "forty-one"),
+                       new Prime(43, "2B", "101011", 4, "XLIII", "forty-three"),
+                       new Prime(47, "2F", "101111", 5, "XLVII", "forty-seven"),
+                       new Prime(4001, "FA1", "111110100001", 7, null, "four thousand one"), // romanNumeralSymbols null
+                       new Prime(4003, "FA3", "111110100011", 8, null, "four thousand three"), // romanNumeralSymbols null
+                       new Prime(4007, "Fa7", "111110100111", 9, null, "four thousand seven"), // romanNumeralSymbols null
+                       new Prime(4013, "FAD", "111110101101", 9, "", "Four Thousand Thirteen"), // empty list of romanNumeralSymbols
+                       new Prime(4019, "FB3", "111110110011", 9, "", "four thousand nineteen"), // empty list of romanNumeralSymbols
+                       new Prime(4021, "FB5", "111110110101", 9, "", " Four thousand twenty-one ")); // extra blank space at beginning and end
     }
 
     /**
@@ -3155,6 +3158,78 @@ public class DataTestServlet extends FATServlet {
         assertEquals(58.0, deque.removeFirst(), 0.01); // sum
         assertEquals(7.0, deque.removeFirst(), 0.01); // count
         assertEquals(8.0, Math.floor(deque.removeFirst()), 0.01); // average
+    }
+
+    /**
+     * Use a repository where methods are for different entities.
+     */
+    @Test
+    public void testMultipleEntitiesInARepository() {
+        // Remove any pre-existing data that could interfere with the test:
+        products.clear();
+        packages.deleteAll();
+        multi.deleteByIdIn(List.of(908070605l, 807060504l, 706050403l));
+
+        Product prod = new Product();
+        prod.pk = UUID.nameUUIDFromBytes("TestMultipleEntitiesInARepository".getBytes());
+        prod.name = "TestMultipleEntitiesInARepository-Product";
+        prod.price = 30.99f;
+
+        prod = multi.create(prod);
+
+        Person p1 = new Person();
+        p1.firstName = "Michael";
+        p1.lastName = "TestMultipleEntitiesInARepository";
+        p1.ssn_id = 908070605;
+
+        Person p2 = new Person();
+        p2.firstName = "Mark";
+        p2.lastName = "TestMultipleEntitiesInARepository";
+        p2.ssn_id = 807060504;
+
+        Person p3 = new Person();
+        p3.firstName = "Maria";
+        p3.lastName = "TestMultipleEntitiesInARepository";
+        p3.ssn_id = 706050403;
+
+        List<Person> added = multi.add(p1, p2, p3);
+        assertEquals(List.of("Michael", "Mark", "Maria"),
+                     added.stream()
+                                     .map(p -> p.firstName)
+                                     .collect(Collectors.toList()));
+
+        Package pkg = multi.upsert(new Package(60504, 30.0f, 20.0f, 10.0f, "TestMultipleEntitiesInARepository-Package"));
+        assertEquals(60504, pkg.id);
+        assertEquals(30.0f, pkg.length, 0.001f);
+        assertEquals(20.0f, pkg.width, 0.001f);
+        assertEquals(10.0f, pkg.height, 0.001f);
+        assertEquals("TestMultipleEntitiesInARepository-Package", pkg.description);
+
+        pkg.length = 33.0f;
+        pkg.width = 22.0f;
+        pkg = multi.upsert(pkg);
+        assertEquals(33.0f, pkg.length, 0.001f);
+        assertEquals(22.0f, pkg.width, 0.001f);
+
+        pkg = multi.findById(60504).orElseThrow();
+        assertEquals(60504, pkg.id);
+        assertEquals(33.0f, pkg.length, 0.001f);
+        assertEquals(22.0f, pkg.width, 0.001f);
+        assertEquals(10.0f, pkg.height, 0.001f);
+        assertEquals("TestMultipleEntitiesInARepository-Package", pkg.description);
+
+        assertEquals(true, multi.remove(added.get(2)));
+
+        Person[] deleted = multi.deleteByIdIn(List.of(908070605l, 807060504l, 706050403l));
+        assertEquals(2, deleted.length);
+
+        prod.name = "Test-Multiple-Entities-In-A-Repository-Product";
+        assertEquals(1, multi.modify(prod));
+
+        prod = products.remove(prod.pk);
+        assertEquals("Test-Multiple-Entities-In-A-Repository-Product", prod.name);
+
+        packages.delete(pkg);
     }
 
     /**

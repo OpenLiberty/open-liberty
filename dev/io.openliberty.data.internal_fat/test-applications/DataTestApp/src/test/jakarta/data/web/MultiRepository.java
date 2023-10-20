@@ -10,32 +10,40 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.validation.web;
+package test.jakarta.data.web;
 
 import java.util.List;
+import java.util.Optional;
 
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Positive;
+import jakarta.data.repository.Update;
 
 /**
- * Repository for a record with bean validation annotations.
+ * Repository with multiple entity classes,
+ * and where this is no primary enitty class.
  */
-@Repository(dataStore = "java:module/jdbc/DerbyDataSource")
-public interface Rectangles {
+@Repository
+public interface MultiRepository {
 
-    @NotEmpty
-    Rectangle[] findByIdStartsWith(String prefix);
+    @Insert
+    List<Person> add(Person... people);
 
-    List<Rectangle> findByWidth(@Positive int width);
+    @Insert
+    Product create(Product prod);
 
-    int findWidthById(String id);
+    Person[] deleteByIdIn(Iterable<Long> ids);
+
+    Optional<Package> findById(Number id);
+
+    @Update
+    int modify(Product prod);
+
+    @Delete
+    boolean remove(Person person);
 
     @Save
-    void save(@Valid Rectangle r);
-
-    @Save
-    void saveAll(@Valid Rectangle... rectangles);
+    Package upsert(Package p);
 }

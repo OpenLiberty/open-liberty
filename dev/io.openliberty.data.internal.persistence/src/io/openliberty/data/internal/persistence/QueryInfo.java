@@ -48,10 +48,10 @@ import jakarta.persistence.Query;
 /**
  * Query information.
  */
-class QueryInfo {
+public class QueryInfo {
     private static final TraceComponent tc = Tr.register(QueryInfo.class);
 
-    static enum Type {
+    public static enum Type {
         COUNT, DELETE, DELETE_WITH_ENTITY_PARAM, EXISTS, FIND, FIND_AND_DELETE, INSERT, SAVE, RESOURCE_ACCESS,
         UPDATE, UPDATE_WITH_ENTITY_PARAM, UPDATE_WITH_ENTITY_PARAM_AND_RESULT
     }
@@ -213,10 +213,20 @@ class QueryInfo {
     /**
      * Construct partially complete query information.
      */
-    QueryInfo(Method method, Class<?> returnArrayType, List<Class<?>> returnTypeAtDepth) {
+    public QueryInfo(Method method, Class<?> returnArrayType, List<Class<?>> returnTypeAtDepth) {
         this.method = method;
         this.returnArrayType = returnArrayType;
         this.returnTypeAtDepth = returnTypeAtDepth;
+    }
+
+    /**
+     * Construct partially complete query information.
+     */
+    public QueryInfo(Method method, Type type) {
+        this.method = method;
+        this.returnArrayType = null;
+        this.returnTypeAtDepth = null;
+        this.type = type;
     }
 
     /**
