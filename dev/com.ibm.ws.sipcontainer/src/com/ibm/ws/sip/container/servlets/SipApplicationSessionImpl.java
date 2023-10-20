@@ -705,9 +705,6 @@ implements SipApplicationSession {
 		}
 		checkIsSessionValid();
 		if (protocol.equalsIgnoreCase("SIP")) {
-			if (c_logger.isTraceDebugEnabled()) {
-				c_logger.traceDebug("SipApplicationSessionImpl","getSessions", "getSessions(SIP) detected");
-			}
 			//Moti 24/Sep: here is a bug in PMR 46156,033,00 : should call getAllSipSessions
 			// if we call  return getSessions() here we might accidently activate derived class' method
 			// defect PK54754
@@ -1809,10 +1806,6 @@ implements SipApplicationSession {
 	}
 	
 	public Iterator getSessions(String protocol, boolean create){
-		if (c_logger.isTraceDebugEnabled()) {
-			c_logger.traceDebug("getSessions(" + protocol + ", " + create + " detected.");
-		}
-
 		if (protocol.equalsIgnoreCase("SIP"))  {  //get SIP application sessions  
 			if (create) {  //boolean is true	
 					return (Iterator)getAllSIPSessions(true).iterator();
