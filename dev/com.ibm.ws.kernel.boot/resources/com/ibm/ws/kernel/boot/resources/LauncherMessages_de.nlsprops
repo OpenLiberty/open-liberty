@@ -432,6 +432,10 @@ warning.unableToPackageLooseConfigFileMissingPath=CWWKE0095W: Der Server kann di
 warning.unableToPackageLooseConfigFileMissingPath.explanation=Die angegebene XML-Anwendungsdatei f\u00fcr lose Konfiguration enth\u00e4lt ung\u00fcltige Informationen zur Position der Dateien. Die Informationen k\u00f6nnen beispielsweise ein Verzeichnis enthalten, das nicht vorhanden ist. Die Pfad in dieser XML-Datei m\u00fcssen relativ zum Konfigurationsverzeichnis des Servers angegeben werden. Das von dieser Datei dargestellte Archiv wird nicht in die gepackte Serverausgabe eingeschlossen.
 warning.unableToPackageLooseConfigFileMissingPath.useraction=\u00c4ndern Sie die Pfade in der XML-Anwendungsdatei f\u00fcr lose Konfiguration so, dass sie auf die richtige Position verweisen, die die Anwendungsdateien enth\u00e4lt. 
 
+warning.tooManySymbolicLinks=CWWKE0096W: Es wurden zu viele symbolische Links gefunden, als das System versuchte, den folgenden Pfad aufzul\u00f6sen: {0}
+warning.tooManySymbolicLinks.explanation=Symbolische Links sind Verkn\u00fcpfungen, die auf andere Dateien oder Verzeichnisse verweisen. Dieser Fehler tritt auf, wenn das System zu viele symbolische Verbindungen in einer Kette findet und den Pfad nicht aufl\u00f6sen kann.
+warning.tooManySymbolicLinks.useraction=\u00dcberpr\u00fcfen Sie zur Behebung des Problems die symbolischen Links im Pfad und stellen Sie sicher, dass sie keine zirkul\u00e4ren Referenzen erstellen. Sie k\u00f6nnen auch den Befehl 'readlink' verwenden, um einzelne Links in der Kette zu \u00fcberpr\u00fcfen.
+
 warn.packageRuntime.include.unknownOption=CWWKE0099W: Die Option --include={0} konnte nicht verwendet werden. Es wird stattdessen die Option --include=wlp verwendet.
 warn.packageRuntime.include.unknownOption.explanation=Die Option wurde ignoriert, da sie nicht erkannt wurde.
 warn.packageRuntime.include.unknownOption.useraction=Wiederholen Sie den Befehl mit g\u00fcltigen Optionen. Mit --help k\u00f6nnen Sie eine Liste der g\u00fcltigen Optionen anzeigen.
@@ -753,6 +757,22 @@ error.checkpoint.failed.selinux.netdiag.useraction=Wenn SELinux im restriktiven 
 error.checkpoint.restore.failed.no.recovery=CWWKE0964E: Die Wiederherstellung des Pr\u00fcfpunktserverprozesses ist fehlgeschlagen. \u00dcberpr\u00fcfen Sie das Protokoll {0}, um festzustellen, warum der Pr\u00fcfpunktprozess nicht wiederhergestellt wurde. Der Server wurde nicht gestartet, da die Wiederherstellung der Pr\u00fcfpunktrestore deaktiviert ist.
 error.checkpoint.restore.failed.no.recovery.explanation=Beim Wiederherstellen eines Pr\u00fcfpunktserverprozesses ist ein Fehler aufgetreten. Der Server wurde nicht gestartet, da die Wiederherstellung der Pr\u00fcfpunktrestore deaktiviert ist.
 error.checkpoint.restore.failed.no.recovery.useraction=\u00dcberpr\u00fcfen Sie die Protokolle, um festzustellen, warum der Pr\u00fcfpunktprozess nicht wiederhergestellt wurde. Um die Wiederherstellung nach einem Wiederherstellungsfehler zu aktivieren, setzen Sie die Umgebungsvariable CRIU_RESTORE_DISABLE_RECOVERY auf 'wahr'.
+
+warning.serverLockFileNotExist=CWWKE0965W: Die Serversperrdatei {0} ist nicht vorhanden.
+warning.serverLockFileNotExist.explanation=Die Warnung kann darauf hinweisen, dass der Server nicht aktiv ist oder die Sperrdatei unerwartet gel\u00f6scht wurde.
+warning.serverLockFileNotExist.useraction=Pr\u00fcfen Sie mithilfe der entsprechenden System\u00fcberwachungstools, ob der Server aktiv ist. Unter Windows k\u00f6nnen Sie den Task-Manager verwenden. Verwenden Sie auf UNIX-\u00e4hnlichen Systemen den Befehl 'ps -ef'.
+
+warning.serverCommandFileNotExist=CWWKE0966W: Die Serverbefehlsdatei {0} ist nicht vorhanden.
+warning.serverCommandFileNotExist.explanation=Die Warnung gibt an, dass die Serverbefehlsdatei, die wichtige Informationen zum Herstellen einer Socketverbindung zum Server enth\u00e4lt, fehlt. M\u00f6glicherweise ist der Server nicht aktiv oder die Datei wurde unerwartet gel\u00f6scht.
+warning.serverCommandFileNotExist.useraction=Pr\u00fcfen Sie mithilfe der entsprechenden System\u00fcberwachungstools, ob der Server aktiv ist. Unter Windows k\u00f6nnen Sie den Task-Manager verwenden. Verwenden Sie auf UNIX-\u00e4hnlichen Systemen den Befehl 'ps -ef'. Wenn der Server aktiv ist, m\u00fcssen Sie ihn erneut starten. Dies beinhaltet das Stoppen des Prozesses. Verwenden Sie den Task-Manager unter Windows zum Stoppen des Prozesses. Verwenden Sie auf UNIX-\u00e4hnlichen Systemen den Befehl 'kill'.
+
+warning.timeoutWaitingForServerToReleaseLock=CWWKE0967W: Beim Warten auf die Freigabe der Serversperrdatei {0} durch den Server ist eine Zeitlimit\u00fcberschreitung aufgetreten.
+warning.timeoutWaitingForServerToReleaseLock.explanation=Die Warnung weist auf eine Zeitlimit\u00fcberschreitung hin. Das Zeitlimit kann auf einen langsamen Serverabschluss, eine Serverblockierung oder eine Dateisperre durch ein anderes Programm zur\u00fcckzuf\u00fchren sein.
+warning.timeoutWaitingForServerToReleaseLock.useraction=Wenn der Server noch aktiv ist, sollten Sie den Zeitlimitwert f\u00fcr den Befehl 'server stop' erh\u00f6hen. Wenn der Server gestoppt ist, verwenden Sie Datei\u00fcberwachungstools, um zu pr\u00fcfen, ob ein anderes Programm die Datei gesperrt hat.
+
+warning.timeoutWaitingForServerProcessToStop=CWWKE0968W: Beim Warten auf das Stoppen des Serverprozesses ist eine Zeitlimit\u00fcberschreitung aufgetreten.
+warning.timeoutWaitingForServerProcessToStop.explanation=Der Server wurde nicht innerhalb der durch den Zeitlimitwert zul\u00e4ssigen Zeit gestoppt. Dies kann auf einen langsamen Serverabschluss oder eine Serverblockierung zur\u00fcckzuf\u00fchren sein.   
+warning.timeoutWaitingForServerProcessToStop.useraction=Wenn der Server noch aktiv ist, sollten Sie den Zeitlimitwert f\u00fcr den Befehl 'server stop' erh\u00f6hen. Auf UNIX-\u00e4hnlichen Systemen wartet der Befehl server stop darauf, dass der Serverprozess gestoppt wird. Unter Windows wartet der Befehl auf eine Sperre f\u00fcr die Datei console.log . Verwenden Sie Datei\u00fcberwachungstools, um zu pr\u00fcfen, ob ein anderes Programm, z. B. ein Editor, die Datei console.log gesperrt hat.
 
 info.serverStarting=Server {0} wird gestartet.
 info.serverStarted=Der Server {0} wurde gestartet.

@@ -432,6 +432,10 @@ warning.unableToPackageLooseConfigFileMissingPath=CWWKE0095W: El servidor no pue
 warning.unableToPackageLooseConfigFileMissingPath.explanation=El archivo XML de la aplicaci\u00f3n de configuraci\u00f3n flexible contiene informaci\u00f3n no v\u00e1lida acerca de la ubicaci\u00f3n de los archivos. Por ejemplo, puede especificar un directorio que no se puede encontrar. Las v\u00edas de acceso de este archivo XML deben ser relativas al directorio de configuraci\u00f3n del servidor. El archivador representado por este archivo no se incluir\u00e1 en la salida de servidor empaquetado.
 warning.unableToPackageLooseConfigFileMissingPath.useraction=Modifique las v\u00edas de acceso en el archivo XML de la aplicaci\u00f3n de configuraci\u00f3n flexible para que apunte a la ubicaci\u00f3n correcta que contiene los archivos de la aplicaci\u00f3n. 
 
+warning.tooManySymbolicLinks=CWWKE0096W: Se han encontrado demasiados enlaces simb\u00f3licos cuando el sistema ha intentado resolver la siguiente v\u00eda de acceso: {0}.
+warning.tooManySymbolicLinks.explanation=Los enlaces simb\u00f3licos son accesos directos que apuntan a otros archivos o directorios. Este error se produce cuando el sistema encuentra demasiados enlaces simb\u00f3licos en una cadena y no puede resolver la v\u00eda de acceso.
+warning.tooManySymbolicLinks.useraction=Para resolver este problema, compruebe los enlaces simb\u00f3licos en la v\u00eda de acceso y aseg\u00farese de que no crean referencias circulares. Tambi\u00e9n puede utilizar el mandato 'readlink' para inspeccionar los enlaces individuales de la cadena.
+
 warn.packageRuntime.include.unknownOption=CWWKE0099W: No se puede utilizar la opci\u00f3n --include={0}, se utilizar\u00e1 --include=wlp en su lugar.
 warn.packageRuntime.include.unknownOption.explanation=La opci\u00f3n se ha ignorado porque no se ha reconocido.
 warn.packageRuntime.include.unknownOption.useraction=Vuelva a intentar el mandato utilizando opciones v\u00e1lidas. Intente utilizar --help para obtener una lista de opciones v\u00e1lidas.
@@ -753,6 +757,22 @@ error.checkpoint.failed.selinux.netdiag.useraction=Si SELinux est\u00e1 habilita
 error.checkpoint.restore.failed.no.recovery=CWWKE0964E: La restauraci\u00f3n del proceso del servidor de punto de comprobaci\u00f3n ha fallado. Compruebe el registro de {0} para determinar por qu\u00e9 no se ha restaurado el proceso de punto de comprobaci\u00f3n. El servidor no se ha iniciado porque la recuperaci\u00f3n de restauraci\u00f3n de punto de comprobaci\u00f3n est\u00e1 inhabilitada.
 error.checkpoint.restore.failed.no.recovery.explanation=Se ha producido un error al restaurar un proceso de servidor de punto de comprobaci\u00f3n. El servidor no se ha iniciado porque la recuperaci\u00f3n de restauraci\u00f3n de punto de comprobaci\u00f3n est\u00e1 inhabilitada.
 error.checkpoint.restore.failed.no.recovery.useraction=Consulte los registros para determinar por qu\u00e9 no se ha restaurado el proceso de punto de comprobaci\u00f3n. Para habilitar la recuperaci\u00f3n de errores de restauraci\u00f3n, establezca la variable de entorno CRIU_RESTORE_DISABLE_RECOVERY en true.
+
+warning.serverLockFileNotExist=CWWKE0965W: El archivo de bloqueo del servidor {0} no existe.
+warning.serverLockFileNotExist.explanation=El aviso puede indicar que el servidor no se est\u00e1 ejecutando o que el archivo de bloqueo se ha suprimido de forma inesperada.
+warning.serverLockFileNotExist.useraction=Compruebe si el servidor se est\u00e1 ejecutando utilizando las herramientas de supervisi\u00f3n del sistema adecuadas. En Windows, puede utilizar el Administrador de tareas. En sistemas similares a UNIX, utilice el mandato 'ps -ef'.
+
+warning.serverCommandFileNotExist=CWWKE0966W: El archivo de mandatos del servidor {0} no existe.
+warning.serverCommandFileNotExist.explanation=El aviso sugiere que falta el archivo de mandatos del servidor, que contiene informaci\u00f3n esencial para establecer una conexi\u00f3n de socket con el servidor. Es posible que el servidor no est\u00e9 en ejecuci\u00f3n o que el archivo se haya suprimido de forma inesperada.
+warning.serverCommandFileNotExist.useraction=Compruebe si el servidor se est\u00e1 ejecutando utilizando las herramientas de supervisi\u00f3n del sistema adecuadas. En Windows, puede utilizar el Administrador de tareas. En sistemas similares a UNIX, utilice el mandato 'ps -ef'. Si el servidor se est\u00e1 ejecutando, debe reiniciarlo, lo que implica detener el proceso. Utilice el Administrador de tareas en Windows para detener el proceso. En sistemas similares a UNIX, utilice el mandato 'kill'.
+
+warning.timeoutWaitingForServerToReleaseLock=CWWKE0967W: Se ha excedido el tiempo de espera mientras se esperaba que el servidor liberara el archivo de bloqueo del servidor {0} .
+warning.timeoutWaitingForServerToReleaseLock.explanation=El aviso indica que se ha excedido el tiempo de espera. El tiempo de espera puede deberse a una conclusi\u00f3n lenta del servidor, a un bloqueo del servidor o a un bloqueo de archivos por parte de otro programa.
+warning.timeoutWaitingForServerToReleaseLock.useraction=Si el servidor sigue en ejecuci\u00f3n, considere la posibilidad de aumentar el valor de tiempo de espera para el mandato 'server stop'. Si el servidor est\u00e1 detenido, utilice las herramientas de supervisi\u00f3n de archivos para comprobar si otro programa ha bloqueado el archivo.
+
+warning.timeoutWaitingForServerProcessToStop=CWWKE0968W: Se ha excedido el tiempo de espera mientras se esperaba a que se detuviera el proceso del servidor.
+warning.timeoutWaitingForServerProcessToStop.explanation=El servidor no se ha detenido dentro del tiempo permitido por el valor de tiempo de espera. Esto puede deberse a una conclusi\u00f3n lenta del servidor o a un bloqueo del servidor.   
+warning.timeoutWaitingForServerProcessToStop.useraction=Si el servidor sigue en ejecuci\u00f3n, considere la posibilidad de aumentar el valor de tiempo de espera para el mandato 'server stop'. En sistemas similares a UNIX, el mandato de detenci\u00f3n del servidor espera a que se detenga el proceso del servidor. En Windows, el mandato espera para obtener un bloqueo en el archivo console.log . Utilice las herramientas de supervisi\u00f3n de archivos para comprobar si otro programa, como un editor, ha bloqueado el archivo console.log .
 
 info.serverStarting=Se est\u00e1 iniciando el servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
