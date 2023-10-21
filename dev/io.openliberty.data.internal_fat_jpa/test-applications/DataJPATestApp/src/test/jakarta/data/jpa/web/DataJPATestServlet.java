@@ -117,6 +117,9 @@ public class DataJPATestServlet extends FATServlet {
     Employees employees;
 
     @Inject
+    MixedRepository mixed;
+
+    @Inject
     Orders orders;
 
     @Inject
@@ -1618,10 +1621,10 @@ public class DataJPATestServlet extends FATServlet {
         // Clear out data before test
         employees.deleteByLastName("TestIdOnEmbeddable");
 
-        Streamable<Employee> added = employees.save(new Employee("Irene", "TestIdOnEmbeddable", (short) 2636, 'A'),
-                                                    new Employee("Isabella", "TestIdOnEmbeddable", (short) 8171, 'B'),
-                                                    new Employee("Ivan", "TestIdOnEmbeddable", (short) 4948, 'A'),
-                                                    new Employee("Isaac", "TestIdOnEmbeddable", (short) 5310, 'C'));
+        Streamable<Employee> added = businesses.save(new Employee("Irene", "TestIdOnEmbeddable", (short) 2636, 'A'),
+                                                     new Employee("Isabella", "TestIdOnEmbeddable", (short) 8171, 'B'),
+                                                     new Employee("Ivan", "TestIdOnEmbeddable", (short) 4948, 'A'),
+                                                     new Employee("Isaac", "TestIdOnEmbeddable", (short) 5310, 'C'));
 
         assertEquals(List.of("Irene", "Isabella", "Ivan", "Isaac"),
                      added.stream().map(e -> e.firstName).collect(Collectors.toList()));
@@ -2055,6 +2058,28 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(t8.leviedAgainst, list.get(7).leviedAgainst);
 
         assertEquals(8, tariffs.deleteByLeviedBy("USA"));
+    }
+
+    /**
+     * Use a repository that has no primary entity class, and no lifecyle methods, but allows find operations
+     * for a mixture of different entity classes.
+     */
+    @Test
+    public void testMixedRepository() {
+
+        Business[] found = mixed.findByLocationAddressCity("Stewartville");
+        assertEquals(List.of("Geotek", "HALCON"),
+                     Stream.of(found)
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
+
+        LinkedList<Unpopulated> nothing = mixed.findBySomethingStartsWith("TestMixedRepository");
+        assertEquals(0, nothing.size());
+
+        assertEquals(List.of("Minnesota", "New York"),
+                     mixed.findByName("Rochester")
+                                     .map(c -> c.stateName)
+                                     .collect(Collectors.toList()));
     }
 
     /**
