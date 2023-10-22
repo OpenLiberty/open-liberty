@@ -1064,6 +1064,30 @@ public class LTPAKeyRotationTests {
         updateConfigDynamically(server, serverConfiguration);
     }
 
+    @Test
+    @AllowedFFDC({ "java.lang.IllegalArgumentException" })
+    public void testExpiredLtpaToken() throws Exception {
+        // Configure the server
+        configureServer("true", "5", true);
+
+        // Initial login to simple servlet for form login1
+        String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+
+        // Get the SSO cookies back from the login
+        String cookie1 = flClient1.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
+
+        // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
+        String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
+
+        // Wait for 70 seconds
+        Thread.sleep(70000);
+
+        // Attempt to access the simple servlet again with the same cookie and assert it fails and the server needs to login again
+        assertTrue("An expired cookie should result in authorization challenge",
+                   flClient1.accessProtectedServletWithInvalidCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1));
+    }
+
     public void configureServer(String monitorDirectory, String monitorInterval, Boolean waitForLTPAConfigReadyMessage) throws Exception {
         configureServer(monitorDirectory, monitorInterval, waitForLTPAConfigReadyMessage, true);
     }
