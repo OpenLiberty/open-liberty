@@ -1451,11 +1451,6 @@ public class ConfigTest extends FATServletClient {
         List<String> matches = new ArrayList<String>();
 
         DataSource dsfat1 = config.getDataSources().getBy("id", "dsfat1");
-        JdbcDriver jdbcDriver = config.getJdbcDrivers().getBy("id", "FATJDBCDriver");
-        Library driverLibrary = jdbcDriver.getNestedLibrary();
-        Fileset libraryFileset = driverLibrary.getNestedFileset();
-        String includes = libraryFileset.getIncludes();
-        includes = includes == null ? null : includes.toLowerCase();
         String dsPropsAlias = dsfat1.getDataSourcePropertiesUsedAlias();
         String traceString = null, traceSpec = null, platform = null;
 
