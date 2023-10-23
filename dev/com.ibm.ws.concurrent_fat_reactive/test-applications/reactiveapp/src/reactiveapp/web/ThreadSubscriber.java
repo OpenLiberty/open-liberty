@@ -39,31 +39,16 @@ public class ThreadSubscriber implements Flow.Subscriber<ContextCDL> {
             latch.countDown();
             subscription.request(1);
         } catch (NamingException e) {
-            onError(e);
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public void onError(Throwable throwable) {
-        closeExceptionally(throwable);
     }
 
     @Override
     public void onComplete() {
-    }
-
-    public void closeExceptionally(Throwable t) {
-        System.out.println("closedExceptionally - sub");
-        closedException = t;
-    }
-
-    /**
-     * Returns the exception associated with closeExceptionally, or null if not closed or if closed normally.
-     *
-     * @return the exception, or null if none
-     */
-    public Throwable getClosedException() {
-        return closedException;
     }
 
 }

@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Flow;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 
 import org.junit.Test;
 
@@ -36,6 +37,13 @@ public class ConcurrentReactiveServlet extends FATServlet {
     @Resource
     private ContextService contextSvcDefault;
 
+    //Handler for Flow.Subscription throwing an exception in onNext
+    BiConsumer<? super Flow.Subscriber<? super ContextCDL>, ? super Throwable> handler = (sub, t) -> {
+        AssertionError ae = new AssertionError("Context was not available in Subscriber");
+        ae.initCause(t);
+        throw ae;
+    };
+
     /**
      * Test that context is available at different points in a flow (publisher, subscriber)
      * when using a ManagerExecutor.
@@ -43,7 +51,7 @@ public class ConcurrentReactiveServlet extends FATServlet {
     @Test
     public void basicFlowTest() throws Exception {
         final ContextCDLImpl continueLatch = new ContextCDLImpl(1);
-        try (ThreadPublisher publisher = new ThreadPublisher(executor)) {
+        try (ThreadPublisher publisher = new ThreadPublisher(executor, handler)) {
             ThreadSubscriber subscriber = new ThreadSubscriber();
             publisher.subscribe(subscriber);
             publisher.offer(continueLatch, null);
@@ -52,10 +60,7 @@ public class ConcurrentReactiveServlet extends FATServlet {
                 System.out.println("timeout");
                 if (publisher.getClosedException() != null)
                     throw (AssertionError) new AssertionError("Context was not available in Publisher").initCause(publisher.getClosedException());
-                else if (subscriber.getClosedException() != null) {
-                    System.out.println("Exception: " + subscriber.getClosedException());
-                    throw (AssertionError) new AssertionError("Context was not available in Subscriber").initCause(subscriber.getClosedException());
-                } else
+                else
                     throw new AssertionError("Timed out occurred waiting for CountDownLatch");
             }
 
@@ -70,7 +75,7 @@ public class ConcurrentReactiveServlet extends FATServlet {
     public void processorFlowTest() throws Exception {
         final ContextCDLImpl continueLatch = new ContextCDLImpl(2);
 
-        try (ThreadPublisher publisher = new ThreadPublisher(executor); ThreadProcessor processor = new ThreadProcessor(executor);) {
+        try (ThreadPublisher publisher = new ThreadPublisher(executor, handler); ThreadProcessor processor = new ThreadProcessor(executor, handler);) {
             ThreadSubscriber subscriber = new ThreadSubscriber();
 
             publisher.subscribe(processor);
@@ -83,10 +88,7 @@ public class ConcurrentReactiveServlet extends FATServlet {
                     throw (AssertionError) new AssertionError("Context was not available in Publisher").initCause(publisher.getClosedException());
                 else if (processor.getClosedException() != null)
                     throw (AssertionError) new AssertionError("Context was not available in Processor").initCause(publisher.getClosedException());
-                else if (subscriber.getClosedException() != null) {
-                    System.out.println("Exception: " + subscriber.getClosedException());
-                    throw (AssertionError) new AssertionError("Context was not available in Subscriber").initCause(subscriber.getClosedException());
-                } else
+                else
                     throw new AssertionError("Timed out occurred waiting for CountDownLatch");
             }
 
@@ -102,7 +104,7 @@ public class ConcurrentReactiveServlet extends FATServlet {
         ContextCDL contextualCDL = contextSvcDefault.createContextualProxy(new ContextCDLImpl(2), ContextCDL.class);
         ExecutorService es = Executors.newFixedThreadPool(3); //Non-managed executor to test Context Service
 
-        try (ThreadPublisher publisher = new ThreadPublisher(es); ThreadProcessor processor = new ThreadProcessor(es);) {
+        try (ThreadPublisher publisher = new ThreadPublisher(es, handler); ThreadProcessor processor = new ThreadProcessor(es, handler);) {
 
             ThreadSubscriber subscriber = new ThreadSubscriber();
 
@@ -116,10 +118,7 @@ public class ConcurrentReactiveServlet extends FATServlet {
                     throw (AssertionError) new AssertionError("Context was not available in Publisher").initCause(publisher.getClosedException());
                 else if (processor.getClosedException() != null)
                     throw (AssertionError) new AssertionError("Context was not available in Processor").initCause(publisher.getClosedException());
-                else if (subscriber.getClosedException() != null) {
-                    System.out.println("Exception: " + subscriber.getClosedException());
-                    throw (AssertionError) new AssertionError("Context was not available in Subscriber").initCause(subscriber.getClosedException());
-                } else
+                else
                     throw new AssertionError("Timed out occurred waiting for CountDownLatch");
             }
 
@@ -136,7 +135,7 @@ public class ConcurrentReactiveServlet extends FATServlet {
         Flow.Subscriber<ContextCDL> subProxy = contextSvcDefault.createContextualProxy(new ThreadSubscriber(), Flow.Subscriber.class);
 
         final ContextCDLImpl continueLatch = new ContextCDLImpl(1);
-        try (ThreadPublisher publisher = new ThreadPublisher(executor)) {
+        try (ThreadPublisher publisher = new ThreadPublisher(executor, handler)) {
 
             publisher.subscribe(subProxy);
             publisher.offer(continueLatch, null);

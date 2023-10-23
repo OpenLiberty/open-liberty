@@ -18,6 +18,7 @@ import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.SubmissionPublisher;
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
 import javax.naming.NamingException;
@@ -30,8 +31,8 @@ public class ThreadProcessor extends SubmissionPublisher<ContextCDL> implements 
     Flow.Subscription subscription = null;
 
     //Subscriber methods
-    public ThreadProcessor(Executor ex) {
-        super(ex, 3);
+    public ThreadProcessor(Executor ex, BiConsumer<? super Subscriber<? super ContextCDL>, ? super Throwable> handler) {
+        super(ex, 3, handler);
     }
 
     @Override
