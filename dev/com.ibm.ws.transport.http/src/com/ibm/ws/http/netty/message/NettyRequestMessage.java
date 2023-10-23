@@ -36,6 +36,7 @@ import com.ibm.wsspi.genericbnf.exception.UnsupportedSchemeException;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.HttpConstants;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
+import com.ibm.wsspi.http.channel.HttpTrailers;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.MethodValues;
@@ -448,6 +449,13 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         }
         setScheme(value);
 
+    }
+
+    @Override
+    public HttpTrailers getTrailers() {
+//        if (request.trailingHeaders().isEmpty())
+//            return null;
+        return new NettyTrailers(this.request.trailingHeaders());
     }
 
     @Override

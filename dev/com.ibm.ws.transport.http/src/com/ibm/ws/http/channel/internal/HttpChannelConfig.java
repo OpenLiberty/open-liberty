@@ -551,19 +551,19 @@ public class HttpChannelConfig {
             }
 
             if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_ADD)) {
-                props.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_ADD, value);
+                props.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_ADD_INTERNAL, value);
             }
 
             if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET)) {
-                props.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET, value);
+                props.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET_INTERNAL, value);
             }
 
             if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET_IF_MISSING)) {
-                props.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET_IF_MISSING, value);
+                props.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET_IF_MISSING_INTERNAL, value);
             }
 
             if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_REMOVE)) {
-                props.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_REMOVE, value);
+                props.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_REMOVE_INTERNAL, value);
             }
 
             props.put(key, value);
