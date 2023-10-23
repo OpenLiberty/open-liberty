@@ -112,16 +112,19 @@ public class WeakReferenceThreadsTest {
 
 		// Remove reference to Thread and Invoke a System GC
 		t = null;
-		doGarbageCollection();
+		doGarbageCollection(iti);
 
 		Assert.assertEquals("The threadMap size is not zero. The value is " + iti.getThreadsMapSize(), 0,
 				iti.getThreadsMapSize());
 
 	}
 
-	private void doGarbageCollection() {
+	private void doGarbageCollection(InterruptibleThreadInfrastructureImpl iti) {
 		for (int i = 0; i < 10; ++i) {
 			System.gc();
+			if (iti.getThreadsMapSize() == 0) {
+				return;
+			}
 			try {
 				TimeUnit.MILLISECONDS.sleep(500);
 			} catch (InterruptedException e) {
