@@ -43,6 +43,7 @@ import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.http.channel.values.TransferEncodingValues;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 
+import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
@@ -63,6 +64,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     HttpResponse nettyResponse;
     HttpHeaders headers;
+    HttpHeaders trailers;
     HttpInboundServiceContext context;
     HttpChannelConfig config;
 
@@ -73,6 +75,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
         this.context = isc;
         this.nettyResponse = response;
         this.headers = nettyResponse.headers();
+        this.trailers = new DefaultHttpHeaders().clear();
 
         if (request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
             String streamId = request.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
@@ -285,8 +288,15 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public HttpTrailers getTrailers() {
-        // TODO Auto-generated method stub
-        return null;
+        // TODO Auto-generated method stub)
+//        if (trailers.isEmpty())
+//            return null;
+        return new NettyTrailers(trailers);
+    }
+
+    public HttpHeaders getNettyTrailers() {
+        // TODO Auto-generated method stub)
+        return trailers;
     }
 
     @Override

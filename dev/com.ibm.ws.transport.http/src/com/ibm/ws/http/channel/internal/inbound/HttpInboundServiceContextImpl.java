@@ -36,6 +36,7 @@ import com.ibm.ws.http.channel.internal.values.ReturnCodes;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
 import com.ibm.ws.http.netty.message.NettyRequestMessage;
 import com.ibm.ws.http.netty.message.NettyResponseMessage;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
@@ -1732,6 +1733,13 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "getRequestBodyBuffer(async) hc: " + this.hashCode());
         }
+
+        // Netty involved so need to just call it complete
+        if (Objects.nonNull(this.nettyContext)) {
+            callback.complete(NettyVirtualConnectionImpl.DUMMY_NETTY_VC);
+            return null;
+        }
+
         boolean isError = false;
 
         try {

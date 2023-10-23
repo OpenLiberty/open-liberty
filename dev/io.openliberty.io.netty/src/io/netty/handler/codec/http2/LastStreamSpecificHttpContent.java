@@ -13,8 +13,9 @@
 package io.netty.handler.codec.http2;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.DefaultLastHttpContent;
-
+import io.netty.handler.codec.http.HttpHeaders;
 
 /**
  * Custom class for writing data frame to specific streams
@@ -30,6 +31,11 @@ public class LastStreamSpecificHttpContent extends DefaultLastHttpContent {
     
 	public LastStreamSpecificHttpContent(int streamId, ByteBuf content) {
 		super(content);
+		this.streamId = streamId;
+	}
+	
+	public LastStreamSpecificHttpContent(int streamId, HttpHeaders trailingHeaders) {
+		super(Unpooled.buffer(0), trailingHeaders);
 		this.streamId = streamId;
 	}
 	

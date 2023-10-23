@@ -108,7 +108,9 @@ import io.netty.channel.VoidChannelPromise;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.DefaultHttpContent;
+import io.netty.handler.codec.http.DefaultLastHttpContent;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpUtil;
@@ -3284,23 +3286,36 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 //                    this.nettyContext.channel().write(buffer);
                 }
             }
+            NettyResponseMessage resp = (NettyResponseMessage) getResponse();
+            HttpHeaders trailers = resp.getNettyTrailers();
+            DefaultLastHttpContent lastContent;
+            if (trailers.isEmpty())
+                lastContent = new LastStreamSpecificHttpContent(Integer.valueOf(nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(),
+                                                                                                            "-1")));
+            else {
+                System.out.println("Adding trailers to last http content! " + trailers.toString());
+                lastContent = new LastStreamSpecificHttpContent(Integer.valueOf(nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(),
+                                                                                                            "-1")), trailers);
+            }
             // Sending last http content since all data was written
             System.out.println("Sending last http content!");
-            this.nettyContext.channel().write(new LastStreamSpecificHttpContent(Integer.valueOf(nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(),
-                                                                                                                            "-1"))));
-        } else if (!getResponse().isBodyAllowed()) {
-            // No body so need to write out the last default content
-            System.out.println("VERIFY THIS!! Writing last http content");
-//            this.nettyContext.channel().write(new DefaultLastHttpContent());
-            this.nettyContext.channel().write(new LastStreamSpecificHttpContent(Integer.valueOf(nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(),
-                                                                                                                            "-1"))));
+            this.nettyContext.channel().write(lastContent);
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "sendFullOutgoing : No buffers to write ");
             }
-            //this.nettyContext.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
-            this.nettyContext.channel().write(new LastStreamSpecificHttpContent(Integer.valueOf(nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(),
-                            "-1"))));
+            NettyResponseMessage resp = (NettyResponseMessage) getResponse();
+            HttpHeaders trailers = resp.getNettyTrailers();
+            DefaultLastHttpContent lastContent;
+            if (trailers.isEmpty()) {
+                lastContent = new LastStreamSpecificHttpContent(Integer.valueOf(nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(),
+                                                                                                            "-1")));
+            } else {
+                System.out.println("Adding trailers to last http content! " + trailers.toString());
+                lastContent = new LastStreamSpecificHttpContent(Integer.valueOf(nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(),
+                                                                                                            "-1")), trailers);
+            }
+            this.nettyContext.channel().write(lastContent);
         }
         this.nettyContext.channel().flush();
         MSP.log("set message sent");
@@ -3882,6 +3897,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @return InterChannelCallback
      */
     final public InterChannelCallback getAppWriteCallback() {
+        System.out.println("IRR getAppWriteCallback called!!");
         return this.appWriteCB;
     }
 
@@ -3891,6 +3907,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @return InterChannelCallback
      */
     final public InterChannelCallback getAppReadCallback() {
+        System.out.println("IRR getAppReadCallback called!!");
         return this.appReadCB;
     }
 
@@ -3900,6 +3917,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @param cb
      */
     final protected void setAppWriteCallback(InterChannelCallback cb) {
+        System.out.println("IRR setAppWriteCallback called!!");
         this.appWriteCB = cb;
     }
 
@@ -3909,6 +3927,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @param cb
      */
     final protected void setAppReadCallback(InterChannelCallback cb) {
+        System.out.println("IRR setAppReadCallback called!!");
         this.appReadCB = cb;
     }
 
