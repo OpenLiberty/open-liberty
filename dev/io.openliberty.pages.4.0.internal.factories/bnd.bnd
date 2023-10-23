@@ -39,6 +39,7 @@ Export-Package: \
 	org.apache.jasper.el;thread-context=true;version="4.0", \
 	org.apache.jasper.runtime;thread-context=true;version="4.0"
 
+# TODO Update el, servlet, and pages API versions once released
 Import-Package: \
    !com.ibm.ws.jsp23.translator.visitor.generator, \
    !com.ibm.ws.jsp23.translator.visitor.validator, \
@@ -46,14 +47,14 @@ Import-Package: \
    !com.ibm.ws.jsp23.webcontainerext.ws, \
    org.apache.xml.*;resolution:=optional, \
    org.apache.xpath.*;resolution:=optional, \
-   jakarta.el;version="[5.0,6)", \
+   jakarta.el;version="[6.0,7)", \
    jakarta.servlet;version="[6.0,7)", \
    jakarta.servlet.http;version="[6.0,7)", \
    jakarta.servlet.resources;version="[6.0,7)", \
-   jakarta.servlet.jsp;version="[4.0,5)" \
-   jakarta.servlet.jsp.el;version="[4.0,5)", \
-   jakarta.servlet.jsp.resources;version="[4.0,5)", \
-   jakarta.servlet.jsp.tagext;version="[4.0,5)", \
+   jakarta.servlet.jsp;version="[3.1,4)" \
+   jakarta.servlet.jsp.el;version="[3.1,4)", \
+   jakarta.servlet.jsp.resources;version="[3.1,4)", \
+   jakarta.servlet.jsp.tagext;version="[3.1,4)", \
    com.ibm.websphere.servlet.*;version=!, \
    com.ibm.wsspi.webcontainer.osgi.*;version=1.0, \
    com.ibm.wsspi.webcontainer, \
@@ -92,6 +93,6 @@ instrument.classesExcludes: org/apache/**/*.class
 # TODO - Update build path to latest APIs once released
 -buildpath: \
    io.openliberty.pages.3.1.internal.factories;version=latest,\
-	io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
-	io.openliberty.jakarta.pages.3.1;version=latest,\
+   io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
+   io.openliberty.jakarta.pages.3.1;version=latest,\
    com.ibm.ws.org.osgi.annotation.versioning;version=latest
