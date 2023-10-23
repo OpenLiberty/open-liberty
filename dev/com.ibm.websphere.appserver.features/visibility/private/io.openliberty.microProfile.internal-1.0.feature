@@ -4,3 +4,4 @@ singleton=true
 kind=noship
 edition=full
 WLP-Activation-Type: parallel
+WLP-DisableAllFeatures-OnConflict: false

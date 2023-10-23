@@ -14,6 +14,8 @@ public class VersionlessFeatureCreator {
 
     private String privatePath = "visibility/private/";
     private String publicPath = "visibility/public/";
+    private String buildPublicPath = "build/visibility/public";
+    private String buildPrivatePath = "build/visibility/private";
 
     /** Private/Internal versioned/versionless Jakarta
     
@@ -46,9 +48,13 @@ public class VersionlessFeatureCreator {
     // the public versionless features as they are brought in by the already existing versioned public features
     // So it would just be '-features=io.openliberty.unversioned.persistence-0.0; ibm.tolerates:="2.0,2.1,2.2,3.0,3.1,3.2"'
     public void createPrivateFeatures(VersionlessFeatureDefinition feature) throws IOException {
-        File f = new File(privatePath);
-    	if(!f.exists()){
-            f.mkdirs();
+        File pu = new File(buildPublicPath);
+    	if(!pu.exists()){
+            pu.mkdirs();
+        }
+        File pr = new File(buildPrivatePath);
+    	if(!pr.exists()){
+            pr.mkdirs();
         }
         ArrayList<String> usedDependencies = new ArrayList<String>();
         //features array:
@@ -71,7 +77,11 @@ public class VersionlessFeatureCreator {
     }
     
     private void createPrivateVersionedFeature(String featureName, String featureNum, String dependsOnName, String dependsOnNum, String fullName) throws IOException {
-    	File f = new File(privatePath + "io.openliberty.unversioned." + featureName + "-" + featureNum + ".feature");
+    	File privFeature = new File(privatePath + "io.openliberty.unversioned." + featureName + "-" + featureNum + ".feature");
+        if(privFeature.exists()){
+            return;
+        }
+        File f = new File(buildPrivatePath + "io.openliberty.unversioned." + featureName + "-" + featureNum + ".feature");
     	if(!f.exists()) {
     		f.createNewFile();
             BufferedWriter writer = new BufferedWriter(new FileWriter(f));
@@ -97,7 +107,7 @@ public class VersionlessFeatureCreator {
             writer.close();
     	}
         else {
-            File file = new File(privatePath + "io.openliberty.unversioned." + featureName + "-" + featureNum + ".feature");
+            File file = new File(buildPrivatePath + "io.openliberty.unversioned." + featureName + "-" + featureNum + ".feature");
             File temp = File.createTempFile("temp-file-name", ".tmp");
             BufferedReader br = new BufferedReader(new FileReader( file ));
             PrintWriter pw =  new PrintWriter(new FileWriter( temp ));
@@ -118,10 +128,15 @@ public class VersionlessFeatureCreator {
     }
     
     public void createPublicVersionlessFeature(VersionlessFeatureDefinition feature) throws IOException {
-    	File dir = new File(publicPath + feature.getFeatureName());
+    	File publicFeatDir = new File(publicPath + feature.getFeatureName());
+        if(publicFeatDir.exists()){
+            return;
+        }
+
+        File dir = new File(buildPublicPath + feature.getFeatureName());
     	if(!dir.exists()) {
     		dir.mkdirs();
-        	File f = new File(publicPath + feature.getFeatureName() + "/io.openliberty." + feature.getFeatureName() + ".feature");
+        	File f = new File(buildPublicPath + feature.getFeatureName() + "/io.openliberty." + feature.getFeatureName() + ".feature");
     		f.createNewFile();
             BufferedWriter writer = new BufferedWriter(new FileWriter(f));
             writer.append("-include= ~${workspace}/cnf/resources/bnd/feature.props");
@@ -150,9 +165,9 @@ public class VersionlessFeatureCreator {
     }
     
     private void createPublicFeaturePropertiesFile(VersionlessFeatureDefinition feature) throws IOException {
-    	File dir = new File(publicPath + feature.getFeatureName() + "/resources/l10n");
+    	File dir = new File(buildPublicPath + feature.getFeatureName() + "/resources/l10n");
     	dir.mkdirs();
-    	File f = new File(publicPath + feature.getFeatureName() + "/resources/l10n/io.openliberty." + feature.getFeatureName() + ".properties");
+    	File f = new File(buildPublicPath + feature.getFeatureName() + "/resources/l10n/io.openliberty." + feature.getFeatureName() + ".properties");
 		f.createNewFile();
         BufferedWriter writer = new BufferedWriter(new FileWriter(f));
         writer.append("###############################################################################");
@@ -192,7 +207,12 @@ public class VersionlessFeatureCreator {
 	}
     
     private void createPrivateVersionlessFeature(String featureName, String dependsOnName) throws IOException {
-    	File f = new File(privatePath + "io.openliberty.unversioned." + featureName + "-0.0.feature");
+    	File privFeature = new File(privatePath + "io.openliberty.unversioned." + featureName + "-0.0.feature");
+        if(privFeature.exists()){
+            return;
+        }
+
+    	File f = new File(buildPrivatePath + "io.openliberty.unversioned." + featureName + "-0.0.feature");
     	if(!f.exists()) {
     		f.createNewFile();
             BufferedWriter writer = new BufferedWriter(new FileWriter(f));
@@ -216,7 +236,7 @@ public class VersionlessFeatureCreator {
             writer.close();
     	}
         else {
-            File file = new File(privatePath + "io.openliberty.unversioned." + featureName + "-0.0.feature");
+            File file = new File(buildPrivatePath + "io.openliberty.unversioned." + featureName + "-0.0.feature");
             File temp = File.createTempFile("temp-file-name", ".tmp");
             BufferedReader br = new BufferedReader(new FileReader( file ));
             PrintWriter pw =  new PrintWriter(new FileWriter( temp ));

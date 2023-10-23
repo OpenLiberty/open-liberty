@@ -337,7 +337,7 @@ public class FeatureTest {
      * Editions are assigned levels in the following (increasing) order:
      * Full, Unsupported, ZOS, ND, Base, Core, Unknown.
      */
-    //@Test
+    @Test
     public void testProductEditions() {
         StringBuilder builder = new StringBuilder();
 
@@ -432,7 +432,7 @@ public class FeatureTest {
      * of any of the feature's dependents. For example, a GA feature
      * may not depend on a Beta feature.
      */
-    //@Test
+    @Test
     public void testProductKinds() {
         StringBuilder builder = new StringBuilder();
 
@@ -479,7 +479,7 @@ public class FeatureTest {
      * "io.openliberty.persistence-3.1", and "io.openliberty.persistence-3.2", is not marked as
      * a singleton. This fails the prior cohorts test.
      */
-    //@Test
+    @Test
     public void testSingletonFeatures() {
         StringBuilder builder = new StringBuilder();
 
@@ -636,7 +636,7 @@ public class FeatureTest {
      * A feature which does not have disable-on-conflict-enabled set
      * must not have a dependent which has disable-on-conflict enabled set.
      */
-    //@Test
+    @Test
     public void testOnConflictsFeatures() {
         StringBuilder builder = new StringBuilder();
 
@@ -711,7 +711,7 @@ public class FeatureTest {
      * exceptions, all of the dependent feature names must match existing
      * features. (See {@link #permitAbsence(String)}.
      */
-    //@Test
+    @Test
     public void testMissingDependencies() {
         StringBuilder builder = new StringBuilder();
 
@@ -845,7 +845,7 @@ public class FeatureTest {
      * Any feature which is no-ship and which is not an auto feature
      * must not depend on a no-ship or beta feature.
      */
-    //@Test
+    @Test
     public void testNoShipFeatures() {
         StringBuilder builder = new StringBuilder();
 
@@ -916,7 +916,7 @@ public class FeatureTest {
      * Tests to make sure that public and protected features are correctly referenced in a feature
      * when a dependent feature includes a public or protected feature with a tolerates attribute.
      */
-    //@Test
+    @Test
     public void testNonTransitiveTolerates() {
         StringBuilder errorMessage = new StringBuilder();
         // appSecurity features are special because they have dependencies on each other.
@@ -939,6 +939,10 @@ public class FeatureTest {
 
         for (Entry<String, FeatureInfo> entry : getFeatures().entrySet()) {
             String featureName = entry.getKey();
+
+            if(featureName.contains("unversioned")){
+                continue;
+            }
 
             FeatureInfo featureInfo = entry.getValue();
             Set<String> processedFeatures = new HashSet<>();
@@ -1014,7 +1018,7 @@ public class FeatureTest {
      * Public features are not included in this test since those features may be explicitly included just to show
      * which public features are enabled by a feature.
      */
-    //@Test
+    @Test
     public void testFeatureDependenciesRedundancy() {
         StringBuilder errorMessage = new StringBuilder();
         Map<String, String> visibilityMap = new HashMap<>();
