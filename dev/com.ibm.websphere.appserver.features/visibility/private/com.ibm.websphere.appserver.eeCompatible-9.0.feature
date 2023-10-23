@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.eeCompatible-9.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 singleton=true
 Subsystem-Version: 9.0.0
