@@ -74,11 +74,11 @@ public class MetricsTest extends FATServletClient {
                         .include(ConnectorProperties.simpleOutgoingChannel(KafkaTests.connectionProperties(), ConnectorProperties.DEFAULT_CONNECTOR_ID,
                                                                            MetricsTestServlet.EMITTER_OUTGOING_CHANNEL, MetricsTestServlet.EMITTER_TOPIC))
                         .include(ConnectorProperties.simpleIncomingChannel(KafkaTests.connectionProperties(), ConnectorProperties.DEFAULT_CONNECTOR_ID,
-                                                                           MetricsReceptionBean.CHANNEL_IN, APP_NAME, MetricsTestServlet.EMITTER_TOPIC))
+                                                                           MetricsReceptionBeanForPayloads.CHANNEL_IN, APP_NAME, MetricsTestServlet.EMITTER_TOPIC))
                         .include(ConnectorProperties.simpleOutgoingChannel(KafkaTests.connectionProperties(), ConnectorProperties.DEFAULT_CONNECTOR_ID,
                                                                            MetricsDeliveryBean.METRICS_OUTGOING, MetricsTestServlet.OUTGOING_TOPIC))
                         .include(ConnectorProperties.simpleIncomingChannel(KafkaTests.connectionProperties(), ConnectorProperties.DEFAULT_CONNECTOR_ID,
-                                                                           MetricsReceptionBean.CHANNEL_MESSAGE_IN, APP_NAME, MetricsTestServlet.OUTGOING_TOPIC));
+                                                                           MetricsReceptionBeanForMessages.CHANNEL_IN, APP_NAME, MetricsTestServlet.OUTGOING_TOPIC));
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsLibraries(kafkaClientLibs())
@@ -99,10 +99,9 @@ public class MetricsTest extends FATServletClient {
         HashMap<String, Integer> metrics = getMetrics();
 
         assertThat("5 messages not detected on channel", metrics.get("metrics-incoming"), equalTo(5));
-//      Assertion disabled as emitters currently don't report metrics per spec
-//        assertTrue("Outgoing and incoming channel counts are not the same",
-//                   metrics.get("mp_messaging_message_count_total{channel=\"MetricsEmitter\",mp_scope=\"base\",}") == metrics
-//                                   .get("mp_messaging_message_count_total{channel=\"metrics-incoming\",mp_scope=\"base\",}"));
+        assertThat("Outgoing and incoming channel counts are not the same",
+                   metrics.get("MetricsEmitter"),
+                   equalTo(metrics.get("metrics-incoming")));
     }
 
     @Test
@@ -112,7 +111,9 @@ public class MetricsTest extends FATServletClient {
         HashMap<String, Integer> metrics = getMetrics();
 
         assertThat("5 messages not detected on channel", metrics.get("metrics-outgoing"), equalTo(5));
-        assertThat("Outgoing and incoming channel counts are not the same", metrics.get("metrics-outgoing"), equalTo(metrics.get("metrics-message-incoming")));
+        assertThat("Outgoing and incoming channel counts are not the same",
+                   metrics.get("metrics-outgoing"),
+                   equalTo(metrics.get("metrics-message-incoming")));
     }
 
     @AfterClass
@@ -134,7 +135,7 @@ public class MetricsTest extends FATServletClient {
         BufferedReader in = new BufferedReader(new InputStreamReader(result));
         try {
             String currentLine;
-    
+
             // filter the /metrics output for reactive messaging metrics
             while ((currentLine = in.readLine()) != null) {
                 if (currentLine.contains("mp_messaging_message_count_total{channel=")) {

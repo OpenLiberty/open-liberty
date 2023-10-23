@@ -22,10 +22,9 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractRe
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class MetricsReceptionBean extends AbstractReceptionBean<String> {
+public class MetricsReceptionBeanForMessages extends AbstractReceptionBean<String> {
 
-    public static final String CHANNEL_IN = "metrics-incoming";
-    public static final String CHANNEL_MESSAGE_IN = "metrics-message-incoming";
+    public static final String CHANNEL_IN = "metrics-message-incoming";
 
     @Incoming(CHANNEL_IN)
     @Acknowledgment(MANUAL)
@@ -33,13 +32,4 @@ public class MetricsReceptionBean extends AbstractReceptionBean<String> {
         System.out.println(msg.getPayload());
         return super.receiveMessage(msg);
     }
-
-    @Incoming(CHANNEL_MESSAGE_IN)
-    @Acknowledgment(MANUAL)
-    @Override
-    public CompletionStage<Void> receiveMessage(Message<String> msg) {
-        System.out.println(msg.getPayload());
-        return super.receiveMessage(msg);
-    }
-
 }

@@ -14,7 +14,6 @@ import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaReader;
 
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
@@ -34,27 +33,32 @@ public class MetricsTestServlet extends AbstractKafkaTestServlet {
     private MetricsDeliveryBean deliveryBean;
 
     @Inject
+    private MetricsReceptionBeanForPayloads receptionBeanForPayloads;
+
+    @Inject
+    private MetricsReceptionBeanForMessages receptionBeanForMessages;
+
+    @Inject
     @Channel(EMITTER_OUTGOING_CHANNEL)
     private Emitter<String> emitter;
 
     // called manually from MetricsTest
-    public void emitterDeliverPayload() {
+    public void emitterDeliverPayload() throws Exception {
         // deliver 5 payloads via an emitter
         for (int i = 1; i < 6; i++) {
             emitter.send("Message " + i);
         }
 
-        KafkaReader<String, String> reader = kafkaTestClient.readerFor(EMITTER_TOPIC);
-        reader.assertReadMessages(5, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
+        receptionBeanForPayloads.assertReceivedMessages(5, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
     }
 
     // called manually from MetricsTest
-    public void deliverMessage() {
+    public void deliverMessage() throws Exception {
         // deliver 5 messages via delivery and reception beans
         for (int i = 1; i < 6; i++) {
             deliveryBean.sendMessage("test");
         }
-        KafkaReader<String, String> reader = kafkaTestClient.readerFor(OUTGOING_TOPIC);
-        reader.assertReadMessages(5, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
+
+        receptionBeanForMessages.assertReceivedMessages(5, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
     }
 }
