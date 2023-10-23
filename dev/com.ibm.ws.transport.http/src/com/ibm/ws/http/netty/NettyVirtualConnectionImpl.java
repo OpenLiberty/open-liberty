@@ -20,6 +20,13 @@ import com.ibm.wsspi.channelfw.VirtualConnection;
  */
 public class NettyVirtualConnectionImpl implements VirtualConnection {
 
+    public static final NettyVirtualConnectionImpl DUMMY_NETTY_VC;
+
+    static {
+        DUMMY_NETTY_VC = new NettyVirtualConnectionImpl();
+        DUMMY_NETTY_VC.init();
+    }
+
     private Map<Object, Object> stateStore = null;
 
     protected NettyVirtualConnectionImpl() {
