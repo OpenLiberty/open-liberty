@@ -63,6 +63,7 @@ import com.ibm.wsspi.resource.ResourceFactory;
 
 import io.openliberty.data.internal.persistence.EntityDefiner;
 import io.openliberty.data.internal.persistence.QueryInfo;
+import jakarta.annotation.Generated;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.model.StaticMetamodel;
 import jakarta.data.repository.DataRepository;
@@ -174,19 +175,24 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
     public <T> void annotatedStaticMetamodel(@Observes @WithAnnotations(StaticMetamodel.class) ProcessAnnotatedType<T> event) {
         AnnotatedType<T> type = event.getAnnotatedType();
 
-        StaticMetamodel staticMetamodel = type.getAnnotation(StaticMetamodel.class);
+        if (type.isAnnotationPresent(Generated.class)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "annotatedStaticMetamodel ignoring generated " + type.getJavaClass().getName());
+        } else {
+            StaticMetamodel staticMetamodel = type.getAnnotation(StaticMetamodel.class);
 
-        Class<?> entityClass = staticMetamodel.value();
+            Class<?> entityClass = staticMetamodel.value();
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "annotatedStaticMetamodel for " + entityClass.getName(),
-                     type.getJavaClass().getName());
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "annotatedStaticMetamodel for " + entityClass.getName(),
+                         type.getJavaClass().getName());
 
-        List<Class<?>> newList = new LinkedList<>();
-        newList.add(type.getJavaClass());
-        List<Class<?>> existingList = staticMetamodels.putIfAbsent(entityClass, newList);
-        if (existingList != null)
-            existingList.add(type.getJavaClass());
+            List<Class<?>> newList = new LinkedList<>();
+            newList.add(type.getJavaClass());
+            List<Class<?>> existingList = staticMetamodels.putIfAbsent(entityClass, newList);
+            if (existingList != null)
+                existingList.add(type.getJavaClass());
+        }
     }
 
     public void afterTypeDiscovery(@Observes AfterTypeDiscovery event, BeanManager beanMgr) {
