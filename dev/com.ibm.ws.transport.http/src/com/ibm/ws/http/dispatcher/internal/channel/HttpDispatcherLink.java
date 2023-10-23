@@ -1257,6 +1257,15 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                         ic.sendResponse(StatusCodes.INTERNAL_ERROR, new Exception("Dispatch error", t), true);
                     }
                 }
+
+                if (ic.decrementNeeded.compareAndSet(true, false)) {
+                        //  ^ set back to false in case close is called more than once after destroy is called (highly unlikely)
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "decrementNeeded is true: decrement active connection");
+                    }
+                    ic.myChannel.decrementActiveConns();
+                }
+
             } finally {
                 if (this.classifiedExecutor != null) {
                     DecoratedExecutorThread.removeExecutor();
