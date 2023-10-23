@@ -12,7 +12,6 @@ package io.openliberty.org.apache.myfaces50.fat;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -21,7 +20,6 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(Suite.class)
@@ -30,9 +28,6 @@ import componenttest.topology.impl.LibertyServer;
 })
 
 public class FATSuite {
-
-    @ClassRule
-    public static RepeatTests repeat = RepeatTests.withoutModification();
 
     /**
      * Utility method that will write xmlContent to output.txt and
