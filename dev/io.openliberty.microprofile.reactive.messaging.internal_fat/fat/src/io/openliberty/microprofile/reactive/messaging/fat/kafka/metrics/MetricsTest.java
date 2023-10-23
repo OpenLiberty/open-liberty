@@ -83,7 +83,7 @@ public class MetricsTest extends FATServletClient {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsLibraries(kafkaClientLibs())
                         .addAsManifestResource(kafkaPermissions(), "permissions.xml")
-                        .addPackage(MetricsTestServlet.class.getPackage())
+                        .addClasses(MetricsTestServlet.class, MetricsDeliveryBean.class, MetricsReceptionBeanForPayloads.class, MetricsReceptionBeanForMessages.class)
                         .addPackage(KafkaTestConstants.class.getPackage())
                         .addPackage(AbstractKafkaTestServlet.class.getPackage())
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
@@ -96,24 +96,26 @@ public class MetricsTest extends FATServletClient {
     public void testDeliverPayload() throws Exception {
         // Test that metrics are updated when a payload is delivered via an emitter
         runTest(server, APP_NAME + "/MetricsTest", "emitterDeliverPayload");
-        HashMap<String, Integer> metrics = getMetrics();
+        URL url = HttpUtils.createURL(server, "/metrics");
+        HashMap<String, Integer> metrics = getMetrics(url);
 
         assertThat("5 messages not detected on channel", metrics.get("metrics-incoming"), equalTo(5));
         assertThat("Outgoing and incoming channel counts are not the same",
-                   metrics.get("MetricsEmitter"),
-                   equalTo(metrics.get("metrics-incoming")));
+                   metrics.get(MetricsTestServlet.EMITTER_OUTGOING_CHANNEL),
+                   equalTo(metrics.get(MetricsReceptionBeanForPayloads.CHANNEL_IN)));
     }
 
     @Test
     public void testDeliverMessage() throws Exception {
         // Test that metrics are updated when a message is delivered via delivery and reception beans
         runTest(server, APP_NAME + "/MetricsTest", "deliverMessage");
-        HashMap<String, Integer> metrics = getMetrics();
+        URL url = HttpUtils.createURL(server, "/metrics");
+        HashMap<String, Integer> metrics = getMetrics(url);
 
         assertThat("5 messages not detected on channel", metrics.get("metrics-outgoing"), equalTo(5));
         assertThat("Outgoing and incoming channel counts are not the same",
-                   metrics.get("metrics-outgoing"),
-                   equalTo(metrics.get("metrics-message-incoming")));
+                   metrics.get(MetricsDeliveryBean.METRICS_OUTGOING),
+                   equalTo(metrics.get(MetricsReceptionBeanForMessages.CHANNEL_IN)));
     }
 
     @AfterClass
@@ -125,15 +127,13 @@ public class MetricsTest extends FATServletClient {
         }
     }
 
-    private HashMap<String, Integer> getMetrics() throws Exception {
+    public static HashMap<String, Integer> getMetrics(URL url) throws Exception {
         // Returns the MicroProfile Reactive Messaging metrics from the /metrics endpoint
-        URL url = HttpUtils.createURL(server, "/metrics");
         HttpURLConnection response = HttpUtils.getHttpConnection(url, 200, null, 30, HTTPRequestMethod.GET, null, null);
         HashMap<String, Integer> metrics = new HashMap<String, Integer>();
         response.setReadTimeout(30 * 1000);
         InputStream result = response.getInputStream();
-        BufferedReader in = new BufferedReader(new InputStreamReader(result));
-        try {
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(result))) {
             String currentLine;
 
             // filter the /metrics output for reactive messaging metrics
@@ -145,8 +145,6 @@ public class MetricsTest extends FATServletClient {
                     metrics.put(channelString.split("\"} ")[0], (int) Float.parseFloat(channelString.split("\"} ")[1]));
                 }
             }
-        } finally {
-            in.close();
         }
 
         return metrics;
