@@ -17,5 +17,6 @@ import jakarta.enterprise.context.ApplicationScoped;
  */
 @ApplicationScoped
 public class WorkerPoolRegistry {
-
+    public static final String WORKER_CONFIG_PREFIX = "smallrye.messaging.worker";
+    public static final String WORKER_CONCURRENCY = "max-concurrency";
 }

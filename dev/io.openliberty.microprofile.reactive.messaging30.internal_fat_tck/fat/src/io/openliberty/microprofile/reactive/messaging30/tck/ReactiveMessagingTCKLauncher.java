@@ -53,7 +53,7 @@ public class ReactiveMessagingTCKLauncher {
 
     @Test
     @Mode(TestMode.FULL)
-    @AllowedFFDC({ "org.jboss.weld.exceptions.DeploymentException", "com.ibm.ws.container.service.state.StateChangeException" }) // The tested deployment exceptions cause FFDC so we have to allow for this.
+    @AllowedFFDC({ "org.jboss.weld.exceptions.DeploymentException", "com.ibm.ws.container.service.state.StateChangeException", "jakarta.enterprise.inject.spi.DeploymentException" }) // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchReactiveMessaging30Tck() throws Exception {
         String bucketName = "io.openliberty.microprofile.reactive.messaging30.internal_fat_tck";
         String testName = this.getClass() + ":launchReactiveMessaging30Tck";

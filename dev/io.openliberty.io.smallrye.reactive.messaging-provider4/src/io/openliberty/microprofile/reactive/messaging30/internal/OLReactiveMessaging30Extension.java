@@ -11,6 +11,11 @@ package io.openliberty.microprofile.reactive.messaging30.internal;
 
 import java.lang.annotation.Annotation;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
+import jakarta.enterprise.inject.spi.DeploymentException;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.spi.Connector;
 import org.osgi.service.component.annotations.Component;
@@ -42,6 +47,8 @@ import jakarta.enterprise.inject.spi.Extension;
 
 @Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "application.bdas.visible=true" })
 public class OLReactiveMessaging30Extension extends ReactiveMessagingExtension implements Extension, WebSphereCDIExtension {
+
+    private static final TraceComponent tc = Tr.register(OLReactiveMessaging30Extension.class);
 
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery discovery, BeanManager beanManager) {
         //This bundle has bean-discovery-mode=none so we have to add anything with a CDI annotation here
@@ -86,6 +93,24 @@ public class OLReactiveMessaging30Extension extends ReactiveMessagingExtension i
         //org.eclipse.microprofile.reactive.messaging.spi
         addQualifier(Connector.class, discovery, beanManager);
     }
+
+
+    // Set priority to be higher then default, so will run after the ReactiveMessagingExtension event
+    void postDeploymentValidation(@Observes @Priority(jakarta.interceptor.Interceptor.Priority.APPLICATION + 1000) AfterDeploymentValidation done, BeanManager beanManager) {
+        // Catch DeploymentException that is thrown if there are any validation errors with the Reactive Messaging Configuration
+        try {
+           mediatorManager.start();
+        } catch (DeploymentException de){
+            for(Throwable e: de.getSuppressed()){
+                // Log any errors that are in the suppressed section of the DeploymentException
+                Tr.error(tc, e.getLocalizedMessage());
+            }
+            // throw new DeploymentException to ensure application stops with the right exception and improve the message
+            throw new DeploymentException("Wiring error(s) detected in application. Review the server messages.log file and FFDC logs to identify the problem(s).", de);
+        }
+    }
+
+
 
     private <T> void addAnnotatedType(Class<T> clazz, BeforeBeanDiscovery discovery, BeanManager beanManager) {
         AnnotatedType<T> annotatedType = beanManager.createAnnotatedType(clazz);

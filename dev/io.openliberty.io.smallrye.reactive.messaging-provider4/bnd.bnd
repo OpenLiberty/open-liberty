@@ -46,10 +46,12 @@ Private-Package: \
 	io.openliberty.microprofile.reactive.messaging30.internal
 
 -buildpath: \
-  io.smallrye.reactive:smallrye-reactive-messaging-api;version=4.8.0;strategy=exact, \
-  io.smallrye.reactive:smallrye-reactive-messaging-provider;version=4.8.0;strategy=exact, \
+  com.ibm.ws.logging;version=latest,\
+  io.smallrye.reactive:smallrye-reactive-messaging-api;version=4.10.1;strategy=exact, \
+  io.smallrye.reactive:smallrye-reactive-messaging-provider;version=4.10.1;strategy=exact, \
   io.openliberty.jakarta.cdi.3.0;version=latest, \
   io.openliberty.jakarta.annotation.2.0;version=latest, \
+  io.openliberty.jakarta.interceptor.2.0;version=latest, \
   io.openliberty.org.eclipse.microprofile.reactive.messaging.3.0;version=latest, \
   io.openliberty.org.eclipse.microprofile.reactive.streams.operators.3.0;version=latest, \
   com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest, \
@@ -62,4 +64,5 @@ Private-Package: \
   io.openliberty.io.smallrye.reactive.mutiny;version=latest,\
   io.openliberty.io.smallrye.common2;version=latest,\
   io.openliberty.io.smallrye.reactive.converter-api3;version=latest,\
-  io.openliberty.org.jboss.logging35;version=latest
+  io.openliberty.org.jboss.logging35;version=latest,\
+  jakarta.enterprise.cdi-api;version=latest

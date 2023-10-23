@@ -20,7 +20,7 @@ Bundle-SymbolicName: io.openliberty.io.smallrye.reactive.mutiny; singleton:=true
                      
 
 Export-Package: \
-  io.smallrye.mutiny.*; version="2.2.0", \
+  io.smallrye.mutiny.*; version="2.5.1", \
   mutiny.zero.flow.adapters.*; version="1.0.0"
 
 WS-TraceGroup: REACTIVESTREAMS
@@ -28,5 +28,5 @@ WS-TraceGroup: REACTIVESTREAMS
 instrument.disabled: true
 
 -buildpath: \
-  io.smallrye.reactive:mutiny;version=2.2.0,\
-  io.smallrye.reactive:mutiny-zero-flow-adapters;version=1.0.0
+  io.smallrye.reactive:mutiny;version=2.5.1,\
+  io.smallrye.reactive:mutiny-zero-flow-adapters;version=1.0.0,\

@@ -994,7 +994,7 @@
     <dependency>
       <groupId>io.smallrye.reactive</groupId>
       <artifactId>mutiny-reactive-streams-operators-jakarta</artifactId>
-      <version>2.2.0</version>
+      <version>2.5.1</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.reactive</groupId>
@@ -1004,22 +1004,22 @@
     <dependency>
       <groupId>io.smallrye.reactive</groupId>
       <artifactId>mutiny</artifactId>
-      <version>2.2.0</version>
+      <version>2.5.1</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.reactive</groupId>
       <artifactId>smallrye-reactive-converter-api</artifactId>
-      <version>3.0.0</version>
+      <version>3.0.1</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.reactive</groupId>
       <artifactId>smallrye-reactive-messaging-api</artifactId>
-      <version>4.8.0</version>
+      <version>4.10.1</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.reactive</groupId>
       <artifactId>smallrye-reactive-messaging-provider</artifactId>
-      <version>4.8.0</version>
+      <version>4.10.1</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
