@@ -159,7 +159,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.1.2</version>
+				<version>3.0.0</version>
 				<configuration>
 					<argLine>-Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
 					<dependenciesToScan>
@@ -173,7 +173,6 @@
 						<wlp>${wlp}</wlp>
 						<tck_server>${tck_server}</tck_server>
 						<tck_port>${tck_port}</tck_port>
-						<tck_protocol>${tck_protocol}</tck_protocol>
 						<sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
 						<java.util.logging.config.file>${basedir}/../logging.properties</java.util.logging.config.file>
 						<jimage.dir>${jimage.dir}</jimage.dir>
