@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -92,9 +92,12 @@ public class CDIListenersTest extends LoggingTest {
             LOG.info("addAppToServer : " + CDI12_TEST_V2_LISTENERS_APP_NAME + " already installed : " + !appInstalled.isEmpty());
             if (appInstalled.isEmpty())
                 ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2ListenersApp);
+            //SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CDI12_TEST_V2_LISTENERS_APP_NAME);
         }
-        SHARED_SERVER.startIfNotStarted();
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CDI12_TEST_V2_LISTENERS_APP_NAME);
+        //SHARED_SERVER.startIfNotStarted();
+        //SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CDI12_TEST_V2_LISTENERS_APP_NAME);
+        SHARED_SERVER.getLibertyServer().startServer(CDIListenersTest.class.getSimpleName() + ".log");
+        SHARED_SERVER.getLibertyServer().waitForStringInLogUsingMark("CWWKO0219I*");
     }
 
     @AfterClass
