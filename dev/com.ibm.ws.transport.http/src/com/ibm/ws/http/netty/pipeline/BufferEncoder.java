@@ -44,38 +44,42 @@ public class BufferEncoder extends MessageToMessageEncoder<AbstractMap.SimpleEnt
      */
     @Override
     public void encode(ChannelHandlerContext context, AbstractMap.SimpleEntry<Integer, WsByteBuffer> pair, List<Object> out) throws Exception {
-
         Integer streamId = pair.getKey();
         WsByteBuffer message = pair.getValue();
 
-        boolean doLastHttpContent = false;
+        // Check if "Content-Length" is set for this channel
+        boolean hasContentLength = context.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH);
 
         bytesWritten += message.remaining();
 
         MSP.log("Encode: bytes written: " + bytesWritten + ", bytes to write: " + message.remaining());
         System.out.println("Encode Got content: " + WsByteBufferUtils.asString(message));
 
-        if (context.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
-            doLastHttpContent = context.channel().attr(NettyHttpConstants.CONTENT_LENGTH).get() == bytesWritten;
-            System.out.println("Has content length! Bytes Written: " + bytesWritten + " Content Length: " + context.channel().attr(NettyHttpConstants.CONTENT_LENGTH).get());
-        }
+        // If "Content-Length" is set, check if it matches the bytes written
+        if (hasContentLength) {
+            boolean doLastHttpContent = context.channel().attr(NettyHttpConstants.CONTENT_LENGTH).get() == bytesWritten;
 
-        if (isHttp2(context) && !doLastHttpContent) {
-            // For HTTP/2 and not the last content, use StreamSpecificHttpContent
-            System.out.println("Sending HTTP/2 content");
-            out.add(new StreamSpecificHttpContent(streamId, Unpooled.wrappedBuffer(message.getWrappedByteBuffer())));
-        } else if (!doLastHttpContent) {
-            // For HTTP/1.1 and not the last content, use ChunkedInput
-            System.out.println("Sending chunked input");
-            ChunkedInput<ByteBuf> chunkedInput = new WsByteBufferChunkedInput(message);
-            MSP.log("Should be writing a chunk of size: " + chunkedInput.length());
-            context.writeAndFlush(chunkedInput);
+            if (!doLastHttpContent) {
+                // Send content with "Content-Length" header
+                out.add(new StreamSpecificHttpContent(streamId, Unpooled.wrappedBuffer(message.getWrappedByteBuffer())));
+            } else {
+                // Send last HTTP content
+                System.out.println("Sending last http content");
+                out.add(new LastStreamSpecificHttpContent(streamId, Unpooled.wrappedBuffer(message.getWrappedByteBuffer())));
+            }
         } else {
-            // For HTTP/1.1 or HTTP/2 when doLastHttpContent is true, use LastStreamSpecificHttpContent
-
-            System.out.println("Sending last http content");
-            out.add(new LastStreamSpecificHttpContent(streamId, Unpooled.wrappedBuffer(message.getWrappedByteBuffer())));
-
+            // If "Content-Length" is not set, determine whether it's HTTP/2 or HTTP/1.1 with chunked encoding
+            if (isHttp2(context)) {
+                // Send content as HTTP/2
+                System.out.println("Sending HTTP/2 content");
+                out.add(new StreamSpecificHttpContent(streamId, Unpooled.wrappedBuffer(message.getWrappedByteBuffer())));
+            } else {
+                // Send content with chunked encoding
+                System.out.println("Sending chunked input");
+                ChunkedInput<ByteBuf> chunkedInput = new WsByteBufferChunkedInput(message);
+                MSP.log("Should be writing a chunk of size: " + chunkedInput.length());
+                context.writeAndFlush(chunkedInput);
+            }
         }
     }
 
@@ -91,5 +95,4 @@ public class BufferEncoder extends MessageToMessageEncoder<AbstractMap.SimpleEnt
 
         return (http2Handler != null) ? true : false;
     }
-
 }

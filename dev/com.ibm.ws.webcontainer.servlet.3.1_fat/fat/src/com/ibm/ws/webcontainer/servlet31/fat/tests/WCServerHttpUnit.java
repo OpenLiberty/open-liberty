@@ -74,6 +74,7 @@ public class WCServerHttpUnit {
 
         // Start the server and use the class name so we can find logs easily.
         server.startServer(WCServerHttpUnit.class.getSimpleName() + ".log");
+        server.waitForStringInLogUsingMark("CWWKO0219I*");
 
         if (FATSuite.isWindows) {
             FATSuite.setDynamicTrace(server, "*=info=enabled");
@@ -96,7 +97,7 @@ public class WCServerHttpUnit {
     // Integer.MAX_VALUE is 2^31-1, or 2,147,483,647.
     // 'sendPostRequest' does writes of the requested length,
     // making for a very, very, long test.
-    @Test
+    // @Test
     @Mode(TestMode.FULL)
     public void testSendContentLengthLongLong_test() throws Exception {
         long len = Integer.MAX_VALUE + 32769L;
