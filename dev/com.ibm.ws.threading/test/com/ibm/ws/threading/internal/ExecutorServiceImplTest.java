@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -134,11 +134,15 @@ public class ExecutorServiceImplTest {
         oldThreadPool.prestartAllCoreThreads();
 
         componentConfig.put("name", "testExecutor2");
+        componentConfig.put("quiesceTimeout", "31s");
         executorService.modified(componentConfig);
         ThreadPoolExecutor newThreadPool = executorService.getThreadPool();
+        int newQuiesceTimeout = executorService.getQuiesceTimeout();
 
         // ensure that a new pool got created when we modified the executor
         Assert.assertNotSame(oldThreadPool, newThreadPool);
+
+        Assert.assertEquals("Quiesce timeout not modified as expected", 31, newQuiesceTimeout);
 
         // ensure that the old pool shrinks down to 0 size (the test will timeout
         // after a minute if the pool never shrinks)
