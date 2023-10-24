@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,7 @@ import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONL
 import static io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpanMatcher.hasNoParent;
 import static io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpanMatcher.hasParentSpanId;
 import static io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpanMatcher.span;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
@@ -37,6 +38,9 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
@@ -54,6 +58,9 @@ import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 public class ZipkinTest {
 
     private static final Class<?> c = ZipkinTest.class;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat("spanTestServer", MicroProfileActions.MP61, MicroProfileActions.MP60);
 
     @ClassRule
     public static ZipkinContainer zipkinContainer = new ZipkinContainer().withLogConsumer(new SimpleLogConsumer(ZipkinTest.class, "zipkin"));
@@ -109,8 +116,13 @@ public class ZipkinTest {
         List<ZipkinSpan> spans = client.waitForSpansForTraceId(traceId, hasSize(1));
 
         ZipkinSpan span = spans.get(0);
-
-        assertThat(span, ZipkinSpanMatcher.hasAnnotation(TestResource.TEST_EVENT_NAME));
+        // Note Zipkin doesn't record any details about the exception in OTEL version 1.19, just that it occurred
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            assertThat(span, ZipkinSpanMatcher.hasAnnotation(TestResource.TEST_EVENT_NAME));
+        } else {
+            // "TestEvent":{}
+            assertThat(span, ZipkinSpanMatcher.hasAnnotation("\"" + TestResource.TEST_EVENT_NAME + "\":{}"));
+        }
     }
 
     @Test
@@ -133,7 +145,11 @@ public class ZipkinTest {
         assertThat(child, hasParentSpanId(parent.getId()));
 
         // Note that zipkin lowercases the name
-        assertThat(parent, hasProperty("name", equalToIgnoringCase("/spanTest/subspan")));
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            assertThat(parent, hasProperty("name", equalToIgnoringCase("/spanTest/subspan")));
+        } else {
+            assertThat(parent, hasProperty("name", equalToIgnoringCase("get /spanTest/subspan")));
+        }
         assertThat(child, hasProperty("name", equalToIgnoringCase(TestResource.TEST_OPERATION_NAME)));
     }
 
@@ -146,8 +162,15 @@ public class ZipkinTest {
 
         ZipkinSpan span = spans.get(0);
 
-        // Note Zipkin doesn't record any details about the exception, just that it occurred
-        assertThat(span, ZipkinSpanMatcher.hasAnnotation("exception"));
+        // Note Zipkin doesn't record any details about the exception in OTEL version 1.19, just that it occurred
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            assertThat(span, ZipkinSpanMatcher.hasAnnotation("exception"));
+        }
+        // Note Zipkin records details about the exception in OTEL version 1.29
+        else {
+            assertThat(span, ZipkinSpanMatcher.hasAnnotation(containsString("exception")));
+        }
+
     }
 
     @Test

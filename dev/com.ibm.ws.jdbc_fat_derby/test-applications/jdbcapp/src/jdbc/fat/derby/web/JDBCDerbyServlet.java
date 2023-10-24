@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -91,6 +91,9 @@ public class JDBCDerbyServlet extends FATServlet {
 
     @Resource(name = "jdbc/dsfat7ref", lookup = "java:module/env/jdbc/dsfat7")
     DataSource dsd7ref; //DataSourceDef(TRAN_SERIALIZABLE) + Res-ref (TRAN_NONE)
+
+    @Resource(lookup = "jdbc/driver-url-preferred")
+    DataSource driver_url_preferred;
 
     @Resource
     private UserTransaction tran;
@@ -429,6 +432,13 @@ public class JDBCDerbyServlet extends FATServlet {
             fail("Connection should have thrown an exception since the JDBC driver does not support setting isolation level to TRANSACTION_NONE.");
         } catch (SQLException sql) {
             assertTrue("Exception message should have contained", sql.getMessage().contains("DSRA4011E"));
+        }
+    }
+
+    @Test
+    public void testVerifyConnectionPrecedence() throws Throwable {
+        try (Connection con = driver_url_preferred.getConnection(); Statement stmt = con.createStatement();) {
+            stmt.executeUpdate("create table " + CITYTABLE + " (" + CITYSCHEMA + ")");
         }
     }
 }

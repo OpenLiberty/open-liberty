@@ -17,7 +17,6 @@ src: \
 	fat/src,\
 	test-applications/app1/src,\
 	test-applications/app2/src,\
-	test-applications/mpapp1/src,\
 	test-applications/ejbapp1/src,\
 	test-applications/inventory/src/java,\
 	test-applications/system/src/java,\
@@ -49,7 +48,8 @@ src: \
 	test-applications/concurrentApp/src,\
 	test-applications/mapCache/src,\
 	test-applications/webCacheApp/src,\
-	test-applications/xmlBindings/src
+	test-applications/xmlBindings/src,\
+	test-bundles/test-mbeans/src
 
 fat.project: true
 
@@ -77,7 +77,10 @@ tested.features: \
 	sessiondatabase-1.0,\
 	oauth-2.0,\
 	openidconnectclient-1.0,\
-	sociallogin-1.0
+	sociallogin-1.0,\
+	mpMetrics-5.1,\
+	passwordUtilities-1.0,\
+	appSecurity-1.0
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}
@@ -172,6 +175,8 @@ tested.features: \
 	com.ibm.ws.security.auth.data.common;version=latest,\
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.websphere.appserver.api.distributedMap;version=latest,\
-	org.testng
+	org.testng,\
+	com.ibm.ws.jmx,\
+	com.ibm.ws.kernel.service
 
 -sub: *.bnd

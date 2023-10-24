@@ -16,7 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
 
-import io.openliberty.org.apache.jasper.expressionLanguage60.fat.tests.SimpleTest;
+import io.openliberty.org.apache.jasper.expressionLanguage60.fat.tests.EL60ArrayLengthTest;
 
 /**
  * Expression Language 6.0 Tests
@@ -33,7 +33,7 @@ import io.openliberty.org.apache.jasper.expressionLanguage60.fat.tests.SimpleTes
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                SimpleTest.class
+                EL60ArrayLengthTest.class
 
 })
 public class FATSuite {

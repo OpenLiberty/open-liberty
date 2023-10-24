@@ -12,8 +12,14 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.RecordComponent;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -22,8 +28,8 @@ import java.util.concurrent.CompletableFuture;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
+import jakarta.data.Sort;
 import jakarta.data.exceptions.MappingException;
-import jakarta.data.repository.Sort;
 import jakarta.persistence.Inheritance;
 
 /**
@@ -83,12 +89,40 @@ class EntityInfo {
         inheritance = entityClass.getAnnotation(Inheritance.class) != null;
     }
 
+    /**
+     * Obtains the value of an entity attribute.
+     *
+     * @param entity        the entity from which to obtain the value.
+     * @param attributeName name of the entity attribute.
+     * @return the value of the attribute.
+     */
+    Object getAttribute(Object entity, String attributeName) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        List<Member> accessors = attributeAccessors.get(attributeName);
+        if (accessors == null)
+            throw new IllegalArgumentException(attributeName); // should never occur
+
+        Object value = entity;
+        for (Member accessor : accessors) {
+            Class<?> type = accessor.getDeclaringClass();
+            if (type.isInstance(value)) {
+                if (accessor instanceof Method)
+                    value = ((Method) accessor).invoke(value);
+                else // Field
+                    value = ((Field) accessor).get(value);
+            } else {
+                throw new MappingException("Value of type " + value.getClass().getName() + " is incompatible with attribute type " + type.getName()); // TODO NLS
+            }
+        }
+
+        return value;
+    }
+
     String getAttributeName(String name, boolean failIfNotFound) {
         String lowerName = name.toLowerCase();
         String attributeName = attributeNames.get(lowerName);
         if (attributeName == null)
-            if ("All".equals(name))
-                attributeName = null; // Special case for CrudRepository.deleteAll and CrudRepository.findAll
+            if ("All".equals(name)) // TODO we might be able to remove special case logic like this now that we have the entity parameter pattern
+                attributeName = null; // Special case for BasicRepository.deleteAll and BasicRepository.findAll
             else if ("id".equals(lowerName))
                 if (idClassAttributeAccessors == null && failIfNotFound)
                     throw new MappingException("Entity class " + getType().getName() + " does not have a property named " + name +
@@ -117,6 +151,37 @@ class EntityInfo {
 
     Collection<String> getAttributeNames() {
         return attributeNames.values();
+    }
+
+    /**
+     * Returns the list of entity attribute names, suitable for use in JPQL, when updating an entity.
+     * This excludes the id and version. It also excludes embeddable and relation attribute names,
+     * but leaves the outermost name (for example, removes location.address, but preserves location.address.cityName).
+     * TODO The above is for embeddables. Decide what to do for relations other than embeddable.
+     * TODO It's inefficient to keep recomputing this. Consider doing it just once, maybe in EntityDefiner
+     * where we can build the list correctly from the start rather than later excluding. Maybe the pre-computed list
+     * can be null when there are relation attributes to indicate that update by entity isn't supported for that type of entity.
+     * TODO updates (and probably deletes) to entities with an embeddable id is not implemented yet.
+     *
+     * @return list of entity attribute names.
+     */
+    LinkedHashSet<String> getAttributeNamesForEntityUpdate() {
+        LinkedHashSet<String> names = new LinkedHashSet<>(attributeNames.size());
+
+        for (String name : attributeTypes.keySet())
+            names.add(name);
+
+        names.remove("id");
+        names.remove(attributeNames.get("id"));
+        names.remove(versionAttributeName);
+
+        for (String name : attributeTypes.keySet()) {
+            int ldot = name.lastIndexOf('.');
+            if (ldot > 0)
+                names.remove(name.substring(0, ldot));
+        }
+
+        return names;
     }
 
     /**
@@ -158,6 +223,29 @@ class EntityInfo {
     static CompletableFuture<EntityInfo> newFuture(Class<?> entityClass) {
         // It's okay to use Java SE's CompletableFuture here given that *Async methods are never invoked on it
         return new CompletableFuture<>();
+    }
+
+    /**
+     * Converts a generated entity back to its record equivalent.
+     *
+     * @param entity generated entity.
+     * @return record.
+     * @throws Exception if an error occurs.
+     */
+    @Trivial
+    final Object toRecord(Object entity) throws Exception {
+        // TODO replace this method by including a toRecord method on an interface that is implemented
+        // by the generated entity, then cast to the interface and invoke it to get the record.
+        RecordComponent[] components = recordClass.getRecordComponents();
+        Class<?>[] argTypes = new Class<?>[components.length];
+        Object[] args = new Object[components.length];
+        int a = 0;
+        for (RecordComponent component : components) {
+            PropertyDescriptor desc = new PropertyDescriptor(component.getName(), entity.getClass());
+            argTypes[a] = component.getType();
+            args[a++] = desc.getReadMethod().invoke(entity);
+        }
+        return recordClass.getConstructor(argTypes).newInstance(args);
     }
 
     @Override

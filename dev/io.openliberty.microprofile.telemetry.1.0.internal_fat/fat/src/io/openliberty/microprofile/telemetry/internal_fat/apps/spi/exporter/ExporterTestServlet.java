@@ -31,7 +31,7 @@ import jakarta.servlet.annotation.WebServlet;
  * Basic test of a span exporter
  */
 @SuppressWarnings("serial")
-@WebServlet("/exporterTest")
+@WebServlet("/testExporter")
 public class ExporterTestServlet extends FATServlet {
 
     @Inject

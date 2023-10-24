@@ -68,7 +68,7 @@ public class LocalTranCurrentImpl {
      */
     public LocalTransactionCoordinator getLocalTranCoord() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getLocalTranCoord", _coord);
+            Tr.debug(tc, "getLocalTranCoord: {0}", _coord);
         return _coord;
     }
 

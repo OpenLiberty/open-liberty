@@ -14,12 +14,12 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PropertiesAsset;
@@ -29,6 +29,9 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.multiapp1.MultiApp1TestServlet;
@@ -47,13 +50,18 @@ public class TelemetryMultiAppTest extends FATServletClient {
 
     public static final String APP1_NAME = "multiapp1";
     public static final String APP2_NAME = "multiapp2";
+    public static final String SERVER_NAME = "Telemetry10MultiApp";
 
     @TestServlets({
                     @TestServlet(contextRoot = APP1_NAME, servlet = MultiApp1TestServlet.class),
                     @TestServlet(contextRoot = APP2_NAME, servlet = MultiApp2TestServlet.class),
     })
-    @Server("Telemetry10MultiApp")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
+                    .andWith(FeatureReplacementAction.BETA_OPTION().fullFATOnly());
 
     @BeforeClass
     public static void setup() throws Exception {

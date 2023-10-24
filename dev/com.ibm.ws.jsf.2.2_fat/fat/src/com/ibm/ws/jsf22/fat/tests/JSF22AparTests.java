@@ -49,8 +49,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -71,7 +70,7 @@ public class JSF22AparTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        boolean isEE10 = JakartaEE10Action.isActive();
+        boolean isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         ShrinkHelper.defaultDropinApp(jsfAparServer, "PI47600.war", "com.ibm.ws.jsf22.fat.tests.PI47600");
 
@@ -893,7 +892,7 @@ public class JSF22AparTests {
 
             // Change the value of ViewState to stateless
             HtmlHiddenInput viewStateInput = (HtmlHiddenInput) statefulForm
-                            .getInputByName((JakartaEE10Action.isActive() || JakartaEE9Action.isActive() ? "jakarta." : "javax.") + "faces.ViewState");
+                            .getInputByName((JakartaEEAction.isEE9OrLaterActive() ? "jakarta." : "javax.") + "faces.ViewState");
             viewStateInput.setValueAttribute("stateless");
 
             // Get the button and then click it
@@ -906,7 +905,7 @@ public class JSF22AparTests {
             // Check that a FacesException is thrown
             assertTrue("PI89168: FacesException was not thrown!\n" + page.asText(),
                        page.asText()
-                                       .contains((JakartaEE10Action.isActive() || JakartaEE9Action.isActive() ? "jakarta." : "javax.")
+                                       .contains((JakartaEEAction.isEE9OrLaterActive() ? "jakarta." : "javax.")
                                                  + "faces.FacesException: unable to create view \"/statefulView.xhtml\""));
         }
     }

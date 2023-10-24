@@ -43,7 +43,7 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -72,7 +72,7 @@ public class JSF22ComponentTesterTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        boolean isEE10 = JakartaEE10Action.isActive();
+        boolean isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         ShrinkHelper.defaultDropinApp(jsfTestServer2, "JSF22ComponentTester.war",
                                       isEE10 ? "com.ibm.ws.jsf22.fat.componenttester.beans.faces40" : "com.ibm.ws.jsf22.fat.componenttester.beans.jsf22",
@@ -253,8 +253,8 @@ public class JSF22ComponentTesterTests {
         assertTrue(page.isInPage("Action-Listener order page"));
 
         page.findElement(By.id("form:testLink")).click();
-        page.waitForCondition(driver1 -> page.isInPage("test action called")); 
-        
+        page.waitForCondition(driver1 -> page.isInPage("test action called"));
+
         assertEquals(page.findElement(By.id("testOutput")).getText(), "test action called");
     }
 

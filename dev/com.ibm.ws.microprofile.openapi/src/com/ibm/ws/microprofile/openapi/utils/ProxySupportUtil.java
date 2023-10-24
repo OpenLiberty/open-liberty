@@ -33,7 +33,7 @@ public class ProxySupportUtil {
     private static final TraceComponent tc = Tr.register(ProxySupportUtil.class);
 
     @FFDCIgnore(MalformedURLException.class)
-    private static URL extractURL(HttpServletRequest request) {
+    private static URL extractURL(HttpServletRequest request, OpenAPIEndpointProvider openAPIEndpointProvider) {
         String urlString;
         String refererHeader = request.getHeader(HTTP_HEADER_REFERER);
 
@@ -41,14 +41,10 @@ public class ProxySupportUtil {
         String docPath = DEFAULT_DOC_PATH;
         String uiPath = docPath + DEFAULT_UI_PATH;
 
-        BundleContext bundleContext = (BundleContext) request.getServletContext().getAttribute("osgi-bundlecontext");
         //Ensure we have a context as change this will be null if bundle is STOPPED
-        if (bundleContext != null) {
-            OpenAPIEndpointProvider endpointProvider = bundleContext.getService(bundleContext.getServiceReference(OpenAPIEndpointProvider.class));
-            if (endpointProvider != null) {
-                docPath = endpointProvider.getOpenAPIDocUrl();
-                uiPath = endpointProvider.getOpenAPIUIUrl();
-            }
+        if (openAPIEndpointProvider != null) {
+            docPath = openAPIEndpointProvider.getOpenAPIDocUrl();
+            uiPath = openAPIEndpointProvider.getOpenAPIUIUrl();
         }
 
         //Ensure that in case somehow the values retrieved are null
@@ -115,8 +111,8 @@ public class ProxySupportUtil {
         return url;
     }
 
-    public static void processRequest(HttpServletRequest request, ServerInfo serverInfo) {
-        URL url = extractURL(request);
+    public static void processRequest(HttpServletRequest request, OpenAPIEndpointProvider openAPIEndpointProvider, ServerInfo serverInfo) {
+        URL url = extractURL(request, openAPIEndpointProvider);
         if (url == null)
             return;
         serverInfo.setHost(url.getHost());

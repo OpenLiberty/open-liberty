@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -194,7 +194,6 @@ public class InterruptibleThreadObject {
 				}
 			}	
 		}
-
 		if (((_interruptibleIOContextObject != null) && ((_iOContextisBlockedMethod != null) || (_iOContextunblockMethod != null))) ||
 				((_interruptibleLockContextObject != null) && ((_lockContextisBlockedMethod != null) || (_lockContextunblockMethod != null)))) {
 			jvmInterruptObject = new JVMInterruptObject(_interruptibleIOContextObject, _iOContextisBlockedMethod, _iOContextunblockMethod,
@@ -209,11 +208,9 @@ public class InterruptibleThreadObject {
 	 * @param requestId A string representing the request that is starting or ending.
 	 */
 	public synchronized void clear(boolean newRequest, String requestId) {
-
 		if (Thread.currentThread().getId() != threadId) {
 			throw new IllegalStateException("An attempt was made to clear this InterruptibleThreadObject from a thread ID other than " + threadId);
 		}
-			
 		/* deregister the jvm interrupt object */
 		if (newRequest == false) {
 			if (jvmInterruptObject != null) {
@@ -231,16 +228,13 @@ public class InterruptibleThreadObject {
 			Exception e = new IllegalStateException("The following interrupt objects were present at request " + requestType + ": " + sb.toString());
 			FFDCFilter.processException(e, this.getClass().getName(), "42", this);
 		}
-
 		odis.clear();
 		isReady = newRequest;
-
 		if (newRequest) {
 			if (this.requestId != null) {
 				IllegalStateException ise = new IllegalStateException("A new request was detected but this InterruptObject was already registered with request ID " + this.requestId);
 				FFDCFilter.processException(ise, this.getClass().getName(), "73", this);
 			}
-			
 			this.requestId = requestId;
 			this.dispatchStartTime = Calendar.getInstance();
 		} else {
@@ -252,7 +246,6 @@ public class InterruptibleThreadObject {
 			this.requestId = null;
 			this.dispatchStartTime = null;
 		}
-		
 		// Cancel any interrupt manager for the previous request on this thread.
 		if (currentInterruptManager != null) {
 			currentInterruptManager.cancel();

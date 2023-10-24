@@ -24,6 +24,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import io.openliberty.microprofile.openapi.internal.common.services.OpenAPIEndpointProvider;
 import org.eclipse.microprofile.openapi.OASFilter;
 import org.eclipse.microprofile.openapi.OASModelReader;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
@@ -79,6 +80,9 @@ public class ApplicationProcessor {
     private static final TraceComponent tc = Tr.register(ApplicationProcessor.class);
 
     private static final ThreadContextAccessor THREAD_CONTEXT_ACCESSOR = AccessController.doPrivileged(ThreadContextAccessor.getPrivilegedAction());
+
+    @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
+    private volatile OpenAPIEndpointProvider openAPIEndpointProvider;
 
     public enum DocType {
         JSON,
@@ -560,7 +564,7 @@ public class ApplicationProcessor {
             synchronized (serverInfo) {
                 reqServerInfo = new ServerInfo(serverInfo);
             }
-            ProxySupportUtil.processRequest(request, reqServerInfo);
+            ProxySupportUtil.processRequest(request, openAPIEndpointProvider, reqServerInfo);
             if (OpenAPIUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Request server info : " + reqServerInfo);
             }

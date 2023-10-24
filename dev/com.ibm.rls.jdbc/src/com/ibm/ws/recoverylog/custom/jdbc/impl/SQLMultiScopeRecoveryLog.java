@@ -3684,23 +3684,28 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             Connection conn = null;
             try {
                 // Get a Connection
-                if (_dsName == null) {
-                    configureConnectionParameters();
-                    conn = getFirstConnection();
-                } else {
-                    conn = getConnection();
+                synchronized (this) {
+                    if (_dsName == null) {
+                        configureConnectionParameters();
+                        conn = getFirstConnection();
+                    } else {
+                        conn = getConnection();
+                    }
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Acquired connection for heartbeat - " + conn);
                 }
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Acquired connection for heartbeat - " + conn);
 
-                // Set autocommit FALSE and RR isolation on the connection
-                initialIsolation = prepareConnectionForBatch(conn);
-                internalHeartBeat(conn);
+                if (!_serverStopping) {
+                    synchronized (this) {
+                        // Set autocommit FALSE and RR isolation on the connection
+                        initialIsolation = prepareConnectionForBatch(conn);
+                        internalHeartBeat(conn);
 
-                // commit the work
-                conn.commit();
-                sqlSuccess = true;
-
+                        // commit the work
+                        conn.commit();
+                        sqlSuccess = true;
+                    }
+                }
             } catch (SQLException sqlex) {
                 if (_serverStopping || failed()) {
                     if (tc.isDebugEnabled())
@@ -3740,79 +3745,81 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     }
                 }
             } else { // !sqlSuccess
-                // Tidy up current connection before dropping into retry code
-                // Attempt a rollback. If it fails, trace the failure but allow processing to continue
-                try {
-                    if (conn != null)
-                        conn.rollback();
-                } catch (SQLException sqlex) {
-                    if (_serverStopping || failed()) {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Rollback Failed, after heartbeat failure, the server is stopping or the log is marked failed, got exception: " + sqlex);
-                    } else {
-                        Tr.audit(tc, "WTRN0107W: " +
-                                     "Rollback Failed, after heartbeat failure, SQLException: " + sqlex);
-                    }
-                } catch (Throwable exc) {
-                    // Trace the exception
-                    if (_serverStopping || failed()) {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Rollback Failed, after heartbeat failure, the server is stopping or the log is marked failed, got exception: " + exc);
-                    } else {
-                        Tr.audit(tc, "WTRN0107W: " +
-                                     "Rollback Failed, after heartbeat failure, exc: " + exc);
-                    }
-                }
-
-                // Attempt a close. If it fails, trace the failure but allow processing to continue
-                try {
-                    if (conn != null)
-                        closeConnectionAfterBatch(conn, initialIsolation);
-                } catch (SQLException sqlex) {
-                    if (_serverStopping || failed()) {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Close failed after heartbeat failure, the server is stopping or the log is marked failed, got exception: " + sqlex);
-                    } else {
-                        Tr.audit(tc, "WTRN0107W: " +
-                                     "Close Failed, after heartbeat failure, SQLException: " + sqlex);
-                    }
-                } catch (Throwable exc) {
-                    // Trace the exception
-                    if (_serverStopping || failed()) {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Close Failed, after heartbeat failure, the server is stopping or the log is marked failed, got exception: " + exc);
-                    } else {
-                        Tr.audit(tc, "WTRN0107W: " +
-                                     "Close Failed, after heartbeat failure, exc: " + exc);
-                    }
-                }
-
-                // Is this an environment in which a retry should be attempted
-                if (_sqlTransientErrorHandlingEnabled) {
-                    if (nonTransientException == null) {
-                        // In this case we will retry if we are operating in an HA DB environment but not if the server is stopping or the log has failed
+                if (!_serverStopping) {
+                    // Tidy up current connection before dropping into retry code
+                    // Attempt a rollback. If it fails, trace the failure but allow processing to continue
+                    try {
+                        if (conn != null)
+                            conn.rollback();
+                    } catch (SQLException sqlex) {
                         if (_serverStopping || failed()) {
-                            if (tc.isEntryEnabled())
-                                Tr.exit(tc, "heartbeat", "Log is not in a fit state for a heartbeat");
-                            throw new LogClosedException();
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Rollback Failed, after heartbeat failure, the server is stopping or the log is marked failed, got exception: " + sqlex);
+                        } else {
+                            Tr.audit(tc, "WTRN0107W: " +
+                                         "Rollback Failed, after heartbeat failure, SQLException: " + sqlex);
                         }
+                    } catch (Throwable exc) {
+                        // Trace the exception
+                        if (_serverStopping || failed()) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Rollback Failed, after heartbeat failure, the server is stopping or the log is marked failed, got exception: " + exc);
+                        } else {
+                            Tr.audit(tc, "WTRN0107W: " +
+                                         "Rollback Failed, after heartbeat failure, exc: " + exc);
+                        }
+                    }
 
-                        HeartbeatRetry heartbeatRetry = new HeartbeatRetry();
-                        sqlSuccess = heartbeatRetry.retryAndReport(this, _serverName, currentSqlEx, SQLRetry.getLightweightRetryAttempts(),
-                                                                   SQLRetry.getLightweightRetrySleepTime());
-                        if (!sqlSuccess)
-                            nonTransientException = heartbeatRetry.getNonTransientException();
+                    // Attempt a close. If it fails, trace the failure but allow processing to continue
+                    try {
+                        if (conn != null)
+                            closeConnectionAfterBatch(conn, initialIsolation);
+                    } catch (SQLException sqlex) {
+                        if (_serverStopping || failed()) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Close failed after heartbeat failure, the server is stopping or the log is marked failed, got exception: " + sqlex);
+                        } else {
+                            Tr.audit(tc, "WTRN0107W: " +
+                                         "Close Failed, after heartbeat failure, SQLException: " + sqlex);
+                        }
+                    } catch (Throwable exc) {
+                        // Trace the exception
+                        if (_serverStopping || failed()) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Close Failed, after heartbeat failure, the server is stopping or the log is marked failed, got exception: " + exc);
+                        } else {
+                            Tr.audit(tc, "WTRN0107W: " +
+                                         "Close Failed, after heartbeat failure, exc: " + exc);
+                        }
+                    }
+
+                    // Is this an environment in which a retry should be attempted
+                    if (_sqlTransientErrorHandlingEnabled) {
+                        if (nonTransientException == null) {
+                            // In this case we will retry if we are operating in an HA DB environment but not if the server is stopping or the log has failed
+                            if (_serverStopping || failed()) {
+                                if (tc.isEntryEnabled())
+                                    Tr.exit(tc, "heartbeat", "Log is not in a fit state for a heartbeat");
+                                throw new LogClosedException();
+                            }
+
+                            HeartbeatRetry heartbeatRetry = new HeartbeatRetry();
+                            sqlSuccess = heartbeatRetry.retryAndReport(this, _serverName, currentSqlEx, SQLRetry.getLightweightRetryAttempts(),
+                                                                       SQLRetry.getLightweightRetrySleepTime());
+                            if (!sqlSuccess)
+                                nonTransientException = heartbeatRetry.getNonTransientException();
+                        } else {
+                            // Exception not able to be retried
+                            Tr.debug(tc, "Cannot recover from Exception when heartbeating for server " + _serverName + " Exception: "
+                                         + nonTransientException);
+                        }
                     } else {
-                        // Exception not able to be retried
-                        Tr.debug(tc, "Cannot recover from Exception when heartbeating for server " + _serverName + " Exception: "
+                        // Not an environment in which we can retry
+                        if (nonTransientException == null) // Up to this point the exception may have appeared to have been transient
+                            nonTransientException = currentSqlEx;
+                        Tr.debug(tc, "Encountered Exception when heartbeating for server " + _serverName + " Exception: "
                                      + nonTransientException);
                     }
-                } else {
-                    // Not an environment in which we can retry
-                    if (nonTransientException == null) // Up to this point the exception may have appeared to have been transient
-                        nonTransientException = currentSqlEx;
-                    Tr.debug(tc, "Encountered Exception when heartbeating for server " + _serverName + " Exception: "
-                                 + nonTransientException);
                 }
             }
         } else {

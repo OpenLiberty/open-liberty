@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -44,6 +44,7 @@ import com.ibm.ws.security.fat.common.apps.AppConstants;
 import com.ibm.ws.security.fat.common.config.settings.BaseConfigSettings;
 import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
 import com.ibm.ws.security.fat.common.utils.MySkipRule;
+import com.ibm.ws.security.fat.common.utils.ldaputils.CommonLocalLDAPServerSuite;
 import com.ibm.ws.security.saml20.fat.commonTest.config.settings.SAMLConfigSettings;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
@@ -304,23 +305,27 @@ public class SAMLCommonTest extends CommonTest {
             Log.info(thisClass, thisMethod, "Server install root is: " + aTestServer.getServer().getInstallRoot());
 
             if (serverType.equals(SAMLConstants.IDP_SERVER_TYPE)) {
-                CommonLocalLDAPServerSuite one = new CommonLocalLDAPServerSuite();
-                CommonLocalLDAPServerSuite two = new CommonLocalLDAPServerSuite();
-                one.ldapSetUp();
-                ldapRefList.add(one);
-                two.ldapSetUp(1);
-                ldapRefList.add(two);
-                // we're having an issue with the in memory LDAP server on z/OS, added a method to see if it can accept requests,
-                // if NOT, we'll use a "external" LDAP server (Shibboleth allows for failover to additional LDAP servers, but,
-                // it doesn't allow different bindDN, bindPassword, ...)
-                // this method will add properties to bootstrap.properties that will point to a hopefully working LDAP server
-                //                int ldapPort = one.getLdapPort();
-                //                int ldapSSLPort = one.getLdapSSLPort();
-                //                Log.info(thisClass, "setupBeforeTest", "ldap Port in Common setup is: " + ldapPort);
-                usingExternalLDAPServer = shibbolethHelpers.updateToUseExternalLDaPIfInMemoryIsBad(aTestServer, Integer.toString(one.getLdapPort()),
-                                                                                                   Integer.toString(one.getLdapSSLPort()), Integer.toString(two.getLdapPort()),
-                                                                                                   Integer.toString(two.getLdapSSLPort()));
+
+                usingExternalLDAPServer = shibbolethHelpers.updateToUseExternalLDaPIfInMemoryIsBad(aTestServer);
                 shibbolethHelpers.setShibbolethPropertiesForTestMachine(aTestServer);
+
+//                CommonLocalLDAPServerSuite one = new CommonLocalLDAPServerSuite();
+//                CommonLocalLDAPServerSuite two = new CommonLocalLDAPServerSuite();
+//                one.ldapSetUp();
+//                ldapRefList.add(one);
+//                two.ldapSetUp(1);
+//                ldapRefList.add(two);
+//                // we're having an issue with the in memory LDAP server on z/OS, added a method to see if it can accept requests,
+//                // if NOT, we'll use a "external" LDAP server (Shibboleth allows for failover to additional LDAP servers, but,
+//                // it doesn't allow different bindDN, bindPassword, ...)
+//                // this method will add properties to bootstrap.properties that will point to a hopefully working LDAP server
+//                //                int ldapPort = one.getLdapPort();
+//                //                int ldapSSLPort = one.getLdapSSLPort();
+//                //                Log.info(thisClass, "setupBeforeTest", "ldap Port in Common setup is: " + ldapPort);
+//                usingExternalLDAPServer = shibbolethHelpers.updateToUseExternalLDaPIfInMemoryIsBad(aTestServer, Integer.toString(one.getLdapPort()),
+//                                                                                                   Integer.toString(one.getLdapSSLPort()), Integer.toString(two.getLdapPort()),
+//                                                                                                   Integer.toString(two.getLdapSSLPort()));
+//                shibbolethHelpers.setShibbolethPropertiesForTestMachine(aTestServer);
             }
 
             transformApps(aTestServer);
@@ -341,22 +346,24 @@ public class SAMLCommonTest extends CommonTest {
                 }
             }
 
-            Log.info(thisClass, thisMethod, "calling LDAPUtil.addLDAPVariables", null);
-            LDAPUtils.addLDAPVariables(aTestServer.getServer());
-            Log.info(thisClass, thisMethod, "called LDAPUtil.addLDAPVariables", null);
+            if ("true" != System.getProperty("saml.fat.test.not.using.ldap")) {
 
-            aTestServer.addIDPServerProp(testSettings.getIdpRoot());
+                Log.info(thisClass, thisMethod, "calling LDAPUtil.addLDAPVariables", null);
+                LDAPUtils.addLDAPVariables(aTestServer.getServer());
+                Log.info(thisClass, thisMethod, "called LDAPUtil.addLDAPVariables", null);
 
-            //TODO - chc - consolidate the next 2 chunks after OIDC is updated for shibboleth
-            Log.info(thisClass, thisMethod, "Server type is: " + serverType);
-            Log.info(thisClass, thisMethod, "Is testIDPServer already set: " + (testIDPServer != null));
-            if (serverType.equals(SAMLConstants.SAML_SERVER_TYPE) && testIDPServer != null) {
-                shibbolethHelpers.fixShibbolethInfoinSPServer(aTestServer, testIDPServer);
+                aTestServer.addIDPServerProp(testSettings.getIdpRoot());
+
+                //TODO - chc - consolidate the next 2 chunks after OIDC is updated for shibboleth
+                Log.info(thisClass, thisMethod, "Server type is: " + serverType);
+                Log.info(thisClass, thisMethod, "Is testIDPServer already set: " + (testIDPServer != null));
+                if (serverType.equals(SAMLConstants.SAML_SERVER_TYPE) && testIDPServer != null) {
+                    shibbolethHelpers.fixShibbolethInfoinSPServer(aTestServer, testIDPServer);
+                }
+                if (serverType.equals(SAMLConstants.SAML_APP_SERVER_TYPE) && testIDPServer != null) {
+                    shibbolethHelpers.fixShibbolethInfoinSPServer(aTestServer, testIDPServer);
+                }
             }
-            if (serverType.equals(SAMLConstants.SAML_APP_SERVER_TYPE) && testIDPServer != null) {
-                shibbolethHelpers.fixShibbolethInfoinSPServer(aTestServer, testIDPServer);
-            }
-
             // need idp ports for all servers
             if (testIDPServer != null) {
                 aTestServer.addShibbolethProp("idpPort", testIDPServer.getHttpDefaultPort().toString());
@@ -429,10 +436,10 @@ public class SAMLCommonTest extends CommonTest {
      *
      * @param server
      * @param configFileName
-     *                             Config file name within the configs/ directory of the server.
+     *            Config file name within the configs/ directory of the server.
      * @param configOutputName
-     *                             File name to which the result will be written, relative to the server's configs/ directory.
-     *                             If null or empty, this will be set to the value of {@code configFileName}.
+     *            File name to which the result will be written, relative to the server's configs/ directory.
+     *            If null or empty, this will be set to the value of {@code configFileName}.
      * @return The path to the resulting configuration file.
      */
     public static String updateConfigFileWithDefaultSettings(SAMLTestServer server, String configFileName, String configOutputName) {
@@ -449,11 +456,11 @@ public class SAMLCommonTest extends CommonTest {
      *
      * @param server
      * @param configFileName
-     *                             Config file name within the configs/ directory of the server.
+     *            Config file name within the configs/ directory of the server.
      * @param configSettings
      * @param configOutputName
-     *                             File name to which the result will be written, relative to the server's configs/ directory.
-     *                             If null or empty, this will be set to the value of {@code configFileName}.
+     *            File name to which the result will be written, relative to the server's configs/ directory.
+     *            If null or empty, this will be set to the value of {@code configFileName}.
      * @return The path to the resulting configuration file.
      */
     public static String updateConfigFile(SAMLTestServer server, String configFileName, BaseConfigSettings configSettings, String configOutputName) {
@@ -467,12 +474,12 @@ public class SAMLCommonTest extends CommonTest {
      *
      * @param server
      * @param configFileName
-     *                             Config file name within the configs/ directory of the server.
+     *            Config file name within the configs/ directory of the server.
      * @param replaceVals
-     *                             Maps variable names to the values to be used to replace them within the file.
+     *            Maps variable names to the values to be used to replace them within the file.
      * @param configOutputName
-     *                             File name to which the result will be written, relative to the server's configs/ directory.
-     *                             If null or empty, this will be set to the value of {@code configFileName}.
+     *            File name to which the result will be written, relative to the server's configs/ directory.
+     *            If null or empty, this will be set to the value of {@code configFileName}.
      * @return The path to the resulting configuration file.
      */
     public static String updateConfigFile(SAMLTestServer server, String configFileName, Map<String, String> replaceVals, String configOutputName) {
@@ -1097,7 +1104,7 @@ public class SAMLCommonTest extends CommonTest {
         if (cipherMayExceed128) {
             addToAllowableTimeoutCount(1);
         }
-	helpers.pingExternalServer(_testName, idpServer.getHttpString() + "/idp/status", null, 30);
+        helpers.pingExternalServer(_testName, idpServer.getHttpString() + "/idp/status", null, 30);
     }
 
     public static void startSPWithIDPServer(String spServer, String spServerCfg, List<String> spExtraMsgs, List<String> spExtraApps, Boolean spCopyDataFlag) throws Exception {
@@ -1179,7 +1186,7 @@ public class SAMLCommonTest extends CommonTest {
      * Add the newly added server to the list of server references
      *
      * @param server
-     *                   - server reference to add
+     *            - server reference to add
      * @throws Exception
      */
     private static void addToServerRefList(SAMLTestServer server) throws Exception {

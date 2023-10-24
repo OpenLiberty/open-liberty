@@ -1016,7 +1016,8 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         if (traceOn && tc.isEntryEnabled())
             Tr.entry(tc, "retryCompletion", new Object[] { this, _configProvider.getHeuristicRetryLimit(), _retryAttempts });
 
-        if (_configProvider.getHeuristicRetryLimit() <= 0 || _retryAttempts < _configProvider.getHeuristicRetryLimit()) {
+        int retryLimit = _configProvider.getHeuristicRetryLimit();
+        if (retryLimit <= 0 || _retryAttempts < retryLimit) {
             _retryAttempts++;
 
             // Issue replay_completion for either IIOP or WSAT

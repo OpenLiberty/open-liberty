@@ -12,9 +12,12 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence.validation;
 
-import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.Set;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.beanvalidation.service.BeanValidation;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -23,84 +26,82 @@ import io.openliberty.data.internal.persistence.EntityValidator;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
+import jakarta.validation.executable.ExecutableValidator;
+import jakarta.validation.metadata.BeanDescriptor;
+import jakarta.validation.metadata.MethodDescriptor;
 
 /**
  * Abstraction for a Jakarta Validation Validator.
  */
 public class EntityValidatorImpl implements EntityValidator {
-    private final BeanValidation validation;
+    private static final TraceComponent tc = Tr.register(EntityValidatorImpl.class);
+
+    private final BeanDescriptor classDesc;
+    private final ExecutableValidator methodValidator;
 
     /**
      * Construct a new instance.
      *
-     * @param validation instance of com.ibm.ws.beanvalidation.service.BeanValidation.
+     * @param validationService   instance of com.ibm.ws.beanvalidation.service.BeanValidation.
+     * @param repositoryInterface interface that is annotated with Repository.
      */
-    public EntityValidatorImpl(Object validation) {
-        this.validation = (BeanValidation) validation;
-    }
-
-    @Override
-    public final Object getValidation() {
-        return validation;
-    }
-
-    /**
-     * Validates each entity instance per its specified constraints (if any).
-     *
-     * @param entities instances to validate.
-     * @throws ConstraintValidationException if any of the constraints are violated for an entity.
-     */
-    @Override
-    public void validate(Iterable<?> entities) {
+    public EntityValidatorImpl(Object validationService, Class<?> repositoryInterface) {
+        BeanValidation validation = (BeanValidation) validationService;
         ComponentMetaData cdata = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        if (cdata != null) {
-            Validator validator = validation.getValidator(cdata);
-            Set<ConstraintViolation<Object>> violations;
-            for (Object entity : entities) {
-                violations = validator.validate(entity);
-                if (violations != null && !violations.isEmpty())
-                    throw new ConstraintViolationException(violations); // TODO better message? Ensure that message includes at least the first violation.
-                // TODO Should we continue after an invalid entity is found and collect up the violations across all?
-            }
-        }
+        if (cdata == null) // internal error
+            throw new IllegalStateException("No component metadata found on thread");
+        Validator validator = validation.getValidator(cdata);
+        classDesc = validator.getConstraintsForClass(repositoryInterface);
+        methodValidator = validator.forExecutables();
     }
 
     /**
-     * Validates the entity instance per its specified constraints (if any).
+     * Determines whether validation is needed for the method return value and parameters.
      *
-     * @param entity instance to validate
+     * @param method a repository method.
+     * @return pair of booleans where the first is whether to validate the parameters
+     *         and the second is whether to validate the result.
+     */
+    @Override
+    @Trivial
+    public boolean[] isValidatable(Method method) {
+        MethodDescriptor methodDesc = classDesc.getConstraintsForMethod(method.getName(), method.getParameterTypes());
+        boolean validateParams = methodDesc != null && method.getParameterCount() > 0 && methodDesc.hasConstrainedParameters();
+        boolean validateResult = methodDesc != null && methodDesc.hasConstrainedReturnValue();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "isValidatable: " + method.getName(),
+                     "validate params? " + validateParams,
+                     "validate result? " + validateResult);
+        return new boolean[] { validateParams, validateResult };
+    }
+
+    /**
+     * Validates method parameters where the method or its class is annotated with ValidateOnExecution.
+     *
+     * @param object instance that has the method with parameters to validate.
+     * @param method the method.
+     * @param args   the method parameters.
      * @throws ConstraintValidationException if any of the constraints are violated.
      */
     @Override
-    public void validate(Object entity) {
-        ComponentMetaData cdata = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        if (cdata != null) {
-            Validator validator = validation.getValidator(cdata);
-            Set<ConstraintViolation<Object>> violations = validator.validate(entity);
-            if (violations != null && !violations.isEmpty())
-                throw new ConstraintViolationException(violations); // TODO better message? Ensure that message includes at least the first violation.
-        }
+    public <T> void validateParameters(T object, Method method, Object[] args) {
+        Set<ConstraintViolation<Object>> violations = methodValidator.validateParameters(object, method, args);
+        if (violations != null && !violations.isEmpty())
+            throw new ConstraintViolationException(violations); // TODO better message? Ensure that message includes at least the first violation.
     }
 
     /**
-     * Validates each entity instance per its specified constraints (if any).
+     * Validates the return value where the method or its class is annotated with ValidateOnExecution.
      *
-     * @param entities instances to validate.
-     * @param length   number of instances in the array to validate.
-     * @throws ConstraintValidationException if any of the constraints are violated for an entity.
+     * @param object      instance that has the method with the return value to validate.
+     * @param method      the method.
+     * @param returnValue the return value of the method.
+     * @throws ConstraintValidationException if any of the constraints are violated.
      */
     @Override
-    public void validate(Object entityArray, int length) {
-        ComponentMetaData cdata = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        if (cdata != null) {
-            Validator validator = validation.getValidator(cdata);
-            Set<ConstraintViolation<Object>> violations;
-            for (int i = 0; i < length; i++) {
-                violations = validator.validate(Array.get(entityArray, i));
-                if (violations != null && !violations.isEmpty())
-                    throw new ConstraintViolationException(violations); // TODO better message? Ensure that message includes at least the first violation.
-                // TODO Should we continue after an invalid entity is found and collect up the violations across all?
-            }
-        }
+    public <T> void validateReturnValue(T object, Method method, Object returnValue) {
+        Set<ConstraintViolation<Object>> violations = methodValidator.validateReturnValue(object, method, returnValue);
+        if (violations != null && !violations.isEmpty())
+            throw new ConstraintViolationException(violations); // TODO better message? Ensure that message includes at least the first violation.
     }
 }

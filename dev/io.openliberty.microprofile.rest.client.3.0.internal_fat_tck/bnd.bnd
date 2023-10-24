@@ -30,7 +30,9 @@ tested.features:\
   cdi-3.0,\
   cdi-4.0,\
   servlet-5.0,\
-  servlet-6.0
+  servlet-6.0,\
+  mpConfig-3.0,\
+  mpConfig-3.1
 
 
 # To define a global minimum java level for the FAT, use the following property.

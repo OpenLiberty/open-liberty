@@ -40,6 +40,12 @@ public interface PersonRepo {
     @Select("firstName")
     List<String> findFirstNames(String surname);
 
+    void insert(Person p);
+
+    void insertAll(Person... p);
+
+    void insertAll(Iterable<Person> p);
+
     void save(List<Person> people);
 
     @Filter(by = "ssn_id")
@@ -71,4 +77,8 @@ public interface PersonRepo {
     @Update(attr = "firstName")
     @Transactional(TxType.NOT_SUPPORTED)
     boolean setFirstNameWithCurrentTransactionSuspended(Long ssn, String newFirstName);
+
+    boolean updateOne(Person person);
+
+    long updateSome(Person... people);
 }

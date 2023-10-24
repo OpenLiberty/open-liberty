@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -38,8 +38,7 @@ import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -92,18 +91,15 @@ public class CxfSampleTests {
         ShrinkHelper.defaultDropinApp(server, "webcontentprovider", "com.ibm.was.cxfsample.sei.echo");
 
         //JakartaEE9 transforms the sample client applications which exist at '<server>/apps/<appname>'.
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             Path webcontent_archive = Paths.get(server.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + "webcontent");
             Path WSSampleSeiClient_archive = Paths.get(server.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + "WSSampleSeiClient");
-            JakartaEE9Action.transformApp(webcontent_archive);
-            JakartaEE9Action.transformApp(WSSampleSeiClient_archive);
-        } else if (JakartaEE10Action.isActive()) {
-            Path webcontent_archive = Paths.get(server.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + "webcontent");
-            Path WSSampleSeiClient_archive = Paths.get(server.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + "WSSampleSeiClient");
+            JakartaEEAction.transformApp(webcontent_archive);
+            JakartaEEAction.transformApp(WSSampleSeiClient_archive);
+        }
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             Path WSSampleSei_archive = Paths.get(server.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "WSSampleSei.war");
-            JakartaEE10Action.transformApp(webcontent_archive);
-            JakartaEE10Action.transformApp(WSSampleSeiClient_archive);
-            JakartaEE10Action.transformApp(WSSampleSei_archive);
+            JakartaEEAction.transformApp(WSSampleSei_archive);
         }
 
         // start server "com.ibm.ws.wssecurity_fat.sample"

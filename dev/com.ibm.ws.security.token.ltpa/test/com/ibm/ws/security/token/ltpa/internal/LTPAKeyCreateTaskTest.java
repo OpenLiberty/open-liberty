@@ -67,9 +67,6 @@ public class LTPAKeyCreateTaskTest {
     private final WsLocationAdmin locationService = mock.mock(WsLocationAdmin.class);
     private Map<String, Object> props;
 
-    private final WsResource keysFileInServerConfig = mock.mock(WsResource.class, "keysFileInServerConfig");
-    private final WsResource parentResource = mock.mock(WsResource.class, "parentResource");
-
     private class LTPAKeyCreatorDouble extends LTPAKeyCreateTask {
         LTPAKeyCreatorDouble(WsLocationAdmin locService, LTPAConfigurationImpl config) {
             super(locService, config);
@@ -109,20 +106,8 @@ public class LTPAKeyCreateTaskTest {
     private void setupLocationServiceExpecatations() {
         mock.checking(new Expectations() {
             {
-                one(locationService).resolveResource(TEST_FILE_NAME);
-                will(returnValue(keysFileInServerConfig));
-
-                one(keysFileInServerConfig).getParent();
-                will(returnValue(parentResource));
-
-                one(parentResource).toRepositoryPath();
-                will(returnValue(""));
-
-                one(locationService).resolveString("");
-                will(returnValue(""));
-
-                one(keysFileInServerConfig).getName();
-                will(returnValue(TEST_FILE_NAME));
+                one(locationService).resolveString(DEFAULT_OUTPUT_LOCATION);
+                will(returnValue(RESOLVED_DEFAULT_OUTPUT_LOCATION));
             }
         });
     }

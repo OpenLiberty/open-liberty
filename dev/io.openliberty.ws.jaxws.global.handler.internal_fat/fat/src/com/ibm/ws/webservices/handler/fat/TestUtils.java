@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ import com.ibm.websphere.simplicity.RemoteFile;
 
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -228,9 +229,9 @@ public class TestUtils {
     }
 
     public static void installUserFeature(LibertyServer server, String featureManifestFile) throws Exception {
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9Active()) {
             server.installUserFeature("ee9/" + featureManifestFile);
-        } else if (JakartaEE10Action.isActive()) {
+        } else if (JakartaEEAction.isEE10OrLaterActive()) {
             server.installUserFeature("ee10/" + featureManifestFile);
         } else {
             server.installUserFeature(featureManifestFile);
@@ -238,9 +239,9 @@ public class TestUtils {
     }
 
     public static void setServerConfigurationFile(LibertyServer server, String newConfigFile) throws Exception {
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9Active()) {
             server.setServerConfigurationFile(newConfigFile + ".ee9");
-        } else if (JakartaEE10Action.isActive()) {
+        } else if (JakartaEEAction.isEE10OrLaterActive()) {
             server.setServerConfigurationFile(newConfigFile + ".ee10");
         }  else {
             server.setServerConfigurationFile(newConfigFile);

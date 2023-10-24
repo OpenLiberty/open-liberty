@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.fat;
+
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Set;
 
@@ -29,6 +31,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -72,7 +75,7 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
 
         // Use the Jakarta version of test features if Jakarta is being used.
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             ServerConfiguration config = server.getServerConfiguration();
             Set<String> features = config.getFeatureManager().getFeatures();
             features.remove("timerinterfacestestfeature-1.0");
@@ -81,6 +84,16 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
         }
 
         server.startServer();
+
+        // Check everything went okay
+        server.waitForStringInLog("CWWKE0002I");
+        assertNotNull("FeatureManager should report update is complete",
+                      server.waitForStringInLog("CWWKF0008I"));
+        assertNotNull("Server should report it has started",
+                      server.waitForStringInLog("CWWKF0011I"));
+
+        // Wait for the Derby start messages from DataSource/database creation to avoid servlet init trying to concurrently start Derby.
+        server.waitForStringInLog("DSRA8206I"); // connected to Derby
     }
 
     @AfterClass

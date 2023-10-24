@@ -12,8 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.message;
 
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaClientLibs;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaPermissions;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -25,11 +25,11 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
 
@@ -38,9 +38,6 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 /**
  *
@@ -57,7 +54,8 @@ public class UseProducerRecordTopicTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10,
+                                                                  ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -71,7 +69,8 @@ public class UseProducerRecordTopicTest {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsLibraries(kafkaClientLibs())
                         .addAsManifestResource(kafkaPermissions(), "permissions.xml")
-                        .addPackage(UseProducerRecordTopicServlet.class.getPackage())
+                        .addClass(UseProducerRecordTopicServlet.class)
+                        .addClass(ProducerRecordBean.class)
                         .addPackage(KafkaTestConstants.class.getPackage())
                         .addPackage(KafkaTestClientProvider.class.getPackage())
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
@@ -82,12 +81,11 @@ public class UseProducerRecordTopicTest {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
-    }
-
-    @AfterClass
-    public static void teardownKafka() throws ExecutionException, InterruptedException, IOException {
-        KafkaUtils.deleteKafkaTopics(PlaintextTests.getAdminClient());
+        try {
+            server.stopServer();
+        } finally {
+            KafkaUtils.deleteKafkaTopics(PlaintextTests.getAdminClient());
+        }
     }
 
 }

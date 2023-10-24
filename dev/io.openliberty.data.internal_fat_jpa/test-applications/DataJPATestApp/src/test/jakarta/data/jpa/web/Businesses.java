@@ -15,11 +15,14 @@ package test.jakarta.data.jpa.web;
 import java.util.List;
 import java.util.stream.Stream;
 
-import jakarta.data.repository.CrudRepository;
-import jakarta.data.repository.KeysetAwareSlice;
+import jakarta.data.Streamable;
+import jakarta.data.page.KeysetAwareSlice;
+import jakarta.data.page.Pageable;
+import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.OrderBy;
-import jakarta.data.repository.Pageable;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
 
 import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Filter;
@@ -30,7 +33,7 @@ import io.openliberty.data.repository.Select;
  *
  */
 @Repository
-public interface Businesses extends CrudRepository<Business, Integer> {
+public interface Businesses extends BasicRepository<Business, Integer> {
 
     // embeddable 1 level deep
     List<Business> findByLatitudeBetweenOrderByLongitudeDesc(float min, float max);
@@ -57,6 +60,9 @@ public interface Businesses extends CrudRepository<Business, Integer> {
     @OrderBy("houseNum")
     Stream<Street> findByZipNotAndCity(int excludeZipCode, String city);
 
+    @OrderBy("id")
+    Business findFirstByName(String name);
+
     @Filter(by = "location_address.city")
     @Filter(by = "location.address_state")
     @OrderBy(descending = true, ignoreCase = true, value = "name")
@@ -68,6 +74,15 @@ public interface Businesses extends CrudRepository<Business, Integer> {
     @OrderBy("name") // Business.name, not Business.Location.Address.Street.name
     @Select("name")
     List<String> onSouthSide();
+
+    // Save with a different entity type does not conflict with the primary entity type from BasicRepository
+    @Save
+    Streamable<Employee> save(Employee... e);
+
+    boolean update(Business b);
+
+    @Query("UPDATE Business b SET b.location=?1, b.name=?2 WHERE b.id=?3")
+    boolean updateWithJPQL(Location newLocation, String newName, long id);
 
     @Filter(by = "location.longitude", fn = Function.AbsoluteValue, op = Compare.Between)
     List<Business> withLongitudeIgnoringSignWithin(float min, float max);

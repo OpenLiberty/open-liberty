@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,6 +18,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.sql.DataSource;
+
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import jakarta.ejb.Schedule;
@@ -26,7 +28,6 @@ import jakarta.ejb.Stateless;
 import jakarta.ejb.Timer;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
-import javax.sql.DataSource;
 
 /**
  * This class uses the @Schedule annotation.
@@ -40,7 +41,7 @@ public class AutomaticDatabase {
     @Resource(shareable = false)
     private DataSource ds;
 
-    private int count = 0; //Incremented with each execution of timer
+    private static volatile int count = 0; //Incremented with each execution of timer
 
     private static final String name = "DatabaseTimer";
 

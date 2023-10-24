@@ -13,7 +13,7 @@
 package io.openliberty.microprofile.telemetry.internal_fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -21,6 +21,7 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -28,6 +29,9 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.globalopentelemetry.TelemetryGlobalOpenTelemetryServlet;
@@ -40,6 +44,10 @@ public class TelemetryGlobalOpenTelemetryTest extends FATServletClient {
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
+                    .andWith(FeatureReplacementAction.BETA_OPTION().fullFATOnly());
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -61,11 +69,14 @@ public class TelemetryGlobalOpenTelemetryTest extends FATServletClient {
     public void testGetGlobalOpenTelemetry() throws Exception {
         server.setMarkToEndOfLog();
         runTest(server, APP_NAME + "/GlobalOpenTelemetryServlet", "testGetGlobalOpenTelemetry");
-        assertFalse(server.waitForStringInLogUsingMark("CWMOT5000W: The GlobalOpenTelemetry.get method was called. This method returns a non-functional OpenTelemetry object. Use CDI to inject an OpenTelemetry object instead.").isEmpty());
+        assertNotNull(server
+                        .waitForStringInLogUsingMark("CWMOT5000W: The GlobalOpenTelemetry.get method was called. This method returns a non-functional OpenTelemetry object. Use CDI to inject an OpenTelemetry object instead."));
 
         server.setMarkToEndOfLog();
         runTest(server, APP_NAME + "/GlobalOpenTelemetryServlet", "testGetGlobalOpenTelemetry");
-        assertNull(server.verifyStringNotInLogUsingMark("CWMOT5000W: The GlobalOpenTelemetry.get method was called. This method returns a non-functional OpenTelemetry object. Use CDI to inject an OpenTelemetry object instead.", 1000));
+        assertNull(server
+                        .verifyStringNotInLogUsingMark("CWMOT5000W: The GlobalOpenTelemetry.get method was called. This method returns a non-functional OpenTelemetry object. Use CDI to inject an OpenTelemetry object instead.",
+                                                       1000));
     }
 
     @AfterClass

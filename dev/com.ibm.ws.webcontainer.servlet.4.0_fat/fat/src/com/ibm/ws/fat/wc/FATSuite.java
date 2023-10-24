@@ -31,6 +31,7 @@ import com.ibm.ws.fat.wc.tests.WCGetMappingTest;
 import com.ibm.ws.fat.wc.tests.WCPushBuilderTest;
 import com.ibm.ws.fat.wc.tests.WCResponseHeadersTest;
 import com.ibm.ws.fat.wc.tests.WCSCIHandlesTypesTest;
+import com.ibm.ws.fat.wc.tests.WCSameContextRootTest;
 import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeSecurityTest;
 import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeTests;
 import com.ibm.ws.fat.wc.tests.WCSendRedirectRelativeURLDefault;
@@ -92,6 +93,7 @@ import componenttest.topology.impl.JavaInfo;
                 WCServletPathForDefaultMappingDefault.class,
                 WCServletPathForDefaultMappingFalse.class,
                 WCGetMappingSlashStarTest.class,
+                WCSameContextRootTest.class,
                 WCSendRedirectRelativeURLTrue.class,
                 WCSendRedirectRelativeURLDefault.class,
                 WC5GetContextPath.class,

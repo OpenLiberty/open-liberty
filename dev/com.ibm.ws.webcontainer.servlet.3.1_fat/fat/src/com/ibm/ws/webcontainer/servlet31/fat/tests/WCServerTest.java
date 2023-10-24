@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -502,8 +503,6 @@ public class WCServerTest extends LoggingTest {
     @Test
     @Mode(TestMode.FULL)
     public void test_DecodeUrlPlusSign() throws Exception {
-        boolean isEE9 = componenttest.rules.repeater.JakartaEE9Action.isActive();
-        boolean isEE10 = componenttest.rules.repeater.JakartaEE10Action.isActive();
 
         LibertyServer wlp = SHARED_SERVER.getLibertyServer();
         wlp.saveServerConfiguration();
@@ -514,7 +513,7 @@ public class WCServerTest extends LoggingTest {
         // Set the decodeUrlPlusSign property to false.
         WebContainerElement webContainer = configuration.getWebContainer();
 
-        if (isEE9 || isEE10) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             webContainer.setDecodeurlplussign(true);
             LOG.info("Setting decodeUrlPlusSign to true");
         } else {
@@ -529,7 +528,7 @@ public class WCServerTest extends LoggingTest {
         LOG.info("Server configuration updated to: " + configuration);
 
         try {
-            if (isEE9 || isEE10)
+            if (JakartaEEAction.isEE9OrLaterActive())
                 this.verifyResponse("/TestServlet31/noplus+sign.html", "This file has a space in the name");
             else
                 this.verifyResponse("/TestServlet31/plus+sign.html", "This file has a plus sign in the name");

@@ -195,13 +195,7 @@ public class AuthenticateApi {
         logoutUnprotectedResourceServiceRef(req, res);
         createSubjectAndPushItOnThreadAsNeeded(req, res);
 
-        AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, subjectManager.getCallerSubject());
-        JaspiService jaspiService = getJaspiService();
-        if (jaspiService == null) {
-            authResult.setAuditCredType(req.getAuthType());
-            authResult.setAuditOutcome(AuditEvent.OUTCOME_SUCCESS);
-            Audit.audit(Audit.EventID.SECURITY_API_AUTHN_TERMINATE_01, req, authResult, Integer.valueOf(res.getStatus()));
-        }
+        commonLogoutAuditAuthResultSuccess(req, res);
 
         removeEntryFromAuthCache(req, res, config);
         invalidateSession(req);
@@ -231,6 +225,22 @@ public class AuthenticateApi {
         postLogout(req, res);
         subjectManager.clearSubjects();
 
+    }
+
+    /**
+     * Audits the appropriate message if the JaspiService is enabled
+     *
+     * @param req
+     * @param res
+     */
+    private void commonLogoutAuditAuthResultSuccess(HttpServletRequest req, HttpServletResponse res) {
+        AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, subjectManager.getCallerSubject());
+        JaspiService jaspiService = getJaspiService();
+        if (jaspiService == null) {
+            authResult.setAuditCredType(req.getAuthType());
+            authResult.setAuditOutcome(AuditEvent.OUTCOME_SUCCESS);
+            Audit.audit(Audit.EventID.SECURITY_API_AUTHN_TERMINATE_01, req, authResult, Integer.valueOf(res.getStatus()));
+        }
     }
 
     /**
@@ -322,21 +332,24 @@ public class AuthenticateApi {
      *
      * @param req
      * @param res
+     * @param createSubjectAndPushItOnThread
      */
-    public void simpleLogout(HttpServletRequest req, HttpServletResponse res) {
-        createSubjectAndPushItOnThreadAsNeeded(req, res);
+    public void simpleLogout(HttpServletRequest req, HttpServletResponse res, WebAppSecurityConfig config, boolean createSubjectAndPushItOnThread) {
+        if (createSubjectAndPushItOnThread)
+            createSubjectAndPushItOnThreadAsNeeded(req, res);
 
+        //TODO: check for jaspic service null, use common method
         AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, subjectManager.getCallerSubject());
         authResult.setAuditCredType(req.getAuthType());
         authResult.setAuditOutcome(AuditEvent.OUTCOME_SUCCESS);
         Audit.audit(Audit.EventID.SECURITY_API_AUTHN_TERMINATE_01, req, authResult, Integer.valueOf(res.getStatus()));
 
-        removeEntryFromAuthCacheForUser(req, res);
+        removeEntryFromAuthCacheForToken(req, res, config);
+
         invalidateSession(req);
         ssoCookieHelper.removeSSOCookieFromResponse(res);
         ssoCookieHelper.createLogoutCookies(req, res);
         subjectManager.clearSubjects();
-
     }
 
     /**

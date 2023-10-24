@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -48,12 +48,30 @@ LTPA_CONFIG_ERROR=CWWKS4106E: B\u0142\u0105d konfiguracji uwierzytelniania LTPA.
 LTPA_CONFIG_ERROR.explanation=Nie mo\u017cna odczyta\u0107 lub utworzy\u0107 kluczy LTPA w okre\u015blonym po\u0142o\u017ceniu.
 LTPA_CONFIG_ERROR.useraction=Upewnij si\u0119, czy to po\u0142o\u017cenie jest dost\u0119pne dla procesu serwera. Dane przechwytywania FFDC mog\u0105 wskazywa\u0107 na b\u0142\u0105d krytyczny podczas generowania lub \u0142adowania kluczy.
 
-LTPA_KEYS_TO_LOAD=CWWKS4107A: Zmodyfikowano plik kluczy LTPA lub konfiguracj\u0119. Klucze LTPA zostan\u0105 prze\u0142adowane z pliku: {0}
-LTPA_KEYS_TO_LOAD.explanation=Klucze LTPA musz\u0105 zosta\u0107 prze\u0142adowane, poniewa\u017c wprowadzono zmian\u0119 w pliku kluczy LTPA lub w konfiguracji.
-LTPA_KEYS_TO_LOAD.useraction=Sprawd\u017a, czy wszystkie serwery uczestnicz\u0105ce w funkcji pojedynczego logowania u\u017cywaj\u0105 tych samych kluczy LTPA i has\u0142a.
+LTPA_KEYS_TO_LOAD=CWWKS4107A: Nast\u0119puj\u0105ce pliki kluczy LTPA zosta\u0142y utworzone, usuni\u0119te lub zmodyfikowane: {0}, albo konfiguracja LTPA zosta\u0142a zmodyfikowana. Wszystkie klucze LTPA zosta\u0142y prze\u0142adowane.
+LTPA_KEYS_TO_LOAD.explanation=Pliki kluczy LTPA musz\u0105 zosta\u0107 prze\u0142adowane z powodu zmiany plik\u00f3w kluczy LTPA lub zmiany konfiguracji.
+LTPA_KEYS_TO_LOAD.useraction=Upewnij si\u0119, \u017ce wszystkie serwery, kt\u00f3re bior\u0105 udzia\u0142 w pojedynczym logowaniu, u\u017cywaj\u0105 tych samych kluczy i has\u0142a LTPA.
 
 LTPA_KEY_CREATE_ERROR=CWWKS4108E: System nie mo\u017ce utworzy\u0107 klucza LTPA.
 LTPA_KEY_CREATE_ERROR.explanation=Nie mo\u017cna utworzy\u0107 klucza LTPA.
 LTPA_KEY_CREATE_ERROR.useraction=Dane przechwytywania FFDC mog\u0105 wskazywa\u0107 na b\u0142\u0105d krytyczny podczas generowania kluczy.
 
+LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE=CWWKS4109W: Warto\u015b\u0107 {0} atrybutu notUseAfterDate dla pliku kluczy sprawdzania poprawno\u015bci LTPA {1} wskazuje przesz\u0142o\u015b\u0107. Klucze sprawdzania poprawno\u015bci LTPA nie mog\u0105 by\u0107 u\u017cywane.
+LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.explanation=Klucze sprawdzania poprawno\u015bci LTPA s\u0105 u\u017cywane tylko wtedy, gdy warto\u015b\u0107 atrybutu notUseAfterDate wskazuje przysz\u0142o\u015b\u0107.
+LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.useraction=Je\u015bli klucze LTPA musz\u0105 by\u0107 u\u017cywane, zaktualizuj warto\u015b\u0107 atrybutu notUseAfterDate, podaj\u0105c przysz\u0142\u0105 dat\u0119. W przeciwnym razie usu\u0144 plik kluczy LTPA.
 
+LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT=CWWKS4110E: Warto\u015b\u0107 {0} atrybutu notUseAfterDate dla pliku kluczy sprawdzania poprawno\u015bci LTPA {1} ma niepoprawny format daty. Klucze sprawdzania poprawno\u015bci LTPA nie mog\u0105 by\u0107 u\u017cywane.
+LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.explanation=Warto\u015b\u0107 atrybutu notUseAfterDate musi by\u0107 zgodna z formatem ISO z podaniem daty, godziny i strefy czasowej. W poni\u017cszym przyk\u0142adzie przedstawiono format daty ISO: "2023-04-18T18:08:35Z".
+LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.useraction=Zaktualizuj warto\u015b\u0107 atrybutu notUseAfterDate na warto\u015b\u0107 zgodn\u0105 z formatem ISO.
+
+LTPA_VALIDATION_KEYS_MISSING_ATTR=CWWKS4111E: W elemencie {0} LTPA validationKeys, kt\u00f3ry jest okre\u015blony w pliku server.xml, brakuje nazwy pliku, has\u0142a lub obu tych element\u00f3w: {1}.
+LTPA_VALIDATION_KEYS_MISSING_ATTR.explanation=Element LTPA validationKeys wymaga podania atrybut\u00f3w nazwy pliku i has\u0142a.
+LTPA_VALIDATION_KEYS_MISSING_ATTR.useraction=Dodaj brakuj\u0105ce atrybuty.
+
+LTPA_KEYS_FILE_DOES_NOT_EXIST=CWWKS4112E: Plik kluczy sprawdzania poprawno\u015bci LTPA {0} nie istnieje.
+LTPA_KEYS_FILE_DOES_NOT_EXIST.explanation=Plik kluczy sprawdzania poprawno\u015bci nie istnieje.
+LTPA_KEYS_FILE_DOES_NOT_EXIST.useraction=Upewnij si\u0119, \u017ce plik kluczy sprawdzania poprawno\u015bci istnieje w miejscu okre\u015blonym przez element validationKeys.
+
+LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED=CWWKS4113W: Atrybut monitorDirectory zosta\u0142 ustawiony na warto\u015b\u0107 true, ale przedzia\u0142 czasu monitorowania to {0}. W przypadku tworzenia, modyfikowania lub usuwania plik\u00f3w kluczy sprawdzania poprawno\u015bci w katalogu dynamiczne prze\u0142adowanie nie wyst\u0119puje.
+LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.explanation= Atrybut monitorInterval ma warto\u015b\u0107 zero lub mniejsz\u0105 od zera. Nie mo\u017cna monitorowa\u0107 katalogu dla operacji tworzenia, usuwania lub modyfikowania plik\u00f3w z przyrostkiem .keys, dynamiczne prze\u0142adowanie nie mo\u017ce mie\u0107 wi\u0119c miejsca.
+LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.useraction=Ustaw atrybut monitorInterval na przedzia\u0142 wi\u0119kszy od zera.

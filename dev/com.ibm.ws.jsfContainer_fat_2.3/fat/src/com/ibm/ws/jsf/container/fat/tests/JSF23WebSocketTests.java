@@ -35,7 +35,7 @@ import com.ibm.ws.jsf.container.fat.utils.JSFUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -96,7 +96,7 @@ public class JSF23WebSocketTests extends FATServletClient {
 
             // Construct the URL for the test
             URL url;
-            if (JakartaEE10Action.isActive()) {
+            if (JakartaEEAction.isEE10OrLaterActive()) {
                 url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, APP_NAME, "faces40/PushWebSocketTest.jsf");
             } else {
                 url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, APP_NAME, "jsf23/PushWebSocketTest.jsf");
@@ -156,7 +156,7 @@ public class JSF23WebSocketTests extends FATServletClient {
 
             // Construct the URL for the test
             URL url;
-            if (JakartaEE10Action.isActive()) {
+            if (JakartaEEAction.isEE10OrLaterActive()) {
                 url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, APP_NAME, "faces40/OpenCloseWebSocketTest.jsf");
             } else {
                 url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, APP_NAME, "jsf23/OpenCloseWebSocketTest.jsf");

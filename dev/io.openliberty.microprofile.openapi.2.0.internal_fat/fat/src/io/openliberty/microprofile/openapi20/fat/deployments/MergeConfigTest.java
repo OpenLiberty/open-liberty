@@ -43,9 +43,9 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.microprofile.openapi20.fat.FATSuite;
 import io.openliberty.microprofile.openapi20.fat.deployments.test1.DeploymentTestApp;
 import io.openliberty.microprofile.openapi20.fat.deployments.test1.DeploymentTestResource;
 import io.openliberty.microprofile.openapi20.fat.deployments.test2.DeploymentTestResource2;
@@ -62,10 +62,7 @@ public class MergeConfigTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-                                                             MicroProfileActions.MP60, // mpOpenAPI-3.1, LITE
-                                                             MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
-                                                             MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
+    public static RepeatTests r = FATSuite.repeatDefault(SERVER_NAME);
 
     private final Set<String> deployedApps = new HashSet<>();
 

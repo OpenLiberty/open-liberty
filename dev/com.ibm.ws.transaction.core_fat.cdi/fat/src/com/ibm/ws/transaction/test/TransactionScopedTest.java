@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -28,6 +28,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -45,7 +46,6 @@ import transactionscopedtest.TransactionScopedTestServlet;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class TransactionScopedTest extends FATServletClient {
-    final int instances = 100;
 
     public static final String APP_NAME = "transactionscoped";
     public static final String SECOND_APP_NAME = "transactionscopedtwo";
@@ -86,6 +86,8 @@ public class TransactionScopedTest extends FATServletClient {
 
     @Test
     public void testTS002() throws Exception {
+        final OperatingSystem os = server.getMachine().getOperatingSystem();
+        final int instances = os == OperatingSystem.ZOS ? 50 : 100;
 
         final ExecutorService executor = Executors.newFixedThreadPool(instances);
         final Collection<Future<Boolean>> tasks = new ArrayList<Future<Boolean>>();
@@ -115,6 +117,9 @@ public class TransactionScopedTest extends FATServletClient {
 
     @Test
     public void testTS003() throws Exception {
+        final OperatingSystem os = server.getMachine().getOperatingSystem();
+        final int instances = os == OperatingSystem.ZOS ? 50 : 100;
+
         // run the test multiple times sequentially
         for (int i = 0; i < instances; i++) {
             HttpUtils.findStringInReadyUrl(server, FATServletClient.getPathAndQuery(SERVLET_NAME, "testTS001"), FATServletClient.SUCCESS);

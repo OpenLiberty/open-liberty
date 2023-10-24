@@ -47,7 +47,7 @@ import jakarta.ws.rs.core.HttpHeaders;
  * Test that a custom Propagator can be provided.
  */
 @SuppressWarnings("serial")
-@WebServlet("/propagator")
+@WebServlet("/testPropagator")
 public class PropagatorTestServlet extends FATServlet {
 
     public static final AttributeKey<String> TEST_KEY = AttributeKey.stringKey("test-key");
@@ -69,7 +69,7 @@ public class PropagatorTestServlet extends FATServlet {
     public void testPropagator() {
         Span span = testSpans.withTestSpan(() -> {
             // Add a key to the baggage that we will look for later
-            try(Scope s = baggage.toBuilder().put(TEST_KEY.getKey(), TEST_VALUE).build().makeCurrent()){
+            try (Scope s = baggage.toBuilder().put(TEST_KEY.getKey(), TEST_VALUE).build().makeCurrent()) {
                 // Call PropagatorTarget (below)
                 String result = ClientBuilder.newClient().target(getTargetURI()).request().get(String.class);
                 assertEquals("OK", result);

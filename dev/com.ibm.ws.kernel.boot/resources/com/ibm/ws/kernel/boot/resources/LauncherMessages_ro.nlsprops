@@ -432,6 +432,10 @@ warning.unableToPackageLooseConfigFileMissingPath=CWWKE0095W: Serverul nu poate 
 warning.unableToPackageLooseConfigFileMissingPath.explanation=Fi\u015fierul XML de aplica\u0163ii de configura\u0163ii flexibile specificat con\u0163ine informa\u0163ii invalide despre loca\u0163ia fi\u015fierelor. De exemplu, ar putea specifica un director care nu poate fi g\u0103sit. C\u0103ile din acest fi\u015fier XML ar trebui s\u0103 fie relative la directorul de configurare al serverului. Arhiva reprezentat\u0103 de acest fi\u015fier nu va fi inclus\u0103 \u00een ie\u015firea \u00eempachetat\u0103 a serverului.
 warning.unableToPackageLooseConfigFileMissingPath.useraction=Modifica\u0163i c\u0103ile din fi\u015fierul XML de aplica\u0163ii de configura\u0163ii flexibile pentru a indica loca\u0163ia corect\u0103 care con\u0163ine fi\u015fierele de aplica\u0163ii. 
 
+warning.tooManySymbolicLinks=CWWKE0096W: Prea multe legaturi simbolice au fost intalnite cand sistemul a incercat sa rezolve urmatoarea cale: {0}.
+warning.tooManySymbolicLinks.explanation=Leg\u0103turile simbolice sunt scurt\u0103turi care indic\u0103 spre alte fi\u0219iere sau directoare. Aceast\u0103 eroare apare atunci c\u00e2nd sistemul \u00eent\u00e2lne\u0219te prea multe leg\u0103turi simbolice \u00eentr-un lan\u021b \u0219i nu este \u00een m\u0103sur\u0103 s\u0103 rezolve calea.
+warning.tooManySymbolicLinks.useraction=Pentru a rezolva aceast\u0103 problem\u0103, verifica\u021bi leg\u0103turile simbolice din cale \u0219i asigura\u021bi-v\u0103 c\u0103 acestea nu creeaz\u0103 referin\u021be circulare. S-ar putea folosi, de asemenea, comanda "readlink" pentru a inspecta link-uri individuale \u00een lan\u021b.
+
 warn.packageRuntime.include.unknownOption=CWWKE0099W: Nu se poate folosi op\u0163iunea --include={0}, se va folosi \u00een schimb --include=wlp.
 warn.packageRuntime.include.unknownOption.explanation=Op\u0163iunea a fost ignorat\u0103 deoarece nu a fost recunoscut\u0103.
 warn.packageRuntime.include.unknownOption.useraction=Re\u00eencerca\u0163i comanda folosind op\u0163iuni valide. \u00cencerca\u0163i s\u0103 folosi\u0163ie --help pentru o list\u0103 de op\u0163iuni valide.
@@ -753,6 +757,22 @@ error.checkpoint.failed.selinux.netdiag.useraction=Dac\u0103 SELinux este activa
 error.checkpoint.restore.failed.no.recovery=CWWKE0964E: Procesul restabilirii serverului de punct de control nu a reu\u0219it. Verifica\u021bi jurnalul {0} pentru a determina din ce cauz\u0103 procesul de punct de control nu a fost restabilit. Serverul nu s-a lansat, deoarece recuperarea prin restaurarea unui punct de control este dezactivat\u0103.
 error.checkpoint.restore.failed.no.recovery.explanation=A ap\u0103rut o eroare la procesul restabilirii unui server de punct de control. Serverul nu s-a lansat, deoarece recuperarea prin restaurarea unui punct de control este dezactivat\u0103.
 error.checkpoint.restore.failed.no.recovery.useraction=Verifica\u021bi jurnalele pentru a determina din ce cauz\u0103 procesul punctului de control nu a fost restabilit. Pentru a permite recuperarea din e\u0219ec prin restaurare, seta\u021bi variabila de mediu CRIU_RESTORE_DISABLE_RECOVERY la adev\u0103rat.
+
+warning.serverLockFileNotExist=CWWKE0965W: Fi\u0219ierul de blocare a serverului {0} exist\u0103.
+warning.serverLockFileNotExist.explanation=Avertismentul ar putea indica faptul c\u0103 serverul nu ruleaz\u0103 sau fi\u0219ierul de blocare a fost \u0219ters \u00een mod nea\u0219teptat.
+warning.serverLockFileNotExist.useraction=Verifica\u021bi dac\u0103 serverul ruleaz\u0103 folosind instrumente adecvate de monitorizare a sistemului. Pe Windows, pute\u021bi utiliza Task Manager. Pe sistemele de tip UNIX, folosi\u0163i comanda 'ps -ef'.
+
+warning.serverCommandFileNotExist=CWWKE0966W: Fi\u0219ierul de comand\u0103 al serverului {0} exist\u0103.
+warning.serverCommandFileNotExist.explanation=Avertismentul sugereaz\u0103 c\u0103 fi\u0219ierul de comand\u0103 al serverului, care con\u021bine informa\u021bii esen\u021biale pentru stabilirea unei conexiuni la soclu cu serverul, lipse\u0219te. Serverul s-ar putea s\u0103 nu fie difuzate sau fi\u0219ierul ar fi fost \u0219terse \u00een mod nea\u0219teptat.
+warning.serverCommandFileNotExist.useraction=Verifica\u021bi dac\u0103 serverul ruleaz\u0103 folosind instrumente adecvate de monitorizare a sistemului. Pe Windows, pute\u021bi utiliza Task Manager. Pe sistemele de tip UNIX, folosi\u0163i comanda 'ps -ef'. Dac\u0103 serverul ruleaz\u0103, trebuie s\u0103-l reporni\u021bi, ceea ce implic\u0103 oprirea procesului. Utiliza\u021bi Task Manager pe Windows pentru a opri procesul. Pe sistemele de tip UNIX, folosi\u0163i comanda 'kill'.
+
+warning.timeoutWaitingForServerToReleaseLock=CWWKE0967W: Un timeout a avut loc \u00een timp ce de a\u0219teptare pentru server pentru a elibera {0}
+warning.timeoutWaitingForServerToReleaseLock.explanation=Avertismentul indic\u0103 un interval de timp petrecut. Timeout-ul s-ar putea datora unei opriri lente a serverului, server hang, sau blocare a fi\u0219ierelor printr-un alt program.
+warning.timeoutWaitingForServerToReleaseLock.useraction=\u00cen cazul \u00een care serverul este \u00eenc\u0103 \u00een func\u021biune, ia \u00een considerare cre\u0219terea valorii de timeout pentru comanda 'server stop'. Dac\u0103 serverul este oprit, utiliza\u021bi instrumente de monitorizare a fi\u0219ierelor pentru a verifica dac\u0103 un alt program a blocat fi\u0219ierul.
+
+warning.timeoutWaitingForServerProcessToStop=CWWKE0968W: Un timeout a avut loc \u00een timp ce de a\u0219teptare pentru procesul de server pentru a opri.
+warning.timeoutWaitingForServerProcessToStop.explanation=Serverul nu s-a oprit \u00een timpul acordat de valoarea timeout. Acest lucru s-ar putea datora unei opriri lente a serverului sau unui server.   
+warning.timeoutWaitingForServerProcessToStop.useraction=\u00cen cazul \u00een care serverul este \u00eenc\u0103 \u00een func\u021biune, ia \u00een considerare cre\u0219terea valorii de timeout pentru comanda 'server stop'. Pe sistemele de tip UNIX, comanda de oprire a serverului asteapta ca procesul serverului sa se opreasca. Pe Windows, comanda a\u0219teapt\u0103 s\u0103 ob\u021bin\u0103 o blocare pe fi\u0219ierul console.log . Utiliza\u021bi instrumente de monitorizare a fi\u0219ierelor pentru a verifica dac\u0103 un alt program, cum ar fi un editor, a blocat fi\u0219ierul console.log .
 
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.

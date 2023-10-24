@@ -349,8 +349,17 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
             run("testSetAttribute&attribute=testWriteFrequency&value=" + newValue, session);
 
             String response = run("getValueFromCache&attribute=testWriteFrequency", session);
-            int start = response.indexOf("value from cache: [") + 19;
-            String cachedValue = response.substring(start, response.indexOf(']', start));
+
+            Log.info(SessionCacheConfigUpdateTest.class, "testWriteInterval", "response = " + response);
+            Log.info(SessionCacheConfigUpdateTest.class, "testWriteInterval", "newValue = " + newValue);
+            String cachedValue = null;
+            try {
+                int start = response.indexOf("value from cache: [") + 19;
+                cachedValue = response.substring(start, response.indexOf(']', start));
+            } catch (Exception e) {
+                Log.info(SessionCacheConfigUpdateTest.class, "testWriteInterval", "response can contains no value = " + response);
+            }
+            Log.info(SessionCacheConfigUpdateTest.class, "testWriteInterval", "cachedValue = " + cachedValue);
 
             if (!previousValue.equals(cachedValue))
                 break;

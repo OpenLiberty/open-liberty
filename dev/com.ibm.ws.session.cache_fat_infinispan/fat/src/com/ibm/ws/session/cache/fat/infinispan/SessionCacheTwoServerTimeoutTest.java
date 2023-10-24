@@ -122,6 +122,20 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
             Log.info(c, "tearDown", "Start server B shutdown");
             serverB.stopServer();
         }
+
+        if (isZOS()) {
+            Log.info(c, "tearDown", "Allow more time for ZOS shutdown");
+            TimeUnit.SECONDS.sleep(20);
+        }
+
+    }
+
+    private static final boolean isZOS() {
+        String osName = System.getProperty("os.name");
+        if (osName.contains("OS/390") || osName.contains("z/OS") || osName.contains("zOS")) {
+            return true;
+        }
+        return false;
     }
 
     /**

@@ -30,7 +30,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -74,7 +74,7 @@ public class JAXRSDynamicHandlerTest {
         assertNotNull("Expected to see config update completed", server.waitForStringInLog("CWWKG0017I"));
         assertNotNull("Expected to see feature update completed", server.waitForStringInLog("CWWKF0008I"));
         assertNotNull("usr:RSHandler1Feature install failed", server.waitForStringInLog("CWWKF0012I.*usr:RSHandler1Feature"));
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             assertNotNull("Expected to see application rsApplication updated", server.waitForStringInLog("CWWKZ0003I: The application rsApplication updated"));
         } else {
             assertNull("Did not expect to see application rsApplication updated", server.waitForStringInLog("CWWKZ0003I: The application rsApplication updated"));
@@ -129,7 +129,7 @@ public class JAXRSDynamicHandlerTest {
         // In EE10 the Global Handler function was removed from automatic inclusion in the restfulWSClient-3.1 and 
         // xml-40 features and into a protected feature.  This changed the behavior for this testcase such that
         // the protected feature causes the bundle to resolve.
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             assertNotNull("Expected to see application rsApplication updated", server.waitForStringInLog("CWWKZ0003I: The application rsApplication updated"));
             assertNull("Did not expect to see user bundle could not resolve", server.waitForStringInLog("CWWKF0029E", 10));
         } else {

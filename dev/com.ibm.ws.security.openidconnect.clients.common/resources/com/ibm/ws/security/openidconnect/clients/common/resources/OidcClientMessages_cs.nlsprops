@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2013, 2022 IBM Corporation and others.
+# Copyright (c) 2013, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/clients/common/resources/OidcClientMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -309,6 +306,11 @@ NO_RECENT_SESSIONS_WITH_CLAIMS.useraction=Ujist\u011bte se, \u017ee n\u00e1roky 
 ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS1553E: Klient protokolu OpenID Connect {0} zjistil chybu p\u0159i odes\u00edl\u00e1n\u00ed po\u017eadavku na autorizaci poskytovateli protokolu OpenID Connect. {1}
 ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=Konfigurace klienta protokolu OpenID Connect m\u016f\u017ee postr\u00e1dat informace, nebo klient zjistil chybu p\u0159i komunikaci s poskytovatelem protokolu OpenID Connect.
 ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b.
+
+# do not translate hostname, wasReqURLRedirectDomainNames, and webAppSecurity
+MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE=CWWKS1554E: Po\u017eadavek na [{0}] nen\u00ed platn\u00fd. Vy\u017eadovan\u00fd soubor cookie s n\u00e1zvem, kter\u00fd za\u010d\u00edn\u00e1 \u0159et\u011bzcem [{1}], m\u00e1 nespr\u00e1vnou hodnotu. N\u00e1zev hostitele [{2}], kter\u00fd se pou\u017e\u00edv\u00e1 v souboru cookie, neodpov\u00edd\u00e1 n\u00e1zvu hostitele po\u017eadavku a n\u00e1zev hostitele v souboru cookie nen\u00ed jedn\u00edm z povolen\u00fdch n\u00e1zv\u016f dom\u00e9n.
+MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.explanation=Po\u017eadavek obsahuje chybn\u00fd soubor cookie. N\u00e1zev hostitele v souboru cookie se mus\u00ed shodovat s aktu\u00e1ln\u00edm po\u017eadavkem, nebo mus\u00ed odpov\u00eddat jednomu z povolen\u00fdch n\u00e1zv\u016f dom\u00e9n. Soubor cookie m\u016f\u017ee b\u00fdt upraven v r\u00e1mci agenta u\u017eivatele.
+MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.useraction=Ov\u011b\u0159te poskytovatele OpenID Connect a konfigurace klienta. Pokud je o\u010dek\u00e1v\u00e1n n\u00e1zev hostitele, p\u0159idejte jej do atributu wasReqURLRedirectDomain Names v prvku webAppSecurity v konfiguraci serveru.
 
 #CWWKS1557 used in client bundle, do not use here.
 

@@ -73,6 +73,47 @@
     <properties.microsoft.sqlserver user="${env.SQL_USER}" password="${env.SQL_PASSWORD}"
       databaseName="${env.SQL_DBNAME}" serverName="${env.SQL_HOST}" portNumber="${env.SQL_PORT}" authenticationScheme="NTLM" />
   </dataSource>
+  
+  <!-- 
+  	 Verify precedence of connection properties on Driver and DataSource
+  -->
+  <dataSource id="driver-property-preferred" jndiName="jdbc/driver-property-preferred" type="java.sql.Driver">
+    <jdbcDriver libraryRef="SQLServerLibAnon"/>
+    <containerAuthData user="${env.SQL_USER}" password="${env.SQL_PASSWORD}"/>
+    <properties.microsoft.sqlserver url="jdbc:sqlserver://$INVALID:1000;databaseName=$INVALID;"
+    databaseName="${env.SQL_DBNAME}" serverName="${env.SQL_HOST}" portNumber="${env.SQL_PORT}"/>
+  </dataSource>
+
+  <dataSource id="ds-property-preferred" jndiName="jdbc/ds-property-preferred" type="javax.sql.DataSource">
+    <jdbcDriver libraryRef="SQLServerLibAnon"/>
+    <containerAuthData user="${env.SQL_USER}" password="${env.SQL_PASSWORD}"/>
+    <properties.microsoft.sqlserver URL="jdbc:sqlserver://$INVALID:1000;databaseName=$INVALID;"
+    databaseName="${env.SQL_DBNAME}" serverName="${env.SQL_HOST}" portNumber="${env.SQL_PORT}"/>
+  </dataSource>
+  
+  <!-- 
+  	Verify default values no longer override URL on Driver and DataSource
+  -->  
+  <dataSource id="driver-no-override" jndiName="jdbc/driver-no-override" type="java.sql.Driver">
+    <jdbcDriver libraryRef="SQLServerLibAnon"/>
+    <containerAuthData user="${env.SQL_USER}" password="${env.SQL_PASSWORD}"/>
+    <properties.microsoft.sqlserver URL="jdbc:sqlserver://${env.SQL_HOST}:${env.SQL_PORT};databaseName=${env.SQL_DBNAME};" />
+  </dataSource>
+  
+  <dataSource id="ds-no-override" jndiName="jdbc/ds-no-override" type="javax.sql.DataSource">
+    <jdbcDriver libraryRef="SQLServerLibAnon"/>
+    <containerAuthData user="${env.SQL_USER}" password="${env.SQL_PASSWORD}"/>
+    <properties.microsoft.sqlserver URL="jdbc:sqlserver://${env.SQL_HOST}:${env.SQL_PORT};databaseName=${env.SQL_DBNAME};" />
+  </dataSource>
+  
+  <!-- 
+  	Verify defaults without URL on DataSource
+  -->  
+  <dataSource id="ds-no-url-defaults" jndiName="jdbc/ds-no-url-defaults" type="javax.sql.DataSource">
+    <jdbcDriver libraryRef="SQLServerLibAnon"/>
+    <containerAuthData user="${env.SQL_USER}" password="${env.SQL_PASSWORD}"/>
+    <properties.microsoft.sqlserver databaseName="${env.SQL_DBNAME}" portNumber="${env.SQL_PORT}" />
+  </dataSource>
 
   <javaPermission codebase="${server.config.dir}/apps/sqlserverfat.war" className="java.security.AllPermission"/>
   <javaPermission codebase="${shared.resource.dir}/anon/anomyous.jar" className="java.security.AllPermission"/>

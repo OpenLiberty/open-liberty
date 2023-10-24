@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013,2022 IBM Corporation and others.
+ * Copyright (c) 2013,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -39,7 +39,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
@@ -350,6 +352,7 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
      */
     @Override
     @Trivial // method name is misleading in trace
+    @FFDCIgnore(IllegalStateException.class)
     public ArrayList<ThreadContext> taskStarting() throws RejectedExecutionException {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isDebugEnabled())
@@ -357,19 +360,32 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
 
         // EE Concurrency 3.3.4: All invocations to any of the proxied interface methods will fail with a
         // java.lang.IllegalStateException exception if the application component is not started or deployed.
-        if (!"false".equalsIgnoreCase(execProps.get(WSContextService.REQUIRE_AVAILABLE_APP)) &&
-            metaDataIdentifier != null && threadContextMgr.metadataIdentifierService.getMetaData(metaDataIdentifier) == null) {
-            String taskName; // ManagedTask.IDENTITY_NAME
-            if (threadContextMgr.eeVersion < 9) {
-                taskName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
-                if (taskName == null)
-                    taskName = execProps.get("jakarta.enterprise.concurrent.IDENTITY_NAME");
-            } else {
-                taskName = execProps.get("jakarta.enterprise.concurrent.IDENTITY_NAME");
-                if (taskName == null)
-                    taskName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
+        if (!"false".equalsIgnoreCase(execProps.get(WSContextService.REQUIRE_AVAILABLE_APP)) && metaDataIdentifier != null) {
+            MetaData mData = null;
+            try {
+                mData = threadContextMgr.metadataIdentifierService.getMetaData(metaDataIdentifier);
+            } catch (IllegalStateException ex) {
+                // IllegalStateException thrown if app is not started or deployed. Although correct
+                // exception type, the message isn't appropriate/helpful. Ignore and throw improved
+                // exception with translated message below.
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "component metadata not available : " + ex);
             }
-            notAvailable(metaDataIdentifier, taskName);
+
+            // if metadata not found; provide an IllegalStateException with useful translated message
+            if (mData == null) {
+                String taskName; // ManagedTask.IDENTITY_NAME
+                if (threadContextMgr.eeVersion < 9) {
+                    taskName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
+                    if (taskName == null)
+                        taskName = execProps.get("jakarta.enterprise.concurrent.IDENTITY_NAME");
+                } else {
+                    taskName = execProps.get("jakarta.enterprise.concurrent.IDENTITY_NAME");
+                    if (taskName == null)
+                        taskName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
+                }
+                notAvailable(metaDataIdentifier, taskName);
+            }
         }
 
         String defaultContextTypes = execProps.get(WSContextService.DEFAULT_CONTEXT);

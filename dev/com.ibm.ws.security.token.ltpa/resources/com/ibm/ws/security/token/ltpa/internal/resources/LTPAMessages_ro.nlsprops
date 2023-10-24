@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -48,12 +48,30 @@ LTPA_CONFIG_ERROR=CWWKS4106E: Eroare de configurare LTPA. Nu se poate crea sau c
 LTPA_CONFIG_ERROR.explanation=Cheile LTPA nu au putut fi citite sau create la loca\u0163ia specificat\u0103.
 LTPA_CONFIG_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 loca\u0163ie este accesibil\u0103 procesului de server. Orice FFDC-uri pot indica o eroare fatal\u0103 \u00een generarea sau \u00eenc\u0103rcarea cheilor.
 
-LTPA_KEYS_TO_LOAD=CWWKS4107A: Fi\u015fierul de chei LTPA sau configura\u0163ia au fost modificate. Cheile LTPA vor fi re\u00eenc\u0103rcate din fi\u015fierul: {0}
-LTPA_KEYS_TO_LOAD.explanation=Cheile LTPA trebuiesc re\u00eenc\u0103rcate deoarece a existat o modificare la fi\u015fierul cheilor LTPA sau a configura\u0163iei.
-LTPA_KEYS_TO_LOAD.useraction=Asigura\u0163i-v\u0103 c\u0103 toate serverele care particip\u0103 \u00een semnarea unic\u0103 (Single-Sign-On) folosesc acelea\u015fi chei LTPA \u015fi parole.
+LTPA_KEYS_TO_LOAD=CWWKS4107A: Urm\u0103toarele fi\u0219iere cu chei LTPA sunt fie create, \u0219terse sau modificate: {0} sau configura\u021bia LTPA a fost modificat\u0103. Toate cheile LTPA sunt re\u00eenc\u0103rcate.
+LTPA_KEYS_TO_LOAD.explanation=Fi\u0219ierele cu chei LTPA trebuie s\u0103 fie re\u00eenc\u0103rcate ca urmare a modific\u0103rii fi\u0219ierelor cu chei LTPA sau a configura\u021biei.
+LTPA_KEYS_TO_LOAD.useraction=Asigura\u021bi-v\u0103 c\u0103 toate serverele care particip\u0103 la semnare unic\u0103 folosesc acelea\u0219i chei LTPA \u0219i aceea\u0219i parol\u0103.
 
 LTPA_KEY_CREATE_ERROR=CWWKS4108E: Sistemul nu poate crea cheia LTPA.
 LTPA_KEY_CREATE_ERROR.explanation=Cheia LTPA nu poate fi creat\u0103.
 LTPA_KEY_CREATE_ERROR.useraction=Orice FFDC ar putea indica o eroare fatal\u0103 \u00een generarea cheilor.
 
+LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE=CWWKS4109W: Valoarea {0} pentru atributul notUseAfterDate pentru fi\u0219ierul cu chei de validare LTPA {1} este \u00een trecut. Cheile de validare LTPA nu pot fi utilizate.
+LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.explanation=Cheile de validare LTPA sunt utilizate numai dac\u0103 valoarea atributului notUseAfterDate este \u00een viitor.
+LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.useraction=Actualiza\u021bi valoarea atributului notUseAfterDate la o dat\u0103 viitoare, dac\u0103 trebuie utilizate cheile LTPA. \u00cen caz contrar, \u0219terge\u021bi fi\u0219ierul cu chei LTPA.
 
+LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT=CWWKS4110E: Valoarea {0} pentru atributul notUseAfterDate pentru fi\u0219ierul cu chei de validare LTPA {1} are un format de dat\u0103 nevalid. Cheile de validare LTPA nu pot fi utilizate.
+LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.explanation=Valoarea atributului notUseAfterDate trebuie s\u0103 fie formatat\u0103 \u00een formatul ISO de dat\u0103, or\u0103 \u0219i zon\u0103. Urm\u0103torul exemplu arat\u0103 formatul datei ISO: \u201e2023-04-18T18:08:35Z\u201d.
+LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.useraction=Actualiza\u021bi valoarea atributului notUseAfterDate la un format ISO de dat\u0103, or\u0103 \u0219i zon\u0103.
+
+LTPA_VALIDATION_KEYS_MISSING_ATTR=CWWKS4111E: Din elementul {0} LTPA validationKeys specificat \u00een fi\u0219ierul server.xml lipsesc numele de fi\u0219ier, parola sau ambele: {1}.
+LTPA_VALIDATION_KEYS_MISSING_ATTR.explanation=Elementul LTPA validationKeys necesit\u0103 atribute nume de fi\u0219ier \u0219i parol\u0103.
+LTPA_VALIDATION_KEYS_MISSING_ATTR.useraction=Ad\u0103uga\u021bi atributele lips\u0103.
+
+LTPA_KEYS_FILE_DOES_NOT_EXIST=CWWKS4112E: Fi\u0219ierul cu chei de validare LTPA {0} nu exist\u0103.
+LTPA_KEYS_FILE_DOES_NOT_EXIST.explanation=Fi\u0219ierul cu chei de validare nu exist\u0103.
+LTPA_KEYS_FILE_DOES_NOT_EXIST.useraction=Asigura\u021bi-v\u0103 c\u0103 fi\u0219ierul cu chei de validare exist\u0103 \u00een loca\u021bia specificat\u0103 de elementul validationKeys.
+
+LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED=CWWKS4113W: Atributul monitorDirectory este setat ca adev\u0103rat, dar intervalul de monitorizare este {0}. Nu are loc o re\u00eenc\u0103rcare dinamic\u0103 atunci c\u00e2nd fi\u0219ierele cu chei de validare sunt create, modificate sau \u0219terse \u00een director.
+LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.explanation= Valoarea pentru atributul monitorInterval este zero sau mai mic\u0103 dec\u00e2t zero. Directorul nu poate fi monitorizat pentru niciun fel de ac\u021biuni de creare, \u0219tergere sau modificare la fi\u0219ierele cu sufixul .keys \u0219i re\u00eenc\u0103rcarea dinamic\u0103 nu poate avea loc.
+LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.useraction=Seta\u021bi atributul monitorInterval la un interval care este mai mare dec\u00e2t zero.

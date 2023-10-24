@@ -1,0 +1,25 @@
+<server>
+  <featureManager>
+    <feature>componentTest-1.0</feature>
+    <feature>servlet-4.0</feature>
+    <feature>javaMail-1.6</feature>
+  </featureManager>
+
+  <mailSession>
+    <mailSessionID>testIMAPMailSession</mailSessionID>
+    <jndiName>IMAPTestingApp/IMAPMailSessionServlet/testIMAPMailSession</jndiName>
+    <description>mailSession for testing IMAP protocol</description>
+    <storeProtocol>imap</storeProtocol>
+    <host>${imap_host}</host>
+    <user>${imap_user}</user>
+    <password>${imap_password}</password>
+    <from>smtp@testserver.com</from>
+    <property name="mail.imap.port" value="${bvt.prop.imap_port}" />
+  </mailSession>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application id="IMAPTestingApp" name="IMAPTestingApp" type="war" location="IMAPTestingApp.war">
+    <classloader apiTypeVisibility="+third-party"/>
+  </application>
+</server>

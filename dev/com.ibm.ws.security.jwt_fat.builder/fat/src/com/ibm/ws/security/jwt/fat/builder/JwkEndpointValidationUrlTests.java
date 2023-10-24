@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwt.fat.builder;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +21,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
@@ -39,6 +43,8 @@ import com.ibm.ws.security.fat.common.jwt.servers.JwtServerInstanceUtils;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.utils.CommonExpectations;
 import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
+import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
+import com.ibm.ws.security.fat.common.utils.MySkipRule;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
@@ -62,6 +68,22 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
+    @Rule
+    public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
+
+    public static class skipIfAddressDoesNotResolve extends MySkipRule {
+
+        @Override
+        public Boolean callSpecificCheck() {
+
+            if (!doesAddressResolve) {
+                Log.info(thisClass, "skipIfAddressDoesNotResolve", "Skipping Test");
+            }
+            return !doesAddressResolve;
+
+        }
+    }
+
     @Server("com.ibm.ws.security.jwt_fat.builder")
     public static LibertyServer builderServer;
 
@@ -77,6 +99,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
     int defaultKeySize = 2048;
     boolean UseTokenInHeader = true;
     boolean UseTokenAsParm = false;
+    static boolean doesAddressResolve = false;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -93,15 +116,19 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         // tell the fat framework to ignore it!
         builderServer.addIgnoredErrors(Arrays.asList(JwtBuilderMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE, JwtBuilderMessageConstants.CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED, JwtBuilderMessageConstants.CWWKS6059W_KEY_MANAGEMENT_KEY_ALIAS_MISSING));
 
-        // start server to run protected app - make sure we can use the JWT
-        // Token that we produce
-        serverTracker.addServer(rsServer);
-        skipRestoreServerTracker.addServer(rsServer);
-        JwtServerInstanceUtils.addHostNameAndAddrToBootstrap(rsServer);
-        rsServer.addInstalledAppForValidation(JWTBuilderConstants.HELLOWORLD_APP);
-        rsServer.startServerUsingExpandedConfiguration("rs_server_orig.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
-        SecurityFatHttpUtils.saveServerPorts(rsServer, JWTBuilderConstants.BVT_SERVER_2_PORT_NAME_ROOT);
-
+        doesAddressResolve();
+        if (doesAddressResolve) {
+            // start server to run protected app - make sure we can use the JWT
+            // Token that we produce
+            serverTracker.addServer(rsServer);
+            skipRestoreServerTracker.addServer(rsServer);
+            JwtServerInstanceUtils.addHostNameAndAddrToBootstrap(rsServer);
+            rsServer.addInstalledAppForValidation(JWTBuilderConstants.HELLOWORLD_APP);
+            rsServer.startServerUsingExpandedConfiguration("rs_server_orig.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
+            SecurityFatHttpUtils.saveServerPorts(rsServer, JWTBuilderConstants.BVT_SERVER_2_PORT_NAME_ROOT);
+        } else {
+            Log.info(thisClass, "setUp", "Will NOT start the RS server because we can not connect to the builder server using the ip address");
+        }
     }
 
     /**
@@ -122,6 +149,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      */
     @Mode(TestMode.LITE)
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_http() throws Exception {
 
         String builderId = "jwkEnabled";
@@ -154,6 +182,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * @throws Exception
      */
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_badConfigId() throws Exception {
 
         String builderId = "badConfig";
@@ -185,6 +214,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * @throws Exception
      */
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkFromServerX509_http() throws Exception {
 
         String builderId = "jwkFromServerX509";
@@ -223,6 +253,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * @throws Exception
      */
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkFromKeyStoreX509_http() throws Exception {
 
         String builderId = "jwkFromKeyStoreX509";
@@ -262,6 +293,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * @throws Exception
      */
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_https() throws Exception {
 
         String builderId = "jwkEnabled";
@@ -298,6 +330,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      */
     @Mode(TestMode.LITE)
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void TokenEndpointValidationTest_https() throws Exception {
 
         String builderId = "jwkEnabled";
@@ -337,6 +370,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      */
     @Mode(TestMode.LITE)
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void TokenEndpointTestHttpsEnforced() throws Exception {
 
         String builderId = "jwkEnabled";
@@ -366,6 +400,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      */
     @Mode(TestMode.LITE)
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void TokenEndpointTestHttpConfiguration() throws Exception {
 
         String builderId = "jwkEnabled";
@@ -404,6 +439,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * @throws Exception
      */
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_jwkSigningKeySize_1024() throws Exception {
 
         String builderId = "jwkEnabled_size_1024";
@@ -443,6 +479,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * @throws Exception
      */
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_jwkSigningKeySize_2048() throws Exception {
 
         String builderId = "jwkEnabled_size_2048";
@@ -482,6 +519,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * @throws Exception
      */
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_jwkSigningKeySize_4096() throws Exception {
 
         String builderId = "jwkEnabled_size_4096";
@@ -521,6 +559,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * @throws Exception
      */
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_jwkSigningKeySize_invalid() throws Exception {
 
         String builderId = "jwkEnabled_size_invalid";
@@ -553,6 +592,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      */
     @Mode(TestMode.LITE)
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_sigAlg_HS256() throws Exception {
 
         String builderId = "jwkEnabled_HS256";
@@ -579,6 +619,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      */
     @Mode(TestMode.LITE)
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_sigAlg_HS384() throws Exception {
 
         String builderId = "jwkEnabled_HS384";
@@ -605,6 +646,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      */
     @Mode(TestMode.LITE)
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_sigAlg_HS512() throws Exception {
 
         String builderId = "jwkEnabled_HS512";
@@ -632,6 +674,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * @throws Exception
      */
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_jwkEnabled_false() throws Exception {
         String builderId = "emptyConfig";
 
@@ -655,6 +698,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * @throws Exception
      */
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_sigAlg_RS384() throws Exception {
 
         String builderId = "jwkEnabled_RS384";
@@ -687,6 +731,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * @throws Exception
      */
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_sigAlg_RS512() throws Exception {
 
         String builderId = "jwkEnabled_RS512";
@@ -719,6 +764,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * @throws Exception
      */
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_sigAlg_ES256() throws Exception {
 
         String builderId = "jwkEnabled_ES256";
@@ -753,6 +799,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * @throws Exception
      */
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_sigAlg_ES384() throws Exception {
 
         String builderId = "jwkEnabled_ES384";
@@ -787,6 +834,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * @throws Exception
      */
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_sigAlg_ES512() throws Exception {
 
         String builderId = "jwkEnabled_ES512";
@@ -917,6 +965,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * @throws Exception
      */
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_encrypt_RS256() throws Exception {
 
         String builderId = "key_encrypt_good_RS256";
@@ -940,6 +989,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
     }
 
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_encrypt_RS384() throws Exception {
 
         String builderId = "key_encrypt_good_RS384";
@@ -963,6 +1013,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
     }
 
     @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_encrypt_RS512() throws Exception {
 
         String builderId = "key_encrypt_good_RS512";
@@ -986,6 +1037,29 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
     }
 
     /**************************************************************************/
+    /**
+     * Check if we can access the builder server using the ip address - our iSeries test systems sometimes have issues resolving
+     * the host name and address. We'll skip these tests if we can't resolve the address - we have enough coverage.
+     * 
+     * @throws Exception
+     */
+    private static void doesAddressResolve() throws Exception {
+
+        doesAddressResolve = true;
+
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL(SecurityFatHttpUtils.getServerIpUrlBase(builderServer)).openConnection();
+            connection.setRequestMethod("HEAD");
+            int responseCode = connection.getResponseCode();
+            if (responseCode != 200) {
+                doesAddressResolve = false;
+            }
+        } catch (Exception e) {
+            Log.info(thisClass, "doesAddressResolve", "Could not connect to the builder server using the ip address, will skip the tests in this class.  Exception was: " + e.getMessage());
+            doesAddressResolve = false;
+        }
+    }
+
     /**
      * <p>
      * Build the requested http url - use the http port, the build id and the

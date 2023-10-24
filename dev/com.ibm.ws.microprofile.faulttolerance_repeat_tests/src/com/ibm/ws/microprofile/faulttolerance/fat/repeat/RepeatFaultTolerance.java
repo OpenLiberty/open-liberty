@@ -72,7 +72,7 @@ public class RepeatFaultTolerance {
      * @return the new action
      */
     public static FeatureReplacementAction ft11metrics20Features(String server) {
-        return RepeatActions.forFeatureSet(ALL, MP21_METRICS20, server, TestMode.LITE);
+        return RepeatActions.forFeatureSet(ALL, MP21_METRICS20, new String[] { server }, TestMode.LITE);
     }
 
     /**
@@ -88,7 +88,7 @@ public class RepeatFaultTolerance {
      * @return the RepeatTests rule
      */
     public static RepeatTests repeatDefault(String server) {
-        return repeat(server, TestMode.FULL, MicroProfileActions.MP60, MicroProfileActions.MP40, MicroProfileActions.MP20);
+        return repeat(server, TestMode.FULL, MicroProfileActions.MP61, MicroProfileActions.MP40, MicroProfileActions.MP20);
     }
 
     /**
@@ -101,7 +101,9 @@ public class RepeatFaultTolerance {
      * @return the RepeatTests rule
      */
     public static RepeatTests repeatAll(String server) {
-        return repeat(server, TestMode.LITE, MicroProfileActions.MP60,
+        return repeat(server, TestMode.LITE,
+                      MicroProfileActions.MP61,
+                      MicroProfileActions.MP60,
                       MicroProfileActions.MP13,
                       MicroProfileActions.MP20,
                       MicroProfileActions.MP22,
@@ -119,7 +121,9 @@ public class RepeatFaultTolerance {
      * @return the RepeatTests rule
      */
     public static RepeatTests repeat20AndAbove(String server) {
-        return repeat(server, TestMode.FULL, MicroProfileActions.MP60,
+        return repeat(server, TestMode.FULL,
+                      MicroProfileActions.MP61,
+                      MicroProfileActions.MP60,
                       MicroProfileActions.MP22,
                       MicroProfileActions.MP30,
                       MicroProfileActions.MP32,

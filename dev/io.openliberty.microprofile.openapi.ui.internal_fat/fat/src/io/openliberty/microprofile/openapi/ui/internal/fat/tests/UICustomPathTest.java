@@ -87,7 +87,7 @@ public class UICustomPathTest {
         server.addEnvVar(DOC_PROPERTY_NAME, DOC_PATH_VALUE);
 
         //Set guards
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true", "-Dopen_api_path_enabled=true"));
+        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         server.startServer();
 
         Testcontainers.exposeHostPorts(server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());

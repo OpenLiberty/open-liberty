@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -59,7 +59,7 @@ public class FATValidateConcurrentMultiserver {
     private static final LibertyServer server2 = FATSuite.server2;
     
     private static AtomicInteger taskNumber = new AtomicInteger(1);
-    private static final String APP_NAME = "webApps.war";
+    private static final String APP_NAME = "webApps";
 
     /**
      * Start Servers.
@@ -68,11 +68,11 @@ public class FATValidateConcurrentMultiserver {
      */
     @BeforeClass
     public static void beforeClass() throws Exception {
-        WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME)
+        WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                 .addPackage("com.ibm.test.servlet")
-                .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/WEB-INF/web.xml"));
-        ShrinkHelper.exportToServer(server1, "apps", app);
-        ShrinkHelper.exportToServer(server2, "apps", app);
+                .addAsWebInfResource(new File("test-applications/" + APP_NAME + ".war/resources/WEB-INF/web.xml"));
+        ShrinkHelper.exportAppToServer(server1, app);
+        ShrinkHelper.exportAppToServer(server2, app);
     	
     	server1.startServer(true);
         server2.startServer(true);
@@ -185,7 +185,7 @@ public class FATValidateConcurrentMultiserver {
      * @throws IOException if an error occurs
      */
     protected StringBuilder runInServlet(LibertyServer server, String queryString) throws Exception {
-        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/multiServer?" + queryString);
+        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME + "?" + queryString);
         Log.info(getClass(), "runInServlet", "URL is " + url);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         try {

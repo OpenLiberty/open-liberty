@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,10 +14,12 @@ package com.ibm.ws.wsat.common.impl;
 
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
+import com.ibm.tx.remote.Vote;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.wsat.service.WSATContext;
+import com.ibm.ws.wsat.service.WSATException;
 import com.ibm.ws.wsat.tm.impl.TranManagerImpl;
 
 /**
@@ -35,6 +37,7 @@ public class WSATTransaction {
 
     private WSATCoordinator registration;
     private WSATCoordinator coordinator;
+    private final Boolean coordinatorLock = Boolean.valueOf(false);
     private final boolean recoveryTran; // true if this is being used for recovery
 
     private final long expiryTime; // time remaining before timeout
@@ -50,9 +53,7 @@ public class WSATTransaction {
     }
 
     public static WSATTransaction getTran(String globalId) {
-        WSATTransaction t2 = (WSATTransaction) tranService.getRemoteTranMgr().getResource(globalId);
-
-        return t2;
+        return (WSATTransaction) tranService.getRemoteTranMgr().getResource(globalId);
     }
 
     @Override
@@ -99,7 +100,7 @@ public class WSATTransaction {
      * Returns a timeout (in milliseconds) of the time remaining
      * before this transaction expires.
      */
-
+    @Trivial
     public long getTimeout() {
         return expiryTime;
     }
@@ -108,13 +109,12 @@ public class WSATTransaction {
      * Registration endpoint is the EPR for the service to be used by a
      * remote system to register as a participant in the transaction.
      */
-
+    @Trivial
     public WSATCoordinator setRegistration(EndpointReferenceType epr) {
-        WSATCoordinator reg = new WSATCoordinator(globalId, epr);
-        registration = reg;
-        return reg;
+        return registration = new WSATCoordinator(globalId, epr);
     }
 
+    @Trivial
     public WSATCoordinator getRegistration() {
         return registration;
     }
@@ -123,23 +123,28 @@ public class WSATTransaction {
      * Coordinator endpoint is the EPR for the service used by participants
      * to return responses to the 2PC protocol calls.
      */
-
-    public synchronized WSATCoordinator setCoordinator(EndpointReferenceType epr) {
-        WSATCoordinator coord = new WSATCoordinator(globalId, epr);
-        coordinator = coord;
-        return coord;
+    @Trivial
+    public WSATCoordinator setCoordinator(EndpointReferenceType epr) {
+        synchronized (coordinatorLock) {
+            return coordinator = new WSATCoordinator(globalId, epr);
+        }
     }
 
     /*
      * Reset coordinator during recovery processing
      */
-    public synchronized WSATCoordinator setCoordinator(WSATCoordinator coord) {
-        coordinator = coord;
-        return coord;
+    @Trivial
+    public WSATCoordinator setCoordinator(WSATCoordinator coord) {
+        synchronized (coordinatorLock) {
+            return coordinator = coord;
+        }
     }
 
-    public synchronized WSATCoordinator getCoordinator() {
-        return coordinator;
+    @Trivial
+    public WSATCoordinator getCoordinator() {
+        synchronized (coordinatorLock) {
+            return coordinator;
+        }
     }
 
     /*
@@ -163,5 +168,31 @@ public class WSATTransaction {
     @Override
     public String toString() {
         return getClass().getSimpleName() + ": " + globalId;
+    }
+
+    // Protocol message handlers are here so they can be synchronized
+
+    /**
+     * @throws WSATException
+     *
+     */
+    public synchronized void rollback() throws WSATException {
+        tranService.rollbackTransaction(globalId);
+    }
+
+    /**
+     * @return
+     * @throws WSATException
+     */
+    public synchronized Vote prepare() throws WSATException {
+        return tranService.prepareTransaction(globalId);
+    }
+
+    /**
+     * @throws WSATException
+     *
+     */
+    public synchronized void commit() throws WSATException {
+        tranService.commitTransaction(globalId);
     }
 }

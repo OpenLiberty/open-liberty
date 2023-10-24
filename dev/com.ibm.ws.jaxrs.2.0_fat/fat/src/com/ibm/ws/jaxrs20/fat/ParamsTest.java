@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -55,8 +55,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -1427,7 +1426,7 @@ public class ParamsTest {
      */
     @Test
     public void testMultipleQueryParam() throws Exception {
-        String ctorVal = ((JakartaEE9Action.isActive()) || (JakartaEE10Action.isActive())) ? "notvalid-exceptInEE9" : "somequeryid";
+        String ctorVal =(JakartaEEAction.isEE9OrLaterActive()) ? "notvalid-exceptInEE9" : "somequeryid";
         assertEquals("getMultiQueryParameter:" + ctorVal + ";hi;789;1moreparam2go",
                      sendGoodRequestAndGetResponse("query/multiple?queryid=somequeryid&multiParam1=hi&123Param=789&1MOREParam=1moreparam2go",
                                                    HttpGet.class));

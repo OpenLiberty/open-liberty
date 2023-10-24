@@ -36,7 +36,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/context")
+@WebServlet("/testContext")
 @ApplicationScoped // Make this a bean so that there's one bean in the archive, otherwise CDI gets disabled and @Inject doesn't work
 public class ContextAPIServlet extends FATServlet {
 
@@ -90,7 +90,7 @@ public class ContextAPIServlet extends FATServlet {
     public void testContextStorage() {
         ContextStorage storage = ContextStorage.get();
         Context context = Context.current();
-        try(Scope scope = storage.attach(context)){
+        try (Scope scope = storage.attach(context)) {
             assertNotNull(scope);
             assertNotSame(Scope.noop(), scope);
             Context stored = storage.current();
@@ -107,7 +107,7 @@ public class ContextAPIServlet extends FATServlet {
         ContextStorageProvider provider = new MyContextStorageProvider();
         ContextStorage storage = provider.get();
         Context context = Context.current();
-        try(Scope scope = storage.attach(context)){
+        try (Scope scope = storage.attach(context)) {
             assertNotNull(scope);
             assertEquals(Scope.noop(), scope);
             Context stored = storage.current();

@@ -30,7 +30,7 @@ import com.ibm.ws.jsf.container.fat.FATSuite;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
@@ -63,7 +63,7 @@ public class JSF22FlowsTests extends FATServletClient {
     @BeforeClass
     public static void setup() throws Exception {
 
-        isEE10 = JakartaEE10Action.isActive();
+        isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         server.removeAllInstalledAppsForValidation();
 

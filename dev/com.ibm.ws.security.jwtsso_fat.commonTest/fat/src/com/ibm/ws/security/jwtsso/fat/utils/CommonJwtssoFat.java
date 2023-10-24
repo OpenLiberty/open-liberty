@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.Base64;
 
 import javax.json.Json;
@@ -31,6 +32,7 @@ import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -73,5 +75,11 @@ public class CommonJwtssoFat extends CommonSecurityFat {
         String jwtHeader = extractAndDecodeJwtHeader(jwt);
         JsonObject header = convertStringToJsonObject(jwtHeader);
         return header;
+    }
+
+    protected static void addServerStartupAllowedErrors(LibertyServer server) throws Exception {
+
+        server.addIgnoredErrors(Arrays.asList(MessageConstants.CWWKE0701E_BUNDLE_ACTIVATOR_FAILURE + ": bundle io.openliberty.checkpoint:"));
+
     }
 }

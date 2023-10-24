@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.text.MessageFormat;
 import java.util.EnumMap;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,6 +49,8 @@ public class ProcessControlHelper {
 
     public static final String INTERNAL_PID = "pid";
     public static final String INTERNAL_PID_FILE = "pid-file";
+
+    private static final boolean WINDOWS = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("windows");
 
     final String serverName;
     final String serverConfigDir;
@@ -83,73 +86,99 @@ public class ProcessControlHelper {
         // Use initialized bootstrap configuration to find the server lock file.
         ServerLock serverLock = ServerLock.createTestLock(bootProps);
 
-        // we can not pre-test the server: on some platforms, the server lock file
+        // We can not pre-test the server: on some platforms, the server lock file
         // can be deleted, which means waiting to see if it is there leads to
         // an abandoned server.
-        ReturnCode stopRc = ReturnCode.STOP_ACTION;
+        ReturnCode rc = ReturnCode.STOP_ACTION;;
 
         // The lock file may have been (erroneously) deleted: this can happen on linux
         boolean lockExists = serverLock.lockFileExists();
 
-        if (lockExists) {
-            // If the lock exists, check quickly to see if the process is holding it.
-            if (serverLock.testServerRunning()) {
-                // we need to tell the server to stop...
-                ServerCommandClient scc = new ServerCommandClient(bootProps);
-
-                if (scc.isValid()) {
-                    stopRc = scc.stopServer(launchArgs.getOption("force") != null);
-                } else {
-                    // we can't communicate to the server...
-                    stopRc = waitForCommandFile(scc, new Integer(BootstrapConstants.SERVER_STOP_WAIT_TIME_DEFAULT));
-
-                    if (stopRc == ReturnCode.OK) {
-                        stopRc = scc.stopServer(launchArgs.getOption("force") != null);
-                    }
-                }
-            } else {
-                // nope: lock not held, we're already stopped
-                stopRc = ReturnCode.REDUNDANT_ACTION_STATUS;
-            }
-        } else {
-            // no lock file: we assume the server is not running, we have nothing to do.
-            stopRc = ReturnCode.REDUNDANT_ACTION_STATUS;
-        }
-
-        int timeout = launchArgs.getStopTimeout();
-
-        // If the lock file existed before we attempted to stop the server,
-        // wait until we can obtain the server lock file (because the server process has stopped)
-        if (stopRc == ReturnCode.OK && lockExists) {
-            stopRc = serverLock.waitForStop(timeout);
-        }
-
-        if (stopRc == ReturnCode.OK) {
-            String pid = getPID();
-            if (pid != null) {
-                stopRc = waitForProcessStop(pid, timeout);
-            }
-        }
-
-        if (stopRc == ReturnCode.OK) {
-            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverStopped"), serverName));
-        } else if (stopRc == ReturnCode.REDUNDANT_ACTION_STATUS) {
+        if (!lockExists) {
+            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.serverLockFileDoesNotExist"), BootstrapConstants.S_LOCK_FILE));
             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverNotRunning"), serverName));
-        } else if (stopRc == ReturnCode.SERVER_COMMAND_PORT_DISABLED_STATUS) {
-            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.serverStopCommandPortDisabled"), serverName));
-        } else {
-            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverStopException"), serverName));
+            return ReturnCode.REDUNDANT_ACTION_STATUS;
         }
 
-        return stopRc;
+        // If the lock exists, check quickly to see if the process is holding it.
+        if (!serverLock.testServerRunning()) {
+            // lock not held, we're already stopped
+            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverNotRunning"), serverName));
+            return ReturnCode.REDUNDANT_ACTION_STATUS;
+
+        }
+
+        // We need to tell the server to stop. The .sCommand has the info we need to communicate with the server
+        ServerCommandClient scc = new ServerCommandClient(bootProps);
+        if (!scc.isValid()) {
+            // We can't communicate to the server.   Since the server is running, it might be starting up.
+            rc = waitForCommandFile(scc, new Integer(BootstrapConstants.SERVER_STOP_WAIT_TIME_DEFAULT));
+
+            if (rc != ReturnCode.OK) {
+                System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.serverCommandFileNotExist"), BootstrapConstants.S_COMMAND_FILE));
+                System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverNotRunning"), serverName));
+                return rc;
+            }
+        }
+
+        // Tell the server to stop
+        rc = scc.stopServer(launchArgs.getOption("force") != null);
+        if (rc != ReturnCode.OK) {
+            if (rc == ReturnCode.SERVER_COMMAND_PORT_DISABLED_STATUS) {
+                System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.serverStopCommandPortDisabled"), serverName));
+            } else {
+                System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverStopException"), serverName));
+            }
+            return rc;
+        }
+
+        // Wait for server to stop
+        final int timeout = launchArgs.getStopTimeout();
+        final long startTime = System.currentTimeMillis();
+        final long endTime = startTime + timeout * 1000;;
+
+        // Wait until the server releases the lock file.  That is, wait until we can obtain it.
+        rc = serverLock.waitForStop(endTime);
+        if (rc != ReturnCode.OK) {
+            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.timeoutWaitingForServerToReleaseLock"), BootstrapConstants.S_LOCK_FILE));
+            return rc; //tempting to continue anyway, even though time has expired and can't obtain lock file.   Possibly if we check the process we see that it is stopped?
+        }
+
+        // There is a small window between when the server releases the lock file and when
+        // the server process stops.  Ensure the process has actually stopped.
+        String pid = getPID();
+
+        // On Windows, the pid seems to be always null.
+        // On other systems, if pid is null, optimistically assume the process is no longer running.
+        if (pid != null || WINDOWS) {
+            rc = waitForProcessStop(pid, endTime);
+            if (rc != ReturnCode.OK) {
+                System.out.println(BootstrapConstants.messages.getString("warning.timeoutWaitingForServerProcessToStop"));
+                return rc;
+            }
+        }
+
+        System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverStopped"), serverName));
+
+        return rc;
     }
 
-    private ReturnCode waitForProcessStop(String pid, int timeout) {
-        ProcessStatus ps = new PSProcessStatusImpl(pid);
+    private ReturnCode waitForProcessStop(String pid, long endTime) {
+        ProcessStatus ps;
 
-        final long timeoutMillis = timeout * 1000;
-        final long startTime = System.currentTimeMillis();
-        final long expireTime = startTime + timeoutMillis;
+        // If the pid is null, which is the expected case on Windows, wait on the lock for the console.log file.
+        // Previously, we did not wait for the process to stop when the pid was null.  However, there is a delay
+        // between the time the server releases the .slock file and when the server finally stops.  This delay should be
+        // very small, but it is non-zero.
+        // The console.log might be held open by another process.  For example it might be open in an editor.
+        // In such a case, we might wait the entire timeout period, which would normally be an excessive delay
+        // since the caller should have already waited for the server to release the .slock file before calling
+        // this method.
+        if (pid == null) {
+            ps = new FileShareLockProcessStatusImpl(consoleLogFile);
+        } else {
+            ps = new PSProcessStatusImpl(pid);
+        }
 
         do {
             try {
@@ -159,7 +188,7 @@ public class ProcessControlHelper {
                 }
 
                 long timeNow = System.currentTimeMillis();
-                if ((timeNow) > expireTime) {
+                if (timeNow > endTime) {
                     break;
                 }
                 Thread.sleep(BootstrapConstants.POLL_INTERVAL_MS);

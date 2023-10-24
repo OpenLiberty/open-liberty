@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -70,6 +71,26 @@ public class DataValidationTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that a constraint placed on the parameterized type variable for the Id type
+     * enforces validation on that type when methods from the repository are used.
+     */
+    //TODO enable once Jakarta Validation allows constraints on type variables of interface
+    //@Test
+    public void testIdTypeVariableWithConstraint() {
+        // invalid method argument type
+        try {
+            int count = creatures.countById(-1L);
+            fail("Did not detect violated constraint. Instead found: " + count);
+        } catch (ConstraintViolationException x) {
+            Set<?> violations = x.getConstraintViolations();
+            if (violations.isEmpty())
+                throw x;
+        }
+
+        assertEquals(0, creatures.countById(1000000L));
+    }
+
+    /**
      * Checks whether there is automatic integration between Jakarta Persistence and
      * Jakarta Validation when Jakarta Data isn't involved. In this case, the entity
      * should be automatically validated.
@@ -91,7 +112,8 @@ public class DataValidationTestServlet extends FATServlet {
     /**
      * Attempt to save a Java class (no entity annotation) that violates constraints for PastOrPresent.
      */
-    @Test
+    //TODO enable once Jakarta Validation allows @Valid on type variables of interface
+    //@Test
     public void testInsertInvalidPastOrPresent_Class() {
         Creature c = new Creature(100l, "Black Bear", "Ursus americanus", //
                         BigDecimal.valueOf(44107730l, 6), BigDecimal.valueOf(-92489272l, 6), //
@@ -298,7 +320,8 @@ public class DataValidationTestServlet extends FATServlet {
     /**
      * Attempt to save updates to Java class entities (no entity annotation) where the updates violate one or more constraints.
      */
-    @Test
+    //TODO enable once Jakarta Validation allows @Valid on type variables of interface
+    //@Test
     public void testUpdateSaveInvalidPatternAndMax_Class() {
         final ZoneId CENTRAL = ZoneId.of("America/Chicago");
         Iterable<Creature> added = creatures.saveAll(List.of( //
@@ -513,5 +536,51 @@ public class DataValidationTestServlet extends FATServlet {
                 throw x;
         }
         assertEquals(Collections.EMPTY_SET, violations);
+    }
+
+    /**
+     * Verify that a repository method parameter that is annotated with a constraint is validated.
+     */
+    @Test
+    public void testValidateMethodParameters() {
+        // valid parameter
+        rectangles.findByWidth(10);
+
+        // invalid parameter
+        try {
+            List<Rectangle> found = rectangles.findByWidth(-20);
+            fail("Did not detect violated constraint. Instead found: " + found);
+        } catch (ConstraintViolationException x) {
+            Set<?> violations = x.getConstraintViolations();
+            if (violations.isEmpty())
+                throw x;
+        }
+    }
+
+    /**
+     * Verify that a repository method return type that is annotated with a constraint is validated.
+     */
+    @Test
+    public void testValidateReturnType() {
+        // invalid empty return value
+        try {
+            Rectangle[] found = rectangles.findByIdStartsWith("R8");
+            fail("Did not detect violated constraint. Instead found: " + Arrays.toString(found));
+        } catch (ConstraintViolationException x) {
+            Set<?> violations = x.getConstraintViolations();
+            if (violations.isEmpty())
+                throw x;
+        }
+
+        rectangles.save(new Rectangle("R8", 800L, 880L, 18, 80));
+
+        // valid non-null return value
+        Rectangle[] r = rectangles.findByIdStartsWith("R8");
+        assertEquals(1, r.length);
+        assertEquals("R8", r[0].id());
+        assertEquals(800L, r[0].x());
+        assertEquals(Long.valueOf(880L), r[0].y());
+        assertEquals(18, r[0].width());
+        assertEquals(Integer.valueOf(80), r[0].height());
     }
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -28,7 +28,7 @@ import jakarta.servlet.annotation.WebServlet;
  * Test that a sampler can be provided via SPI
  */
 @SuppressWarnings("serial")
-@WebServlet("/sampler")
+@WebServlet("/testSampler")
 @ApplicationScoped // Make this a bean so that there's one bean in the archive, otherwise CDI gets disabled and @Inject doesn't work
 public class SamplerTestServlet extends FATServlet {
 

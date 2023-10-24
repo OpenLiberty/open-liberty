@@ -88,7 +88,7 @@ public class MultiRecoveryTest {
 	}
 	
 	@Before
-	public void before() throws IOException {
+	public void before() throws Exception {
 		WSATTest.callClearResourcesServlet(recoveryServer, server1, server2);
 	}
 
@@ -115,9 +115,11 @@ public class MultiRecoveryTest {
 		// wait for crashing servers to have gone away
 		if ("both".equals(crashingServers) || crashingServers.equals("server1")) {
 			assertNotNull(server.getServerName() + " did not crash", server.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
+			server.postStopServerArchive();
 		}
 		if ("both".equals(crashingServers) || crashingServers.equals("server2")) {
 			assertNotNull(server2.getServerName() + " did not crash", server2.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
+			server2.postStopServerArchive();
 		}
 
 		// Start the ones that need restarting

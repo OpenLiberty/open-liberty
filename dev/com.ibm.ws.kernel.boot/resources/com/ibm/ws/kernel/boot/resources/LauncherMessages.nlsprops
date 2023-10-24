@@ -438,6 +438,10 @@ warning.unableToPackageLooseConfigFileMissingPath=CWWKE0095W: The server cannot 
 warning.unableToPackageLooseConfigFileMissingPath.explanation=The specified loose configuration application XML file contains invalid information about the location of the files. For example, it might specify a directory that cannot be found. Paths in this XML file should be relative to the configuration directory of the server. The archive represented by this file will not be included in the packaged server output.
 warning.unableToPackageLooseConfigFileMissingPath.useraction=Modify the paths in the loose configuration application XML file to point to the correct location that contains the application files. 
 
+warning.tooManySymbolicLinks=CWWKE0096W: Too many symbolic links were encountered when the system tried to resolve the following path: {0}.
+warning.tooManySymbolicLinks.explanation=Symbolic links are shortcuts that point to other files or directories. This error occurs when the system encounters too many symbolic links in a chain and it is unable to resolve the path.
+warning.tooManySymbolicLinks.useraction=To resolve this issue, check the symbolic links in the path and ensure that they do not create circular references. You might also use the 'readlink' command to inspect individual links in the chain.
+
 warn.packageRuntime.include.unknownOption=CWWKE0099W: Unable to use option --include={0}, will use --include=wlp instead.
 warn.packageRuntime.include.unknownOption.explanation=The option was ignored because it was not recognized.
 warn.packageRuntime.include.unknownOption.useraction=Retry the command using valid options. Try using --help for a list of valid options.
@@ -767,6 +771,22 @@ error.checkpoint.failed.selinux.netdiag.useraction=If SELinux is enabled in enfo
 error.checkpoint.restore.failed.no.recovery=CWWKE0964E: Restoring the checkpoint server process failed. Check the {0} log to determine why the checkpoint process was not restored. The server did not launch because checkpoint restore recovery is disabled.
 error.checkpoint.restore.failed.no.recovery.explanation=An error occurred restoring a checkpoint server process. The server did not launch because checkpoint restore recovery is disabled.
 error.checkpoint.restore.failed.no.recovery.useraction=Check the logs to determine why the checkpoint process was not restored. To enable restore failure recovery, set the CRIU_RESTORE_DISABLE_RECOVERY environment variable to true.
+
+warning.serverLockFileNotExist=CWWKE0965W: The {0} server lock file does not exist.
+warning.serverLockFileNotExist.explanation=The warning might indicate that the server is not running or the lock file was unexpectedly deleted.
+warning.serverLockFileNotExist.useraction=Check whether the server is running by using appropriate system monitoring tools. On Windows, you can use the Task Manager. On UNIX-like systems, use the 'ps -ef' command.
+
+warning.serverCommandFileNotExist=CWWKE0966W: The {0} server command file does not exist.
+warning.serverCommandFileNotExist.explanation=The warning suggests that the server command file, which contains essential information for establishing a socket connection with the server, is missing. The server might not be running or the file might have been unexpectedly deleted.
+warning.serverCommandFileNotExist.useraction=Check whether the server is running by using appropriate system monitoring tools. On Windows, you can use the Task Manager. On UNIX-like systems, use the 'ps -ef' command. If the server is running, you must restart it, which involves stopping the process. Use the Task Manager on Windows to stop the process. On UNIX-like systems, use the 'kill' command.
+
+warning.timeoutWaitingForServerToReleaseLock=CWWKE0967W: A timeout occurred while waiting for the server to release the {0} server lock file.
+warning.timeoutWaitingForServerToReleaseLock.explanation=The warning indicates a timeout occurred. The timeout might be due to a slow server shutdown, server hang, or file locking by another program.
+warning.timeoutWaitingForServerToReleaseLock.useraction=If the server is still running, consider increasing the timeout value for the 'server stop' command. If the server is stopped, use file monitoring tools to check whether another program locked the file.
+
+warning.timeoutWaitingForServerProcessToStop=CWWKE0968W: A timeout occurred while waiting for the server process to stop.
+warning.timeoutWaitingForServerProcessToStop.explanation=The server did not stop within the time allowed by the timeout value. This might be due to a slow server shutdown or a server hang.   
+warning.timeoutWaitingForServerProcessToStop.useraction=If the server is still running, consider increasing the timeout value for the 'server stop' command. On UNIX-like systems, the server stop command waits for the server process to stop. On Windows, the command waits to obtain a lock on the console.log file. Use file monitoring tools to check whether another program, such as an editor, locked the console.log file.
 
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.

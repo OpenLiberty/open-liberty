@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -28,6 +28,7 @@ import jakarta.servlet.ServletContextEvent;
 public class Weld50InitialListener extends WeldInitialListener {
 
     private final BeanDeploymentModule module;
+    private boolean initialized = false;
 
     public Weld50InitialListener(BeanManagerImpl beanManagerImpl) {
         super(beanManagerImpl);
@@ -38,6 +39,7 @@ public class Weld50InitialListener extends WeldInitialListener {
     @Override
     public void contextInitialized(ServletContextEvent event) {
         super.contextInitialized(event);
+        initialized = true;
         if (this.module != null) {
             module.fireEvent(Startup.class, new Startup(), Any.Literal.INSTANCE);
         }
@@ -48,6 +50,8 @@ public class Weld50InitialListener extends WeldInitialListener {
         if (this.module != null) {
             module.fireEvent(Shutdown.class, new Shutdown(), Any.Literal.INSTANCE);
         }
-        super.contextDestroyed(event);
+        if (initialized) {
+            super.contextDestroyed(event);
+        }
     }
 }

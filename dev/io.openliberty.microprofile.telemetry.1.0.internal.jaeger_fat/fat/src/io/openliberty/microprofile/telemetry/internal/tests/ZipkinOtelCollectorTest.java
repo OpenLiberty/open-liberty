@@ -43,6 +43,9 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
@@ -66,6 +69,9 @@ public class ZipkinOtelCollectorTest {
     //Start otel collector container -> Requires zipkin mapped port
     @ClassRule
     public static Network network = Network.newNetwork();
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat("spanTestServer", MicroProfileActions.MP61, MicroProfileActions.MP60);
 
     private static final Class<?> c = ZipkinTest.class;
 
@@ -157,7 +163,11 @@ public class ZipkinOtelCollectorTest {
         assertThat(child, hasParentSpanId(parent.getId()));
 
         // Note that zipkin lowercases the name
-        assertThat(parent, hasProperty("name", equalToIgnoringCase("/spanTest/subspan")));
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            assertThat(parent, hasProperty("name", equalToIgnoringCase("/spanTest/subspan")));
+        } else {
+            assertThat(parent, hasProperty("name", equalToIgnoringCase("get /spanTest/subspan")));
+        }
         assertThat(child, hasProperty("name", equalToIgnoringCase(TestResource.TEST_OPERATION_NAME)));
     }
 

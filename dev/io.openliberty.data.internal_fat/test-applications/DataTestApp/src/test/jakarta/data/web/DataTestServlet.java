@@ -57,19 +57,20 @@ import java.util.stream.Stream;
 
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
+import jakarta.data.Limit;
+import jakarta.data.Sort;
+import jakarta.data.Streamable;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
+import jakarta.data.exceptions.EntityExistsException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
-import jakarta.data.repository.KeysetAwarePage;
-import jakarta.data.repository.KeysetAwareSlice;
-import jakarta.data.repository.Limit;
-import jakarta.data.repository.Page;
-import jakarta.data.repository.Pageable;
-import jakarta.data.repository.Slice;
-import jakarta.data.repository.Sort;
-import jakarta.data.repository.Streamable;
+import jakarta.data.page.KeysetAwarePage;
+import jakarta.data.page.KeysetAwareSlice;
+import jakarta.data.page.Page;
+import jakarta.data.page.Pageable;
+import jakarta.data.page.Slice;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -89,6 +90,7 @@ import jakarta.transaction.UserTransaction;
 
 import org.junit.Test;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
 
 @DataSourceDefinition(name = "java:app/jdbc/DerbyDataSource",
@@ -103,6 +105,9 @@ public class DataTestServlet extends FATServlet {
 
     @Inject
     Houses houses;
+
+    @Inject
+    MultiRepository multi;
 
     @Inject
     Packages packages;
@@ -145,27 +150,27 @@ public class DataTestServlet extends FATServlet {
     public void init(ServletConfig config) throws ServletException {
         // Do not add or remove from this data in tests.
         // Tests must be able to rely on this data always being present.
-        primes.save(new Prime(2, "2", "10", 1, "II", "two"),
-                    new Prime(3, "3", "11", 2, "III", "three"),
-                    new Prime(5, "5", "101", 2, "V", "five"),
-                    new Prime(7, "7", "111", 3, "VII", "seven"),
-                    new Prime(11, "B", "1011", 3, "XI", "eleven"),
-                    new Prime(13, "D", "1101", 3, "XIII", "thirteen"),
-                    new Prime(17, "11", "10001", 2, "XVII", "seventeen"),
-                    new Prime(19, "13", "10011", 3, "XIX", "nineteen"),
-                    new Prime(23, "17", "10111", 4, "XXIII", "twenty-three"),
-                    new Prime(29, "1D", "11101", 4, "XXIX", "twenty-nine"),
-                    new Prime(31, "1F", "11111", 5, "XXXI", "thirty-one"),
-                    new Prime(37, "25", "100101", 3, "XXXVII", "thirty-seven"),
-                    new Prime(41, "29", "101001", 3, "XLI", "forty-one"),
-                    new Prime(43, "2B", "101011", 4, "XLIII", "forty-three"),
-                    new Prime(47, "2F", "101111", 5, "XLVII", "forty-seven"),
-                    new Prime(4001, "FA1", "111110100001", 7, null, "four thousand one"), // romanNumeralSymbols null
-                    new Prime(4003, "FA3", "111110100011", 8, null, "four thousand three"), // romanNumeralSymbols null
-                    new Prime(4007, "Fa7", "111110100111", 9, null, "four thousand seven"), // romanNumeralSymbols null
-                    new Prime(4013, "FAD", "111110101101", 9, "", "Four Thousand Thirteen"), // empty list of romanNumeralSymbols
-                    new Prime(4019, "FB3", "111110110011", 9, "", "four thousand nineteen"), // empty list of romanNumeralSymbols
-                    new Prime(4021, "FB5", "111110110101", 9, "", " Four thousand twenty-one ")); // extra blank space at beginning and end
+        primes.persist(new Prime(2, "2", "10", 1, "II", "two"),
+                       new Prime(3, "3", "11", 2, "III", "three"),
+                       new Prime(5, "5", "101", 2, "V", "five"),
+                       new Prime(7, "7", "111", 3, "VII", "seven"),
+                       new Prime(11, "B", "1011", 3, "XI", "eleven"),
+                       new Prime(13, "D", "1101", 3, "XIII", "thirteen"),
+                       new Prime(17, "11", "10001", 2, "XVII", "seventeen"),
+                       new Prime(19, "13", "10011", 3, "XIX", "nineteen"),
+                       new Prime(23, "17", "10111", 4, "XXIII", "twenty-three"),
+                       new Prime(29, "1D", "11101", 4, "XXIX", "twenty-nine"),
+                       new Prime(31, "1F", "11111", 5, "XXXI", "thirty-one"),
+                       new Prime(37, "25", "100101", 3, "XXXVII", "thirty-seven"),
+                       new Prime(41, "29", "101001", 3, "XLI", "forty-one"),
+                       new Prime(43, "2B", "101011", 4, "XLIII", "forty-three"),
+                       new Prime(47, "2F", "101111", 5, "XLVII", "forty-seven"),
+                       new Prime(4001, "FA1", "111110100001", 7, null, "four thousand one"), // romanNumeralSymbols null
+                       new Prime(4003, "FA3", "111110100011", 8, null, "four thousand three"), // romanNumeralSymbols null
+                       new Prime(4007, "Fa7", "111110100111", 9, null, "four thousand seven"), // romanNumeralSymbols null
+                       new Prime(4013, "FAD", "111110101101", 9, "", "Four Thousand Thirteen"), // empty list of romanNumeralSymbols
+                       new Prime(4019, "FB3", "111110110011", 9, "", "four thousand nineteen"), // empty list of romanNumeralSymbols
+                       new Prime(4021, "FB5", "111110110101", 9, "", " Four thousand twenty-one ")); // extra blank space at beginning and end
     }
 
     /**
@@ -561,11 +566,22 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(15, primes.countByIdLessThan(50));
 
-        assertEquals(Integer.valueOf(0), primes.countNumberIdBetween(32, 36));
+        assertEquals(Integer.valueOf(0), primes.countByNumberIdBetween(32, 36));
 
-        assertEquals(Integer.valueOf(3), primes.countNumberIdBetween(40, 50));
+        assertEquals(Integer.valueOf(3), primes.countByNumberIdBetween(40, 50));
 
         assertEquals(Short.valueOf((short) 14), primes.countByIdBetweenAndEvenNot(0, 50, true).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+    }
+
+    /**
+     * Count method that uses the query-by-parameters pattern.
+     */
+    @Test
+    public void testCountQueryByParameters() {
+        assertEquals(1, primes.count(1, true));
+        assertEquals(0, primes.count(1, false));
+        assertEquals(0, primes.count(2, true));
+        assertEquals(3, primes.count(2, false));
     }
 
     /**
@@ -604,9 +620,20 @@ public class DataTestServlet extends FATServlet {
         p3.lastName = "TestCustomRepositoryInterface";
         p3.ssn_id = 432446688;
 
-        people.save(Set.of(p1, p2, p3));
+        people.updateOrAdd(Set.of(p1, p2, p3));
 
         assertEquals(3L, people.countByIdBetween(400000000L, 499999999L));
+
+        Person p4 = new Person();
+        p4.firstName = "Cathy";
+        p4.lastName = "TestCustomRepositoryInterface";
+        p4.ssn_id = p1.ssn_id;
+        people.updateOrAdd(List.of(p4));
+
+        assertEquals(List.of("Cathy", "Charles", "Claire"),
+                     Arrays.stream(people.findByLastName("TestCustomRepositoryInterface"))
+                                     .map(p -> p.firstName)
+                                     .collect(Collectors.toList()));
 
         assertEquals(1L, people.deleteByIdBetween(400000000L, 449999999L));
 
@@ -662,6 +689,98 @@ public class DataTestServlet extends FATServlet {
         }
 
         products.clear();
+    }
+
+    /**
+     * Delete method that uses the query-by-parameters pattern.
+     */
+    @Test
+    public void testDeleteQueryByParameters() {
+        houses.deleteAll();
+
+        House h1 = new House();
+        h1.area = 1600;
+        h1.garage = new Garage();
+        h1.garage.area = 190;
+        h1.garage.door = new GarageDoor();
+        h1.garage.door.setHeight(9);
+        h1.garage.door.setWidth(9);
+        h1.garage.type = Garage.Type.Detached;
+        h1.kitchen = new Kitchen();
+        h1.kitchen.length = 14;
+        h1.kitchen.width = 13;
+        h1.lotSize = 0.16f;
+        h1.numBedrooms = 2;
+        h1.parcelId = "TestDeleteQueryByParameters-1";
+        h1.purchasePrice = 116000;
+        h1.sold = Year.of(2016);
+        houses.insert(h1);
+
+        House h2 = new House();
+        h2.area = 2200;
+        h2.garage = new Garage();
+        h2.garage.area = 230;
+        h2.garage.door = new GarageDoor();
+        h2.garage.door.setHeight(9);
+        h2.garage.door.setWidth(10);
+        h2.garage.type = Garage.Type.Attached;
+        h2.kitchen = new Kitchen();
+        h2.kitchen.length = 14;
+        h2.kitchen.width = 18;
+        h2.lotSize = 0.22f;
+        h2.numBedrooms = 5;
+        h2.parcelId = "TestDeleteQueryByParameters-2";
+        h2.purchasePrice = 212000;
+        h2.sold = Year.of(2022);
+        houses.insert(h2);
+
+        House h3 = new House();
+        h3.area = 1300;
+        h3.kitchen = new Kitchen();
+        h3.kitchen.length = 13;
+        h2.kitchen.width = 12;
+        h3.lotSize = 0.13f;
+        h3.numBedrooms = 2;
+        h3.parcelId = "TestDeleteQueryByParameters-3";
+        h3.purchasePrice = 83000;
+        h3.sold = Year.of(2013);
+        houses.insert(h3);
+
+        House h4 = new House();
+        h4.area = 2400;
+        h4.garage = new Garage();
+        h4.garage.area = 240;
+        h4.garage.door = new GarageDoor();
+        h4.garage.door.setHeight(9);
+        h4.garage.door.setWidth(12);
+        h4.garage.type = Garage.Type.Detached;
+        h4.kitchen = new Kitchen();
+        h4.kitchen.length = 17;
+        h4.kitchen.width = 14;
+        h4.lotSize = 0.24f;
+        h4.numBedrooms = 5;
+        h4.parcelId = "TestDeleteQueryByParameters-4";
+        h4.purchasePrice = 144000;
+        h4.sold = Year.of(2014);
+        houses.insert(h4);
+
+        assertEquals(2, houses.deleteBasedOnGarage(Garage.Type.Detached, 9));
+
+        House h = houses.remove("TestDeleteQueryByParameters-2").orElseThrow();
+        assertEquals(2200, h.area);
+        assertEquals(230, h.garage.area);
+        assertEquals(9, h.garage.door.getHeight());
+        assertEquals(10, h.garage.door.getWidth());
+        assertEquals(Garage.Type.Attached, h.garage.type);
+        assertEquals(14, h.kitchen.length);
+        assertEquals(18, h.kitchen.width);
+        assertEquals(0.22f, h.lotSize, 0.001f);
+        assertEquals(5, h.numBedrooms);
+        assertEquals("TestDeleteQueryByParameters-2", h.parcelId);
+        assertEquals(212000, h.purchasePrice, 0.001);
+        assertEquals(Year.of(2022), h.sold);
+
+        assertEquals(1, houses.deleteAll());
     }
 
     /**
@@ -896,6 +1015,25 @@ public class DataTestServlet extends FATServlet {
 
         // Query and order by embeddable attributes
 
+        List<House> list = houses.findWithGarageDoorDimensions(12, 8);
+        assertEquals(1, list.size());
+        h = list.get(0);
+        assertEquals("TestEmbeddable-204-2992-20", h.parcelId);
+        assertEquals(2000, h.area);
+        assertNotNull(h.garage);
+        assertEquals(220, h.garage.area);
+        assertEquals(Garage.Type.Detached, h.garage.type);
+        assertNotNull(h.garage.door);
+        assertEquals(8, h.garage.door.getHeight());
+        assertEquals(12, h.garage.door.getWidth());
+        assertNotNull(h.kitchen);
+        assertEquals(16, h.kitchen.length);
+        assertEquals(13, h.kitchen.width);
+        assertEquals(0.18f, h.lotSize, 0.001f);
+        assertEquals(4, h.numBedrooms);
+        assertEquals(188000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2020), h.sold);
+
         List<House> found = houses.findByGarageTypeOrderByGarageDoorWidthDesc(Garage.Type.Detached);
         assertEquals(found.toString(), 2, found.size());
 
@@ -932,6 +1070,47 @@ public class DataTestServlet extends FATServlet {
         assertEquals(4, h.numBedrooms);
         assertEquals(188000f, h.purchasePrice, 0.001f);
         assertEquals(Year.of(2020), h.sold);
+
+        // Sorting with type-safe StaticMetamodel constant-like fields
+
+        assertEquals(List.of("TestEmbeddable-404-4418-40",
+                             "TestEmbeddable-204-2992-20",
+                             "TestEmbeddable-104-2288-60",
+                             "TestEmbeddable-304-3655-30"),
+                     houses.findByAreaGreaterThan(1500,
+                                                  Sort.desc(House_.numBedrooms.name()),
+                                                  Sort.asc(House_.LotSize.name()))
+                                     .map(house -> house.parcelId)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of("TestEmbeddable-404-4418-40",
+                             "TestEmbeddable-304-3655-30",
+                             "TestEmbeddable-104-2288-60",
+                             "TestEmbeddable-204-2992-20"),
+                     houses.findByAreaGreaterThan(1400,
+                                                  House_.garage_door_height.desc(),
+                                                  House_.kitchen_width.asc(),
+                                                  House_.AREA.asc())
+                                     .map(house -> house.parcelId)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of("TestEmbeddable-404-4418-40",
+                             "TestEmbeddable-304-3655-30",
+                             "TestEmbeddable-204-2992-20",
+                             "TestEmbeddable-104-2288-60"),
+                     houses.findByAreaGreaterThan(1300,
+                                                  House_.parcelid.descIgnoreCase())
+                                     .map(house -> house.parcelId)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of("TestEmbeddable-104-2288-60",
+                             "TestEmbeddable-204-2992-20",
+                             "TestEmbeddable-304-3655-30",
+                             "TestEmbeddable-404-4418-40"),
+                     houses.findByAreaGreaterThan(1200,
+                                                  House_.id.ascIgnoreCase())
+                                     .map(house -> house.parcelId)
+                                     .collect(Collectors.toList()));
 
         // Find a single attribute type
 
@@ -1029,8 +1208,8 @@ public class DataTestServlet extends FATServlet {
         assertEquals(true, primes.existsByNumberId(19));
         assertEquals(false, primes.existsByNumberId(9));
 
-        assertEquals(Boolean.TRUE, primes.existsIdBetween(Long.valueOf(14), Long.valueOf(18)));
-        assertEquals(Boolean.FALSE, primes.existsIdBetween(Long.valueOf(24), Long.valueOf(28)));
+        assertEquals(Boolean.TRUE, primes.existsByIdBetween(Long.valueOf(14), Long.valueOf(18)));
+        assertEquals(Boolean.FALSE, primes.existsByIdBetween(Long.valueOf(24), Long.valueOf(28)));
     }
 
     /**
@@ -1041,6 +1220,16 @@ public class DataTestServlet extends FATServlet {
         assertEquals(true, primes.anyLessThanEndingWithBitPattern(25L, "1101"));
         assertEquals(false, primes.anyLessThanEndingWithBitPattern(25L, "1111"));
         assertEquals(false, primes.anyLessThanEndingWithBitPattern(12L, "1101"));
+    }
+
+    /**
+     * Exists method that uses the query-by-parameters pattern.
+     */
+    @Test
+    public void testExistsQueryByParameters() {
+        assertEquals(true, primes.existsWith(47, "2F"));
+        assertEquals(false, primes.existsWith(41, "2F")); // 2F is not hex for 41 decimal
+        assertEquals(false, primes.existsWith(15, "F")); // not prime
     }
 
     /**
@@ -1270,13 +1459,13 @@ public class DataTestServlet extends FATServlet {
         remaining.addAll(Set.of(80008, 80080, 80081, 80088));
 
         Sort sort = supportsOrderByForUpdate ? Sort.desc("width") : null;
-        Integer id = packages.deleteFirst(sort).orElseThrow();
+        Integer id = packages.deleteFirstBy(sort).orElseThrow();
         if (supportsOrderByForUpdate)
             assertEquals(Integer.valueOf(80080), id);
         assertEquals("Found " + id + "; expected one of " + remaining, true, remaining.remove(id));
 
         Sort[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.desc("height"), Sort.asc("length") } : null;
-        int[] ids = packages.deleteFirst2(sorts);
+        int[] ids = packages.deleteFirst2By(sorts);
         assertEquals(Arrays.toString(ids), 2, ids.length);
         if (supportsOrderByForUpdate) {
             assertEquals(80081, ids[0]);
@@ -1286,7 +1475,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Found " + ids[1] + "; expected one of " + remaining, true, remaining.remove(ids[1]));
 
         // should have only 1 remaining
-        ids = packages.deleteFirst2(sorts);
+        ids = packages.deleteFirst2By(sorts);
         assertEquals(Arrays.toString(ids), 1, ids.length);
         assertEquals(remaining.iterator().next(), Integer.valueOf(ids[0]));
     }
@@ -1435,7 +1624,7 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindFirstWithoutBy() {
-        Prime first = primes.findFirst(Sort.asc("numberId"));
+        Prime first = primes.findFirst(Sort.asc("numberId"), Limit.of(1));
         assertEquals(2, first.numberId);
     }
 
@@ -1558,11 +1747,33 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Find method that uses the query-by-parameter name pattern.
+     */
+    @Test
+    public void testFindQueryByParameters() {
+        Prime prime = primes.findHexadecimal("2B").orElseThrow();
+        assertEquals(43, prime.numberId);
+        assertEquals(false, prime.even);
+        assertEquals("2B", prime.hex);
+        assertEquals("forty-three", prime.name);
+        assertEquals("XLIII", prime.romanNumeral);
+        assertEquals(List.of("X", "L", "I", "I", "I"), prime.romanNumeralSymbols);
+        assertEquals(4, prime.sumOfBits);
+
+        assertEquals(false, primes.findHexadecimal("2A").isPresent());
+
+        assertEquals(List.of("thirty-seven", "thirteen", "seven", "nineteen"),
+                     primes.find(false, 3, Limit.of(4), Sort.asc("even"), Sort.desc("name"))
+                                     .map(p -> p.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
      * Find a subset of attributes of the entity.
      */
     @Test
     public void testFindSubsetOfAttributes() {
-        List<Object[]> all = primes.findIdAndName(Sort.asc("numberId"));
+        List<Object[]> all = primes.findIdAndNameBy(Sort.asc("numberId"));
 
         Object[] idAndName = all.get(5);
         assertEquals(13L, idAndName[0]);
@@ -1616,7 +1827,7 @@ public class DataTestServlet extends FATServlet {
         p4.lastName = "TestGenericArrayReturnType";
         p4.ssn_id = 100101004l;
 
-        people.save(List.of(p1, p2, p3, p4));
+        people.updateOrAdd(List.of(p1, p2, p3, p4));
 
         Person[] found = people.findByLastName("TestGenericArrayReturnType");
 
@@ -1779,6 +1990,205 @@ public class DataTestServlet extends FATServlet {
                                              .stream()
                                              .map(p -> p.hex)
                                              .collect(Collectors.toList()));
+    }
+
+    /**
+     * Tests repository insert methods.
+     */
+    @AllowedFFDC("jakarta.data.exceptions.EntityExistsException")
+    @Test
+    public void testInsert() throws Exception {
+        people.deleteByIdBetween(0L, 999999999L);
+
+        // insert single:
+
+        Person isaac = new Person();
+        isaac.firstName = "Isaac";
+        isaac.lastName = "TestInsert";
+        isaac.ssn_id = 999009001;
+        persons.insert(isaac);
+
+        Person ike = new Person();
+        ike.firstName = "Ike";
+        ike.lastName = "TestInsert";
+        ike.ssn_id = 999009001;
+        try {
+            persons.insert(ike);
+            fail("Did not detect duplicate insert of id.");
+        } catch (EntityExistsException x) {
+            // pass
+        }
+
+        Person p = personnel.findBySSN_Id(999009001).join();
+        assertEquals("Isaac", p.firstName);
+
+        // insert collection:
+
+        Person ian = new Person();
+        ian.firstName = "Ian";
+        ian.lastName = "TestInsert";
+        ian.ssn_id = 999009002;
+
+        Person isabelle = new Person();
+        isabelle.firstName = "Isabelle";
+        isabelle.lastName = "TestInsert";
+        isabelle.ssn_id = 999009003;
+
+        try {
+            persons.insertAll(List.of(ian, ike, isabelle));
+            fail("Did not detect duplicate insert of id within collection.");
+        } catch (EntityExistsException x) {
+            // pass
+        }
+
+        persons.insertAll(List.of(ian, isabelle));
+
+        // insert varargs array:
+        Person irene = new Person();
+        irene.firstName = "Irene";
+        irene.lastName = "TestInsert";
+        irene.ssn_id = 999009004;
+
+        Person isaiah = new Person();
+        isaiah.firstName = "Isaiah";
+        isaiah.lastName = "TestInsert";
+        isaiah.ssn_id = 999009005;
+
+        persons.insertAll(irene, isaiah);
+
+        Person ivan = new Person();
+        ivan.firstName = "Ivan";
+        ivan.lastName = "TestInsert";
+        ivan.ssn_id = 999009006;
+
+        Person iris = new Person();
+        iris.firstName = "Iris";
+        iris.lastName = "TestInsert";
+        iris.ssn_id = ivan.ssn_id;
+
+        try {
+            persons.insertAll(ivan, iris);
+            fail("Did not detect duplicate insert of id within array.");
+        } catch (EntityExistsException x) {
+            // pass
+        }
+
+        tran.begin();
+        try {
+            Person ivy = new Person();
+            ivy.firstName = "Ivy";
+            ivy.lastName = "TestInsert";
+            ivy.ssn_id = 999009007;
+            persons.insert(ivy);
+
+            try {
+                persons.insert(ike);
+                fail("Did not detect duplicate insert of id within transaction.");
+            } catch (EntityExistsException x) {
+                // pass
+            }
+        } finally {
+            if (tran.getStatus() == Status.STATUS_MARKED_ROLLBACK)
+                tran.rollback();
+            else
+                tran.commit();
+        }
+
+        assertEquals(5, people.deleteByIdBetween(0L, 999999999L));
+    }
+
+    /**
+     * Insert and delete multiple entities.
+     */
+    // @AllowedFFDC("jakarta.data.exceptions.EntityExistsException")
+    @Test
+    public void testInsertAndDeleteMultiple() throws Exception {
+        people.deleteByIdBetween(0L, 999999999L);
+
+        // insert multiple:
+
+        Person david = new Person();
+        david.firstName = "David";
+        david.lastName = "TestInsertAndDeleteMultiple";
+        david.ssn_id = 999009999;
+
+        Person daniel = new Person();
+        daniel.firstName = "Daniel";
+        daniel.lastName = "TestInsertAndDeleteMultiple";
+        daniel.ssn_id = 999009998;
+
+        Person dorothy = new Person();
+        dorothy.firstName = "Dorothy";
+        dorothy.lastName = "TestInsertAndDeleteMultiple";
+        dorothy.ssn_id = 999009997;
+
+        Person dianne = new Person();
+        dianne.firstName = "Dianne";
+        dianne.lastName = "TestInsertAndDeleteMultiple";
+        dianne.ssn_id = 999009996;
+
+        Person dominic = new Person();
+        dominic.firstName = "Dominic";
+        dominic.lastName = "TestInsertAndDeleteMultiple";
+        dominic.ssn_id = 999009995;
+
+        assertEquals(null, personnel.insertAll(david, daniel, dorothy, dianne, dominic).join());
+
+        assertEquals(List.of("Daniel", "David", "Dianne", "Dominic", "Dorothy"),
+                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
+
+        Person dennis = new Person();
+        dennis.firstName = "Dennis";
+        dennis.lastName = "TestInsertAndDeleteMultiple";
+        dennis.ssn_id = 999009994;
+
+        // attempted insert where one is duplicate:
+
+        CompletableFuture<Void> future = personnel.insertAll(dennis, daniel);
+
+        try {
+            future.join();
+            fail("Did not detect duplicate insert of id within varags array.");
+        } catch (CompletionException x) {
+            if ((x.getCause() instanceof EntityExistsException))
+                ; // pass
+            else
+                throw x;
+        }
+
+        assertEquals(List.of("Daniel", "David", "Dianne", "Dominic", "Dorothy"),
+                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
+
+        // delete multiple entities at once
+
+        assertEquals(null, personnel.deleteMultiple(daniel, david).join());
+
+        assertEquals(List.of("Dianne", "Dominic", "Dorothy"),
+                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
+
+        // attempt deletion where one is not found:
+
+        future = personnel.deleteMultiple(dianne, dorothy, david);
+
+        try {
+            future.join();
+            fail("Deletion did not detect missing entity.");
+        } catch (CompletionException x) {
+            if ((x.getCause() instanceof OptimisticLockingFailureException))
+                ; // pass
+            else
+                throw x;
+        }
+
+        assertEquals(List.of("Dianne", "Dominic", "Dorothy"),
+                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
+
+        // delete remaining:
+
+        assertEquals(Integer.valueOf(3), personnel.deleteSeveral(Stream.of(dianne, dorothy, dominic)).join());
+
+        assertEquals(List.of(),
+                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
     }
 
     /**
@@ -2001,7 +2411,7 @@ public class DataTestServlet extends FATServlet {
                              page.stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         // remove some entries that we already read:
-        packages.deleteAllById(List.of(116, 118, 120, 122, 124));
+        packages.deleteByIdIn(List.of(116, 118, 120, 122, 124));
 
         // should appear on next page because length 22.0 matches the keyset value and width 70.0 is beyond the keyset value:
         packages.save(new Package(130, 22.0f, 70.0f, 67.0f, "package#130"));
@@ -2020,7 +2430,7 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(140, 144, 148),
                              page.stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        packages.deleteAllById(List.of(132, 140));
+        packages.deleteByIdIn(List.of(132, 140));
 
         // Page 5
         page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.nextPageable());
@@ -2097,7 +2507,7 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(114, 133, 144, 128, 148, 150),
                              page.stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        packages.deleteAllById(List.of(144, 148, 150));
+        packages.deleteByIdIn(List.of(144, 148, 150));
 
         packages.save(new Package(152, 48.0f, 45.0f, 52.0f, "package#152"));
 
@@ -2451,7 +2861,7 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(370, 350, 351),
                              page.stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        packages.deleteAllById(List.of(350, 333));
+        packages.deleteByIdIn(List.of(350, 333));
 
         // Page 1
         page = packages.findByHeightGreaterThan(20.0f, page.previousPageable());
@@ -2490,7 +2900,7 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(315, 373),
                              page.stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        packages.deleteAllById(List.of(373, 315, 376));
+        packages.deleteByIdIn(List.of(373, 315, 376));
 
         page = packages.whereHeightNotWithin(32.0f, 35.5f, page.previousPageable());
 
@@ -2751,6 +3161,115 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository where methods are for different entities.
+     */
+    @Test
+    public void testMultipleEntitiesInARepository() {
+        // Remove any pre-existing data that could interfere with the test:
+        products.clear();
+        packages.deleteAll();
+        multi.deleteByIdIn(List.of(908070605l, 807060504l, 706050403l));
+
+        Product prod = new Product();
+        prod.pk = UUID.nameUUIDFromBytes("TestMultipleEntitiesInARepository".getBytes());
+        prod.name = "TestMultipleEntitiesInARepository-Product";
+        prod.price = 30.99f;
+
+        prod = multi.create(prod);
+
+        Person p1 = new Person();
+        p1.firstName = "Michael";
+        p1.lastName = "TestMultipleEntitiesInARepository";
+        p1.ssn_id = 908070605;
+
+        Person p2 = new Person();
+        p2.firstName = "Mark";
+        p2.lastName = "TestMultipleEntitiesInARepository";
+        p2.ssn_id = 807060504;
+
+        Person p3 = new Person();
+        p3.firstName = "Maria";
+        p3.lastName = "TestMultipleEntitiesInARepository";
+        p3.ssn_id = 706050403;
+
+        List<Person> added = multi.add(p1, p2, p3);
+        assertEquals(List.of("Michael", "Mark", "Maria"),
+                     added.stream()
+                                     .map(p -> p.firstName)
+                                     .collect(Collectors.toList()));
+
+        Package pkg = multi.upsert(new Package(60504, 30.0f, 20.0f, 10.0f, "TestMultipleEntitiesInARepository-Package"));
+        assertEquals(60504, pkg.id);
+        assertEquals(30.0f, pkg.length, 0.001f);
+        assertEquals(20.0f, pkg.width, 0.001f);
+        assertEquals(10.0f, pkg.height, 0.001f);
+        assertEquals("TestMultipleEntitiesInARepository-Package", pkg.description);
+
+        pkg.length = 33.0f;
+        pkg.width = 22.0f;
+        pkg = multi.upsert(pkg);
+        assertEquals(33.0f, pkg.length, 0.001f);
+        assertEquals(22.0f, pkg.width, 0.001f);
+
+        pkg = multi.findById(60504).orElseThrow();
+        assertEquals(60504, pkg.id);
+        assertEquals(33.0f, pkg.length, 0.001f);
+        assertEquals(22.0f, pkg.width, 0.001f);
+        assertEquals(10.0f, pkg.height, 0.001f);
+        assertEquals("TestMultipleEntitiesInARepository-Package", pkg.description);
+
+        assertEquals(true, multi.remove(added.get(2)));
+
+        Person[] deleted = multi.deleteByIdIn(List.of(908070605l, 807060504l, 706050403l));
+        assertEquals(2, deleted.length);
+
+        prod.name = "Test-Multiple-Entities-In-A-Repository-Product";
+        assertEquals(1, multi.modify(prod));
+
+        prod = products.remove(prod.pk);
+        assertEquals("Test-Multiple-Entities-In-A-Repository-Product", prod.name);
+
+        packages.delete(pkg);
+    }
+
+    /**
+     * Use a repository query with named parameters, where the parameters are obtained from
+     * the corresponding method parameters based on the method's parameter names.
+     */
+    @Test
+    public void testNamedParametersFromMethodParameterNames() {
+        assertArrayEquals(new long[] { 19, 29, 43, 47 },
+                          primes.matchAny(19, "XLVII", "2B", "twenty-nine"));
+    }
+
+    /**
+     * Use a repository query with both named parameters and positional parameters. Expect this to be rejected.
+     */
+    @Test
+    public void testNamedParametersMixedWithPositionalParameters() {
+        try {
+            Collection<Long> found = primes.matchAnyWithMixedUsageOfPositionalAndNamed("three", 23);
+            fail("Should not be able to mix positional and named parameters. Found: " + found);
+        } catch (MappingException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Use a repository query with named parameters, where the parameters are
+     * sometimes obtained from the Param annotation and other times obtained from
+     * the corresponding method parameters based on the method's parameter names.
+     */
+    @Test
+    public void testNamedParametersMixingAnnotationAndParameterNames() {
+        assertEquals(List.of(5L, 13L, 29L, 31L),
+                     primes.matchAnyWithMixedUsageOfParamAnnotation(31, "thirteen", "V", "1D")
+                                     .stream()
+                                     .sorted()
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
      * Test NotBetween in a filter.
      */
     @Test
@@ -2927,6 +3446,18 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository query with positional parameters and a literal value that looks like a named parameter, but isn't.
+     */
+    @Test
+    public void testPositionalParameterWithLiteralThatLooksLikeANamedParameter() {
+        assertEquals(List.of("thirty-seven", "forty-one"), // ordered by numeric value
+                     primes.matchAnyExceptLiteralValueThatLooksLikeANamedParameter(41, "thirty-seven"));
+
+        assertEquals(List.of("forty-one", "thirty-seven"), // ordered by name
+                     primes.matchAnyExceptLiteralValueThatLooksLikeANamedParameter("thirty-seven", 41));
+    }
+
+    /**
      * Use a repository method that has both AND and OR keywords.
      * The AND keywords should take precedence over OR and be computed first.
      */
@@ -2939,10 +3470,10 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Tests all CrudRepository methods with a record as the entity.
+     * Tests all BasicRepository methods with a record as the entity.
      */
     @Test
-    public void testRecordCrudRepositoryMethods() {
+    public void testRecordBasicRepositoryMethods() {
         receipts.deleteAll();
 
         receipts.save(new Receipt(100L, "C0013-00-031", 101.90f));
@@ -2958,12 +3489,12 @@ public class DataTestServlet extends FATServlet {
         assertEquals(202.40f, receipt.total(), 0.001f);
 
         assertIterableEquals(List.of("C0013-00-031:300", "C0022-00-022:200", "C0045-00-054:500"),
-                             receipts.findAllById(List.of(200L, 300L, 500L))
+                             receipts.findByIdIn(List.of(200L, 300L, 500L))
                                              .map(r -> r.customer() + ":" + r.purchaseId())
                                              .sorted()
                                              .collect(Collectors.toList()));
 
-        receipts.deleteAllById(List.of(200L, 500L));
+        receipts.deleteByIdIn(List.of(200L, 500L));
 
         assertIterableEquals(List.of("C0013-00-031:100", "C0013-00-031:300", "C0045-00-054:400"),
                              receipts.findAll()
@@ -2987,6 +3518,75 @@ public class DataTestServlet extends FATServlet {
                                    new Receipt(700L, "C0067-00-076", 17.99f)));
 
         assertEquals(2L, receipts.count());
+
+        receipts.deleteAll();
+
+        assertEquals(0L, receipts.count());
+    }
+
+    /**
+     * Tests all CrudRepository methods (apart from those inherited from BasicRepository) with a record as the entity.
+     */
+    @Test
+    public void testRecordCrudRepositoryMethods() {
+        receipts.deleteAll();
+
+        receipts.insert(new Receipt(1200L, "C0002-12-002", 102.20f));
+
+        receipts.insertAll(Set.of(new Receipt(1300L, "C0033-13-003", 130.13f),
+                                  new Receipt(1400L, "C0040-14-004", 14.40f),
+                                  new Receipt(1500L, "C0005-15-005", 105.50f),
+                                  new Receipt(1600L, "C0006-16-006", 600.16f)));
+
+        try {
+            receipts.insert(new Receipt(1200L, "C0002-10-002", 22.99f));
+            fail("Inserted an entity with an Id that already exists.");
+        } catch (EntityExistsException x) {
+            // expected
+        }
+
+        // Ensure that the entity that already exists was not modified by insert
+        Receipt r = receipts.findById(1200L).orElseThrow();
+        assertEquals(1200L, r.purchaseId());
+        assertEquals("C0002-12-002", r.customer());
+        assertEquals(102.20f, r.total(), 0.001f);
+
+        try {
+            receipts.insertAll(Set.of(new Receipt(1700L, "C0017-17-007", 177.70f),
+                                      new Receipt(1500L, "C0055-15-005", 55.55f),
+                                      new Receipt(1800L, "C0008-18-008", 180.18f)));
+            fail("insertAll must fail when one of the entities has an Id that already exists.");
+        } catch (EntityExistsException x) {
+            // expected
+        }
+
+        // Ensure that insertAll inserted no entities when one had an Id that already exists
+        assertEquals(false, receipts.update(new Receipt(1700L, "C0017-17-007", 77.70f)));
+        assertEquals(false, receipts.update(new Receipt(1800L, "C0018-18-008", 88.80f)));
+
+        // Ensure that the entity that already exists was not modified by insertAll
+        r = receipts.findById(1500L).orElseThrow();
+        assertEquals(1500L, r.purchaseId());
+        assertEquals("C0005-15-005", r.customer());
+        assertEquals(105.50f, r.total(), 0.001f);
+
+        // Update single entity that exists
+        assertEquals(true, receipts.update(new Receipt(1600L, "C0060-16-006", 600.16f)));
+
+        // Update multiple entities, if they exist
+        assertEquals(2, receipts.updateAll(List.of(new Receipt(1400L, "C0040-14-044", 14.41f),
+                                                   new Receipt(1900L, "C0009-19-009", 199.99f),
+                                                   new Receipt(1200L, "C0002-12-002", 112.20f))));
+
+        // Verify the updates
+        assertEquals(List.of(new Receipt(1200L, "C0002-12-002", 112.20f), // updated by updateAll
+                             new Receipt(1300L, "C0033-13-003", 130.13f),
+                             new Receipt(1400L, "C0040-14-044", 14.41f), // updated by updateAll
+                             new Receipt(1500L, "C0005-15-005", 105.50f),
+                             new Receipt(1600L, "C0060-16-006", 600.16f)), // updated by update
+                     receipts.findAll()
+                                     .sorted(Comparator.comparing(Receipt::purchaseId))
+                                     .collect(Collectors.toList()));
 
         receipts.deleteAll();
 
@@ -3089,7 +3689,7 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(4, reservations.count());
 
-        Map<Long, Reservation> found = reservations.findAllById(List.of(r4.meetingID, r2.meetingID))
+        Map<Long, Reservation> found = reservations.findByIdIn(List.of(r4.meetingID, r2.meetingID))
                         .collect(Collectors.toMap(rr -> rr.meetingID, Function.identity()));
         assertEquals(found.toString(), 2, found.size());
         assertEquals(true, found.containsKey(r2.meetingID));
@@ -3107,7 +3707,7 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(3, reservations.count());
 
-        reservations.deleteAllById(Set.of(r1.meetingID, r4.meetingID));
+        reservations.deleteByIdIn(Set.of(r1.meetingID, r4.meetingID));
 
         assertEquals(false, reservations.existsById(r4.meetingID));
 
@@ -4912,6 +5512,100 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use update methods with an entity parameter to make updates.
+     */
+    @Test
+    public void testUpdateWithEntityParameter() {
+        people.deleteByIdBetween(0L, 999999999L);
+
+        Person ursula = new Person();
+        ursula.firstName = "Ursula";
+        ursula.lastName = "TestUpdateWithEntityParameter";
+        ursula.ssn_id = 987001001;
+
+        Person ulysses = new Person();
+        ulysses.firstName = "Ulysses";
+        ulysses.lastName = "TestUpdateWithEntityParameter";
+        ulysses.ssn_id = 987001002;
+
+        Person uriel = new Person();
+        uriel.firstName = "Uriel";
+        uriel.lastName = "TestUpdateWithEntityParameter";
+        uriel.ssn_id = 987001003;
+
+        Person uriah = new Person();
+        uriah.firstName = "Uriah";
+        uriah.lastName = "TestUpdateWithEntityParameter";
+        uriah.ssn_id = 987001004;
+
+        Person urban = new Person();
+        urban.firstName = "Urban";
+        urban.lastName = "TestUpdateWithEntityParameter";
+        urban.ssn_id = 987001005;
+
+        people.updateOrAdd(List.of(ursula, ulysses, uriel, uriah));
+
+        // update single entity:
+
+        ulysses.lastName = "Test-UpdateWithEntityParameter";
+        assertEquals(true, persons.updateOne(ulysses));
+
+        assertEquals(false, persons.updateOne(urban)); // not in database
+
+        // update multiple entities:
+
+        ulysses.lastName = "TestUpdate-WithEntityParameter";
+        ursula.lastName = "TestUpdate-WithEntityParameter";
+        uriah.lastName = "TestUpdate-WithEntityParameter";
+
+        assertEquals(3, persons.updateSome(ulysses, urban, ursula, uriah)); // one is not in the database
+
+        assertEquals(0, persons.updateSome());
+
+        assertEquals(4, people.deleteByIdBetween(0L, 999999999L));
+    }
+
+    /**
+     * Use update methods with a versioned entity parameter to make updates.
+     */
+    @Test
+    public void testUpdateWithVersionedEntityParameter() {
+        Product prod1 = new Product();
+        prod1.pk = UUID.nameUUIDFromBytes("UPD-VER-EP-1".getBytes());
+        prod1.name = "testUpdateWithVersionedEntityParameter Product 1";
+        prod1.price = 10.99f;
+
+        Product prod2 = new Product();
+        prod2.pk = UUID.nameUUIDFromBytes("UPD-VER-EP-2".getBytes());
+        prod2.name = "testUpdateWithVersionedEntityParameter Product 2";
+        prod2.price = 12.99f;
+
+        Product prod3 = new Product();
+        prod3.pk = UUID.nameUUIDFromBytes("UPD-VER-EP-3".getBytes());
+        prod3.name = "testUpdateWithVersionedEntityParameter Product 3";
+        prod3.price = 13.99f;
+
+        Product[] p = products.saveMultiple(prod1, prod2, prod3);
+        prod1 = p[0];
+        prod2 = p[1];
+        prod3 = p[2];
+
+        // versioned update to 1 entity:
+
+        prod1.price = 10.79f;
+        assertEquals(Boolean.TRUE, products.update(prod1)); // current version
+
+        prod1.price = 10.89f;
+        assertEquals(Boolean.FALSE, products.update(prod1)); // old version
+
+        // versioned update to multiple entities:
+
+        prod2.price = 12.89f;
+        prod3.price = 13.89f;
+        assertEquals(Long.valueOf(2), products.update(Stream.of(prod1, prod2, prod3))); // 1 with old version
+    }
+
+    /**
      * Use JPQL query to update based on version.
      */
     @Test
@@ -4920,18 +5614,32 @@ public class DataTestServlet extends FATServlet {
         prod1.pk = UUID.nameUUIDFromBytes("Q6008-U8-21001".getBytes());
         prod1.name = "testVersionedUpdateViaQuery Product 1";
         prod1.price = 82.99f;
-        products.save(prod1);
+        prod1 = products.upsert(prod1);
 
-        Product p = products.findItem(prod1.pk);
-        long initialVersion = p.version;
+        long initialVersion = prod1.version;
 
         assertEquals(true, products.setPrice(prod1.pk, initialVersion, 84.99f));
         assertEquals(false, products.setPrice(prod1.pk, initialVersion, 83.99f));
         assertEquals(true, products.setPrice(prod1.pk, initialVersion + 1, 88.99f));
 
-        p = products.findItem(prod1.pk);
-        assertEquals(88.99f, p.price, 0.001f);
-        assertEquals(initialVersion + 2, p.version);
+        prod1 = products.findItem(prod1.pk);
+        assertEquals(88.99f, prod1.price, 0.001f);
+        assertEquals(initialVersion + 2, prod1.version);
+
+        prod1.version = initialVersion + 1;
+        prod1.price = 89.99f;
+        try {
+            prod1 = products.upsert(prod1);
+            fail("Should not be able to save an update at an old version.");
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
+
+        prod1.version = initialVersion + 2;
+        prod1.price = 90.99f;
+        prod1 = products.upsert(prod1);
+        assertEquals(90.99f, prod1.price, 0.001f);
+        assertEquals(initialVersion + 3, prod1.version);
     }
 
     /**

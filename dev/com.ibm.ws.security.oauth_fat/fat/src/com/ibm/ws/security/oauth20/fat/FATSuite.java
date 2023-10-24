@@ -23,8 +23,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.security.fat.common.actions.LargeProjectRepeatActions;
 
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
@@ -87,18 +86,13 @@ public class FATSuite extends CommonLocalLDAPServerSuite {
      * JakartaEE9 transform a list of applications.
      *
      * @param myServer The server to transform the applications on.
-     * @param apps The names of the applications to transform. Should include the path from the server root directory.
+     * @param apps     The names of the applications to transform. Should include the path from the server root directory.
      */
     public static void transformApps(LibertyServer myServer, String... apps) {
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             for (String app : apps) {
                 Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + app);
-                JakartaEE10Action.transformApp(someArchive);
-            }
-        } else if (JakartaEE9Action.isActive()) {
-            for (String app : apps) {
-                Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + app);
-                JakartaEE9Action.transformApp(someArchive);
+                JakartaEEAction.transformApp(someArchive);
             }
         }
     }

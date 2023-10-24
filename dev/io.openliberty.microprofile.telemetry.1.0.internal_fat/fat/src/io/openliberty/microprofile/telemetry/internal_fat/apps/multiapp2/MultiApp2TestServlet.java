@@ -27,7 +27,7 @@ import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/multiapp2")
+@WebServlet("/testMultiapp2")
 public class MultiApp2TestServlet extends FATServlet {
 
     @Inject

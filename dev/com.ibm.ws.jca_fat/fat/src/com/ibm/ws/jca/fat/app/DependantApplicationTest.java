@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -47,8 +47,7 @@ import com.ibm.ws.jca.fat.FATSuite;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -122,9 +121,9 @@ public class DependantApplicationTest extends FATServletClient {
         EnterpriseArchive fvtapp_ear = ShrinkWrap.create(EnterpriseArchive.class, fvtapp + ".ear");
         fvtapp_ear.addAsModule(fvtweb_war);
         ShrinkHelper.addDirectory(fvtapp_ear, "lib/LibertyFATTestFiles/fvtapp");
-        ShrinkHelper.exportToServer(server, "apps", fvtapp_ear);
+        ShrinkHelper.exportAppToServer(server, fvtapp_ear);
 
-        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             /*
              * Need to update the destination type of the topic to ensure it matches the Jakarta FQN.
              */
@@ -144,7 +143,6 @@ public class DependantApplicationTest extends FATServletClient {
         }
 
         originalServerConfig = server.getServerConfiguration().clone();
-        server.addInstalledAppForValidation(fvtapp);
         server.startServer();
     }
 
@@ -274,7 +272,7 @@ public class DependantApplicationTest extends FATServletClient {
         //   <properties.FAT1.jmsMessageListener destinationRef="queue2"...
         // </activationSpec>
         properties_FAT1.setDestinationRef("topic2");
-        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             properties_FAT1.setDestinationType(jakarta.jms.Topic.class.getName());
         } else {
             properties_FAT1.setDestinationType(javax.jms.Topic.class.getName());

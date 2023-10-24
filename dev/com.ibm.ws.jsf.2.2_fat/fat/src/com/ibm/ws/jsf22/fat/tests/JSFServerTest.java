@@ -35,8 +35,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /*
@@ -162,8 +161,8 @@ public class JSFServerTest {
      */
     @Test
     public void testWASMyFacesAnnotationProvider() throws Exception {
-        String msgToSearchFor = JakartaEE10Action
-                        .isActive() ? "io.openliberty.faces40.internal.config.annotation.WASMyFacesAnnotationProvider" : "com.ibm.ws.jsf.config.annotation.WASMyFacesAnnotationProvider <init> ENTRY";
+        String msgToSearchFor = JakartaEEAction
+                        .isEE10OrLaterActive() ? "io.openliberty.faces40.internal.config.annotation.WASMyFacesAnnotationProvider" : "com.ibm.ws.jsf.config.annotation.WASMyFacesAnnotationProvider <init> ENTRY";
 
         // Check the trace.log to see if the WASMyFacesAnnotationProvider has any entry trace.
         String isWASMyFacesAnnotationProviderBeingUsed = jsfTestServer1.waitForStringInTrace(msgToSearchFor);
@@ -225,7 +224,7 @@ public class JSFServerTest {
         String msgToSearchFor = "MyFaces Bean Validation support disabled";
         String msgToSearchForMyFaces30 = "MyFaces Core Bean Validation support disabled";
 
-        if (JakartaEE10Action.isActive() || JakartaEE9Action.isActive() || RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID)) {
+        if (JakartaEEAction.isEE9OrLaterActive() || RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID)) {
             Log.info(c, name.getMethodName(), "Looking for : " + msgToSearchForMyFaces30);
             // Check the trace.log to see if the LibertyWebConfigProviderFactory has any entry trace.
             String isBeanValidationDisabled = jsfTestServer1.waitForStringInLog(msgToSearchForMyFaces30);

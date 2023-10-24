@@ -54,8 +54,12 @@ public class ConcurrentTckLauncherFull {
         additionalProps.put("jakarta.concurrent.tck.groupid", "io.openliberty.jakarta.enterprise.concurrent");
         additionalProps.put("jakarta.concurrent.tck.version", "3.1.0-20230802");
 
-        //Jakarta TCK platform - Signature test run as part of web profile
-        additionalProps.put("jakarta.tck.platform", "full & !signature");
+        //Jakarta TCK platform
+        additionalProps.put("jakarta.tck.platform", "full");
+
+        if (!FATSuite.shouldRunSignatureTests(ConcurrentTckLauncherFull.class)) {
+            additionalProps.put("jakarta.tck.platform", "full & !signature");
+        }
 
         Map<String, String> opts = server.getJvmOptionsAsMap();
         opts.put("-Djimage.dir", server.getServerSharedPath() + "jimage/output/");

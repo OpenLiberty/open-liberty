@@ -54,7 +54,10 @@ public class EJBVisibilityTests extends FATServletClient {
     //Fault Tolerance is included as a feature with CDI extension which can see application BDAs.
     //This previously caused issues with masked classes.
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP14, MicroProfileActions.MP50);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+                                                             MicroProfileActions.MP61,
+                                                             MicroProfileActions.MP50,
+                                                             MicroProfileActions.MP14);
 
     public static final String MASKED_CLASS_APP_NAME = "maskedClassWeb";
 

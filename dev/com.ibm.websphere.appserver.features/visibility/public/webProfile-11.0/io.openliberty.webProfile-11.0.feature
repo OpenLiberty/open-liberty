@@ -24,7 +24,8 @@ Subsystem-Name: Jakarta EE Web Profile 11.0
   com.ibm.websphere.appserver.jndi-1.0, \
   com.ibm.websphere.appserver.transaction-2.0, \
   io.openliberty.expressionLanguage-6.0, \
-  io.openliberty.jsonp-2.1
+  io.openliberty.jsonp-2.1, \
+  io.openliberty.data-1.0
 kind=noship
 edition=full
 WLP-InstantOn-Enabled: true

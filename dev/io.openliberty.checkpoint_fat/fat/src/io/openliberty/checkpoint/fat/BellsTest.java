@@ -28,12 +28,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -57,17 +56,14 @@ public class BellsTest extends FATServletClient {
     public static final String USER_FEATURE_NAME = "user.feature.checkpoint.bells-1.0";
 
     @ClassRule
-    public static RepeatTests repeatTest = MicroProfileActions.repeat(SERVER_NAME, TestMode.FULL,
-                                                                      MicroProfileActions.MP41, // first test in LITE mode
-                                                                      // rest are FULL mode
-                                                                      MicroProfileActions.MP50, MicroProfileActions.MP60);
+    public static RepeatTests repeatTest = FATSuite.defaultMPRepeat(SERVER_NAME);
 
     @BeforeClass
     public static void copyAppToDropins() throws Exception {
         buildAndExportBellLibrary(server, "bells", "AppInitializer", "TestInterfaceImpl");
         server.installUserBundle(USER_BUNDLE_NAME);
         server.installUserFeature(USER_FEATURE_NAME);
-        ShrinkHelper.defaultApp(server, APP_NAME, APP_NAME);
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, APP_NAME);
         FATSuite.copyAppsAppToDropins(server, APP_NAME);
     }
 
@@ -135,7 +131,7 @@ public class BellsTest extends FATServletClient {
                                                                     }
                                                                 },
                                                                 "bells");
-        ShrinkHelper.exportToServer(targetServer, "sharedLib", bellArchive);
+        ShrinkHelper.exportToServer(targetServer, "sharedLib", bellArchive, DeployOptions.OVERWRITE);
     }
 
     @After

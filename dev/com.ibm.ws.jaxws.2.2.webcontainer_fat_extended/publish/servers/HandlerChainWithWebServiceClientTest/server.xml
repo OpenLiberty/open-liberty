@@ -2,6 +2,7 @@
     <featureManager>
     	<feature>jsp-2.2</feature>
         <feature>jaxws-2.2</feature>
+        <feature>componenttest-1.0</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>

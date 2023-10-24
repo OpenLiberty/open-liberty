@@ -40,7 +40,7 @@ import jakarta.ws.rs.core.Response;
  * Test tracing requests of each JAX-RS method type
  */
 @SuppressWarnings("serial")
-@WebServlet("/JaxRsMethodTest")
+@WebServlet("/testJaxRsMethod")
 public class JaxRsMethodTestServlet extends FATServlet {
 
     @Inject

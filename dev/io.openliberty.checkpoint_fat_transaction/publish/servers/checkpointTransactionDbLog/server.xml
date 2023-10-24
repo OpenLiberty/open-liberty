@@ -45,7 +45,7 @@
     <library id="DerbyClientLib" filesetRef="DerbyClientFileset"/>
     <fileset id="DerbyClientFileset" dir="${shared.resource.dir}derbyclient" includes="derbyclient.jar"/>
 
-    <variable name="DERBY_TXLOG_PORT" defaultValue="9099"/>
+    <variable name="DERBY_TXLOG_PORT" defaultValue="9099"/>  <!-- override to 1619 -->
     <variable name="DERBY_TXLOG_DS_JNDINAME" defaultValue="jdbc/tranlogDataSource"/>
 
     <dataSource
@@ -60,6 +60,19 @@
          password="userPassword"/>
     </dataSource>
 
+    <!-- Embedded database for tx logging
+    <dataSource
+        id="tranlogDataSource"
+        jdbcDriverRef="DerbyEmbedded"
+        jndiName="${TRANLOG_DS_JNDINAME}"
+        transactional="false">
+      <properties
+          databaseName="${shared.resource.dir}/data/tranlogdb"
+          createDatabase="create"
+      />
+    </dataSource>
+    -->
+
     <variable name="TX_RETRY_INT" defaultValue="10"/>
 
     <transaction
@@ -71,5 +84,7 @@
 
     <application location="transactionservlet.war"/>
 
+    <!-- See bootstrap.properties
     <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
+    -->
 </server>

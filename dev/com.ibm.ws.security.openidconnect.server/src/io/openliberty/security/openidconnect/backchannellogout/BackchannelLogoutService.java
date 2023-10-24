@@ -93,7 +93,7 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
         }
         String idTokenString = request.getParameter(OIDCConstants.OIDC_LOGOUT_ID_TOKEN_HINT);
 
-        sendBackchannelLogoutRequests(oidcServerConfig, userName, idTokenString);
+        sendBackchannelLogoutRequests(request, oidcServerConfig, userName, idTokenString);
         return true;
     }
 
@@ -163,8 +163,8 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
         return null;
     }
 
-    void sendBackchannelLogoutRequests(OidcServerConfig oidcServerConfig, String userName, String idTokenString) {
-        BackchannelLogoutRequestHelper bclRequestCreator = new BackchannelLogoutRequestHelper(oidcServerConfig);
+    void sendBackchannelLogoutRequests(HttpServletRequest request, OidcServerConfig oidcServerConfig, String userName, String idTokenString) {
+        BackchannelLogoutRequestHelper bclRequestCreator = new BackchannelLogoutRequestHelper(request, oidcServerConfig);
         bclRequestCreator.sendBackchannelLogoutRequests(userName, idTokenString);
     }
 

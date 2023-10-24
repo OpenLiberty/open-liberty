@@ -15,6 +15,3 @@
 -Dhttp.proxyHost=1.2.3.4
 -Dhttps.proxyPort=34567
 -Dhttps.proxyHost=1.2.3.4
-
-# Enable beta PKCE function
--Dcom.ibm.ws.beta.edition=true

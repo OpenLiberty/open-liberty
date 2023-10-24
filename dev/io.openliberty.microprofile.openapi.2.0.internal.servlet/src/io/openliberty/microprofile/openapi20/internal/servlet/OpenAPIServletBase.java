@@ -27,6 +27,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
+import io.openliberty.microprofile.openapi.internal.common.services.OpenAPIEndpointProvider;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -45,12 +46,15 @@ public abstract class OpenAPIServletBase extends HttpServlet {
     private static final long serialVersionUID = -6021365340147075272L;
 
     private ServiceTracker<DefaultHostListener, DefaultHostListener> defaultHostListenerTracker;
+    private ServiceTracker<OpenAPIEndpointProvider, OpenAPIEndpointProvider> openAPIEndpointTracker;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         BundleContext bundleContext = (BundleContext) config.getServletContext().getAttribute("osgi-bundlecontext");
         defaultHostListenerTracker = new ServiceTracker<>(bundleContext, DefaultHostListener.class, null);
         defaultHostListenerTracker.open();
+        openAPIEndpointTracker = new ServiceTracker<>(bundleContext, OpenAPIEndpointProvider.class, null);
+        openAPIEndpointTracker.open();
         super.init(config);
     }
 
@@ -58,6 +62,7 @@ public abstract class OpenAPIServletBase extends HttpServlet {
     public void destroy() {
         super.destroy();
         defaultHostListenerTracker.close();
+        openAPIEndpointTracker.close();
     }
 
     /**
@@ -139,7 +144,7 @@ public abstract class OpenAPIServletBase extends HttpServlet {
         }
 
         ServerInfo serverInfo = new ServerInfo(defaultHostListener.getDefaultHostServerInfo());
-        ProxySupportUtil.processRequest(request, serverInfo);
+        ProxySupportUtil.processRequest(request, openAPIEndpointTracker.getService(), serverInfo);
         return OpenAPIUtils.getOpenAPIModelServers(serverInfo, applciationPath);
     }
 

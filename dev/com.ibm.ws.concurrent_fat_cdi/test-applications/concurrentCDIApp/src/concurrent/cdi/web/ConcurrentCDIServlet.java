@@ -49,8 +49,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.junit.Test;
-
 @ContextServiceDefinition(name = "java:global/concurrent/with-app-context",
                           propagated = APPLICATION, cleared = ALL_REMAINING)
 @ContextServiceDefinition(name = "java:global/concurrent/without-app-context",
@@ -166,7 +164,6 @@ public class ConcurrentCDIServlet extends HttpServlet {
     /**
      * Inject default instance of ContextService and use it.
      */
-    @Test
     public void testInjectContextServiceDefaultInstance() throws Exception {
         assertNotNull(defaultContextSvc);
 
@@ -183,7 +180,6 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * Inject qualified instances of ContextService and verify that the behavior of each
      * matches the configuration that the qualifier points to.
      */
-    @Test
     public void testInjectContextServiceQualified() throws Exception {
         assertNotNull(withAppContext);
 
@@ -209,7 +205,6 @@ public class ConcurrentCDIServlet extends HttpServlet {
     /**
      * Inject default instance of ManagedExecutorService and use it.
      */
-    @Test
     public void testInjectManagedExecutorServiceDefaultInstance() throws Exception {
         assertNotNull(defaultManagedExecutor);
 
@@ -225,7 +220,6 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * Inject qualified instances of ManagedExecutorService and verify that the behavior of each
      * matches the configuration that the qualifier points to.
      */
-    @Test
     public void testInjectManagedExecutorServiceQualified() throws Exception {
         Callable<?> task = () -> InitialContext.doLookup("java:comp/env/entry2");
 
@@ -252,7 +246,6 @@ public class ConcurrentCDIServlet extends HttpServlet {
     /**
      * Inject default instance of ManagedScheduledExecutorService and use it.
      */
-    @Test
     public void testInjectManagedScheduledExecutorServiceDefaultInstance() throws Exception {
         assertNotNull(defaultManagedScheduledExecutor);
 
@@ -274,7 +267,6 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * Inject qualified instances of ManagedScheduledExecutorService and verify that the behavior of each
      * matches the configuration that the qualifier points to.
      */
-    @Test
     public void testInjectManagedScheduledExecutorServiceQualified() throws Exception {
         Callable<?> task = () -> InitialContext.doLookup("java:comp/env/entry2");
 

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -41,8 +41,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -98,7 +97,7 @@ public class DynaCfgTest extends FATServletClient {
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, dynamicConfigTestAppName + ".ear")
                         .addAsModule(war);
         ShrinkHelper.addDirectory(ear, "test-applications/dynaCfgTestApp/resources");
-        ShrinkHelper.exportToServer(server, "apps", ear);
+        ShrinkHelper.exportAppToServer(server, ear);
 
         //Create rar
         ShrinkHelper.defaultRar(server, dynamicConfigTestRarName, "com.ibm.test.dynamicconfigadapter");
@@ -176,7 +175,7 @@ public class DynaCfgTest extends FATServletClient {
         runTest("testActivationSpec_NoMessages");
 
         // Enable the mdb-4.0/mdb-3.2 feature
-        config.getFeatureManager().getFeatures().add((JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) ? "mdb-4.0" : "mdb-3.2");
+        config.getFeatureManager().getFeatures().add(JakartaEEAction.isEE9OrLaterActive() ? "mdb-4.0" : "mdb-3.2");
         cleanUpExprs = APP_AND_RA_RECYCLE_EXPR_LIST;
         updateConfig(config);
         runTest("testActivationSpec_MessageOn_0");

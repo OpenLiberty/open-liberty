@@ -16,7 +16,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import io.openliberty.microprofile.openapi.internal.common.services.OpenAPIEndpointProvider;
-import org.osgi.framework.BundleContext;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
@@ -30,10 +29,11 @@ public class ProxySupportUtil {
     private static final String HTTP_HEADER_REFERER = "Referer";
     private static final String DEFAULT_DOC_PATH = "/openapi";
     private static final String DEFAULT_UI_PATH = "/ui";
+
     private static final TraceComponent tc = Tr.register(ProxySupportUtil.class);
 
-    public static void processRequest(HttpServletRequest request, ServerInfo serverInfo) {
-        URL url = extractURL(request);
+    public static void processRequest(HttpServletRequest request, OpenAPIEndpointProvider openAPIEndpointProvider, ServerInfo serverInfo) {
+        URL url = extractURL(request, openAPIEndpointProvider);
         if (url == null)
             return;
         serverInfo.setHost(url.getHost());
@@ -50,7 +50,7 @@ public class ProxySupportUtil {
     }
 
     @FFDCIgnore(MalformedURLException.class)
-    private static URL extractURL(HttpServletRequest request) {
+    private static URL extractURL(HttpServletRequest request, OpenAPIEndpointProvider openAPIEndpointProvider) {
         String urlString;
         String refererHeader = request.getHeader(HTTP_HEADER_REFERER);
 
@@ -58,14 +58,9 @@ public class ProxySupportUtil {
         String docPath = DEFAULT_DOC_PATH;
         String uiPath = docPath + DEFAULT_UI_PATH;
 
-        BundleContext bundleContext = (BundleContext) request.getServletContext().getAttribute("osgi-bundlecontext");
-        //ensure we have a context as change this will be null if bundle is STOPPED
-        if (bundleContext != null) {
-            OpenAPIEndpointProvider endpointProvider = bundleContext.getService(bundleContext.getServiceReference(OpenAPIEndpointProvider.class));
-            if (endpointProvider != null) {
-                docPath = endpointProvider.getOpenAPIDocUrl();
-                uiPath = endpointProvider.getOpenAPIUIUrl();
-            }
+        if (openAPIEndpointProvider != null) {
+           docPath = openAPIEndpointProvider.getOpenAPIDocUrl();
+           uiPath = openAPIEndpointProvider.getOpenAPIUIUrl();
         }
 
         if (docPath == null) {

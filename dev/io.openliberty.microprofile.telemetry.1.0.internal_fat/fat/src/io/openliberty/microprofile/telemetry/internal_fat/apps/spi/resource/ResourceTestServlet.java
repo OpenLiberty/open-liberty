@@ -29,7 +29,7 @@ import jakarta.servlet.annotation.WebServlet;
  * Test that the Resource can be customized via SPI
  */
 @SuppressWarnings("serial")
-@WebServlet("/resource")
+@WebServlet("/testResource")
 public class ResourceTestServlet extends FATServlet {
 
     public static final String TEST_VALUE1 = "test1";

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -52,7 +52,8 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
+import componenttest.rules.repeater.RepeatActions.EEVersion;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
@@ -131,7 +132,7 @@ public class FailoverTimersTest extends FATServletClient {
         File apps = Paths.get("publish", "servers", "com.ibm.ws.concurrent.persistent.fat.failovertimers.serverB", "apps").toFile();
         apps.mkdir();
 
-        JakartaEE9Action.transformApp(javaEEApp, jakartaEEApp);
+        JakartaEEAction.transformApp(javaEEApp, jakartaEEApp, EEVersion.EE9);
         Log.info(c, "setUp", "Transformed app " + javaEEApp + " to " + jakartaEEApp);
         serverB.copyFileToLibertyServerRoot(apps.toString(), "apps", APP_NAME + ".war");
         Log.info(c, "setUp", "Copied from " + apps + " to " + serverB.getServerRoot() + "/apps/");

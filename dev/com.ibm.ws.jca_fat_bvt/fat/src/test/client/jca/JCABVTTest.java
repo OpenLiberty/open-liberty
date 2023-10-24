@@ -56,8 +56,7 @@ public class JCABVTTest extends FATServletClient {
                         .addAsWebInfResource(new File("test-applications/bvtapp/resources/WEB-INF/web.xml"))
                         .addAsWebInfResource(new File("test-applications/bvtapp/resources/WEB-INF/ibm-web-bnd.xml"))
                         .addAsWebInfResource(new File("test-applications/bvtapp/resources/WEB-INF/ibm-ejb-jar-bnd.xml"));
-        ShrinkHelper.exportToServer(server, "dropins", war);
-        server.addInstalledAppForValidation("bvtapp");
+        ShrinkHelper.exportDropinAppToServer(server, war);
 
         ResourceAdapterArchive rar1 = ShrinkWrap.create(ResourceAdapterArchive.class, "JCARAR1.rar")
                         .addAsLibraries(ShrinkWrap.create(JavaArchive.class)

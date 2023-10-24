@@ -35,6 +35,8 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.security.utils.SSLUtils;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
@@ -56,6 +58,9 @@ public class JaegerSecureOtelCollectorTest extends JaegerBaseTest {
 
     @ClassRule
     public static Network network = Network.newNetwork();
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat("spanTestServer", MicroProfileActions.MP61, MicroProfileActions.MP60);
 
     @ClassRule
     public static JaegerContainer jaegerContainer = new JaegerContainer()

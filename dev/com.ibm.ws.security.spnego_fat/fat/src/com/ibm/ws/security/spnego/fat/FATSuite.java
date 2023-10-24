@@ -31,6 +31,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.JavaInfo.Vendor;
@@ -41,13 +42,13 @@ import componenttest.topology.impl.LibertyServerFactory;
 @SuiteClasses({
                 AlwaysPassesTest.class,
                 BasicAuthTest.class,
-                //CanonicalHostNameTest.class,
-                //IncludeClientGSSCredentialInSubjectTest.class,
-                //IncludeCustomCacheKeyTest.class,
-                //Krb5ConfigTest.class,
-                ///ServicePrincipalNamesTest.class,
-                //SpnegoTokenHelperApiTest.class,
-                //TrustedActiveDirectoryDomainsTest.class
+//CanonicalHostNameTest.class,
+//IncludeClientGSSCredentialInSubjectTest.class,
+//IncludeCustomCacheKeyTest.class,
+//Krb5ConfigTest.class,
+///ServicePrincipalNamesTest.class,
+//SpnegoTokenHelperApiTest.class,
+//TrustedActiveDirectoryDomainsTest.class
 })
 public class FATSuite extends ApacheKDCforSPNEGO {
     private static final Class<?> c = FATSuite.class;
@@ -147,15 +148,10 @@ public class FATSuite extends ApacheKDCforSPNEGO {
      * @param apps     The simple names of the applications to transform.
      */
     public static void transformApps(LibertyServer myServer, String... apps) {
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             for (String app : apps) {
                 Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + app);
-                JakartaEE9Action.transformApp(someArchive);
-            }
-        } else if (JakartaEE10Action.isActive()) {
-            for (String app : apps) {
-                Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + app);
-                JakartaEE10Action.transformApp(someArchive);
+                JakartaEEAction.transformApp(someArchive);
             }
         }
     }

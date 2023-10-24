@@ -1,17 +1,16 @@
-package com.ibm.tx.jta.impl;
-
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.impl;
 
 import javax.transaction.SystemException;
 
@@ -541,7 +540,7 @@ public class TransactionState {
 
     public int getState() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getState", stateToString(_state));
+            Tr.debug(tc, "getState: {0}", stateToString(_state));
         return _state;
     }
 

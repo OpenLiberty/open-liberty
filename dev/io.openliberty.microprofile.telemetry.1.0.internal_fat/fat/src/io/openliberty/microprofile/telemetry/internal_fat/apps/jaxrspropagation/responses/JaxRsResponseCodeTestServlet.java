@@ -40,7 +40,7 @@ import jakarta.ws.rs.core.UriBuilder;
  *
  */
 @SuppressWarnings("serial")
-@WebServlet("/JaxRsResponseCodeTestServlet")
+@WebServlet("/testJaxRsResponseCode")
 public class JaxRsResponseCodeTestServlet extends FATServlet {
 
     @Inject
@@ -130,10 +130,10 @@ public class JaxRsResponseCodeTestServlet extends FATServlet {
 
     @Test
     public void testInvalidJaxRsPath() {
-        URI testUri = getBaseUri();
-        UriBuilder.fromUri(testUri)
+        URI testUri = UriBuilder.fromUri(getBaseUri())
                         .path("responseCodeEndpoints")
-                        .path("invalid");
+                        .path("invalid")
+                        .build();
         Span span = spans.withTestSpan(() -> {
             Response response = ClientBuilder.newClient()
                             .target(testUri)
@@ -143,18 +143,24 @@ public class JaxRsResponseCodeTestServlet extends FATServlet {
             assertThat(response.getStatus(), equalTo(404));
         });
 
-        // Because the request is not handled by a JAX-RS resource method, we don't get a server span
-
-        List<SpanData> spans = exporter.getFinishedSpanItems(2, span.getSpanContext().getTraceId());
+        List<SpanData> spans = exporter.getFinishedSpanItems(3, span.getSpanContext().getTraceId());
         TestSpans.assertLinearParentage(spans);
 
         SpanData clientSpan = spans.get(1);
+        SpanData serverSpan = spans.get(2);
 
         assertThat(clientSpan, isSpan()
                         .withKind(SpanKind.CLIENT)
                         .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
                         .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 404L)
                         .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString()));
+
+        // Assert the span created by HTTP tracing
+        assertThat(serverSpan, isSpan()
+                        .withKind(SpanKind.SERVER)
+                        .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
+                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 404L)
+                        .withAttribute(SemanticAttributes.HTTP_TARGET, testUri.getPath()));
     }
 
     private void doTestForStatusCode(int statusCode) {

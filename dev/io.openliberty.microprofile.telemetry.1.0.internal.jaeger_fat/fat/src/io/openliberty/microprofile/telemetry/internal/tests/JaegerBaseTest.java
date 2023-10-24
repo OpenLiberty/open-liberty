@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -31,6 +31,8 @@ import org.junit.Test;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
@@ -112,7 +114,12 @@ public abstract class JaegerBaseTest {
         assertThat(parent, hasNoParent());
         assertThat(child, hasParentSpanId(parent.getSpanId()));
 
-        assertThat(parent, hasProperty("operationName", equalTo("/spanTest/subspan")));
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            assertThat(parent, hasProperty("operationName", equalTo("/spanTest/subspan")));
+        } else {
+            assertThat(parent, hasProperty("operationName", equalTo("GET /spanTest/subspan")));
+        }
+
         assertThat(child, hasProperty("operationName", equalTo(TestResource.TEST_OPERATION_NAME)));
     }
 

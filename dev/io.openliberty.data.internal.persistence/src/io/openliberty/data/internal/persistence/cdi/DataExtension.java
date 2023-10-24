@@ -15,23 +15,34 @@ package io.openliberty.data.internal.persistence.cdi;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedParameterizedType;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.AbstractMap;
+import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+
+import javax.sql.DataSource;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -44,7 +55,6 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
@@ -52,9 +62,16 @@ import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 import io.openliberty.data.internal.persistence.EntityDefiner;
+import io.openliberty.data.internal.persistence.QueryInfo;
 import jakarta.data.exceptions.MappingException;
+import jakarta.data.model.StaticMetamodel;
 import jakarta.data.repository.DataRepository;
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Insert;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AfterTypeDiscovery;
@@ -66,6 +83,7 @@ import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.inject.spi.WithAnnotations;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
 
 /**
  * CDI extension to handle the injection of repository implementations
@@ -77,7 +95,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
     /**
      * OSGi service that registers this extension.
      */
-    public final DataExtensionProvider provider = AccessController.doPrivileged(this);
+    private final DataExtensionProvider provider = AccessController.doPrivileged(this);
 
     /**
      * Beans for repository interfaces.
@@ -94,9 +112,9 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
     private final ConcurrentHashMap<AnnotatedType<?>, String> repositoryTypes = new ConcurrentHashMap<>();
 
     /**
-     * jakarata.validation.Valid, if available. Otherwise null.
+     * Map of entity class to list of static metamodel class.
      */
-    public final Class<? extends Annotation> Valid = loadIfAvailable("jakarta.validation.Valid");
+    private final Map<Class<?>, List<Class<?>>> staticMetamodels = new HashMap<>();
 
     /**
      * A key for a group of entities for the same backend database
@@ -152,8 +170,26 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
         }
     }
 
-    public void afterTypeDiscovery(@Observes AfterTypeDiscovery event, BeanManager beanMgr) {
+    @Trivial
+    public <T> void annotatedStaticMetamodel(@Observes @WithAnnotations(StaticMetamodel.class) ProcessAnnotatedType<T> event) {
+        AnnotatedType<T> type = event.getAnnotatedType();
 
+        StaticMetamodel staticMetamodel = type.getAnnotation(StaticMetamodel.class);
+
+        Class<?> entityClass = staticMetamodel.value();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "annotatedStaticMetamodel for " + entityClass.getName(),
+                     type.getJavaClass().getName());
+
+        List<Class<?>> newList = new LinkedList<>();
+        newList.add(type.getJavaClass());
+        List<Class<?>> existingList = staticMetamodels.putIfAbsent(entityClass, newList);
+        if (existingList != null)
+            existingList.add(type.getJavaClass());
+    }
+
+    public void afterTypeDiscovery(@Observes AfterTypeDiscovery event, BeanManager beanMgr) {
         // Group entities by data access provider and class loader
         Map<EntityGroupKey, EntityDefiner> entityGroups = new HashMap<>();
 
@@ -164,28 +200,32 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
             AnnotatedType<?> repositoryType = entry.getKey();
             String databaseStoreId = entry.getValue();
             Class<?> repositoryInterface = repositoryType.getJavaClass();
-            Entry<Class<?>, Boolean> entityClassInfo = getEntityClass(repositoryInterface);
-            Class<?> entityClass = entityClassInfo.getKey();
-            boolean requestsValidation = entityClassInfo.getValue();
             ClassLoader loader = repositoryInterface.getClassLoader();
 
-            if (supportsEntity(entityClass, repositoryType)) {
+            Class<?>[] primaryEntityClassReturnValue = new Class<?>[1];
+            Map<Class<?>, List<QueryInfo>> queriesPerEntityClass = new HashMap<>();
+            if (discoverEntityClasses(repositoryType, queriesPerEntityClass, primaryEntityClassReturnValue)) {
                 EntityGroupKey entityGroupKey = new EntityGroupKey(databaseStoreId, loader);
                 EntityDefiner entityDefiner = entityGroups.get(entityGroupKey);
                 if (entityDefiner == null)
                     entityGroups.put(entityGroupKey, entityDefiner = new EntityDefiner(entityGroupKey.databaseId, loader));
 
-                entityDefiner.add(entityClass);
+                for (Class<?> entityClass : queriesPerEntityClass.keySet())
+                    entityDefiner.add(entityClass);
 
                 BeanAttributes<?> attrs = beanMgr.createBeanAttributes(repositoryType);
                 Bean<?> bean = beanMgr.createBean(attrs, repositoryInterface, new RepositoryProducer.Factory<>( //
-                                beanMgr, this, entityDefiner, entityClass, requestsValidation));
+                                beanMgr, provider, this, entityDefiner, primaryEntityClassReturnValue[0], queriesPerEntityClass));
                 repositoryBeans.add(bean);
             }
         }
 
         for (EntityDefiner entityDefiner : entityGroups.values()) {
             provider.executor.submit(entityDefiner);
+        }
+
+        for (EntityDefiner entityDefiner : entityGroups.values()) {
+            entityDefiner.populateStaticMetamodelClasses(staticMetamodels);
         }
     }
 
@@ -333,90 +373,225 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
     }
 
     /**
-     * Determine the entity class for the interface that is annotated as a Repository.
+     * Identifies entity classes that are referenced by an interface that is annotated as a Repository
+     * and determines the primary entity class.
      *
      * Many repository interfaces will inherit from DataRepository or another built-in repository class,
      * all of which are parameterized with the entity class as the first parameter.
      *
-     * Otherwise, it might be possible to infer the entity class from the method signature.
-     * The following approach is used:
-     * <ul>
-     * <li>Look for a save(E) or save(E[]) method
-     * <li>TODO Look at the return value of other methods
-     * </ul>
-     *
-     * @param repositoryInterface
-     * @return entity class for the repository and whether the repository requests validation
-     *         of the entity class by annotating it with jakarta.validation.Valid.
+     * @param repositoryType                the repository interface as an annotated type.
+     * @param queriesPerEntity              initially empty map to populate with partially completed query information per entity.
+     * @param primaryEntityClassReturnValue initially empty size 1 array for returning the primary entity class, if any.
+     * @return whether all entity types that appear on the repository interface are supported.
      */
-    private Entry<Class<?>, Boolean> getEntityClass(Class<?> repositoryInterface) {
-        Class<?> entityClass = null;
-        boolean requestsValidation = false;
+    private boolean discoverEntityClasses(AnnotatedType<?> repositoryType,
+                                          Map<Class<?>, List<QueryInfo>> queriesPerEntity,
+                                          Class<?>[] primaryEntityClassReturnValue) {
+        Class<?> repositoryInterface = repositoryType.getJavaClass();
+        Class<?> primaryEntityClass = null;
+        Set<Class<?>> lifecycleMethodEntityClasses = new HashSet<>();
 
+        // Look for parameterized type variable of the repository interface, for example,
+        // public interface MyRepository extends DataRepository<MyEntity, IdType>
         for (java.lang.reflect.AnnotatedType interfaceType : repositoryInterface.getAnnotatedInterfaces()) {
             if (interfaceType instanceof AnnotatedParameterizedType) {
                 AnnotatedParameterizedType parameterizedType = (AnnotatedParameterizedType) interfaceType;
                 java.lang.reflect.AnnotatedType typeParams[] = parameterizedType.getAnnotatedActualTypeArguments();
                 Type firstParamType = typeParams.length > 0 ? typeParams[0].getType() : null;
                 if (firstParamType != null && firstParamType instanceof Class) {
-                    entityClass = (Class<?>) firstParamType;
-                    requestsValidation = typeParams[0].isAnnotationPresent(Valid);
+                    primaryEntityClass = (Class<?>) firstParamType;
                     if (typeParams.length == 2 && parameterizedType.getType().getTypeName().startsWith(DataRepository.class.getPackageName()))
                         break; // spec-defined repository interfaces take precedence if multiple interfaces are present
                 }
             }
         }
 
-        if (entityClass == null) {
-            for (Method method : repositoryInterface.getMethods())
-                if (method.getParameterCount() == 1 && "save".equals(method.getName())) {
-                    Type type = method.getGenericParameterTypes()[0];
-                    if (type instanceof ParameterizedType) {
-                        Type[] typeParams = ((ParameterizedType) type).getActualTypeArguments();
-                        if (typeParams.length == 1) // for example, List<Product> vs. Map<Long, String>
-                            type = typeParams[0];
-                    }
-                    if (type instanceof Class) {
-                        Class<?> paramClass = (Class<?>) type;
-                        if (paramClass.isArray())
-                            paramClass = paramClass.getComponentType();
-                        String packageName = paramClass.getPackageName();
-                        if (!paramClass.isPrimitive() &&
-                            !paramClass.isInterface() &&
-                            !packageName.startsWith("java") &&
-                            !packageName.startsWith("jakarta")) {
-                            entityClass = paramClass;
-                            break;
+        for (Method method : repositoryInterface.getMethods()) {
+            if (method.isDefault()) // skip default methods
+                continue;
+
+            // Check for resource accessor methods:
+            Class<?> returnType = method.getReturnType();
+            if (method.getParameterCount() == 0 &&
+                (EntityManager.class.equals(returnType)
+                 || DataSource.class.equals(returnType)
+                 || Connection.class.equals(returnType))) {
+                QueryInfo queryInfo = new QueryInfo(method, QueryInfo.Type.RESOURCE_ACCESS);
+
+                List<QueryInfo> queries = queriesPerEntity.get(Void.class);
+                if (queries == null)
+                    queriesPerEntity.put(Void.class, queries = new ArrayList<>());
+                queries.add(queryInfo);
+                continue;
+            }
+
+            Class<?> returnArrayComponentType = null;
+            List<Class<?>> returnTypeAtDepth = new ArrayList<>(5);
+            Type type = method.getGenericReturnType();
+            for (int depth = 0; depth < 5 && type != null; depth++) {
+                if (type instanceof ParameterizedType) {
+                    returnTypeAtDepth.add((Class<?>) ((ParameterizedType) type).getRawType());
+                    Type[] typeParams = ((ParameterizedType) type).getActualTypeArguments();
+                    type = typeParams.length == 1 ? typeParams[0] : null;
+                } else if (type instanceof Class) {
+                    Class<?> c = (Class<?>) type;
+                    returnTypeAtDepth.add(c);
+                    if (IntStream.class.equals(type)) {
+                        returnTypeAtDepth.add(int.class);
+                        depth++;
+                    } else if (LongStream.class.equals(type)) {
+                        returnTypeAtDepth.add(long.class);
+                        depth++;
+                    } else if (DoubleStream.class.equals(type)) {
+                        returnTypeAtDepth.add(double.class);
+                        depth++;
+                    } else if (returnArrayComponentType == null) {
+                        returnArrayComponentType = c.getComponentType();
+                        if (returnArrayComponentType != null) {
+                            returnTypeAtDepth.add(returnArrayComponentType);
+                            depth++;
                         }
                     }
+                    type = null;
+                } else if (type instanceof GenericArrayType) {
+                    // TODO cover the possibility that the generic type could be for something other than the entity, such as the primary key?
+                    Class<?> arrayComponentType = primaryEntityClass;
+                    returnTypeAtDepth.add(arrayComponentType.arrayType());
+                    if (returnArrayComponentType == null) {
+                        returnTypeAtDepth.add(returnArrayComponentType = arrayComponentType);
+                        depth++;
+                    }
+                    type = null;
+                } else {
+                    returnTypeAtDepth.add(primaryEntityClass);
+                    type = null;
                 }
+            }
 
-            // TODO if still not found, look through @Query/@Select annotations that indicate an entity result class type?
-            if (entityClass == null)
-                throw new IllegalArgumentException("@Repository " + repositoryInterface.getName() + " does not specify an entity class." + // TODO NLS
-                                                   " To correct this, have the repository interface extend DataRepository" +
-                                                   " or another built-in repository interface and supply the entity class as the first parameter.");
+            QueryInfo queryInfo = new QueryInfo(method, returnArrayComponentType, returnTypeAtDepth);
+
+            // Possible entity class based on the return type:
+            Class<?> entityClass = returnTypeAtDepth.get(returnTypeAtDepth.size() - 1);
+
+            // Determine entity class from a lifecycle method parameter:
+            if (method.getParameterCount() == 1
+                && !method.isDefault()
+                && method.getAnnotation(Query.class) == null
+                && (method.getAnnotation(Insert.class) != null
+                    || method.getAnnotation(Update.class) != null
+                    || method.getAnnotation(Save.class) != null
+                    || method.getAnnotation(Delete.class) != null
+                    || method.getName().startsWith("insert") // TODO combine this with other logic that understands the method to ensure correct interpretation
+                    || method.getName().startsWith("update")
+                    || method.getName().startsWith("save"))) {
+                type = method.getGenericParameterTypes()[0];
+                if (type instanceof ParameterizedType) {
+                    Type[] typeParams = ((ParameterizedType) type).getActualTypeArguments();
+                    if (typeParams.length == 1) // for example, List<Product>
+                        type = typeParams[0];
+                }
+                if (type instanceof Class) {
+                    Class<?> c = (Class<?>) type;
+                    if (c.isArray())
+                        c = c.getComponentType();
+                    String packageName = c.getPackageName();
+                    if (!c.isPrimitive() &&
+                        !c.isInterface() &&
+                        !packageName.startsWith("java.") &&
+                        !packageName.startsWith("jakarta.")) {
+                        entityClass = c;
+                        lifecycleMethodEntityClasses.add(c);
+                    }
+                }
+            }
+
+            if (entityClass == null) {
+                entityClass = Void.class;
+            } else {
+                // TODO find better ways of determining non-entities ******** require @Entity unless found on lifecycle method!!!!!!
+                String packageName = entityClass.getPackageName();
+                if (packageName.startsWith("java.")
+                    || packageName.startsWith("jakarta.")
+                    || entityClass.isPrimitive()
+                    || entityClass.isInterface())
+                    entityClass = Void.class;
+            }
+
+            List<QueryInfo> queries = queriesPerEntity.get(entityClass);
+            if (queries == null)
+                queriesPerEntity.put(entityClass, queries = new ArrayList<>());
+            queries.add(queryInfo);
         }
 
-        return new AbstractMap.SimpleImmutableEntry<>(entityClass, requestsValidation);
-    }
+        List<QueryInfo> additionalQueriesForPrimaryEntity = queriesPerEntity.remove(Void.class);
 
-    /**
-     * Loads the specified annotation class if it can be found.
-     *
-     * @param className fully qualified annotation class name to load.
-     * @return loaded annotation class or null.
-     */
-    @FFDCIgnore(ClassNotFoundException.class)
-    @SuppressWarnings("unchecked")
-    private Class<? extends Annotation> loadIfAvailable(String annotationClassName) {
-        Class<? extends Annotation> c;
-        try {
-            c = (Class<? extends Annotation>) DataExtension.class.getClassLoader().loadClass(annotationClassName);
-        } catch (ClassNotFoundException x) {
-            c = null;
+        // Confirm which classes are actually entity classes and that all entity classes are supported
+        boolean supportsAllEntities = true;
+
+        Set<Class<?>> allEntityClasses = new HashSet<>();
+        if (primaryEntityClass != null) {
+            allEntityClasses.add(primaryEntityClass);
+            supportsAllEntities &= supportsEntity(primaryEntityClass, repositoryType);
         }
-        return c;
+        for (Class<?> c : lifecycleMethodEntityClasses) {
+            if (allEntityClasses.add(c))
+                supportsAllEntities &= supportsEntity(c, repositoryType);
+        }
+
+        for (Iterator<Entry<Class<?>, List<QueryInfo>>> it = queriesPerEntity.entrySet().iterator(); it.hasNext();) {
+            Entry<Class<?>, List<QueryInfo>> entry = it.next();
+            Class<?> c = entry.getKey();
+            if (!allEntityClasses.contains(c))
+                if (c.getAnnotation(Entity.class) == null) {
+                    // Our provider doesn't recognize this as an entity class. Find out if another provider might:
+                    supportsAllEntities &= supportsEntity(c, repositoryType);
+                    if (additionalQueriesForPrimaryEntity == null)
+                        additionalQueriesForPrimaryEntity = new ArrayList<>();
+                    additionalQueriesForPrimaryEntity.addAll(entry.getValue());
+                    it.remove();
+                } else {
+                    // The entity class is supported because it is annotated with jakarta.persistence.Entity
+                    allEntityClasses.add(c);
+                }
+        }
+
+        if (supportsAllEntities) {
+            if (primaryEntityClass == null) {
+                // Primary entity class is inferred to be the only entity class found on lifecycle methods
+                if (lifecycleMethodEntityClasses.size() == 1)
+                    primaryEntityClass = lifecycleMethodEntityClasses.iterator().next();
+                else if (lifecycleMethodEntityClasses.isEmpty()) {
+                    // Primary entity class is inferred to be the only entity class that appears on repository methods
+                    if (queriesPerEntity.size() == 1)
+                        primaryEntityClass = queriesPerEntity.keySet().iterator().next();
+                    else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "Unable to determine primary entity class because there are multiple entity classes: ",
+                                 queriesPerEntity.keySet());
+                }
+            } else if (!queriesPerEntity.containsKey(primaryEntityClass)) {
+                queriesPerEntity.put(primaryEntityClass, new ArrayList<>());
+            }
+
+            if (additionalQueriesForPrimaryEntity != null && !additionalQueriesForPrimaryEntity.isEmpty())
+                if (primaryEntityClass == null) {
+                    throw new MappingException("@Repository " + repositoryInterface.getName() + " does not specify an entity class." + // TODO NLS
+                                               " To correct this, have the repository interface extend DataRepository" + // TODO can we include example type vars?
+                                               " or another built-in repository interface and supply the entity class as the first parameter.");
+                } else {
+                    List<QueryInfo> queries = queriesPerEntity.get(primaryEntityClass);
+                    if (queries == null)
+                        queriesPerEntity.put(primaryEntityClass, additionalQueriesForPrimaryEntity);
+                    else
+                        queries.addAll(additionalQueriesForPrimaryEntity);
+                }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, repositoryInterface.getName() + " has primary entity class " + primaryEntityClass,
+                     "and methods that use the following entities:", queriesPerEntity);
+
+        primaryEntityClassReturnValue[0] = primaryEntityClass;
+        return supportsAllEntities;
     }
 
     /**

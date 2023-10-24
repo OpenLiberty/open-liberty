@@ -15,6 +15,7 @@ package io.openliberty.data.internal.persistence.cdi;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,6 +25,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.data.internal.persistence.EntityDefiner;
+import io.openliberty.data.internal.persistence.QueryInfo;
 import io.openliberty.data.internal.persistence.RepositoryImpl;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
@@ -49,17 +51,20 @@ public class RepositoryProducer<R, P> implements Producer<R> {
     @Trivial
     static class Factory<P> implements ProducerFactory<P> {
         private final BeanManager beanMgr;
-        private final Class<?> entityClass;
         private final EntityDefiner entityDefiner;
         private final DataExtension extension;
-        private final boolean requestsValidation;
+        private final Class<?> primaryEntityClass;
+        private final DataExtensionProvider provider;
+        private final Map<Class<?>, List<QueryInfo>> queriesPerEntityClass;
 
-        Factory(BeanManager beanMgr, DataExtension extension, EntityDefiner entityDefiner, Class<?> entityClass, boolean requestsValidation) {
+        Factory(BeanManager beanMgr, DataExtensionProvider provider, DataExtension extension, EntityDefiner entityDefiner,
+                Class<?> primaryEntityClass, Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
             this.beanMgr = beanMgr;
-            this.entityClass = entityClass;
             this.entityDefiner = entityDefiner;
             this.extension = extension;
-            this.requestsValidation = requestsValidation;
+            this.primaryEntityClass = primaryEntityClass;
+            this.provider = provider;
+            this.queriesPerEntityClass = queriesPerEntityClass;
         }
 
         @Override
@@ -123,8 +128,8 @@ public class RepositoryProducer<R, P> implements Producer<R> {
                         Tr.debug(this, tc, "add " + anno + " for " + method.getAnnotated().getJavaMember());
                 }
 
-        RepositoryImpl<R> handler = new RepositoryImpl<>(factory.extension, factory.entityDefiner, //
-                        repositoryInterface, factory.entityClass, factory.requestsValidation);
+        RepositoryImpl<R> handler = new RepositoryImpl<>(factory.provider, factory.extension, factory.entityDefiner, //
+                        repositoryInterface, factory.primaryEntityClass, factory.queriesPerEntityClass);
 
         R instance = repositoryInterface.cast(Proxy.newProxyInstance(repositoryInterface.getClassLoader(),
                                                                      new Class<?>[] { repositoryInterface },

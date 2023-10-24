@@ -38,7 +38,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 
 @SuppressWarnings("serial")
-@WebServlet("/b3Propagation")
+@WebServlet("/testB3Propagation")
 public class B3PropagationTestServlet extends FATServlet {
 
     private static final String BAGGAGE_VALUE = "test.baggage.value";

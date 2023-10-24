@@ -79,7 +79,7 @@ public class CRaCResourceRequestPhaseAfterAppStartTest {
     public void testRequestCheckpointAfterStartPhase() throws Exception {
         ProgramOutput checkpointOutput = server.startServer(getTestMethodNameOnly(testName) + ".log");
         assertEquals("Wrong return code.", 72, checkpointOutput.getReturnCode());
-        assertNotNull("Application did not get CheckpointException", server.waitForStringInLogUsingMark("TESTING - got CheckpointException.", 0));
+        assertNotNull("Application did not get CheckpointException", server.waitForStringInLogUsingMark("TESTING - got CheckpointException: CWWKC0553E", 0));
     }
 
     @After

@@ -49,6 +49,8 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
@@ -73,6 +75,9 @@ public class AgentConfigTest {
 
     @ClassRule
     public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat("spanTestServer", MicroProfileActions.MP61, MicroProfileActions.MP60);
 
     public static JaegerQueryClient client;
 
@@ -221,7 +226,7 @@ public class AgentConfigTest {
 
         List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(1));
 
-        assertThat(spans.get(0), hasName("/agentTest/"));
+        assertThat(spans.get(0), hasName("/agentTest"));
 
         // We should still be able to manually create spans with the API
         String traceId2 = new HttpRequest(server, "/agentTest/manualSpans").run(String.class);

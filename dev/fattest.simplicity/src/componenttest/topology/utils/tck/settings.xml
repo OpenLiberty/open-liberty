@@ -4,19 +4,31 @@
     <localRepository>${env.MAVEN_USER_HOME}/repository</localRepository>
     <servers>
         <server>
-            <username>${env.MVNW_USERNAME}</username>
-            <password>${env.MVNW_PASSWORD}</password>
             <id>central-mirror</id>
-        </server>
-        <server>
             <username>${env.MVNW_USERNAME}</username>
             <password>${env.MVNW_PASSWORD}</password>
+            <configuration>
+                <!-- 5 mins, reduced from default 30 minutes to avoid timeouts -->
+                <requestTimeout>300000</requestTimeout>
+            </configuration>
+        </server>
+        <server>
             <id>plugin-central-mirror</id>
-        </server>
-        <server>
             <username>${env.MVNW_USERNAME}</username>
             <password>${env.MVNW_PASSWORD}</password>
+            <configuration>
+                <!-- 5 mins, reduced from default 30 minutes to avoid timeouts -->
+                <requestTimeout>300000</requestTimeout>
+            </configuration>
+        </server>
+        <server>
             <id>artifactory</id>
+            <username>${env.MVNW_USERNAME}</username>
+            <password>${env.MVNW_PASSWORD}</password>
+            <configuration>
+                <!-- 5 mins, reduced from default 30 minutes to avoid timeouts -->
+                <requestTimeout>300000</requestTimeout>
+            </configuration>
         </server>
     </servers>
     <profiles>

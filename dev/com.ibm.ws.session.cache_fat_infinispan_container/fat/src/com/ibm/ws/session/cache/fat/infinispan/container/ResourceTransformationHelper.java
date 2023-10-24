@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,7 +19,7 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -44,7 +44,7 @@ public class ResourceTransformationHelper {
                 Path resourceFile = Paths.get(originalResourceDir.getAbsolutePath(), resource.getName());
                 Path newResourceFile = Paths.get(jakartaResourceDir.getAbsolutePath(),
                                                  resource.getName().substring(0, resource.getName().lastIndexOf(".")) + ".jakarta.jar");
-                JakartaEE10Action.transformApp(resourceFile, newResourceFile);
+                JakartaEEAction.transformApp(resourceFile, newResourceFile);
             }
         }
         if (serverA != null) {

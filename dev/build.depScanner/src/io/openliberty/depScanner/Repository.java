@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -57,12 +57,12 @@ public class Repository {
 
     private final Map<String, List<Module>> moduleMap = new HashMap<>();
 
-    public Repository(File repoDir) {
+    public Repository(File repoDir, boolean isGradleCache) {
         Module.setRoot(repoDir.getAbsolutePath());
 
         for (File f : Utils.findJars(repoDir)) {
             try {
-                Module m = new Module(f);
+                Module m = new Module(f, isGradleCache);
                 if (!knownTestLibs(m)) {
                     List<Module> modules = moduleMap.computeIfAbsent(m.getModuleId(), k -> new ArrayList<>());
                     modules.add(m);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 
 @RunWith(FATRunner.class)
 public class JAXRSClientSSLTestNoLibertySSLFeature extends JAXRSClientSSLTestNoLibertySSLCfg {
@@ -43,7 +43,7 @@ public class JAXRSClientSSLTestNoLibertySSLFeature extends JAXRSClientSSLTestNoL
         } catch (Exception e) {
             System.out.println(e.toString());
         }
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9Active()) {
             serverNoSSL.changeFeatures(Arrays.asList("restfulWS-3.0", "ssl-1.0"));
         } else {
             serverNoSSL.changeFeatures(Arrays.asList("jaxrs-2.0", "ssl-1.0"));

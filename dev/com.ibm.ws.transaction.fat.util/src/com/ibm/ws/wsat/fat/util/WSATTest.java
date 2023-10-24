@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -71,7 +71,7 @@ public abstract class WSATTest {
         return newUri;
     }
 
-	public static void callClearResourcesServlet(String app, LibertyServer... servers) throws IOException{
+	public static void callClearResourcesServlet(String app, LibertyServer... servers) throws Exception{
 		final String method = "callClearResourcesServlet";
 		int expectedConnectionCode = HttpURLConnection.HTTP_OK;
 		String servletName = "ClearResourcesServlet";
@@ -80,15 +80,15 @@ public abstract class WSATTest {
 			String urlStr = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + app + "/" + servletName;
 	
 			Log.info(WSATTest.class, method, "callClearResourcesServlet URL: " + urlStr);
-			String result = "";
 			HttpURLConnection con = HttpUtils.getHttpConnection(new URL(urlStr), 
 				expectedConnectionCode, REQUEST_TIMEOUT);
 			try {
-				BufferedReader br = HttpUtils.getConnectionStream(con);
-				result = br.readLine();
+				HttpUtils.getConnectionStream(con).readLine();
 			} finally {
 				con.disconnect();
 			}
+			
+			server.setMarkToEndOfLog();
 		}
 	}
 }

@@ -32,6 +32,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.security.utils.SSLUtils;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
@@ -46,6 +48,9 @@ public class JaegerSecureOtlpTest extends JaegerBaseTest {
 
     @ClassRule
     public static JaegerContainer jaegerContainer = new JaegerContainer(getCertificate(), getKey()).withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat("spanTestServer", MicroProfileActions.MP61, MicroProfileActions.MP60);
 
     public static JaegerQueryClient client;
 

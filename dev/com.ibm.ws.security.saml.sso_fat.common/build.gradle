@@ -75,10 +75,8 @@ dependencies {
      */
     collectedDeps project(':io.openliberty.org.apache.commons.codec'),
                   project(':io.openliberty.org.apache.commons.logging'),
-                  'com.unboundid:unboundid-ldapsdk:5.1.0',
 //                  'jdom:1.1.2',                                     NOT USED IN OPEN LIBERTY YET
                   project(':com.ibm.json4j'),
-                  project(':com.ibm.ws.com.unboundid'),
                   project(':com.ibm.ws.com.meterware.httpunit.1.7'),
 //                  project(':com.ibm.ws.org.apache.commons.lang'),   NOT IN OPEN LIBERTY
                   project(':com.ibm.ws.org.joda.time')

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -37,7 +37,7 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationDa
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -100,7 +100,7 @@ public class OidcClientCookieVerificationTests extends CommonTest {
         expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_COOKIE, Constants.STRING_MATCHES, "Should have found a WASOidcState cookie but didn't.", null, "WASOidcState[pn][0-9]+=[^" + CommonValidationTools.COOKIE_DELIMITER + "]+");
         expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_COOKIE, Constants.STRING_MATCHES, "Should have found a WASOidcNonce cookie but didn't.", null, "WASOidcNonce[pn][0-9]+=[^" + CommonValidationTools.COOKIE_DELIMITER + "]+");
         expectations = getSuccessfulAccessExpectations(updatedTestSettings, expectations);
-        String expirationCookieFormat = JakartaEE10Action.isActive() ? "; max-age=0" : "; Expires=Thu, 01 Dec 1994";
+        String expirationCookieFormat = JakartaEEAction.isEE10OrLaterActive() ? "; max-age=0" : "; Expires=Thu, 01 Dec 1994";
         expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_HEADER, Constants.STRING_MATCHES, "Should have found a Set-Cookie header to clear the WASOidcState cookie but didn't.", null, "WASOidcState[pn][0-9]+=\"\"" + expirationCookieFormat);
         expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_HEADER, Constants.STRING_MATCHES, "Should have found a Set-Cookie header to clear the WASOidcNonce cookie but didn't.", null, "WASOidcNonce[pn][0-9]+=\"\"" + expirationCookieFormat);
 

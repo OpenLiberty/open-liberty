@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,6 +35,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
@@ -134,33 +135,25 @@ public class FATSuite {
         //REMINDER - for future EE version remember to update the corresponding transformer file
         //i.e. wlp-jakarta-transformer/jakarta-versions-eeX.properties
         //This is necessary for bundle MANIFEST.MF to be updated with the correct version of jsonp/b spec versions.
-        if (JakartaEE10Action.isActive()) {
-            Log.info(c, "beforeSuite", "Transforming bundle for Jakarta EE 10");
+
+        if (JakartaEEAction.isEE9OrLaterActive()) {
+            Log.info(c, "beforeSuite", "Transforming bundle for Jakarta EE 9 or later");
             // Install bundles for jakartaee user features
             for (String bundle : TEST_BUNDLES) {
                 Path bundleFile = Paths.get("lib/LibertyFATTestFiles/bundles", bundle + ".jar");
                 Path newBundleFile = Paths.get("lib/LibertyFATTestFiles/bundles", bundle + ".jakarta.jar");
-                JakartaEE10Action.transformApp(bundleFile, newBundleFile);
+                JakartaEEAction.transformApp(bundleFile, newBundleFile);
                 Log.info(c, "beforeSuite", "Transformed bundle " + bundleFile + " to " + newBundleFile);
                 server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/" + bundle + ".jakarta.jar");
             }
-
+        }
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             // Install jakartaee user features
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/testFeatureUsingJsonp-2.1.mf");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/testFeatureUsingJsonb-3.0.mf");
 
             addFakeProvider(server);
-        } else if (JakartaEE9Action.isActive()) {
-            Log.info(c, "beforeSuite", "Transforming bundle for Jakarta EE 9");
-            // Install bundles for jakartaee user features
-            for (String bundle : TEST_BUNDLES) {
-                Path bundleFile = Paths.get("lib/LibertyFATTestFiles/bundles", bundle + ".jar");
-                Path newBundleFile = Paths.get("lib/LibertyFATTestFiles/bundles", bundle + ".jakarta.jar");
-                JakartaEE9Action.transformApp(bundleFile, newBundleFile);
-                Log.info(c, "beforeSuite", "Transformed bundle " + bundleFile + " to " + newBundleFile);
-                server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/" + bundle + ".jakarta.jar");
-            }
-
+        } else if (JakartaEEAction.isEE9Active()) {
             // Install jakartaee user features
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/testFeatureUsingJsonp-2.0.mf");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/testFeatureUsingJsonb-2.0.mf");
@@ -191,19 +184,19 @@ public class FATSuite {
      */
     public static void configureImpls(LibertyServer server) {
 
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             //TODO replace with a third party implementation when one is developed
             server.addEnvVar("JSONP_PATH", "fakeProvider/1.0/jakarta/");
             server.addEnvVar("JSONP_JAR", "fake-json-p.jar");
 
             //TODO replace with a third party implementation when one is developed
-            server.addEnvVar("JSONB_PATH", "yasson/3.0.0/");
+            server.addEnvVar("JSONB_PATH", "yasson/3.0.3/");
             server.addEnvVar("JSONB_JAR", "yasson.jar");
             server.addEnvVar("JSONB_ALT_JAR", "yasson.jar");
 
-            server.addEnvVar("YASSON_PATH", "yasson/3.0.0/");
+            server.addEnvVar("YASSON_PATH", "yasson/3.0.3/");
             server.addEnvVar("YASSON_JAR", "yasson.jar");
-        } else if (JakartaEE9Action.isActive()) {
+        } else if (JakartaEEAction.isEE9Active()) {
             server.addEnvVar("JSONP_PATH", "johnzon/1.2.18/jakarta/");
             server.addEnvVar("JSONP_JAR", "johnzon-core.jar");
 
@@ -240,11 +233,11 @@ public class FATSuite {
 
         //If the length is 1 and set to false, provide the native case
         if (isAvailable.length == 1 && !isAvailable[0]) {
-            return JakartaEE10Action.isActive() ? PROVIDER_JOHNZON_JSONB : PROVIDER_YASSON;
+            return JakartaEEAction.isEE10OrLaterActive() ? PROVIDER_JOHNZON_JSONB : PROVIDER_YASSON;
         }
 
         //In all other situations we should return the provider that is available
-        return JakartaEE10Action.isActive() ? PROVIDER_YASSON : PROVIDER_JOHNZON_JSONB;
+        return JakartaEEAction.isEE10OrLaterActive() ? PROVIDER_YASSON : PROVIDER_JOHNZON_JSONB;
     }
 
     /**
@@ -261,11 +254,11 @@ public class FATSuite {
 
         //If the length is 1 and set to false, provide the native case
         if (isAvailable.length == 1 && !isAvailable[0]) {
-            return JakartaEE10Action.isActive() ? PROVIDER_JOHNZON_JSONP : PROVIDER_FAKE;
+            return JakartaEEAction.isEE10OrLaterActive() ? PROVIDER_JOHNZON_JSONP : PROVIDER_FAKE;
         }
 
         //In all other situations we should return the provider that is available
-        return JakartaEE10Action.isActive() ? PROVIDER_FAKE : PROVIDER_JOHNZON_JSONP;
+        return JakartaEEAction.isEE10OrLaterActive() ? PROVIDER_FAKE : PROVIDER_JOHNZON_JSONP;
 
     }
 
@@ -276,8 +269,8 @@ public class FATSuite {
      * @throws Exception
      */
     private static void addFakeProvider(LibertyServer server) throws Exception {
-        if (JakartaEE10Action.isActive()) {
-            RemoteFile parsson = server.getFileFromLibertySharedDir("resources/parsson/1.1.0/jakarta/parsson.jar");
+        if (JakartaEEAction.isEE10OrLaterActive()) {
+            RemoteFile parsson = server.getFileFromLibertySharedDir("resources/parsson/1.1.4/jakarta/parsson.jar");
             Path fakeDestination = Paths.get(server.getServerSharedPath(), "resources", "fakeProvider", "1.0", "jakarta");
 
             JavaArchive fake_json_p = ShrinkWrap.create(ZipImporter.class, "fake-json-p.jar")

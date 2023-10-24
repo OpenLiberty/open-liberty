@@ -110,6 +110,9 @@ memory.committedHeap.description=Afi\u015feaz\u0103 cantitatea de memorie \u00ee
 #Memory maxHeap message
 memory.maxHeap.description=Afi\u015feaz\u0103 cantitatea maxim\u0103 de memorie heap \u00een octe\u0163i care poate fi utilizat\u0103 pentru gestiunea memoriei. Acest atribut afi\u015feaz\u0103 -1 dac\u0103 dimensiunea heap maxim\u0103 de memorie este nedefinit\u0103. Aceast\u0103 cantitatea de memorie nu este garantat\u0103 s\u0103 fie disponibil\u0103 pentru gestionarea memoriei dac\u0103 este mai mare dec\u00e2t cantitatea de memorie angajat\u0103. E posibil ca ma\u015fina virtual\u0103 Java s\u0103 e\u015fueze alocarea memoriei, chiar c\u00e2nd cantitatea de memorie utilizat\u0103 nu dep\u0103\u015fe\u015fte aceast\u0103 dimensiune maxim\u0103.
 
+#Memory heapUtilization message
+memory.heapUtilization.description=Por\u021biunea de memorie maxim\u0103 heap, care este \u00een prezent \u00een uz. Aceast\u0103 metric\u0103 afi\u0219eaz\u0103 -1 dac\u0103 dimensiunea maxim\u0103 a memoriei heap este nedefinit\u0103.
+
 #Jvm uptime message
 jvm.uptime.description=Afi\u015feaz\u0103 ora de \u00eencepere a ma\u015finii virtuale Java \u00een milisecunde. Acest atribut afi\u015feaz\u0103 ora aproximativ\u0103 c\u00e2nd porne\u015fte ma\u015fina virtual\u0103 Java.
 
@@ -143,11 +146,17 @@ cpu.processCpuLoad.description=Afi\u015feaz\u0103 'utilizare recent\u0103 cpu' p
 #Cpu processCpuTime message
 cpu.processCpuTime.description=Afi\u015feaz\u0103 timpul CPU utilizat de procesul pe care ruleaz\u0103 JVM (ma\u015fina virtual\u0103 Java).
 
+#Cpu processCpuUtilization message
+cpu.processCpuUtilization.description=Timpul recent al procesorului care este utilizat de procesul JVM de la toate procesoarele care sunt disponibile pentru JVM.
+
 #Garbage collection count message
 garbageCollectionCount.description=Afi\u015feaz\u0103 num\u0103rul total de colec\u0163ii care au ap\u0103rut. Acest atribut listeaz\u0103 -1 dac\u0103 num\u0103rul de colec\u0163ie nu este definit pentru acest colector.
 
 #Garbage collection time message
 garbageCollectionTime.description=Afi\u015feaz\u0103 timpul aproximativ scurs pentru colectarea acumulat\u0103 \u00een milisecunde. Acest atribut afi\u015feaz\u0103 -1 dac\u0103 timpul scurs de colectare este nedefinit pentru acest colector. Implementarea ma\u015finii virtuale Java ar putea utiliza un cronometru de rezolu\u0163ie \u00eenalt\u0103 pentru a m\u0103sura timpul scurs. Acest atribut ar putea afi\u015fa aceea\u015fi valoare chiar dac\u0103 num\u0103rul de colec\u0163ie a fost incrementat dac\u0103 intervalul de colectare este foarte scurt.
+
+#Garbage collection time per garbage collection cycle message
+gc.time.per.cycle.description=Timpul mediu recent petrecut pe ciclu de colectare a gunoiului. Aceast\u0103 metric\u0103 afi\u0219eaz\u0103 -1 \u00een cazul \u00een care colectarea gunoiului timp scurs sau num\u0103rul este nedefinit pentru acest colector.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
@@ -157,6 +166,7 @@ threadpool.size.description=Dimensiunea pool-ului de fire.
 
 servlet.request.total.description=Num\u0103rul de vizite la acest servlet de la pornirea serverului.
 servlet.responseTime.total.description=Timpul total de r\u0103spuns al acestui servlet de la pornirea serverului.
+servlet.request.elapsedTime.per.request.description=Timpul recent mediu de r\u0103spuns scurs per cerere de servlet.
 
 connectionpool.create.total.description=Num\u0103rul total de conexiuni gestionate care au fost create de la crearea pool-ului.
 connectionpool.destroy.total.description=Num\u0103rul total de conexiuni gestionate care au fost distruse de la crearea pool-ului.
@@ -167,6 +177,8 @@ connectionpool.waitTime.total.description=Timpul total de a\u015fteptare pe toat
 connectionpool.inUseTime.total.description=Timpul total \u00een care toate conexiunile sunt folosite de la pornirea serverului.
 connectionpool.usedConnections.total.description=Num\u0103rul total de cereri de conexiune care au a\u015fteptat din cauza pool-ului de conexiuni plin sau care nu au trebuit s\u0103 a\u015ftepte de la pornirea serverului. Orice conexiuni care sunt momentan folosite nu sunt incluse \u00een acest total.
 connectionpool.queuedRequests.total.description=Num\u0103rul total de cereri de conexiune care au trebuit s\u0103 a\u015ftepte din cauza pool-ului de conexiuni plin de la pornirea serverului.
+connectionpool.inUseTime.per.usedConnection.description=Timpul mediu recent c\u0103 conexiunile sunt \u00een uz.
+connectionpool.waitTime.per.queuedRequest.description=Timpul mediu recent de a\u0219teptare pentru cererile de conexiune la coad\u0103.
 
 session.create.total.description=Num\u0103rul de sesiuni care s-au logat de la activarea acestui indice de m\u0103surare.
 session.liveSessions.description=Num\u0103rul de utilizatori care sunt loga\u0163i curent.
@@ -188,6 +200,7 @@ grpc.client.responseTime.total.description=Timpul total de r\u0103spuns al RPC-u
 
 REST.request.description=Num\u0103rul de invoc\u0103ri \u015fi timpul total de r\u0103spuns al acestei metode de resurs\u0103 RESTful de la pornirea serverului. Indicele de m\u0103surare nu va \u00eenregistra timpul scurs \u015fi nici nu va lua \u00een considerare o cerere REST care a avut ca rezultat o excep\u0163ie care nu este mapat\u0103. De asemenea urm\u0103re\u015fte cea mai mare durat\u0103 de timp \u015fi cea mai mic\u0103 durat\u0103 de timp \u00eenregistrate \u00een ultimul minut \u00eentreg terminat.
 REST.request.unmappedException.description=Num\u0103rul total de excep\u0163ii care nu sunt mapate care au ap\u0103rut de la aceast\u0103 metod\u0103 de resurs\u0103 RESTful de la pornirea serverului.
+REST.request.elapsedTime.per.request.description: Recentul timp mediu de r\u0103spuns scurs per cerere de metod\u0103 de resurse RESTful.
 
 requestTiming.requestCount.description=Num\u0103rul cererilor de servlet de c\u00e2nd a pornit serverul.
 requestTiming.activeRequestCount.description=Num\u0103rul cererilor de servlet care ruleaz\u0103 curent.

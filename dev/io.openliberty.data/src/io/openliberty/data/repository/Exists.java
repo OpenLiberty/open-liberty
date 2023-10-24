@@ -17,6 +17,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import jakarta.data.repository.Delete;
+
 /**
  * <p>Annotates a repository method to designate it as an exists operation.
  * The {@link Filter &#64;Filter} annotation can be added to provide conditions.</p>

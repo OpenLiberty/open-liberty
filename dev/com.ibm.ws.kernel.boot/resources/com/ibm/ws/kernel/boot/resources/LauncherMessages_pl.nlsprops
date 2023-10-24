@@ -432,6 +432,10 @@ warning.unableToPackageLooseConfigFileMissingPath=CWWKE0095W: Serwer nie mo\u017
 warning.unableToPackageLooseConfigFileMissingPath.explanation=Okre\u015blony plik XML lu\u017anej konfiguracji aplikacji zawiera niepoprawne informacje o po\u0142o\u017ceniu plik\u00f3w. Mo\u017ce na przyk\u0142ad okre\u015bla\u0107 katalog, kt\u00f3rego nie mo\u017cna znale\u017a\u0107. \u015acie\u017cki w tym pliku XML powinny by\u0107 wzgl\u0119dne wobec katalogu konfiguracji serwera. Archiwum reprezentowane przez ten plik nie b\u0119dzie do\u0142\u0105czone do danych wyj\u015bciowych serwera znajduj\u0105cych si\u0119 w pakiecie.
 warning.unableToPackageLooseConfigFileMissingPath.useraction=Zmodyfikuj \u015bcie\u017cki w pliku XML lu\u017anej konfiguracji aplikacji tak, aby wskazywa\u0142y poprawne po\u0142o\u017cenie zawieraj\u0105ce pliki aplikacji. 
 
+warning.tooManySymbolicLinks=CWWKE0096W: Napotkano zbyt wiele dowi\u0105za\u0144 symbolicznych podczas pr\u00f3by rozstrzygni\u0119cia przez system nast\u0119puj\u0105cej \u015bcie\u017cki: {0}.
+warning.tooManySymbolicLinks.explanation=Dowi\u0105zania symboliczne to skr\u00f3ty wskazuj\u0105ce na inne pliki lub katalogi. Ten b\u0142\u0105d wyst\u0119puje, gdy system napotka zbyt wiele dowi\u0105za\u0144 symbolicznych w \u0142a\u0144cuchu i nie mo\u017ce rozstrzygn\u0105\u0107 \u015bcie\u017cki.
+warning.tooManySymbolicLinks.useraction=Aby rozwi\u0105za\u0107 ten problem, sprawd\u017a dowi\u0105zania symboliczne w \u015bcie\u017cce i upewnij si\u0119, \u017ce nie tworz\u0105 one odwo\u0142a\u0144 cyklicznych. Mo\u017cna r\u00f3wnie\u017c u\u017cy\u0107 komendy 'readlink', aby sprawdzi\u0107 poszczeg\u00f3lne powi\u0105zania w \u0142a\u0144cuchu.
+
 warn.packageRuntime.include.unknownOption=CWWKE0099W: Nie mo\u017cna u\u017cy\u0107 opcji --include={0}. Zamiast niej zostanie u\u017cyta opcja --include=wlp.
 warn.packageRuntime.include.unknownOption.explanation=Opcja zosta\u0142a zignorowana, poniewa\u017c nie zosta\u0142a rozpoznana.
 warn.packageRuntime.include.unknownOption.useraction=Pon\u00f3w komend\u0119, u\u017cywaj\u0105c poprawnych opcji. Istnieje mo\u017cliwo\u015b\u0107 u\u017cycia parametru --help w celu wy\u015bwietlenia listy poprawnych opcji.
@@ -753,6 +757,22 @@ error.checkpoint.failed.selinux.netdiag.useraction=Je\u015bli mechanizm SELinux 
 error.checkpoint.restore.failed.no.recovery=CWWKE0964E: Odtwarzanie procesu serwera punktu kontrolnego zako\u0144czy\u0142o si\u0119 niepowodzeniem. Sprawd\u017a dziennik {0}, aby okre\u015bli\u0107, dlaczego proces punktu kontrolnego nie zosta\u0142 odtworzony. Serwer nie zosta\u0142 uruchomiony, poniewa\u017c odtwarzanie punktu kontrolnego zosta\u0142o wy\u0142\u0105czone.
 error.checkpoint.restore.failed.no.recovery.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas odtwarzania procesu serwera punktu kontrolnego. Serwer nie zosta\u0142 uruchomiony, poniewa\u017c odtwarzanie punktu kontrolnego zosta\u0142o wy\u0142\u0105czone.
 error.checkpoint.restore.failed.no.recovery.useraction=Sprawd\u017a dzienniki, aby okre\u015bli\u0107, dlaczego proces punktu kontrolnego nie zosta\u0142 odtworzony. Aby w\u0142\u0105czy\u0107 odtwarzanie po awarii, ustaw zmienn\u0105 \u015brodowiskow\u0105 CRIU_RESTORE_DISABLE_RECOVERY na warto\u015b\u0107 true.
+
+warning.serverLockFileNotExist=CWWKE0965W: Plik blokady serwera {0} nie istnieje.
+warning.serverLockFileNotExist.explanation=Ostrze\u017cenie mo\u017ce wskazywa\u0107, \u017ce serwer nie dzia\u0142a lub plik blokady zosta\u0142 nieoczekiwanie usuni\u0119ty.
+warning.serverLockFileNotExist.useraction=Sprawd\u017a, czy serwer jest uruchomiony, u\u017cywaj\u0105c odpowiednich narz\u0119dzi monitorowania systemu. W systemie Windows mo\u017cna u\u017cy\u0107 Mened\u017cera zada\u0144. W systemach typu UNIX u\u017cyj komendy 'ps -ef'.
+
+warning.serverCommandFileNotExist=CWWKE0966W: Plik komend serwera {0} nie istnieje.
+warning.serverCommandFileNotExist.explanation=Ostrze\u017cenie sugeruje, \u017ce brakuje pliku komend serwera, kt\u00f3ry zawiera informacje niezb\u0119dne do nawi\u0105zania po\u0142\u0105czenia gniazda z serwerem. Mo\u017cliwe, \u017ce serwer nie jest uruchomiony lub plik zosta\u0142 nieoczekiwanie usuni\u0119ty.
+warning.serverCommandFileNotExist.useraction=Sprawd\u017a, czy serwer jest uruchomiony, u\u017cywaj\u0105c odpowiednich narz\u0119dzi monitorowania systemu. W systemie Windows mo\u017cna u\u017cy\u0107 Mened\u017cera zada\u0144. W systemach typu UNIX u\u017cyj komendy 'ps -ef'. Je\u015bli serwer jest uruchomiony, nale\u017cy go zrestartowa\u0107, co oznacza zatrzymanie procesu. U\u017cyj mened\u017cera zada\u0144 w systemie Windows, aby zatrzyma\u0107 proces. W systemach typu UNIX u\u017cyj komendy 'kill'.
+
+warning.timeoutWaitingForServerToReleaseLock=CWWKE0967W: Przekroczono limit czasu podczas oczekiwania na zwolnienie przez serwer pliku blokady serwera {0} .
+warning.timeoutWaitingForServerToReleaseLock.explanation=Ostrze\u017cenie wskazuje przekroczenie limitu czasu. Przyczyn\u0105 przekroczenia limitu czasu mo\u017ce by\u0107 wolne zamkni\u0119cie serwera, zawieszenie serwera lub zablokowanie pliku przez inny program.
+warning.timeoutWaitingForServerToReleaseLock.useraction=Je\u015bli serwer nadal dzia\u0142a, rozwa\u017c zwi\u0119kszenie warto\u015bci limitu czasu dla komendy 'server stop'. Je\u015bli serwer jest zatrzymany, u\u017cyj narz\u0119dzi do monitorowania plik\u00f3w, aby sprawdzi\u0107, czy inny program zablokowa\u0142 plik.
+
+warning.timeoutWaitingForServerProcessToStop=CWWKE0968W: Przekroczono limit czasu podczas oczekiwania na zatrzymanie procesu serwera.
+warning.timeoutWaitingForServerProcessToStop.explanation=Serwer nie zosta\u0142 zatrzymany w czasie dozwolonym przez warto\u015b\u0107 limitu czasu. Mo\u017ce to by\u0107 spowodowane powolnym zamkni\u0119ciem serwera lub zawieszeniem si\u0119 serwera.   
+warning.timeoutWaitingForServerProcessToStop.useraction=Je\u015bli serwer nadal dzia\u0142a, rozwa\u017c zwi\u0119kszenie warto\u015bci limitu czasu dla komendy 'server stop'. W systemach typu UNIX komenda zatrzymania serwera oczekuje na zatrzymanie procesu serwera. W systemie Windows komenda oczekuje na na\u0142o\u017cenie blokady na plik console.log . U\u017cyj narz\u0119dzi do monitorowania plik\u00f3w, aby sprawdzi\u0107, czy inny program, taki jak edytor, zablokowa\u0142 plik console.log .
 
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.

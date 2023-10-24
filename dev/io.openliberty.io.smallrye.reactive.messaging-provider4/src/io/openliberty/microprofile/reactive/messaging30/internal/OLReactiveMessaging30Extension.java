@@ -33,6 +33,7 @@ import io.smallrye.reactive.messaging.providers.impl.ConfiguredChannelFactory;
 import io.smallrye.reactive.messaging.providers.impl.ConnectorFactories;
 import io.smallrye.reactive.messaging.providers.impl.InternalChannelRegistry;
 import io.smallrye.reactive.messaging.providers.wiring.Wiring;
+import io.smallrye.reactive.messaging.providers.metrics.MetricDecorator;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -70,9 +71,11 @@ public class OLReactiveMessaging30Extension extends ReactiveMessagingExtension i
         //io.smallrye.reactive.messaging.providers.locals - Decorator to dispatch messages on the Vert.x context attached to the message
         //addAnnotatedType(ContextDecorator.class, discovery, beanManager);
 
-        //io.smallrye.reactive.messaging.providers.metrics - These depend on Micrometer so we're excluding them
-//        addAnnotatedType(MetricDecorator.class, discovery, beanManager);
-//        addAnnotatedType(MicrometerDecorator.class, discovery, beanManager);
+        // io.smallrye.reactive.messaging.providers.metrics
+        // Metrics Decorator to handle Reactive Messaging and MP Metrics integration
+        addAnnotatedType(MetricDecorator.class, discovery, beanManager);
+        // Micrometer Decorator to handle Smallrye Reactive Messaging and Micrometer integration - This uses micrometer so excluding
+        // addAnnotatedType(MicrometerDecorator.class, discovery, beanManager);
 
         //io.smallrye.reactive.messaging.providers.wiring
         addAnnotatedType(Wiring.class, discovery, beanManager);

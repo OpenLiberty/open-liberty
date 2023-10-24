@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -32,19 +32,27 @@ import javax.json.JsonValue;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.JakartaEEAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(FATRunner.class)
 public class ConfigRESTHandlerTest extends FATServletClient {
+    @ClassRule
+    public static RepeatTests r = EERepeatActions.repeat("com.ibm.ws.rest.handler.config.fat",
+                                                         EERepeatActions.EE10, // EE10
+                                                         EERepeatActions.EE9, // EE9
+                                                         EERepeatActions.EE8); // EE8
+
     @Server("com.ibm.ws.rest.handler.config.fat")
     public static LibertyServer server;
 
@@ -623,7 +631,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
                                                 "id=WrongDefaultAuth&jndiName=jdbc/wrongdefaultauth&beginTranForVendorAPIs=true&" +
                                                 "commitOrRollbackOnCleanup=rollback&invalidProperty=The+property's+value.&" +
                                                 "queryTimeout=130&statementCacheSize=15&validationTimeout=20")
-                        .run(JsonObject.class);
+                                                                .run(JsonObject.class);
         String err = "unexpected response: " + j;
         assertEquals(err, "dataSource", j.getString("configElementName"));
         assertEquals(err, "WrongDefaultAuth", j.getString("uid"));
@@ -695,7 +703,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         List<String> features = new ArrayList<String>();
         for (int i = 0; i < length; i++)
             features.add(ja.getString(i).toLowerCase());
-        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             assertTrue(err, features.contains("componenttest-2.0"));
         } else {
             assertTrue(err, features.contains("componenttest-1.0"));

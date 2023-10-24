@@ -42,15 +42,13 @@ public class LibertyCheckpoint implements CheckpointHook {
     @Override
     public void prepare() {
         // called in reverse register order on prepare
-        // TODO create translatable message
-        callHooks(hooks.descendingIterator(), CheckpointHook::prepare, () -> new CheckpointException("One or more application resources caused checkpoint to fail."));
+        callHooks(hooks.descendingIterator(), CheckpointHook::prepare, () -> new CheckpointException(Tr.formatMessage(tc, "CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551")));
     }
 
     @Override
     public void restore() {
         // call in register order on restore
-        // TODO create translatable message
-        callHooks(hooks.iterator(), CheckpointHook::restore, () -> new RestoreException("One or more application resources caused restore to fail."));
+        callHooks(hooks.iterator(), CheckpointHook::restore, () -> new RestoreException(Tr.formatMessage(tc, "CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552")));
     }
 
     @FFDCIgnore(Exception.class)
@@ -113,7 +111,7 @@ public class LibertyCheckpoint implements CheckpointHook {
 
     public static void checkpointRestore() throws RestoreException, CheckpointException {
         debug(tc, () -> "Requesting an application initiated checkpoint.");
-        String errorMessage = "Request to checkpoint is not supported.";
+        String errorMessage = Tr.formatMessage(tc, "CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553");
         final Exception fail = CheckpointPhase.INACTIVE == CheckpointPhase.getPhase() ? new UnsupportedOperationException(errorMessage) : new CheckpointException(errorMessage);
         fail.fillInStackTrace();
         // Add a hook to fail checkpoint in case afterAppStart checkpoint;

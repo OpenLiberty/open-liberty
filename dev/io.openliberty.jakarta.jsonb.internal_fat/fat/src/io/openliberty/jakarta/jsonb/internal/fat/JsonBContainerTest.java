@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -43,7 +43,7 @@ public class JsonBContainerTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        RemoteFile yasson = server.getFileFromLibertySharedDir("resources/yasson/3.0.0/yasson.jar");
+        RemoteFile yasson = server.getFileFromLibertySharedDir("resources/yasson/3.0.3/yasson.jar");
 
         JavaArchive fake_json_b = ShrinkWrap.create(ZipImporter.class, "fake-json-b.jar")
                         .importFrom(new File(yasson.getAbsolutePath()))

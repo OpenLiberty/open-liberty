@@ -1,0 +1,42 @@
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 21
+javac.target: 21
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
+
+Bundle-Name: Java 21 Virtual Thread API Access
+Bundle-SymbolicName: io.openliberty.threading.internal.java21
+Bundle-Description: Java 21 Virtual Thread API access; version=${bVersion}
+
+WS-TraceGroup: threading
+
+Private-Package: \
+  io.openliberty.threading.internal.java21.*,\
+  io.openliberty.threading.internal.java21.resources.*
+
+-dsannotations: io.openliberty.threading.internal.java21.VirtualThreadOperations
+
+instrument.classesExcludes: io/openliberty/threading/internal/java21/resources/*.class
+
+-buildpath: \
+  com.ibm.websphere.appserver.spi.logging,\
+  com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+  com.ibm.websphere.org.osgi.core,\
+  com.ibm.websphere.org.osgi.service.component,\
+  com.ibm.wsspi.org.osgi.service.component.annotations,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.threading;version=latest

@@ -199,13 +199,8 @@ public class FeatureUtility {
     protected VerifyOption getVerifyOption(String builderVerifyOption, Map<String, Object> envMap) throws InstallException {
 	String verifyValue;
 	String envValue = ((String) envMap.get("FEATURE_VERIFY"));
-	// beta
-	boolean enableVerify = System.getProperty("enable.verify") != null
-		&& System.getProperty("enable.verify").equals("true");
-	if (!enableVerify) {
-	    verifyValue = "skip";
-	} else {
-	    if (builderVerifyOption == null && envValue == null) {
+
+	if (builderVerifyOption == null && envValue == null) {
 		verifyValue = DEFAULT_VERIFY.toString();
 	    } else if (builderVerifyOption == null) {
 		verifyValue = envValue.toLowerCase();
@@ -222,8 +217,6 @@ public class FeatureUtility {
 		}
 		verifyValue = builderVerifyOption;
 	    }
-	}
-
 
 
 	try {

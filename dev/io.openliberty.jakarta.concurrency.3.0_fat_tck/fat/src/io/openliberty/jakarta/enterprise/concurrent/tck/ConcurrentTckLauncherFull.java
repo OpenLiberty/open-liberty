@@ -53,7 +53,7 @@ public class ConcurrentTckLauncherFull {
     public static void setUp() throws Exception {
         //UNCOMMENT - To test against a local snapshot of TCK
 //        additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
-//        additionalProps.put("jakarta.concurrent.tck.version", "3.0.2-SNAPSHOT");
+//        additionalProps.put("jakarta.concurrent.tck.version", "3.0.3-SNAPSHOT");
 
         Map<String, String> opts = server.getJvmOptionsAsMap();
         //Path that jimage will output modules for signature testing
@@ -69,9 +69,6 @@ public class ConcurrentTckLauncherFull {
         server.stopServer(
                           "WLTC0032W", //Transaction rollback warning.
                           "WLTC0033W", //Transaction rollback warning.
-                          "J2CA0046E", //See: https://github.com/jakartaee/concurrency/issues/317
-                          "DSRA9400E", //See: https://github.com/jakartaee/concurrency/issues/317
-                          "CWWKC1101E", //See: https://github.com/jakartaee/concurrency/issues/317
                           "CWWKS0901E" //Quickstart security
         );
     }

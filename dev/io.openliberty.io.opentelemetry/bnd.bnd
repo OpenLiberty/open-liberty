@@ -16,28 +16,28 @@ src: src, resources
 
 Bundle-Name: io.openliberty.io.opentelemetry
 Bundle-SymbolicName: io.openliberty.io.opentelemetry; singleton:=true
-Bundle-Description: MicroProfile Telemetry Internal packages
+Bundle-Description: OpenTelementry bundle
 
 javac.source: 11
 javac.target: 11
 
 Import-Package: \
-  javax.net,\
-  javax.net.ssl,\
-  okhttp3,\
-  okio,\
-  zipkin2,\
-  zipkin2.codec,\
-  zipkin2.internal,\
-  zipkin2.reporter,\
-  zipkin2.reporter.okhttp3,\
-  jakarta.interceptor,\
-  jakarta.enterprise.util,\
-  com.ibm.wsspi.classloading,\
-  org.osgi.framework,\
-  com.ibm.websphere.ras,\
-  com.ibm.websphere.ras.annotation,\
-  io.openliberty.microprofile.telemetry.common.resources
+	javax.net,\
+	javax.net.ssl,\
+	okhttp3,\
+	okio,\
+	zipkin2,\
+	zipkin2.codec,\
+	zipkin2.internal,\
+	zipkin2.reporter,\
+	zipkin2.reporter.okhttp3,\
+	jakarta.interceptor,\
+	jakarta.enterprise.util,\
+	com.ibm.wsspi.classloading,\
+	org.osgi.framework,\
+	com.ibm.websphere.ras,\
+	com.ibm.websphere.ras.annotation,\
+	io.openliberty.microprofile.telemetry.internal.common.resources
 
 Export-Package: \
   io.opentelemetry.extension.trace.propagation;version=${openTelemetryVersion};thread-context=true,\
@@ -91,7 +91,6 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 	com.ibm.ws.classloading;version=latest,\
 	org.eclipse.osgi;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	io.openliberty.microprofile.telemetry.common;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 WS-TraceGroup: TELEMETRY

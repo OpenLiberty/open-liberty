@@ -73,7 +73,7 @@ public class CRaCResourceRequestPhaseBeforeAppStartTest {
         server.startServer(getTestMethodNameOnly(testName) + ".log");
         assertNotNull("'CWWKZ0001I: ' message not found in log.",
                       server.waitForStringInLogUsingMark("CWWKZ0001I: Application " + APP_NAME + " started", 0));
-        assertNotNull("Application did not get CheckpointException", server.waitForStringInLogUsingMark("TESTING - got CheckpointException.", 0));
+        assertNotNull("Application did not get CheckpointException", server.waitForStringInLogUsingMark("TESTING - got CheckpointException: CWWKC0553E", 0));
     }
 
     @After

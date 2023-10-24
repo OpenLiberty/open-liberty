@@ -69,10 +69,7 @@ public class OpenAPIEndpointManager implements OpenAPIEndpointProvider {
         uiPath = docPath + OPEN_API_UI_PATH;
 
         if (ProductInfo.getBetaEdition()) {
-            //check for system property `open_api_path_enabled` as additional guide - getBoolean returns `true` if the value exists and is set to `true`, if the value is `false`
-            if (Boolean.getBoolean("open_api_path_enabled")) {
-                getPathsFromProperties(properties);
-            }
+            getPathsFromProperties(properties);
         }
 
         uiWabConfigManager = new WABConfigManager(context, OPEN_API_UI_VAR_NAME, "OpenAPI UI");
@@ -84,12 +81,8 @@ public class OpenAPIEndpointManager implements OpenAPIEndpointProvider {
     @Modified
     protected void modified(Map<String, Object> properties) {
         if (ProductInfo.getBetaEdition()) {
-            //check for system property `open_api_path_enabled` as additional guide - getBoolean returns `true` if the value exists and is set to `true`, if the value is `false`
-            if (Boolean.getBoolean("open_api_path_enabled")) {
-                getPathsFromProperties(properties);
-            }
+            getPathsFromProperties(properties);
         }
-
         uiWabConfigManager.setPath(uiPath);
         docWabConfigManager.setPath(docPath);
     }

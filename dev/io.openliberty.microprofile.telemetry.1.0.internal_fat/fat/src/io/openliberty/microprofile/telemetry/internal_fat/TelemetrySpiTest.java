@@ -14,7 +14,6 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -61,6 +60,7 @@ public class TelemetrySpiTest extends FATServletClient {
     public static final String RESOURCE_APP_NAME = "resourceTest";
     public static final String PROPAGATOR_APP_NAME = "propagatorTest";
     public static final String CUSTOMIZER_APP_NAME = "customizerTest";
+    public static final String SERVER_NAME = "Telemetry10Spi";
 
     @TestServlets({
                     @TestServlet(contextRoot = EXPORTER_APP_NAME, servlet = ExporterTestServlet.class),
@@ -69,7 +69,7 @@ public class TelemetrySpiTest extends FATServletClient {
                     @TestServlet(contextRoot = PROPAGATOR_APP_NAME, servlet = PropagatorTestServlet.class),
                     @TestServlet(contextRoot = CUSTOMIZER_APP_NAME, servlet = CustomizerTestServlet.class),
     })
-    @Server("Telemetry10Spi")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass

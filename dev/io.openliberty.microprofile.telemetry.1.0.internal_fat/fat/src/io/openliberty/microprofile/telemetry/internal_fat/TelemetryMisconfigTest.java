@@ -10,14 +10,14 @@
 package io.openliberty.microprofile.telemetry.internal_fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static org.junit.Assert.assertFalse;
-
+import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -28,6 +28,10 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
@@ -57,161 +61,170 @@ public class TelemetryMisconfigTest extends FATServletClient {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
+                    .andWith(FeatureReplacementAction.BETA_OPTION().fullFATOnly());
+
+    private static WebArchive invalidExporterApp = null;
+    private static WebArchive invalidJaegerEndpointApp = null;
+    private static WebArchive invalidZipkinEndpointApp = null;
+    private static WebArchive invalidOtlpEndpointApp = null;
+    private static WebArchive invalidJaegerTimeoutApp = null;
+    private static WebArchive notKnownEndpointApp = null;
+    private static WebArchive doesNotExistEndpointApp = null;
+
     @BeforeClass
     public static void setUp() throws Exception {
-        //Invalid exporter name (Should allow Jaeger, Zipkin, OTLP, Logging)
-        WebArchive invalidExporterApp = ShrinkWrap.create(WebArchive.class, INVALID_EXPORTER_APP_NAME + ".war")
+        invalidExporterApp = ShrinkWrap.create(WebArchive.class, INVALID_EXPORTER_APP_NAME + ".war")
                         .addPackage(JaxRsMisConfigEndpoints.class.getPackage())
                         .addAsResource(new StringAsset("otel.sdk.disabled=false\notel.traces.exporter=" + INVALID_EXPORTER),
                                        "META-INF/microprofile-config.properties");
 
-        ShrinkHelper.exportAppToServer(server, invalidExporterApp, SERVER_ONLY);
-
         //Invalid Jaeger endpoint (Should allow URL as http://HOST:PORT)
 
-        WebArchive invalidJaegerEndpointApp = ShrinkWrap.create(WebArchive.class, INVALID_JAEGER_ENDPOINT_APP_NAME + ".war")
+        invalidJaegerEndpointApp = ShrinkWrap.create(WebArchive.class, INVALID_JAEGER_ENDPOINT_APP_NAME + ".war")
                         .addPackage(JaxRsMisConfigEndpoints.class.getPackage())
                         .addAsResource(new StringAsset("otel.sdk.disabled=false\notel.traces.exporter=jaeger\notel.exporter.jaeger.endpoint=" + INVALID_JAEGER_ENDPOINT),
                                        "META-INF/microprofile-config.properties");
 
-        ShrinkHelper.exportAppToServer(server, invalidJaegerEndpointApp, SERVER_ONLY);
-
         //Invalid Zipkin endpoint (Should allow URL as http://HOST:PORT)
 
-        WebArchive invalidZipkinEndpointApp = ShrinkWrap.create(WebArchive.class, INVALID_ZIPKIN_ENDPOINT_APP_NAME + ".war")
+        invalidZipkinEndpointApp = ShrinkWrap.create(WebArchive.class, INVALID_ZIPKIN_ENDPOINT_APP_NAME + ".war")
                         .addPackage(JaxRsMisConfigEndpoints.class.getPackage())
                         .addAsResource(new StringAsset("otel.sdk.disabled=false\notel.traces.exporter=zipkin\notel.exporter.zipkin.endpoint=" + INVALID_ZIPKIN_ENDPOINT),
                                        "META-INF/microprofile-config.properties");
 
-        ShrinkHelper.exportAppToServer(server, invalidZipkinEndpointApp, SERVER_ONLY);
-
         //Invalid OTLP endpoint (Should allow URL as http://HOST:PORT)
 
-        WebArchive invalidOtlpEndpointApp = ShrinkWrap.create(WebArchive.class, INVALID_OTLP_ENDPOINT_APP_NAME + ".war")
+        invalidOtlpEndpointApp = ShrinkWrap.create(WebArchive.class, INVALID_OTLP_ENDPOINT_APP_NAME + ".war")
                         .addPackage(JaxRsMisConfigEndpoints.class.getPackage())
                         .addAsResource(new StringAsset("otel.sdk.disabled=false\notel.traces.exporter=otlp\notel.exporter.otlp.endpoint=" + INVALID_OTLP_ENDPOINT),
                                        "META-INF/microprofile-config.properties");
 
-        ShrinkHelper.exportAppToServer(server, invalidOtlpEndpointApp, SERVER_ONLY);
-
         //Invalid Jaeger timeout amount (Should allow number of milliseconds e.g. 1000)
 
-        WebArchive invalidJaegerTimeoutApp = ShrinkWrap.create(WebArchive.class, INVALID_JAEGER_TIMEOUT_APP_NAME + ".war")
+        invalidJaegerTimeoutApp = ShrinkWrap.create(WebArchive.class, INVALID_JAEGER_TIMEOUT_APP_NAME + ".war")
                         .addPackage(JaxRsMisConfigEndpoints.class.getPackage())
                         .addAsResource(new StringAsset("otel.sdk.disabled=false\notel.traces.exporter=jaeger\notel.exporter.jaeger.timeout=" + INVALID_TIMEOUT),
                                        "META-INF/microprofile-config.properties");
 
-        ShrinkHelper.exportAppToServer(server, invalidJaegerTimeoutApp, SERVER_ONLY);
-
-        //Server name in the endpoint is not known
-        WebArchive notKnownEndpointApp = ShrinkWrap.create(WebArchive.class, NOT_KNOWN_ENDPOINT_APP_NAME + ".war")
+        notKnownEndpointApp = ShrinkWrap.create(WebArchive.class, NOT_KNOWN_ENDPOINT_APP_NAME + ".war")
                         .addPackage(JaxRsMisConfigEndpoints.class.getPackage())
                         .addAsResource(new StringAsset("otel.sdk.disabled=false\notel.traces.exporter=jaeger\notel.exporter.jaeger.endpoint=" + NOT_KNOWN_ENDPOINT),
                                        "META-INF/microprofile-config.properties");
 
-        ShrinkHelper.exportAppToServer(server, notKnownEndpointApp, SERVER_ONLY);
-
-        //The endpoint does not exist
-        WebArchive doesNotExistEndpointApp = ShrinkWrap.create(WebArchive.class, DOES_NOT_EXIST_ENDPOINT_APP_NAME + ".war")
+        doesNotExistEndpointApp = ShrinkWrap.create(WebArchive.class, DOES_NOT_EXIST_ENDPOINT_APP_NAME + ".war")
                         .addPackage(JaxRsMisConfigEndpoints.class.getPackage())
                         .addAsResource(new StringAsset("otel.sdk.disabled=false\notel.traces.exporter=jaeger\notel.exporter.jaeger.endpoint=" + DOES_NOT_EXIST_ENDPOINT),
                                        "META-INF/microprofile-config.properties");
 
-        ShrinkHelper.exportAppToServer(server, doesNotExistEndpointApp, SERVER_ONLY);
-
-        server.startServer();
+        //Don't validate the apps because they have not been deployed yet.
+        server.startServerAndValidate(LibertyServer.DEFAULT_PRE_CLEAN, LibertyServer.DEFAULT_CLEANSTART, false);
     }
 
     @Test
-    @ExpectedFFDC({ "org.jboss.resteasy.spi.UnhandledException" })
+    @ExpectedFFDC({ "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
     public void testInvalidExporter() throws Exception {
-        server.setMarkToEndOfLog();
-
+        deployAndWaitForApp(invalidExporterApp, INVALID_EXPORTER_APP_NAME);
         new HttpRequest(server, "/" + INVALID_EXPORTER_APP_NAME + "/misconfig/jaxrsclient")
-                        .expectCode(500)
+                        .expectCode(200)
                         .run(String.class);
 
-        assertFalse(server.waitForStringInLogUsingMark("Unrecognized value for otel.traces.exporter: " + INVALID_EXPORTER).isEmpty());
+        assertNotNull(server.waitForStringInLogUsingMark("Unrecognized value for otel.traces.exporter: " + INVALID_EXPORTER));
     }
 
     @Test
-    @ExpectedFFDC({ "org.jboss.resteasy.spi.UnhandledException" })
+    @ExpectedFFDC(repeatAction = MicroProfileActions.MP60_ID, value = { "java.lang.IllegalArgumentException" })
+    @ExpectedFFDC(repeatAction = MicroProfileActions.MP61_ID, value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
+    @ExpectedFFDC(repeatAction = FeatureReplacementAction.BETA_ID, value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
     public void testInvalidJaegerExporterEndpoint() throws Exception {
-        server.setMarkToEndOfLog();
-
+        deployAndWaitForApp(invalidJaegerEndpointApp, INVALID_JAEGER_ENDPOINT_APP_NAME);
         new HttpRequest(server, "/" + INVALID_JAEGER_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
-                        .expectCode(500)
+                        .expectCode(200)
                         .run(String.class);
-
-        assertFalse(server.waitForStringInLogUsingMark("Invalid endpoint, must start with http:// or https://: " + INVALID_JAEGER_ENDPOINT).isEmpty());
-
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            assertNotNull(server.waitForStringInLogUsingMark("Invalid endpoint, must start with http:// or https://: " + INVALID_JAEGER_ENDPOINT));
+        } else {
+            assertNotNull(server.waitForStringInLogUsingMark("Unexpected configuration error."));
+        }
     }
 
     @Test
-    @ExpectedFFDC({ "org.jboss.resteasy.spi.UnhandledException" })
+    @ExpectedFFDC(repeatAction = MicroProfileActions.MP60_ID, value = { "java.lang.IllegalArgumentException" })
+    @ExpectedFFDC(repeatAction = MicroProfileActions.MP61_ID, value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
+    @ExpectedFFDC(repeatAction = FeatureReplacementAction.BETA_ID, value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
     public void testInvalidZipkinExporterEndpoint() throws Exception {
-        server.setMarkToEndOfLog();
-
+        deployAndWaitForApp(invalidZipkinEndpointApp, INVALID_ZIPKIN_ENDPOINT_APP_NAME);
         new HttpRequest(server, "/" + INVALID_ZIPKIN_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
-                        .expectCode(500)
+                        .expectCode(200)
                         .run(String.class);
 
-        assertFalse(server.waitForStringInLogUsingMark("invalid POST url: " + INVALID_ZIPKIN_ENDPOINT).isEmpty());
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            assertNotNull(server.waitForStringInLogUsingMark("invalid POST url: " + INVALID_ZIPKIN_ENDPOINT));
+        } else {
+            assertNotNull(server.waitForStringInLogUsingMark("Unexpected configuration error."));
+        }
     }
 
     @Test
-    @ExpectedFFDC({ "org.jboss.resteasy.spi.UnhandledException" })
+    @ExpectedFFDC({ "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
     public void testInvalidOtlpExporterEndpoint() throws Exception {
-        server.setMarkToEndOfLog();
-
+        deployAndWaitForApp(invalidOtlpEndpointApp, INVALID_OTLP_ENDPOINT_APP_NAME);
         new HttpRequest(server, "/" + INVALID_OTLP_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
-                        .expectCode(500)
+                        .expectCode(200)
                         .run(String.class);
 
-        assertFalse(server.waitForStringInLogUsingMark("OTLP endpoint must be a valid URL: " + INVALID_OTLP_ENDPOINT).isEmpty());
+        assertNotNull(server.waitForStringInLogUsingMark("OTLP endpoint must be a valid URL: " + INVALID_OTLP_ENDPOINT));
     }
 
     @Test
     public void testNotKnownEndpoint() throws Exception {
-        server.setMarkToEndOfLog();
-
+        deployAndWaitForApp(notKnownEndpointApp, NOT_KNOWN_ENDPOINT_APP_NAME);
         new HttpRequest(server, "/" + NOT_KNOWN_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
                         .expectCode(200)
                         .run(String.class);
 
-        assertFalse(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message:.*" + INVALID_JAEGER_ENDPOINT.toLowerCase())
-                        .isEmpty());
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID) || RepeatTestFilter.isRepeatActionActive(FeatureReplacementAction.BETA_ID)) {
+            assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. Server responded with gRPC status code 2. Error message:.*"
+                                                             + INVALID_JAEGER_ENDPOINT.toLowerCase()));
+        } else {
+            assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message:.*"
+                                                             + INVALID_JAEGER_ENDPOINT.toLowerCase()));
+        }
     }
 
     @Test
     public void testDoesNotExistEndpoint() throws Exception {
-        server.setMarkToEndOfLog();
-
+        deployAndWaitForApp(doesNotExistEndpointApp, DOES_NOT_EXIST_ENDPOINT_APP_NAME);
         new HttpRequest(server, "/" + DOES_NOT_EXIST_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
                         .expectCode(200)
                         .run(String.class);
 
-        assertFalse(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message: Failed to connect to.*" + ":10000")
-                        .isEmpty());
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID) || RepeatTestFilter.isRepeatActionActive(FeatureReplacementAction.BETA_ID)) {
+            assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. Server responded with gRPC status code 2. Error message: Failed to connect to.*" + ":10000"));
+        } else {
+            assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message: Failed to connect to.*" + ":10000"));
+        }
     }
 
     @Test
-    @ExpectedFFDC({ "org.jboss.resteasy.spi.UnhandledException" })
+    @ExpectedFFDC({ "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
     public void testInvalidJaegerTimeout() throws Exception {
-        server.setMarkToEndOfLog();
-
+        deployAndWaitForApp(invalidJaegerTimeoutApp, INVALID_JAEGER_TIMEOUT_APP_NAME);
         new HttpRequest(server, "/" + INVALID_JAEGER_TIMEOUT_APP_NAME + "/misconfig/jaxrsclient")
-                        .expectCode(500)
+                        .expectCode(200)
                         .run(String.class);
 
-        assertFalse(server.waitForStringInLogUsingMark("Invalid duration property otel.exporter.jaeger.timeout").isEmpty());
+        assertNotNull(server.waitForStringInLogUsingMark("Invalid duration property otel.exporter.jaeger.timeout"));
+    }
+
+    private static void deployAndWaitForApp(WebArchive app, String appName) throws Exception {
+        server.setMarkToEndOfLog();
+        ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("SRVE0777E", // Exception thrown by application class
-                          "SRVE0315E: .*INVALID_EXPORTER", // An exception occurred: ... Unrecognized value for otel.traces.exporter: INVALID_EXPORTER
-                          "SRVE0315E: .*INVALID_TIMEOUT", // An exception occurred: ... Invalid duration property otel.exporter.jaeger.timeout: INVALID_TIMEOUT
-                          "SRVE0315E: .*ENDPOINT"); //An exception occurred: ... Endpoint must be a valid URL: INVALID_ENDPOINT
+        server.stopServer("CWMOT5002E", "CWWKZ0014W"); //CWMOT5002E thrown in OpenTelemetryProducer. CWWKZ0014W thrown because apps defined in server.xml will be added dynamically
     }
 }

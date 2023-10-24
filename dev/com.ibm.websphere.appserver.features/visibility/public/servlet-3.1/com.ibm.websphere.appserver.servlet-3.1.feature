@@ -42,8 +42,7 @@ Subsystem-Category: JavaEE7Application
   com.ibm.websphere.appserver.requestProbes-1.0, \
   com.ibm.websphere.appserver.javax.annotation-1.2; ibm.tolerates:="1.1", \
   com.ibm.websphere.appserver.injection-1.0, \
-  com.ibm.websphere.appserver.javaeePlatform-7.0, \
-  com.ibm.websphere.appserver.anno-1.0
+  com.ibm.websphere.appserver.javaeePlatform-7.0
 -bundles=com.ibm.ws.app.manager.war, \
  com.ibm.ws.managedobject, \
  com.ibm.ws.org.apache.commons.io, \

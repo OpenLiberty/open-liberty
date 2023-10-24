@@ -4,7 +4,7 @@ visibility=private
 singleton=true
 -features=\
   com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0",\
-  io.openliberty.jakarta.annotation-2.1,\
+  io.openliberty.jakarta.annotation-2.1; ibm.tolerates:="3.0",\
   io.openliberty.jakarta.cdi-4.0; ibm.tolerates:="4.1",\
   io.openliberty.noShip-1.0
 -bundles=\

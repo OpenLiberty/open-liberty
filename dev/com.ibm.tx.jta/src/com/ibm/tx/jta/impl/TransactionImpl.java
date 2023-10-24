@@ -47,6 +47,7 @@ import com.ibm.tx.util.alarm.AlarmListener;
 import com.ibm.tx.util.alarm.AlarmManager;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.Transaction.TransactionScopeDestroyer;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.JTA.HeuristicHazardException;
@@ -1417,15 +1418,11 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     /**
      * Indicate that the prepare XA phase failed.
      */
-    protected void setPrepareXAFailed() // d266464A
-    {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "setPrepareXAFailed");
+    protected void setPrepareXAFailed() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setPrepareXAFailed");
 
         setRBO(); // Ensure native context is informed
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "setPrepareXAFailed");
     }
 
     /**
@@ -2340,7 +2337,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         }
 
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getStatus (SPI)", Util.printStatus(state));
+            Tr.debug(tc, "getStatus (SPI): {0}", Util.printStatus(state));
         return state;
     }
 
@@ -2367,9 +2364,8 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
      *
      * @return The global transaction identifier.
      */
+    @Trivial
     public XidImpl getXidImpl() {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "getXidImpl", this);
         return getXidImpl(true);
     }
 

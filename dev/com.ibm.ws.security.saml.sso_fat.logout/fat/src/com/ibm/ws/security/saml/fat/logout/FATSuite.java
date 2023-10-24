@@ -13,13 +13,13 @@
 
 package com.ibm.ws.security.saml.fat.logout;
 
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.security.fat.common.actions.LargeProjectRepeatActions;
+import com.ibm.ws.security.fat.common.utils.ldaputils.CommonLocalLDAPServerSuite;
 import com.ibm.ws.security.saml.fat.logout.IDPInitiated_Login.IDPInitiatedLogin_2ServerLogout_usingApps_Tests;
 import com.ibm.ws.security.saml.fat.logout.IDPInitiated_Login.IDPInitiatedLogin_2ServerLogout_usingServlets_Tests;
 import com.ibm.ws.security.saml.fat.logout.IDPInitiated_Login.IDPInitiatedLogin_Timeout_usingApps_Tests;
@@ -69,7 +69,7 @@ import componenttest.rules.repeater.RepeatTests;
         UnsolicitedSPInitiatedLogin_Timeout_usingApps_Tests.class,
 
 })
-public class FATSuite {
+public class FATSuite extends CommonLocalLDAPServerSuite {
 
     /*
      * On Windows, always run the default/empty/EE7/EE8 tests.
@@ -82,13 +82,5 @@ public class FATSuite {
      */
     @ClassRule
     public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10Repeats();
-
-    @BeforeClass
-    public static void setup() throws Exception {
-        /*
-         * Force the tests to use local LDAP server
-         */
-        System.setProperty("fat.test.really.use.local.ldap", "true");
-    }
 
 }

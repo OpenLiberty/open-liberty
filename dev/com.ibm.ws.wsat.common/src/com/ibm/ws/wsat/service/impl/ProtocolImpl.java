@@ -20,6 +20,7 @@ import org.apache.cxf.ws.addressing.Names;
 import org.apache.cxf.ws.addressing.ReferenceParametersType;
 import org.w3c.dom.Element;
 
+import com.ibm.tx.remote.DistributableTransaction;
 import com.ibm.tx.remote.Vote;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -149,7 +150,7 @@ public class ProtocolImpl {
             final WSATTransaction tran = WSATTransaction.getTran(globalId);
             if (tran != null) {
                 try {
-                    Vote vote = tranService.prepareTransaction(globalId);
+                    Vote vote = tran.prepare();
                     WSATParticipantState resp = (vote == Vote.VoteCommit) ? WSATParticipantState.PREPARED : (vote == Vote.VoteReadOnly) ? WSATParticipantState.READONLY : WSATParticipantState.ABORTED;
                     participantResponse(tran, globalId, wrapper.getResponseEpr(), resp);
                 } catch (WSATException e) {
@@ -238,13 +239,28 @@ public class ProtocolImpl {
         final String globalId = wrapper.getTxID();
         final WSATTransaction tran = WSATTransaction.getTran(globalId);
 
+        DistributableTransaction t = null;
+
         if (tran != null) {
-            tranService.commitTransaction(globalId);
+            tran.commit();
+        } else {
+            t = tranService.getRemoteTranMgr().getTransactionForID(globalId);
         }
 
-        participantResponse(tran, globalId, wrapper.getResponseEpr(), WSATParticipantState.COMMITTED);
+        if (t != null) {
+            if (TC.isDebugEnabled()) {
+                Tr.debug(TC, "Participant is probably still in replay. Coordinator can retry later: {0}", t);
+            }
+        } else {
+            if (TC.isDebugEnabled()) {
+                Tr.debug(TC, "No sign of this subordinate. Assume it committed");
+            }
+
+            participantResponse(tran, globalId, wrapper.getResponseEpr(), WSATParticipantState.COMMITTED);
+        }
     }
 
+    @FFDCIgnore(WSATException.class)
     public void rollback(ProtocolServiceWrapper wrapper) throws WSATException {
         if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
             rerouteToCorrectParticipant(wrapper, WSATParticipantState.ROLLBACK);
@@ -255,7 +271,13 @@ public class ProtocolImpl {
         final WSATTransaction tran = WSATTransaction.getTran(globalId);
 
         if (tran != null) {
-            tranService.rollbackTransaction(globalId);
+            try {
+                tran.rollback();
+            } catch (WSATException e) {
+                if (TC.isDebugEnabled()) {
+                    Tr.debug(TC, "Transaction is probably gone already: {0}", e);
+                }
+            }
         }
 
         participantResponse(tran, globalId, wrapper.getResponseEpr(), WSATParticipantState.ABORTED);

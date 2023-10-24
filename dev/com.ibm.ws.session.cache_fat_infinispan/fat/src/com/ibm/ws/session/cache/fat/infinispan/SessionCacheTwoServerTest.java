@@ -113,6 +113,19 @@ public class SessionCacheTwoServerTest extends FATServletClient {
                 }
             }
         }
+
+        if (isZOS()) {
+            Log.info(SessionCacheTwoServerTest.class, "tearDown", "Allow more time for ZOS shutdown");
+            TimeUnit.SECONDS.sleep(20);
+        }
+    }
+
+    private static final boolean isZOS() {
+        String osName = System.getProperty("os.name");
+        if (osName.contains("OS/390") || osName.contains("z/OS") || osName.contains("zOS")) {
+            return true;
+        }
+        return false;
     }
 
     /**

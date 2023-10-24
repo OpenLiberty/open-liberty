@@ -18,6 +18,7 @@ import componenttest.annotation.MinimumJavaLevel;
 @RunWith(Suite.class)
 @MinimumJavaLevel(javaLevel = 11)
 @SuiteClasses({
+                ClientWithNoCdi.class,
                 JaxRsIntegration.class,
                 JaxRsIntegrationWithConcurrency.class,
                 Telemetry10.class,
@@ -38,6 +39,8 @@ import componenttest.annotation.MinimumJavaLevel;
                 TelemetryLongRunningTest.class,
                 TelemetryGlobalOpenTelemetryTest.class,
                 TelemetryDisabledTest.class,
+                TelemetryServletTest.class,
+                TelemetryWithSpanErrorTest.class
 })
 
 public class FATSuite {

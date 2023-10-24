@@ -30,7 +30,7 @@ import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -73,7 +73,7 @@ public class CDITests {
          *
          * Previous CDI specifications stated that a beans.xml with no version would have bean-discovery-mode="all".
          */
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             cdi12TestApp = (WebArchive) ShrinkHelper.addDirectory(cdi12TestApp, "test-applications/" + CDI12_TEST_EE10_APP_NAME + ".war/resources");
         } else {
             cdi12TestApp = (WebArchive) ShrinkHelper.addDirectory(cdi12TestApp, "test-applications/" + CDI12_TEST_APP_NAME + ".war/resources");

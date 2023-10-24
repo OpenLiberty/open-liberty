@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2013, 2022 IBM Corporation and others.
+# Copyright (c) 2013, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/clients/common/resources/OidcClientMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -309,6 +306,11 @@ NO_RECENT_SESSIONS_WITH_CLAIMS.useraction=Stellen Sie sicher, dass die in der Na
 ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS1553E: Der OpenID Connect-Client {0} hat beim Senden einer Berechtigungsanforderung an den OpenID Connect-Provider einen Fehler festgestellt. {1}
 ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=In der Konfiguration des OpenID Connect-Clients fehlen m\u00f6glicherweise Informationen oder der Client hat bei der Kommunikation mit dem OpenID Connect-Provider einen Fehler festgestellt.
 ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Suchen Sie in der Fehlernachricht nach weiteren Informationen.
+
+# do not translate hostname, wasReqURLRedirectDomainNames, and webAppSecurity
+MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE=CWWKS1554E: Eine Anforderung f\u00fcr [{0}] ist nicht g\u00fcltig. Ein erforderliches Cookie, dessen Name mit [{1}] beginnt, hat einen ung\u00fcltigen Wert. Der Hostname [{2}], der im Cookie verwendet wird, stimmt nicht mit dem Hostnamen der Anforderung \u00fcberein und der Hostname im Cookie ist keiner der zul\u00e4ssigen Dom\u00e4nennamen.
+MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.explanation=Die Anforderung enth\u00e4lt ein fehlerhaftes Cookie. Der Hostname im Cookie muss mit der aktuellen Anforderung oder mit einem der zul\u00e4ssigen Dom\u00e4nennamen \u00fcbereinstimmen. Das Cookie kann \u00fcber den Benutzeragenten ge\u00e4ndert werden.
+MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.useraction=\u00dcberpr\u00fcfen Sie die OpenID Connect-Providerkonfiguration und die OpenID Connect-Clientkonfiguration. Wenn der Hostname erwartet wurde, f\u00fcgen Sie ihn dem Attribut wasReqURLRedirectDomainNames des Elements webAppSecurity in der Serverkonfiguration hinzu.
 
 #CWWKS1557 used in client bundle, do not use here.
 

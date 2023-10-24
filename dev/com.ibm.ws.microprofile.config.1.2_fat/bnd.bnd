@@ -26,6 +26,7 @@ tested.features: mpConfig-1.2,\
                  mpConfig-1.4,\
                  mpConfig-2.0,\
                  mpConfig-3.0,\
+                 mpConfig-3.1,\
                  cdi-1.2,\
                  cdi-2.0,\
                  cdi-3.0,\

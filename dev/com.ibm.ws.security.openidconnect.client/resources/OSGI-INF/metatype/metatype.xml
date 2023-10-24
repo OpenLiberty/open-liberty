@@ -94,7 +94,7 @@
                 <Option label="%tokenEndpointAuthMethod.privateKeyJwt" value="private_key_jwt" />
          </AD>
          <AD id="tokenEndpointAuthSigningAlgorithm" name="%tokenEndpointAuthSigningAlgorithm" description="%tokenEndpointAuthSigningAlgorithm.desc" required="false"
-             type="String" default="RS256" ibm:beta="true" >
+             type="String" default="RS256" >
                 <Option label="%tokenEndpointAuthSigningAlgorithm.RS256" value="RS256" />
                 <Option label="%tokenEndpointAuthSigningAlgorithm.RS384" value="RS384" />
                 <Option label="%tokenEndpointAuthSigningAlgorithm.RS512" value="RS512" />
@@ -102,7 +102,7 @@
                 <Option label="%tokenEndpointAuthSigningAlgorithm.ES384" value="ES384" />
                 <Option label="%tokenEndpointAuthSigningAlgorithm.ES512" value="ES512" />
          </AD>
-         <AD id="keyAliasName" name="%keyAliasName" description="%keyAliasName.desc" required="false" type="String" ibm:beta="true" />
+         <AD id="keyAliasName" name="%keyAliasName" description="%keyAliasName.desc" required="false" type="String" />
          <AD id="jsonWebKey" name="internal" description="internal use only" required="false" type="String" />
          <AD id="prompt" name="internal" description="internal use only" required="false" type="String" />
           <AD id="jwt" name="internal" description="internal use only" ibm:type="pid" ibm:reference="com.ibm.ws.security.openidconnect.client.jwt"
@@ -162,7 +162,7 @@
                 <Option label="%pkceCodeChallengeMethod.plain" value="plain" />
                 <Option label="%pkceCodeChallengeMethod.S256" value="S256" />
          </AD>
-         <AD id="tokenRequestOriginHeader" name="%tokenRequestOriginHeader" description="%tokenRequestOriginHeader.desc" required="false" type="String" ibm:beta="true" />
+         <AD id="tokenRequestOriginHeader" name="%tokenRequestOriginHeader" description="%tokenRequestOriginHeader.desc" required="false" type="String" />
      </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.openidconnect.client.oidcClientConfig">

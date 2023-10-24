@@ -39,7 +39,7 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -69,7 +69,7 @@ public class JSF22ClientWindowTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        isEE10 = JakartaEE10Action.isActive();
+        isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         if (isEE10) {
             ShrinkHelper.defaultDropinApp(jsfTestServer2, APP_NAME_FACES40 + ".war",

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -54,12 +54,12 @@ import jakarta.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-                                  "productName",
-                                  "quantity",
-                                  "price",
-                                  "comment",
-                                  "shipDate"
+@XmlType(propOrder = {
+                       "productName",
+                       "quantity",
+                       "price",
+                       "comment",
+                       "shipDate"
 })
 public class Item {
 
@@ -73,6 +73,18 @@ public class Item {
     protected XMLGregorianCalendar shipDate;
     @XmlAttribute(name = "partNum", required = true)
     protected String partNum;
+
+    public Item() {
+
+    }
+
+    public Item(String productName, int quantity, BigDecimal price, String comment, XMLGregorianCalendar shipDate) {
+        this.productName = productName;
+        this.quantity = quantity;
+        this.price = price;
+        this.comment = comment;
+        this.shipDate = shipDate;
+    }
 
     /**
      * Gets the value of the productName property.

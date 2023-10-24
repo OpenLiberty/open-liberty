@@ -38,7 +38,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 
 @SuppressWarnings("serial")
-@WebServlet("/w3cTracePropagation")
+@WebServlet("/testW3cTracePropagation")
 public class W3CTracePropagationTestServlet extends FATServlet {
 
     private static final String BAGGAGE_VALUE = "test.baggage.value";

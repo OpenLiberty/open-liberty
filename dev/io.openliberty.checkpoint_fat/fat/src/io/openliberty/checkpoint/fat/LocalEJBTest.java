@@ -38,8 +38,6 @@ import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -65,10 +63,7 @@ public class LocalEJBTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests repeatTest = MicroProfileActions.repeat("checkpointEJB", TestMode.FULL,
-                                                                      MicroProfileActions.MP41, // first test in LITE mode
-                                                                      // rest are FULL mode
-                                                                      MicroProfileActions.MP50, MicroProfileActions.MP60);
+    public static RepeatTests repeatTest = FATSuite.defaultMPRepeat(SERVER_NAME);
 
     @Before
     public void setUp() throws Exception {

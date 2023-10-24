@@ -47,10 +47,7 @@ public class AppExtensionTest extends FATServletClient {
     public static final String SERVER_NAME = "cdi12AppExtensionServer";
 
     @ClassRule
-    public static RepeatTests r = CDIExtensionRepeatActions.repeat(SERVER_NAME,
-                                                                   CDIExtensionRepeatActions.EE10_PLUS,
-                                                                   CDIExtensionRepeatActions.EE9_PLUS,
-                                                                   CDIExtensionRepeatActions.EE7_PLUS);
+    public static RepeatTests r = CDIExtensionRepeatActions.defaultRepeat(SERVER_NAME);
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = com.ibm.ws.cdi.extension.apps.appExtension.AppExtensionServlet.class, contextRoot = APP_NAME)

@@ -27,7 +27,7 @@ import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/ServiceNameServlet")
+@WebServlet("/testServiceName")
 @ApplicationScoped
 public class ServiceNameServlet extends FATServlet {
 

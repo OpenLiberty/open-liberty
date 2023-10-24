@@ -44,8 +44,8 @@ public class MP61EE9CompatibleTest {
     }
 
     /**
-     * microProfile-6.1 plus jakartaee-8.0
-     * Should fail because microProfile-6.1 is not compatible with jakartaee-8.0
+     * microProfile-6.1 plus jakartaee-9.0
+     * Should fail because microProfile-6.1 is not compatible with jakartaee-9.0
      *
      * @throws Exception
      */

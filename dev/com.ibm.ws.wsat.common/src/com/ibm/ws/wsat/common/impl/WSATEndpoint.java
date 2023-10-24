@@ -126,6 +126,7 @@ public abstract class WSATEndpoint implements Serializable {
      * @param epr
      * @throws MalformedURLException
      */
+    @Trivial
     private void misRoute(EndpointReferenceType epr) throws MalformedURLException {
         if (MISROUTE_PORT != 0) {
             AttributedURIType uri = epr.getAddress();

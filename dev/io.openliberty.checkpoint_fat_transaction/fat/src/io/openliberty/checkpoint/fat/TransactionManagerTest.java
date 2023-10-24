@@ -15,9 +15,9 @@ package io.openliberty.checkpoint.fat;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
 import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
 import static io.openliberty.checkpoint.fat.util.FATUtils.LOG_SEARCH_TIMEOUT;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -73,8 +73,9 @@ public class TransactionManagerTest extends FATServletClient {
 
     TestMethod testMethod;
 
-    static String DERBY_DS_JNDINAME = "jdbc/derby"; // Differs from server config
+    static String DERBY_DS_JNDINAME = "jdbc/derby"; // Required; differs from server config
     static final int DERBY_TXLOG_PORT = 9099; // Same as server config
+    static final int TX_RETRY_INT = 11;
 
     @BeforeClass
     public static void setupClass() throws Exception {
@@ -86,30 +87,53 @@ public class TransactionManagerTest extends FATServletClient {
     public void setUp() throws Exception {
         ShrinkHelper.cleanAllExportedArchives();
 
+        Consumer<LibertyServer> preRestoreLogic = null;
         testMethod = getTestMethod(TestMethod.class, testName);
         switch (testMethod) {
-            case testTransactionManagerStartsDuringRestore:
+            case testTMStartsCheckpointBAS:
                 serverTranLogRecOnStart.restoreServerConfiguration();
 
                 ShrinkHelper.defaultApp(serverTranLogRecOnStart, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
 
-                Consumer<LibertyServer> preRestoreLogic1 = checkpointServer -> {
-                    // The datasource jndiName in server.xml is invalid. At restore reconfigure
-                    // the jndiName to that used by SimpleServlet
+                preRestoreLogic = checkpointServer -> {
                     File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
                     try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
                         serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME);
                     } catch (FileNotFoundException e) {
                         throw new UncheckedIOException(e);
                     }
-                    assertNull("The transaction manager started during checkpoint",
-                               serverTranLogRecOnStart.waitForStringInTraceUsingMark("doStartup0", 1000));
+                    assertNotNull("The transaction manager did not start during checkpoint BAS",
+                                  checkpointServer.waitForStringInTraceUsingMark("TMS, serverName", 0));
+                    assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log.",
+                                  checkpointServer.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));
+                };
+                serverTranLogRecOnStart.setCheckpoint(CheckpointPhase.BEFORE_APP_START, false, preRestoreLogic);
+                serverTranLogRecOnStart.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+                serverTranLogRecOnStart.startServer();
+                break;
+            case testTMRestartsRestoreAAS:
+                serverTranLogRecOnStart.restoreServerConfiguration();
+
+                ShrinkHelper.defaultApp(serverTranLogRecOnStart, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
+
+                preRestoreLogic = checkpointServer -> {
+                    // The datasource jndiName in server.xml is invalid. At restore reconfigure
+                    // the jndiName to that used by SimpleServlet
+                    File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
+                    try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
+                        serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME);
+                        serverEnvWriter.println("TX_RETRY_INT=" + TX_RETRY_INT);
+                    } catch (FileNotFoundException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                    assertNotNull("The transaction manager did not start during checkpoint AAS",
+                                  serverTranLogRecOnStart.waitForStringInTraceUsingMark("TMS, serverName", 0));
                     assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log.",
                                   serverTranLogRecOnStart.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));
                     assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
                                   serverTranLogRecOnStart.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
                 };
-                serverTranLogRecOnStart.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic1);
+                serverTranLogRecOnStart.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic);
                 serverTranLogRecOnStart.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
                 serverTranLogRecOnStart.startServer();
                 break;
@@ -124,7 +148,7 @@ public class TransactionManagerTest extends FATServletClient {
 
                 ShrinkHelper.defaultApp(serverTranDbLogNoRecOnStart, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
 
-                Consumer<LibertyServer> preRestoreLogic2 = checkpointServer -> {
+                preRestoreLogic = checkpointServer -> {
                     File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
                     try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
                         serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME);
@@ -136,7 +160,7 @@ public class TransactionManagerTest extends FATServletClient {
                     assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
                                   serverTranDbLogNoRecOnStart.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
                 };
-                serverTranDbLogNoRecOnStart.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic2);
+                serverTranDbLogNoRecOnStart.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic);
                 serverTranDbLogNoRecOnStart.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
                 serverTranDbLogNoRecOnStart.startServer();
                 break;
@@ -148,7 +172,8 @@ public class TransactionManagerTest extends FATServletClient {
     @After
     public void tearDown() throws Exception {
         switch (testMethod) {
-            case testTransactionManagerStartsDuringRestore:
+            case testTMStartsCheckpointBAS:
+            case testTMRestartsRestoreAAS:
                 stopServer(serverTranLogRecOnStart, "WTRN0017W");
                 break;
             case testRecoveryBeginsAfterStartup:
@@ -164,23 +189,48 @@ public class TransactionManagerTest extends FATServletClient {
     }
 
     /**
-     * Ensure the Transaction Manager service startup (TMImpl.doStart()) executes
-     * during restore, only, for a server checkpointed at=applications.
-     *
-     * When recoverOnStartup=true the call to TMImpl.doStart() will discover or
-     * initialize the tran logs and attempt to recover transactions during server startup.
-     *
-     * These behaviors must execute during restore, only.
+     * Verify the TM starts exactly once during checkpoint+restore when the transaction configuration
+     * does not update during restore. Recovery should not start during checkpoint BAS as it ignores
+     * recoveryOnStart. RecoveryOnStart is also ignored during restore so that recovery starts lazily
+     * when the server begins the first global transaction.
      */
     @Test
-    public void testTransactionManagerStartsDuringRestore() throws Exception {
+    public void testTMStartsCheckpointBAS() throws Exception {
 
-        assertFalse("After checkpoint the tranlog directory \\`tranlog\\' should not exist in the server output directory, but it does",
-                    serverTranLogRecOnStart.fileExistsInLibertyServerRoot("/tranlog"));
+        assertTrue("After checkpoint directory \\`tranlog\\' should exist in the server output directory, but it does not",
+                   serverTranLogRecOnStart.fileExistsInLibertyServerRoot("/tranlog"));
+
+        assertNotNull("Recovery did not start during checkoint BAS, but it should for file-based recovery log",
+                      serverTranLogRecOnStart.waitForStringInLogUsingMark("CWRLS0010I:.*checkpointTransactionServlet", 0));
+
+        // TM should not restart during restore unless the transaction configuration is updated
+        serverTranLogRecOnStart.checkpointRestore();
+
+        assertNull("The transaction manager restarted during restore, but should not when the transaction configuration is not updated",
+                   serverTranLogRecOnStart.waitForStringInTraceUsingMark("TMS, serverName", 1000));
+
+        // Quick verification of TM service operation; TXs log to a newly created tranlog dir
+        runTest("testTransactionEnlistment", serverTranLogRecOnStart);
+    }
+
+    /**
+     * Verify the TM starts during checkpoint AAS, then restarts during restore due to a transaction
+     * configuration update. Recovery should start during checkpoint AAS when recoverOnStart=true.
+     * Recovery should also restart during restore whenever the tran config updates (i.e. the TM restarts).
+     * And, recovery starts lazily during restore when the server begins the first global transaction.
+     */
+    @Test
+    public void testTMRestartsRestoreAAS() throws Exception {
+
+        assertTrue("After checkpoint directory \\`tranlog\\' should exist in the server output directory, but it does not",
+                   serverTranLogRecOnStart.fileExistsInLibertyServerRoot("/tranlog"));
+
+        assertNotNull("Recovery did not start during checkpoint AAS, but it should for file-based recovery log",
+                      serverTranLogRecOnStart.waitForStringInLogUsingMark("CWRLS0010I:.*checkpointTransactionServlet"));
 
         serverTranLogRecOnStart.checkpointRestore();
 
-        assertNotNull("Recovery processing did not begin during server startup, but should when isRecoveryOnStartup=true",
+        assertNotNull("Recovery did not restart during restore, but should whenever the transaction configuration updates",
                       serverTranLogRecOnStart.waitForStringInLogUsingMark("CWRLS0010I:.*checkpointTransactionServlet"));
 
         // Quick verification of TM service operation
@@ -199,7 +249,7 @@ public class TransactionManagerTest extends FATServletClient {
 
         serverTranDbLogNoRecOnStart.checkpointRestore();
 
-        assertNull("Recovery processing began during server startup, but should not when isRecoveryOnStartup=false",
+        assertNull("Recovery started before startup, but should not when recoverOnStartup=false",
                    serverTranDbLogNoRecOnStart.waitForStringInLogUsingMark("CWRLS0010I:.*checkpointTransactionDbLog", 1000));
 
         runTest("testTransactionEnlistment", serverTranDbLogNoRecOnStart);
@@ -215,7 +265,8 @@ public class TransactionManagerTest extends FATServletClient {
     }
 
     static enum TestMethod {
-        testTransactionManagerStartsDuringRestore,
+        testTMStartsCheckpointBAS,
+        testTMRestartsRestoreAAS,
         testRecoveryBeginsAfterStartup,
         unknown;
     }

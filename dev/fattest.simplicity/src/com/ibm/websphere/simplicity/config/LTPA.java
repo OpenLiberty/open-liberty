@@ -13,24 +13,65 @@
 package com.ibm.websphere.simplicity.config;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 
 /**
  * Represents the <ltpa> element in server.xml
  */
 public class LTPA extends ConfigElement {
 
+    // Atrribute to specify the name of the file that contains the primary keys
+    @XmlAttribute
+    public String keysFileName;
+
+    // Atrribute to specify the expiration value for the primary keys
+    @XmlAttribute
+    public String expiration;
+
+    // Atrribute to specify the password for the primary keys
+    @XmlAttribute
+    public String password;
+
+    // Atrribute to toggle monitoring of the keys within the directory
     @XmlAttribute
     public String monitorDirectory;
+
+    // Atrribute to specify the interval for monitoring the keys within the directory
     @XmlAttribute
     public String monitorInterval;
+
+    // Inherit ValidationKeys
+    @XmlElement(name = "validationKeys")
+    private ConfigElementList<ValidationKeys> validationKeys;
+
+    /**
+     * Retrieves the validation keys for this ltpa configuration
+     *
+     * @return the validation keys for this ltpa configuration
+     */
+    public ConfigElementList<ValidationKeys> getValidationKeys() {
+        if (this.validationKeys == null) {
+            this.validationKeys = new ConfigElementList<ValidationKeys>();
+        }
+        return this.validationKeys;
+    }
 
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(getClass().getSimpleName()).append('{');
-        // attributes
-        buf.append("monitorDirectory=").append(monitorDirectory);
+        // Attributes
+        buf.append("keysFileName=").append(keysFileName);
+        buf.append(", expiration=").append(expiration);
+        buf.append(", password=").append(password);
+        buf.append(", monitorDirectory=").append(monitorDirectory);
         buf.append(", monitorInterval=").append(monitorInterval);
+
+        // Elements
+        if (this.validationKeys != null)
+            for (ValidationKeys validationKey : this.validationKeys)
+                buf.append(validationKey.toString() + ",");
         buf.append('}');
+
         return buf.toString();
     }
 }

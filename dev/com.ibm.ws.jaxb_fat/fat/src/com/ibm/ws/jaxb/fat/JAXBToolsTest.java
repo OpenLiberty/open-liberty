@@ -31,7 +31,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -94,7 +94,7 @@ public class JAXBToolsTest extends FATServletClient {
                         .toString();
         RemoteFile xjc;
         RemoteFile xjcBat;
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             xjc = server.getFileFromLibertyInstallRoot("bin/xmlBinding/xjc");
             xjcBat = server.getFileFromLibertyInstallRoot("bin/xmlBinding/xjc.bat");
 
@@ -136,7 +136,7 @@ public class JAXBToolsTest extends FATServletClient {
         String xjcArgs;
         RemoteFile xjc;
         RemoteFile xjcBat;
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             xjcArgs = new StringBuilder().append("-p po")
                             .append(" -d ")
                             .append(xjcTargetDir.getAbsolutePath())
@@ -200,7 +200,7 @@ public class JAXBToolsTest extends FATServletClient {
         String schemagenArgs;
         RemoteFile schemagen;
         RemoteFile schemagenBat;
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             schemagenArgs = new StringBuilder().append("-d ")
                             .append(jakartaSchemagenTargetDir.getAbsolutePath())
                             .append(" ")
@@ -268,7 +268,7 @@ public class JAXBToolsTest extends FATServletClient {
         RemoteFile purchaseOrderTypeClassFile;
         RemoteFile shippingAddressClassFile;
 
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             xsdFile = server.getFileFromLibertyServerRoot("temp/jakartaSchemagenTargetDir/schema1.xsd");
             itemsClassFile = server.getFileFromLibertyServerRoot("temp/jakartaSchemagenTargetDir/po/Items.class");
             purchaseOrderTypeClassFile = server.getFileFromLibertyServerRoot("temp/jakartaSchemagenTargetDir/po/PurchaseOrderType.class");

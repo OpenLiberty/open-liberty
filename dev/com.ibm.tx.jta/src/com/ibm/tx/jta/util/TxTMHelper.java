@@ -49,6 +49,8 @@ import com.ibm.ws.uow.UOWScopeCallbackAgent;
 import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.tx.UOWEventListener;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
     private static final TraceComponent tc = Tr.register(TxTMHelper.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
@@ -273,9 +275,18 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             try {
                 startRecovery();
             } catch (RecoveryFailedException exc) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Local recovery failed.");
-                _localRecoveryFailed = true;
+                if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && !CheckpointPhase.getPhase().restored()) {
+                    // Local recovery failed during checkpoint, likely due inaccessible logging resource.
+                    // Shutdown now to enable recovery logging to re-initialize (restart) during restore
+                    // using the restored server's configuration and environment vars.
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Local recovery failed during checkpoint. Shutdown to enable local recovery during restore.");
+                    shutdown();
+                } else {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Local recovery failed.");
+                    _localRecoveryFailed = true;
+                }
             } catch (Exception e) {
                 FFDCFilter.processException(e, "com.ibm.tx.jta.util.impl.TxTMHelper.start", "148", this);
             }
@@ -455,7 +466,14 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "shutdown", new Object[] { withCleanup, timeout });
 
-        if ((_state != TMService.TMStates.STOPPED) && (_state != TMService.TMStates.INACTIVE)) {
+        if ((_state != TMService.TMStates.STOPPED) && (_state != TMService.TMStates.INACTIVE)
+            || (_state == TMService.TMStates.INACTIVE &&
+                CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && !CheckpointPhase.getPhase().restored())) {
+            // Shutdown during checkpoint to enable recovery logging to reset during restore.
+            // This is especially necessary for SQL recovery logging, where the datasource
+            // will likely fail to connect during checkpoint, leaving TMState==INACTIVE and
+            // the recovery director+agents initialized with potentially stale configuration.
+
             // Ensure no new transactions can start
             setState(TMService.TMStates.STOPPING);
 
@@ -508,11 +526,11 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
                         if (postStatus == Status.STATUS_ROLLEDBACK ||
                             postStatus == Status.STATUS_NO_TRANSACTION) {
-                            Tr.warning(tc, "WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED", tx.getLocalTID());
+                            Tr.warning(tc, "WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED", Long.toString(tx.getLocalTID()));
                         } else if (postStatus == Status.STATUS_MARKED_ROLLBACK) {
-                            Tr.warning(tc, "WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY", tx.getLocalTID());
+                            Tr.warning(tc, "WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY", Long.toString(tx.getLocalTID()));
                         } else {
-                            Tr.warning(tc, "WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED", tx.getLocalTID());
+                            Tr.warning(tc, "WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED", Long.toString(tx.getLocalTID()));
                         }
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
@@ -546,13 +564,18 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
             LocalTIDTable.clear();
 
-            try {
-                _asyncRecoverySemaphore.waitEvent();
-            } catch (InterruptedException e) {
+            if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && !CheckpointPhase.getPhase().restored()) {
+                // Waiting on the semaphore will cause checkpoint to fail. Skip the wait
+                // as resync never started and will never complete (interrupt).
+                setResyncException(null);
+            } else {
+                try {
+                    _asyncRecoverySemaphore.waitEvent();
+                } catch (InterruptedException e) {
+                }
+                setResyncException(null);
+                _asyncRecoverySemaphore.clear();
             }
-
-            setResyncException(null);
-            _asyncRecoverySemaphore.clear();
 
             ConfigurationProviderManager.stop(true);
 
@@ -666,10 +689,24 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
     public void checkTMState() throws NotSupportedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "checkTMState");
+
         if (_state != TMService.TMStates.ACTIVE) {
             if (_state == TMService.TMStates.RECOVERING) {
                 // A noop
             } else if (_state == TMService.TMStates.INACTIVE) {
+                try {
+                    TMHelper.start();
+                } catch (Exception e) {
+                    final NotSupportedException nse = new NotSupportedException();
+                    nse.initCause(e);
+                    throw nse;
+                }
+            } else if (_state == TMService.TMStates.STOPPED &&
+                       CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && CheckpointPhase.getPhase().restored()) {
+                // A new state transition for InstantOn. Enable recovery logging to restart
+                // during restore whenever initial local recovery fails during checkpoint.
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "checkTMState", "TMService was shutdown during checkpoint. Restarting the TMService during restore");
                 try {
                     TMHelper.start();
                 } catch (Exception e) {

@@ -364,22 +364,13 @@ public abstract class FeatureUtilityToolTest {
 
     protected ProgramOutput runFeatureUtility(String testcase, String[] params, boolean debug) throws Exception {
         Properties envProps = new Properties();
-	// beta
-	envProps.put("JVM_ARGS", "-Denable.verify=true");
-//        envProps.put("JVM_ARGS", "-Drepository.description.url=" + TestUtils.repositoryDescriptionUrl);
-//        envProps.put("INSTALL_LOG_LEVEL", "FINE");
-//        if (debug)
-//            envProps.put("JVM_ARGS", "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=7777,timeout=10000 -Drepository.description.url="
-//                                     + TestUtils.repositoryDescriptionUrl);
-//        else
-//            envProps.put("JVM_ARGS", "-Drepository.description.url=" + TestUtils.repositoryDescriptionUrl);
+	// add beta property here
+	// envProps.put("JVM_ARGS", "-Dbeta.property=true");
         return runFeatureUtility(testcase, params, envProps);
     }
 
     protected ProgramOutput runFeatureUtility(String testcase, String[] params, Properties envProps) throws Exception {
-            // always run feature utility with minified root
-	    // beta
-	    envProps.put("JVM_ARGS", "-Denable.verify=true");
+	// always run feature utility with minified root
         return runCommand(minifiedRoot, testcase, "featureUtility", params, envProps);
     }
 

@@ -39,7 +39,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -63,7 +63,7 @@ public class JSFHtmlUnit {
 
     @BeforeClass
     public static void setup() throws Exception {
-        boolean isEE10 = JakartaEE10Action.isActive();
+        boolean isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         // Create the JSF22TestResourcesJar that is used in JSF22TestResourcesWar
         JavaArchive JSF22TestResourcesJar = ShrinkHelper.buildJavaArchive(JSF22_TEST_RESOURCES_JAR_NAME, "");

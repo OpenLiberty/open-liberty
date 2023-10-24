@@ -99,6 +99,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     public static final Predicate<FeatureReplacementAction> GREATER_THAN_OR_EQUAL_JAVA_11 = (action) -> JavaInfo.JAVA_VERSION >= 11;
     public static final Predicate<FeatureReplacementAction> GREATER_THAN_OR_EQUAL_JAVA_17 = (action) -> JavaInfo.JAVA_VERSION >= 17;
+    public static final Predicate<FeatureReplacementAction> GREATER_THAN_OR_EQUAL_JAVA_21 = (action) -> JavaInfo.JAVA_VERSION >= 21;
 
     public static EmptyAction NO_REPLACEMENT() {
         return new EmptyAction();
@@ -122,21 +123,21 @@ public class FeatureReplacementAction implements RepeatTestAction {
     /**
      * Remove the EE7 and EE8 features; replace them with the EE9 features
      */
-    public static FeatureReplacementAction EE9_FEATURES() {
+    public static JakartaEEAction EE9_FEATURES() {
         return new JakartaEE9Action();
     }
 
     /**
      * Remove the EE7, EE8, and EE9 features; replace them with the EE10 features
      */
-    public static FeatureReplacementAction EE10_FEATURES() {
+    public static JakartaEEAction EE10_FEATURES() {
         return new JakartaEE10Action();
     }
 
     /**
      * Remove the EE7, EE8, EE9, and EE10 features; replace them with the EE11 features
      */
-    public static FeatureReplacementAction EE11_FEATURES() {
+    public static JakartaEEAction EE11_FEATURES() {
         return new JakartaEE11Action();
     }
 
@@ -315,6 +316,29 @@ public class FeatureReplacementAction implements RepeatTestAction {
         return this;
     }
 
+    /**
+     * Conditionally marks this repeat action as FULL FAT only mode if the Predicate that is passed to it returns true.
+     *
+     * This method is helpful when you have a list of repeats and you want only one of them to run in lite mode. When running
+     * with Jakarta EE 10, you would want to have a previous Jakarta EE repeat to have this method call passing {@link #GREATER_THAN_OR_EQUAL_JAVA_11}
+     * in order that at least one of the repeats runs in LITE FAT mode. Otherwise with Java 8 builds, no tests will run in LITE mode which
+     * will produce an error. Similarly the same is true for Jakarta EE 11 repeats which require Java 21. If doing a repeat for Jakarta EE 11
+     * you will want to call this method and pass {@link #GREATER_THAN_OR_EQUAL_JAVA_21} for previous Jakarta feature repeats. Usually that would be
+     * a Jakarta EE 10 repeat because one of the previous Jakarta EE feature repeats would have {@link #GREATER_THAN_OR_EQUAL_JAVA_11} passed to it.
+     *
+     * The example below will run EE 9 in lite mode with Java 8, EE 10 in lite mode with Java 11 and 17 and EE 11 in lite mode with Java 21.
+     *
+     * <pre>
+     * RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT().fullFATOnly())
+     *                 .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+     *                 .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(GREATER_THAN_OR_EQUAL_JAVA_11))
+     *                 .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(GREATER_THAN_OR_EQUAL_JAVA_21))
+     *                 .andWith(FeatureReplacementAction.EE11_FEATURES());
+     * </pre>
+     *
+     * @param  conditional the Predicate that if it returns true, will instruct this repeat action to be done in full mode
+     * @return
+     */
     public FeatureReplacementAction conditionalFullFATOnly(Predicate<FeatureReplacementAction> conditional) {
         if (conditional.test(this)) {
             this.testRunMode = TestMode.FULL;

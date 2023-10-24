@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,6 +25,7 @@ import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.models.Paths;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,6 +34,8 @@ import com.ibm.ws.microprofile.openapi.impl.parser.core.models.SwaggerParseResul
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpsRequest;
@@ -42,6 +45,12 @@ public class ConfigOpenApiSchemaTest extends FATServletClient {
 
     /**  */
     private static final String SERVER_NAME = "com.ibm.ws.rest.handler.config.openapi.fat";
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+                                                             MicroProfileActions.MP61, // EE10
+                                                             MicroProfileActions.MP50, // EE9
+                                                             MicroProfileActions.MP40); // EE8
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,11 +16,13 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Set;
 
 import javax.enterprise.inject.Stereotype;
 import javax.interceptor.InvocationContext;
 import javax.transaction.Transactional;
+import javax.transaction.TransactionalException;
 
 import org.osgi.framework.FrameworkUtil;
 
@@ -41,6 +43,15 @@ public abstract class TransactionalInterceptor implements Serializable {
     private static final TraceComponent tc = Tr.register(TransactionalInterceptor.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
     private static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
+
+    protected static final String THROW_CHECKED_EXCEPTIONS = "com.ibm.tx.jta.cdi.interceptors.throwCheckedExceptions";
+
+    private static boolean _throwCheckedExceptions = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+        @Override
+        public Boolean run() {
+            return Boolean.getBoolean(THROW_CHECKED_EXCEPTIONS);
+        }
+    });
 
     /*
      * Find the Transactional annotation being processed
@@ -194,5 +205,36 @@ public abstract class TransactionalInterceptor implements Serializable {
 
         return getUOWM().runUnderUOW(uowType, join, a, t.rollbackOn(), t.dontRollbackOn());
 
+    }
+
+    protected Exception processException(final InvocationContext context, Exception e) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "processException", context, e);
+
+        if (_throwCheckedExceptions) {
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "processException", e);
+            return e;
+        }
+
+        for (Class<?> declaredException : context.getMethod().getExceptionTypes()) {
+            if (declaredException.isAssignableFrom(e.getClass())) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "{0} is assignable from {1}", declaredException, e.getClass());
+                // So we can rethrow it
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "processException", e);
+                return e;
+            } else {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "{0} is not assignable from {1}", declaredException, e.getClass());
+            }
+        }
+
+        // So we need to wrap it in a RuntimeException
+        final TransactionalException te = new TransactionalException(e.getMessage(), e);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "processException", te);
+        return te;
     }
 }

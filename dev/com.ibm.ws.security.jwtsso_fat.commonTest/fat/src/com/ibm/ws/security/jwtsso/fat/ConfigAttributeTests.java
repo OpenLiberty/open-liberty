@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.apps.jwtbuilder.JwtBuilderServlet;
 import com.ibm.ws.security.fat.common.expectations.Expectation;
@@ -45,6 +44,7 @@ import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwtsso.fat.actions.JwtFatActions;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
+import com.ibm.ws.security.jwtsso.fat.utils.CommonJwtssoFat;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatUtils;
 import com.ibm.ws.security.jwtsso.fat.utils.MessageConstants;
@@ -59,7 +59,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class ConfigAttributeTests extends CommonSecurityFat {
+public class ConfigAttributeTests extends CommonJwtssoFat {
 
     protected static Class<?> thisClass = ConfigAttributeTests.class;
 
@@ -85,6 +85,8 @@ public class ConfigAttributeTests extends CommonSecurityFat {
         serverTracker.addServer(server);
         skipRestoreServerTracker.addServer(server);
         server.startServerUsingExpandedConfiguration("server_withFeature.xml", CommonWaitForAppChecks.getLTPAReadyMsgs(CommonWaitForAppChecks.getSSLChannelReadyMsgs()));
+
+        addServerStartupAllowedErrors(server);
     }
 
     @Before

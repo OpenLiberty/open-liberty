@@ -33,7 +33,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings({ "serial", "deprecation" })
-@WebServlet("/common")
+@WebServlet("/testCommon")
 @ApplicationScoped // Make this a bean so that there's one bean in the archive, otherwise CDI gets disabled and @Inject doesn't work
 public class CommonSDKServlet extends FATServlet {
 

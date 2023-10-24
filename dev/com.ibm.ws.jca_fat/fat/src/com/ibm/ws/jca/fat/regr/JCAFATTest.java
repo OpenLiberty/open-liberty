@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011,2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -92,7 +92,7 @@ public abstract class JCAFATTest {
      * Utility method to search for a clear text passwords
      *
      * @throws Exception
-     *             if occurrences found
+     *                       if occurrences found
      */
     protected void checkForTextPasswordsInLogs() throws Exception {
         List<String> uncheckedMatches = new ArrayList<String>();
@@ -134,13 +134,13 @@ public abstract class JCAFATTest {
      * checkForTextPasswordsInLogs()
      *
      * @param server
-     *            the server
+     *                              the server
      * @param excludeTraceNames
-     *            a list of Strings that the password check will use to ignore
-     *            instances of a password found if the line also contains a
-     *            string in the exclude list
+     *                              a list of Strings that the password check will use to ignore
+     *                              instances of a password found if the line also contains a
+     *                              string in the exclude list
      * @throws Exception
-     *             if occurrences found
+     *                       if occurrences found
      */
     protected static void activatePasswordCheck(List<String> excludeTraceNames) throws Exception {
         String method = "activatePasswordCheck";
@@ -185,12 +185,12 @@ public abstract class JCAFATTest {
      * Utility method to run a test on a JCA FAT servlet.
      *
      * @param servlet
-     *            Name of servlet to run test on
+     *                    Name of servlet to run test on
      * @param test
-     *            Test name to supply as an argument to the servlet
+     *                    Test name to supply as an argument to the servlet
      * @return output of the servlet
      * @throws IOException
-     *             if an error occurs
+     *                         if an error occurs
      */
     protected StringBuilder runInJCAFATServlet(String warFile, String servlet,
                                                String test) throws Exception {
@@ -279,6 +279,6 @@ public abstract class JCAFATTest {
         EnterpriseArchive fvtapp_ear = ShrinkWrap.create(EnterpriseArchive.class, fvtapp + ".ear");
         fvtapp_ear.addAsModules(fvtweb_war, JCAFAT1_rar);
         ShrinkHelper.addDirectory(fvtapp_ear, "lib/LibertyFATTestFiles/fvtapp_regr");
-        ShrinkHelper.exportToServer(server, "apps", fvtapp_ear);
+        ShrinkHelper.exportAppToServer(server, fvtapp_ear);
     }
 }

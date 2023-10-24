@@ -139,7 +139,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>30.1-android</version>
+      <version>32.0.1-android</version>
     </dependency>
     <dependency>
       <groupId>com.google.inject</groupId>
@@ -549,57 +549,57 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
-      <version>4.1.94.Final</version>
+      <version>4.1.100.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-http2</artifactId>
-      <version>4.1.94.Final</version>
+      <version>4.1.100.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-http</artifactId>
-      <version>4.1.94.Final</version>
+      <version>4.1.100.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-socks</artifactId>
-      <version>4.1.94.Final</version>
+      <version>4.1.100.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec</artifactId>
-      <version>4.1.94.Final</version>
+      <version>4.1.100.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-common</artifactId>
-      <version>4.1.94.Final</version>
+      <version>4.1.100.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler-proxy</artifactId>
-      <version>4.1.94.Final</version>
+      <version>4.1.100.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler</artifactId>
-      <version>4.1.94.Final</version>
+      <version>4.1.100.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-resolver</artifactId>
-      <version>4.1.94.Final</version>
+      <version>4.1.100.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-native-unix-common</artifactId>
-      <version>4.1.94.Final</version>
+      <version>4.1.100.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
-      <version>4.1.94.Final</version>
+      <version>4.1.100.Final</version>
     </dependency>
     <dependency>
       <groupId>io.openliberty.arquillian</groupId>
@@ -760,6 +760,11 @@
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-opentracing-shim</artifactId>
       <version>1.19.0-alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-opentracing-shim</artifactId>
+      <version>1.29</version>
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
@@ -1064,7 +1069,7 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-metrics</artifactId>
-      <version>5.1.0-RC1</version>
+      <version>5.1.0</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
@@ -1154,7 +1159,7 @@
     <dependency>
       <groupId>jakarta.enterprise.concurrent</groupId>
       <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-      <version>3.0.2</version>
+      <version>3.0.3</version>
     </dependency>
     <dependency>
       <groupId>jakarta.enterprise</groupId>
@@ -2194,7 +2199,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-el-api</artifactId>
-      <version>10.1.8</version>
+      <version>10.1.11</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
@@ -2209,7 +2214,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper-el</artifactId>
-      <version>10.1.8</version>
+      <version>10.1.11</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
@@ -2349,7 +2354,7 @@
     <dependency>
       <groupId>org.crac</groupId>
       <artifactId>crac</artifactId>
-      <version>1.3.0</version>
+      <version>1.4.0</version>
     </dependency>
     <dependency>
       <groupId>org.cryptacular</groupId>
@@ -2389,7 +2394,7 @@
     <dependency>
       <groupId>org.eclipse.jdt</groupId>
       <artifactId>ecj</artifactId>
-      <version>3.34.0</version>
+      <version>3.35.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty.websocket</groupId>
@@ -2799,7 +2804,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.metrics</groupId>
       <artifactId>microprofile-metrics-api</artifactId>
-      <version>5.1.0-RC1</version>
+      <version>5.1.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.openapi</groupId>
@@ -2924,22 +2929,22 @@
     <dependency>
       <groupId>org.eclipse.parsson</groupId>
       <artifactId>parsson</artifactId>
-      <version>1.1.0</version>
+      <version>1.1.4</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.antlr</artifactId>
-      <version>2.7.12</version>
+      <version>2.7.13</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.asm</artifactId>
-      <version>9.5.0</version>
+      <version>9.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.core</artifactId>
-      <version>2.7.12</version>
+      <version>2.7.13</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -2954,7 +2959,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
-      <version>2.7.12</version>
+      <version>2.7.13</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -2969,7 +2974,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
-      <version>2.7.12</version>
+      <version>2.7.13</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -2984,7 +2989,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
-      <version>2.7.12</version>
+      <version>2.7.13</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3039,7 +3044,7 @@
     <dependency>
       <groupId>org.eclipse</groupId>
       <artifactId>yasson</artifactId>
-      <version>3.0.2</version>
+      <version>3.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.ehcache</groupId>
@@ -3964,27 +3969,27 @@
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-analysis</artifactId>
-      <version>9.5</version>
+      <version>9.6</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-commons</artifactId>
-      <version>9.5</version>
+      <version>9.6</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-tree</artifactId>
-      <version>9.5</version>
+      <version>9.6</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-util</artifactId>
-      <version>9.5</version>
+      <version>9.6</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm</artifactId>
-      <version>9.5</version>
+      <version>9.6</version>
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>

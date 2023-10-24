@@ -12,9 +12,12 @@
  *******************************************************************************/
 package jakarta.data.repository;
 
+import jakarta.data.page.Page;
+import jakarta.data.page.Pageable;
+
 /**
  * Interface methods copied from the Jakarta Data git repository.
  */
-public interface PageableRepository<T, K> extends CrudRepository<T, K> {
+public interface PageableRepository<T, K> extends BasicRepository<T, K> {
     Page<T> findAll(Pageable pageable);
 }

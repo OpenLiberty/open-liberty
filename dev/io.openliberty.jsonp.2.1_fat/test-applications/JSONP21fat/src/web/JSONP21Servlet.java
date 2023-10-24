@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,9 +18,13 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collections;
 import java.util.Map;
 
 import org.junit.Test;
@@ -34,6 +38,9 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import jakarta.json.JsonReaderFactory;
 import jakarta.json.JsonWriter;
+import jakarta.json.spi.JsonProvider;
+import jakarta.json.stream.JsonGenerator;
+import jakarta.json.stream.JsonGeneratorFactory;
 import jakarta.json.stream.JsonParser;
 import jakarta.json.stream.JsonParser.Event;
 import jakarta.servlet.annotation.WebServlet;
@@ -239,6 +246,82 @@ public class JSONP21Servlet extends FATServlet {
             fail();
         } catch (JsonException ex) {
             //expected
+        }
+    }
+
+    //Verify that calling close on a JsonGenerator multiple times does not cause data corruption
+    //Fixed in 1.1.1: https://github.com/eclipse-ee4j/parsson/issues/20
+    @Test
+    public void testJsonGeneratorDuplicateClose() {
+        StringWriter sw = new StringWriter();
+        JsonGeneratorFactory factory = Json.createGeneratorFactory(Collections.emptyMap());
+
+        //Create a generator and double close it
+        try (JsonGenerator generator = factory.createGenerator(sw)) {
+            generator.writeStartObject();
+            generator.writeEnd();
+            generator.close(); //Generator has been closed and buffer is flushed and returned to the pool
+            assertEquals("{}", sw.toString()); //Expected result
+        } //Closed again and a second reference to the same buffer is returned to the pool
+
+        StringWriter sw1 = new StringWriter();
+        StringWriter sw2 = new StringWriter();
+        try (
+                        JsonGenerator generator1 = factory.createGenerator(sw1); //Gets first reference to buffer
+                        JsonGenerator generator2 = factory.createGenerator(sw2); //Gets second reference to buffer
+        ) {
+            //Both generators are writing to the same buffer
+            generator1.writeStartObject();
+            generator1.write("key", "value");
+
+            generator2.writeStartArray();
+            generator2.write("item");
+            generator2.write("item2");
+
+            generator1.write("key2", "value2");
+
+            generator2.writeEnd();
+
+            generator1.writeEnd();
+        }
+
+        assertEquals("{\"key\":\"value\",\"key2\":\"value2\"}", sw1.toString()); //Failing case: ["item","item2,]key2":"value2"}
+        assertEquals("[\"item\",\"item2\"]", sw2.toString()); //Failing case: ["item","item2,]
+    }
+
+    //Verify that calling close on a JsonTokenizer (PASSON INTERNAL CLASS)
+    //multiple times does not cause data corruption.
+    //Only exposed via JsonParser
+    //Fixed in JsonParser 1.1.0: https://github.com/eclipse-ee4j/parsson/issues/25
+    //Fixed in JsonTokenizer 1.1.3: https://github.com/eclipse-ee4j/parsson/issues/77
+    @Test
+    public void testJsonTokenizerDuplicateClose() throws IOException {
+        byte[] content = "[\"test\"]".getBytes();
+        JsonProvider json = JsonProvider.provider();
+
+        //First round will put 2 buffers back into pool
+        //Second and Third rounds will end up using those 2 buffers and getting corrupted data.
+        for (int i = 0; i < 3; i++) {
+            try (InputStream in = new ByteArrayInputStream(content)) {
+
+                //JsonParser uses JsonTokenizer to parse
+                try (JsonParser parser = json.createParser(in)) {
+
+                    JsonParser.Event firstEvent = parser.next();
+                    assertEquals(JsonParser.Event.START_ARRAY, firstEvent);
+
+                    while (parser.hasNext()) {
+                        JsonParser.Event event = parser.next();
+                        if (event == JsonParser.Event.START_OBJECT) {
+                            JsonObject object = parser.getObject();
+                            object.toString();
+                        }
+                    }
+
+                    parser.close(); //Returns JsonTokenizer buffer to pool
+
+                } // Returns JsonTokenizer buffer to pool again
+            }
         }
     }
 }

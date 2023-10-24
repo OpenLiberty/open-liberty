@@ -13,19 +13,13 @@
 package mpGraphQL10.iface;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -33,15 +27,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.core.Response;
-
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.junit.Test;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
-import componenttest.rules.repeater.MicroProfileActions;
 
 
 @SuppressWarnings("serial")
@@ -80,7 +69,6 @@ public class InterfaceTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat(MicroProfileActions.STANDALONE10_ID) // Looks to be a yasson 3.0 bug
     public void testMutationUsingInterfaceType(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         long timeStampAtStart = System.currentTimeMillis();
         GraphQLClient client = builder.build(GraphQLClient.class);

@@ -34,6 +34,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.JavaInfo.Vendor;
@@ -105,21 +106,13 @@ public class FATSuite extends InitClass {
             String thisMethod = "isSupportJDK";
             JavaInfo javaInfo = JavaInfo.forServer(LibertyServerFactory.getLibertyServer("DynamicSpnegoConfigTest"));
 
-            IBM_JDK_V8_LOWER = javaInfo.vendor() == Vendor.IBM && javaInfo.majorVersion() <= 8;
-            SUN_ORACLE_JDK_V8_HIGHER = javaInfo.vendor() == Vendor.SUN_ORACLE && javaInfo.majorVersion() >= 8;
-            OTHER_SUPPORT_JDKS = javaInfo.majorVersion() >= 11 || SUN_ORACLE_JDK_V8_HIGHER;
             IBM_HYBRID_JDK = isHybridJDK(javaInfo);
 
             Log.info(c, thisMethod, "The JDK used on this system is version: " + javaInfo.majorVersion() + " and vendor: " + javaInfo.vendor());
-            if (!IBM_JDK_V8_LOWER && !OTHER_SUPPORT_JDKS && !SUN_ORACLE_JDK_V8_HIGHER) {
-                Log.info(c, thisMethod, "The JDK used on this system is version: " + javaInfo.majorVersion() + " and vendor: " + javaInfo.vendor() +
-                                        ". Because only IBM JDK version 8 or less, Oracle and Open JDK version 8 and higher and JDK version 11 are currently supported, no tests will be run.");
-                RUN_TESTS = false;
-            }
             if (IBM_HYBRID_JDK) {
+                Log.info(c, thisMethod, "SPENGO and constrained delegation do not support IBM hybrid JDK. Test will not be run as isHybridJDK: " + IBM_HYBRID_JDK);
                 RUN_TESTS = false;
             }
-            Log.info(c, thisMethod, "The JDK vendor used is " + javaInfo.vendor() + " and version: " + javaInfo.majorVersion());
             return RUN_TESTS;
         };
 
@@ -178,15 +171,10 @@ public class FATSuite extends InitClass {
      * @param apps     The simple names of the applications to transform.
      */
     public static void transformApps(LibertyServer myServer, String... apps) {
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             for (String app : apps) {
                 Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + app);
-                JakartaEE9Action.transformApp(someArchive);
-            }
-        } else if (JakartaEE10Action.isActive()) {
-            for (String app : apps) {
-                Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + app);
-                JakartaEE10Action.transformApp(someArchive);
+                JakartaEEAction.transformApp(someArchive);
             }
         }
 

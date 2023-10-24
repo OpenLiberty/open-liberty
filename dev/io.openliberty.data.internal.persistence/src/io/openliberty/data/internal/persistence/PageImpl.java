@@ -24,8 +24,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import jakarta.data.repository.Page;
-import jakarta.data.repository.Pageable;
+import jakarta.data.page.Page;
+import jakarta.data.page.Pageable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 

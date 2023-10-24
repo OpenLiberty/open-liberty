@@ -31,7 +31,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jsf.beanval.BeanValTestServlet;
@@ -54,7 +54,7 @@ public class JSF22BeanValidationTests extends FATServletClient {
     @BeforeClass
     public static void setup() throws Exception {
 
-        isEE10 = JakartaEE10Action.isActive();
+        isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         WebArchive mojarraApp = ShrinkWrap.create(WebArchive.class, MOJARRA_APP + ".war")
                         .addPackage("jsf.beanval")

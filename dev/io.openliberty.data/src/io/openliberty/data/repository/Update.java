@@ -18,6 +18,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import jakarta.data.repository.Delete;
+
 /**
  * <p>Annotates a repository method to specify an update operation.</p>
  *

@@ -763,7 +763,6 @@ public class LibertyServer implements LogMonitorClient {
 
         // TODO: Verify the micro version matches the files under 'installRoot/lib'.
 
-
         // Allow user directory name to be provided in bootstrap properties.
         // It is optional and if it is not set, setup() will set it.
         userDir = b.getValue("libertyUserDir");
@@ -1108,6 +1107,21 @@ public class LibertyServer implements LogMonitorClient {
             Log.info(c, thisMethod, "Did not detect a restart of the SSL port");
         }
 
+    }
+
+    /**
+     * Wait for the server to state that it is listening on its SSL port
+     *
+     * @throws Exception
+     */
+    public void waitForSSLStart() throws Exception {
+        //wait for "CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host"
+        String sslStartMsg = waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint-ssl.*");
+        if (sslStartMsg == null) {
+            RuntimeException rx = new RuntimeException("Timed out waiting for the server to initialize defaultHttpEndpoint-ssl");
+            Log.error(c, "waitForSSLStart", rx);
+            throw rx;
+        }
     }
 
     /**
@@ -6150,7 +6164,7 @@ public class LibertyServer implements LogMonitorClient {
      * @param  outputFile file to check
      * @return            line that matched the regexp
      */
-    protected String waitForStringInLogUsingMark(String regexp, long intendedTimeout, RemoteFile outputFile) {
+    public String waitForStringInLogUsingMark(String regexp, long intendedTimeout, RemoteFile outputFile) {
         return waitForStringInLogUsingMark(regexp, intendedTimeout, 2 * intendedTimeout, outputFile);
     }
 

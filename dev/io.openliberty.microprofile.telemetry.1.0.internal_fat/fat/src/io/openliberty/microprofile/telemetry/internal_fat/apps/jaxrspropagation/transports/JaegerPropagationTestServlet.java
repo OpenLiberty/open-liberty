@@ -38,7 +38,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 
 @SuppressWarnings("serial")
-@WebServlet("/jaegerPropagation")
+@WebServlet("/testJaegerPropagation")
 public class JaegerPropagationTestServlet extends FATServlet {
 
     private static final String BAGGAGE_VALUE = "test.baggage.value";

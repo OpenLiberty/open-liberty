@@ -25,4 +25,5 @@ tested.features=\
   cdi-4.0,\
   jsonp-2.1,\
   restfulws-3.1,\
-  restfulwsclient-3.1
+  restfulwsclient-3.1,\
+  mpconfig-3.1

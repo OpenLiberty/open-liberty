@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,13 @@
  *******************************************************************************/
 package io.openliberty.org.apache.jasper.expressionLanguage50.fat;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
+import java.util.Properties;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -52,5 +58,23 @@ public class ELUtils {
           .append(path);
 
         return sb.toString();
+    }
+
+    /**
+     * Set websphere.java.security.exempt to true in the provided server's bootstrap.properties file.
+     *
+     * @param server
+     * @throws Exception
+     */
+    public static void setServerJavaSecurityExempt(LibertyServer server) throws Exception {
+        File bootstrapPropertiesFile = new File(server.getFileFromLibertyServerRoot("bootstrap.properties").getAbsolutePath());
+        Properties props = new Properties();
+        try (InputStream in = new FileInputStream(bootstrapPropertiesFile)) {
+            props.load(in);
+        }
+        props.put("websphere.java.security.exempt", "true");
+        try (OutputStream out = new FileOutputStream(bootstrapPropertiesFile)) {
+            props.store(out, "Updated to include \"websphere.java.security.exempt=true\"");
+        }
     }
 }

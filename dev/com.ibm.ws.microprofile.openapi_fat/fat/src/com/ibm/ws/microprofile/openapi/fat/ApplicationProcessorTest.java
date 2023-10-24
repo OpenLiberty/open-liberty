@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -79,12 +79,7 @@ public class ApplicationProcessorTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-        MicroProfileActions.MP60, // mpOpenAPI-3.1, LITE
-        MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
-        MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
-        MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL
-        MicroProfileActions.MP22);// mpOpenAPI-1.0, FULL
+    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
 
     @BeforeClass
     public static void setUpTest() throws Exception {
@@ -388,7 +383,10 @@ public class ApplicationProcessorTest extends FATServletClient {
     @SkipForRepeat({
         // Due to API incompatibilities, mpOpenAPI-2.0+ is tested in
         // io.openliberty.microprofile.openapi.2.0.internal_fat
-        MicroProfileActions.MP41_ID, MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID
+        MicroProfileActions.MP41_ID,
+        MicroProfileActions.MP50_ID,
+        MicroProfileActions.MP60_ID,
+        MicroProfileActions.MP61_ID
     })
     public void testCompleteFlow() throws Exception {
         OpenAPITestUtil.addApplication(server, APP_NAME_11);

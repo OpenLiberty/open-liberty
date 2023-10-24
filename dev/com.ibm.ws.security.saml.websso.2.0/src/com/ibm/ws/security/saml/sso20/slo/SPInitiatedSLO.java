@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -370,7 +370,7 @@ public class SPInitiatedSLO {
 //            //throw new SamlException(e1); //TODO
 //        }
         //@AV999-092821 
-        if(req.getAttribute("OIDC_END_SESSION_REDIRECT") != null) {
+        if(req.getAttribute("OIDC_END_SESSION_REDIRECT") != null || req.getAttribute("OIDC_LOGOUT_REDIRECT_URL") != null || req.getAttribute("OIDC_LOGOUT_REDIRECT_PAGE") != null) {
             resp.setStatus(javax.servlet.http.HttpServletResponse.SC_ACCEPTED);
         } else {
             resp.setStatus(javax.servlet.http.HttpServletResponse.SC_OK);

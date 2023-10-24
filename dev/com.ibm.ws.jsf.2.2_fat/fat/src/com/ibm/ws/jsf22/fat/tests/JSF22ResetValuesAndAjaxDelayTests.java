@@ -45,7 +45,7 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -71,7 +71,7 @@ public class JSF22ResetValuesAndAjaxDelayTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        boolean isEE10 = JakartaEE10Action.isActive();
+        boolean isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         ShrinkHelper.defaultDropinApp(jsf22TracingServer, APP_NAME + ".war",
                                       isEE10 ? "com.ibm.ws.jsf22.fat.ajax.ajaxDelay.faces40" : "com.ibm.ws.jsf22.fat.ajax.ajaxDelay.jsf22",

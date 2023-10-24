@@ -4,7 +4,6 @@ visibility=private
 singleton=true
 -features=io.openliberty.appSecurity-6.0, \
  io.openliberty.servlet.api-6.1; apiJar=false, \
- com.ibm.websphere.appserver.servlet-6.1, \
  io.openliberty.xmlWS-4.0, \
  io.openliberty.wss4j-2.3
 -bundles=\

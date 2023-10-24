@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,9 +34,7 @@ import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.servers.ServerTracker;
 import com.ibm.ws.security.fat.common.utils.WebClientTracker;
 
-import componenttest.custom.junit.runner.RepeatTestFilter;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.LibertyServerUtils;
 import componenttest.topology.utils.ServerFileUtils;
@@ -211,10 +209,8 @@ public class CommonSecurityFat {
         }
         if (list != null) {
             for (RemoteFile app : list) {
-                if (JakartaEE9Action.isActive()) {
-                    JakartaEE9Action.transformApp(Paths.get(app.getAbsolutePath()));
-                } else if (JakartaEE10Action.isActive()) {
-                    JakartaEE10Action.transformApp(Paths.get(app.getAbsolutePath()));
+                if (JakartaEEAction.isEE9OrLaterActive()) {
+                    JakartaEEAction.transformApp(Paths.get(app.getAbsolutePath()));
                 }
             }
         }
@@ -227,7 +223,7 @@ public class CommonSecurityFat {
      *            The server to transform the applications on.
      */
     public static void transformApps(LibertyServer server) {
-        if (RepeatTestFilter.isAnyRepeatActionActive(JakartaEE9Action.ID, JakartaEE10Action.ID)) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
 
             transformAppsInDefaultDirs(server, "dropins");
             transformAppsInDefaultDirs(server, "apps");

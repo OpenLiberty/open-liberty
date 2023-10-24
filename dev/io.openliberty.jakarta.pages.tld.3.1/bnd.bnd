@@ -6,14 +6,12 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 -nouses=true
 
+# Contains Tags Implementation for Tooling
 Bundle-SymbolicName: io.openliberty.jakarta.pages.tld.3.1
 Bundle-Description: Jakarta Standard Tag Library, version 3.0
 

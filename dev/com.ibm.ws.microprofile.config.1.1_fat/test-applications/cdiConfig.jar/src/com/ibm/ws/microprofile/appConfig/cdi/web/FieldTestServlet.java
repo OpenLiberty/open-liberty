@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -80,11 +80,13 @@ public class FieldTestServlet extends AbstractBeanServlet {
         test("DISCOVERED_KEY", "DISCOVERED_VALUE");
     }
 
+    // TODO: The intended behaviour for this is not defined in the MP Config spec. It may be covered by the answer to this: https://github.com/eclipse/microprofile-config/issues/608
     @Test
     @SkipForRepeat({ MicroProfileActions.MP40_ID,
                      MicroProfileActions.MP41_ID,
                      MicroProfileActions.MP50_ID,
-                     MicroProfileActions.MP60_ID }) // TODO: The intended behaviour for this is not defined in the MP Config spec. It may be covered by the answer to this: https://github.com/eclipse/microprofile-config/issues/608
+                     MicroProfileActions.MP60_ID,
+                     MicroProfileActions.MP61_ID })
     public void testNullWithDefault() throws Exception {
         test("NULL_WITH_DEFAULT_KEY", "null");
     }
