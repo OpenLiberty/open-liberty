@@ -51,6 +51,10 @@ public class ExecutorServiceImplTest {
         }
     }
 
+    static {
+        ExecutorServiceImpl.isBeta = true;
+    }
+
     @Test
     public void testCreateExecutor() throws Exception {
         ExecutorServiceImpl executorService = new ExecutorServiceImpl();
