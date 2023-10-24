@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -515,6 +515,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
         SAMLProviderSettings updatedSamlProviderSettings = updatedSamlConfigSettings.getDefaultSamlProviderSettings();
         updatedSamlProviderSettings.setHttpsRequired("true");
         updatedSamlProviderSettings.setNameIDFormat("unspecified");
+        updatedSamlProviderSettings.setSignatureMethodAlgorithm("SHA256");
 
         updateConfigFile(testSAMLServer, baseSamlServerConfig, updatedSamlConfigSettings, testServerConfigFile);
 
@@ -544,6 +545,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
         SAMLProviderSettings updatedSamlProviderSettings = updatedSamlConfigSettings.getDefaultSamlProviderSettings();
         updatedSamlProviderSettings.setHttpsRequired("true");
         updatedSamlProviderSettings.setNameIDFormat("unspecified");
+        updatedSamlProviderSettings.setSignatureMethodAlgorithm("SHA256");
 
         updateConfigFile(testSAMLServer, baseSamlServerConfig, updatedSamlConfigSettings, testServerConfigFile);
 
@@ -682,6 +684,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
         SAMLProviderSettings updatedSamlProviderSettings = updatedSamlConfigSettings.getDefaultSamlProviderSettings();
         updatedSamlProviderSettings.setHttpsRequired("false");
         updatedSamlProviderSettings.setNameIDFormat("unspecified");
+        updatedSamlProviderSettings.setSignatureMethodAlgorithm("SHA256");
 
         updateConfigFile(testSAMLServer, baseSamlServerConfig, updatedSamlConfigSettings, testServerConfigFile);
 
@@ -711,6 +714,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
         SAMLProviderSettings updatedSamlProviderSettings = updatedSamlConfigSettings.getDefaultSamlProviderSettings();
         updatedSamlProviderSettings.setHttpsRequired("false");
         updatedSamlProviderSettings.setNameIDFormat("unspecified");
+        updatedSamlProviderSettings.setSignatureMethodAlgorithm("SHA256");
 
         updateConfigFile(testSAMLServer, baseSamlServerConfig, updatedSamlConfigSettings, testServerConfigFile);
 
