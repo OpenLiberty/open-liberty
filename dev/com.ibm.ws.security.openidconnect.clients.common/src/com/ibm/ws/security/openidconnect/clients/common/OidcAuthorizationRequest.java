@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.web.JavaScriptUtils;
 import com.ibm.ws.security.common.web.WebSSOUtils;
 import com.ibm.ws.security.openidconnect.pkce.ProofKeyForCodeExchangeHelper;
@@ -46,6 +47,8 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
 
     ConvergedClientConfig clientConfig;
     WebSSOUtils webSsoUtils = new WebSSOUtils();
+    
+    private static boolean issuedBetaMessage = false;
 
     public OidcAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ConvergedClientConfig clientConfig) {
         super(request, response, clientConfig.getClientId());
@@ -230,7 +233,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
             addImplicitParameters(authzParameters);
         }
         String resources = getResourcesParameter();
-        if (resources != null) {
+        if (resources != null && (isImplicit || isRunningBetaMode())) {          
             authzParameters.addParameter("resource", resources);
         }
 
@@ -239,6 +242,18 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
 
         // check and see if we have any additional params to forward from the request
         addForwardLoginParams(authzParameters);
+    }
+    
+    boolean isRunningBetaMode() {
+        if (!ProductInfo.getBetaEdition()) {
+            return false;
+        } else {
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+            return true;
+        }
     }
 
     private boolean isACRConfigured() {
