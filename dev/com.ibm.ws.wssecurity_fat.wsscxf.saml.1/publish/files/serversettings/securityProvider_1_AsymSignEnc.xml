@@ -9,6 +9,7 @@
                 ws-security.return.security.error="true"
 	>
 		<signatureProperties
+		    signatureAlgorithm="sha256"
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
 			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server"
 			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerDefault"

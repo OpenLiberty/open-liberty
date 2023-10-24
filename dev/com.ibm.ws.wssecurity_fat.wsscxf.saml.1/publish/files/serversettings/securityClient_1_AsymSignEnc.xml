@@ -8,6 +8,7 @@
 	>
 
 		<signatureProperties
+		    signatureAlgorithm="sha256"
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
 			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client"
 			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefault"
