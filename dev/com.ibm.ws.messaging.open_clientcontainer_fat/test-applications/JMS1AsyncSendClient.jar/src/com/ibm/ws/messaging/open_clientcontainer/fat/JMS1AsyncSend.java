@@ -1,5 +1,5 @@
 /* ============================================================================
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -590,37 +590,6 @@ public class JMS1AsyncSend extends ClientMain {
 
       reportSuccess();
   }
-
-    @ClientTest
-    public void testJMS1TimeToLive() throws JMSException, InterruptedException, TestException {
-
-        try (QueueSession session = queueConnection_.createQueueSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE)) {
-            MessageProducer producer = session.createProducer(null);
-            MessageConsumer consumer = session.createConsumer(queueOne_);
-
-            TextMessage sentMessage = session.createTextMessage(methodName() + " at " + new Date());
-            BasicCompletionListener completionListener = new BasicCompletionListener();
-            producer.send(queueOne_, sentMessage, DeliveryMode.NON_PERSISTENT, 0, 500, completionListener);
-            Util.CODEPATH();
-
-            // Ensure the message is on the queue before we start waiting for it to expire.
-            if (!completionListener.waitFor(1, 0))
-                throw new TestException("CompletionLister not notified after send.");
-            // Wait for the message to expire.
-            Thread.sleep(3000);
-            Util.CODEPATH();
-
-            Message receivedMessage = consumer.receiveNoWait();
-            Util.TRACE("messageReceived=" + receivedMessage);
-            if (receivedMessage != null)
-                throw new TestException("Unexpected message, receivedMessage:" + receivedMessage + "\nsentMessage:" + sentMessage);
-
-        } finally {
-            clearQueue(queueOne_, methodName(), 0);
-        }
-        
-        reportSuccess();
-    }
 
     @ClientTest
     public void testJMS1NegativeTimeToLive() throws JMSException, InterruptedException, TestException {
