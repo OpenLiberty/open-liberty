@@ -28,6 +28,7 @@ import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyNettyALPNHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyUpgradeCodec;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
+import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
 import com.ibm.ws.http.netty.pipeline.inbound.TransportInboundHandler;
 
 import io.netty.channel.Channel;
@@ -35,7 +36,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpMessage;
-import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler;
@@ -309,9 +309,15 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
      * @param pipeline ChannelPipeline to update as necessary
      */
     private void addPreDispatcherHandlers(ChannelPipeline pipeline, boolean isHttp2) {
+        long maxContentLength = Long.MAX_VALUE;
+
         if (!isHttp2)
             pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
-        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new HttpObjectAggregator(64 * 1024));
+        //TODO: this is a very large number, check best practice
+        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new LibertyHttpObjectAggregator(maxContentLength));
+
+        //pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new HttpObjectAggregator(maxContentLength);
+        //pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new HttpObjectAggregator(64 * 1024));
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new ChunkSizeLoggingHandler());
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new ChunkedWriteHandler());
         // if (httpConfig.useAutoCompression()) {
