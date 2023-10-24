@@ -24,13 +24,8 @@ import javax.naming.NamingException;
 public class ThreadSubscriber implements Flow.Subscriber<ContextCDL> {
 
     private Flow.Subscription subscription = null;
-    public Throwable completeException = null;
-    public Throwable errorException = null;
-
-    @SuppressWarnings("serial")
-    public class PassException extends Throwable {
-
-    }
+    public Object onCompleteResult = null;
+    public Object onErrorResult = null;
 
     @Override
     public void onSubscribe(Subscription subscription) {
@@ -53,20 +48,18 @@ public class ThreadSubscriber implements Flow.Subscriber<ContextCDL> {
     @Override
     public void onError(Throwable throwable) {
         try {
-            new InitialContext().lookup("java:comp/env/entry1");
-            errorException = new PassException();
+            onErrorResult = new InitialContext().lookup("java:comp/env/entry1");
         } catch (NamingException e) {
-            errorException = e;
+            onErrorResult = e;
         }
     }
 
     @Override
     public void onComplete() {
         try {
-            new InitialContext().lookup("java:comp/env/entry1");
-            completeException = new PassException();
+            onCompleteResult = new InitialContext().lookup("java:comp/env/entry1");
         } catch (NamingException e) {
-            completeException = e;
+            onCompleteResult = e;
         }
 
     }

@@ -72,16 +72,16 @@ public class ConcurrentReactiveServlet extends FATServlet {
         //Check for context in onComplete
         for (long currentTime = Instant.now().toEpochMilli(),
                         endTime = currentTime + TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS); currentTime < endTime; currentTime = Instant.now().toEpochMilli()) {
-            if (subscriber.completeException != null) {
-                if (subscriber.completeException instanceof NamingException) {
-                    throw (AssertionError) new AssertionError("Context was not available in Subscriber onComplete").initCause(subscriber.completeException);
+            if (subscriber.onCompleteResult != null) {
+                if (subscriber.onCompleteResult instanceof NamingException) {
+                    throw (AssertionError) new AssertionError("Context was not available in Subscriber onComplete").initCause((NamingException) subscriber.onCompleteResult);
                 } else {
                     break;
                 }
             }
         }
-        if (!(subscriber.completeException instanceof ThreadSubscriber.PassException))
-            throw new AssertionError("Timed out waiting for subscriber.completeException");
+        if (subscriber.onCompleteResult == null)
+            throw new AssertionError("Timed out waiting for subscriber.onCompleteResult");
 
         //Check for context in onError
         try (ThreadPublisher publisher = new ThreadPublisher(executor, handler)) {
@@ -90,16 +90,16 @@ public class ConcurrentReactiveServlet extends FATServlet {
         }
         for (long currentTime = Instant.now().toEpochMilli(),
                         endTime = currentTime + TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS); currentTime < endTime; currentTime = Instant.now().toEpochMilli()) {
-            if (subscriber.errorException != null) {
-                if (subscriber.errorException instanceof NamingException) {
-                    throw (AssertionError) new AssertionError("Context was not available in Subscriber onError").initCause(subscriber.errorException);
+            if (subscriber.onErrorResult != null) {
+                if (subscriber.onErrorResult instanceof NamingException) {
+                    throw (AssertionError) new AssertionError("Context was not available in Subscriber onError").initCause((NamingException) subscriber.onErrorResult);
                 } else {
                     break;
                 }
             }
         }
-        if (!(subscriber.errorException instanceof ThreadSubscriber.PassException))
-            throw new AssertionError("Timed out waiting for subscriber.errorException");
+        if (subscriber.onErrorResult == null)
+            throw new AssertionError("Timed out waiting for subscriber.onErrorResult");
     }
 
     /**
