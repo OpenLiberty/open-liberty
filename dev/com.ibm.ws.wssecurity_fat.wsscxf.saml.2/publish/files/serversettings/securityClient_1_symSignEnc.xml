@@ -5,6 +5,7 @@
 		id="default"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
 		ws-security.saml-callback-handler="com.ibm.ws.wssecurity.callback.Saml20PropagationCallbackHandler"
+		ws-security.symmetric.signature.algorithm="http://www.w3.org/2001/04/xmldsig-more#hmac-sha256"
 	>
 		<encryptionProperties
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
