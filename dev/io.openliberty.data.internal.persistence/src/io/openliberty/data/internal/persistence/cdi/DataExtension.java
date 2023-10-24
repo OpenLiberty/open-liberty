@@ -221,7 +221,8 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
 
                 BeanAttributes<?> attrs = beanMgr.createBeanAttributes(repositoryType);
                 Bean<?> bean = beanMgr.createBean(attrs, repositoryInterface, new RepositoryProducer.Factory<>( //
-                                beanMgr, provider, this, entityDefiner, primaryEntityClassReturnValue[0], queriesPerEntityClass));
+                                repositoryInterface, beanMgr, provider, this, //
+                                entityDefiner, primaryEntityClassReturnValue[0], queriesPerEntityClass));
                 repositoryBeans.add(bean);
             }
         }
