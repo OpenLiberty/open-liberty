@@ -37,7 +37,6 @@ public class ThreadProcessor extends SubmissionPublisher<ContextCDL> implements 
 
     @Override
     public int offer(ContextCDL latch, BiPredicate<Subscriber<? super ContextCDL>, ? super ContextCDL> onDrop) {
-        System.out.println("processor offer");
         try {
             latch.checkContext();
             return super.offer(latch, onDrop);
@@ -56,7 +55,6 @@ public class ThreadProcessor extends SubmissionPublisher<ContextCDL> implements 
 
     @Override
     public void onNext(ContextCDL latch) {
-        System.out.println("processor onNext");
         try {
             latch.checkContext();
             latch.countDown();

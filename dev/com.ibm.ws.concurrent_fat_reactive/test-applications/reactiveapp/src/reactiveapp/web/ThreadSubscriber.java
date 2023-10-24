@@ -15,6 +15,7 @@ package reactiveapp.web;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscription;
 
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 /**
@@ -23,7 +24,13 @@ import javax.naming.NamingException;
 public class ThreadSubscriber implements Flow.Subscriber<ContextCDL> {
 
     private Flow.Subscription subscription = null;
-    private Throwable closedException = null;
+    public Throwable completeException = null;
+    public Throwable errorException = null;
+
+    @SuppressWarnings("serial")
+    public class PassException extends Throwable {
+
+    }
 
     @Override
     public void onSubscribe(Subscription subscription) {
@@ -45,10 +52,23 @@ public class ThreadSubscriber implements Flow.Subscriber<ContextCDL> {
 
     @Override
     public void onError(Throwable throwable) {
+        try {
+            new InitialContext().lookup("java:comp/env/entry1");
+            errorException = new PassException();
+        } catch (NamingException e) {
+            errorException = e;
+        }
     }
 
     @Override
     public void onComplete() {
+        try {
+            new InitialContext().lookup("java:comp/env/entry1");
+            completeException = new PassException();
+        } catch (NamingException e) {
+            completeException = e;
+        }
+
     }
 
 }
