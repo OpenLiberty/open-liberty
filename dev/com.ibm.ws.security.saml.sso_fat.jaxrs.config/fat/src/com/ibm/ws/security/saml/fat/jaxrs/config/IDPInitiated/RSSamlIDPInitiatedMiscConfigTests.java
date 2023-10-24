@@ -977,6 +977,7 @@ public class RSSamlIDPInitiatedMiscConfigTests extends RSSamlIDPInitiatedConfigC
         defaultRsSettings.setInboundPropagation("none");
         defaultRsSettings.setAudiences("none");
         defaultRsSettings.setHeaderName("SomethingOdd");
+        defaultRsSettings.setSignatureMethodAlgorithm("SHA256");
 
         // Update the bootstrap prop for IdP server since that variable doesn't
         // get set for the app server

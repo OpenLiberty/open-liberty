@@ -96,7 +96,7 @@
 						p:signResponses="false"
 						p:signAssertions="true"
 						p:encryptAssertions="false"
-						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:securityConfiguration-ref="SHA256SecurityConfig"
 						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid"
 						p:maximumSPSessionLifetime="PT1H" />
 					<ref bean="SAML2.ECP" />
@@ -122,7 +122,7 @@
 						p:signResponses="false"
 						p:signAssertions="false"
 						p:encryptAssertions="false"
-						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:securityConfiguration-ref="SHA256SecurityConfig"
 						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid"
 						p:maximumSPSessionLifetime="PT1H" />
 					<ref bean="SAML2.ECP" />
@@ -201,7 +201,7 @@
 						p:signResponses="false"
 						p:signAssertions="true"
 						p:encryptAssertions="true"
-						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:securityConfiguration-ref="SHA256SecurityConfig"
 						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid" />
 					<ref bean="SAML2.ECP" />
 					<ref bean="SAML2.Logout" />
@@ -351,7 +351,7 @@
 						p:signResponses="false"
 						p:signAssertions="true"
 						p:encryptAssertions="false"
-						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:securityConfiguration-ref="SHA256SecurityConfig"
 						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName"
 						p:maximumSPSessionLifetime="PT1H" />
 					<ref bean="SAML2.ECP" />
@@ -376,7 +376,7 @@
 						p:signResponses="false"
 						p:signAssertions="true"
 						p:encryptAssertions="false"
-						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:securityConfiguration-ref="SHA256SecurityConfig"
 						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName"
 						p:maximumSPSessionLifetime="PT1H" />
 					<ref bean="SAML2.ECP" />
@@ -401,7 +401,7 @@
 						p:signResponses="false"
 						p:signAssertions="true"
 						p:encryptAssertions="false"
-						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:securityConfiguration-ref="SHA256SecurityConfig"
 						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos"
 						p:maximumSPSessionLifetime="PT1H" />
 					<ref bean="SAML2.ECP" />
@@ -426,7 +426,7 @@
 						p:signResponses="false"
 						p:signAssertions="true"
 						p:encryptAssertions="false"
-						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:securityConfiguration-ref="SHA256SecurityConfig"
 						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:entity"
 						p:maximumSPSessionLifetime="PT1H" />
 					<ref bean="SAML2.ECP" />
@@ -451,7 +451,7 @@
 						p:signResponses="false"
 						p:signAssertions="true"
 						p:encryptAssertions="false"
-						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:securityConfiguration-ref="SHA256SecurityConfig"
 						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:1.1:nameid-format:persistent"
 						p:maximumSPSessionLifetime="PT1H" />
 					<ref bean="SAML2.ECP" />
@@ -476,7 +476,7 @@
 						p:signResponses="false"
 						p:signAssertions="true"
 						p:encryptAssertions="false"
-						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:securityConfiguration-ref="SHA256SecurityConfig"
 						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
 						p:maximumSPSessionLifetime="PT1H" />
 					<ref bean="SAML2.ECP" />
@@ -502,7 +502,7 @@
 						p:signAssertions="true"
 						p:encryptAssertions="false"
 						p:encryptNameIDs="true"
-						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:securityConfiguration-ref="SHA256SecurityConfig"
 						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:1.1:nameid-format:encrypted"
 						p:maximumSPSessionLifetime="PT1H" />
 					<ref bean="SAML2.ECP" />
@@ -527,7 +527,7 @@
 						p:signResponses="false"
 						p:signAssertions="true"
 						p:encryptAssertions="false"
-						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:securityConfiguration-ref="SHA256SecurityConfig"
 						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid"
 						p:maximumSPSessionLifetime="PT1H" />
 					<ref bean="SAML2.ECP" />
@@ -553,7 +553,7 @@
 						p:signResponses="false"
 						p:signAssertions="true"
 						p:encryptAssertions="false"
-						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:securityConfiguration-ref="SHA256SecurityConfig"
 						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid"
 						p:maximumSPSessionLifetime="PT20S" />
 					<ref bean="SAML2.ECP" />
@@ -615,7 +615,7 @@
 		class="net.shibboleth.idp.profile.config.SecurityConfiguration"
 	>
 		<property name="signatureSigningConfiguration">
-			<ref bean="shibboleth.SigningConfiguration.SHA1" />
+			<ref bean="shibboleth.SigningConfiguration.SHA256" />
 		</property>
 		<property name="encryptionConfiguration">
 			<bean parent="shibboleth.BasicEncryptionConfiguration">
@@ -640,7 +640,7 @@
 		class="net.shibboleth.idp.profile.config.SecurityConfiguration"
 	>
 		<property name="signatureSigningConfiguration">
-			<ref bean="shibboleth.SigningConfiguration.SHA1" />
+			<ref bean="shibboleth.SigningConfiguration.SHA256" />
 		</property>
 		<property name="encryptionConfiguration">
 			<bean parent="shibboleth.BasicEncryptionConfiguration">
@@ -665,7 +665,7 @@
 		class="net.shibboleth.idp.profile.config.SecurityConfiguration"
 	>
 		<property name="signatureSigningConfiguration">
-			<ref bean="shibboleth.SigningConfiguration.SHA1" />
+			<ref bean="shibboleth.SigningConfiguration.SHA256" />
 		</property>
 		<property name="encryptionConfiguration">
 			<bean parent="shibboleth.BasicEncryptionConfiguration">
