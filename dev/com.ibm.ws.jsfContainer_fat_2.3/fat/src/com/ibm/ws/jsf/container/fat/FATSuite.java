@@ -13,11 +13,13 @@ import java.io.File;
 import java.util.Locale;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.jsf.container.fat.tests.CDIFlowsTests;
 import com.ibm.ws.jsf.container.fat.tests.ClassloadingTest;
 import com.ibm.ws.jsf.container.fat.tests.ErrorPathsTest;
@@ -98,6 +100,14 @@ public class FATSuite {
             return app.addAsLibraries(new File("publish/files/myfaces30/").listFiles()).addAsLibraries(new File("publish/files/myfaces-libs/").listFiles());
         }
         return app.addAsLibraries(new File("publish/files/myfaces/").listFiles()).addAsLibraries(new File("publish/files/myfaces-libs/").listFiles());
+    }
+
+    /**
+     * @see {@link FatLogHandler#generateHelpFile()}
+     */
+    @BeforeClass
+    public static void generateHelpFile() {
+        FatLogHandler.generateHelpFile();
     }
 
 }

@@ -6,15 +6,15 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package test.server.transport.http2;
 
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import com.ibm.ws.fat.util.FatLogHandler;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 
@@ -51,6 +51,13 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 })
 
 public class FATSuite {
-    private static final Class<?> c = FATSuite.class;
+
+    /**
+     * @see {@link FatLogHandler#generateHelpFile()}
+     */
+    @BeforeClass
+    public static void generateHelpFile() {
+        FatLogHandler.generateHelpFile();
+    }
 
 }
