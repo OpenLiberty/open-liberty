@@ -59,5 +59,5 @@ CWWKE1205.start.timeout.explanation=When a startTimeout is configured on an exec
 CWWKE1205.start.timeout.useraction=No action is necessary if the application expects some tasks to abort because they exceed the startTimeout duration. Otherwise, take any combination of the following actions: increase the startTimeout duration, increase the maxConcurrency value.
 
 CWWKE1206.quiesce.timeout.not.valid=CWWKE1206W: The ''{0}'' value that is specified for the ''quiesceTimeout'' attribute on the ''executor'' element in the ''server.xml'' file is not valid.  The default value of 30 seconds is used instead.
-CWWKE1206.quiesce.timeout.not.valid.explanation=The 'quiesceTimeout' value represents a time duration and accepts values in the format XmXs, where 'X' is replaced by a number,'m' represents minutes, and 's' represents seconds.  The default value is '30s', meaning 30 seconds. A value of '1m30s' represents 90 seconds.  
-CWWKE1206.quiesce.timeout.not.valid.useraction=Edit the 'server.xml' file and change the ''quiesceTimeout'' attribute on the ''executor'' element to a valid time duration.
+CWWKE1206.quiesce.timeout.not.valid.explanation=The 'quiesceTimeout' value specifies a duration and accepts values in the format XmXs, where 'X' is replaced by a number,'m' represents minutes, and 's' represents seconds.  The default value is '30s' (30 seconds). A value of '1m30s' represents 90 seconds.  
+CWWKE1206.quiesce.timeout.not.valid.useraction=Edit the 'server.xml' file and change the 'quiesceTimeout' attribute on the 'executor' element to a valid duration.
