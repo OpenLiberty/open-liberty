@@ -62,7 +62,6 @@ public class ConcurrentReactiveServlet extends FATServlet {
             publisher.offer(continueLatch, null);
 
             if (!continueLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS)) {
-                System.out.println("timeout");
                 if (publisher.getClosedException() != null)
                     throw (AssertionError) new AssertionError("Context was not available in Publisher").initCause(publisher.getClosedException());
                 else
@@ -85,7 +84,6 @@ public class ConcurrentReactiveServlet extends FATServlet {
             throw new AssertionError("Timed out waiting for subscriber.completeException");
 
         //Check for context in onError
-        System.out.println("onError");
         try (ThreadPublisher publisher = new ThreadPublisher(executor, handler)) {
             publisher.subscribe(subscriber);
             publisher.closeExceptionally(new Throwable("Ignored Exception"));
@@ -120,7 +118,6 @@ public class ConcurrentReactiveServlet extends FATServlet {
             publisher.offer(continueLatch, null);
 
             if (!continueLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS)) {
-                System.out.println("timeout");
                 if (publisher.getClosedException() != null)
                     throw (AssertionError) new AssertionError("Context was not available in Publisher").initCause(publisher.getClosedException());
                 else if (processor.getClosedException() != null)
@@ -150,7 +147,6 @@ public class ConcurrentReactiveServlet extends FATServlet {
             publisher.offer(contextualCDL, null);
 
             if (!contextualCDL.await(TIMEOUT_NS, TimeUnit.NANOSECONDS)) {
-                System.out.println("timeout");
                 if (publisher.getClosedException() != null)
                     throw (AssertionError) new AssertionError("Context was not available in Publisher").initCause(publisher.getClosedException());
                 else if (processor.getClosedException() != null)
@@ -164,7 +160,7 @@ public class ConcurrentReactiveServlet extends FATServlet {
     }
 
     /**
-     * Test that an contextualized ThreadSubscriber has access to Context.
+     * Test that a contextualized ThreadSubscriber has access to Context.
      * Publisher -> Subscriber
      */
     @Test
@@ -178,7 +174,6 @@ public class ConcurrentReactiveServlet extends FATServlet {
             publisher.offer(continueLatch, null);
 
             if (!continueLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS)) {
-                System.out.println("timeout");
                 if (publisher.getClosedException() != null)
                     throw (AssertionError) new AssertionError("Context was not available in Publisher").initCause(publisher.getClosedException());
                 else
