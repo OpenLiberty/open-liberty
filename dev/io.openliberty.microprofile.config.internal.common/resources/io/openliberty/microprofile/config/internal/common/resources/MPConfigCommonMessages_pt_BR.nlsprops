@@ -1,0 +1,29 @@
+###############################################################################
+# Copyright (c) 2022, 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.microprofile.config.internal.common/resources/io/openliberty/microprofile/config/internal/common/resources/MPConfigCommonMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC MicroProfile Config with InstantOn
+# Message numbers CWWKC0651-700 are reserved for this file.
+
+#COMPONENTPREFIX CWMCG                 
+#COMPONENTNAMEFOR CWMCG MicroProfile Config Common
+# Message numbers CWMCG0400-499 are reserved for this file.
+
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWMCG0000=CWMCG0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWMCG0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWMCG0000.useraction=User action text for the message
+
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651=CWWKC0651W: O valor de configura\u00e7\u00e3o MicroProfile para a chave {0} mudou desde que a a\u00e7\u00e3o do ponto de verifica\u00e7\u00e3o foi conclu\u00edda no servidor. Se o valor da chave muda ap\u00f3s a a\u00e7\u00e3o do ponto de verifica\u00e7\u00e3o, o aplicativo poder\u00e1 n\u00e3o utilizar o valor atualizado.
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651.explanation=O valor de configura\u00e7\u00e3o foi acessado durante uma a\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o e atualizado antes que o processo do servidor fosse restaurado. Dependendo de como o aplicativo acessa a configura\u00e7\u00e3o, o valor atualizado pode n\u00e3o ser utilizado.
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651.useraction=Evite acessar as propriedades de configura\u00e7\u00e3o durante o ponto de verifica\u00e7\u00e3o.

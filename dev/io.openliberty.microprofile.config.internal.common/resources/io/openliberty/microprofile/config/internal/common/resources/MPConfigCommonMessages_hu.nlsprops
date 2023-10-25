@@ -1,0 +1,29 @@
+###############################################################################
+# Copyright (c) 2022, 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.microprofile.config.internal.common/resources/io/openliberty/microprofile/config/internal/common/resources/MPConfigCommonMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC MicroProfile Config with InstantOn
+# Message numbers CWWKC0651-700 are reserved for this file.
+
+#COMPONENTPREFIX CWMCG                 
+#COMPONENTNAMEFOR CWMCG MicroProfile Config Common
+# Message numbers CWMCG0400-499 are reserved for this file.
+
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWMCG0000=CWMCG0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWMCG0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWMCG0000.useraction=User action text for the message
+
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651=CWWKC0651W: A(z) {0} kulcs MicroProfile konfigur\u00e1ci\u00f3s \u00e9rt\u00e9ke megv\u00e1ltozott a kiszolg\u00e1l\u00f3n elv\u00e9gzett ellen\u0151rz\u00e9si pont m\u0171velet \u00f3ta. Ha a kulcs m\u00f3dos\u00edt\u00e1sa az ellen\u0151rz\u00e9si pont m\u0171velet ut\u00e1n t\u00f6rt\u00e9nik, akkor lehet, hogy az alkalmaz\u00e1s nem tudja haszn\u00e1lni a friss\u00edtett \u00e9rt\u00e9ket.
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651.explanation=Egy ellen\u0151rz\u00e9si pont m\u0171velet sor\u00e1n konfigur\u00e1ci\u00f3s \u00e9rt\u00e9k el\u00e9r\u00e9s t\u00f6rt\u00e9nt, \u00e9s az \u00e9rt\u00e9k a kiszolg\u00e1l\u00f3folyamat vissza\u00e1ll\u00edt\u00e1sa el\u0151tt friss\u00fclt. Att\u00f3l f\u00fcgg\u0151en, hogy az alkalmaz\u00e1s hogyan f\u00e9r hozz\u00e1 a konfigur\u00e1ci\u00f3hoz, el\u0151fordulhat, hogy a friss\u00edtett \u00e9rt\u00e9k nem ker\u00fcl felhaszn\u00e1l\u00e1sra.
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651.useraction=Ellen\u0151rz\u00e9si pont k\u00f6zben ker\u00fclje a konfigur\u00e1ci\u00f3s tulajdons\u00e1gok el\u00e9r\u00e9s\u00e9t.
