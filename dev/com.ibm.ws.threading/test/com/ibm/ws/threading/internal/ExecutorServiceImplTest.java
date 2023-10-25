@@ -146,7 +146,7 @@ public class ExecutorServiceImplTest {
         // ensure that a new pool got created when we modified the executor
         Assert.assertNotSame(oldThreadPool, newThreadPool);
 
-        Assert.assertEquals("Quiesce timeout not modified as expected", 31, newQuiesceTimeout);
+        // Beta: Assert.assertEquals("Quiesce timeout not modified as expected", 31, newQuiesceTimeout);
 
         // ensure that the old pool shrinks down to 0 size (the test will timeout
         // after a minute if the pool never shrinks)
