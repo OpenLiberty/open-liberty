@@ -15,9 +15,13 @@ package com.ibm.ws.crypto.ltpakeyutil;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 
 public final class LTPAKeyUtil {
+	private static final TraceComponent tc = Tr.register(LTPAKeyUtil.class);
 
 	public static boolean ibmJCEAvailable = false;
 	public static boolean ibmJCEPlusFIPSAvailable = false;
@@ -38,6 +42,8 @@ public final class LTPAKeyUtil {
 	public static String IBMJCE_PROVIDER = "com.ibm.crypto.provider.IBMJCE";
 	public static String IBMJCE_PLUS_FIPS_PROVIDER = "com.ibm.crypto.provider.IBMJCEPlusFIPS";
 	public static String OPENJCE_PLUS_PROVIDER = "com.ibm.crypto.plus.provider.OpenJCEPlus";
+
+	private static boolean issuedBetaMessage = false;
 
 	public static byte[] encrypt(byte[] data, byte[] key, String cipher) throws Exception {
 		return LTPACrypto.encrypt(data, key, cipher);
@@ -97,7 +103,7 @@ public final class LTPAKeyUtil {
 					return System.getProperty("com.ibm.jsse2.usefipsProviderName");
 				}
 			});
-			if (ibmjceplusfipsprovider == "IBMJCEPlusFIPS") {
+			if (ibmjceplusfipsprovider == "IBMJCEPlusFIPS" && isRunningBetaMode()) {
 				ibmJCEPlusFIPSAvailable = true;
 				providerChecked = true;
 				return ibmJCEPlusFIPSAvailable;
@@ -106,6 +112,20 @@ public final class LTPAKeyUtil {
 			}
 		}
 
+	}
+
+	static boolean isRunningBetaMode() {
+		if (!ProductInfo.getBetaEdition()) {
+			return false;
+		} else {
+			// Running beta exception, issue message if we haven't already issued one for
+			// this class
+			if (!issuedBetaMessage) {
+				Tr.info(tc, "BETA: A beta method has been invoked for the class LTPAKeyUtil for the first time.");
+				issuedBetaMessage = !issuedBetaMessage;
+			}
+			return true;
+		}
 	}
 
 	public static boolean isFIPSEnabled() {

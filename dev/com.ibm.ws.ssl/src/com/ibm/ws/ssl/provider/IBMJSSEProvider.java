@@ -20,6 +20,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEProvider;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 
 /**
@@ -37,18 +38,22 @@ public class IBMJSSEProvider extends AbstractJSSEProvider implements JSSEProvide
     private static TraceComponent tc = Tr.register(IBMJSSEProvider.class, "SSL", "com.ibm.ws.ssl.resources.ssl");
     public static String IBM_JCE_Plus_FIPS_PROVIDER = "com.ibm.crypto.provider.IBMJCEPlusFIPS";
 
+    private static boolean issuedBetaMessage = false;
+
     /**
      * Constructor.
      */
     public IBMJSSEProvider() {
         super();
         String fipsON = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
             public String run() {
                 return System.getProperty("com.ibm.jsse2.usefipsprovider");
             }
         });
 
         String ibmjceplusfipsprovider = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
             public String run() {
                 return System.getProperty("com.ibm.jsse2.usefipsProviderName");
             }
@@ -58,7 +63,7 @@ public class IBMJSSEProvider extends AbstractJSSEProvider implements JSSEProvide
             Tr.debug(tc, "provider: " + ibmjceplusfipsprovider);
         }
 
-        if (fipsON != null && fipsON.equalsIgnoreCase("true") && ibmjceplusfipsprovider.equals("IBMJCEPlusFIPS")) {
+        if (fipsON != null && fipsON.equalsIgnoreCase("true") && ibmjceplusfipsprovider.equals("IBMJCEPlusFIPS") && isRunningBetaMode()) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "fips is enabled and using IBMJCEPlusFIPS provider");
                 Tr.debug(tc, "key manager factory alg: " + JSSEProviderFactory.getKeyManagerFactoryAlgorithm());
@@ -77,6 +82,20 @@ public class IBMJSSEProvider extends AbstractJSSEProvider implements JSSEProvide
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Created an IBM JSSE provider");
+        }
+    }
+
+    boolean isRunningBetaMode() {
+        if (!ProductInfo.getBetaEdition()) {
+            return false;
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for
+            // this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+            return true;
         }
     }
 
