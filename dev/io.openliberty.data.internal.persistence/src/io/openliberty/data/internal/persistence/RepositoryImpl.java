@@ -89,8 +89,6 @@ import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Page;
 import jakarta.data.page.Pageable;
 import jakarta.data.page.Slice;
-import jakarta.data.repository.BasicRepository;
-import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
@@ -297,7 +295,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * Invoked when the bean for the repository is disposed.
      */
     public void beanDisposed() {
-        isDisposed.set(true);
+        // TODO re-enable when using a single bean for the repository rather than sharing the repository across multiple beans
+        // isDisposed.set(true);
     }
 
     /**
@@ -350,7 +349,50 @@ public class RepositoryImpl<R> implements InvocationHandler {
             q = generateUpdateEntity(queryInfo);
         } else if (delete != null && filters.length == 0) { // @Delete annotation with no @Filter annotations
             q = generateDeleteEntity(queryInfo);
-        } else if (query == null) {
+        } else if (query != null) { // @Query annotation
+            queryInfo.jpql = query.value();
+
+            String upper = queryInfo.jpql.toUpperCase();
+            String upperTrimmed = upper.stripLeading();
+            if (upperTrimmed.startsWith("SELECT")) {
+                int order = upper.lastIndexOf("ORDER BY");
+                queryInfo.type = QueryInfo.Type.FIND;
+                queryInfo.sorts = queryInfo.sorts == null ? new ArrayList<>() : queryInfo.sorts;
+                queryInfo.jpqlCount = query.count().length() > 0 ? query.count() : null;
+
+                int selectIndex = upper.length() - upperTrimmed.length();
+                int from = find("FROM", upper, selectIndex + 9);
+                if (from > 0) {
+                    // TODO support for multiple entity types
+                    int entityName = find(entityInfo.name.toUpperCase(), upper, from + 5);
+                    if (entityName > 0) {
+                        String entityVar = findEntityVariable(queryInfo.jpql, entityName + entityInfo.name.length() + 1);
+                        if (entityVar != null)
+                            queryInfo.entityVar = entityVar;
+                    }
+
+                    if (countPages && queryInfo.jpqlCount == null) {
+                        // Attempt to infer from provided query
+                        String s = queryInfo.jpql.substring(selectIndex + 6, from);
+                        int comma = s.indexOf(',');
+                        if (comma > 0)
+                            s = s.substring(0, comma);
+                        queryInfo.jpqlCount = new StringBuilder(queryInfo.jpql.length() + 7) //
+                                        .append("SELECT COUNT(").append(s.trim()).append(") ") //
+                                        .append(order > from ? queryInfo.jpql.substring(from, order) : queryInfo.jpql.substring(from)) //
+                                        .toString();
+                    }
+                }
+            } else if (upperTrimmed.startsWith("UPDATE")) {
+                queryInfo.type = QueryInfo.Type.UPDATE;
+            } else if (upperTrimmed.startsWith("DELETE")) {
+                queryInfo.type = QueryInfo.Type.DELETE;
+            } else {
+                throw new UnsupportedOperationException(queryInfo.jpql);
+            }
+
+            queryInfo.hasWhere = upperTrimmed.contains("WHERE");
+        } else {
             // Query by annotations
             StringBuilder whereClause = filters.length > 0 ? generateWhereClause(queryInfo, filters) : null;
             String o = queryInfo.entityVar;
@@ -407,49 +449,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     }
                 }
             }
-        } else if (query != null) { // @Query annotation
-            queryInfo.jpql = query.value();
-
-            String upper = queryInfo.jpql.toUpperCase();
-            String upperTrimmed = upper.stripLeading();
-            if (upperTrimmed.startsWith("SELECT")) {
-                int order = upper.lastIndexOf("ORDER BY");
-                queryInfo.type = QueryInfo.Type.FIND;
-                queryInfo.sorts = queryInfo.sorts == null ? new ArrayList<>() : queryInfo.sorts;
-                queryInfo.jpqlCount = query.count().length() > 0 ? query.count() : null;
-
-                int selectIndex = upper.length() - upperTrimmed.length();
-                int from = find("FROM", upper, selectIndex + 9);
-                if (from > 0) {
-                    // TODO support for multiple entity types
-                    int entityName = find(entityInfo.name.toUpperCase(), upper, from + 5);
-                    if (entityName > 0) {
-                        String entityVar = findEntityVariable(queryInfo.jpql, entityName + entityInfo.name.length() + 1);
-                        if (entityVar != null)
-                            queryInfo.entityVar = entityVar;
-                    }
-
-                    if (countPages && queryInfo.jpqlCount == null) {
-                        // Attempt to infer from provided query
-                        String s = queryInfo.jpql.substring(selectIndex + 6, from);
-                        int comma = s.indexOf(',');
-                        if (comma > 0)
-                            s = s.substring(0, comma);
-                        queryInfo.jpqlCount = new StringBuilder(queryInfo.jpql.length() + 7) //
-                                        .append("SELECT COUNT(").append(s.trim()).append(") ") //
-                                        .append(order > from ? queryInfo.jpql.substring(from, order) : queryInfo.jpql.substring(from)) //
-                                        .toString();
-                    }
-                }
-            } else if (upperTrimmed.startsWith("UPDATE")) {
-                queryInfo.type = QueryInfo.Type.UPDATE;
-            } else if (upperTrimmed.startsWith("DELETE")) {
-                queryInfo.type = QueryInfo.Type.DELETE;
-            } else {
-                throw new UnsupportedOperationException(queryInfo.jpql);
-            }
-
-            queryInfo.hasWhere = upperTrimmed.contains("WHERE");
         }
 
         // If we don't already know from generating the JPQL, find out how many
@@ -1418,16 +1417,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (queryInfo.type == null && paramTypes.length == 1) {
             if (entityClass.equals(paramTypes[0])) {
                 queryInfo.entityParamType = paramTypes[0];
-            } else if (BasicRepository.class.equals(queryInfo.method.getDeclaringClass())) {
-                if ("delete".equals(methodName) || "deleteAll".equals(methodName)) {
-                    queryInfo.entityParamType = paramTypes[0];
-                    q = generateDeleteEntity(queryInfo);
-                }
-            } else if (CrudRepository.class.equals(queryInfo.method.getDeclaringClass())) {
-                if ("update".equals(methodName) || "updateAll".equals(methodName)) {
-                    queryInfo.entityParamType = paramTypes[0];
-                    q = generateUpdateEntity(queryInfo);
-                }
             } else if (paramTypes[0].isArray()) {
                 if (entityClass.equals(paramTypes[0].getComponentType()))
                     queryInfo.entityParamType = paramTypes[0];
@@ -2469,7 +2458,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                                 Tr.debug(this, tc, "createQuery", queryInfo.jpql, entityInfo.entityClass.getName());
 
-                            
                             final QueryInfo qi = queryInfo;
                             final EntityManager eMgr = em;
                             TypedQuery<?> query = eMgr.createQuery(qi.jpql, qi.entityInfo.entityClass);
