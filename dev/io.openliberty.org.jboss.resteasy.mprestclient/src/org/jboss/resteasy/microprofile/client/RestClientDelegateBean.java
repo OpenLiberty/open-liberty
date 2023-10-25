@@ -1,5 +1,25 @@
 package org.jboss.resteasy.microprofile.client;
 
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.rest.client.RestClientBuilder;
+import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.logging.Logger;
+
+import javax.annotation.Priority;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.PassivationCapable;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.net.ssl.HostnameVerifier;
+import javax.ws.rs.Priorities;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -18,6 +38,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.cert.CertificateException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,23 +50,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.PassivationCapable;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.net.ssl.HostnameVerifier;
-
-import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.rest.client.RestClientBuilder;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-
 public class RestClientDelegateBean implements Bean<Object>, PassivationCapable {
+    private static final Logger LOGGER = Logger.getLogger(RestClientDelegateBean.class);
 
     public static final String REST_URL_FORMAT = "%s/mp-rest/url";
 
@@ -58,6 +64,8 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
     public static final String REST_READ_TIMEOUT_FORMAT = "%s/mp-rest/readTimeout";
 
     public static final String REST_PROVIDERS = "%s/mp-rest/providers";
+
+    public static final String REST_PROVIDERS_PRIORITY_FORMAT = "/mp-rest/providers/%s/priority"; // Liberty Change
 
     public static final String TRUST_STORE = "%s/mp-rest/trustStore";
 
@@ -73,6 +81,13 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
 
     public static final String HOSTNAME_VERIFIER = "%s/mp-rest/hostnameVerifier";
 
+    // Liberty Change Start
+    public static final String REST_FOLLOW_REDIRECTS_FORMAT = "%s/mp-rest/followRedirects";
+
+    public static final String REST_PROXY_ADDRESS_FORMAT = "%s/mp-rest/proxyAddress";
+
+    public static final String QUERY_PARAM_STYLE_FORMAT = "%s/mp-rest/queryParamStyle";
+    // Liberty Change End
 
     private static final String PROPERTY_PREFIX = "%s/property/";
 
@@ -128,6 +143,14 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
         configureProviders(builder);
 
         configureSsl(builder);
+
+        // Liberty Change Start
+        configureFollowRedirects(builder);
+
+        configureQueryParamStyle(builder);
+
+        configureProxyAddress(builder);
+        // Liberty Change End
 
         getConfigProperties().forEach(builder::property);
         return builder.build(proxyType);
@@ -230,13 +253,17 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
     private void registerProviders(RestClientBuilder builder, String providersAsString) {
         Stream.of(providersAsString.split(","))
                 .map(String::trim)
-                .map(this::providerClassForName)
-                .forEach(builder::register);
+                .map(providerName -> {
+                    Class<?> providerClass = providerClassForName(providerName);
+                    int priority = getConfiguredProviderPriority(providerClass);
+                    return new AbstractMap.SimpleEntry<>(providerClass, priority);
+                })
+                .forEach(entry -> builder.register(entry.getKey(), entry.getValue()));
     }
 
     private Class<?> providerClassForName(String name) {
         try {
-            //Liberty change start
+            // Liberty Change Start
             ClassLoader cl = null;
             if (System.getSecurityManager() != null) { // only if Java2Security is enabled
                 try {
@@ -251,10 +278,10 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
                 }
              } else {
                 cl = Thread.currentThread().getContextClassLoader();
-            }          
-            
+            }
+
             return Class.forName(name, true, cl);
-            // Liberty change end
+            // Liberty Change End
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Could not find provider class: " + name);
         }
@@ -305,6 +332,15 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
 
     @Override
     public void destroy(Object instance, CreationalContext<Object> creationalContext) {
+        // Liberty Change Start
+//        if (instance instanceof AutoCloseable) {
+//            try {
+//                ((AutoCloseable) instance).close();
+//            } catch (Exception e) {
+//                LOGGER.debugf(e, "Failed to close client %s", instance);
+//            }
+//        }
+        // Liberty Change End
     }
 
     @Override
@@ -397,4 +433,64 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
         }
     }
 
+    // Liberty Change Start
+    private void configureFollowRedirects(RestClientBuilder builder) {
+        Optional<String> followRedirectsFromConfig = getOptionalProperty(REST_FOLLOW_REDIRECTS_FORMAT, String.class);
+
+        if (followRedirectsFromConfig.isPresent()) {
+            String followRedirects = followRedirectsFromConfig.get();
+            builder.followRedirects("true".equalsIgnoreCase(followRedirects.toString()));
+
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("followRedirects set by MP Config: " + followRedirects);
+            }
+        }
+    }
+
+    private void configureQueryParamStyle(RestClientBuilder builder) {
+        Optional<String> proxyAddressFromConfig = getOptionalProperty(QUERY_PARAM_STYLE_FORMAT, String.class);
+
+        if (proxyAddressFromConfig.isPresent()) {
+            String styleString = proxyAddressFromConfig.get();
+            builder.queryParamStyle(QueryParamStyle.valueOf(styleString));
+        }
+    }
+
+    private void configureProxyAddress(RestClientBuilder builder) {
+        Optional<String> proxyAddressFromConfig = getOptionalProperty(REST_PROXY_ADDRESS_FORMAT, String.class);
+
+        if (proxyAddressFromConfig.isPresent()) {
+            String address = proxyAddressFromConfig.get();
+            String[] split = address.split(":");
+            if (split.length != 2) {
+                throw new IllegalStateException(String.format("Invalid proxy server address configured for %s",
+                                                              address));
+            }
+            try {
+                String hostname = split[0];
+                int port = Integer.parseInt(split[1]);
+                builder.proxyAddress(hostname, port);
+            } catch (Throwable t) {
+                throw new IllegalStateException(String.format("Invalid proxy server address configured for %s",
+                                                              address), t);
+            }
+
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("proxyAddress set by MP Config: " + address);
+            }
+        }
+    }
+
+    private Integer getConfiguredProviderPriority(Class<?> providerClass) {
+        String propertyFormat = "%s" + String.format(REST_PROVIDERS_PRIORITY_FORMAT,
+                                        providerClass.getName());
+        return getOptionalProperty(propertyFormat, Integer.class)
+                                       .orElse(getPriorityFromClass(providerClass, Priorities.USER));
+    }
+
+    private static int getPriorityFromClass(Class<?> providerClass, int defaultValue) {
+        Priority p = providerClass.getAnnotation(Priority.class);
+        return p != null ? p.value() : defaultValue;
+    }
+ // Liberty Change End
 }
