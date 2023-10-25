@@ -1320,13 +1320,42 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      */
     @Override
     public boolean handleHTTP2UpgradeRequest(Map<String, String> http2Settings) {
+        System.out.println("PMDINH, " + LINK_ID + " ENTRY >>> handleHTTP2UpgradeRequest");
         HttpInboundLink link = isc.getLink();
         HttpInboundChannel channel = link.getChannel();
         VirtualConnection vc = link.getVirtualConnection();
         H2InboundLink h2Link = new H2InboundLink(channel, vc, getTCPConnectionContext());
 
+        //PMDINH
+        /*
+         * System.out.println("PMDINH, " + LINK_ID + " handleHTTP2UpgradeRequest ,  request method [" + this.getRequest().getMethod() + "]"
+         * + "request getContentLength [" + this.getRequest().getContentLength() + "]");
+         * 
+         * //IF method is POST AND getContentLength is -1 , can we assume it is CHUNKED ?
+         * 
+         * //At this point, how to check whether all POST data (chunked or not) has been read in at the channel (the application not necessarily read/consume these data yet)
+         * 
+         * System.out.println("PMDINH, isc.isChunkedEncoding() [" + isc.isChunkedEncoding() + "]"
+         * + " , isContentLength() [" + isc.isContentLength() + "]"
+         * + " , isIncomingMessageFullyRead() [" + isc.isIncomingMessageFullyRead() + "]"
+         * + " , isBodyComplete() [" + isc.isBodyComplete() + "]");
+         * 
+         * System.out.println("PMDINH, isReadDataAvailable [" + isc.isReadDataAvailable() + "]"
+         * + " , isc.getReadBuffer().position()" + isc.getReadBuffer().position() + "]"
+         * + " , isc.getReadBuffer().limit()" + isc.getReadBuffer().limit() + "]");
+         * 
+         */
+
+        System.out.println("PMDINH, " + LINK_ID + " handleHTTP2UpgradeRequest , ENTERing >>> H2InboundLink.handleHTTP2UpgradeRequest ");
+
         boolean upgraded = h2Link.handleHTTP2UpgradeRequest(http2Settings, link);
+
+        System.out.println("PMDINH, " + LINK_ID + " handleHTTP2UpgradeRequest , RETURN <<< H2InboundLink.handleHTTP2UpgradeRequest. Upgraded?  [" + upgraded + "]");
+
         if (upgraded) {
+
+            System.out.println("PMDINH, " + LINK_ID + " handleHTTP2UpgradeRequest , start startAsyncRead");
+
             h2Link.startAsyncRead(true);
         } else {
             return false;

@@ -95,7 +95,7 @@ public class SRTServletRequest31 extends SRTServletRequest implements HttpServle
     public void initForNextRequest(IRequest req) {
         // 321485
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
-            logger.logp(Level.FINE, CLASS_NAME,"initForNextRequest", "this->"+this+" : " + " req->"+req);
+            logger.logp(Level.FINE, CLASS_NAME,"initForNextRequest", "this->"+this+" : " + " req-> "+req );
         }
         
         if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
@@ -106,12 +106,15 @@ public class SRTServletRequest31 extends SRTServletRequest implements HttpServle
 
             if (req == null) {
                 // MultiRead Start
-                if(this.multiReadPropertyEnabled) {
+                if(this.multiReadPropertyEnabled
+                                || (WebContainerRequestState.getInstance(false).getAttribute("com.ibm.ws.webcontainer.multiReadCleanupDynamically") != null)) {
                     if(this._in instanceof SRTInputStream) {
                         ((SRTInputStream) this._in).cleanupforMultiRead();
                     }
                     multiReadPropertyEnabled = false;
                     httpUpdatedwMultiReadValues = false;
+                    
+                    WebContainerRequestState.getInstance(false).removeAttribute("com.ibm.ws.webcontainer.multiReadCleanupDynamically");
                 }
                 _in.init(null);
                 return;
