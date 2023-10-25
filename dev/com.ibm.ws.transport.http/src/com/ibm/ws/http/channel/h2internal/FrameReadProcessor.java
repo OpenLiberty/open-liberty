@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -102,7 +102,7 @@ public class FrameReadProcessor {
                     throw new ProtocolException("Cannot start a stream from the client with an even numbered ID. stream-id: " + streamId);
                 }
             } else {
-                if (FrameworkState.isStopping()){
+                if (FrameworkState.isStopping()) {
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "processCompleteFrame: server is stopping so this new stream will be rejected");
                     }
@@ -398,6 +398,8 @@ public class FrameReadProcessor {
     public boolean checkConnectionPreface() throws FrameSizeException {
         byte[] value = grabNextBytes(24);
         String valueString = new String(value);
+
+        System.out.println("PMDINH, FrameReadProcessor, checkConnectionPreface , valueString [" + valueString + "]");
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "checkConnectionPreface: processNextFrame-:  stream: 0 frame type: Magic Preface  direction: "
