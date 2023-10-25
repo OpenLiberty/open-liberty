@@ -232,6 +232,12 @@ public class LibertyServer implements LogMonitorClient {
                     ? Boolean.parseBoolean(PrivHelper.getProperty("global.debug.java2.sec", "true")) //
                     : Boolean.parseBoolean(PrivHelper.getProperty("global.debug.java2.sec", "false"));
 
+    //FIPS 140-3
+    protected static final boolean GLOBAL_FIPS_140_3 = Boolean.parseBoolean(PrivHelper.getProperty("global.fips_140-3", "false"));
+    protected static final boolean GLOBAL_DEBUG_FIPS_140_3 = FAT_TEST_LOCALRUN //
+                    ? Boolean.parseBoolean(PrivHelper.getProperty("global.debug.fips_140-3", "false")) //
+                    : Boolean.parseBoolean(PrivHelper.getProperty("global.debug.fips_140-3", "true"));
+
     protected static final String GLOBAL_TRACE = PrivHelper.getProperty("global.trace.spec", "").trim();
     protected static final String GLOBAL_JVM_ARGS = PrivHelper.getProperty("global.jvm.args", "").trim();
 
@@ -1626,6 +1632,25 @@ public class LibertyServer implements LogMonitorClient {
                 Log.info(c, "startServerWithArgs", "Java 18 + Java2Sec requested, setting -Djava.security.manager=allow");
                 JVM_ARGS += " -Djava.security.manager=allow";
             }
+        }
+
+        //FIPS 140-3        
+        // if we have FIPS 140-3 enabled, and the matched java/platform,  add JVM Arg
+        if (isFIPS140_3Enabled()) {
+            if ((info.majorVersion() == 8) && (info.VENDOR == Vendor.IBM)) {
+                Log.info(c, "startServerWithArgs", "The JDK version: " + info.majorVersion() + " and vendor: " + JavaInfo.Vendor.IBM);
+                Log.info(c, "startServerWithArgs", "FIPS 140-3 global build properties is set for server " + getServerName() + " with IBM Java 8, adding JVM arguments -Xenablefips140-3, ...,  to run with FIPS 140-3 enabled");
+
+                JVM_ARGS += " -Xenablefips140-3";
+                JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
+                JVM_ARGS += " -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS";
+                JVM_ARGS += " -Djavax.net.debug=all";
+
+            } else {
+                Log.info(c, "startServerWithArgs", "The JDK version: " + info.majorVersion() + " and vendor: " + info.VENDOR);
+                Log.info(c, "startServerWithArgs", "No match of IBM java 8 on liberty server to run with FIPS 140-3 enabled");
+            }
+            
         }
 
         Properties bootstrapProperties = getBootstrapProperties();
@@ -7083,6 +7108,15 @@ public class LibertyServer implements LogMonitorClient {
         boolean isJava2SecExempt = "true".equalsIgnoreCase(getBootstrapProperties().getProperty("websphere.java.security.exempt"));
         Log.info(c, "isJava2SecurityEnabled", "Is server " + getServerName() + " Java 2 Security exempt?  " + isJava2SecExempt);
         return !isJava2SecExempt;
+    }
+
+    //FIPS 140-3
+    public boolean isFIPS140_3Enabled() {
+        boolean globalEnabled = GLOBAL_FIPS_140_3 || GLOBAL_DEBUG_FIPS_140_3;
+        if (globalEnabled)
+           Log.info(c, "isFIPS140_3Enabled", "The global build properties FIPS_140_3 is set for server " + getServerName() + 
+                     ",  but requires IBM Java version 8/Linux/AIX/Windows to run with FIPS 140-3 enabled. Next checking java version on liberty server.");
+        return globalEnabled;
     }
 
     /**
