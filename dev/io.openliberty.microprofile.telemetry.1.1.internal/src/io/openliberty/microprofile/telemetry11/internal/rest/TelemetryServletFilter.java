@@ -10,12 +10,12 @@
 package io.openliberty.microprofile.telemetry11.internal.rest;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
@@ -273,7 +273,7 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
                                                   final String name) {
             if (response instanceof HttpServletResponse) {
                 HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-                return httpServletResponse.getHeaders(name).stream().collect(Collectors.toList());
+                return new ArrayList<>(httpServletResponse.getHeaders(name));
             }
             return Collections.emptyList();
         }
