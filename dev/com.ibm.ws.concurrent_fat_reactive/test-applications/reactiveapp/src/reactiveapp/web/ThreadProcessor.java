@@ -18,6 +18,7 @@ import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.SubmissionPublisher;
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
 import javax.naming.NamingException;
@@ -30,13 +31,12 @@ public class ThreadProcessor extends SubmissionPublisher<ContextCDL> implements 
     Flow.Subscription subscription = null;
 
     //Subscriber methods
-    public ThreadProcessor(Executor ex) {
-        super(ex, 3);
+    public ThreadProcessor(Executor ex, BiConsumer<? super Subscriber<? super ContextCDL>, ? super Throwable> handler) {
+        super(ex, 3, handler);
     }
 
     @Override
     public int offer(ContextCDL latch, BiPredicate<Subscriber<? super ContextCDL>, ? super ContextCDL> onDrop) {
-        System.out.println("processor offer");
         try {
             latch.checkContext();
             return super.offer(latch, onDrop);
@@ -55,7 +55,6 @@ public class ThreadProcessor extends SubmissionPublisher<ContextCDL> implements 
 
     @Override
     public void onNext(ContextCDL latch) {
-        System.out.println("processor onNext");
         try {
             latch.checkContext();
             latch.countDown();
@@ -69,7 +68,6 @@ public class ThreadProcessor extends SubmissionPublisher<ContextCDL> implements 
     @Override
     public void onError(Throwable throwable) {
         closeExceptionally(throwable);
-        throwable.printStackTrace(System.out);
     }
 
     @Override

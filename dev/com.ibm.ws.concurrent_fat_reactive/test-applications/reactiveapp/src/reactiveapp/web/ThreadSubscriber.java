@@ -15,6 +15,7 @@ package reactiveapp.web;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscription;
 
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 /**
@@ -23,7 +24,8 @@ import javax.naming.NamingException;
 public class ThreadSubscriber implements Flow.Subscriber<ContextCDL> {
 
     private Flow.Subscription subscription = null;
-    private Throwable closedException = null;
+    public Object onCompleteResult = null;
+    public Object onErrorResult = null;
 
     @Override
     public void onSubscribe(Subscription subscription) {
@@ -33,38 +35,33 @@ public class ThreadSubscriber implements Flow.Subscriber<ContextCDL> {
 
     @Override
     public void onNext(ContextCDL latch) {
-        System.out.println("subscriber onNext");
 
         try {
             latch.checkContext();
             latch.countDown();
             subscription.request(1);
         } catch (NamingException e) {
-            closeExceptionally(e);
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public void onError(Throwable throwable) {
-        closeExceptionally(throwable);
-        throwable.printStackTrace(System.out);
+        try {
+            onErrorResult = new InitialContext().lookup("java:comp/env/entry1");
+        } catch (NamingException e) {
+            onErrorResult = e;
+        }
     }
 
     @Override
     public void onComplete() {
-    }
+        try {
+            onCompleteResult = new InitialContext().lookup("java:comp/env/entry1");
+        } catch (NamingException e) {
+            onCompleteResult = e;
+        }
 
-    public void closeExceptionally(Throwable t) {
-        closedException = t;
-    }
-
-    /**
-     * Returns the exception associated with closeExceptionally, or null if not closed or if closed normally.
-     *
-     * @return the exception, or null if none
-     */
-    public Throwable getClosedException() {
-        return closedException;
     }
 
 }

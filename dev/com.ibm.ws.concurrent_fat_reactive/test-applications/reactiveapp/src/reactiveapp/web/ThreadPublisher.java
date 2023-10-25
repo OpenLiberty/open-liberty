@@ -15,6 +15,7 @@ package reactiveapp.web;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.SubmissionPublisher;
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
 import javax.naming.NamingException;
@@ -24,8 +25,8 @@ import javax.naming.NamingException;
  */
 public class ThreadPublisher extends SubmissionPublisher<ContextCDL> {
 
-    public ThreadPublisher(Executor ex) {
-        super(ex, 3);
+    public ThreadPublisher(Executor ex, BiConsumer<? super Subscriber<? super ContextCDL>, ? super Throwable> handler) {
+        super(ex, 3, handler);
     }
 
     @Override
