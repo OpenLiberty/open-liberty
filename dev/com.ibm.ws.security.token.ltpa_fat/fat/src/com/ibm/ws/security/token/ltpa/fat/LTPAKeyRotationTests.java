@@ -1064,11 +1064,36 @@ public class LTPAKeyRotationTests {
         updateConfigDynamically(server, serverConfiguration);
     }
 
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI>Set Expiry to 1m, MonitorDirectory to true, and MonitorInterval to 5.
+     * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <LI>Wait for 70 seconds.
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <OL>
+     * <P>Expected Results:
+     * <OL>
+     * <LI>Expiry is set to 1m, MonitorDirectory is set to true, and MonitorInterval to 5.
+     * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
+     * <LI>Successful authentication to simple servlet.
+     * <LI>Wait for 70 seconds.
+     * <LI>Failed authentication to simple servlet.
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testExpiredLtpaToken() throws Exception {
         // Configure the server
         configureServer("true", "5", true);
+
+        // Set the expiry to 1m
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        LTPA ltpa = serverConfiguration.getLTPA();
+        ltpa.expiration = "1m";
+        updateConfigDynamically(server, serverConfiguration);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -1144,6 +1169,15 @@ public class LTPAKeyRotationTests {
     public boolean setLTPAMonitorIntervalElement(LTPA ltpa, String value) {
         if (!ltpa.monitorInterval.equals(value)) {
             ltpa.monitorInterval = value;
+            return true; // Config update is needed
+        }
+        return false; // Config update is not needed;
+    }
+
+    // Function to configure the expiration time for the LTPA token to a specific value
+    public boolean setLTPAExpiryElement(LTPA ltpa, String value) {
+        if (!ltpa.expiration.equals(value)) {
+            ltpa.expiration = value;
             return true; // Config update is needed
         }
         return false; // Config update is not needed;
