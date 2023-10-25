@@ -65,6 +65,7 @@ IBM-Process-Types: server, \
  com.ibm.ws.org.apache.yoko.core.1.5, \
  com.ibm.ws.org.apache.yoko.util.1.5, \
  com.ibm.ws.transport.iiop, \
+ com.ibm.ws.app.manager.lifecycle, \
  com.ibm.ws.org.apache.yoko.rmi.spec.1.5
 kind=ga
 edition=base
