@@ -25,10 +25,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
@@ -71,6 +71,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
         majorCodeMap.put("19", 63);
         majorCodeMap.put("20", 64);
         majorCodeMap.put("21", 65);
+        majorCodeMap.put("22", 65);
 	}
 	
 	/**
@@ -190,6 +191,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 			
 			transformedClass.newInstance();		
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 		
@@ -207,6 +209,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 			
 			transformedClass.newInstance();		
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 		
@@ -224,6 +227,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 			
 			transformedClass.newInstance();		
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 		
@@ -242,6 +246,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 			
 			transformedClass.newInstance();		
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 		
@@ -259,6 +264,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 			
 			transformedClass.newInstance();		
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 		
@@ -276,6 +282,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 			
 			transformedClass.newInstance();		
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 		
@@ -303,11 +310,9 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 			
 			Class<?> loadedClassPreTransform = testLoaderPreTransform.loadClass(classUnderTest); 
 			loadedClassPreTransform.newInstance();
-
 			
-			
-			byte[] classUnderTestBytes = transformedClassBytes(classUnderTest, classPath);
-			byte[] classUnderTestBytesInnerClass = transformedClassBytes(classUnderTestInnerClass, classPath + "$Converter.class");
+			byte[] classUnderTestBytes = transformedClassBytes(classUnderTest, classPath, preTransformBytes);
+			byte[] classUnderTestBytesInnerClass = transformedClassBytes(classUnderTestInnerClass, classPath + "$Converter.class", preTransformBytesInnerClass);
 			
 			Map<String, byte[]> classDefs = new HashMap<String, byte[]>();
 			classDefs.put(classUnderTest, classUnderTestBytes);
@@ -321,6 +326,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 		
@@ -340,12 +346,13 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 			
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 		
 	}
 	
-	@Test //TODO expand this test to actually test Java 11 features
+	@Test //TODO expand this test to actually test Java 11 features https://openjdk.org/jeps/323
 	public void testJava11Basic() {
 		assumeTrue(Integer.parseInt(System.getProperty("java.specification.version")) >= 11);
 		String classPath = "test/test data/com/ibm/example/bytecode/HelloWorldJava11.class";
@@ -357,12 +364,13 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 			
 			transformedClass.newInstance();		
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 		
 	}
 	
-	@Test //TODO expand this test to actually test Java 17 features
+	@Test //TODO expand this test to actually test Java 17 features https://openjdk.org/jeps/409
 	public void testJava17Basic() {
 		assumeTrue(Integer.parseInt(System.getProperty("java.specification.version")) >= 17);
 		String classPath = "test/test data/com/ibm/example/bytecode/HelloWorldJava17.class";
@@ -374,13 +382,15 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 			
 			transformedClass.newInstance();		
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 		
 	}
 	
-	//TODO update transformer to support Java 21
-//	@Test //TODO expand this test to actually test Java 21 features
+	//FIXME - This test is currently failing because isTransformPossible returns false
+	//TODO expand this test to actually test Java 21 features https://openjdk.org/jeps/441
+	//@Test 
 	public void testJava21Basic() {
 		assumeTrue(Integer.parseInt(System.getProperty("java.specification.version")) >= 21);
 		String classPath = "test/test data/com/ibm/example/bytecode/HelloWorldJava21.class";
@@ -392,6 +402,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 			
 			transformedClass.newInstance();
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 		
@@ -399,81 +410,25 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 
 	
 	private void writeStringToFile(String toWrite, String path) {
-		PrintWriter file;
-		try {
-			file = new PrintWriter(path);
+		File dir = new File(path).getParentFile();
+		dir.mkdirs();
+		
+		try (PrintWriter file = new PrintWriter(path)) {
 			file.println(toWrite);
-			file.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 	
-//	private void writeBytesToFile(byte[] toWrite, String path) {
-//		try {
-//			FileOutputStream fos = new FileOutputStream(path);
-//			fos.write(toWrite);
-//			fos.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
-	
-	
 	//turn this on to get detailed ASM output in the project folder.
 	public final boolean dumpTrace = false;
 	
-//	private byte[] transformedClassBytesJava8Injector(String className, String path) {
-//		byte[] transformedClass = null;
-//
-//		try {
-//			//LibertyRuntimeTransformer.setInjectAtTransform(false);
-//			
-//			String classUnderTest = className;
-//			byte[] pre = makeBytesFromFile(path);
-//			byte[] staticInject = staticTransform.transform(pre);
-//			byte[] postDynamic = LibertyRuntimeTransformer.transform(pre, false);
-//			
-//			//Case that tries to fully emulate what the runtime ends up doing.
-//			if (staticInject == null) {
-//				staticInject = pre;
-//			}
-//			byte[] post = LibertyRuntimeTransformer.transform(staticInject, false);
-//			
-//			String preTransform = dumpClassViaASM(pre);
-//			//System.out.println("Pre transform class: " + preTransform);
-//			
-//			String postStaticTransform = dumpClassViaASM(staticInject);
-//			//System.out.println("Static transform class: " + postStaticTransform);
-//			
-//			String postDynamicTransform = dumpClassViaASM(postDynamic);
-//			//System.out.println("Post transform class: " + postTransform);
-//			
-//			String postStaticAndDynamicTransform = dumpClassViaASM(post);
-//			
-//			if (dumpTrace) {
-//				writeStringToFile(preTransform, "Debug-Pre-"+className);
-//				writeStringToFile(postStaticTransform, "Debug-Static-"+className);
-//				writeStringToFile(postDynamicTransform, "Debug-PostDyn-"+className);
-//				writeStringToFile(postStaticAndDynamicTransform, "Debug-PostStaticDyn-"+className);
-//			}
-//			transformedClass = post;
-//		} catch (Exception e) {
-//			System.out.println("Exception: " + e.getStackTrace().toString());
-//			Assert.assertTrue(false);
-//		} 
-//		
-//		return transformedClass;
-//		
-//	}
-	
-	private byte[] transformedClassBytes(String className, String path) {
+	private byte[] transformedClassBytes(String className, String path, byte[] pre) {
 		byte[] transformedClass = null;
 
 		try {
 			//LibertyRuntimeTransformer.setInjectAtTransform(false);
 			
-			byte[] pre = makeBytesFromFile(path);
 			byte[] staticInject = staticTransform.transform(pre);
 			byte[] postDynamic = LibertyRuntimeTransformer.transform(pre, false);
 			
@@ -495,15 +450,15 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 			String postStaticAndDynamicTransform = dumpClassViaASM(post);
 			
 			if (dumpTrace) {
-				writeStringToFile(preTransform, "Debug-Pre-"+className);
-				writeStringToFile(postStaticTransform, "Debug-Static-"+className);
-				writeStringToFile(postDynamicTransform, "Debug-PostDyn-"+className);
-				writeStringToFile(postStaticAndDynamicTransform, "Debug-PostStaticDyn-"+className);
+				writeStringToFile(preTransform, "build/results/Debug-Pre-"+className);
+				writeStringToFile(postStaticTransform, "build/results/Debug-Static-"+className);
+				writeStringToFile(postDynamicTransform, "build/results/Debug-PostDyn-"+className);
+				writeStringToFile(postStaticAndDynamicTransform, "build/results/Debug-PostStaticDyn-"+className);
 			}
 			transformedClass = post;
 		} catch (Exception e) {
-			System.out.println("Exception: " + e.getStackTrace().toString());
-			Assert.assertTrue(false);
+			e.printStackTrace();
+			fail(e.getMessage());
 		} 
 		
 		return transformedClass;
@@ -514,13 +469,28 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 		Class<?> transformedClass = null;
 
 		try {
-			transformedClass = makeAClassFromBytes(className, transformedClassBytes(className, path), "com.ibm.example.bytecode");
+			byte[] pre = makeBytesFromFile(path);
+			assertTrue("isTransformPossible returned false, likely the bytecode level is not supported yet and needs to be tested", 
+					invokeIsTransformPossible(pre));
+			transformedClass = makeAClassFromBytes(className, transformedClassBytes(className, path, pre), "com.ibm.example.bytecode");
 		} catch (Exception e) {
-			System.out.println("Exception: " + e.getStackTrace().toString());
-			Assert.assertTrue(false);
+			e.printStackTrace();
+			fail(e.getMessage());
 		} 
 		
 		return transformedClass;
+	}
+	
+	/**
+	 * Invokes LibertyRuntimeTransformer.isTransformPossible() which is a private method not accessable from child class.
+	 * 
+	 * @return the result of invoking the method
+	 * @throws Exception if method cannot be invoked
+	 */
+	private boolean invokeIsTransformPossible(byte[] bytes) throws Exception {
+		Method isTransformPossible = LibertyRuntimeTransformer.class.getDeclaredMethod("isTransformPossible", byte[].class);
+		isTransformPossible.setAccessible(true);
+		return (boolean) isTransformPossible.invoke(null, bytes);
 	}
 	
 }
