@@ -72,7 +72,6 @@ import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Function;
-import io.openliberty.data.repository.Operation;
 import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.Select.Aggregate;
 import io.openliberty.data.repository.update.Add;
@@ -341,10 +340,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
         Count count = method.getAnnotation(Count.class);
         Exists exists = method.getAnnotation(Exists.class);
         Select select = method.getAnnotation(Select.class);
-        io.openliberty.data.repository.Update[] updates = method.getAnnotationsByType(io.openliberty.data.repository.Update.class);
 
         queryInfo.validateAnnotationCombinations(delete, insert, update, save, query, orderBy,
-                                                 filters, count, exists, select, updates);
+                                                 filters, count, exists, select);
 
         // Lifecycle annotations
         if (save != null) { // @Save annotation
@@ -403,12 +401,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             StringBuilder whereClause = filters.length > 0 ? generateWhereClause(queryInfo, filters) : null;
             String o = queryInfo.entityVar;
 
-            if (updates.length > 0) {
-                queryInfo.type = QueryInfo.Type.UPDATE;
-                q = generateUpdateClause(queryInfo, updates);
-                if (whereClause != null)
-                    q.append(whereClause);
-            } else if (delete != null) {
+            if (delete != null) {
                 if (queryInfo.isFindAndDelete()) {
                     queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
                     q = generateSelectClause(queryInfo, null); // TODO select annotation parameter would be limited by collision with update count/boolean
@@ -1957,9 +1950,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
             if (name == null) {
                 if (op == '=') {
-                    generateUpdatesForIdClass(queryInfo, null, first, q);
+                    generateUpdatesForIdClass(queryInfo, first, q);
                 } else {
-                    String opName = op == '+' ? Operation.Add.name() : op == '*' ? Operation.Multiply.name() : Operation.Divide.name();
+                    String opName = op == '+' ? "Add" : op == '*' ? "Multiply" : "Divide";
                     throw new MappingException("The " + opName +
                                                " repository update operation cannot be used on the Id of the entity when the Id is an IdClass."); // TODO NLS
                 }
@@ -1987,94 +1980,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
         }
 
         return q.append(where);
-    }
-
-    /**
-     * Generates the JPQL UPDATE clause from @Update annotations.
-     *
-     * @param queryInfo query information
-     * @param updates   Update annotations
-     * @return the JPQL UPDATE clause
-     */
-    private StringBuilder generateUpdateClause(QueryInfo queryInfo, io.openliberty.data.repository.Update[] updates) {
-        String o = queryInfo.entityVar;
-        StringBuilder q = new StringBuilder(400).append("UPDATE ").append(queryInfo.entityInfo.name).append(' ').append(o).append(" SET");
-
-        boolean first = true;
-        for (io.openliberty.data.repository.Update update : updates) {
-            String attribute = update.attr();
-            Operation op = update.op();
-            String name = queryInfo.entityInfo.getAttributeName(attribute, true);
-
-            if (name == null) {
-                if (op == Operation.Assign)
-                    generateUpdatesForIdClass(queryInfo, update, first, q);
-                else
-                    throw new MappingException("The " + op.name() +
-                                               " repository update operation cannot be used on the Id of the entity when the Id is an IdClass."); // TODO NLS
-            } else {
-                q.append(first ? " " : ", ").append(o).append('.').append(name).append("=");
-
-                boolean withFunction = false;
-                switch (op) {
-                    case Assign:
-                        break;
-                    case Add:
-                        if (withFunction = CharSequence.class.isAssignableFrom(queryInfo.entityInfo.attributeTypes.get(name)))
-                            q.append("CONCAT(").append(o).append('.').append(name).append(',');
-                        else
-                            q.append(o).append('.').append(name).append('+');
-                        break;
-                    case Multiply:
-                        q.append(o).append('.').append(name).append('*');
-                        break;
-                    case Subtract:
-                        q.append(o).append('.').append(name).append('-');
-                        break;
-                    case Divide:
-                        q.append(o).append('.').append(name).append('/');
-                        break;
-                    default:
-                        throw new UnsupportedOperationException(op.name());
-                }
-
-                String param = update.param();
-                String[] values = update.value();
-                if (param.length() > 0) { // named parameter
-                    q.append(':').append(param);
-                    if (queryInfo.paramNames == null)
-                        queryInfo.paramNames = new ArrayList<>(); // content is computed later from method signature
-                } else if (values.length == 1) { // single value
-                    char c = values[0].length() == 0 ? ' ' : values[0].charAt(0);
-                    boolean enquote = (c < '0' || c > '9') && c != '\'';
-                    if (enquote)
-                        q.append("'");
-                    q.append(values[0]);
-                    if (enquote)
-                        q.append("'");
-                } else if (values.length > 1) { // multiple value list // TODO should we even allow this if there is no way to supply a single value list?
-                    for (int v = 0; v < values.length; v++) {
-                        q.append(v == 0 ? "(" : ", ");
-                        char c = values[v].length() == 0 ? ' ' : values[v].charAt(0);
-                        boolean enquote = (c < '0' || c > '9') && c != '\'';
-                        if (enquote)
-                            q.append("'");
-                        q.append(values[v]);
-                        if (enquote)
-                            q.append("'");
-                    }
-                    q.append(')');
-                } else { // positional parameter
-                    q.append('?').append(++queryInfo.paramCount);
-                }
-
-                if (withFunction)
-                    q.append(')');
-            }
-            first = false;
-        }
-
-        return q;
     }
 
     /**
@@ -2133,25 +2038,17 @@ public class RepositoryImpl<R> implements InvocationHandler {
     /**
      * Generates JPQL to assign the entity properties of which the IdClass consists.
      */
-    private void generateUpdatesForIdClass(QueryInfo queryInfo, io.openliberty.data.repository.Update update, boolean firstOperation, StringBuilder q) {
-        if (update != null && update.value().length != 0)
-            throw new MappingException("IdClass parameter cannot be represented as a hard-coded value of the @Update annotation."); // TODO NLS
-
-        String paramName = update == null || update.param().length() == 0 ? null : update.param();
+    private void generateUpdatesForIdClass(QueryInfo queryInfo, boolean firstOperation, StringBuilder q) {
 
         int count = 0;
         for (String idClassAttr : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
             count++;
             String name = queryInfo.entityInfo.getAttributeName(idClassAttr, true);
 
-            q.append(firstOperation ? " " : ", ").append(queryInfo.entityVar).append('.').append(name);
-            if (paramName == null) { // positional parameter
-                q.append("=?").append(++queryInfo.paramCount);
-                if (count != 1)
-                    queryInfo.paramAddedCount++;
-            } else { // named parameter
-                q.append("=:").append(paramName).append('_').append(count);
-            }
+            q.append(firstOperation ? " " : ", ").append(queryInfo.entityVar).append('.').append(name) //
+                            .append("=?").append(++queryInfo.paramCount);
+            if (count != 1)
+                queryInfo.paramAddedCount++;
 
             firstOperation = false;
         }
