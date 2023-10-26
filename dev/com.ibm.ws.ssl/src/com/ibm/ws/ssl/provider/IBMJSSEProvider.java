@@ -74,7 +74,7 @@ public class IBMJSSEProvider extends AbstractJSSEProvider implements JSSEProvide
                        Constants.SOCKET_FACTORY_WAS_DEFAULT, null, Constants.PROTOCOL_TLS);
         } else {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "fips not enabled: " + fipsON);
+                Tr.debug(tc, "protocol: " + Constants.PROTOCOL_SSL_TLS_V2);
             }
             initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,
                        Constants.SOCKET_FACTORY_WAS_DEFAULT, null, Constants.PROTOCOL_SSL_TLS_V2);

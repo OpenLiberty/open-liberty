@@ -51,7 +51,7 @@ final class LTPACrypto {
 	private static final String IBMJCE_NAME = "IBMJCE";
 	private static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
 	private static final String OPENJCE_PLUS_NAME = "OpenJCEPlus";
-	private static String provider = getProvider();
+	private static final String provider = getProvider();
 
 	private static final String SIGNATURE_ALGORITHM_SHA1WITHRSA = "SHA1withRSA";
 	private static final String SIGNATURE_ALGORITHM_SHA256WITHRSA = "SHA256withRSA";

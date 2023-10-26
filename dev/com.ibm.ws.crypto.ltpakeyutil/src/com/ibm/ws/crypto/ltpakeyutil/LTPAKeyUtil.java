@@ -26,8 +26,9 @@ public final class LTPAKeyUtil {
 	public static boolean ibmJCEAvailable = false;
 	public static boolean ibmJCEPlusFIPSAvailable = false;
 	public static boolean openJCEPlusAvailable = false;
-	public static boolean providerChecked = false;
-	public static boolean zosProviderChecked = false;
+	public static boolean ibmJCEProviderChecked = false;
+	public static boolean ibmJCEPlusFIPSProviderChecked = false;
+	public static boolean openJCEPlusProviderChecked = false;
 
 	public static boolean javaVersionChecked = false;
 	public static boolean isJava11orHigher = false;
@@ -83,17 +84,17 @@ public final class LTPAKeyUtil {
 	}
 
 	public static boolean isIBMJCEAvailable() {
-		if (providerChecked) {
+		if (ibmJCEProviderChecked) {
 			return ibmJCEAvailable;
 		} else {
 			ibmJCEAvailable = JavaInfo.isSystemClassAvailable(IBMJCE_PROVIDER);
-			providerChecked = true;
+			ibmJCEProviderChecked = true;
 			return ibmJCEAvailable;
 		}
 	}
 
 	public static boolean isIBMJCEPlusFIPSAvailable() {
-		if (providerChecked) {
+		if (ibmJCEPlusFIPSProviderChecked) {
 			return ibmJCEPlusFIPSAvailable;
 		} else {
 
@@ -105,7 +106,7 @@ public final class LTPAKeyUtil {
 			});
 			if (ibmjceplusfipsprovider == "IBMJCEPlusFIPS" && isRunningBetaMode()) {
 				ibmJCEPlusFIPSAvailable = true;
-				providerChecked = true;
+				ibmJCEPlusFIPSProviderChecked = true;
 				return ibmJCEPlusFIPSAvailable;
 			} else {
 				return false;
@@ -143,11 +144,11 @@ public final class LTPAKeyUtil {
 	}
 
 	public static boolean isOpenJCEPlusAvailable() {
-		if (zosProviderChecked) {
+		if (openJCEPlusProviderChecked) {
 			return openJCEPlusAvailable;
 		} else {
 			openJCEPlusAvailable = JavaInfo.isSystemClassAvailable(OPENJCE_PLUS_PROVIDER);
-			zosProviderChecked = true;
+			openJCEPlusProviderChecked = true;
 			return openJCEPlusAvailable;
 		}
 
