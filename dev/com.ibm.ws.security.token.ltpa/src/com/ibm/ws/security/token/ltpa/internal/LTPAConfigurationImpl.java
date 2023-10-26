@@ -220,7 +220,6 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private List<Properties> getNonConfiguredValidationKeys() {
         List<Properties> validationKeysInDirectory = new ArrayList<Properties>();
         Iterator<File> keysFiles = this.allKeysFiles.iterator();
-        Properties properties = new Properties();
 
         if (keysFiles != null) {
             while (keysFiles.hasNext()) {
@@ -230,10 +229,11 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
                 String fullFileName = primaryKeyImportDir.concat(fileName);
 
                 // skip the primary LTPA keys file or validationKeys file configured in the valicationKeys element
-                if (primaryKeyImportFile.equals(fileName) || isConfiguredValidationKeys(fullFileName)) {
+                if (primaryKeyImportFile.equals(fullFileName) || isConfiguredValidationKeys(fullFileName)) {
                     continue;
                 }
 
+                Properties properties = new Properties();
                 properties.setProperty(CFG_KEY_VALIDATION_FILE_NAME, fullFileName);
                 properties.setProperty(CFG_KEY_VALIDATION_PASSWORD, primaryKeyPassword);
 
@@ -253,11 +253,13 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      * @return
      */
     private boolean isConfiguredValidationKeys(String fn) {
-        Iterator<Properties> configValidationKeysIterator = configValidationKeys.iterator();
-        while (configValidationKeysIterator.hasNext()) {
-            Properties vKeys = configValidationKeysIterator.next();
-            if (vKeys.getProperty(CFG_KEY_VALIDATION_FILE_NAME).equals(fn))
-                return true;
+        if (configValidationKeys != null) {
+            Iterator<Properties> configValidationKeysIterator = configValidationKeys.iterator();
+            while (configValidationKeysIterator.hasNext()) {
+                Properties vKeys = configValidationKeysIterator.next();
+                if (vKeys.getProperty(CFG_KEY_VALIDATION_FILE_NAME).equals(fn))
+                    return true;
+            }
         }
 
         return false;
@@ -341,9 +343,9 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     public void performFileBasedAction(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles) {
         Collection<File> allFiles = getAllFiles(createdFiles, modifiedFiles, deletedFiles);
 
-        processAllKeysFiles(createdFiles, modifiedFiles, deletedFiles);
+        processAllKeysFiles(createdFiles, modifiedFiles, deletedFiles); // we've got validation3.keys
 
-        processValidationKeys();
+        processValidationKeys(); //
 
         if (noValidationKeys()) { // no validationKeys. Keep behavior the same as SecurityFileMonnitor
             if (deletedFiles.isEmpty() == false) {
