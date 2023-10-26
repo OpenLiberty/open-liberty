@@ -3412,7 +3412,8 @@ public class DataTestServlet extends FATServlet {
         s5.setStatus("PREPARING");
         shipments.save(s5);
 
-        assertEquals(true, shipments.dispatch(2, "44.036217, -92.488040", OffsetDateTime.now()));
+        assertEquals(true, shipments.dispatch(2, "READY_FOR_PICKUP",
+                                              "IN_TRANSIT", "44.036217, -92.488040", OffsetDateTime.now()));
         assertEquals("IN_TRANSIT", shipments.getStatus(2));
 
         // @OrderBy "destination"
@@ -4242,8 +4243,8 @@ public class DataTestServlet extends FATServlet {
         assertEquals(10.0f, p.height, 0.01f);
         assertEquals("Tissue box halved and slightly shortened", p.description);
 
-        // subtract from height and append to description via annotatively defined method with fixed values
-        assertEquals(true, packages.shorten(990003));
+        // subtract from height and append to description via annotatively defined method
+        assertEquals(true, packages.shorten(990003, 1.0f, " and shortened 1 cm"));
 
         p = packages.findById(990003).orElseThrow();
         assertEquals(11.4f, p.length, 0.01f);

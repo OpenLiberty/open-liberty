@@ -26,14 +26,12 @@ import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 import jakarta.transaction.Transactional;
 
-import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
-import io.openliberty.data.repository.Filter;
-import io.openliberty.data.repository.Operation;
 import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.Select.Aggregate;
-import io.openliberty.data.repository.Update;
+import io.openliberty.data.repository.update.Assign;
+import io.openliberty.data.repository.update.Multiply;
 
 /**
  * Repository interface for the unannotated Product entity, which has a UUID as the Id.
@@ -60,13 +58,13 @@ public interface Products {
     @Select(function = Aggregate.MAXIMUM, value = "price")
     float highestPrice();
 
-    @Update(attr = "price", op = Operation.Multiply)
-    @Update(attr = "version", op = Operation.Add, value = "1")
-    long inflateAllPrices(float rateOfIncrease);
+    long inflateAllPrices(@Multiply("price") float rateOfIncrease);
 
-    @Filter(by = "name", op = Compare.Contains)
-    @Update(attr = "price", op = Operation.Multiply)
-    @Update(attr = "version", op = Operation.Add, value = "1")
+    @Query("UPDATE Product o SET o.price=o.price*?2, o.version=o.version+1 WHERE (o.name LIKE CONCAT('%', ?1, '%'))")
+    // TODO replace with annotated condition on nameContains parameter
+    // @Filter(by = "name", op = Compare.Contains)
+    // @Update(attr = "price", op = Operation.Multiply)
+    // @Update(attr = "version", op = Operation.Add, value = "1")
     long inflatePrices(String nameContains, float rateOfIncrease);
 
     @Exists
@@ -94,10 +92,9 @@ public interface Products {
 
     Product[] saveMultiple(Product... p);
 
-    @Filter(by = "pk")
-    @Filter(by = "version")
-    @Update(attr = "price")
-    boolean setPrice(UUID id, long currentVersion, float newPrice);
+    boolean setPrice(UUID id,
+                     long version,
+                     @Assign("price") float newPrice);
 
     @Select(function = Aggregate.COUNT, distinct = false, value = { "name", "description", "price" })
     ProductCount stats();
@@ -108,9 +105,11 @@ public interface Products {
     @Select(function = Aggregate.SUM, distinct = true, value = "price")
     float totalOfDistinctPrices();
 
-    @Filter(by = "pk", op = Compare.In)
-    @Update(attr = "price", op = Operation.Divide)
-    @Update(attr = "version", op = Operation.Subtract, value = "1")
+    @Query("UPDATE Product o SET o.price=o.price/?2, o.version=o.version-1 WHERE (o.pk IN ?1)")
+    // TODO switch to annotated parameters once available for conditions
+    //@Filter(by = "pk", op = Compare.In)
+    //@Update(attr = "price", op = Operation.Divide)
+    //@Update(attr = "version", op = Operation.Subtract, value = "1")
     long undoPriceIncrease(Iterable<UUID> productIds, float divisor);
 
     Boolean update(Product product);

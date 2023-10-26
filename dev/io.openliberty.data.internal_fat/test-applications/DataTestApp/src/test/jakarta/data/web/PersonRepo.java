@@ -22,7 +22,7 @@ import jakarta.transaction.Transactional.TxType;
 
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Select;
-import io.openliberty.data.repository.Update;
+import io.openliberty.data.repository.update.Assign;
 
 /**
  * This example only references the entity class as a parameterized type.
@@ -48,35 +48,29 @@ public interface PersonRepo {
 
     void save(List<Person> people);
 
-    @Filter(by = "ssn_id")
     @Select("firstName")
     @Transactional(TxType.SUPPORTS)
-    String getFirstNameInCurrentOrNoTransaction(Long ssn);
+    String getFirstNameInCurrentOrNoTransaction(Long ssn_id);
 
-    @Filter(by = "ssn_id")
-    @Update(attr = "firstName")
     @Transactional(TxType.REQUIRED)
-    boolean setFirstNameInCurrentOrNewTransaction(Long ssn, String newFirstName);
+    boolean setFirstNameInCurrentOrNewTransaction(Long ssn_id,
+                                                  @Assign String firstName);
 
-    @Filter(by = "ssn_id")
-    @Update(attr = "firstName")
     @Transactional(TxType.MANDATORY)
-    boolean setFirstNameInCurrentTransaction(Long ssn, String newFirstName);
+    boolean setFirstNameInCurrentTransaction(Long ssn_id,
+                                             @Assign("firstName") String newFirstName);
 
-    @Filter(by = "ssn_id")
-    @Update(attr = "firstName")
     @Transactional(TxType.REQUIRES_NEW)
-    boolean setFirstNameInNewTransaction(Long ssn, String newFirstName);
+    boolean setFirstNameInNewTransaction(Long ssn_id,
+                                         @Assign("FirstName") String newFirstName);
 
-    @Filter(by = "ssn_id")
-    @Update(attr = "firstName")
     @Transactional(TxType.NEVER)
-    boolean setFirstNameWhenNoTransactionIsPresent(Long ssn, String newFirstName);
+    boolean setFirstNameWhenNoTransactionIsPresent(Long id,
+                                                   @Assign("FIRSTNAME") String newFirstName);
 
-    @Filter(by = "ssn_id")
-    @Update(attr = "firstName")
     @Transactional(TxType.NOT_SUPPORTED)
-    boolean setFirstNameWithCurrentTransactionSuspended(Long ssn, String newFirstName);
+    boolean setFirstNameWithCurrentTransactionSuspended(Long id,
+                                                        @Assign("firstname") String newFirstName);
 
     boolean updateOne(Person person);
 
