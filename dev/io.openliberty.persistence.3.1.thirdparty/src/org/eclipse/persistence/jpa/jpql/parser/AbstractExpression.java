@@ -246,8 +246,8 @@ public abstract class AbstractExpression implements Expression {
 
         try {
             Method visitMethod = type.getDeclaredMethod("visit", parameterType);
-            if (!visitMethod.isAccessible()) {
-            	AccessController.doPrivileged((PrivilegedAction<Void>) () -> {visitMethod.setAccessible(true); return null;});
+            if (!visitMethod.canAccess(visitor)) {
+                AccessController.doPrivileged((PrivilegedAction<Void>) () -> {visitMethod.setAccessible(true); return null;});
             }
             visitMethod.invoke(visitor, this);
         }
