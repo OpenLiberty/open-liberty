@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.AsyncEvent;
@@ -36,6 +38,7 @@ import org.eclipse.microprofile.config.ConfigProvider;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTelemetryServletFilter;
@@ -60,6 +63,8 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
     private static final HttpServerAttributesGetterImpl HTTP_SERVER_ATTRIBUTES_GETTER = new HttpServerAttributesGetterImpl();
 
     private Instrumenter<ServletRequest, ServletResponse> instrumenter;
+    private volatile boolean lazyCreate = false;
+    private final AtomicReference<Instrumenter<ServletRequest, ServletResponse>> lazyInstrumenter = new AtomicReference<>();
 
     private final Config config = ConfigProvider.getConfig();
 
@@ -69,33 +74,58 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
     @Override
     public void init(FilterConfig config) {
         if (instrumenter == null) {
-            OpenTelemetryInfo otelInfo = OpenTelemetryAccessor.getOpenTelemetryInfo();
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "otelInfo.getEnabled()=" + otelInfo.getEnabled());
-            }
-            if (otelInfo != null &&
-                otelInfo.getEnabled() &&
-                !AgentDetection.isAgentActive() &&
-                !checkDisabled(getTelemetryProperties())) {
-                InstrumenterBuilder<ServletRequest, ServletResponse> builder = Instrumenter.builder(
-                                                                                                    otelInfo.getOpenTelemetry(),
-                                                                                                    INSTRUMENTATION_NAME,
-                                                                                                    HttpSpanNameExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER));
-
-                this.instrumenter = builder
-                                .setSpanStatusExtractor(HttpSpanStatusExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
-                                .addAttributesExtractor(HttpServerAttributesExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
-                                .buildServerInstrumenter(new ServletRequestContextTextMapGetter());
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "instrumenter is initialized");
-                }
+            if (!CheckpointPhase.getPhase().restored()) {
+                lazyCreate = true;
             } else {
-                instrumenter = null;
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "instrumenter is set to null");
-                }
+                instrumenter = createInstrumenter();
             }
+        }
+    }
 
+    private Instrumenter<ServletRequest, ServletResponse> getInstrumenter() {
+        if (instrumenter != null) {
+            return instrumenter;
+        }
+        if (lazyCreate) {
+            instrumenter = lazyInstrumenter.updateAndGet((i) -> {
+                if (i == null) {
+                    return createInstrumenter();
+                } else {
+                    return i;
+                }
+            });
+        }
+        return instrumenter;
+    }
+    
+    private Instrumenter<ServletRequest, ServletResponse> createInstrumenter() {
+        OpenTelemetryInfo otelInfo = OpenTelemetryAccessor.getOpenTelemetryInfo();
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "otelInfo.getEnabled()=" + otelInfo.getEnabled());
+        }
+        if (otelInfo != null &&
+            otelInfo.getEnabled() &&
+            !AgentDetection.isAgentActive() &&
+            !checkDisabled(getTelemetryProperties())) {
+            InstrumenterBuilder<ServletRequest, ServletResponse> builder = Instrumenter.builder(
+                                                                                                otelInfo.getOpenTelemetry(),
+                                                                                                INSTRUMENTATION_NAME,
+                                                                                                HttpSpanNameExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER));
+
+            Instrumenter<ServletRequest, ServletResponse> result = builder
+                            .setSpanStatusExtractor(HttpSpanStatusExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
+                            .addAttributesExtractor(HttpServerAttributesExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
+                            .buildServerInstrumenter(new ServletRequestContextTextMapGetter());
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "instrumenter is initialized");
+            }
+            return result;
+        } else {
+            instrumenter = null;
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "instrumenter is set to null");
+            }
+            return null;
         }
     }
 
@@ -103,10 +133,11 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         Scope scope = null;
-        if (instrumenter != null) {
+        Instrumenter<ServletRequest, ServletResponse> current = getInstrumenter();
+        if (current != null) {
             Context parentContext = Context.current();
-            if (instrumenter.shouldStart(parentContext, request)) {
-                Context spanContext = instrumenter.start(parentContext, request);
+            if (current.shouldStart(parentContext, request)) {
+                Context spanContext = current.start(parentContext, request);
                 scope = spanContext.makeCurrent();
                 request.setAttribute(SPAN_CONTEXT, spanContext);
                 request.setAttribute(SPAN_PARENT_CONTEXT, parentContext);
@@ -130,17 +161,17 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
             asyncContext.addListener(new AsyncListener() {
                 @Override
                 public void onComplete(AsyncEvent event) throws IOException {
-                    endSpan(request, response, null);
+                    endSpan(request, response, null, current);
                 }
 
                 @Override
                 public void onTimeout(AsyncEvent event) throws IOException {
-                    endSpan(request, response, event.getThrowable());
+                    endSpan(request, response, event.getThrowable(), current);
                 }
 
                 @Override
                 public void onError(AsyncEvent event) throws IOException {
-                    endSpan(request, response, event.getThrowable());
+                    endSpan(request, response, event.getThrowable(), current);
                 }
 
                 @Override
@@ -148,7 +179,7 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
                 }
             });
         } else {
-            endSpan(request, response, null);
+            endSpan(request, response, null, current);
         }
 
         if (scope != null) {
@@ -158,8 +189,8 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
 
     }
 
-    private void endSpan(ServletRequest request, ServletResponse response, Throwable throwable) {
-        if (instrumenter != null) {
+    private void endSpan(ServletRequest request, ServletResponse response, Throwable throwable, Instrumenter<ServletRequest, ServletResponse> current) {
+        if (current != null) {
             Context spanContext = (Context) request.getAttribute(SPAN_CONTEXT);
             if (spanContext == null) {
                 return;
@@ -170,7 +201,7 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
                     Tr.debug(tc, "End span traceId=" + Span.fromContext(spanContext).getSpanContext().getTraceId() + " spanId="
                                  + Span.fromContext(spanContext).getSpanContext().getSpanId());
                 }
-                instrumenter.end(spanContext, request, response, throwable);
+                current.end(spanContext, request, response, throwable);
             } finally {
                 request.removeAttribute(SPAN_CONTEXT);
                 request.removeAttribute(SPAN_PARENT_CONTEXT);

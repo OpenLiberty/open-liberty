@@ -18,6 +18,7 @@ import static java.util.Collections.singletonList;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
@@ -25,6 +26,7 @@ import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.ext.Provider;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTelemetryClientFilter;
@@ -42,37 +44,67 @@ import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 @Provider
 public class TelemetryClientFilter extends AbstractTelemetryClientFilter implements ClientRequestFilter, ClientResponseFilter {
 
-    private final Instrumenter<ClientRequestContext, ClientResponseContext> instrumenter;
+    private Instrumenter<ClientRequestContext, ClientResponseContext> instrumenter;
+    private volatile boolean lazyCreate = false;
+    private final AtomicReference<Instrumenter<ClientRequestContext, ClientResponseContext>> lazyInstrumenter = new AtomicReference<>();
 
     private final String configString = "otel.span.client.";
 
     private static final HttpClientAttributesGetterImpl HTTP_CLIENT_ATTRIBUTES_GETTER = new HttpClientAttributesGetterImpl();
 
     public TelemetryClientFilter() {
+        if (instrumenter == null) {
+            if (!CheckpointPhase.getPhase().restored()) {
+                lazyCreate = true;
+            } else {
+                instrumenter = createInstrumenter();
+            }
+        }
+    }
+    
+    private Instrumenter<ClientRequestContext, ClientResponseContext> getInstrumenter() {
+        if (instrumenter != null) {
+            return instrumenter;
+        }
+        if (lazyCreate) {
+            instrumenter = lazyInstrumenter.updateAndGet((i) -> {
+                if (i == null) {
+                    return createInstrumenter();
+                } else {
+                    return i;
+                }
+            });
+        }
+        return instrumenter;
+    }
+    
+    private Instrumenter<ClientRequestContext, ClientResponseContext> createInstrumenter() {
         final OpenTelemetryInfo openTelemetryInfo = OpenTelemetryAccessor.getOpenTelemetryInfo();
         if (openTelemetryInfo.getEnabled() && !AgentDetection.isAgentActive()) {
             InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(openTelemetryInfo.getOpenTelemetry(),
                                                                                                             "Client filter",
                                                                                                             HttpSpanNameExtractor.create(HTTP_CLIENT_ATTRIBUTES_GETTER));
 
-            this.instrumenter = builder
+            Instrumenter<ClientRequestContext, ClientResponseContext> result = builder
                             .setSpanStatusExtractor(HttpSpanStatusExtractor.create(HTTP_CLIENT_ATTRIBUTES_GETTER))
                             .addAttributesExtractor(HttpClientAttributesExtractor.create(HTTP_CLIENT_ATTRIBUTES_GETTER))
                             .buildClientInstrumenter(new ClientRequestContextTextMapSetter());
+            return result;
         } else {
-            this.instrumenter = null;
+            return null;
         }
     }
 
     @Override
     public void filter(final ClientRequestContext request) {
-        if (instrumenter != null) {
+        Instrumenter<ClientRequestContext, ClientResponseContext> currentInstrumenter = getInstrumenter();
+        if (currentInstrumenter != null) {
             AccessController.doPrivileged(new PrivilegedAction<Void>() {
                 @Override
                 public Void run() {
                     Context parentContext = Context.current();
-                    if (instrumenter.shouldStart(parentContext, request)) {
-                        Context spanContext = instrumenter.start(parentContext, request);
+                    if (currentInstrumenter.shouldStart(parentContext, request)) {
+                        Context spanContext = currentInstrumenter.start(parentContext, request);
                         request.setProperty(configString + "context", spanContext);
                         request.setProperty(configString + "parentContext", parentContext);
                     }
@@ -84,7 +116,8 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
 
     @Override
     public void filter(final ClientRequestContext request, final ClientResponseContext response) {
-        if (instrumenter != null) {
+        Instrumenter<ClientRequestContext, ClientResponseContext> currentInstrumenter = getInstrumenter();
+        if (currentInstrumenter != null) {
             AccessController.doPrivileged(new PrivilegedAction<Void>() {
                 @Override
                 public Void run() {
@@ -93,7 +126,7 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
                         return null;
                     }
                     try {
-                        instrumenter.end(spanContext, request, response, null);
+                        currentInstrumenter.end(spanContext, request, response, null);
                     } finally {
                         request.removeProperty(configString + "context");
                         request.removeProperty(configString + "parentContext");

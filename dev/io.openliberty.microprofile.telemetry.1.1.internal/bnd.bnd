@@ -71,6 +71,7 @@ Import-Package: \
 	com.ibm.websphere.org.eclipse.microprofile.rest.client.1.1;version=latest,\
 	io.openliberty.org.jboss.resteasy.common;version=latest,\
 	io.openliberty.microprofile.telemetry.internal.common;version=latest,\
-	io.openliberty.io.opentelemetry.1.29;version=latest
+	io.openliberty.io.opentelemetry.1.29;version=latest,\
+	com.ibm.ws.kernel.boot.common;version=latest
 
 WS-TraceGroup: TELEMETRY

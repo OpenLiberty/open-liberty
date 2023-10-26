@@ -18,6 +18,7 @@ import static java.util.Collections.singletonList;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -28,6 +29,7 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.ext.Provider;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTelemetryContainerFilter;
@@ -61,11 +63,39 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
     private static final RestRouteCache ROUTE_CACHE = new RestRouteCache();
 
     private Instrumenter<ContainerRequestContext, ContainerResponseContext> instrumenter;
+    private volatile boolean lazyCreate = false;
+    private final AtomicReference<Instrumenter<ContainerRequestContext, ContainerResponseContext>> lazyInstrumenter = new AtomicReference<>();
 
     @javax.ws.rs.core.Context
     private ResourceInfo resourceInfo;
-
+    
     public TelemetryContainerFilter() {
+        if (instrumenter == null) {
+            if (!CheckpointPhase.getPhase().restored()) {
+                lazyCreate = true;
+            } else {
+                instrumenter = createInstrumenter();
+            }
+        }
+    }
+    
+    private Instrumenter<ContainerRequestContext, ContainerResponseContext> getInstrumenter() {
+        if (instrumenter != null) {
+            return instrumenter;
+        }
+        if (lazyCreate) {
+            instrumenter = lazyInstrumenter.updateAndGet((i) -> {
+                if (i == null) {
+                    return createInstrumenter();
+                } else {
+                    return i;
+                }
+            });
+        }
+        return instrumenter;
+    }
+
+    private Instrumenter<ContainerRequestContext, ContainerResponseContext> createInstrumenter() {
         final OpenTelemetryInfo openTelemetry = OpenTelemetryAccessor.getOpenTelemetryInfo();
         if (openTelemetry.getEnabled() && !AgentDetection.isAgentActive()) {
             InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
@@ -73,28 +103,30 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
                                                                                                                   INSTRUMENTATION_NAME,
                                                                                                                   HttpSpanNameExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER));
 
-            this.instrumenter = builder
+            Instrumenter<ContainerRequestContext, ContainerResponseContext> result = builder
                             .setSpanStatusExtractor(HttpSpanStatusExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
                             .addAttributesExtractor(HttpServerAttributesExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
                             .buildServerInstrumenter(new ContainerRequestContextTextMapGetter());
+            return result;
 
         } else {
-            this.instrumenter = null;
+            return null;
         }
     }
 
     @Override
     public void filter(final ContainerRequestContext request) {
-        if (instrumenter == null) {
+        Instrumenter<ContainerRequestContext, ContainerResponseContext> currentInstrumenter = getInstrumenter();
+        if (currentInstrumenter == null) {
             return;
         }
 
         Context parentContext = Context.current();
-        if (instrumenter.shouldStart(parentContext, request)) {
+        if (currentInstrumenter.shouldStart(parentContext, request)) {
             request.setProperty(REST_RESOURCE_CLASS, resourceInfo.getResourceClass());
             request.setProperty(REST_RESOURCE_METHOD, resourceInfo.getResourceMethod());
 
-            Context spanContext = instrumenter.start(parentContext, request);
+            Context spanContext = currentInstrumenter.start(parentContext, request);
             Scope scope = spanContext.makeCurrent();
             request.setProperty(SPAN_CONTEXT, spanContext);
             request.setProperty(SPAN_PARENT_CONTEXT, parentContext);
@@ -134,8 +166,8 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
     public void filter(final ContainerRequestContext request, final ContainerResponseContext response) {
         // Note: for async resource methods, this may not run on 	the same thread as the other filter method
         // Scope is ended in TelemetryServletRequestListener to ensure it does run on the original request thread
-
-        if (instrumenter == null) {
+        Instrumenter<ContainerRequestContext, ContainerResponseContext> currentInstrumenter = getInstrumenter();
+        if (currentInstrumenter == null) {
             return;
         }
 
@@ -145,7 +177,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
         }
 
         try {
-            instrumenter.end(spanContext, request, response, null);
+            currentInstrumenter.end(spanContext, request, response, null);
         } finally {
             request.removeProperty(REST_RESOURCE_CLASS);
             request.removeProperty(REST_RESOURCE_METHOD);
