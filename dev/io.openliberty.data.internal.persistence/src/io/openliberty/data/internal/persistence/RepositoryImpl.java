@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -74,6 +75,11 @@ import io.openliberty.data.repository.Function;
 import io.openliberty.data.repository.Operation;
 import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.Select.Aggregate;
+import io.openliberty.data.repository.update.Add;
+import io.openliberty.data.repository.update.Assign;
+import io.openliberty.data.repository.update.Divide;
+import io.openliberty.data.repository.update.Multiply;
+import io.openliberty.data.repository.update.SubtractFrom;
 import jakarta.data.Limit;
 import jakarta.data.Sort;
 import jakarta.data.Streamable;
@@ -1286,6 +1292,204 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
+     * Generates JPQL based on method parameters.
+     * Method parameters with annotations such as Assign, Add, Multiply, and Divide indicate an update method.
+     * Method annotations such as Count, Delete, and Exists indicate the respective type of method if present.
+     * Methods with a none of the above are considered find methods.
+     * Find methods can have special type parameters (Pageable, Limit, Sort, Sort[]). Other methods cannot.
+     *
+     * @param queryInfo  query information
+     * @param q          JPQL query to which to append the WHERE clause. Or null to create a new JPQL query.
+     * @param methodAnno Count, Delete, Exists, or Update annotation on the method. Otherwise null.
+     * @param isUpdate   True if known to be an update. False if known to not be an update. Null if unknown.
+     */
+    private StringBuilder generateFromParameters(QueryInfo queryInfo, StringBuilder q, Annotation methodAnno, Boolean isUpdate) {
+        System.out.println("generateFromParameters for " + queryInfo + "\r\n  annotated with  " + methodAnno + " and starting from " + q);
+        Parameter[] params = queryInfo.method.getParameters();
+        String o = queryInfo.entityVar;
+
+        int numAttributeParams = params.length;
+        while (numAttributeParams > 0 && SPECIAL_PARAM_TYPES.contains(params[numAttributeParams - 1].getType()))
+            numAttributeParams--;
+
+        Annotation[] updateOperationAnnos = new Annotation[numAttributeParams];
+        String[] updateOperationAttrs = new String[numAttributeParams];
+        int numUpdateOps = 0;
+        for (int i = 0; i < numAttributeParams; i++) {
+            Parameter param = params[i];
+            Set<Annotation> paramAnnos = new HashSet<>();
+
+            Assign assign = param.getAnnotation(Assign.class);
+            if (assign != null) {
+                paramAnnos.add(updateOperationAnnos[i] = assign);
+                updateOperationAttrs[i] = assign.value();
+            }
+
+            Add add = param.getAnnotation(Add.class);
+            if (add != null) {
+                paramAnnos.add(updateOperationAnnos[i] = add);
+                updateOperationAttrs[i] = add.value();
+            }
+
+            Divide divide = param.getAnnotation(Divide.class);
+            if (divide != null) {
+                paramAnnos.add(updateOperationAnnos[i] = divide);
+                updateOperationAttrs[i] = divide.value();
+            }
+
+            Multiply multiply = param.getAnnotation(Multiply.class);
+            if (multiply != null) {
+                paramAnnos.add(updateOperationAnnos[i] = multiply);
+                updateOperationAttrs[i] = multiply.value();
+            }
+
+            SubtractFrom subtractFrom = param.getAnnotation(SubtractFrom.class);
+            if (subtractFrom != null) {
+                paramAnnos.add(updateOperationAnnos[i] = subtractFrom);
+                updateOperationAttrs[i] = subtractFrom.value();
+            }
+
+            if (paramAnnos.size() > 1)
+                throw new MappingException("The " + getName(param, i) + " parameter of the " +
+                                           queryInfo.method.getName() + " method of the " +
+                                           repositoryInterface.getName() + " repository has an invalid combination of annotations: " +
+                                           paramAnnos + "."); // TODO NLS
+
+            if (updateOperationAnnos[i] != null) {
+                numUpdateOps++;
+                if (isUpdate == null)
+                    isUpdate = Boolean.TRUE;
+                else if (Boolean.FALSE.equals(isUpdate))
+                    throw new MappingException("The " + getName(param, i) + " parameter of the " +
+                                               queryInfo.method.getName() + " method of the " +
+                                               repositoryInterface.getName() + " repository must not be annotated with the " +
+                                               updateOperationAnnos[i].annotationType().getName() +
+                                               " annotation because the repository method is not an update method."); // TODO NLS
+            }
+        }
+
+        System.out.println("  found Annos: " + Arrays.toString(updateOperationAnnos));
+
+        if (isUpdate == null)
+            isUpdate = Boolean.FALSE;
+        else if (numUpdateOps == 0 && Boolean.TRUE.equals(isUpdate))
+            throw new MappingException("Because the " + queryInfo.method.getName() + " method of the " +
+                                       repositoryInterface.getName() + " repository is an update operation, it must have either " +
+                                       "a single parameter that is the entity type or an iterable, stream, or array of entity, " +
+                                       "Or it must have at least one parameter that is annotated with one of " +
+                                       List.of(Assign.class, Add.class, Multiply.class, Divide.class) + "."); // TODO
+
+        if (numAttributeParams < params.length && (methodAnno != null || Boolean.TRUE.equals(isUpdate)))
+            throw new MappingException("The special parameter types " + SPECIAL_PARAM_TYPES +
+                                       " must not be used on the " + queryInfo.method.getName() + " method of the " +
+                                       repositoryInterface.getName() + " repository because the repository method is a " +
+                                       (methodAnno == null ? "Update" : methodAnno.annotationType().getSimpleName()) + " operation."); // TODO NLS
+
+        Boolean isNamePresent = null; // unknown
+
+        // Write new JPQL, starting with UPDATE or SELECT
+        if (q == null)
+            if (Boolean.FALSE.equals(isUpdate)) {
+                queryInfo.type = QueryInfo.Type.FIND;
+                q = generateSelectClause(queryInfo, queryInfo.method.getAnnotation(Select.class));
+            } else {
+                queryInfo.type = QueryInfo.Type.UPDATE;
+                q = new StringBuilder(250).append("UPDATE ").append(queryInfo.entityInfo.name).append(' ').append(o).append(" SET");
+
+                boolean first = true;
+                for (int i = 0; i < numAttributeParams; i++)
+                    if (updateOperationAnnos[i] != null) {
+                        String attribute = updateOperationAttrs[i];
+                        if ("".equals(attribute)) {
+                            if (isNamePresent == null)
+                                isNamePresent = params[i].isNamePresent();
+                            if (Boolean.TRUE.equals(isNamePresent))
+                                attribute = params[i].getName();
+                            else
+                                throw new MappingException("You must specify an entity attribute name as the value of the " +
+                                                           updateOperationAnnos[i].annotationType().getName() + " annotation on parameter " + (i + 1) +
+                                                           " of the " + queryInfo.method.getName() + " method of the " +
+                                                           repositoryInterface.getName() + " repository or compile the application" +
+                                                           " with the -parameters compiler option that preserves the parameter names."); // TODO NLS
+                        }
+                        String name = queryInfo.entityInfo.getAttributeName(attribute, true);
+
+                        if (name == null) {
+                            // TODO
+                            //if (Assign.class.equals(updateOperationAnnos[i].annotationType()))
+                            //    generateUpdatesForIdClass(queryInfo, update, first, q);
+                            //else
+                            throw new MappingException("The " + updateOperationAnnos[i].annotationType().getName() +
+                                                       " annotation cannot be used on the " + getName(params[i], i) +
+                                                       " parameter of the " + queryInfo.method.getName() + " method of the " +
+                                                       repositoryInterface.getName() +
+                                                       " repository cannot be used on the Id of the entity when the Id is an IdClass."); // TODO NLS
+                        } else {
+                            q.append(first ? " " : ", ").append(o).append('.').append(name).append("=");
+                            first = false;
+
+                            boolean withFunction = false;
+                            Class<?> annoClass = updateOperationAnnos[i].annotationType();
+                            if (Assign.class.equals(annoClass)) {
+                            } else if (Add.class.equals(annoClass)) {
+                                if (withFunction = CharSequence.class.isAssignableFrom(queryInfo.entityInfo.attributeTypes.get(name)))
+                                    q.append("CONCAT(").append(o).append('.').append(name).append(',');
+                                else
+                                    q.append(o).append('.').append(name).append('+');
+                            } else if (SubtractFrom.class.equals(annoClass)) {
+                                q.append(o).append('.').append(name).append('-');
+                            } else if (Multiply.class.equals(annoClass)) {
+                                q.append(o).append('.').append(name).append('*');
+                            } else if (Divide.class.equals(annoClass)) {
+                                q.append(o).append('.').append(name).append('/');
+                            } else { // should be unreachable
+                                throw new UnsupportedOperationException(updateOperationAnnos[i].annotationType().getName());
+                            }
+
+                            queryInfo.paramCount++;
+                            q.append('?').append(i + 1);
+
+                            if (withFunction)
+                                q.append(')');
+                        }
+                    }
+            }
+
+        // append the WHERE clause
+        for (int i = 0; i < numAttributeParams; i++) {
+            if (updateOperationAnnos[i] == null) {
+                q.append(queryInfo.hasWhere == false ? " WHERE (" : " AND ");
+                queryInfo.hasWhere = true;
+
+                String attribute;
+                if (isNamePresent == null)
+                    isNamePresent = params[i].isNamePresent();
+                if (Boolean.TRUE.equals(isNamePresent))
+                    attribute = params[i].getName();
+                else // TODO annotation for specifying attribute name
+                    throw new MappingException("You must specify an entity attribute name as the value of the " +
+                                               "[not-implemented-yet] annotation on parameter " + (i + 1) +
+                                               " of the " + queryInfo.method.getName() + " method of the " +
+                                               repositoryInterface.getName() + " repository or compile the application" +
+                                               " with the -parameters compiler option that preserves the parameter names."); // TODO NLS
+
+                String name = queryInfo.entityInfo.getAttributeName(attribute, true);
+                if (name == null) {
+                    // TODO generateConditionsForIdClass(...); continue;
+                    throw new UnsupportedOperationException("Queries with IdClass"); // TODO NLS
+                }
+
+                queryInfo.paramCount++;
+                q.append(o).append('.').append(name).append("=?").append(i + 1);
+            }
+        }
+        if (queryInfo.hasWhere)
+            q.append(')');
+
+        return q;
+    }
+
+    /**
      * Generates the before/after keyset queries and populates them into the query information.
      * Example conditions to add for forward keyset of (lastName, firstName, ssn):
      * AND ((o.lastName > ?5)
@@ -1509,15 +1713,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
                 queryInfo.type = QueryInfo.Type.EXISTS;
             }
-        } else if (queryInfo.type == null) {
+        }
+
+        if (queryInfo.type == null) {
             // Might be Query by Parameters
 
-            if (methodName.startsWith("find")) {
-                q = generateSelectClause(queryInfo, queryInfo.method.getAnnotation(Select.class));
-                if (queryInfo.method.getParameterCount() > 0)
-                    generateWhereClause(queryInfo, q);
-                queryInfo.type = QueryInfo.Type.FIND;
-            } else if (methodName.startsWith("delete") || methodName.startsWith("remove")) {
+            if (methodName.startsWith("delete") || methodName.startsWith("remove")) {
                 boolean isFindAndDelete = queryInfo.isFindAndDelete();
                 if (isFindAndDelete) {
                     if (queryInfo.type != null)
@@ -1549,13 +1750,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 if (queryInfo.method.getParameterCount() > 0)
                     generateWhereClause(queryInfo, q);
                 queryInfo.type = QueryInfo.Type.EXISTS;
+            } else {
+                Update update = queryInfo.method.getAnnotation(Update.class);
+                q = generateFromParameters(queryInfo, null, update, update == null ? null : Boolean.TRUE);
+                System.out.println("  returned " + q);
             }
-        } else {
-            // Method with Entity Parameters - already processed
-
-            if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, "Method with Entity Parameter identified as " + queryInfo.type);
         }
+
+        if (trace && tc.isDebugEnabled())
+            Tr.debug(this, tc, queryInfo.method.getName() + " is identified as a " + queryInfo.type + " method");
 
         return q;
     }
@@ -2151,6 +2354,20 @@ public class RepositoryImpl<R> implements InvocationHandler {
         }
 
         q.append(')');
+    }
+
+    /**
+     * Return a name for the parameter, suitable for display in an NLS message.
+     *
+     * @param param parameter
+     * @param index zero-based method index.
+     * @return parameter name.
+     */
+    @Trivial
+    private static final String getName(Parameter param, int index) {
+        return param.isNamePresent() //
+                        ? param.getName() //
+                        : ("(" + (index + 1) + ")");
     }
 
     /**
