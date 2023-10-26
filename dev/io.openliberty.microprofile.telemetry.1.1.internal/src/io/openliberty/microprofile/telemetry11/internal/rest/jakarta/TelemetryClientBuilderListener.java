@@ -18,6 +18,7 @@ import com.ibm.websphere.ras.Tr;
 import io.openliberty.restfulWS.client.ClientBuilderListener;
 import javax.ws.rs.client.ClientBuilder;
 import io.openliberty.microprofile.telemetry11.internal.rest.TelemetryClientFilter;
+import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
 
 /**
  * Adds the Telemetry client filter when a rest client is built.

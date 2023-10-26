@@ -21,10 +21,10 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @MinimumJavaLevel(javaLevel = 11)
 @SuiteClasses({
-                /* ClientWithNoCdi.class,
+                ClientWithNoCdi.class,
                 JaxRsIntegration.class,
-                JaxRsIntegrationWithConcurrency.class, */
-                Telemetry10.class,/*
+                JaxRsIntegrationWithConcurrency.class,
+                Telemetry10.class,
                 TelemetryBeanTest.class,
                 TelemetryMultiAppTest.class,
                 TelemetrySpiTest.class,
@@ -36,21 +36,23 @@ import componenttest.rules.repeater.RepeatTests;
                 TelemetryServiceNameTest.class,
                 TelemetryShimTest.class,
                 TelemetryLoggingExporterTest.class,
-                TelemetryAPITest.class,
+                TelemetryAPITest.class, 
                 MultiThreadedContextTest.class,
                 TelemetryMisconfigTest.class,
                 TelemetryLongRunningTest.class,
                 TelemetryGlobalOpenTelemetryTest.class,
                 TelemetryDisabledTest.class,
                 TelemetryServletTest.class,
-                TelemetryWithSpanErrorTest.class*/
+                TelemetryWithSpanErrorTest.class
 })
 
 public class FATSuite {
 
-    public static RepeatTests allMPRepeats(String serverName) {
+    public static final String BETA_ID = MicroProfileActions.MP61_ID + "_BETA";
+
+    public static RepeatTests aboveMP50Repeats(String serverName) {
         return MicroProfileActions
-                        .repeat(serverName, TelemetryActions.MP14_MPTEL11, TelemetryActions.MP13_MPTEL11, TelemetryActions.MP21_MPTEL11, MicroProfileActions.MP60, MicroProfileActions.MP61, TelemetryActions.MP21_MPTEL11);//, TelemetryActions.MP22_MPTEL11, TelemetryActions.MP32_MPTEL11, TelemetryActions.MP33_MPTEL11, TelemetryActions.MP41_MPTEL11)
-                        //.andWith(FeatureReplacementAction.BETA_OPTION().fullFATOnly());
+                        .repeat(serverName, TelemetryActions.MP50_MPTEL11, MicroProfileActions.MP60, MicroProfileActions.MP61)
+                        .andWith(FeatureReplacementAction.EE10_FEATURES().withBeta().fullFATOnly().withID(BETA_ID));
     }
 }

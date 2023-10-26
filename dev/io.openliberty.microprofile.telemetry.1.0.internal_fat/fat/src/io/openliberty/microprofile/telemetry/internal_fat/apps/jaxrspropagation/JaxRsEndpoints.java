@@ -171,6 +171,45 @@ public class JaxRsEndpoints extends Application {
         return Response.ok(TEST_PASSED).build();
     }
 
+    //Gets a list of spans created by open telemetry when a test was running and confirms the spans are what we expected and IDs are propagated correctly
+    //spanExporter.reset() should be called at the start of each new test.
+    @GET
+    @Path("/readspansmptel11/{traceId}")
+    public Response readSpansMpTel11(@Context UriInfo uriInfo, @PathParam("traceId") String traceId) {
+        List<SpanData> spanData = spanExporter.getFinishedSpanItems(3, traceId);
+
+        SpanData firstURL = spanData.get(0);
+        SpanData httpGet = spanData.get(1);
+        SpanData secondURL = spanData.get(2);
+
+        assertEquals(SERVER, firstURL.getKind());
+        assertEquals(CLIENT, httpGet.getKind());
+        assertEquals(SERVER, secondURL.getKind());
+
+        assertEquals(firstURL.getSpanId(), httpGet.getParentSpanId());
+        assertEquals(httpGet.getSpanId(), secondURL.getParentSpanId());
+
+        assertEquals(HTTP_OK, firstURL.getAttributes().get(HTTP_STATUS_CODE).intValue());
+        assertEquals(HttpMethod.GET, firstURL.getAttributes().get(HTTP_METHOD));
+        assertEquals("http", firstURL.getAttributes().get(HTTP_SCHEME));
+        assertThat(httpGet.getAttributes().get(HTTP_URL), containsString("endpoints")); //There are many different URLs that will end up here. But all should contain "endpoints"
+
+        // The request used to call /readspans should have the same hostname and port as the test request
+        URI requestUri = uriInfo.getRequestUri();
+        assertEquals(requestUri.getHost(), firstURL.getAttributes().get(NET_HOST_NAME));
+        assertEquals(Long.valueOf(requestUri.getPort()), firstURL.getAttributes().get(NET_HOST_PORT));
+
+        assertEquals(CLIENT, httpGet.getKind());
+        assertEquals("GET", httpGet.getName());
+        assertEquals(HTTP_OK, httpGet.getAttributes().get(HTTP_STATUS_CODE).intValue());
+        assertEquals(HttpMethod.GET, httpGet.getAttributes().get(HTTP_METHOD));
+        assertEquals(requestUri.getHost(), httpGet.getAttributes().get(NET_PEER_NAME));
+        assertEquals(Long.valueOf(requestUri.getPort()), httpGet.getAttributes().get(NET_PEER_PORT));
+        assertThat(httpGet.getAttributes().get(HTTP_URL), containsString("endpoints"));
+
+        return Response.ok(TEST_PASSED).build();
+    }
+
     //This URL is called by the test framework to trigger testing both JAX-RS server and JAX-RS client
     //Tests {2} automatically as this method triggers span creation.
     @GET

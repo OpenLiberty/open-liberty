@@ -64,10 +64,8 @@ public class TelemetryMisconfigTest extends FATServletClient {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().withBeta().fullFATOnly().withID(BETA_ID));
+    public static RepeatTests r = FATSuite.aboveMP50Repeats(SERVER_NAME);
 
     private static WebArchive invalidExporterApp = null;
     private static WebArchive invalidJaegerEndpointApp = null;
@@ -139,9 +137,8 @@ public class TelemetryMisconfigTest extends FATServletClient {
 
     @Test
     @ExpectedFFDC(repeatAction = MicroProfileActions.MP60_ID, value = { "java.lang.IllegalArgumentException" })
-    @ExpectedFFDC(repeatAction = MicroProfileActions.MP61_ID, value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
+    @ExpectedFFDC(repeatAction = {MicroProfileActions.MP61_ID, MicroProfileActions.MP50_ID, MicroProfileActions.MP41_ID, MicroProfileActions.MP14_ID}, value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException"})
     public void testInvalidJaegerExporterEndpoint() throws Exception {
-        System.out.println("THIS IS JAEGER");
         deployAndWaitForApp(invalidJaegerEndpointApp, INVALID_JAEGER_ENDPOINT_APP_NAME);
         new HttpRequest(server, "/" + INVALID_JAEGER_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
                         .expectCode(200)
@@ -155,9 +152,8 @@ public class TelemetryMisconfigTest extends FATServletClient {
 
     @Test
     @ExpectedFFDC(repeatAction = MicroProfileActions.MP60_ID, value = { "java.lang.IllegalArgumentException" })
-    @ExpectedFFDC(repeatAction = MicroProfileActions.MP61_ID, value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
+    @ExpectedFFDC(repeatAction = {MicroProfileActions.MP61_ID, MicroProfileActions.MP50_ID, MicroProfileActions.MP41_ID, MicroProfileActions.MP14_ID}, value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
     public void testInvalidZipkinExporterEndpoint() throws Exception {
-        System.out.println("THIS IS ZIPKIN");
         deployAndWaitForApp(invalidZipkinEndpointApp, INVALID_ZIPKIN_ENDPOINT_APP_NAME);
         new HttpRequest(server, "/" + INVALID_ZIPKIN_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
                         .expectCode(200)
@@ -188,11 +184,11 @@ public class TelemetryMisconfigTest extends FATServletClient {
                         .expectCode(200)
                         .run(String.class);
 
-        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID) || RepeatTestFilter.isRepeatActionActive(FeatureReplacementAction.BETA_ID)) {
-            assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. Server responded with gRPC status code 2. Error message:.*"
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message:.*"
                                                              + INVALID_JAEGER_ENDPOINT.toLowerCase()));
         } else {
-            assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message:.*"
+            assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. Server responded with gRPC status code 2. Error message:.*"
                                                              + INVALID_JAEGER_ENDPOINT.toLowerCase()));
         }
     }
@@ -204,10 +200,11 @@ public class TelemetryMisconfigTest extends FATServletClient {
                         .expectCode(200)
                         .run(String.class);
 
-        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID) || RepeatTestFilter.isRepeatActionActive(FeatureReplacementAction.BETA_ID)) {
-            assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. Server responded with gRPC status code 2. Error message: Failed to connect to.*" + ":10000"));
-        } else {
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message: Failed to connect to.*" + ":10000"));
+        }
+        else{
+            assertNotNull(server.waitForStringInLogUsingMark("Failed to export spans. Server responded with gRPC status code 2. Error message: Failed to connect to.*" + ":10000"));
         }
     }
 

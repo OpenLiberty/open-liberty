@@ -45,8 +45,10 @@ Import-Package: \
   io.opentelemetry.context.propagation,\
   com.ibm.websphere.ras,\
   com.ibm.websphere.ras.annotation,\
+  javax.ws.rs.client;version="[1.0.0,3.0.0)",\
   javax.enterprise.context;version="[1.1.0,3.0.0)",\
   javax.enterprise.inject;version="[1.1.0,3.0.0)",\
+  org.eclipse.microprofile.config;version="[1.0.0,3.0.0)",\
   *
 
 Private-Package: io.openliberty.microprofile.telemetry.internal.common.helpers

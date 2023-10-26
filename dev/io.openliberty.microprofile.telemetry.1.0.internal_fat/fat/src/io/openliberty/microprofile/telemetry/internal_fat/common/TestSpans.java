@@ -78,7 +78,7 @@ public class TestSpans {
      * @throws Exception if {@code runnable} throws an exception
      */
     public Span withTestSpan(ThrowingRunnable runnable) {
-        String spanName = "testSpan-" + request.getRequestURI();
+        String spanName = "testSpan-" + request.getRequestURL();
         Span span = tracer.spanBuilder(spanName)
                         .setNoParent()
                         .startSpan();

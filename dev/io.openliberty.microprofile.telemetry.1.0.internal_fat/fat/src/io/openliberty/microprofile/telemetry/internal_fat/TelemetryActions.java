@@ -19,38 +19,13 @@ import componenttest.rules.repeater.RepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 
 public class TelemetryActions {
-    public static final String MP13_MPTEL11_ID = MicroProfileActions.MP13_ID + "_MPTEL11";
     public static final String MP14_MPTEL11_ID = MicroProfileActions.MP14_ID + "_MPTEL11";
-    public static final String MP21_MPTEL11_ID = MicroProfileActions.MP21_ID + "_MPTEL11";
-    public static final String MP22_MPTEL11_ID = MicroProfileActions.MP22_ID + "_MPTEL11";
-    public static final String MP32_MPTEL11_ID = MicroProfileActions.MP32_ID + "_MPTEL11";
-    public static final String MP33_MPTEL11_ID = MicroProfileActions.MP33_ID + "_MPTEL11";
     public static final String MP41_MPTEL11_ID = MicroProfileActions.MP41_ID + "_MPTEL11";
     public static final String MP50_MPTEL11_ID = MicroProfileActions.MP50_ID + "_MPTEL11";
-
-    public static final FeatureSet MP13_MPTEL11 = MicroProfileActions.MP13
-                    .addFeature("mpTelemetry-1.1")
-                    .build(MP13_MPTEL11_ID);
 
     public static final FeatureSet MP14_MPTEL11 = MicroProfileActions.MP14
                     .addFeature("mpTelemetry-1.1")
                     .build(MP14_MPTEL11_ID);
-
-    public static final FeatureSet MP21_MPTEL11 = MicroProfileActions.MP21
-                    .addFeature("mpTelemetry-1.1")
-                    .build(MP21_MPTEL11_ID);
-
-    public static final FeatureSet MP22_MPTEL11 = MicroProfileActions.MP22
-                    .addFeature("mpTelemetry-1.1")
-                    .build(MP22_MPTEL11_ID);
-
-    public static final FeatureSet MP32_MPTEL11 = MicroProfileActions.MP32
-                    .addFeature("mpTelemetry-1.1")
-                    .build(MP32_MPTEL11_ID);
-
-    public static final FeatureSet MP33_MPTEL11 = MicroProfileActions.MP33
-                    .addFeature("mpTelemetry-1.1")
-                    .build(MP33_MPTEL11_ID);
 
     public static final FeatureSet MP41_MPTEL11 = MicroProfileActions.MP41
                     .addFeature("mpTelemetry-1.1")
@@ -61,7 +36,7 @@ public class TelemetryActions {
                     .build(MP50_MPTEL11_ID);
 
     //All MicroProfile Telemetry FeatureSets - must be descending order
-    private static final FeatureSet[] ALL_MPTEL_SETS_ARRAY = { MP13_MPTEL11, MP14_MPTEL11, MP21_MPTEL11, MP22_MPTEL11, MP32_MPTEL11, MP33_MPTEL11, MP41_MPTEL11, MP50_MPTEL11 };
+    private static final FeatureSet[] ALL_MPTEL_SETS_ARRAY = { MP14_MPTEL11, MP41_MPTEL11, MP50_MPTEL11 };
     private static final List<FeatureSet> ALL_MPTEL_SETS_LIST = Arrays.asList(ALL_MPTEL_SETS_ARRAY);
 
     /**

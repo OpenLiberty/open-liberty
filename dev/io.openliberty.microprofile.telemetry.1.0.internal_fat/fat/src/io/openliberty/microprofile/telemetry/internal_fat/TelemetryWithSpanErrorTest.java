@@ -54,8 +54,8 @@ public class TelemetryWithSpanErrorTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP61, MicroProfileActions.MP60);
-    
+    public static RepeatTests r = FATSuite.aboveMP50Repeats(SERVER_NAME);
+
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")

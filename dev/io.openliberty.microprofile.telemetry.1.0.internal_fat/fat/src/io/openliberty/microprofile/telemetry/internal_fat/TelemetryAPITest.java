@@ -59,10 +59,9 @@ public class TelemetryAPITest extends FATServletClient {
     })
     @Server(SERVER_NAME)
     public static LibertyServer server;
-
+    
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().withBeta().fullFATOnly());
+    public static RepeatTests r = FATSuite.aboveMP50Repeats(SERVER_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {

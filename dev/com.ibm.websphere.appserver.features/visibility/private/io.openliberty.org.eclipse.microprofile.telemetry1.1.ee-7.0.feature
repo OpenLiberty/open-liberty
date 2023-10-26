@@ -2,10 +2,11 @@
 symbolicName=io.openliberty.mpTelemetry1.1.ee-7.0
 singleton=true
 -features=\
-  com.ibm.websphere.appserver.mpRestClient-1.0, \
-  com.ibm.websphere.appserver.mpConfig-1.2, \
+  com.ibm.websphere.appserver.org.eclipse.microprofile.rest.client-1.1, \
+  com.ibm.websphere.appserver.mpConfig-1.3, \
   com.ibm.websphere.appserver.cdi-1.2, \
-  io.openliberty.mpCompatible-0.0, \ 
+  io.openliberty.mpCompatible-0.0, \
+  com.ibm.websphere.appserver.jaxrs-2.0, \
   com.ibm.websphere.appserver.eeCompatible-7.0
 -bundles=\
   com.ibm.ws.cdi.interfaces, \

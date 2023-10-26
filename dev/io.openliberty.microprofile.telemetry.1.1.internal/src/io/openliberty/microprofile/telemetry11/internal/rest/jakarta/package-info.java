@@ -7,8 +7,6 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 @TraceOptions(traceGroup = "TELEMETRY")
 package io.openliberty.microprofile.telemetry11.internal.rest.jakarta;

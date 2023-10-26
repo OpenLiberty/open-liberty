@@ -64,10 +64,8 @@ public class MultiThreadedContextTest extends FATServletClient {
     }
     
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().withBeta().fullFATOnly());
-
-
+    public static RepeatTests r = FATSuite.aboveMP50Repeats(SERVER_NAME);
+    
     @AfterClass
     public static void teardown() throws Exception {
         server.stopServer();

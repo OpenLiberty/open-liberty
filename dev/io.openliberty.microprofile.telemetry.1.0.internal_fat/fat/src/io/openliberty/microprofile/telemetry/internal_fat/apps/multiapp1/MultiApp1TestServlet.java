@@ -71,6 +71,7 @@ public class MultiApp1TestServlet extends FATServlet {
             assertThat(response, equalTo("OK"));
         });
 
+        System.out.println(span);
         // Note the exporter is static and in a shared library so it will contain traces from both apps
         List<SpanData> spanData = exporter.getFinishedSpanItems(3, span);
         SpanData app1client = spanData.get(1);

@@ -23,7 +23,13 @@ import java.util.List;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import componenttest.annotation.SkipForRepeat;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
 import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
+import io.openliberty.microprofile.telemetry.internal_fat.FATSuite;
+import io.openliberty.microprofile.telemetry.internal_fat.TelemetryActions;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanKind;
@@ -198,7 +204,7 @@ public class JaxRsMethodTestServlet extends FATServlet {
     }
 
     @Test
-    //@SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat(TelemetryActions.MP14_MPTEL11_ID)
     public void testPatch() {
         URI testUri = getUri();
         Span span = utils.withTestSpan(() -> {
@@ -228,6 +234,39 @@ public class JaxRsMethodTestServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat({TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP50_MPTEL11_ID, MicroProfileActions.MP60_ID, MicroProfileActions.MP61_ID, FATSuite.BETA_ID})
+    public void testOptionsEE7() {
+        URI testUri = getUri();
+        Span span = utils.withTestSpan(() -> {
+            Response response = ClientBuilder.newClient().target(testUri).request()
+                            .build("OPTIONS")
+                            .invoke();
+            assertThat(response.getStatus(), equalTo(200));
+            assertThat(response.readEntity(String.class), equalTo("options"));
+            
+            assertThat(response.getStringHeaders().get(HttpHeaders.ALLOW), containsInAnyOrder("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"));
+        });
+
+        List<SpanData> spans = exporter.getFinishedSpanItems(3, span.getSpanContext().getTraceId());
+        TestSpans.assertLinearParentage(spans);
+
+        SpanData clientSpan = spans.get(1);
+        SpanData serverSpan = spans.get(2);
+
+        assertThat(clientSpan, isSpan()
+                        .withKind(SpanKind.CLIENT)
+                        .withAttribute(SemanticAttributes.HTTP_METHOD, "OPTIONS")
+                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
+                        .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString()));
+
+        assertThat(serverSpan, isSpan()
+                        .withKind(SpanKind.SERVER)
+                        .withAttribute(SemanticAttributes.HTTP_METHOD, "OPTIONS")
+                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L));
+    }
+
+    @Test
+    @SkipForRepeat(TelemetryActions.MP14_MPTEL11_ID)
     public void testOptions() {
         URI testUri = getUri();
         Span span = utils.withTestSpan(() -> {
@@ -236,6 +275,7 @@ public class JaxRsMethodTestServlet extends FATServlet {
                             .invoke();
             assertThat(response.getStatus(), equalTo(200));
             assertThat(response.readEntity(String.class), equalTo("options"));
+            
             assertThat(response.getStringHeaders().get(HttpHeaders.ALLOW), containsInAnyOrder("GET", "HEAD", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         });
 
