@@ -61,7 +61,7 @@ final class LTPACrypto {
 
 	private static final String ENCRYPT_ALGORITHM_DESEDE = "DESede";
 	private static final String ENCRYPT_ALGORITHM_RSA = "RSA";
-	private static final String encryptAlgorithm = getEncryptAlgorithm();
+	private static final String encryptAlgorithm = getEncryptionAlgorithm();
 
 	private static int MAX_CACHE = 500;
 	private static IvParameterSpec ivs8 = null;
@@ -1184,7 +1184,7 @@ final class LTPACrypto {
 			return SIGNATURE_ALGORITHM_SHA1WITHRSA;
 	}
 
-	private static String getEncryptAlgorithm() {
+	private static String getEncryptionAlgorithm() {
 		if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable())
 			return ENCRYPT_ALGORITHM_RSA;
 		else
