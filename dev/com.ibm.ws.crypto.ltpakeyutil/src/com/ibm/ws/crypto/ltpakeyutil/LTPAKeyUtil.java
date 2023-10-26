@@ -44,6 +44,12 @@ public final class LTPAKeyUtil {
 	public static String IBMJCE_PLUS_FIPS_PROVIDER = "com.ibm.crypto.provider.IBMJCEPlusFIPS";
 	public static String OPENJCE_PLUS_PROVIDER = "com.ibm.crypto.plus.provider.OpenJCEPlus";
 
+	public static final String MESSAGE_DIGEST_ALGORITHM_SHA = "SHA";
+	public static final String MESSAGE_DIGEST_ALGORITHM_SHA256 = "SHA256";
+
+	public static final String IBMJCE_NAME = "IBMJCE";
+	public static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
+
 	private static boolean issuedBetaMessage = false;
 
 	public static byte[] encrypt(byte[] data, byte[] key, String cipher) throws Exception {
