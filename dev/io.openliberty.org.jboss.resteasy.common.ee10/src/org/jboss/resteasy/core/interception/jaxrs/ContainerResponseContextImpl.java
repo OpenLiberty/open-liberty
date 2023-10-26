@@ -1,3 +1,22 @@
+/*
+ * JBoss, Home of Professional Open Source.
+ *
+ * Copyright 2021, 2023 Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.resteasy.core.interception.jaxrs;
 
 import org.jboss.resteasy.core.ResteasyContext;
@@ -30,6 +49,10 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+// Liberty change start
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+//Liberty change end
 import java.util.function.Consumer;
 
 /**
@@ -52,6 +75,7 @@ public class ContainerResponseContextImpl implements SuspendableContainerRespons
    private Throwable throwable;
    private Consumer<Throwable> onComplete;
    private boolean weSuspended;
+   private final Lock lock = new ReentrantLock(); // Liberty change
 
    @Deprecated
    public ContainerResponseContextImpl(final HttpRequest request, final HttpResponse httpResponse, final BuiltResponse serverResponse)
@@ -288,48 +312,75 @@ public class ContainerResponseContextImpl implements SuspendableContainerRespons
 
 
    @Override
-   public synchronized void suspend() {
-      if(continuation == null)
-         throw new RuntimeException("Suspend not supported yet");
-      suspended = true;
+   // Liberty change start
+   public void suspend() {
+      lock.lock();
+      try {
+      // Liberty change end
+         if(continuation == null)
+            throw new RuntimeException("Suspend not supported yet");
+          suspended = true;
+      // Liberty change start
+      } finally {
+         lock.unlock();
+      }
+      // Liberty change end
    }
 
    @Override
-   public synchronized void resume() {
-      if(!suspended)
-         throw new RuntimeException("Cannot resume: not suspended");
-      if(inFilter)
-      {
-         // suspend/resume within filter, same thread: just ignore and move on
-         suspended = false;
-         return;
-      }
+   // Liberty change start
+   public void resume() {
+      lock.lock();
+      try {
+      // Liberty change end
+         if(!suspended)
+            throw new RuntimeException("Cannot resume: not suspended");
+         if(inFilter)
+         {
+            // suspend/resume within filter, same thread: just ignore and move on
+            suspended = false;
+            return;
+         }
 
-      // go on, but with proper exception handling
-      try(CloseableContext c = ResteasyContext.addCloseableContextDataLevel(contextDataMap)){
-         filter();
-      }catch(Throwable t) {
-         // don't throw to client
-         writeException(t);
-      }
-   }
-
-   @Override
-   public synchronized void resume(Throwable t) {
-      if(!suspended)
-         throw new RuntimeException("Cannot resume: not suspended");
-      if(inFilter)
-      {
-         // not suspended, or suspend/abortWith within filter, same thread: collect and move on
-         throwable = t;
-         suspended = false;
-      }
-      else
-      {
+         // go on, but with proper exception handling
          try(CloseableContext c = ResteasyContext.addCloseableContextDataLevel(contextDataMap)){
+            filter();
+         }catch(Throwable t) {
+            // don't throw to client
             writeException(t);
          }
+      // Liberty change start
+      } finally {
+         lock.unlock();
       }
+      // Liberty change end
+   }
+
+   @Override
+   // Liberty change start
+   public void resume(Throwable t) {
+      lock.lock();
+      try {
+      // Liberty change end
+         if(!suspended)
+            throw new RuntimeException("Cannot resume: not suspended");
+         if(inFilter)
+         {
+            // not suspended, or suspend/abortWith within filter, same thread: collect and move on
+            throwable = t;
+            suspended = false;
+         }
+         else
+         {
+            try(CloseableContext c = ResteasyContext.addCloseableContextDataLevel(contextDataMap)){
+               writeException(t);
+            }
+         }
+      // Liberty change start
+      } finally {
+         lock.unlock();
+      }
+      // Liberty change end
    }
 
    private void writeException(Throwable t)
@@ -351,81 +402,90 @@ public class ContainerResponseContextImpl implements SuspendableContainerRespons
       asyncResponse.completionCallbacks(t);
    }
 
-   public synchronized void filter() throws IOException
+   // Liberty change start
+   public void filter() throws IOException
    {
-      RESTEasyTracingLogger logger = RESTEasyTracingLogger.getInstance(request);
+      lock.lock();
+      try {
+      // Liberty change end
+         RESTEasyTracingLogger logger = RESTEasyTracingLogger.getInstance(request);
 
-      while(currentFilter < responseFilters.length)
-      {
-         ContainerResponseFilter filter = responseFilters[currentFilter++];
-         try
+         while(currentFilter < responseFilters.length)
          {
-            suspended = false;
-            throwable = null;
-            inFilter = true;
-            final long timestamp = logger.timestamp("RESPONSE_FILTER");
-            filter.filter(requestContext, this);
-            logger.logDuration("RESPONSE_FILTER", timestamp, filter);
-         }
-         catch (IOException e)
-         {
-            throw new ApplicationException(e);
-         }
-         finally
-         {
-            inFilter = false;
-         }
-         if(suspended) {
-            if(!request.getAsyncContext().isSuspended())
+            ContainerResponseFilter filter = responseFilters[currentFilter++];
+            try
             {
-               request.getAsyncContext().suspend();
-               weSuspended = true;
+               suspended = false;
+               throwable = null;
+               inFilter = true;
+               final long timestamp = logger.timestamp("RESPONSE_FILTER");
+               filter.filter(requestContext, this);
+               logger.logDuration("RESPONSE_FILTER", timestamp, filter);
             }
-            // ignore any abort request until we are resumed
-            filterReturnIsMeaningful = false;
-            return;
-         }
-         if (throwable != null)
-         {
-            // handle the case where we've been suspended by a previous filter
-            if(filterReturnIsMeaningful)
-               SynchronousDispatcher.rethrow(throwable);
-            else
+            catch (IOException e)
             {
-               writeException(throwable);
+               throw new ApplicationException(e);
+            }
+            finally
+            {
+               inFilter = false;
+            }
+            if(suspended) {
+               if(!request.getAsyncContext().isSuspended())
+               {
+                  request.getAsyncContext().suspend();
+                  weSuspended = true;
+               }
+               // ignore any abort request until we are resumed
+               filterReturnIsMeaningful = false;
                return;
             }
-         }
-      }
-      // here it means we reached the last filter
-
-      // some frameworks don't support async request filters, in which case suspend() is forbidden
-      // so if we get here we're still synchronous and don't have a continuation, which must be in
-      // the caller
-      if(continuation == null)
-         return;
-
-      // if we've never been suspended, the caller is valid so let it handle any exception
-      if(filterReturnIsMeaningful) {
-         continuation.run(onComplete);
-         return;
-      }
-      // if we've been suspended then the caller is a filter and have to invoke our continuation
-      // FIXME: we don't really know if we're already trying to send an exception, so we can't just blindly
-      // try to write it out
-      try
-      {
-         continuation.run((t) -> {
-            onComplete.accept(t);
-            if(weSuspended)
+            if (throwable != null)
             {
-               // if we're the ones who turned the request async, nobody will call complete() for us, so we have to
-               request.getAsyncContext().complete();
+               // handle the case where we've been suspended by a previous filter
+               if(filterReturnIsMeaningful)
+                  SynchronousDispatcher.rethrow(throwable);
+               else
+               {
+                  writeException(throwable);
+                  return;
+               }
             }
-         });
-      } catch (IOException e)
-      {
-         LogMessages.LOGGER.unknownException(request.getHttpMethod(), request.getUri().getPath(), e);
+         }
+         // here it means we reached the last filter
+
+         // some frameworks don't support async request filters, in which case suspend() is forbidden
+         // so if we get here we're still synchronous and don't have a continuation, which must be in
+         // the caller
+         if(continuation == null)
+            return;
+
+         // if we've never been suspended, the caller is valid so let it handle any exception
+         if(filterReturnIsMeaningful) {
+            continuation.run(onComplete);
+            return;
+         }
+         // if we've been suspended then the caller is a filter and have to invoke our continuation
+         // FIXME: we don't really know if we're already trying to send an exception, so we can't just blindly
+         // try to write it out
+         try
+         {
+            continuation.run((t) -> {
+               onComplete.accept(t);
+               if(weSuspended)
+               {
+                  // if we're the ones who turned the request async, nobody will call complete() for us, so we have to
+                  request.getAsyncContext().complete();
+               }
+            });
+         } catch (IOException e)
+         {
+            LogMessages.LOGGER.unknownException(request.getHttpMethod(), request.getUri().getPath(), e);
+         }
+      // Liberty change start
+      } finally {
+         lock.unlock();
       }
+      // Liberty change end
    }
 }
