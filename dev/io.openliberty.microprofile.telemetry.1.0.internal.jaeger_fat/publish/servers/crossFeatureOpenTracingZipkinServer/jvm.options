@@ -1,0 +1,2 @@
+# beta fence for HTTP tracing
+-Dcom.ibm.ws.beta.edition=true

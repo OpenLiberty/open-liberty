@@ -17,6 +17,7 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.microprofile.telemetry.internal.common.rest.TelemetryServletRequestListener;
 import jakarta.servlet.FilterRegistration;
@@ -37,13 +38,21 @@ public class TelemetryServletContainerInitializer implements ServletContainerIni
     public void onStartup(Set<Class<?>> c, ServletContext sc) throws ServletException {
         sc.addListener(TelemetryServletRequestListener.class);
 
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Enable TelemetryServletFilter");
+        // Beta fencing for HTTP tracing
+        if (ProductInfo.getBetaEdition()) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Running beta driver, enable TelemetryServletFilter");
+            }
+            FilterRegistration.Dynamic filterRegistration = sc.addFilter("io.openliberty.microprofile.telemetry10.internal.rest.TelemetryServletFilter",
+                                                                         TelemetryServletFilter.class);
+            filterRegistration.addMappingForUrlPatterns(null, true, "/*");
+            filterRegistration.setAsyncSupported(true);
+        } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Running product driver, disable TelemetryServletFilter");
+            }
         }
-        FilterRegistration.Dynamic filterRegistration = sc.addFilter("io.openliberty.microprofile.telemetry10.internal.rest.TelemetryServletFilter",
-                                                                     TelemetryServletFilter.class);
-        filterRegistration.addMappingForUrlPatterns(null, true, "/*");
-        filterRegistration.setAsyncSupported(true);
+
     }
 
 }
