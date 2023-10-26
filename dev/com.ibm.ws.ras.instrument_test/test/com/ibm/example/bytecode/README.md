@@ -1,8 +1,7 @@
 ## Source files
 
-The classes compiled in this package are not meant to be used for testing.
-Instead, they are placeholder .java files that we need to manually compile at different java levels.
-The compiled classes will then be put into the `test data` directory.
+The classes in this directory are the source files for the .class files located in the `test data` directory.
+If you are adding a new class to this directory you need to manually compile it at the java level it was written to be tested against.
 
 ### Generate new class files
 

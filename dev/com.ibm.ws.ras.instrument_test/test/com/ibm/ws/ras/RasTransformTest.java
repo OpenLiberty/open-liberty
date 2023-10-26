@@ -39,6 +39,7 @@ import org.objectweb.asm.util.TraceClassVisitor;
 
 import com.ibm.ws.ras.instrument.internal.main.LibertyRuntimeTransformer;
 
+//TODO add tests that make sure classes are instrumented with trace.
 @SuppressWarnings("deprecation")
 public class RasTransformTest extends LibertyRuntimeTransformer {
 	
@@ -71,7 +72,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
         majorCodeMap.put("19", 63);
         majorCodeMap.put("20", 64);
         majorCodeMap.put("21", 65);
-        majorCodeMap.put("22", 65);
+        majorCodeMap.put("22", 66);
 	}
 	
 	/**
@@ -388,9 +389,8 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 		
 	}
 	
-	//FIXME - This test is currently failing because isTransformPossible returns false
 	//TODO expand this test to actually test Java 21 features https://openjdk.org/jeps/441
-	//@Test 
+	@Test 
 	public void testJava21Basic() {
 		assumeTrue(Integer.parseInt(System.getProperty("java.specification.version")) >= 21);
 		String classPath = "test/test data/com/ibm/example/bytecode/HelloWorldJava21.class";
