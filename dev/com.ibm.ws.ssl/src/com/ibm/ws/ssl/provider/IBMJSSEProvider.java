@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,9 @@
  *******************************************************************************/
 
 package com.ibm.ws.ssl.provider;
+
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -25,21 +28,53 @@ import com.ibm.ws.ssl.JSSEProviderFactory;
  * This is the old IBMJSSE JSSEProvider implementation. This currently assumes
  * IBMJSSE2 is the replacement.
  * </p>
- * 
+ *
  * @author IBM Corporation
  * @version WAS 7.0
  * @since WAS 7.0
  */
 public class IBMJSSEProvider extends AbstractJSSEProvider implements JSSEProvider {
     private static TraceComponent tc = Tr.register(IBMJSSEProvider.class, "SSL", "com.ibm.ws.ssl.resources.ssl");
+    public static String IBM_JCE_Plus_FIPS_PROVIDER = "com.ibm.crypto.provider.IBMJCEPlusFIPS";
 
     /**
      * Constructor.
      */
     public IBMJSSEProvider() {
         super();
-        initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,
-                   Constants.SOCKET_FACTORY_WAS_DEFAULT, null, Constants.PROTOCOL_SSL_TLS_V2);
+        String fipsON = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            public String run() {
+                return System.getProperty("com.ibm.jsse2.usefipsprovider");
+            }
+        });
+
+        String ibmjceplusfipsprovider = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            public String run() {
+                return System.getProperty("com.ibm.jsse2.usefipsProviderName");
+            }
+        });
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "provider: " + ibmjceplusfipsprovider);
+        }
+
+        if (fipsON != null && fipsON.equalsIgnoreCase("true") && ibmjceplusfipsprovider.equals("IBMJCEPlusFIPS")) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "fips is enabled and using IBMJCEPlusFIPS provider");
+                Tr.debug(tc, "key manager factory alg: " + JSSEProviderFactory.getKeyManagerFactoryAlgorithm());
+                Tr.debug(tc, "trust manager factory alg: " + JSSEProviderFactory.getTrustManagerFactoryAlgorithm());
+                Tr.debug(tc, "protocol: " + Constants.PROTOCOL_TLS);
+            }
+            initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,
+                       Constants.SOCKET_FACTORY_WAS_DEFAULT, null, Constants.PROTOCOL_TLS);
+        } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "fips not enabled: " + fipsON);
+            }
+            initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,
+                       Constants.SOCKET_FACTORY_WAS_DEFAULT, null, Constants.PROTOCOL_SSL_TLS_V2);
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Created an IBM JSSE provider");
         }

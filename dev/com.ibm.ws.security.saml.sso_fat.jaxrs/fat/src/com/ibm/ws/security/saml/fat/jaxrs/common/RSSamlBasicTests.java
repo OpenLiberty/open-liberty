@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -276,9 +276,9 @@ public class RSSamlBasicTests extends SAMLCommonTest {
      * Tests
      */
 
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException" })
-    @Mode(TestMode.LITE)
-    @Test
+    //@ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException" })
+    //@Mode(TestMode.LITE)
+    //@Test - IdP is updated to use sha256 signature algorithm , this test is not valid anymore. when we update samlWeb to support more signature algorithms , use this test
     public void RSSamlBasicTests_signatureAlgorithNotSatisfied() throws Exception {
 
         WebClient webClient = getAndSaveWebClient();
