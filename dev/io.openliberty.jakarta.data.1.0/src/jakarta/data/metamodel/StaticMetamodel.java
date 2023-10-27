@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data.model;
+package jakarta.data.metamodel;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

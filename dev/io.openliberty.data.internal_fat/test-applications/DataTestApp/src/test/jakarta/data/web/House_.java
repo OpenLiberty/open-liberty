@@ -12,37 +12,39 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import jakarta.data.model.Attribute;
-import jakarta.data.model.StaticMetamodel;
+import jakarta.data.metamodel.Attribute;
+import jakarta.data.metamodel.SortableAttribute;
+import jakarta.data.metamodel.StaticMetamodel;
+import jakarta.data.metamodel.TextAttribute;
 
 /**
  * Metamodel for the House entity.
  */
 @StaticMetamodel(House.class)
-public class House_ {
-    public static final Attribute AREA = Attribute.get();
+public interface House_ {
+    SortableAttribute AREA = SortableAttribute.get();
 
-    public static final Attribute garage = Attribute.get();
+    Attribute garage = Attribute.get();
 
-    public static final Attribute GARAGE_AREA = Attribute.get();
+    SortableAttribute GARAGE_AREA = SortableAttribute.get();
 
-    public static final Attribute garage_door_height = Attribute.get();
+    SortableAttribute garage_door_height = SortableAttribute.get();
 
-    public static final Attribute Garage_Door_Width = Attribute.get();
+    SortableAttribute Garage_Door_Width = SortableAttribute.get();
 
-    public static final Attribute garage_type = Attribute.get();
+    SortableAttribute garage_type = SortableAttribute.get();
 
-    public static final Attribute kitchen = Attribute.get();
+    Attribute kitchen = Attribute.get();
 
-    public static final Attribute kitchen_length = Attribute.get();
+    SortableAttribute kitchen_length = SortableAttribute.get();
 
-    public static final Attribute kitchen_width = Attribute.get();
+    SortableAttribute kitchen_width = SortableAttribute.get();
 
-    public static final Attribute id = Attribute.get();
+    TextAttribute id = TextAttribute.get();
 
-    public static final Attribute LotSize = Attribute.get();
+    SortableAttribute LotSize = SortableAttribute.get();
 
-    public static final Attribute numBedrooms = Attribute.get();
+    SortableAttribute numBedrooms = SortableAttribute.get();
 
-    public static final Attribute parcelid = Attribute.get();
+    TextAttribute parcelid = TextAttribute.get();
 }

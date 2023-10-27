@@ -29,7 +29,6 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.RecordComponent;
 import java.util.ArrayList;
@@ -66,6 +65,7 @@ import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.InMemoryMappingFile;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
+import io.openliberty.data.internal.persistence.model.Model;
 import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -337,38 +337,13 @@ public class EntityDefiner implements Runnable {
      * @param staticMetamodels static metamodel class(es) per entity class.
      */
     public void populateStaticMetamodelClasses(Map<Class<?>, List<Class<?>>> staticMetamodels) {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
         for (Class<?> entityClass : entities) {
             List<Class<?>> metamodelClasses = staticMetamodels.get(entityClass);
             if (metamodelClasses != null) {
                 CompletableFuture<EntityInfo> entityInfoFuture = entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
                 EntityInfo entityInfo = entityInfoFuture.join();
                 for (Class<?> metamodelClass : metamodelClasses)
-                    for (Field field : metamodelClass.getFields()) {
-                        int mod = field.getModifiers();
-                        if (jakarta.data.model.Attribute.class.equals(field.getType())
-                            && Modifier.isPublic(mod)
-                            && Modifier.isStatic(mod)
-                            && Modifier.isFinal(mod)) {
-
-                            String fieldName = field.getName();
-                            String attrName = entityInfo.attributeNames.get(fieldName.toLowerCase());
-                            jakarta.data.model.Attribute attribute = null;
-                            if (attrName != null)
-                                try {
-                                    attribute = (jakarta.data.model.Attribute) field.get(null);
-                                } catch (IllegalAccessException | IllegalArgumentException x) {
-                                    System.out.println("Unable to initialize the " + fieldName + " field of the " +
-                                                       metamodelClass.getName() + " StaticMetamodel class.");
-                                    // TODO NLS
-                                }
-                            if (trace && tc.isDebugEnabled())
-                                Tr.debug(this, tc, "initialize " + metamodelClass.getSimpleName() + '.' + fieldName + " (" + attrName + "): " + attribute);
-
-                            if (attribute != null)
-                                attribute.init(AttributeInfoImpl.create(fieldName));
-                        }
-                    }
+                    Model.initialize(metamodelClass, entityInfo.attributeNames);
             }
         }
     }

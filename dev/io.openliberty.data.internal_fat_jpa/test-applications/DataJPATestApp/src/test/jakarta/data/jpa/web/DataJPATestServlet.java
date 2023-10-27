@@ -2695,6 +2695,14 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Tests direct usage of StaticMetamodel auto-populated CollectionAttribute field.
+     */
+    @Test
+    public void testStaticMetamodelCollectionAttribute() {
+        assertEquals("bankAccounts", TaxPayer_.bankAccounts.name());
+    }
+
+    /**
      * Tests that the StaticMetamodel annotation on a non-JPA entity is not populated by the JPA-based provider.
      */
     @Test

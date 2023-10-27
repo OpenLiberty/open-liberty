@@ -67,7 +67,7 @@ import io.openliberty.data.internal.persistence.EntityDefiner;
 import io.openliberty.data.internal.persistence.QueryInfo;
 import jakarta.annotation.Generated;
 import jakarta.data.exceptions.MappingException;
-import jakarta.data.model.StaticMetamodel;
+import jakarta.data.metamodel.StaticMetamodel;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Insert;
