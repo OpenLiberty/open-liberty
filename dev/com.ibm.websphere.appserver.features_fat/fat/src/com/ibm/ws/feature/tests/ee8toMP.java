@@ -56,8 +56,8 @@ public class ee8toMP {
         LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
         server.startServer();
 
-        assertNotNull(server.waitForStringInLog("mpMetrics-2.3"));
-        assertNotNull(server.waitForStringInLog("mpHealth-2.2"));
+        assertNotNull(server.waitForStringInLog("mpMetrics-1.1"));
+        assertNotNull(server.waitForStringInLog("mpHealth-1.0"));
 
         server.stopServer("CWWKF0001E");
     }

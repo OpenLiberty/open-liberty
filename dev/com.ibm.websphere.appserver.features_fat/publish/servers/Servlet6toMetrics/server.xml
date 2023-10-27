@@ -12,8 +12,6 @@
  -->
 <server>
 
-    <logging traceSpecification="*=info:com.ibm.ws.kernel.feature.internal*=debug" maxFileSize="100" maxFiles="5" />
-
     <featureManager>
         <feature>servlet-6.0</feature>
         <feature>mpMetrics</feature>

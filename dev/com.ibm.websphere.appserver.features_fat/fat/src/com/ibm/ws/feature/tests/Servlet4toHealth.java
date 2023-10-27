@@ -56,7 +56,7 @@ public class Servlet4toHealth {
         LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
         server.startServer();
 
-        assertNotNull(server.waitForStringInLog("mpHealth-2.2"));
+        assertNotNull(server.waitForStringInLog("mpHealth-1.0"));
 
         server.stopServer("CWWKF0001E");
     }
