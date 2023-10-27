@@ -56,7 +56,7 @@ public class Servlet4toMetrics {
         LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
         server.startServer();
 
-        assertNotNull(server.waitForStringInLog("mpMetrics-2.3"));
+        assertNotNull(server.waitForStringInLog("mpMetrics-1.1"));
 
         server.stopServer("CWWKF0001E");
     }

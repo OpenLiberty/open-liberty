@@ -474,7 +474,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                     checkForFullSymbolicName(toleratedCandidateDef, toleratedSymbolicName, chain.getLast());
                     isSingleton |= toleratedCandidateDef.isSingleton();
                     // Only check against the allowed tolerations if this candidate feature is public or protected (NOT private)
-                    if (isAllowedToleration(selectionContext, toleratedCandidateDef, allowedTolerations, overrideTolerates, baseSymbolicName, tolerate)) {
+                    if (isAllowedToleration(selectionContext, toleratedCandidateDef, allowedTolerations, overrideTolerates, baseSymbolicName, tolerate, chain)) {
                         candidateNames.add(toleratedCandidateDef.getSymbolicName());
                     }
                 }
@@ -516,7 +516,7 @@ public class FeatureResolverImpl implements FeatureResolver {
      */
     private boolean isAllowedToleration(SelectionContext selectionContext, ProvisioningFeatureDefinition toleratedCandidateDef, Set<String> allowedTolerations,
                                         List<String> overrideTolerates,
-                                        String baseSymbolicName, String tolerate) {
+                                        String baseSymbolicName, String tolerate, Deque<String> chain) {
         // if in minify mode always allow (_allowMultipleVersions)
         if (selectionContext.allowMultipleVersions(baseSymbolicName)) {
             return true;
@@ -531,6 +531,9 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
         // otherwise if it is part of the override list
         if (overrideTolerates.contains(tolerate)) {
+            return true;
+        }
+        if(!chain.peekFirst().contains("-")){
             return true;
         }
         return false;
