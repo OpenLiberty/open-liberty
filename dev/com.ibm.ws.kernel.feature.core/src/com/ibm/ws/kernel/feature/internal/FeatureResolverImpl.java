@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -319,7 +319,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 selectionContext.getResult().addMissing(rootFeatureName);
             } else {
                 // process the selected root and its included features
-                processSelected(rootFeatureDef, null, chain, result, selectionContext);
+                processSelected(rootFeatureDef, chain, result, selectionContext);
             }
         }
         // Note that this only saves the blocked count on the first call during doResolveFeatures;
@@ -350,7 +350,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         return new String[] { baseName, version };
     }
 
-    private void processSelected(ProvisioningFeatureDefinition selectedFeature, Set<String> allowedTolerations, Deque<String> chain, Set<String> result,
+    private void processSelected(ProvisioningFeatureDefinition selectedFeature, Deque<String> chain, Set<String> result,
                                  SelectionContext selectionContext) {
         if (selectedFeature == null) {
             return;
@@ -382,29 +382,8 @@ public class FeatureResolverImpl implements FeatureResolver {
             // Postpone decisions on variable candidates until after the first pass
             Collection<FeatureResource> includes = selectedFeature.getConstituents(SubsystemContentType.FEATURE_TYPE);
 
-            boolean isRoot = chain.size() == 1;
-            // do a first pass to get all the base feature names that are included
-            Set<String> includedBaseFeatureNames = new HashSet<String>();
             for (FeatureResource included : includes) {
-                String symbolicName = included.getSymbolicName();
-                if (symbolicName != null) {
-                    String[] nameAndVersion = parseNameAndVersion(included.getSymbolicName());
-                    String baseName = nameAndVersion[0];
-                    includedBaseFeatureNames.add(baseName);
-                }
-            }
-            if (allowedTolerations == null) {
-                // if allowTolerations is null then use the whole includedBaseFeatureNames, this is a root feature; but lets make sure
-                if (!!!isRoot) {
-                    throw new IllegalStateException("A null allowTolerations is only valid for root features.");
-                }
-            } else {
-                // otherwise we need to take the intersection from the parent's toleration with the ones we include directly here
-                includedBaseFeatureNames.retainAll(allowedTolerations);
-            }
-            allowedTolerations = includedBaseFeatureNames;
-            for (FeatureResource included : includes) {
-                processIncluded(selectedFeature, included, allowedTolerations, chain, result, selectionContext);
+                processIncluded(selectedFeature, included, chain, result, selectionContext);
             }
         } finally {
             chain.removeLast();
@@ -418,7 +397,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
     }
 
-    private void processIncluded(ProvisioningFeatureDefinition includingFeature, FeatureResource included, Set<String> allowedTolerations, Deque<String> chain, Set<String> result,
+    private void processIncluded(ProvisioningFeatureDefinition includingFeature, FeatureResource included, Deque<String> chain, Set<String> result,
                                  SelectionContext selectionContext) {
         String symbolicName = included.getSymbolicName();
         if (symbolicName == null) {
@@ -473,10 +452,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 if (toleratedCandidateDef != null && !!!candidateNames.contains(toleratedCandidateDef.getSymbolicName()) && isAccessible(includingFeature, toleratedCandidateDef)) {
                     checkForFullSymbolicName(toleratedCandidateDef, toleratedSymbolicName, chain.getLast());
                     isSingleton |= toleratedCandidateDef.isSingleton();
-                    // Only check against the allowed tolerations if this candidate feature is public or protected (NOT private)
-                    if (isAllowedToleration(selectionContext, toleratedCandidateDef, allowedTolerations, overrideTolerates, baseSymbolicName, tolerate)) {
-                        candidateNames.add(toleratedCandidateDef.getSymbolicName());
-                    }
+                    candidateNames.add(toleratedCandidateDef.getSymbolicName());
                 }
             }
         }
@@ -492,7 +468,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         if (candidateNames.size() == 1) {
             // We selected one candidate; now process the selected
             String selectedName = candidateNames.get(0);
-            processSelected(selectionContext.getRepository().getFeature(selectedName), allowedTolerations, chain, result, selectionContext);
+            processSelected(selectionContext.getRepository().getFeature(selectedName), chain, result, selectionContext);
         }
     }
 
@@ -503,37 +479,6 @@ public class FeatureResolverImpl implements FeatureResolver {
      */
     private boolean isAccessible(ProvisioningFeatureDefinition includingFeature, ProvisioningFeatureDefinition candidateDef) {
         return candidateDef.getVisibility() != Visibility.PRIVATE || includingFeature.getBundleRepositoryType().equals(candidateDef.getBundleRepositoryType());
-    }
-
-    /**
-     * @param selectionContext
-     * @param toleratedCandidateDef
-     * @param allowedTolerations
-     * @param overrideTolerates
-     * @param baseSymbolicName
-     * @param tolerate
-     * @return
-     */
-    private boolean isAllowedToleration(SelectionContext selectionContext, ProvisioningFeatureDefinition toleratedCandidateDef, Set<String> allowedTolerations,
-                                        List<String> overrideTolerates,
-                                        String baseSymbolicName, String tolerate) {
-        // if in minify mode always allow (_allowMultipleVersions)
-        if (selectionContext.allowMultipleVersions(baseSymbolicName)) {
-            return true;
-        }
-        // all private features tolerations are allowed
-        if (Visibility.PRIVATE == toleratedCandidateDef.getVisibility()) {
-            return true;
-        }
-        // if it is part of the allowed tolerates from the dependency chain then allow
-        if (allowedTolerations.contains(baseSymbolicName)) {
-            return true;
-        }
-        // otherwise if it is part of the override list
-        if (overrideTolerates.contains(tolerate)) {
-            return true;
-        }
-        return false;
     }
 
     /**
