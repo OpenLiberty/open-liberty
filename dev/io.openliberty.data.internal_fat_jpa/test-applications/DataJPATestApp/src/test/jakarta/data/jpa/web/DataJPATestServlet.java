@@ -1531,16 +1531,16 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Repository method with the Update annotation that makes an update by assigning the IdClass instance to something else.
+     * Repository method with the Assign annotation that makes an update by assigning the IdClass instance to something else.
      */
     @Test
-    public void testIdClassUpdateAnnotation() {
+    public void testIdClassUpdateAssignIdClass() {
         cities.save(new City("La Crosse", "Wisconsin", 52680, Set.of(608)));
         try {
             cities.findById(CityId.of("La Crosse", "Wisconsin")).orElseThrow();
 
-            assertEquals(1, cities.replace(CityId.of("La Crosse", "Wisconsin"),
-                                           CityId.of("Decorah", "Iowa"), 7587, Set.of(563)));
+            assertEquals(1, cities.replace("La Crosse", "Wisconsin", // TODO CityId.of("La Crosse", "Wisconsin"),
+                                           "Decorah", "Iowa", 7587, Set.of(563))); // TODO CityId.of("Decorah", "Iowa"), 7587, Set.of(563)));
 
             assertEquals(true, cities.findById(CityId.of("La Crosse", "Wisconsin")).isEmpty());
             assertEquals(true, cities.existsById(CityId.of("Decorah", "Iowa")));
@@ -1558,17 +1558,16 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Repository method with the Update annotation that makes an update by assigning the IdClass instance to something else.
-     * This test uses named parameters.
+     * Repository method with the Update annotation that makes an update by assigning the IdClass components to something else.
      */
     @Test
-    public void testIdClassUpdateAnnotationWithNamedParameters() {
+    public void testIdClassUpdateAssignIdClassComponents() {
         cities.save(new City("Janesville", "Wisconsin", 65615, Set.of(608)));
         try {
             cities.findById(CityId.of("Janesville", "Wisconsin")).orElseThrow();
 
-            assertEquals(1, cities.replace(CityId.of("Janesville", "Wisconsin"),
-                                           CityId.of("Ames", "Iowa"), Set.of(515), 66427));
+            assertEquals(1, cities.replace("Janesville", "Wisconsin",
+                                           "Ames", "Iowa", Set.of(515), 66427));
 
             assertEquals(true, cities.findById(CityId.of("Janesville", "Wisconsin")).isEmpty());
             assertEquals(true, cities.existsById(CityId.of("Ames", "Iowa")));

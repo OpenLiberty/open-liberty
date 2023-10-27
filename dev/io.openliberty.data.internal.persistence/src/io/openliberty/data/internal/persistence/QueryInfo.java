@@ -680,17 +680,14 @@ public class QueryInfo {
      * @param count   The Count annotation if present, otherwise null.
      * @param exists  The Exists annotation if present, otherwise null.
      * @param select  The Select annotation if present, otherwise null.
-     * @param updates array of experimental Update annotations if present, otherwise an empty array.
      * @throws UnsupportedOperationException if the combination of annotations is not valid.
      */
     @Trivial
     void validateAnnotationCombinations(Delete delete, Insert insert, Update update, Save save,
                                         jakarta.data.repository.Query query, OrderBy[] orderBy,
-                                        Filter[] filters, Count count, Exists exists, Select select,
-                                        io.openliberty.data.repository.Update[] updates) {
+                                        Filter[] filters, Count count, Exists exists, Select select) {
         int f = filters.length == 0 ? 0 : 1;
         int o = orderBy.length == 0 ? 0 : 1;
-        int u = updates.length == 0 ? 0 : 1;
         int q = query == null ? 0 : 1;
         int s = select == null ? 0 : 1;
 
@@ -698,7 +695,7 @@ public class QueryInfo {
                   (update == null ? 0 : 1) +
                   (save == null ? 0 : 1);
 
-        int iusdce = ius + u +
+        int iusdce = ius +
                      (delete == null ? 0 : 1) +
                      (count == null ? 0 : 1) +
                      (exists == null ? 0 : 1);
@@ -721,8 +718,6 @@ public class QueryInfo {
             for (Annotation anno : Arrays.asList(count, exists, select))
                 if (anno != null)
                     annoClassNames.add(anno.annotationType().getName());
-            if (updates.length > 0)
-                annoClassNames.add(io.openliberty.data.repository.Update.class.getName());
 
             throw new UnsupportedOperationException("The " + method.getDeclaringClass().getName() + '.' + method.getName() +
                                                     " repository method cannot be annotated with the following combination of annotations: " +

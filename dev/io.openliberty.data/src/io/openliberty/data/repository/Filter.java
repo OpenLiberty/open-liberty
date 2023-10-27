@@ -20,16 +20,16 @@ import java.lang.annotation.Target;
 
 import jakarta.data.repository.Delete;
 
+// TODO this annotation will be replace by method parameter annotations for conditions
 /**
  * <p>Annotates a repository method to specify a find operation
- * or provide conditions for a {@link Count}, {@link Delete}, {@link Exists},
- * or {@link Update} operation.</p>
+ * or provide conditions for a {@link Count}, {@link Delete}, or {@link Exists}
+ * operation.</p>
  *
  * <p>Multiple {@code Filter} annotations can be placed on a repository method.
  * When positional parameters are used, method parameters corresponding to
  * {@code Filter} annotations are specified in the same order as the
  * {@code Filter} annotations appear on the method,
- * followed by the method parameters for any {@link Update} annotations,
  * followed by any additional parameters with special meaning (such as
  * {@link jakarta.data.repository.Sort sorting},
  * {@link jakarta.data.repository.Limit limits}, and
