@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.timer.cal.ejb;
 
+import static javax.ejb.TransactionAttributeType.NOT_SUPPORTED;
 import static javax.ejb.TransactionAttributeType.REQUIRES_NEW;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -684,6 +685,7 @@ public class NextTimeoutBean implements NextTimeoutIntf {
     }
 
     @Override
+    @TransactionAttribute(NOT_SUPPORTED)
     public void waitForTimer(long maxWaitTime) {
         try {
             svTimerLatch.await(maxWaitTime, TimeUnit.MILLISECONDS);
