@@ -23,4 +23,3 @@ IBM-API-Package: \
   com.ibm.ws.javamail.config
 kind=ga
 edition=core
-WLP-InstantOn-Enabled: true

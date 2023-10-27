@@ -34,4 +34,3 @@ IBM-API-Package: \
  com.ibm.websphere.appserver.thirdparty.mail-1.6; location:=dev/api/third-party/; mavenCoordinates="com.sun.mail:javax.mail:1.6.2"
 kind=ga
 edition=core
-WLP-InstantOn-Enabled: true
