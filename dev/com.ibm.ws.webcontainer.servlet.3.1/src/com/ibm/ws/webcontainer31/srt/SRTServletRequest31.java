@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer31.srt;
 
@@ -105,8 +102,8 @@ public class SRTServletRequest31 extends SRTServletRequest implements HttpServle
         try {
 
             if (req == null) {
-                // MultiRead Start
-                if(this.multiReadPropertyEnabled) {
+                // MultiRead Start, 25279
+                if(this.multiReadPropertyEnabled || (WebContainerRequestState.getInstance(false).getAttribute("com.ibm.ws.webcontainer.multiReadCleanupDynamically") != null)) {
                     if(this._in instanceof SRTInputStream) {
                         ((SRTInputStream) this._in).cleanupforMultiRead();
                     }
