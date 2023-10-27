@@ -20,4 +20,3 @@ Subsystem-Name: Password Utilities 1.0
  dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.passwordUtil_1.0-javadoc.zip
 kind=ga
 edition=base
-WLP-InstantOn-Enabled: true

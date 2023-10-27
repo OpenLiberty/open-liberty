@@ -22,8 +22,12 @@ Subsystem-Name: Jakarta Concurrency 3.1
   com.ibm.ws.concurrent.jakarta, \
   com.ibm.ws.javaee.platform.defaultresource, \
   com.ibm.ws.resource, \
+<<<<<<< HEAD
   io.openliberty.concurrent.internal,\
   io.openliberty.threading.internal.java21
+=======
+  io.openliberty.concurrent.internal
+>>>>>>> 15f3950fcb (remove non mvp versionless features)
 kind=noship
 edition=full
 WLP-Activation-Type: parallel

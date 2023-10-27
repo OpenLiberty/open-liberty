@@ -14,4 +14,3 @@ Subsystem-Name: Application Security 1.0
 kind=ga
 edition=core
 superseded-by=appSecurity-2.0,[servlet-3.0],[ldapRegistry-3.0]
-WLP-InstantOn-Enabled: true
