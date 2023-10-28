@@ -145,7 +145,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     private String tokenRequestOriginHeader = null;
     
     public static final String CFG_KEY_TOKEN_ORDER_TOFETCH_CALLER_CLAIMS = "tokenOrderToFetchCallerClaims";
-    private List<String> tokenOrderToFetchCallerClaims;
+    private List<String> tokenOrderToFetchCallerClaims = new ArrayList<String>();
 
     HttpUtils httputils = new HttpUtils();
     ConfigUtils oidcConfigUtils = new ConfigUtils(null);
@@ -236,6 +236,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         }
 
         performMiscellaneousConfigurationChecks();
+        tokenOrderToFetchCallerClaims = new ArrayList<String>(3);
+        tokenOrderToFetchCallerClaims.add(com.ibm.ws.security.openidconnect.clients.common.Constants.TOKEN_TYPE_ID_TOKEN); //IDToken only for now
     }
 
     void performMiscellaneousConfigurationChecks() {
@@ -987,27 +989,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     }
 
     @Override
-    public List<String> getTokenOrderToFetchCallerClaims() {
+    public List<String> getTokenOrderToFetchCallerClaims() {  
         return tokenOrderToFetchCallerClaims;
-    }
-
-    static List<String> split(String str) {
-        List<String> rvalue = new ArrayList<String>();
-        if (str != null) {
-            StringTokenizer st = new StringTokenizer(str, ", ");
-            while (st.hasMoreElements()) {
-                rvalue.add(st.nextToken());
-            }
-        }
-        return rvalue;
-    }
-
-    public static void main(String[] args) {
-        String str = "AccessToken, IDToken,Userinfo";
-        List<String> splitList = split(str);
-        for (String aStr : splitList) {
-            System.out.println(aStr);
-        }
     }
 
 }

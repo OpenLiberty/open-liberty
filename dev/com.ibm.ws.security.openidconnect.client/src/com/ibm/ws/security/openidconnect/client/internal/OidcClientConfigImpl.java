@@ -569,7 +569,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
 
         tokenOrderToFetchCallerClaims = split(trimIt((String) props.get(CFG_KEY_TOKEN_ORDER_TOFETCH_CALLER_CLAIMS)));
         if (tokenOrderToFetchCallerClaims == null || tokenOrderToFetchCallerClaims.size() == 0) {
-            tokenOrderToFetchCallerClaims = new ArrayList<String>();
+            tokenOrderToFetchCallerClaims = new ArrayList<String>(3);
             tokenOrderToFetchCallerClaims.add(com.ibm.ws.security.openidconnect.clients.common.Constants.TOKEN_TYPE_ID_TOKEN);
         }
 
@@ -1959,23 +1959,14 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         return tokenOrderToFetchCallerClaims;
     }
 
-    static List<String> split(String str) {
-        List<String> rvalue = new ArrayList<String>();
+    List<String> split(String str) {
+        List<String> rvalue = new ArrayList<String>(3);
         if (str != null) {
-            StringTokenizer st = new StringTokenizer(str, ", ");
+            StringTokenizer st = new StringTokenizer(str, ",");
             while (st.hasMoreElements()) {
                 rvalue.add(st.nextToken());
             }
         }
         return rvalue;
     }
-
-    public static void main(String[] args) {
-        String str = "AccessToken, IDToken,Userinfo";
-        List<String> splitList = split(str);
-        for (String aStr : splitList) {
-            System.out.println(aStr);
-        }
-    }
-
 }
