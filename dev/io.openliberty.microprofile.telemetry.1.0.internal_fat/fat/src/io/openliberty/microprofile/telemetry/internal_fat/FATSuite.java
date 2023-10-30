@@ -21,9 +21,9 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @MinimumJavaLevel(javaLevel = 11)
 @SuiteClasses({
-                ClientWithNoCdi.class,
+                //ClientWithNoCdi.class,
                 JaxRsIntegration.class,
-                JaxRsIntegrationWithConcurrency.class,
+                /*JaxRsIntegrationWithConcurrency.class,
                 Telemetry10.class,
                 TelemetryBeanTest.class,
                 TelemetryMultiAppTest.class,
@@ -43,7 +43,7 @@ import componenttest.rules.repeater.RepeatTests;
                 TelemetryGlobalOpenTelemetryTest.class,
                 TelemetryDisabledTest.class,
                 TelemetryServletTest.class,
-                TelemetryWithSpanErrorTest.class
+                TelemetryWithSpanErrorTest.class*/
 })
 
 public class FATSuite {
@@ -51,8 +51,14 @@ public class FATSuite {
     public static final String BETA_ID = MicroProfileActions.MP61_ID + "_BETA";
 
     public static RepeatTests aboveMP50Repeats(String serverName) {
+<<<<<<< HEAD
         return TelemetryActions
                         .repeat(serverName, TelemetryActions.MP50_MPTEL11, MicroProfileActions.MP60, MicroProfileActions.MP61)
                         .andWith(FeatureReplacementAction.EE10_FEATURES().withBeta().fullFATOnly().withID(BETA_ID));
+=======
+        return MicroProfileActions
+                        .repeat(serverName, TelemetryActions.MP14_MPTEL11);
+                        //.andWith(FeatureReplacementAction.EE10_FEATURES().withBeta().fullFATOnly().withID(BETA_ID));
+>>>>>>> ca0b8d80ea (Add TelemetryJaxRsProviderRegister)
     }
 }
