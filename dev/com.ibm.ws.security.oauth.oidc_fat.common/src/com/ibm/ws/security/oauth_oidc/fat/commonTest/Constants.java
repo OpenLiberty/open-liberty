@@ -50,7 +50,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String OIDC_OP = "OpenIDConnect_OP";
     public static final String ISAM_OP = "ISAM";
     // public static final String OAUTH = OAUTH_OP;
-    // public static final String OIDC = OIDC_OP ;
+    public static final String OIDC__OP = "OIDC_OP";
     public static final String OIDC_RP = "OIDC_RP";
     public static final String GENERIC_SERVER = "Generic_Server";
     public static final String JWT_CONSUMER = "JWT_Consumer";

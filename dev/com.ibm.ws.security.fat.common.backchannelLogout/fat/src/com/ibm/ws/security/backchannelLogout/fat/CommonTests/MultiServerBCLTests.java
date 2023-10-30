@@ -362,11 +362,11 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
         updatedTestSettings.setTestURL(server.getHttpsString() + "/formlogin/simple/" + client);
         updatedTestSettings.setProtectedResource(server.getHttpsString() + "/formlogin/simple/" + client);
         // set logout url - end_session
-        if (logoutMethodTested.equals(Constants.SAML)) {
+        if (vSettings.logoutMethodTested.equals(Constants.SAML)) {
             updatedTestSettings.setEndSession(testIDPServer.getHttpsString() + "/idp/profile/Logout");
         } else {
             updatedTestSettings.setEndSession(updatedTestSettings.getEndSession().replace("OidcConfigSample", provider));
-            if (logoutMethodTested.equals(Constants.LOGOUT_ENDPOINT)) {
+            if (vSettings.logoutMethodTested.equals(Constants.LOGOUT_ENDPOINT)) {
                 updatedTestSettings.setEndSession(updatedTestSettings.getEndSession().replace(Constants.END_SESSION_ENDPOINT, Constants.LOGOUT_ENDPOINT));
             }
         }
@@ -641,7 +641,7 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
         saveInstanceForMultiServerLogout(getStringValue(new JwtTokenForTest(keeper2_1.getIdToken()).getMapPayload(), Constants.IDTOK_SESSION_ID), bclEndpoint2_5);
 
         // logout expectations
-        List<validationData> logoutExpectations = initLogoutExpectations(finalAppWithoutPostRedirect, reuseWebClientForLogout);
+        List<validationData> logoutExpectations = initLogoutExpectations(vSettings.finalAppWithoutPostRedirect, reuseWebClientForLogout);
         // check for error messages when the logout test app tries to invoke bcl for the instance on the RS server - there should be nothing to clean up for a propagated access
         if (shouldWeReallyLogout) {
             logoutExpectations = validationTools.addMessageExpectation(genericTestServer, logoutExpectations, Constants.LOGOUT, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Message log did not contain message indicating that a there was a problem invoking the back channel logout.", MessageConstants.CWWKS1541E_BACK_CHANNEL_LOGOUT_ERROR + ".*bcl_multiServer_client1-1.*");

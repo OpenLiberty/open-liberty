@@ -146,6 +146,12 @@ task copyGenericServer (dependsOn: [':com.ibm.ws.security.fat.common:assemble', 
       rename 'oauthclient.zip', 'oauthclient.war'
     }
         
+    copy {
+      from new File(project(":com.ibm.ws.security.fat.common.backchannelLogout").buildDir, "test-application/simpleLogoutTestApp.zip")
+      into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
+      rename 'simpleLogoutTestApp.zip', 'simpleLogoutTestApp.war'
+    }
+        
   }
 }
 }

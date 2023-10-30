@@ -17,6 +17,7 @@
 		tokenFormat="${oidcTokenFormat}"
 		autoAuthorize="true"
 	>
+		<customStore storeId="mongoDbStore" />
 		<autoAuthorizeClient>bcl_mainPath_confClient</autoAuthorizeClient>
 		<autoAuthorizeClient>bcl_mainPath_publicClient_withSecret</autoAuthorizeClient>
 		<autoAuthorizeClient>bcl_mainPath_publicClient_withoutSecret</autoAuthorizeClient>

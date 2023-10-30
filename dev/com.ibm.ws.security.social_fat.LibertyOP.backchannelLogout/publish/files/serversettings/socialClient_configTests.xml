@@ -734,6 +734,21 @@
 	>
 	</oidcLogin>	
 
+	<oidcLogin
+		id="bcl_mainPath_accessTokenCacheEnabled_false_confClient"
+		clientId="bcl_mainPath_accessTokenCacheEnabled_false_confClient"
+		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		createSession="true"
+		redirectToRPHostAndPort="https://localhost:${client2Port}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_mainPath/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_mainPath/token"
+		authFilterRef="bcl_mainPath_accessTokenCacheEnabled_false_confClient_filter"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
 
 
 <!-- openid Connect Clients that are used to validate the access token - these are needed because social clients do not support propagation -->

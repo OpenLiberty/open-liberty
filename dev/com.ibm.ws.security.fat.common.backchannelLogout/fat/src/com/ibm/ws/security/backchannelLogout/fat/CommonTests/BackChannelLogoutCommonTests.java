@@ -35,6 +35,7 @@ import com.ibm.ws.security.backchannelLogout.fat.utils.SkipIfSocialClient;
 import com.ibm.ws.security.backchannelLogout.fat.utils.SkipIfUsesMongoDB;
 import com.ibm.ws.security.backchannelLogout.fat.utils.SkipIfUsesMongoDBOrSocialClient;
 import com.ibm.ws.security.backchannelLogout.fat.utils.TokenKeeper;
+import com.ibm.ws.security.backchannelLogout.fat.utils.VariationSettings;
 import com.ibm.ws.security.fat.common.Utils;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
@@ -44,6 +45,7 @@ import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.social.SocialConstants;
 import com.ibm.ws.security.fat.common.utils.AutomationTools;
+import com.ibm.ws.security.fat.common.utils.MySkipRule;
 import com.ibm.ws.security.jwt.utils.JweHelper;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings;
@@ -72,21 +74,38 @@ public class BackChannelLogoutCommonTests extends CommonTest {
     public String testClient = null;
     public static TestServer clientServer = null;
     public static TestServer clientServer2 = null;
-    protected static String loginMethod = Constants.OIDC;
-    protected static String logoutMethodTested = Constants.END_SESSION;
-    protected static String sessionLogoutEndpoint = null;
+    //    protected static String loginMethod = Constants.OIDC;
+    //    protected static String logoutMethodTested = Constants.END_SESSION;
+    //    protected static String sessionLogoutEndpoint = null;
     protected static String currentRepeatAction = null;
     protected static String tokenType = null;
     protected static String httpSessionEnabled = null;
+    //    protected static String reqLogoutServer = null;
+
+    protected static VariationSettings vSettings = null;
 
     protected static BackChannelLogout_RegisterClients regClients = null;
 
-    protected static String finalAppWithPostRedirect = null;
-    protected static String finalAppWithoutPostRedirect = null;
+    //    protected static String finalAppWithPostRedirect = null;
+    //    protected static String finalAppWithoutPostRedirect = null;
     protected static String logoutApp = null;
 
     //    protected boolean debug = true;
     protected boolean debug = false;
+
+    public static class SkipIfUsingJustReqLogout extends MySkipRule {
+
+        protected static Class<?> thisClass = SkipIfUsingJustReqLogout.class;
+
+        @Override
+        public Boolean callSpecificCheck() {
+
+            boolean flag = currentRepeatAction.contains(Constants.HTTP_SESSION) && vSettings.sessionLogoutEndpoint == null;
+            Log.info(thisClass, "callSpecificCheck", "Is using just req.logout() without either end_session or logout on the OP: " + Boolean.toString(flag));
+            return flag;
+        }
+
+    }
 
     @AfterClass
     public static void afterClass() {
@@ -164,61 +183,76 @@ public class BackChannelLogoutCommonTests extends CommonTest {
      **/
     public static void setConfigBasedOnRepeat() throws Exception {
 
-        finalAppWithPostRedirect = Constants.postLogoutJSessionIdApp;
-
-        Log.info(thisClass, "setConfigBasedOnRepeat", "Current repeat action: " + currentRepeatAction);
-
-        if (currentRepeatAction.toUpperCase().contains(Constants.SAML)) {
-            loginMethod = Constants.SAML;
-        } else {
-            if (currentRepeatAction.contains(SocialConstants.SOCIAL)) {
-                loginMethod = SocialConstants.SOCIAL;
-            } else {
-                loginMethod = Constants.OIDC;
-            }
-        }
-        if (currentRepeatAction.contains(Constants.HTTP_SESSION)) {
-            logoutMethodTested = Constants.HTTP_SESSION;
-            if (currentRepeatAction.contains(Constants.END_SESSION)) {
-                sessionLogoutEndpoint = Constants.END_SESSION;
-                finalAppWithoutPostRedirect = Constants.defaultLogoutPage;
-                finalAppWithPostRedirect = Constants.defaultLogoutPage;
-            } else {
-                sessionLogoutEndpoint = Constants.LOGOUT_ENDPOINT;
-                finalAppWithoutPostRedirect = Constants.LOGOUT_ENDPOINT;
-                // override for configs that use post redrects - using the logout endpoint on the OP will NOT result in a call to them
-                finalAppWithPostRedirect = Constants.LOGOUT_ENDPOINT;
-            }
-        } else {
-            //            if (currentRepeatAction.contains(Constants.SAML)) {
-            //                //                logoutMethodTested = Constants.SAML;
-            //                finalAppWithoutPostRedirect = Constants.samlLogoutPage;
-            //            } // else {
-            if (currentRepeatAction.contains(Constants.END_SESSION)) {
-                logoutMethodTested = Constants.END_SESSION;
-                finalAppWithoutPostRedirect = Constants.defaultLogoutPage;
-            } else {
-                if (currentRepeatAction.contains(Constants.SAML_IDP_INITIATED_LOGOUT)) {
-                    logoutMethodTested = Constants.SAML_IDP_INITIATED_LOGOUT;
-                    finalAppWithoutPostRedirect = Constants.samlLogoutPage;
-                } else {
-                    logoutMethodTested = Constants.LOGOUT_ENDPOINT;
-                    finalAppWithoutPostRedirect = "/oidc/endpoint/.*/logout";
-                    // logout doesn't redirect to the post logout uri
-                    finalAppWithPostRedirect = finalAppWithoutPostRedirect;
-                }
-            }
-            sessionLogoutEndpoint = null;
-        }
-
-        Log.info(thisClass, "setConfigBaseOnRepeat", "loginMethod: " + loginMethod);
-        Log.info(thisClass, "setConfigBaseOnRepeat", "logoutMethodTested: " + logoutMethodTested);
+        //        finalAppWithPostRedirect = Constants.postLogoutJSessionIdApp;
+        //        sessionLogoutEndpoint = null;
+        //        reqLogoutServer = null;
+        //
+        //        Log.info(thisClass, "setConfigBasedOnRepeat", "Current repeat action: " + currentRepeatAction);
+        //
+        //        if (currentRepeatAction.toUpperCase().contains(Constants.SAML)) {
+        //            loginMethod = Constants.SAML;
+        //        } else {
+        //            if (currentRepeatAction.contains(SocialConstants.SOCIAL)) {
+        //                loginMethod = SocialConstants.SOCIAL;
+        //            } else {
+        //                loginMethod = Constants.OIDC;
+        //            }
+        //        }
+        //        if (currentRepeatAction.contains(Constants.HTTP_SESSION)) {
+        //            if (currentRepeatAction.contains(Constants.OIDC_RP)) {
+        //                reqLogoutServer = Constants.OIDC_RP;
+        //            } else {
+        //                reqLogoutServer = Constants.OIDC__OP;
+        //            }
+        //            logoutMethodTested = Constants.HTTP_SESSION;
+        //            if (currentRepeatAction.contains(Constants.END_SESSION)) {
+        //                sessionLogoutEndpoint = Constants.END_SESSION;
+        //                finalAppWithoutPostRedirect = Constants.defaultLogoutPage;
+        //                finalAppWithPostRedirect = Constants.defaultLogoutPage;
+        //            } else {
+        //                if (currentRepeatAction.contains(Constants.LOGOUT_ENDPOINT)) {
+        //                    sessionLogoutEndpoint = Constants.LOGOUT_ENDPOINT;
+        //                    finalAppWithoutPostRedirect = Constants.LOGOUT_ENDPOINT;
+        //                    // override for configs that use post redrects - using the logout endpoint on the OP will NOT result in a call to them
+        //                    finalAppWithPostRedirect = Constants.LOGOUT_ENDPOINT;
+        //                } else {
+        //                    finalAppWithPostRedirect = "/simpleLogoutTestApp/simpleLogout";
+        //                    finalAppWithoutPostRedirect = "/simpleLogoutTestApp/simpleLogout";
+        //                }
+        //            }
+        //        } else {
+        //            //            if (currentRepeatAction.contains(Constants.SAML)) {
+        //            //                //                logoutMethodTested = Constants.SAML;
+        //            //                finalAppWithoutPostRedirect = Constants.samlLogoutPage;
+        //            //            } // else {
+        //            if (currentRepeatAction.contains(Constants.END_SESSION)) {
+        //                logoutMethodTested = Constants.END_SESSION;
+        //                finalAppWithoutPostRedirect = Constants.defaultLogoutPage;
+        //            } else {
+        //                if (currentRepeatAction.contains(Constants.SAML_IDP_INITIATED_LOGOUT)) {
+        //                    logoutMethodTested = Constants.SAML_IDP_INITIATED_LOGOUT;
+        //                    finalAppWithoutPostRedirect = Constants.samlLogoutPage;
+        //                } else {
+        //                    logoutMethodTested = Constants.LOGOUT_ENDPOINT;
+        //                    if (currentRepeatAction.toUpperCase().contains(Constants.SAML)) {
+        //                        finalAppWithoutPostRedirect = "/ibm/saml20/spOP/slo"; // all tests should be using the same provider spOP
+        //                    } else {
+        //                        finalAppWithoutPostRedirect = "/oidc/endpoint/.*/logout";
+        //                        // logout doesn't redirect to the post logout uri
+        //                        finalAppWithPostRedirect = finalAppWithoutPostRedirect;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //
+        //        Log.info(thisClass, "setConfigBaseOnRepeat", "loginMethod: " + loginMethod);
+        //        Log.info(thisClass, "setConfigBaseOnRepeat", "logoutMethodTested: " + logoutMethodTested);
     }
 
     public String buildContextRoot() throws Exception {
 
         String contextRoot = null;
-        if (currentRepeatAction.contains(Constants.SOCIAL)) {
+        if (currentRepeatAction.contains(SocialConstants.SOCIAL)) {
             contextRoot = SocialConstants.DEFAULT_CONTEXT_ROOT;
         } else {
             contextRoot = Constants.OIDC_CLIENT_DEFAULT_CONTEXT_ROOT;
@@ -314,7 +348,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
     }
 
     public boolean isUsingSaml() throws Exception {
-        return loginMethod.equals(Constants.SAML);
+        return vSettings.loginMethod.equals(Constants.SAML);
     }
 
     /**
@@ -527,7 +561,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
         Object response = null;
 
-        if (loginMethod.equals(Constants.SAML)) {
+        if (isUsingSaml()) {
             response = genericRP(_testName, webClient, settings, previousResponse, Constants.GOOD_OIDC_POST_LOGIN_ACTIONS_SKIP_CONSENT_WITH_SAML, expectations);
         } else {
             response = genericRP(_testName, webClient, settings, previousResponse, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
@@ -562,7 +596,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
             postLogoutExpectations = vData.addExpectation(postLogoutExpectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not find the FormLoginServlet output in the response", null, Constants.FORMLOGIN_SERVLET);
         } else {
             states.setClientJSessionIdMatchesPrevious(false); // client JSEssionId will exist (and match the value from the login) before this attempt, it will exist but be a new value after
-            if (!loginMethod.equals(Constants.SAML)) {
+            if (!isUsingSaml()) {
                 postLogoutExpectations = vData.addExpectation(postLogoutExpectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, "Did not Redirect to OP", null, "Redirect To OP");
                 //            postLogoutExpectations = vData.addExpectation(postLogoutExpectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, "Did not land on the login page", null, "Login");
                 //            postLogoutExpectations = vData.addExpectation(postLogoutExpectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_URL, Constants.STRING_DOES_NOT_CONTAIN, "Landed on the test app after a logout and should NOT have", null, settings.getTestURL());
@@ -759,18 +793,20 @@ public class BackChannelLogoutCommonTests extends CommonTest {
         //    } else {
         //        expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_URL, Constants.STRING_MATCHES, "Did not land on the post back channel logout test app", null, logoutPage);
         //    }
-        if (logoutMethodTested.equals(Constants.SAML_IDP_INITIATED_LOGOUT)) {
+        if (vSettings.logoutMethodTested.equals(Constants.SAML_IDP_INITIATED_LOGOUT)) {
             expectations = vData.addExpectation(expectations, Constants.PROCESS_LOGOUT_PROPAGATE_YES, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not land on the SAML logout confirmation page", null, "\"result\":  \"Success\"");
         } else {
-            if (loginMethod.equals(Constants.SAML)) {
+            if (isUsingSaml()) {
                 if (usingLoginClient) {
+                    Log.info(thisClass, "initLogoutExpectations", "chc - is using saml and using the same login client");
                     expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, "Did not land on Web Login Service.", null, "Web Login Service");
                     expectations = vData.addExpectation(expectations, Constants.PROCESS_LOGOUT_PROPAGATE_YES, Constants.RESPONSE_URL, Constants.STRING_MATCHES, "Did not land on the post back channel logout test app", null, logoutPage);
                 } else {
+                    Log.info(thisClass, "initLogoutExpectations", "chc - is using saml and NOT using the same login client");
                     expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_URL, Constants.STRING_MATCHES, "Did not land on the post back channel logout test app", null, logoutPage);
                 }
             } else {
-
+                Log.info(thisClass, "initLogoutExpectations", "chc - is NOT using saml");
                 expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_URL, Constants.STRING_MATCHES, "Did not land on the post back channel logout test app", null, logoutPage);
             }
         }
@@ -1217,7 +1253,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
     public void validateClientCookies(TokenKeeper beforeLogoutTokenKeeper, TokenKeeper currentTokenKeeper, String clientCookieName, String clientJSessionIdName, AfterLogoutStates states) throws Exception {
 
-        String thisMethod = "validateRPCookies";
+        String thisMethod = "validateClientCookies";
         validationLogger("Starting", thisMethod);
 
         validateClientCookie(beforeLogoutTokenKeeper, currentTokenKeeper, clientCookieName, states);
@@ -1263,9 +1299,8 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
         String thisMethod = "validateSPCookie";
         msgUtils.printMethodName("Start - " + thisMethod);
-        if (loginMethod.equals(Constants.SAML)) {
+        if (isUsingSaml()) {
             genericCookieValidator(Constants.spCookieName, beforeLogoutTokenKeeper.getSPCookie(), currentTokenKeeper.getSPCookie(), states.getSpCookieExists(), states.getSpCookieMatchesPrevious());
-            // TODO Log.info(thisClass, thisMethod, "NO IMPLEMENTED YET");
         } else {
             Log.info(thisClass, thisMethod, "Skipping checks since they are only valid with SAML and this instance does NOT use SAML");
         }
@@ -1275,7 +1310,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
         String thisMethod = "validateIDPCookie";
         msgUtils.printMethodName("Start - " + thisMethod);
-        if (loginMethod.equals(Constants.SAML)) {
+        if (isUsingSaml()) {
             // TODO
             Log.info(thisClass, thisMethod, "NO IMPLEMENTED YET");
         } else {
@@ -1340,35 +1375,45 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
         String opLogoutEndpoint = null;
 
-        //        // Debug
-        //        Log.info(thisClass, thisMethod, "Debug logoutMethodTested: " + logoutMethodTested);
-        //        Log.info(thisClass, thisMethod, "Debug finalApp: " + finalAppWithPostRedirect);
-        //        Log.info(thisClass, thisMethod, "Debug defaultApp: " + finalAppWithoutPostRedirect);
-        //        Log.info(thisClass, thisMethod, "Debug logoutApp: " + logoutApp);
-        //        Log.info(thisClass, thisMethod, "Debug sessionLogoutEndpoint: " + sessionLogoutEndpoint);
+        // Debug
+        Log.info(thisClass, thisMethod, "Debug logoutMethodTested: " + vSettings.logoutMethodTested);
+        Log.info(thisClass, thisMethod, "Debug finalApp: " + vSettings.finalAppWithPostRedirect);
+        Log.info(thisClass, thisMethod, "Debug defaultApp: " + vSettings.finalAppWithoutPostRedirect);
+        Log.info(thisClass, thisMethod, "Debug logoutApp: " + logoutApp);
+        Log.info(thisClass, thisMethod, "Debug sessionLogoutEndpoint: " + vSettings.sessionLogoutEndpoint);
 
-        switch (logoutMethodTested) {
+        List<endpointSettings> parms = null;
+        switch (vSettings.logoutMethodTested) {
         case Constants.SAML_IDP_INITIATED_LOGOUT: // update for idp/sp initiated
             return genericOP(_testName, webClient, settings, Constants.IDP_INITIATED_LOGOUT, logoutExpectations, null, id_token);
+        case Constants.REVOCATION_ENDPOINT:
+            parms = eSettings.addEndpointSettings(parms, "client_id", settings.getClientID());
+            parms = eSettings.addEndpointSettings(parms, "client_secret", settings.getClientSecret());
+            parms = eSettings.addEndpointSettings(parms, "token", id_token);
+            return genericInvokeEndpoint(_testName, webClient, null, settings.getRevocationEndpt(), Constants.POSTMETHOD, Constants.INVOKE_REVOCATION_ENDPOINT, parms, null, logoutExpectations, testSettings);
         case Constants.END_SESSION:
         case Constants.LOGOUT_ENDPOINT:
             // invoke end_session on the op - test controls if the id_token is passed as the id_token_hint by either passing or not passing the previous response
             String[] logoutActions = Constants.LOGOUT_ONLY_ACTIONS;
-            if (loginMethod.equals(Constants.SAML) && reuseWebClient) {
+            if (isUsingSaml() && reuseWebClient) {
                 logoutActions = new String[] { Constants.LOGOUT, Constants.PROCESS_LOGOUT_PROPAGATE_YES };
             }
             return genericOP(_testName, webClient, settings, logoutActions, logoutExpectations, null, id_token);
         case Constants.HTTP_SESSION:
             //            String id_token = null;
-            if (sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT)) {
-                opLogoutEndpoint = testOPServer.getHttpsString() + "/oidc/endpoint/" + settings.getProvider() + "/" + Constants.LOGOUT_ENDPOINT;
-            } else {
-                //                if (previousResponse != null) {
-                //                    id_token = validationTools.getIDToken(settings, previousResponse);
-                //                }
-                opLogoutEndpoint = settings.getEndSession();
+            if (vSettings.sessionLogoutEndpoint != null) {
+                if (vSettings.sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT)) {
+                    opLogoutEndpoint = testOPServer.getHttpsString() + "/oidc/endpoint/" + settings.getProvider() + "/" + Constants.LOGOUT_ENDPOINT;
+                } else {
+                    //                    id_token = validationTools.getIDToken(settings, previousResponse);
+                    //                }
+                    opLogoutEndpoint = settings.getEndSession();
+                } // else we want the endpoint to be null
             }
-            List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "opLogoutUri", opLogoutEndpoint);
+
+            if (opLogoutEndpoint != null) {
+                parms = eSettings.addEndpointSettingsIfNotNull(parms, "opLogoutUri", opLogoutEndpoint);
+            }
             if (id_token != null) {
                 parms = eSettings.addEndpointSettingsIfNotNull(parms, "id_token_hint", id_token);
             }

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -196,8 +196,10 @@ public class AccessTokenAuthenticator {
             }
             if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_INTROSPECT)) {
                 oidcResult = introspectToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
-                // put userinfo json on the subject if we can get it, even tho it's not req'd. for authentication
-                (new UserInfoHelper(clientConfig, sslSupport)).getUserInfoIfPossible(oidcResult, accessToken, oidcResult.getUserName(), sslSocketFactory, oidcClientRequest);
+                if (oidcResult.getStatus() == AuthResult.SUCCESS) {
+                    // put userinfo json on the subject if we can get it, even tho it's not req'd. for authentication
+                    (new UserInfoHelper(clientConfig, sslSupport)).getUserInfoIfPossible(oidcResult, accessToken, oidcResult.getUserName(), sslSocketFactory, oidcClientRequest);
+                }
             } else if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_USERINFO)) {
                 oidcResult = getUserInfoFromToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
             }
@@ -239,7 +241,7 @@ public class AccessTokenAuthenticator {
             token = (String) req.getAttribute(OidcClient.OIDC_ACCESS_TOKEN);
             if (remove_attribute) {
                 req.removeAttribute(OidcClient.OIDC_ACCESS_TOKEN); // per request setting, so remove it here and sso authenticator will add again.
-            }  
+            }
         }
         return token;
     }
