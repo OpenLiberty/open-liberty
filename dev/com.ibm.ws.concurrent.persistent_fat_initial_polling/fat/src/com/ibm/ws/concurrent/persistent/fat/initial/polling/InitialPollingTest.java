@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -221,6 +221,9 @@ public class InitialPollingTest {
             ServerConfiguration config = originalConfig.clone();
             config.getPersistentExecutors().removeById("executor2");
 
+            // Double the standard timeout for this test
+            server.setConfigUpdateTimeout(360 * 1000);
+
             // Schedule tasks
             StringBuilder output = runInServlet(
                                                 "test=testScheduleRepeatingTask&jndiName=concurrent/executor1&initialDelay=0&interval=100&invokedBy=testRescheduleUnderConfigUpdate-1");
@@ -289,6 +292,9 @@ public class InitialPollingTest {
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
             server.waitForConfigUpdateInLogUsingMark(appNames);
+
+            // Reset to the standard timeout
+            server.setConfigUpdateTimeout(180 * 1000);
         }
     }
 
