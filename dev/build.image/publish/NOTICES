@@ -102,7 +102,11 @@ TOMCAT-EL-API [EXPRESSION LANGUAGE PACKAGE], MICROPROFILE CONFIG, MICROPROFILE C
 MICROPROFILE GRAPHQL, MICROPROFILE HEALTH, MICROPROFILE JWT AUTH [JSON WEB TOKEN], MICROPROFILE METRICS, MICROPROFILE OPENAPI,
 MICROPROFILE OPENTRACING, MICROPROFILE REACTIVE STREAMS OPERATORS, MICROPROFILE REACTIVE MESSAGING, MICROPROFILE REST CLIENT,
 APIDOM-AST, APIDOM-CORE, CACHE-API, DETECT-LIBC, FIND-YARN-WORKSPACE-ROOT, GERONIMO-ATINJECT, APACHE HTTPCOMPONENTS,
-SHORT-UNIQUE-ID,TS-TOOLBELT, DOMPURIFY
+SHORT-UNIQUE-ID,TS-TOOLBELT, DOMPURIFY, OKIO-JVM, KOTLIN-STDLIB-JDK7, KOTLIN-STDLIB-JDK8, KOTLIN-STDLIB,OPENSAML-XACML-API, OPENSAML-XACML-SAML-API, 
+OPENSAML-XACML-SAML-IMPL, OPENSAML-XACML-IMPL, OPENSAML-XMLSEC-API, OPENSAML-SOAP-API, OPENSAML-SECURITY-IMPL,
+OPENSAML-SAML-API, OPENSAML-SECURITY-API, OPENSAML-XMLSEC-IMPL, ASM, ASM-ANALYSIS, ASM-COMMONS, ASM-TREE, 
+ASM-UTIL, MICROMETER-COMMONS, MICROMETER-CORE, MICROMETER-OBSERVATION, NETTY-BUFFER, NETTY-CODEC, NETTY-CODEC-SOCKS, 
+NETTY-COMMON, NETTY-HANDLER, NETTY-HANDLER-PROXY, NETTY-RESOLVER, NETTY-TRANSPORT, NETTY-TRANSPORT-NATIVE-UNIX-COMMON
 
 
 Apache License
@@ -547,6 +551,8 @@ JAVAX.JMS
 JAXB-IMPL 
 (https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api/2.2.1)
 
+TXW2
+(http://txw.java.net/
 
 END OF COMMON DEVELOPMENT AND DISTRIBUTION V1.1 LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -627,7 +633,7 @@ ORG.ECLIPSE.OSGI
 (https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.17.200/),
 JSONP (https://github.com/jakartaee/jsonp-api/tree/2.0.0), JAKARTA
 CONCURRENCY
-(https://mvnrepository.com/artifact/jakarta.enterprise.concurrent/jakarta.enterprise.concurrent-api/2.0.0),
+(https://mvnrepository.com/artifact/jakarta.enterprise.concurrent/jakarta.enterprise.concurrent-api/3.0.3),
 JAKARTA.EXPRESSIONLANGUAGE
 (https://mvnrepository.com/artifact/jakarta.el/jakarta.el-api/4.0.0),
 JAKARTA.JSON
@@ -656,7 +662,7 @@ JAKARTA.ENTERPRISE.LANG-MODEL
 JAKARTA.JMS-API
 (https://repo1.maven.org/maven2/jakarta/jms/jakarta.jms-api/3.1.0/)
 JAKARTA.JSON-API
- (https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/)
+ (https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.2/)
 JAKARTA.JSON.BIND-API
  (https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/3.0.0/)
 JAKARTA.MAIL-API
@@ -670,21 +676,31 @@ JAKARTA.SERVLET-API
 JAKARTA.SERVLET.JSP-API
  (https://repo1.maven.org/maven2/jakarta/servlet/jsp/jakarta.servlet.jsp-api/3.1.1/)
 JAKARTA.SERVLET.JSP.JSTL-API [JAKARTA STANDARD TAG]
- (https://repo1.maven.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/3.0.0/)
+ (https://repo1.maven.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/3.0.0/),
 JAKARTA.WEBSOCKET-CLIENT-API 
- (https://repo1.maven.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/)
+ (https://repo1.maven.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/),
 ECLIPSE-PARSSON
-(https://repo1.maven.org/maven2/org/eclipse/parsson/parsson/1.1.0/parsson-1.1.0.jar)
+(https://repo1.maven.org/maven2/org/eclipse/parsson/parsson/1.1.0/parsson-1.1.4.jar),
 YASSON
-(https://repo1.maven.org/maven2/org/eclipse/yasson/3.0/yasson-3.0.jar),
+(https://repo1.maven.org/maven2/org/eclipse/yasson/3.0/yasson-3.0.2.jar),
 ORG.ECLIPSE.OSGI
-https://mvnrepository.com/artifact/org.eclipse.platform/org.eclipse.osgi/3.18.300   
+(https://mvnrepository.com/artifact/org.eclipse.platform/org.eclipse.osgi/3.18.500)  
 ORG.ECLIPSE.PERSISTENCE.JPA
-(https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.jpa/4.0.1)
+(https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.jpa/2.7.13)
 ORG.ECLIPSE.PERSISTENCE.JPA.JPQL
-(https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.jpa.jpql/4.0.1),
+(https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.jpa.jpql/2.7.13),
 JBOSS-ANNOTATIONS-API
-(https://mvnrepository.com/artifact/org.jboss.spec.javax.annotation/jboss-annotations-api_1.3_spec/2.0.1.Final)
+(https://mvnrepository.com/artifact/org.jboss.spec.javax.annotation/jboss-annotations-api_1.3_spec/2.0.1.Final),
+ORG.ECLIPSE.PERSISTENCE.ANTLR 
+(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.antlr/2.7.13/),
+ORG.ECLIPSE.PERSISTENCE.CORE 
+(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.core/2.7.13/),
+ORG.ECLIPSE.PERSISTENCE.ASM
+(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.asm/9.6.0/),
+ORG.ECLIPSE.ECJ
+(https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.35.0/)
+(https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.33.0/)
+(https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.26.0/)
 
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
@@ -696,6 +712,7 @@ under a GPL-2.0-with-classpath-exception license:
 
 
 JBOSS-ANNOTATIONS-API_SPEC | Copyright (c) Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+JAXB-IMPL | Copyright (c)  2014 Oracle and/or its affiliates. All rights reserved.
 
 The Program includes some or all of the following available
 under the GNU General Public License. For copies of the source

@@ -15,10 +15,10 @@ package test.jakarta.data.jpa.web;
 import java.util.List;
 import java.util.Set;
 
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
-
-import io.openliberty.data.repository.Delete;
+import jakarta.data.repository.Save;
 
 /**
  * Repository for testing Inheritance and DiscriminatorColumn/Value.
@@ -41,7 +41,9 @@ public interface ShippingAddresses {
     @Delete
     long removeAll();
 
+    @Save
     void save(ShippingAddress entity);
 
+    @Save
     Set<ShippingAddress> save(Set<ShippingAddress> addresses);
 }

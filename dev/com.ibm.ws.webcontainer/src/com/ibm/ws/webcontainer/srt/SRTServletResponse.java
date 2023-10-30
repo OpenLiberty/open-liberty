@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -870,7 +871,16 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
                 if (isTraceOn&&logger.isLoggable (Level.FINE) && writerException){  //306998.15
                     logger.logp(Level.FINE, CLASS_NAME,"getWriter", "writerException --> " + writerException + "--> creating new OutputStreamWriter");
                 }
-                _outWriter = new OutputStreamWriter(_rawOut, EncodingUtils.getJvmConverter(charEncoding));
+
+                String convertedCharEncoding = EncodingUtils.getJvmConverter(charEncoding);
+                if (convertedCharEncoding == null) {
+                    convertedCharEncoding = Charset.defaultCharset().name();
+                }
+                Charset charset = EncodingUtils.getCharsetForName(convertedCharEncoding);
+                if (charset == null) {
+                    throw new UnsupportedEncodingException(convertedCharEncoding + " is not found");
+                }
+                _outWriter = new OutputStreamWriter(_rawOut, charset);
                 _outWriterEncoding = charEncoding;
                 writerException = false;
             }

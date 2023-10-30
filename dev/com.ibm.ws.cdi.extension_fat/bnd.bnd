@@ -45,7 +45,14 @@ tested.features:\
 	cdi-4.0,\
 	servlet-6.0,\
 	faces-4.0,\
-        cdi.internals-4.0
+        cdi.internals-4.0,\
+        expressionlanguage-6.0,\
+        noship-1.0,\
+        cdi-4.1,\
+        pages-4.0,\
+        servlet-6.1,\
+        faces-5.0,\
+        beanvalidation-3.1
 	
 fat.project: true
 

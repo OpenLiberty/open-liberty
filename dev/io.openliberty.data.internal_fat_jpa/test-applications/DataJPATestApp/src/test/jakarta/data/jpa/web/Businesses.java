@@ -15,12 +15,14 @@ package test.jakarta.data.jpa.web;
 import java.util.List;
 import java.util.stream.Stream;
 
-import jakarta.data.repository.CrudRepository;
-import jakarta.data.repository.KeysetAwareSlice;
+import jakarta.data.Streamable;
+import jakarta.data.page.KeysetAwareSlice;
+import jakarta.data.page.Pageable;
+import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.OrderBy;
-import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
 
 import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Filter;
@@ -31,7 +33,7 @@ import io.openliberty.data.repository.Select;
  *
  */
 @Repository
-public interface Businesses extends CrudRepository<Business, Integer> {
+public interface Businesses extends BasicRepository<Business, Integer> {
 
     // embeddable 1 level deep
     List<Business> findByLatitudeBetweenOrderByLongitudeDesc(float min, float max);
@@ -72,6 +74,10 @@ public interface Businesses extends CrudRepository<Business, Integer> {
     @OrderBy("name") // Business.name, not Business.Location.Address.Street.name
     @Select("name")
     List<String> onSouthSide();
+
+    // Save with a different entity type does not conflict with the primary entity type from BasicRepository
+    @Save
+    Streamable<Employee> save(Employee... e);
 
     boolean update(Business b);
 

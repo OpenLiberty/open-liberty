@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,15 +16,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.ws.policy.AssertionInfo;
 import org.apache.cxf.ws.policy.AssertionInfoMap;
+import org.apache.wss4j.policy.SP11Constants;
 //import org.apache.cxf.ws.security.policy.SP12Constants;
 import org.apache.wss4j.policy.SP12Constants;
+import org.apache.wss4j.policy.model.AbstractBinding;
 //import org.apache.cxf.ws.security.policy.model.AlgorithmSuite;
 //import org.apache.cxf.ws.security.policy.model.Binding;
 import org.apache.wss4j.policy.model.AlgorithmSuite;
-import org.apache.wss4j.policy.model.AbstractBinding;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -80,31 +83,48 @@ public class SignatureAlgorithms {
             }
         }
     }
-
-    public static AlgorithmSuite getAlgorithmSuite(AssertionInfoMap aim) {
-        AbstractBinding transport = null;
-        Collection<AssertionInfo> ais = aim.get(SP12Constants.TRANSPORT_BINDING);
-        if (ais != null) {
-            for (AssertionInfo ai : ais) {
-                transport = (AbstractBinding) ai.getAssertion();
+    public static AbstractBinding getAbstractBinding(AssertionInfoMap aim, String binding) {
+        Collection<AssertionInfo> ais = null;
+        AbstractBinding absBinding = null;
+        if ("transport".equals(binding)) {
+            ais = getMatchingAssertionInfo(aim, SP12Constants.TRANSPORT_BINDING);
+            if (ais == null) {
+                ais = getMatchingAssertionInfo(aim, SP11Constants.TRANSPORT_BINDING);
             }
-        } else {
-            ais = aim.get(SP12Constants.ASYMMETRIC_BINDING);
-            if (ais != null) {
-                for (AssertionInfo ai : ais) {
-                    transport = (AbstractBinding) ai.getAssertion();
-                }
-            } else {
-                ais = aim.get(SP12Constants.SYMMETRIC_BINDING);
-                if (ais != null) {
-                    for (AssertionInfo ai : ais) {
-                        transport = (AbstractBinding) ai.getAssertion();
-                    }
-                }
+        } else if("asymmetric".equals(binding)) {
+            ais = getMatchingAssertionInfo(aim, SP12Constants.ASYMMETRIC_BINDING);
+            if (ais == null) {
+                ais = getMatchingAssertionInfo(aim, SP11Constants.ASYMMETRIC_BINDING);
+            }
+        } else if ("symmetric".equals(binding)) {
+            ais = getMatchingAssertionInfo(aim, SP12Constants.SYMMETRIC_BINDING);
+            if (ais == null) {
+                ais = getMatchingAssertionInfo(aim, SP11Constants.SYMMETRIC_BINDING);
             }
         }
-        if (transport != null) {
-            return transport.getAlgorithmSuite();
+        if (ais != null) {
+            for (AssertionInfo ai : ais) {
+                absBinding = (AbstractBinding) ai.getAssertion();
+            }
+        }
+        return absBinding;
+    }
+    public static Collection<AssertionInfo> getMatchingAssertionInfo(AssertionInfoMap aim, QName qname) {
+        return aim.get(qname);
+
+    }
+
+    public static AlgorithmSuite getAlgorithmSuite(AssertionInfoMap aim) {
+        AbstractBinding binding = null;
+        binding = getAbstractBinding(aim, "transport");
+        if (binding == null) {
+            binding = getAbstractBinding(aim, "asymmetric");
+            if (binding == null) {
+                binding = getAbstractBinding(aim, "symmetric");
+            }
+        }
+        if (binding != null) {
+            return binding.getAlgorithmSuite();
         }
         return null;
     }

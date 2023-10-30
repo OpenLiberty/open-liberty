@@ -17,9 +17,9 @@ import java.util.Optional;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
+import jakarta.data.Sort;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Sort;
 
 /**
  * Repository for operations on the unannotated House entity,

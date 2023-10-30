@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -36,6 +36,7 @@ import org.w3c.dom.Element;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jaxws.bus.LibertyApplicationBus;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.jaxws.wsat.components.WSATFeatureService;
@@ -66,19 +67,26 @@ public class WSATPolicyAwareInterceptor extends AbstractPhaseInterceptor<Message
         }
     }
 
+    @Trivial
     private WSATInterceptorService getService() {
-        BundleContext context = FrameworkUtil.getBundle(WSATInterceptorService.class)
-                        .getBundleContext();
+        BundleContext context = FrameworkUtil.getBundle(WSATInterceptorService.class).getBundleContext();
+        WSATInterceptorService ret;
         if (context != null) {
-            ServiceReference<WSATInterceptorService> serviceRef = context
-                            .getServiceReference(WSATInterceptorService.class);
+            ServiceReference<WSATInterceptorService> serviceRef = context.getServiceReference(WSATInterceptorService.class);
             if (serviceRef != null)
-                return context.getService(serviceRef);
+                ret = context.getService(serviceRef);
             else
-                return null;
+                ret = null;
         } else {
-            return null;
+            ret = null;
         }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(
+                     tc,
+                     "getService {0}",
+                     ret);
+        return ret;
     }
 
     private boolean assertAssertion(Message message) {
@@ -91,8 +99,7 @@ public class WSATPolicyAwareInterceptor extends AbstractPhaseInterceptor<Message
                      "Checking if there's any ATAssertion present in the AssertionInfoMap",
                      aim);
         if (aim != null) {
-            Collection<AssertionInfo> ais = aim
-                            .get(Constants.AT_ASSERTION_QNAME);
+            Collection<AssertionInfo> ais = aim.get(Constants.AT_ASSERTION_QNAME);
             if (ais != null) {
                 for (AssertionInfo a : ais) {
                     a.setAsserted(true);
@@ -139,8 +146,8 @@ public class WSATPolicyAwareInterceptor extends AbstractPhaseInterceptor<Message
             return;
         }
         if (isOut && busType.equals(LibertyApplicationBus.Type.CLIENT)) {
-            //NOTE: message.getInterceptorChain() is the current interceptor list. 
-            //If we are in the middle of the interceptor process, the list will NOT be refreshed again from ex.getEndpoint().getOutInterceptors() 
+            //NOTE: message.getInterceptorChain() is the current interceptor list.
+            //If we are in the middle of the interceptor process, the list will NOT be refreshed again from ex.getEndpoint().getOutInterceptors()
             //So message.getInterceptorChain() is the correct and only way to modify it.
             message.getInterceptorChain().add(service.getCoorContextOutInterceptor());
         } else if (!isOut && busType.equals(LibertyApplicationBus.Type.SERVER)) {
@@ -159,14 +166,12 @@ public class WSATPolicyAwareInterceptor extends AbstractPhaseInterceptor<Message
 
         if (isOut) {
             if (assertion_exist) {
-                throw new Fault(new RuntimeException(
-                                "WS-AT Feature is not installed"));
+                throw new Fault(new RuntimeException("WS-AT Feature is not installed"));
             } else {
                 XMLStreamWriter xtw = message.getContent(XMLStreamWriter.class);
                 if (xtw != null
                     && xtw.toString().contains(Constants.NAMESPACE_WSAT)) {
-                    throw new Fault(new RuntimeException(
-                                    "WS-AT Feature is not installed"));
+                    throw new Fault(new RuntimeException("WS-AT Feature is not installed"));
                 }
             }
         }
@@ -183,8 +188,7 @@ public class WSATPolicyAwareInterceptor extends AbstractPhaseInterceptor<Message
                     if (headerURI != null && headerURI.contains(Constants.NAMESPACE_WSCOOR)) {
                         if (headerElement.getTextContent().contains(
                                                                     Constants.NAMESPACE_WSAT))
-                            throw new Fault(new RuntimeException(
-                                            "WS-AT Feature is not installed"));
+                            throw new Fault(new RuntimeException("WS-AT Feature is not installed"));
                     }
                 }
             }

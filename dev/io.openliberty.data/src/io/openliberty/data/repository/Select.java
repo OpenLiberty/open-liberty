@@ -17,6 +17,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Insert;
+import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
+
 /**
  * <p>Specifies which entity attribute values are retrieved by a repository method
  * find operation and, in the case of multiple entity attributes, also the ordering
@@ -53,7 +58,8 @@ import java.lang.annotation.Target;
  * </pre>
  *
  * <p>Do not use in combination with the {@link jakarta.data.repository.Query Query},
- * {@link Count}, {@link Delete}, {@link Exists}, or {@link Update} annotation.</p>
+ * {@link Count}, {@link Delete}, {@link Exists}, {@link Insert}, {@link Save}, or {@link Update} annotation,
+ * or with any annotation in the {@link io.openliberty.data.repository.update} package.</p>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

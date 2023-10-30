@@ -432,6 +432,10 @@ warning.unableToPackageLooseConfigFileMissingPath=CWWKE0095W: O servidor n\u00e3
 warning.unableToPackageLooseConfigFileMissingPath.explanation=O arquivo XML loose do aplicativo de configura\u00e7\u00e3o especificado cont\u00e9m informa\u00e7\u00f5es inv\u00e1lidas sobre o local dos arquivos. Por exemplo, ele pode especificar um diret\u00f3rio que n\u00e3o pode ser localizado. Os caminhos nesse arquivo XML devem ser relativos ao diret\u00f3rio de configura\u00e7\u00e3o do servidor. O archive representado por esse arquivo n\u00e3o ser\u00e1 inclu\u00eddo na sa\u00edda do servidor empacotada.
 warning.unableToPackageLooseConfigFileMissingPath.useraction=Modifique os caminhos no arquivo XML loose do aplicativo de configura\u00e7\u00e3o para apontar para o local correto que cont\u00e9m os arquivos de aplicativo. 
 
+warning.tooManySymbolicLinks=CWWKE0096W: Muitos links simb\u00f3licos foram encontrados quando o sistema tentou resolver o seguinte caminho: {0}.
+warning.tooManySymbolicLinks.explanation=Links simb\u00f3licos s\u00e3o atalhos que apontam para outros arquivos ou diret\u00f3rios. Esse erro ocorre quando o sistema encontra muitos links simb\u00f3licos em uma cadeia e n\u00e3o consegue resolver o caminho..
+warning.tooManySymbolicLinks.useraction=Para resolver esse problema, verifique os links simb\u00f3licos no caminho e assegure que eles n\u00e3o criem refer\u00eancias circulares. Voc\u00ea tamb\u00e9m pode usar o comando 'readlink' para inspecionar links individuais na cadeia.
+
 warn.packageRuntime.include.unknownOption=CWWKE0099W: N\u00e3o \u00e9 poss\u00edvel usar a op\u00e7\u00e3o --include={0}, --include=wlp ser\u00e1 usada no lugar.
 warn.packageRuntime.include.unknownOption.explanation=A op\u00e7\u00e3o foi ignorada porque ela n\u00e3o foi reconhecida.
 warn.packageRuntime.include.unknownOption.useraction=Tente o comando novamente usando op\u00e7\u00f5es v\u00e1lidas. Tente usar --help para obter uma lista de op\u00e7\u00f5es v\u00e1lidas.
@@ -753,6 +757,22 @@ error.checkpoint.failed.selinux.netdiag.useraction=Se o SELinux estiver ativado 
 error.checkpoint.restore.failed.no.recovery=CWWKE0964E: A restaura\u00e7\u00e3o do processo do servidor de ponto de verifica\u00e7\u00e3o falhou. Verifique o log {0} para determinar por que o processo de ponto de verifica\u00e7\u00e3o n\u00e3o foi restaurado. O servidor n\u00e3o foi ativado porque a recupera\u00e7\u00e3o da restaura\u00e7\u00e3o do ponto de verifica\u00e7\u00e3o est\u00e1 desativada.
 error.checkpoint.restore.failed.no.recovery.explanation=Ocorreu um erro ao restaurar um processo do servidor de ponto de verifica\u00e7\u00e3o. O servidor n\u00e3o foi ativado porque a recupera\u00e7\u00e3o da restaura\u00e7\u00e3o do ponto de verifica\u00e7\u00e3o est\u00e1 desativada.
 error.checkpoint.restore.failed.no.recovery.useraction=Verifique os logs para determinar por que o processo de ponto de verifica\u00e7\u00e3o n\u00e3o foi restaurado. Para ativar a recupera\u00e7\u00e3o da falha de restaura\u00e7\u00e3o, configure a vari\u00e1vel de ambiente CRIU_RESTORE_DISABLE_RECOVERY como true.
+
+warning.serverLockFileNotExist=CWWKE0965W: O arquivo de bloqueio do servidor {0} n\u00e3o existe.
+warning.serverLockFileNotExist.explanation=O aviso pode indicar que o servidor n\u00e3o est\u00e1 em execu\u00e7\u00e3o ou que o arquivo de bloqueio foi exclu\u00eddo inesperadamente
+warning.serverLockFileNotExist.useraction=Verifique se o servidor est\u00e1 em execu\u00e7\u00e3o usando as ferramentas de monitoramento do sistema apropriadas No Windows, \u00e9 poss\u00edvel usar o Gerenciador de Tarefas.. Em sistemas UNIX, use o comando 'ps -ef'.
+
+warning.serverCommandFileNotExist=CWWKE0966W: O arquivo de comando do servidor {0} n\u00e3o existe
+warning.serverCommandFileNotExist.explanation=O aviso sugere que o arquivo de comando do servidor, que cont\u00e9m informa\u00e7\u00f5es essenciais para estabelecer uma conex\u00e3o de socket com o servidor, est\u00e1 ausente O servidor pode n\u00e3o estar em execu\u00e7\u00e3o ou o arquivo pode ter sido exclu\u00eddo inesperadamente.
+warning.serverCommandFileNotExist.useraction=Verifique se o servidor est\u00e1 em execu\u00e7\u00e3o usando as ferramentas de monitoramento do sistema apropriadas No Windows, \u00e9 poss\u00edvel usar o Gerenciador de Tarefas.. Em sistemas UNIX, use o comando 'ps -ef'. Se o servidor estiver em execu\u00e7\u00e3o, voc\u00ea deve reinici\u00e1-lo, o que envolve parar o processo. Use o Gerenciador de Tarefas no Windows para parar o processo Em sistemas UNIX, use o comando 'kill'.
+
+warning.timeoutWaitingForServerToReleaseLock=CWWKE0967W: Ocorreu um tempo limite ao aguardar o servidor liberar o arquivo de bloqueio do servidor {0} .
+warning.timeoutWaitingForServerToReleaseLock.explanation=O aviso indica que ocorreu um tempo limite. O tempo limite pode ser devido a um encerramento lento do servidor, interrup\u00e7\u00e3o do servidor ou bloqueio de arquivo por outro programa.
+warning.timeoutWaitingForServerToReleaseLock.useraction=Se o servidor ainda estiver em execu\u00e7\u00e3o, considere aumentar o valor de tempo limite para o comando 'server stop'. Se o servidor estiver parado, utilize ferramentas de monitoramento de arquivos para verificar se outro programa bloqueou o arquivo.
+
+warning.timeoutWaitingForServerProcessToStop=CWWKE0968W: Ocorreu um tempo limite ao aguardar o processo do servidor parar.
+warning.timeoutWaitingForServerProcessToStop.explanation=O servidor n\u00e3o parou no tempo permitido pelo valor de tempo limite. Isso pode ser devido a um encerramento lento do servidor ou uma interrup\u00e7\u00e3o do servidor.   
+warning.timeoutWaitingForServerProcessToStop.useraction=Se o servidor ainda estiver em execu\u00e7\u00e3o, considere aumentar o valor de tempo limite para o comando 'server stop'. Em sistemas UNIX-like, o comando de parada do servidor aguarda o processo do servidor parar. No Windows, o comando espera obter um bloqueio no arquivo console.log . Use as ferramentas de monitoramento de arquivo para verificar se outro programa, como um editor, bloqueou o arquivo console.log
 
 info.serverStarting=Iniciando servidor {0}.
 info.serverStarted=Servidor {0} iniciado.

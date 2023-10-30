@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jaxws.client;
 
@@ -34,41 +31,20 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _AddNumbers_QNAME = new QName("http://provider.jaxws.ws.ibm.com/", "addNumbers");
-    private final static QName _AddNumbersResponse_QNAME = new QName("http://provider.jaxws.ws.ibm.com/", "addNumbersResponse");
-    private final static QName _AddNegativesResponse_QNAME = new QName("http://provider.jaxws.ws.ibm.com/", "addNegativesResponse");
-    private final static QName _AddNumbersException_QNAME = new QName("http://provider.jaxws.ws.ibm.com/", "AddNumbersException");
-    private final static QName _AddNegatives_QNAME = new QName("http://provider.jaxws.ws.ibm.com/", "addNegatives");
-    private final static QName _LocalName_QNAME = new QName("http://provider.jaxws.ws.ibm.com/", "LocalName");
+    private static final QName _AddNegatives_QNAME = new QName("http://provider.jaxws.ws.ibm.com/", "addNegatives");
+    private static final QName _AddNegativesResponse_QNAME = new QName("http://provider.jaxws.ws.ibm.com/", "addNegativesResponse");
+    private static final QName _AddNumbers_QNAME = new QName("http://provider.jaxws.ws.ibm.com/", "addNumbers");
+    private static final QName _AddNumbersResponse_QNAME = new QName("http://provider.jaxws.ws.ibm.com/", "addNumbersResponse");
+    private static final QName _EqualNumbersException_QNAME = new QName("http://provider.jaxws.ws.ibm.com/", "EqualNumbersException");
+    private static final QName _LargeNumbersException_QNAME = new QName("http://provider.jaxws.ws.ibm.com/", "LargeNumbersException");
+    private static final QName _AddNumbersException_QNAME = new QName("http://provider.jaxws.ws.ibm.com/", "AddNumbersException");
+    private static final QName _LocalName_QNAME = new QName("http://provider.jaxws.ws.ibm.com/", "LocalName");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.ibm.ws.jaxws.client
      *
      */
-    public ObjectFactory() {}
-
-    /**
-     * Create an instance of {@link AddNegativesResponse }
-     *
-     */
-    public AddNegativesResponse createAddNegativesResponse() {
-        return new AddNegativesResponse();
-    }
-
-    /**
-     * Create an instance of {@link AddNumbersResponse }
-     *
-     */
-    public AddNumbersResponse createAddNumbersResponse() {
-        return new AddNumbersResponse();
-    }
-
-    /**
-     * Create an instance of {@link LocalName }
-     *
-     */
-    public LocalName createLocalName() {
-        return new LocalName();
+    public ObjectFactory() {
     }
 
     /**
@@ -80,11 +56,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link AddNumbersException }
+     * Create an instance of {@link AddNegativesResponse }
      *
      */
-    public AddNumbersException createAddNumbersException() {
-        return new AddNumbersException();
+    public AddNegativesResponse createAddNegativesResponse() {
+        return new AddNegativesResponse();
     }
 
     /**
@@ -96,44 +72,52 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link AddNumbers_Type }{@code >}}
+     * Create an instance of {@link AddNumbersResponse }
      *
      */
-    @XmlElementDecl(namespace = "http://provider.jaxws.ws.ibm.com/", name = "addNumbers")
-    public JAXBElement<AddNumbers_Type> createAddNumbers(AddNumbers_Type value) {
-        return new JAXBElement<AddNumbers_Type>(_AddNumbers_QNAME, AddNumbers_Type.class, null, value);
+    public AddNumbersResponse createAddNumbersResponse() {
+        return new AddNumbersResponse();
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link AddNumbersResponse }{@code >}}
+     * Create an instance of {@link EqualNumbersException }
      *
      */
-    @XmlElementDecl(namespace = "http://provider.jaxws.ws.ibm.com/", name = "addNumbersResponse")
-    public JAXBElement<AddNumbersResponse> createAddNumbersResponse(AddNumbersResponse value) {
-        return new JAXBElement<AddNumbersResponse>(_AddNumbersResponse_QNAME, AddNumbersResponse.class, null, value);
+    public EqualNumbersException createEqualNumbersException() {
+        return new EqualNumbersException();
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link AddNegativesResponse }{@code >}}
+     * Create an instance of {@link LargeNumbersException }
      *
      */
-    @XmlElementDecl(namespace = "http://provider.jaxws.ws.ibm.com/", name = "addNegativesResponse")
-    public JAXBElement<AddNegativesResponse> createAddNegativesResponse(AddNegativesResponse value) {
-        return new JAXBElement<AddNegativesResponse>(_AddNegativesResponse_QNAME, AddNegativesResponse.class, null, value);
+    public LargeNumbersException createLargeNumbersException() {
+        return new LargeNumbersException();
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link AddNumbersException }{@code >}}
+     * Create an instance of {@link AddNumbersException }
      *
      */
-    @XmlElementDecl(namespace = "http://provider.jaxws.ws.ibm.com/", name = "AddNumbersException")
-    public JAXBElement<AddNumbersException> createAddNumbersException(AddNumbersException value) {
-        return new JAXBElement<AddNumbersException>(_AddNumbersException_QNAME, AddNumbersException.class, null, value);
+    public AddNumbersException createAddNumbersException() {
+        return new AddNumbersException();
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link AddNegatives }{@code >}}
+     * Create an instance of {@link LocalName }
      *
+     */
+    public LocalName createLocalName() {
+        return new LocalName();
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link AddNegatives }{@code >}
+     *
+     * @param value
+     *                  Java instance representing xml element's value.
+     * @return
+     *         the new instance of {@link JAXBElement }{@code <}{@link AddNegatives }{@code >}
      */
     @XmlElementDecl(namespace = "http://provider.jaxws.ws.ibm.com/", name = "addNegatives")
     public JAXBElement<AddNegatives> createAddNegatives(AddNegatives value) {
@@ -141,8 +125,90 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link LocalName }{@code >}}
+     * Create an instance of {@link JAXBElement }{@code <}{@link AddNegativesResponse }{@code >}
      *
+     * @param value
+     *                  Java instance representing xml element's value.
+     * @return
+     *         the new instance of {@link JAXBElement }{@code <}{@link AddNegativesResponse }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://provider.jaxws.ws.ibm.com/", name = "addNegativesResponse")
+    public JAXBElement<AddNegativesResponse> createAddNegativesResponse(AddNegativesResponse value) {
+        return new JAXBElement<AddNegativesResponse>(_AddNegativesResponse_QNAME, AddNegativesResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link AddNumbers_Type }{@code >}
+     *
+     * @param value
+     *                  Java instance representing xml element's value.
+     * @return
+     *         the new instance of {@link JAXBElement }{@code <}{@link AddNumbers_Type }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://provider.jaxws.ws.ibm.com/", name = "addNumbers")
+    public JAXBElement<AddNumbers_Type> createAddNumbers(AddNumbers_Type value) {
+        return new JAXBElement<AddNumbers_Type>(_AddNumbers_QNAME, AddNumbers_Type.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link AddNumbersResponse }{@code >}
+     *
+     * @param value
+     *                  Java instance representing xml element's value.
+     * @return
+     *         the new instance of {@link JAXBElement }{@code <}{@link AddNumbersResponse }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://provider.jaxws.ws.ibm.com/", name = "addNumbersResponse")
+    public JAXBElement<AddNumbersResponse> createAddNumbersResponse(AddNumbersResponse value) {
+        return new JAXBElement<AddNumbersResponse>(_AddNumbersResponse_QNAME, AddNumbersResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link EqualNumbersException }{@code >}
+     *
+     * @param value
+     *                  Java instance representing xml element's value.
+     * @return
+     *         the new instance of {@link JAXBElement }{@code <}{@link EqualNumbersException }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://provider.jaxws.ws.ibm.com/", name = "EqualNumbersException")
+    public JAXBElement<EqualNumbersException> createEqualNumbersException(EqualNumbersException value) {
+        return new JAXBElement<EqualNumbersException>(_EqualNumbersException_QNAME, EqualNumbersException.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link LargeNumbersException }{@code >}
+     *
+     * @param value
+     *                  Java instance representing xml element's value.
+     * @return
+     *         the new instance of {@link JAXBElement }{@code <}{@link LargeNumbersException }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://provider.jaxws.ws.ibm.com/", name = "LargeNumbersException")
+    public JAXBElement<LargeNumbersException> createLargeNumbersException(LargeNumbersException value) {
+        return new JAXBElement<LargeNumbersException>(_LargeNumbersException_QNAME, LargeNumbersException.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link AddNumbersException }{@code >}
+     *
+     * @param value
+     *                  Java instance representing xml element's value.
+     * @return
+     *         the new instance of {@link JAXBElement }{@code <}{@link AddNumbersException }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://provider.jaxws.ws.ibm.com/", name = "AddNumbersException")
+    public JAXBElement<AddNumbersException> createAddNumbersException(AddNumbersException value) {
+        return new JAXBElement<AddNumbersException>(_AddNumbersException_QNAME, AddNumbersException.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link LocalName }{@code >}
+     *
+     * @param value
+     *                  Java instance representing xml element's value.
+     * @return
+     *         the new instance of {@link JAXBElement }{@code <}{@link LocalName }{@code >}
      */
     @XmlElementDecl(namespace = "http://provider.jaxws.ws.ibm.com/", name = "LocalName")
     public JAXBElement<LocalName> createLocalName(LocalName value) {

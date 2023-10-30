@@ -17,23 +17,24 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import jakarta.data.repository.KeysetAwarePage;
-import jakarta.data.repository.KeysetAwareSlice;
-import jakarta.data.repository.Limit;
+import jakarta.data.Limit;
+import jakarta.data.Sort;
+import jakarta.data.page.KeysetAwarePage;
+import jakarta.data.page.KeysetAwareSlice;
+import jakarta.data.page.Pageable;
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
-import jakarta.data.repository.Pageable;
 import jakarta.data.repository.PageableRepository;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Sort;
 
 import io.openliberty.data.repository.Compare;
-import io.openliberty.data.repository.Delete;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Function;
-import io.openliberty.data.repository.Operation;
-import io.openliberty.data.repository.Update;
+import io.openliberty.data.repository.update.Add;
+import io.openliberty.data.repository.update.Divide;
+import io.openliberty.data.repository.update.SubtractFrom;
 
 /**
  *
@@ -76,20 +77,17 @@ public interface Packages extends PageableRepository<Package, Integer> {
     @OrderBy(value = "id")
     List<Integer> findIdByWidthRounded(int width);
 
-    @Filter(by = "id")
-    @Update(attr = "height", op = Operation.Divide)
-    @Update(attr = "description", op = Operation.Add)
-    int reduceBy(int id, float heightDivisor, String additionalDescription);
+    int reduceBy(int id,
+                 @Divide("height") float heightDivisor,
+                 @Add("description") String additionalDescription);
 
-    @Filter(by = "id")
-    @Update(attr = "height", op = Operation.Subtract, value = "1")
-    @Update(attr = "description", op = Operation.Add, value = " and shortened 1 cm")
-    boolean shorten(int id);
+    boolean shorten(int id,
+                    @SubtractFrom float height,
+                    @Add String description);
 
-    @Filter(by = "id", param = "id")
-    @Update(attr = "height", op = Operation.Subtract, param = "reduction")
-    @Update(attr = "description", op = Operation.Add, param = "moreDesc")
-    void shortenBy(@Param("reduction") int amount, @Param("moreDesc") String moreDescription, @Param("id") int id);
+    void shortenBy(@SubtractFrom("height") int reduction,
+                   @Add("description") String moreDescription,
+                   int id);
 
     @Delete
     @Filter(by = "id")

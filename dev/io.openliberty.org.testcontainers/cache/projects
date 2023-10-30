@@ -158,4 +158,5 @@ io.openliberty.jakarta.data.1.0_fat_tck
 io.openliberty.jcache.internal_fat.hazelcast
 io.openliberty.jcache.internal_fat.infinispan
 io.openliberty.microprofile.openapi.ui.internal_fat
+io.openliberty.microprofile.reactive.messaging.internal_fat
 io.openliberty.microprofile.telemetry.1.0.internal.jaeger_fat

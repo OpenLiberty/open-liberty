@@ -28,6 +28,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.jaxws.wsat.components.WSATConfigService;
 import com.ibm.ws.wsat.service.Handler;
@@ -82,6 +83,7 @@ public class WSATConfigServiceImpl implements WSATConfigService {
      * @see com.ibm.ws.wsat.service.WSATConfigService#isGlobalEnabled()
      */
     @Override
+    @Trivial
     public boolean isSSLEnabled() {
         return enabled;
     }
@@ -152,6 +154,7 @@ public class WSATConfigServiceImpl implements WSATConfigService {
      * @see com.ibm.ws.jaxws.wsat.components.WSATConfigService#getSSLReferenceId()
      */
     @Override
+    @Trivial
     public String getSSLReferenceId() {
         return sslId;
     }
@@ -162,6 +165,7 @@ public class WSATConfigServiceImpl implements WSATConfigService {
      * @see com.ibm.ws.jaxws.wsat.components.WSATConfigService#getWSATUrl(boolean)
      */
     @Override
+    @Trivial
     public String getWSATUrl() {
         if (proxy != null && proxy.length() > 0)
             return proxy + WSATContextRoot;
@@ -169,6 +173,7 @@ public class WSATConfigServiceImpl implements WSATConfigService {
             return httpOptions.getService().getUrlString(WSATContextRoot, enabled);
     }
 
+    @Trivial
     private String resolveHost() {
         String host = "";
         if (TraceComponent.isAnyTracingEnabled() && TC.isDebugEnabled())
@@ -193,6 +198,7 @@ public class WSATConfigServiceImpl implements WSATConfigService {
      * @see com.ibm.ws.jaxws.wsat.components.WSATConfigService#isClientAuthEnabled()
      */
     @Override
+    @Trivial
     public boolean isClientAuthEnabled() {
         return clientAuth;
     }

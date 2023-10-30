@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,10 +27,10 @@ public class EmptyAction implements RepeatTestAction {
     public static final String ID = "NO_MODIFICATION_ACTION";
     private TestMode testRunMode = TestMode.LITE;
     private boolean liteFATOnly = false;
-    
+
     public static final Predicate<EmptyAction> GREATER_THAN_OR_EQUAL_JAVA_11 = (action) -> JavaInfo.JAVA_VERSION >= 11;
     public static final Predicate<EmptyAction> GREATER_THAN_OR_EQUAL_JAVA_17 = (action) -> JavaInfo.JAVA_VERSION >= 17;
-
+    public static final Predicate<EmptyAction> GREATER_THAN_OR_EQUAL_JAVA_21 = (action) -> JavaInfo.JAVA_VERSION >= 21;
 
     @Override
     public void setup() {}
@@ -61,7 +61,7 @@ public class EmptyAction implements RepeatTestAction {
         liteFATOnly = false;
         return this;
     }
-    
+
     public EmptyAction conditionalFullFATOnly(Predicate<EmptyAction> conditional) {
         if (conditional.test(this)) {
             this.testRunMode = TestMode.FULL;

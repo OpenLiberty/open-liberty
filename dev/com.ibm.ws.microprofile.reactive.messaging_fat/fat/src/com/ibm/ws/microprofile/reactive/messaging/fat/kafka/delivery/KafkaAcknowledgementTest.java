@@ -13,8 +13,8 @@
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaClientLibs;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaPermissions;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -25,9 +25,9 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
 
@@ -37,9 +37,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
-/**
- *
- */
 @RunWith(FATRunner.class)
 public class KafkaAcknowledgementTest {
 
@@ -52,7 +49,11 @@ public class KafkaAcknowledgementTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME,
+                                                                  ReactiveMessagingActions.MP61_RM30,
+                                                                  ReactiveMessagingActions.MP20_RM10,
+                                                                  ReactiveMessagingActions.MP50_RM30,
+                                                                  ReactiveMessagingActions.MP60_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -60,7 +61,9 @@ public class KafkaAcknowledgementTest {
                         .addProperty(AbstractKafkaTestServlet.KAFKA_BOOTSTRAP_PROPERTY, PlaintextTests.kafkaContainer.getBootstrapServers())
                         .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.connectionProperties(), KafkaReceptionBean.CHANNEL_NAME,
                                                                            KafkaAcknowledgementTestServlet.APP_GROUPID))
-                        .include(ConnectorProperties.simpleOutgoingChannel(PlaintextTests.connectionProperties(), KafkaDeliveryBean.CHANNEL_NAME));
+                        .include(ConnectorProperties.simpleOutgoingChannel(PlaintextTests.connectionProperties(), KafkaDeliveryBean.CHANNEL_NAME))
+                        .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.connectionProperties(), KafkaPostProcessReceptionBean.POST_PROCESS_CHANNEL,
+                                                                           KafkaAcknowledgementTestServlet.APP_GROUPID));
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsLibraries(kafkaClientLibs())

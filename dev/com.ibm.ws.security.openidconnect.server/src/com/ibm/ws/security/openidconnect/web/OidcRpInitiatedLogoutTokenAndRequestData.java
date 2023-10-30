@@ -147,15 +147,15 @@ public class OidcRpInitiatedLogoutTokenAndRequestData {
                         clientId = getVerifiedClientId(payload);
                     }
                 } catch (Exception e) {
-                    Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e });
+                    Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e.getMessage() });
                     isDataValidForLogout = false;
                 }
             } else {
-                Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { ivfe });
+                Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { ivfe.getMessage() });
                 isDataValidForLogout = false;
             }
         } catch (Exception e) {
-            Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e });
+            Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e.getMessage() });
             isDataValidForLogout = false;
         }
     }

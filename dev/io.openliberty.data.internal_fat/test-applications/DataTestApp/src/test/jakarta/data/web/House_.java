@@ -12,36 +12,37 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import jakarta.data.repository.StaticMetamodel;
+import jakarta.data.model.Attribute;
+import jakarta.data.model.StaticMetamodel;
 
 /**
  * Metamodel for the House entity.
  */
 @StaticMetamodel(House.class)
 public class House_ {
-    public static volatile String AREA;
+    public static final Attribute AREA = Attribute.get();
 
-    public static volatile String garage;
+    public static final Attribute garage = Attribute.get();
 
-    public static volatile String GARAGE_AREA;
+    public static final Attribute GARAGE_AREA = Attribute.get();
 
-    public static volatile String garage_door_height;
+    public static final Attribute garage_door_height = Attribute.get();
 
-    public static volatile String Garage_Door_Width;
+    public static final Attribute Garage_Door_Width = Attribute.get();
 
-    public static volatile String garage_type;
+    public static final Attribute garage_type = Attribute.get();
 
-    public static volatile String kitchen;
+    public static final Attribute kitchen = Attribute.get();
 
-    public static volatile String kitchen_length;
+    public static final Attribute kitchen_length = Attribute.get();
 
-    public static volatile String kitchen_width;
+    public static final Attribute kitchen_width = Attribute.get();
 
-    public static volatile String id;
+    public static final Attribute id = Attribute.get();
 
-    public static volatile String LotSize;
+    public static final Attribute LotSize = Attribute.get();
 
-    public static volatile String numBedrooms;
+    public static final Attribute numBedrooms = Attribute.get();
 
-    public static volatile String parcelid;
+    public static final Attribute parcelid = Attribute.get();
 }

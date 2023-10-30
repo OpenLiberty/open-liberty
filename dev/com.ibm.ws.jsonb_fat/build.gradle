@@ -29,7 +29,7 @@ dependencies {
     johnzonJakarta "${id.group}:${id.name}:${id.version}:jakarta"
   }
   
-  parsson 'org.eclipse.parsson:parsson:1.1.0'
+  parsson 'org.eclipse.parsson:parsson:1.1.4'
   //This is the latest implementation of yasson that uses javax packages
   yasson1 'org.eclipse:yasson:1.0.4'
   
@@ -63,7 +63,7 @@ task addJonhzonJakarta(type: Copy) {
 
 task addParrson(type: Copy) {
   from configurations.parsson
-  into "${buildDir}/autoFVT/publish/shared/resources/parsson/1.1.0/jakarta/"
+  into "${buildDir}/autoFVT/publish/shared/resources/parsson/1.1.4/jakarta/"
   rename "parsson-.*.jar", "parsson.jar"
 }
 

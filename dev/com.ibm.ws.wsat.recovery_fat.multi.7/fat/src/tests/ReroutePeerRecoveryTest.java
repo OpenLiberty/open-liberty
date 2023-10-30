@@ -88,6 +88,8 @@ public class ReroutePeerRecoveryTest extends MultiRecoveryTest {
 	@Before
 	public void beforeTest() throws Exception {
 		WSATTest.callClearResourcesServlet(recoveryServer, server3, server5);
+		server3.setTraceMarkToEndOfDefaultTrace();
+		server5.setTraceMarkToEndOfDefaultTrace();
 	}
 	
 	private static final String[] allowedMsgs = new String[] {"WTRN0048W"};

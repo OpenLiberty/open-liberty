@@ -15,34 +15,36 @@ package test.jakarta.data.web;
 import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
 
-import io.openliberty.data.repository.Compare;
-import io.openliberty.data.repository.Delete;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Select;
-import io.openliberty.data.repository.Update;
+import io.openliberty.data.repository.update.Assign;
 
 /**
  *
  */
 @Repository
 public interface Shipments {
-    @Filter(by = "id", param = "shipmentId")
-    @Filter(by = "status", op = Compare.In, value = { "PREPARING", "READY_FOR_PICKUP" })
-    @Update(attr = "status", value = "CANCELED")
-    @Update(attr = "canceledAt", param = "time")
+    @Query("UPDATE Shipment o SET o.status='CANCELED', o.canceledAt=:time WHERE (o.id=:shipmentId And o.status IN ('PREPARING', 'READY_FOR_PICKUP'))")
+    // TODO switch to parameter annotations once annotations for conditions area added
+    //@Filter(by = "id", param = "shipmentId")
+    //@Filter(by = "status", op = Compare.In, value = { "PREPARING", "READY_FOR_PICKUP" })
+    //@Update(attr = "status", value = "CANCELED")
+    //@Update(attr = "canceledAt", param = "time")
     boolean cancel(@Param("shipmentId") long id,
                    @Param("time") OffsetDateTime timeOfCancellation);
 
-    @Filter(by = "id")
-    @Filter(by = "status", value = "'READY_FOR_PICKUP'")
-    @Update(attr = "status", value = "'IN_TRANSIT'")
-    @Update(attr = "location")
-    @Update(attr = "shippedAt")
-    boolean dispatch(long id, String location, OffsetDateTime timeOfDispatch);
+    boolean dispatch(long id,
+                     String status,
+                     @Assign("status") String newStatus,
+                     @Assign("location") String location,
+                     @Assign("shippedAt") OffsetDateTime timeOfDispatch);
 
     @Filter(by = "id")
     Shipment find(long id);
@@ -66,10 +68,10 @@ public interface Shipments {
     @Delete
     int removeEverything();
 
+    @Save
     void save(Shipment s);
 
-    @Filter(by = "id")
-    @Filter(by = "location")
-    @Update(attr = "location")
-    boolean updateLocation(long id, String prevLocation, String newLocation);
+    boolean updateLocation(long id,
+                           String location,
+                           @Assign("location") String newLocation);
 }

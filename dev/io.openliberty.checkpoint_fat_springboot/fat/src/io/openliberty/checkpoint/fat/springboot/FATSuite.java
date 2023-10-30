@@ -19,12 +19,18 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.SpringBootApplication;
+
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.topology.impl.LibertyServer;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                BasicSpringBootTests.class
+                BasicSpringBootTests.class,
+                BasicSpringBootWefluxTests.class
 })
 
 public class FATSuite {
@@ -39,4 +45,12 @@ public class FATSuite {
         return testMethodSimpleName;
     }
 
+    public static void configureApplication(LibertyServer server, String appName) throws Exception {
+        ServerConfiguration config = server.getServerConfiguration();
+        RemoteFile appFile = server.getFileFromLibertyServerRoot("apps/" + appName);
+        SpringBootApplication app = new SpringBootApplication();
+        app.setLocation(appFile.getName());
+        config.getSpringBootApplications().add(app);
+        server.updateServerConfiguration(config);
+    }
 }

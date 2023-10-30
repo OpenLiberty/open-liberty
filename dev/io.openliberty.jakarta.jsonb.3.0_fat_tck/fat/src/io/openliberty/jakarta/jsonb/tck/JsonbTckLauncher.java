@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -55,9 +55,13 @@ public class JsonbTckLauncher {
             additionalProps.put("java.locale.providers", "COMPAT");
         }
 
+        // TODO Update if a service release of JSON-B tck is ever released
+        additionalProps.put("jakarta.jsonb.tck.groupId", "io.openliberty.jakarta.json.bind");
+        additionalProps.put("jakarta.jsonb.tck.version", "3.0.0-13102023");
+
         // Skip signature testing on Windows
-        // So far as I can tell the signature test plugin is not supported on this configuration
-        //Opened an issue against jsonb tck https://github.com/eclipse-ee4j/jsonb-api/issues/327
+        // So far as I can tell the signature test plugin is not supported on Windows
+        // Opened an issue against jsonb tck https://github.com/eclipse-ee4j/jsonb-api/issues/327
         if (System.getProperty("os.name").contains("Windows")) {
             Log.info(JsonbTckLauncher.class, "setUp", "Skipping JSONB Signature Test on Windows");
             additionalProps.put("exclude.tests", "ee.jakarta.tck.json.bind.signaturetest.jsonb.JSONBSigTest.java");

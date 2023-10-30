@@ -34,7 +34,6 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -47,10 +46,7 @@ public class PassivationBeanTests extends FATServletClient {
     private static final String SERVER_NAME = "cdi12PassivationServer";
 
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME,
-                                                         EERepeatActions.EE10,
-                                                         EERepeatActions.EE9,
-                                                         EERepeatActions.EE7);
+    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
 
     @Server(SERVER_NAME)
     @TestServlet(contextRoot = "transientReferenceBasic", servlet = TransientReferenceTestServlet.class)

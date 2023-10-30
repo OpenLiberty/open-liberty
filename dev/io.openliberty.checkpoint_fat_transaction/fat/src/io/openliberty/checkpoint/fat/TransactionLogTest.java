@@ -17,6 +17,7 @@ import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
 import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
 import static io.openliberty.checkpoint.fat.util.FATUtils.LOG_SEARCH_TIMEOUT;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -35,8 +36,10 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
@@ -58,12 +61,18 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 public class TransactionLogTest extends FATServletClient {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new EE8FeatureReplacementAction().forServers("checkpointTransactionServlet", "checkpointTransactionDbLog"))
-                    .andWith(new JakartaEE9Action().forServers("checkpointTransactionServlet", "checkpointTransactionDbLog").fullFATOnly())
-                    .andWith(new JakartaEE10Action().forServers("checkpointTransactionServlet", "checkpointTransactionDbLog").fullFATOnly());
+    public static RepeatTests r = RepeatTests
+                    .with(new EE8FeatureReplacementAction().forServers("checkpointTransactionServletStartupDbLog", "checkpointTransactionServlet", "checkpointTransactionDbLog"))
+                    .andWith(new JakartaEE9Action().forServers("checkpointTransactionServletStartupDbLog", "checkpointTransactionServlet", "checkpointTransactionDbLog")
+                                    .fullFATOnly())
+                    .andWith(new JakartaEE10Action().forServers("checkpointTransactionServletStartupDbLog", "checkpointTransactionServlet", "checkpointTransactionDbLog")
+                                    .fullFATOnly());
 
     static final String APP_NAME = "transactionservlet";
     static final String SERVLET_NAME = APP_NAME + "/SimpleServlet";
+
+    static final String APP2_NAME = "transactionservletstartup";
+    static final String SERVLET2_NAME = APP_NAME + "/StartupServlet";
 
     // Use sever.env vars to override these config vars in server.xml
     static final int DERBY_TXLOG_PORT = 1619;
@@ -77,12 +86,16 @@ public class TransactionLogTest extends FATServletClient {
     @Server("checkpointTransactionDbLog")
     public static LibertyServer serverDbTranLog;
 
+    @Server("checkpointTransactionServletStartupDbLog")
+    public static LibertyServer serverServletStartupDbTranLog;
+
     TestMethod testMethod;
 
     @BeforeClass
     public static void setupClass() throws Exception {
         serverTranLog.saveServerConfiguration();
         serverDbTranLog.saveServerConfiguration();
+        serverServletStartupDbTranLog.saveServerConfiguration();
     }
 
     @Before
@@ -91,27 +104,92 @@ public class TransactionLogTest extends FATServletClient {
 
         testMethod = getTestMethod(TestMethod.class, testName);
         switch (testMethod) {
-            case testCheckpointRemovesDefaultTranlogDir:
+            case testCheckpointBasIgnoresRosWhenSqlRecoveryLog:
+                DerbyNetworkUtilities.startDerbyNetwork(DERBY_TXLOG_PORT);
+
+                serverServletStartupDbTranLog.restoreServerConfiguration();
+
+                ShrinkHelper.defaultApp(serverServletStartupDbTranLog, APP2_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.startup.*");
+
+                Consumer<LibertyServer> preRestoreLogic = checkpointServer -> {
+                    // Override the app datasource, tranlog datasource, and transactions
+                    // configurations for restore.
+                    File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
+                    try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
+                        serverEnvWriter.println("DERBY_TXLOG_PORT=" + DERBY_TXLOG_PORT);
+                        serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME);
+                        serverEnvWriter.println("TX_RETRY_INT=" + TX_RETRY_INT);
+                    } catch (FileNotFoundException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                    // Verify the application started during checkpoint
+                    assertNull("'CWWKZ0001I: Application " + APP2_NAME + " started' message not found in log.",
+                               serverServletStartupDbTranLog.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP2_NAME, 1000));
+                };
+                serverServletStartupDbTranLog.setCheckpoint(new CheckpointInfo(CheckpointPhase.BEFORE_APP_START, false, preRestoreLogic));
+                serverServletStartupDbTranLog.startServer();
+                break;
+            case testCheckpointNoRosWithDefaultRecoveryLog:
                 serverTranLog.restoreServerConfiguration();
 
                 ShrinkHelper.defaultApp(serverTranLog, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
 
-                // Initialize tran logs in ${server.output.dir}/tranlog
+                // Set recoverOnStartup to false (default value)
+                ServerConfiguration config = serverTranLog.getServerConfiguration();
+                config.getTransaction().setRecoverOnStartup(false);
+                serverTranLog.updateServerConfiguration(config);
+
                 deleteTranlogDir(serverTranLog);
+
+                // Simulate configure.sh: prime the server caches
                 serverTranLog.startServer();
                 stopServer(serverTranLog);
 
-                serverTranLog.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, null));
+                Consumer<LibertyServer> preRestoreLogic1 = checkpointServer -> {
+                    // Override the app datasource, but not the default transactionLogDirectory
+                    File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
+                    try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
+                        serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME);
+                    } catch (FileNotFoundException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                };
+                serverTranLog.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic1));
                 serverTranLog.startServer();
                 break;
-            case testUpdateTranlogDirAtRestore:
+            case testCheckpointRosWithDefaultRecoveryLog:
+                serverTranLog.restoreServerConfiguration();
+
+                ShrinkHelper.defaultApp(serverTranLog, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
+
+                deleteTranlogDir(serverTranLog); // clean up
+
+                // Cycling the server with ROS=true will initialize the recovery logs in ${server.output.dir}/tranlog/,
+                // the default transactionLogDirectory. This step simulates a container build optimization
+                // to populate the java SCC and server caches (container layer) before server checkpoint.
+                serverTranLog.startServer();
+                stopServer(serverTranLog);
+
+                Consumer<LibertyServer> preRestoreLogic4 = checkpointServer -> {
+                    // Override the app datasource, but not the default transactionLogDirectory
+                    File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
+                    try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
+                        serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME);
+                    } catch (FileNotFoundException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                };
+                serverTranLog.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic4));
+                serverTranLog.startServer();
+                break;
+            case testTranactionLogDirectoryUpdatesAtRestore:
                 serverTranLog.restoreServerConfiguration();
 
                 ShrinkHelper.defaultApp(serverTranLog, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
 
                 deleteTranlogDir(serverTranLog); // Clean up
 
-                Consumer<LibertyServer> preRestoreLogic1 = checkpointServer -> {
+                Consumer<LibertyServer> preRestoreLogic2 = checkpointServer -> {
                     // Override the app datasource and transaction configurations for restore.
                     File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
                     try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
@@ -121,17 +199,17 @@ public class TransactionLogTest extends FATServletClient {
                         throw new UncheckedIOException(e);
                     }
                 };
-                serverTranLog.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic1));
+                serverTranLog.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic2));
                 serverTranLog.startServer();
                 break;
-            case testUpdateTranlogDatasourceAtRestore:
+            case testSqlRecoveryLogUpdatesUpdatesAtRestore:
                 DerbyNetworkUtilities.startDerbyNetwork(DERBY_TXLOG_PORT);
 
                 serverDbTranLog.restoreServerConfiguration();
 
                 ShrinkHelper.defaultApp(serverDbTranLog, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
 
-                Consumer<LibertyServer> preRestoreLogic2 = checkpointServer -> {
+                Consumer<LibertyServer> preRestoreLogic3 = checkpointServer -> {
                     // Override the app datasource, tranlog datasource, and transactions
                     // configurations for restore.
                     File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
@@ -148,7 +226,7 @@ public class TransactionLogTest extends FATServletClient {
                     assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
                                   serverDbTranLog.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
                 };
-                serverDbTranLog.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic2);
+                serverDbTranLog.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic3);
                 serverDbTranLog.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
                 serverDbTranLog.startServer();
                 break;
@@ -160,13 +238,23 @@ public class TransactionLogTest extends FATServletClient {
     @After
     public void tearDown() throws Exception {
         switch (testMethod) {
-            case testCheckpointRemovesDefaultTranlogDir:
+            case testCheckpointBasIgnoresRosWhenSqlRecoveryLog:
+                try {
+                    stopServer(serverServletStartupDbTranLog, "WTRN0017W");
+                } finally {
+                    DerbyNetworkUtilities.stopDerbyNetwork(DERBY_TXLOG_PORT);
+                }
+                break;
+            case testCheckpointNoRosWithDefaultRecoveryLog:
                 stopServer(serverTranLog, "WTRN0017W");
                 break;
-            case testUpdateTranlogDirAtRestore:
+            case testCheckpointRosWithDefaultRecoveryLog:
                 stopServer(serverTranLog, "WTRN0017W");
                 break;
-            case testUpdateTranlogDatasourceAtRestore:
+            case testTranactionLogDirectoryUpdatesAtRestore:
+                stopServer(serverTranLog, "WTRN0017W");
+                break;
+            case testSqlRecoveryLogUpdatesUpdatesAtRestore:
                 try {
                     stopServer(serverDbTranLog, "WTRN0017W");
                 } finally {
@@ -179,39 +267,78 @@ public class TransactionLogTest extends FATServletClient {
     }
 
     /**
-     * Verify checkpoint at=applications fails when transactions log to file and the
-     * transaction log directory already exists.
+     * Verify the TM does not run initial local recovery during checkpoint at beforeAppStart.
+     * when dataSourceRef is set -- i,e, when recovery logs will store to an RDBMS. This
+     * test ensures checkpoint overrides recoverOnStartup="true".
      */
     @Test
-    public void testCheckpointRemovesDefaultTranlogDir() throws Exception {
-        // Checkpoint should fail iff the pre-existing tran logs could not
-        // be deleted, which we can't test for. But we can ensure the TM
-        // otherwise removed the tran logs.
-        assertTrue("Checkpoint should have the deleted transaction log directory, but did not.",
-                   !serverTranLog.fileExistsInLibertyServerRoot("/tranlog"));
+    public void testCheckpointBasIgnoresRosWhenSqlRecoveryLog() throws Exception {
+        assertNull("Local recovery must not start during checkpoint BAS when SQL recovery logging is configured, but did",
+                   serverServletStartupDbTranLog.waitForStringInLogUsingMark("CWRLS0010I:.*checkpointTransactionServletStartupDbLog", 1000));
 
-        serverTranLog.checkpointRestore();
+        serverServletStartupDbTranLog.checkpointRestore();
+
+        assertNotNull("The StartupServlet.init() method should complete a user transaction during restore, but did not.",
+                      serverServletStartupDbTranLog.waitForStringInLogUsingMark("StartupServlet init completed without exception"));
     }
 
     /**
-     * Verify a restored server logs transactions only to a directory path
+     * Verify the TM does not run initial local recovery during checkpoint for the default
+     * tranlog and recoverOnStartup configuration.
+     */
+    @Test
+    public void testCheckpointNoRosWithDefaultRecoveryLog() throws Exception {
+        // The test app does not require a TX  at server start, so neither the setup to
+        // start+stop the server nor the server checkpoint should start initial local recovery.
+        assertTrue("The default recovery log should not exist before nor after checkpoint, but does.",
+                   !serverTranLog.fileExistsInLibertyServerRoot("/tranlog"));
+
+        assertNull("Local recovery should not start during checkpoint for the default transaction configuration, but did",
+                   serverTranLog.waitForStringInLogUsingMark("CWRLS0010I:.*checkpointTransactionServlet", 1000));
+
+        serverTranLog.checkpointRestore();
+
+        runTest(serverTranLog, "testLTCAfterGlobalTran");
+    }
+
+    /**
+     * Verify a server checkpoint preserves and uses the default tranlog when it
+     * already exists from a previous server run, as it would when exercised in a container
+     * build. The TM should run initial local recovery during checkpoint.
+     */
+    @Test
+    public void testCheckpointRosWithDefaultRecoveryLog() throws Exception {
+        assertTrue("The default recovery log should exist before and after checkpoint, but does not.",
+                   serverTranLog.fileExistsInLibertyServerRoot("/tranlog"));
+
+        assertNotNull("Local recovery should start during checkpoint for the default transaction configuration, but did not",
+                      serverTranLog.waitForStringInLogUsingMark("CWRLS0010I:.*checkpointTransactionServlet"));
+
+        serverTranLog.checkpointRestore();
+
+        runTest(serverTranLog, "testLTCAfterGlobalTran");
+    }
+
+    /**
+     * Verify a restored server logs transactions to the transactionLogDirectory
      * overridden by server.env. The test ensures the transaction configuration
      * updates during checkpoint-restore and starts recovery using the updated
      * transactionLogDirectory.
      */
     @Test
-    public void testUpdateTranlogDirAtRestore() throws Exception {
-        assertTrue("The transaction log directory configured in server.xml should not exist, but it does.",
-                   !serverTranLog.fileExistsInLibertyServerRoot("/tranlog"));
+    public void testTranactionLogDirectoryUpdatesAtRestore() throws Exception {
+        assertTrue("Server checkpoint should preserve directory ${server.output.dir}/tranlog, but did not.",
+                   serverTranLog.fileExistsInLibertyServerRoot("/tranlog"));
 
         serverTranLog.checkpointRestore();
+
+        assertTrue("The restored server should not remove directory ${server.output.dir}/tranlog, but did.",
+                   serverTranLog.fileExistsInLibertyServerRoot("/tranlog"));
+
         runTest(serverTranLog, "testLTCAfterGlobalTran");
 
-        assertTrue("The server should log transactions to directory ${server.output.dir}NEW_TRANLOG_DIR, but did not.",
+        assertTrue("The restored server should log transactions to directory ${server.output.dir}NEW_TRANLOG_DIR, but did not.",
                    serverTranLog.fileExistsInLibertyServerRoot("/NEW_TRANLOG_DIR"));
-
-        assertTrue("The server should not log transactions to the directory configured in server.xml, but did.",
-                   !serverTranLog.fileExistsInLibertyServerRoot("/tranlog"));
     }
 
     /**
@@ -220,7 +347,9 @@ public class TransactionLogTest extends FATServletClient {
      * update during checkpoint-restore.
      */
     @Test
-    public void testUpdateTranlogDatasourceAtRestore() throws Exception {
+    @ExpectedFFDC({ "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException",
+                    "javax.resource.spi.ResourceAllocationException" })
+    public void testSqlRecoveryLogUpdatesUpdatesAtRestore() throws Exception {
         serverDbTranLog.checkpointRestore();
 
         // Exercise a transaction and start logging to the data source.
@@ -239,9 +368,11 @@ public class TransactionLogTest extends FATServletClient {
     }
 
     static enum TestMethod {
-        testCheckpointRemovesDefaultTranlogDir,
-        testUpdateTranlogDirAtRestore,
-        testUpdateTranlogDatasourceAtRestore,
+        testCheckpointBasIgnoresRosWhenSqlRecoveryLog,
+        testCheckpointNoRosWithDefaultRecoveryLog,
+        testCheckpointRosWithDefaultRecoveryLog,
+        testTranactionLogDirectoryUpdatesAtRestore,
+        testSqlRecoveryLogUpdatesUpdatesAtRestore,
         unknown;
     }
 }

@@ -25,7 +25,7 @@ javac.target: 11
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 tested.features: \
-    concurrent-3.0,\
+    concurrent-2.0,\
     cdi-3.0,\
     servlet-5.0
 

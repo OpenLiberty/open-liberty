@@ -25,6 +25,7 @@ import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -39,6 +40,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -109,15 +111,14 @@ public class MetricsMonitorTest {
         
         checkStrings(getHttpsServlet("/metrics"), new String[] { "mp_scope=\"base\"", "p_scope=\"vendor\"" }, new String[] {});
 
-        
         server.setMarkToEndOfLog();
         Log.info(c, testName, "------- Remove mpMetrics-5.0: no metrics should be available ------");
+
         server.setServerConfigurationFile("server_monitorOnly.xml");
         Assert.assertNotNull("CWWKF0008I NOT FOUND", server.waitForStringInLogUsingMark("CWWKF0008I"));
        
         //Check for Trace output from MetricsConfig indicating that the WAB is unregistered (this would imply /metrics no longer active)
-        server.waitForStringInTrace("io.openliberty.microprofile.metrics50.internal.MetricsConfig 1 Unregistered web app bundle");       
-        
+        Assert.assertNotNull(server.waitForStringInTrace("io.openliberty.microprofile.metrics50.internal.MetricsConfig 1 Unregistered web app bundle"));
         
         //For additional checking, check that we will get an ConnectException when trying to connect to /metrics
         String exceptionString = null;

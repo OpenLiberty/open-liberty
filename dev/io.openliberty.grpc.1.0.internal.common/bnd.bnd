@@ -51,7 +51,7 @@ Export-Package: \
   io.openliberty.grpc.internal.GrpcManagedObjectProvider
 
 Include-Resource: \
-  @${repo;io.grpc:grpc-core;${grpcVersion};EXACT}!/META-INF/**
+  @${repo;io.grpc:grpc-core;${grpcVersion};EXACT}!/META-INF/**|!io/grpc/internal/AbstractServerStream.class
 
 instrument.disabled: true
 

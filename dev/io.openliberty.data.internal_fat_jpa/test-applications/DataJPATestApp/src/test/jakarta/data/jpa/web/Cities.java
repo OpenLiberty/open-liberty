@@ -15,22 +15,22 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import jakarta.data.repository.KeysetAwarePage;
-import jakarta.data.repository.KeysetAwareSlice;
-import jakarta.data.repository.Limit;
+import jakarta.data.Limit;
+import jakarta.data.Sort;
+import jakarta.data.Streamable;
+import jakarta.data.page.KeysetAwarePage;
+import jakarta.data.page.KeysetAwareSlice;
+import jakarta.data.page.Pageable;
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
-import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Sort;
-import jakarta.data.repository.Streamable;
 
 import io.openliberty.data.repository.Compare;
-import io.openliberty.data.repository.Delete;
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Function;
-import io.openliberty.data.repository.Update;
+import io.openliberty.data.repository.update.Assign;
 
 /**
  *
@@ -125,20 +125,23 @@ public interface Cities {
 
     Streamable<City> removeByStateNameOrderByName(String state);
 
-    @Filter(by = "id")
-    @Update(attr = "id")
-    @Update(attr = "population")
-    @Update(attr = "areaCodes")
-    int replace(CityId oldId, CityId newId, int newPopulation, Set<Integer> newAreaCodes);
+    int replace(String name,
+                String stateName,
+                //TODO switch the above to the following once IdClass is supported for query conditions
+                //CityId id,
+                @Assign("name") String newCityName,
+                @Assign("stateName") String newStateName,
+                // TODO switch the above to the following once IdClass is supported for updates
+                //@Assign("id") CityId newId,
+                @Assign("population") int newPopulation,
+                @Assign("areaCodes") Set<Integer> newAreaCodes);
 
-    @Filter(by = "id", param = "oldName")
-    @Update(attr = "id", param = "newName")
-    @Update(attr = "population", param = "newSize")
-    @Update(attr = "areaCodes", param = "newAreaCodes")
-    int replace(@Param("oldName") CityId oldId,
-                @Param("newName") CityId newId,
-                @Param("newAreaCodes") Set<Integer> newAreaCodes,
-                @Param("newSize") int newPopulation);
+    int replace(String name,
+                String stateName,
+                @Assign("name") String newCityName,
+                @Assign("stateName") String newStateName,
+                @Assign("areaCodes") Set<Integer> newAreaCodes,
+                @Assign("population") int newPopulation);
 
     @Filter(by = "population", op = Compare.Between, param = { "minSize", "maxSize" })
     @OrderBy(value = "id", descending = true)

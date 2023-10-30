@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -103,7 +103,7 @@ public class KafkaPublisherVerification extends PublisherVerification<Message<St
         PartitionTrackerFactory trackerFactory = new PartitionTrackerFactory();
         trackerFactory.setExecutor(executor);
         trackerFactory.setAutoCommitEnabled(false);
-        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, trackerFactory, kafkaConsumer, executor, topicName, 100);
+        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, trackerFactory, kafkaConsumer, executor, topicName, 100, false);
         kafkaInputs.add(kafkaInput);
         return kafkaInput.getPublisher().buildRs();
     }
@@ -139,7 +139,7 @@ public class KafkaPublisherVerification extends PublisherVerification<Message<St
         PartitionTrackerFactory trackerFactory = new PartitionTrackerFactory();
         trackerFactory.setExecutor(executor);
         trackerFactory.setAutoCommitEnabled(false);
-        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, trackerFactory, kafkaConsumer, executor, topicName, 100);
+        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, trackerFactory, kafkaConsumer, executor, topicName, 100, false);
         kafkaInputs.add(kafkaInput);
         return kafkaInput.getPublisher().buildRs();
     }

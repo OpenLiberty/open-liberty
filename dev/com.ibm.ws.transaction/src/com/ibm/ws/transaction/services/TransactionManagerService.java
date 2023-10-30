@@ -62,7 +62,6 @@ import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 import com.ibm.wsspi.tx.UOWEventListener;
 
-import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @Component(service = { TransactionManager.class, EmbeddableWebSphereTransactionManager.class, UOWCurrent.class, ServerQuiesceListener.class }, immediate = true)
@@ -111,40 +110,17 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
         }
     }
 
-    private final AtomicBoolean addRestoreHook = new AtomicBoolean(true);
     private final AtomicBoolean deferRecoveryAtRestore = new AtomicBoolean(false);
-
-    public void doStartup(ConfigurationProvider cp, boolean isSQLRecoveryLog) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "doStartup with cp: " + cp + " and flag: " + isSQLRecoveryLog);
-
-        if (CheckpointPhase.getPhase().restored()) {
-            // normal and checkpoint restore cases: start TM now
-            doStartup0(cp, isSQLRecoveryLog);
-        } else {
-            // checkpoint case: start TM early in restore
-            if (addRestoreHook.compareAndSet(true, false)) {
-                CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHook() {
-                    @Override
-                    public void restore() {
-                        doStartup0(cp, isSQLRecoveryLog);
-                    }
-                });
-            }
-        }
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "doStartup");
-    }
 
     /**
      * This method will start log recovery processing.
      *
-     * @param cp
+     * @param cp               The configuration provider instance
+     * @param isSQLRecoveryLog True indicates database recovery log, false indicates file-based log
      */
-    public void doStartup0(ConfigurationProvider cp, boolean isSQLRecoveryLog) {
+    public void doStartup(ConfigurationProvider cp, boolean isSQLRecoveryLog) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "doStartup0 with cp: " + cp + " and flag: " + isSQLRecoveryLog);
+            Tr.entry(tc, "doStartup with cp: " + cp + " and flag: " + isSQLRecoveryLog);
 
         if (isStarted.compareAndSet(false, true)) {
             // Create an AppId that will be unique for this server to be used in the generation of Xids.
@@ -163,6 +139,7 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
             String hostName = "";
             hostName = AccessController.doPrivileged(new PrivilegedAction<String>() {
                 @Override
+                @Trivial
                 public String run() {
 
                     String theHost = "";
@@ -199,20 +176,18 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
                 }
             } else {
                 // Set to true during checkpoint restore, false during checkpoint or normal operation.
-                // For the future we may want to call doStartup0 on the checkpoint side; set the value
-                // accordingly.
                 deferRecoveryAtRestore.set(CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && CheckpointPhase.getPhase().restored());
             }
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "doStartup0");
+            Tr.exit(tc, "doStartup");
     }
 
     protected void doDeferredRecoveryAtRestore(ConfigurationProvider cp) {
         if (deferRecoveryAtRestore.compareAndSet(true, false)) {
             // To be here isStarted is true, checkpoint restore config updates are complete,
-            // and recoverOnStartup was overriden (disabled/skipped) during doStartup0.
+            // and recoverOnStartup was overriden (disabled) during doStartup.
             if (cp.isRecoverOnStartup()) {
                 try {
                     TMHelper.start(cp.isWaitForRecovery());

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
@@ -25,18 +26,19 @@ import java.util.concurrent.CompletionStage;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import jakarta.data.repository.KeysetAwarePage;
-import jakarta.data.repository.KeysetAwareSlice;
-import jakarta.data.repository.Limit;
+import jakarta.data.Limit;
+import jakarta.data.Sort;
+import jakarta.data.Streamable;
+import jakarta.data.page.KeysetAwarePage;
+import jakarta.data.page.KeysetAwareSlice;
+import jakarta.data.page.Page;
+import jakarta.data.page.Pageable;
+import jakarta.data.page.Slice;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
-import jakarta.data.repository.Page;
-import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Slice;
-import jakarta.data.repository.Sort;
-import jakarta.data.repository.Streamable;
 import jakarta.enterprise.concurrent.Asynchronous;
 
 import io.openliberty.data.repository.Compare;
@@ -228,6 +230,27 @@ public interface Primes {
     Stream<Prime> lessThanWithSuffixOrBetweenWithSuffix(long numLessThan, String firstSuffix,
                                                         long lowerLimit, long upperLimit, String secondSuffix);
 
+    @OrderBy("id")
+    @Query("SELECT o.numberId FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR o.numberId=:num)")
+    long[] matchAny(long num, String numeral, String hex, String numberName);
+
+    @OrderBy("id")
+    @Query("SELECT o.name FROM Prime o WHERE (o.name <> ':name' AND (o.numberId=?1 OR o.name=?2))")
+    List<String> matchAnyExceptLiteralValueThatLooksLikeANamedParameter(long num, String name);
+
+    @OrderBy("name")
+    @Query("SELECT o.name FROM Prime o WHERE ((o.name=?1 OR o.numberId=?2) AND o.name <> ':name')")
+    ArrayList<String> matchAnyExceptLiteralValueThatLooksLikeANamedParameter(String name, long num);
+
+    @Query("SELECT o.numberId FROM Prime o WHERE (o.name = :numName OR o.romanNumeral=:numeral OR o.hex =:hexadecimal OR o.numberId=:num)")
+    Streamable<Long> matchAnyWithMixedUsageOfParamAnnotation(long num,
+                                                             @Param("numName") String numberName,
+                                                             String numeral,
+                                                             @Param("hexadecimal") String hex);
+
+    @Query("SELECT o.numberId FROM Prime o WHERE (o.name = ?1 OR o.numberId=:num)")
+    Collection<Long> matchAnyWithMixedUsageOfPositionalAndNamed(String name, long num);
+
     @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
     Deque<Double> minMaxSumCountAverageDeque(long numBelow);
 
@@ -268,10 +291,11 @@ public interface Primes {
     @OrderBy("id")
     List<Long> notWithinButBelow(int rangeMin, int rangeMax, int below);
 
+    @Insert
+    void persist(Prime... primes);
+
     @Query("SELECT DISTINCT LENGTH(p.romanNumeral) FROM Prime p WHERE p.numberId <= ?1 ORDER BY LENGTH(p.romanNumeral) DESC")
     Page<Integer> romanNumeralLengths(long maxNumber, Pageable pagination);
-
-    void save(Prime... primes);
 
     @Query("SELECT prime_ FROM Prime AS prime_ WHERE (prime_.numberId <= ?1)")
     @OrderBy(value = "even", descending = true)

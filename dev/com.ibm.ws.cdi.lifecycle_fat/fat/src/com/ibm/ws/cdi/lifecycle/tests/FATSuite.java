@@ -16,6 +16,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.RepeatTests;
+
 @RunWith(Suite.class)
 @SuiteClasses({
                 BeanLifecycleTest.class,
@@ -25,5 +28,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 SessionDestroyTests.class
 })
 public class FATSuite {
-
+    //not bothering to repeat with EE8 ... the EE9 version is mostly a transformed version of the EE8 code
+    public static RepeatTests defaultRepeat(String serverName) {
+        return EERepeatActions.repeat(serverName, EERepeatActions.EE10, EERepeatActions.EE11, EERepeatActions.EE9, EERepeatActions.EE7);
+    }
 }

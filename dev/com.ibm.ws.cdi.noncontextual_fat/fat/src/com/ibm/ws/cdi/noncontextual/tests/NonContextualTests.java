@@ -53,7 +53,7 @@ public class NonContextualTests extends FATServletClient {
     @ClassRule
     public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME,
                                                          EERepeatActions.EE10,
-                                                         EERepeatActions.EE8,
+                                                         EERepeatActions.EE11,
                                                          EERepeatActions.EE7);
 
     @BeforeClass

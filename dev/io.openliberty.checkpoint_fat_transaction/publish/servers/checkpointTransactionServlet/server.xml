@@ -29,8 +29,10 @@
              dir="${shared.resource.dir}derby"
              includes="derby.jar" />
 
-    <!-- Potential overrides to transaction config at restore -->
-    <variable name="TX_LOG_DIR" defaultValue="${server.output.dir}tranlog" />
+    <!-- Potential overrides to transaction config at restore.
+         The defaultValue's for these variables must be the default
+         values declared in the transaction metatype. -->
+    <variable name="TX_LOG_DIR" defaultValue="${server.output.dir}/tranlog/" />
     <variable name="TX_RETRY_INT" defaultValue="10" />
 
     <transaction

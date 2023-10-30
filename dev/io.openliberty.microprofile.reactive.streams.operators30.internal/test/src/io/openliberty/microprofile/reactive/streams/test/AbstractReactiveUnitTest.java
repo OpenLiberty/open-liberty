@@ -11,7 +11,6 @@ package io.openliberty.microprofile.reactive.streams.test;
 
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -30,7 +29,6 @@ public class AbstractReactiveUnitTest {
     @Before
     public void activateEngine() {
         engine = new TestReactiveStreamsEngine();
-        engine.setExecutorService(ForkJoinPool.commonPool());
         engine.activate();
     }
 
