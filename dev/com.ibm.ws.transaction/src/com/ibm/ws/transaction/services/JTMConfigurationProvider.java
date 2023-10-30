@@ -843,11 +843,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#enableHADBPeerLocking()
+     * @see com.ibm.tx.config.ConfigurationProvider#enableDBLogPeerLocking()
      */
     @Override
-    public boolean enableHADBPeerLocking() {
-        return (Boolean) _props.get("enableHADBPeerLocking");
+    public boolean enableDBLogPeerLocking() {
+        return (Boolean) _props.get("enableDBLogPeerLocking");
     }
 
     /*
@@ -991,6 +991,46 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
             }
         }
         return sqlCodeList;
+    }
+
+    @Override
+    public boolean enableHomeLeaseLockRetries() {
+        final Boolean ehllr = (Boolean) _props.get("enableHomeLeaseLockRetries");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "enableHomeLeaseLockRetries {0}", ehllr);
+        return ehllr;
+    }
+
+    @Override
+    public int getHomeLeaseLockRetryDelay() {
+        Number num = (Number) _props.get("homeLeaseLockRetryDelay");
+        return num.intValue();
+    }
+
+    @Override
+    public int getHomeNumberOfLeaseLockRetries() {
+        Number num = (Number) _props.get("homeNumberOfLeaseLockRetries");
+        return num.intValue();
+    }
+
+    @Override
+    public boolean enablePeerLeaseLockRetries() {
+        final Boolean epllr = (Boolean) _props.get("enablePeerLeaseLockRetries");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "enablePeerLeaseLockRetries {0}", epllr);
+        return epllr;
+    }
+
+    @Override
+    public int getPeerLeaseLockRetryDelay() {
+        Number num = (Number) _props.get("peerLeaseLockRetryDelay");
+        return num.intValue();
+    }
+
+    @Override
+    public int getPeerNumberOfLeaseLockRetries() {
+        Number num = (Number) _props.get("peerNumberOfLeaseLockRetries");
+        return num.intValue();
     }
 
     @Override

@@ -237,7 +237,14 @@ public class FailureScopeController {
                 if (!partnersLeft && (_tranLog != null && !_tranLog.failed()) && (_xaLog != null && !_xaLog.failed())) {
                     Tr.audit(tc, "WTRN0105_CLEAN_SHUTDOWN");
                     // Shutdown is clean, we do some housekeeping if peer recovery is enabled.
-                    if (_recoveryManager != null) {
+                    if (_recoveryManager != null && com.ibm.ws.recoverylog.spi.Configuration.HAEnabled()) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Peer recovery enabled, do housekeeping");
+                        // Renew lease to avoid a peer acquiring the home server's logs just as we are about to delete them.
+                        _recoveryManager.updateServerLease(serverName());
+
+                        // Release the home lease lock
+                        _recoveryManager.releaseLocalLease(serverName());
                         // If we are operating in a peer recovery environment this method will delete the home server's
                         // recovery logs where it has shutdown cleanly.
                         _recoveryManager.deleteRecoveryLogsIfPeerRecoveryEnv();
@@ -245,11 +252,14 @@ public class FailureScopeController {
                         // Delete the home server's lease
                         _recoveryManager.deleteServerLease(serverName());
                     }
-                } else if (tc.isDebugEnabled()) {
+                } else {
                     if (partnersLeft) {
-                        Tr.debug(tc, "Not a clean shutdown", new Object[] { immediate, _localFailureScope });
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Not a clean shutdown", new Object[] { immediate, _localFailureScope });
                     }
 
+                    // Release the home lease lock
+                    _recoveryManager.releaseLocalLease(serverName());
                 }
 
                 if ((_tranLog != null && _tranLog.failed()) || (_xaLog != null && _xaLog.failed())) {

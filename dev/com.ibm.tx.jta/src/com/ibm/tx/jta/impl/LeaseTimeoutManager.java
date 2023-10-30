@@ -6,7 +6,7 @@ package com.ibm.tx.jta.impl;
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -107,15 +107,8 @@ public class LeaseTimeoutManager {
 
             boolean leaseRenewed = false;
             try {
-                if (_leaseLog.lockLocalLease(_recoveryIdentity)) {
-                    _leaseLog.updateServerLease(_recoveryIdentity, _recoveryGroup, false);
-
-                    _leaseLog.releaseLocalLease(_recoveryIdentity);
-                    leaseRenewed = true;
-                } else {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Could not lock lease for " + _recoveryIdentity);
-                }
+                _leaseLog.updateServerLease(_recoveryIdentity, _recoveryGroup, false);
+                leaseRenewed = true;
             } catch (Exception e) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Swallow exception " + e);

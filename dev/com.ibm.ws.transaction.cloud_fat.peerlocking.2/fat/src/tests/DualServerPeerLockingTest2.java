@@ -171,7 +171,7 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
                 testFailed = true;
                 testFailureString = "Second server did not attempt peer recovery at least 2 times, attempted " + numStringOccurrences;
             }
-            if (!testFailed && (longPeerStaleTimeServer2.waitForStringInLog("HADB Peer Recovery failed for server") == null)) {
+            if (!testFailed && (longPeerStaleTimeServer2.waitForStringInLog("Peer Recovery failed for server") == null)) {
                 testFailed = true;
                 testFailureString = "Server2 did not report that HADB Peer recovery had failed";
             }

@@ -459,10 +459,10 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#enableHADBPeerLocking()
+     * @see com.ibm.tx.config.ConfigurationProvider#enableDBLogPeerLocking()
      */
     @Override
-    public boolean enableHADBPeerLocking() {
+    public boolean enableDBLogPeerLocking() {
         // TODO Auto-generated method stub
         return false;
     }
@@ -582,5 +582,41 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
     @Override
     public String getBackendURL() {
         return null;
+    }
+
+    @Override
+    public boolean enableHomeLeaseLockRetries() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public int getHomeLeaseLockRetryDelay() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int getHomeNumberOfLeaseLockRetries() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public boolean enablePeerLeaseLockRetries() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public int getPeerLeaseLockRetryDelay() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int getPeerNumberOfLeaseLockRetries() {
+        // TODO Auto-generated method stub
+        return 0;
     }
 }

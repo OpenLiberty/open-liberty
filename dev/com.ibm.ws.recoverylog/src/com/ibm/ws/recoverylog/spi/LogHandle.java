@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2022 IBM Corporation and others.
+ * Copyright (c) 2003, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -156,12 +156,6 @@ class LogHandle {
     /**
      */
     FailureScope _failureScope;
-
-    /**
-     * A flag that allows the support of the "original" peer recovery behaviour, where recovery logs
-     * would not be deleted.
-     */
-    private boolean _retainLogsInPeerRecoveryEnv;
 
     //------------------------------------------------------------------------------
     // Method: LogHandle.LogHandle
@@ -760,7 +754,7 @@ class LogHandle {
             throw new InternalLogException(exc);
         }
 
-        if (Configuration.HAEnabled() && !_retainLogsInPeerRecoveryEnv) {
+        if (Configuration.HAEnabled() && !_recoveryLog.isRetainLogsInPeerRecoveryEnv()) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Working in a peer recovery environment retain logFileHandles on close");
         } else {
@@ -1271,16 +1265,6 @@ class LogHandle {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "delete", deleted);
         return deleted;
-    }
-
-    public void retainLogsInPeerRecoveryEnv(boolean retainLogs) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "retainLogsInPeerRecoveryEnv", new Object[] { retainLogs, this });
-
-        _retainLogsInPeerRecoveryEnv = retainLogs;
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "retainLogsInPeerRecoveryEnv", this);
     }
 
     @Override
