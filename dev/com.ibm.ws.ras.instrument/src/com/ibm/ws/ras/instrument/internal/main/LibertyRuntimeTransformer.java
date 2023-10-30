@@ -202,7 +202,7 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
         if (isJDK8WithHotReplaceBug)
             return classFileVersion <= Opcodes.V1_7;
         else
-            return classFileVersion <= Opcodes.V11;
+            return classFileVersion <= Opcodes.V22;
     }
 
     /**

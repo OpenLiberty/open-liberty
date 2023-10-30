@@ -36,43 +36,43 @@ task copyKernelService(type: Copy) {
 task copyApp17A(type: Copy) {
   from configurations.app17
   into new File(autoFvtDir, 'publish/servers/java17-cdi-server/apps/')
-  rename 'java-apps-*.*.*.jar', 'io.openliberty.java.internal_fat_17.war'
+  rename 'java-apps-*.*.*.*', 'io.openliberty.java.internal_fat_17.war'
 }
 
 task copyApp17B(type: Copy) {
   from configurations.app17
   into new File(autoFvtDir, 'publish/servers/java17-server/apps/')
-  rename 'java-apps-*.*.*.jar', 'io.openliberty.java.internal_fat_17.war'
+  rename 'java-apps-*.*.*.*', 'io.openliberty.java.internal_fat_17.war'
 }
 
 task copyApp18A(type: Copy) {
   from configurations.app18
   into new File(autoFvtDir, 'publish/servers/java18-cdi-server/apps/')
-  rename 'java-apps-*.*.*.jar', 'io.openliberty.java.internal_fat_18.war'
+  rename 'java-apps-*.*.*.*', 'io.openliberty.java.internal_fat_18.war'
 }
 
 task copyApp18B(type: Copy) {
   from configurations.app18
   into new File(autoFvtDir, 'publish/servers/java18-server/apps/')
-  rename 'java-apps-*.*.*.jar', 'io.openliberty.java.internal_fat_18.war'
+  rename 'java-apps-*.*.*.*', 'io.openliberty.java.internal_fat_18.war'
 }
 
 task copyApp19(type: Copy) {
   from configurations.app19
   into new File(autoFvtDir, 'publish/servers/java19-server/apps/')
-  rename 'java-apps-*.*.*.jar', 'io.openliberty.java.internal_fat_19.war'
+  rename 'java-apps-*.*.*.*', 'io.openliberty.java.internal_fat_19.war'
 }
 
 task copyApp20(type: Copy) {
   from configurations.app20
   into new File(autoFvtDir, 'publish/servers/java20-server/apps/')
-  rename 'java-apps-*.*.*.jar', 'io.openliberty.java.internal_fat_20.war'
+  rename 'java-apps-*.*.*.*', 'io.openliberty.java.internal_fat_20.war'
 }
 
 task copyApp21(type: Copy) {
   from configurations.app21
   into new File(autoFvtDir, 'publish/servers/java21-server/apps/')
-  rename 'java-apps-*.*.*.jar', 'io.openliberty.java.internal_fat_21.war'
+  rename 'java-apps-*.*.*.*', 'io.openliberty.java.internal_fat_21.war'
 }
 
 addRequiredLibraries.dependsOn copyKernelService

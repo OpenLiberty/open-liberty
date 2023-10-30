@@ -21,12 +21,18 @@ public class ComputedMonitorMetrics {
     private double prevValue;
     private String monitorMetricScope;
     private String appName;
+    private String mpAppNameConfigValue;
+    
+    public ComputedMonitorMetrics(String metricScope, MetricID metricID, String computationType) {
+       this(metricScope, metricID, computationType, null, null);
+    }
 
-    public ComputedMonitorMetrics(String metricScope, MetricID metricID, String computationType, String appName) {
+    public ComputedMonitorMetrics(String metricScope, MetricID metricID, String computationType, String appName, String mpAppNameConfigValue) {
         this.monitorMetricScope = metricScope;
         this.monitorMetricID = metricID;
         this.computationType = computationType;
         this.appName = appName;
+        this.mpAppNameConfigValue = mpAppNameConfigValue;
         this.prevValue = (double) 0.0;
     }
 
@@ -52,6 +58,10 @@ public class ComputedMonitorMetrics {
 
     public String getAppName() {
         return this.appName;
+    }
+    
+    public String getMpAppNameConfigValue() {
+        return this.mpAppNameConfigValue;
     }
 
     public Double getDifference(double current) {

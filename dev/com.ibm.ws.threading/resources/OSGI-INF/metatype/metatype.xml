@@ -19,6 +19,7 @@
         <AD name="%name"         description="%name.desc"         id="name"        required="false" type="String"  default="Default Executor" />
         <AD name="%max.threads"  description="%max.threads.desc"  id="maxThreads"  required="false" type="Integer" default="-1" />
         <AD name="%core.threads" description="%core.threads.desc" id="coreThreads" required="false" type="Integer" default="-1" />
+        <AD ibm:beta="true" name="%quiesce.timeout" description="%quiesce.timeout.desc" id="quiesceTimeout" required="false" type="String" default="30s" />
     </OCD>
 
     <!-- Designate pid="com.ibm.ws.threading" --> <!-- factoryPid="com.ibm.ws.threading" -->

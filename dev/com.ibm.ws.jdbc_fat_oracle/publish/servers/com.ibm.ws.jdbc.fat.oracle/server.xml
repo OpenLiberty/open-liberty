@@ -60,6 +60,26 @@
     	<jdbcDriver libraryRef="DBLib"/>
     </dataSource>
     
+    <!-- 
+    	 Verify precedence of connection properties on Driver
+    -->
+    <dataSource id="driver-url-preferred" jndiName="jdbc/driver-url-preferred" type="java.sql.Driver">
+      <jdbcDriver libraryRef="DBLib"/>
+      <containerAuthData user="${ORACLE_USER}" password="${ORACLE_PASSWORD}"/>
+      <properties.oracle url="jdbc:oracle:thin:@${env.ORACLE_HOST}:${env.ORACLE_PORT}:${env.ORACLE_DBNAME}"
+      serverName="$INVALID" portNumber="000" serviceName="$INVALID"/> <!-- Should be ignored -->
+    </dataSource>
+    
+    <!-- 
+    	 Verify precedence of connection properties on DataSource
+    -->
+    <dataSource id="ds-url-preferred" jndiName="jdbc/ds-url-preferred" type="javax.sql.DataSource">
+      <jdbcDriver libraryRef="DBLib"/>
+      <containerAuthData user="${ORACLE_USER}" password="${ORACLE_PASSWORD}"/>
+      <properties.oracle URL="jdbc:oracle:thin:@${env.ORACLE_HOST}:${env.ORACLE_PORT}:${env.ORACLE_DBNAME}"
+      serverName="$INVALID" portNumber="000" serviceName="$INVALID"/> <!-- Should be ignored -->
+    </dataSource>
+    
     <javaPermission codebase="${shared.resource.dir}/oracle/oracleunknown.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${server.config.dir}/apps/oraclejdbcfat.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
 

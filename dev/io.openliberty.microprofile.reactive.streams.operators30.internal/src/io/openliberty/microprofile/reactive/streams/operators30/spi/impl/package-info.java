@@ -8,10 +8,6 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
-/**
- * @version 1.0
- */
-@org.osgi.annotation.versioning.Version("1.0")
 @TraceOptions(traceGroup = "REACTIVESTREAMS")
 package io.openliberty.microprofile.reactive.streams.operators30.spi.impl;
 

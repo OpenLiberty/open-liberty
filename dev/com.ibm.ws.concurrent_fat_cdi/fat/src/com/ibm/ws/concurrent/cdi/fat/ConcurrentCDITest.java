@@ -29,7 +29,7 @@ import componenttest.topology.utils.FATServletClient;
 import concurrent.cdi4.web.ConcurrentCDI4Servlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 17)
+@MinimumJavaLevel(javaLevel = 21)
 public class ConcurrentCDITest extends FATServletClient {
 
     public static final String APP_NAME = "concurrentCDIApp";

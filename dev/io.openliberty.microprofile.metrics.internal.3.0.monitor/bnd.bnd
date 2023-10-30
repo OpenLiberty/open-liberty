@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2022 IBM Corporation and others.
+# Copyright (c) 2020, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -25,22 +25,27 @@ Import-Package: \
 	javax.ws.rs.container;resolution:=optional,\
 	*
 
-Export-Package: io.openliberty.microprofile.metrics.internal.monitor
+Export-Package: \
+	io.openliberty.microprofile.metrics.internal.monitor,\
+	io.openliberty.microprofile.metrics.internal.monitor.computed
 
 Private-Package: \
-   com.ibm.ws.microprofile.metrics.monitor.resources
+   com.ibm.ws.microprofile.metrics.monitor.resources,\
+   io.openliberty.microprofile.metrics.internal.monitor.computed
 
 WS-TraceGroup: METRICS
 
 -dsannotations: \
     io.openliberty.microprofile.metrics.internal.monitor.MonitorMetricsHandler, \
-    io.openliberty.microprofile.metrics.internal.monitor.MetricsJaxRsEMCallbackImpl
+    io.openliberty.microprofile.metrics.internal.monitor.MetricsJaxRsEMCallbackImpl, \
+    io.openliberty.microprofile.metrics.internal.monitor.MonitorApplicationListener30
 
 -buildpath: \
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	io.openliberty.microprofile.metrics.internal.3.0;version=latest,\
 	io.openliberty.org.eclipse.microprofile.metrics.3.0;version=latest,\
+	io.openliberty.org.eclipse.microprofile.config.2.0;version=latest,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
@@ -48,4 +53,6 @@ WS-TraceGroup: METRICS
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.ws.jaxrs.defaultexceptionmapper;version=latest, \
 	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
-	com.ibm.ws.microprofile.metrics.common;version=latest
+	com.ibm.ws.microprofile.metrics.common;version=latest,\
+	com.ibm.ws.microprofile.metrics,\
+	com.ibm.ws.kernel.service

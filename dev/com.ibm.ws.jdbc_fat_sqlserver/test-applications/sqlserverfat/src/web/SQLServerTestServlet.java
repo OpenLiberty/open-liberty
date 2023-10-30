@@ -48,6 +48,7 @@ import com.microsoft.sqlserver.jdbc.ISQLServerDataSource;
 import com.microsoft.sqlserver.jdbc.ISQLServerStatement;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
@@ -73,6 +74,21 @@ public class SQLServerTestServlet extends FATServlet {
 
     @Resource(lookup = "jdbc/ntlm")
     private DataSource ds_ntlm;
+
+    @Resource(lookup = "jdbc/driver-property-preferred")
+    private DataSource driver_property_perferred;
+
+    @Resource(lookup = "jdbc/ds-property-preferred")
+    private DataSource ds_property_perferred;
+
+    @Resource(lookup = "jdbc/driver-no-override")
+    private DataSource driver_no_override;
+
+    @Resource(lookup = "jdbc/ds-no-override")
+    private DataSource ds_no_override;
+
+    @Resource(lookup = "jdbc/ds-no-url-defaults")
+    private DataSource ds_no_url_defaults;
 
     @Resource
     private ExecutorService executor;
@@ -465,6 +481,65 @@ public class SQLServerTestServlet extends FATServlet {
             ResultSet result = stmt.executeQuery("SELECT STRVAL FROM MYTABLE WHERE ID=40");
             assertTrue("Query should have returned a result", result.next());
             assertEquals("Unexpected value returned", "fourty", result.getString(1));
+        }
+    }
+
+    @Test
+    public void testVerifyConnectionPrecedence() throws Throwable {
+        try (Connection con = driver_property_perferred.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO MYTABLE VALUES (?, ?)");) {
+            stmt.setInt(1, 41);
+            stmt.setString(2, "fourty-one");
+            stmt.execute();
+        }
+
+        try (Connection con = ds_property_perferred.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO MYTABLE VALUES (?, ?)");) {
+            stmt.setInt(1, 42);
+            stmt.setString(2, "fourty-two");
+            stmt.execute();
+        }
+    }
+
+    @Test
+    public void testVerifyDefaultDoesNotOverride() throws Throwable {
+        try (Connection con = driver_no_override.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO MYTABLE VALUES (?, ?)");) {
+            stmt.setInt(1, 43);
+            stmt.setString(2, "fourty-three");
+            stmt.execute();
+        }
+
+        try (Connection con = ds_no_override.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO MYTABLE VALUES (?, ?)");) {
+            stmt.setInt(1, 44);
+            stmt.setString(2, "fourty-four");
+            stmt.execute();
+        }
+    }
+
+    /**
+     * If a URL is not set, and no serverName is configured on the DataSource, then the JDBC Driver does default to localhost when attempting a connection.
+     *
+     * This is where the serverName is queried and defaulted:
+     * https://github.com/microsoft/mssql-jdbc/blob/3343f73f0a18ce322d894b5646f3d89a3fbe375c/src/main/java/com/microsoft/sqlserver/jdbc/SQLServerConnection.java#L2090-L2097
+     *
+     * Here is where you would expect to find the default value (but isn't)
+     * https://github.com/microsoft/mssql-jdbc/blob/3343f73f0a18ce322d894b5646f3d89a3fbe375c/src/main/java/com/microsoft/sqlserver/jdbc/SQLServerDriver.java#L577
+     *
+     * This test will verify this behavior does not change in future releases.
+     *
+     * @throws Throwable
+     */
+    @Test
+    @ExpectedFFDC({ "com.microsoft.sqlserver.jdbc.SQLServerException",
+                    "javax.resource.spi.ResourceAllocationException",
+                    "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
+    public void testVerifyDefaultWithoutURL() throws Throwable {
+        try (Connection con = ds_no_url_defaults.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO MYTABLE VALUES (?, ?)");) {
+            stmt.setInt(1, 45);
+            stmt.setString(2, "fourty-five");
+            stmt.execute();
+            fail("Should not have been able to create a connection using default serverName.");
+        } catch (SQLException e) {
+            //Expect the default to be localhost and for the connection to fail.
+            assertTrue(e.getMessage().contains("TCP/IP connection to the host localhost"));
         }
     }
 }

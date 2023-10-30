@@ -67,6 +67,12 @@ public class OracleTestServlet extends FATServlet {
     @Resource(name = "java:comp/jdbc/env/unsharable-ds-xa-tightly-coupled", shareable = false)
     private DataSource unsharable_ds_xa_tightly_coupled;
 
+    @Resource(lookup = "jdbc/driver-url-preferred")
+    private DataSource driver_url_perferred;
+
+    @Resource(lookup = "jdbc/ds-url-preferred")
+    private DataSource ds_url_perferred;
+
     @Resource
     private UserTransaction tx;
 
@@ -486,6 +492,21 @@ public class OracleTestServlet extends FATServlet {
                 ps.setBinaryStream(2, inputStream);
                 ps.executeUpdate();
             }
+        }
+    }
+
+    @Test
+    public void testVerifyConnectionPrecedence() throws Throwable {
+        try (Connection con = driver_url_perferred.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO MYTABLE VALUES (?, ?)");) {
+            stmt.setInt(1, 33);
+            stmt.setString(2, "thirty-three");
+            stmt.execute();
+        }
+
+        try (Connection con = ds_url_perferred.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO MYTABLE VALUES (?, ?)");) {
+            stmt.setInt(1, 34);
+            stmt.setString(2, "thirty-four");
+            stmt.execute();
         }
     }
 }

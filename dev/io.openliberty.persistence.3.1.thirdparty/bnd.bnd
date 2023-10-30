@@ -17,7 +17,7 @@ bVersion=1.0
 eclVersion=4.0.2
 eclFullVersion=${eclVersion}
 eclPackageVersion=4.0.2
-asmFullVersion=9.5.0
+asmFullVersion=9.6.0
 
 Bundle-SymbolicName: io.openliberty.persistence.3.1.thirdparty
 Bundle-Description: EclipseLink JPA
@@ -134,7 +134,8 @@ Include-Resource: \
   @${repo;org.eclipse.persistence:org.eclipse.persistence.json;${eclFullVersion};EXACT}!/!(META-INF/maven/*|module-info.class),\
   org/eclipse/persistence/asm=${bin}/org/eclipse/persistence/asm,\
   org/eclipse/persistence/dynamic=${bin}/org/eclipse/persistence/dynamic,\
-  org/eclipse/persistence/internal/jpa=${bin}/org/eclipse/persistence/internal/jpa
+  org/eclipse/persistence/internal/jpa=${bin}/org/eclipse/persistence/internal/jpa,\
+  org/eclipse/persistence/jpa/jpql/parser=${bin}/org/eclipse/persistence/jpa/jpql/parser
 
 publish.wlp.jar.suffix: dev/api/third-party
 
@@ -152,6 +153,7 @@ Service-Component: \
 -buildpath: \
     org.eclipse.persistence:org.eclipse.persistence.core;version=${eclFullVersion};strategy=exact,\
     org.eclipse.persistence:org.eclipse.persistence.jpa;version=${eclFullVersion};strategy=exact,\
+    org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;version=${eclFullVersion};strategy=exact,\
     org.eclipse.persistence:org.eclipse.persistence.asm;version=${asmFullVersion};strategy=exact,\
     io.openliberty.jakarta.persistence.3.1;version=latest,\
     com.ibm.websphere.org.osgi.core,\

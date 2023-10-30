@@ -327,6 +327,7 @@ public class WebClientImpl extends WebClient {
     /**
      * @return the tccl
      */
+    @Trivial
     public static ClassLoader getTccl() {
         return tccl;
     }
@@ -334,11 +335,13 @@ public class WebClientImpl extends WebClient {
     /**
      * @param tccl the tccl to set
      */
+    @Trivial
     public static void setTccl(ClassLoader tccl) {
         WebClientImpl.tccl = tccl;
     }
 
     @Override
+    @Trivial
     public void setMisrouting(boolean b) {
         _misrouting = b;
     }

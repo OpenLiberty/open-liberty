@@ -19,7 +19,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.PrintStream;
-import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.reactive.streams.operators.ProcessorBuilder;
@@ -45,7 +44,6 @@ public class SetInstanceTest extends AbstractReactiveUnitTest {
 
         PrintStream out = System.out;
         TestReactiveStreamsEngine secondaryEngine = new TestReactiveStreamsEngine();
-        secondaryEngine.setExecutorService(ForkJoinPool.commonPool());
 
         ProcessorBuilder<String, String> filterOut2 = ReactiveStreams.<String> builder()
                         .filter(s -> !s.equalsIgnoreCase("2"));

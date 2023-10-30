@@ -1,18 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsp.translator.utils;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +36,6 @@ import com.ibm.ws.jsp.JspOptions;
 import com.ibm.ws.jsp.configuration.JspConfiguration;
 import com.ibm.ws.jsp.taglib.TagLibraryCache;
 import com.ibm.ws.jsp.taglib.TagLibraryInfoImpl;
-import com.ibm.ws.jsp.tools.JspFileUtils.InnerclassFilenameFilter; //PI12939
 import com.ibm.ws.jsp.translator.JspTranslationException;
 import com.ibm.ws.jsp.translator.JspTranslator;
 import com.ibm.ws.jsp.translator.JspTranslatorFactory;
@@ -751,4 +748,22 @@ public class JspTranslatorUtil {
             logger.exiting(CLASS_NAME, "deleteClassFiles", "Exiting");
         }
     }
+
+    // PI12939
+    private static class InnerclassFilenameFilter implements FilenameFilter {
+		String filename=null;
+		public InnerclassFilenameFilter(String filename){
+			this.filename=filename;
+		}
+		public boolean accept(File dir, String name) {
+			int dollarIndex = name.indexOf("$");
+			if (dollarIndex > -1) {
+				String nameStart = name.substring(0, dollarIndex);
+				if (this.filename.equals(nameStart)) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
 }

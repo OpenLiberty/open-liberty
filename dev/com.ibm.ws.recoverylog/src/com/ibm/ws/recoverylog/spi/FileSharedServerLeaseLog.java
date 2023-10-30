@@ -737,43 +737,37 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
             _peerLeaseLock = null;
         }
 
-//        // Release the lock - if it is not null!
-//        FileLock fLock = null;
-//        FileChannel fChannel = null;
-//        if (_peerLeaseLock != null) {
-//            String recIdentity = _peerLeaseLock.getRecoveryIdentity();
-//            if (recoveryIdentity.equals(recIdentity)) {
-//                fLock = _peerLeaseLock.getFileLock();
-//                if (fLock != null) {
-//                    if (tc.isDebugEnabled())
-//                        Tr.debug(tc, "Release the peer lock");
-//                    try {
-//                        fLock.release();
-//                    } catch (Exception ex) {
-//                        if (tc.isDebugEnabled())
-//                            Tr.debug(tc, "Caught exception on lock release " + ex);
-//                    }
-//                }
-//                // Close the channel
-//                fChannel = _peerLeaseLock.getFileChannel();
-//                if (tc.isDebugEnabled())
-//                    Tr.debug(tc, "Close channel " + fChannel);
-//                if (fChannel != null)
-//                    try {
-//                        fChannel.close();
-//                    } catch (Exception ex) {
-//                        if (tc.isDebugEnabled())
-//                            Tr.debug(tc, "Caught exception on channel close " + ex);
-//                    }
-//                _peerLeaseLock = null;
-//            } else {
-//                if (tc.isDebugEnabled())
-//                    Tr.debug(tc, "The locks identity which was {0} did not match the requested identity which was {1}", recIdentity, recoveryIdentity);
-//            }
-//        } else {
-//            if (tc.isDebugEnabled())
-//                Tr.debug(tc, "The lease lock was null");
-//        }
+        // Release the lock - if it is not null!
+        FileLock fLock = null;
+        FileChannel fChannel = null;
+        if (_peerLeaseLock != null) {
+            fLock = _peerLeaseLock.getFileLock();
+            if (fLock != null) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Release the peer lock");
+                try {
+                    fLock.release();
+                } catch (Exception ex) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Caught exception on lock release " + ex);
+                }
+            }
+            // Close the channel
+            fChannel = _peerLeaseLock.getFileChannel();
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Close channel " + fChannel);
+            if (fChannel != null)
+                try {
+                    fChannel.close();
+                } catch (Exception ex) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Caught exception on channel close " + ex);
+                }
+            _peerLeaseLock = null;
+        } else {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "The lease lock was null");
+        }
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "releasePeerLease");

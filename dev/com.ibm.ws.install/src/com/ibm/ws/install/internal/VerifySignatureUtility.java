@@ -24,7 +24,6 @@ import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.Security;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,11 +65,6 @@ public class VerifySignatureUtility {
     private String defaultKeyID = null;
 
     private final ProgressBar progressBar = ProgressBar.getInstance();
-
-    VerifySignatureUtility() {
-        Security.addProvider(new BouncyCastleProvider());
-
-    }
 
     private String getLibertyKeyID() throws InstallException {
         if (defaultKeyID != null) {
@@ -296,6 +290,7 @@ public class VerifySignatureUtility {
                 progressBar.updateProgress(increment);
 
             } catch (IOException | PGPException e) {
+                logger.fine(e.getMessage());
                 failedFeatures.add(f);
             }
         }
@@ -368,7 +363,7 @@ public class VerifySignatureUtility {
      * @throws FileNotFoundException
      */
     private boolean verifySignature(String fileName, PGPSignature sig, PGPPublicKey pubKey) throws IOException, FileNotFoundException, PGPException {
-        sig.init(new JcaPGPContentVerifierBuilderProvider().setProvider("BC"), pubKey);
+        sig.init(new JcaPGPContentVerifierBuilderProvider().setProvider(new BouncyCastleProvider()), pubKey);
 
         // Read file to verify
         try (InputStream dIn = new BufferedInputStream(new FileInputStream(fileName))) {

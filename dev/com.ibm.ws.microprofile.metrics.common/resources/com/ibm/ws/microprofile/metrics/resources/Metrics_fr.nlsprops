@@ -110,6 +110,9 @@ memory.committedHeap.description=Affiche la quantit\u00e9 de m\u00e9moire en oct
 #Memory maxHeap message
 memory.maxHeap.description=Affiche la quantit\u00e9 maximale de m\u00e9moire dynamique en octets qui peut \u00eatre utilis\u00e9e pour la gestion de la m\u00e9moire. Cet attribut affiche -1 si la taille de la m\u00e9moire dynamique maximale est ind\u00e9finie. Cette quantit\u00e9 de m\u00e9moire n'est pas garanti disponible pour la gestion de m\u00e9moire si elle d\u00e9passe la quantit\u00e9 de m\u00e9moire valid\u00e9e. Il est possible que la machine virtuelle Java ne r\u00e9ussisse pas \u00e0 allouer de la m\u00e9moire, m\u00eame si la quantit\u00e9 de m\u00e9moire utilis\u00e9e ne d\u00e9passe pas cette taille maximale.
 
+#Memory heapUtilization message
+memory.heapUtilization.description=Partie de la m\u00e9moire dynamique maximale actuellement utilis\u00e9e. Cette m\u00e9trique affiche -1 si la taille de segment de m\u00e9moire maximale n'est pas d\u00e9finie.
+
 #Jvm uptime message
 jvm.uptime.description=Affiche l'heure de d\u00e9marrage de la machine virtuelle Java en millisecondes. Cet attribut affiche l'heure approximative \u00e0 laquelle la machine virtuelle Java a \u00e9t\u00e9 d\u00e9marr\u00e9e.
 
@@ -143,11 +146,17 @@ cpu.processCpuLoad.description=Affiche l'utilisation r\u00e9cente de l'unit\u00e
 #Cpu processCpuTime message
 cpu.processCpuTime.description=Affiche le temps UC utilis\u00e9 par le processus dans lequel la machine virtuelle Java s'ex\u00e9cute.
 
+#Cpu processCpuUtilization message
+cpu.processCpuUtilization.description=Temps UC r\u00e9cent utilis\u00e9 par le processus JVM \u00e0 partir de tous les processeurs disponibles pour la machine virtuelle Java.
+
 #Garbage collection count message
 garbageCollectionCount.description=Affiche le nombre total de collections qui se sont produites. L'attribut affiche -1 si le nombre de collections n'est pas d\u00e9fini pour ce collecteur.
 
 #Garbage collection time message
 garbageCollectionTime.description=Affiche le temps approximatif \u00e9coul\u00e9 pour la collection accumul\u00e9e en millisecondes. Cet attribut affiche -1 si le temps \u00e9coul\u00e9 pour la collection est ind\u00e9fini pour ce collecteur. L'impl\u00e9mentation de la machine virtuelle Java peut utiliser un temporisateur haute r\u00e9solution pour mesurer le temps \u00e9coul\u00e9. Cet attribut peut afficher la m\u00eame valeur m\u00eame si le nombre de collections a \u00e9t\u00e9 incr\u00e9ment\u00e9 si le temps \u00e9coul\u00e9 pour la collection est tr\u00e8s court.
+
+#Garbage collection time per garbage collection cycle message
+gc.time.per.cycle.description=Temps moyen r\u00e9cent pass\u00e9 par cycle de r\u00e9cup\u00e9ration de place. Cette mesure affiche -1 si le temps \u00e9coul\u00e9 ou le nombre de r\u00e9cup\u00e9rations de place n'est pas d\u00e9fini pour ce collecteur.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
@@ -157,6 +166,7 @@ threadpool.size.description=Taille du pool d'unit\u00e9s d'ex\u00e9cution.
 
 servlet.request.total.description=Nombre de visites sur ce servlet depuis le d\u00e9marrage du serveur.
 servlet.responseTime.total.description=Temps de r\u00e9ponse total de ce servlet depuis le d\u00e9marrage du serveur.
+servlet.request.elapsedTime.per.request.description=Temps de r\u00e9ponse moyen r\u00e9cent par demande de servlet.
 
 connectionpool.create.total.description=Nombre total de connexions g\u00e9r\u00e9es qui ont \u00e9t\u00e9 cr\u00e9\u00e9es depuis la cr\u00e9ation du pool.
 connectionpool.destroy.total.description=Nombre total de connexions g\u00e9r\u00e9es qui ont \u00e9t\u00e9 d\u00e9truites depuis la cr\u00e9ation du pool.
@@ -167,6 +177,8 @@ connectionpool.waitTime.total.description=Le temps total d'attente sur l'ensembl
 connectionpool.inUseTime.total.description=Le temps total d'utilisation de l'ensemble des connexions depuis que le serveur a d\u00e9marr\u00e9.
 connectionpool.usedConnections.total.description=Le nombre total de demandes de connexion qui ont attendu en raison d'un pool de connexions complet ou qui n'ont pas eu \u00e0 attendre, depuis que le serveur a d\u00e9marr\u00e9. Ce total ne tient pas compte des connexions actuellement utilis\u00e9es.
 connectionpool.queuedRequests.total.description=Le nombre total de demandes de connexion qui ont d\u00fb attendre en raison d'un pool de connexions complet, depuis que le serveur a d\u00e9marr\u00e9.
+connectionpool.inUseTime.per.usedConnection.description=Dur\u00e9e moyenne r\u00e9cente d'utilisation des connexions.
+connectionpool.waitTime.per.queuedRequest.description=Temps d'attente moyen r\u00e9cent pour les demandes de connexion en file d'attente.
 
 session.create.total.description=Nombre de sessions connect\u00e9es depuis l'activation de la m\u00e9trique.
 session.liveSessions.description=Nombre d'utilisateurs actuellement connect\u00e9s.
@@ -188,6 +200,7 @@ grpc.client.responseTime.total.description=Temps de r\u00e9ponse total des appel
 
 REST.request.description=Nombre d'appels et temps de r\u00e9ponse total de cette m\u00e9thode de ressource RESTful depuis le d\u00e9marrage du serveur. La m\u00e9trique n'enregistre pas le temps \u00e9coul\u00e9 ni le comptage d'une demande REST si celle-ci a g\u00e9n\u00e9r\u00e9 une exception non mapp\u00e9e. Elle effectue le suivi de la dur\u00e9e la plus longue enregistr\u00e9e et de la dur\u00e9e la plus courte enregistr\u00e9e au cours de la minute compl\u00e8te pr\u00e9c\u00e9dente.
 REST.request.unmappedException.description=Nombre total d'exceptions non mapp\u00e9es \u00e9mises par cette m\u00e9thode de ressource RESTful depuis le d\u00e9marrage du serveur.
+REST.request.elapsedTime.per.request.description: Temps de r\u00e9ponse moyen r\u00e9cent par demande de m\u00e9thode de ressource RESTful.
 
 requestTiming.requestCount.description=Nombre de demandes de servlet depuis que le serveur a d\u00e9marr\u00e9.
 requestTiming.activeRequestCount.description=Nombre de demandes de servlet en cours d'ex\u00e9cution.

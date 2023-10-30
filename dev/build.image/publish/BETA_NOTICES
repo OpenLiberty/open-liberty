@@ -194,8 +194,8 @@ PROTO-GOOGLE-COMMON-PROTOS,RESTEASY-CLIENT-MICROPROFILE, RESTEASY-CLIENT-MICROPR
 SWAGGER-CLIENT, SWAGGER-UI, TUNNEL-AGENT, VELOCITY, VELOCITY-ENGINE-CORE, WELD-API, WELD-CORE-JSF, WELD-EJB, WELD-JTA
 WELD-LITE-EXTENSION-TRANSLATOR, WELD-PROBE-CORE, WELD-SPI, WELD-WEB, WOODSTOX-CORE, WOODSTOX-CORE-ASL, WSS4J-BINDINGS
 WSS4J-POLICY, WSS4J-WS-SECURITY-COMMON, WSS4J-WS-SECURITY-DOM, WSS4J-WS-SECURITY-POLICY-STAX, WSS4J-WS-SECURITY-STAX
-WSS4J-WS-SECURITY-WEB, XBEAN-ASM5-SHADED, XBEAN-FINDER-SHADED, XML-RESOLVER
-
+WSS4J-WS-SECURITY-WEB, XBEAN-ASM5-SHADED, XBEAN-FINDER-SHADED, XML-RESOLVER, ASM, ASM-ANALYSIS, ASM-COMMONS,
+ASM-TREE, MICROMETER-COMMONS, MICROMETER-OBSERVATION
 
 
 Apache License
@@ -783,9 +783,15 @@ ORG.ECLIPSE.PERSISTENCE.JPA.JPQL
 ORG.ECLIPSE.PERSISTENCE.CORE
 (https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.core/4.0.1/),
 ORG.ECLIPSE.PERSISTENCE.ASM
-(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.asm/9.4.0/),
+(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.asm/9.6.0),
+(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.asm/9.5.0),
+(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.asm/9.3.0),
 ORG.ECLIPSE.PERSISTENCE.ANTLR
-(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.antlr/2.7.11/)
+(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.antlr/2.7.13/),
+ORG.ECLIPSE.ECJ
+(https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.35.0/),
+(https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.33.0/),
+(https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.26.0/),
 
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION

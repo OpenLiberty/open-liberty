@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -1451,11 +1451,6 @@ public class ConfigTest extends FATServletClient {
         List<String> matches = new ArrayList<String>();
 
         DataSource dsfat1 = config.getDataSources().getBy("id", "dsfat1");
-        JdbcDriver jdbcDriver = config.getJdbcDrivers().getBy("id", "FATJDBCDriver");
-        Library driverLibrary = jdbcDriver.getNestedLibrary();
-        Fileset libraryFileset = driverLibrary.getNestedFileset();
-        String includes = libraryFileset.getIncludes();
-        includes = includes == null ? null : includes.toLowerCase();
         String dsPropsAlias = dsfat1.getDataSourcePropertiesUsedAlias();
         String traceString = null, traceSpec = null, platform = null;
 
@@ -1467,6 +1462,8 @@ public class ConfigTest extends FATServletClient {
             return;
         }
 
+        boolean configUpdated = false;
+
         // 1) Disable all tracing
         switch (dsPropsAlias) {
             case DataSourceProperties.DB2_JCC:
@@ -1475,15 +1472,22 @@ public class ConfigTest extends FATServletClient {
                 traceString = "\\[jcc\\]\\[";
 
                 ConfigElementList<Properties_db2_jcc> db2JccProps = dsfat1.getProperties_db2_jcc();
-                if (!db2JccProps.isEmpty())
+                if (!db2JccProps.isEmpty() && db2JccProps.get(0).getTraceLevel() != null) {
                     db2JccProps.get(0).setTraceLevel(null);
+                    configUpdated = true;
+                }
+
                 break;
             case DataSourceProperties.DERBY_EMBEDDED:
                 platform = "Derby Embedded";
                 traceSpec = "com.ibm.ws.derby.logwriter=all=enabled";
                 traceString = "new org.apache.derby.jdbc.EmbeddedConnectionPoolDataSource40()";
 
-                dsfat1.setSupplementalJDBCTrace(null);
+                if (dsfat1.getSupplementalJDBCTrace() != null) {
+                    dsfat1.setSupplementalJDBCTrace(null);
+                    configUpdated = true;
+                }
+
                 break;
             case DataSourceProperties.DERBY_CLIENT:
                 platform = "Derby Network Client";
@@ -1491,56 +1495,47 @@ public class ConfigTest extends FATServletClient {
                 traceString = "Driver: Apache Derby Network Client JDBC Driver";
 
                 ConfigElementList<Properties_derby_client> derbyProps = dsfat1.getProperties_derby_client();
-                if (!derbyProps.isEmpty())
+                if (!derbyProps.isEmpty() && derbyProps.get(0).getTraceLevel() != null) {
                     derbyProps.get(0).setTraceLevel(null);
+                    configUpdated = true;
+                }
                 break;
             case DataSourceProperties.ORACLE_JDBC:
-                // Oracle tracing will only work if we are using *_g.jar
-                // Make a best effort to check for it
-                if (includes != null) {
-                    platform = "Oracle";
-                    traceSpec = "oracle.*=all";
-                    traceString = "oracle.jdbc.driver.OracleDriver";
-                    if (!includes.contains("_g.jar")) {
-                        // make an effort to use the correct jars
-                        StringBuilder sb = new StringBuilder();
-                        String[] jars = includes.split(" ");
-                        for (int i = 0; i < jars.length; ++i) {
-                            if (jars[i].startsWith("ojdbc")) {
-                                int index = jars[i].indexOf('.');
-                                sb.append(jars[i].substring(0, index) + "_g.jar");
-                                if (i + 1 != jars.length)
-                                    sb.append(' ');
-                            }
-                        }
-
-                        libraryFileset.setIncludes(sb.toString());
-                    }
-                } else {
-                    Log.info(c, method, "Did not find *_g.jar required for Oracle tracing - aborting test");
-                    return;
-                }
+                // Database Rotation infrastructure guarantees that the _g driver is used
+                platform = "Oracle";
+                traceSpec = "oracle.*=all";
+                traceString = "oracle.jdbc.driver.OracleDriver";
                 break;
             case DataSourceProperties.DATADIRECT_SQLSERVER:
                 platform = "SQL Server (DataDirect)";
                 traceSpec = "com.ibm.ws.sqlserver.logwriter=all=enabled";
                 traceString = "jdbc:datadirect:sqlserver:";
 
-                dsfat1.setSupplementalJDBCTrace(null);
+                if (dsfat1.getSupplementalJDBCTrace() != null) {
+                    dsfat1.setSupplementalJDBCTrace(null);
+                    configUpdated = true;
+                }
+
                 break;
             case DataSourceProperties.MICROSOFT_SQLSERVER:
                 platform = "SQL Server (Microsoft)";
                 traceSpec = "com.ibm.ws.sqlserver.logwriter=all=enabled";
                 traceString = "setURL\\(\"jdbc:sqlserver://\"\\)|setApplicationName\\(\"Microsoft JDBC Driver for SQL Server\"\\)";
 
-                dsfat1.setSupplementalJDBCTrace(null);
+                if (dsfat1.getSupplementalJDBCTrace() != null) {
+                    dsfat1.setSupplementalJDBCTrace(null);
+                    configUpdated = true;
+                }
                 break;
             case DataSourceProperties.SYBASE:
                 platform = "Sybase";
                 traceString = "new com.sybase.jdbc4.jdbc.SybConnectionPoolDataSource()|new com.sybase.jdbc3.jdbc.SybConnectionPoolDataSource()";
                 traceSpec = "com.ibm.ws.sybase.logwriter=all=enabled";
 
-                dsfat1.setSupplementalJDBCTrace(null);
+                if (dsfat1.getSupplementalJDBCTrace() != null) {
+                    dsfat1.setSupplementalJDBCTrace(null);
+                    configUpdated = true;
+                }
                 break;
             default:
                 // skip the test since we don't know what we are running with
@@ -1559,23 +1554,25 @@ public class ConfigTest extends FATServletClient {
 
         Log.info(c, method, "Trace spec found for " + platform + " and result is: " + traceSpec);
 
-        try {
-            updateServerConfig(config, EMPTY_EXPR_LIST);
+        if (configUpdated) {
             try {
-                server.stopServer(ALLOWED_MESSAGES);
+                updateServerConfig(config, EMPTY_EXPR_LIST);
+                try {
+                    server.stopServer(ALLOWED_MESSAGES);
 
-                //Get driver type
-                server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-                server.addEnvVar("ANON_DRIVER", "driver" + DatabaseContainerType.valueOf(testContainer).ordinal() + ".jar");
-                server.addEnvVar("DB_USER", testContainer.getUsername());
-                server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
-            } finally {
-                server.startServer();
+                    //Get driver type
+                    server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+                    server.addEnvVar("ANON_DRIVER", "driver" + DatabaseContainerType.valueOf(testContainer).ordinal() + ".jar");
+                    server.addEnvVar("DB_USER", testContainer.getUsername());
+                    server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
+                } finally {
+                    server.startServer();
+                }
+            } catch (Throwable t) {
+                System.out.println("Failure during " + method + " with the following config: ");
+                System.out.println(config);
+                throw t;
             }
-        } catch (Throwable t) {
-            System.out.println("Failure during " + method + " with the following config: ");
-            System.out.println(config);
-            throw t;
         }
 
         // 2) execute testBasicQuery and ensure that NO trace is found

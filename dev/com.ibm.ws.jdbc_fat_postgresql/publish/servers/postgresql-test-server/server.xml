@@ -95,6 +95,26 @@
       <properties.postgresql URL="${env.POSTGRES_URL}"/>
     </dataSource>
     
+    <!-- 
+    	 Verify precedence of connection properties on Driver
+    -->
+    <dataSource id="driver-url-preferred" jndiName="jdbc/driver-url-preferred" type="java.sql.Driver">
+      <jdbcDriver libraryRef="PostgresLibJar"/>
+      <containerAuthData user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
+      <properties.postgresql url="jdbc:postgresql://${env.POSTGRES_HOST}:${env.POSTGRES_PORT}/${env.POSTGRES_DB}"
+      serverName="$INVALID" portNumber="000" databaseName="$INVALID"/> <!-- Should be ignored -->
+    </dataSource>
+    
+    <!-- 
+    	 Verify precedence of connection properties on DataSource
+    -->
+    <dataSource id="ds-property-preferred" jndiName="jdbc/ds-property-preferred" type="javax.sql.DataSource">
+      <jdbcDriver libraryRef="PostgresLibJar"/>
+      <containerAuthData user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
+      <properties.postgresql URL="jdbc:postgresql://$INVALID:100/$INVALID"
+      serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}"/>
+    </dataSource>
+    
     <include location="../fatTestPorts.xml"/>
     
     <!-- Needed because this sysprop is read by static init of the org.postgresql.jdbc.PgStatement class, which could be triggered by many different 

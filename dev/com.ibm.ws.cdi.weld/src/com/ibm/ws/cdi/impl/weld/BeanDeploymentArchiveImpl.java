@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -298,12 +299,9 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            String debugClassesString = this.beanClasses.entrySet()
-            .stream()
-            .filter(Objects::nonNull)
-            .map(entry -> entry.getKey()  + " = " + entry.getValue().toString())
-            .collect(Collectors.joining(", "));
-            Tr.debug(tc, "scan [ " + getHumanReadableName() + " ] AFTER SCAN. Bean classes: { " + debugClassesString + "}" );
+            String debugClassesString = this.beanClasses.entrySet().stream().filter(Objects::nonNull).map(entry -> entry.getKey() + " = "
+                                                                                                                   + entry.getValue().toString()).collect(Collectors.joining(", "));
+            Tr.debug(tc, "scan [ " + getHumanReadableName() + " ] AFTER SCAN. Bean classes: { " + debugClassesString + "}");
         }
 
         this.hasBeans = this.beanClasses.size() > 0;
@@ -745,7 +743,16 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
      */
     @Override
     public Collection<EjbDescriptor<?>> getEjbs() {
-        return ejbDescriptors;
+        if (beanDiscoveryMode == BeanDiscoveryMode.NONE) {
+            // Don't tell Weld about any EJBs if bean discovery mode is none, otherwise it will turn them into beans
+            // which we don't want.
+
+            // We still need to store the EJB Descriptors so that we can find which BDA contains a given EJB, even if
+            // it has bean discovery mode none.
+            return Collections.emptySet();
+        } else {
+            return ejbDescriptors;
+        }
     }
 
     private Set<Class<?>> getEJBClasses() {
@@ -871,17 +878,18 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     public void addEjbDescriptor(EjbDescriptor<?> ejbDescriptor) {
         Tr.entry(tc, "addEjbDescriptor. Adding EjbDescriptor: " + ejbDescriptor + " with ejbName: " + ejbDescriptor.getEjbName() + " to bda: " + getHumanReadableName());
 
+        this.ejbDescriptors.add(ejbDescriptor);
+        Class<?> beanClass = ejbDescriptor.getBeanClass();
+        Set<EjbDescriptor<?>> ejbDescriptors = ejbDescriptorMap.get(beanClass);
+        if (ejbDescriptors == null) {
+            ejbDescriptors = new HashSet<EjbDescriptor<?>>();
+        }
+        ejbDescriptors.add(ejbDescriptor);
+        this.ejbDescriptorMap.put(beanClass, ejbDescriptors);
+
         if (getBeanDiscoveryMode() != BeanDiscoveryMode.NONE) {
-            this.ejbDescriptors.add(ejbDescriptor);
-            Class<?> beanClass = ejbDescriptor.getBeanClass();
             this.beanClasses.put(beanClass.getName(), beanClass);
             this.ejbClasses.add(beanClass);
-            Set<EjbDescriptor<?>> ejbDescriptors = ejbDescriptorMap.get(beanClass);
-            if (ejbDescriptors == null) {
-                ejbDescriptors = new HashSet<EjbDescriptor<?>>();
-            }
-            ejbDescriptors.add(ejbDescriptor);
-            this.ejbDescriptorMap.put(beanClass, ejbDescriptors);
             this.hasBeans = true;
         }
     }

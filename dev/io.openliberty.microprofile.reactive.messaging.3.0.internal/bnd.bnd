@@ -18,9 +18,22 @@ Bundle-Name: io.openliberty.microprofile.reactive.messaging.3.0.internal
 Bundle-SymbolicName: io.openliberty.microprofile.reactive.messaging.3.0.internal
 Bundle-Description: MicroProfile Reactive Messaging 3.0 components
 
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
 WS-TraceGroup: REACTIVEMESSAGE
 
+Include-Resource: \
+  OSGI-INF/wlp=resources/OSGI-INF/wlp
+
 Import-Package: *
+
+Private-Package: \
+  io.openliberty.microprofile.reactive.messaging30.internal
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 -dsannotations: \
     io.openliberty.microprofile.reactive.messaging30.internal.MessageAccess30

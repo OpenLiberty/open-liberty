@@ -110,6 +110,9 @@ memory.committedHeap.description=Visualizza la quantit\u00e0 di memoria, in byte
 #Memory maxHeap message
 memory.maxHeap.description=Visualizza la quantit\u00e0 massima di memoria heap, in byte, che pu\u00f2 essere utilizzata per la gestione della memoria. Questo attributo visualizza -1 se la dimensione massima della memoria heap non \u00e8 definita. La disponibilit\u00e0 di questa quantit\u00e0 di memoria non \u00e8 garantita per la gestione della memoria se maggiore della quantit\u00e0 di memoria sottoposta a commit. La JVM (Java Virtual Machine) potrebbe non essere in grado di assegnare la memoria anche se la quantit\u00e0 di memoria utilizzata non supera la dimensione massima.
 
+#Memory heapUtilization message
+memory.heapUtilization.description=La parte della memoria heap massima attualmente in uso. Questa metrica visualizza -1 se la dimensione massima della memoria heap non \u00e8 definita.
+
 #Jvm uptime message
 jvm.uptime.description=Visualizza l'ora di avvio della JVM (Java Virtual Machine) in millisecondi. Questo attributo visualizza l'ora approssimativa in cui la JVM (Java Virtual Machine) \u00e8 stata avviata.
 
@@ -143,11 +146,17 @@ cpu.processCpuLoad.description=Visualizza l'utilizzo recente della CPU per il pr
 #Cpu processCpuTime message
 cpu.processCpuTime.description=Visualizza il tempo CPU utilizzato dal processo su cui \u00e8 in esecuzione la Java Virtual Machine.
 
+#Cpu processCpuUtilization message
+cpu.processCpuUtilization.description=Il tempo CPU recente utilizzato dal processo JVM da tutti i processori disponibili per la JVM.
+
 #Garbage collection count message
 garbageCollectionCount.description=Visualizza il numero totale delle raccolte che si sono verificate. Questo attributo visualizza -1 se il conteggio delle raccolte non \u00e8 definito per questo programma di raccolta.
 
 #Garbage collection time message
 garbageCollectionTime.description=Visualizza il tempo trascorso accumulato approssimativo per la raccolta, in millisecondi. Questo attributo visualizza -1 se il tempo trascorso per la raccolta non \u00e8 definito per questo programma di raccolta. L'implementazione della JVM (Java Virtual Machine) potrebbe utilizzare un timer a risoluzione elevata per misurare il tempo trascorso. Se il tempo trascorso per la raccolta \u00e8 molto breve, questo attributo potrebbe visualizzare lo stesso valore anche se il conteggio della raccolta \u00e8 stato aumentato.
+
+#Garbage collection time per garbage collection cycle message
+gc.time.per.cycle.description=Il tempo medio recente impiegato per il ciclo di raccolta dati inutilizzati. Questa metrica visualizza -1 se il tempo trascorso della raccolta dati inutilizzati o il conteggio non \u00e8 definito per questo programma di raccolta.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
@@ -157,6 +166,7 @@ threadpool.size.description=La dimensione del pool di thread.
 
 servlet.request.total.description=Il numero di visite a questo servlet dall'avvio del server.
 servlet.responseTime.total.description=Il tempo di risposta totale di questo servlet dall'avvio del server.
+servlet.request.elapsedTime.per.request.description=Il tempo di risposta trascorso medio recente per richiesta servlet.
 
 connectionpool.create.total.description=Il numero totale di connessione gestite create dalla creazione del pool.
 connectionpool.destroy.total.description=Il numero totale di connessione gestite eliminate dalla creazione del pool.
@@ -167,6 +177,8 @@ connectionpool.waitTime.total.description=Il tempo di attesa totale su tutte le 
 connectionpool.inUseTime.total.description=Il tempo totale per cui tutte le connessioni s ono in uso dall'avvio del server.
 connectionpool.usedConnections.total.description=Il numero totale di richieste di connessione che hanno atteso a causa di un pool di connessione pieno o che non hanno dovuto attendere dall'avvio del server. Qualsiasi connessione attualmente in uso non \u00e8 inclusa in questo totale.
 connectionpool.queuedRequests.total.description=Il numero totale di richieste di connessione che hanno dovuto attendere a causa di un pool di connessione pieno dall'avvio del server.
+connectionpool.inUseTime.per.usedConnection.description=Il tempo medio recente in cui le connessioni sono in uso.
+connectionpool.waitTime.per.queuedRequest.description=Il tempo di attesa medio recente per le richieste di connessione in coda.
 
 session.create.total.description=Il numero di sessioni in cui \u00e8 stato effettuato l'accesso dal momento dell'abilitazione di questa metrica.
 session.liveSessions.description=Il numero di utenti attualmente collegati.
@@ -188,6 +200,7 @@ grpc.client.responseTime.total.description=Il tempo di risposta totale delle RPC
 
 REST.request.description=Il numero di richiami e il tempo di risposta totale di questo metodo di risorsa RESTful dall'avvio del server. La metrica non registrer\u00e0 il tempo trascorso e non contegger\u00e0 una richiesta REST, se questa ha generato un'eccezione non associata. Inoltre, tiene traccia della durata di tempo massima registrata nel precedente minuto intero completato e della durata di tempo minima registrata nel precedente minuto intero completato.
 REST.request.unmappedException.description=Il numero totale di eccezioni non associate che vengono generate da questo metodo di risorsa RESTful dall'avvio del server.
+REST.request.elapsedTime.per.request.description: Il tempo di risposta trascorso medio recente per richiesta del metodo della risorsa RESTful.
 
 requestTiming.requestCount.description=Il numero di richieste servlet dall'avvio del server.
 requestTiming.activeRequestCount.description=Il numero di richieste servlet attualmente in esecuzione.

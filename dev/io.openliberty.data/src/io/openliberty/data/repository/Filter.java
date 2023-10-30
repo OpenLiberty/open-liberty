@@ -18,16 +18,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import jakarta.data.repository.Delete;
+
+// TODO this annotation will be replace by method parameter annotations for conditions
 /**
  * <p>Annotates a repository method to specify a find operation
- * or provide conditions for a {@link Count}, {@link Delete}, {@link Exists},
- * or {@link Update} operation.</p>
+ * or provide conditions for a {@link Count}, {@link Delete}, or {@link Exists}
+ * operation.</p>
  *
  * <p>Multiple {@code Filter} annotations can be placed on a repository method.
  * When positional parameters are used, method parameters corresponding to
  * {@code Filter} annotations are specified in the same order as the
  * {@code Filter} annotations appear on the method,
- * followed by the method parameters for any {@link Update} annotations,
  * followed by any additional parameters with special meaning (such as
  * {@link jakarta.data.repository.Sort sorting},
  * {@link jakarta.data.repository.Limit limits}, and
@@ -46,6 +48,21 @@ import java.lang.annotation.Target;
  * <pre>
  * pagination = Pageable.size(10).sortBy(Sort.desc("price"), Sort.asc("name"), Sort.asc("id"));
  * page1 = products.pricedWithin(20.0f, 40.0f, "trackball%mouse", pagination);
+ * </pre>
+ *
+ * <p>Example delete query:</p>
+ *
+ * <pre>
+ * {@literal @Delete}
+ * {@literal @Filter}(by = "expiresOn", op = Compare.LessThanEqual)
+ * {@literal @Filter}(by = "balanceDue", value = "0")
+ * long removeExpired(LocalDate mostRecentExpiry);
+ * </pre>
+ *
+ * <p>Example usage:</p>
+ *
+ * <pre>
+ * numRemoved = creditCards.removeExpired(LocalDate.now().minusYears(2));
  * </pre>
  *
  * <p>Do not use in combination with the {@link jakarta.data.repository.Query Query} annotation.</p>
