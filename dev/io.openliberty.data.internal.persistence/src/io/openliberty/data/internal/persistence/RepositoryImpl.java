@@ -94,6 +94,7 @@ import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Page;
 import jakarta.data.page.Pageable;
 import jakarta.data.page.Slice;
+import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
@@ -1297,7 +1298,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @param isUpdate   True if known to be an update. False if known to not be an update. Null if unknown.
      */
     private StringBuilder generateFromParameters(QueryInfo queryInfo, StringBuilder q, Annotation methodAnno, Boolean isUpdate) {
-        System.out.println("generateFromParameters for " + queryInfo + "\r\n  annotated with  " + methodAnno + " and starting from " + q);
         Parameter[] params = queryInfo.method.getParameters();
         String o = queryInfo.entityVar;
 
@@ -1360,8 +1360,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                " annotation because the repository method is not an update method."); // TODO NLS
             }
         }
-
-        System.out.println("  found Annos: " + Arrays.toString(updateOperationAnnos));
 
         if (isUpdate == null)
             isUpdate = Boolean.FALSE;
@@ -1454,17 +1452,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 q.append(queryInfo.hasWhere == false ? " WHERE (" : " AND ");
                 queryInfo.hasWhere = true;
 
-                String attribute;
-                if (isNamePresent == null)
-                    isNamePresent = params[i].isNamePresent();
-                if (Boolean.TRUE.equals(isNamePresent))
-                    attribute = params[i].getName();
-                else // TODO annotation for specifying attribute name
-                    throw new MappingException("You must specify an entity attribute name as the value of the " +
-                                               "[not-implemented-yet] annotation on parameter " + (i + 1) +
-                                               " of the " + queryInfo.method.getName() + " method of the " +
-                                               repositoryInterface.getName() + " repository or compile the application" +
-                                               " with the -parameters compiler option that preserves the parameter names."); // TODO NLS
+                // Determine the entity attribute name, first from @By("name"), otherwise from the parameter name
+                By by = params[i].getAnnotation(By.class);
+                String attribute = by == null ? "" : by.value();
+                if (attribute.length() == 0) {
+                    if (isNamePresent == null)
+                        isNamePresent = params[i].isNamePresent();
+                    if (Boolean.TRUE.equals(isNamePresent))
+                        attribute = params[i].getName();
+                    else
+                        throw new MappingException("You must specify an entity attribute name as the value of the " +
+                                                   "By(ATTRIBUTE_NAME) annotation on parameter " + (i + 1) +
+                                                   " of the " + queryInfo.method.getName() + " method of the " +
+                                                   repositoryInterface.getName() + " repository or compile the application" +
+                                                   " with the -parameters compiler option that preserves the parameter names."); // TODO NLS
+                }
 
                 String name = queryInfo.entityInfo.getAttributeName(attribute, true);
                 if (name == null) {
@@ -1746,7 +1748,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
             } else {
                 Update update = queryInfo.method.getAnnotation(Update.class);
                 q = generateFromParameters(queryInfo, null, update, update == null ? null : Boolean.TRUE);
-                System.out.println("  returned " + q);
             }
         }
 

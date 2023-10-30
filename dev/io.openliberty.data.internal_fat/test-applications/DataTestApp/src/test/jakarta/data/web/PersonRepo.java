@@ -14,6 +14,7 @@ package test.jakarta.data.web;
 
 import java.util.List;
 
+import jakarta.data.repository.By;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
@@ -57,7 +58,7 @@ public interface PersonRepo {
                                                   @Assign String firstName);
 
     @Transactional(TxType.MANDATORY)
-    boolean setFirstNameInCurrentTransaction(Long ssn_id,
+    boolean setFirstNameInCurrentTransaction(@By("id") Long ssn,
                                              @Assign("firstName") String newFirstName);
 
     @Transactional(TxType.REQUIRES_NEW)

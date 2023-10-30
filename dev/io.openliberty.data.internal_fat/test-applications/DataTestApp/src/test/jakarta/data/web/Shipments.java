@@ -15,6 +15,7 @@ package test.jakarta.data.web;
 import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 
+import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
@@ -46,12 +47,10 @@ public interface Shipments {
                      @Assign("location") String location,
                      @Assign("shippedAt") OffsetDateTime timeOfDispatch);
 
-    @Filter(by = "id")
-    Shipment find(long id);
+    Shipment find(@By("id") long shipmentId);
 
-    @Filter(by = "status")
     @OrderBy("destination")
-    Stream<Shipment> find(String status);
+    Stream<Shipment> find(@By("status") String shipmentStatus);
 
     @OrderBy("status")
     @OrderBy(value = "orderedAt", descending = true)

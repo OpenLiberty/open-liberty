@@ -18,6 +18,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
 import jakarta.data.Streamable;
+import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
@@ -91,7 +92,7 @@ public interface Personnel {
     @Asynchronous
     CompletableFuture<List<Person>> save(Person... p);
 
-    long setSurname(long ssn_id, @Assign("lastName") String newSurname);
+    long setSurname(@By("ssn_id") long ssn, @Assign("lastName") String newSurname);
 
     @Asynchronous
     CompletableFuture<Boolean> setSurnameAsync(long ssn_id, @Assign String lastName);

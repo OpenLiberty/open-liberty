@@ -19,6 +19,7 @@ import jakarta.data.Streamable;
 import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Pageable;
 import jakarta.data.repository.BasicRepository;
+import jakarta.data.repository.By;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
@@ -63,10 +64,9 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     @OrderBy("id")
     Business findFirstByName(String name);
 
-    @Filter(by = "location_address.city")
-    @Filter(by = "location.address_state")
     @OrderBy(descending = true, ignoreCase = true, value = "name")
-    Stream<Business> in(String city, String state);
+    Stream<Business> in(@By("location_address.city") String city,
+                        @By("location.address_state") String state);
 
     @Filter(by = "locationAddressCity", value = "Rochester")
     @Filter(by = "locationAddressState", value = "MN")
