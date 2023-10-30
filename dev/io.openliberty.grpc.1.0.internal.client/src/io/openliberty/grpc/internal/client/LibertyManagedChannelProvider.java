@@ -14,8 +14,12 @@ package io.openliberty.grpc.internal.client;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
@@ -47,6 +51,11 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 		return 10;
 	}
 
+	@Override
+	protected Collection<Class<? extends SocketAddress>> getSupportedSocketAddressTypes(){
+		return Collections.singleton(InetSocketAddress.class);
+	}
+	
 	@Override
 	public NettyChannelBuilder builderForAddress(String name, int port) {
 

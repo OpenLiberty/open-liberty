@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,9 +17,9 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import com.ibm.websphere.simplicity.RemoteFile;
-
 import org.junit.Assert;
+
+import com.ibm.websphere.simplicity.RemoteFile;
 
 import componenttest.topology.impl.LibertyServer;
 import io.grpc.ManagedChannel;
@@ -134,12 +134,15 @@ public class GrpcTestUtils {
     }
 
     /**
-     * Terminate a channel and wait for it to stop; if the stop does not complete within 
+     * Terminate a channel and wait for it to stop; if the stop does not complete within
      * CHANNEL_SHUTDOWN_TIMEOUT then an Assert failure will be thrown
      *
      * @param channel
      */
     public static void stopGrpcService(ManagedChannel channel) {
+        if (channel == null) {
+            return; //TODO follow up when null
+        }
         channel.shutdownNow();
         boolean terminated = false;
         try {

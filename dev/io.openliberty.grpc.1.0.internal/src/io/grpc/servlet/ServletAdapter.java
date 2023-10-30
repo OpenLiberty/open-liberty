@@ -82,8 +82,7 @@ import io.openliberty.grpc.internal.servlet.GrpcServletUtils;
 @ExperimentalApi("https://github.com/grpc/grpc-java/issues/5066")
 public final class ServletAdapter {
 
-  private static final String CLASS_NAME = ServletAdapter.class.getName();
-  static final Logger logger = Logger.getLogger(CLASS_NAME);
+  static final Logger logger = Logger.getLogger(ServletAdapter.class.getName());
   private static TraceNLS nls = TraceNLS.getTraceNLS(ServletAdapter.class , GrpcMessages.GRPC_BUNDLE);
   
   private final ServerTransportListener transportListener;
@@ -105,7 +104,7 @@ public final class ServletAdapter {
    * Call this method inside {@link javax.servlet.http.HttpServlet#doGet(HttpServletRequest,
    * HttpServletResponse)} to serve gRPC GET request.
    *
-   * <p>This method is currently not impelemented.
+   * <p>This method is currently not implemented.
    *
    * <p>Note that in rare case gRPC client sends GET requests.
    *
@@ -113,7 +112,7 @@ public final class ServletAdapter {
    * calling {@code resp.setBufferSize()} before invocation is allowed.
    */
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    // TODO(zdapeng)
+    resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "GET method not supported");
   }
 
   /**
@@ -124,77 +123,65 @@ public final class ServletAdapter {
    * calling {@code resp.setBufferSize()} before invocation is allowed.
    */
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
-		InternalLogId logId = InternalLogId.allocate(ServletAdapter.class, null);
-		logger.log(FINE, "[{0}] RPC started", logId);
-
+		if (!req.isAsyncSupported()) {
+			resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "servlet does not support asynchronous operation");
+			return;
+		}
+    
 		if (!ServletAdapter.isGrpc(req)) {
 			resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "the request is not a gRPC request");
 			return;
 		}
+    
+		InternalLogId logId = InternalLogId.allocate(ServletAdapter.class, null);
+		logger.log(FINE, "[{0}] RPC started", logId);
 
-		String method = req.getRequestURI().substring(1); // remove the leading "/"
+        AsyncContext asyncCtx = req.startAsync(req, resp);
+	
+		String method = GrpcServletUtils.translateLibertyPath(req.getRequestURI().substring(1)); // remove the leading "/"
+		Metadata headers = getHeaders(req, libertyAuth(req, resp, logId, method) );
 
-		// Liberty change: remove application context root from path
-		// then perform authentication/authorization
-		method = GrpcServletUtils.translateLibertyPath(method);
-
-		if (resp.isCommitted()) {
-			// security error might have already occurred
-			logger.log(Level.SEVERE, nls.getFormattedMessage("response.already.committed", new Object[] { method },
-					"The response has already been committed."));
-			logger.log(FINE, "[{0}] RPC exited for service [{1}]", new Object[] { logId, method });
-			return;
-		}
-
-		boolean libertyAuth = true;
-		if (GrpcServerComponent.isSecurityEnabled()) {
-			libertyAuth = GrpcServerSecurity.doServletAuth(req, resp, method);
-		}
-
-		AsyncContext asyncCtx = req.startAsync(req, resp);
-
-		if (logger.isLoggable(FINEST)) {
-			logger.log(FINE, "Liberty inbound gRPC request path translated to {0}", method);
-		}
-
-		Metadata headers = getHeaders(req, libertyAuth);
-
-		if (logger.isLoggable(FINEST)) {
-			logger.log(FINEST, "[{0}] method: {1}", new Object[] { logId, method });
-			logger.log(FINEST, "[{0}] headers: {1}", new Object[] { logId, headers });
-		}
-
+	    if (logger.isLoggable(FINEST)) {
+	        logger.log(FINEST, "[{0}] method: {1}", new Object[] {logId, method});
+	        logger.log(FINEST, "[{0}] headers: {1}", new Object[] {logId, headers});
+	    }
+	    
 		Long timeoutNanos = headers.get(TIMEOUT_KEY);
 		if (timeoutNanos == null) {
 			timeoutNanos = 0L;
 		}
-		asyncCtx.setTimeout(TimeUnit.NANOSECONDS.toMillis(timeoutNanos));
-		StatsTraceContext statsTraceCtx = StatsTraceContext.newServerContext(streamTracerFactories, method, headers);
+		asyncCtx.setTimeout(TimeUnit.NANOSECONDS.toMillis(timeoutNanos));		
+		StatsTraceContext statsTraceCtx =
+        StatsTraceContext.newServerContext(streamTracerFactories, method, headers);
 
-		ServletServerStream stream = new ServletServerStream(asyncCtx, statsTraceCtx, maxInboundMessageSize, attributes
-				.toBuilder()
-				.set(Grpc.TRANSPORT_ATTR_REMOTE_ADDR, new InetSocketAddress(req.getRemoteHost(), req.getRemotePort()))
-				.set(Grpc.TRANSPORT_ATTR_LOCAL_ADDR, new InetSocketAddress(req.getLocalAddr(), req.getLocalPort()))
-				.build(), getAuthority(req), logId);
-
-		if (logger.isLoggable(FINEST)) {
-			logger.log(FINE, "set the listeners on async request {0}", asyncCtx.getRequest());
-		}
-
-		asyncCtx.getRequest().getInputStream().setReadListener(new GrpcReadListener(stream, asyncCtx, logId));
-
-		asyncCtx.addListener(new GrpcAsycListener(stream, logId));
-
-		if (logger.isLoggable(FINEST)) {
-			logger.log(FINE, "[{0}] the listeners set on async request {1}", new Object[] { logId, asyncCtx.getRequest()});
-		}
+		ServletServerStream stream = new ServletServerStream(
+        asyncCtx,
+        statsTraceCtx,
+        maxInboundMessageSize,
+        attributes.toBuilder()
+            .set(
+                Grpc.TRANSPORT_ATTR_REMOTE_ADDR,
+                new InetSocketAddress(req.getRemoteHost(), req.getRemotePort()))
+            .set(
+                Grpc.TRANSPORT_ATTR_LOCAL_ADDR,
+                new InetSocketAddress(req.getLocalAddr(), req.getLocalPort()))
+            .build(),
+        getAuthority(req),
+        logId);
 
 		transportListener.streamCreated(stream, method, headers);
-		stream.setWriteListener();
+		// GDH stream.setWriteListener();
 		stream.transportState().runOnTransportThread(stream.transportState()::onStreamAllocated);
+		
+	    asyncCtx.getRequest().getInputStream()
+        .setReadListener(new GrpcReadListener(stream, asyncCtx, logId));
+    asyncCtx.addListener(new GrpcAsyncListener(stream, logId));
+    
 	}
 
+// This method must use Enumeration and its members, since that is the only way to read headers
+// from the servlet api.
+@SuppressWarnings("JdkObsolete")
   private static Metadata getHeaders(HttpServletRequest req, boolean libertyAuth) {
     Enumeration<String> headerNames = req.getHeaderNames();
     checkNotNull(
@@ -228,7 +215,7 @@ public final class ServletAdapter {
     try {
       return new URI(req.getRequestURL().toString()).getAuthority();
     } catch (URISyntaxException e) {
-      logger.log(FINE, "Error getting authority from the request URL {0}" + req.getRequestURL());
+      logger.log(FINE, "Error getting authority from the request URL {0}", req.getRequestURL());
       return req.getServerName() + ":" + req.getServerPort();
     }
   }
@@ -240,11 +227,11 @@ public final class ServletAdapter {
     transportListener.transportTerminated();
   }
 
-  private static final class GrpcAsycListener implements AsyncListener {
+  private static final class GrpcAsyncListener implements AsyncListener {
     final InternalLogId logId;
     final ServletServerStream stream;
 
-    GrpcAsycListener(ServletServerStream stream, InternalLogId logId) {
+    GrpcAsyncListener(ServletServerStream stream, InternalLogId logId) {
       this.stream = stream;
       this.logId = logId;
     }
@@ -334,7 +321,7 @@ public final class ServletAdapter {
     public void onAllDataRead() {
       logger.log(FINE, "[{0}] onAllDataRead", logId);
       stream.transportState().runOnTransportThread(() ->
-          stream.transportState().inboundDataReceived(ReadableBuffers.wrap(new byte[] {}), true));
+          stream.transportState().inboundDataReceived(ReadableBuffers.empty(), true));
     }
 
     @Override
@@ -363,4 +350,27 @@ public final class ServletAdapter {
     return request.getContentType() != null
         && request.getContentType().contains(GrpcUtil.CONTENT_TYPE_GRPC);
   }
+
+private boolean libertyAuth(HttpServletRequest req, HttpServletResponse resp, InternalLogId logId, String method) {
+	// Liberty change: remove application context root from path
+	// then perform authentication/authorization
+
+	if (resp.isCommitted()) {
+		// security error might have already occurred
+		logger.log(Level.SEVERE, nls.getFormattedMessage("response.already.committed", new Object[] { method },
+				"The response has already been committed."));
+		logger.log(FINE, "[{0}] RPC exited for service [{1}]", new Object[] { logId, method });
+		return false;
+	}
+
+	boolean libertyAuth = true;
+	if (GrpcServerComponent.isSecurityEnabled()) {
+		libertyAuth = GrpcServerSecurity.doServletAuth(req, resp, method);
+	}
+	
+	return libertyAuth;
+}
+
+
+
 }
