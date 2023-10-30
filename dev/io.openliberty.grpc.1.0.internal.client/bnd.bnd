@@ -15,9 +15,10 @@
 -sub: *.bnd
 
 bVersion=1.0
-grpcVersion=1.43.2
+grpcVersion=1.57.2
 
 Import-Package: \
+  !com.google.errorprone.*,\
   !com.aayushatharva.brotli4j*,\
   !com.github.luben.zstd,\
   !com.google.protobuf.nano,\
@@ -59,6 +60,7 @@ instrument.disabled: true
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
 -buildpath: \
+  com.google.errorprone:error_prone_annotations;version=2.4.0,\
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
   com.ibm.websphere.security;version=latest,\
   com.ibm.ws.container.service;version=latest,\
