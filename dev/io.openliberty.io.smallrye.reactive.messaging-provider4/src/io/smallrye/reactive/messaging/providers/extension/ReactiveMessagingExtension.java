@@ -1,12 +1,18 @@
-/*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License 2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-2.0/
+/*
+ * Copyright 2023 Red Hat Inc.
  *
- * SPDX-License-Identifier: EPL-2.0
- ******************************************************************************/
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package io.smallrye.reactive.messaging.providers.extension;
 
@@ -21,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Flow;
 
-import jakarta.annotation.Priority;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
@@ -55,6 +60,13 @@ import jakarta.enterprise.inject.spi.WithAnnotations;
 import jakarta.inject.Inject;
 
 /**
+ *
+ * This is a derivative work based on Smallrye Reactive Messaging ReactiveMessagingExtension
+ * From https://github.com/smallrye/smallrye-reactive-messaging/blob/4.10.1/smallrye-reactive-messaging-provider/src/main/java/io/smallrye/reactive/messaging/providers/extension/ReactiveMessagingExtension.java
+ *
+ * Changelog
+ * Store a copy of the MediatorManager such that is accessible by extending classes
+ * Do not start the MediatorManager instance when the AfterDeploymentValidation event is processed so that it can be started on a CDI different event
  *
  */
 public class ReactiveMessagingExtension implements Extension {

@@ -48,7 +48,7 @@ public class ReactiveMessagingTCKLauncher {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKZ000[24]E"); // Ignore app start errors - there are lots of tests for invalid apps
+        server.stopServer("CWWKZ000[24]E", "CWMRX1100E"); // Ignore app start errors - there are lots of tests for invalid apps
     }
 
     @Test

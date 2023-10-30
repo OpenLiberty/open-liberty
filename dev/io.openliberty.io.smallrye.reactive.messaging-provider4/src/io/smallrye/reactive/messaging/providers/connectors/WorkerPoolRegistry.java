@@ -13,7 +13,10 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * This is a dummy version SmallRye's WorkerPoolRegistry which does nothing ... we do not expect it to be called
- * https://github.com/smallrye/smallrye-reactive-messaging/blob/4.7.0/smallrye-reactive-messaging-provider/src/main/java/io/smallrye/reactive/messaging/providers/connectors/WorkerPoolRegistry.java
+ * https://github.com/smallrye/smallrye-reactive-messaging/blob/4.10.1/smallrye-reactive-messaging-provider/src/main/java/io/smallrye/reactive/messaging/providers/connectors/WorkerPoolRegistry.java
+ *
+ * Properties are using during the MediatorManager.start() process
+ *
  */
 @ApplicationScoped
 public class WorkerPoolRegistry {

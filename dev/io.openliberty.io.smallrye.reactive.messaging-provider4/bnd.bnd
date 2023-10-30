@@ -43,7 +43,8 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 Private-Package: \
 	io.smallrye.reactive.messaging.providers.connectors;-split-package:=merge-first,\
 	io.smallrye.reactive.messaging.*,\
-	io.openliberty.microprofile.reactive.messaging30.internal
+	io.openliberty.microprofile.reactive.messaging30.internal,\
+	io.openliberty.microprofile.reactive.messaging30.resources;version=1.0
 
 -buildpath: \
   com.ibm.ws.logging;version=latest,\
@@ -61,6 +62,7 @@ Private-Package: \
   com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.container.service;version=latest,\
   io.openliberty.io.smallrye.reactive.mutiny;version=latest,\
   io.openliberty.io.smallrye.common2;version=latest,\
   io.openliberty.io.smallrye.reactive.converter-api3;version=latest,\

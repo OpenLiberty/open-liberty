@@ -13,6 +13,7 @@ import java.lang.annotation.Annotation;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
 import jakarta.enterprise.inject.spi.DeploymentException;
@@ -94,23 +95,22 @@ public class OLReactiveMessaging30Extension extends ReactiveMessagingExtension i
         addQualifier(Connector.class, discovery, beanManager);
     }
 
-
     // Set priority to be higher then default, so will run after the ReactiveMessagingExtension event
     void postDeploymentValidation(@Observes @Priority(jakarta.interceptor.Interceptor.Priority.APPLICATION + 1000) AfterDeploymentValidation done, BeanManager beanManager) {
         // Catch DeploymentException that is thrown if there are any validation errors with the Reactive Messaging Configuration
         try {
-           mediatorManager.start();
-        } catch (DeploymentException de){
-            for(Throwable e: de.getSuppressed()){
-                // Log any errors that are in the suppressed section of the DeploymentException
-                Tr.error(tc, e.getLocalizedMessage());
+            mediatorManager.start();
+        } catch (DeploymentException de) {
+            StringBuilder exceptionBuilder = new StringBuilder(de.getLocalizedMessage());
+            for (Throwable t : de.getSuppressed()) {
+                exceptionBuilder.append("\n" + t.getLocalizedMessage());
             }
-            // throw new DeploymentException to ensure application stops with the right exception and improve the message
-            throw new DeploymentException("Wiring error(s) detected in application. Review the server messages.log file and FFDC logs to identify the problem(s).", de);
+            String appName = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getJ2EEName().getApplication();
+            Tr.error(tc,  Tr.formatMessage(tc, "reactive.messaging.validation.error.CWMRX1100E", appName, exceptionBuilder.toString()));
+            // rethrow DeploymentException to make sure we stop the application correctly.
+            throw de;
         }
     }
-
-
 
     private <T> void addAnnotatedType(Class<T> clazz, BeforeBeanDiscovery discovery, BeanManager beanManager) {
         AnnotatedType<T> annotatedType = beanManager.createAnnotatedType(clazz);
