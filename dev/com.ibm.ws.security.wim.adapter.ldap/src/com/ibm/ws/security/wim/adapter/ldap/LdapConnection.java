@@ -2048,14 +2048,19 @@ public class LdapConnection {
     }
 
     /**
-     * For the given attributes, check if any of them are range attributes, and if they are, request the rest
-     * of the attributes that fall outside the range.
+     * This method is called to retrieve all range attributes
+     * from LDAP, eg. member;range=0-1499. At this point, a
+     * getAttributes call has already been made. First we parse the results
+     * to obtain the first set of attributes and the range step.
+     * Then we make additional calls to retrieve the rest of the attributes.
      *
-     * @param attributes The attributes returned (so far).
-     * @param dn The distinguished name of the entity containing the attributes.
-     * @param ctx The context to use to request the remainder of the range attributes.
-     * @throws WIMException If there was an error recreating a context in the case of a connection error.
-     * @throws NamingException If there was an error retrieving the attributes from the LDAP server.
+     * We've retrieved all attributes when LDAP returns range=x-* (the asterisk indicates final set).
+     *
+     * @param attributes The attributes returned from LDAP
+     * @param dn         The DN whose attributes are being retrieved
+     * @param ctx        The DirContext used to connect to LDAP and make additional getAttribute calls
+     * @throws WIMException
+     * @throws NamingException
      */
     @FFDCIgnore({ NumberFormatException.class, NamingException.class })
     private void supportRangeAttributes(Attributes attributes, String dn, TimedDirContext ctx) throws WIMException, NamingException {
@@ -2075,38 +2080,41 @@ public class LdapConnection {
                     Tr.debug(tc, METHODNAME + " Range attribute retrieved: " + attrName);
                 }
 
+                //Add the ranged attributes we found to newAttr
                 for (NamingEnumeration<?> neu2 = attr.getAll(); neu2.hasMoreElements();) {
                     newAttr.add(neu2.nextElement());
                 }
 
-                int rangeLow = iAttrRangeStep;
+                //Parse the range attribute for low and high values to make sure
+                //we are using the maximum step range.
+                int localAttrRangeStep = parseRangeAttribute(attrName);
+
+                //The first set of attributes has been added. Now update the range
+                //and retrieve the second set.
+                int rangeLow = localAttrRangeStep;
                 try {
                     rangeLow = Integer.parseInt(attrName.substring(attrName.indexOf('-') + 1)) + 1;
                 } catch (NumberFormatException e) {
                     // continue;
                 }
-                int rangeHigh = rangeLow + iAttrRangeStep - 1;
+                int rangeHigh = rangeLow + localAttrRangeStep - 1;
                 boolean quitLoop = false;
-                boolean lastQuery = false;
                 do {
+                    //Format the getAttributes request
                     String attributeWithRange = null;
-                    if (!lastQuery) {
-                        Object[] args = { Integer.valueOf(rangeLow).toString(),
-                                          Integer.valueOf(rangeHigh).toString()
-                        };
-                        attributeWithRange = attrId + MessageFormat.format(ATTR_RANGE_QUERY, args);
-                    } else {
-                        Object[] args = {
-                                          Integer.valueOf(rangeLow).toString()
-                        };
-                        attributeWithRange = attrId + MessageFormat.format(ATTR_RANGE_LAST_QUERY, args);
-                    }
+                    Object[] args = {
+                                      Integer.toString(rangeLow),
+                                      Integer.toString(rangeHigh)
+                    };
+                    attributeWithRange = attrId + MessageFormat.format(ATTR_RANGE_QUERY, args);
                     Attributes results = null;
                     String[] rAttrIds = {
                                           attributeWithRange
                     };
                     try {
+
                         results = ctx.getAttributes(new LdapName(dn), rAttrIds);
+
                     } catch (NamingException e) {
                         if (ContextManager.isConnectionException(e)) {
                             ctx = iContextManager.reCreateDirContext(ctx, e.toString());
@@ -2116,27 +2124,36 @@ public class LdapConnection {
                         }
                     }
                     Attribute result = results.get(attributeWithRange);
+                    //If the result is null, we didn't find the exact attributeWithRange string
+                    //we were looking for. This could mean there are fewer results left than iAttrRangeStep.
+                    //In this case, LDAP will have sent back range;x-*.
                     if (result == null) {
-                        Object[] args = {
-                                          Integer.valueOf(rangeLow).toString()
+                        Object[] rangeArgs = {
+                                               Integer.toString(rangeLow)
                         };
-                        attributeWithRange = attrId + MessageFormat.format(ATTR_RANGE_LAST_QUERY, args);
+                        String tempRange = attributeWithRange;
+                        attributeWithRange = attrId + MessageFormat.format(ATTR_RANGE_LAST_QUERY, rangeArgs);
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc,
+                                     "Result was null for " + tempRange + ", now parsing results for " + attributeWithRange);
+                        }
                         result = results.get(attributeWithRange);
-                        lastQuery = true;
+                        //If we found a result, this is the last search.
+                        if (result != null)
+                            quitLoop = true;
                     }
+                    //If we found a result, add it to the list. If the result was range;x-*, quit.
+                    //If result is null, there was an issue parsing the results. Quit the loop.
                     if (result != null) {
                         for (NamingEnumeration<?> neu2 = result.getAll(); neu2.hasMoreElements();) {
                             newAttr.add(neu2.nextElement());
                         }
 
-                        if (lastQuery) {
-                            quitLoop = true;
-                        } else {
-                            rangeLow = rangeHigh + 1;
-                            rangeHigh = rangeLow + iAttrRangeStep - 1;
-                        }
+                        rangeLow = rangeHigh + 1;
+                        rangeHigh = rangeLow + localAttrRangeStep - 1;
                     } else {
-                        lastQuery = true;
+                        throw new WIMSystemException(WIMMessageKey.RANGE_ATTRIBUTE_PARSING, Tr.formatMessage(tc, WIMMessageKey.RANGE_ATTRIBUTE_PARSING,
+                                                                                                             WIMMessageHelper.generateMsgParms(dn, localAttrRangeStep)));
                     }
                 } while (!quitLoop);
                 attributes.put(newAttr);
@@ -2146,13 +2163,40 @@ public class LdapConnection {
     }
 
     /**
+     * Find the range returned from LDAP. This will be the maximum LDAP will return so
+     * we want to use this rather than the default attributeRangeStep.
+     *
+     * @param attr The range attribute returned from LDAP, eg. member;range=0-1499
+     * @return The max value of results LDAP will return
+     */
+    private int parseRangeAttribute(String attr) {
+        try {
+            //Find the range by parsing member;range=1500-2999 for low and high.
+            int rangeLow = Integer.parseInt(attr.substring(attr.indexOf('=') + 1, attr.indexOf('-')));
+            int rangeHigh = Integer.parseInt(attr.substring(attr.indexOf('-') + 1));
+            int rangeReturnedFromLDAP = rangeHigh - rangeLow + 1;
+            return rangeReturnedFromLDAP;
+        } catch (NumberFormatException e) {
+            //If there was an issue setting the new iAttrRangeStep, something has gone wrong.
+            //Issue a warning or error saying not all attributes were returned.
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc,
+                         "The range attribute was not parsed correctly. Use current value of iAttrRangeStep.");
+            }
+        }
+        //If there was an issue, return the default.
+        return iAttrRangeStep;
+
+    }
+
+    /**
      * Search using operational attribute specified in the parameter.
      *
-     * @param dn The DN to search on
-     * @param filter The LDAP filter for the search.
+     * @param dn            The DN to search on
+     * @param filter        The LDAP filter for the search.
      * @param inEntityTypes The entity types to search for.
-     * @param propNames The property names to return.
-     * @param oprAttribute The operational attribute.
+     * @param propNames     The property names to return.
+     * @param oprAttribute  The operational attribute.
      * @return The search results or null if there are no results.
      * @throws WIMException If the entity types do not exist or the search failed.
      */

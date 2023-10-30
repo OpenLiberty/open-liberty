@@ -1032,6 +1032,10 @@ public class LdapConfigManager {
             entity.setSearchFilter(null);
     }
 
+    /**
+     *
+     * @return The userFilter from the <filters> element in config
+     */
     public Filter getUserFilter() {
         // If there is a filter defined but not initialized, then initialize it.
         if ((iUserFilter != null) && (userFilter == null)) {
@@ -2565,6 +2569,14 @@ public class LdapConfigManager {
         return subTypes;
     }
 
+    /**
+     * Return a combined filter given a set of entity types. This
+     * is only the objectclass portion of the filter. The login/search
+     * attributes are appended later.
+     *
+     * @param entityTypes The entity types whose filters to combine.
+     * @return The filter
+     */
     public String getEntityTypesFilter(Set<String> entityTypes) {
         StringBuffer filter = new StringBuffer();
 
