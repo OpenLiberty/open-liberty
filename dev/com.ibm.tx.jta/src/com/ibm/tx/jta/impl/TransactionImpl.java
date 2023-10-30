@@ -3348,18 +3348,18 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         return ((XidImpl) (r.getXID())).printOtid();
     }
 
+    @Trivial
     public TimeoutInfo setTimeoutInfo(TimeoutInfo timeoutInfo) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "setTimeoutInfo", timeoutInfo);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setTimeoutInfo: {0} {1}", timeoutInfo, _timeoutInfo);
 
         final TimeoutInfo ret = _timeoutInfo;
         _timeoutInfo = timeoutInfo;
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "setTimeoutInfo", ret);
         return ret;
     }
 
+    @Trivial
     public TimeoutInfo getTimeoutInfo() {
         return _timeoutInfo;
     }
