@@ -16,7 +16,7 @@ javac.target: 11
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
-Bundle-SymbolicName: io.openliberty.io.smallrye.common.2.1; singleton:=true
+Bundle-SymbolicName: io.openliberty.io.smallrye.common2; singleton:=true
                      
 
 Export-Package: \

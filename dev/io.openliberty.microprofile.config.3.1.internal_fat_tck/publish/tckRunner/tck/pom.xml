@@ -20,8 +20,8 @@
 
     <properties>
         <!-- The API and TCK versions should be the same before GA -->
-        <microprofile.config.api.version>3.1-RC2</microprofile.config.api.version>
-        <microprofile.config.tck.version>3.1-RC2</microprofile.config.tck.version>
+        <microprofile.config.api.version>3.1</microprofile.config.api.version>
+        <microprofile.config.tck.version>3.1</microprofile.config.tck.version>
         <arquillian.version>1.7.0.Alpha14</arquillian.version>
         <arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
         <testng.version>7.5.1</testng.version>

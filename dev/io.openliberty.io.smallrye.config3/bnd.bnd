@@ -51,7 +51,7 @@ Export-Package: \
 
 
 -buildpath: \
-  io.openliberty.io.smallrye.common.2.1;version=latest, \
+  io.openliberty.io.smallrye.common2;version=latest, \
   io.smallrye.config:smallrye-config;version=3.3.0;strategy=exact, \
   io.smallrye.config:smallrye-config-common;version=3.3.0;strategy=exact, \
   io.smallrye.config:smallrye-config-core;version=3.3.0;strategy=exact, \
