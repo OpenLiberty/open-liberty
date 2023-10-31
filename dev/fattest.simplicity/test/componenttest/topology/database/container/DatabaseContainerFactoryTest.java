@@ -76,7 +76,7 @@ public class DatabaseContainerFactoryTest {
         boolean usingSid = getField(OracleContainer.class, _oracle, "usingSid", boolean.class);
         assertTrue(usingSid);
 
-        WaitStrategy waitStrategy = getField(Db2Container.class, _oracle, "waitStrategy", WaitStrategy.class);
+        WaitStrategy waitStrategy = getField(OracleContainer.class, _oracle, "waitStrategy", WaitStrategy.class);
         assertTrue(waitStrategy.getClass().isAssignableFrom(LogMessageWaitStrategy.class));
         LogMessageWaitStrategy _waitStrategy = (LogMessageWaitStrategy) waitStrategy;
 

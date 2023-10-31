@@ -191,14 +191,14 @@ public class DatabaseContainerFactory {
     /**
      * Creates a container timeout duration (in minutes) based on where the test is being run.
      *
-     * @param  low  - For fast systems: typically your local system
-     * @param  high - For slow systems: typically our build systems
+     * @param  fastTimeout - For fast systems: typically your local system
+     * @param  slowTimeout - For slow systems: typically our build systems
      *
-     * @return      The timeout duration
+     * @return             The timeout duration
      */
-    private static Duration getContainerTimeout(int low, int high) {
+    private static Duration getContainerTimeout(int fastTimeout, int slowTimeout) {
         boolean isFast = FATRunner.FAT_TEST_LOCALRUN && !FATRunner.ARM_ARCHITECTURE;
-        Duration result = Duration.ofMinutes(isFast ? low : high);
+        Duration result = Duration.ofMinutes(isFast ? fastTimeout : slowTimeout);
         Log.info(c, "getContainerTimeout", "Returning container timeout of " + result.toMinutes() + " minutes, because"
                                            + " FAT_TEST_LOCALRUN = " + FATRunner.FAT_TEST_LOCALRUN + " and"
                                            + " ARM_ARCHITECTURE = " + FATRunner.ARM_ARCHITECTURE);
