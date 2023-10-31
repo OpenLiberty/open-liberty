@@ -86,6 +86,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     public static final String HTTP_KEEP_ALIVE_HANDLER_NAME = "httpKeepAlive";
     public static final String HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME = "H2C_UPGRADE_HANDLER";
 
+    long maxContentLength = Long.MAX_VALUE;
+
     private HttpPipelineInitializer(HttpPipelineBuilder builder) {
         Objects.requireNonNull(builder);
         this.chain = builder.chain;
@@ -274,6 +276,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             protected void channelRead0(ChannelHandlerContext ctx, HttpMessage msg) throws Exception {
                 // If this handler is hit then no upgrade has been attempted and the client is just talking HTTP 1.1.
                 ctx.pipeline().remove(HttpServerUpgradeHandler.class);
+                ctx.pipeline().addBefore("chunkWriteHandler", "objectAggregator", new LibertyHttpObjectAggregator(maxContentLength));
+                ctx.pipeline().addBefore("objectAggregator", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
                 ctx.fireChannelRead(msg);
                 // Remove unused handlers
                 ctx.pipeline().remove(NO_UPGRADE_OCURRED_HANDLER_NAME);
@@ -309,7 +313,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
      * @param pipeline ChannelPipeline to update as necessary
      */
     private void addPreDispatcherHandlers(ChannelPipeline pipeline, boolean isHttp2) {
-        long maxContentLength = Long.MAX_VALUE;
 
         if (!isHttp2) {
             pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
@@ -319,8 +322,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         //pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new HttpObjectAggregator(maxContentLength);
         //pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new HttpObjectAggregator(64 * 1024));
-        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new ChunkSizeLoggingHandler());
-        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new ChunkedWriteHandler());
+        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, "chunkLoggingHandler", new ChunkSizeLoggingHandler());
+        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, "chunkWriteHandler", new ChunkedWriteHandler());
         // if (httpConfig.useAutoCompression()) {
         //   pipeline.addLast(new NettyHttpContentCompressor());
         //}
