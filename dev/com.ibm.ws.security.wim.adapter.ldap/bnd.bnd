@@ -61,6 +61,7 @@ instrument.classesExcludes: com/ibm/ws/security/wim/adapter/ldap/resources/*.cla
 	com.ibm.ws.security.kerberos.auth;version=latest, \
 	com.ibm.ws.security;version=latest, \
 	com.ibm.ws.config;version=latest, \
+	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.kernel.boot.common;version=latest
 	
 -testpath: \
