@@ -24,9 +24,13 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.ExtendedK
 
 import componenttest.containers.SimpleLogConsumer;
 import io.openliberty.microprofile.reactive.messaging.fat.apps.kafkanack.KafkaNackTest;
+import io.openliberty.microprofile.reactive.messaging.fat.kafka.validation.KafkaValidationTests;
 
 @RunWith(Suite.class)
-@SuiteClasses({ KafkaNackTest.class })
+@SuiteClasses({
+                KafkaNackTest.class,
+                KafkaValidationTests.class
+})
 public class KafkaTests {
 
     @ClassRule
