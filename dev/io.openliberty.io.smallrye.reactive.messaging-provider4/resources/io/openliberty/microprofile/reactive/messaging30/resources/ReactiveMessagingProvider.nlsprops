@@ -27,6 +27,6 @@
 # CWMRX   1000-1999       MicroProfile Reactive Messaging
 #-----------------------------------------------------------------------------------------------------------------------------
 
-reactive.messaging.validation.error.CWMRX1100E=CWMRX1100E: An error occurred during Reactive Messaging validation while starting the {0} application. The error was {1}
-reactive.messaging.validation.error.CWMRX1100E.explanation=During validation of the constructed Reactive Messaging graph, errors have been found that would prevent the ability of sending or receiving messages.
+reactive.messaging.validation.error.CWMRX1100E=CWMRX1100E: An error occurred during Reactive Messaging validation when the {0} application started. The error was {1}
+reactive.messaging.validation.error.CWMRX1100E.explanation=During validation of the constructed Reactive Messaging graph, errors were found that prevent the sending or receiving of messages.
 reactive.messaging.validation.error.CWMRX1100E.useraction=Resolve the reported errors and redeploy the application.
