@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.is;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -243,8 +244,9 @@ public class JaxRsMethodTestServlet extends FATServlet {
                             .invoke();
             assertThat(response.getStatus(), equalTo(200));
             assertThat(response.readEntity(String.class), equalTo("options"));
-            
-            assertThat(response.getStringHeaders().get(HttpHeaders.ALLOW), containsInAnyOrder("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"));
+
+            // Added in "get" and "split" due to JAX-RS behaviour when providing the headers in JEE7/MP1.4
+            assertThat(Arrays.asList(response.getStringHeaders().get(HttpHeaders.ALLOW).get(0).split(",",-1)), containsInAnyOrder("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"));
         });
 
         List<SpanData> spans = exporter.getFinishedSpanItems(3, span.getSpanContext().getTraceId());
