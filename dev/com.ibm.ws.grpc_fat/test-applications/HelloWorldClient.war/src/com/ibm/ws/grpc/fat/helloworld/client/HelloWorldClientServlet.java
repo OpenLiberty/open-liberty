@@ -146,8 +146,12 @@ public class HelloWorldClientServlet extends HttpServlet {
                             .append("<form><input type=\"button\" value=\"Go back!\" onclick=\"history.back()\"></form>")
                             .append("               </body>\r\n")
                             .append("</html>\r\n");
+        } catch (Throwable t) {
+            System.out.println(t.getMessage());
         } finally {
-            stopService(channel);
+            if (channel != null) {
+                stopService(channel);
+            }
         }
     }
 
