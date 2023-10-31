@@ -140,13 +140,9 @@ public final class Configuration {
      *
      * @return The applId of the server.
      */
+    @Trivial
     public static final byte[] getApplId() {
-        // Determine the applId.
-        final byte[] result = applId;
-
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "getApplId: {0}", result);
-        return result;
+        return applId;
     }
 
     public static void setLogManager(RecoveryLogManager logManager) {

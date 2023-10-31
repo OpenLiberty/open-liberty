@@ -899,20 +899,39 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
     public String getBackendURL(String recoveryId) {
         String filename = _serverInstallLeaseLogDir + File.separator + recoveryId;
         String ret = null;
+        int retries = 0;
 
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getBackendURL", filename);
 
-        // Want the second line out of the file
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            // discard first line
-            reader.readLine();
-            // return the second
-            ret = reader.readLine();
-        } catch (Exception e) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "getBackendURL", e);
-        }
+        do {
+            // Want the second line out of the file
+            try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+                // discard first line
+                reader.readLine();
+                // return the second
+                ret = reader.readLine();
+
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "getBackendURL", ret);
+                return ret;
+            } catch (Exception e) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "getBackendURL: Lease was probably being renewed. Wait 500ms and try one more time", e);
+            }
+
+            // Just the one retry
+            if (retries++ > 0) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "getBackendURL: Couldn't access lease file even on a retry.");
+                break;
+            }
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e1) {
+            }
+        } while (true);
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getBackendURL", ret);
