@@ -61,14 +61,18 @@ public class LTPAValidationKeysInfo {
         return ltpaPublicKey;
     }
 
-    public boolean isValidUntilDate() {
-        if (validUntilDateOdt == null)
+    // Check if the validUntilDate0dt has already passed the current time.
+    // If so, then they key is expired, and will return true with a warning message.
+    // Otherwise, the key is valid and will return false.
+    // If the validUntilDateOdt is null, then the key is forever valid and will return false.
+    public boolean isValidUntilDateExpired() {
+        if (validUntilDateOdt == null) // If not specified, then it is forever valid.
             return false;
 
         OffsetDateTime currentTime = OffsetDateTime.now(validUntilDateOdt.getOffset());
 
         if (validUntilDateOdt.isBefore(currentTime)) {
-            Tr.warning(tc, "LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE", validUntilDateOdt, filename);
+            Tr.warning(tc, "LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST", validUntilDateOdt, filename);
             return true;
         } else {
             return false;

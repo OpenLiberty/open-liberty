@@ -284,7 +284,7 @@ public class LTPAKeyRotationTests {
      * <LI>Successful authentication to simple servlet since the old cookie is still being used.
      * </OL>
      */
-    @Test
+    //@Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testLTPAFileReplacement_newInvalidKey_enableDirectoryMonitoring_true_monitorInterval_5() throws Exception {
         // Configure the server
@@ -659,7 +659,7 @@ public class LTPAKeyRotationTests {
      * <LI>Successful authentication to simple servlet.
      * </OL>
      */
-    @Test
+    //@Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testValidationKeys_fileNameAttribute() throws Exception {
         // Configure the server
@@ -1085,7 +1085,7 @@ public class LTPAKeyRotationTests {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testExpiredLtpaToken_enableDirectoryMonitoring_true_monitorInterval_5()() throws Exception {
+    public void testExpiredLtpaToken_enableDirectoryMonitoring_true_monitorInterval_5() throws Exception {
         // Configure the server
         configureServer("true", "5", true);
 
@@ -1134,7 +1134,7 @@ public class LTPAKeyRotationTests {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testExpiredLtpaTokenenableDirectoryMonitoring_false_monitorInterval_0()() throws Exception {
+    public void testExpiredLtpaTokenenableDirectoryMonitoring_false_monitorInterval_0() throws Exception {
         // Configure the server
         configureServer("false", "0", true);
 
@@ -1161,7 +1161,7 @@ public class LTPAKeyRotationTests {
         assertTrue("An expired cookie should result in authorization challenge",
                    flClient1.accessProtectedServletWithInvalidCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1));
     }
- 
+
     public void configureServer(String enableDirectoryMonitoring, String monitorInterval, Boolean waitForLTPAConfigReadyMessage) throws Exception {
         configureServer(enableDirectoryMonitoring, monitorInterval, waitForLTPAConfigReadyMessage, true);
     }

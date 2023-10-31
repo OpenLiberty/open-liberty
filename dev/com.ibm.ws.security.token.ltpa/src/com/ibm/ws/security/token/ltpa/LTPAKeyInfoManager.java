@@ -138,11 +138,11 @@ public class LTPAKeyInfoManager {
                     if (validUntilDate != null) {
                         try {
                             validUntilDateOdt = OffsetDateTime.parse(validUntilDate);
-                            if (validUntilDateOdt != null && isValidUntilDate(filename, validUntilDateOdt)) {
+                            if (validUntilDateOdt != null && isValidUntilDateExpired(filename, validUntilDateOdt)) {
                                 continue; //Skip this LTPA validationKeys
                             }
                         } catch (Exception e) {
-                            Tr.error(tc, "LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT", validUntilDate, filename);
+                            Tr.error(tc, "LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT", validUntilDate, filename);
                             continue; //Skip this LTPA validationKeys
                         }
                     }
@@ -161,15 +161,26 @@ public class LTPAKeyInfoManager {
         }
     }
 
-    public boolean isValidUntilDate(String filename, OffsetDateTime validUntilDateOdt) {
+    /**
+     * This function checks if the validUntilDate0dt has already passed the current time.
+     * If so, then they key is expired, and will return true with a warning message.
+     * Otherwise, the key is valid and will return false.
+     * If the validUntilDateOdt is null, then the key is forever valid and will return false.
+     *
+     * @param filename
+     * @param validUntilDateOdt
+     * 
+     * @return
+     */
+    public boolean isValidUntilDateExpired(String filename, OffsetDateTime validUntilDateOdt) {
         OffsetDateTime currentTime = OffsetDateTime.now(validUntilDateOdt.getOffset());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "current date: " + currentTime);
         }
 
-        if (currentTime.isAfter(validUntilDateOdt)) {
-            Tr.warning(tc, "LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE", validUntilDateOdt, filename);
+        if (validUntilDateOdt.isBefore(currentTime)) {
+            Tr.warning(tc, "LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST", validUntilDateOdt, filename);
             return true;
         } else {
             return false;

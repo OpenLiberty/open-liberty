@@ -178,7 +178,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
         if (updateTrigger != null && !updateTrigger.equalsIgnoreCase("polled")){
             if (enableDirectoryMonitoring) {
-            Tr.warning(tc, "LTPA_UPDATE_TRIGGER_NOT_POLLED_AND_MONITOR_DIRECTORY_TRUE", enableDirectoryMonitoring);
+            Tr.warning(tc, "LTPA_UPDATE_TRIGGER_NOT_POLLED_AND_ENABLE_DIRECTORY_MONITORING_TRUE", enableDirectoryMonitoring);
             }
             if (monitorInterval > 0) {
                 Tr.warning(tc, "LTPA_UPDATE_TRIGGER_NOT_POLLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO", monitorInterval);
@@ -187,7 +187,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
         if (enableDirectoryMonitoring) {
             if (monitorInterval <= 0) {
-                Tr.warning(tc, "LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED", monitorInterval);
+                Tr.warning(tc, "LTPA_ENABLE_DIRECTORY_MONITORING_TRUE_AND_MONITOR_INTERVAL_EQUALS_TO_OR_LESS_THAN_ZERO", monitorInterval);
             }
             //nonConfigValidationKeys = getNonConfiguredValidationKeys();
             // getNonConfiguredValidationKeys needs to be called from the performFileBasedAction for the fileMonitor Baseline
@@ -800,7 +800,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     @Sensitive
     private Properties getValidationKeysProps(Map<String, Object> configProps, String elementName, String... attrKeys) {
         Properties properties = new Properties();
-        if (primaryKeyImportDir != null){
+        if (primaryKeyImportDir == null){
             Tr.debug(tc, "primaryKeyImportDir is null. Validation keys will not be loaded.");
             return properties;
         }
@@ -831,7 +831,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             }
             return null;
         } else {
-            if (isValidUntilDate(configProps)) {
+            if (isValidUntilDateExpired(configProps)) {
                 return null; //it can not be used so skip this validationKeys.
             }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -843,22 +843,24 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
     /**
      * validUntilDate attribute is an optional and have no default value.
-     * if validUntilDate is null, then it can use for ever.
-     * if validUntilDate is greater then current date and time, then it can not be used.
+     * This function checks if the validUntilDate0dt has already passed the current time.
+     * If so, then they key is expired, and will return true with a warning message.
+     * Otherwise, the key is valid and will return false.
+     * If the validUntilDateOdt is null, then the key is forever valid and will return false.
      *
      * @param configProps
      * @return
      */
-    private boolean isValidUntilDate(Map<String, Object> configProps) {
+    private boolean isValidUntilDateExpired(Map<String, Object> configProps) {
         String validUntilDate = (String) configProps.get(CFG_KEY_VALIDATION_VALID_UNTIL_DATE);
-        if (validUntilDate == null) { // Not specify so it is good to use
+        if (validUntilDate == null) { // If not specified, then it is forever valid.
             return false;
         }
         OffsetDateTime noUserAfterDateOdt = null;
         try {
             noUserAfterDateOdt = OffsetDateTime.parse(validUntilDate);
         } catch (Exception e) {
-            Tr.error(tc, "LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT", validUntilDate, configProps.get(CFG_KEY_VALIDATION_FILE_NAME));
+            Tr.error(tc, "LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT", validUntilDate, configProps.get(CFG_KEY_VALIDATION_FILE_NAME));
             return true;
         }
 
@@ -871,8 +873,8 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             Tr.debug(tc, "current date: " + currentDateTime);
         }
 
-        if (currentDateTime.isAfter(noUserAfterDateOdt)) {
-            Tr.warning(tc, "LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE", validUntilDate, configProps.get(CFG_KEY_VALIDATION_FILE_NAME));
+        if (noUserAfterDateOdt.isBefore(currentDateTime)) {
+            Tr.warning(tc, "LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST", validUntilDate, configProps.get(CFG_KEY_VALIDATION_FILE_NAME));
             return true;
         } else {
             return false;
