@@ -18,7 +18,7 @@
 		id="rsSaml1"
 		headerName="saml_token"
 		authFilterRef="defAuthFilter1"
-		signatureMethodAlgorithm="SHA1"
+		signatureMethodAlgorithm="SHA256"
 	>
 	</samlWebSso20>
 
@@ -37,7 +37,7 @@
 		inboundPropagation="required"
 		id="rsSaml_signed_badTrust"
 		headerName="saml_token"
-		signatureMethodAlgorithm="SHA1"
+		signatureMethodAlgorithm="SHA256"
 		wantAssertionsSigned="true"
 		authFilterRef="mangleFilterWithTrust"
 	>

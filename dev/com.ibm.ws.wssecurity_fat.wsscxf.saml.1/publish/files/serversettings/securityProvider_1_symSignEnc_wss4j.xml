@@ -7,6 +7,7 @@
 		ws-security.return.security.error="true"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
 		ws-security.cache.config.file="${server.config.dir}/cxf-ehcache_ee8.xml"
+		ws-security.symmetric.signature.algorithm="http://www.w3.org/2001/04/xmldsig-more#hmac-sha256"
 	>
 	<!-- 3/2021 EE8 Callbackhandler com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j -->	
 	<!-- 3/2021 add ws-security.return.security.error="true" -->
