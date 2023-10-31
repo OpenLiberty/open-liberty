@@ -40,7 +40,11 @@ Service-Component: \
 Include-Resource: \
   META-INF=resources/META-INF
 
-Private-Package: io.openliberty.microprofile.config.internal.extension,io.openliberty.io.smallrye.config.resources.*
+Private-Package: io.openliberty.microprofile.config.internal.extension
+
+Import-Package: \
+        io.openliberty.microprofile.config.internal.common.resources, \
+        *
 
 Export-Package: \
         io.smallrye.config.*;version="2.5.1"

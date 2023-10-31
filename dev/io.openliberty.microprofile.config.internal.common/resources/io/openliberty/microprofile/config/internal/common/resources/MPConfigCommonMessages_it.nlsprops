@@ -1,0 +1,29 @@
+###############################################################################
+# Copyright (c) 2022, 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.microprofile.config.internal.common/resources/io/openliberty/microprofile/config/internal/common/resources/MPConfigCommonMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC MicroProfile Config with InstantOn
+# Message numbers CWWKC0651-700 are reserved for this file.
+
+#COMPONENTPREFIX CWMCG                 
+#COMPONENTNAMEFOR CWMCG MicroProfile Config Common
+# Message numbers CWMCG0400-499 are reserved for this file.
+
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWMCG0000=CWMCG0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWMCG0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWMCG0000.useraction=User action text for the message
+
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651=CWWKC0651W: Il valore di configurazione MicroProfile per la chiave {0} \u00e8 stato modificato successivamente al completamento dell''azione di checkpoint sul server. Se il valore della chiave viene modificato dopo l''azione di checkpoint, l''applicazione potrebbe non utilizzare il valore aggiornato.
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651.explanation=\u00c8 stato eseguito l'accesso al valore di configurazione durante un'azione di checkpoint e il valore \u00e8 stato aggiornato prima che il processo del server fosse ripristinato. A seconda di come l'applicazione accede alla configurazione, il valore aggiornato potrebbe non essere utilizzato.
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651.useraction=Evitare di accedere alle propriet\u00e0 di configurazione durante il checkpoint.
