@@ -20,6 +20,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.internal.HttpChain;
+import com.ibm.ws.http.internal.HttpChain.ChainState;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
 import com.ibm.ws.http.internal.HttpServiceConstants;
 import com.ibm.ws.http.internal.VirtualHostMap;
@@ -298,6 +299,8 @@ public class NettyChain extends HttpChain {
             return;
         }
 
+        MSP.log("startNettyChannel state -> " + chainState.get());
+
         if (chainState.get() == ChainState.RESTARTING.val) {
             //TODO: clean up dynamic update, only update changed configs, missing TCP/SSL
             // Map<String, Object> httpOptions = new HashMap<String, Object>();
@@ -405,6 +408,7 @@ public class NettyChain extends HttpChain {
     public boolean isHttp2Enabled() {
         String protocolVersion = getOwner().getProtocolVersion();
         Boolean defaultSetting = getOwner().getChfwBundle().getHttp2DefaultSetting();
+
         System.out.println("Protocol version found to be: " + protocolVersion);
         if (defaultSetting == null) // No default configured, only HTTP 1.1 is enabled
             return false;
