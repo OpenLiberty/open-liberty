@@ -59,6 +59,7 @@ public class WCSameSiteCookieAttributeTests {
 
         // Start the server and use the class name so we can find logs easily.
         sameSiteServer.startServer(WCSameSiteCookieAttributeTests.class.getSimpleName() + ".log");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKO0219I*");
     }
 
     @AfterClass
