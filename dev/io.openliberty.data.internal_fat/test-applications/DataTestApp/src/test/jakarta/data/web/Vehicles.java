@@ -15,6 +15,7 @@ package test.jakarta.data.web;
 import java.util.Optional;
 
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
 
 /**
  * Repository for operations on the unannotated Vehicle entity.
@@ -30,6 +31,7 @@ public interface Vehicles {
 
     boolean removeById(String vin);
 
+    @Save
     Iterable<Vehicle> save(Iterable<Vehicle> v);
 
     boolean updateByIdAddPrice(String vin, float priceIncrease);

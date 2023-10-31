@@ -20,8 +20,10 @@ import java.util.stream.Stream;
 import jakarta.data.Streamable;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
 import jakarta.enterprise.concurrent.Asynchronous;
 
 import io.openliberty.data.repository.Compare;
@@ -55,9 +57,11 @@ public interface Personnel {
     CompletableFuture<Void> deleteById(long ssn);
 
     @Asynchronous
+    @Delete
     CompletableFuture<Void> deleteMultiple(Person... people);
 
     @Asynchronous
+    @Delete
     CompletableFuture<Integer> deleteSeveral(Stream<Person> people);
 
     @Asynchronous
@@ -71,6 +75,7 @@ public interface Personnel {
     CompletableFuture<Stream<String>> firstNames(String lastName);
 
     @Asynchronous
+    @Insert
     CompletableFuture<Void> insertAll(Person... people);
 
     @Asynchronous
@@ -90,6 +95,7 @@ public interface Personnel {
     CompletableFuture<Long> removeAll();
 
     @Asynchronous
+    @Save
     CompletableFuture<List<Person>> save(Person... p);
 
     long setSurname(@By("ssn_id") long ssn, @Assign("lastName") String newSurname);

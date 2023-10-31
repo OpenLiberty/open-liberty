@@ -15,9 +15,12 @@ package test.jakarta.data.web;
 import java.util.List;
 
 import jakarta.data.repository.By;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
 import jakarta.transaction.Transactional;
 import jakarta.transaction.Transactional.TxType;
 
@@ -41,12 +44,16 @@ public interface PersonRepo {
     @Select("firstName")
     List<String> findFirstNames(String surname);
 
+    @Insert
     void insert(Person p);
 
+    @Insert
     void insertAll(Person... p);
 
+    @Insert
     void insertAll(Iterable<Person> p);
 
+    @Save
     void save(List<Person> people);
 
     @Select("firstName")
@@ -73,7 +80,9 @@ public interface PersonRepo {
     boolean setFirstNameWithCurrentTransactionSuspended(Long id,
                                                         @Assign("firstname") String newFirstName);
 
+    @Update
     boolean updateOne(Person person);
 
+    @Update
     long updateSome(Person... people);
 }

@@ -25,6 +25,7 @@ import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
 
 import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Exists;
@@ -43,11 +44,13 @@ public interface Cities {
 
     long countByStateNameAndIdNotOrIdNotAndName(String state, CityId exceptForInState, CityId exceptForCity, String city);
 
-    void delete(City city); // copied from CrudRepository
+    @Delete
+    void delete(City city); // copied from BasicRepository
 
     // "IN" (which is needed for this) is not supported for composite IDs, but EclipseLink generates SQL
     // that leads to an SQLSyntaxErrorException rather than rejecting it outright
-    void deleteAll(Iterable<City> list); // copied from CrudRepository
+    @Delete
+    void deleteAll(Iterable<City> list); // copied from BasicRepository
 
     long deleteByIdOrId(CityId id1, CityId id2);
 
@@ -119,6 +122,7 @@ public interface Cities {
     @OrderBy("name")
     Stream<City> largerThan(int minPopulation, CityId exceptFor, String statePattern);
 
+    @Delete
     boolean remove(City city);
 
     Streamable<City> removeByStateName(String state);
@@ -147,6 +151,7 @@ public interface Cities {
     @OrderBy(value = "id", descending = true)
     KeysetAwarePage<City> sizedWithin(@Param("minSize") int minPopulation, @Param("maxSize") int maxPopulation, Pageable pagination);
 
+    @Save
     City save(City c);
 
     int updateByIdAndPopulationSetIdSetPopulationSetAreaCodes(CityId oldId, int oldPopulation,

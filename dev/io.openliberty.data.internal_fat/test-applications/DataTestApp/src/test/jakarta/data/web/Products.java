@@ -24,6 +24,7 @@ import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
 import jakarta.transaction.Transactional;
 
 import io.openliberty.data.repository.Count;
@@ -88,8 +89,10 @@ public interface Products {
         return null;
     }
 
+    @Save
     void save(Product p);
 
+    @Save
     Product[] saveMultiple(Product... p);
 
     boolean setPrice(UUID id,
@@ -112,8 +115,10 @@ public interface Products {
     //@Update(attr = "version", op = Operation.Subtract, value = "1")
     long undoPriceIncrease(Iterable<UUID> productIds, float divisor);
 
+    @Update
     Boolean update(Product product);
 
+    @Update
     Long update(Stream<Product> products);
 
     @Save
