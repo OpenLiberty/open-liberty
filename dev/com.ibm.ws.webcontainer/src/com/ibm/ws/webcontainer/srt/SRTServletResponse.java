@@ -873,12 +873,14 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
                 }
 
                 String convertedCharEncoding = EncodingUtils.getJvmConverter(charEncoding);
+                Charset charset;
                 if (convertedCharEncoding == null) {
-                    convertedCharEncoding = Charset.defaultCharset().name();
-                }
-                Charset charset = EncodingUtils.getCharsetForName(convertedCharEncoding);
-                if (charset == null) {
-                    throw new UnsupportedEncodingException(convertedCharEncoding + " is not found");
+                    charset = Charset.defaultCharset();
+                } else {
+                    charset = EncodingUtils.getCharsetForName(convertedCharEncoding);
+                    if (charset == null) {
+                        throw new UnsupportedEncodingException(convertedCharEncoding + " is not found");
+                    }
                 }
                 _outWriter = new OutputStreamWriter(_rawOut, charset);
                 _outWriterEncoding = charEncoding;
