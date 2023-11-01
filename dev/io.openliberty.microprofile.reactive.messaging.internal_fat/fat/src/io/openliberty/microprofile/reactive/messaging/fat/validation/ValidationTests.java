@@ -25,6 +25,7 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
 
+//@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 @AllowedFFDC
 public class ValidationTests {
@@ -55,6 +56,8 @@ public class ValidationTests {
         AppValidator.validateAppOn(server)
                         .withClass(IncomingMethodWithoutUpstream.class)
                         .failsWith("Wiring error\\(s\\) detected in application")
+                        .failsWith("CWMRX1100E:.*testApp-[0-9]+")
+                        .failsWith("- SubscriberMethod\\{method:'[^']*', incoming:'" + IncomingMethodWithoutUpstream.CHANNEL + "'\\} has no upstream")
                         .run();
 //        Suppressed: io.smallrye.reactive.messaging.providers.wiring.OpenGraphException: Some components are not connected to either downstream consumers or upstream producers:
 //        - SubscriberMethod{method:'io.openliberty.microprofile.reactive.messaging.fat.validation.IncomingMethodWithoutUpstream#badMethod', incoming:'IncomingMethodWithoutUpstream'} has no upstream
@@ -65,6 +68,8 @@ public class ValidationTests {
         AppValidator.validateAppOn(server)
                         .withClass(OutgoingMethodWithoutDownstream.class)
                         .failsWith("Wiring error\\(s\\) detected in application")
+                        .failsWith("CWMRX1100E:.*testApp-[0-9]+")
+                        .failsWith("- PublisherMethod\\{method:'[^']*', outgoing:'" + OutgoingMethodWithoutDownstream.CHANNEL + "'\\} has no downstream")
                         .run();
 //        Suppressed: io.smallrye.reactive.messaging.providers.wiring.OpenGraphException: Some components are not connected to either downstream consumers or upstream producers:
 //        - SubscriberMethod{method:'io.openliberty.microprofile.reactive.messaging.fat.validation.OutgoingMethodWithoutDownstream#badMethod', incoming:'OutgoingMethodWithoutDownstream'} has no downstream
@@ -75,6 +80,9 @@ public class ValidationTests {
         AppValidator.validateAppOn(server)
                         .withClass(IncomingMethodWithMultipleUpstreams.class)
                         .failsWith("Wiring error\\(s\\) detected in application")
+                        .failsWith("CWMRX1100E:.*testApp-[0-9]+")
+                        .failsWith("'SubscriberMethod\\{method:'[^']*', incoming:'" + IncomingMethodWithMultipleUpstreams.CHANNEL
+                                   + "'\\}' supports a single upstream producer, but found 2")
                         .run();
 //        Suppressed: io.smallrye.reactive.messaging.providers.wiring.TooManyUpstreamCandidatesException:
 //        'SubscriberMethod{method:'io.openliberty.microprofile.reactive.messaging.fat.validation.IncomingMethodWithMultipleUpstreams#badMethod',
@@ -86,6 +94,9 @@ public class ValidationTests {
         AppValidator.validateAppOn(server)
                         .withClass(OutgoingMethodWithMultipleDownstreams.class)
                         .failsWith("Wiring error\\(s\\) detected in application")
+                        .failsWith("CWMRX1100E:.*testApp-[0-9]+")
+                        .failsWith("'PublisherMethod\\{method:'[^']*', outgoing:'" + OutgoingMethodWithMultipleDownstreams.CHANNEL
+                                   + "'\\}' supports a single downstream consumer, but found 2")
                         .run();
 //        Suppressed: io.smallrye.reactive.messaging.providers.wiring.TooManyDownstreamCandidatesException:
 //        'PublisherMethod{method:'io.openliberty.microprofile.reactive.messaging.fat.validation.OutgoingMethodWithMultipleDownstreams#outgoingMethod', outgoing:'OutgoingMethodWithMultipleDownstreams'}'
@@ -96,6 +107,7 @@ public class ValidationTests {
     public void testEmitterWithNoDownstream() throws Exception {
         AppValidator.validateAppOn(server)
                         .withClass(EmitterWithNoDownstream.class)
+                        .failsWith("CWWKZ0002E:.*testApp-[0-9]+")
                         .failsWith("Unsatisfied dependencies for type Emitter with qualifiers @Default")
                         .run();
 //      org.jboss.weld.exceptions.DeploymentException: WELD-001408: Unsatisfied dependencies for type Emitter with qualifiers @Default
@@ -106,6 +118,8 @@ public class ValidationTests {
         AppValidator.validateAppOn(server)
                         .withClass(EmitterWithMultipleDownstreams.class)
                         .failsWith("Wiring error\\(s\\) detected in application")
+                        .failsWith("CWMRX1100E:.*testApp-[0-9]+")
+                        .failsWith("'Emitter\\{channel:'" + EmitterWithMultipleDownstreams.CHANNEL + "'\\}' supports a single downstream consumer, but found 2")
                         .run();
 //        Suppressed: io.smallrye.reactive.messaging.providers.wiring.TooManyDownstreamCandidatesException: 'Emitter{channel:'EmitterWithMultipleDownstreams'}'
 //        supports a single downstream consumer, but found 2
@@ -116,6 +130,8 @@ public class ValidationTests {
         AppValidator.validateAppOn(server)
                         .withClass(InjectedChannelWithNoUpstream.class)
                         .failsWith("Wiring error\\(s\\) detected in application")
+                        .failsWith("CWMRX1100E:.*testApp-[0-9]+")
+                        .failsWith("- @Channel\\{channel:'" + InjectedChannelWithNoUpstream.CHANNEL + "'\\} has no upstream")
                         .run();
 //        Suppressed: io.smallrye.reactive.messaging.providers.wiring.OpenGraphException: Some components are not connected to either downstream consumers or upstream producers:
 //        - @Channel{channel:'InjectedChannelWithNoUpstream'} has no upstream
@@ -126,6 +142,8 @@ public class ValidationTests {
         AppValidator.validateAppOn(server)
                         .withClass(InjectedChannelWithMultipleUpstreams.class)
                         .failsWith("Wiring error\\(s\\) detected in application")
+                        .failsWith("CWMRX1100E:.*testApp-[0-9]+")
+                        .failsWith("'@Channel\\{channel:'" + InjectedChannelWithMultipleUpstreams.CHANNEL + "'\\}' supports a single upstream producer, but found 2")
                         .run();
 //        Suppressed: io.smallrye.reactive.messaging.providers.wiring.TooManyUpstreamCandidatesException: '@Channel{channel:'InjectedChannelWithMultipleUpstreams'}' supports a single upstream producer, but found 2
     }
