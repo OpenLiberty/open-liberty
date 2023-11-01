@@ -223,17 +223,10 @@ public class JaxRsEndpoints extends Application {
             String url = new String(uriInfo.getAbsolutePath().toString());
             url = url.replace("jaxrsclient", "jaxrstwo"); //The jaxrsclient will use the URL as given so it needs the final part to be provided.
 
-            Client client = ClientBuilder.newClient();           
-            try {
-                String result = client.target(url)
-                                .request(MediaType.TEXT_PLAIN)
-                                .get(String.class);
-                assertEquals(TEST_PASSED, result);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            } finally {
-                client.close();
-            }
+            String result = client.target(url)
+                            .request(MediaType.TEXT_PLAIN)
+                            .get(String.class);
+            assertEquals(TEST_PASSED, result);
         } finally {
             LOGGER.info("<<< getJax");
         }
