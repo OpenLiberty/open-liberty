@@ -313,8 +313,7 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
     private HashMap<String, String> getTelemetryProperties() {
         HashMap<String, String> telemetryProperties = new HashMap<>();
         for (String propertyName : config.getPropertyNames()) {
-            System.out.println(propertyName);
-            if (propertyName.startsWith("otel.") || propertyName.startsWith("OTEL.") || propertyName.startsWith("otel_") || propertyName.startsWith("OTEL_")) {
+            if (propertyName.startsWith("otel") || propertyName.startsWith("OTEL")) {
                 config.getOptionalValue(propertyName.toLowerCase().replace('_', '.'), String.class).ifPresent(
                     value -> telemetryProperties.put(propertyName.toLowerCase().replace('_', '.'), value));
             }

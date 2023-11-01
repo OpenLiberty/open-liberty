@@ -235,7 +235,7 @@ public class JaxRsMethodTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP50_MPTEL11_ID, MicroProfileActions.MP60_ID, MicroProfileActions.MP61_ID, FATSuite.BETA_ID})
+    @SkipForRepeat({TelemetryActions.MP50_MPTEL11_ID, MicroProfileActions.MP60_ID, MicroProfileActions.MP61_ID, FATSuite.BETA_ID})
     public void testOptionsBelowEE9() {
         URI testUri = getUri();
         Span span = utils.withTestSpan(() -> {
@@ -269,7 +269,7 @@ public class JaxRsMethodTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat(TelemetryActions.MP14_MPTEL11_ID)
+    @SkipForRepeat({TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID})
     public void testOptionsAboveEE8() {
         URI testUri = getUri();
         Span span = utils.withTestSpan(() -> {
