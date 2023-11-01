@@ -72,6 +72,7 @@ Design preliminaries determine whether a formal design, which will be provided b
 
 ### **Design Preliminaries**
 - [ ] UI requirements identified, or N/A. (Feature owner and [UI focal point](https://github.com/orgs/OpenLiberty/teams/ui-approvers))
+- [ ] Accessibility requirements identified, or N/A. (Feature owner and [Accessibility focal point](https://github.com/orgs/OpenLiberty/teams/accessibility-approvers))
 - [ ] ID requirements identified, or N/A. (Feature owner and [ID focal point](https://github.com/orgs/OpenLiberty/teams/id-approvers))
    - Refer to [Documenting Open Liberty](https://github.com/OpenLiberty/open-liberty/wiki/Documenting-Open-Liberty).
    - Feature Owner adds label `ID Required`, if non-trivial documentation needs to be created by the ID team.
@@ -114,7 +115,7 @@ Design preliminaries determine whether a formal design, which will be provided b
 
 A feature must be [prioritized](https://github.com/orgs/OpenLiberty/projects/2) before any implementation work may begin to be delivered (inaccessible/no-ship).  However, a design focused approach should still be applied to features, and developers should think about the feature design prior to writing and delivering any code.  
 Besides being prioritized, a feature must also be socialized (or No Design Approved) before any beta code may be delivered.  All new Liberty content must be inaccessible in our GA releases until it is [Feature Complete](#feature-complete) by either marking it `kind=noship` or [beta fencing](#beta-code) it.  
-Code may not GA until this feature has obtained the "Design Approved" or "No Design Approved" label, along with all other tasks outlined in the [GA](#ga) section.
+Code may not GA until this feature has obtained the `Design Approved` or `No Design Approved` label, along with all other tasks outlined in the [GA](#ga) section.
 
 ### **Feature Development Begins**
 - [ ] Add the `In Progress` label
@@ -162,7 +163,13 @@ A feature is ready to GA after it is Feature Complete and has obtained all neces
   - [ ] All epic and child issues are closed.
   - [ ] All stop ship issues are completed.
 - [ ] Legal: all necessary approvals granted.
-- [ ] Translation: All messages translated or sent for translation for upcoming release 
+- [ ] Translation: Feature may only proceed to GA if it has either `Translation - Complete` or `Translation - Missing` label
+  - If all translation has been delivered to `release` branch, feature owner adds label `Translation - Complete`
+  - If missing translation does not cause a break in functionality, nor a security or production outage risk, feature owner adds label `Translation - Missing`.
+    - Once all missing translations are delivered, the `Translation - Missing` label is replaced with `Translation - Complete`.
+  - If missing translation could cause a break in functionality or a security or production outage risk, feature owner adds the `Translation - Blocked` label.
+    - Featues with `Translation - Blocked` may **NOT** proceed to GA until the label has been replaced with either `Translation - Missing` or `Translation - Complete`.
+  - For further guidance, contact [Globalization focal point](https://github.com/orgs/OpenLiberty/teams/globalization-approvers)) or the [Release Architect](https://github.com/orgs/OpenLiberty/teams/release-architect).
 - [ ] GA development complete and feature ready for inclusion in a GA release
   - Add label `target:ga` and the appropriate `target:YY00X` (where YY00X is the targeted GA version).
   - Inclusion in a release requires the completion of all Focal Point Approvals.
@@ -179,12 +186,8 @@ These occur only after GA of this feature is requested (by adding a `target:ga` 
   - Approver adds label `focalApproved:demo`.
 - [ ] **FAT** All Tests complete and running successfully in SOE or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/fat-approvers))
   - Approver adds label `focalApproved:fat`.
-- [ ] **Globalization** Translation and TVT are complete or N/A. ([OpenLiberty/globalization-approvers](https://github.com/orgs/OpenLiberty/teams/globalization-approvers))
-  - Approver adds label `focalApproved:globalization`.
 
 ### **Design Approved Features**
-- [ ] **Accessibility** Accessibility testing completed or N/A. ([OpenLiberty/accessibility-approvers](https://github.com/orgs/OpenLiberty/teams/accessibility-approvers))
-  - Approver adds label `focalApproved:accessibility`.
 - [ ] **ID** Documentation is complete or N/A. ([OpenLiberty/id-approvers](https://github.com/orgs/OpenLiberty/teams/id-approvers))
   - Approver adds label `focalApproved:id`.
   - > **_NOTE:_**  If only trivial documentation changes are required, you may reach out to the ID Feature Focal to request a `ID Required - Trivial` label.  Unlike features with regular ID requirement, those with `ID Required - Trivial` label do not have a hard requirement for a Design/UFO.
