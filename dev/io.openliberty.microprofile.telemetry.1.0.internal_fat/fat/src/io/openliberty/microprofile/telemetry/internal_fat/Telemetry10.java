@@ -27,8 +27,6 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -57,8 +55,7 @@ public class Telemetry10 extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
-                    .andWith(FeatureReplacementAction.BETA_OPTION().fullFATOnly());
+    public static RepeatTests r = FATSuite.aboveMP50Repeats(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {

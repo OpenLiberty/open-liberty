@@ -17,9 +17,9 @@ import io.openliberty.microprofile.telemetry.internal.common.cdi.MethodRequest;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import io.opentelemetry.instrumentation.api.annotation.support.MethodSpanAttributesExtractor;
-import jakarta.annotation.Priority;
-import jakarta.inject.Inject;
-import jakarta.interceptor.Interceptor;
+import javax.annotation.Priority;
+import javax.inject.Inject;
+import javax.interceptor.Interceptor;
 
 @WithSpan
 @Interceptor

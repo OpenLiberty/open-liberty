@@ -35,15 +35,15 @@ import io.opentelemetry.instrumentation.api.instrumenter.http.HttpServerAttribut
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanNameExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanStatusExtractor;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
-import jakarta.annotation.Nullable;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.container.ContainerRequestContext;
-import jakarta.ws.rs.container.ContainerRequestFilter;
-import jakarta.ws.rs.container.ContainerResponseContext;
-import jakarta.ws.rs.container.ContainerResponseFilter;
-import jakarta.ws.rs.container.ResourceInfo;
-import jakarta.ws.rs.core.UriBuilder;
-import jakarta.ws.rs.ext.Provider;
+import javax.annotation.Nullable;
+import javax.ws.rs.Path;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.ext.Provider;
 
 @Provider
 public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter implements ContainerRequestFilter, ContainerResponseFilter {
@@ -62,7 +62,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
 
     private Instrumenter<ContainerRequestContext, ContainerResponseContext> instrumenter;
 
-    @jakarta.ws.rs.core.Context
+    @javax.ws.rs.core.Context
     private ResourceInfo resourceInfo;
 
     public TelemetryContainerFilter() {

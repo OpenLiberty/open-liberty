@@ -22,8 +22,8 @@ import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.In
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.sdk.trace.data.SpanData;
-import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebServlet;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
 
 /**
  * Test that the Resource can be customized via SPI

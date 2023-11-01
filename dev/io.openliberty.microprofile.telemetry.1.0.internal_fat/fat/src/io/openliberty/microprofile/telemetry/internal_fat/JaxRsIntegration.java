@@ -23,6 +23,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,14 +34,16 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
-
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.JaxRsEndpoints;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.async.JaxRsServerAsyncTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.common.PropagationHeaderEndpoint;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.methods.JaxRsMethodTestEndpoints;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.methods.JaxRsMethodTestServlet;
@@ -82,6 +85,9 @@ public class JaxRsIntegration extends FATServletClient {
     })
     @Server(SERVER_NAME)
     public static LibertyServer server;
+    
+    @ClassRule
+    public static RepeatTests r = FATSuite.aboveMP50Repeats(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -152,14 +158,14 @@ public class JaxRsIntegration extends FATServletClient {
                         .addAsResource(jaegerAppConfig, "META-INF/microprofile-config.properties");
 /*
  * We do not test this one without concurrency-3.0 enabled as it uses a ManagedExecutorService
- * 
-        WebArchive asyncServerApp = ShrinkWrap.create(WebArchive.class, ASYNC_SERVER_APP_NAME + ".war")
-                        .addPackage(JaxRsServerAsyncTestServlet.class.getPackage())
-                        .addPackage(InMemorySpanExporter.class.getPackage())
-                        .addPackage(TestSpans.class.getPackage())
-                        .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
-                        .addAsResource(appConfig, "META-INF/microprofile-config.properties");
-*/
+ *
+ * WebArchive asyncServerApp = ShrinkWrap.create(WebArchive.class, ASYNC_SERVER_APP_NAME + ".war")
+ * .addPackage(JaxRsServerAsyncTestServlet.class.getPackage())
+ * .addPackage(InMemorySpanExporter.class.getPackage())
+ * .addPackage(TestSpans.class.getPackage())
+ * .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
+ * .addAsResource(appConfig, "META-INF/microprofile-config.properties");
+ */
 
         WebArchive methodsApp = ShrinkWrap.create(WebArchive.class, METHODS_APP_NAME + ".war")
                         .addPackage(JaxRsMethodTestEndpoints.class.getPackage())
@@ -184,9 +190,14 @@ public class JaxRsIntegration extends FATServletClient {
     public void testIntegrationWithJaxRsClient() throws Exception {
         HttpRequest pokeJax = new HttpRequest(server, "/" + APP_NAME + "/endpoints/jaxrsclient");
         String traceId = readTraceId(pokeJax);
-        
-        HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
-        assertEquals(TEST_PASSED, readspans.run(String.class));
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        }
+        else{
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel11/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        }
     }
 
     @Test
@@ -194,8 +205,14 @@ public class JaxRsIntegration extends FATServletClient {
         HttpRequest pokeJax = new HttpRequest(server, "/" + APP_NAME + "/endpoints/jaxrsclientasync");
         String traceId = readTraceId(pokeJax);
 
-        HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
-        assertEquals(TEST_PASSED, readspans.run(String.class));
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        }
+        else{
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel11/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        }
     }
 
     @Test
@@ -203,8 +220,14 @@ public class JaxRsIntegration extends FATServletClient {
         HttpRequest pokeMp = new HttpRequest(server, "/" + APP_NAME + "/endpoints/mpclient");
         String traceId = readTraceId(pokeMp);
 
-        HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
-        assertEquals(TEST_PASSED, readspans.run(String.class));
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        }
+        else{
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel11/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        }
     }
 
     @Test
@@ -212,8 +235,14 @@ public class JaxRsIntegration extends FATServletClient {
         HttpRequest pokeMp = new HttpRequest(server, "/" + APP_NAME + "/endpoints/mpclientasync");
         String traceId = readTraceId(pokeMp);
 
-        HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
-        assertEquals(TEST_PASSED, readspans.run(String.class));
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        }
+        else{
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel11/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        }
     }
 
     @AfterClass

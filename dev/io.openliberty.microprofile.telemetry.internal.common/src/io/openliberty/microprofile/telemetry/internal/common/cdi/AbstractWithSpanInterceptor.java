@@ -17,6 +17,10 @@ import java.lang.reflect.Parameter;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import javax.inject.Inject;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.InvocationContext;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -33,9 +37,6 @@ import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;
 import io.opentelemetry.instrumentation.api.instrumenter.InstrumenterBuilder;
 import io.opentelemetry.instrumentation.api.instrumenter.SpanNameExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.util.SpanNames;
-import jakarta.inject.Inject;
-import jakarta.interceptor.AroundInvoke;
-import jakarta.interceptor.InvocationContext;
 
 /**
  * This intercepter is responsible for creating Spans and managing the span context for all methods annotated @Span

@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal.common.rest;
+package io.openliberty.microprofile.telemetry.internal.common.rest.jakarta;
 
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
@@ -51,16 +51,6 @@ public class TelemetryClientAsyncTaskWrapper implements ClientAsyncTaskWrapper {
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
             return c;
-        }
-    }
-
-    @Override
-    public <T> Supplier<T> wrap(Supplier<T> s) {
-        try {
-            return Context.current().wrapSupplier(s);
-        } catch (Exception e) {
-            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
-            return s;
         }
     }
 

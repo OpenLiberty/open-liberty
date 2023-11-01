@@ -12,11 +12,11 @@ package io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.UriInfo;
-import jakarta.ws.rs.ext.ExceptionMapper;
-import jakarta.ws.rs.ext.Provider;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
 /**
  * Maps an exception to an error response in a similar manner to FATServlet
@@ -25,7 +25,7 @@ import jakarta.ws.rs.ext.Provider;
 public class TestExceptionMapper implements ExceptionMapper<Throwable> {
 
     @Context
-    private UriInfo uriInfo;
+    private UriInfo urlInfo;
 
     /** {@inheritDoc} */
     @Override
@@ -33,7 +33,7 @@ public class TestExceptionMapper implements ExceptionMapper<Throwable> {
         StringWriter sw = new StringWriter();
         try (PrintWriter pw = new PrintWriter(sw)) {
             System.out.println("ERROR: " + t);
-            pw.println("ERROR: Caught exception attempting to call " + uriInfo.getRequestUri().toString());
+            pw.println("ERROR: Caught exception attempting to call " + urlInfo.getRequestUri().toString());
             t.printStackTrace(pw);
         }
         return Response.ok(sw.toString()).build();

@@ -23,9 +23,9 @@ import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.sdk.trace.data.SpanData;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.servlet.http.HttpServletRequest;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Utility methods for working with spans in tests
@@ -78,7 +78,7 @@ public class TestSpans {
      * @throws Exception if {@code runnable} throws an exception
      */
     public Span withTestSpan(ThrowingRunnable runnable) {
-        String spanName = "testSpan-" + request.getRequestURI();
+        String spanName = "testSpan-" + request.getRequestURL();
         Span span = tracer.spanBuilder(spanName)
                         .setNoParent()
                         .startSpan();

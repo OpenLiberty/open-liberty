@@ -22,7 +22,7 @@ package io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter;
 import io.opentelemetry.sdk.autoconfigure.spi.ConfigProperties;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
-import jakarta.enterprise.inject.spi.CDI;
+import javax.enterprise.inject.spi.CDI;
 
 public class InMemorySpanExporterProvider implements ConfigurableSpanExporterProvider {
     @Override

@@ -12,7 +12,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal_fat.apps.shim;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ApplicationScoped;
 
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 

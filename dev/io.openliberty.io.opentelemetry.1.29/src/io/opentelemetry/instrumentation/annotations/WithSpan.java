@@ -11,8 +11,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import io.opentelemetry.api.trace.SpanKind;
-import jakarta.enterprise.util.Nonbinding;
-import jakarta.interceptor.InterceptorBinding;
+import javax.enterprise.util.Nonbinding;
+import javax.interceptor.InterceptorBinding;
 
 /**
  * This annotation marks that an execution of this method or constructor should result in a new

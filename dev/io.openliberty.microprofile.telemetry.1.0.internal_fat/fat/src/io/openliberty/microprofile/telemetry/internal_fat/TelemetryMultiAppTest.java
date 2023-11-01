@@ -34,6 +34,9 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.multiapp1.MultiApp1TestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.multiapp2.MultiApp2TargetResource;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.multiapp2.MultiApp2TestServlet;
@@ -60,14 +63,15 @@ public class TelemetryMultiAppTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
-                    .andWith(FeatureReplacementAction.BETA_OPTION().fullFATOnly());
+    public static RepeatTests r = FATSuite.aboveMP50Repeats(SERVER_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {
         // InMemorySpanExporter shared library
         PropertiesAsset exporterConfig = new PropertiesAsset()
-                        .addProperty("otel.traces.exporter", "in-memory");
+                        .addProperty("otel.traces.exporter", "in-memory")
+                        .addProperty("otel.sdk.disabled", "false")
+                        .addProperty("otel.bsp.schedule.delay", "100");
         JavaArchive exporterJar = ShrinkWrap.create(JavaArchive.class, "exporter.jar")
                         .addClasses(InMemorySpanExporter.class, InMemorySpanExporterProvider.class)
                         .addPackage(TestSpans.class.getPackage())
@@ -77,7 +81,9 @@ public class TelemetryMultiAppTest extends FATServletClient {
         ShrinkHelper.exportToServer(server, "shared", exporterJar, SERVER_ONLY);
 
         PropertiesAsset app1Config = new PropertiesAsset()
-                        .addProperty("otel.service.name", "multiapp1");
+                        .addProperty("otel.service.name", "multiapp1")
+                        .addProperty("otel.sdk.disabled", "false")
+                        .addProperty("otel.bsp.schedule.delay", "100");
         WebArchive multiapp1 = ShrinkWrap.create(WebArchive.class, APP1_NAME + ".war")
                         .addClass(MultiApp1TestServlet.class)
                         .addPackage(TestSpans.class.getPackage())
@@ -86,7 +92,9 @@ public class TelemetryMultiAppTest extends FATServletClient {
         ShrinkHelper.exportAppToServer(server, multiapp1, SERVER_ONLY);
 
         PropertiesAsset app2Config = new PropertiesAsset()
-                        .addProperty("otel.service.name", "multiapp2");
+                        .addProperty("otel.service.name", "multiapp2")
+                        .addProperty("otel.sdk.disabled", "false")
+                        .addProperty("otel.bsp.schedule.delay", "100");
         WebArchive multiapp2 = ShrinkWrap.create(WebArchive.class, APP2_NAME + ".war")
                         .addClass(MultiApp2TestServlet.class)
                         .addClass(MultiApp2TargetResource.class)
@@ -95,8 +103,6 @@ public class TelemetryMultiAppTest extends FATServletClient {
 
         ShrinkHelper.exportAppToServer(server, multiapp2, SERVER_ONLY);
 
-        server.addEnvVar("OTEL_SDK_DISABLED", "false");
-        server.addEnvVar("OTEL_BSP_SCHEDULE_DELAY", "100");
         server.startServer();
     }
 

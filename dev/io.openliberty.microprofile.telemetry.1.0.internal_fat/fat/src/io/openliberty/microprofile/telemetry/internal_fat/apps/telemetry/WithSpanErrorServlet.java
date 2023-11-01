@@ -28,9 +28,9 @@ import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.In
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import io.opentelemetry.sdk.trace.data.SpanData;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebServlet;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/testWithSpanErrorServlet")

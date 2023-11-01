@@ -17,8 +17,8 @@ import componenttest.app.FATServlet;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
-import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebServlet;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/testBaggage")

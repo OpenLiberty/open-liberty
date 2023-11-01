@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry11.internal.rest;
+package io.openliberty.microprofile.telemetry11.internal.rest.jakarta;
 
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
@@ -16,7 +16,9 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.websphere.ras.Tr;
 
 import io.openliberty.restfulWS.client.ClientBuilderListener;
-import jakarta.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.ClientBuilder;
+import io.openliberty.microprofile.telemetry11.internal.rest.TelemetryClientFilter;
+import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
 
 /**
  * Adds the Telemetry client filter when a rest client is built.

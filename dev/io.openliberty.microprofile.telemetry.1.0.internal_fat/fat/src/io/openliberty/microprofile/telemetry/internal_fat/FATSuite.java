@@ -14,6 +14,9 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.annotation.MinimumJavaLevel;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @MinimumJavaLevel(javaLevel = 11)
@@ -33,7 +36,7 @@ import componenttest.annotation.MinimumJavaLevel;
                 TelemetryServiceNameTest.class,
                 TelemetryShimTest.class,
                 TelemetryLoggingExporterTest.class,
-                TelemetryAPITest.class,
+                TelemetryAPITest.class, 
                 MultiThreadedContextTest.class,
                 TelemetryMisconfigTest.class,
                 TelemetryLongRunningTest.class,
@@ -44,4 +47,12 @@ import componenttest.annotation.MinimumJavaLevel;
 })
 
 public class FATSuite {
+
+    public static final String BETA_ID = MicroProfileActions.MP61_ID + "_BETA";
+
+    public static RepeatTests aboveMP50Repeats(String serverName) {
+        return MicroProfileActions
+                        .repeat(serverName, TelemetryActions.MP50_MPTEL11, MicroProfileActions.MP60, MicroProfileActions.MP61)
+                        .andWith(FeatureReplacementAction.EE10_FEATURES().withBeta().fullFATOnly().withID(BETA_ID));
+    }
 }
