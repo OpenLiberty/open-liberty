@@ -79,12 +79,10 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
     private ResourceInfo resourceInfo;
 
     public TelemetryContainerFilter() {
-        if (instrumenter == null) {
-            if (!CheckpointPhase.getPhase().restored()) {
-                lazyCreate = true;
-            } else {
-                instrumenter = createInstrumenter();
-            }
+        if (!CheckpointPhase.getPhase().restored()) {
+            lazyCreate = true;
+        } else {
+            instrumenter = createInstrumenter();
         }
     }
     

@@ -77,12 +77,10 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
 
     @Override
     public void init(FilterConfig config) {
-        if (instrumenter == null) {
-            if (!CheckpointPhase.getPhase().restored()) {
-                lazyCreate = true;
-            } else {
-                instrumenter = createInstrumenter();
-            }
+        if (!CheckpointPhase.getPhase().restored()) {
+            lazyCreate = true;
+        } else {
+            instrumenter = createInstrumenter();
         }
     }
 

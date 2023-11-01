@@ -61,12 +61,10 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
     private static final HttpClientAttributesGetterImpl HTTP_CLIENT_ATTRIBUTES_GETTER = new HttpClientAttributesGetterImpl();
 
     TelemetryClientFilter() {
-        if (instrumenter == null) {
-            if (!CheckpointPhase.getPhase().restored()) {
-                lazyCreate = true;
-            } else {
-                instrumenter = createInstrumenter();
-            }
+        if (!CheckpointPhase.getPhase().restored()) {
+            lazyCreate = true;
+        } else {
+            instrumenter = createInstrumenter();
         }
     }
     
