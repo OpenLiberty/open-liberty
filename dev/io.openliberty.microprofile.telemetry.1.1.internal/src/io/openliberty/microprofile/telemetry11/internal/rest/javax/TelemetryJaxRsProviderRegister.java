@@ -38,7 +38,7 @@ public class TelemetryJaxRsProviderRegister implements JaxRsProviderRegister {
         try {
             if (clientSide) {
                 TelemetryClientFilter currentFilter = new TelemetryClientFilter();
-                if (currentFilter != null) {
+                if (currentFilter != null && currentFilter.isEnabled()) {
                     providers.add(currentFilter);
                 }
             }
