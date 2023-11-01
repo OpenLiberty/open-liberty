@@ -36,19 +36,17 @@ import io.grpc.Status;
 import io.grpc.Status.Code;
 import io.grpc.internal.AbstractServerStream;
 import io.grpc.internal.GrpcUtil;
+import io.grpc.internal.MessageFramer;
 import io.grpc.internal.SerializingExecutor;
 import io.grpc.internal.StatsTraceContext;
 import io.grpc.internal.TransportFrameUtil;
 import io.grpc.internal.TransportTracer;
 import io.grpc.internal.WritableBuffer;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 import javax.annotation.Nullable;
@@ -228,6 +226,7 @@ final class ServletServerStream extends AbstractServerStream {
 
   private final class Sink implements AbstractServerStream.Sink {
     final TrailerSupplier trailerSupplier = new TrailerSupplier();
+	private int closedButNoFlush = 0;
 
     @Override
     public void writeHeaders(Metadata headers) {
@@ -242,7 +241,21 @@ final class ServletServerStream extends AbstractServerStream {
     }
 
     @Override
-    public void writeFrame(@Nullable WritableBuffer frame, boolean flush, int numMessages) {
+    public void writeFrame(
+    		@Nullable 
+    		WritableBuffer frame, boolean flush, int numMessages) {
+      
+      MessageFramer framer = ServletServerStream.this.framer();
+      if( framer != null && framer.isClosed() && !flush ) {
+    		  if( closedButNoFlush==0) {
+    			 // Liberty change - our stack needs a flush at this point which has been
+    			 // removed from later versions of GRPC. See:
+    			 // https://github.com/grpc/grpc-java/pull/9177/files#diff-2de04da34f7e35c085ca26dc596410983f5ded55a8de11eb97811264dea011f2
+    		     flush = true;
+    		  }
+     		  closedButNoFlush=closedButNoFlush+1;     		 
+      }
+    	
       if (frame == null && !flush) {
         return;
       }
@@ -301,18 +314,21 @@ final class ServletServerStream extends AbstractServerStream {
         return; // let the servlet timeout, the container will sent RST_STREAM automatically
       }
       transportState.runOnTransportThread(() -> transportState.transportReportStatus(status));
+
+      // Liberty change: pass the actual status and skip countdown timer
+      close(status.withCause(status.asRuntimeException()), new Metadata());
       // There is no way to RST_STREAM with CANCEL code, so write trailers instead
-      close(Status.CANCELLED.withCause(status.asRuntimeException()), new Metadata());
-      CountDownLatch countDownLatch = new CountDownLatch(1);
+      //close(Status.CANCELLED.withCause(status.asRuntimeException()), new Metadata());
+//      CountDownLatch countDownLatch = new CountDownLatch(1);
       transportState.runOnTransportThread(() -> {
         asyncCtx.complete();
-        countDownLatch.countDown();
+//        countDownLatch.countDown();
       });
-      try {
-        countDownLatch.await(5, TimeUnit.SECONDS);
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
+//      try {
+//        countDownLatch.await(5, TimeUnit.SECONDS);
+//      } catch (InterruptedException e) {
+//        Thread.currentThread().interrupt();
+//      }
     }
   }
 
@@ -339,3 +355,4 @@ final class ServletServerStream extends AbstractServerStream {
     return hex;
   }
 }
+
