@@ -180,7 +180,7 @@ public class Jose4jUtil {
             }
 
             List<String> tokensOrderToFetchCallerClaims = clientConfig.getTokenOrderToFetchCallerClaims();
-            if (tokensOrderToFetchCallerClaims.size() > 1) {
+            if (tokensOrderToFetchCallerClaims.size() > 1 && tokensOrderToFetchCallerClaims.contains(Constants.TOKEN_TYPE_ACCESS_TOKEN)) {
                 // access token
                 JwtClaims accessTokenClaims = getClaimsFromAccessToken(accessTokenStr);
                 tokenClaimsMap.put(Constants.TOKEN_TYPE_ACCESS_TOKEN, accessTokenClaims);

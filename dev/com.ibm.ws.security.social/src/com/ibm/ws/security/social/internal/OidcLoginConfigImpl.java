@@ -145,7 +145,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     private String tokenRequestOriginHeader = null;
     
     public static final String CFG_KEY_TOKEN_ORDER_TOFETCH_CALLER_CLAIMS = "tokenOrderToFetchCallerClaims";
-    private List<String> tokenOrderToFetchCallerClaims = new ArrayList<String>();
+    private List<String> tokenOrderToFetchCallerClaims;
 
     HttpUtils httputils = new HttpUtils();
     ConfigUtils oidcConfigUtils = new ConfigUtils(null);
@@ -236,7 +236,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         }
 
         performMiscellaneousConfigurationChecks();
-        tokenOrderToFetchCallerClaims = new ArrayList<String>(3);
+        tokenOrderToFetchCallerClaims = new ArrayList<String>(1);
         tokenOrderToFetchCallerClaims.add(com.ibm.ws.security.openidconnect.clients.common.Constants.TOKEN_TYPE_ID_TOKEN); //IDToken only for now
     }
 

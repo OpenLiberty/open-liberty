@@ -18,6 +18,7 @@ import java.security.PrivilegedExceptionAction;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
@@ -566,13 +567,14 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         // checkValidationEndpointUrl();
 
         // validateAuthzTokenEndpoints(); //TODO: update tests to expect the error if the validation here fails
-
-        tokenOrderToFetchCallerClaims = split(trimIt((String) props.get(CFG_KEY_TOKEN_ORDER_TOFETCH_CALLER_CLAIMS)));
-        if (tokenOrderToFetchCallerClaims == null || tokenOrderToFetchCallerClaims.size() == 0) {
-            tokenOrderToFetchCallerClaims = new ArrayList<String>(3);
+        String tokens = configUtils.getConfigAttributeWithDefaultValue(props, CFG_KEY_TOKEN_ORDER_TOFETCH_CALLER_CLAIMS, "IDToken");//getStringArrayConfigAttribute(props, CFG_KEY_TOKEN_ORDER_TOFETCH_CALLER_CLAIMS);
+ /*       if (tokens == null) {
+            Tr.info(tc, "@AMMI, null tokens");
+            tokenOrderToFetchCallerClaims = new ArrayList<String>(1);
             tokenOrderToFetchCallerClaims.add(com.ibm.ws.security.openidconnect.clients.common.Constants.TOKEN_TYPE_ID_TOKEN);
-        }
-
+        } else {    */        
+            tokenOrderToFetchCallerClaims = split(tokens);
+       /* }*/
         if (discovery) {
             logDiscoveryMessage("OIDC_CLIENT_DISCOVERY_COMPLETE");
         }
@@ -647,7 +649,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             Tr.debug(tc, "accessTokenCacheTimeout:" + accessTokenCacheTimeout);
             Tr.debug(tc, "pkceCodeChallengeMethod:" + pkceCodeChallengeMethod);
             Tr.debug(tc, "tokenRequestOriginHeader:" + tokenRequestOriginHeader);
-            Tr.debug(tc, "tokenOrderToFetchCallerClaims:" + tokenOrderToFetchCallerClaims);
+            Tr.debug(tc, "tokenOrderToFetchCallerClaims:" + tokenOrderToFetchCallerClaims.toString());
         }
 
     }
@@ -1959,14 +1961,16 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         return tokenOrderToFetchCallerClaims;
     }
 
-    List<String> split(String str) {
+    List<String> split(String str) {    
         List<String> rvalue = new ArrayList<String>(3);
-        if (str != null) {
-            StringTokenizer st = new StringTokenizer(str, ",");
-            while (st.hasMoreElements()) {
-                rvalue.add(st.nextToken());
+            if (str.contains(" ")) {
+                StringTokenizer st = new StringTokenizer(str, " ");
+                while (st.hasMoreElements()) {
+                    rvalue.add(st.nextToken());
+                }
+            } else {
+                rvalue.add(str);
             }
-        }
         return rvalue;
     }
 }
