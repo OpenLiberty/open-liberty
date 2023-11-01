@@ -65,12 +65,6 @@ public class DB2TestServlet extends FATServlet {
     @Resource(name = "java:comp/jdbc/env/unsharable-ds-xa-tightly-coupled", shareable = false)
     private DataSource unsharable_ds_xa_tightly_coupled;
 
-    @Resource(lookup = "jdbc/driver-property-preferred")
-    private DataSource driver_property_perferred;
-
-    @Resource(lookup = "jdbc/driver-no-override")
-    private DataSource driver_no_override;
-
     @Resource(lookup = "jdbc/ds-no-url-defaults")
     private DataSource ds_no_url_defaults;
 
@@ -306,7 +300,9 @@ public class DB2TestServlet extends FATServlet {
     }
 
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Tests JCC driver behavior, not valid for DB2 on i driver
     public void testVerifyConnectionPrecedence() throws Throwable {
+        DataSource driver_property_perferred = InitialContext.doLookup("jdbc/driver-property-preferred");
         try (Connection con = driver_property_perferred.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO MYTABLE VALUES (?, ?)");) {
             stmt.setInt(1, 33);
             stmt.setString(2, "thirty-three");
@@ -315,7 +311,9 @@ public class DB2TestServlet extends FATServlet {
     }
 
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Tests JCC driver behavior, not valid for DB2 on i driver
     public void testVerifyDefaultDoesNotOverride() throws Throwable {
+        DataSource driver_no_override = InitialContext.doLookup("jdbc/driver-no-override");
         try (Connection con = driver_no_override.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO MYTABLE VALUES (?, ?)");) {
             stmt.setInt(1, 34);
             stmt.setString(2, "thirty-four");
