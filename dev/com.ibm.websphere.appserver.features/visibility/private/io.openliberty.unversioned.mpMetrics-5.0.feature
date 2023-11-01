@@ -5,5 +5,5 @@ singleton=true
 -features= \
     io.openliberty.microProfile.internal-6.0, \
     io.openliberty.mpMetrics-5.0
-kind=noship
-edition=full
+kind=beta
+edition=core

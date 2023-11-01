@@ -5,5 +5,5 @@ singleton=true
 -features= \
     io.openliberty.microProfile.internal-3.3, \
     com.ibm.websphere.appserver.mpMetrics-2.3
-kind=noship
-edition=full
+kind=beta
+edition=core
