@@ -18,6 +18,7 @@ bVersion=1.0
 grpcVersion=1.57.2
 
 Import-Package: \
+  !com.google.errorprone.*,\
   !com.aayushatharva.brotli4j*,\
   !com.github.luben.zstd,\
   !com.google.protobuf.nano,\
