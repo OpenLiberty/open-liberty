@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.microprofile.reactive.messaging.fat.kafka.validation;
 
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider.CONNECTION_PROPERTIES_KEY;
 
 import org.junit.AfterClass;
@@ -21,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PropertiesAsset;
+import com.ibm.ws.microprofile.reactive.messaging.fat.AppValidator;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
 
@@ -31,7 +34,6 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.microprofile.reactive.messaging.fat.suite.KafkaTests;
 import io.openliberty.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
-import io.openliberty.microprofile.reactive.messaging.fat.validation.AppValidator;
 
 @RunWith(FATRunner.class)
 @AllowedFFDC
@@ -60,21 +62,26 @@ public class KafkaValidationTests {
 
     @Test
     public void testMissingConnector() throws Exception {
+        String testAppName = "MissingConnectorTest";
         // Configure delivery to a non-existant connector
         ConnectorProperties incoming = ConnectorProperties.simpleIncomingChannel(KafkaTests.connectionProperties(), "missingConnector", ValidConfig.INCOMING_CHANNEL, "Connector",
                                                                                  "Topic");
         PropertiesAsset appConfig = new PropertiesAsset().include(incoming);
 
         AppValidator.validateAppOn(server)
+                        .withAppName(testAppName)
                         .withClass(ValidConfig.class)
                         .withAppConfig(appConfig)
-                        .failsWith("Unknown connector for `" + ValidConfig.INCOMING_CHANNEL + "`.")
+                        .withLibrary(kafkaClientLibs())
+                        .withManifestResource(kafkaPermissions(), "permissions.xml")
+                        .failsWith("SRMSG00072.*" + ValidConfig.INCOMING_CHANNEL)
                         .run();
 //        org.jboss.weld.exceptions.DeploymentException: SRMSG00072: Unknown connector for `ValidIncomingChannel`.
     }
 
     @Test
     public void testIncomingConnectorWithoutDownstream() throws Exception {
+        String testAppName = "IncomingConnectorWithoutDownstreamTest";
         // Test DeploymentException is thrown when an incoming connector has no downstream channels
         String invalidChannel = "InvalidIncomingChannel";
         PropertiesAsset appConfig = new PropertiesAsset()
@@ -87,10 +94,13 @@ public class KafkaValidationTests {
                         .include(ConnectorProperties.simpleOutgoingChannel(KafkaTests.connectionProperties(), ConnectorProperties.DEFAULT_CONNECTOR_ID,
                                                                            ValidConfig.OUTGOING_CHANNEL, "ValidTopic"));
         AppValidator.validateAppOn(server)
+                        .withAppName(testAppName)
                         .withClass(ValidConfig.class)
                         .withAppConfig(appConfig)
+                        .withLibrary(kafkaClientLibs())
+                        .withManifestResource(kafkaPermissions(), "permissions.xml")
                         .failsWith("Wiring error\\(s\\) detected in application.")
-                        .failsWith("CWMRX1100E:.*testApp-[0-9]+")
+                        .failsWith("CWMRX1100E:.*" + testAppName)
                         .failsWith("- IncomingConnector\\{channel:'" + invalidChannel + "', attribute:'mp.messaging.incoming." + invalidChannel + "'\\} has no downstream")
                         .run();
 //        Suppressed: io.smallrye.reactive.messaging.providers.wiring.OpenGraphException: Some components are not connected to either downstream consumers or upstream producers:
@@ -99,16 +109,20 @@ public class KafkaValidationTests {
 
     @Test
     public void testIncomingConnectorWithMultipleDownstreams() throws Exception {
+        String testAppName = "IncomingConnectorWithMultipleDownstreamsTest";
         // Test DeploymentException is thrown when an incoming connector has multiple downstream channels
         PropertiesAsset appConfig = new PropertiesAsset()
                         .addProperty(CONNECTION_PROPERTIES_KEY, KafkaTestClientProvider.encodeProperties(KafkaTests.connectionProperties()))
                         .include(ConnectorProperties.simpleIncomingChannel(KafkaTests.connectionProperties(), ConnectorProperties.DEFAULT_CONNECTOR_ID,
                                                                            IncomingConnectorMultipleDownstreams.INCOMING_CHANNEL, "KafkaApp", "ValidTopic"));
         AppValidator.validateAppOn(server)
+                        .withAppName(testAppName)
                         .withClass(IncomingConnectorMultipleDownstreams.class)
                         .withAppConfig(appConfig)
+                        .withLibrary(kafkaClientLibs())
+                        .withManifestResource(kafkaPermissions(), "permissions.xml")
                         .failsWith("Wiring error\\(s\\) detected in application.")
-                        .failsWith("CWMRX1100E:.*testApp-[0-9]+")
+                        .failsWith("CWMRX1100E:.*" + testAppName)
                         .failsWith("'IncomingConnector\\{channel:'" + IncomingConnectorMultipleDownstreams.INCOMING_CHANNEL + "', attribute:'mp.messaging.incoming."
                                    + IncomingConnectorMultipleDownstreams.INCOMING_CHANNEL + "'\\}' supports a single downstream consumer, but found 2")
                         .run();
@@ -118,6 +132,7 @@ public class KafkaValidationTests {
 
     @Test
     public void testOutgoingConnectorWithoutUpstream() throws Exception {
+        String testAppName = "OutgoingConnectorWithoutUpstreamTest";
         // Test DeploymentException is thrown when an outgoing connector has no upstream channels
         String invalidChannel = "InvalidOutgoingChannel";
         PropertiesAsset appConfig = new PropertiesAsset()
@@ -130,10 +145,13 @@ public class KafkaValidationTests {
                         .include(ConnectorProperties.simpleOutgoingChannel(KafkaTests.connectionProperties(), ConnectorProperties.DEFAULT_CONNECTOR_ID,
                                                                            ValidConfig.OUTGOING_CHANNEL, "ValidTopic"));
         AppValidator.validateAppOn(server)
+                        .withAppName(testAppName)
                         .withClass(ValidConfig.class)
                         .withAppConfig(appConfig)
+                        .withLibrary(kafkaClientLibs())
+                        .withManifestResource(kafkaPermissions(), "permissions.xml")
                         .failsWith("Wiring error\\(s\\) detected in application.")
-                        .failsWith("CWMRX1100E:.*testApp-[0-9]+")
+                        .failsWith("CWMRX1100E:.*" + testAppName)
                         .failsWith("- OutgoingConnector\\{channel:'" + invalidChannel + "', attribute:'mp.messaging.outgoing." + invalidChannel + "'\\} has no upstream")
                         .run();
 //        Suppressed: io.smallrye.reactive.messaging.providers.wiring.OpenGraphException: Some components are not connected to either downstream consumers or upstream producers:
@@ -142,16 +160,20 @@ public class KafkaValidationTests {
 
     @Test
     public void testOutgoingConnectorWithMultipleUpstreams() throws Exception {
+        String testAppName = "OutgoingConnectorWithMultipleUpstreamsTest";
         // Test DeploymentException is thrown when an outgoing connector has multiple upstream channels
         PropertiesAsset appConfig = new PropertiesAsset()
                         .addProperty(CONNECTION_PROPERTIES_KEY, KafkaTestClientProvider.encodeProperties(KafkaTests.connectionProperties()))
                         .include(ConnectorProperties.simpleOutgoingChannel(KafkaTests.connectionProperties(), ConnectorProperties.DEFAULT_CONNECTOR_ID,
                                                                            OutgoingConnectorMultipleUpstreams.OUTGOING_CHANNEL, "ValidTopic"));
         AppValidator.validateAppOn(server)
+                        .withAppName(testAppName)
                         .withClass(OutgoingConnectorMultipleUpstreams.class)
                         .withAppConfig(appConfig)
+                        .withLibrary(kafkaClientLibs())
+                        .withManifestResource(kafkaPermissions(), "permissions.xml")
                         .failsWith("Wiring error\\(s\\) detected in application.")
-                        .failsWith("CWMRX1100E:.*testApp-[0-9]+")
+                        .failsWith("CWMRX1100E:.*" + testAppName)
                         .failsWith("'mp.messaging.outgoing." + OutgoingConnectorMultipleUpstreams.OUTGOING_CHANNEL + ".merge=true' to allow multiple upstreams.")
                         .run();
 //      Suppressed: io.smallrye.reactive.messaging.providers.wiring.TooManyUpstreamCandidatesException: 'mp.messaging.outgoing.OutgoingChannel.merge=true' to allow multiple upstreams.

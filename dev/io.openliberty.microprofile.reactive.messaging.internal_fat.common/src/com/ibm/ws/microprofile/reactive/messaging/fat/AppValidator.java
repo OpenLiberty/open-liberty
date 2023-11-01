@@ -10,15 +10,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.reactive.messaging.fat.validation;
+package com.ibm.ws.microprofile.reactive.messaging.fat;
 
-import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -45,14 +47,17 @@ import componenttest.topology.impl.LibertyServer;
  * </pre>
  *
  * <p>
- * This creates a web application containing just {@code MyInvalidClass}, deploys it, checks that it fails to start and that a message containing {@code CWMFT5001E} is found in the
- * log and then undeploys it.
+ * This creates a web application containing just {@code MyInvalidClass}, deploys it, checks that it either succeeds or fails to start. In the case of failure, it checks that a message containing {@code CWMFT5001E} is found in the
+ * log, and then undeploys it.
  */
 public class AppValidator {
     private final LibertyServer server;
     private final List<Class<?>> classes;
+    private final Map<URL, String> manifestResources;
     private final List<String> stringsToFind;
+    private final List<File[]> libraries;
     private PropertiesAsset appConfig;
+    private String appName;
 
     private static String APP_START_CODE = "CWWKZ000[13]I";
     private static String APP_FAIL_CODE = "CWWKZ000[24]E";
@@ -69,6 +74,8 @@ public class AppValidator {
         this.server = server;
         classes = new ArrayList<>();
         stringsToFind = new ArrayList<>();
+        manifestResources = new HashMap<>();
+        libraries = new ArrayList<>();
     }
 
     /**
@@ -108,6 +115,21 @@ public class AppValidator {
         return this;
     }
 
+    public AppValidator withAppName(String appName) {
+        this.appName = appName;
+        return this;
+    }
+
+    public AppValidator withManifestResource(URL url, String target) {
+        manifestResources.put(url, target);
+        return this;
+    }
+
+    public AppValidator withLibrary(File[] library) {
+        libraries.add(library);
+        return this;
+    }
+
     /**
      * Specify that the app should start successfully
      * <p>
@@ -133,7 +155,14 @@ public class AppValidator {
      */
     public void run() {
         try {
-            String archiveName = "testApp-" + (++appCount) + ".war";
+            String archiveName;
+
+            if (appName != null) {
+                archiveName = appName + ".war";
+            } else {
+                archiveName = "testApp-" + (++appCount) + ".war";
+            }
+
             try {
                 WebArchive app = ShrinkWrap.create(WebArchive.class, archiveName);
 
@@ -141,9 +170,15 @@ public class AppValidator {
                     app = app.addClass(clazz);
                 }
                 if (appConfig != null) {
-                    app = app.addAsLibraries(kafkaClientLibs())
-                                    .addAsManifestResource(kafkaPermissions(), "permissions.xml");
                     app = app.addAsResource(appConfig, "META-INF/microprofile-config.properties");
+                }
+
+                for (File[] library : libraries) {
+                    app = app.addAsLibraries(library);
+                }
+
+                for (URL url : manifestResources.keySet()) {
+                    app = app.addAsManifestResource(url, manifestResources.get(url));
                 }
 
                 RemoteFile logFile = server.getDefaultLogFile();
