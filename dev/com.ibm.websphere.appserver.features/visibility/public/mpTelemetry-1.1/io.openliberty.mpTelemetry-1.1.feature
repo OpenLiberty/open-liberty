@@ -26,7 +26,7 @@ IBM-API-Package: \
   io.opentelemetry.sdk.resources;type="third-party",\
   io.opentelemetry.instrumentation.annotations;type="third-party"
 -features=\
-  io.openliberty.mpTelemetry1.1.ee-7.0; ibm.tolerates:= "7.0"
+  io.openliberty.mpTelemetry1.1.ee-7.0; ibm.tolerates:= "7.0, 8.0, 9.0"
 -bundles=\
   io.openliberty.com.squareup.okhttp,\
   io.openliberty.com.squareup.okio-jvm,\

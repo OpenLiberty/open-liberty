@@ -12,6 +12,7 @@ package io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation
 import static io.openliberty.microprofile.telemetry.internal_fat.common.SpanDataMatcher.isSpan;
 import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.HTTP_METHOD;
 import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.HTTP_STATUS_CODE;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -23,8 +24,10 @@ import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import componenttest.annotation.SkipForRepeat;
 import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
+import io.openliberty.microprofile.telemetry.internal_fat.TelemetryActions;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.sdk.trace.data.SpanData;
@@ -82,7 +85,9 @@ public class JaxRsResponseCodeTestServlet extends FATServlet {
         doTestForStatusCode(307);
     }
 
+    // Method followRedirects() was unavailable before RestClient 2.0
     @Test
+    @SkipForRepeat({TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID})
     public void testRedirectWithRestClient() {
         JaxRsResponseCodeTestClient client = RestClientBuilder.newBuilder()
                         .baseUri(getBaseUri())
