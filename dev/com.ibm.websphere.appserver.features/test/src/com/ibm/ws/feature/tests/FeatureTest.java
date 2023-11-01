@@ -1032,6 +1032,9 @@ public class FeatureTest {
             if (lastIndex == -1) {
                 continue;
             }
+            if (feature.length() - lastIndex > 7){
+                lastIndex = feature.length()-1;
+            }
             String baseFeatureName = feature.substring(0, lastIndex + 1);
             visibilityMap.put(baseFeatureName, featureInfo.getVisibility());
 
@@ -1071,10 +1074,18 @@ public class FeatureTest {
             }
             for (Map.Entry<String, Set<String>> errorEntry : featureErrors.entrySet()) {
                 String depFeature = errorEntry.getKey();
-                String baseFeatureName = depFeature.substring(0, depFeature.lastIndexOf('-') + 1);
+                int lastIndex = depFeature.indexOf('-');
+                if (lastIndex == -1) {
+                    continue;
+                }
+                if (depFeature.length() - lastIndex > 7){
+                    lastIndex = depFeature.length()-1;
+                }
+                String baseFeatureName = depFeature.substring(0, lastIndex + 1);
                 if (toleratedFeatures.contains(baseFeatureName) || visibilityMap.get(baseFeatureName).equals("public")) {
                     continue;
                 }
+                errorMessage.append(baseFeatureName + " visibility:" + visibilityMap.get(baseFeatureName) + "\n");
                 errorMessage.append(featureName).append(" contains redundant feature ").append(depFeature)
                             .append(" because it is already in an included feature(s):\n");
                 for (String errorPath : errorEntry.getValue()) {

@@ -5,5 +5,5 @@ IBM-ShortName: mpMetrics
 Subsystem-Name: mpMetrics
 -features=io.openliberty.unversioned.mpMetrics-1.0; ibm.tolerates:="1.1,2.0,2.2,2.3,3.0,4.0,5.0,5.1"
 WLP-Required-Feature: jakartaPlatform, mpPlatform
-kind=noship
-edition=full
+kind=beta
+edition=core

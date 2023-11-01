@@ -5,5 +5,5 @@ singleton=true
 -features= \
     io.openliberty.microProfile.internal-1.2; ibm.tolerates:="1.3,1.4,2.0,2.1,2.2", \
     com.ibm.websphere.appserver.mpHealth-1.0
-kind=noship
-edition=full
+kind=beta
+edition=core

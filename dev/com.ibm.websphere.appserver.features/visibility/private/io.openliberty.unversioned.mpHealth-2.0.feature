@@ -5,5 +5,5 @@ singleton=true
 -features= \
     io.openliberty.microProfile.internal-3.0, \
     com.ibm.websphere.appserver.mpHealth-2.0
-kind=noship
-edition=full
+kind=beta
+edition=core
