@@ -77,6 +77,7 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
         if (lazyCreate) {
             instrumenter = lazyInstrumenter.updateAndGet((i) -> {
                 if (i == null) {
+                    lazyCreate = false;
                     return createInstrumenter();
                 } else {
                     return i;
@@ -162,10 +163,15 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
     /**
      * @return false if OpenTelemetry is disabled
      *         Indicated by instrumenter being set to null
+     * @return true when instrumenter is not null or if it is called during checkpoint
      */
     @Override
     public boolean isEnabled() {
-        return instrumenter != null;
+        if (instrumenter != null || !CheckpointPhase.getPhase().restored()) {
+            return true;
+        }         
+        instrumenter = getInstrumenter();
+        return instrumenter != null;                   
     }
 
     private static class ClientRequestContextTextMapSetter implements TextMapSetter<ClientRequestContext> {

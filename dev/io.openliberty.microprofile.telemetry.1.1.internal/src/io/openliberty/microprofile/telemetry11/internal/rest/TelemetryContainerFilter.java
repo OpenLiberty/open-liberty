@@ -86,6 +86,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
         if (lazyCreate) {
             instrumenter = lazyInstrumenter.updateAndGet((i) -> {
                 if (i == null) {
+                    lazyCreate = false;
                     return createInstrumenter();
                 } else {
                     return i;
