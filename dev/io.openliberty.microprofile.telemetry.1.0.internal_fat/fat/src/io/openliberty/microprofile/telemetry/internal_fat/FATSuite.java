@@ -36,7 +36,7 @@ import componenttest.rules.repeater.RepeatTests;
                 TelemetryServiceNameTest.class,
                 TelemetryShimTest.class,
                 TelemetryLoggingExporterTest.class,
-                TelemetryAPITest.class, 
+                TelemetryAPITest.class,
                 MultiThreadedContextTest.class,
                 TelemetryMisconfigTest.class,
                 TelemetryLongRunningTest.class,
@@ -51,7 +51,7 @@ public class FATSuite {
     public static final String BETA_ID = MicroProfileActions.MP61_ID + "_BETA";
 
     public static RepeatTests aboveMP50Repeats(String serverName) {
-        return MicroProfileActions
+        return TelemetryActions
                         .repeat(serverName, TelemetryActions.MP50_MPTEL11, MicroProfileActions.MP60, MicroProfileActions.MP61)
                         .andWith(FeatureReplacementAction.EE10_FEATURES().withBeta().fullFATOnly().withID(BETA_ID));
     }

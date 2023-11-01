@@ -18,11 +18,11 @@ import java.util.function.Supplier;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
-import io.openliberty.restfulWS.client.ClientAsyncTaskWrapper;
-import io.opentelemetry.context.Context;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+
+import io.openliberty.restfulWS.client.ClientAsyncTaskWrapper;
+import io.opentelemetry.context.Context;
 
 /**
  * Ensures that the OTel context is used when either JAX-RS client or MP Rest Client makes an async request.
@@ -51,6 +51,16 @@ public class TelemetryClientAsyncTaskWrapper implements ClientAsyncTaskWrapper {
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
             return c;
+        }
+    }
+
+    // Overrides method on restfulWS-3.1 version of this interface
+    public <T> Supplier<T> wrap(Supplier<T> s) {
+        try {
+            return Context.current().wrapSupplier(s);
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return s;
         }
     }
 

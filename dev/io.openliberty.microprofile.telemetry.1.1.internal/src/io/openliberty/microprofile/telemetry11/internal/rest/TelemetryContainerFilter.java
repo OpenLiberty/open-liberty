@@ -19,6 +19,15 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.ext.Provider;
+
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTelemetryContainerFilter;
@@ -35,15 +44,6 @@ import io.opentelemetry.instrumentation.api.instrumenter.http.HttpServerAttribut
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanNameExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanStatusExtractor;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
-import javax.annotation.Nullable;
-import javax.ws.rs.Path;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.ext.Provider;
 
 @Provider
 public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter implements ContainerRequestFilter, ContainerResponseFilter {
@@ -227,7 +227,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
 
         //If one was sent
         @Override
-        public Integer getHttpResponseStatusCode(final ContainerRequestContext request, final ContainerResponseContext response, @Nullable Throwable error) {
+        public Integer getHttpResponseStatusCode(final ContainerRequestContext request, final ContainerResponseContext response, Throwable error) {
             return response.getStatus();
         }
 

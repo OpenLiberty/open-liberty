@@ -8,12 +8,20 @@
 # SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
 
+
 Bundle-Name: io.openliberty.microprofile.telemetry.1.1.internal
 Bundle-SymbolicName: io.openliberty.microprofile.telemetry.1.1.internal
+
+## NOTE: Sub-bundles have different contents
 
 Export-Package: \
 	io.openliberty.microprofile.telemetry11.internal.cdi;version='1.0',\
 	io.openliberty.microprofile.telemetry11.internal.rest;version='1.0';thread-context=true
+
+Private-Package: \
+	io.openliberty.microprofile.telemetry11.internal.helper,\
+	io.openliberty.microprofile.telemetry11.internal.sdk
+
 
 -dsannotations: \
   io.openliberty.microprofile.telemetry11.internal.cdi.SPIMetaData,\

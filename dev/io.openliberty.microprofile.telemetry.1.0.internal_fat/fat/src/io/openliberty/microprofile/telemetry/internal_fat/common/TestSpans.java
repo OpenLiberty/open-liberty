@@ -17,15 +17,16 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.sdk.trace.data.SpanData;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Utility methods for working with spans in tests
@@ -78,7 +79,7 @@ public class TestSpans {
      * @throws Exception if {@code runnable} throws an exception
      */
     public Span withTestSpan(ThrowingRunnable runnable) {
-        String spanName = "testSpan-" + request.getRequestURL();
+        String spanName = "testSpan-" + request.getRequestURI();
         Span span = tracer.spanBuilder(spanName)
                         .setNoParent()
                         .startSpan();

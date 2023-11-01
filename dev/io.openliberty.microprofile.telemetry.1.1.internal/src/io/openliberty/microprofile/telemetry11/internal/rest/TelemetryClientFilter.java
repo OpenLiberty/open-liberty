@@ -19,6 +19,12 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
 
+import javax.ws.rs.client.ClientRequestContext;
+import javax.ws.rs.client.ClientRequestFilter;
+import javax.ws.rs.client.ClientResponseContext;
+import javax.ws.rs.client.ClientResponseFilter;
+import javax.ws.rs.ext.Provider;
+
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTelemetryClientFilter;
@@ -32,12 +38,6 @@ import io.opentelemetry.instrumentation.api.instrumenter.http.HttpClientAttribut
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanNameExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanStatusExtractor;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
-import javax.annotation.Nullable;
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientRequestFilter;
-import javax.ws.rs.client.ClientResponseContext;
-import javax.ws.rs.client.ClientResponseFilter;
-import javax.ws.rs.ext.Provider;
 
 @Provider
 public class TelemetryClientFilter extends AbstractTelemetryClientFilter implements ClientRequestFilter, ClientResponseFilter {
@@ -132,7 +132,7 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
 
         //If one was sent
         @Override
-        public Integer getHttpResponseStatusCode(final ClientRequestContext request, final ClientResponseContext response, @Nullable Throwable error) {
+        public Integer getHttpResponseStatusCode(final ClientRequestContext request, final ClientResponseContext response, Throwable error) {
             return response.getStatus();
         }
 
@@ -152,13 +152,11 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
             return response.getHeaders().getOrDefault(name, emptyList());
         }
 
-        @Nullable
         @Override
         public String getServerAddress(final ClientRequestContext request) {
             return request.getUri().getHost();
         }
 
-        @Nullable
         @Override
         public Integer getServerPort(final ClientRequestContext request) {
             return request.getUri().getPort();
