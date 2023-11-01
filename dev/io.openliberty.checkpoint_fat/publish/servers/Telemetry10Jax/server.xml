@@ -1,0 +1,45 @@
+<server description="Server for testing Telemetry10">
+
+    <include location="../fatTestPorts.xml" />
+
+    <featureManager>
+        <feature>servlet-6.0</feature>
+        <feature>mpTelemetry-1.0</feature>
+        <feature>componentTest-2.0</feature>
+        <feature>restfulWS-3.1</feature>
+        <feature>mpRestClient-3.0</feature>
+    </featureManager>
+
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+
+    <application id="JaxPropagation" name="JaxPropagation" type="war" location="JaxPropagation.war">
+        <classloader apiTypeVisibility="+third-party"/>
+    </application>
+
+    <application type="war" location="w3cTrace.war">
+        <classloader apiTypeVisibility="+third-party"/>
+    </application>
+
+    <application type="war" location="w3cTraceBaggage.war">
+        <classloader apiTypeVisibility="+third-party"/>
+    </application>
+
+    <application type="war" location="b3.war">
+        <classloader apiTypeVisibility="+third-party"/>
+    </application>
+
+    <application type="war" location="b3multi.war">
+        <classloader apiTypeVisibility="+third-party"/>
+    </application>
+
+    <application type="war" location="jaeger.war">
+        <classloader apiTypeVisibility="+third-party"/>
+    </application>
+
+    <application type="war" location="jaxrsMethods.war">
+        <classloader apiTypeVisibility="+third-party"/>
+    </application>
+
+    <!--logging traceSpecification="TELEMETRY=all:RESTfulWS=all"/-->
+
+</server>
