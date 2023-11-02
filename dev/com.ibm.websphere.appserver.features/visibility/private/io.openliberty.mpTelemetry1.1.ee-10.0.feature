@@ -16,4 +16,3 @@ singleton=true
 kind=beta
 edition=core
 WLP-Activation-Type: parallel 
-WLP-InstantOn-Enabled: true

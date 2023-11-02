@@ -13,8 +13,6 @@ singleton=true
   io.openliberty.microprofile.telemetry.1.1.internal, \
   io.openliberty.io.opentelemetry.1.29, \
   io.openliberty.microprofile.telemetry.internal.common
--jars=io.openliberty.mpTelemetry.1.1.thirdparty; location:="dev/api/third-party/,lib/"
 kind=beta
 edition=core
 WLP-Activation-Type: parallel 
-WLP-InstantOn-Enabled: true

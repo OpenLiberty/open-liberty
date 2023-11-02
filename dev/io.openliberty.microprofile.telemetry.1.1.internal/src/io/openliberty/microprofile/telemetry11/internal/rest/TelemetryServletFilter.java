@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
 import javax.servlet.AsyncContext;
 import javax.servlet.AsyncEvent;
 import javax.servlet.AsyncListener;
@@ -252,7 +251,7 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
         }
 
         @Override
-        public Integer getHttpResponseStatusCode(final ServletRequest request, final ServletResponse response, @Nullable Throwable error) {
+        public Integer getHttpResponseStatusCode(final ServletRequest request, final ServletResponse response, Throwable error) {
             if (response instanceof HttpServletResponse) {
                 HttpServletResponse httpServletResponse = (HttpServletResponse) response;
                 return httpServletResponse.getStatus();
