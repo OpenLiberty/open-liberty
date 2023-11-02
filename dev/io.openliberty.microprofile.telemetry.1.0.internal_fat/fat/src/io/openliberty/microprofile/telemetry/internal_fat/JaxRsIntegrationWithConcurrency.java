@@ -33,7 +33,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.MicroProfileActions;
@@ -85,7 +84,7 @@ public class JaxRsIntegrationWithConcurrency extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = FATSuite.aboveMP50Repeats(SERVER_NAME);
+    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {

@@ -50,9 +50,8 @@ public class FATSuite {
 
     public static final String BETA_ID = MicroProfileActions.MP61_ID + "_BETA";
 
-    public static RepeatTests aboveMP50Repeats(String serverName) {
+    public static RepeatTests allMPRepeats(String serverName) {
         return MicroProfileActions
-                        .repeat(serverName, TelemetryActions.MP14_MPTEL11,  TelemetryActions.MP41_MPTEL11, TelemetryActions.MP50_MPTEL11, MicroProfileActions.MP60)
-                        .andWith(FeatureReplacementAction.EE10_FEATURES().withBeta().fullFATOnly().withID(BETA_ID));
+                        .repeat(serverName, MicroProfileActions.MP61, TelemetryActions.MP14_MPTEL11,  TelemetryActions.MP41_MPTEL11, TelemetryActions.MP50_MPTEL11, MicroProfileActions.MP60);
     }
 }

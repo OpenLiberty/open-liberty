@@ -64,7 +64,7 @@ public class MultiThreadedContextTest extends FATServletClient {
     }
     
     @ClassRule
-    public static RepeatTests r = FATSuite.aboveMP50Repeats(SERVER_NAME);
+    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
     
     @AfterClass
     public static void teardown() throws Exception {
