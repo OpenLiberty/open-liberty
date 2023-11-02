@@ -11,6 +11,7 @@ package io.openliberty.microprofile.openapi.ui.internal.fat.tests;
 
 import static componenttest.selenium.SeleniumWaits.waitForElement;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -123,11 +124,15 @@ public class UIBasicTest {
         assertThat("Headerbar image", headerbarWrapper.getCssValue("background-image"), startsWith("url(\"data:image/png"));
 
         // Check we can see and open the operation
-        WebElement testGetOpBlock = waitForElement(driver, By.id("operations-default-get_test"));
+        WebElement testGetOpBlock = waitForElement(driver, By.id("operations-default-get_test__id_"));
         WebElement testGetButton = testGetOpBlock.findElement(By.tagName("button"));
         testGetButton.click();
         WebElement testGet200Response = waitForElement(testGetOpBlock, By.cssSelector("tr.response[data-code=\"200\"]"));
         assertNotNull("200 response line", testGet200Response);
+
+        // Check the Required field renders correctly so we know the JS is being interpreted as UTF-8
+        WebElement requiredField = waitForElement(testGetOpBlock, By.cssSelector("div.parameter__name.required"));
+        assertThat("Code page UTF-8 not being used", requiredField.getText(), is("id *"));
     }
 
 }

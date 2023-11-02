@@ -10,8 +10,10 @@
 package io.openliberty.microprofile.openapi.ui.internal.fat.app;
 
 import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PathParam;
 
 /**
  * Very basic application so that we have something to look at in the OpenAPI UI
@@ -20,8 +22,7 @@ import jakarta.ws.rs.Path;
 @Path("/test")
 public class TestResource {
 
+    @Path("/{id}")
     @GET
-    public String testGet() {
-        return "OK";
-    }
+    public int testGet(@PathParam("id") int id) {return id;}
 }
