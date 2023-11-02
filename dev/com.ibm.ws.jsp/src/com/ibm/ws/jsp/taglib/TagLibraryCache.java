@@ -198,10 +198,7 @@ public class TagLibraryCache extends Hashtable<String, Object> {
         }
         //PK68590 end
 
-        if (jspOptions.isUseImplicitTagLibs() &&
-             (jspOptions.getTranslationContextClass() == null 
-              	|| (jspOptions.getTranslationContextClass() != null && // 415289
-              	    jspOptions.getTranslationContextClass().equals(Constants.IN_MEMORY_TRANSLATION_CONTEXT_CLASS)))) { 
+        if (jspOptions.isUseImplicitTagLibs() && jspOptions.getTranslationContextClass() == null) { 
             for (Map.Entry<String, Object> mapEntry : globalMap.entrySet()) {
                 String uri = mapEntry.getKey();
                 if (!containsKey(uri)) {
