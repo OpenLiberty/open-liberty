@@ -40,12 +40,13 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+@AllowedFFDC("javax.management.InstanceNotFoundException")
 public class TestEnableDisableFeaturesTest {
 
     private static Class<?> c = TestEnableDisableFeaturesTest.class;
