@@ -20,13 +20,13 @@ Bundle-SymbolicName: io.openliberty.io.smallrye.common2; singleton:=true
                      
 
 Export-Package: \
-  io.smallrye.common.*; version="2.1.0"
+  io.smallrye.common.*; version="2.2.0"
 
 instrument.disabled: true
 
 -buildpath: \
-  io.smallrye.common:smallrye-common-annotation;version=2.1.0;strategy=exact, \
-  io.smallrye.common:smallrye-common-expression;version=2.1.0;strategy=exact, \
-  io.smallrye.common:smallrye-common-constraint;version=2.1.0;strategy=exact, \
-  io.smallrye.common:smallrye-common-function;version=2.1.0;strategy=exact, \
-  io.smallrye.common:smallrye-common-classloader;version=2.1.0;strategy=exact
+  io.smallrye.common:smallrye-common-annotation;version=2.2.0;strategy=exact, \
+  io.smallrye.common:smallrye-common-expression;version=2.2.0;strategy=exact, \
+  io.smallrye.common:smallrye-common-constraint;version=2.2.0;strategy=exact, \
+  io.smallrye.common:smallrye-common-function;version=2.2.0;strategy=exact, \
+  io.smallrye.common:smallrye-common-classloader;version=2.2.0;strategy=exact

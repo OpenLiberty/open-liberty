@@ -919,7 +919,7 @@
     <dependency>
       <groupId>io.smallrye.common</groupId>
       <artifactId>smallrye-common-annotation</artifactId>
-      <version>2.1.0</version>
+      <version>2.2.0</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.common</groupId>
@@ -929,7 +929,7 @@
     <dependency>
       <groupId>io.smallrye.common</groupId>
       <artifactId>smallrye-common-classloader</artifactId>
-      <version>2.1.0</version>
+      <version>2.2.0</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.common</groupId>
@@ -939,7 +939,7 @@
     <dependency>
       <groupId>io.smallrye.common</groupId>
       <artifactId>smallrye-common-constraint</artifactId>
-      <version>2.1.0</version>
+      <version>2.2.0</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.common</groupId>
@@ -949,7 +949,7 @@
     <dependency>
       <groupId>io.smallrye.common</groupId>
       <artifactId>smallrye-common-expression</artifactId>
-      <version>2.1.0</version>
+      <version>2.2.0</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.common</groupId>
@@ -959,7 +959,7 @@
     <dependency>
       <groupId>io.smallrye.common</groupId>
       <artifactId>smallrye-common-function</artifactId>
-      <version>2.1.0</version>
+      <version>2.2.0</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.config</groupId>
@@ -969,7 +969,7 @@
     <dependency>
       <groupId>io.smallrye.config</groupId>
       <artifactId>smallrye-config-common</artifactId>
-      <version>3.3.0</version>
+      <version>3.4.1</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.config</groupId>
@@ -979,7 +979,7 @@
     <dependency>
       <groupId>io.smallrye.config</groupId>
       <artifactId>smallrye-config-core</artifactId>
-      <version>3.3.0</version>
+      <version>3.4.1</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.config</groupId>
@@ -989,7 +989,7 @@
     <dependency>
       <groupId>io.smallrye.config</groupId>
       <artifactId>smallrye-config</artifactId>
-      <version>3.3.0</version>
+      <version>3.4.1</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.reactive</groupId>
