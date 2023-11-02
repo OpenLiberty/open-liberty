@@ -55,15 +55,18 @@ public class OpenAPIEndpointFilter implements Filter {
 
             //Modify Response
             if (httpServletResp.getContentType() != null && httpServletResp.getContentType().contains("text/html")) {
-                String content = wrapper.getContentAsString();
+                String content = new String(wrapper.getContentAsBytes(), StandardCharsets.UTF_8);
                 // in case we have had a issue creating the tracker earlier - if so leave content as-is
                 if(openAPIEndpointTracker != null) {
                     // replace the default URL for the document endpoint with the value that is being used
                     content = content.replaceAll("/openapi", openAPIEndpointTracker.getService().getOpenAPIDocUrl());
                 }
-                httpServletResp.setContentLength(content.getBytes(StandardCharsets.UTF_8).length);
-                httpServletResp.setHeader("Content-Type",httpServletResp.getContentType()+";charset=UTF-8");
-                httpServletResp.getWriter().write(content);
+                httpServletResp.setCharacterEncoding(StandardCharsets.UTF_8.name());
+                byte[] cbytes = content.getBytes(StandardCharsets.UTF_8);
+                httpServletResp.setContentLength(cbytes.length);
+                try (ServletOutputStream sos = httpServletResp.getOutputStream()) {
+                    sos.write(cbytes);
+                }
             }
         }
     }
