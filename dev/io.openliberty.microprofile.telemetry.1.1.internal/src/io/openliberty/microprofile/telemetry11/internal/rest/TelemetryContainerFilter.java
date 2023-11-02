@@ -83,13 +83,13 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
         }
         if (lazyCreate) {
             instrumenter = lazyInstrumenter.updateAndGet((i) -> {
-                if (i == null) {
-                    lazyCreate = false;
+                if (i == null) {                    
                     return createInstrumenter();
                 } else {
                     return i;
                 }
             });
+            lazyCreate = false;
         }
         return instrumenter;
     }

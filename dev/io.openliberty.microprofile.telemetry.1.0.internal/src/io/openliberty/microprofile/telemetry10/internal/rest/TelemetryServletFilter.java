@@ -91,12 +91,12 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
         if (lazyCreate) {
             instrumenter = lazyInstrumenter.updateAndGet((i) -> {
                 if (i == null) {
-                    lazyCreate = false;
                     return createInstrumenter();
                 } else {
                     return i;
                 }
             });
+            lazyCreate = false;
         }
         return instrumenter;
     }

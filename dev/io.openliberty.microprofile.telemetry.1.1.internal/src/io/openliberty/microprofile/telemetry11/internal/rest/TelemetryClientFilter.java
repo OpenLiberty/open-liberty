@@ -66,13 +66,13 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
         }
         if (lazyCreate) {
             instrumenter = lazyInstrumenter.updateAndGet((i) -> {
-                if (i == null) {
-                    lazyCreate = false;
+                if (i == null) {                    
                     return createInstrumenter();
                 } else {
                     return i;
                 }
             });
+            lazyCreate = false;
         }
         return instrumenter;
     }
@@ -143,11 +143,10 @@ public class TelemetryClientFilter extends AbstractTelemetryClientFilter impleme
      */
     @Override
     public boolean isEnabled() {
-        if (instrumenter != null || !CheckpointPhase.getPhase().restored()) {
+        if (!CheckpointPhase.getPhase().restored()) {
             return true;
         }         
-        instrumenter = getInstrumenter();
-        return instrumenter != null;    
+        return getInstrumenter() != null;  
     }
 
     private static class ClientRequestContextTextMapSetter implements TextMapSetter<ClientRequestContext> {
