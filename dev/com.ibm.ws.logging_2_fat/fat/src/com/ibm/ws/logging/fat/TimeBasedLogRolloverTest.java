@@ -347,6 +347,14 @@ public class TimeBasedLogRolloverTest {
      */
     @Test
     public void testInvalidRolloverStartTime() throws Exception {
+
+        //wait to do a server config update at the start of the minute
+	//this allows enough time for timedexit check
+        if (Calendar.getInstance().get(Calendar.SECOND) != 0) {
+            Thread.sleep((60000 - Calendar.getInstance().get(Calendar.SECOND)*1000));
+            Thread.sleep(2000); //padding
+        }
+
         setUp(server_xml, "testInvalidRolloverStartTime");
         
         //wait to do a server config update at the start of the minute
