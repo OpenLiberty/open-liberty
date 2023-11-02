@@ -450,4 +450,12 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         }
     }
 
+    /**
+     *
+     */
+    public void clearConfig() {
+        this.httpConfig.clear();
+
+    }
+
 }
