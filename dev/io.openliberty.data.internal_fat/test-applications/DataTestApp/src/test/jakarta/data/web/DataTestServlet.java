@@ -574,14 +574,14 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Count method that uses the query-by-parameters pattern.
+     * Parameter-based query with the Count annotation to indicate that it performs a count rather than a find operation.
      */
     @Test
-    public void testCountQueryByParameters() {
-        assertEquals(1, primes.count(1, true));
-        assertEquals(0, primes.count(1, false));
-        assertEquals(0, primes.count(2, true));
-        assertEquals(3, primes.count(2, false));
+    public void testCountAnnoParameterBasedQuery() {
+        assertEquals(1, primes.numEvenWithSumOfBits(1, true));
+        assertEquals(0, primes.numEvenWithSumOfBits(1, false));
+        assertEquals(0, primes.numEvenWithSumOfBits(2, true));
+        assertEquals(3, primes.numEvenWithSumOfBits(2, false));
     }
 
     /**
@@ -1223,13 +1223,13 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Exists method that uses the query-by-parameters pattern.
+     * Parameter-based query with the Exists annotation.
      */
     @Test
-    public void testExistsQueryByParameters() {
-        assertEquals(true, primes.existsWith(47, "2F"));
-        assertEquals(false, primes.existsWith(41, "2F")); // 2F is not hex for 41 decimal
-        assertEquals(false, primes.existsWith(15, "F")); // not prime
+    public void testExistsAnnotationWithParameterBasedQuery() {
+        assertEquals(true, primes.isFoundWith(47, "2F"));
+        assertEquals(false, primes.isFoundWith(41, "2F")); // 2F is not hex for 41 decimal
+        assertEquals(false, primes.isFoundWith(15, "F")); // not prime
     }
 
     /**

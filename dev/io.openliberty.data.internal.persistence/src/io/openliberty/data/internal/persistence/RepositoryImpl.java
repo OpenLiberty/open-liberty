@@ -92,6 +92,7 @@ import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Page;
 import jakarta.data.page.Pageable;
 import jakarta.data.page.Slice;
+import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Insert;
@@ -345,7 +346,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         if (query != null) { // @Query annotation
             queryInfo.initForQuery(query.value(), query.count(), countPages);
-        } else if (filters.length > 0 || count != null || exists != null) {
+        } else if (filters.length > 0) {
             // TODO this section will eventually be replaced
             StringBuilder whereClause = filters.length > 0 ? generateWhereClause(queryInfo, filters) : null;
             String o = queryInfo.entityVar;
@@ -1588,12 +1589,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
                 if (queryInfo.method.getParameterCount() > 0)
                     generateFromParameters(queryInfo, q, methodTypeAnno, false);
-            } else if (methodTypeAnno instanceof Count || methodName.startsWith("count")) {
+            } else if (methodTypeAnno instanceof Count || // Special case for BasicRepository.count(), which doesn't follow the spec's own rules:
+                       BasicRepository.class.equals(queryInfo.method.getDeclaringClass()) && methodName.startsWith("count")) {
                 queryInfo.type = QueryInfo.Type.COUNT;
                 q = new StringBuilder(150).append("SELECT COUNT(").append(o).append(") FROM ").append(entityInfo.name).append(' ').append(o);
                 if (queryInfo.method.getParameterCount() > 0)
                     generateFromParameters(queryInfo, q, methodTypeAnno, false);
-            } else if (methodTypeAnno instanceof Exists || methodName.startsWith("exists")) {
+            } else if (methodTypeAnno instanceof Exists) {
                 queryInfo.type = QueryInfo.Type.EXISTS;
                 String name = entityInfo.idClassAttributeAccessors == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
                 String attrName = entityInfo.getAttributeName(name, true);
