@@ -105,7 +105,7 @@ public class BackchannelLogoutRequestHelper {
             }
             return false;
         }
-        if (!hasClientWithBackchannelLogoutUri()) {
+        if (!hasClientWithBackchannelLogoutUri(oidcServerConfig)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "No client has a back-channel logout uri set up, so back-channel logout will not be performed.");
             }
@@ -114,7 +114,7 @@ public class BackchannelLogoutRequestHelper {
         return true;
     }
 
-    boolean hasClientWithBackchannelLogoutUri() {
+    public static boolean hasClientWithBackchannelLogoutUri(OidcServerConfig oidcServerConfig) {
         String oauthProviderName = oidcServerConfig.getOauthProviderName();
         OAuth20Provider provider = ProvidersService.getOAuth20Provider(oauthProviderName);
         if (provider == null) {
@@ -124,7 +124,7 @@ public class BackchannelLogoutRequestHelper {
     }
 
     @FFDCIgnore(OidcServerException.class)
-    boolean hasClientWithBackchannelLogoutUri(OAuth20Provider provider) {
+    static boolean hasClientWithBackchannelLogoutUri(OAuth20Provider provider) {
         OidcOAuth20ClientProvider clientProvider = provider.getClientProvider();
         if (clientProvider == null) {
             return false;

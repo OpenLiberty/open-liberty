@@ -129,12 +129,7 @@ public class LogoutTokenBuilder {
         } else {
             expectedIssuer = getIssuerFromRequest();
             if (!expectedIssuer.equals(issuerClaim)) {
-                String otherExpectedIssuer = expectedIssuer;
-                if (otherExpectedIssuer.contains("/oidc/providers/")) {
-                    otherExpectedIssuer = otherExpectedIssuer.replace("/oidc/providers/", "/oidc/endpoint/");
-                } else if (otherExpectedIssuer.contains("/oidc/endpoint/")) {
-                    otherExpectedIssuer = otherExpectedIssuer.replace("/oidc/endpoint/", "/oidc/providers/");
-                }
+                String otherExpectedIssuer = expectedIssuer.replace("/oidc/providers/", "/oidc/endpoint/");
                 if (!otherExpectedIssuer.equals(issuerClaim)) {
                     String errorMsg = Tr.formatMessage(tc, "ID_TOKEN_ISSUER_NOT_THIS_OP", new Object[] { issuerClaim, expectedIssuer, oidcServerConfig.getProviderId() });
                     throw new IdTokenDifferentIssuerException(errorMsg);
@@ -410,9 +405,7 @@ public class LogoutTokenBuilder {
         if (port != 80 && port != 443) {
             issuerIdentifier += ":" + port;
         }
-        String requestUri = request.getRequestURI();
-        requestUri = requestUri.substring(0, requestUri.lastIndexOf("/"));
-        issuerIdentifier += requestUri;
+        issuerIdentifier += "/oidc/providers/" + oidcServerConfig.getProviderId();
         return issuerIdentifier;
     }
 

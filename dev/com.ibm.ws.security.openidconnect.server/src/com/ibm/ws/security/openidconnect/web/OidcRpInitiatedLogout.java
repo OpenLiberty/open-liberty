@@ -228,7 +228,7 @@ public class OidcRpInitiatedLogout {
             BackchannelLogoutRequestHelper bclRequestCreator = new BackchannelLogoutRequestHelper(request, oidcServerConfig);
             bclRequestCreator.sendBackchannelLogoutRequests(userName, idTokenString);
         } catch (BackchannelLogoutRequestException e) {
-            throw new ServletException(e.getMessage());
+            throw new ServletException();
         }
     }
 
