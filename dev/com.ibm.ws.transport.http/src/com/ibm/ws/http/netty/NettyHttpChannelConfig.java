@@ -44,6 +44,21 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
 
     }
 
+    public void clear() {
+        //TODO implement
+        //clearHeader
+        //clearCompression
+        //clearHTTPOptions
+
+        clearSameSiteOptions();
+    }
+
+    /**
+     * Parses the provided configuration options.
+     *
+     * @param config The configuration options to parse.
+     */
+
     private void parseConfig(Map<String, Object> config) {
 
         if (Objects.isNull(config) || config.isEmpty()) {
@@ -65,9 +80,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
             parseRemoteIpOptions(config);
         }
 
-        if (useSameSiteOptions) {
-            parseSameSiteOptions(config);
-        }
+        parseSameSiteOptions(config);
 
         parseHttpOptions(config);
 
@@ -247,19 +260,32 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         }
     }
 
+    private void clearSameSiteOptions() {
+
+        this.useSameSiteOptions = false;
+        this.sameSiteCookies = new HashMap<String, String>();
+        this.sameSiteErrorCookies = new HashSet<String>();
+        this.sameSiteStringPatterns = new HashMap<String, String>();
+        this.sameSitePatterns = null;
+        this.onlySameSiteStar = false;
+    }
+
     private void parseSameSiteOptions(Map<String, Object> options) {
         String method = "parseSameSiteOptions";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "parseSameSiteOptions");
         }
 
-        if (options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_LAX) ||
-            options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_NONE) ||
-            options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_STRICT)) {
+        this.sameSiteCookies = new HashMap<String, String>();
+        this.sameSiteErrorCookies = new HashSet<String>();
+        this.sameSiteStringPatterns = new HashMap<String, String>();
+        this.sameSitePatterns = null;
+        this.onlySameSiteStar = false;
 
-            this.sameSiteCookies = new HashMap<String, String>();
-            this.sameSiteErrorCookies = new HashSet<String>();
-            this.sameSiteStringPatterns = new HashMap<String, String>();
+        if (this.useSameSiteOptions && (options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_LAX) ||
+                                        options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_NONE) ||
+                                        options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_STRICT))) {
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, method, "Http Channel Config: SameSite configuration has been enabled");
             }
@@ -267,6 +293,8 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
             parseCookiesSameSiteLax(options.get(HttpConfigConstants.PROPNAME_SAMESITE_LAX));
             parseCookiesSameSiteNone(options.get(HttpConfigConstants.PROPNAME_SAMESITE_NONE));
             parseCookiesSameSiteStrict(options.get(HttpConfigConstants.PROPNAME_SAMESITE_STRICT));
+
+            initSameSiteCookiesPatterns();
 
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
