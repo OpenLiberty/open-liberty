@@ -44,6 +44,7 @@ public class TelemetryBeanTestServlet extends FATServlet {
 
     @Test
     public void testSpanUpdates() {
+        injectedSpan.makeCurrent(); //This should do nothing, and putting it here ensures the proxy doesn't delegate to itself in an infinite loop. 
         injectedSpan.toString(); //Just poke the object so CDI fetches the real object behind the proxy.
 
         Span span = Span.current();
