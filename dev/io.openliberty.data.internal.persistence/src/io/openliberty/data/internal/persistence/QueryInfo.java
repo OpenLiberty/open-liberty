@@ -782,13 +782,13 @@ public class QueryInfo {
      * @param count   The Count annotation if present, otherwise null.
      * @param exists  The Exists annotation if present, otherwise null.
      * @param select  The Select annotation if present, otherwise null.
-     * @return true if the method has a Count, Delete, Exists, Insert, Query, Save, or Update annotation. Otherwise false.
+     * @return Count, Delete, Exists, Insert, Query, Save, or Update annotation if present. Otherwise null.
      * @throws UnsupportedOperationException if the combination of annotations is not valid.
      */
     @Trivial
-    boolean validateAnnotationCombinations(Delete delete, Insert insert, Update update, Save save,
-                                           jakarta.data.repository.Query query, OrderBy[] orderBy,
-                                           Filter[] filters, Count count, Exists exists, Select select) {
+    Annotation validateAnnotationCombinations(Delete delete, Insert insert, Update update, Save save,
+                                              jakarta.data.repository.Query query, OrderBy[] orderBy,
+                                              Filter[] filters, Count count, Exists exists, Select select) {
         int f = filters.length == 0 ? 0 : 1;
         int o = orderBy.length == 0 ? 0 : 1;
         int q = query == null ? 0 : 1;
@@ -827,7 +827,11 @@ public class QueryInfo {
                                                     annoClassNames); // TODO NLS
         }
 
-        return iusdce + q > 0;
+        return ius == 1 //
+                        ? (insert != null ? insert : update != null ? update : save) //
+                        : iusdce == 1 //
+                                        ? (delete != null ? delete : count != null ? count : exists) //
+                                        : (q == 1 ? query : null);
     }
 
     /**
