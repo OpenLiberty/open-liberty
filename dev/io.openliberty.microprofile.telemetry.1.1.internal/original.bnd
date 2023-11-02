@@ -16,13 +16,12 @@ Bundle-SymbolicName: io.openliberty.microprofile.telemetry.1.1.internal
 
 Export-Package: \
 	io.openliberty.microprofile.telemetry11.internal.cdi;version='1.0',\
-	io.openliberty.microprofile.telemetry11.internal.rest;version='1.0';thread-context=true,\
-	io.openliberty.microprofile.telemetry11.internal.rest.javax;version='1.0';thread-context=true
+	io.openliberty.microprofile.telemetry11.internal.rest;version='1.0';thread-context=true
 
 Private-Package: \
 	io.openliberty.microprofile.telemetry11.internal.helper,\
-	io.openliberty.microprofile.telemetry11.internal.sdk
-
+	io.openliberty.microprofile.telemetry11.internal.sdk,\
+	io.openliberty.microprofile.telemetry11.internal.rest.javax
 
 -dsannotations: \
   io.openliberty.microprofile.telemetry11.internal.cdi.SPIMetaData,\

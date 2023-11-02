@@ -48,10 +48,13 @@ import componenttest.rules.repeater.RepeatTests;
 
 public class FATSuite {
 
-    public static final String BETA_ID = MicroProfileActions.MP61_ID + "_BETA";
+    public static final String MP60_BETA_ID = MicroProfileActions.MP60_ID + "_BETA";
+    public static final String MP61_BETA_ID = MicroProfileActions.MP61_ID + "_BETA";
 
     public static RepeatTests allMPRepeats(String serverName) {
-        return MicroProfileActions
-                        .repeat(serverName, MicroProfileActions.MP61, TelemetryActions.MP14_MPTEL11,  TelemetryActions.MP41_MPTEL11, TelemetryActions.MP50_MPTEL11, MicroProfileActions.MP60);
+        return TelemetryActions
+                        .repeat(serverName, MicroProfileActions.MP61, TelemetryActions.MP14_MPTEL11, TelemetryActions.MP41_MPTEL11, TelemetryActions.MP50_MPTEL11, MicroProfileActions.MP60)
+                        .andWith(TelemetryActions.repeatFor(serverName, MicroProfileActions.MP61).fullFATOnly().withBeta().withID(MP61_BETA_ID))
+                        .andWith(TelemetryActions.repeatFor(serverName, MicroProfileActions.MP60).fullFATOnly().withBeta().withID(MP60_BETA_ID));
     }
 }
