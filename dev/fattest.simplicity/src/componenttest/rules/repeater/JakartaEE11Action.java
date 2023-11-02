@@ -123,6 +123,7 @@ public class JakartaEE11Action extends JakartaEEAction {
                                                                          "servlet-6.1",
                                                                          "websocket-2.2"
     };
+    private static final Set<String> NON_PREFERRED_EE11_JDBC_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("jdbc-4.0", "jdbc-4.1", "jdbc-4.2")));
 
     public static final Set<String> EE11_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE11_FEATURES_ARRAY)));
     public static final Set<String> EE11_ONLY_FEATURE_SET_LOWERCASE = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE11_ONLY_FEATURES_ARRAY_LOWERCASE)));
@@ -139,6 +140,9 @@ public class JakartaEE11Action extends JakartaEEAction {
         removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET);
         removeFeatures(JakartaEE9Action.EE9_FEATURE_SET);
         removeFeatures(JakartaEE10Action.EE10_FEATURE_SET);
+        // Update any previous jdbc versions to jdbc-4.3
+        addFeature("jdbc-4.3");
+        removeFeatures(NON_PREFERRED_EE11_JDBC_FEATURES);
         forceAddFeatures(false);
         withMinJavaLevel(SEVersion.JAVA17);
         withID(EE11_ACTION_ID);
