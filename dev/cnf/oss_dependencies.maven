@@ -769,6 +769,7 @@ org.opensaml:opensaml-xmlsec-impl:3.4.5
 org.osgi:org.osgi.annotation.versioning:1.1.0
 org.osgi:org.osgi.compendium:4.2.0
 org.osgi:org.osgi.core:6.0.0
+org.osgi:org.osgi.namespace.extender:1.0.1
 org.osgi:org.osgi.namespace.service:1.0.0
 org.osgi:org.osgi.service.blueprint:1.0.2
 org.osgi:org.osgi.service.cm:1.6.0
