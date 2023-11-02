@@ -305,7 +305,7 @@ public class NettyChain extends HttpChain {
             //TODO: clean up dynamic update, only update changed configs, missing TCP/SSL
             // Map<String, Object> httpOptions = new HashMap<String, Object>();
             // owner.getHttpOptions().forEach(httpOptions::putIfAbsent);
-
+            httpPipeline.clearConfig();
             // httpPipeline.updateConfig(ConfigElement.COMPRESSION, this.owner.getCompressionConfig());
             // httpPipeline.updateConfig(ConfigElement.HTTP_OPTIONS, owner.getHttpOptions());
             httpPipeline.updateConfig(ConfigElement.HEADERS, this.owner.getHeadersConfig());

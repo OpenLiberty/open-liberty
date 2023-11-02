@@ -14,7 +14,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Collections;
 import java.util.logging.Logger;
 
 import org.apache.hc.client5.http.classic.methods.HttpGet;
@@ -60,6 +59,7 @@ public class WCSameSiteCookieAttributeTests {
         // Start the server and use the class name so we can find logs easily.
         sameSiteServer.startServer(WCSameSiteCookieAttributeTests.class.getSimpleName() + ".log");
         sameSiteServer.waitForStringInLogUsingMark("CWWKO0219I*");
+
     }
 
     @AfterClass
@@ -358,7 +358,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -395,7 +395,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -428,7 +428,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -465,7 +465,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -505,7 +505,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.setTraceMarkToEndOfDefaultTrace();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie_secure";
@@ -544,7 +544,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -579,7 +579,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -616,7 +616,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -653,7 +653,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
@@ -693,7 +693,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -730,7 +730,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
@@ -770,7 +770,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -808,7 +808,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
@@ -850,7 +850,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -886,7 +886,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -923,7 +923,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -959,7 +959,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -996,7 +996,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -1036,7 +1036,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
@@ -1078,7 +1078,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -1114,7 +1114,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -1148,7 +1148,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -1184,7 +1184,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -1218,7 +1218,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -1266,7 +1266,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
@@ -1306,7 +1306,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -1343,7 +1343,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -1377,7 +1377,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -1412,7 +1412,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -1446,7 +1446,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -1483,7 +1483,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
@@ -1523,7 +1523,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -1560,7 +1560,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
@@ -1600,7 +1600,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -1637,7 +1637,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
@@ -1677,7 +1677,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -1714,7 +1714,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
@@ -1754,7 +1754,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -1796,7 +1796,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.setTraceMarkToEndOfDefaultTrace();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies_secure";
@@ -1838,7 +1838,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -1875,7 +1875,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_same_cookie_twice";
@@ -1916,7 +1916,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -1955,7 +1955,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/TestSetCookie?testSameSiteConfigSetAddHeader=true";
@@ -1994,7 +1994,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -2025,7 +2025,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -2065,7 +2065,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -2096,7 +2096,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -2136,7 +2136,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -2171,7 +2171,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -2211,7 +2211,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -2246,7 +2246,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -2286,7 +2286,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -2322,7 +2322,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies_different_case";
@@ -2362,7 +2362,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -2398,7 +2398,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -2435,7 +2435,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -2478,7 +2478,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
 
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -2515,7 +2515,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -2559,7 +2559,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/TestAddCookieSetCookieHeader?testDuplicateSameSiteValue=true";
@@ -2598,7 +2598,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -2644,7 +2644,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/TestSetCookie?testDuplicateSameSiteValue=true";
@@ -2683,7 +2683,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -2729,7 +2729,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/TestAddCookieSetCookieHeader?testEmptySameSiteValue=true";
@@ -2768,7 +2768,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -2814,7 +2814,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/TestSetCookie?testEmptySameSiteValue=true";
@@ -2853,7 +2853,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -2900,7 +2900,7 @@ public class WCSameSiteCookieAttributeTests {
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/TestAddCookieSetCookieHeader?testIncorrectSameSiteValue=true";
@@ -2943,7 +2943,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -2971,7 +2971,7 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getHttpSession().setCookieSameSite("Lax");
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -3011,7 +3011,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -3039,7 +3039,7 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getHttpSession().setCookieSameSite("Strict");
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -3079,7 +3079,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -3110,7 +3110,7 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getHttpSession().setCookieSecure(true);
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -3150,7 +3150,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -3181,7 +3181,7 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getHttpSession().setCookieSameSite("None");
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -3221,7 +3221,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -3248,7 +3248,8 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
         // No need to wait for CWWKT0016I:.*SameSiteTest.* as this test doesn't cause the app to be restarted.
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
+        //sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -3286,7 +3287,8 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             // No need to wait for CWWKT0016I:.*SameSiteTest.* as this test doesn't cause the app to be restarted.
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
+            //sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");
         }
     }
 
@@ -3368,7 +3370,8 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
         // No need to wait for CWWKT0016I:.*SameSiteTest.* as this test doesn't cause the app to be restarted.
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
+        //sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -3408,7 +3411,8 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             // No need to wait for CWWKT0016I:.*SameSiteTest.* as this test doesn't cause the app to be restarted.
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
+            //sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");
         }
     }
 
@@ -3440,7 +3444,7 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getHttpSession().setCookieSameSite("LaX");
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -3480,7 +3484,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -3511,7 +3515,7 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getHttpSession().setCookieName("uniqueSessionIdCookieName");
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -3552,7 +3556,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
@@ -3581,7 +3585,7 @@ public class WCSameSiteCookieAttributeTests {
         configuration.getHttpSession().setCookieSecure(true);
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -3621,7 +3625,7 @@ public class WCSameSiteCookieAttributeTests {
         } finally {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
         }
     }
 
