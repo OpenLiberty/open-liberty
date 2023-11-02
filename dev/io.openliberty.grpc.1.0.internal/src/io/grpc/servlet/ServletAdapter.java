@@ -170,7 +170,7 @@ public final class ServletAdapter {
         logId);
 
 		transportListener.streamCreated(stream, method, headers);
-		// GDH stream.setWriteListener();
+        stream.setWriteListener();
 		stream.transportState().runOnTransportThread(stream.transportState()::onStreamAllocated);
 		
 	    asyncCtx.getRequest().getInputStream()
