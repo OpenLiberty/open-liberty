@@ -105,6 +105,8 @@ class JakartaEE11Action extends JakartaEEAction {
                                                   "xmlWS-4.0"
     };
 
+    private static final Set<String> NON_EE11_JDBC_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("jdbc-4.0", "jdbc-4.1", "jdbc-4.2")));
+
     public static final Set<String> EE11_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE11_FEATURES_ARRAY)));
 
     JakartaEE11Action() {
@@ -115,6 +117,9 @@ class JakartaEE11Action extends JakartaEEAction {
         removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET);
         removeFeatures(JakartaEE9Action.EE9_FEATURE_SET);
         removeFeatures(JakartaEE10Action.EE10_FEATURE_SET);
+        // Update any previous jdbc versions to jdbc-4.3
+        addFeature("jdbc-4.3");
+        removeFeatures(NON_EE11_JDBC_FEATURES);
         forceAddFeatures(false);
         withMinJavaLevel(SEVersion.JAVA21);
         withID(EE11_ACTION_ID);
