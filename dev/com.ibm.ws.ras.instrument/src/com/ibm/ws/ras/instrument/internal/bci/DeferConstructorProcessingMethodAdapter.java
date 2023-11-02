@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,8 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+
+import io.openliberty.asm.ASMHelper;
 
 /**
  * This whole pile of code is needed to keep track of the state of the stack
@@ -91,7 +93,7 @@ public class DeferConstructorProcessingMethodAdapter extends MethodVisitor {
      * Create an instance of a {@code ProbeMethodAdapter}.
      */
     DeferConstructorProcessingMethodAdapter(MethodVisitor visitor) {
-        super(Opcodes.ASM9, visitor);
+        super(ASMHelper.getCurrentASM(), visitor);
     }
 
     private void push(Object stackElement, int count) {

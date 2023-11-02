@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,8 @@ import java.util.List;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Opcodes;
 
+import io.openliberty.asm.ASMHelper;
+
 import com.ibm.ws.ras.instrument.internal.model.TraceOptionsData;
 
 public class TraceOptionsAnnotationVisitor extends AnnotationVisitor {
@@ -29,15 +31,15 @@ public class TraceOptionsAnnotationVisitor extends AnnotationVisitor {
     private TraceOptionsData packageData;
 
     public TraceOptionsAnnotationVisitor() {
-        super(Opcodes.ASM9);
+        super(ASMHelper.getCurrentASM());
     }
 
     public TraceOptionsAnnotationVisitor(AnnotationVisitor av) {
-        super(Opcodes.ASM9, av);
+        super(ASMHelper.getCurrentASM(), av);
     }
 
     public TraceOptionsAnnotationVisitor(AnnotationVisitor av, TraceOptionsData od) {
-    	super(Opcodes.ASM9, av);
+    	super(ASMHelper.getCurrentASM(), av);
     	packageData = od;
 	}
 
@@ -70,7 +72,7 @@ public class TraceOptionsAnnotationVisitor extends AnnotationVisitor {
     private final class TraceGroupsValueArrayVisitor extends AnnotationVisitor {
 
         private TraceGroupsValueArrayVisitor(AnnotationVisitor av) {
-            super(Opcodes.ASM9, av);
+            super(ASMHelper.getCurrentASM(), av);
         }
 
         @Override
