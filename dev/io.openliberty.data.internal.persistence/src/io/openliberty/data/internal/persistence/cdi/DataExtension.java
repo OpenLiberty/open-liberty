@@ -17,6 +17,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedParameterizedType;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.security.AccessController;
@@ -41,6 +42,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
@@ -475,10 +477,10 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                 }
             }
 
-            QueryInfo queryInfo = new QueryInfo(method, returnArrayComponentType, returnTypeAtDepth);
-
             // Possible entity class based on the return type:
             Class<?> entityClass = returnTypeAtDepth.get(returnTypeAtDepth.size() - 1);
+
+            Class<?> entityParamType = null;
 
             // Determine entity class from a lifecycle method parameter:
             if (method.getParameterCount() == 1
@@ -487,30 +489,46 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                 && (method.getAnnotation(Insert.class) != null
                     || method.getAnnotation(Update.class) != null
                     || method.getAnnotation(Save.class) != null
-                    || method.getAnnotation(Delete.class) != null
-                    || method.getName().startsWith("insert") // TODO combine this with other logic that understands the method to ensure correct interpretation
-                    || method.getName().startsWith("update")
-                    || method.getName().startsWith("save"))) {
-                type = method.getGenericParameterTypes()[0];
-                if (type instanceof ParameterizedType) {
-                    Type[] typeParams = ((ParameterizedType) type).getActualTypeArguments();
-                    if (typeParams.length == 1) // for example, List<Product>
-                        type = typeParams[0];
+                    || method.getAnnotation(Delete.class) != null)) {
+                Class<?> c = method.getParameterTypes()[0];
+                if (Iterable.class.isAssignableFrom(c) || Stream.class.isAssignableFrom(c)) {
+                    type = method.getGenericParameterTypes()[0];
+                    if (type instanceof ParameterizedType) {
+                        Type[] typeParams = ((ParameterizedType) type).getActualTypeArguments();
+                        if (typeParams.length == 1 && typeParams[0] instanceof Class) // for example, List<Product>
+                            c = (Class<?>) typeParams[0];
+                        else { // could be a method like BasicRepository.saveAll(Iterable<S> entity) {
+                            entityParamType = c;
+                            c = null;
+                        }
+                    } else {
+                        c = null;
+                    }
+                } else if (c.isArray()) {
+                    c = c.getComponentType();
                 }
-                if (type instanceof Class) {
-                    Class<?> c = (Class<?>) type;
-                    if (c.isArray())
-                        c = c.getComponentType();
+                if (Object.class.equals(c)) { // generic parameter like BasicRepository.save(S entity)
+                    entityParamType = method.getParameterTypes()[0];
+                } else if (c != null &&
+                           !c.isPrimitive() &&
+                           !c.isInterface()) {
                     String packageName = c.getPackageName();
-                    if (!c.isPrimitive() &&
-                        !c.isInterface() &&
-                        !packageName.startsWith("java.") &&
+                    if (!packageName.startsWith("java.") &&
                         !packageName.startsWith("jakarta.")) {
-                        entityClass = c;
-                        lifecycleMethodEntityClasses.add(c);
+                        Parameter param = method.getParameters()[0];
+                        entityParamType = param.getType();
+                        for (Annotation anno : param.getAnnotations())
+                            if (anno.annotationType().getPackageName().startsWith("jakarta.data"))
+                                entityParamType = null;
+                        if (entityParamType != null) {
+                            entityClass = c;
+                            lifecycleMethodEntityClasses.add(c);
+                        }
                     }
                 }
             }
+
+            QueryInfo queryInfo = new QueryInfo(method, entityParamType, returnArrayComponentType, returnTypeAtDepth);
 
             if (entityClass == null) {
                 entityClass = Void.class;

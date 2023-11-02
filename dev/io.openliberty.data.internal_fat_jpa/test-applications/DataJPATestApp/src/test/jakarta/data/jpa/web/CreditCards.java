@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
 
 import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Filter;
@@ -82,7 +83,9 @@ public interface CreditCards extends DataRepository<CreditCard, CardId> {
     @OrderBy("number")
     Stream<CreditCard> issuedInMonth(Iterable<Integer> months);
 
+    @Save
     void save(CreditCard... cards);
 
+    @Save
     void save(Customer... customers);
 }

@@ -13,9 +13,11 @@ package test.jakarta.data.jpa.web;
 import java.util.List;
 import java.util.stream.Stream;
 
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
 
 /**
  *
@@ -31,6 +33,7 @@ public interface Accounts {
 
     // "IN" (which is needed for this) is not supported for embeddables, but EclipseLink generates SQL
     // that leads to an SQLSyntaxErrorException rather than rejecting it outright
+    @Delete
     void deleteAll(Iterable<Account> list); // copied from CrudRepository
 
     long deleteByOwnerEndsWith(String pattern);
@@ -80,7 +83,9 @@ public interface Accounts {
     // Descriptor: RelationalDescriptor(test.jakarta.data.jpa.web.Account --> [DatabaseTable(WLPAccount)])
     List<Account> findByIdTrue();
 
+    @Delete
     void remove(Account account);
 
+    @Save
     void save(Account a);
 }

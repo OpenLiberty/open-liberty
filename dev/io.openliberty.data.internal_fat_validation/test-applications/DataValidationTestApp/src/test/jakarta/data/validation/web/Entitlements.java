@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
 import jakarta.validation.Valid;
 
 /**
@@ -26,9 +27,11 @@ public interface Entitlements extends DataRepository<Entitlement, Long> {
 
     Optional<Entitlement> findById(long id);
 
+    @Save
     @Valid
     Entitlement save(Entitlement e);
 
+    @Save
     @Valid
     Entitlement[] save(Entitlement[] e);
 }

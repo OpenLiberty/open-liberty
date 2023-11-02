@@ -19,10 +19,12 @@ import jakarta.data.Streamable;
 import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Pageable;
 import jakarta.data.repository.BasicRepository;
+import jakarta.data.repository.By;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
 
 import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Filter;
@@ -63,10 +65,9 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     @OrderBy("id")
     Business findFirstByName(String name);
 
-    @Filter(by = "location_address.city")
-    @Filter(by = "location.address_state")
     @OrderBy(descending = true, ignoreCase = true, value = "name")
-    Stream<Business> in(String city, String state);
+    Stream<Business> in(@By("location_address.city") String city,
+                        @By("location.address_state") String state);
 
     @Filter(by = "locationAddressCity", value = "Rochester")
     @Filter(by = "locationAddressState", value = "MN")
@@ -79,6 +80,7 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     @Save
     Streamable<Employee> save(Employee... e);
 
+    @Update
     boolean update(Business b);
 
     @Query("UPDATE Business b SET b.location=?1, b.name=?2 WHERE b.id=?3")
