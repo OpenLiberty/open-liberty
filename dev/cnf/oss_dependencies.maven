@@ -49,8 +49,8 @@ com.oracle.database.security:oraclepki:21.8.0.0
 com.oracle.database.security:osdt_cert:21.8.0.0
 com.oracle.database.security:osdt_core:21.8.0.0
 com.sebastian-daschner:jaxrs-analyzer:0.9
-com.squareup.okhttp3:okhttp:4.10.0
-com.squareup.okio:okio-jvm:3.4.0
+com.squareup.okhttp3:okhttp:4.12.0
+com.squareup.okio:okio-jvm:3.6.0
 com.sun.activation:jakarta.activation:2.0.1
 com.sun.faces:jsf-api:2.2.14
 com.sun.faces:jsf-impl:2.2.14
@@ -212,9 +212,9 @@ io.smallrye:smallrye-graphql:1.0.26
 io.smallrye:smallrye-metrics:5.1.0
 io.smallrye:smallrye-open-api-core:3.1.1
 io.smallrye:smallrye-open-api-jaxrs:3.1.1
-io.zipkin.reporter2:zipkin-reporter:2.16.3
-io.zipkin.reporter2:zipkin-sender-okhttp3:2.16.3
-io.zipkin.zipkin2:zipkin:2.23.2
+io.zipkin.reporter2:zipkin-reporter:2.16.4
+io.zipkin.reporter2:zipkin-sender-okhttp3:2.16.4
+io.zipkin.zipkin2:zipkin:2.24.3
 jakarta.activation:jakarta.activation-api:2.0.1
 jakarta.activation:jakarta.activation-api:2.1.1
 jakarta.annotation:jakarta.annotation-api:2.0.0
