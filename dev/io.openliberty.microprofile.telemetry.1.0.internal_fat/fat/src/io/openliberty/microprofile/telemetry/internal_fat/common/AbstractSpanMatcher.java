@@ -145,79 +145,93 @@ public abstract class AbstractSpanMatcher<SPAN, SELF extends AbstractSpanMatcher
      */
     @Override
     protected boolean matchesSafely(SPAN span, Description desc) {
-        // For now, we just use the toString of the span as the description of why it didn't match
-        // We could list out or highlight the elements that didn't match, but usually it's obvious
-        // enough from the toString().
-        desc.appendValue(span);
+
+        boolean result = true;
 
         if (expectedTraceId != null && !expectedTraceId.equals(getTraceId(span))) {
-            return false;
+            desc.appendText("\n  traceId is: ").appendValue(getTraceId(span));
+            result = false;
         }
 
         if (expectedName != null && !expectedName.equals(getName(span))) {
-            return false;
+            desc.appendText("\n  name is: ").appendValue(getName(span));
+            result = false;
         }
 
         String parentSpanId = getParentSpanId(span);
 
         if (expectedParentSpanId != null) {
             if (!expectedParentSpanId.equals(parentSpanId)) {
-                return false;
+                desc.appendText("\n  parentSpanId is: ").appendValue(parentSpanId);
+                result = false;
             }
         }
 
         if (expectHasParent != null) {
             boolean hasParent = parentSpanId != null;
             if (hasParent != expectHasParent) {
-                return false;
+                desc.appendText("\n  has parent is: ").appendValue(hasParent);
+                result = false;
             }
         }
 
         if (expectedKind != null) {
             if (expectedKind != getKind(span)) {
-                return false;
+                desc.appendText("\n  kind is: ").appendValue(getKind(span));
+                result = false;
             }
         }
 
         if (expectedStatusCode != null) {
             if (expectedStatusCode != getStatusCode(span)) {
-                return false;
+                desc.appendText("\n  status code is: ").appendValue(getStatusCode(span));
+                result = false;
             }
         }
 
         for (AttributeData<?> attribute : expectedAttributes) {
             if (!hasAttribute(span, attribute)) {
-                return false;
+                desc.appendText("\n  attribute missing or has wrong value: ").appendValue(attribute.key);
+                result = false;
             }
         }
 
         for (String eventName : expectedEvents) {
             if (!hasEvent(span, eventName)) {
-                return false;
+                desc.appendText("\n  event missing: ").appendValue(eventName);
+                result = false;
             }
         }
 
         for (Class<?> exceptionClass : expectedExceptions) {
             if (!hasException(span, exceptionClass)) {
-                return false;
+                desc.appendText("\n  exception missing: ").appendValue(exceptionClass);
+                result = false;
             }
         }
 
         if (expectedServiceName != null) {
             if (!expectedServiceName.equals(getServiceName(span))) {
-                return false;
+                desc.appendText("\n  service name is: ").appendValue(getServiceName(span));
+                result = false;
             }
         }
 
         if (!expectedResourceAttributes.isEmpty()) {
             for (AttributeData<?> attribute : expectedResourceAttributes) {
                 if (!hasResourceAttribute(span, attribute)) {
-                    return false;
+                    desc.appendText("\n  resource attribute missing or has wrong value: ").appendValue(attribute.key);
+                    result = false;
                 }
             }
         }
 
-        return true;
+        // If we failed to match, also include the full span in the output
+        if (!result) {
+            desc.appendText("\n\n  Full span:\n").appendValue(span);
+        }
+
+        return result;
     }
 
     // Abstract methods, to be implemented for each specific span data structure
