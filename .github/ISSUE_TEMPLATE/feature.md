@@ -128,11 +128,11 @@ In order to avoid last minute blockers and significant disruptions to the featur
 - [ ] Changed or new open source libraries are cleared and approved, or N/A. (Legal Release Services/Cass Tucker/Release PM).
 - [ ] Licenses and Certificates of Originality (COOs) are updated, or N/A
 
-### **Translation** (Complete 1 week before Feature Complete Date)
-- [ ] PII updates are merged, or N/A. Note timing with translation shipments.
-
 ### **Innovation** (Complete 1 week before Feature Complete Date)
 - [ ] Consider whether any aspects of the feature may be patentable. If any identified, disclosures have been submitted.
+
+### **Translation** (Complete by Feature Complete Date)
+- [ ] PII updates are merged, or N/A.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Beta**
@@ -164,7 +164,7 @@ A feature is ready to GA after it is Feature Complete and has obtained all neces
   - [ ] All stop ship issues are completed.
 - [ ] Legal: all necessary approvals granted.
 - [ ] Translation: Feature may only proceed to GA if it has either `Translation - Complete` or `Translation - Missing` label
-  - If all translation has been delivered to `release` branch, feature owner adds label `Translation - Complete`
+  - If all translation has been delivered to `release` branch, feature owner adds label `Translation - Complete`.
   - If missing translation does not cause a break in functionality, nor a security or production outage risk, feature owner adds label `Translation - Missing`.
     - Once all missing translations are delivered, the `Translation - Missing` label is replaced with `Translation - Complete`.
   - If missing translation could cause a break in functionality or a security or production outage risk, feature owner adds the `Translation - Blocked` label.
@@ -179,25 +179,27 @@ A feature is ready to GA after it is Feature Complete and has obtained all neces
 These occur only after GA of this feature is requested (by adding a `target:ga` label).  GA of this feature may not occur until all approvals are obtained.
 
 ### **All Features**
-- [ ] **APIs/Externals** Externals have been reviewed or N/A.  ([OpenLiberty/externals-approvers](https://github.com/orgs/OpenLiberty/teams/externals-approvers))
+- [ ] **APIs/Externals** - Externals have been reviewed or N/A.  ([OpenLiberty/externals-approvers](https://github.com/orgs/OpenLiberty/teams/externals-approvers))
   - Approver adds label `focalApproved:externals` 
-- [ ] **Demo** Demo is scheduled for an upcoming EOI or N/A. ([OpenLiberty/demo-approvers](https://github.com/orgs/OpenLiberty/teams/demo-approvers))
+- [ ] **Demo** - Demo is scheduled for an upcoming EOI or N/A. ([OpenLiberty/demo-approvers](https://github.com/orgs/OpenLiberty/teams/demo-approvers))
   - Add comment `@OpenLiberty/demo-approvers Demo scheduled for EOI [Iteration Number]` to this issue.
   - Approver adds label `focalApproved:demo`.
-- [ ] **FAT** All Tests complete and running successfully in SOE or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/fat-approvers))
+- [ ] **FAT** - All Tests complete and running successfully in SOE or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/fat-approvers))
   - Approver adds label `focalApproved:fat`.
 
 ### **Design Approved Features**
-- [ ] **ID** Documentation is complete or N/A. ([OpenLiberty/id-approvers](https://github.com/orgs/OpenLiberty/teams/id-approvers))
+- [ ] **ID** - Documentation is complete or N/A. ([OpenLiberty/id-approvers](https://github.com/orgs/OpenLiberty/teams/id-approvers))
   - Approver adds label `focalApproved:id`.
   - > **_NOTE:_**  If only trivial documentation changes are required, you may reach out to the ID Feature Focal to request a `ID Required - Trivial` label.  Unlike features with regular ID requirement, those with `ID Required - Trivial` label do not have a hard requirement for a Design/UFO.
-- [ ] **Performance** Performance testing is complete or N/A. ([OpenLiberty/performance-approvers](https://github.com/orgs/OpenLiberty/teams/performance-approvers))
+- [ ] **InstantOn** - InstantOn capable or N/A. ([OpenLiberty/performance-approvers](https://github.com/orgs/OpenLiberty/teams/instantOn-approvers))
+  - Approver adds label `focalApproved:instantOn`.
+- [ ] **Performance** - Performance testing is complete or N/A. ([OpenLiberty/performance-approvers](https://github.com/orgs/OpenLiberty/teams/performance-approvers))
   - Approver adds label `focalApproved:performance`.
-- [ ] **Serviceability** Serviceability has been addressed or N/A. ([OpenLiberty/serviceability-approvers](https://github.com/orgs/OpenLiberty/teams/serviceability-approvers))
+- [ ] **Serviceability** - Serviceability has been addressed or N/A. ([OpenLiberty/serviceability-approvers](https://github.com/orgs/OpenLiberty/teams/serviceability-approvers))
   - Approver adds label `focalApproved:sve`.
-- [ ] **STE** Skills Transfer Education chart deck is complete or N/A. ([OpenLiberty/ste-approvers](https://github.com/orgs/OpenLiberty/teams/ste-approvers))
+- [ ] **STE** - Skills Transfer Education chart deck is complete or N/A. ([OpenLiberty/ste-approvers](https://github.com/orgs/OpenLiberty/teams/ste-approvers))
   - Approver adds label `focalApproved:ste`.
-- [ ] **SVT** System Verification Test is complete or N/A. ([OpenLiberty/svt-approvers](https://github.com/orgs/OpenLiberty/teams/svt-approvers))
+- [ ] **SVT** - System Verification Test is complete or N/A. ([OpenLiberty/svt-approvers](https://github.com/orgs/OpenLiberty/teams/svt-approvers))
   - Approver adds label `focalApproved:svt`.
 
 ### **Remove Beta Fencing** (Complete by Feature Complete Date)
