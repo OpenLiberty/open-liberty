@@ -60,15 +60,14 @@ public interface Shipments {
     @Select("status")
     String getStatus(long id);
 
-    @Filter(by = "status", value = "CANCELED")
-    @Delete
-    int removeCanceled();
-
     @Delete
     int removeEverything();
 
     @Save
     void save(Shipment s);
+
+    @Delete
+    int statusBasedRemoval(@By("status") String s);
 
     boolean updateLocation(long id,
                            String location,

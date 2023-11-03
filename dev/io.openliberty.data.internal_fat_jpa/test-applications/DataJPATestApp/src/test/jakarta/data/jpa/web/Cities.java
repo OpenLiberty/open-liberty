@@ -63,8 +63,8 @@ public interface Cities {
     Iterable<CityId> deleteFirst3ByStateName(String state, Sort... sorts);
 
     @Delete
-    @Filter(by = "stateName")
-    Streamable<CityId> deleteSome(String state, Limit limit);
+    Streamable<CityId> deleteSome(@By("stateName") String state,
+                                  Limit limit);
 
     @Delete
     @Filter(by = "population", op = Compare.Between)

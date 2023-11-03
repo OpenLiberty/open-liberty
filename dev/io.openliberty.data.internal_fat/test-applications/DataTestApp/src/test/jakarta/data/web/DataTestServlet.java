@@ -692,11 +692,11 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Delete method that uses the query-by-parameters pattern.
+     * Parameter-based query with the Delete annotation.
      */
     @Test
     public void testDeleteQueryByParameters() {
-        houses.deleteAll();
+        houses.dropAll();
 
         House h1 = new House();
         h1.area = 1600;
@@ -764,7 +764,7 @@ public class DataTestServlet extends FATServlet {
         h4.sold = Year.of(2014);
         houses.insert(h4);
 
-        assertEquals(2, houses.deleteBasedOnGarage(Garage.Type.Detached, 9));
+        assertEquals(2, houses.discardBasedOnGarage(Garage.Type.Detached, 9));
 
         House h = houses.remove("TestDeleteQueryByParameters-2").orElseThrow();
         assertEquals(2200, h.area);
@@ -780,7 +780,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(212000, h.purchasePrice, 0.001);
         assertEquals(Year.of(2022), h.sold);
 
-        assertEquals(1, houses.deleteAll());
+        assertEquals(1, houses.dropAll());
     }
 
     /**
@@ -925,7 +925,7 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testEmbeddable() {
-        houses.deleteAll();
+        houses.dropAll();
 
         House h1 = new House();
         h1.area = 1800;
@@ -1165,7 +1165,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(153000f, h.purchasePrice, 0.001f);
         assertEquals(Year.of(2018), h.sold);
 
-        assertEquals(2, houses.deleteAll());
+        assertEquals(2, houses.dropAll());
     }
 
     /**
@@ -1400,14 +1400,14 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindAndDeleteRecords() {
-        assertIterableEquals(Collections.EMPTY_SET, receipts.deleteFor("C1510-13-999"));
+        assertIterableEquals(Collections.EMPTY_SET, receipts.discardFor("C1510-13-999"));
 
         receipts.save(new Receipt(909L, "C1510-13-999", 9.09f));
         receipts.save(new Receipt(900L, "C1510-13-900", 9.00f));
         receipts.save(new Receipt(999L, "C1510-13-999", 9.99f));
         receipts.save(new Receipt(990L, "C1510-13-999", 9.90f));
 
-        Collection<Receipt> deleted = receipts.deleteFor("C1510-13-999");
+        Collection<Receipt> deleted = receipts.discardFor("C1510-13-999");
 
         assertEquals(deleted.toString(), 3, deleted.size());
 
@@ -1430,7 +1430,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals("C1510-13-999", r.customer());
         assertEquals(9.99f, r.total(), 0.001f);
 
-        deleted = receipts.deleteFor("C1510-13-900");
+        deleted = receipts.discardFor("C1510-13-900");
 
         assertEquals(deleted.toString(), 1, deleted.size());
 
@@ -1493,21 +1493,21 @@ public class DataTestServlet extends FATServlet {
         Sort sort = Sort.asc("id");
 
         try {
-            long[] deleted = packages.deleteFirst3(sort);
+            long[] deleted = packages.deleteFirst3By(sort);
             fail("Deleted with return type of long[]: " + Arrays.toString(deleted) + " even though the id type is int.");
         } catch (MappingException x) {
             // expected
         }
 
         try {
-            List<String> deleted = packages.deleteFirst4(sort);
+            List<String> deleted = packages.deleteFirst4By(sort);
             fail("Deleted with return type of List<String>: " + deleted + " even though the id type is int.");
         } catch (MappingException x) {
             // expected
         }
 
         try {
-            Collection<Number> deleted = packages.deleteFirst5(sort);
+            Collection<Number> deleted = packages.deleteFirst5By(sort);
             fail("Deleted with return type of Collection<Number>: " + deleted + " even though the id type is int.");
         } catch (MappingException x) {
             // expected
@@ -1533,7 +1533,7 @@ public class DataTestServlet extends FATServlet {
         remaining.addAll(Set.of(70007, 70070, 70071, 70077));
 
         Sort sort = supportsOrderByForUpdate ? Sort.desc("width") : null;
-        Object[] deleted = packages.delete(Limit.of(1), sort);
+        Object[] deleted = packages.destroy(Limit.of(1), sort);
         assertEquals("Deleted " + Arrays.toString(deleted), 1, deleted.length);
         Package p = (Package) deleted[0];
         if (supportsOrderByForUpdate) {
@@ -1566,7 +1566,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Found " + p1.id + "; expected one of " + remaining, true, remaining.remove(p1.id));
 
         // should have only 1 remaining
-        deleted = packages.delete(Limit.of(4), sort);
+        deleted = packages.destroy(Limit.of(4), sort);
         assertEquals("Deleted " + Arrays.toString(deleted), 1, deleted.length);
         assertEquals(remaining.iterator().next(), Integer.valueOf(((Package) deleted[0]).id));
     }
@@ -3016,7 +3016,7 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testMixedEntitiesInTransaction() throws HeuristicMixedException, HeuristicRollbackException, //
                     IllegalStateException, NotSupportedException, RollbackException, SecurityException, SystemException {
-        houses.deleteAll();
+        houses.dropAll();
         vehicles.removeAll();
 
         House h1 = new House();
@@ -3085,7 +3085,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Year.of(2021), h.sold);
         assertEquals(26000f, v.price, 0.001f);
 
-        houses.deleteAll();
+        houses.dropAll();
         vehicles.removeAll();
     }
 
@@ -3441,7 +3441,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(true, shipments.cancel(5, OffsetDateTime.now()));
         assertEquals(false, shipments.cancel(10, OffsetDateTime.now()));
 
-        assertEquals(2, shipments.removeCanceled());
+        assertEquals(2, shipments.statusBasedRemoval("CANCELED"));
 
         assertEquals(3, shipments.removeEverything());
     }
@@ -4395,7 +4395,7 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testSaveAndUpdateMultiple() {
         // find none
-        houses.deleteAll();
+        houses.dropAll();
         assertEquals(false, houses.existsById("001-203-401"));
 
         // insert
@@ -4488,7 +4488,7 @@ public class DataTestServlet extends FATServlet {
         // delete nothing
         assertEquals(0L, houses.deleteById(h1.parcelId));
 
-        assertEquals(2L, houses.deleteAll());
+        assertEquals(2L, houses.dropAll());
     }
 
     /**

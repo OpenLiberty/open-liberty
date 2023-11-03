@@ -1279,7 +1279,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                        "Or it must have at least one parameter that is annotated with one of " +
                                        List.of(Assign.class, Add.class, Multiply.class, Divide.class) + "."); // TODO
 
-        if (numAttributeParams < params.length && (methodAnno != null || Boolean.TRUE.equals(isUpdate)))
+        if (numAttributeParams < params.length && !(methodAnno instanceof Delete) && (methodAnno != null || Boolean.TRUE.equals(isUpdate)))
             throw new MappingException("The special parameter types " + SPECIAL_PARAM_TYPES +
                                        " must not be used on the " + queryInfo.method.getName() + " method of the " +
                                        repositoryInterface.getName() + " repository because the repository method is a " +
@@ -1577,8 +1577,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         if (queryInfo.type == null) {
             // Parameter-based query
-            // TODO replace these with annotations only:
-            if (methodTypeAnno instanceof Delete || methodName.startsWith("delete") || methodName.startsWith("remove")) {
+            if (methodTypeAnno instanceof Delete || // Special case for BasicRepository.deleteAll(), which doesn't follow the spec's own rules:
+                BasicRepository.class.equals(queryInfo.method.getDeclaringClass()) && methodName.equals("deleteAll")) {
                 if (queryInfo.isFindAndDelete()) {
                     queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
                     q = generateSelectClause(queryInfo, null);
@@ -1590,7 +1590,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 if (queryInfo.method.getParameterCount() > 0)
                     generateFromParameters(queryInfo, q, methodTypeAnno, false);
             } else if (methodTypeAnno instanceof Count || // Special case for BasicRepository.count(), which doesn't follow the spec's own rules:
-                       BasicRepository.class.equals(queryInfo.method.getDeclaringClass()) && methodName.startsWith("count")) {
+                       BasicRepository.class.equals(queryInfo.method.getDeclaringClass()) && methodName.equals("count")) {
                 queryInfo.type = QueryInfo.Type.COUNT;
                 q = new StringBuilder(150).append("SELECT COUNT(").append(o).append(") FROM ").append(entityInfo.name).append(' ').append(o);
                 if (queryInfo.method.getParameterCount() > 0)

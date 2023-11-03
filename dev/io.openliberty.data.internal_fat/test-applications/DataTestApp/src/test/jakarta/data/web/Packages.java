@@ -41,7 +41,6 @@ import io.openliberty.data.repository.update.SubtractFrom;
  */
 @Repository
 public interface Packages extends PageableRepository<Package, Integer> {
-    Object[] delete(Limit limit, Sort sort);
 
     Optional<Package> deleteByDescription(String description);
 
@@ -53,11 +52,14 @@ public interface Packages extends PageableRepository<Package, Integer> {
 
     LinkedList<?> deleteFirst2ByHeightLessThan(float maxHeight, Sort... sorts);
 
-    long[] deleteFirst3(Sort sort); // invalid return type is not the entity or id
+    long[] deleteFirst3By(Sort sort); // invalid return type is not the entity or id
 
-    List<String> deleteFirst4(Sort sort); // invalid return type is not the entity or id
+    List<String> deleteFirst4By(Sort sort); // invalid return type is not the entity or id
 
-    Collection<Number> deleteFirst5(Sort sort); // invalid return type is not the entity or id
+    Collection<Number> deleteFirst5By(Sort sort); // invalid return type is not the entity or id
+
+    @Delete
+    Object[] destroy(Limit limit, Sort sort);
 
     List<Package> findByHeightBetween(float minHeight, float maxHeight);
 

@@ -14,6 +14,7 @@ package test.jakarta.data.web;
 
 import java.util.stream.Stream;
 
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
@@ -68,6 +69,7 @@ public interface Things {
     Stream<Thing> forPurchaseOrder(int num);
 
     // Matches signature from CrudRepository
+    @Delete
     void deleteAll();
 
     @Insert // intentionally does not match the method name because the spec permits this, although hopefully no one will write code this way
