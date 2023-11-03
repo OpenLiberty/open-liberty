@@ -155,7 +155,7 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set EnableDirectoryMonitoring to true, and MonitorInterval to 5.
+     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 5.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Rename the ltpa.keys file to validation1.keys.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -164,7 +164,7 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>EnableDirectoryMonitoring is set to true, and MonitorInterval to 5.
+     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 5.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is renamed to validation1.keys.
      * <LI>Continued authentication to simple servlet; server is not restarted and does not need to login again.
@@ -175,7 +175,7 @@ public class LTPAKeyRotationTests {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testLTPAFileCreationDeletion_enableDirectoryMonitoring_true_monitorInterval_5() throws Exception {
+    public void testLTPAFileCreationDeletion_monitorValidationKeysDir_true_monitorInterval_5() throws Exception {
         // Configure the server
         configureServer("true", "5", true);
 
@@ -212,7 +212,7 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set EnableDirectoryMonitoring to true, and MonitorInterval to 5.
+     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 5.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Replace the primary key with a different valid key.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -220,7 +220,7 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>EnableDirectoryMonitoring is set to true, and MonitorInterval to 5.
+     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 5.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is replaced with a different key.
      * <LI>Failed authentication to simple servlet.
@@ -229,7 +229,7 @@ public class LTPAKeyRotationTests {
      */
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testLTPAFileReplacement_newValidKey_enableDirectoryMonitoring_true_monitorInterval_5() throws Exception {
+    public void testLTPAFileReplacement_newValidKey_monitorValidationKeysDir_true_monitorInterval_5() throws Exception {
         // Configure the server
         configureServer("true", "5", true);
 
@@ -271,14 +271,14 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set EnableDirectoryMonitoring to true, and MonitorInterval to 5.
+     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 5.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Replace the primary key with a different invalid key which has garbage values in the private key.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>EnableDirectoryMonitoring is set to true, and MonitorInterval to 5.
+     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 5.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is replaced with a different key causing a CWWKS4106E: LTPA configuration error.
      * <LI>Successful authentication to simple servlet since the old cookie is still being used.
@@ -286,7 +286,7 @@ public class LTPAKeyRotationTests {
      */
     //@Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testLTPAFileReplacement_newInvalidKey_enableDirectoryMonitoring_true_monitorInterval_5() throws Exception {
+    public void testLTPAFileReplacement_newInvalidKey_monitorValidationKeysDir_true_monitorInterval_5() throws Exception {
         // Configure the server
         configureServer("true", "5", true);
 
@@ -318,7 +318,7 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set EnableDirectoryMonitoring to false, and MonitorInterval to 0.
+     * <LI>Set MonitorValidationKeysDir to false, and MonitorInterval to 0.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Rename the ltpa.keys file to validation1.keys.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -327,7 +327,7 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>EnableDirectoryMonitoring is set to false, and MonitorInterval to 0.
+     * <LI>MonitorValidationKeysDir is set to false, and MonitorInterval to 0.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is renamed to validation1.keys.
      * <LI>Continued authentication to simple servlet; server is not restarted and does not need to login again.
@@ -338,7 +338,7 @@ public class LTPAKeyRotationTests {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testLTPAFileCreationDeletion_enableDirectoryMonitoring_false_monitorInterval_0() throws Exception {
+    public void testLTPAFileCreationDeletion_monitorValidationKeysDir_false_monitorInterval_0() throws Exception {
         // Configure the server
         configureServer("false", "0", true);
 
@@ -367,7 +367,7 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set EnableDirectoryMonitoring to false, and MonitorInterval to 0.
+     * <LI>Set MonitorValidationKeysDir to false, and MonitorInterval to 0.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Replace the primary key with a different valid key.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -375,7 +375,7 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>EnableDirectoryMonitoring is set to false, and MonitorInterval to 0.
+     * <LI>MonitorValidationKeysDir is set to false, and MonitorInterval to 0.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is replaced with a different key.
      * <LI>Successful authentication to simple servlet, since the server still uses the old key without file monitoring.
@@ -384,7 +384,7 @@ public class LTPAKeyRotationTests {
      */
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testLTPAFileReplacement_newValidKey_enableDirectoryMonitoring_false_monitorInterval_0() throws Exception {
+    public void testLTPAFileReplacement_newValidKey_monitorValidationKeysDir_false_monitorInterval_0() throws Exception {
         // Configure the server
         configureServer("false", "0", true);
 
@@ -413,7 +413,7 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set EnableDirectoryMonitoring to false, and MonitorInterval to 5.
+     * <LI>Set MonitorValidationKeysDir to false, and MonitorInterval to 5.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Rename the ltpa.keys file to validation1.keys.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -422,7 +422,7 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>EnableDirectoryMonitoring is set to false, and MonitorInterval to 5.
+     * <LI>MonitorValidationKeysDir is set to false, and MonitorInterval to 5.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is renamed to validation1.keys.
      * <LI>Continued authentication to simple servlet; server is not restarted and does not need to login again.
@@ -433,7 +433,7 @@ public class LTPAKeyRotationTests {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testLTPAFileCreationDeletion_enableDirectoryMonitoring_false_monitorInterval_5() throws Exception {
+    public void testLTPAFileCreationDeletion_monitorValidationKeysDir_false_monitorInterval_5() throws Exception {
         // Configure the server
         configureServer("false", "5", false);
 
@@ -470,7 +470,7 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set EnableDirectoryMonitoring to false, and MonitorInterval to 5.
+     * <LI>Set MonitorValidationKeysDir to false, and MonitorInterval to 5.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Replace the primary key with a different valid key.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -478,7 +478,7 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>EnableDirectoryMonitoring is set to false, and MonitorInterval to 5.
+     * <LI>MonitorValidationKeysDir is set to false, and MonitorInterval to 5.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is replaced with a different key.
      * <LI>Failed authentication to simple servlet.
@@ -487,7 +487,7 @@ public class LTPAKeyRotationTests {
      */
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testLTPAFileReplacement_newValidKey_enableDirectoryMonitoring_false_monitorInterval_5() throws Exception {
+    public void testLTPAFileReplacement_newValidKey_monitorValidationKeysDir_false_monitorInterval_5() throws Exception {
         // Configure the server
         configureServer("false", "5", true);
 
@@ -525,7 +525,7 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set EnableDirectoryMonitoring to true, and MonitorInterval to 0.
+     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 0.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Rename the ltpa.keys file to validation1.keys.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -534,7 +534,7 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>EnableDirectoryMonitoring is set to true, and MonitorInterval to 0.
+     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 0.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is renamed to validation1.keys.
      * <LI>Continued authentication to simple servlet; server is not restarted and does not need to login again.
@@ -545,7 +545,7 @@ public class LTPAKeyRotationTests {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testLTPAFileCreationDeletion_enableDirectoryMonitoring_true_monitorInterval_0() throws Exception {
+    public void testLTPAFileCreationDeletion_monitorValidationKeysDir_true_monitorInterval_0() throws Exception {
         // Configure the server
         configureServer("true", "0", true);
 
@@ -574,7 +574,7 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set EnableDirectoryMonitoring to true, and MonitorInterval to 0.
+     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 0.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Replace the primary key with a different valid key.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -582,7 +582,7 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>EnableDirectoryMonitoring is set to true, and MonitorInterval to 0.
+     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 0.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is replaced with a different key.
      * <LI>Successful authentication to simple servlet, since the server still uses the old key without file monitoring.
@@ -591,7 +591,7 @@ public class LTPAKeyRotationTests {
      */
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testLTPAFileReplacement_newValidKey_enableDirectoryMonitoring_true_monitorInterval_0() throws Exception {
+    public void testLTPAFileReplacement_newValidKey_monitorValidationKeysDir_true_monitorInterval_0() throws Exception {
         // Configure the server
         configureServer("true", "0", true, false);
 
@@ -624,7 +624,7 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set EnableDirectoryMonitoring to true, and MonitorInterval to 5.
+     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 5.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Rename the ltpa.keys file to validation1.keys.
      * <LI>Set fileName to null to make it not configured in the validation keys element.
@@ -642,7 +642,7 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>EnableDirectoryMonitoring is set to true, and MonitorInterval to 5.
+     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 5.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is renamed to validation1.keys.
      * <LI>The fileName attribute is not configured in the validation keys element.
@@ -741,7 +741,7 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set EnableDirectoryMonitoring to true, and MonitorInterval to 5.
+     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 5.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Rename the ltpa.keys file to validation1.keys.
      * <LI>Set password to null to make it not configured in the validation keys element.
@@ -755,7 +755,7 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>EnableDirectoryMonitoring is set to true, and MonitorInterval to 5.
+     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 5.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is renamed to validation1.keys.
      * <LI>The password attribute is not configured in the validation keys element.
@@ -828,7 +828,7 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set EnableDirectoryMonitoring to true, and MonitorInterval to 5.
+     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 5.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Rename the ltpa.keys file to validation1.keys.
      * <LI>Set validUntilDate to null to make it not configured in the validation keys element.
@@ -844,7 +844,7 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>EnableDirectoryMonitoring is set to true, and MonitorInterval to 5.
+     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 5.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is renamed to validation1.keys.
      * <LI>The validUntilDate attribute is not configured in the validation keys element.
@@ -924,24 +924,24 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set EnableDirectoryMonitoring to false, and MonitorInterval to 5.
+     * <LI>Set MonitorValidationKeysDir to false, and MonitorInterval to 5.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Add a new validation keys element with a fileName attribute as "validation2.keys".
      * <LI>Rename the ltpa.keys file to validation2.keys.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
-     * <LI>Set EnableDirectoryMonitoring to true, and MonitorInterval to 0.
+     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 0.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
      * <LI>Delete the validation2.keys file.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>EnableDirectoryMonitoring is set to false, and MonitorInterval to 5.
+     * <LI>MonitorValidationKeysDir is set to false, and MonitorInterval to 5.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>A new validation keys element is added with a fileName attribute as "validation2.keys".
      * <LI>The ltpa.keys file is renamed to validation2.keys.
      * <LI>Successful authentication to simple servlet.
-     * <LI>EnableDirectoryMonitoring is set to true, and MonitorInterval to 0.
+     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 0.
      * <LI>Successful authentication to simple servlet.
      * <LI>The validation2.keys file is deleted.
      * <LI>Successful authentication to simple servlet.
@@ -978,7 +978,7 @@ public class LTPAKeyRotationTests {
         // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
 
-        // Set EnableDirectoryMonitoring to true, and MonitorInterval to 0
+        // Set MonitorValidationKeysDir to true, and MonitorInterval to 0
         configureServer("true", "0", true);
 
         // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
@@ -998,7 +998,7 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set EnableDirectoryMonitoring to true, and MonitorInterval to 0.
+     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 0.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Add a new validation keys element with a fileName attribute as "validation2.keys" and validUntilDate attribute as current time + 10 second.
      * <LI>Rename the ltpa.keys file to validation2.keys.
@@ -1008,7 +1008,7 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>EnableDirectoryMonitoring is set to true, and MonitorInterval to 0.
+     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 0.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>A new validation keys element is added with a fileName attribute as "validation2.keys" and validUntilDate attribute as current time + 10 second.
      * <LI>The ltpa.keys file is renamed to validation2.keys.
@@ -1085,7 +1085,7 @@ public class LTPAKeyRotationTests {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testExpiredLtpaToken_enableDirectoryMonitoring_true_monitorInterval_5() throws Exception {
+    public void testExpiredLtpaToken_monitorValidationKeysDir_true_monitorInterval_5() throws Exception {
         // Configure the server
         configureServer("true", "5", true);
 
@@ -1134,7 +1134,7 @@ public class LTPAKeyRotationTests {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testExpiredLtpaTokenenableDirectoryMonitoring_false_monitorInterval_0() throws Exception {
+    public void testExpiredLtpaToken_monitorValidationKeysDir_false_monitorInterval_0() throws Exception {
         // Configure the server
         configureServer("false", "0", true);
 
@@ -1162,21 +1162,21 @@ public class LTPAKeyRotationTests {
                    flClient1.accessProtectedServletWithInvalidCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1));
     }
 
-    public void configureServer(String enableDirectoryMonitoring, String monitorInterval, Boolean waitForLTPAConfigReadyMessage) throws Exception {
-        configureServer(enableDirectoryMonitoring, monitorInterval, waitForLTPAConfigReadyMessage, true);
+    public void configureServer(String monitorValidationKeysDir, String monitorInterval, Boolean waitForLTPAConfigReadyMessage) throws Exception {
+        configureServer(monitorValidationKeysDir, monitorInterval, waitForLTPAConfigReadyMessage, true);
     }
 
     /**
      * Function to do the server configuration for all the tests.
      * Assert that the server has with a default ltpa.keys file.
      *
-     * @param enableDirectoryMonitoring
+     * @param monitorValidationKeysDir
      * @param monitorInterval
      * @param waitForLTPAConfigReadyMessage
      *
      * @throws Exception
      */
-    public void configureServer(String enableDirectoryMonitoring, String monitorInterval, Boolean waitForLTPAConfigReadyMessage, boolean setLogMarkToEnd) throws Exception {
+    public void configureServer(String monitorValidationKeysDir, String monitorInterval, Boolean waitForLTPAConfigReadyMessage, boolean setLogMarkToEnd) throws Exception {
         // Get the server configuration
         ServerConfiguration serverConfiguration = server.getServerConfiguration();
         LTPA ltpa = serverConfiguration.getLTPA();
@@ -1184,8 +1184,8 @@ public class LTPAKeyRotationTests {
         // Check if the configuration needs to be updated
         boolean configurationUpdateNeeded = false;
 
-        // Set EnableDirectoryMonitoring to true, and MonitorInterval to 0
-        configurationUpdateNeeded = setLTPAenableDirectoryMonitoringElement(ltpa, enableDirectoryMonitoring) | setLTPAmonitorIntervalElement(ltpa, monitorInterval);
+        // Set MonitorValidationKeysDir to true, and MonitorInterval to 0
+        configurationUpdateNeeded = setLTPAmonitorValidationKeysDirElement(ltpa, monitorValidationKeysDir) | setLTPAmonitorIntervalElement(ltpa, monitorInterval);
 
         // Apply server configuration update if needed
         if (configurationUpdateNeeded) {
@@ -1205,10 +1205,10 @@ public class LTPAKeyRotationTests {
             server.setMarkToEndOfLog(messagesLogFile);
     }
 
-    // Function to set the enableDirectoryMonitoring to true or false
-    public boolean setLTPAenableDirectoryMonitoringElement(LTPA ltpa, String value) {
-        if (!ltpa.enableDirectoryMonitoring.equals(value)) {
-            ltpa.enableDirectoryMonitoring = value;
+    // Function to set the monitorValidationKeysDir to true or false
+    public boolean setLTPAmonitorValidationKeysDirElement(LTPA ltpa, String value) {
+        if (!ltpa.monitorValidationKeysDir.equals(value)) {
+            ltpa.monitorValidationKeysDir = value;
             return true; // Config update is needed
         }
         return false; // Config update is not needed;

@@ -29,7 +29,7 @@
         <AD id="monitorInterval" name="%ltpa.monitorInterval" description="%ltpa.monitorInterval.desc"
             required="false" type="String" ibm:type="duration" 
             default="0ms" />
-        <AD id="enableDirectoryMonitoring" name="%ltpa.enableDirectoryMonitoring" description="%ltpa.enableDirectoryMonitoring.desc" 
+        <AD id="monitorValidationKeysDir" name="%ltpa.monitorValidationKeysDir" description="%ltpa.monitorValidationKeysDir.desc" 
             required="false" type="Boolean"
             default="false" ibm:beta="true"/>
         <AD id="updateTrigger" name="%ltpa.updateTrigger" description="%ltpa.updateTrigger.desc" 

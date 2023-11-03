@@ -119,13 +119,13 @@ public class LTPAConfigurationImplTest {
         ltpaConfig = createActivatedLTPAConfigurationImpl();
     }
 
-    private Map<String, Object> createProps(String filePath, String password, long expiration, long monitorInterval, boolean enableDirectoryMonitoring, String updateTrigger, long expDiffAllowed) {
+    private Map<String, Object> createProps(String filePath, String password, long expiration, long monitorInterval, boolean monitorValidationKeysDir, String updateTrigger, long expDiffAllowed) {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, filePath);
         props.put(LTPAConfiguration.CFG_KEY_PASSWORD, new SerializableProtectedString(password.toCharArray()));
         props.put(LTPAConfiguration.CFG_KEY_TOKEN_EXPIRATION, expiration);
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, monitorInterval);
-        props.put(LTPAConfiguration.CFG_KEY_ENABLE_DIRECTORY_MONITORING, enableDirectoryMonitoring);
+        props.put(LTPAConfiguration.CFG_KEY_MONITOR_VALIDATION_KEYS_DIR, monitorValidationKeysDir);
         props.put(LTPAConfiguration.CFG_KEY_UPDATE_TRIGGER, updateTrigger);
         props.put(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED, expDiffAllowed);
         return props;

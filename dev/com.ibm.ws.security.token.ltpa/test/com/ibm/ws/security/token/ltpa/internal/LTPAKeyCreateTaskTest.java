@@ -99,7 +99,7 @@ public class LTPAKeyCreateTaskTest {
         props.put(LTPAConfiguration.CFG_KEY_PASSWORD, new SerializableProtectedString("notUsed".toCharArray()));
         props.put(LTPAConfiguration.CFG_KEY_TOKEN_EXPIRATION, 0L);
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, 0L);
-        props.put(LTPAConfiguration.CFG_KEY_ENABLE_DIRECTORY_MONITORING, false);
+        props.put(LTPAConfiguration.CFG_KEY_MONITOR_VALIDATION_KEYS_DIR, false);
         props.put(LTPAConfiguration.CFG_KEY_UPDATE_TRIGGER, "polled");
         props.put(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED, 0L);
     }

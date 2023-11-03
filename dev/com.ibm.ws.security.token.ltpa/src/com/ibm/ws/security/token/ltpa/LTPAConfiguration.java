@@ -46,7 +46,7 @@ public interface LTPAConfiguration {
     /**
      * The Boolean to monitor the token keys file's directory.
      */
-    public static final String CFG_KEY_ENABLE_DIRECTORY_MONITORING = "enableDirectoryMonitoring";
+    public static final String CFG_KEY_MONITOR_VALIDATION_KEYS_DIR = "monitorValidationKeysDir";
 
     /**
      * The token keys file's update method or trigger.
@@ -114,9 +114,9 @@ public interface LTPAConfiguration {
     long getMonitorInterval();
 
     /**
-     * @return enable directory monitoring
+     * @return boolean for monitoring validation keys dir
      */
-    boolean getEnableDirectoryMonitoring();
+    boolean getMonitorValidationKeysDir();
 
     /**
      * @return update trigger

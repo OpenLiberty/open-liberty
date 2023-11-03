@@ -34,7 +34,7 @@ public class LTPA extends ConfigElement {
 
     // Atrribute to toggle monitoring of the keys within the directory
     @XmlAttribute
-    public String enableDirectoryMonitoring;
+    public String monitorValidationKeysDir;
 
     // Atrribute to specify the interval for monitoring the keys within the directory
     @XmlAttribute
@@ -67,7 +67,7 @@ public class LTPA extends ConfigElement {
         buf.append("keysFileName=").append(keysFileName);
         buf.append(", expiration=").append(expiration);
         buf.append(", password=").append(password);
-        buf.append(", enableDirectoryMonitoring=").append(enableDirectoryMonitoring);
+        buf.append(", monitorValidationKeysDir=").append(monitorValidationKeysDir);
         buf.append(", monitorInterval=").append(monitorInterval);
         buf.append(", updateTrigger=").append(updateTrigger);
 

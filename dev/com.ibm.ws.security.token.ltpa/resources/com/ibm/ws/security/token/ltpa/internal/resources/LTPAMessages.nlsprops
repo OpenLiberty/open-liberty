@@ -72,6 +72,6 @@ LTPA_KEYS_FILE_DOES_NOT_EXIST=CWWKS4112E: The {0} LTPA validation keys file does
 LTPA_KEYS_FILE_DOES_NOT_EXIST.explanation=The validation keys file does not exist.
 LTPA_KEYS_FILE_DOES_NOT_EXIST.useraction=Make sure that the validation keys file exists in the specified location that is specified by the validationKeys element.
 
-LTPA_ENABLE_DIRECTORY_MONITORING_TRUE_AND_MONITOR_INTERVAL_EQUALS_TO_OR_LESS_THAN_ZERO=CWWKS4113W: The enableDirectoryMonitoring attribute is set to true but the monitor interval is {0}. No dynamic reload occurs when validation keys files are created, modified or deleted in the directory.
-LTPA_ENABLE_DIRECTORY_MONITORING_TRUE_AND_MONITOR_INTERVAL_EQUALS_TO_OR_LESS_THAN_ZERO.explanation= The value for the monitorInterval attribute is zero or less than zero. The directory cannot be monitored for any create, delete, or modify actions on files with the .keys suffix and dynamic reload cannot occur.
-LTPA_ENABLE_DIRECTORY_MONITORING_TRUE_AND_MONITOR_INTERVAL_EQUALS_TO_OR_LESS_THAN_ZERO.useraction=Set the monitorInterval attribute to an interval that is greater than zero.
+LTPA_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_EQUALS_TO_OR_LESS_THAN_ZERO=CWWKS4113W: The monitorValidationKeysDir attribute is set to true but the monitor interval is {0}. No dynamic reload occurs when validation keys files are created, modified or deleted in the directory.
+LTPA_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_EQUALS_TO_OR_LESS_THAN_ZERO.explanation= The value for the monitorInterval attribute is zero or less than zero. The directory cannot be monitored for any create, delete, or modify actions on files with the .keys suffix and dynamic reload cannot occur.
+LTPA_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_EQUALS_TO_OR_LESS_THAN_ZERO.useraction=Set the monitorInterval attribute to an interval that is greater than zero.
