@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.mpMetrics
+symbolicName=io.openliberty.versionless.mpMetrics
 visibility=public
 IBM-ShortName: mpMetrics
 Subsystem-Name: mpMetrics

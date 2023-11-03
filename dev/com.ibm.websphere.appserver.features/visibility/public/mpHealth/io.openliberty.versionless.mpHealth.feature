@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.mpHealth
+symbolicName=io.openliberty.versionless.mpHealth
 visibility=public
 IBM-ShortName: mpHealth
 Subsystem-Name: mpHealth
