@@ -20,5 +20,6 @@
         <feature>localConnector-1.0</feature>
         <feature>mpReactiveMessaging-3.0</feature>
         <feature>servlet-5.0</feature>
+        <feature>mpConfig-3.1</feature>
     </featureManager>
 </server>
