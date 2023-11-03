@@ -24,7 +24,7 @@ tested.features: mphealth-2.2, jndi-1.0, cdi-2.0, json-1.0,\
 	mpconfig-3.0, mphealth-4.0, cdi-3.0, mpmetrics-2.3, ssl-1.0,\
 	monitor-1.0, mpconfig-1.4, mpmetrics-5.0, cdi-4.0, mpmetrics-4.0,\
 	javaee-7.0, javaee-8.0, jakartaee-9.1, jakartaee-10.0,\
-	mpconfig-1.2, mpmetrics-1.1, mphealth-1.0
+	mpconfig-1.2, mpmetrics-1.1, mphealth-1.0, mpconfig-2.0, mpmetrics-3.0
 
 -buildpath: \
 	io.openliberty.org.apache.commons.logging;version=latest,\

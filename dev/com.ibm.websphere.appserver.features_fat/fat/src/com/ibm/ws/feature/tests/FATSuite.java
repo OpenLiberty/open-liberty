@@ -31,5 +31,6 @@ import org.junit.runners.Suite.SuiteClasses;
         ee8toMP.class,
         ee9toMP.class,
         ee10toMP.class,
+        envVarVersionlessTest.class
 })
 public class FATSuite {}

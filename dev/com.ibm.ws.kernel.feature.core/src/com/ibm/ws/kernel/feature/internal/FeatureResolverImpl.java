@@ -448,6 +448,25 @@ public class FeatureResolverImpl implements FeatureResolver {
             // Note that we do not check for dups here, that is handled while getting the actual candidates below
             tolerates.addAll(overrideTolerates);
         }
+
+        // Gets the preferred feature version for a versionless feature from the PREFERRED_FEATURE_VERSIONS env var.
+        //System.getenv("com.ibm.ws.beta.edition");
+        if(baseSymbolicName.startsWith("io.openliberty.unversioned.")){
+            if(System.getenv("PREFERRED_FEATURE_VERSIONS") != null && !System.getenv("PREFERRED_FEATURE_VERSIONS").equals("")){
+                String[] preferredVersionlessVersions = System.getenv("PREFERRED_FEATURE_VERSIONS").split(",");
+                for(String versionlessVersion : preferredVersionlessVersions){
+                    String[] nAV = parseNameAndVersion(versionlessVersion);
+                    if(baseSymbolicName.equals("io.openliberty.unversioned." + nAV[0])){
+                        tolerates.set(0, preferredVersion);
+                        tolerates.remove(nAV[1]);
+                        preferredVersion = nAV[1];
+                        symbolicName = "io.openliberty.unversioned." + versionlessVersion;
+                        break;
+                    }
+                }
+            }
+        }
+
         List<String> candidateNames = new ArrayList<String>(1 + (tolerates == null ? 0 : tolerates.size()));
 
         // look for the preferred feature using the fully qualified symbolicName first
@@ -502,7 +521,7 @@ public class FeatureResolverImpl implements FeatureResolver {
      * @return
      */
     private boolean isAccessible(ProvisioningFeatureDefinition includingFeature, ProvisioningFeatureDefinition candidateDef) {
-        return candidateDef.getVisibility() != Visibility.PRIVATE || includingFeature.getBundleRepositoryType().equals(candidateDef.getBundleRepositoryType());
+        return !!!candidateDef.getFeatureName().startsWith("io.openliberty.versionless.") && (candidateDef.getVisibility() != Visibility.PRIVATE || includingFeature.getBundleRepositoryType().equals(candidateDef.getBundleRepositoryType()));
     }
 
     /**
@@ -533,7 +552,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         if (overrideTolerates.contains(tolerate)) {
             return true;
         }
-        if(!chain.peekFirst().contains("-")){
+        if(chain.peekFirst().contains("io.openliberty.versionless.")){
             return true;
         }
         return false;
