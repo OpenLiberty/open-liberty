@@ -176,15 +176,20 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             configValidationKeys = null;
         }
 
-        if (monitorValidationKeysDir) {
-            if (monitorInterval <= 0) {
-                Tr.warning(tc, "LTPA_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_EQUALS_TO_OR_LESS_THAN_ZERO", monitorInterval);
-            }
-            //nonConfigValidationKeys = getNonConfiguredValidationKeys();
-            // getNonConfiguredValidationKeys needs to be called from the performFileBasedAction for the fileMonitor Baseline
-            // so that allKeysFiles will be populated first when MD is turned on in a config update.
-        } else {
+        if (updateTrigger.equalsIgnoreCase("disabled")) {
             nonConfigValidationKeys = null;
+            if (monitorValidationKeysDir) {
+                Tr.warning(tc, "LTPA_UPDATE_TRIGGER_DISABLED_AND_ENABLE_DIRECTORY_MONITORING_TRUE", monitorValidationKeysDir);
+            }
+            if (monitorInterval > 0) {
+                Tr.warning(tc, "LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO", monitorInterval);
+            }
+        } else if (updateTrigger.equalsIgnoreCase("polled")) {
+            if (monitorValidationKeysDir && monitorInterval <= 0) {
+                Tr.warning(tc, "LTPA_ENABLE_DIRECTORY_MONITORING_TRUE_AND_MONITOR_INTERVAL_EQUALS_TO_OR_LESS_THAN_ZERO", monitorInterval);
+            } else if (!monitorValidationKeysDir) {
+                nonConfigValidationKeys = null;
+            }
         }
 
         combineValidationKeys();
@@ -321,10 +326,12 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      * Creates an LTPA file monitor when the monitor interval is greater than zero.
      */
     private void optionallyCreateFileMonitor() {
-        if (updateTrigger != null && updateTrigger.equalsIgnoreCase("polled")){
+        if (updateTrigger.equalsIgnoreCase("polled")) {
             if (monitorInterval > 0 || monitorValidationKeysDir) {
                 createFileMonitor();
             }
+        } else if (updateTrigger.equalsIgnoreCase("mbean")) {
+            createFileMonitor();
         }
     }
 
@@ -334,13 +341,16 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private void createFileMonitor() {
         try {
             ltpaFileMonitor = new LTPAFileMonitor(this);
-            if (monitorValidationKeysDir && primaryKeyImportDir != null) { // monitor directory and file
-                setFileMonitorRegistration(ltpaFileMonitor.monitorFiles(Arrays.asList(primaryKeyImportDir), Arrays.asList(primaryKeyImportFile), monitorInterval, updateTrigger));
+            if (primaryKeyImportDir != null) { // monitor directory and file
+                setFileMonitorRegistration(ltpaFileMonitor.monitorFiles(null,
+                                                                        Arrays.asList(primaryKeyImportDir),
+                                                                        Arrays.asList(primaryKeyImportFile),
+                                                                        monitorInterval, updateTrigger));
             } else { // monitor only files
-                if(monitorValidationKeysDir && primaryKeyImportDir == null) { // monitor directory only
+                if (monitorValidationKeysDir && primaryKeyImportDir == null) {
                     Tr.debug(tc, "Since primaryKeyImportDir is null, monitor the primaryKeyImportFile, and not the directory.");
                 }
-                setFileMonitorRegistration(ltpaFileMonitor.monitorFiles(Arrays.asList(primaryKeyImportFile), monitorInterval, updateTrigger));
+                setFileMonitorRegistration(ltpaFileMonitor.monitorFiles(null, null, Arrays.asList(primaryKeyImportFile), monitorInterval, updateTrigger));
             }
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) { 
