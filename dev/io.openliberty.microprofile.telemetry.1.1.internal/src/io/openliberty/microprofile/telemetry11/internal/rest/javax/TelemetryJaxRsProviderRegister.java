@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,19 +13,20 @@
 
 package io.openliberty.microprofile.telemetry11.internal.rest.javax;
 
+import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
+
 import java.util.List;
 import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
 
-import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 import io.openliberty.microprofile.telemetry11.internal.rest.TelemetryClientFilter;
+import io.openliberty.microprofile.telemetry11.internal.rest.TelemetryContainerFilter;
 
 @Component(configurationPolicy = IGNORE)
 public class TelemetryJaxRsProviderRegister implements JaxRsProviderRegister {
@@ -39,6 +40,11 @@ public class TelemetryJaxRsProviderRegister implements JaxRsProviderRegister {
             if (clientSide) {
                 TelemetryClientFilter currentFilter = new TelemetryClientFilter();
                 if (currentFilter != null && currentFilter.isEnabled()) {
+                    providers.add(currentFilter);
+                }
+            } else {
+                TelemetryContainerFilter currentFilter = new TelemetryContainerFilter();
+                if (currentFilter != null) {
                     providers.add(currentFilter);
                 }
             }
