@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -605,7 +606,7 @@ public class ClientConfigTests extends FATServletClient {
 
             // submit to the grpcClient, and execute the RPC
             HtmlSubmitInput submitButton = form.getInputByName("submit");
-            page = submitButton.click();
+            submitButton.click();
 
             //Make sure the expected error is logged
             String hitMax = GrpcClientOnly.waitForStringInLog("RESOURCE_EXHAUSTED: gRPC message exceeds maximum size 12",
@@ -764,16 +765,16 @@ public class ClientConfigTests extends FATServletClient {
 
             // submit to the grpcClient, and execute the RPC
             HtmlSubmitInput submitButton = form.getInputByName("submit");
-            page = submitButton.click();
+            Page p2 = submitButton.click();
 
             // Expect a 500 status code since grpcClient-1.0 is not enabled
-            Log.info(c, name.getMethodName(), page.asText());
-            assertEquals("A failure was expected", 500, page.getWebResponse().getStatusCode());
+            Log.info(c, name.getMethodName(), p2.getWebResponse().getContentAsString());
+            assertEquals("A failure was expected", 500, p2.getWebResponse().getStatusCode());
 
             // re-enable grpcClient-1.0 and check for a good response
             serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcClientOnly, serverConfigurationFile, GRPC_CLIENT_ELEMENT, appName, LOG);
-            page = submitButton.click();
-            assertTrue("the gRPC request did not complete correctly", page.asText().contains("us3r1"));
+            p2 = submitButton.click();
+            assertTrue("the gRPC request did not complete correctly", p2.getWebResponse().getContentAsString().contains("us3r1"));
         }
     }
 }
