@@ -27,6 +27,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -36,6 +37,8 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -47,11 +50,18 @@ public class MPTelemetryTest extends FATServletClient {
 
     public static final String APP_NAME = "mpTelemetry";
 
-    @Server("checkpointMPTelemetry")
+    public static final String SERVER_NAME = "checkpointMPTelemetry";
+
+    @Server(SERVER_NAME)
     @TestServlet(servlet = MpTelemetryServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     public TestMethod testMethod;
+
+    @ClassRule
+    public static RepeatTests repeatTest = MicroProfileActions.repeat(SERVER_NAME,
+                                                                      MicroProfileActions.MP60, // first test in LITE mode
+                                                                      MicroProfileActions.MP61); // rest are FULL mode
 
     @BeforeClass
     public static void deployApp() throws Exception {

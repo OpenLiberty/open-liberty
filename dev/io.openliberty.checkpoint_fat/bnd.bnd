@@ -49,7 +49,8 @@ src: \
 	test-applications/mapCache/src,\
 	test-applications/webCacheApp/src,\
 	test-applications/xmlBindings/src,\
-	test-bundles/test-mbeans/src
+	test-bundles/test-mbeans/src,\
+	test-applications/jaxrspropagation/src
 
 fat.project: true
 
@@ -80,7 +81,12 @@ tested.features: \
 	sociallogin-1.0,\
 	mpMetrics-5.1,\
 	passwordUtilities-1.0,\
-	appSecurity-1.0
+	appSecurity-1.0,\
+	mpTelemetry-1.1,\
+	mpConfig-3.1,\
+	restfulWS-3.1,\
+	servlet-5.0,\
+	servlet-6.0
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}
@@ -125,7 +131,6 @@ tested.features: \
 	com.ibm.ws.org.slf4j.simple;version=latest,\
 	com.ibm.ws.org.slf4j.api;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.faulttolerance.1.0,\
-	com.ibm.websphere.org.eclipse.microprofile.rest.client.1.4,\
 	io.openliberty.jakarta.restfulWS.3.0,\
 	jakarta.ws.rs-api,\
 	io.openliberty.jakarta.cdi.3.0,\
@@ -177,6 +182,10 @@ tested.features: \
 	com.ibm.websphere.appserver.api.distributedMap;version=latest,\
 	org.testng,\
 	com.ibm.ws.jmx,\
-	com.ibm.ws.kernel.service
+	com.ibm.ws.kernel.service,\
+	io.opentelemetry:opentelemetry-opentracing-shim;version=1.19.0.alpha,\
+	io.opentracing:opentracing-api;version=0.33.0,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.boot.common;version=latest
 
 -sub: *.bnd
