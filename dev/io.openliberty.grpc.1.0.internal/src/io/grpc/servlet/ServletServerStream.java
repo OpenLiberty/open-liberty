@@ -51,6 +51,7 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import javax.servlet.AsyncContext;
+import javax.servlet.ServletResponse;
 import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletResponse;
 
@@ -70,6 +71,7 @@ final class ServletServerStream extends AbstractServerStream {
 
   ServletServerStream(
       AsyncContext asyncCtx,
+      ServletResponse respParm,
       StatsTraceContext statsTraceCtx,
       int maxInboundMessageSize,
       Attributes attributes,
@@ -82,7 +84,7 @@ final class ServletServerStream extends AbstractServerStream {
     this.authority = authority;
     this.logId = logId;
     this.asyncCtx = asyncCtx;
-    this.resp = (HttpServletResponse) asyncCtx.getResponse();
+    this.resp = (HttpServletResponse)respParm;
     // TODO: previously setWriteListener was called before setting this.writer, which created a  
     // race condition that led to a NPE on the first request.  We should fix this upstream.
     this.writer = new AsyncServletOutputStreamWriter(

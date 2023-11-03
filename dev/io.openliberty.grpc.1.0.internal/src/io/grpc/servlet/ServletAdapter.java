@@ -42,6 +42,9 @@ import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
 
 import com.google.common.io.BaseEncoding;
 import com.ibm.ejs.ras.TraceNLS;
@@ -152,6 +155,7 @@ public final class ServletAdapter {
 		}
 
 		AsyncContext asyncCtx = req.startAsync(req, resp);
+		ServletRequest asyncRq = asyncCtx.getRequest();
 
 		if (logger.isLoggable(FINEST)) {
 			logger.log(FINE, "Liberty inbound gRPC request path translated to {0}", method);
@@ -171,22 +175,22 @@ public final class ServletAdapter {
 		asyncCtx.setTimeout(TimeUnit.NANOSECONDS.toMillis(timeoutNanos));
 		StatsTraceContext statsTraceCtx = StatsTraceContext.newServerContext(streamTracerFactories, method, headers);
 
-		ServletServerStream stream = new ServletServerStream(asyncCtx, statsTraceCtx, maxInboundMessageSize, attributes
+		ServletServerStream stream = new ServletServerStream(asyncCtx, asyncCtx.getResponse(), statsTraceCtx, maxInboundMessageSize, attributes
 				.toBuilder()
 				.set(Grpc.TRANSPORT_ATTR_REMOTE_ADDR, new InetSocketAddress(req.getRemoteHost(), req.getRemotePort()))
 				.set(Grpc.TRANSPORT_ATTR_LOCAL_ADDR, new InetSocketAddress(req.getLocalAddr(), req.getLocalPort()))
 				.build(), getAuthority(req), logId);
 
 		if (logger.isLoggable(FINEST)) {
-			logger.log(FINE, "set the listeners on async request {0}", asyncCtx.getRequest());
+			logger.log(FINE, "set the listeners on async request {0}", asyncRq);
 		}
 
-		asyncCtx.getRequest().getInputStream().setReadListener(new GrpcReadListener(stream, asyncCtx, logId));
+		asyncRq.getInputStream().setReadListener(new GrpcReadListener(stream, asyncCtx, asyncRq, logId));
 
 		asyncCtx.addListener(new GrpcAsycListener(stream, logId));
 
 		if (logger.isLoggable(FINEST)) {
-			logger.log(FINE, "[{0}] the listeners set on async request {1}", new Object[] { logId, asyncCtx.getRequest()});
+			logger.log(FINE, "[{0}] the listeners set on async request {1}", new Object[] { logId, asyncRq});
 		}
 
 		transportListener.streamCreated(stream, method, headers);
@@ -299,10 +303,11 @@ public final class ServletAdapter {
     GrpcReadListener(
         ServletServerStream stream,
         AsyncContext asyncCtx,
+        ServletRequest rq2,
         InternalLogId logId) throws IOException {
       this.stream = stream;
       this.asyncCtx = asyncCtx;
-      input = asyncCtx.getRequest().getInputStream();
+      input = rq2.getInputStream();
       this.logId = logId;
     }
 
