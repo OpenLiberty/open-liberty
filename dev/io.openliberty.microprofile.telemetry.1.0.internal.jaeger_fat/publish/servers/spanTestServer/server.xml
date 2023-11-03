@@ -5,6 +5,7 @@
     <featureManager>
         <feature>mpTelemetry-1.0</feature>
         <feature>timedexit-1.0</feature>
+        <feature>mpRestClient-3.0</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml" />
