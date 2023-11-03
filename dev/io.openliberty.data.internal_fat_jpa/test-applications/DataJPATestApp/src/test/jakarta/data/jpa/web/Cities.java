@@ -21,6 +21,7 @@ import jakarta.data.Streamable;
 import jakarta.data.page.KeysetAwarePage;
 import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Pageable;
+import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
@@ -39,8 +40,7 @@ import io.openliberty.data.repository.update.Assign;
 @Repository
 public interface Cities {
     @Exists
-    @Filter(by = "stateName")
-    boolean areFoundIn(String state);
+    boolean areFoundIn(@By("stateName") String state);
 
     long countByStateNameAndIdNotOrIdNotAndName(String state, CityId exceptForInState, CityId exceptForCity, String city);
 

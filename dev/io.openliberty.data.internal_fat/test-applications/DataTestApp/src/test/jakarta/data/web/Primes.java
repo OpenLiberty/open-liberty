@@ -61,16 +61,12 @@ public interface Primes {
     @Filter(by = "numberId", op = Compare.LessThan, param = "max")
     boolean anyLessThanEndingWithBitPattern(@Param("max") long upperLimit, @Param("bits") String pattern);
 
-    int count(int sumOfBits, boolean even);
-
     long countByIdLessThan(long number);
 
     @Asynchronous
     CompletableFuture<Short> countByIdBetweenAndEvenNot(long first, long last, boolean isOdd);
 
     Integer countByNumberIdBetween(long first, long last);
-
-    boolean existsWith(long id, String hex);
 
     Stream<Prime> find(boolean even, int sumOfBits, Limit limit, Sort... sorts);
 
@@ -222,6 +218,9 @@ public interface Primes {
     @OrderBy(value = "id", descending = true)
     List<Long> inRangeHavingVNumeralAndSubstringOfName(long min, long max, String nameSuffix);
 
+    @Exists
+    boolean isFoundWith(long id, String hex);
+
     @Filter(by = "id", op = Compare.LessThan)
     @Filter(by = "name", op = Compare.EndsWith)
     @Filter(as = Filter.Type.Or, by = "id", op = Compare.Between)
@@ -290,6 +289,9 @@ public interface Primes {
     @Filter(by = "id", op = Compare.LessThan)
     @OrderBy("id")
     List<Long> notWithinButBelow(int rangeMin, int rangeMax, int below);
+
+    @Count
+    int numEvenWithSumOfBits(int sumOfBits, boolean even);
 
     @Insert
     void persist(Prime... primes);
