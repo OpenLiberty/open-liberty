@@ -47,6 +47,8 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.methods.JaxRsMethodTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.responses.JaxRsResponseCodeTestEndpoints;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.responses.JaxRsResponseCodeTestServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.route.JaxRsRouteTestEndpoints;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.route.JaxRsRouteTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.transports.B3MultiPropagationTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.transports.B3PropagationTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.transports.JaegerPropagationTestServlet;
@@ -79,6 +81,7 @@ public class JaxRsIntegrationWithConcurrency extends FATServletClient {
                     @TestServlet(contextRoot = ASYNC_SERVER_APP_NAME, servlet = JaxRsServerAsyncTestServlet.class),
                     @TestServlet(contextRoot = METHODS_APP_NAME, servlet = JaxRsMethodTestServlet.class),
                     @TestServlet(contextRoot = METHODS_APP_NAME, servlet = JaxRsResponseCodeTestServlet.class),
+                    @TestServlet(contextRoot = METHODS_APP_NAME, servlet = JaxRsRouteTestServlet.class),
     })
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -164,6 +167,7 @@ public class JaxRsIntegrationWithConcurrency extends FATServletClient {
         WebArchive methodsApp = ShrinkWrap.create(WebArchive.class, METHODS_APP_NAME + ".war")
                         .addPackage(JaxRsMethodTestEndpoints.class.getPackage())
                         .addPackage(JaxRsResponseCodeTestEndpoints.class.getPackage())
+                        .addPackage(JaxRsRouteTestEndpoints.class.getPackage())
                         .addPackage(InMemorySpanExporter.class.getPackage())
                         .addPackage(TestSpans.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
