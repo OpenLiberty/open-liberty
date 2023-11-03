@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsp.translator.visitor;
 
@@ -296,7 +293,7 @@ public abstract class JspVisitor {
                         visitJspParamsStart(jspElement);
                         processChildren(jspElement);
                         visitJspParamsEnd(jspElement);
-                    } else if(PagesVersionHandler.isPages30Loaded()) { //only check in 3.0 since jsp:params was removed in 4.0
+                    } else if(PagesVersionHandler.isPages31Loaded()) {
                         // Changed for Page 3.1. jsp:params is a no-op (as it must be a child of jsp:plugin)
                         // JSP must still valid contents/syntax within (3.1 Spec, section 5.8 <jsp:params>)
                         if(this.getClass().equals(com.ibm.ws.jsp.translator.visitor.validator.ValidateJspVisitor.class)){
@@ -311,6 +308,10 @@ public abstract class JspVisitor {
                                 logger.logp(Level.FINEST, CLASS_NAME, "processJspElement","Skipping the jsp:params element as it is a no operation for Pages 3.1+");
                             }
                         }
+                    } else { // jsp:params was removed in 4.0
+                            if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)){
+                                logger.logp(Level.FINEST, CLASS_NAME, "processJspElement","Skipping the jsp:params element as it was removed in 4.0");
+                            }
                     }
                 }
                 else if (jspElementType.equals(Constants.JSP_FALLBACK_TYPE)) {
