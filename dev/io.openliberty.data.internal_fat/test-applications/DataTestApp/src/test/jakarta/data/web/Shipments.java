@@ -23,7 +23,6 @@ import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 
-import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.update.Assign;
 
@@ -56,7 +55,6 @@ public interface Shipments {
     @OrderBy(value = "orderedAt", descending = true)
     Shipment[] getAll();
 
-    @Filter(by = "id")
     @Select("status")
     String getStatus(long id);
 

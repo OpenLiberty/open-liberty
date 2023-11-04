@@ -34,6 +34,7 @@ import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Page;
 import jakarta.data.page.Pageable;
 import jakarta.data.page.Slice;
+import jakarta.data.repository.By;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
@@ -72,6 +73,8 @@ public interface Primes {
 
     @Query("SELECT p.numberId FROM Prime p WHERE p.numberId >= ?1 AND p.numberId <= ?2")
     long findAsLongBetween(long min, long max);
+
+    Optional<Prime> findByBinary(@By("binaryDigits") String binary);
 
     @OrderBy("id")
     List<Prime> findByEvenFalseAndIdLessThan(long max);

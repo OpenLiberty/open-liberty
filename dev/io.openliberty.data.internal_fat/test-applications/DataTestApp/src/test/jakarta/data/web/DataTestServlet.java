@@ -3368,6 +3368,17 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a method with a prefix for Query by Method Name and a parameter annotation
+     * that indicates Parameter-based Query. Verify the latter takes precedence when
+     * interpreting the method.
+     */
+    @Test
+    public void testParameterAnnotationTakesPrecedenceOverMethodPrefix() {
+        Prime nine = primes.findByBinary("1001").orElseThrow();
+        assertEquals(9L, nine.numberId);
+    }
+
+    /**
      * Invoke methods that are annotated with the Select, Where, Update, and Delete annotations.
      */
     @Test

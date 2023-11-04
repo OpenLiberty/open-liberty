@@ -22,6 +22,7 @@ import jakarta.data.Sort;
 import jakarta.data.page.KeysetAwarePage;
 import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Pageable;
+import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.PageableRepository;
@@ -92,8 +93,7 @@ public interface Packages extends PageableRepository<Package, Integer> {
                    int id);
 
     @Delete
-    @Filter(by = "id")
-    Package take(int id);
+    Package take(@By("id") int packageNum);
 
     @Delete
     @Filter(by = "length", op = Compare.Between)
