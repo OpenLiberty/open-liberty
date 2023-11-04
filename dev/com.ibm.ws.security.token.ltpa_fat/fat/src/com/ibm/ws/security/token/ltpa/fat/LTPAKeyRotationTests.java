@@ -74,7 +74,7 @@ public class LTPAKeyRotationTests {
     private static final String validPassword = "user1pwd";
 
     private static final String[] serverShutdownMessages = { "CWWKG0058E", "CWWKG0083W", "CWWKS4106E", "CWWKS4109W", "CWWKS4110E", "CWWKS4111E", "CWWKS4112E", "CWWKS4113W",
-                                                             "CWWKS1859E" };
+                                                             "CWWKS4114W", "CWWKS4115W", "CWWKS1859E" };
 
     private static final String validationKeyPassword = "{xor}Lz4sLCgwLTs=";
 
@@ -594,10 +594,6 @@ public class LTPAKeyRotationTests {
     public void testLTPAFileReplacement_newValidKey_monitorValidationKeysDir_true_monitorInterval_0() throws Exception {
         // Configure the server
         configureServer("true", "0", true, false);
-
-        // Wait for configuration error message to be logged
-        assertNotNull("Expected LTPA configuration error message not found in the log.",
-                      server.waitForStringInLog("CWWKS4113W", 5000));
 
         // Copy validation key file (validation2.keys) to the server
         copyFileToServerResourcesSecurityDir("alternate/validation2.keys");
@@ -1190,6 +1186,12 @@ public class LTPAKeyRotationTests {
         // Apply server configuration update if needed
         if (configurationUpdateNeeded) {
             updateConfigDynamically(server, serverConfiguration);
+
+            if (monitorValidationKeysDir.equals("true") && monitorInterval.equals("0")) {
+                // Wait for a warning message message to be logged
+                assertNotNull("Expected LTPA configuration warning message not found in the log.",
+                            server.waitForStringInLog("CWWKS4113W", 5000));
+            }
 
             if (waitForLTPAConfigReadyMessage) {
                 // Wait for the LTPA configuration to be ready after the change

@@ -72,6 +72,14 @@ LTPA_KEYS_FILE_DOES_NOT_EXIST=CWWKS4112E: The {0} LTPA validation keys file does
 LTPA_KEYS_FILE_DOES_NOT_EXIST.explanation=The validation keys file does not exist.
 LTPA_KEYS_FILE_DOES_NOT_EXIST.useraction=Make sure that the validation keys file exists in the specified location that is specified by the validationKeys element.
 
-LTPA_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_EQUALS_TO_OR_LESS_THAN_ZERO=CWWKS4113W: The monitorValidationKeysDir attribute is set to true but the monitor interval is {0}. No dynamic reload occurs when validation keys files are created, modified or deleted in the directory.
-LTPA_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_EQUALS_TO_OR_LESS_THAN_ZERO.explanation= The value for the monitorInterval attribute is zero or less than zero. The directory cannot be monitored for any create, delete, or modify actions on files with the .keys suffix and dynamic reload cannot occur.
+LTPA_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_EQUALS_TO_OR_LESS_THAN_ZERO=CWWKS4113W: The monitorValidationKeysDir attribute is set to true but the monitor interval is {0}. No dynamic reload occurs when LTPA key files are created, modified or deleted in the directory.
+LTPA_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_EQUALS_TO_OR_LESS_THAN_ZERO.explanation=The value for the monitorInterval attribute is zero or less than zero. The directory cannot be monitored for any create, delete, or modify actions on files with the .keys suffix and dynamic reload cannot occur.
 LTPA_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_EQUALS_TO_OR_LESS_THAN_ZERO.useraction=Set the monitorInterval attribute to an interval that is greater than zero.
+
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE=CWWKS4114W: The updateTrigger attribute is set to disabled and the monitorValidationKeysDir attribute is set to true. No dynamic reload occurs when LTPA key files are created, modified or deleted in the directory.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.explanation=When the updateTrigger attribute is set to disabled, the directory will not be monitored for any create, delete, or modify actions on files with the .keys suffix and dynamic reload will not occur. Even if the monitorValidationKeysDir attribute is set to true, the attribute will be ignored, and the directory will not be monitored.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.useraction=Set the updateTrigger attribute to polled or mbean.
+
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO=CWWKS4115W: The updateTrigger attribute is set to disabled and the monitor interval is greater than {0}. No dynamic reload occurs when LTPA key files are created, modified or deleted.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.explanation=When the updateTrigger attribute is set to disabled, the files will not be monitored for any create, delete, or modify actions on files with the .keys suffix and dynamic reload will not occur. Even if the monitorInterval attribute is set to an interval that is greater than zero, the attribute will be ignored, and the files will not be monitored.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=Set the updateTrigger attribute to polled or mbean.
