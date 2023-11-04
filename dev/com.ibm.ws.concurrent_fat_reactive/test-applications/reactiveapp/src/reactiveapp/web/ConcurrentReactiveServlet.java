@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import componenttest.app.FATServlet;
 import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.Uni;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
@@ -188,17 +189,25 @@ public class ConcurrentReactiveServlet extends FATServlet {
      *
      */
     @Test
-    public void mutinyOperatorsTest() throws Exception {
+    public void mutinyTest() throws Exception {
         final ContextCDLImpl continueLatch = new ContextCDLImpl(2);
 
-        Multi.createFrom().item(continueLatch).emitOn(executor).invoke(cdl -> {
+        MutinySubscriber ms = new MutinySubscriber();
+
+        Multi.createFrom().item(continueLatch).emitOn(executor).call(cdl -> {
             try {
                 cdl.checkContext();
                 cdl.countDown();
+                return Uni.createFrom().item(cdl);
             } catch (NamingException e) {
-                throw new RuntimeException(e);
+                return Uni.createFrom().failure(new AssertionError("Context unavailable in function").initCause(e));
             }
-        }).subscribe().withSubscriber(new ThreadSubscriber());
+        }).subscribe().withSubscriber(ms);
+
+        Object o = ms.getResult().get();
+        if (o instanceof AssertionError) {
+            throw (AssertionError) o;
+        }
 
         if (!continueLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS))
             throw new AssertionError("Timed out waiting for CountDownLatch, context may not have been available");
