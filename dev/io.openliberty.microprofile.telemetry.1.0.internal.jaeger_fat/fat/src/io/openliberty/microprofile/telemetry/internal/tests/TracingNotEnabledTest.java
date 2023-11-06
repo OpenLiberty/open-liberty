@@ -27,6 +27,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -37,12 +38,12 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
+import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
@@ -56,19 +57,20 @@ import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryCl
 @RunWith(FATRunner.class)
 public class TracingNotEnabledTest {
 
+    private static final String SERVER_NAME = "spanTestServer";
     private static final String SERVICE_NAME = "Test service";
 
     private static final Class<TracingNotEnabledTest> c = TracingNotEnabledTest.class;
 
-    @ClassRule
     public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(TracingNotEnabledTest.class, "jaeger"));
+    public static RepeatTests repeat = FATSuite.allMPRepeats(SERVER_NAME);
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("spanTestServer", MicroProfileActions.MP61, MicroProfileActions.MP60);
+    public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);
 
     public static JaegerQueryClient client;
 
-    @Server("spanTestServer")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass
@@ -97,7 +99,9 @@ public class TracingNotEnabledTest {
 
     @AfterClass
     public static void closeClient() throws Exception {
-        client.close();
+        if (client != null) {
+            client.close();
+        }
     }
 
     @Test

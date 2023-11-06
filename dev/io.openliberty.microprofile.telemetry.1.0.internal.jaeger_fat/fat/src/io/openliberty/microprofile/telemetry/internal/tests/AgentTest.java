@@ -42,6 +42,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -51,12 +52,12 @@ import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
 import io.openliberty.microprofile.telemetry.internal.apps.agent.AgentTestResource;
+import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
@@ -71,18 +72,18 @@ public class AgentTest {
 
     private static final Class<AgentTest> c = AgentTest.class;
     private static final String SERVICE_NAME = "Test service";
+    private static final String SERVER_NAME = "TelemetryAgent";
 
-    @Server("TelemetryAgent")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    @ClassRule
     public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
+    public static RepeatTests repeat = FATSuite.allMPRepeats(SERVER_NAME);
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("spanTestServer", MicroProfileActions.MP61, MicroProfileActions.MP60);
+    public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);
 
-    public static JaegerQueryClient client;
-
+    private static JaegerQueryClient client;
     private static Set<String> traceIdsUsed;
 
     @BeforeClass
@@ -121,7 +122,7 @@ public class AgentTest {
     }
 
     @AfterClass
-    public static void checkAllTraceIdsAccountedFor() {
+    public static void checkAllTraceIdsAccountedFor() throws Exception {
         Log.info(c, "checkAllTraceIdsAccountedFor", "Trace IDs used: " + traceIdsUsed);
         List<Span> unexpectedSpans;
         unexpectedSpans = client.getServices().stream() // Get all the services
@@ -136,6 +137,8 @@ public class AgentTest {
                                 .collect(toList());
 
         assertThat("Spans created that don't belong to any test", unexpectedSpans, is(empty()));
+
+        client.close();
     }
 
     /**

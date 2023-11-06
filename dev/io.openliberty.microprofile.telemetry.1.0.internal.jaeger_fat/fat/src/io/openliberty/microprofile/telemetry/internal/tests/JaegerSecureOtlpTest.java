@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.testcontainers.DockerClientFactory;
 
@@ -32,10 +33,10 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.security.utils.SSLUtils;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
+import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
@@ -46,11 +47,11 @@ import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryCl
 @RunWith(FATRunner.class)
 public class JaegerSecureOtlpTest extends JaegerBaseTest {
 
-    @ClassRule
     public static JaegerContainer jaegerContainer = new JaegerContainer(getCertificate(), getKey()).withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
+    public static RepeatTests repeat = FATSuite.allMPRepeats(SERVER_NAME);
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("spanTestServer", MicroProfileActions.MP61, MicroProfileActions.MP60);
+    public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);
 
     public static JaegerQueryClient client;
 
@@ -86,7 +87,9 @@ public class JaegerSecureOtlpTest extends JaegerBaseTest {
 
     @AfterClass
     public static void closeClient() throws Exception {
-        client.close();
+        if (client != null) {
+            client.close();
+        }
     }
 
     @Override

@@ -27,6 +27,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -36,11 +37,11 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
+import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
@@ -53,21 +54,22 @@ import io.opentelemetry.api.trace.SpanKind;
 @RunWith(FATRunner.class)
 public class CrossFeatureJaegerTest {
 
+    private static final String CROSS_FEATURE_TELEMETRY_SERVER = "crossFeatureTelemetryServer";
     private static final String APP_NAME = "crossFeature";
     private static final Class<?> c = CrossFeatureJaegerTest.class;
 
-    @ClassRule
     public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
+    public static RepeatTests repeat = FATSuite.allMPRepeats(CROSS_FEATURE_TELEMETRY_SERVER);
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("crossFeatureTelemetryServer", MicroProfileActions.MP61, MicroProfileActions.MP60);
+    public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);
 
     public static JaegerQueryClient client;
 
     @Server("crossFeatureOpenTracingServer")
     public static LibertyServer opentracingServer;
 
-    @Server("crossFeatureTelemetryServer")
+    @Server(CROSS_FEATURE_TELEMETRY_SERVER)
     public static LibertyServer telemetryServer;
 
     @BeforeClass
@@ -82,12 +84,12 @@ public class CrossFeatureJaegerTest {
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false"); //Enable tracing
         telemetryServer.addEnvVar("OTEL_PROPAGATORS", "tracecontext, baggage, jaeger"); // Include the jaeger propagation headers
-        telemetryServer.addEnvVar("TESTCLIENT_MP_REST_URL", getUrl(opentracingServer));
+        telemetryServer.addEnvVar("IO_OPENLIBERTY_MICROPROFILE_TELEMETRY_INTERNAL_APPS_CROSSFEATURE_TELEMETRY_CROSSFEATURECLIENT_MP_REST_URL", getUrl(opentracingServer));
 
         opentracingServer.addEnvVar("JAEGER_ENDPOINT", jaegerContainer.getJaegerThriftUrl());
         opentracingServer.addEnvVar("JAEGER_SAMPLER_TYPE", "const"); // Trace every call
         opentracingServer.addEnvVar("JAEGER_SAMPLER_PARAM", "1"); // Trace every call
-        opentracingServer.addEnvVar("TESTCLIENT_MP_REST_URL", getUrl(telemetryServer));
+        opentracingServer.addEnvVar("IO_OPENLIBERTY_MICROPROFILE_TELEMETRY_INTERNAL_APPS_CROSSFEATURE_OPENTRACING_CROSSFEATURECLIENT_MP_REST_URL", getUrl(telemetryServer));
 
         // create apps
         WebArchive opentracingWar = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
@@ -108,6 +110,13 @@ public class CrossFeatureJaegerTest {
     public static void teardownTelemetry() throws Exception {
         telemetryServer.stopServer();
         opentracingServer.stopServer();
+    }
+
+    @AfterClass
+    public static void closeClient() throws Exception {
+        if (client != null) {
+            client.close();
+        }
     }
 
     private static String getUrl(LibertyServer server) {

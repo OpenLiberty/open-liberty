@@ -51,13 +51,20 @@ import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 public abstract class JaegerBaseTest {
 
     private static final Class<?> c = JaegerBaseTest.class;
+    protected static final String SERVER_NAME = "spanTestServer";
 
-    @Server("spanTestServer")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     public JaegerQueryClient client = getJaegerClient();
 
     /**
+     * Get a valid client for the Jaeger server
+     * <p>
+     * This method is called for each test and subclasses may return the same client or different classes for each test.
+     * <p>
+     * The subclass is responsible for closing the client at the end of the test or the class.
+     *
      * @return a client for the Jaeger server
      */
     protected abstract JaegerQueryClient getJaegerClient();

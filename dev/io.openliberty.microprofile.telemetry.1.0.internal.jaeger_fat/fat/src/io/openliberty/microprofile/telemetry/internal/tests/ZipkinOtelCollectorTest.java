@@ -32,6 +32,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.Network;
 
@@ -49,6 +50,7 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
+import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.otelCollector.OtelCollectorContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinContainer;
@@ -63,36 +65,31 @@ import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class ZipkinOtelCollectorTest {
-    //Set up network
-    //Start Zipkin container - > mapping port
-
-    //Start otel collector container -> Requires zipkin mapped port
-    @ClassRule
-    public static Network network = Network.newNetwork();
-
-    @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("spanTestServer", MicroProfileActions.MP61, MicroProfileActions.MP60);
 
     private static final Class<?> c = ZipkinTest.class;
+    private static final String SERVER_NAME = "spanTestServer";
 
-    public static final int OTLP_GRPC_PORT = 4317;
-
-    @ClassRule
+    public static Network network = Network.newNetwork();
     public static ZipkinContainer zipkinContainer = new ZipkinContainer()
                                                                          .withLogConsumer(new SimpleLogConsumer(ZipkinTest.class, "zipkin"))
                                                                          .withNetwork(network)
                                                                          .withNetworkAliases("zipkin-all-in-one");
-
-    @ClassRule
     public static OtelCollectorContainer otelCollectorContainer = new OtelCollectorContainer(new File("lib/LibertyFATTestFiles/otel-collector-config-zipkin.yaml"))
                                                                                                                                                                    .withNetwork(network)
                                                                                                                                                                    .withNetworkAliases("otel-collector-zipkin")
                                                                                                                                                                    .withLogConsumer(new SimpleLogConsumer(ZipkinOtelCollectorTest.class,
                                                                                                                                                                                                           "otelCol"));
+    public static RepeatTests repeat = FATSuite.allMPRepeats(SERVER_NAME);
+
+    @ClassRule
+    public static RuleChain chain = RuleChain.outerRule(network)
+                                             .around(zipkinContainer)
+                                             .around(otelCollectorContainer)
+                                             .around(repeat);
 
     public ZipkinQueryClient client = new ZipkinQueryClient(zipkinContainer);
 
-    @Server("spanTestServer")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass

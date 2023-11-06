@@ -202,10 +202,12 @@ public class JaegerQueryClient implements AutoCloseable {
     /** {@inheritDoc} */
     @Override
     public void close() throws Exception {
-        Channel channel = client.getChannel();
-        if (channel instanceof ManagedChannel) {
-            ManagedChannel managedChannel = (ManagedChannel) channel;
-            managedChannel.shutdown().awaitTermination(10, TimeUnit.SECONDS);
+        if (client != null) {
+            Channel channel = client.getChannel();
+            if (channel instanceof ManagedChannel) {
+                ManagedChannel managedChannel = (ManagedChannel) channel;
+                managedChannel.shutdown().awaitTermination(10, TimeUnit.SECONDS);
+            }
         }
     }
 
