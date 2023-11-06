@@ -42,6 +42,7 @@ import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 /**
  * A feature resolver that determines the set of features that should be installed
@@ -450,18 +451,19 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         // Gets the preferred feature version for a versionless feature from the PREFERRED_FEATURE_VERSIONS env var.
-        //System.getenv("com.ibm.ws.beta.edition");
-        if(baseSymbolicName.startsWith("io.openliberty.unversioned.")){
-            if(System.getenv("PREFERRED_FEATURE_VERSIONS") != null && !System.getenv("PREFERRED_FEATURE_VERSIONS").equals("")){
-                String[] preferredVersionlessVersions = System.getenv("PREFERRED_FEATURE_VERSIONS").split(",");
-                for(String versionlessVersion : preferredVersionlessVersions){
-                    String[] nAV = parseNameAndVersion(versionlessVersion);
-                    if(baseSymbolicName.equals("io.openliberty.unversioned." + nAV[0])){
-                        tolerates.set(0, preferredVersion);
-                        tolerates.remove(nAV[1]);
-                        preferredVersion = nAV[1];
-                        symbolicName = "io.openliberty.unversioned." + versionlessVersion;
-                        break;
+        if(Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"))){
+            if(baseSymbolicName.startsWith("io.openliberty.unversioned.")){
+                if(System.getenv("PREFERRED_FEATURE_VERSIONS") != null && !System.getenv("PREFERRED_FEATURE_VERSIONS").equals("")){
+                    String[] preferredVersionlessVersions = System.getenv("PREFERRED_FEATURE_VERSIONS").split(",");
+                    for(String versionlessVersion : preferredVersionlessVersions){
+                        String[] nAV = parseNameAndVersion(versionlessVersion);
+                        if(baseSymbolicName.equals("io.openliberty.unversioned." + nAV[0])){
+                            tolerates.set(0, preferredVersion);
+                            tolerates.remove(nAV[1]);
+                            preferredVersion = nAV[1];
+                            symbolicName = "io.openliberty.unversioned." + versionlessVersion;
+                            break;
+                        }
                     }
                 }
             }
@@ -552,8 +554,10 @@ public class FeatureResolverImpl implements FeatureResolver {
         if (overrideTolerates.contains(tolerate)) {
             return true;
         }
-        if(chain.peekFirst().contains("io.openliberty.versionless.")){
-            return true;
+        if(Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"))){
+            if(chain.peekFirst().contains("io.openliberty.versionless.")){
+                return true;
+            }
         }
         return false;
     }
