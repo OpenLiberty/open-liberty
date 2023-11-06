@@ -168,7 +168,7 @@ A feature is ready to GA after it is Feature Complete and has obtained all neces
     - Once all missing translations are delivered, the `Translation - Missing` label is replaced with `Translation - Complete`.
   - If missing translation could cause a break in functionality or a security or production outage risk, feature owner adds the `Translation - Blocked` label.
     - Featues with `Translation - Blocked` may **NOT** proceed to GA until the label has been replaced with either `Translation - Missing` or `Translation - Complete`.
-  - For further guidance, contact [Globalization focal point](https://github.com/orgs/OpenLiberty/teams/globalization-approvers)) or the [Release Architect](https://github.com/orgs/OpenLiberty/teams/release-architect).
+  - For further guidance, contact [Globalization focal point](https://github.com/orgs/OpenLiberty/teams/globalization-approvers) or the [Release Architect](https://github.com/orgs/OpenLiberty/teams/release-architect).
 - [ ] GA development complete and feature ready for inclusion in a GA release
   - Add label `target:ga` and the appropriate `target:YY00X` (where YY00X is the targeted GA version).
   - Inclusion in a release requires the completion of all Focal Point Approvals.
