@@ -147,7 +147,7 @@ In order to facilitate early feedback from users, all new features and functiona
 - [ ] Feature delivered into beta
   - ([OpenLiberty/release-manager](https://github.com/orgs/OpenLiberty/teams/release-manager)) adds label `release:YY00X-beta` (where YY00X is the first beta version that included the functionality).
 
-### **Beta Blog** (Complete 1.5 weeks before beta eGA)
+### **Beta Blog** (Complete by beta eGA)
 - [ ] Beta blog issue created and populated using the [Open Liberty BETA blog post](https://github.com/OpenLiberty/open-liberty/issues/new/choose) template.
   - Add a link to the beta blog issue in the [Documents](#documents) section.
   - Note: This is for inclusion into the overall [beta release blog post](https://openliberty.io/blog/?search=beta&key=tag).  If, in addition, you'd also like to create a dedicated blog post about your feature, then follow the "Standalone Feature Blog Post" instructions under the [Other Deliverables](#other-deliverables) section.
@@ -206,7 +206,7 @@ These occur only after GA of this feature is requested (by adding a `target:ga` 
 - [ ] Beta guards are removed, or N/A
   - Only after all necessary Focal Point Approvals have been granted.
 
-### **GA Blog** (Complete by Feature Complete Date)
+### **GA Blog** (Complete by Friday after GM)
 - [ ] GA Blog issue created and populated using the [Open Liberty GA release blog post](https://github.com/OpenLiberty/open-liberty/issues/new/choose) template.
   - Add a link to the GA Blog issue in the [Documents](#documents) section.
   - Note: This is for inclusion into the overall [release blog post](https://openliberty.io/blog/?search=release&key=tag).  If, in addition, you'd also like to create a dedicated blog post about your feature, then follow the "Standalone Feature Blog Post" instructions under the [Other Deliverables](#other-deliverables) section.
@@ -217,9 +217,9 @@ These occur only after GA of this feature is requested (by adding a `target:ga` 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Other Deliverables**
 
-- [ ] **Standalone Feature Blog Post** A blog post specifically about your feature or N/A.  ([OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect))
+- [ ] **Standalone Feature Blog Post** - A blog post specifically about your feature or N/A.  ([OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect))
   - This should be strongly considered for larger or more prominent features.
   - Follow [instructions](https://github.com/OpenLiberty/blogs/tree/draft#writing-and-publishing-blog-posts-on-the-openlibertyio-blog) in the blogs repo.
-- [ ] **OL Guides** OL Guides assessment is complete or N/A. ([OpenLiberty/guide-assessment](https://github.com/orgs/OpenLiberty/teams/guide-assessment/members))
-- [ ] **Dev Experience** Developer Experience & Tools work is complete or N/A. ([OpenLiberty/dev-experience-assessment](https://github.com/orgs/OpenLiberty/teams/dev-experience-assessment/members))
+- [ ] **OL Guides** - OL Guides assessment is complete or N/A. ([OpenLiberty/guide-assessment](https://github.com/orgs/OpenLiberty/teams/guide-assessment/members))
+- [ ] **Dev Experience** - Developer Experience & Tools work is complete or N/A. ([OpenLiberty/dev-experience-assessment](https://github.com/orgs/OpenLiberty/teams/dev-experience-assessment/members))
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
