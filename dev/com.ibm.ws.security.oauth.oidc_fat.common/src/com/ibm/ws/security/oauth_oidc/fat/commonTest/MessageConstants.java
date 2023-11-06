@@ -123,6 +123,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS1741W_OIDC_CLIENT_NONE_ALG = "CWWKS1741W";
     public static final String CWWKS1743E_REUSED_JTI = "CWWKS1743E";
     public static final String CWWKS1747E_JWK_RETRIEVE_FAILED = "CWWKS1747E";
+    public static final String CWWKS1748E_USERINFO_REQUEST_NOT_AUTHORIZED = "CWWKS1748E";
     public static final String CWWKS1749E_SUB_DID_NOT_MATCH_ID_TOKEN = "CWWKS1749E";
     public static final String CWWKS1756E_OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR = "CWWKS1756E";
     public static final String CWWKS1761E_SIG_ALG_MISMATCH = "CWWKS1761E";
