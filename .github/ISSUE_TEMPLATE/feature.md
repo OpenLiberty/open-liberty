@@ -126,13 +126,12 @@ In order to avoid last minute blockers and significant disruptions to the featur
 
 ### **Legal** (Complete before Feature Complete Date)
 - [ ] Changed or new open source libraries are cleared and approved, or N/A. (Legal Release Services/Cass Tucker/Release PM).
-- [ ] Licenses and Certificates of Originality (COOs) are updated, or N/A
 
 ### **Innovation** (Complete 1 week before Feature Complete Date)
 - [ ] Consider whether any aspects of the feature may be patentable. If any identified, disclosures have been submitted.
 
 ### **Translation** (Complete by Feature Complete Date)
-- [ ] PII updates are merged, or N/A.
+- [ ] PII (Program Integrated Information) updates are merged (i.e. all English strings due for translation have been delivered), or N/A.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Beta**
@@ -140,8 +139,8 @@ In order to avoid last minute blockers and significant disruptions to the featur
 In order to facilitate early feedback from users, all new features and functionality should first be released as part of a beta release.
 
 ### **Beta Code**
-- [ ] Beta fence the functionality
-  - `kind=beta`, `ibm:beta`, `ProductInfo.getBetaEdition()`
+- [ ] [Beta fence](https://github.com/OpenLiberty/open-liberty/wiki/Beta-Fencing) the functionality
+  - E.g. `kind=beta`, `ibm:beta`, `ProductInfo.getBetaEdition()`
 - [ ] Beta development complete and feature ready for inclusion in a beta release
   - Add label `target:beta` and the appropriate `target:YY00X-beta` (where YY00X is the targeted beta version).
 - [ ] Feature delivered into beta
