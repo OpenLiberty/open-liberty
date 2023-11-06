@@ -34,38 +34,6 @@
         </group>
     </basicRegistry>
 
-    <application type="war" id="basicauth1" name="basicauth1" location="${server.config.dir}/apps/basicauth.war">
-        <application-bnd>
-            <security-role name="Employee">
-                <user name="user1" />
-                <group name="group1" />
-            </security-role>
-            <security-role name="Manager">
-                <user name="user2" />
-                <group name="group2" />
-            </security-role>        
-            <security-role name="AllAuthenticated">
-                <special-subject type="ALL_AUTHENTICATED_USERS" />
-            </security-role>
-        </application-bnd>
-    </application>
-
-    <application type="war" id="basicauth2" name="basicauth2" location="${server.config.dir}/apps/basicauth.war">
-        <application-bnd>
-            <security-role name="Employee">
-                <user name="user1" />
-                <group name="group1" />
-            </security-role>
-            <security-role name="Manager">
-                <user name="user2" />
-                <group name="group2" />
-            </security-role>        
-            <security-role name="AllAuthenticated">
-                <special-subject type="ALL_AUTHENTICATED_USERS" />
-            </security-role>
-        </application-bnd>
-    </application>
-
     <application type="war" id="formlogin1" name="formlogin1" location="${server.config.dir}/apps/formlogin.war">
         <application-bnd>
             <security-role name="Employee">
@@ -98,8 +66,6 @@
         </application-bnd>
     </application>
 
-    <webAppSecurity useContextRootForSSOCookiePath="false" />
-
     <authentication id="Basic" cacheEnabled="false" />
 
     <ltpa monitorInterval = "5" monitorValidationKeysDir="true" expiration="5m" updateTrigger="polled" keysPassword="{xor}Lz4sLCgwLTs=">
@@ -113,6 +79,6 @@
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>
 
     <!-- Default SSL configuration enables trust for default certificates from the Java runtime --> 
-    <ssl id="defaultSSLConfig" trustDefaultCerts="true" />
+    <ssl id="defaultSSLConfig" />
     
 </server>

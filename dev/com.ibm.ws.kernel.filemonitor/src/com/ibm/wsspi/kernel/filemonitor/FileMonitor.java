@@ -135,7 +135,6 @@ public interface FileMonitor {
      * <ul>
      * <li>{@value #MONITOR_TYPE_TIMED} will monitor the files and/or directories at regular intervals</li>
      * <li>{@value #MONITOR_TYPE_EXTERNAL} will defer monitoring to an external agent</li>
-     * <li>{@value #MONITOR_TYPE_DISABLED} will disable monitoring</li>
      * </ul>
      * <em>({@value #MONITOR_TYPE_TIMED} is the default setting.)</em>
      */
@@ -146,9 +145,6 @@ public interface FileMonitor {
 
     /** <h4>Property value</h4> Defer monitoring to an external agent. */
     String MONITOR_TYPE_EXTERNAL = "external";
-
-    /** <h4>Property value</h4> Disable monitoring. */
-    String MONITOR_TYPE_DISABLED = "disabled";
 
     /**
      * Called with the result of a scan of specified resources.
