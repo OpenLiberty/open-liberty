@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,7 +29,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -39,6 +38,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -111,7 +111,7 @@ public class ClientConfigTests extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         Exception excep = null;
-
+        
         LOG.info("ClientConfigTests : tearDown() : serverConfigurationFile set to null");
         // Setting serverConfigurationFile to null forces a server.xml update (when GrpcTestUtils.setServerConfiguration() is first called) on the repeat run
         // If not set to null, test failures may occur (since the incorrect server.xml could be used)
@@ -142,7 +142,7 @@ public class ClientConfigTests extends FATServletClient {
 
     private static void stopClientServer() throws Exception {
         if (GrpcClientOnly != null && GrpcClientOnly.isStarted()) {
-
+            
             /*
              * CWWKG0083W: expected by testInvalidMaxInboundMessageSize due to invalid message size config
              * CWWKG0076W: expected when a previous config is still in use because an invalid config was rejected
@@ -570,7 +570,7 @@ public class ClientConfigTests extends FATServletClient {
      * @throws Exception
      */
     @Test
-    // ExpectedFFDC("io.grpc.StatusRuntimeException")
+    @ExpectedFFDC("io.grpc.StatusRuntimeException")
     public void testSmallMaxInboundMessageSize() throws Exception {
         LOG.info("ClientConfigTests : testSmallMaxInboundMessageSize() : test very small MaxInboundMessageSize.");
 
@@ -605,7 +605,7 @@ public class ClientConfigTests extends FATServletClient {
 
             // submit to the grpcClient, and execute the RPC
             HtmlSubmitInput submitButton = form.getInputByName("submit");
-            submitButton.click();
+            page = submitButton.click();
 
             //Make sure the expected error is logged
             String hitMax = GrpcClientOnly.waitForStringInLog("RESOURCE_EXHAUSTED: gRPC message exceeds maximum size 12",
@@ -623,7 +623,7 @@ public class ClientConfigTests extends FATServletClient {
      * @throws Exception
      */
     @Test
-    // ExpectedFFDC("io.grpc.StatusRuntimeException")
+    @ExpectedFFDC("io.grpc.StatusRuntimeException")
     @AllowedFFDC("java.io.IOException")
     public void testMaxInboundMetadataSize() throws Exception {
         LOG.info("ClientConfigTests : testMaxInboundMetadataSize() : test maxInboundMetadataSize.");
@@ -660,8 +660,7 @@ public class ClientConfigTests extends FATServletClient {
 
             // submit to the grpcClient, and execute the RPC
             HtmlSubmitInput submitButton = form.getInputByName("submit");
-
-            submitButton.click();
+            page = submitButton.click();
 
             //Make sure the expected error is logged
             String hitMeta = GrpcClientOnly.waitForStringInLog("INTERNAL: http2 exception",
@@ -764,16 +763,16 @@ public class ClientConfigTests extends FATServletClient {
 
             // submit to the grpcClient, and execute the RPC
             HtmlSubmitInput submitButton = form.getInputByName("submit");
-            Page p2 = submitButton.click();
+            page = submitButton.click();
 
             // Expect a 500 status code since grpcClient-1.0 is not enabled
-            Log.info(c, name.getMethodName(), p2.getWebResponse().getContentAsString());
-            assertEquals("A failure was expected", 500, p2.getWebResponse().getStatusCode());
+            Log.info(c, name.getMethodName(), page.asText());
+            assertEquals("A failure was expected", 500, page.getWebResponse().getStatusCode());
 
             // re-enable grpcClient-1.0 and check for a good response
             serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcClientOnly, serverConfigurationFile, GRPC_CLIENT_ELEMENT, appName, LOG);
-            p2 = submitButton.click();
-            assertTrue("the gRPC request did not complete correctly", p2.getWebResponse().getContentAsString().contains("us3r1"));
+            page = submitButton.click();
+            assertTrue("the gRPC request did not complete correctly", page.asText().contains("us3r1"));
         }
     }
 }

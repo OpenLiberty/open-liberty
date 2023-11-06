@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -49,9 +49,6 @@ public class HelloWorldClientServlet extends HttpServlet {
     }
 
     private void stopService(ManagedChannel channel) {
-        if (channel == null) {
-            return; //TODO when is this true
-        }
         boolean terminated = false;
         try {
             channel.shutdownNow();
@@ -146,12 +143,8 @@ public class HelloWorldClientServlet extends HttpServlet {
                             .append("<form><input type=\"button\" value=\"Go back!\" onclick=\"history.back()\"></form>")
                             .append("               </body>\r\n")
                             .append("</html>\r\n");
-        } catch (Throwable t) {
-            System.out.println(t.getMessage());
         } finally {
-            if (channel != null) {
-                stopService(channel);
-            }
+            stopService(channel);
         }
     }
 
