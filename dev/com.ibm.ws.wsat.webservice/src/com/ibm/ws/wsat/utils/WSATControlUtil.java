@@ -111,7 +111,7 @@ public class WSATControlUtil {
             faultTo = replyTo;
         }
 
-        Protocol service = WSATOSGIService.getInstance().getProtocolService();
+        Protocol service = WSCoorUtil.getProtocolService();
 
         return new ProtocolServiceWrapper().setFaultTo(faultTo).setReplyTo(replyTo).setFrom(from).setService(service).setTxID(ctxID).setPartID(partID).setRecoveryID(recoveryID).setMigrationHeaders(migration).setNextStepEPR(replyTo).setWSATProperties(wsatProperties);
     }

@@ -512,7 +512,7 @@ public class XAResourceImpl implements XAResource, Serializable {
         public String toString() {
             StringBuffer sb = new StringBuffer("Resource: " + key + "\n");
             sb.append("RM: " + RM);
-            sb.append("\nState: " + stateFormatter(_state));
+            sb.append("\nState: " + stateFormatter());
             sb.append("\nXid: " + _xid);
             sb.append("\nCommit order: " + _commitOrder);
             sb.append("\nRecover action: " + actionFormatter(recoverAction));
@@ -520,7 +520,7 @@ public class XAResourceImpl implements XAResource, Serializable {
             return sb.toString();
         }
 
-        private String stateFormatter(int state) {
+        private String stateFormatter() {
             StringBuffer sb = new StringBuffer("NOT STARTED");
 
             if (inState(STARTED)) {
@@ -1321,18 +1321,15 @@ public class XAResourceImpl implements XAResource, Serializable {
         	if (null != res.getXid()) {
         		numResources++;
         		if (res.inState(COMMITTED)) {
-        			sb.append("Committed: ").append(res.key).append(" ");
         			committed++;
         		} else if (res.inState(ROLLEDBACK)) {
-        			sb.append("RolledBack: ").append(res.key).append(" ");
         			rolledback++;
         		} else if (res.inState(PREPARED)) {
-        			sb.append("Prepared: ").append(res.key).append(" ");
         			prepared++;
         		} else {
-        			sb.append(res.getState()).append(": ").append(res.key).append(" ");
         			rolledback++;
         		}
+    			sb.append(res.stateFormatter()).append(": ").append(res.key).append(" ");
         	} else {
         		System.out.println("Resource has null Xid. Ignoring in checkAtomicity(): " + res);
         	}

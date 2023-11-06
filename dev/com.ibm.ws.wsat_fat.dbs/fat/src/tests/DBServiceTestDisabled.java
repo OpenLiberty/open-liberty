@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.ws.wsat.fat.util.DBTestBase;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -100,10 +101,10 @@ public class DBServiceTestDisabled extends DBTestBase {
 
 		// Test URL
 		// ATAssertion exists on Operation level in WSDL
-		appNameService = "wsatAppService";
+		appName = "wsatAppService";
 
-		ShrinkHelper.defaultDropinApp(client, appNameService, "web."+appNameService+".client","web."+appNameService+".server","web."+appNameService+".servlet","web."+appNameService+".utils");
-		ShrinkHelper.defaultDropinApp(server1, appNameService, "web."+appNameService+".client","web."+appNameService+".server","web."+appNameService+".servlet","web."+appNameService+".utils");
+		ShrinkHelper.defaultDropinApp(client, appName, "web."+appName+".client","web."+appName+".server","web."+appName+".servlet","web."+appName+".utils");
+		ShrinkHelper.defaultDropinApp(server1, appName, "web."+appName+".client","web."+appName+".server","web."+appName+".servlet","web."+appName+".utils");
 
 		FATUtils.startServers(client, server1);
 	}
@@ -118,19 +119,19 @@ public class DBServiceTestDisabled extends DBTestBase {
 	
 	@Test
 	public void testDBDisabled13() {
-		String testURL = "/" + appNameService + "/ClientServlet";
+		String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
 				+ commit + ":" + basicURL + ":" + server1Port
 				+ "&withouttrans=true";
-		commonTest(appNameService, wsatURL, notInstalled, "1", "0");
+		commonTest(appName, wsatURL, notInstalled, "1", "0");
 	}
 
 	@Test
 	public void testDBDisabled14() {
-		String testURL = "/" + appNameService + "/ClientServlet";
+		String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
 				+ commit + ":" + basicURL + ":" + server1Port;
-		commonTest(appNameService, wsatURL, notInstalled, "0");
+		commonTest(appName, wsatURL, notInstalled, "0");
 	}
 
 	@Override

@@ -27,4 +27,6 @@ fat.project: true
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	com.ibm.ws.componenttest.2.0;version=latest,\
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
-	io.openliberty.jakarta.concurrency.3.0;version=latest
+	io.openliberty.jakarta.concurrency.3.0;version=latest,\
+	io.openliberty.io.smallrye.reactive.mutiny
+	

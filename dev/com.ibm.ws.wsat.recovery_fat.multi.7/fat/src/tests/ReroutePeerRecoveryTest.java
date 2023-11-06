@@ -65,11 +65,22 @@ public class ReroutePeerRecoveryTest extends MultiRecoveryTest {
 
 	@BeforeClass
 	public static void startExtraServers() throws Exception {
-    	Log.info(ReroutePeerRecoveryTest.class, "startExtraServers", "");
-		server3.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_quaternary")));
-		server4.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_tertiary")));
-		server5.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_quinary")));
-		server6.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_senary")));
+		String method = "startExtraServers";
+    	int port = Integer.parseInt(System.getProperty("HTTP_quaternary"));
+    	Log.info(ReroutePeerRecoveryTest.class, method, "Setting port for " + server3.getServerName() + " to " + port);
+    	server3.setHttpDefaultPort(port);
+
+    	port = Integer.parseInt(System.getProperty("HTTP_tertiary"));
+    	Log.info(ReroutePeerRecoveryTest.class, method, "Setting port for " + server4.getServerName() + " to " + port);
+		server4.setHttpDefaultPort(port);
+
+    	port = Integer.parseInt(System.getProperty("HTTP_quinary"));
+    	Log.info(ReroutePeerRecoveryTest.class, method, "Setting port for " + server5.getServerName() + " to " + port);
+		server5.setHttpDefaultPort(port);
+
+    	port = Integer.parseInt(System.getProperty("HTTP_senary"));
+    	Log.info(ReroutePeerRecoveryTest.class, method, "Setting port for " + server6.getServerName() + " to " + port);
+		server6.setHttpDefaultPort(port);
 
 		ShrinkHelper.exportDropinAppToServer(server3, clientApp);
 		ShrinkHelper.exportDropinAppToServer(server5, clientApp);

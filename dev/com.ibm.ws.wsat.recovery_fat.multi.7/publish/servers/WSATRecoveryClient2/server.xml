@@ -24,7 +24,6 @@
     backendURL="http://localhost:${bvt.prop.HTTP_quaternary}"
     leaseLength="2m"
     heuristicRetryInterval="10"
-    heuristicRetryLimit="3"
     recoverOnStartup="true"
     recoveryGroup="client-group"
     recoveryIdentity="WSATRecoveryClient2"
