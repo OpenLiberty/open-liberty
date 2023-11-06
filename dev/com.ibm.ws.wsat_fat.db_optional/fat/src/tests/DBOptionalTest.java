@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.ws.wsat.fat.util.DBTestBase;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -204,11 +205,11 @@ public class DBOptionalTest extends DBTestBase {
 
 		// Test URL
 		// ATAssertion exists on Operation level in WSDL
-		appNameOptional = "wsatAppOptional";
+		appName = "wsatAppOptional";
 
-		ShrinkHelper.defaultDropinApp(client, appNameOptional, "web."+appNameOptional+".client","web."+appNameOptional+".server","web."+appNameOptional+".servlet","web."+appNameOptional+".utils");
-		ShrinkHelper.defaultDropinApp(server1, appNameOptional, "web."+appNameOptional+".client","web."+appNameOptional+".server","web."+appNameOptional+".servlet","web."+appNameOptional+".utils");
-		ShrinkHelper.defaultDropinApp(server2, appNameOptional, "web."+appNameOptional+".client","web."+appNameOptional+".server","web."+appNameOptional+".servlet","web."+appNameOptional+".utils");
+		ShrinkHelper.defaultDropinApp(client, appName, "web."+appName+".client","web."+appName+".server","web."+appName+".servlet","web."+appName+".utils");
+		ShrinkHelper.defaultDropinApp(server1, appName, "web."+appName+".client","web."+appName+".server","web."+appName+".servlet","web."+appName+".utils");
+		ShrinkHelper.defaultDropinApp(server2, appName, "web."+appName+".client","web."+appName+".server","web."+appName+".servlet","web."+appName+".utils");
 
 		FATUtils.startServers(client, server1, server2);
 	}
@@ -239,43 +240,43 @@ public class DBOptionalTest extends DBTestBase {
 	 */
 	@Test
 	public void test3DBs43() {
-		final String testURL = "/" + appNameOptional + "/ClientServlet";
+		final String testURL = "/" + appName + "/ClientServlet";
 
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "s="
 				+ commit + ":" + basicURL + ":" + server1Port + "&"
 				+ server2Name + "p=" + commit + ":" + basicURL + ":"
 				+ server2Port;
-		commonTest(appNameOptional, wsatURL, goodResult, "1");
+		commonTest(appName, wsatURL, goodResult, "1");
 	}
 	
 	@Test
 	public void test3DBs44() {
-		String testURL = "/" + appNameOptional + "/ClientServlet";
+		String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
 				+ commit + ":" + basicURL + ":" + server1Port + "&"
 				+ server2Name + "s=" + commit + ":" + basicURL + ":"
 				+ server2Port;
-		commonTest(appNameOptional, wsatURL, goodResult, "1");
+		commonTest(appName, wsatURL, goodResult, "1");
 	}
 	
 	@Test
 	public void test3DBs45() {
-		String testURL = "/" + appNameOptional + "/ClientServlet";
+		String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "s="
 				+ commit + ":" + basicURL + ":" + server1Port + "&"
 				+ server2Name + "p=" + rollback + ":" + basicURL + ":"
 				+ server2Port;
-		commonTest(appNameOptional, wsatURL, serverRollbackResult, "0");
+		commonTest(appName, wsatURL, serverRollbackResult, "0");
 	}
 	
 	@Test
 	public void test3DBs46() {
-		String testURL = "/" + appNameOptional + "/ClientServlet";
+		String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
 				+ commit + ":" + basicURL + ":" + server1Port + "&"
 				+ server2Name + "s=" + rollback + ":" + basicURL + ":"
 				+ server2Port;
-		commonTest(appNameOptional, wsatURL, serverRollbackResult, "0");
+		commonTest(appName, wsatURL, serverRollbackResult, "0");
 	}
 	
 	/*
@@ -283,45 +284,45 @@ public class DBOptionalTest extends DBTestBase {
 	 */
 	@Test
 	public void test3DB47() {
-		String testURL = "/" + appNameOptional + "/ClientServlet";
+		String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "s="
 				+ commit + ":" + basicURL + ":" + server1Port + "&"
 				+ server2Name + "p=" + commit + ":" + basicURL + ":"
 				+ server2Port
 				+ "&withouttrans=true";
-		commonTest(appNameOptional, wsatURL, goodResult, "1");
+		commonTest(appName, wsatURL, goodResult, "1");
 	}
 	
 	@Test
 	public void test3DBs48() {
-		String testURL = "/" + appNameOptional + "/ClientServlet";
+		String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
 				+ commit + ":" + basicURL + ":" + server1Port + "&"
 				+ server2Name + "s=" + commit + ":" + basicURL + ":"
 				+ server2Port
 				+ "&withouttrans=true";
-		commonTest(appNameOptional, wsatURL, goodResult, "1");
+		commonTest(appName, wsatURL, goodResult, "1");
 	}
 	
 	@Test
 	public void test3DBs49() {
-		String testURL = "/" + appNameOptional + "/ClientServlet";
+		String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
 				+ rollback + ":" + basicURL + ":" + server1Port + "&"
 				+ server2Name + "p=" + rollback + ":" + basicURL + ":"
 				+ server2Port
 				+ "&withouttrans=true";
-		commonTest(appNameOptional, wsatURL, serverRollbackResult, "1", "0", "0");
+		commonTest(appName, wsatURL, serverRollbackResult, "1", "0", "0");
 	}
 	
 	@Test
 	public void test3DBs50() {
-		String testURL = "/" + appNameOptional + "/ClientServlet";
+		String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
 				+ commit + ":" + basicURL + ":" + server1Port + "&"
 				+ server2Name + "s=" + rollback + ":" + basicURL + ":"
 				+ server2Port
 				+ "&withouttrans=true";
-		commonTest(appNameOptional, wsatURL, serverRollbackResult, "1", "1", "0");
+		commonTest(appName, wsatURL, serverRollbackResult, "1", "1", "0");
 	}
 }

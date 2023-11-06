@@ -57,7 +57,7 @@ Include-Resource: \
   @./resources!/META-INF/**, \
   index.jsp=resources/WEB-CONTENT/index.jsp
 
--dsannotations: com.ibm.ws.wsat.utils.CommonService
+-dsannotations: com.ibm.ws.wsat.utils.WSCoorUtil
 
 Service-Component: \
  com.ibm.ws.wsat.interceptor.WSATInterceptorService; \
