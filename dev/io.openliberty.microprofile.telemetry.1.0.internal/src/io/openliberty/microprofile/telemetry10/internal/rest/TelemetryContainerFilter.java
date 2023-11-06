@@ -71,7 +71,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
     private static final RestRouteCache ROUTE_CACHE = new RestRouteCache();
 
     private Instrumenter<ContainerRequestContext, ContainerResponseContext> instrumenter;
-    
+
     private volatile boolean lazyCreate = false;
     private final AtomicReference<Instrumenter<ContainerRequestContext, ContainerResponseContext>> lazyInstrumenter = new AtomicReference<>();
 
@@ -85,14 +85,14 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
             instrumenter = createInstrumenter();
         }
     }
-    
+
     private Instrumenter<ContainerRequestContext, ContainerResponseContext> getInstrumenter() {
         if (instrumenter != null) {
             return instrumenter;
         }
         if (lazyCreate) {
             instrumenter = lazyInstrumenter.updateAndGet((i) -> {
-                if (i == null) {                   
+                if (i == null) {
                     return createInstrumenter();
                 } else {
                     return i;
@@ -103,7 +103,6 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
         return instrumenter;
     }
 
-    
     private Instrumenter<ContainerRequestContext, ContainerResponseContext> createInstrumenter() {
         try {
             OpenTelemetryInfo openTelemetry = OpenTelemetryAccessor.getOpenTelemetryInfo();
@@ -206,6 +205,14 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
         }
+    }
+
+    @Override
+    public boolean isEnabled() {
+        if (!CheckpointPhase.getPhase().restored()) {
+            return true;
+        }
+        return getInstrumenter() != null;
     }
 
     private static class ContainerRequestContextTextMapGetter implements TextMapGetter<ContainerRequestContext> {

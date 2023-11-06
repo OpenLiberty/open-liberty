@@ -44,7 +44,7 @@ public class TelemetryJaxRsProviderRegister implements JaxRsProviderRegister {
                 }
             } else {
                 TelemetryContainerFilter currentFilter = new TelemetryContainerFilter();
-                if (currentFilter != null) {
+                if (currentFilter != null && currentFilter.isEnabled()) {
                     providers.add(currentFilter);
                 }
             }
