@@ -39,7 +39,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -571,7 +570,7 @@ public class ClientConfigTests extends FATServletClient {
      * @throws Exception
      */
     @Test
-    @ExpectedFFDC("io.grpc.StatusRuntimeException")
+    // ExpectedFFDC("io.grpc.StatusRuntimeException")
     public void testSmallMaxInboundMessageSize() throws Exception {
         LOG.info("ClientConfigTests : testSmallMaxInboundMessageSize() : test very small MaxInboundMessageSize.");
 
@@ -624,7 +623,7 @@ public class ClientConfigTests extends FATServletClient {
      * @throws Exception
      */
     @Test
-    @ExpectedFFDC("io.grpc.StatusRuntimeException")
+    // ExpectedFFDC("io.grpc.StatusRuntimeException")
     @AllowedFFDC("java.io.IOException")
     public void testMaxInboundMetadataSize() throws Exception {
         LOG.info("ClientConfigTests : testMaxInboundMetadataSize() : test maxInboundMetadataSize.");
