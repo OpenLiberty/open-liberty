@@ -513,7 +513,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      */
     @Override
     @FFDCIgnore({ RecoveryFailedException.class })
-    public void directInitialization(FailureScope failureScope) throws RecoveryFailedException {
+    public void directInitialization(FailureScope failureScope) throws RecoveryFailedException, PeerLostLogOwnershipException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "directInitialization", new Object[] { failureScope, this });
 
@@ -599,8 +599,10 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                                 shouldBeRecovered = heartbeatLog.claimPeerRecoveryLogs();
                                 if (!shouldBeRecovered) {
                                     // Cannot recover peer server, throw exception
-                                    RecoveryFailedException rfex = new RecoveryFailedException("HADB Peer locking, peer recovery failed");
-                                    throw rfex;
+                                    if (tc.isDebugEnabled())
+                                        Tr.debug(tc, "Unable to claim logs, throw PeerLostLogOwnershipException");
+                                    PeerLostLogOwnershipException plex = new PeerLostLogOwnershipException();
+                                    throw plex;
                                 }
                             }
                         }
@@ -1047,6 +1049,12 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "driveLocalRecovery", exc);
             throw exc;
+        } catch (PeerLostLogOwnershipException plex) {
+            // Not expected, wrap exception and rethrow
+            RecoveryFailedException rfex = new RecoveryFailedException(plex);
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "driveLocalRecovery", rfex);
+            throw rfex;
         }
 
         if (tc.isEntryEnabled())
@@ -1633,7 +1641,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
             Tr.exit(tc, "drivePeerRecovery");
     }
 
-    @FFDCIgnore({ RecoveryFailedException.class })
+    @FFDCIgnore({ RecoveryFailedException.class, PeerLostLogOwnershipException.class })
     public synchronized void peerRecoverServers(RecoveryAgent recoveryAgent, String myRecoveryIdentity, ArrayList<String> peersToRecover) throws RecoveryFailedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "peerRecoverServers", new Object[] { recoveryAgent, myRecoveryIdentity, peersToRecover });
@@ -1659,6 +1667,11 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "peerRecoverServers", rfexc);
                 throw rfexc;
+            } catch (PeerLostLogOwnershipException plex) {
+                // This is thrown if this server was unable to claim the logs for a peer server
+                Tr.audit(tc, "WTRN0108I: " +
+                             "Peer recovery will not be attempted, this server was unable to claim the logs of the server with recovery identity " + peerRecoveryIdentity);
+                // allow processing to continue
             } catch (Exception exc) {
                 Tr.audit(tc, "WTRN0108I: " +
                              "HADB Peer Recovery failed for server with recovery identity " + peerRecoveryIdentity + " with exception " + exc);

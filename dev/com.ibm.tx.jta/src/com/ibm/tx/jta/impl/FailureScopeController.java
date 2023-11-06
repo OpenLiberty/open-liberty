@@ -240,10 +240,12 @@ public class FailureScopeController {
                     if (_recoveryManager != null) {
                         // If we are operating in a peer recovery environment this method will delete the home server's
                         // recovery logs where it has shutdown cleanly.
-                        _recoveryManager.deleteRecoveryLogsIfPeerRecoveryEnv();
+                        boolean success = _recoveryManager.deleteRecoveryLogsIfPeerRecoveryEnv();
 
-                        // Delete the home server's lease
-                        _recoveryManager.deleteServerLease(serverName());
+                        // Delete the home server's lease. Note deleteServerLease() is a noop if peer recovery is disabled.
+                        // Retain the lease if an unexpected problem occurred when deleting the recovery log
+                        if (success)
+                            _recoveryManager.deleteServerLease(serverName());
                     }
                 } else if (tc.isDebugEnabled()) {
                     if (partnersLeft) {
