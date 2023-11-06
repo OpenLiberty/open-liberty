@@ -28,8 +28,6 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -37,6 +35,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.Service
 import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporterProvider;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.AbstractSpanMatcher;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
 
 @RunWith(FATRunner.class)
@@ -62,6 +61,7 @@ public class TelemetryServiceNameTest extends FATServletClient {
                                        "META-INF/microprofile-config.properties")
                         .addClasses(InMemorySpanExporter.class, InMemorySpanExporterProvider.class, ServiceNameServlet.class)
                         .addPackage(TestSpans.class.getPackage())
+                        .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class);
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
