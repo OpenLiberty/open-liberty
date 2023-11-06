@@ -44,6 +44,7 @@ public class LTPAToken2 implements Token, Serializable {
     private static final TraceComponent tc = Tr.register(LTPAToken2.class);
 
     private static final String AES_CBC_CIPHER = "AES/CBC/PKCS5Padding";
+    private static final String AES_GCM_CIPHER = "AES/GCM/NoPadding"; // should we use this cipher?
 
     private static final long serialVersionUID = 1L;
     private static final String DELIM = "%";
