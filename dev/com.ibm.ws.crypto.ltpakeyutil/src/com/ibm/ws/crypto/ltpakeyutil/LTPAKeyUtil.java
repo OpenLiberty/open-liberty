@@ -110,12 +110,13 @@ public final class LTPAKeyUtil {
 				}
 			});
 			ibmJCEPlusFIPSProviderChecked = true;
-			if (ibmjceplusfipsprovider == "IBMJCEPlusFIPS" && isRunningBetaMode()) {
+			if (ibmjceplusfipsprovider != null && ibmjceplusfipsprovider.equalsIgnoreCase("IBMJCEPlusFIPS")
+					&& isRunningBetaMode()) {
 				ibmJCEPlusFIPSAvailable = true;
 				return ibmJCEPlusFIPSAvailable;
 			} else {
 				if (isFIPSEnabled()) {
-					// UTLE TODO: error msg - FIPS is enabled but the IBMJCEPlusFIPS is not
+					// UTLE TODO: error msg - FIPS is enabled but the IBMJCEPlusFIPS provider is not
 					// available
 				}
 				return false;
@@ -145,7 +146,7 @@ public final class LTPAKeyUtil {
 				return System.getProperty("com.ibm.jsse2.usefipsprovider");
 			}
 		});
-		if (fipsON == "true") {
+		if (fipsON != null && fipsON.equals("true")) {
 			return true;
 		} else {
 			return false;
