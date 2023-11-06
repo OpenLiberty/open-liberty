@@ -22,6 +22,12 @@
     
     <include location="../fatTestPorts.xml"/>
     
-    <application location="reactiveapp.war" />
+    <application location="reactiveapp.war" >
+      		<classloader commonLibraryRef="mutiny" />
+  	</application>
+
+	<library id="mutiny">
+		<fileset dir="${shared.resource.dir}/mutiny" includes="*.jar" />
+	</library>
 
 </server>

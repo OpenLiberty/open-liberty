@@ -24,6 +24,7 @@ import javax.naming.NamingException;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import io.smallrye.mutiny.Multi;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
@@ -40,7 +41,7 @@ public class ConcurrentReactiveServlet extends FATServlet {
     @Resource
     private ContextService contextSvcDefault;
 
-    //Handler for Flow.Subscription throwing an exception in onNext
+    //Handler for Flow.Subscriber throwing an exception in onNext
     BiConsumer<? super Flow.Subscriber<? super ContextCDL>, ? super Throwable> handler = (sub, t) -> {
         AssertionError ae = new AssertionError("Context was not available in Subscriber");
         ae.initCause(t);
@@ -180,6 +181,27 @@ public class ConcurrentReactiveServlet extends FATServlet {
                     throw new AssertionError("Timed out waiting for CountDownLatch, context may not have been available on Subscriber");
             }
         }
+    }
+
+    /**
+     * Test that context can be accessed in an Operator and a Flow.Subscriber subscribed to a Multi
+     *
+     */
+    @Test
+    public void mutinyOperatorsTest() throws Exception {
+        final ContextCDLImpl continueLatch = new ContextCDLImpl(2);
+
+        Multi.createFrom().item(continueLatch).emitOn(executor).invoke(cdl -> {
+            try {
+                cdl.checkContext();
+                cdl.countDown();
+            } catch (NamingException e) {
+                throw new RuntimeException(e);
+            }
+        }).subscribe().withSubscriber(new ThreadSubscriber());
+
+        if (!continueLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS))
+            throw new AssertionError("Timed out waiting for CountDownLatch, context may not have been available");
     }
 
 }
