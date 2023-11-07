@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,8 +21,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
+import io.openliberty.security.common.osgi.SecurityOSGiUtils;
 
 /**
  * Local in-memory cache used to keep track of oidc sessions based on the sub, sid, and the oidc session id.
@@ -31,11 +38,16 @@ import java.util.TimerTask;
  */
 public class InMemoryOidcSessionCache implements OidcSessionCache {
 
+    private static final TraceComponent tc = Tr.register(InMemoryOidcSessionCache.class);
+
+    private final PrivilegedAction<ScheduledExecutorService> getScheduledExecutorServiceAction = new GetScheduledExecutorServiceAction();
+
     private final Set<OidcSessionInfo> invalidatedSessions;
     private final Map<String, OidcSessionsStore> subToOidcSessionsMap;
 
-    private Timer timer;
     private long timeoutInMilliSeconds = 10 * 60 * 1000;
+
+    private ScheduledExecutorService evictionSchedule;
 
     public InMemoryOidcSessionCache() {
         this(0);
@@ -48,15 +60,22 @@ public class InMemoryOidcSessionCache implements OidcSessionCache {
         if (timeoutInMilliSeconds > 0) {
             this.timeoutInMilliSeconds = timeoutInMilliSeconds;
         }
-        scheduleEvictionTask(this.timeoutInMilliSeconds);
+        scheduleEvictionTask();
     }
 
-    private void scheduleEvictionTask(long timeoutInMilliSeconds) {
-        EvictionTask evictionTask = new EvictionTask();
-        timer = new Timer(true);
-        long period = timeoutInMilliSeconds;
-        long delay = period;
-        timer.schedule(evictionTask, delay, period);
+    private void scheduleEvictionTask() {
+        if (System.getSecurityManager() == null) {
+            evictionSchedule = getScheduledExecutorService();
+        } else {
+            evictionSchedule = AccessController.doPrivileged(getScheduledExecutorServiceAction);
+        }
+        if (evictionSchedule != null) {
+            evictionSchedule.scheduleWithFixedDelay(new EvictionTask(), timeoutInMilliSeconds, timeoutInMilliSeconds, TimeUnit.MILLISECONDS);
+        } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to obtain a ScheduledExecutorService");
+            }
+        }
     }
 
     @Override
@@ -152,7 +171,20 @@ public class InMemoryOidcSessionCache implements OidcSessionCache {
         return invalidatedSessions.contains(sessionInfo);
     }
 
-    private class EvictionTask extends TimerTask {
+    private class GetScheduledExecutorServiceAction implements PrivilegedAction<ScheduledExecutorService> {
+
+        @Override
+        public ScheduledExecutorService run() {
+            return getScheduledExecutorService();
+        }
+
+    }
+
+    private ScheduledExecutorService getScheduledExecutorService() {
+        return SecurityOSGiUtils.getService(getClass(), ScheduledExecutorService.class);
+    }
+
+    private class EvictionTask implements Runnable {
 
         @Override
         public void run() {
