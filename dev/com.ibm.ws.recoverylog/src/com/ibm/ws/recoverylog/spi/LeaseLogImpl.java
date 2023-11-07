@@ -48,8 +48,7 @@ public class LeaseLogImpl {
      *
      * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#releasePeerLease(java.lang.String)
      */
-    public boolean releasePeerLease(String recoveryIdentity) throws Exception {
-        return true;
+    public void releasePeerLease(String recoveryIdentity) throws Exception {
     }
 
     /*
@@ -66,7 +65,6 @@ public class LeaseLogImpl {
      *
      * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#releaseLocalLease(java.lang.String)
      */
-    public boolean releaseLocalLease(String recoveryIdentity) throws Exception {
-        return true;
+    public void releaseLocalLease(String recoveryIdentity) throws Exception {
     }
 }
