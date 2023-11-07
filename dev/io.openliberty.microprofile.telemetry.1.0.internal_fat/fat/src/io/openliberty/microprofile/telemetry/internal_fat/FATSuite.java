@@ -44,7 +44,6 @@ import componenttest.rules.repeater.RepeatTests;
                 TelemetryServletTest.class,
                 TelemetryWithSpanErrorTest.class
 })
-
 public class FATSuite {
 
     public static RepeatTests allMPRepeats(String serverName) {
