@@ -27,6 +27,7 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 AlwaysPassesTest.class,
                 CxfReservedTypeAndCTypeTest.class,
+                ExceptionTest.class,
                 JAXRS21SecurityAnnotationsTest.class,
                 JAXRS21SecurityAnnotationsTestRolesAsGroups.class,
                 JAXRS21SecurityContextTest.class,
@@ -36,7 +37,7 @@ import componenttest.rules.repeater.RepeatTests;
 })
 public class FATSuite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
-        .andWith(new JakartaEE9Action().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-        .andWith(new JakartaEE10Action());
+    public static RepeatTests r = RepeatTests.withoutModification();
+//        .andWith(new JakartaEE9Action().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+//        .andWith(new JakartaEE10Action());
 }

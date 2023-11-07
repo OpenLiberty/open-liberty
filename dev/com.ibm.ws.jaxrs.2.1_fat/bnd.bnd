@@ -16,9 +16,11 @@ bVersion=1.0
 
 src: \
   fat/src,\
+  test-applications/exception/src,\
   test-applications/jaxrs21security/src,\
   test-applications/jaxrs21typeAndCType/src,\
   test-applications/jaxrs21uriInfo/src,\
+  test-applications/TestWebAppInvocationCollaboratorBundle/src,\
   test-applications/RolesAllowed/src
 
 fat.project: true
@@ -36,16 +38,18 @@ tested.features: \
   xmlbinding-3.0
 
 -buildpath: \
-  com.ibm.websphere.javaee.annotation.1.2,\
-  com.ibm.websphere.javaee.cdi.1.2,\
-  com.ibm.websphere.javaee.ejb.3.2,\
-  com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
-  com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
-  com.ibm.websphere.javaee.jsonb.1.0,\
-  com.ibm.websphere.javaee.servlet.3.1,\
-  com.ibm.websphere.javaee.validation.1.1,\
-  com.ibm.ws.org.apache.cxf.cxf.core.3.2,\
-  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2,\
-  com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2,\
-  com.ibm.ws.org.apache.httpcomponents;version=latest
+	com.ibm.websphere.javaee.annotation.1.2,\
+	com.ibm.websphere.javaee.cdi.1.2,\
+	com.ibm.websphere.javaee.ejb.3.2,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+	com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
+	com.ibm.websphere.javaee.jsonb.1.0,\
+	com.ibm.websphere.javaee.servlet.3.1,\
+	com.ibm.websphere.javaee.validation.1.1,\
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2,\
+	com.ibm.ws.org.apache.httpcomponents;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.websphere.appserver.spi.servlet
 
