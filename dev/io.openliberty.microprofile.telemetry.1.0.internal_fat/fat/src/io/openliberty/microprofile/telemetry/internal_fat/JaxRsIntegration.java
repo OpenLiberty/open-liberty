@@ -42,8 +42,12 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
+import componenttest.topology.utils.HttpUtils;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.JaxRsEndpoints;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.common.PropagationHeaderEndpoint;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.injected.InjectedClientTestClient;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.injected.InjectedClientTestEndpoints;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.injected.InjectedClientTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.methods.JaxRsMethodTestEndpoints;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.methods.JaxRsMethodTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.responses.JaxRsResponseCodeTestEndpoints;
@@ -85,6 +89,7 @@ public class JaxRsIntegration extends FATServletClient {
                     @TestServlet(contextRoot = METHODS_APP_NAME, servlet = JaxRsMethodTestServlet.class),
                     @TestServlet(contextRoot = METHODS_APP_NAME, servlet = JaxRsResponseCodeTestServlet.class),
                     @TestServlet(contextRoot = METHODS_APP_NAME, servlet = JaxRsRouteTestServlet.class),
+                    @TestServlet(contextRoot = METHODS_APP_NAME, servlet = InjectedClientTestServlet.class),
     })
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -176,15 +181,21 @@ public class JaxRsIntegration extends FATServletClient {
  * .addAsResource(appConfig, "META-INF/microprofile-config.properties");
  */
 
+        PropertiesAsset methodsAppConfig = new PropertiesAsset()
+                        .include(appConfig)
+                        .addProperty(InjectedClientTestClient.class.getName() + "/mp-rest/url",
+                                     HttpUtils.createURL(server, METHODS_APP_NAME).toString());
+
         WebArchive methodsApp = ShrinkWrap.create(WebArchive.class, METHODS_APP_NAME + ".war")
                         .addPackage(JaxRsMethodTestEndpoints.class.getPackage())
                         .addPackage(JaxRsResponseCodeTestEndpoints.class.getPackage())
                         .addPackage(JaxRsRouteTestEndpoints.class.getPackage())
+                        .addPackage(InjectedClientTestEndpoints.class.getPackage())
                         .addPackage(InMemorySpanExporter.class.getPackage())
                         .addPackage(TestSpans.class.getPackage())
                         .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
-                        .addAsResource(appConfig, "META-INF/microprofile-config.properties");
+                        .addAsResource(methodsAppConfig, "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, w3cTraceApp, SERVER_ONLY);
