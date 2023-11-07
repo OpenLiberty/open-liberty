@@ -190,7 +190,7 @@ These occur only after GA of this feature is requested (by adding a `target:ga` 
 - [ ] **ID** - Documentation is complete or N/A. ([OpenLiberty/id-approvers](https://github.com/orgs/OpenLiberty/teams/id-approvers))
   - Approver adds label `focalApproved:id`.
   - > **_NOTE:_**  If only trivial documentation changes are required, you may reach out to the ID Feature Focal to request a `ID Required - Trivial` label.  Unlike features with regular ID requirement, those with `ID Required - Trivial` label do not have a hard requirement for a Design/UFO.
-- [ ] **InstantOn** - InstantOn capable or N/A. ([OpenLiberty/performance-approvers](https://github.com/orgs/OpenLiberty/teams/instantOn-approvers))
+- [ ] **InstantOn** - InstantOn capable or N/A. ([OpenLiberty/instantOn-approvers](https://github.com/orgs/OpenLiberty/teams/instantOn-approvers))
   - Approver adds label `focalApproved:instantOn`.
 - [ ] **Performance** - Performance testing is complete or N/A. ([OpenLiberty/performance-approvers](https://github.com/orgs/OpenLiberty/teams/performance-approvers))
   - Approver adds label `focalApproved:performance`.
