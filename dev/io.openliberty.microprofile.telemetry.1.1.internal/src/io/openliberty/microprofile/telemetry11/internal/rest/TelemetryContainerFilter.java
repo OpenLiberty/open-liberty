@@ -68,7 +68,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
 
     @javax.ws.rs.core.Context
     private ResourceInfo resourceInfo;
-    
+
     public TelemetryContainerFilter() {
         if (!CheckpointPhase.getPhase().restored()) {
             lazyCreate = true;
@@ -76,14 +76,14 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
             instrumenter = createInstrumenter();
         }
     }
-    
+
     private Instrumenter<ContainerRequestContext, ContainerResponseContext> getInstrumenter() {
         if (instrumenter != null) {
             return instrumenter;
         }
         if (lazyCreate) {
             instrumenter = lazyInstrumenter.updateAndGet((i) -> {
-                if (i == null) {                    
+                if (i == null) {
                     return createInstrumenter();
                 } else {
                     return i;
@@ -111,6 +111,14 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
         } else {
             return null;
         }
+    }
+
+    @Override
+    public boolean isEnabled() {
+        if (!CheckpointPhase.getPhase().restored()) {
+            return true;
+        }
+        return getInstrumenter() != null;
     }
 
     @Override
