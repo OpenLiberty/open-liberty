@@ -179,6 +179,8 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
 
                 @Override
                 public void onStartAsync(AsyncEvent event) throws IOException {
+                    // A new async cycle is starting, we need to re-register ourself
+                    event.getAsyncContext().addListener(this);
                 }
             });
         } else {

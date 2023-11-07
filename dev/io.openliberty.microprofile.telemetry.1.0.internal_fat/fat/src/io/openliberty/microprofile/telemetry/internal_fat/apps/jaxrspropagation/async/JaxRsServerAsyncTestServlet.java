@@ -58,15 +58,12 @@ public class JaxRsServerAsyncTestServlet extends FATServlet {
     private TestSpans testSpans;
 
     @Test
-    // ERROR with JaxRsIntegrationWithConcurrency: "Expected 4 traces but found 3"
-    @SkipForRepeat({TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID})
+    @SkipForRepeat(TelemetryActions.MP14_MPTEL11_ID)
     public void testJaxRsServerAsyncCompletionStage() {
         doAsyncTest(JaxRsServerAsyncTestEndpointClient::getCompletionStage);
     }
 
     @Test
-    // ERROR with JaxRsIntegrationWithConcurrency: "Expected 4 traces but found 3"
-    @SkipForRepeat({TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID})
     public void testJaxRsServerAsyncSuspend() {
         doAsyncTest(JaxRsServerAsyncTestEndpointClient::getSuspend);
     }
