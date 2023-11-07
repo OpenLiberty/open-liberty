@@ -115,12 +115,6 @@ public class Jose4jUtil {
 
     private JwtClaims getClaimsFromIdToken(String tokenStr, ConvergedClientConfig clientConfig, OidcClientRequest oidcClientRequest) throws Exception {
         String clientId = clientConfig.getClientId();
-        if (tokenStr == null || tokenStr.isEmpty()) {
-            // This is for ID Token only
-            Tr.error(tc, "OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE", new Object[] { clientId, clientConfig.getTokenEndpointUrl() });
-            throw new Exception();
-        }
-
         JwtContext jwtContext = validateJwtStructureAndGetContext(tokenStr, clientConfig);
         JwtClaims jwtClaims = parseJwtWithValidation(clientConfig, jwtContext.getJwt(), jwtContext, oidcClientRequest);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -156,7 +150,14 @@ public class Jose4jUtil {
         String clientId = clientConfig.getClientId();
         Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
 
-        try {
+        List<String> tokensOrderToFetchCallerClaims = clientConfig.getTokenOrderToFetchCallerClaims();
+        try {          
+            if ((idTokenStr == null || idTokenStr.isEmpty()) && tokensOrderToFetchCallerClaims.size() == 1) {
+                // This is for ID Token only
+                Tr.error(tc, "OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE", new Object[] { clientId, clientConfig.getTokenEndpointUrl() });
+                return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
+            }
+            
             Map<String, JwtClaims> tokenClaimsMap = new HashMap<String, JwtClaims>();
 
             JwtClaims idTokenClaims = getClaimsFromIdToken(idTokenStr, clientConfig, oidcClientRequest);
@@ -179,7 +180,6 @@ public class Jose4jUtil {
                 }
             }
 
-            List<String> tokensOrderToFetchCallerClaims = clientConfig.getTokenOrderToFetchCallerClaims();
             if (tokensOrderToFetchCallerClaims.size() > 1 && tokensOrderToFetchCallerClaims.contains(Constants.TOKEN_TYPE_ACCESS_TOKEN)) {
                 // access token
                 JwtClaims accessTokenClaims = getClaimsFromAccessToken(accessTokenStr);
@@ -588,14 +588,14 @@ public class Jose4jUtil {
      * @throws MalformedClaimException
      */
     String getUserName(ConvergedClientConfig clientConfig, List<String> tokensOrderToFetchCallerClaims, Map<String, JwtClaims> tokenClaimsMap) throws MalformedClaimException {
-        String userNameClaim = getUserNameClaim(clientConfig);
+        String userNameClaim = getUserNameClaim(clientConfig)[1]; 
         String userName = getClaimValueFromTokens(userNameClaim, String.class, tokensOrderToFetchCallerClaims, tokenClaimsMap);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "user name = '" + userName + "' and the user identifier = " + userNameClaim);
         }
 
         if (userName == null) {
-            Tr.error(tc, "OIDC_CLIENT_JWT_MISSING_CLAIM", new Object[] { clientConfig.getClientId(), userNameClaim });
+            Tr.error(tc, "OIDC_CLIENT_JWT_MISSING_CLAIM", new Object[] { clientConfig.getClientId(), userNameClaim, getUserNameClaim(clientConfig)[0] });
             Tr.debug(tc, "There is no principal");
         }
         return userName;
@@ -607,10 +607,12 @@ public class Jose4jUtil {
      * @param clientConfig
      * @param tokensOrderToFetchCallerClaims
      * @param tokenClaimsMap
+     * @return 
      * @return
      * @throws MalformedClaimException
      */
-    String getUserNameClaim(ConvergedClientConfig clientConfig) {
+     String[] getUserNameClaim(ConvergedClientConfig clientConfig) {
+        
         String attrUsedToCreateSubject = clientConfig.isSocial() ? "userNameAttribute" : "userIdentifier";
         String uid = clientConfig.getUserIdentifier();
         if (uid == null || uid.isEmpty()) {
@@ -618,11 +620,13 @@ public class Jose4jUtil {
             uid = clientConfig.getUserIdentityToCreateSubject();
         }
 
+        String[] userClaimIdentifiers = {attrUsedToCreateSubject, uid};
+                
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "The " + attrUsedToCreateSubject + " config attribute is used");
             Tr.debug(tc, "the user identifier = " + uid);
         }
-        return uid;
+        return userClaimIdentifiers;
     }
 
     /**
@@ -677,7 +681,7 @@ public class Jose4jUtil {
      * @throws MalformedClaimException
      */
     String getUniqueSecurityName(ConvergedClientConfig clientConfig, List<String> tokensOrderToFetchCallerClaims, Map<String, JwtClaims> tokenClaimsMap, String userName) throws MalformedClaimException {
-        String uniqueSecurityNameClaim = getUserNameClaim(clientConfig);
+        String uniqueSecurityNameClaim = getUniqueSecurityNameClaim(clientConfig);
         String uniqueSecurityName = getClaimValueFromTokens(uniqueSecurityNameClaim, String.class, tokensOrderToFetchCallerClaims, tokenClaimsMap);
 
         if (uniqueSecurityName == null || uniqueSecurityName.isEmpty()) {
