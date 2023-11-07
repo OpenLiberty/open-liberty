@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,93 +24,125 @@ import com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 import com.ibm.wsspi.artifact.overlay.OverlayContainerFactory;
 
-/**
- *     
- */
+//@formatter:off
 public class AdaptableModuleFactoryImpl implements AdaptableModuleFactory, FactoryHolder {
-
-    private volatile AdapterFactoryService adapterFactoryService;
-    private volatile ArtifactContainerFactory containerFactory;
-    private volatile OverlayContainerFactory overlayContainerFactory;
+    // Component lifecycle ...
 
     protected void activate(ComponentContext ctx) {
         //no op
     }
 
     protected void deactivate(ComponentContext ctx) {
-        this.containerFactory = null;
-        this.overlayContainerFactory = null;
-        this.adapterFactoryService = null;
+        containerFactory = null;
+        overlayContainerFactory = null;
+        adapterFactoryService = null;
     }
 
-    protected void setAdapterFactoryService(AdapterFactoryService afs) {
-        this.adapterFactoryService = afs;
-    }
+    // Component services ...
+
+    /**
+     * The root, delegating, container factory.
+     *
+     * This is no longer in use.  This factory uses instead the
+     * overlay container and the adapter factory.
+     */
+    private volatile ArtifactContainerFactory containerFactory;
 
     protected void setContainerFactory(ArtifactContainerFactory cf) {
-        this.containerFactory = cf;
-    }
-
-    protected void setOverlayContainerFactory(OverlayContainerFactory ocf) {
-        this.overlayContainerFactory = ocf;
-    }
-
-    protected void unsetAdapterFactoryService(AdapterFactoryService afs) {
-        if (this.adapterFactoryService == afs) {
-            this.adapterFactoryService = null;
-        }
+        containerFactory = cf;
     }
 
     protected void unsetContainerFactory(ArtifactContainerFactory cf) {
-        if (this.containerFactory == cf) {
-            this.containerFactory = null;
+        if ( containerFactory == cf ) {
+            containerFactory = null;
         }
+    }
+
+    @Override
+    public ArtifactContainerFactory getContainerFactory() {
+        if ( containerFactory != null ) {
+            return containerFactory;
+        } else {
+            throw new IllegalStateException();
+        }
+    }
+
+    /**
+     * Adapter factory.  This is not in use. Adaptable containers
+     * are created directly as {@link AdaptableContainer} instances.
+     */
+    private volatile AdapterFactoryService adapterFactoryService;
+
+    protected void setAdapterFactoryService(AdapterFactoryService afs) {
+        adapterFactoryService = afs;
+    }
+
+    protected void unsetAdapterFactoryService(AdapterFactoryService afs) {
+        if ( adapterFactoryService == afs ) {
+            adapterFactoryService = null;
+        }
+    }
+
+    @Override
+    public AdapterFactoryService getAdapterFactoryService() {
+        if ( adapterFactoryService != null ) {
+            return adapterFactoryService;
+        } else {
+            throw new IllegalStateException();
+        }
+    }
+
+    //
+
+    /**
+     * The factory for overlay containers.  This retains a very small
+     * portion of component services.  However, only a single overlay
+     * factory implementation is available, and that factory always
+     * creates directory overlay containers.
+     */
+    private volatile OverlayContainerFactory overlayContainerFactory;
+
+    protected void setOverlayContainerFactory(OverlayContainerFactory ocf) {
+        overlayContainerFactory = ocf;
     }
 
     protected void unsetOverlayContainerFactory(OverlayContainerFactory ocf) {
-        if (this.overlayContainerFactory == ocf) {
-            this.overlayContainerFactory = null;
+        if ( overlayContainerFactory == ocf ) {
+            overlayContainerFactory = null;
         }
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public Container getContainer(File overlayDir, File cacheDirForOverlayContent, ArtifactContainer container) {
-        com.ibm.wsspi.artifact.overlay.OverlayContainer o = getOverlayContainerFactory().createOverlay(OverlayContainer.class, container);
-        if (o != null) {
-            o.setOverlayDirectory(cacheDirForOverlayContent, overlayDir);
-            AdaptableContainerImpl a = new AdaptableContainerImpl(o, this);
-            return a;
-        }
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public AdapterFactoryService getAdapterFactoryService() {
-        if (adapterFactoryService != null)
-            return adapterFactoryService;
-        else
-            throw new IllegalStateException();
-
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public ArtifactContainerFactory getContainerFactory() {
-        if (containerFactory != null)
-            return containerFactory;
-        else
-            throw new IllegalStateException();
-    }
-
-    /** {@inheritDoc} */
     @Override
     public OverlayContainerFactory getOverlayContainerFactory() {
-        if (overlayContainerFactory != null)
+        if ( overlayContainerFactory != null ) {
             return overlayContainerFactory;
-        else
+        } else {
             throw new IllegalStateException();
+        }
     }
 
+    //
+
+    /**
+     * Main API: Create an overlay container for a specified artifact container.
+     *
+     * @param overlayDir The overlay directory.
+     * @param overlayCacheDir The cache directory for the overlay.
+     * @param artifactContainer The base artifact container of the overlay.
+     *
+     * @return A new overlay container.
+     */
+    @Override
+    public Container getContainer(File overlayDir, File overlayCacheDir,
+                                  ArtifactContainer artifactContainer) {
+        OverlayContainer overlayContainer =
+            getOverlayContainerFactory().createOverlay(OverlayContainer.class, artifactContainer);
+        if ( overlayContainer == null ) {
+            return null;
+        }
+
+        overlayContainer.setOverlayDirectory(overlayCacheDir, overlayDir);
+        return new AdaptableContainerImpl(overlayContainer, this);
+    }
 }
+//@formatter:on

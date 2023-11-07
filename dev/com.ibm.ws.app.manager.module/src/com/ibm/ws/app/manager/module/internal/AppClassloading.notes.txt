@@ -1,0 +1,349 @@
+See: https://openliberty.io/docs/latest/reference/config/library.html#application.html
+
+Application configuration [abbreviated]:
+
+* Application (application)
+Defines the properties of an application.
+
+** autoStart boolean (true)
+Indicates whether or not the server automatically starts the application.
+
+** classloaderRef A reference to top level classloader element (string)
+Defines the settings for an application classloader.
+
+** context-root string
+Context root of an application.
+
+** id string
+A unique configuration ID.
+
+** location A file, directory or url.(Required)
+Location of an application expressed as an absolute path or a path relative to the server-level apps directory.
+
+** name string
+Name of an application.
+
+** startAfterRef List of references to top level application elements (comma-separated string).
+Specifies applications that are required to start before this application can begin starting.
+
+** type string
+Type of application archive.
+
+** useJandex boolean
+Enables use of Jandex index files if they are supplied in the application
+
+* application > appProperties
+Provides custom properties to an application.
+
+* application > appProperties > property
+Provides a specific custom property to an application.
+
+* application > application-bnd
+Defines properties that apply to application bindings.
+
+* application > application-bnd > data-source
+Specifies the binding for a data source.
+
+* application > application-bnd > ejb-ref
+Specifies the binding for an EJB Reference.
+
+* application > application-bnd > env-entry
+Specifies the binding for an environment entry.
+
+* application > application-bnd > message-destination-ref
+Specifies the binding for a message destination reference.
+
+* application > application-bnd > resource-env-ref
+Specifies the binding for a resource environment reference.
+
+* application > application-bnd > resource-ref
+Specifies the binding for a resource reference.
+
+* application > application-bnd > security-role
+A role that is mapped to users and groups in a domain user registry.
+
+* application > application-client-bnd
+Defines properties that apply to application clients.
+
+* application > application-client-bnd > data-source
+Defines a data source for an application client.
+
+* application > application-client-bnd > ejb-ref
+EJB References in an application client.
+
+* application > application-client-bnd > env-entry
+Defines an environment entry for an application client.
+
+* application > application-client-bnd > message-destination-ref
+Message destination reference in an application client.
+
+* application > application-client-bnd > resource-env-ref
+Specifies the binding for a resource environment reference.
+
+* application > application-client-bnd > resource-ref
+Resource references in an application client.
+
+* application > application-ext
+Defines properties to extend applications.
+
+* application > classloader
+
+** apiTypeVisibility string(spec,ibm-api,api,stable)
+The types of API packages that this class loader supports. This value is a
+comma-separated list of any combination of the following API packages: spec, ibm-api,
+api, stable, third-party. If a prefix of + or - is added to API types, those API types
+are added or removed, respectively, from the default set of API types. Common usage for
+the prefix, +third-party, results in "spec, ibm-api, api, stable, third-party". The
+prefix, -api, results in "spec, ibm-api, stable".
+
+** classProviderRef List of references to top level resourceAdapter elements (comma-separated string)
+List of class provider references. When searching for classes or resources, this class
+loader will delegate to the specified class providers after searching its own class
+path.
+
+** commonLibraryRef List of references to top level library elements (comma-separated string).
+List of library references. Library class instances are shared with other classloaders.
+
+** delegation parentFirst, parentLast (parentFirst)
+Controls whether parent classloader is used before or after this classloader. If parent
+first is selected then delegate to immediate parent before searching the classpath. If
+parent last is selected then search the classpath before delegating to the immediate
+parent.
+
+** privateLibraryRef List of references to top level library elements (comma-separated string).
+List of library references. Library class instances are unique to this classloader,
+independent of class instances from other classloaders.
+
+* application > classloader > classProvider
+List of class provider references. When searching for classes or resources, this class
+loader will delegate to the specified class providers after searching its own class
+path.
+
+* application > classloader > commonLibrary
+List of library references. Library class instances are shared with other classloaders.
+-- Same as Library.
+
+* application > classloader > privateLibrary
+List of library references. Library class instances are unique to this classloader,
+independent of class instances from other classloaders.
+-- Same as Library
+
+* application > ejb-jar-bnd
+The EJB binding descriptor defines binding information for an EJB module.
+
+* application > ejb-jar-bnd > interceptor
+Binding properties for interceptors.
+
+* application > ejb-jar-bnd > message-destination
+Binding properties for message destinations.
+
+* application > ejb-jar-bnd > message-driven
+Binding properties for message driven beans.
+
+* application > ejb-jar-bnd > session
+Binding properties for session beans.
+
+* application > ejb-jar-ext
+Extension properties for EJB applications.
+The module name specifies the individual module that the binding or extension
+configuration applies to.
+
+* application > ejb-jar-ext > message-driven
+Extension properties for message driven beans.
+
+* application > ejb-jar-ext > session
+Extension properties for session beans.
+
+application > managed-bean-bnd
+Specifies the bindings for a managed bean.
+
+* application > managed-bean-bnd > interceptor
+Defines interceptors for the managed bean binding.
+
+* application > managed-bean-bnd > managed-bean
+Specifies the managed bean for this binding.
+
+* application > resourceAdapter
+Specifies configuration for a resource adapter that is embedded in an application.
+
+* application > resourceAdapter > contextService
+Configures how context is captured and propagated to threads.
+
+* application > resourceAdapter > customize
+Customizes the configuration properties element for the activation specification,
+administered object, or connection factory with the specified interface and/or
+implementation class.
+
+* application > startAfter
+Specifies applications that are required to start before this application can begin starting.
+
+* application > startAfter > appProperties
+Provides custom properties to an application.
+
+* application > startAfter > application-bnd
+Defines properties that apply to application bindings.
+
+* application > startAfter > application-client-bnd
+Defines properties that apply to application clients.
+
+* application > startAfter > application-ext
+Defines properties to extend applications.
+
+* application > startAfter > classloader
+Defines the settings for an application classloader.
+
+* application > startAfter > ejb-jar-bnd
+The EJB binding descriptor defines binding information for an EJB module.
+
+* application > startAfter > ejb-jar-ext
+Extension properties for EJB applications.
+
+* application > startAfter > managed-bean-bnd
+Specifies the bindings for a managed bean.
+
+* application > startAfter > resourceAdapter
+Specifies configuration for a resource adapter that is embedded in an application.
+
+* application > startAfter > web-bnd
+Specifies binding properties for a web application.
+
+* application > startAfter > web-ext
+Extension properties for web applications.
+
+* application > startAfter > webservices-bnd
+Web service bindings are used to customize web services endpoints and configure
+security settings for both web services providers and web service clients.
+
+* application > web-bnd
+Specifies binding properties for a web application.
+
+* application > web-bnd > data-source
+Specifies the binding for a data source.
+
+* application > web-bnd > ejb-ref
+Specifies the binding for an EJB Reference.
+
+* application > web-bnd > env-entry
+Specifies the binding for an environment entry.
+
+* application > web-bnd > message-destination-ref
+Specifies the binding for a message destination reference.
+
+* application > web-bnd > resource-env-ref
+Specifies the binding for a resource environment reference.
+
+* application > web-bnd > resource-ref
+Specifies the binding for a resource reference.
+
+* application > web-bnd > virtual-host
+Specifies the virtual host that is used for the web application.
+
+* application > web-ext
+Extension properties for web applications.
+
+* application > web-ext > file-serving-attribute
+Specifies whether the web application allows files to be served.
+
+* application > web-ext > invoker-attribute
+Specifies attributes for an invoker.
+
+* application > web-ext > jsp-attribute
+Specifies attributes that affect JSP behavior.
+
+* application > web-ext > mime-filter
+Properties for a MIME filter.
+
+* application > web-ext > resource-ref
+Properties for a resource reference.
+
+* application > webservices-bnd
+Web service bindings are used to customize web services endpoints and configure
+security settings for both web services providers and web service clients.
+
+* application > webservices-bnd > http-publishing
+HTTP publishing is used to specify the publishing configurations when using HTTP
+protocol for all the web services endpoints.
+
+* application > webservices-bnd > service-ref
+The service reference element is used to define the web services reference
+configurations for a web services client.
+
+* application > webservices-bnd > webservice-endpoint
+A web service endpoint is used to specify the binding for a specified service instance.
+
+application > webservices-bnd > webservice-endpoint-properties
+* Web service endpoint properties are used to define the default properties for all the
+web services endpoints in the same module.
+
+---
+
+See: https://openliberty.io/docs/latest/reference/config/library.html
+
+Library configuration:
+
+* Shared Library (library)
+Shared Library
+
+** apiTypeVisibility string spec,ibm-api,api,stable
+The types of API packages that this class loader supports. This value is a comma-separated list
+of any combination of the following API packages spec, ibm-api, api, stable, third-party.
+
+** description string
+Description of shared library for administrators
+
+** filesetRef List of references to top level fileset elements (comma-separated string)
+Id of referenced Fileset
+
+** id string
+A unique configuration ID.
+
+** name string
+Name of shared library for administrators
+
+* library > file
+Id of referenced File
+
+** id string
+A unique configuration ID.
+
+** name Path to a file (required)
+Fully qualified filename
+
+** library > fileset
+Id of referenced Fileset
+
+** caseSensitive boolean(true)
+Boolean to indicate whether or not the search should be case sensitive (default true).
+
+** dir Path to a directory(${server.config.dir})
+The base directory to search for files.
+
+** excludes string
+The comma or space separated list of file name patterns to exclude
+from the search results, by default no files are excluded.
+
+** id string
+A unique configuration ID.
+
+** includes string(*)
+The comma or space separated list of file name patterns to include in the search
+results (default *).
+
+** scanInterval A period of time with millisecond precision(0)
+The scanning interval to determine whether files are added or removed from the
+fileset. The individual files are not scanned. The suffix for the interval of time is
+h-hour, m-minute, s-second, and ms-millisecond, for example, 2ms or 5s. The scanning
+interval is disabled by default and is disabled manually by setting the scan interval,
+scanInterval, to 0. Specify a positive integer followed by a unit of time, which can be
+hours (h), minutes (m), seconds (s), or milliseconds (ms). For example, specify 500
+milliseconds as 500ms. You can include multiple values in a single entry. For example,
+1s500ms is equivalent to 1.5 seconds.
+
+* library > folder
+Id of referenced folder
+
+** dir Path to a directory(Required)
+Directory or folder to be included in the library classpath for locating resource files
+
+** id string
+A unique configuration ID.
