@@ -61,7 +61,7 @@ public class JaegerOtlpTest extends JaegerBaseTest {
 
         // Construct the test application
         WebArchive jaegerTest = ShrinkWrap.create(WebArchive.class, "spanTest.war")
-                                          .addClass(TestResource.class);
+                                          .addPackage(TestResource.class.getPackage());
         ShrinkHelper.exportAppToServer(server, jaegerTest, SERVER_ONLY);
         server.startServer();
     }

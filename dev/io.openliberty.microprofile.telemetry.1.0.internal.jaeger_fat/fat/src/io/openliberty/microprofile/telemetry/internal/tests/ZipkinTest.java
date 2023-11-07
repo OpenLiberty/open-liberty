@@ -86,7 +86,7 @@ public class ZipkinTest {
 
         // Construct the test application
         WebArchive spanTest = ShrinkWrap.create(WebArchive.class, "spanTest.war")
-                                        .addClass(TestResource.class);
+                                        .addPackage(TestResource.class.getPackage());
         ShrinkHelper.exportAppToServer(server, spanTest, SERVER_ONLY);
         server.startServer();
     }

@@ -12,7 +12,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.apps.agent;
 
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.span;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -37,8 +36,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
-import io.openliberty.microprofile.telemetry.internal.apps.agent.AgentTestResource.AgentTestBean;
-import io.openliberty.microprofile.telemetry.internal.apps.agent.AgentTestResource.AgentTestRestClient;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Scope;

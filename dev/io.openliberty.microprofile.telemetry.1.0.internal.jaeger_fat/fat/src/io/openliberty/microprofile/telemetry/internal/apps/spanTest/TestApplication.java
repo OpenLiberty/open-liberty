@@ -7,26 +7,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal.apps.crossfeature.opentracing;
+package io.openliberty.microprofile.telemetry.internal.apps.spanTest;
 
-import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
 
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-
-@RegisterRestClient
-public interface CrossFeatureClient {
-
-    @GET
-    @Path("1")
-    public String get1();
-
-    @GET
-    @Path("2")
-    public String get2();
-
-    @GET
-    @Path("3")
-    public String get3();
+@ApplicationPath("/")
+public class TestApplication extends Application {
 
 }

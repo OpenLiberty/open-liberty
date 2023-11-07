@@ -75,7 +75,7 @@ public class JaegerSecureOtlpTest extends JaegerBaseTest {
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_CERTIFICATE, certificateFile.getAbsolutePath());
         // Construct the test application
         WebArchive jaegerTest = ShrinkWrap.create(WebArchive.class, "spanTest.war")
-                                          .addClass(TestResource.class);
+                                          .addPackage(TestResource.class.getPackage());
         ShrinkHelper.exportAppToServer(server, jaegerTest, SERVER_ONLY);
         server.startServer();
     }
