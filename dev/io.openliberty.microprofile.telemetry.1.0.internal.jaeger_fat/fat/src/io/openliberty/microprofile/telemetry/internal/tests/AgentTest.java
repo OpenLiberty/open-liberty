@@ -81,8 +81,10 @@ public class AgentTest {
     public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
     public static RepeatTests repeat = FATSuite.allMPRepeats(SERVER_NAME);
 
+    // In contrast to most tests, this test needs a new jaeger instance for each repeat
+    // so that it can check for any trace IDs not accounted for
     @ClassRule
-    public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);
+    public static RuleChain chain = RuleChain.outerRule(repeat).around(jaegerContainer);
 
     private static JaegerQueryClient client;
     private static Set<String> traceIdsUsed;
