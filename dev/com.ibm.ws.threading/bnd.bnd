@@ -28,8 +28,6 @@ Export-Package: com.ibm.ws.threading;provide:=true, \
 Private-Package: com.ibm.ws.threading.internal, \
     com.ibm.ws.threading.internal.resources
 
-Import-Package: com.ibm.ws.kernel.boot.core.*,*
-
 Service-Component=com.ibm.ws.threading.internal.DeferrableScheduledExecutorImpl; \
         implementation:=com.ibm.ws.threading.internal.DeferrableScheduledExecutorImpl; \
         executor='java.util.concurrent.ScheduledExecutorService(deferrable=false)'; \
@@ -65,8 +63,7 @@ instrument.classesExcludes: com/ibm/ws/threading/internal/resources/*.class
     com.ibm.ws.logging.core;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.ws.kernel.service;version=latest, \
-    com.ibm.ws.kernel.boot;version=latest, \
-    com.ibm.ws.kernel.boot.core;version=latest
+    com.ibm.ws.kernel.boot;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

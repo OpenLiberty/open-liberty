@@ -289,7 +289,7 @@ public class ServerStopTest {
         final String METHOD_NAME = "testQuiesceTimeNotValid()";
         Log.info(c, METHOD_NAME, ENTERING);
 
-        Utils.createFile(serverXmlFilePath, getServerXmlContents("XXXXX"));
+        Utils.createFile(serverXmlFilePath, getServerXmlContentsForQuiesceTests("XXXXX"));
         assertTrue("", runQuiesceTest("30"));
         Log.info(c, METHOD_NAME, EXITING);
     }
@@ -305,7 +305,7 @@ public class ServerStopTest {
     public void testQuiesceTimeValueLessThanDefault() throws Exception {
         final String METHOD_NAME = "testQuiesceTimeValueLessThanDefault()";
         Log.info(c, METHOD_NAME, ENTERING);
-        Utils.createFile(serverXmlFilePath, getServerXmlContents("29s"));
+        Utils.createFile(serverXmlFilePath, getServerXmlContentsForQuiesceTests("29s"));
         assertTrue("", runQuiesceTest("30"));
         Log.info(c, METHOD_NAME, EXITING);
     }
@@ -321,7 +321,7 @@ public class ServerStopTest {
     public void testQuiesceTimeValueGreaterThanDefault() throws Exception {
         final String METHOD_NAME = "testQuiesceTimeValueGreaterThanDefault()";
         Log.info(c, METHOD_NAME, ENTERING);
-        Utils.createFile(serverXmlFilePath, getServerXmlContents("1m30s"));
+        Utils.createFile(serverXmlFilePath, getServerXmlContentsForQuiesceTests("1m30s"));
         assertTrue("", runQuiesceTest("90"));
         Log.info(c, METHOD_NAME, EXITING);
     }
@@ -357,7 +357,7 @@ public class ServerStopTest {
         if (lastMatch != null) {
             String actualResult = extractTimeValue(lastMatch);
             if (actualResult != null) {
-                Log.info(c, METHOD_NAME, "returning  - actual result is [" + actualResult + "]");
+                Log.info(c, METHOD_NAME, "return - did test pass? [" + actualResult + "]");
                 return actualResult.equals(expectedResult);
             }
             Log.info(c, METHOD_NAME, "Problem extracting time from quiesce message [" + lastMatch + "]");
@@ -370,10 +370,10 @@ public class ServerStopTest {
 
     ///////  END QUIESE TESTS
 
-    public String getServerXmlContents(String timeout) {
+    public String getServerXmlContentsForQuiesceTests(String timeout) {
         return "<server>\n" +
                "    <include location=\"../fatTestPorts.xml\"/>\n" +
-               "    <executor quiesceTimeout=\"" + timeout + "\"/>\n" +
+               "    <applicationManager quiesceTimeout=\"" + timeout + "\"/>\n" +
                "</server>";
     }
 

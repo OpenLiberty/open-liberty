@@ -61,4 +61,12 @@ quiesce.listeners.not.complete.useraction=No action is required.
 
 quiesce.waiting.on.threads=CWWKE1107W: {0} threads did not complete during the quiesce period. 
 quiesce.waiting.on.threads.explanation=One or more threads that were active before shutting down the server were still active at the end of the quiesce period.
-quiesce.waiting.on.threads.useraction=No action is required. 
+quiesce.waiting.on.threads.useraction=No action is required.
+
+quiesce.timeout.not.available=CWWKE1108W: The quiesce timeout value could not be obtained from the ''ApplicationManager''.  The default quiesce timeout value of ''{0}'' will be used instead. 
+quiesce.timeout.not.available.explanation=The 'RuntimeUpdateMangager' was not able to retrieve the 'quiesceTimeout' value from the 'ApplicationManager'.    
+quiesce.timeout.not.available.useraction=Possibly the 'ApplicationManager' did not start because of a confuration problem. Check the configuration of the 'applicationManager' element in the server.xml.  Ensure all of the attributes are configured correctly.
+
+quiesce.timeout.too.low=CWWKE1109W: The ''{0}'' value that is specified for the ''quiesceTimeout'' attribute on the ''applicationManager'' element in the ''server.xml'' file is below the minimum value of ''{1}''.  The default value of ''{1}'' seconds is used instead.
+quiesce.timeout.too.low.explanation=The 'quiesceTimeout' value specifies a duration and accepts values in the format XmXs, where 'X' is replaced by a number,'m' represents minutes, and 's' represents seconds. A value of '1m30s' represents 90 seconds.  
+quiesce.timeout.too.low.useraction=Edit the 'server.xml' file and change the 'quiesceTimeout' attribute on the 'applicationManager' element to a valid duration.
