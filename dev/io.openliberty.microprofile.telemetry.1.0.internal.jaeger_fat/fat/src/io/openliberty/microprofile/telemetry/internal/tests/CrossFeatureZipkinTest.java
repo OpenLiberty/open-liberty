@@ -35,14 +35,15 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
-import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinQueryClient;
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpan;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import io.opentelemetry.api.trace.SpanKind;
 
 /**
@@ -57,7 +58,11 @@ public class CrossFeatureZipkinTest {
     private static final Class<?> c = CrossFeatureZipkinTest.class;
 
     public static ZipkinContainer zipkinContainer = new ZipkinContainer().withLogConsumer(new SimpleLogConsumer(ZipkinTest.class, "zipkin"));
-    public static RepeatTests repeat = FATSuite.allMPRepeats(CROSS_FEATURE_TELEMETRY_SERVER);
+    // Broken on EE7 & 8, see https://github.com/OpenLiberty/open-liberty/issues/26856
+    public static RepeatTests repeat = TelemetryActions.repeat(CROSS_FEATURE_TELEMETRY_SERVER,
+                                                               MicroProfileActions.MP61,
+                                                               TelemetryActions.MP50_MPTEL11,
+                                                               MicroProfileActions.MP60);
 
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(zipkinContainer).around(repeat);
