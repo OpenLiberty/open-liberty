@@ -15,6 +15,7 @@ import java.util.List;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.FeatureSet;
 import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -39,6 +40,18 @@ public class TelemetryActions {
     private static final FeatureSet[] ALL_MPTEL_SETS_ARRAY = { MicroProfileActions.MP61, MicroProfileActions.MP60, MP50_MPTEL11, MP41_MPTEL11, MP14_MPTEL11 };
     private static final List<FeatureSet> ALL_MPTEL_SETS_LIST = Arrays.asList(ALL_MPTEL_SETS_ARRAY);
 
+    /**
+     * Get a repeat action which runs the given feature set
+     * <p>
+     * The returned FeatureReplacementAction can then be configured further
+     *
+     * @param server     the server to repeat on
+     * @param featureSet the featureSet to repeat with
+     * @return a FeatureReplacementAction
+     */
+    public static FeatureReplacementAction repeatFor(String server, FeatureSet featureSet) {
+        return RepeatActions.forFeatureSet(ALL_MPTEL_SETS_LIST, featureSet, new String[] { server }, TestMode.FULL);
+    }
     /**
      * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will be run in LITE mode. The others will be run in FULL.
      *

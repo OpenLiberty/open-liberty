@@ -193,9 +193,10 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
             Config config = ConfigProvider.getConfig();
             HashMap<String, String> telemetryProperties = new HashMap<>();
             for (String propertyName : config.getPropertyNames()) {
-                if (propertyName.startsWith("otel.")) {
-                    config.getOptionalValue(propertyName, String.class).ifPresent(
-                                                                                  value -> telemetryProperties.put(propertyName, value));
+                if (propertyName.startsWith("otel") || propertyName.startsWith("OTEL")) {
+                    String normalizedName = propertyName.toLowerCase().replace('_', '.');
+                    config.getOptionalValue(normalizedName, String.class)
+                        .ifPresent(value -> telemetryProperties.put(normalizedName, value));
                 }
             }
             //Metrics and logs are disabled by default

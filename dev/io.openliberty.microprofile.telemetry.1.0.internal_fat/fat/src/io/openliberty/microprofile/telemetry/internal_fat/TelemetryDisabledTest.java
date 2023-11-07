@@ -51,7 +51,7 @@ public class TelemetryDisabledTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = FATSuite.aboveMP50Repeats(SERVER_NAME);
+    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
     
     @BeforeClass
     public static void setUp() throws Exception {
