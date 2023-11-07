@@ -59,7 +59,6 @@ public class WCSameSiteCookieAttributeTests {
         // Start the server and use the class name so we can find logs easily.
         sameSiteServer.startServer(WCSameSiteCookieAttributeTests.class.getSimpleName() + ".log");
         sameSiteServer.waitForStringInLogUsingMark("CWWKO0219I*");
-
     }
 
     @AfterClass
@@ -3248,8 +3247,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
         // No need to wait for CWWKT0016I:.*SameSiteTest.* as this test doesn't cause the app to be restarted.
-        //sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
-        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -3287,8 +3285,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             // No need to wait for CWWKT0016I:.*SameSiteTest.* as this test doesn't cause the app to be restarted.
-            //sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
-            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
         }
     }
 
@@ -3370,8 +3367,7 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.updateServerConfiguration(configuration);
         // No need to wait for CWWKT0016I:.*SameSiteTest.* as this test doesn't cause the app to be restarted.
-        //sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
-        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");
+        sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -3411,8 +3407,7 @@ public class WCSameSiteCookieAttributeTests {
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             // No need to wait for CWWKT0016I:.*SameSiteTest.* as this test doesn't cause the app to be restarted.
-            //sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
-            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");
+            sameSiteServer.waitForStringInLogUsingMark("CWWKF0008I*");//sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE));
         }
     }
 
