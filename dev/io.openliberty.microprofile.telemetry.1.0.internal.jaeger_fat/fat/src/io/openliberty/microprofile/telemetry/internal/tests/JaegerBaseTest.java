@@ -12,10 +12,10 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.tests;
 
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasEventLog;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasNoParent;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasParentSpanId;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.span;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasEventLog;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasNoParent;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasParentSpanId;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.isSpan;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
@@ -80,9 +80,9 @@ public abstract class JaegerBaseTest {
 
         Span span = spans.get(0);
 
-        assertThat(span, span().withTraceId(traceId)
-                               .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/spanTest/")
-                               .withTag(SemanticAttributes.HTTP_METHOD.getKey(), "GET"));
+        assertThat(span, isSpan().withTraceId(traceId)
+                                 .withAttribute(SemanticAttributes.HTTP_ROUTE, "/spanTest/")
+                                 .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
 
         // This is mostly just to check that getSpansForServiceName works for TracingNotEnabledTest
         List<Span> allSpans = client.getSpansForServiceName("Test service");
@@ -139,8 +139,8 @@ public abstract class JaegerBaseTest {
 
         Span span = spans.get(0);
 
-        assertThat(span, span().withStatus(StatusCode.ERROR)
-                               .withExceptionLog(RuntimeException.class));
+        assertThat(span, isSpan().withStatus(StatusCode.ERROR)
+                                 .withExceptionLog(RuntimeException.class));
         assertThat(span.getLogs(0).hasTimestamp(), is(true));
     }
 
@@ -153,7 +153,7 @@ public abstract class JaegerBaseTest {
 
         Span span = spans.get(0);
 
-        assertThat(span, span().withTag(TestResource.TEST_ATTRIBUTE_KEY.getKey(), TestResource.TEST_ATTRIBUTE_VALUE));
+        assertThat(span, isSpan().withAttribute(TestResource.TEST_ATTRIBUTE_KEY, TestResource.TEST_ATTRIBUTE_VALUE));
     }
 
     private boolean hasParent(Span span) {

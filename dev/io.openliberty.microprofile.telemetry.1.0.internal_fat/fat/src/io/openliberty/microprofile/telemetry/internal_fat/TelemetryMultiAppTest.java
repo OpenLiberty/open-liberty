@@ -38,7 +38,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.multiapp2.MultiAp
 import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporterProvider;
-import io.openliberty.microprofile.telemetry.internal_fat.shared.AbstractSpanMatcher;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.spans.AbstractSpanMatcher;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
 
 /**

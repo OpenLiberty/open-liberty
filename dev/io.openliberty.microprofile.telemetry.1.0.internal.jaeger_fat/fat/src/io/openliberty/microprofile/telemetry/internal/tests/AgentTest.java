@@ -15,21 +15,21 @@ package io.openliberty.microprofile.telemetry.internal.tests;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static io.openliberty.microprofile.telemetry.internal.utils.TestUtils.findOneFrom;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient.convertByteString;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasKind;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasName;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasNoParent;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasParentSpanId;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasServiceName;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.span;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasKind;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasName;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasNoParent;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasParentSpanId;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasServiceName;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.isSpan;
 import static io.opentelemetry.api.trace.SpanKind.CLIENT;
 import static io.opentelemetry.api.trace.SpanKind.INTERNAL;
 import static io.opentelemetry.api.trace.SpanKind.SERVER;
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.util.HashSet;
@@ -61,6 +61,7 @@ import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
+import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 
 /**
@@ -156,9 +157,9 @@ public class AgentTest {
 
         Span span = spans.get(0);
 
-        assertThat(span, span().withTraceId(traceId)
-                               .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/agentTest/")
-                               .withTag(SemanticAttributes.HTTP_METHOD.getKey(), "GET"));
+        assertThat(span, JaegerSpanMatcher.isSpan().withTraceId(traceId)
+                                          .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/")
+                                          .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
 
         // We shouldn't have any additional spans
         List<String> services = client.getServices();
@@ -288,15 +289,15 @@ public class AgentTest {
         List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(3));
 
         Span root = findOneFrom(spans, hasNoParent());
-        assertThat(root, span().withKind(SERVER)
-                               .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/agentTest/httpclient"));
+        assertThat(root, isSpan().withKind(SERVER)
+                                 .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/httpclient"));
 
         Span child1 = findOneFrom(spans, hasParentSpanId(root.getSpanId()));
         assertThat(child1, hasKind(CLIENT));
 
         Span child2 = findOneFrom(spans, hasParentSpanId(child1.getSpanId()));
-        assertThat(child2, span().withKind(SERVER)
-                                 .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/agentTest/httpclient/target"));
+        assertThat(child2, isSpan().withKind(SERVER)
+                                   .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/httpclient/target"));
     }
 
     /**
@@ -315,15 +316,15 @@ public class AgentTest {
         List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(3));
 
         Span root = findOneFrom(spans, hasNoParent());
-        assertThat(root, span().withKind(SERVER)
-                               .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/agentTest/jaxrsclient"));
+        assertThat(root, isSpan().withKind(SERVER)
+                                 .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/jaxrsclient"));
 
         Span child1 = findOneFrom(spans, hasParentSpanId(root.getSpanId()));
         assertThat(child1, hasKind(CLIENT));
 
         Span child2 = findOneFrom(spans, hasParentSpanId(child1.getSpanId()));
-        assertThat(child2, span().withKind(SERVER)
-                                 .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/agentTest/httpclient/target"));
+        assertThat(child2, isSpan().withKind(SERVER)
+                                   .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/httpclient/target"));
     }
 
     /**
@@ -342,14 +343,14 @@ public class AgentTest {
         List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(3));
 
         Span root = findOneFrom(spans, hasNoParent());
-        assertThat(root, span().withKind(SERVER)
-                               .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/agentTest/mprestclient"));
+        assertThat(root, isSpan().withKind(SERVER)
+                                 .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/mprestclient"));
 
         Span child1 = findOneFrom(spans, hasParentSpanId(root.getSpanId()));
         assertThat(child1, hasKind(CLIENT));
 
         Span child2 = findOneFrom(spans, hasParentSpanId(child1.getSpanId()));
-        assertThat(child2, span().withKind(SERVER)
-                                 .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/agentTest/httpclient/target"));
+        assertThat(child2, isSpan().withKind(SERVER)
+                                   .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/httpclient/target"));
     }
 }
