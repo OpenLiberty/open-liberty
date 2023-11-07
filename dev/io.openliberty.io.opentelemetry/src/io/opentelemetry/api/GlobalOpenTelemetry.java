@@ -49,7 +49,7 @@ public final class GlobalOpenTelemetry {
         return OpenTelemetry.noop();
     }
 
-    //GlobalOpenTelemetry cannot be set twice
+    //GlobalOpenTelemetry cannot be set
     public static void set(OpenTelemetry openTelemetry) {
         throw new IllegalStateException(Tr.formatMessage(tc, "CWMOT5001.cannot.set.globalopentelemetry"));
     }
@@ -60,6 +60,10 @@ public final class GlobalOpenTelemetry {
 
     public static Tracer getTracer(String instrumentationScopeName) {
         return get().getTracer(instrumentationScopeName);
+    }
+
+    public static Tracer getTracer(String instrumentationScopeName, String instrumentationScopeVersion){
+        return get().getTracer(instrumentationScopeName, instrumentationScopeVersion);
     }
 
     public static TracerBuilder tracerBuilder(String instrumentationScopeName) {
