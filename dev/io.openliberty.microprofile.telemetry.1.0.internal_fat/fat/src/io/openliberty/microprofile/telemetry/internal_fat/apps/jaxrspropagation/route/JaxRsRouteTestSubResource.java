@@ -9,29 +9,19 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.route;
 
-import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 
-@Path("routeTestEndpoints")
-public class JaxRsRouteTestEndpoints {
+public class JaxRsRouteTestSubResource {
 
-    @Path("/getWithId/{id}")
-    @GET
-    public String getWithId(@PathParam("id") String id) {
-        return id;
+    public JaxRsRouteTestSubResource(String id) {
+        this.id = id;
     }
 
-    @Path("/getWithQueryParam")
-    @GET
-    public String getWithQueryParam(@QueryParam("id") String id) {
-        return id;
-    }
+    private final String id;
 
-    @Path("/getSubResource/{id}")
-    public JaxRsRouteTestSubResource getSubResource(@PathParam("id") String id) {
-        return new JaxRsRouteTestSubResource(id);
+    @Path("details")
+    public String details() {
+        return id;
     }
 
 }
