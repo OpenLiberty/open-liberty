@@ -867,4 +867,11 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String CLIENT_ASSERTION = "client_assertion";
     public static final String CLIENT_ASSERTION_TYPE = "client_assertion_type";
     public static final String PRIVATE_KEY_JWT_ASSERTION_TYPE = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
+
+    /*********************************** Token Order ******************************************/
+    public static final String TOKEN_ORDER_IDTOKEN="IDToken";
+    public static final String TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO="AccessToken IDToken Userinfo";
+    public static final String TOKEN_TYPE_IDTOKEN="IDToken";
+    public static final String TOKEN_TYPE_ACCESSTOKEN="AccessToken";
+    public static final String TOKEN_TYPE_USERINFO="Userinfo";
 }

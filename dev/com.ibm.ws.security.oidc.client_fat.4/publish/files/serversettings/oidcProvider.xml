@@ -43,7 +43,7 @@
 				name="client01"
 				secret="{xor}LDo8LTor"
 				displayname="client01"
-				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/sampleBuilder,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/atOnly,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/noClaim"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/sampleBuilder,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/idtokenonly"
 				scope="ALL_SCOPES"
 				enabled="true" />
 				
