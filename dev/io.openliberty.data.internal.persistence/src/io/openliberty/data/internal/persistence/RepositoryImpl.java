@@ -70,6 +70,7 @@ import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Function;
+import io.openliberty.data.repository.Or;
 import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.Select.Aggregate;
 import io.openliberty.data.repository.comparison.Contains;
@@ -1334,8 +1335,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
         for (int p = 0; p < numAttributeParams; p++) {
             ParamInfo paramInfo = allParamInfo[p];
             if (paramInfo == null || paramInfo.updateAnno == null) {
-                q.append(queryInfo.hasWhere == false ? " WHERE (" : " AND ");
-                queryInfo.hasWhere = true;
+                if (queryInfo.hasWhere) {
+                    q.append(paramInfo != null && paramInfo.or ? " OR " : " AND ");
+                } else {
+                    q.append(" WHERE (");
+                    queryInfo.hasWhere = true;
+                }
 
                 // Determine the entity attribute name, first from @By("name"), otherwise from the parameter name
                 String attribute = paramInfo == null ? "" : paramInfo.attributeName;
@@ -1374,16 +1379,16 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     q.append(attributeExpr).append(paramInfo != null && paramInfo.negate ? "<>" : "=");
                     appendParam(q, ignoreCase, p + 1);
                 } else if (paramInfo.comparisonAnno instanceof GreaterThan) {
-                    q.append(attributeExpr).append('>');
+                    q.append(attributeExpr).append(paramInfo.negate ? "<=" : ">");
                     appendParam(q, ignoreCase, p + 1);
                 } else if (paramInfo.comparisonAnno instanceof GreaterThanEqual) {
-                    q.append(attributeExpr).append(">=");
+                    q.append(attributeExpr).append(paramInfo.negate ? "<" : ">=");
                     appendParam(q, ignoreCase, p + 1);
                 } else if (paramInfo.comparisonAnno instanceof LessThan) {
-                    q.append(attributeExpr).append('<');
+                    q.append(attributeExpr).append(paramInfo.negate ? ">=" : "<");
                     appendParam(q, ignoreCase, p + 1);
                 } else if (paramInfo.comparisonAnno instanceof LessThanEqual) {
-                    q.append(attributeExpr).append("<=");
+                    q.append(attributeExpr).append(paramInfo.negate ? ">" : "<=");
                     appendParam(q, ignoreCase, p + 1);
                 } else if (paramInfo.comparisonAnno instanceof Contains) {
                     if (isCollection) {
@@ -1541,39 +1546,44 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         Annotation[][] annosForAllParams = queryInfo.method.getParameterAnnotations();
         ParamInfo[] allParamInfo = annosForAllParams.length == 0 ? null : new ParamInfo[annosForAllParams.length];
-        for (int p = 0; p < annosForAllParams.length; p++) {
-            ParamInfo paramInfo = new ParamInfo();
-            for (Annotation anno : annosForAllParams[p])
-                if (anno instanceof By) {
-                    paramInfo.attributeName = ((By) anno).value();
-                } else {
-                    String packageName = anno.annotationType().getPackageName();
-                    if (COMPARISON_ANNO_PACKAGE.equals(packageName)) {
-                        if (paramInfo.comparisonAnno == null)
-                            paramInfo.comparisonAnno = anno;
-                        else
-                            throw new MappingException("The " + Set.of(paramInfo.comparisonAnno, anno) +
-                                                       " annotations cannot be combined on parameter " + (p + 1) + " of the " +
-                                                       queryInfo.method.getName() + " method of the " +
-                                                       repositoryInterface.getName() + " repository."); // TODO NLS
-                    } else if (FUNCTION_ANNO_PACKAGE.equals(packageName)) {
-                        paramInfo.addFunctionAnnotation(anno);
-                    } else if (UPDATE_ANNO_PACKAGE.equals(packageName)) {
-                        hasUpdateParam = true;
-                        if (paramInfo.updateAnno == null)
-                            paramInfo.updateAnno = anno;
-                        else
-                            throw new MappingException("The " + Set.of(paramInfo.updateAnno, anno) +
-                                                       " annotations cannot be combined on parameter " + (p + 1) + " of the " +
-                                                       queryInfo.method.getName() + " method of the " +
-                                                       repositoryInterface.getName() + " repository."); // TODO NLS
+        for (int p = 0; p < annosForAllParams.length; p++)
+            if (annosForAllParams[p].length > 0) {
+                ParamInfo paramInfo = new ParamInfo();
+                for (Annotation anno : annosForAllParams[p])
+                    if (anno instanceof By) {
+                        paramInfo.attributeName = ((By) anno).value();
+                    } else if (anno instanceof Or) {
+                        paramInfo.or = true;
+                    } else if (anno instanceof Not) {
+                        paramInfo.negate = true;
+                    } else {
+                        String packageName = anno.annotationType().getPackageName();
+                        if (COMPARISON_ANNO_PACKAGE.equals(packageName)) {
+                            if (paramInfo.comparisonAnno == null)
+                                paramInfo.comparisonAnno = anno;
+                            else
+                                throw new MappingException("The " + Set.of(paramInfo.comparisonAnno, anno) +
+                                                           " annotations cannot be combined on parameter " + (p + 1) + " of the " +
+                                                           queryInfo.method.getName() + " method of the " +
+                                                           repositoryInterface.getName() + " repository."); // TODO NLS
+                        } else if (FUNCTION_ANNO_PACKAGE.equals(packageName)) {
+                            paramInfo.addFunctionAnnotation(anno);
+                        } else if (UPDATE_ANNO_PACKAGE.equals(packageName)) {
+                            hasUpdateParam = true;
+                            if (paramInfo.updateAnno == null)
+                                paramInfo.updateAnno = anno;
+                            else
+                                throw new MappingException("The " + Set.of(paramInfo.updateAnno, anno) +
+                                                           " annotations cannot be combined on parameter " + (p + 1) + " of the " +
+                                                           queryInfo.method.getName() + " method of the " +
+                                                           repositoryInterface.getName() + " repository."); // TODO NLS
+                        }
                     }
+                if (paramInfo.hasDataAnnotation()) {
+                    allParamInfo[p] = paramInfo;
+                    isParameterBased = true;
                 }
-            if (paramInfo.hasDataAnnotation()) {
-                allParamInfo[p] = paramInfo;
-                isParameterBased = true;
             }
-        }
 
         if (methodTypeAnno instanceof Update) {
             if (!hasUpdateParam)

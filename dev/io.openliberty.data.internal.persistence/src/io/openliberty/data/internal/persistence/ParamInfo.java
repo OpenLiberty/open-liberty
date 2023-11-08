@@ -47,6 +47,11 @@ class ParamInfo {
     boolean negate;
 
     /**
+     * Indicates if the Or annotation is present.
+     */
+    boolean or;
+
+    /**
      * Annotation that is specified on the parameter to indicate a type of update (such as Add). Otherwise null.
      */
     Annotation updateAnno;
@@ -62,6 +67,6 @@ class ParamInfo {
     }
 
     boolean hasDataAnnotation() {
-        return negate || attributeName != null || comparisonAnno != null || functionAnnos != null || updateAnno != null;
+        return or || negate || attributeName != null || comparisonAnno != null || functionAnnos != null || updateAnno != null;
     }
 }

@@ -26,14 +26,15 @@ import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.PageableRepository;
-import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
-import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Function;
+import io.openliberty.data.repository.Or;
+import io.openliberty.data.repository.comparison.GreaterThan;
 import io.openliberty.data.repository.comparison.GreaterThanEqual;
+import io.openliberty.data.repository.comparison.LessThan;
 import io.openliberty.data.repository.comparison.LessThanEqual;
 import io.openliberty.data.repository.update.Add;
 import io.openliberty.data.repository.update.Divide;
@@ -115,10 +116,8 @@ public interface Packages extends PageableRepository<Package, Integer> {
     long updateByLengthLessThanEqualAndHeightBetweenMultiplyLengthMultiplyWidthSetHeight(float maxLength, float minHeight, float maxHeight,
                                                                                          float lengthMultiplier, float widthMultiplier, float newHeight);
 
-    @Filter(by = "height", op = Compare.LessThan, param = "min")
-    @Filter(as = Filter.Type.Or, by = "height", op = Compare.GreaterThan, param = "max")
-    KeysetAwarePage<Package> whereHeightNotWithin(@Param("min") float minToExclude,
-                                                  @Param("max") float maxToExclude,
+    KeysetAwarePage<Package> whereHeightNotWithin(@By("height") @LessThan float minToExclude,
+                                                  @Or @By("height") @GreaterThan float maxToExclude,
                                                   Pageable pagination);
 
     @Query("SELECT p FROM Package p WHERE (p.length * p.width * p.height >= ?1 AND p.length * p.width * p.height <= ?2)")

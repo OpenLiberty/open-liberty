@@ -47,11 +47,14 @@ import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Function;
+import io.openliberty.data.repository.Or;
+import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.comparison.EndsWith;
 import io.openliberty.data.repository.comparison.GreaterThan;
 import io.openliberty.data.repository.comparison.GreaterThanEqual;
 import io.openliberty.data.repository.comparison.LessThan;
 import io.openliberty.data.repository.comparison.LessThanEqual;
+import io.openliberty.data.repository.function.Not;
 
 /**
  * Repository with data that is pre-populated.
@@ -232,13 +235,12 @@ public interface Primes {
     @Exists
     boolean isFoundWith(long id, String hex);
 
-    @Filter(by = "id", op = Compare.LessThan)
-    @Filter(by = "name", op = Compare.EndsWith)
-    @Filter(as = Filter.Type.Or, by = "id", op = Compare.Between)
-    @Filter(by = "name", op = Compare.EndsWith)
     @OrderBy(value = "numberId", descending = true)
-    Stream<Prime> lessThanWithSuffixOrBetweenWithSuffix(long numLessThan, String firstSuffix,
-                                                        long lowerLimit, long upperLimit, String secondSuffix);
+    Stream<Prime> lessThanWithSuffixOrBetweenWithSuffix(@By("id") @LessThan long numLessThan,
+                                                        @By("name") @EndsWith String firstSuffix,
+                                                        @Or @By("id") @GreaterThanEqual long lowerLimit,
+                                                        @By("id") @LessThanEqual long upperLimit,
+                                                        @By("name") @EndsWith String secondSuffix);
 
     @OrderBy("id")
     @Query("SELECT o.numberId FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR o.numberId=:num)")
@@ -296,10 +298,10 @@ public interface Primes {
     @OrderBy("numberId")
     Page<Object[]> namesWithHex(long maxNumber, Pageable pagination);
 
-    @Filter(by = "id", op = Compare.NotBetween)
-    @Filter(by = "id", op = Compare.LessThan)
     @OrderBy("id")
-    List<Long> notWithinButBelow(int rangeMin, int rangeMax, int below);
+    List<Long> notWithinButBelow(@By("id") @LessThan int rangeMin,
+                                 @Or @By("id") @GreaterThan int rangeMax,
+                                 @By("id") @LessThan int below);
 
     @Count
     int numEvenWithSumOfBits(int sumOfBits, boolean even);
@@ -325,4 +327,9 @@ public interface Primes {
     @Filter(by = "name", fn = { Function.Trimmed, Function.CharCount })
     @Filter(by = "id", op = Compare.Between)
     List<Prime> withNameLengthAndWithin(int length, long min, long max);
+
+    @Select("name")
+    List<String> withRomanNumeralSuffixAndWithoutNameSuffix(@By("romanNumeral") @EndsWith String numeralSuffix,
+                                                            @By("name") @Not @EndsWith String nameSuffixToExclude,
+                                                            @By("id") @LessThanEqual long max);
 }
