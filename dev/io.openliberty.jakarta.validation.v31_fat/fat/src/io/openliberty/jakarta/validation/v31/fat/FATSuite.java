@@ -10,23 +10,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package app1.web;
+package io.openliberty.jakarta.validation.v31.fat;
 
-import javax.servlet.annotation.WebServlet;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-import org.junit.Assert;
-import org.junit.Test;
-
-import componenttest.app.FATServlet;
-
-@SuppressWarnings("serial")
-@WebServlet("/TestServletA")
-public class TestServletA extends FATServlet {
-
-    @Test
-    public void basicTest() throws Exception {
-        System.out.println("Test is running in an HttpServlet");
-        Assert.assertTrue("Can also use JUnit assertions", true);
-    }
+@RunWith(Suite.class)
+@SuiteClasses({
+                Validation31Test.class,
+})
+public class FATSuite {
 
 }

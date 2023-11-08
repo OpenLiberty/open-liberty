@@ -10,16 +10,23 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.example;
+package val31.web;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.servlet.annotation.WebServlet;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                SimpleTest.class,
-})
-public class FATSuite {
+import org.junit.Assert;
+import org.junit.Test;
+
+import componenttest.app.FATServlet;
+
+@SuppressWarnings("serial")
+@WebServlet("/Validation31TestServlet")
+public class Validation31TestServlet extends FATServlet {
+
+    @Test
+    public void basicTest() throws Exception {
+        System.out.println("Test is running in an HttpServlet");
+        Assert.assertTrue("Can also use JUnit assertions", true);
+    }
 
 }
