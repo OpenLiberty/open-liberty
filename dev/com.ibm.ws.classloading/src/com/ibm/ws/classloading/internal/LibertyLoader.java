@@ -21,7 +21,8 @@ import java.util.function.Supplier;
 import org.osgi.framework.Bundle;
 
 import com.ibm.ws.classloading.LibertyClassLoader;
-import com.ibm.ws.kernel.service.util.KeyBasedLockStore;
+import com.ibm.ws.kernel.boot.classloader.NameBasedClassLoaderLock;
+import com.ibm.ws.kernel.boot.utils.KeyBasedLockStore;
 
 public abstract class LibertyLoader extends SecureClassLoader implements NoClassNotFoundLoader, LibertyClassLoader, DeclaredApiAccess {
     static {
@@ -30,19 +31,15 @@ public abstract class LibertyLoader extends SecureClassLoader implements NoClass
 
     final ClassLoader parent;
 
+    // This is used to help when analyzing ClassLoader leaks to show which ones are active and which ones were destroyed.
+    volatile boolean isDestroyed = false;
+
     public LibertyLoader(ClassLoader parent) {
         super(parent);
         this.parent = parent;
     }
 
-    private static final class NameBasedClassLoaderLock {};
-
-    private final KeyBasedLockStore<String, NameBasedClassLoaderLock> classNameLockStore = new KeyBasedLockStore<>(new Supplier<NameBasedClassLoaderLock>() {
-        @Override
-        public NameBasedClassLoaderLock get() {
-            return new NameBasedClassLoaderLock();
-        }
-    });
+    private final KeyBasedLockStore<String, NameBasedClassLoaderLock> classNameLockStore = new KeyBasedLockStore<>(NameBasedClassLoaderLock.LOCK_SUPPLIER);
 
     /**
      * Override the default Java implementation for this method because on HotSpot based implementations the collection of locks
@@ -50,7 +47,7 @@ public abstract class LibertyLoader extends SecureClassLoader implements NoClass
      * concurrency when getting the lock.  With this implementation both issues (memory and concurrency) are handled. 
      */
     @Override
-    protected final Object getClassLoadingLock(String className) {
+    protected final NameBasedClassLoaderLock getClassLoadingLock(String className) {
         return classNameLockStore.getLock(className);
     }
 
@@ -89,4 +86,10 @@ public abstract class LibertyLoader extends SecureClassLoader implements NoClass
     }
 
     public abstract Bundle getBundle();
+
+    @Override
+    public void destroy() {
+        classNameLockStore.cleanup();
+        isDestroyed = true;
+    }
 }

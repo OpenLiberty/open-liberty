@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.kernel.service.util;
+package com.ibm.ws.kernel.boot.utils;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
@@ -62,6 +62,10 @@ public final class KeyBasedLockStore<Key, Lock> {
             }
             lockMap.remove(key, retVal);
         }
+    }
+
+    public void cleanup() {
+        poll();
     }
 
     @SuppressWarnings("unchecked")

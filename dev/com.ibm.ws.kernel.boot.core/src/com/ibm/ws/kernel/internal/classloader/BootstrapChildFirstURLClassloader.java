@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011,2020 IBM Corporation and others.
+ * Copyright (c) 2011,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,6 +18,9 @@ import java.net.URLClassLoader;
 import java.util.Collections;
 import java.util.Enumeration;
 
+import com.ibm.ws.kernel.boot.classloader.NameBasedClassLoaderLock;
+import com.ibm.ws.kernel.boot.utils.KeyBasedLockStore;
+
 /**
  * Child-first delegating classloader.
  * Delegates bootstrap packages to this (the application classloader), to
@@ -29,24 +32,36 @@ public final class BootstrapChildFirstURLClassloader extends URLClassLoader {
         ClassLoader.registerAsParallelCapable();
     }
 
+    private final KeyBasedLockStore<String, NameBasedClassLoaderLock> classNameLockStore = new KeyBasedLockStore<>(NameBasedClassLoaderLock.LOCK_SUPPLIER);
+
     private final ClassLoader parent;
 
     /**
      * Delegates to constructor of superclass (URLClassLoader)
      *
      * @param urls
-     *            the URLs from which to load classes and resources
+     *                   the URLs from which to load classes and resources
      * @param parent
-     *            the parent class loader for delegation
+     *                   the parent class loader for delegation
      *
      * @throws java.lang.SecurityException
-     *             if a security manager exists and its
-     *             checkCreateClassLoader method doesn't allow creation of a
-     *             class loader.
+     *                                         if a security manager exists and its
+     *                                         checkCreateClassLoader method doesn't allow creation of a
+     *                                         class loader.
      */
     public BootstrapChildFirstURLClassloader(URL[] urls, ClassLoader parent) {
         super(urls, parent);
         this.parent = parent;
+    }
+
+    /**
+     * Override the default Java implementation for this method because on HotSpot based implementations the collection of locks
+     * is a hard reference and bloats memory and on J9 based implementations the collection is a Hashtable which doesn't allow for
+     * concurrency when getting the lock. With this implementation both issues (memory and concurrency) are handled.
+     */
+    @Override
+    protected final NameBasedClassLoaderLock getClassLoadingLock(String className) {
+        return classNameLockStore.getLock(className);
     }
 
     // NOTE that the rest of the methods in this class are duplicated in

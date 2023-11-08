@@ -82,8 +82,7 @@ import com.ibm.ws.classloading.internal.util.MultiMap;
 import com.ibm.ws.classloading.serializable.ClassLoaderIdentityImpl;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
-import com.ibm.ws.kernel.service.util.KeyBasedLockStore;
+import com.ibm.ws.kernel.boot.utils.KeyBasedLockStore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -607,8 +606,12 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
             @Override
             protected void update() {
                 AppClassLoader cl = get();
-                if (cl != null && aclStore != null)
-                    aclStore.remove(cl);
+                if (cl != null) {
+                    if (aclStore != null) {
+                        aclStore.remove(cl);
+                    }
+                    cl.destroy();
+                }
                 deregister();
             }
         };
