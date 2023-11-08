@@ -512,15 +512,9 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     // Release the lock on the lease log. This could be the local server or a peer.
                     try {
                         if (localRecovery) {
-                            if (_leaseLog.releaseLocalLease(recoveredServerIdentity)) {
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Have released local lease lock");
-                            }
+                            _leaseLog.releaseLocalLease(recoveredServerIdentity);
                         } else {
-                            if (_leaseLog.releasePeerLease(recoveredServerIdentity)) {
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Have released peer lease lock");
-                            }
+                            _leaseLog.releasePeerLease(recoveredServerIdentity);
                         }
                     } catch (Exception e) {
                         // Note the error but continue
