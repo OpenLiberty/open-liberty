@@ -10,12 +10,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/**
- * <p>This package defines extensions to Jakarta Data that
- * enable you to annotate repository method parameters as
- * indicating they cause an update to be performed.</p>
- *
- * @version 1.0
- */
-@org.osgi.annotation.versioning.Version("1.0")
-package io.openliberty.data.repository.update;
+package io.openliberty.data.repository.function;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.PARAMETER)
+public @interface Not {
+}
