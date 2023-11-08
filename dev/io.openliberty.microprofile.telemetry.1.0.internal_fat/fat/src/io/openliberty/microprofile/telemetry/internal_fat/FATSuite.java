@@ -25,6 +25,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
                 JaxRsIntegration.class,
                 JaxRsIntegrationWithConcurrency.class,
                 Telemetry10.class,
+                TelemetryAloneTest.class,
                 TelemetryBeanTest.class,
                 TelemetryMultiAppTest.class,
                 TelemetrySpiTest.class,
