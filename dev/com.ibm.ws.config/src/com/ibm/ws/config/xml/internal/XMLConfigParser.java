@@ -406,7 +406,8 @@ public class XMLConfigParser {
                     while (children.hasNext()) {
                         alphabeticalChildren.add(children.next());
                     }
-                    Collections.sort(alphabeticalChildren);
+                    // Match sort used for configDropins. Reference ServerXMLConfiguration.java:parseDirectoryFiles()
+                    Collections.sort(alphabeticalChildren, String.CASE_INSENSITIVE_ORDER);
                     for(String child : alphabeticalChildren){
                         parseIncludeDir(parser, docLocation, child, includes, configuration);
                     }

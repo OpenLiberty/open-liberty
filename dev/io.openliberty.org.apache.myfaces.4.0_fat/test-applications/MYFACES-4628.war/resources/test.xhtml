@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
+ <html xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:ui="jakarta.faces.facelets"
+       xmlns:h="jakarta.faces.html"
+       xmlns:f="jakarta.faces.core">
+ <body>
+ 
+ <h:form id="form">
+    <h:messages/>
+    <h:selectOneMenu id="select" label="MYFACES-4628" required="true" value="#{selectBean.selectedNumber}">
+        <f:selectItem itemLabel="Val-1" itemValue="one" />
+        <f:selectItem itemLabel="Val-2" itemValue="two" />
+        <f:selectItem itemLabel="Val-3" itemValue="three" itemDisabled="true"/> 
+    </h:selectOneMenu>
+    <h:outputText id="output" value="Value is: '#{selectBean.selectedNumber}'"/>
+    <h:commandButton id="submit" value="submit"/>
+ </h:form>
+ 
+ 
+ </body>
+ </html>

@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 
 import jakarta.data.page.Pageable;
 import jakarta.data.repository.DataRepository;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.Repository;
 
 /**
@@ -36,5 +37,6 @@ public interface Tariffs extends DataRepository<Tariff, Long> {
 
     List<Tariff> findByLeviedByOrderByKey(String country, Pageable pagination);
 
+    @Insert
     Tariff save(Tariff t);
 }

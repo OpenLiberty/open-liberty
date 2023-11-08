@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012,2020 IBM Corporation and others.
+ * Copyright (c) 2012,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,6 +21,7 @@ import java.sql.Statement;
 import java.util.Set;
 
 import javax.resource.ResourceException;
+import javax.resource.spi.ConnectionEvent;
 import javax.resource.spi.ConnectionManager;
 import javax.resource.spi.ConnectionRequestInfo;
 import javax.resource.spi.ManagedConnection;
@@ -121,6 +122,12 @@ public class FVTManagedConnectionFactory implements ManagedConnectionFactory, Re
         for (Object o : set)
             if (o instanceof FVTManagedConnection) {
                 FVTManagedConnection m = (FVTManagedConnection) o;
+                if (m.isInvalid()) {
+                    FVTConnection conHandle = null;
+                    Exception failure = null;
+                    m.notify(ConnectionEvent.CONNECTION_ERROR_OCCURRED, conHandle, failure);
+                    return null;
+                }
                 if (match(m.cri, cri) && matchSubjects(m.subject, subject))
                     return m;
             }

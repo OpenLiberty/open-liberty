@@ -21,10 +21,12 @@ import java.util.stream.Stream;
 public interface BasicRepository<T, K> extends DataRepository<T, K> {
     long count();
 
+    @Delete
     void delete(T entity);
 
     void deleteAll();
 
+    @Delete
     void deleteAll(Iterable<? extends T> entities);
 
     void deleteByIdIn(Iterable<K> ids);
@@ -39,7 +41,9 @@ public interface BasicRepository<T, K> extends DataRepository<T, K> {
 
     Optional<T> findById(K id);
 
+    @Save
     <S extends T> S save(S entity);
 
+    @Save
     <S extends T> Iterable<S> saveAll(Iterable<S> entities);
 }

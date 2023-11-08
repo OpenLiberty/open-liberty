@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -98,8 +98,8 @@ public class RSSamlIDPInitiatedSSLConfigWithReconfigTests extends RSSamlIDPIniti
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException" })
-    @Test
+    //@ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException" })
+    //@Test - TODO : enable this test when we update signature algorithm config to support higher than sha256
     public void RSSamlIDPInitiatedConfigTests_signatureMethodAlgorithm_SHA256() throws Exception {
 
         RSSamlConfigSettings updatedRsSamlSettings = rsConfigSettings.copyConfigSettings();

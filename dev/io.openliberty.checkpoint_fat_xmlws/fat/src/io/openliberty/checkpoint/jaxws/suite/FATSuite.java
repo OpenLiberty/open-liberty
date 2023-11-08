@@ -23,6 +23,9 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.checkpoint.jaxws.fat.EJBWSBasicTest;
 import io.openliberty.checkpoint.jaxws.fat.LibertyCXFPositivePropertiesTest;
@@ -54,5 +57,11 @@ public class FATSuite {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static RepeatTests defaultRepeat(String serverName) {
+        return RepeatTests.withoutModification()
+                        .andWith(new JakartaEE9Action().forServers(serverName).fullFATOnly())
+                        .andWith(new JakartaEE10Action().forServers(serverName).fullFATOnly());
     }
 }

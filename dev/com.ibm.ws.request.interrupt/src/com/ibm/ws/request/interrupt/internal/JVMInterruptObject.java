@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import com.ibm.websphere.interrupt.InterruptObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
@@ -39,7 +40,7 @@ final class JVMInterruptObject implements InterruptObject {
 	/**
 	 * The thread for which this ODI is created.
 	 */
-	private Thread _thread = null;
+	private WeakReference<Thread> _wrThread = null;
 
 	/**
 	 * Object which monitors JVM network activity.
@@ -77,7 +78,7 @@ final class JVMInterruptObject implements InterruptObject {
 	protected JVMInterruptObject(Object interruptibleIOContextObject, Method interruptibleIOContextisBlockedMethod,
 			Method interruptibleIOContextunblockMethod, Object interruptibleLockContextObject,
 			Method interruptibleLockContextisBlockedMethod, Method interruptibleLockContextunblockdMethod) {
-		_thread = Thread.currentThread();
+		_wrThread = new WeakReference<Thread>(Thread.currentThread());
 
 		_interruptibleIOContextObject = interruptibleIOContextObject;
 		_iOContextisBlockedMethod = interruptibleIOContextisBlockedMethod;
@@ -167,7 +168,10 @@ final class JVMInterruptObject implements InterruptObject {
 		boolean threadIsBlocked = false;
 
 		if (TraceComponent.isAnyTracingEnabled() && (tc.isDebugEnabled())) {
-			Tr.debug(tc, "interrupt method stack trace of thread. ", new Object[] { _thread, _thread.getStackTrace() });
+			Thread thread = _wrThread.get();
+			if (thread != null) {
+				Tr.debug(tc, "interrupt method stack trace of thread. ", new Object[] { thread, thread.getStackTrace() });
+			}
 		}
 
 		/* call the isBlocked method on the lock context.
@@ -189,7 +193,10 @@ final class JVMInterruptObject implements InterruptObject {
 				if (booleanObject.booleanValue()) {
 					threadIsBlocked = true;
 					if (TraceComponent.isAnyTracingEnabled() && (tc.isDebugEnabled())) {
-						Tr.debug(tc, "calling unblock on lock context", _thread);
+						Thread thread = _wrThread.get();
+						if (thread != null) {
+							Tr.debug(tc, "calling unblock on lock context", thread);
+						}
 					}
 					try {
 						AccessController.doPrivileged(
@@ -232,7 +239,10 @@ final class JVMInterruptObject implements InterruptObject {
 				if (booleanObject.booleanValue()) {
 					threadIsBlocked = true;
 					if (TraceComponent.isAnyTracingEnabled() && (tc.isDebugEnabled())) {
-						Tr.debug(tc, "calling unblock on IO context", _thread);
+						Thread thread = _wrThread.get();
+						if (thread != null) {
+							Tr.debug(tc, "calling unblock on IO context", thread);
+						}
 					}
 					try {
 						AccessController.doPrivileged(

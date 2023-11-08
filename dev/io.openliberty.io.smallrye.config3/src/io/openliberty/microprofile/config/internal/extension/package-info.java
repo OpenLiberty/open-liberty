@@ -4,11 +4,12 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-@com.ibm.websphere.ras.annotation.TraceOptions(traceGroups = { "APPCONFIG", "checkpoint" }, messageBundle = "io.openliberty.io.smallrye.config.resources.SmallryeConfigMessages")
+@com.ibm.websphere.ras.annotation.TraceOptions(traceGroups = { "APPCONFIG", "checkpoint" },
+                                               messageBundle = "io.openliberty.microprofile.config.internal.common.resources.MPConfigCommonMessages")
 package io.openliberty.microprofile.config.internal.extension;

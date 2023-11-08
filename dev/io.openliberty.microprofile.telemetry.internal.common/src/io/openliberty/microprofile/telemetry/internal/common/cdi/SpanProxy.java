@@ -11,14 +11,16 @@ package io.openliberty.microprofile.telemetry.internal.common.cdi;
 
 import java.util.concurrent.TimeUnit;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanContext;
 import io.opentelemetry.api.trace.StatusCode;
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
+import io.opentelemetry.context.Context;
+import io.opentelemetry.context.Scope;
 
 /**
  * This proxy class redirects method calls to Span.current(), by doing so it allows people to use @Inject Span and get an object which will not become obsolete.
@@ -26,6 +28,17 @@ import com.ibm.websphere.ras.TraceComponent;
 public class SpanProxy implements Span {
 
     private static final TraceComponent tc = Tr.register(SpanProxy.class);
+
+    @Override
+    public Scope makeCurrent() {
+        //We can't do anything useful here but this will prevent the proxy itself becoming the current span.
+        return Scope.noop();
+    }
+
+    @Override
+    public Context storeInContext(Context context) {
+        return Span.current().storeInContext(context);
+    }
 
     @Override
     public <T> Span setAttribute(AttributeKey<T> key, T value) {

@@ -18,9 +18,12 @@ import javax.servlet.sip.SipSession;
 
 import com.ibm.websphere.logging.hpel.LogRecordContext;
 import com.ibm.ws.sip.container.properties.PropertiesStore;
+import com.ibm.ws.sip.container.servlets.SipURIImpl;
 import com.ibm.ws.sip.container.tu.TransactionUserWrapper;
 import com.ibm.ws.sip.container.was.ThreadLocalStorage;
 import com.ibm.ws.sip.properties.CoreProperties;
+import com.ibm.sip.util.log.Log;
+import com.ibm.sip.util.log.LogMgr;
 
 /**
  * HPEL log extension for SIP information.
@@ -34,6 +37,12 @@ import com.ibm.ws.sip.properties.CoreProperties;
  * @since Sep 23, 2012
  */
 public class SipLogExtension {
+	
+	
+	/**
+     * Class Logger. 
+     */
+    private static final LogMgr c_logger = Log.get(SipLogExtension.class);
 	
 	/**
 	 * The extension key for Sip Application Session ID..
@@ -112,6 +121,9 @@ public class SipLogExtension {
      * Registers the extensions. 
      */
     public static void init() {
+    	if (c_logger.isTraceEntryExitEnabled()) {
+    		c_logger.traceDebug("SipLogExtension", "init", "ENTRY");
+    	}
     	//Use custom property to enable/disable the feature
     	if (PropertiesStore.getInstance().getProperties().getBoolean(CoreProperties.ENABLE_HPEL_SIP_LOG_EXTENSION)) {
             LogRecordContext.registerExtension(SAS_ID_EXT_KEY, _sasIdExtension);
@@ -120,12 +132,18 @@ public class SipLogExtension {
             LogRecordContext.registerExtension(CALL_ID_2_EXT_KEY, _addCallIdExtension);
             LogRecordContext.registerExtension(SESSION_ID_2_EXT_KEY, _addSessionIdExtension);
     	}
+    	if (c_logger.isTraceEntryExitEnabled()) {
+    		c_logger.traceDebug("SipLogExtension", "init", "EXIT");
+    	}
     }
     
     /**
      * Unregisters the extensions. 
      */
     public static void destroy() {
+    	if (c_logger.isTraceEntryExitEnabled()) {
+    		c_logger.traceDebug("SipLogExtension", "destroy", "ENTRY");
+    	}
     	//Use custom property to enable/disable the feature
     	if (PropertiesStore.getInstance().getProperties().getBoolean(CoreProperties.ENABLE_HPEL_SIP_LOG_EXTENSION)) {
             LogRecordContext.unregisterExtension(SAS_ID_EXT_KEY);
@@ -133,6 +151,9 @@ public class SipLogExtension {
             LogRecordContext.unregisterExtension(SESSION_ID_EXT_KEY);
             LogRecordContext.unregisterExtension(CALL_ID_2_EXT_KEY);
             LogRecordContext.unregisterExtension(SESSION_ID_2_EXT_KEY);
+    	}
+    	if (c_logger.isTraceEntryExitEnabled()) {
+    		c_logger.traceDebug("SipLogExtension", "destroy", "EXIT");
     	}
     }
     
@@ -161,7 +182,6 @@ public class SipLogExtension {
 			}
 		}
 		
-		//Look for the SAS ID on the stack's ThreadLocal
 		return com.ibm.ws.sip.stack.util.ThreadLocalStorage.getSasID();
     }
     
@@ -171,10 +191,7 @@ public class SipLogExtension {
      * @return call ID
      */
     private static String getCallId() {
-    	//try catch block needed to catch NPE thrown by logger
-    	//in case ThreadLocalStorage.getApplicationSession() returns NULL
-    	//see open-liberty issue #21770
-    	try {
+    	
     	SipApplicationSession sas = ThreadLocalStorage.getApplicationSession();
     	if (sas != null) {
     		Iterator<SipSession> i = sas.getSessions("SIP", false);
@@ -195,9 +212,6 @@ public class SipLogExtension {
 			}
 		}
 		
-    	} catch (NullPointerException e ) {
-    		
-    	}
 		//Look for the call ID on the stack's ThreadLocal
 		return com.ibm.ws.sip.stack.util.ThreadLocalStorage.getCallID();
     }
@@ -208,10 +222,7 @@ public class SipLogExtension {
      * @return SIP session ID
      */
     private static String getSessionId() {
-    	//try catch block needed to catch NPE thrown by logger
-    	//in case ThreadLocalStorage.getApplicationSession() returns NULL
-    	//see open-liberty issue #21770
-    	try {
+    	
     	SipApplicationSession sas = ThreadLocalStorage.getApplicationSession();
     	if (sas != null) {
     		Iterator<SipSession> i = sas.getSessions("SIP", false);
@@ -232,10 +243,6 @@ public class SipLogExtension {
 			}
 		} 
 		
-    	} catch (NullPointerException e ) {
-    		
-    	}
-		
 		return null;
     }
     
@@ -245,10 +252,7 @@ public class SipLogExtension {
      * @return second call ID
      */
     private static String getSecondCallId() {
-    	//try catch block needed to catch NPE thrown by logger
-    	//in case ThreadLocalStorage.getApplicationSession() returns NULL
-    	//see open-liberty issue #21770
-    	try {
+    	
     	SipApplicationSession sas = ThreadLocalStorage.getApplicationSession();
     	
     	if (sas != null) {
@@ -267,9 +271,6 @@ public class SipLogExtension {
     		}
     	}
     	
-    	} catch (NullPointerException e ) {
-    		
-    	}
 		return null;
     }
     
@@ -279,11 +280,8 @@ public class SipLogExtension {
      * @return second SIP session ID
      */
     private static String getSecondSessionId() {
-    	//try catch block needed to catch NPE thrown by logger
-    	//in case ThreadLocalStorage.getApplicationSession() returns NULL
-    	//see open-liberty issue #21770
-    	try {
-    		SipApplicationSession sas = ThreadLocalStorage.getApplicationSession();
+  
+    	SipApplicationSession sas = ThreadLocalStorage.getApplicationSession();
     	
     	if (sas != null) {
     		Iterator<SipSession> i = sas.getSessions("SIP", false);
@@ -298,11 +296,7 @@ public class SipLogExtension {
     				return session.getId();
     			}
     		}
-    	}	
-		
-    } catch (NullPointerException e) {
-    	
-    }
+    	}
     	return null;
     }
 }

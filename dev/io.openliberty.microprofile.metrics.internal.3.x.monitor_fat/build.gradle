@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,7 @@
 dependencies {
 }
 
-def serverArray = new File[8]
+def serverArray = new File[9]
 serverArray[0] = new File(autoFvtDir, 'publish/servers/TestEDF4')
 serverArray[1] = new File(autoFvtDir, 'publish/servers/TestEDF5')
 serverArray[2] = new File(autoFvtDir, 'publish/servers/TestEDF6')
@@ -23,6 +23,7 @@ serverArray[4] = new File(autoFvtDir, 'publish/servers/TestEDF9')
 serverArray[5] = new File(autoFvtDir, 'publish/servers/TestEDF10')
 serverArray[6] = new File(autoFvtDir, 'publish/servers/TestEDF11')
 serverArray[7] = new File(autoFvtDir, 'publish/servers/TestEDF12')
+serverArray[8] = new File(autoFvtDir, 'publish/servers/ComputedMetricsServer')
 
 task addDerbyToServerDir(type: Copy) {
   from configurations.derby
@@ -72,6 +73,12 @@ task addDerbyToServerDir8(type: Copy) {
   rename 'derby-.*.jar', 'derby.jar'
 }
 
+task addDerbyToServerDir9(type: Copy) {
+  from configurations.derby
+  into serverArray[8]
+  rename 'derby-.*.jar', 'derby.jar'
+}
+
 addRequiredLibraries {
   dependsOn addDerbyToServerDir
   dependsOn addDerbyToServerDir2
@@ -81,4 +88,5 @@ addRequiredLibraries {
   dependsOn addDerbyToServerDir6
   dependsOn addDerbyToServerDir7
   dependsOn addDerbyToServerDir8
+  dependsOn addDerbyToServerDir9
 }

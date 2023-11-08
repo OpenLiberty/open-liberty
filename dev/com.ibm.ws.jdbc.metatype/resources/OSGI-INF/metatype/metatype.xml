@@ -147,6 +147,7 @@
  </Designate>
  
  <OCD id="com.ibm.ws.jdbc.dataSource.properties.datadirect.sqlserver" name="%properties.datadirect.sqlserver" description="%properties.datadirect.sqlserver.desc" ibm:extendsAlias="datadirect.sqlserver" ibm:extends="com.ibm.ws.jdbc.dataSource.properties.supertype" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+  <!-- TODO verify if these properties override connection properties in a URL -->
   <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseName.desc"/>
   <AD id="serverName"                         required="false" type="String"  default="localhost" name="%serverName" description="%serverName.desc"/>
   <AD id="portNumber"                         required="false" type="Integer" name="%portNumber" description="%portNumber.desc"/>
@@ -266,6 +267,7 @@
  </Designate>
 
  <OCD id="com.ibm.ws.jdbc.dataSource.properties.db2.i.native" name="%properties.db2.i.native" description="%properties.db2.i.native.desc" ibm:extendsAlias="db2.i.native" ibm:extends="com.ibm.ws.jdbc.dataSource.properties.supertype" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+  <!-- TODO verify if these properties override connection properties in a URL -->
   <AD id="databaseName"                       required="false" type="String"  default="*LOCAL" name="%databaseName" description="%databaseName.desc"/>
   <!-- Advanced properties for properties.db2.i.native -->
   <AD id="access"                             ibmui:group="Advanced" required="false" type="String"  default="all" name="%access" description="%access.desc">
@@ -372,6 +374,7 @@
  </Designate>
 
  <OCD id="com.ibm.ws.jdbc.dataSource.properties.db2.i.toolbox" name="%properties.db2.i.toolbox" description="%properties.db2.i.toolbox.desc" ibm:extendsAlias="db2.i.toolbox" ibm:extends="com.ibm.ws.jdbc.dataSource.properties.supertype" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+  <!-- TODO verify if these properties override connection properties in a URL -->
   <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseName.desc"/>
   <AD id="serverName"                         required="true"  type="String"  name="%serverName" description="%serverName.desc"/>
   <!-- Advanced properties for properties.db2.i.toolbox -->
@@ -602,9 +605,9 @@
    <Option value="2" label="%driverType.2.desc"/>
    <Option value="4" label="%driverType.4.desc"/>
   </AD>
-  <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseName.desc"/>
-  <AD id="serverName"                         required="false" type="String"  default="localhost" name="%serverName" description="%serverName.desc"/>
-  <AD id="portNumber"                         required="false" type="Integer" default="50000" name="%portNumber" description="%portNumber.desc"/>
+  <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseNameOverrides.desc"/>
+  <AD id="serverName"                         required="false" type="String"  name="%serverName" description="%serverNameOverrides.desc"/>
+  <AD id="portNumber"                         required="false" type="Integer" default="50000" name="%portNumber" description="%portNumberOverrides.desc"/>
   <!-- Advanced properties for properties.db2.jcc -->
   <!-- TODO: consider having another group for heterogeneous pooling properties -->
   <AD id="accessToken"                            ibmui:group="Advanced" required="false" type="String"  ibm:type="password" name="%accessToken" description="%accessToken.desc"/>
@@ -954,9 +957,9 @@
    <Option value="create" label="%createDatabase.create.desc"/>
    <Option value="false"  label="%createDatabase.false.desc"/>
   </AD>
-  <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseName.desc"/>
-  <AD id="serverName"                         required="false" type="String"  default="localhost" name="%serverName" description="%serverName.desc"/>  
-  <AD id="portNumber"                         required="false" type="Integer" default="1527" name="%portNumber" description="%portNumber.desc"/>
+  <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseNameIgnored.desc"/>
+  <AD id="serverName"                         required="false" type="String"  default="localhost" name="%serverName" description="%serverNameIgnored.desc"/>  
+  <AD id="portNumber"                         required="false" type="Integer" default="1527" name="%portNumber" description="%portNumberIgnored.desc"/>
   <!-- Advanced properties for properties.derby.client -->
   <AD id="connectionAttributes"               ibmui:group="Advanced" required="false" type="String"  name="%connectionAttributes" description="%connectionAttributes.desc"/>
   <AD id="loginTimeout"                       ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" min="0" name="%loginTimeout" description="%loginTimeout.desc"/>
@@ -996,7 +999,7 @@
    <Option value="create" label="%createDatabase.create.desc"/>
    <Option value="false"  label="%createDatabase.false.desc"/>
   </AD>
-  <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseName.desc"/>
+  <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseNameIgnored.desc"/>
   <!-- Advanced properties for properties.derby.embedded -->
   <AD id="connectionAttributes"               ibmui:group="Advanced" required="false" type="String"  name="%connectionAttributes" description="%connectionAttributes.desc"/>
   <AD id="loginTimeout"                       ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" min="0" name="%loginTimeout" description="%loginTimeout.desc"/>
@@ -1193,10 +1196,10 @@
  </Designate>
 
  <OCD id="com.ibm.ws.jdbc.dataSource.properties.microsoft.sqlserver" name="%properties.microsoft.sqlserver" description="%properties.microsoft.sqlserver.desc" ibm:extendsAlias="microsoft.sqlserver" ibm:extends="com.ibm.ws.jdbc.dataSource.properties.supertype" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
-  <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseName.desc"/>
-  <AD id="instanceName"                       required="false" type="String"  name="%instanceName" description="%instanceName.desc"/>
-  <AD id="serverName"                         required="false" type="String"  default="localhost" name="%serverName" description="%serverName.desc"/>
-  <AD id="portNumber"                         required="false" type="Integer" name="%portNumber" description="%portNumber.desc"/>
+  <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseNameOverrides.desc"/>
+  <AD id="instanceName"                       required="false" type="String"  name="%instanceName" description="%instanceNameOverrides.desc"/>
+  <AD id="serverName"                         required="false" type="String"  name="%serverName"   description="%serverNameOverrides.desc"/>
+  <AD id="portNumber"                         required="false" type="Integer" name="%portNumber"   description="%portNumberOverrides.desc"/>
   <!-- Advanced properties for properties.microsoft.sqlserver -->
   <AD id="accessToken"                        ibmui:group="Advanced" required="false" type="String"  ibm:type="password" name="%accessToken" description="%accessToken.desc"/>
   <AD id="applicationIntent"                  ibmui:group="Advanced" required="false" type="String"  name="%applicationIntent" description="%applicationIntent.desc">
@@ -1269,9 +1272,9 @@
    <Option value="thin" label="thin"/>
    <Option value="oci"  label="oci"/>
   </AD>
-  <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseName.desc"/>
-  <AD id="serverName"                         required="false" type="String"  default="localhost" name="%serverName" description="%serverName.desc"/>
-  <AD id="portNumber"                         required="false" type="Integer" default="1521" name="%portNumber" description="%portNumber.desc"/>
+  <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseNameIgnored.desc"/>
+  <AD id="serverName"                         required="false" type="String"  default="localhost" name="%serverName" description="%serverNameIgnored.desc"/>
+  <AD id="portNumber"                         required="false" type="Integer" default="1521" name="%portNumber" description="%portNumberIgnored.desc"/>
   <AD id="URL"                                required="false" type="String"  name="%URL" ibm:obscure="true" description="%URL.oracle.desc"/>
   <!-- Advanced properties for properties.oracle -->
   <AD id="connectionProperties"               ibmui:group="Advanced" required="false" type="String"  ibm:obscure="true" name="%connectionProperties" description="%connectionProperties.desc"/>
@@ -1280,7 +1283,7 @@
   <AD id="ONSConfiguration"                   ibmui:group="Advanced" required="false" type="String"  name="%ONSConfiguration" description="%ONSConfiguration.desc"/>
   <AD id="password"                           ibmui:group="Advanced" required="false" type="String"  ibm:type="password" name="%password" description="%password.desc"/>
   <AD id="roleName"                           ibmui:group="Advanced" required="false" type="String"  name="%roleName" description="%roleName.desc"/>
-  <AD id="serviceName"                        ibmui:group="Advanced" required="false" type="String"  name="%serviceName" description="%serviceName.desc"/>
+  <AD id="serviceName"                        ibmui:group="Advanced" required="false" type="String"  name="%serviceName" description="%serviceNameIgnored.desc"/>
   <AD id="TNSEntryName"                       ibmui:group="Advanced" required="false" type="String"  name="%TNSEntryName" description="%TNSEntryName.desc"/>
   <AD id="user"                               ibmui:group="Advanced" required="false" type="String"  name="%user" description="%user.desc"/>
  </OCD>
@@ -1297,9 +1300,9 @@
    <Option value="oracle.jdbc.xa.client.OracleXADataSource"        label="oracle.jdbc.xa.client.OracleXADataSource"/>
   </AD>
   <AD id="connectionPoolName"                 required="false" type="String"  name="%connectionPoolName" description="%connectionPoolName.desc"/>
-  <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseName.desc"/>
-  <AD id="serverName"                         required="false" type="String"  default="localhost" name="%serverName" description="%serverName.desc"/>
-  <AD id="portNumber"                         required="false" type="Integer" default="1521" name="%portNumber" description="%portNumber.desc"/>
+  <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseNameIgnored.desc"/>
+  <AD id="serverName"                         required="false" type="String"  default="localhost" name="%serverName" description="%serverNameIgnored.desc"/>
+  <AD id="portNumber"                         required="false" type="Integer" default="1521" name="%portNumber" description="%portNumberIgnored.desc"/>
   <AD id="URL"                                required="false" type="String"  ibm:obscure="true" name="%URL" description="%URL.oracle.desc"/>
   <!-- Advanced properties for properties.oracle.ucp -->
   <AD id="abandonedConnectionTimeout"         ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" name="%abandonedConnectionTimeout" description="%abandonedConnectionTimeout.desc" />
@@ -1365,9 +1368,9 @@
  </Designate>
 
  <OCD id="com.ibm.ws.jdbc.dataSource.properties.postgresql" name="%properties.postgresql" description="%properties.postgresql.desc" ibm:extendsAlias="postgresql" ibm:extends="com.ibm.ws.jdbc.dataSource.properties.supertype" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
-  <AD id="databaseName"            required="false" type="String"  name="%databaseName" description="%databaseName.desc"/>
-  <AD id="serverName"              required="false" type="String"  name="%serverName"   description="%serverName.desc"/>
-  <AD id="portNumber"              required="false" type="Integer" name="%portNumber"   description="%portNumber.desc"/>
+  <AD id="databaseName"            required="false" type="String"  name="%databaseName" description="%databaseNamePostgreSQL.desc"/>
+  <AD id="serverName"              required="false" type="String"  name="%serverName"   description="%serverNamePostgreSQL.desc"/>
+  <AD id="portNumber"              required="false" type="Integer" name="%portNumber"   description="%portNumberPostgreSQL.desc"/>
   <!-- Advanced properties for properties.postgresql -->
   <AD id="applicationName"               ibmui:group="Advanced" required="false" type="String"                         name="%applicationName"     description="%applicationName.desc"/>
   <AD id="cancelSignalTimeout"           ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" name="%cancelSignalTimeout" description="%cancelSignalTimeout.desc"/>

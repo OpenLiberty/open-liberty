@@ -110,6 +110,9 @@ memory.committedHeap.description=A Java virtu\u00e1lis g\u00e9p \u00e1ltali hasz
 #Memory maxHeap message
 memory.maxHeap.description=A mem\u00f3riakezel\u00e9shez haszn\u00e1lhat\u00f3 kupacmem\u00f3ria maxim\u00e1lis mennyis\u00e9g\u00e9t jelen\u00edti meg (byte-ban). Az attrib\u00fatum -1 \u00e9rt\u00e9ket jelen\u00edt meg, ha a kupacmem\u00f3ria maxim\u00e1lis m\u00e9rete nincs meghat\u00e1rozva. Ez a mem\u00f3riamennyis\u00e9g garant\u00e1ltan rendelkez\u00e9sre \u00e1ll a mem\u00f3riakezel\u00e9shez, ha nagyobb, mint v\u00e9gleges\u00edtett mem\u00f3ria mennyis\u00e9ge. Lehet, hogy a Java virtu\u00e1lis g\u00e9pnek akkor sem siker\u00fcl mem\u00f3ri\u00e1t lefoglalnia, ha a haszn\u00e1lt mem\u00f3ria mennyis\u00e9ge nem haladja meg ezt a maxim\u00e1lis m\u00e9retet.
 
+#Memory heapUtilization message
+memory.heapUtilization.description=A jelenleg haszn\u00e1latban l\u00e9v\u0151 maxim\u00e1lis kupacmem\u00f3ria r\u00e9sze. Ez a m\u00e9r\u0151sz\u00e1m -1, ha a maxim\u00e1lis kupacmem\u00f3ria m\u00e9rete nincs meghat\u00e1rozva.
+
 #Jvm uptime message
 jvm.uptime.description=A Java virtu\u00e1lis g\u00e9p ind\u00edt\u00e1s\u00e1nak idej\u00e9t jelen\u00edti meg ezredm\u00e1sodpercben. Az attrib\u00fatum a megk\u00f6zel\u00edt\u0151 id\u0151t jelen\u00edti meg, amikor a Java virtu\u00e1lis g\u00e9p elindult.
 
@@ -144,11 +147,17 @@ cpu.processCpuLoad.description=A Java virtu\u00e1lis g\u00e9p folyamat 'recent c
 #Cpu processCpuTime message
 cpu.processCpuTime.description=Megjelen\u00edti a Java virtu\u00e1lis g\u00e9pet futtat\u00f3 folyamat \u00e1ltal haszn\u00e1lt CPU id\u0151t.
 
+#Cpu processCpuUtilization message
+cpu.processCpuUtilization.description=A JVM folyamat \u00e1ltal a JVM sz\u00e1m\u00e1ra el\u00e9rhet\u0151 leg\u00fajabb CPU id\u0151.
+
 #Garbage collection count message
 garbageCollectionCount.description=A v\u00e9grehajtott adatgy\u0171jt\u00e9sek teljes sz\u00e1m\u00e1t jelen\u00edti meg. Az attrib\u00fatum -1 \u00e9rt\u00e9ket jelen\u00edt meg, ha az adatgy\u0171jt\u00e9sek sz\u00e1ma ehhez az adatgy\u0171jt\u0151h\u00f6z nincs meghat\u00e1rozva.
 
 #Garbage collection time message
 garbageCollectionTime.description=A halmozott eltelt adatgy\u0171jt\u00e9si id\u0151t jelen\u00edti meg (megk\u00f6zel\u00edt\u0151 pontoss\u00e1ggal) ezredm\u00e1sodpercben. Az attrib\u00fatum -1 \u00e9rt\u00e9ket jelen\u00edt meg, ha az eltelt adatgy\u0171jt\u00e9si id\u0151 ehhez az adatgy\u0171jt\u0151h\u00f6z nincs meghat\u00e1rozva. A Java virtu\u00e1lis g\u00e9p nagy felbont\u00e1s\u00fa id\u0151m\u00e9r\u0151 seg\u00edts\u00e9g\u00e9vel m\u00e9rheti az eltelt id\u0151t. Az attrib\u00fatum ugyanazt az \u00e9rt\u00e9ket jelen\u00edtheti meg annak ellen\u00e9re, hogy az adatgy\u0171jt\u00e9sek sz\u00e1ma n\u00f6vekedett, ha az eltelt adatgy\u0171jt\u00e9si id\u0151 nagyon r\u00f6vid.
+
+#Garbage collection time per garbage collection cycle message
+gc.time.per.cycle.description=A szem\u00e9tgy\u0171jt\u00e9si ciklusonk\u00e9nti \u00e1tlagos \u00e1tlagos id\u0151. Ez a m\u00e9r\u0151sz\u00e1m -1 \u00e9rt\u00e9ket jelen\u00edt meg, ha a szem\u00e9tgy\u0171jt\u00e9s eltelt ideje vagy sz\u00e1ma nincs meghat\u00e1rozva ehhez a gy\u0171jt\u0151h\u00f6z.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
@@ -158,6 +167,7 @@ threadpool.size.description=A sz\u00e1lt\u00e1rol\u00f3 m\u00e9rete.
 
 servlet.request.total.description=A szervlet l\u00e1togat\u00e1sainak sz\u00e1ma a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
 servlet.responseTime.total.description=A szervlet teljes v\u00e1laszideje a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
+servlet.request.elapsedTime.per.request.description=Az elm\u00falt \u00e1tlagos \u00e1tlagos v\u00e1laszid\u0151 szervlet k\u00e9r\u00e9senk\u00e9nt.
 
 connectionpool.create.total.description=A k\u00e9szlet l\u00e9trehoz\u00e1sa \u00f3ta l\u00e9trehozott fel\u00fcgyelt kapcsolatok sz\u00e1ma \u00f6sszesen.
 connectionpool.destroy.total.description=A k\u00e9szlet l\u00e9trehoz\u00e1sa \u00f3ta megsemmis\u00edtett fel\u00fcgyelt kapcsolatok sz\u00e1ma \u00f6sszesen.
@@ -168,6 +178,8 @@ connectionpool.waitTime.total.description=Az \u00f6sszes csatlakoz\u00e1si k\u00
 connectionpool.inUseTime.total.description=Az \u00f6sszes kapcsolat teljes haszn\u00e1lati ideje a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
 connectionpool.usedConnections.total.description=Az \u00f6sszes csatlakoz\u00e1si k\u00e9r\u00e9s, amely megtelt kapcsolatk\u00e9szlet miatt v\u00e1rakozott, vagy nem kellett v\u00e1rakoznia a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta. Az aktu\u00e1lisan haszn\u00e1latban l\u00e9v\u0151 kapcsolatok nem ker\u00fclnek besz\u00e1m\u00edt\u00e1sra ebbe az \u00f6sszes\u00edt\u00e9sbe.
 connectionpool.queuedRequests.total.description=Az \u00f6sszes csatlakoz\u00e1si k\u00e9r\u00e9s, amelynek megtelt kapcsolatk\u00e9szlet miatt kellett v\u00e1rakoznia csatlakoz\u00e1sra a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
+connectionpool.inUseTime.per.usedConnection.description=A kapcsolatok legut\u00f3bbi \u00e1tlagos ideje.
+connectionpool.waitTime.per.queuedRequest.description=A v\u00e1rakoz\u00e1si sorba \u00e1ll\u00edtott csatlakoz\u00e1si k\u00e9r\u00e9sek legut\u00f3bbi \u00e1tlagos v\u00e1rakoz\u00e1si ideje.
 
 session.create.total.description=A m\u00e9r\u0151sz\u00e1m enged\u00e9lyez\u00e9se \u00f3ta bejelentkezett munkamenetek sz\u00e1ma.
 session.liveSessions.description=A jelenleg bejelentkezett felhaszn\u00e1l\u00f3k sz\u00e1ma.
@@ -189,6 +201,7 @@ grpc.client.responseTime.total.description=A befejezett t\u00e1voli elj\u00e1r\u
 
 REST.request.description=Az adott RESTful er\u0151forr\u00e1s met\u00f3dus felh\u00edv\u00e1sainak sz\u00e1ma \u00e9s teljes v\u00e1laszideje a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta. A m\u00e9r\u0151sz\u00e1m nem fogja r\u00f6gz\u00edteni a REST k\u00e9r\u00e9s eltelt idej\u00e9t \u00e9s sz\u00e1m\u00e1t, ha az lek\u00e9pezetlen kiv\u00e9telt eredm\u00e9nyezett. Nyomon k\u00f6veti tov\u00e1bb\u00e1 a legmagasabb r\u00f6gz\u00edtett id\u0151tartamot az el\u0151z\u0151 befejez\u0151d\u00f6tt teljes percben \u00e9s a legalacsonyabb r\u00f6gz\u00edtett id\u0151tartamot az el\u0151z\u0151 befejez\u0151d\u00f6tt teljes percben.
 REST.request.unmappedException.description=Az ezen RESTful er\u0151forr\u00e1s met\u00f3dusb\u00f3l keletkez\u0151 lek\u00e9pezetlen kiv\u00e9telek teljes sz\u00e1ma a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
+REST.request.elapsedTime.per.request.description: Az elm\u00falt \u00e1tlagos \u00e1tlagos v\u00e1laszid\u0151 RESTful er\u0151forr\u00e1s-met\u00f3dusk\u00e9r\u00e9senk\u00e9nt.
 
 requestTiming.requestCount.description=A szervletk\u00e9r\u00e9sek sz\u00e1ma a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
 requestTiming.activeRequestCount.description=A jelenleg fut\u00f3 szervletk\u00e9r\u00e9sek sz\u00e1ma.

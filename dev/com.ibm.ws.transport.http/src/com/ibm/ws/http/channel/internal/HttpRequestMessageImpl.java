@@ -338,7 +338,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             this.setScheme(pseudoHeaders.get(HpackConstants.SCHEME));
         }
         if (pseudoHeaders.containsKey(HpackConstants.AUTHORITY)) {
-            parseH2Authority(pseudoHeaders.get(HpackConstants.AUTHORITY).getBytes());
+            parseH2Authority(GenericUtils.getBytes(pseudoHeaders.get(HpackConstants.AUTHORITY)));
         }
 
     }
@@ -2102,14 +2102,13 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         H2StreamProcessor promisedSP = ((H2HttpInboundLinkWrap) link).muxLink.createNewInboundLink(promisedStreamId);
         if (promisedSP == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                if(((H2HttpInboundLinkWrap) link).muxLink.isClosing()){
+                if (((H2HttpInboundLinkWrap) link).muxLink.isClosing()) {
                     Tr.exit(tc, "pushNewRequest exit; cannot create new push stream - "
-                            + "server is shutting down, closing link: " + link);
-                }
-                else{
+                                + "server is shutting down, closing link: " + link);
+                } else {
                     Tr.exit(tc, "pushNewRequest exit; cannot create new push stream -"
-                            + " the max number of concurrent streams has already been reached on link: " + link); 
-                }                
+                                + " the max number of concurrent streams has already been reached on link: " + link);
+                }
             }
             return;
         }

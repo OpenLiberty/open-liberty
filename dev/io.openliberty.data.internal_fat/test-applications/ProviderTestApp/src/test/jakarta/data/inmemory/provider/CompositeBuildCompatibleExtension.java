@@ -12,11 +12,23 @@
  *******************************************************************************/
 package test.jakarta.data.inmemory.provider;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import jakarta.data.repository.Repository;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
-import jakarta.enterprise.inject.build.compatible.spi.Discovery;
 import jakarta.enterprise.inject.build.compatible.spi.Enhancement;
-import jakarta.enterprise.inject.build.compatible.spi.ScannedClasses;
-import jakarta.enterprise.lang.model.declarations.FieldInfo;
+import jakarta.enterprise.inject.build.compatible.spi.Synthesis;
+import jakarta.enterprise.inject.build.compatible.spi.SyntheticBeanBuilder;
+import jakarta.enterprise.inject.build.compatible.spi.SyntheticComponents;
+import jakarta.enterprise.inject.build.compatible.spi.Types;
+import jakarta.enterprise.lang.model.AnnotationInfo;
+import jakarta.enterprise.lang.model.AnnotationMember;
+import jakarta.enterprise.lang.model.declarations.ClassInfo;
+import jakarta.enterprise.lang.model.types.Type;
 
 /**
  * A fake Jakarta Data provider extension that only produces a single repository class,
@@ -25,18 +37,82 @@ import jakarta.enterprise.lang.model.declarations.FieldInfo;
  */
 public class CompositeBuildCompatibleExtension implements BuildCompatibleExtension {
 
-    //@Trivial
-    @Discovery
-    public void discovery(ScannedClasses scan) {
-        System.out.println("Discovery invoked");
+    // map of data store to list of repository class name
+    private final Map<String, List<String>> repositoryClassNames = new HashMap<>();
+
+    /**
+     * Identify classes that are annotated with Repository
+     * and determine which apply to this provider.
+     */
+    @Enhancement(withAnnotations = Repository.class, types = Object.class, withSubtypes = true)
+    public void enhancement(ClassInfo repositoryClassInfo) {
+
+        AnnotationInfo repositoryAnnotationInfo = repositoryClassInfo.annotation(Repository.class);
+
+        // First, check for explicit configuration to use this provider:
+        @SuppressWarnings({ "deprecation", "removal" }) // Work around bug where WELD lacks doPrivileged.
+        AnnotationMember providerMember = java.security.AccessController.doPrivileged((java.security.PrivilegedAction<AnnotationMember>) () -> //
+        repositoryAnnotationInfo.member("provider"));
+
+        String provider = providerMember.asString();
+        boolean provideRepository = "Composites Mock Data Provider".equals(provider);
+
+        // Otherwise, if the provider is not explicitly specified,
+        // then look for an entity annotation that this provider handles:
+        if (!provideRepository && "".equals(provider))
+            // The entity class is on one of the super interfaces: DataRepository<MyEntityClass, MyIdClass>
+            for (Type supertype : repositoryClassInfo.superInterfaces())
+                if (supertype.isParameterizedType()) {
+                    List<Type> typeVarTypes = supertype.asParameterizedType().typeArguments();
+                    if (!typeVarTypes.isEmpty()) {
+                        // The entity type is the first type parameter (and the id type is second).
+                        Type entityType = typeVarTypes.get(0);
+                        if (entityType.isClass()) {
+                            ClassInfo entityTypeInfo = entityType.asClass().declaration();
+                            if (entityTypeInfo.hasAnnotation(anno -> CompositeEntity.class.getName().equals(anno.name()))) {
+                                provideRepository = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+        if (provideRepository) {
+            // Identify which data store to use.
+            // This mock provider is in-memory and doesn't care, so we just print it.
+            @SuppressWarnings({ "deprecation", "removal" }) // Work around bug where WELD lacks doPrivileged.
+            AnnotationMember dataStoreMember = java.security.AccessController.doPrivileged((java.security.PrivilegedAction<AnnotationMember>) () -> //
+            repositoryAnnotationInfo.member("dataStore"));
+
+            String dataStore = dataStoreMember.asString();
+            System.out.println("During enhancement, found " + repositoryClassInfo + " with dataStore of " + dataStore + ".");
+
+            List<String> list = repositoryClassNames.get(dataStore);
+            if (list == null)
+                repositoryClassNames.put(dataStore, list = new ArrayList<>());
+            list.add(repositoryClassInfo.name());
+        }
     }
 
-    @Enhancement(types = Object.class, withSubtypes = true)
-    public void enhancement(FieldInfo info) {
-        System.out.println("enhancement field info: " + info.toString());
-
-        // Causes SecurityException "java.lang.RuntimePermission" "accessDeclaredMembers"
-        // and there does not appear to be any doPriv in the stack:
-        //System.out.println("  declaring class:      " + info.declaringClass());
+    /**
+     * Register beans for repositories.
+     */
+    @Synthesis
+    public void synthesis(Types types, SyntheticComponents synth) throws ClassNotFoundException {
+        for (String dataStore : repositoryClassNames.keySet())
+            for (String repoClassName : repositoryClassNames.get(dataStore)) {
+                @SuppressWarnings("unchecked")
+                Class<Object> repoClass = (Class<Object>) Class.forName(repoClassName);
+                @SuppressWarnings({ "deprecation", "removal" }) // Work around bug where WELD lacks doPrivileged.
+                SyntheticBeanBuilder<Object> builder = java.security.AccessController.doPrivileged((java.security.PrivilegedAction<SyntheticBeanBuilder<Object>>) () -> //
+                synth
+                                .addBean(repoClass)
+                                .name(repoClassName)
+                                .type(types.ofClass(repoClassName))
+                                .scope(ApplicationScoped.class)
+                                .withParam("dataStore", dataStore)
+                                .createWith(CompositeBeanCreator.class));
+                System.out.println("Registered " + repoClassName + " bean with " + builder);
+            }
     }
 }

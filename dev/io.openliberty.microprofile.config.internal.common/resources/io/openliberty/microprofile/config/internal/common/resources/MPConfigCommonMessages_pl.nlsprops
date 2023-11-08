@@ -1,0 +1,29 @@
+###############################################################################
+# Copyright (c) 2022, 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.microprofile.config.internal.common/resources/io/openliberty/microprofile/config/internal/common/resources/MPConfigCommonMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC MicroProfile Config with InstantOn
+# Message numbers CWWKC0651-700 are reserved for this file.
+
+#COMPONENTPREFIX CWMCG                 
+#COMPONENTNAMEFOR CWMCG MicroProfile Config Common
+# Message numbers CWMCG0400-499 are reserved for this file.
+
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWMCG0000=CWMCG0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWMCG0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWMCG0000.useraction=User action text for the message
+
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651=CWWKC0651W: Warto\u015b\u0107 konfiguracyjna MicroProfile dla klucza {0} zosta\u0142a zmieniona od czasu zako\u0144czenia dzia\u0142ania punktu kontrolnego na serwerze. Je\u015bli warto\u015b\u0107 klucza zostanie zmieniona po dzia\u0142aniu punktu kontrolnego, aplikacja mo\u017ce nie u\u017cywa\u0107 zaktualizowanej warto\u015bci.
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651.explanation=Dost\u0119p do warto\u015bci konfiguracyjnej uzyskano podczas dzia\u0142ania punktu kontrolnego. Zosta\u0142a ona zaktualizowana przed przywr\u00f3ceniem procesu serwera. W zale\u017cno\u015bci od sposobu, w jaki aplikacja uzyskuje dost\u0119p do konfiguracji, zaktualizowana warto\u015b\u0107 mo\u017ce nie by\u0107 u\u017cywana.
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651.useraction=Nale\u017cy unika\u0107 uzyskiwania dost\u0119pu do w\u0142a\u015bciwo\u015bci konfiguracji podczas punktu kontrolnego.

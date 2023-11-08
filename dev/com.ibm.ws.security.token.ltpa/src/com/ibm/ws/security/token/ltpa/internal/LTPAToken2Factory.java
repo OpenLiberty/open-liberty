@@ -97,9 +97,14 @@ public class LTPAToken2Factory implements TokenFactory {
                     }
                     return validatedToken;
                 }
-
             } catch (Exception e) {
-                //TODO:
+                //If the token is expired then we do not want to continue processing validation keys below
+                if (e instanceof com.ibm.websphere.security.auth.TokenExpiredException) {
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "validateTokenBytes (expired)");
+                    throw (com.ibm.websphere.security.auth.TokenExpiredException) e;
+                }
+                //invalidToken exceptions should continue to check other keys below
             }
         }
 
@@ -117,7 +122,7 @@ public class LTPAToken2Factory implements TokenFactory {
                 byte[] sharedKeyForValidation = ltpaKeyInfo.getSecretKey();
                 LTPAPrivateKey ltpaPrivateKeyForValidation = ltpaKeyInfo.getLTPAPrivateKey();
                 LTPAPublicKey ltpaPublicKeyForValidation = ltpaKeyInfo.getLTPAPublicKey();
-                if (ltpaKeyInfo.isNotUseAfterDate()) {
+                if (ltpaKeyInfo.isValidUntilDateExpired()) {
                     validationKeysIterator.remove();
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

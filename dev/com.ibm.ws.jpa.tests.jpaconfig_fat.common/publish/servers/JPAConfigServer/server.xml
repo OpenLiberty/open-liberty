@@ -36,6 +36,8 @@
 
     <!-- Permission needed for Oracle driver -->
     <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" />
+    <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+    
 
     <!-- File read write permissions -->
     <javaPermission className="java.util.PropertyPermission" name="user.dir" actions="read"/>

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -64,16 +64,16 @@ public class ExternalTestService {
     private ExternalTestService(JsonObject data, Map<String, ServiceProperty> props) {
         JsonObject serviceData = data.getJsonObject("Service");
         JsonObject nodeData = data.getJsonObject("Node");
-        String networkLocationProp = getNetworkLocation()+"_address";
+        String networkLocationProp = getNetworkLocation() + "_address";
         String address;
 
         if (props.get(networkLocationProp) != null) {
             //The service has a private IP on the same network, so use that
-           try {
+            try {
                 address = props.get(networkLocationProp).getStringValue();
-           } catch(Exception ex) {
+            } catch (Exception ex) {
                 address = nodeData.getString("Address");
-           }
+            }
         } else if (!serviceData.getString("Address", "").isEmpty()) {
             //Use the service address
             address = serviceData.getString("Address");
@@ -333,7 +333,11 @@ public class ExternalTestService {
             throw new Exception("There are not enough healthy services available for " + serviceName + " that match the filter provided");
 
         }
-        throw finalError;
+
+        //Http requests above ended in exception
+        Exception e = new Exception("Exception attempting to connect to Consul servers");
+        e.initCause(finalError);
+        throw e;
 
     }
 

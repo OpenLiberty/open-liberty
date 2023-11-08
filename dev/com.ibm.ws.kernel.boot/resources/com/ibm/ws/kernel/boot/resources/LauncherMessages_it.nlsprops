@@ -432,6 +432,10 @@ warning.unableToPackageLooseConfigFileMissingPath=CWWKE0095W: Il server non ries
 warning.unableToPackageLooseConfigFileMissingPath.explanation=Il file XML applicazione della configurazione debole specificato contiene informazioni non valide sull'ubicazione dei file. Ad esempio, specifica una directory che non pu\u00f2 essere trovata. I percorsi in questo file XML devono essere relativi rispetto alla directory di configurazione del server. L'archivio rappresentato da questo file non verr\u00e0 incluso nell'output del server incluso in un package.
 warning.unableToPackageLooseConfigFileMissingPath.useraction=Modificare i percorsi nel file XML applicazione della configurazione debole in modo che puntino all'ubicazione corretta che contiene i file dell'applicazione. 
 
+warning.tooManySymbolicLinks=CWWKE0096W: Sono stati rilevati troppi collegamenti simbolici quando il sistema ha provato a risolvere il seguente percorso: {0}.
+warning.tooManySymbolicLinks.explanation=I collegamenti simbolici sono collegamenti che puntano ad altri file o directory. Questo errore si verifica quando il sistema rileva troppi collegamenti simbolici in una catena e non \u00e8 in grado di risolvere il percorso.
+warning.tooManySymbolicLinks.useraction=Per risolvere questo problema, controllare i link simbolici nel percorso e assicurarsi che non creino riferimenti circolari. \u00c8 inoltre possibile utilizzare il comando 'readlink' per esaminare singoli collegamenti nella catena.
+
 warn.packageRuntime.include.unknownOption=CWWKE0099W: Impossibile utilizzare l''opzione --include={0}; verr\u00e0 invece utilizzata --include=wlp.
 warn.packageRuntime.include.unknownOption.explanation=L'opzione \u00e8 stata ignorata perch\u00e9 non \u00e8 stata riconosciuta.
 warn.packageRuntime.include.unknownOption.useraction=Ripetere il comando utilizzando opzioni valide. Provare ad utilizzare --help per un elenco delle opzioni valide.
@@ -753,6 +757,22 @@ error.checkpoint.failed.selinux.netdiag.useraction=Se SELinux \u00e8 abilitato i
 error.checkpoint.restore.failed.no.recovery=CWWKE0964E: Ripristino del processo del server di checkpoint non riuscito. Controllare il log {0} per determinare il motivo per cui il processo di checkpoint non \u00e8 stato ripristinato. Il server non \u00e8 stato avviato perch\u00e9 il recupero del ripristino del checkpoint \u00e8 disabilitato.
 error.checkpoint.restore.failed.no.recovery.explanation=Si \u00e8 verificato un errore durante il ripristino di un processo del server di checkpoint. Il server non \u00e8 stato avviato perch\u00e9 il recupero del ripristino del checkpoint \u00e8 disabilitato.
 error.checkpoint.restore.failed.no.recovery.useraction=Controllare i log per determinare il motivo per cui il processo di checkpoint non \u00e8 stato ripristinato. Per abilitare il recupero dall'errore di ripristino, impostare la variabile d'ambiente CRIU_RESTORE_DISABLE_RECOVERY su true.
+
+warning.serverLockFileNotExist=CWWKE0965W: Il file di blocco del server {0} non esiste.
+warning.serverLockFileNotExist.explanation=L'avvertenza potrebbe indicare che il server non \u00e8 in esecuzione o che il file di blocco \u00e8 stato eliminato in modo imprevisto.
+warning.serverLockFileNotExist.useraction=Verificare se il server \u00e8 in esecuzione utilizzando gli strumenti di monitoraggio del sistema appropriati. In Windows, \u00e8 possibile utilizzare Task Manager. Su sistemi UNIX, utilizzare il comando 'ps -ef'.
+
+warning.serverCommandFileNotExist=CWWKE0966W: Il file di comandi del server {0} non esiste.
+warning.serverCommandFileNotExist.explanation=L'avvertenza suggerisce che il file di comandi del server, che contiene informazioni essenziali per stabilire una connessione socket con il server, non \u00e8 presente. Il server potrebbe non essere in esecuzione o il file potrebbe essere stato eliminato in modo imprevisto.
+warning.serverCommandFileNotExist.useraction=Verificare se il server \u00e8 in esecuzione utilizzando gli strumenti di monitoraggio del sistema appropriati. In Windows, \u00e8 possibile utilizzare Task Manager. Su sistemi UNIX, utilizzare il comando 'ps -ef'. Se il server \u00e8 in esecuzione, \u00e8 necessario riavviarlo, il che implica l'arresto del processo. Utilizzare Task Manager su Windows per arrestare il processo. Su sistemi UNIX, utilizzare il comando 'kill'.
+
+warning.timeoutWaitingForServerToReleaseLock=CWWKE0967W: Si \u00e8 verificato un timeout durante l''attesa che il server rilasci il file di blocco del server {0} .
+warning.timeoutWaitingForServerToReleaseLock.explanation=L'avvertenza indica che si \u00e8 verificato un timeout. Il timeout potrebbe essere causato da un arresto lento del server, da un blocco del server o da un blocco del file da parte di un altro programma.
+warning.timeoutWaitingForServerToReleaseLock.useraction=Se il server \u00e8 ancora in esecuzione, aumentare il valore di timeout per il comando 'server stop'. Se il server \u00e8 arrestato, utilizzare gli strumenti di monitoraggio file per verificare se un altro programma ha bloccato il file.
+
+warning.timeoutWaitingForServerProcessToStop=CWWKE0968W: Si \u00e8 verificato un timeout durante l'attesa dell'arresto del processo del server.
+warning.timeoutWaitingForServerProcessToStop.explanation=Il server non si \u00e8 arrestato entro il tempo consentito dal valore di timeout. Ci\u00f2 potrebbe essere dovuto a un arresto lento del server o a un blocco del server.   
+warning.timeoutWaitingForServerProcessToStop.useraction=Se il server \u00e8 ancora in esecuzione, aumentare il valore di timeout per il comando 'server stop'. Su sistemi UNIX, il comando di arresto del server attende l'arresto del processo del server. Su Windows, il comando attende di ottenere un blocco sul file console.log . Utilizzare gli strumenti di controllo file per verificare se un altro programma, ad esempio un editor, ha bloccato il file console.log .
 
 info.serverStarting=Avvio del server {0} in corso.
 info.serverStarted=Server {0} avviato.

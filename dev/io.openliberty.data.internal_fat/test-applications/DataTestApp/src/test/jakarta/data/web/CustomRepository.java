@@ -13,6 +13,7 @@
 package test.jakarta.data.web;
 
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Save;
 
 /**
  * Custom repository interface that provides entity and key type parameters.
@@ -26,5 +27,6 @@ public interface CustomRepository<T, K> {
     @OrderBy("id")
     T[] findByLastName(String lastName);
 
-    void save(Iterable<T> entities);
+    @Save
+    void updateOrAdd(Iterable<T> entities);
 }

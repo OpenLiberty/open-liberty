@@ -47,6 +47,7 @@ import com.ibm.tx.util.alarm.AlarmListener;
 import com.ibm.tx.util.alarm.AlarmManager;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.Transaction.TransactionScopeDestroyer;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.JTA.HeuristicHazardException;
@@ -2363,9 +2364,8 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
      *
      * @return The global transaction identifier.
      */
+    @Trivial
     public XidImpl getXidImpl() {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "getXidImpl", this);
         return getXidImpl(true);
     }
 
@@ -3348,18 +3348,18 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         return ((XidImpl) (r.getXID())).printOtid();
     }
 
+    @Trivial
     public TimeoutInfo setTimeoutInfo(TimeoutInfo timeoutInfo) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "setTimeoutInfo", timeoutInfo);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setTimeoutInfo: {0} {1}", timeoutInfo, _timeoutInfo);
 
         final TimeoutInfo ret = _timeoutInfo;
         _timeoutInfo = timeoutInfo;
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "setTimeoutInfo", ret);
         return ret;
     }
 
+    @Trivial
     public TimeoutInfo getTimeoutInfo() {
         return _timeoutInfo;
     }

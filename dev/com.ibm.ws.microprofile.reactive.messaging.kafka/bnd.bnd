@@ -42,7 +42,7 @@ Include-Resource: \
 
 -buildpath: \
   com.ibm.ws.microprofile.reactive.messaging.kafka.adapter;version=latest, \
-  io.openliberty.microprofile.reactive.messaging.internal, \
+  io.openliberty.microprofile.reactive.messaging.internal;version=latest, \
   com.ibm.ws.logging;version=latest, \
   com.ibm.ws.logging.core;version=latest, \
   org.eclipse.osgi;version=latest, \

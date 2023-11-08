@@ -91,6 +91,7 @@ instrument.classesExcludes: com/ibm/ws/security/token/ltpa/internal/resources/*.
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.kernel.boot.common;version=latest, \
+	com.ibm.ws.kernel.boot.core;version=latest, \
 	com.ibm.ws.crypto.ltpakeyutil;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\

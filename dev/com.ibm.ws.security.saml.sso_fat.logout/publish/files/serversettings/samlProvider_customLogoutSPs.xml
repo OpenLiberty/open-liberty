@@ -1,6 +1,6 @@
 <!-- 
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@
 		id="customLogout_emptyString"
 		authFilterRef="myAuthFilterCL1"
 		wantAssertionsSigned="true"
-		signatureMethodAlgorithm="SHA1"
+		signatureMethodAlgorithm="SHA256"
 		authnRequestsSigned="true"
 		forceAuthn="false"
 		isPassive="false"
@@ -47,7 +47,7 @@
 		id="customLogout_invalidURL"
 		authFilterRef="myAuthFilterCL2"
 		wantAssertionsSigned="true"
-		signatureMethodAlgorithm="SHA1"
+		signatureMethodAlgorithm="SHA256"
 		authnRequestsSigned="true"
 		forceAuthn="false"
 		isPassive="false"
@@ -75,7 +75,7 @@
 		id="customLogout_relativePath"
 		authFilterRef="myAuthFilterCL3"
 		wantAssertionsSigned="true"
-		signatureMethodAlgorithm="SHA1"
+		signatureMethodAlgorithm="SHA256"
 		authnRequestsSigned="true"
 		forceAuthn="false"
 		isPassive="false"
@@ -102,7 +102,7 @@
 		id="customLogout_specialRelativePath"
 		authFilterRef="myAuthFilterCL3b"
 		wantAssertionsSigned="true"
-		signatureMethodAlgorithm="SHA1"
+		signatureMethodAlgorithm="SHA256"
 		authnRequestsSigned="true"
 		forceAuthn="false"
 		isPassive="false"
@@ -130,7 +130,7 @@
 		id="customLogout_invalidRelativePath"
 		authFilterRef="myAuthFilterCL4"
 		wantAssertionsSigned="true"
-		signatureMethodAlgorithm="SHA1"
+		signatureMethodAlgorithm="SHA256"
 		authnRequestsSigned="true"
 		forceAuthn="false"
 		isPassive="false"
@@ -157,7 +157,7 @@
 		id="customLogout_absLocalURL"
 		authFilterRef="myAuthFilterCL5"
 		wantAssertionsSigned="true"
-		signatureMethodAlgorithm="SHA1"
+		signatureMethodAlgorithm="SHA256"
 		authnRequestsSigned="true"
 		forceAuthn="false"
 		isPassive="false"
@@ -184,7 +184,7 @@
 		id="customLogout_absExternalURL"
 		authFilterRef="myAuthFilterCL6"
 		wantAssertionsSigned="true"
-		signatureMethodAlgorithm="SHA1"
+		signatureMethodAlgorithm="SHA256"
 		authnRequestsSigned="true"
 		forceAuthn="false"
 		isPassive="false"
@@ -210,7 +210,7 @@
 		id="sp5"
 		authFilterRef="myAuthFilterCL5s"
 		wantAssertionsSigned="true"
-		signatureMethodAlgorithm="SHA1"
+		signatureMethodAlgorithm="SHA256"
 		authnRequestsSigned="true"
 		forceAuthn="false"
 		isPassive="false"

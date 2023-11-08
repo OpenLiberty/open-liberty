@@ -207,7 +207,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
      * and PoolManager are null. It may still have references to
      * XATransactionWrapper, LocalTransactionWrapper, NoTransactionWrapper, and
      * ConnectionEventListener, but those wrappers are not allowed to hold connection
-     * related resoures (for example: XAResoure). A MCWrapper is pooled in
+     * related resources (for example: XAResoure). A MCWrapper is pooled in
      * the MCWrapperPool when in the INACTIVE state. In addition, all variables which
      * need to be reset every use should be at some default value when in the INACTIVE
      * state.
@@ -409,6 +409,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
     private boolean pretestThisConnection = false;
     private boolean aborted = false;
     private boolean qmidenabled = true;
+    protected boolean errorDuringExternalCall = false;
 
     /**
      * Constructor is protected and should only be used by
@@ -2175,10 +2176,10 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             /*
              * When a resource adapter uses connectionErrorOccurred during a
              * createManagedConnection, matchManagedConnection or getConnection
-             * we can not reuse the mcw. Reuse of the mcw may results in duplicate
+             * we can not reuse the mcw. Reuse of the mcw may result in duplicate
              * entries in the MCWrapperListPool. To be safe, all mcw connectionErrorOccurred
              * events will be marked not to be reused. Note, the use of connectionErrorOccurred before
-             * the managed connection is inuse, may not be spec compliant, but the customer for this request has
+             * the managed connection is in use, may not be spec compliant, but the customer for this request has
              * stated their resource adapter worked with this behavior on 5.0.1.
              */
             if (isTracingEnabled && tc.isDebugEnabled()) {
@@ -2186,6 +2187,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
                                    "Attempting to cleanup and destroy this connection cleanly");
             }
             do_not_reuse_mcw = true;
+            errorDuringExternalCall = true;
 
         } else {
             /*
@@ -2544,6 +2546,12 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
         if (isStale()) {
             buf.append("[STALE]  ");
         }
+
+        // Added errorDuringExternalCall check for tracing purposes
+        if (errorDuringExternalCall) {
+            buf.append("[ExtCallError]  ");
+        }
+
         if (do_not_reuse_mcw) {
             buf.append("[REMOVING]  ");
         }

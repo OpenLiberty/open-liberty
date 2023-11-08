@@ -41,6 +41,7 @@ import com.ibm.tx.remote.Vote;
 import com.ibm.tx.util.TMHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
@@ -270,6 +271,7 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
      * @param xid
      * @return
      */
+    @Override
     public DistributableTransaction getTransactionForID(String globalId) {
 
         for (TransactionImpl tx : LocalTIDTable.getAllTransactions()) {
@@ -435,11 +437,13 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
     }
 
     @Override
+    @Trivial
     public void putResource(String globalId, Object o) {
         ((TransactionImpl) getTransactionForID(globalId)).putResource(globalId, o);
     }
 
     @Override
+    @Trivial
     public String getRecoveryId() {
         return ConfigurationProviderManager.getConfigurationProvider().getRecoveryIdentity();
     }

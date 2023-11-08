@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -74,6 +74,10 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
     private final KafkaAdapterFactory kafkaAdapterFactory;
     private final ThresholdCounter unackedMessageCounter;
     private final PartitionTrackerFactory partitionTrackerFactory;
+    /**
+     * If true, acknowledgement is reported complete immediately, otherwise it's not reported complete until the partition offset is committed which may fail.
+     */
+    private final boolean fastAck;
 
     /**
      * The current collection of partition trackers
@@ -96,7 +100,7 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
 
     public KafkaInput(KafkaAdapterFactory kafkaAdapterFactory, PartitionTrackerFactory partitionTrackerFactory,
                       KafkaConsumer<K, V> kafkaConsumer, ExecutorService executor,
-                      String topic, int unackedLimit) {
+                      String topic, int unackedLimit, boolean fastAck) {
         super();
         this.kafkaConsumer = kafkaConsumer;
         this.executor = executor;
@@ -109,6 +113,7 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
         } else {
             this.unackedMessageCounter = ThresholdCounter.UNLIMITED;
         }
+        this.fastAck = fastAck;
     }
 
     public PublisherBuilder<Message<V>> getPublisher() {
@@ -296,11 +301,14 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
                                       Message<V> message = this.kafkaAdapterFactory.newIncomingKafkaMessage(r,
                                                                                                             () -> {
                                                                                                                 unackedMessageCounter.decrement();
-                                                                                                                return tracker.recordDone(r.offset(), r.leaderEpoch());
+                                                                                                                CompletionStage<Void> ackResult = tracker.recordDone(r.offset(),
+                                                                                                                                                                     r.leaderEpoch());
+                                                                                                                return fastAck ? CompletableFuture.completedFuture(null) : ackResult;
                                                                                                             },
                                                                                                             (t) -> {
                                                                                                                 logNackedMessage(r, t);
                                                                                                                 error = t;
+                                                                                                                unackedMessageCounter.decrement();
                                                                                                                 return CompletableFuture.completedFuture(null);
                                                                                                             });
                                       return new TrackedMessage<>(message, tracker);

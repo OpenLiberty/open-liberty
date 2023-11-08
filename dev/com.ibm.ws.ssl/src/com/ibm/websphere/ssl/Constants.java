@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -210,7 +210,9 @@ public class Constants {
     public static final String IBMJCE = "com.ibm.crypto.provider.IBMJCE";
     public static final String IBMJCE_NAME = "IBMJCE";
     public static final String IBMJCEFIPS = "com.ibm.crypto.fips.provider.IBMJCEFIPS";
+    public static final String IBMJCEPlusFIPS = "com.ibm.crypto.fips.provider.IBMJCEPlusFIPS";
     public static final String IBMJCEFIPS_NAME = "IBMJCEFIPS";
+    public static final String IBMJCEPlusFIPS_NAME = "IBMJCEPlusFIPS";
     public static final String IBMJSSE2 = "com.ibm.jsse2.IBMJSSEProvider2";
     public static final String IBMJSSE2_NAME = "IBMJSSE2";
     public static final String IBMJSSE_NAME = "IBMJSSE";

@@ -46,6 +46,7 @@ WS-TraceGroup: METRICS
 
 -buildpath: \
 	com.ibm.ws.logging;version=latest,\
+	io.openliberty.org.eclipse.microprofile.config.3.0;version=latest,\
 	com.ibm.ws.monitor;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	io.openliberty.microprofile.metrics.5.0.internal;version=latest,\
@@ -59,6 +60,5 @@ WS-TraceGroup: METRICS
 	io.openliberty.jakarta.restfulWS.3.1;version=latest,\
 	com.ibm.ws.microprofile.metrics.common;version=latest,\
 	com.ibm.ws.microprofile.metrics,\
-	com.ibm.ws.kernel.service,\
-	com.ibm.ws.kernel.boot.core;version=latest
+	com.ibm.ws.kernel.service
 	

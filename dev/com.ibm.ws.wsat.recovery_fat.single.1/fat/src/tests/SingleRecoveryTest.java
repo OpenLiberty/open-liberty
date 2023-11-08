@@ -86,7 +86,7 @@ public class SingleRecoveryTest {
 			System.out.println(logKeyword + "callServlet with setupRec and "
 					+ id + " end");
 		} catch (IOException e) {
-			Log.info(this.getClass(), method, "setupRec" + id + " failed to return. As expected.");
+			Log.info(this.getClass(), method, "setupRec" + id + " failed to return. This is what we expected.");
 		}
 
 		System.out.println(logKeyword + "waitForStringInLog Dump State start");
@@ -99,7 +99,7 @@ public class SingleRecoveryTest {
 		if (id.equals("42") || id.equals("41")) {
 			try {
 		        server1.startServerExpectFailure("expected-start-fail.log", false, false);
-				Log.info(this.getClass(), method, server1.getServerName() + " failed to start. As expected.");
+				Log.info(this.getClass(), method, server1.getServerName() + " failed to start. This is what we expected.");
 				server1.resetLogMarks();
 			} catch (TopologyException e) {
 				e.printStackTrace(System.out);
@@ -111,6 +111,9 @@ public class SingleRecoveryTest {
 
 		po = server1.startServerAndValidate(false, false, false);
 		System.out.println("Start server return code: " + po.getReturnCode());
+		
+		// Recovery might have already happened by the time the CWWKF0011I (smarter planet) comes out so reset the log marks
+		server1.resetLogMarks();
 
 		// Server appears to have started ok
 		server1.waitForStringInTrace("Performed recovery for "+server1.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT);

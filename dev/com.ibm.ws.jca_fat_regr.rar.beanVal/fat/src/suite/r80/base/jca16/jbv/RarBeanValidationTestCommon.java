@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -39,7 +39,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
@@ -47,7 +46,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jca.fat.regr.util.HttpHelper;
 
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -59,8 +57,6 @@ import suite.r80.base.jca16.TestSetupUtils;
 /**
  *
  */
-@Mode(TestMode.FULL)
-@RunWith(FATRunner.class)
 public abstract class RarBeanValidationTestCommon extends FATServletClient {
 
     private final static String CLASSNAME = "RarBeanValidationTest";
@@ -398,6 +394,18 @@ public abstract class RarBeanValidationTestCommon extends FATServletClient {
                                                                                    RarTests.sampleapp_jca16_jbv_ejbvalconfigApp + ".ear");
         sampleapp_jca16_jbv_ejbvalconfig_ear.addAsModules(jbvweb1_war, jbv_ejb1_jar);
         ShrinkHelper.exportToServer(server, "apps", sampleapp_jca16_jbv_ejbvalconfig_ear);
+
+        // Application start may take longer than local run default
+        int appStartTimeout = server.getAppStartTimeout();
+        if (appStartTimeout < (30 * 1000)) {
+            server.setAppStartTimeout(30 * 1000);
+        }
+
+        // Configuration update may take longer than local run default
+        int configUpdateTimeout = server.getConfigUpdateTimeout();
+        if (configUpdateTimeout < (30 * 1000)) {
+            server.setConfigUpdateTimeout(30 * 1000);
+        }
     }
 
     @AfterClass

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
@@ -33,6 +34,7 @@ import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Page;
 import jakarta.data.page.Pageable;
 import jakarta.data.page.Slice;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
@@ -59,16 +61,12 @@ public interface Primes {
     @Filter(by = "numberId", op = Compare.LessThan, param = "max")
     boolean anyLessThanEndingWithBitPattern(@Param("max") long upperLimit, @Param("bits") String pattern);
 
-    int count(int sumOfBits, boolean even);
-
     long countByIdLessThan(long number);
 
     @Asynchronous
     CompletableFuture<Short> countByIdBetweenAndEvenNot(long first, long last, boolean isOdd);
 
     Integer countByNumberIdBetween(long first, long last);
-
-    boolean existsWith(long id, String hex);
 
     Stream<Prime> find(boolean even, int sumOfBits, Limit limit, Sort... sorts);
 
@@ -220,6 +218,9 @@ public interface Primes {
     @OrderBy(value = "id", descending = true)
     List<Long> inRangeHavingVNumeralAndSubstringOfName(long min, long max, String nameSuffix);
 
+    @Exists
+    boolean isFoundWith(long id, String hex);
+
     @Filter(by = "id", op = Compare.LessThan)
     @Filter(by = "name", op = Compare.EndsWith)
     @Filter(as = Filter.Type.Or, by = "id", op = Compare.Between)
@@ -227,6 +228,27 @@ public interface Primes {
     @OrderBy(value = "numberId", descending = true)
     Stream<Prime> lessThanWithSuffixOrBetweenWithSuffix(long numLessThan, String firstSuffix,
                                                         long lowerLimit, long upperLimit, String secondSuffix);
+
+    @OrderBy("id")
+    @Query("SELECT o.numberId FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR o.numberId=:num)")
+    long[] matchAny(long num, String numeral, String hex, String numberName);
+
+    @OrderBy("id")
+    @Query("SELECT o.name FROM Prime o WHERE (o.name <> ':name' AND (o.numberId=?1 OR o.name=?2))")
+    List<String> matchAnyExceptLiteralValueThatLooksLikeANamedParameter(long num, String name);
+
+    @OrderBy("name")
+    @Query("SELECT o.name FROM Prime o WHERE ((o.name=?1 OR o.numberId=?2) AND o.name <> ':name')")
+    ArrayList<String> matchAnyExceptLiteralValueThatLooksLikeANamedParameter(String name, long num);
+
+    @Query("SELECT o.numberId FROM Prime o WHERE (o.name = :numName OR o.romanNumeral=:numeral OR o.hex =:hexadecimal OR o.numberId=:num)")
+    Streamable<Long> matchAnyWithMixedUsageOfParamAnnotation(long num,
+                                                             @Param("numName") String numberName,
+                                                             String numeral,
+                                                             @Param("hexadecimal") String hex);
+
+    @Query("SELECT o.numberId FROM Prime o WHERE (o.name = ?1 OR o.numberId=:num)")
+    Collection<Long> matchAnyWithMixedUsageOfPositionalAndNamed(String name, long num);
 
     @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
     Deque<Double> minMaxSumCountAverageDeque(long numBelow);
@@ -268,10 +290,14 @@ public interface Primes {
     @OrderBy("id")
     List<Long> notWithinButBelow(int rangeMin, int rangeMax, int below);
 
+    @Count
+    int numEvenWithSumOfBits(int sumOfBits, boolean even);
+
+    @Insert
+    void persist(Prime... primes);
+
     @Query("SELECT DISTINCT LENGTH(p.romanNumeral) FROM Prime p WHERE p.numberId <= ?1 ORDER BY LENGTH(p.romanNumeral) DESC")
     Page<Integer> romanNumeralLengths(long maxNumber, Pageable pagination);
-
-    void save(Prime... primes);
 
     @Query("SELECT prime_ FROM Prime AS prime_ WHERE (prime_.numberId <= ?1)")
     @OrderBy(value = "even", descending = true)

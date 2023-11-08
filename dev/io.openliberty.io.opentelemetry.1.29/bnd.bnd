@@ -10,6 +10,8 @@
 
 -include= ~../cnf/resources/bnd/bundle.props
 
+-sub: *.bnd
+
 bVersion=1.0
 
 openTelemetryVersion=1.29.0
@@ -19,10 +21,6 @@ javac.source: 11
 javac.target: 11
 
 src: src, resources
-
-Bundle-Name: io.openliberty.io.opentelemetry.1.29
-Bundle-SymbolicName: io.openliberty.io.opentelemetry.1.29; singleton:=true
-Bundle-Description: OpenTelemetry bundle
 
 Import-Package: \
 	javax.net,\
@@ -34,8 +32,8 @@ Import-Package: \
 	zipkin2.internal,\
 	zipkin2.reporter,\
 	zipkin2.reporter.okhttp3,\
-	jakarta.interceptor,\
-	jakarta.enterprise.util,\
+	javax.interceptor,\
+	javax.enterprise.util;version="[1.1.0,3.0.0)",\
 	com.ibm.wsspi.classloading,\
 	org.osgi.framework,\
 	com.ibm.websphere.ras,\
@@ -76,34 +74,34 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 	io.openliberty.com.squareup.okhttp;version=latest,\
 	io.openliberty.com.squareup.okio-jvm;version=latest,\
 	io.openliberty.io.zipkin.zipkin2;version=latest,\
-	io.openliberty.jakarta.interceptor.2.1;version=latest,\
-	io.openliberty.jakarta.cdi.4.0;version=latest,\
-	io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations-support;version=${alphaOpenTelemetryVersion};strategy=exact,\
-	io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations;version=${openTelemetryVersion};strategy=exact,\
-	io.opentelemetry.instrumentation:opentelemetry-instrumentation-api;version=${openTelemetryVersion};strategy=exact,\
-	io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-semconv;version=${alphaOpenTelemetryVersion};strategy=exact,\
-	io.opentelemetry:opentelemetry-api;version=${openTelemetryVersion};strategy=exact,\
-	io.opentelemetry:opentelemetry-api-events;version=${alphaOpenTelemetryVersion};strategy=exact,\
-	io.opentelemetry:opentelemetry-context;version=${openTelemetryVersion};strategy=exact,\
-	io.opentelemetry:opentelemetry-exporter-jaeger;version=${openTelemetryVersion};strategy=exact,\
-	io.opentelemetry:opentelemetry-exporter-logging;version=${openTelemetryVersion};strategy=exact,\
-	io.opentelemetry:opentelemetry-exporter-otlp-common;version=${openTelemetryVersion};strategy=exact,\
-	io.opentelemetry:opentelemetry-exporter-otlp;version=${openTelemetryVersion};strategy=exact,\
-	io.opentelemetry:opentelemetry-exporter-common;version=${openTelemetryVersion};strategy=exact,\
-	io.opentelemetry:opentelemetry-exporter-sender-okhttp;version=${openTelemetryVersion};strategy=exact,\
-	io.opentelemetry:opentelemetry-exporter-zipkin;version=${openTelemetryVersion};strategy=exact,\
-	io.opentelemetry:opentelemetry-extension-trace-propagators;version=${openTelemetryVersion};strategy=exact,\
-	io.opentelemetry:opentelemetry-sdk;version=${openTelemetryVersion};strategy=exact,\
-	io.opentelemetry:opentelemetry-sdk-common;version=${openTelemetryVersion};strategy=exact,\
-	io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi;version=${openTelemetryVersion};strategy=exact,\
-	io.opentelemetry:opentelemetry-sdk-extension-autoconfigure;version=${openTelemetryVersion};strategy=exact,\
-	io.opentelemetry:opentelemetry-sdk-logs;version=${openTelemetryVersion};strategy=exact,\
-	io.opentelemetry:opentelemetry-sdk-metrics;version=${openTelemetryVersion};strategy=exact,\
-	io.opentelemetry:opentelemetry-sdk-trace;version=${openTelemetryVersion};strategy=exact,\
-	io.opentelemetry:opentelemetry-semconv;version=${alphaOpenTelemetryVersion};strategy=exact,\
+	io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations-support;version='${alphaOpenTelemetryVersion}';strategy=exact,\
+	io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations;version='${openTelemetryVersion}';strategy=exact,\
+	io.opentelemetry.instrumentation:opentelemetry-instrumentation-api;version='${openTelemetryVersion}';strategy=exact,\
+	io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-semconv;version='${alphaOpenTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-api;version='${openTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-api-events;version='${alphaOpenTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-context;version='${openTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-exporter-jaeger;version='${openTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-exporter-logging;version='${openTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-exporter-otlp-common;version='${openTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-exporter-otlp;version='${openTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-exporter-common;version='${openTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-exporter-sender-okhttp;version='${openTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-exporter-zipkin;version='${openTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-extension-trace-propagators;version='${openTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-sdk;version='${openTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-sdk-common;version='${openTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi;version='${openTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-sdk-extension-autoconfigure;version='${openTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-sdk-logs;version='${openTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-sdk-metrics;version='${openTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-sdk-trace;version='${openTelemetryVersion}';strategy=exact,\
+	io.opentelemetry:opentelemetry-semconv;version='${alphaOpenTelemetryVersion}';strategy=exact,\
 	com.ibm.ws.classloading;version=latest,\
 	org.eclipse.osgi;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.websphere.javaee.cdi.1.2
 
 WS-TraceGroup: TELEMETRY

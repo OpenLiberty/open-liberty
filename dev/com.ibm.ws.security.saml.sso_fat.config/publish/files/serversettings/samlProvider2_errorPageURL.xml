@@ -18,7 +18,7 @@
 		id="sp2"
 		authFilterRef="myAuthFilter2"
 		wantAssertionsSigned="true"
-		signatureMethodAlgorithm="SHA1"
+		signatureMethodAlgorithm="SHA256"
 		authnRequestsSigned="true"
 		forceAuthn="false"
 		isPassive="false"

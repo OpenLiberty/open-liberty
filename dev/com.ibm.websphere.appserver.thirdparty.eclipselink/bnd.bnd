@@ -18,7 +18,7 @@ eclVersion=2.6.10.WAS
 eclHash=f193aac
 eclFullVersion=${eclVersion}-${eclHash}
 eclPackageVersion=1.0.16
-asmFullVersion=9.5.0
+asmFullVersion=9.6.0
 
 Bundle-SymbolicName: com.ibm.websphere.appserver.thirdparty.eclipselink
 Bundle-Description: EclipseLink JPA

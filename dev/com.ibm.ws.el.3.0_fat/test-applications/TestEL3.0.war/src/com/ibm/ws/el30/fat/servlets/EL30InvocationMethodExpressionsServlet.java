@@ -1,18 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.el30.fat.servlets;
 
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static org.junit.Assert.assertEquals;
@@ -108,7 +106,7 @@ public class EL30InvocationMethodExpressionsServlet extends FATServlet {
      */
     @Test
     @Mode(TestMode.FULL)
-    @SkipForRepeat(EE10_FEATURES)
+    @SkipForRepeat({ EE10_FEATURES, EE11_FEATURES })
     public void testMethodExpression_isParmetersProvided_available() throws Exception {
         boolean exceptionOccurred = false;
         ELProcessor elp = new ELProcessor();

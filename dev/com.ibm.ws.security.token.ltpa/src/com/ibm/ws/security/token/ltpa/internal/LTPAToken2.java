@@ -43,7 +43,6 @@ public class LTPAToken2 implements Token, Serializable {
 
     private static final TraceComponent tc = Tr.register(LTPAToken2.class);
 
-    private static final String MESSAGE_DIGEST_ALGORITHM = "SHA";
     private static final String AES_CBC_CIPHER = "AES/CBC/PKCS5Padding";
 
     private static final long serialVersionUID = 1L;
@@ -62,18 +61,20 @@ public class LTPAToken2 implements Token, Serializable {
     private final LTPAPrivateKey privateKey;
     private final LTPAPublicKey publicKey;
     private String cipher = null;
-    private static final String IBMJCE_NAME = "IBMJCE";
     private long expirationDifferenceAllowed;
 
     static {
         MessageDigest m1 = null, m2 = null;
         try {
-            if (LTPAKeyUtil.isIBMJCEAvailable()) {
-                m1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM, IBMJCE_NAME);
-                m2 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM, IBMJCE_NAME);
+            if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
+                m1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.IBMJCE_PLUS_FIPS_NAME);
+                m2 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256, LTPAKeyUtil.IBMJCE_PLUS_FIPS_NAME);
+            } else if (LTPAKeyUtil.isIBMJCEAvailable()) {
+                m1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.IBMJCE_NAME);
+                m2 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.IBMJCE_NAME);
             } else {
-                m1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
-                m2 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
+                m1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA);
+                m2 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA);
             }
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -128,12 +129,12 @@ public class LTPAToken2 implements Token, Serializable {
         this.cipher = AES_CBC_CIPHER;
         this.expirationDifferenceAllowed = expDiffAllowed;
         decrypt();
-        if (attributes != null && attributes.length > 0) {
+        isValid();
+        if (attributes != null) {
             //Reset signature, encryptedBytes and remove attributes
             this.signature = null;
             this.encryptedBytes = null;
             userData.removeAttributes(attributes);
-            isValid();
         }
     }
 

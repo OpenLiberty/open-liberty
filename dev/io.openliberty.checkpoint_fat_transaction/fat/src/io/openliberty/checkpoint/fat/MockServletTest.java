@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static io.openliberty.checkpoint.fat.FATSuite.setMockCheckpoint;
 import static io.openliberty.checkpoint.fat.util.FATUtils.LOG_SEARCH_TIMEOUT;
 
 import java.io.File;
@@ -19,10 +20,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -84,7 +83,7 @@ public class MockServletTest extends FATServletClient {
         } catch (FileNotFoundException e) {
             throw new UncheckedIOException(e);
         }
-        setMockCheckpoint(CheckpointPhase.AFTER_APP_START);
+        setMockCheckpoint(server, CheckpointPhase.AFTER_APP_START);
         server.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
         server.startServer();
     }
@@ -96,36 +95,9 @@ public class MockServletTest extends FATServletClient {
         }
     }
 
-    private static final List<String> CHECKPOINT_INACTIVE = Collections.emptyList();
-    private static final List<String> CHECKPOINT_BEFORE_APP_START = Arrays.asList("--internal-checkpoint-at=beforeAppStart");
-    private static final List<String> CHECKPOINT_AFTER_APP_START = Arrays.asList("--internal-checkpoint-at=afterAppStart");
-
-    /*
-     * Enable stubbed criu operation for checkpoint-restore at the specified
-     * checkpoint phase.
-     */
-    private static void setMockCheckpoint(CheckpointPhase phase) throws Exception {
-        Map<String, String> jvmOptions = server.getJvmOptionsAsMap();
-        switch (phase) {
-            case BEFORE_APP_START:
-                jvmOptions.put("-Dio.openliberty.checkpoint.stub.criu", "true");
-                server.setExtraArgs(CHECKPOINT_BEFORE_APP_START);
-                break;
-            case AFTER_APP_START:
-                jvmOptions.put("-Dio.openliberty.checkpoint.stub.criu", "true");
-                server.setExtraArgs(CHECKPOINT_AFTER_APP_START);
-                break;
-            default:
-                // Normal server operation; no checkpoint-restore
-                jvmOptions.remove("-Dio.openliberty.checkpoint.stub.criu");
-                server.setExtraArgs(CHECKPOINT_INACTIVE);
-        }
-        server.setJvmOptions(jvmOptions);
-    }
-
     //@Test
     public void testMockDynamicUpdateLTCAfterGlobalTran() throws Exception {
-        setMockCheckpoint(CheckpointPhase.AFTER_APP_START);
+        setMockCheckpoint(server, CheckpointPhase.AFTER_APP_START);
         try {
             server.startServer();
             // Update config vars used by datasource and transaction

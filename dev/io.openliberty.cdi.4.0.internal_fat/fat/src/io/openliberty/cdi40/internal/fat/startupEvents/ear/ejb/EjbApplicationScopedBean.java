@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -40,7 +40,7 @@ public class EjbApplicationScopedBean extends AbstractObserver {
     private volatile boolean preDestroyObserved = false;
 
     @Override
-    public void observeInit(@Observes @Initialized(ApplicationScoped.class) Object event) {
+    public void observeInit(@Observes @Initialized(ApplicationScoped.class) Object event) throws Exception {
         super.observeInit(event);
         //@Initialized(ApplicationScoped.class) should be seen before EJB PostConstruct
         assertFalse(logMsg("@Initialized(ApplicationScoped.class) was observed after EJB PostConstruct"), postConstructObserved);
@@ -70,10 +70,11 @@ public class EjbApplicationScopedBean extends AbstractObserver {
 
         //EJB PreDestroy should be seen after any test request
         assertTrue(logMsg("EJB PreDestroy was observed before test"), testRequested);
-        /* 
+        /*
          * EJB PreDestroy for a bean with ApplicationScoped should be seen after Shutdown
          * https://jakarta.ee/specifications/cdi/4.0/jakarta-cdi-spec-4.0.html#session_beans - A singleton session bean can be ApplicationScoped or Dependent
-         * https://jakarta.ee/specifications/cdi/4.0/jakarta-cdi-spec-4.0.html#startup_event - jakarta.enterprise.event.Shutdown is not after @BeforeDestroyed(ApplicationScoped.class)
+         * https://jakarta.ee/specifications/cdi/4.0/jakarta-cdi-spec-4.0.html#startup_event - jakarta.enterprise.event.Shutdown is not
+         * after @BeforeDestroyed(ApplicationScoped.class)
          */
         assertTrue(logMsg("EJB PreDestroy was observed before Shutdown"), shutdownObserved);
     }

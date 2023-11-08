@@ -14,6 +14,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.annotation.MinimumJavaLevel;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @MinimumJavaLevel(javaLevel = 11)
@@ -44,4 +46,10 @@ import componenttest.annotation.MinimumJavaLevel;
 })
 
 public class FATSuite {
+
+    public static RepeatTests allMPRepeats(String serverName) {
+        return TelemetryActions
+                        .repeat(serverName, MicroProfileActions.MP61, TelemetryActions.MP14_MPTEL11, TelemetryActions.MP41_MPTEL11, TelemetryActions.MP50_MPTEL11,
+                                MicroProfileActions.MP60);
+    }
 }

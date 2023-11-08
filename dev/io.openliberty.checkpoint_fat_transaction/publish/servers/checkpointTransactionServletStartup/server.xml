@@ -31,5 +31,7 @@
 
     <application location="transactionservletstartup.war"/>
 
+<!--
     <logging traceSpecification="Transaction=all::logservice=all=enabled:*=info=enabled"/>
+-->
 </server>

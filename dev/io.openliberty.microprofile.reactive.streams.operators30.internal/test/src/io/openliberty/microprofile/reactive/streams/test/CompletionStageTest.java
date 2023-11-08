@@ -27,17 +27,36 @@ import io.openliberty.microprofile.reactive.streams.test.utils.CompletionStageRe
 public class CompletionStageTest extends AbstractReactiveUnitTest {
 
     @Test
-    public void test() {
+    public void testBlocking() {
         CompletableFuture<Void> latch = new CompletableFuture<>();
-        CompletionRunner<Optional<Integer>> runner = ReactiveStreams.of(1, 2, 3, 4, 5).map(x -> x * 2)
-                        .map(waitFor(latch)).reduce((x, y) -> x + y);
+        CompletionRunner<Optional<Integer>> runner = ReactiveStreams.of(1, 2, 3, 4, 5)
+                        .map(x -> x * 2)
+                        .map(blockingWaitFor(latch))
+                        .reduce((x, y) -> x + y);
+
+        // Call runner.run asynchronously, ensuring blocking wait runs on another thread
+        CompletionStage<Optional<Integer>> cs = CompletableFuture.completedStage(null).thenComposeAsync(x -> runner.run());
+
+        latch.complete(null);
+        CompletionStageResult.from(cs.thenApply(Optional::get)).assertResult(is(30));
+    }
+
+    @Test
+    public void testNonBlocking() {
+        CompletableFuture<Void> latch = new CompletableFuture<>();
+        CompletionRunner<Optional<Integer>> runner = ReactiveStreams.of(1, 2, 3, 4, 5)
+                        .map(x -> x * 2)
+                        .flatMapCompletionStage(i -> latch.thenApply(x -> i)) // Non-blocking wait on latch
+                        .reduce((x, y) -> x + y);
+
+        // No blocking operations, runner.run called on current thread
         CompletionStage<Optional<Integer>> cs = runner.run();
 
         latch.complete(null);
         CompletionStageResult.from(cs.thenApply(Optional::get)).assertResult(is(30));
     }
 
-    private <T> Function<T, T> waitFor(Future<?> latch) {
+    private <T> Function<T, T> blockingWaitFor(Future<?> latch) {
         return (t) -> {
             try {
                 latch.get(5, TimeUnit.SECONDS);

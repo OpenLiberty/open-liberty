@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsp.taglib;
 
@@ -98,25 +95,6 @@ public class TagLibraryCache extends Hashtable<String, Object> {
     private Container container = null;
     
     private Map locationsCache = null;
-
-    //AbstractJspModC.java uses this constructor
-    public TagLibraryCache(JspTranslationContext ctxt,
-                           Map webxmlTagLibMap,
-                           JspOptions jspOptions,
-                           JspConfigurationManager configManager,
-                           Map<String, Object> globalMap,
-                           Map implicitMap,
-                           Map optimizedTagMap) throws JspCoreException {
-        this(ctxt,
-        null, //container
-        webxmlTagLibMap,
-        jspOptions,
-        configManager,
-        globalMap,
-        implicitMap,
-        optimizedTagMap,
-        null);
-    }
 
     public TagLibraryCache(JspTranslationContext ctxt,
                            Map webxmlTagLibMap,
@@ -220,10 +198,7 @@ public class TagLibraryCache extends Hashtable<String, Object> {
         }
         //PK68590 end
 
-        if (jspOptions.isUseImplicitTagLibs() &&
-             (jspOptions.getTranslationContextClass() == null 
-              	|| (jspOptions.getTranslationContextClass() != null && // 415289
-              	    jspOptions.getTranslationContextClass().equals(Constants.IN_MEMORY_TRANSLATION_CONTEXT_CLASS)))) { 
+        if (jspOptions.isUseImplicitTagLibs() && jspOptions.getTranslationContextClass() == null) { 
             for (Map.Entry<String, Object> mapEntry : globalMap.entrySet()) {
                 String uri = mapEntry.getKey();
                 if (!containsKey(uri)) {
@@ -391,107 +366,6 @@ public class TagLibraryCache extends Hashtable<String, Object> {
         JspInputSource inputSource = getInputSource(container, resourcePath, null, null);
         Container jarContainer = ((JspInputSourceContainerImpl)inputSource).getContainer();
         loadTldsFromJar(jarContainer, resourcePath, loadedLocations, null);
-    }
-    //called from AbstractJspModC, no need to cache
-    public void loadTldsFromJar(URL url, String resourcePath, List loadedLocations, JspXmlExtConfig webAppConfig) {
-        if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)){
-                logger.logp(Level.FINE, CLASS_NAME, "loadTldsFromJar", "url ["+url+"]"+"resourcePath ["+resourcePath+"] loadedLocations ["+loadedLocations+"] webAppConfig ["+webAppConfig+"]" );
-        }
-        JarFile jarFile = null;
-        InputStream stream = null;
-        String name = null;
-        try {
-            JarURLConnection conn = (JarURLConnection)url.openConnection();
-            conn.setUseCaches(false);
-            jarFile = conn.getJarFile();
-
-            String originatorId = jarFile.getName();
-            originatorId = originatorId.substring(0, originatorId.indexOf(".jar"));
-            if (originatorId.indexOf(File.separatorChar) != -1)
-                originatorId = originatorId.substring(originatorId.lastIndexOf(File.separatorChar)+1);
-            originatorId = NameMangler.mangleString(originatorId);
-
-            Enumeration entries = jarFile.entries();
-            while (entries.hasMoreElements()) {
-                JarEntry entry = (JarEntry) entries.nextElement();
-                name = entry.getName();
-                if (name.startsWith("META-INF/") &&
-                    name.endsWith(".tld") &&
-                    loadedLocations.contains(resourcePath + "/" + name) == false) {
-                    stream = jarFile.getInputStream(entry);
-                    JspInputSource tldInputSource = getInputSource(container, name, null, url);
-                    //TagLibraryInfoImpl tli = loadSerializedTld(tldInputSource, inputSource);
-
-                    //if (tli == null) {
-                    try {
-                        TagLibraryInfoImpl tli = tldParser.parseTLD(tldInputSource, stream, originatorId);
-                        
-                        //516822 - If no URI is defined in the tag, we still want to load it in case it has listeners
-                        //use the resourcePath + "/" + name as the key
-                        String uri = null;
-                        if (tli.getReliableURN() != null && tli.getReliableURN().trim().equals("") == false) {
-                            uri = tli.getReliableURN();
-                        } else {
-                            uri = resourcePath + "/" + name;
-                        }
-                        
-                        //if (tli.getReliableURN() != null && tli.getReliableURN().trim().equals("") == false) {
-                            tli.setURI(uri);
-                            if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)){
-                                logger.logp(Level.FINE, CLASS_NAME, "loadTldsFromJar", "webAppConfig is "+webAppConfig);
-                            }
-                            if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE) && webAppConfig!=null){
-                                logger.logp(Level.FINE, CLASS_NAME, "loadTldsFromJar", "tli URN is "+ uri+
-                                                                                                                                           " :webAppConfig.getTagLibMap() is "+webAppConfig.getTagLibMap()+
-                                                                                                                                           " :webAppConfig.getTagLibMap().containsKey(uri) is "+webAppConfig.getTagLibMap().containsKey(uri)+
-                                                                                                                                           " :containsKey(uri) is "+containsKey(uri) );
-                            }
-                            if ((webAppConfig!=null && webAppConfig.getTagLibMap().containsKey(uri)==false)
-                                    || (webAppConfig==null && containsKey(uri) == false)) {
-                                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)){
-                                    logger.logp(Level.FINE, CLASS_NAME, "loadTldsFromJar", "jar tld loaded for {0}", uri);
-                                }
-                                put(uri, tli);
-                                //serializeTld(tldInputSource, tli);
-                                eventListenerList.addAll(tldParser.getEventListenerList());
-                                tagListForInjection.addAll(tldParser.getParsedTagsList());
-                                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)){
-                                    logger.logp(Level.FINE, CLASS_NAME, "loadTldsFromJar", "tldParser.getEventListenerList() ["+ tldParser.getEventListenerList()+"]");
-                                }
-                            }
-                        //}
-                    }
-                    catch (JspCoreException e) {
-                        if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.WARNING)){
-                            logger.logp(Level.WARNING, CLASS_NAME, "loadTldsFromJar", "jsp error failed to load tld in jar. uri = ["+resourcePath+"]", e);
-                        }
-                    }
-                    //}
-
-                    stream.close();
-                    stream = null;
-                }
-            }
-        }
-        catch (Exception e) {
-            if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.WARNING)){
-                logger.logp(Level.WARNING, CLASS_NAME, "loadTldsFromJar", "jsp error failed to load tld in jar. uri = ["+resourcePath+"]", e);
-            }
-        }
-        finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                }
-                catch (Throwable t) {}
-            }
-            if (jarFile != null) {
-                try {
-                    jarFile.close();
-                }
-                catch (Throwable t) {}
-            }
-        }
     }
 
     public void loadTldsFromJar(Container jarContainer, String resourcePath, List loadedLocations, JspXmlExtConfig webAppConfig) {

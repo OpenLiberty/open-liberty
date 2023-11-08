@@ -31,7 +31,9 @@
 
     <!-- Allow Arquillian to monitor application -->
     <applicationMonitor updateTrigger="mbean"/>
+    
     <keyStore id="defaultKeyStore" password="libertyPassword"/>
+    <quickStartSecurity userName="admin" userPassword="adminpwd"/>
 
     <!-- Allow Arquillian access to dropins directory for application installation -->
     <remoteFileAccess>

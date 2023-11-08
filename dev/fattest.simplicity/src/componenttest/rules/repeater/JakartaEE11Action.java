@@ -116,7 +116,7 @@ class JakartaEE11Action extends JakartaEEAction {
         removeFeatures(JakartaEE9Action.EE9_FEATURE_SET);
         removeFeatures(JakartaEE10Action.EE10_FEATURE_SET);
         forceAddFeatures(false);
-        withMinJavaLevel(SEVersion.JAVA17);
+        withMinJavaLevel(SEVersion.JAVA21);
         withID(EE11_ACTION_ID);
     }
 

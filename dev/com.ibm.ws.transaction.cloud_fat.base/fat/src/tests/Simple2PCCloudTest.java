@@ -240,19 +240,24 @@ public class Simple2PCCloudTest extends FATServletClient {
         }
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
-        server1.waitForStringInLog(XAResourceImpl.DUMP_STATE);
+        assertNotNull(server1.getServerName() + " didn't crash properly", server1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
+        server1.postStopServerArchive(); // must explicitly collect since crashed server
+        // Need to ensure we have a long (5 minute) timeout for the lease, otherwise we may decide that we CAN delete
+        // and renew our own lease. longLeasLengthServer1 is a clone of server1 with a longer lease length.
 
-        // Pull in a new server.xml file that ensures that we have a long (5 minute) timeout
-        // for the lease, otherwise we may decide that we CAN delete and renew our own lease.
-
-        // Now re-start cloud1 but we fully expect this to fail
+        // Now re-start server1 but we fully expect this to fail
         try {
+            // The server has been halted but its status variable won't have been reset because we crashed it. In order to
+            // setup the server for a restart, set the server state manually.
+            server1.setStarted(false);
             longLeaseLengthServer1.startServerExpectFailure("recovery-dblog-fail.log", false, true);
         } catch (Exception ex) {
             // Tolerate an exception here, as recovery is asynch and the "successful start" message
             // may have been produced by the main thread before the recovery thread had completed
             Log.info(this.getClass(), method, "startServerExpectFailure threw exc: " + ex);
         }
+        // Pull in a new server.xml file that ensures that we have a long (5 minute) timeout
+        // for the lease, otherwise we may decide that we CAN delete and renew our own lease.
 
         // Server appears to have failed as expected. Check for log failure string
         if (longLeaseLengthServer1.waitForStringInLog("RECOVERY_LOG_FAILED") == null) {
@@ -260,7 +265,7 @@ public class Simple2PCCloudTest extends FATServletClient {
             Log.error(this.getClass(), "recoveryTestCompeteForLock", ex);
             throw ex;
         }
-
+        longLeaseLengthServer1.postStopServerArchive();
         // defect 210055: Now start cloud2 so that we can tidy up the environment, otherwise cloud1
         // is unstartable because its lease is owned by cloud2.
         server2.setHttpDefaultPort(cloud2ServerPort);

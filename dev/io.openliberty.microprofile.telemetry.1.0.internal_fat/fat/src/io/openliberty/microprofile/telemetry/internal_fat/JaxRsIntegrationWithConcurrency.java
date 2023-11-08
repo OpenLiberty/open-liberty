@@ -23,6 +23,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,6 +34,9 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
@@ -43,6 +47,8 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.methods.JaxRsMethodTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.responses.JaxRsResponseCodeTestEndpoints;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.responses.JaxRsResponseCodeTestServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.route.JaxRsRouteTestEndpoints;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.route.JaxRsRouteTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.transports.B3MultiPropagationTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.transports.B3PropagationTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.transports.JaegerPropagationTestServlet;
@@ -75,9 +81,13 @@ public class JaxRsIntegrationWithConcurrency extends FATServletClient {
                     @TestServlet(contextRoot = ASYNC_SERVER_APP_NAME, servlet = JaxRsServerAsyncTestServlet.class),
                     @TestServlet(contextRoot = METHODS_APP_NAME, servlet = JaxRsMethodTestServlet.class),
                     @TestServlet(contextRoot = METHODS_APP_NAME, servlet = JaxRsResponseCodeTestServlet.class),
+                    @TestServlet(contextRoot = METHODS_APP_NAME, servlet = JaxRsRouteTestServlet.class),
     })
     @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -157,6 +167,7 @@ public class JaxRsIntegrationWithConcurrency extends FATServletClient {
         WebArchive methodsApp = ShrinkWrap.create(WebArchive.class, METHODS_APP_NAME + ".war")
                         .addPackage(JaxRsMethodTestEndpoints.class.getPackage())
                         .addPackage(JaxRsResponseCodeTestEndpoints.class.getPackage())
+                        .addPackage(JaxRsRouteTestEndpoints.class.getPackage())
                         .addPackage(InMemorySpanExporter.class.getPackage())
                         .addPackage(TestSpans.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
@@ -178,8 +189,7 @@ public class JaxRsIntegrationWithConcurrency extends FATServletClient {
         HttpRequest pokeJax = new HttpRequest(server, "/" + APP_NAME + "/endpoints/jaxrsclient");
         String traceId = readTraceId(pokeJax);
 
-        HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
-        assertEquals(TEST_PASSED, readspans.run(String.class));
+        assertSpans(traceId);
     }
 
     @Test
@@ -187,8 +197,7 @@ public class JaxRsIntegrationWithConcurrency extends FATServletClient {
         HttpRequest pokeJax = new HttpRequest(server, "/" + APP_NAME + "/endpoints/jaxrsclientasync");
         String traceId = readTraceId(pokeJax);
 
-        HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
-        assertEquals(TEST_PASSED, readspans.run(String.class));
+        assertSpans(traceId);
     }
 
     @Test
@@ -196,8 +205,7 @@ public class JaxRsIntegrationWithConcurrency extends FATServletClient {
         HttpRequest pokeMp = new HttpRequest(server, "/" + APP_NAME + "/endpoints/mpclient");
         String traceId = readTraceId(pokeMp);
 
-        HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
-        assertEquals(TEST_PASSED, readspans.run(String.class));
+        assertSpans(traceId);
     }
 
     @Test
@@ -205,13 +213,25 @@ public class JaxRsIntegrationWithConcurrency extends FATServletClient {
         HttpRequest pokeMp = new HttpRequest(server, "/" + APP_NAME + "/endpoints/mpclientasync");
         String traceId = readTraceId(pokeMp);
 
-        HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
-        assertEquals(TEST_PASSED, readspans.run(String.class));
+        assertSpans(traceId);
     }
 
     @AfterClass
     public static void tearDownWithConcurrency() throws Exception {
         server.stopServer();
+    }
+
+    /**
+     * Call the appropriate readspans endpoint and assert the result
+     */
+    private void assertSpans(String traceId) throws Exception {
+        HttpRequest readspans;
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
+        } else {
+            readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel11/" + traceId);
+        }
+        assertEquals(TEST_PASSED, readspans.run(String.class));
     }
 
     private static final Pattern TRACE_ID_PATTERN = Pattern.compile("[0-9a-f]{32}");

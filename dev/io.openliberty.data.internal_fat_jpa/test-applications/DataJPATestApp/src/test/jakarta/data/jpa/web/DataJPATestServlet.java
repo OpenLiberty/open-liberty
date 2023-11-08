@@ -21,11 +21,14 @@ import static test.jakarta.data.jpa.web.Assertions.assertIterableEquals;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -36,6 +39,7 @@ import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.TreeSet;
+import java.util.Vector;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -47,6 +51,7 @@ import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.data.Limit;
 import jakarta.data.Sort;
 import jakarta.data.Streamable;
+import jakarta.data.exceptions.EntityExistsException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.page.KeysetAwarePage;
@@ -112,7 +117,13 @@ public class DataJPATestServlet extends FATServlet {
     Employees employees;
 
     @Inject
+    MixedRepository mixed;
+
+    @Inject
     Orders orders;
+
+    @Inject
+    Rebates rebates;
 
     @Inject
     ShippingAddresses shippingAddresses;
@@ -777,16 +788,16 @@ public class DataJPATestServlet extends FATServlet {
         // Clear out data before test
         accounts.deleteByOwnerEndsWith("TestEmbeddedId");
 
-        accounts.save(new Account(1005380, 70081, "Think Bank", true, 552.18, "Ellen TestEmbeddedId"));
-        accounts.save(new Account(1004470, 70081, "Think Bank", true, 443.94, "Erin TestEmbeddedId"));
-        accounts.save(new Account(1006380, 70081, "Think Bank", true, 160.63, "Edward TestEmbeddedId"));
-        accounts.save(new Account(1007590, 70081, "Think Bank", true, 793.30, "Elizabeth TestEmbeddedId"));
+        accounts.create(new Account(1005380, 70081, "Think Bank", true, 552.18, "Ellen TestEmbeddedId"));
+        accounts.create(new Account(1004470, 70081, "Think Bank", true, 443.94, "Erin TestEmbeddedId"));
+        accounts.create(new Account(1006380, 70081, "Think Bank", true, 160.63, "Edward TestEmbeddedId"));
+        accounts.create(new Account(1007590, 70081, "Think Bank", true, 793.30, "Elizabeth TestEmbeddedId"));
         accounts.save(new Account(1008410, 22158, "Home Federal Savings Bank", true, 829.91, "Elizabeth TestEmbeddedId"));
         accounts.save(new Account(1006380, 22158, "Home Federal Savings Bank", true, 261.66, "Elliot TestEmbeddedId"));
         accounts.save(new Account(1004470, 22158, "Home Federal Savings Bank", false, 416.14, "Emma TestEmbeddedId"));
-        accounts.save(new Account(1009130, 30372, "Mayo Credit Union", true, 945.20, "Elizabeth TestEmbeddedId"));
-        accounts.save(new Account(1004470, 30372, "Mayo Credit Union", true, 423.15, "Eric TestEmbeddedId"));
-        accounts.save(new Account(1008200, 30372, "Mayo Credit Union", true, 103.04, "Evan TestEmbeddedId"));
+        accounts.createAll(new Account(1009130, 30372, "Mayo Credit Union", true, 945.20, "Elizabeth TestEmbeddedId"),
+                           new Account(1004470, 30372, "Mayo Credit Union", true, 423.15, "Eric TestEmbeddedId"),
+                           new Account(1008200, 30372, "Mayo Credit Union", true, 103.04, "Evan TestEmbeddedId"));
 
         assertIterableEquals(List.of("Emma TestEmbeddedId", "Eric TestEmbeddedId", "Erin TestEmbeddedId"),
                              accounts.findByAccountIdAccountNum(1004470)
@@ -873,32 +884,35 @@ public class DataJPATestServlet extends FATServlet {
         o1.purchasedBy = "testEntitiesAsParameters-Customer1";
         o1.purchasedOn = OffsetDateTime.now();
         o1.total = 10.99f;
-        o1 = orders.save(o1);
-        int o1_v1 = o1.versionNum;
 
         Order o2 = new Order();
         o2.purchasedBy = "testEntitiesAsParameters-Customer2";
         o2.purchasedOn = OffsetDateTime.now();
         o2.total = 20.99f;
-        o2 = orders.save(o2);
+
+        Order[] created = orders.create(o1, o2);
+        o1 = created[0];
+        o2 = created[1];
+        int o1_v1 = o1.versionNum;
 
         Order o3 = new Order();
         o3.purchasedBy = "testEntitiesAsParameters-Customer3";
         o3.purchasedOn = OffsetDateTime.now();
         o3.total = 30.99f;
-        o3 = orders.save(o3);
+        orders.insert(o3);
+        o3 = orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer3").orElseThrow();
 
         Order o4 = new Order();
         o4.purchasedBy = "testEntitiesAsParameters-Customer4";
         o4.purchasedOn = OffsetDateTime.now();
         o4.total = 40.99f;
-        o4 = orders.save(o4);
+        o4 = orders.create(o4);
 
         Order o5 = new Order();
         o5.purchasedBy = "testEntitiesAsParameters-Customer5";
         o5.purchasedOn = OffsetDateTime.now();
         o5.total = 50.99f;
-        o5 = orders.save(o5);
+        o5 = orders.create(o5);
         int o5_v1 = o5.versionNum;
 
         // delete even though a property doesn't match
@@ -984,6 +998,60 @@ public class DataJPATestServlet extends FATServlet {
         assertNotNull(o = map.get("testEntitiesAsParameters-Customer5"));
         assertEquals(50.99f, o.total, 0.001f);
         assertEquals(o5_v1, o.versionNum); // never updated
+
+        Order o7 = new Order();
+        o7.purchasedBy = "testEntitiesAsParameters-Customer7";
+        o7.purchasedOn = OffsetDateTime.now();
+        o7.total = 70.99f;
+
+        try {
+            orders.insertAll(List.of(o7, o5));
+            fail("Should not be able insert an entity with an Id that is already present.");
+        } catch (EntityExistsException x) {
+            // expected
+        }
+
+        assertEquals(false, orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer7").isPresent());
+
+        Order o8 = new Order();
+        o8.purchasedBy = "testEntitiesAsParameters-Customer8";
+        o8.purchasedOn = OffsetDateTime.now();
+        o8.total = 80.99f;
+
+        orders.insertAll(Set.of(o7, o8));
+
+        o7 = orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer7").orElseThrow();
+        o8 = orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer8").orElseThrow();
+
+        o7.total = 77.99f;
+        o8.total = 88.99f;
+        o1.total = 1.99f;
+        o1.versionNum = o1_v1;
+
+        assertEquals(2, orders.updateAll(List.of(o8, o1, o7)));
+
+        List<Float> totals = orders.findTotalByPurchasedByIn(Set.of("testEntitiesAsParameters-Customer8",
+                                                                    "testEntitiesAsParameters-Customer7",
+                                                                    "testEntitiesAsParameters-Customer1"),
+                                                             Sort.desc("total"));
+        assertEquals(totals.toString(), 3, totals.size());
+        assertEquals(88.99f, totals.get(0), 0.001f);
+        assertEquals(77.99f, totals.get(1), 0.001f);
+        assertEquals(11.99f, totals.get(2), 0.001f); // not updated due to version mismatch
+
+        assertEquals(false, orders.update(o1));
+
+        assertEquals(11.99f, totals.get(2), 0.001f); // still not updated due to version mismatch
+
+        // use correct version for update:
+        o1 = orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer1").orElseThrow();
+        o1.total = 0.99f;
+
+        assertEquals(true, orders.update(o1));
+
+        totals = orders.findTotalByPurchasedByIn(Set.of("testEntitiesAsParameters-Customer1"));
+        assertEquals(totals.toString(), 1, totals.size());
+        assertEquals(0.99f, totals.get(0), 0.001f);
 
         orders.deleteAll();
     }
@@ -1463,16 +1531,16 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Repository method with the Update annotation that makes an update by assigning the IdClass instance to something else.
+     * Repository method with the Assign annotation that makes an update by assigning the IdClass instance to something else.
      */
     @Test
-    public void testIdClassUpdateAnnotation() {
+    public void testIdClassUpdateAssignIdClass() {
         cities.save(new City("La Crosse", "Wisconsin", 52680, Set.of(608)));
         try {
             cities.findById(CityId.of("La Crosse", "Wisconsin")).orElseThrow();
 
-            assertEquals(1, cities.replace(CityId.of("La Crosse", "Wisconsin"),
-                                           CityId.of("Decorah", "Iowa"), 7587, Set.of(563)));
+            assertEquals(1, cities.replace("La Crosse", "Wisconsin", // TODO CityId.of("La Crosse", "Wisconsin"),
+                                           "Decorah", "Iowa", 7587, Set.of(563))); // TODO CityId.of("Decorah", "Iowa"), 7587, Set.of(563)));
 
             assertEquals(true, cities.findById(CityId.of("La Crosse", "Wisconsin")).isEmpty());
             assertEquals(true, cities.existsById(CityId.of("Decorah", "Iowa")));
@@ -1490,17 +1558,16 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Repository method with the Update annotation that makes an update by assigning the IdClass instance to something else.
-     * This test uses named parameters.
+     * Repository method with the Update annotation that makes an update by assigning the IdClass components to something else.
      */
     @Test
-    public void testIdClassUpdateAnnotationWithNamedParameters() {
+    public void testIdClassUpdateAssignIdClassComponents() {
         cities.save(new City("Janesville", "Wisconsin", 65615, Set.of(608)));
         try {
             cities.findById(CityId.of("Janesville", "Wisconsin")).orElseThrow();
 
-            assertEquals(1, cities.replace(CityId.of("Janesville", "Wisconsin"),
-                                           CityId.of("Ames", "Iowa"), Set.of(515), 66427));
+            assertEquals(1, cities.replace("Janesville", "Wisconsin",
+                                           "Ames", "Iowa", Set.of(515), 66427));
 
             assertEquals(true, cities.findById(CityId.of("Janesville", "Wisconsin")).isEmpty());
             assertEquals(true, cities.existsById(CityId.of("Ames", "Iowa")));
@@ -1553,10 +1620,10 @@ public class DataJPATestServlet extends FATServlet {
         // Clear out data before test
         employees.deleteByLastName("TestIdOnEmbeddable");
 
-        Streamable<Employee> added = employees.save(new Employee("Irene", "TestIdOnEmbeddable", (short) 2636, 'A'),
-                                                    new Employee("Isabella", "TestIdOnEmbeddable", (short) 8171, 'B'),
-                                                    new Employee("Ivan", "TestIdOnEmbeddable", (short) 4948, 'A'),
-                                                    new Employee("Isaac", "TestIdOnEmbeddable", (short) 5310, 'C'));
+        Streamable<Employee> added = businesses.save(new Employee("Irene", "TestIdOnEmbeddable", (short) 2636, 'A'),
+                                                     new Employee("Isabella", "TestIdOnEmbeddable", (short) 8171, 'B'),
+                                                     new Employee("Ivan", "TestIdOnEmbeddable", (short) 4948, 'A'),
+                                                     new Employee("Isaac", "TestIdOnEmbeddable", (short) 5310, 'C'));
 
         assertEquals(List.of("Irene", "Isabella", "Ivan", "Isaac"),
                      added.stream().map(e -> e.firstName).collect(Collectors.toList()));
@@ -1684,7 +1751,11 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Query that matches multiple entities and returns a combined collection of results across matches for the ManyToMany association.
      */
-    @Test
+    //@Test
+    // This test is currently incorrect because Phone is an attribute of Customer (primary entity type), not DeliveryLocation (result type).
+    // This would require a way to indicate that a projection is desired, meaning the return type indicates
+    // an attribute of the entity rather than the entity class itself.
+    // TODO Could this be achieved with @Select?
     public void testManyToManyReturnsCombinedCollectionFromMany() {
 
         List<String> addresses = customers.findLocationsByPhoneIn(List.of(5075552444L, 5075550101L))
@@ -1700,7 +1771,11 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Query that matches a single entity and returns the corresponding collection from its ManyToMany association.
      */
-    @Test
+    //@Test
+    // This test is currently incorrect because Email is an attribute of Customer (primary entity type), not DeliveryLocation (result type)
+    // This would require a way to indicate that a projection is desired, meaning the return type indicates
+    // an attribute of the entity rather than the entity class itself.
+    // TODO Could this be achieved with @Select?
     public void testManyToManyReturnsOneSetOfMany() {
         Set<DeliveryLocation> locations = customers.findLocationsByEmail("Maximilian@tests.openliberty.io");
 
@@ -1768,7 +1843,11 @@ public class DataJPATestServlet extends FATServlet {
      * orders by an attribute on the one side,
      * returning results from the one side.
      */
-    @Test
+    //@Test
+    // This test is currently incorrect because Issuer is an attribute of CreditCard (primary entity type), not Customer (result type).
+    // This would require a way to indicate that a projection is desired, meaning the return type indicates
+    // an attribute of the entity rather than the entity class itself.
+    // TODO Could this be achieved with @Select?
     public void testManyToOneMM11() {
         assertIterableEquals(List.of("MICHELLE@TESTS.OPENLIBERTY.IO",
                                      "Matthew@tests.openliberty.io",
@@ -1981,6 +2060,28 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository that has no primary entity class, and no lifecyle methods, but allows find operations
+     * for a mixture of different entity classes.
+     */
+    @Test
+    public void testMixedRepository() {
+
+        Business[] found = mixed.findByLocationAddressCity("Stewartville");
+        assertEquals(List.of("Geotek", "HALCON"),
+                     Stream.of(found)
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
+
+        LinkedList<Unpopulated> nothing = mixed.findBySomethingStartsWith("TestMixedRepository");
+        assertEquals(0, nothing.size());
+
+        assertEquals(List.of("Minnesota", "New York"),
+                     mixed.findByName("Rochester")
+                                     .map(c -> c.stateName)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
      * Use a custom join query so that a OneToMany association can query by attributes of the many side of the relationship.
      */
     @Test
@@ -1996,7 +2097,11 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Query that matches multiple entities and returns a combined collection of results across matches for the OneToMany association.
      */
-    @Test
+    //@Test
+    // This test is currently incorrect because Email is an attribute of Customer (primary entity type), not CreditCard (result type).
+    // This would require a way to indicate that a projection is desired, meaning the return type indicates
+    // an attribute of the entity rather than the entity class itself.
+    // TODO Could this be achieved with @Select?
     public void testOneToManyReturnsCombinedCollectionFromMany() {
 
         List<Long> cardNumbers = customers.findCardsByEmailEndsWith("an@tests.openliberty.io")
@@ -2014,7 +2119,12 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Query that matches a single entity and so returns one collection for a OneToMany association.
      */
-    @Test
+    //@Test
+    // Test is currently incorrect because the text expects to query on the Id of Customer (primary entity type),
+    // not the Id of CreditCard (result type).
+    // This would require a way to indicate that a projection is desired, meaning the return type indicates
+    // an attribute of the entity rather than the entity class itself.
+    // TODO Could this be achieved with @Select?
     public void testOneToManyReturnsOneSetOfMany() {
         Set<CreditCard> cards = customers.findCardsById(9210005);
 
@@ -2113,20 +2223,465 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Tests lifecycle methods returning a single record.
+     */
+    @Test
+    public void testRecordReturnedByLifecycleMethods() {
+        // Insert
+        Rebate r1 = new Rebate(1, 1.00, "TestRecordReturned-Customer1", //
+                        LocalTime.of(11, 31, 0), //
+                        LocalDate.of(2023, Month.OCTOBER, 16), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 16, 11, 32, 0), //
+                        null);
+        r1 = rebates.add(r1);
+        assertEquals(Integer.valueOf(1), r1.id());
+        assertEquals(1.00, r1.amount(), 0.001f);
+        assertEquals(LocalTime.of(11, 31, 0), r1.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 16), r1.purchaseMadeOn());
+        assertEquals(Rebate.Status.SUBMITTED, r1.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 16, 11, 32, 0), r1.updatedAt());
+        Integer initialVersion = r1.version();
+        assertNotNull(initialVersion);
+
+        // Update
+        r1 = new Rebate(r1.id(), r1.amount(), r1.customerId(), //
+                        r1.purchaseMadeAt(), //
+                        r1.purchaseMadeOn(), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 16, 11, 41, 0), //
+                        r1.version());
+        r1 = rebates.modify(r1);
+        assertEquals(Integer.valueOf(1), r1.id());
+        assertEquals(1.00, r1.amount(), 0.001f);
+        assertEquals(LocalTime.of(11, 31, 0), r1.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 16), r1.purchaseMadeOn());
+        assertEquals(Rebate.Status.VERIFIED, r1.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 16, 11, 41, 0), r1.updatedAt());
+        assertEquals(Integer.valueOf(initialVersion + 1), r1.version());
+
+        // Save
+        r1 = new Rebate(r1.id(), r1.amount(), r1.customerId(), //
+                        r1.purchaseMadeAt(), //
+                        r1.purchaseMadeOn(), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 16, 11, 44, 0), //
+                        r1.version());
+        r1 = rebates.process(r1);
+        assertEquals(Integer.valueOf(1), r1.id());
+        assertEquals(1.00, r1.amount(), 0.001f);
+        assertEquals(LocalTime.of(11, 31, 0), r1.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 16), r1.purchaseMadeOn());
+        assertEquals(Rebate.Status.PAID, r1.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 16, 11, 44, 0), r1.updatedAt());
+        assertEquals(Integer.valueOf(initialVersion + 2), r1.version());
+
+        // Delete
+        assertEquals(true, rebates.remove(r1));
+        // TODO allow entity return type on delete?
+        //r1 = rebates.remove(r1);
+        //assertEquals(Integer.valueOf(1), r1.id());
+        //assertEquals(1.00, r1.amount(), 0.001f);
+        //assertEquals(LocalTime.of(11, 31, 0), r1.purchaseMadeAt());
+        //assertEquals(LocalDate.of(2023, Month.OCTOBER, 16), r1.purchaseMadeOn());
+        //assertEquals(Rebate.Status.PAID, r1.status());
+        //assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 16, 11, 44, 0), r1.updatedAt());
+        //assertEquals(Integer.valueOf(initialVersion + 2), r1.version());
+    }
+
+    /**
+     * Tests lifecycle methods returning multiple records as an array.
+     */
+    @Test
+    public void testRecordsArrayReturnedByLifecycleMethods() {
+        // Insert
+        Rebate r2 = new Rebate(2, 2.00, "TestRecordsArrayReturned-Customer2", //
+                        LocalTime.of(8, 22, 0), //
+                        LocalDate.of(2023, Month.OCTOBER, 12), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 12, 8, 22, 0), //
+                        null);
+
+        Rebate r3 = new Rebate(3, 3.00, "TestRecordsArrayReturned-Customer3", //
+                        LocalTime.of(9, 33, 0), //
+                        LocalDate.of(2023, Month.OCTOBER, 13), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 13, 9, 33, 0), //
+                        null);
+
+        Rebate r4 = new Rebate(4, 4.00, "TestRecordsArrayReturned-Customer4", //
+                        LocalTime.of(7, 44, 0), //
+                        LocalDate.of(2023, Month.OCTOBER, 14), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 14, 7, 44, 0), //
+                        null);
+
+        // r5 is intentionally not inserted into the database yet so that we can test non-matching
+        Rebate r5 = new Rebate(5, 5.00, "TestRecordsArrayReturned-Customer5", //
+                        LocalTime.of(6, 55, 0), //
+                        LocalDate.of(2023, Month.OCTOBER, 15), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 15, 6, 55, 0), //
+                        null);
+
+        Rebate[] r = rebates.addAll(r4, r3, r2);
+        assertEquals(3, r.length);
+        r2 = r[2];
+        r3 = r[1];
+        r4 = r[0];
+
+        assertEquals(Integer.valueOf(2), r2.id());
+        assertEquals(2.00, r2.amount(), 0.001f);
+        assertEquals("TestRecordsArrayReturned-Customer2", r2.customerId());
+        assertEquals(LocalTime.of(8, 22, 0), r2.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 12), r2.purchaseMadeOn());
+        assertEquals(Rebate.Status.SUBMITTED, r2.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 12, 8, 22, 0), r2.updatedAt());
+        Integer r2_initialVersion = r2.version();
+        assertNotNull(r2_initialVersion);
+
+        assertEquals(Integer.valueOf(3), r3.id());
+        assertEquals("TestRecordsArrayReturned-Customer3", r3.customerId());
+        assertEquals(3.00, r3.amount(), 0.001f);
+        assertEquals(LocalTime.of(9, 33, 0), r3.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 13), r3.purchaseMadeOn());
+        assertEquals(Rebate.Status.SUBMITTED, r3.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 13, 9, 33, 0), r3.updatedAt());
+        Integer r3_initialVersion = r3.version();
+        assertNotNull(r3_initialVersion);
+
+        assertEquals(Integer.valueOf(4), r4.id());
+        assertEquals("TestRecordsArrayReturned-Customer4", r4.customerId());
+        assertEquals(4.00, r4.amount(), 0.001f);
+        assertEquals(LocalTime.of(7, 44, 0), r4.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 14), r4.purchaseMadeOn());
+        assertEquals(Rebate.Status.SUBMITTED, r4.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 14, 7, 44, 0), r4.updatedAt());
+        Integer r4_initialVersion = r4.version();
+        assertNotNull(r4_initialVersion);
+
+        // Update
+        r2 = new Rebate(r2.id(), r2.amount(), r2.customerId(), //
+                        r2.purchaseMadeAt(), //
+                        r2.purchaseMadeOn(), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 17, 8, 45, 0), //
+                        r2.version());
+
+        r4 = new Rebate(r4.id(), r4.amount(), r4.customerId(), //
+                        r4.purchaseMadeAt(), //
+                        r4.purchaseMadeOn(), //
+                        Rebate.Status.DENIED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 17, 8, 47, 0), //
+                        r4.version());
+
+        r = rebates.modifyAll(r2, r5, r4);
+
+        assertEquals(2, r.length);
+        Rebate r4_old = r4;
+        r2 = r[0];
+        r4 = r[1];
+
+        assertEquals(Integer.valueOf(2), r2.id());
+        assertEquals("TestRecordsArrayReturned-Customer2", r2.customerId());
+        assertEquals(2.00, r2.amount(), 0.001f);
+        assertEquals(LocalTime.of(8, 22, 0), r2.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 12), r2.purchaseMadeOn());
+        assertEquals(Rebate.Status.VERIFIED, r2.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 17, 8, 45, 0), r2.updatedAt());
+        assertEquals(Integer.valueOf(r2_initialVersion + 1), r2.version());
+
+        assertEquals(Integer.valueOf(4), r4.id());
+        assertEquals("TestRecordsArrayReturned-Customer4", r4.customerId());
+        assertEquals(4.00, r4.amount(), 0.001f);
+        assertEquals(LocalTime.of(7, 44, 0), r4.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 14), r4.purchaseMadeOn());
+        assertEquals(Rebate.Status.DENIED, r4.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 17, 8, 47, 0), r4.updatedAt());
+        assertEquals(Integer.valueOf(r4_initialVersion + 1), r4.version());
+
+        // Save
+
+        r2 = new Rebate(r2.id(), r2.amount(), r2.customerId(), //
+                        r2.purchaseMadeAt(), //
+                        r2.purchaseMadeOn(), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 22, 10, 28, 0), //
+                        r2.version()); // valid update
+
+        r3 = new Rebate(r3.id(), r3.amount(), r3.customerId(), //
+                        r3.purchaseMadeAt(), //
+                        r3.purchaseMadeOn(), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 22, 10, 36, 0), //
+                        r3.version()); // valid update
+
+        r = rebates.processAll(r5, r3, r2); // new, update, update
+
+        assertEquals(3, r.length);
+        r5 = r[0];
+        r3 = r[1];
+        r2 = r[2];
+
+        assertEquals(Integer.valueOf(2), r2.id());
+        assertEquals("TestRecordsArrayReturned-Customer2", r2.customerId());
+        assertEquals(2.00, r2.amount(), 0.001f);
+        assertEquals(LocalTime.of(8, 22, 0), r2.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 12), r2.purchaseMadeOn());
+        assertEquals(Rebate.Status.PAID, r2.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 22, 10, 28, 0), r2.updatedAt());
+        assertEquals(Integer.valueOf(r2_initialVersion + 2), r2.version());
+
+        assertEquals(Integer.valueOf(3), r3.id());
+        assertEquals("TestRecordsArrayReturned-Customer3", r3.customerId());
+        assertEquals(3.00, r3.amount(), 0.001f);
+        assertEquals(LocalTime.of(9, 33, 0), r3.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 13), r3.purchaseMadeOn());
+        assertEquals(Rebate.Status.VERIFIED, r3.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 22, 10, 36, 0), r3.updatedAt());
+        assertEquals(Integer.valueOf(r3_initialVersion + 1), r3.version());
+
+        assertEquals(Integer.valueOf(5), r5.id());
+        assertEquals("TestRecordsArrayReturned-Customer5", r5.customerId());
+        assertEquals(5.00, r5.amount(), 0.001f);
+        assertEquals(LocalTime.of(6, 55, 0), r5.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 15), r5.purchaseMadeOn());
+        assertEquals(Rebate.Status.SUBMITTED, r5.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 15, 6, 55, 0), r5.updatedAt());
+        assertNotNull(r5.version());
+
+        Rebate r4_nonMatching = new Rebate(r4_old.id(), r4_old.amount(), r4_old.customerId(), //
+                        r4_old.purchaseMadeAt(), //
+                        r4_old.purchaseMadeOn(), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 22, 10, 49, 0), //
+                        r4_old.version()); // invalid update due to old version
+
+        try {
+            r = rebates.processAll(r4_nonMatching);
+            fail("Did not raise OptimisticLockingFailureException when saving a record with an old version. Instead: " +
+                 Arrays.toString(r));
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
+
+        // Delete
+        assertEquals(2, rebates.removeAll(r4_old, r3, r2));
+        assertEquals(2, rebates.removeAll(r2, r3, r4, r5));
+        assertEquals(0, rebates.removeAll(r2, r5));
+        // TODO allow entity return type on delete?
+    }
+
+    /**
+     * Tests lifecycle methods returning multiple records as various types of Iterable.
+     */
+    @Test
+    public void testRecordsIterableReturnedByLifecycleMethods() {
+        // Insert
+        Rebate r6 = new Rebate(6, 6.00, "TestRecordsIterableReturned-Customer6", //
+                        LocalTime.of(6, 36, 0), //
+                        LocalDate.of(2023, Month.OCTOBER, 16), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 16, 6, 36, 0), //
+                        null);
+
+        Rebate r7 = new Rebate(7, 7.00, "TestRecordsIterableReturned-Customer7", //
+                        LocalTime.of(7, 37, 0), //
+                        LocalDate.of(2023, Month.OCTOBER, 17), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 17, 7, 37, 0), //
+                        null);
+
+        Rebate r8 = new Rebate(8, 8.00, "TestRecordsIterableReturned-Customer8", //
+                        LocalTime.of(8, 38, 0), //
+                        LocalDate.of(2023, Month.OCTOBER, 18), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 18, 8, 38, 0), //
+                        null);
+
+        // r9 is intentionally not inserted into the database yet so that we can test non-matching
+        Rebate r9 = new Rebate(9, 9.00, "TestRecordsIterableReturned-Customer9", //
+                        LocalTime.of(9, 39, 0), //
+                        LocalDate.of(2023, Month.OCTOBER, 19), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 19, 9, 39, 0), //
+                        null);
+
+        Iterator<Rebate> it = rebates.addMultiple(List.of(r6, r7, r8)).iterator();
+
+        assertEquals(true, it.hasNext());
+        r6 = it.next();
+        assertEquals(Integer.valueOf(6), r6.id());
+        assertEquals(6.00, r6.amount(), 0.001f);
+        assertEquals("TestRecordsIterableReturned-Customer6", r6.customerId());
+        assertEquals(LocalTime.of(6, 36, 0), r6.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 16), r6.purchaseMadeOn());
+        assertEquals(Rebate.Status.SUBMITTED, r6.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 16, 6, 36, 0), r6.updatedAt());
+        Integer r6_initialVersion = r6.version();
+        assertNotNull(r6_initialVersion);
+
+        assertEquals(true, it.hasNext());
+        r7 = it.next();
+        assertEquals(Integer.valueOf(7), r7.id());
+        assertEquals("TestRecordsIterableReturned-Customer7", r7.customerId());
+        assertEquals(7.00, r7.amount(), 0.001f);
+        assertEquals(LocalTime.of(7, 37, 0), r7.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 17), r7.purchaseMadeOn());
+        assertEquals(Rebate.Status.SUBMITTED, r7.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 17, 7, 37, 0), r7.updatedAt());
+        Integer r7_initialVersion = r7.version();
+        assertNotNull(r7_initialVersion);
+
+        assertEquals(true, it.hasNext());
+        r8 = it.next();
+        assertEquals(Integer.valueOf(8), r8.id());
+        assertEquals("TestRecordsIterableReturned-Customer8", r8.customerId());
+        assertEquals(8.00, r8.amount(), 0.001f);
+        assertEquals(LocalTime.of(8, 38, 0), r8.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 18), r8.purchaseMadeOn());
+        assertEquals(Rebate.Status.SUBMITTED, r8.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 18, 8, 38, 0), r8.updatedAt());
+        Integer r8_initialVersion = r8.version();
+        assertNotNull(r8_initialVersion);
+
+        assertEquals(false, it.hasNext());
+
+        // Save
+        r6 = new Rebate(r6.id(), r6.amount(), r6.customerId(), //
+                        r6.purchaseMadeAt(), //
+                        r6.purchaseMadeOn(), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 26, 6, 46, 0), //
+                        r6.version());
+
+        r8 = new Rebate(r8.id(), r8.amount(), r8.customerId(), //
+                        r8.purchaseMadeAt(), //
+                        r8.purchaseMadeOn(), //
+                        Rebate.Status.DENIED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 28, 8, 48, 0), //
+                        r8.version());
+
+        Collection<Rebate> collection = rebates.processMultiple(List.of(r6, r8, r9)); // update, update, new
+        it = collection.iterator();
+
+        assertEquals(true, it.hasNext());
+        r6 = it.next();
+        assertEquals(Integer.valueOf(6), r6.id());
+        assertEquals("TestRecordsIterableReturned-Customer6", r6.customerId());
+        assertEquals(6.00, r6.amount(), 0.001f);
+        assertEquals(LocalTime.of(6, 36, 0), r6.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 16), r6.purchaseMadeOn());
+        assertEquals(Rebate.Status.VERIFIED, r6.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 26, 6, 46, 0), r6.updatedAt());
+        assertEquals(Integer.valueOf(r6_initialVersion + 1), r6.version());
+
+        assertEquals(true, it.hasNext());
+        Rebate r8_old = r8;
+        r8 = it.next();
+        assertEquals(Integer.valueOf(8), r8.id());
+        assertEquals("TestRecordsIterableReturned-Customer8", r8.customerId());
+        assertEquals(8.00, r8.amount(), 0.001f);
+        assertEquals(LocalTime.of(8, 38, 0), r8.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 18), r8.purchaseMadeOn());
+        assertEquals(Rebate.Status.DENIED, r8.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 28, 8, 48, 0), r8.updatedAt());
+        assertEquals(Integer.valueOf(r8_initialVersion + 1), r8.version());
+
+        assertEquals(true, it.hasNext());
+        r9 = it.next();
+        assertEquals(Integer.valueOf(9), r9.id());
+        assertEquals("TestRecordsIterableReturned-Customer9", r9.customerId());
+        assertEquals(9.00, r9.amount(), 0.001f);
+        assertEquals(LocalTime.of(9, 39, 0), r9.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 19), r9.purchaseMadeOn());
+        assertEquals(Rebate.Status.SUBMITTED, r9.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 19, 9, 39, 0), r9.updatedAt());
+        assertNotNull(r9.version());
+
+        assertEquals(false, it.hasNext());
+
+        // Update
+
+        r6 = new Rebate(r6.id(), r6.amount(), r6.customerId(), //
+                        r6.purchaseMadeAt(), //
+                        r6.purchaseMadeOn(), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 30, 12, 56, 0), //
+                        r6.version()); // valid update
+
+        r7 = new Rebate(r7.id(), r7.amount(), r7.customerId(), //
+                        r7.purchaseMadeAt(), //
+                        r7.purchaseMadeOn(), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 30, 12, 57, 0), //
+                        r7.version()); // valid update
+
+        Rebate r8_nonMatching = new Rebate(r8_old.id(), r8_old.amount(), r8_old.customerId(), //
+                        r8_old.purchaseMadeAt(), //
+                        r8_old.purchaseMadeOn(), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2023, Month.OCTOBER, 30, 12, 58, 0), //
+                        r8_old.version()); // invalid update due to old version
+
+        List<Rebate> list = rebates.modifyMultiple(List.of(r7, r8_nonMatching, r6));
+
+        assertEquals(2, list.size());
+        r7 = list.get(0);
+        r6 = list.get(1);
+
+        assertEquals(Integer.valueOf(7), r7.id());
+        assertEquals("TestRecordsIterableReturned-Customer7", r7.customerId());
+        assertEquals(7.00, r7.amount(), 0.001f);
+        assertEquals(LocalTime.of(7, 37, 0), r7.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 17), r7.purchaseMadeOn());
+        assertEquals(Rebate.Status.VERIFIED, r7.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 30, 12, 57, 0), r7.updatedAt());
+        assertEquals(Integer.valueOf(r7_initialVersion + 1), r7.version());
+
+        assertEquals(Integer.valueOf(6), r6.id());
+        assertEquals("TestRecordsIterableReturned-Customer6", r6.customerId());
+        assertEquals(6.00, r6.amount(), 0.001f);
+        assertEquals(LocalTime.of(6, 36, 0), r6.purchaseMadeAt());
+        assertEquals(LocalDate.of(2023, Month.OCTOBER, 16), r6.purchaseMadeOn());
+        assertEquals(Rebate.Status.PAID, r6.status());
+        assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 30, 12, 56, 0), r6.updatedAt());
+        assertEquals(Integer.valueOf(r6_initialVersion + 2), r6.version());
+
+        // Delete
+        assertEquals(3, rebates.removeMultiple(new ArrayList<>(List.of(r9, r8_old, r7, r6))));
+        assertEquals(1, rebates.removeMultiple(new ArrayList<>(List.of(r6, r7, r8))));
+        assertEquals(0, rebates.removeMultiple(new ArrayList<>(List.of(r9, r7))));
+        // TODO allow entity return type on delete?
+    }
+
+    /**
      * Tests direct usage of StaticMetamodel auto-populated fields.
      */
     @Test
     public void testStaticMetamodel() {
-        assertEquals("name", CityAttrNames1.name);
-        assertEquals("population", CityAttrNames1.population);
-        assertEquals("stateName", CityAttrNames1.stateName);
+        assertEquals("name", CityAttrNames1.name.name());
+        assertEquals(Sort.asc("population"), CityAttrNames1.population.asc());
+        assertEquals(Sort.ascIgnoreCase("stateName"), CityAttrNames1.stateName.ascIgnoreCase());
 
-        assertEquals("areaCodes", CityAttrNames2.areaCodes);
-        assertEquals("changeCount", CityAttrNames2.changeCount);
-        assertEquals(null, CityAttrNames2.id);
-        assertEquals("do-not-replace", CityAttrNames2.ignore);
+        assertEquals("areaCodes", CityAttrNames2.areaCodes.name());
+        assertEquals(Sort.desc("changeCount"), CityAttrNames2.changeCount.desc());
         assertEquals(0L, CityAttrNames2.population);
-        assertEquals("do-not-replace-final", CityAttrNames2.name);
+        assertEquals(null, CityAttrNames2.name);
+
+        try {
+            String name = CityAttrNames2.id.name();
+            fail("Metamodel should not initialize an id field when the entity has a compound unique identifier (IdClass): " + name);
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            Sort sort = CityAttrNames2.ignore.asc();
+            fail("Metamodel should not initialize fields that do not correspond to entity attributes: " + sort);
+        } catch (MappingException x) {
+            // expected
+        }
     }
 
     /**
@@ -2134,9 +2689,21 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testStaticMetamodelIgnoresNonJPAEntity() {
-        assertEquals(null, EntityModelUnknown_.days);
-        assertEquals(null, EntityModelUnknown_.months);
-        assertEquals("do-not-replace-this", EntityModelUnknown_.years);
+        try {
+            Sort sort = EntityModelUnknown_.days.desc();
+            fail("Metamodel should not initialize fields for a non-entity or unrecognized entity: " + sort);
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            String name = EntityModelUnknown_.months.name();
+            fail("Metamodel should not initialize fields for a non-entity or unrecognized entity: " + name);
+        } catch (MappingException x) {
+            // expected
+        }
+
+        assertEquals(null, EntityModelUnknown_.years);
     }
 
     /**
@@ -2415,6 +2982,195 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Test that a method that is annotated with the Update annotation can return entity results,
+     * and the resulting entities match the updated values that were written to the database.
+     */
+    @Test
+    public void testUpdateWithEntityResults() {
+        orders.deleteAll();
+
+        Order o1 = new Order();
+        o1.purchasedBy = "testUpdateWithEntityResults-Customer1";
+        o1.purchasedOn = OffsetDateTime.now();
+        o1.total = 1.00f;
+        o1 = orders.create(o1);
+
+        Order o2 = new Order();
+        o2.purchasedBy = "testUpdateWithEntityResults-Customer2";
+        o2.purchasedOn = OffsetDateTime.now();
+        o2.total = 2.00f;
+        o2 = orders.create(o2);
+
+        Order o3 = new Order();
+        o3.purchasedBy = "testUpdateWithEntityResults-Customer3";
+        o3.purchasedOn = OffsetDateTime.now();
+        o3.total = 3.00f;
+        o3 = orders.create(o3);
+
+        Order o4 = new Order();
+        o4.purchasedBy = "testUpdateWithEntityResults-Customer4";
+        o4.purchasedOn = OffsetDateTime.now();
+        o4.total = 4.00f;
+        o4 = orders.create(o4);
+
+        Order o5 = new Order();
+        o5.purchasedBy = "testUpdateWithEntityResults-Customer5";
+        o5.purchasedOn = OffsetDateTime.now();
+        o5.total = 5.00f;
+        o5 = orders.create(o5);
+
+        Order o6 = new Order();
+        o6.purchasedBy = "testUpdateWithEntityResults-Customer6";
+        o6.purchasedOn = OffsetDateTime.now();
+        o6.total = 6.00f;
+        // o6 is intentionally not written to the database so that it will not be found for update
+
+        int o1_initialVersion = o1.versionNum;
+        int o2_initialVersion = o2.versionNum;
+        int o3_initialVersion = o3.versionNum;
+        int o4_initialVersion = o4.versionNum;
+        int o5_initialVersion = o5.versionNum;
+
+        // update multiple in a variable arguments array
+        o1.total = 1.01f;
+        o3.total = 3.01f;
+        Order[] modified = orders.modifyAll(o3, o1);
+        assertEquals("testUpdateWithEntityResults-Customer3", modified[0].purchasedBy);
+        assertEquals(3.01f, modified[0].total, 0.001f);
+        assertEquals(o3_initialVersion + 1, modified[0].versionNum);
+        // o3 is intentionally left at its original version so that it will not be found for update
+
+        o1 = modified[1];
+        assertEquals("testUpdateWithEntityResults-Customer1", o1.purchasedBy);
+        assertEquals(1.01f, o1.total, 0.001f);
+        assertEquals(o1_initialVersion + 1, o1.versionNum);
+
+        // update multiple in an Iterable where the first entity is non-matching due to its version
+        o1.total = 1.02f;
+        o3.versionNum = o3_initialVersion;
+        o3.total = 3.02f;
+        o5.total = 5.02f;
+        Vector<Order> results = orders.modifyMultiple(List.of(o3, o5, o1));
+        assertEquals(2, results.size());
+
+        o5 = results.get(0);
+        assertEquals("testUpdateWithEntityResults-Customer5", o5.purchasedBy);
+        assertEquals(5.02f, o5.total, 0.001f);
+        assertEquals(o5_initialVersion + 1, o5.versionNum);
+
+        o1 = results.get(1);
+        assertEquals("testUpdateWithEntityResults-Customer1", o1.purchasedBy);
+        assertEquals(1.02f, o1.total, 0.001f);
+        assertEquals(o1_initialVersion + 2, o1.versionNum);
+
+        // update multiple in a variable arguments array where the second entry is not found in the database
+        o2.total = 2.03f;
+        o4.total = 4.03f;
+        o5.total = 5.03f;
+        o6.total = 6.03f;
+        modified = orders.modifyAll(o5, o6, o4, o2);
+        assertEquals(3, modified.length);
+
+        o5 = modified[0];
+        assertEquals("testUpdateWithEntityResults-Customer5", o5.purchasedBy);
+        assertEquals(5.03f, o5.total, 0.001f);
+        assertEquals(o5_initialVersion + 2, o5.versionNum);
+
+        o4 = modified[1];
+        assertEquals("testUpdateWithEntityResults-Customer4", o4.purchasedBy);
+        assertEquals(4.03f, o4.total, 0.001f);
+        assertEquals(o4_initialVersion + 1, o4.versionNum);
+
+        o2 = modified[2];
+        assertEquals("testUpdateWithEntityResults-Customer2", o2.purchasedBy);
+        assertEquals(2.03f, o2.total, 0.001f);
+        assertEquals(o1_initialVersion + 1, o2.versionNum);
+
+        // update returning one entity
+        o4.total = 4.04f;
+        o4 = orders.modifyOne(o4);
+        assertEquals("testUpdateWithEntityResults-Customer4", o4.purchasedBy);
+        assertEquals(4.04f, o4.total, 0.001f);
+        assertEquals(o4_initialVersion + 2, o4.versionNum);
+
+        // update where no entities match, returning empty array
+        modified = orders.modifyAll(o3, o6);
+        assertEquals(0, modified.length);
+
+        // update where no entities match, returning empty iterable
+        results = orders.modifyMultiple(List.of(o6, o3));
+        assertEquals(true, results.isEmpty());
+
+        // update where the only entity does not match, returning null
+        assertEquals(null, orders.modifyOne(o6));
+
+        // update where the only entity does not match, returning an empty optional
+        assertEquals(false, orders.modifyIfMatching(o3).isPresent());
+    }
+
+    /**
+     * Test that @Delete requires the entity to exist with the same version as the database for successful removal.
+     */
+    @Test
+    public void testVersionedDelete() {
+        orders.deleteAll();
+
+        Order o1 = new Order();
+        o1.purchasedBy = "testVersionedDelete-Customer1";
+        o1.purchasedOn = OffsetDateTime.now();
+        o1.total = 1.09f;
+        assertEquals(0, orders.cancel(o1)); // doesn't exist yet
+
+        o1 = orders.create(o1);
+
+        int oldVersion = o1.versionNum;
+
+        o1.total = 1.19f;
+        assertEquals(true, orders.modify(o1));
+
+        o1 = orders.findById(o1.id).orElseThrow();
+        int newVersion = o1.versionNum;
+        Long id = o1.id;
+
+        // Attempt deletion at old version
+        o1 = new Order();
+        o1.id = id;
+        o1.purchasedBy = "testVersionedDelete-Customer1";
+        o1.purchasedOn = OffsetDateTime.now();
+        o1.total = 1.19f;
+        o1.versionNum = oldVersion;
+        assertEquals(0, orders.cancel(o1));
+
+        Order o2 = new Order();
+        o2.purchasedBy = "testVersionedDelete-Customer2";
+        o2.purchasedOn = OffsetDateTime.now();
+        o2.total = 2.09f;
+
+        Order o3 = new Order();
+        o3.purchasedBy = "testVersionedDelete-Customer3";
+        o3.purchasedOn = OffsetDateTime.now();
+        o3.total = 3.09f;
+
+        LinkedList<Order> created = orders.create(List.of(o2, o3));
+        o2 = created.get(0);
+        o3 = created.get(1);
+
+        // Attempt deletion at correct version
+        o1.versionNum = newVersion;
+        assertEquals(2, orders.cancel(o1, o2));
+
+        // Entities o1 and o2 should no longer be in the database:
+        assertEquals(0, orders.cancel(o1, o2));
+
+        // Entity o3 should still be there:
+        o3 = orders.findById(o3.id).orElseThrow();
+        assertEquals(3.09f, o3.total, 0.001f);
+
+        // Deletion where only 1 is found:
+        assertEquals(1, orders.cancel(o1, o3, o2));
+    }
+
+    /**
      * Test that remove(entity) requires the entity to be at the same version as the database for successful removal.
      * This tests covers an entity type with an IdClass.
      */
@@ -2433,5 +3189,50 @@ public class DataJPATestServlet extends FATServlet {
 
         duluth.changeCount = newVersion;
         assertEquals(true, cities.remove(duluth));
+    }
+
+    /**
+     * Test that @Update requires the entity to exist with the same version as the database for successful update.
+     * This tests covers an entity type with an IdClass.
+     */
+    @Test
+    public void testVersionedUpdate() {
+        orders.deleteAll();
+
+        Order o1 = new Order();
+        o1.purchasedBy = "testVersionedUpdate-Customer1";
+        o1.purchasedOn = OffsetDateTime.now();
+        o1.total = 10.09f;
+        assertEquals(false, orders.modify(o1)); // doesn't exist yet
+
+        o1 = orders.create(o1);
+
+        int oldVersion = o1.versionNum;
+
+        o1.total = 10.19f;
+        assertEquals(true, orders.modify(o1));
+
+        o1 = orders.findById(o1.id).orElseThrow();
+        assertEquals(10.19f, o1.total, 0.001f);
+        int newVersion = o1.versionNum;
+        Long id = o1.id;
+
+        o1 = new Order();
+        o1.id = id;
+        o1.purchasedBy = "testVersionedUpdate-Customer1";
+        o1.purchasedOn = OffsetDateTime.now();
+        o1.total = 10.29f;
+        o1.versionNum = oldVersion;
+        assertEquals(false, orders.update(o1));
+
+        o1.versionNum = newVersion;
+        assertEquals(true, orders.update(o1));
+        o1 = orders.findById(o1.id).orElseThrow();
+        assertEquals(10.29f, o1.total, 0.001f);
+
+        orders.delete(o1);
+
+        o1.total = 10.39f;
+        assertEquals(false, orders.modify(o1)); // doesn't exist anymore
     }
 }

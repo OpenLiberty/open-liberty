@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -60,6 +60,7 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
     public static final String KeyMismatch = "KeyMismatch";
     protected final static MPJwtAppSetupUtils baseSetupUtils = new MPJwtAppSetupUtils();
     private static ServerFileUtils fatUtils = new ServerFileUtils();
+    protected static String mpConfigExtension = "mpConfig-3.1";
 
     public static enum MPConfigLocation {
         IN_APP, SYSTEM_PROP, ENV_VAR
@@ -116,7 +117,13 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
     }
 
     protected static void startRSServerForMPTests(LibertyServer server, String configFile) throws Exception {
-        fatUtils.updateFeatureFiles(server, setActionInstance(RepeatTestFilter.getRepeatActionsAsString()), "mpConfigFeatures", "rsFeatures");
+
+        String extension = "";
+        if (RepeatTestFilter.getRepeatActionsAsString().contains(mpConfigExtension)) {
+            extension = "_" + mpConfigExtension;
+        }
+        fatUtils.updateFeatureFiles(server, setActionInstance(RepeatTestFilter.getRepeatActionsAsString()) + extension, "mpConfigFeatures");
+        fatUtils.updateFeatureFiles(server, setActionInstance(RepeatTestFilter.getRepeatActionsAsString()), "rsFeatures");
 
         serverTracker.addServer(server);
         transformApps(server);

@@ -119,7 +119,7 @@ public class DatabaseContainerFactory {
                     acceptDB2License.invoke(cont);
                     //Add startup timeout since DB2 tends to take longer than the default 3 minutes on build machines.
                     Method withStartupTimeoutDB2 = cont.getClass().getMethod("withStartupTimeout", Duration.class);
-                    withStartupTimeoutDB2.invoke(cont, Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN && !FATRunner.ARM_ARCHITECTURE ? 5 : 15));
+                    withStartupTimeoutDB2.invoke(cont, getContainerTimeout(5, 15));
                     break;
                 case Derby:
                     break;
@@ -131,7 +131,7 @@ public class DatabaseContainerFactory {
                     usingSid.invoke(cont);
                     //Add startup timeout since Oracle tends to take longer than the default 3 minutes on build machines.
                     Method withStartupTimeoutOracle = cont.getClass().getMethod("withStartupTimeout", Duration.class);
-                    withStartupTimeoutOracle.invoke(cont, Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25));
+                    withStartupTimeoutOracle.invoke(cont, getContainerTimeout(3, 25));
                     break;
                 case Postgres:
                     //This allows postgres by default to participate in XA transactions (2PC).
@@ -185,6 +185,23 @@ public class DatabaseContainerFactory {
             Log.warning(c, "MISSING: " + type + " JDBC driver not in location: " + temp.getAbsolutePath());
         }
 
+        return result;
+    }
+
+    /**
+     * Creates a container timeout duration (in minutes) based on where the test is being run.
+     *
+     * @param  fastTimeout - For fast systems: typically your local system
+     * @param  slowTimeout - For slow systems: typically our build systems
+     *
+     * @return             The timeout duration
+     */
+    private static Duration getContainerTimeout(int fastTimeout, int slowTimeout) {
+        boolean isFast = FATRunner.FAT_TEST_LOCALRUN && !FATRunner.ARM_ARCHITECTURE;
+        Duration result = Duration.ofMinutes(isFast ? fastTimeout : slowTimeout);
+        Log.info(c, "getContainerTimeout", "Returning container timeout of " + result.toMinutes() + " minutes, because"
+                                           + " FAT_TEST_LOCALRUN = " + FATRunner.FAT_TEST_LOCALRUN + " and"
+                                           + " ARM_ARCHITECTURE = " + FATRunner.ARM_ARCHITECTURE);
         return result;
     }
 }

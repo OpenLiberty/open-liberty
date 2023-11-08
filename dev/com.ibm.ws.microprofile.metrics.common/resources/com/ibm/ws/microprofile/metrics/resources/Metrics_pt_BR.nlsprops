@@ -110,6 +110,9 @@ memory.committedHeap.description=Exibe a quantia de mem\u00f3ria em bytes confir
 #Memory maxHeap message
 memory.maxHeap.description=Exibe a quantia m\u00e1xima de mem\u00f3ria heap em bytes que pode ser usada para o gerenciamento de mem\u00f3ria. Esse atributo exibir\u00e1 -1, se o tamanho m\u00e1ximo da mem\u00f3ria heap for indefinido. N\u00e3o \u00e9 garantido que essa quantia de mem\u00f3ria estar\u00e1 dispon\u00edvel para gerenciamento de mem\u00f3ria se for maior que a quantia de mem\u00f3ria confirmada. A Java virtual machine poder\u00e1 falhar ao alocar mem\u00f3ria, mesmo se a quantia de mem\u00f3ria usada n\u00e3o exceder esse tamanho m\u00e1ximo.
 
+#Memory heapUtilization message
+memory.heapUtilization.description=A parte da mem\u00f3ria de heap m\u00e1xima que est\u00e1 atualmente em uso Essa m\u00e9trica exibir\u00e1 -1 se o tamanho m\u00e1ximo de mem\u00f3ria heap for indefinido.
+
 #Jvm uptime message
 jvm.uptime.description=Exibe o hor\u00e1rio de in\u00edcio da Java virtual machine em milissegundos. Esse atributo exibe o tempo aproximado em que a Java virtual machine foi iniciada.
 
@@ -143,11 +146,17 @@ cpu.processCpuLoad.description=Exibe o 'uso de CPU recente' para o processo da J
 #Cpu processCpuTime message
 cpu.processCpuTime.description=Exibe o tempo de CPU usado pelo processo no qual a Java virtual machine est\u00e1 em execu\u00e7\u00e3o.
 
+#Cpu processCpuUtilization message
+cpu.processCpuUtilization.description=O tempo de CPU recente que \u00e9 usado pelo processo da JVM de todos os processadores que est\u00e3o dispon\u00edveis para a JVM.
+
 #Garbage collection count message
 garbageCollectionCount.description=Exibe o n\u00famero total de coletas ocorridas. Esse atributo listar\u00e1 -1 se a contagem de coletas for indefinida para esse coletor.
 
 #Garbage collection time message
 garbageCollectionTime.description=Exibe o tempo decorrido aproximado acumulado da coleta em milissegundos. Esse atributo exibir\u00e1 -1 se o tempo decorrido da coleta for indefinido para esse coletor. A implementa\u00e7\u00e3o da Java virtual machine pode usar um cron\u00f4metro de alta resolu\u00e7\u00e3o para medir o tempo decorrido. Esse atributo poder\u00e1 exibir o mesmo valor, mesmo se a contagem de coleta tiver sido incrementada se o tempo decorrido de coleta for muito curto.
+
+#Garbage collection time per garbage collection cycle message
+gc.time.per.cycle.description=O tempo m\u00e9dio recente gasto por ciclo de coleta de lixo Essa m\u00e9trica exibir\u00e1 -1 se o tempo decorrido ou a contagem de coleta de lixo estiver indefinido para esse coletor...
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
@@ -157,6 +166,7 @@ threadpool.size.description=O tamanho do conjunto de encadeamentos.
 
 servlet.request.total.description=O n\u00famero de visitas a esse servlet desde o in\u00edcio do servidor.
 servlet.responseTime.total.description=O tempo total de resposta desse servlet desde o in\u00edcio do servidor.
+servlet.request.elapsedTime.per.request.description=A m\u00e9dia recente de tempo de resposta decorrido por solicita\u00e7\u00e3o do servlet
 
 connectionpool.create.total.description=O n\u00famero total de conex\u00f5es gerenciadas criadas desde a cria\u00e7\u00e3o do conjunto.
 connectionpool.destroy.total.description=O n\u00famero total de conex\u00f5es gerenciadas eliminadas desde a cria\u00e7\u00e3o do conjunto.
@@ -167,6 +177,8 @@ connectionpool.waitTime.total.description=O tempo de espera total em todas as so
 connectionpool.inUseTime.total.description=O tempo total em que todas as conex\u00f5es est\u00e3o em uso desde o in\u00edcio do servidor.
 connectionpool.usedConnections.total.description=O n\u00famero total de solicita\u00e7\u00f5es de conex\u00e3o que aguardaram devido a um conjunto de conex\u00f5es cheio ou que n\u00e3o precisaram aguardar desde o in\u00edcio do servidor. Quaisquer conex\u00f5es que est\u00e3o em uso atualmente n\u00e3o est\u00e3o inclu\u00eddas neste total.
 connectionpool.queuedRequests.total.description=O n\u00famero total de solicita\u00e7\u00f5es de conex\u00e3o que tiveram que aguardar por uma conex\u00e3o devido a um conjunto de conex\u00f5es cheio desde o in\u00edcio do servidor.
+connectionpool.inUseTime.per.usedConnection.description=O tempo m\u00e9dio recente em que as conex\u00f5es est\u00e3o em uso
+connectionpool.waitTime.per.queuedRequest.description=O tempo m\u00e9dio de espera recente para as solicita\u00e7\u00f5es de conex\u00e3o enfileirada
 
 session.create.total.description=O n\u00famero de sess\u00f5es que efetuaram login desde que essa m\u00e9trica foi ativada.
 session.liveSessions.description=O n\u00famero de usu\u00e1rios conectados atualmente.
@@ -188,6 +200,7 @@ grpc.client.responseTime.total.description=O tempo total de respostas de RPCs co
 
 REST.request.description=O n\u00famero de chamadas e o tempo total de resposta deste m\u00e9todo de recurso RESTful desde o in\u00edcio do servidor. A m\u00e9trica n\u00e3o registrar\u00e1 o tempo decorrido nem a contagem de uma solicita\u00e7\u00e3o REST se ela resultar em uma exce\u00e7\u00e3o n\u00e3o mapeada. Tamb\u00e9m rastreia a dura\u00e7\u00e3o de tempo mais alta registrada dentro do minuto completo anterior conclu\u00eddo e a dura\u00e7\u00e3o de tempo mais baixa registrada dentro do minuto completo anterior conclu\u00eddo.
 REST.request.unmappedException.description=O n\u00famero total de exce\u00e7\u00f5es n\u00e3o mapeadas que ocorrem a partir deste m\u00e9todo de recurso RESTful desde o in\u00edcio do servidor.
+REST.request.elapsedTime.per.request.description: A m\u00e9dia recente do tempo de resposta decorrido por solicita\u00e7\u00e3o do m\u00e9todo de recurso RESTful
 
 requestTiming.requestCount.description=O n\u00famero de solicita\u00e7\u00f5es do servlet desde que o servidor foi iniciado.
 requestTiming.activeRequestCount.description=O n\u00famero de solicita\u00e7\u00f5es do servlet que est\u00e3o em execu\u00e7\u00e3o no momento.

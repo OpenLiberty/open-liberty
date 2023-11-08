@@ -60,7 +60,7 @@ public class WSATRequestHandler {
     private RegisterResponseType doRegister(Map<String, String> wsatProperties, String protocolId, EndpointReferenceType participant, String txID,
                                             String recoveryID) throws Throwable {
         String errorStr = null;
-        Protocol service = WSATOSGIService.getInstance().getProtocolService();
+        Protocol service = WSCoorUtil.getProtocolService();
         EndpointReferenceType coordinator = null;
         if (txID == null) {
             errorStr = "txID is NULL";
@@ -119,7 +119,7 @@ public class WSATRequestHandler {
     }
 
     public void handleFaultRequest(QName faultcode, String faultstring, String faultactor, Detail detail) throws WSATException {
-        WSATOSGIService.getInstance().getHandlerService().handleClientFault();
+        WSCoorUtil.getHandlerService().handleClientFault();
     }
 
     public void handleParticipantPrepareRequest(Notification parameters, WebServiceContext ctx) throws WSATException {

@@ -40,14 +40,18 @@ Service-Component: \
 Include-Resource: \
   META-INF=resources/META-INF
 
-Private-Package: io.openliberty.microprofile.config.internal.extension,io.openliberty.io.smallrye.config.resources.*
+Private-Package: io.openliberty.microprofile.config.internal.extension
+
+Import-Package: \
+        io.openliberty.microprofile.config.internal.common.resources, \
+        *
 
 Export-Package: \
         io.smallrye.config.*;version="3.3.0"
 
 
 -buildpath: \
-  io.openliberty.io.smallrye.common.2.1;version=latest, \
+  io.openliberty.io.smallrye.common2;version=latest, \
   io.smallrye.config:smallrye-config;version=3.3.0;strategy=exact, \
   io.smallrye.config:smallrye-config-common;version=3.3.0;strategy=exact, \
   io.smallrye.config:smallrye-config-core;version=3.3.0;strategy=exact, \

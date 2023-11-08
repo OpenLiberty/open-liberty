@@ -60,19 +60,21 @@ public class DataCoreTckLauncher {
         // Test groups to run
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("jimage.dir", server.getServerSharedPath() + "jimage/output/");
+        additionalProps.put("tck_protocol", "rest");
         additionalProps.put("jakarta.tck.profile", "core");
+
         //FIXME Always skip signature tests since our implementation has experimental API
         additionalProps.put("included.groups", "core & persistence & !signature");
 
-        //TODO Remove once TCK is available from stagging repo
-        additionalProps.put("jakarta.data.groupid", "io.openliberty.jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.0-20230802");
+        //TODO Update once TCK is available as GA
+        additionalProps.put("jakarta.data.groupid", "jakarta.data");
+        additionalProps.put("jakarta.data.tck.version", "1.0.0-M1");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckCore";
         Type type = Type.JAKARTA;
         String specName = "Data (Core)";
-        String relativeTckRunner = "publish/tckRunner/core/";
+        String relativeTckRunner = "publish/tckRunner/platform/";
         TCKRunner.runTCK(server, bucketName, testName, type, specName, null, relativeTckRunner, additionalProps);
     }
 }

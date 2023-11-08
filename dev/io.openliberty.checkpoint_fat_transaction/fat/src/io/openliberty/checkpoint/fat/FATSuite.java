@@ -22,6 +22,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -36,6 +39,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -153,5 +157,40 @@ public class FATSuite {
         if (server.fileExistsInLibertyInstallRoot(dir)) {
             server.deleteDirectoryFromLibertyInstallRoot(dir);
         }
+    }
+
+    // MOCK CHECKPOINT SUPPORT
+    // Command line options "--internal-checkpoint-at=before/afterAppStart" and system
+    // property "io.openliberty.checkpoint.stub.criu" enable the server to stub-out
+    // calls to criu operations during checkpoint|restore.
+
+    // Use this support for tests that don't care about criu and jvm criu function,
+    // or to enable debugging a test server over checkpoint and restore.
+
+    static final List<String> INTERNAL_CHECKPOINT_INACTIVE = Collections.emptyList();
+    static final List<String> INTERNAL_CHECKPOINT_BEFORE_APP_START = Arrays.asList("--internal-checkpoint-at=beforeAppStart");
+    static final List<String> INTERNAL_CHECKPOINT_AFTER_APP_START = Arrays.asList("--internal-checkpoint-at=afterAppStart");
+
+    /*
+     * Enable stubbed criu operations within checkpoint-and restore at the specified
+     * checkpoint phase.
+     */
+    static void setMockCheckpoint(LibertyServer server, CheckpointPhase phase) throws Exception {
+        Map<String, String> jvmOptions = server.getJvmOptionsAsMap();
+        switch (phase) {
+            case BEFORE_APP_START:
+                jvmOptions.put("-Dio.openliberty.checkpoint.stub.criu", "true");
+                server.setExtraArgs(INTERNAL_CHECKPOINT_BEFORE_APP_START);
+                break;
+            case AFTER_APP_START:
+                jvmOptions.put("-Dio.openliberty.checkpoint.stub.criu", "true");
+                server.setExtraArgs(INTERNAL_CHECKPOINT_AFTER_APP_START);
+                break;
+            default:
+                // Normal server operation; no checkpoint-restore
+                jvmOptions.remove("-Dio.openliberty.checkpoint.stub.criu");
+                server.setExtraArgs(INTERNAL_CHECKPOINT_INACTIVE);
+        }
+        server.setJvmOptions(jvmOptions);
     }
 }

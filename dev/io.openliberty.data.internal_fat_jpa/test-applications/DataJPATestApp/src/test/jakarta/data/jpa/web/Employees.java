@@ -13,13 +13,14 @@ package test.jakarta.data.jpa.web;
 import java.util.List;
 import java.util.stream.Stream;
 
-import jakarta.data.Streamable;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 /**
- *
+ * Repository that infers its primary entity type from the entity result class of find operations.
+ * Do not add add a superinterface for this class, and do not add any lifecycle methods.
+ * (A save method for Employee can be found on the Businesses repository)
  */
 @Repository
 public interface Employees {
@@ -37,8 +38,6 @@ public interface Employees {
 
     @OrderBy("badge")
     Stream<Badge> findByLastName(String lastName);
-
-    Streamable<Employee> save(Employee... e);
 
     // "IN" is not supported for embeddables, but EclipseLink generates SQL that leads to an SQLDataException rather than rejecting outright
     @Query("SELECT e FROM Employee e WHERE e.badge IN ?1")

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -42,7 +42,6 @@ import com.ibm.ws.jaxws.bus.LibertyApplicationBus;
 import com.ibm.ws.jaxws.globalhandler.GlobalHandlerInterceptor;
 import com.ibm.ws.jaxws.wsat.Constants.AssertionStatus;
 import com.ibm.ws.wsat.service.WSATException;
-import com.ibm.ws.wsat.utils.WSATOSGIService;
 import com.ibm.ws.wsat.utils.WSCoorConstants;
 import com.ibm.ws.wsat.utils.WSCoorUtil;
 import com.ibm.ws.wsat.webservice.client.wscoor.CoordinationContext;
@@ -150,7 +149,7 @@ public class CoorContextInInterceptor extends AbstractPhaseInterceptor<SoapMessa
 
             try {
                 //handleServerRequest will take care of calling reg service
-                WSATOSGIService.getInstance().getHandlerService().handleServerRequest(ctxId, epr, cc.getExpires().getValue());
+                WSCoorUtil.getHandlerService().handleServerRequest(ctxId, epr, cc.getExpires().getValue());
             } catch (WSATException e) {
                 FFDCFilter.processException(e, "com.ibm.ws.wsat.interceptor.CoorContextInInterceptor", "146");
                 throw new Fault(e);
@@ -179,7 +178,7 @@ public class CoorContextInInterceptor extends AbstractPhaseInterceptor<SoapMessa
                              "Execute handleServerFault for transaction",
                              ctxId);
                 }
-                WSATOSGIService.getInstance().getHandlerService().handleServerFault();
+                WSCoorUtil.getHandlerService().handleServerFault();
             } catch (WSATException e) {
                 FFDCFilter.processException(e, "com.ibm.ws.wsat.interceptor.CoorContextInInterceptor", "185");
             }

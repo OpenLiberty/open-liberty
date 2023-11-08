@@ -88,7 +88,9 @@ public class EntityDefiner implements Runnable {
 
     private final ClassDefiner classDefiner = new ClassDefiner();
     private final String databaseId;
-    private final List<Class<?>> entities = new ArrayList<>();
+    private final Set<Class<?>> entities = new HashSet<>();
+
+    // Mapping of JPA entity class (not record class) to entity information.
     final ConcurrentHashMap<Class<?>, CompletableFuture<EntityInfo>> entityInfoMap = new ConcurrentHashMap<>();
     private final ClassLoader loader;
 
@@ -343,23 +345,27 @@ public class EntityDefiner implements Runnable {
                 for (Class<?> metamodelClass : metamodelClasses)
                     for (Field field : metamodelClass.getFields()) {
                         int mod = field.getModifiers();
-                        if (String.class.equals(field.getType())
+                        if (jakarta.data.model.Attribute.class.equals(field.getType())
                             && Modifier.isPublic(mod)
                             && Modifier.isStatic(mod)
-                            && !Modifier.isFinal(mod)
-                            && Modifier.isVolatile(mod)) {
+                            && Modifier.isFinal(mod)) {
 
                             String fieldName = field.getName();
-                            String value = entityInfo.attributeNames.get(fieldName.toLowerCase());
-                            if (value != null)
+                            String attrName = entityInfo.attributeNames.get(fieldName.toLowerCase());
+                            jakarta.data.model.Attribute attribute = null;
+                            if (attrName != null)
                                 try {
-                                    if (trace && tc.isDebugEnabled())
-                                        Tr.debug(this, tc, "set " + metamodelClass.getSimpleName() + '.' + fieldName + " = " + value);
-                                    field.set(null, value);
+                                    attribute = (jakarta.data.model.Attribute) field.get(null);
                                 } catch (IllegalAccessException | IllegalArgumentException x) {
-                                    System.out.println("Unable to set the value of the " + field + " field to " + value);
+                                    System.out.println("Unable to initialize the " + fieldName + " field of the " +
+                                                       metamodelClass.getName() + " StaticMetamodel class.");
                                     // TODO NLS
                                 }
+                            if (trace && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "initialize " + metamodelClass.getSimpleName() + '.' + fieldName + " (" + attrName + "): " + attribute);
+
+                            if (attribute != null)
+                                attribute.init(AttributeInfoImpl.create(fieldName));
                         }
                     }
             }

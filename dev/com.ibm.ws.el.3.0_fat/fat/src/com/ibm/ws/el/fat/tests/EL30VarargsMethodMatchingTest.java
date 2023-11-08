@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.el.fat.tests;
 
@@ -17,6 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.el.fat.ELUtils;
 import com.ibm.ws.el30.fat.varargstest.EL30VarargsMethodMatchingServlet;
 
 import componenttest.annotation.Server;
@@ -24,11 +22,12 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 /**
- * Test EL 3.0 Method Matching when Varargs are used. See BZ 65358 
+ * Test EL 3.0 Method Matching when Varargs are used. See BZ 65358
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -36,20 +35,26 @@ public class EL30VarargsMethodMatchingTest extends FATServletClient {
 
     @Server("elServer")
     @TestServlet(servlet = EL30VarargsMethodMatchingServlet.class, contextRoot = "TestVarargsMatching")
-    public static LibertyServer elServer;
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(elServer, "TestVarargsMatching.war", "com.ibm.ws.el30.fat.varargstest");
+        ShrinkHelper.defaultDropinApp(server, "TestVarargsMatching.war", "com.ibm.ws.el30.fat.varargstest");
 
-        elServer.startServer(EL30VarargsMethodMatchingTest.class.getSimpleName() + ".log");
+        // Set websphere.java.security.exempt=true because Expression Language 6.0 removed all references
+        // to the SecurityManager and related APIs.
+        if (JakartaEEAction.isEE11OrLaterActive()) {
+            ELUtils.setServerJavaSecurityExempt(server);
+        }
+
+        server.startServer(EL30VarargsMethodMatchingTest.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (elServer != null && elServer.isStarted()) {
-            elServer.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
         }
     }
 }

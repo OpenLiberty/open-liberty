@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,7 +23,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 public final class KeyBasedLockStore<Key, Lock> {
 
     private final ReferenceQueue<Lock> refQueue = new ReferenceQueue<>();
-    private final ConcurrentHashMap<String, LockWeakRef> lockMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Key, LockWeakRef> lockMap = new ConcurrentHashMap<>();
     private final Supplier<Lock> lockCreator;
 
     public KeyBasedLockStore(Supplier<Lock> lockCreator) {
@@ -31,16 +31,16 @@ public final class KeyBasedLockStore<Key, Lock> {
     }
 
     private final class LockWeakRef extends WeakReference<Lock> {
-        final String key;
+        final Key key;
 
         @Trivial
-        public LockWeakRef(Lock referent, String keyValue) {
+        public LockWeakRef(Lock referent, Key keyValue) {
             super(referent, refQueue);
             key = keyValue;
         }
     }
 
-    public final Lock getLock(String key) {
+    public final Lock getLock(Key key) {
         poll();
         LockWeakRef lockRef = lockMap.get(key);
         Lock lock = lockRef != null ? lockRef.get() : null;

@@ -18,8 +18,10 @@ import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
 import jakarta.data.Sort;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
 
 /**
  * Repository for operations on the unannotated House entity,
@@ -56,10 +58,12 @@ public interface Houses {
 
     List<House> findWithGarageDoorDimensions(int garage_door_width, int garage_door_height);
 
+    @Insert
     void insert(House h);
 
     Optional<House> remove(String parcelId);
 
+    @Save
     List<House> save(House... h);
 
     boolean updateByIdSetGarageAddAreaAddKitchenLengthSetNumBedrooms(String parcel, Garage updatedGarage, int addedArea, int addedKitchenLength, int newNumBedrooms);
