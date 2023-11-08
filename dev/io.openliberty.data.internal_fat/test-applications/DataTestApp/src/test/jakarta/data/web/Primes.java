@@ -47,6 +47,11 @@ import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Function;
+import io.openliberty.data.repository.comparison.EndsWith;
+import io.openliberty.data.repository.comparison.GreaterThan;
+import io.openliberty.data.repository.comparison.GreaterThanEqual;
+import io.openliberty.data.repository.comparison.LessThan;
+import io.openliberty.data.repository.comparison.LessThanEqual;
 
 /**
  * Repository with data that is pre-populated.
@@ -58,9 +63,8 @@ public interface Primes {
     Slice<String> all(Pageable pagination);
 
     @Exists
-    @Filter(by = "binaryDigits", op = Compare.EndsWith, param = "bits")
-    @Filter(by = "numberId", op = Compare.LessThan, param = "max")
-    boolean anyLessThanEndingWithBitPattern(@Param("max") long upperLimit, @Param("bits") String pattern);
+    boolean anyLessThanEndingWithBitPattern(@By("numberId") @LessThan long upperLimit,
+                                            @By("binaryDigits") @EndsWith String pattern);
 
     long countByIdLessThan(long number);
 
@@ -206,20 +210,24 @@ public interface Primes {
     Boolean existsByIdBetween(Long first, Long last);
 
     @Count
-    @Filter(by = "id", op = Compare.GreaterThanEqual)
-    @Filter(by = "id", op = Compare.LessThanEqual)
-    long howManyIn(long min, long max);
+    long howManyIn(@By("id") @GreaterThanEqual long min,
+                   @By("id") @LessThanEqual long max);
 
     @Count
-    @Filter(by = "NumberId", op = Compare.GreaterThan)
-    @Filter(by = "NumberId", op = Compare.LessThan, value = "20")
-    Long howManyLessThan20StartingAfter(long min);
+    Long howManyBetweenExclusive(@By("NumberId") @GreaterThan long exclusiveMin,
+                                 @By("NumberId") @LessThan long exclusiveMax);
 
     @Filter(by = "id", op = Compare.Between)
     @Filter(by = "romanNumeral", fn = Function.IgnoreCase, op = Compare.Like, value = "%v%")
     @Filter(by = "name", op = Compare.Contains)
     @OrderBy(value = "id", descending = true)
     List<Long> inRangeHavingVNumeralAndSubstringOfName(long min, long max, String nameSuffix);
+    // TODO after IgnoreCase is added, switch to:
+    //@OrderBy(value = "id", descending = true)
+    //List<Long> inRangeHavingNumeralLikeAndSubstringOfName(@By("id") @GreaterThanEqual long min,
+    //                                                      @By("id") @LessThanEqual long max,
+    //                                                      @By("romanNumeral") @IgnoreCase @Like String pattern,
+    //                                                      @By("name") @Contains String nameSuffix);
 
     @Exists
     boolean isFoundWith(long id, String hex);

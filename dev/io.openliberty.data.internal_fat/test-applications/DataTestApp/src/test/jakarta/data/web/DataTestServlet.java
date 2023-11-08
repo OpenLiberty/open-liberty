@@ -593,9 +593,9 @@ public class DataTestServlet extends FATServlet {
         assertEquals(6, primes.howManyIn(17L, 37L));
         assertEquals(0, primes.howManyIn(24L, 28L));
 
-        assertEquals(Long.valueOf(5), primes.howManyLessThan20StartingAfter(5));
-        assertEquals(Long.valueOf(0), primes.howManyLessThan20StartingAfter(19));
-        assertEquals(Long.valueOf(0), primes.howManyLessThan20StartingAfter(21));
+        assertEquals(Long.valueOf(5), primes.howManyBetweenExclusive(5, 20));
+        assertEquals(Long.valueOf(0), primes.howManyBetweenExclusive(19, 20));
+        assertEquals(Long.valueOf(0), primes.howManyBetweenExclusive(21, 20));
     }
 
     /**
@@ -3374,8 +3374,8 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testParameterAnnotationTakesPrecedenceOverMethodPrefix() {
-        Prime nine = primes.findByBinary("1001").orElseThrow();
-        assertEquals(9L, nine.numberId);
+        Prime nine = primes.findByBinary("10011").orElseThrow();
+        assertEquals(19L, nine.numberId);
     }
 
     /**

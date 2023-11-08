@@ -33,6 +33,8 @@ import jakarta.data.repository.Repository;
 import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Function;
+import io.openliberty.data.repository.comparison.GreaterThanEqual;
+import io.openliberty.data.repository.comparison.LessThanEqual;
 import io.openliberty.data.repository.update.Add;
 import io.openliberty.data.repository.update.Divide;
 import io.openliberty.data.repository.update.SubtractFrom;
@@ -96,13 +98,13 @@ public interface Packages extends PageableRepository<Package, Integer> {
     Package take(@By("id") int packageNum);
 
     @Delete
-    @Filter(by = "length", op = Compare.Between)
-    List<Package> takeWithin(float minLength, float maxLength);
+    List<Package> takeWithin(@By("length") @GreaterThanEqual float minLength,
+                             @By("length") @LessThanEqual float maxLength);
 
     @Delete
-    @Filter(by = "length", op = Compare.Between)
     @OrderBy("id")
-    List<Package> takeWithinOrdered(float minLength, float maxLength);
+    List<Package> takeWithinOrdered(@By("length") @GreaterThanEqual float minLength,
+                                    @By("length") @LessThanEqual float maxLength);
 
     boolean updateByIdAddHeightMultiplyLengthDivideWidth(int id, float heightToAdd, float lengthMultiplier, float widthDivisor);
 
