@@ -310,7 +310,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      *
      * @return boolean
      */
-    final protected boolean isBodyComplete() {
+    final public boolean isBodyComplete() {
         return STATE_FULL_MESSAGE == this.msgParsedState;
     }
 
@@ -1502,7 +1502,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      *
      * @return boolean
      */
-    final protected boolean isIncomingBodyExpected() {
+    final public boolean isIncomingBodyExpected() {
         return this.bIsBodyExpected;
     }
 

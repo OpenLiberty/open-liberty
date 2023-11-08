@@ -35,6 +35,7 @@ import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundChannel;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
+import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.ws.http.dispatcher.classify.DecoratedExecutorThread;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.internal.VirtualHostImpl;
@@ -1338,6 +1339,40 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         VirtualConnection vc = link.getVirtualConnection();
         H2InboundLink h2Link = new H2InboundLink(channel, vc, getTCPConnectionContext());
 
+        if(this.isc != null) {
+            if(this.isc.isIncomingBodyExpected() && !this.isc.isBodyComplete()){
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Body needed for request. Queueing data locally before upgrade.");
+                }
+                HttpInputStreamImpl body = this.request.getBody();
+                body.setupChannelMultiRead();
+                byte[] inBytes = new byte[1024];
+                try{
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Starting request read loop.");
+                    }
+                    for (int n; (n = body.read(inBytes)) != -1;) {}
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Finished request read loop.");
+                    }
+                }catch(Exception e){
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Got exception reading request and queueing up data. Can't handle request upgrade to HTTP2.", e);
+                    }
+                    vc.getStateMap().put(h2InitError, true);
+                    return false;
+                }
+                body.resetReaderChannelMultiRead();
+            }else{
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No body needed for request. Continuing upgrade as normal.");
+                }
+            }
+        }else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to get isc, Null value received which could cause issues expecting data. Continuing upgrade as normal.");
+            }
+        }
         boolean upgraded = h2Link.handleHTTP2UpgradeRequest(http2Settings, link);
         if (upgraded) {
             h2Link.startAsyncRead(true);
