@@ -14,7 +14,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 
-@RegisterRestClient(configKey = "testClient")
+@RegisterRestClient
 public interface CrossFeatureClient {
 
     @GET

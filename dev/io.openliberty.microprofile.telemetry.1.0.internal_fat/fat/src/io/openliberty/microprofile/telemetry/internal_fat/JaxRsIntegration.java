@@ -42,8 +42,12 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
+import componenttest.topology.utils.HttpUtils;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.JaxRsEndpoints;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.common.PropagationHeaderEndpoint;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.injected.InjectedClientTestClient;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.injected.InjectedClientTestEndpoints;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.injected.InjectedClientTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.methods.JaxRsMethodTestEndpoints;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.methods.JaxRsMethodTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.responses.JaxRsResponseCodeTestEndpoints;
@@ -58,6 +62,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.
 import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporterProvider;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.spans.AbstractSpanMatcher;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
 
 @Mode(TestMode.FULL)
@@ -84,6 +89,7 @@ public class JaxRsIntegration extends FATServletClient {
                     @TestServlet(contextRoot = METHODS_APP_NAME, servlet = JaxRsMethodTestServlet.class),
                     @TestServlet(contextRoot = METHODS_APP_NAME, servlet = JaxRsResponseCodeTestServlet.class),
                     @TestServlet(contextRoot = METHODS_APP_NAME, servlet = JaxRsRouteTestServlet.class),
+                    @TestServlet(contextRoot = METHODS_APP_NAME, servlet = InjectedClientTestServlet.class),
     })
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -101,6 +107,7 @@ public class JaxRsIntegration extends FATServletClient {
                         .addPackage(JaxRsEndpoints.class.getPackage())
                         .addPackage(InMemorySpanExporter.class.getPackage())
                         .addPackage(TestSpans.class.getPackage())
+                        .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
 
@@ -111,6 +118,7 @@ public class JaxRsIntegration extends FATServletClient {
                         .addClass(W3CTracePropagationTestServlet.class)
                         .addPackage(InMemorySpanExporter.class.getPackage())
                         .addPackage(TestSpans.class.getPackage())
+                        .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addPackage(PropagationHeaderEndpoint.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
                         .addAsResource(w3cTraceAppConfig, "META-INF/microprofile-config.properties");
@@ -122,6 +130,7 @@ public class JaxRsIntegration extends FATServletClient {
                         .addClass(W3CTraceBaggagePropagationTestServlet.class)
                         .addPackage(InMemorySpanExporter.class.getPackage())
                         .addPackage(TestSpans.class.getPackage())
+                        .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addPackage(PropagationHeaderEndpoint.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
                         .addAsResource(w3cTraceBaggageAppConfig, "META-INF/microprofile-config.properties");
@@ -133,6 +142,7 @@ public class JaxRsIntegration extends FATServletClient {
                         .addClass(B3PropagationTestServlet.class)
                         .addPackage(InMemorySpanExporter.class.getPackage())
                         .addPackage(TestSpans.class.getPackage())
+                        .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addPackage(PropagationHeaderEndpoint.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
                         .addAsResource(b3AppConfig, "META-INF/microprofile-config.properties");
@@ -144,6 +154,7 @@ public class JaxRsIntegration extends FATServletClient {
                         .addClass(B3MultiPropagationTestServlet.class)
                         .addPackage(InMemorySpanExporter.class.getPackage())
                         .addPackage(TestSpans.class.getPackage())
+                        .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addPackage(PropagationHeaderEndpoint.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
                         .addAsResource(b3MultiAppConfig, "META-INF/microprofile-config.properties");
@@ -155,6 +166,7 @@ public class JaxRsIntegration extends FATServletClient {
                         .addClass(JaegerPropagationTestServlet.class)
                         .addPackage(InMemorySpanExporter.class.getPackage())
                         .addPackage(TestSpans.class.getPackage())
+                        .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addPackage(PropagationHeaderEndpoint.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
                         .addAsResource(jaegerAppConfig, "META-INF/microprofile-config.properties");
@@ -169,14 +181,21 @@ public class JaxRsIntegration extends FATServletClient {
  * .addAsResource(appConfig, "META-INF/microprofile-config.properties");
  */
 
+        PropertiesAsset methodsAppConfig = new PropertiesAsset()
+                        .include(appConfig)
+                        .addProperty(InjectedClientTestClient.class.getName() + "/mp-rest/url",
+                                     HttpUtils.createURL(server, METHODS_APP_NAME).toString());
+
         WebArchive methodsApp = ShrinkWrap.create(WebArchive.class, METHODS_APP_NAME + ".war")
                         .addPackage(JaxRsMethodTestEndpoints.class.getPackage())
                         .addPackage(JaxRsResponseCodeTestEndpoints.class.getPackage())
                         .addPackage(JaxRsRouteTestEndpoints.class.getPackage())
+                        .addPackage(InjectedClientTestEndpoints.class.getPackage())
                         .addPackage(InMemorySpanExporter.class.getPackage())
                         .addPackage(TestSpans.class.getPackage())
+                        .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
-                        .addAsResource(appConfig, "META-INF/microprofile-config.properties");
+                        .addAsResource(methodsAppConfig, "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, w3cTraceApp, SERVER_ONLY);

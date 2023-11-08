@@ -15,21 +15,21 @@ package io.openliberty.microprofile.telemetry.internal.tests;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static io.openliberty.microprofile.telemetry.internal.utils.TestUtils.findOneFrom;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient.convertByteString;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasKind;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasName;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasNoParent;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasParentSpanId;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasServiceName;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.span;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasKind;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasName;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasNoParent;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasParentSpanId;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasServiceName;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.isSpan;
 import static io.opentelemetry.api.trace.SpanKind.CLIENT;
 import static io.opentelemetry.api.trace.SpanKind.INTERNAL;
 import static io.opentelemetry.api.trace.SpanKind.SERVER;
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.util.HashSet;
@@ -42,6 +42,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -49,17 +50,20 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
 import io.openliberty.microprofile.telemetry.internal.apps.agent.AgentTestResource;
+import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
+import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 
 /**
@@ -71,18 +75,20 @@ public class AgentTest {
 
     private static final Class<AgentTest> c = AgentTest.class;
     private static final String SERVICE_NAME = "Test service";
+    private static final String SERVER_NAME = "TelemetryAgent";
 
-    @Server("TelemetryAgent")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    @ClassRule
     public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
+    public static RepeatTests repeat = FATSuite.allMPRepeats(SERVER_NAME);
 
+    // In contrast to most tests, this test needs a new jaeger instance for each repeat
+    // so that it can check for any trace IDs not accounted for
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("spanTestServer", MicroProfileActions.MP61, MicroProfileActions.MP60);
+    public static RuleChain chain = RuleChain.outerRule(repeat).around(jaegerContainer);
 
-    public static JaegerQueryClient client;
-
+    private static JaegerQueryClient client;
     private static Set<String> traceIdsUsed;
 
     @BeforeClass
@@ -121,7 +127,7 @@ public class AgentTest {
     }
 
     @AfterClass
-    public static void checkAllTraceIdsAccountedFor() {
+    public static void checkAllTraceIdsAccountedFor() throws Exception {
         Log.info(c, "checkAllTraceIdsAccountedFor", "Trace IDs used: " + traceIdsUsed);
         List<Span> unexpectedSpans;
         unexpectedSpans = client.getServices().stream() // Get all the services
@@ -136,12 +142,16 @@ public class AgentTest {
                                 .collect(toList());
 
         assertThat("Spans created that don't belong to any test", unexpectedSpans, is(empty()));
+
+        client.close();
     }
 
     /**
      * Test we get the expected span for a basic JAX-RS request
      */
     @Test
+    // Test needs updating to reflect different attributes reported by the agent when instrumenting EE7/8 vs. EE9/10
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID })
     public void testBasic() throws Exception {
         HttpRequest request = new HttpRequest(server, "/agentTest");
         String traceId = request.run(String.class);
@@ -153,9 +163,9 @@ public class AgentTest {
 
         Span span = spans.get(0);
 
-        assertThat(span, span().withTraceId(traceId)
-                               .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/agentTest/")
-                               .withTag(SemanticAttributes.HTTP_METHOD.getKey(), "GET"));
+        assertThat(span, JaegerSpanMatcher.isSpan().withTraceId(traceId)
+                                          .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/")
+                                          .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
 
         // We shouldn't have any additional spans
         List<String> services = client.getServices();
@@ -285,15 +295,15 @@ public class AgentTest {
         List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(3));
 
         Span root = findOneFrom(spans, hasNoParent());
-        assertThat(root, span().withKind(SERVER)
-                               .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/agentTest/httpclient"));
+        assertThat(root, isSpan().withKind(SERVER)
+                                 .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/httpclient"));
 
         Span child1 = findOneFrom(spans, hasParentSpanId(root.getSpanId()));
         assertThat(child1, hasKind(CLIENT));
 
         Span child2 = findOneFrom(spans, hasParentSpanId(child1.getSpanId()));
-        assertThat(child2, span().withKind(SERVER)
-                                 .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/agentTest/httpclient/target"));
+        assertThat(child2, isSpan().withKind(SERVER)
+                                   .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/httpclient/target"));
     }
 
     /**
@@ -312,15 +322,15 @@ public class AgentTest {
         List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(3));
 
         Span root = findOneFrom(spans, hasNoParent());
-        assertThat(root, span().withKind(SERVER)
-                               .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/agentTest/jaxrsclient"));
+        assertThat(root, isSpan().withKind(SERVER)
+                                 .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/jaxrsclient"));
 
         Span child1 = findOneFrom(spans, hasParentSpanId(root.getSpanId()));
         assertThat(child1, hasKind(CLIENT));
 
         Span child2 = findOneFrom(spans, hasParentSpanId(child1.getSpanId()));
-        assertThat(child2, span().withKind(SERVER)
-                                 .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/agentTest/httpclient/target"));
+        assertThat(child2, isSpan().withKind(SERVER)
+                                   .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/httpclient/target"));
     }
 
     /**
@@ -339,14 +349,14 @@ public class AgentTest {
         List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(3));
 
         Span root = findOneFrom(spans, hasNoParent());
-        assertThat(root, span().withKind(SERVER)
-                               .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/agentTest/mprestclient"));
+        assertThat(root, isSpan().withKind(SERVER)
+                                 .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/mprestclient"));
 
         Span child1 = findOneFrom(spans, hasParentSpanId(root.getSpanId()));
         assertThat(child1, hasKind(CLIENT));
 
         Span child2 = findOneFrom(spans, hasParentSpanId(child1.getSpanId()));
-        assertThat(child2, span().withKind(SERVER)
-                                 .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/agentTest/httpclient/target"));
+        assertThat(child2, isSpan().withKind(SERVER)
+                                   .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/httpclient/target"));
     }
 }

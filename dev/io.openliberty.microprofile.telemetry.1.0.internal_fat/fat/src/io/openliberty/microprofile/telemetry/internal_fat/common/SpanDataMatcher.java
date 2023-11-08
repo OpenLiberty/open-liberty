@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal_fat.common;
 
+import io.openliberty.microprofile.telemetry.internal_fat.shared.spans.AbstractSpanMatcher;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.SpanId;
 import io.opentelemetry.api.trace.SpanKind;

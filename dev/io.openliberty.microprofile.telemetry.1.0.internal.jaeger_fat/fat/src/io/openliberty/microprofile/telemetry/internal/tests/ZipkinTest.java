@@ -30,6 +30,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -44,6 +45,7 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
+import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinQueryClient;
@@ -57,17 +59,19 @@ import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 @RunWith(FATRunner.class)
 public class ZipkinTest {
 
+    private static final String SERVER_NAME = "spanTestServer";
+
     private static final Class<?> c = ZipkinTest.class;
 
-    @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("spanTestServer", MicroProfileActions.MP61, MicroProfileActions.MP60);
+    public static ZipkinContainer zipkinContainer = new ZipkinContainer().withLogConsumer(new SimpleLogConsumer(ZipkinTest.class, "zipkin"));
+    public static RepeatTests repeat = FATSuite.allMPRepeats(SERVER_NAME);
 
     @ClassRule
-    public static ZipkinContainer zipkinContainer = new ZipkinContainer().withLogConsumer(new SimpleLogConsumer(ZipkinTest.class, "zipkin"));
+    public static RuleChain chain = RuleChain.outerRule(zipkinContainer).around(repeat);
 
     public ZipkinQueryClient client = new ZipkinQueryClient(zipkinContainer);
 
-    @Server("spanTestServer")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass
@@ -82,7 +86,7 @@ public class ZipkinTest {
 
         // Construct the test application
         WebArchive spanTest = ShrinkWrap.create(WebArchive.class, "spanTest.war")
-                                        .addClass(TestResource.class);
+                                        .addPackage(TestResource.class.getPackage());
         ShrinkHelper.exportAppToServer(server, spanTest, SERVER_ONLY);
         server.startServer();
     }

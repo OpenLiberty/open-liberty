@@ -10,9 +10,9 @@
 package io.openliberty.microprofile.telemetry.internal.tests;
 
 import static io.openliberty.microprofile.telemetry.internal.utils.TestUtils.findOneFrom;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasProcessTag;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasTag;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.span;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasAttribute;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasResourceAttribute;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.isSpan;
 import static io.opentelemetry.semconv.resource.attributes.ResourceAttributes.TELEMETRY_SDK_NAME;
 import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.HTTP_ROUTE;
 import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.HTTP_URL;
@@ -27,6 +27,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -44,6 +45,8 @@ import io.jaegertracing.api_v2.Model.Span;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
+import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.SpanKind;
 
 /**
@@ -51,23 +54,30 @@ import io.opentelemetry.api.trace.SpanKind;
  * Spans are exported to Jaeger
  */
 @RunWith(FATRunner.class)
+// Broken on EE7 & 8, see https://github.com/OpenLiberty/open-liberty/issues/26856
 public class CrossFeatureJaegerTest {
 
+    private static final String CROSS_FEATURE_TELEMETRY_SERVER = "crossFeatureTelemetryServer";
     private static final String APP_NAME = "crossFeature";
     private static final Class<?> c = CrossFeatureJaegerTest.class;
+    private static final AttributeKey<String> JAEGER_VERSION = AttributeKey.stringKey("jaeger.version");
 
-    @ClassRule
     public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
+    // Broken on EE7 & 8, see https://github.com/OpenLiberty/open-liberty/issues/26856
+    public static RepeatTests repeat = TelemetryActions.repeat(CROSS_FEATURE_TELEMETRY_SERVER,
+                                                               MicroProfileActions.MP61,
+                                                               TelemetryActions.MP50_MPTEL11,
+                                                               MicroProfileActions.MP60);
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("crossFeatureTelemetryServer", MicroProfileActions.MP61, MicroProfileActions.MP60);
+    public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);
 
     public static JaegerQueryClient client;
 
     @Server("crossFeatureOpenTracingServer")
     public static LibertyServer opentracingServer;
 
-    @Server("crossFeatureTelemetryServer")
+    @Server(CROSS_FEATURE_TELEMETRY_SERVER)
     public static LibertyServer telemetryServer;
 
     @BeforeClass
@@ -82,12 +92,12 @@ public class CrossFeatureJaegerTest {
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false"); //Enable tracing
         telemetryServer.addEnvVar("OTEL_PROPAGATORS", "tracecontext, baggage, jaeger"); // Include the jaeger propagation headers
-        telemetryServer.addEnvVar("TESTCLIENT_MP_REST_URL", getUrl(opentracingServer));
+        telemetryServer.addEnvVar("IO_OPENLIBERTY_MICROPROFILE_TELEMETRY_INTERNAL_APPS_CROSSFEATURE_TELEMETRY_CROSSFEATURECLIENT_MP_REST_URL", getUrl(opentracingServer));
 
         opentracingServer.addEnvVar("JAEGER_ENDPOINT", jaegerContainer.getJaegerThriftUrl());
         opentracingServer.addEnvVar("JAEGER_SAMPLER_TYPE", "const"); // Trace every call
         opentracingServer.addEnvVar("JAEGER_SAMPLER_PARAM", "1"); // Trace every call
-        opentracingServer.addEnvVar("TESTCLIENT_MP_REST_URL", getUrl(telemetryServer));
+        opentracingServer.addEnvVar("IO_OPENLIBERTY_MICROPROFILE_TELEMETRY_INTERNAL_APPS_CROSSFEATURE_OPENTRACING_CROSSFEATURECLIENT_MP_REST_URL", getUrl(telemetryServer));
 
         // create apps
         WebArchive opentracingWar = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
@@ -108,6 +118,13 @@ public class CrossFeatureJaegerTest {
     public static void teardownTelemetry() throws Exception {
         telemetryServer.stopServer();
         opentracingServer.stopServer();
+    }
+
+    @AfterClass
+    public static void closeClient() throws Exception {
+        if (client != null) {
+            client.close();
+        }
     }
 
     private static String getUrl(LibertyServer server) {
@@ -133,19 +150,19 @@ public class CrossFeatureJaegerTest {
             Log.info(c, "testCrossFeatureFromTelemetry", span.toString());
         }
 
-        Span server1 = findOneFrom(spans, hasTag(HTTP_ROUTE.getKey(), "/crossFeature/1"));
-        Span client2 = findOneFrom(spans, span().withKind(SpanKind.CLIENT)
-                                                .withTag(HTTP_URL.getKey(), getUrl(opentracingServer) + "/2"));
-        Span server2 = findOneFrom(spans, span().withKind(SpanKind.SERVER)
-                                                .withTag(HTTP_URL.getKey(), getUrl(opentracingServer) + "/2"));
-        Span client3 = findOneFrom(spans, hasTag(HTTP_URL.getKey(), getUrl(telemetryServer) + "/3"));
-        Span server3 = findOneFrom(spans, hasTag(HTTP_ROUTE.getKey(), "/crossFeature/3"));
+        Span server1 = findOneFrom(spans, hasAttribute(HTTP_ROUTE, "/crossFeature/1"));
+        Span client2 = findOneFrom(spans, isSpan().withKind(SpanKind.CLIENT)
+                                                  .withAttribute(HTTP_URL, getUrl(opentracingServer) + "/2"));
+        Span server2 = findOneFrom(spans, isSpan().withKind(SpanKind.SERVER)
+                                                  .withAttribute(HTTP_URL, getUrl(opentracingServer) + "/2"));
+        Span client3 = findOneFrom(spans, hasAttribute(HTTP_URL, getUrl(telemetryServer) + "/3"));
+        Span server3 = findOneFrom(spans, hasAttribute(HTTP_ROUTE, "/crossFeature/3"));
 
-        assertThat(server1, hasProcessTag(TELEMETRY_SDK_NAME.getKey(), "opentelemetry"));
-        assertThat(client2, hasProcessTag(TELEMETRY_SDK_NAME.getKey(), "opentelemetry"));
-        assertThat(server2, hasProcessTag("jaeger.version", "Java-1.6.0"));
-        assertThat(client3, hasProcessTag("jaeger.version", "Java-1.6.0"));
-        assertThat(server3, hasProcessTag(TELEMETRY_SDK_NAME.getKey(), "opentelemetry"));
+        assertThat(server1, hasResourceAttribute(TELEMETRY_SDK_NAME, "opentelemetry"));
+        assertThat(client2, hasResourceAttribute(TELEMETRY_SDK_NAME, "opentelemetry"));
+        assertThat(server2, hasResourceAttribute(JAEGER_VERSION, "Java-1.6.0"));
+        assertThat(client3, hasResourceAttribute(JAEGER_VERSION, "Java-1.6.0"));
+        assertThat(server3, hasResourceAttribute(TELEMETRY_SDK_NAME, "opentelemetry"));
     }
 
     /**
@@ -167,19 +184,19 @@ public class CrossFeatureJaegerTest {
             Log.info(c, "testCrossFeatureFromOpenTracing", span.toString());
         }
 
-        Span server1 = findOneFrom(spans, span().withTag(HTTP_URL.getKey(), getUrl(opentracingServer) + "/1"));
-        Span client2 = findOneFrom(spans, span().withTag(HTTP_URL.getKey(), getUrl(telemetryServer) + "/2"));
-        Span server2 = findOneFrom(spans, hasTag(HTTP_ROUTE.getKey(), "/crossFeature/2"));
-        Span client3 = findOneFrom(spans, span().withKind(SpanKind.CLIENT)
-                                                .withTag(HTTP_URL.getKey(), getUrl(opentracingServer) + "/3"));
-        Span server3 = findOneFrom(spans, span().withKind(SpanKind.SERVER)
-                                                .withTag(HTTP_URL.getKey(), getUrl(opentracingServer) + "/3"));
+        Span server1 = findOneFrom(spans, isSpan().withAttribute(HTTP_URL, getUrl(opentracingServer) + "/1"));
+        Span client2 = findOneFrom(spans, isSpan().withAttribute(HTTP_URL, getUrl(telemetryServer) + "/2"));
+        Span server2 = findOneFrom(spans, hasAttribute(HTTP_ROUTE, "/crossFeature/2"));
+        Span client3 = findOneFrom(spans, isSpan().withKind(SpanKind.CLIENT)
+                                                  .withAttribute(HTTP_URL, getUrl(opentracingServer) + "/3"));
+        Span server3 = findOneFrom(spans, isSpan().withKind(SpanKind.SERVER)
+                                                  .withAttribute(HTTP_URL, getUrl(opentracingServer) + "/3"));
 
-        assertThat(server1, hasProcessTag("jaeger.version", "Java-1.6.0"));
-        assertThat(client2, hasProcessTag("jaeger.version", "Java-1.6.0"));
-        assertThat(server2, hasProcessTag(TELEMETRY_SDK_NAME.getKey(), "opentelemetry"));
-        assertThat(client3, hasProcessTag(TELEMETRY_SDK_NAME.getKey(), "opentelemetry"));
-        assertThat(server3, hasProcessTag("jaeger.version", "Java-1.6.0"));
+        assertThat(server1, hasResourceAttribute(JAEGER_VERSION, "Java-1.6.0"));
+        assertThat(client2, hasResourceAttribute(JAEGER_VERSION, "Java-1.6.0"));
+        assertThat(server2, hasResourceAttribute(TELEMETRY_SDK_NAME, "opentelemetry"));
+        assertThat(client3, hasResourceAttribute(TELEMETRY_SDK_NAME, "opentelemetry"));
+        assertThat(server3, hasResourceAttribute(JAEGER_VERSION, "Java-1.6.0"));
     }
 
 }

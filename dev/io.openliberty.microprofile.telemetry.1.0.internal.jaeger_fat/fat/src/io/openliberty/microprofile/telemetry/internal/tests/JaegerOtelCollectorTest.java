@@ -31,9 +31,9 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
+import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
@@ -60,14 +60,14 @@ public class JaegerOtelCollectorTest extends JaegerBaseTest {
                                                                                                                                                                    .withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class,
                                                                                                                                                                                                           "otelCol"))
                                                                                                                                                                    .withNetworkAliases("otel-collector-jaeger");
-    public static RepeatTests r = MicroProfileActions.repeat("spanTestServer", MicroProfileActions.MP61, MicroProfileActions.MP60);
+    public static RepeatTests repeat = FATSuite.allMPRepeats(SERVER_NAME);
 
     @ClassRule
     public static RuleChain chain = RuleChain
                                              .outerRule(network)
                                              .around(jaegerContainer)
                                              .around(otelCollectorContainer)
-                                             .around(r);
+                                             .around(repeat);
 
     public static JaegerQueryClient client;
 
@@ -84,7 +84,7 @@ public class JaegerOtelCollectorTest extends JaegerBaseTest {
 
         // Construct the test application
         WebArchive jaegerTest = ShrinkWrap.create(WebArchive.class, "spanTest.war")
-                                          .addClass(TestResource.class);
+                                          .addPackage(TestResource.class.getPackage());
         ShrinkHelper.exportAppToServer(server, jaegerTest, SERVER_ONLY);
         server.startServer();
     }
@@ -96,7 +96,9 @@ public class JaegerOtelCollectorTest extends JaegerBaseTest {
 
     @AfterClass
     public static void closeClient() throws Exception {
-        client.close();
+        if (client != null) {
+            client.close();
+        }
     }
 
     @Override

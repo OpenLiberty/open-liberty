@@ -19,6 +19,8 @@ import org.junit.runners.Suite.SuiteClasses;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.microprofile.telemetry.internal.tests.AgentConfigTest;
 import io.openliberty.microprofile.telemetry.internal.tests.AgentTest;
 import io.openliberty.microprofile.telemetry.internal.tests.CrossFeatureJaegerTest;
@@ -31,6 +33,7 @@ import io.openliberty.microprofile.telemetry.internal.tests.JaegerSecureOtlpTest
 import io.openliberty.microprofile.telemetry.internal.tests.TracingNotEnabledTest;
 import io.openliberty.microprofile.telemetry.internal.tests.ZipkinOtelCollectorTest;
 import io.openliberty.microprofile.telemetry.internal.tests.ZipkinTest;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -54,5 +57,14 @@ import io.openliberty.microprofile.telemetry.internal.tests.ZipkinTest;
  * Purpose: This suite collects and runs all known good test suites.
  */
 public class FATSuite extends TestContainerSuite {
+
+    public static RepeatTests allMPRepeats(String serverName) {
+        return TelemetryActions.repeat(serverName,
+                                       MicroProfileActions.MP61,
+                                       TelemetryActions.MP14_MPTEL11,
+                                       TelemetryActions.MP41_MPTEL11,
+                                       TelemetryActions.MP50_MPTEL11,
+                                       MicroProfileActions.MP60);
+    }
 
 }
