@@ -501,18 +501,12 @@ public class ComputedMonitorMetricsHandler {
             if (cmm.getComputationType().equals(DURATION)) {
                 Duration currentDur = currentTimer.getElapsedTime();
                 if (currentDur != null)  {
-                    // In the Duration API, the length of the duration is stored using two fields - seconds and nanoseconds. 
-                    // The nanoseconds part is a value from 0 to 999,999,999 that is an adjustment to the length in seconds. 
-                    // To retrieve the REST elaspedTime, we need to get the seconds and the nanoseconds and add them.
-                    double tempSecs = (double) currentDur.getSeconds();
+                    // Get total elapsed time in nanoseconds from Duration API.
+                    double tempDurNanos = (double) currentDur.toNanos();
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "REST Timer ElapsedTime Duration in seconds = " + tempSecs);
+                        Tr.debug(tc, "REST Timer ElapsedTime Duration in nanoseconds = " + tempDurNanos);
                     }
-                    double tempNanos = (double) currentDur.getNano();
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "REST Timer ElapsedTime Duration in nanoseconds = " + tempNanos);
-                    }
-                    currentValue = tempSecs + (tempNanos * NANOSECOND_CONVERSION); // convert to secs
+                    currentValue = tempDurNanos * NANOSECOND_CONVERSION; // convert to secs
                 }
             } else {
                 // Get Total Counter Value for Timer
