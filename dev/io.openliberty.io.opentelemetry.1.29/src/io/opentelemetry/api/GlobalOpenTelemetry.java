@@ -49,7 +49,7 @@ public final class GlobalOpenTelemetry {
         return OpenTelemetry.noop();
     }
 
-    //GlobalOpenTelemetry cannot be set twice
+    //GlobalOpenTelemetry cannot be set
     public static void set(OpenTelemetry openTelemetry) {
         throw new IllegalStateException(Tr.formatMessage(tc, "CWMOT5001.cannot.set.globalopentelemetry"));
     }
