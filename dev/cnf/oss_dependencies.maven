@@ -375,9 +375,9 @@ org.apache.deltaspike.modules:deltaspike-scheduler-module-impl:1.5.0
 org.apache.derby:derby:10.11.1.1
 org.apache.derby:derbyclient:10.11.1.1
 org.apache.derby:derbynet:10.11.1.1
-org.apache.directory.server:apacheds-all:2.0.0-M24
+org.apache.directory.server:apacheds-all:2.0.0.AM26
 org.apache.directory.server:apacheds-service:2.0.0-M15
-org.apache.directory.server:kerberos-client:2.0.0-M24
+org.apache.directory.server:kerberos-client:2.0.0.AM26
 org.apache.felix:org.apache.felix.http.api:2.2.0
 org.apache.felix:org.apache.felix.http.base:2.2.0
 org.apache.felix:org.apache.felix.scr:2.2.6
