@@ -42,6 +42,9 @@ import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
 
 import com.google.common.io.BaseEncoding;
 import com.ibm.ejs.ras.TraceNLS;
@@ -82,8 +85,7 @@ import io.openliberty.grpc.internal.servlet.GrpcServletUtils;
 @ExperimentalApi("https://github.com/grpc/grpc-java/issues/5066")
 public final class ServletAdapter {
 
-  private static final String CLASS_NAME = ServletAdapter.class.getName();
-  static final Logger logger = Logger.getLogger(CLASS_NAME);
+  static final Logger logger = Logger.getLogger(ServletAdapter.class.getName());
   private static TraceNLS nls = TraceNLS.getTraceNLS(ServletAdapter.class , GrpcMessages.GRPC_BUNDLE);
   
   private final ServerTransportListener transportListener;
@@ -105,7 +107,7 @@ public final class ServletAdapter {
    * Call this method inside {@link javax.servlet.http.HttpServlet#doGet(HttpServletRequest,
    * HttpServletResponse)} to serve gRPC GET request.
    *
-   * <p>This method is currently not impelemented.
+   * <p>This method is currently not implemented.
    *
    * <p>Note that in rare case gRPC client sends GET requests.
    *
@@ -113,7 +115,7 @@ public final class ServletAdapter {
    * calling {@code resp.setBufferSize()} before invocation is allowed.
    */
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    // TODO(zdapeng)
+    resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "GET method not supported");
   }
 
   /**
@@ -153,6 +155,7 @@ public final class ServletAdapter {
 		}
 
 		AsyncContext asyncCtx = req.startAsync(req, resp);
+		ServletRequest asyncRq = asyncCtx.getRequest();
 
 		if (logger.isLoggable(FINEST)) {
 			logger.log(FINE, "Liberty inbound gRPC request path translated to {0}", method);
@@ -172,22 +175,22 @@ public final class ServletAdapter {
 		asyncCtx.setTimeout(TimeUnit.NANOSECONDS.toMillis(timeoutNanos));
 		StatsTraceContext statsTraceCtx = StatsTraceContext.newServerContext(streamTracerFactories, method, headers);
 
-		ServletServerStream stream = new ServletServerStream(asyncCtx, statsTraceCtx, maxInboundMessageSize, attributes
+		ServletServerStream stream = new ServletServerStream(asyncCtx, asyncCtx.getResponse(), statsTraceCtx, maxInboundMessageSize, attributes
 				.toBuilder()
 				.set(Grpc.TRANSPORT_ATTR_REMOTE_ADDR, new InetSocketAddress(req.getRemoteHost(), req.getRemotePort()))
 				.set(Grpc.TRANSPORT_ATTR_LOCAL_ADDR, new InetSocketAddress(req.getLocalAddr(), req.getLocalPort()))
 				.build(), getAuthority(req), logId);
 
 		if (logger.isLoggable(FINEST)) {
-			logger.log(FINE, "set the listeners on async request {0}", asyncCtx.getRequest());
+			logger.log(FINE, "set the listeners on async request {0}", asyncRq);
 		}
 
-		asyncCtx.getRequest().getInputStream().setReadListener(new GrpcReadListener(stream, asyncCtx, logId));
+		asyncRq.getInputStream().setReadListener(new GrpcReadListener(stream, asyncCtx, asyncRq, logId));
 
 		asyncCtx.addListener(new GrpcAsycListener(stream, logId));
 
 		if (logger.isLoggable(FINEST)) {
-			logger.log(FINE, "[{0}] the listeners set on async request {1}", new Object[] { logId, asyncCtx.getRequest()});
+			logger.log(FINE, "[{0}] the listeners set on async request {1}", new Object[] { logId, asyncRq});
 		}
 
 		transportListener.streamCreated(stream, method, headers);
@@ -195,6 +198,9 @@ public final class ServletAdapter {
 		stream.transportState().runOnTransportThread(stream.transportState()::onStreamAllocated);
 	}
 
+// This method must use Enumeration and its members, since that is the only way to read headers
+// from the servlet api.
+@SuppressWarnings("JdkObsolete")
   private static Metadata getHeaders(HttpServletRequest req, boolean libertyAuth) {
     Enumeration<String> headerNames = req.getHeaderNames();
     checkNotNull(
@@ -297,10 +303,11 @@ public final class ServletAdapter {
     GrpcReadListener(
         ServletServerStream stream,
         AsyncContext asyncCtx,
+        ServletRequest rq2,
         InternalLogId logId) throws IOException {
       this.stream = stream;
       this.asyncCtx = asyncCtx;
-      input = asyncCtx.getRequest().getInputStream();
+      input = rq2.getInputStream();
       this.logId = logId;
     }
 
@@ -334,7 +341,7 @@ public final class ServletAdapter {
     public void onAllDataRead() {
       logger.log(FINE, "[{0}] onAllDataRead", logId);
       stream.transportState().runOnTransportThread(() ->
-          stream.transportState().inboundDataReceived(ReadableBuffers.wrap(new byte[] {}), true));
+          stream.transportState().inboundDataReceived(ReadableBuffers.empty(), true));
     }
 
     @Override
@@ -363,4 +370,27 @@ public final class ServletAdapter {
     return request.getContentType() != null
         && request.getContentType().contains(GrpcUtil.CONTENT_TYPE_GRPC);
   }
+
+private boolean libertyAuth(HttpServletRequest req, HttpServletResponse resp, InternalLogId logId, String method) {
+	// Liberty change: remove application context root from path
+	// then perform authentication/authorization
+
+	if (resp.isCommitted()) {
+		// security error might have already occurred
+		logger.log(Level.SEVERE, nls.getFormattedMessage("response.already.committed", new Object[] { method },
+				"The response has already been committed."));
+		logger.log(FINE, "[{0}] RPC exited for service [{1}]", new Object[] { logId, method });
+		return false;
+	}
+
+	boolean libertyAuth = true;
+	if (GrpcServerComponent.isSecurityEnabled()) {
+		libertyAuth = GrpcServerSecurity.doServletAuth(req, resp, method);
+	}
+	
+	return libertyAuth;
+}
+
+
+
 }

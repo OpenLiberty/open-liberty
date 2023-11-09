@@ -22,6 +22,7 @@ Bundle-Description: gRPC Client Monitor, version ${bVersion}
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
   !*.internal.*, \
+  !com.google.errorprone.*,\
   com.ibm.websphere.monitor.meters;version="1.0.0", \
   com.ibm.websphere.monitor.annotation;version="1.0.0", \
   com.ibm.websphere.monitor.jmx;version="1.0.0", \
