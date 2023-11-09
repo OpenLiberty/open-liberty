@@ -27,6 +27,7 @@ import jakarta.data.repository.Save;
 import jakarta.enterprise.concurrent.Asynchronous;
 
 import io.openliberty.data.repository.Select;
+import io.openliberty.data.repository.comparison.In;
 import io.openliberty.data.repository.comparison.StartsWith;
 import io.openliberty.data.repository.update.Assign;
 
@@ -39,12 +40,9 @@ import io.openliberty.data.repository.update.Assign;
 @Repository
 public interface Personnel {
     @Asynchronous
-    @Query("UPDATE Person o SET o.lastName=?3 WHERE (o.lastName=?1 And o.ssn_id IN ?2)")
-    // TODO re-enable once Filter operations are moved to method parameter annotations
-    //@Filter(by = "lastName")
-    //@Filter(by = "ssn_id", op = Compare.In)
-    //@Update(attr = "lastName")
-    CompletionStage<Integer> changeSurnames(String oldSurname, List<Long> ssnList, String newSurname);
+    CompletionStage<Integer> changeSurnames(@By("lastName") String oldSurname,
+                                            @By("ssn_id") @In List<Long> ssnList,
+                                            @Assign("lastName") String newSurname);
 
     @Asynchronous
     CompletableFuture<Long> countByFirstNameStartsWith(String beginningOfFirstName);

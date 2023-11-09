@@ -3460,9 +3460,12 @@ public class DataTestServlet extends FATServlet {
         s = shipments.find(3);
         assertEquals("44.029468, -92.483191", s.getLocation());
 
-        assertEquals(true, shipments.cancel(4, OffsetDateTime.now()));
-        assertEquals(true, shipments.cancel(5, OffsetDateTime.now()));
-        assertEquals(false, shipments.cancel(10, OffsetDateTime.now()));
+        assertEquals(true, shipments.cancel(4, Set.of("PREPARING", "READY_FOR_PICKUP"),
+                                            "CANCELED", OffsetDateTime.now()));
+        assertEquals(true, shipments.cancel(5, Set.of("PREPARING", "READY_FOR_PICKUP"),
+                                            "CANCELED", OffsetDateTime.now()));
+        assertEquals(false, shipments.cancel(10, Set.of("PREPARING", "READY_FOR_PICKUP"),
+                                             "CANCELED", OffsetDateTime.now()));
 
         assertEquals(2, shipments.statusBasedRemoval("CANCELED"));
 

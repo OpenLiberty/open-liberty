@@ -30,9 +30,8 @@ import jakarta.data.repository.Update;
  * <p>Example query for single attribute value:</p>
  *
  * <pre>
- * {@literal @Filter}(by = "id")
  * {@literal @Select}("price")
- * Optional{@literal <Float>} priceOf(long productId);
+ * Optional{@literal <Float>} priceOf({@literal @By("id")} long productId);
  * </pre>
  *
  * <p>Example usage:</p>
@@ -44,11 +43,10 @@ import jakarta.data.repository.Update;
  * <p>Example query of Employee entities converted to record type Person(firstName, surname):</p>
  *
  * <pre>
- * {@literal @Filter}(by = "age")
  * {@literal @Select}("firstName", "lastName")
  * {@literal @OrderBy}("lastName")
  * {@literal @OrderBy}("firstName")
- * List{@literal <Person>} ofAge(int age);
+ * List{@literal <Person>} ofAge({@literal @By("age")} int yearsOld);
  * </pre>
  *
  * <p>Example usage:</p>
