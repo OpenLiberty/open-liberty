@@ -112,10 +112,10 @@ public class JaxRsRouteTestServlet extends FATServlet {
     }
 
     @Test
-    public void testRouteWithSubResource() {
+    public void testRouteWithSubResourceWithPathParam() {
         URI testUri = getUri();
         Span span = utils.withTestSpan(() -> {
-            Response response = ClientBuilder.newClient().target(testUri).path("getSubResource/myIdForTesting/details").request()
+            Response response = ClientBuilder.newClient().target(testUri).path("getSubResourceWithPathParam/myIdForTesting/details").request()
                             .build("GET").invoke();
             System.out.println("RESPONSESSS" + response.toString());
             assertThat(response.getStatus(), equalTo(200));
@@ -132,14 +132,47 @@ public class JaxRsRouteTestServlet extends FATServlet {
                         .withKind(SpanKind.CLIENT)
                         .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
                         .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
-                        .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "getSubResource/myIdForTesting/details"));
+                        .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "getSubResourceWithPathParam/myIdForTesting/details"));
 
         assertThat(serverSpan, isSpan()
                         .withKind(SpanKind.SERVER)
                         .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
                         .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
-                        .withAttribute(SemanticAttributes.HTTP_ROUTE, getPath() + "getSubResource/{id}/details")
-                        .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "getSubResource/{id}/details"));
+                        .withAttribute(SemanticAttributes.HTTP_ROUTE, getPath() + "getSubResourceWithPathParam/{id}/details")
+                        .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "getSubResourceWithPathParam/{id}/details"));
+    }
+
+    @Test
+    public void testRouteWithSubResourceWithQueryParam() {
+        URI testUri = getUri();
+        Span span = utils.withTestSpan(() -> {
+            Response response = ClientBuilder.newClient()
+                            .target(testUri)
+                            .path("getSubResourceWithQueryParam/details")
+                            .queryParam("id", "myIdForTesting")
+                            .request()
+                            .build("GET").invoke();
+            assertThat(response.getStatus(), equalTo(200));
+            assertThat(response.readEntity(String.class), equalTo("myIdForTesting"));
+        });
+
+        List<SpanData> spans = exporter.getFinishedSpanItems(3, span.getSpanContext().getTraceId());
+        TestSpans.assertLinearParentage(spans);
+
+        SpanData clientSpan = spans.get(1);
+        SpanData serverSpan = spans.get(2);
+
+        assertThat(clientSpan, isSpan()
+                        .withKind(SpanKind.CLIENT)
+                        .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
+                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
+                        .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "/getSubResourceWithQueryParam?id=myIdForTesting"));
+
+        assertThat(serverSpan, isSpan()
+                        .withKind(SpanKind.SERVER)
+                        .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
+                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
+                        .withAttribute(SemanticAttributes.HTTP_ROUTE, getPath() + "/getSubResourceWithQueryParam"));
     }
 
     private URI getUri() {

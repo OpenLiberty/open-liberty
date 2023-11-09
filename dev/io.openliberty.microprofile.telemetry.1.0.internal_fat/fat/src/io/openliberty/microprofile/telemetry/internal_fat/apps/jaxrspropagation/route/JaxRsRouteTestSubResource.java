@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.route;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 public class JaxRsRouteTestSubResource {
@@ -19,7 +20,8 @@ public class JaxRsRouteTestSubResource {
 
     private final String id;
 
-    @Path("details")
+    @Path("/details")
+    @GET
     public String details() {
         return id;
     }

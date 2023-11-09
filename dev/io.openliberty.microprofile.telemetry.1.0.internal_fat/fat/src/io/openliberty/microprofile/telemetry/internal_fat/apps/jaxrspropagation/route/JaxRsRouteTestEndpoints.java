@@ -29,8 +29,13 @@ public class JaxRsRouteTestEndpoints {
         return id;
     }
 
-    @Path("/getSubResource/{id}")
-    public JaxRsRouteTestSubResource getSubResource(@PathParam("id") String id) {
+    @Path("/getSubResourceWithPathParam/{id}")
+    public JaxRsRouteTestSubResource getSubResourceWithPathParam(@PathParam("id") String id) {
+        return new JaxRsRouteTestSubResource(id);
+    }
+
+    @Path("/getSubResourceWithQueryParam")
+    public JaxRsRouteTestSubResource getSubResourceWithQueryParam(@QueryParam("id") String id) {
         return new JaxRsRouteTestSubResource(id);
     }
 
