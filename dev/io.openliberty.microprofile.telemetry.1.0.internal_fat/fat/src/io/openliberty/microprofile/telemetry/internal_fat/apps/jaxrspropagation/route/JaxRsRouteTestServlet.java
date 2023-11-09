@@ -132,7 +132,7 @@ public class JaxRsRouteTestServlet extends FATServlet {
                         .withKind(SpanKind.CLIENT)
                         .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
                         .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
-                        .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "getSubResourceWithPathParam/myIdForTesting/details"));
+                        .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "getSubResourceWithPathParam/{id}/details"));
 
         assertThat(serverSpan, isSpan()
                         .withKind(SpanKind.SERVER)
