@@ -164,7 +164,8 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
                     ROUTE_CACHE.putRoute(resourceClass, resourceMethod, route);
                 }
 
-                currentSpan.setAttribute(SemanticAttributes.HTTP_ROUTE, route);
+                currentSpan.setAttribute(SemanticAttributes.HTTP_ROUTE + " " + route);
+                currentSpan.updateName(request.getMethod() + route);
             }
         }
     }
