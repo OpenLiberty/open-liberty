@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -82,7 +83,14 @@ import io.openliberty.data.repository.comparison.LessThan;
 import io.openliberty.data.repository.comparison.LessThanEqual;
 import io.openliberty.data.repository.comparison.Like;
 import io.openliberty.data.repository.comparison.StartsWith;
+import io.openliberty.data.repository.function.AbsoluteValue;
+import io.openliberty.data.repository.function.CharCount;
+import io.openliberty.data.repository.function.ElementCount;
+import io.openliberty.data.repository.function.Extract;
+import io.openliberty.data.repository.function.IgnoreCase;
 import io.openliberty.data.repository.function.Not;
+import io.openliberty.data.repository.function.Rounded;
+import io.openliberty.data.repository.function.Trimmed;
 import io.openliberty.data.repository.update.Add;
 import io.openliberty.data.repository.update.Assign;
 import io.openliberty.data.repository.update.Divide;
@@ -128,24 +136,42 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private static final String FUNCTION_ANNO_PACKAGE = Not.class.getPackageName();
     private static final String UPDATE_ANNO_PACKAGE = Add.class.getPackageName();
 
-    private static final Map<Function, String> FUNCTION_CALLS = new HashMap<>();
+    private static final Map<String, String> FUNCTION_CALLS = new HashMap<>();
     static {
-        FUNCTION_CALLS.put(Function.AbsoluteValue, "ABS(");
-        FUNCTION_CALLS.put(Function.CharCount, "LENGTH(");
-        FUNCTION_CALLS.put(Function.ElementCount, "SIZE(");
-        FUNCTION_CALLS.put(Function.IgnoreCase, "LOWER(");
-        FUNCTION_CALLS.put(Function.Rounded, "ROUND(");
-        FUNCTION_CALLS.put(Function.RoundedDown, "FLOOR(");
-        FUNCTION_CALLS.put(Function.RoundedUp, "CEILING(");
-        FUNCTION_CALLS.put(Function.Trimmed, "TRIM(");
-        FUNCTION_CALLS.put(Function.WithDay, "EXTRACT (DAY FROM ");
-        FUNCTION_CALLS.put(Function.WithHour, "EXTRACT (HOUR FROM ");
-        FUNCTION_CALLS.put(Function.WithMinute, "EXTRACT (MINUTE FROM ");
-        FUNCTION_CALLS.put(Function.WithMonth, "EXTRACT (MONTH FROM ");
-        FUNCTION_CALLS.put(Function.WithQuarter, "EXTRACT (QUARTER FROM ");
-        FUNCTION_CALLS.put(Function.WithSecond, "EXTRACT (SECOND FROM ");
-        FUNCTION_CALLS.put(Function.WithWeek, "EXTRACT (WEEK FROM ");
-        FUNCTION_CALLS.put(Function.WithYear, "EXTRACT (YEAR FROM ");
+        FUNCTION_CALLS.put(AbsoluteValue.class.getSimpleName(), "ABS(");
+        FUNCTION_CALLS.put(CharCount.class.getSimpleName(), "LENGTH(");
+        FUNCTION_CALLS.put(ElementCount.class.getSimpleName(), "SIZE(");
+        FUNCTION_CALLS.put(IgnoreCase.class.getSimpleName(), "LOWER(");
+        FUNCTION_CALLS.put(Not.class.getSimpleName(), "NOT(");
+        FUNCTION_CALLS.put(Rounded.Direction.DOWN.name(), "FLOOR(");
+        FUNCTION_CALLS.put(Rounded.Direction.NEAREST.name(), "ROUND(");
+        FUNCTION_CALLS.put(Rounded.Direction.UP.name(), "CEILING(");
+        FUNCTION_CALLS.put(Trimmed.class.getSimpleName(), "TRIM(");
+        FUNCTION_CALLS.put(Extract.Field.DAY.name(), "EXTRACT (DAY FROM ");
+        FUNCTION_CALLS.put(Extract.Field.HOUR.name(), "EXTRACT (HOUR FROM ");
+        FUNCTION_CALLS.put(Extract.Field.MINUTE.name(), "EXTRACT (MINUTE FROM ");
+        FUNCTION_CALLS.put(Extract.Field.MONTH.name(), "EXTRACT (MONTH FROM ");
+        FUNCTION_CALLS.put(Extract.Field.QUARTER.name(), "EXTRACT (QUARTER FROM ");
+        FUNCTION_CALLS.put(Extract.Field.SECOND.name(), "EXTRACT (SECOND FROM ");
+        FUNCTION_CALLS.put(Extract.Field.WEEK.name(), "EXTRACT (WEEK FROM ");
+        FUNCTION_CALLS.put(Extract.Field.YEAR.name(), "EXTRACT (YEAR FROM ");
+        // TODO remove the following once we can delete Function
+        FUNCTION_CALLS.put(Function.AbsoluteValue.name(), "ABS(");
+        FUNCTION_CALLS.put(Function.CharCount.name(), "LENGTH(");
+        FUNCTION_CALLS.put(Function.ElementCount.name(), "SIZE(");
+        FUNCTION_CALLS.put(Function.IgnoreCase.name(), "LOWER(");
+        FUNCTION_CALLS.put(Function.Rounded.name(), "ROUND(");
+        FUNCTION_CALLS.put(Function.RoundedDown.name(), "FLOOR(");
+        FUNCTION_CALLS.put(Function.RoundedUp.name(), "CEILING(");
+        FUNCTION_CALLS.put(Function.Trimmed.name(), "TRIM(");
+        FUNCTION_CALLS.put(Function.WithDay.name(), "EXTRACT (DAY FROM ");
+        FUNCTION_CALLS.put(Function.WithHour.name(), "EXTRACT (HOUR FROM ");
+        FUNCTION_CALLS.put(Function.WithMinute.name(), "EXTRACT (MINUTE FROM ");
+        FUNCTION_CALLS.put(Function.WithMonth.name(), "EXTRACT (MONTH FROM ");
+        FUNCTION_CALLS.put(Function.WithQuarter.name(), "EXTRACT (QUARTER FROM ");
+        FUNCTION_CALLS.put(Function.WithSecond.name(), "EXTRACT (SECOND FROM ");
+        FUNCTION_CALLS.put(Function.WithWeek.name(), "EXTRACT (WEEK FROM ");
+        FUNCTION_CALLS.put(Function.WithYear.name(), "EXTRACT (YEAR FROM ");
     }
 
     private static final Set<Class<?>> SPECIAL_PARAM_TYPES = new HashSet<>(Arrays.asList //
@@ -1343,8 +1369,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
 
                 // Determine the entity attribute name, first from @By("name"), otherwise from the parameter name
-                String attribute = paramInfo == null ? "" : paramInfo.attributeName;
-                if (attribute.length() == 0) {
+                String attribute = paramInfo == null ? null : paramInfo.byAttribute;
+                if (attribute == null) {
                     if (isNamePresent == null) {
                         params = queryInfo.method.getParameters();
                         isNamePresent = params[p].isNamePresent();
@@ -1359,16 +1385,37 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                    " with the -parameters compiler option that preserves the parameter names."); // TODO NLS
                 }
 
+                boolean ignoreCase = false;
+                StringBuilder attributeExpr = new StringBuilder();
+                if (paramInfo != null && paramInfo.functionAnnos != null)
+                    for (ListIterator<Annotation> fn = paramInfo.functionAnnos.listIterator(paramInfo.functionAnnos.size()); fn.hasPrevious();) {
+                        Annotation anno = fn.previous();
+                        ignoreCase |= anno instanceof IgnoreCase;
+                        String functionType = anno instanceof Extract ? ((Extract) anno).value().name() //
+                                        : anno instanceof Rounded ? ((Rounded) anno).value().name() //
+                                                        : anno.annotationType().getSimpleName();
+                        String functionCall = FUNCTION_CALLS.get(functionType);
+                        if (functionCall == null)
+                            throw new UnsupportedOperationException(anno.toString()); // should never occur
+                        attributeExpr.append(functionCall);
+                    }
+
                 String name = queryInfo.entityInfo.getAttributeName(attribute, true);
                 if (name == null) {
                     // TODO generateConditionsForIdClass(...); continue;
                     throw new UnsupportedOperationException("Queries with IdClass"); // TODO NLS
                 }
 
-                StringBuilder attributeExpr = new StringBuilder();
                 attributeExpr.append(o).append('.').append(name);
 
-                boolean ignoreCase = false;
+                if (paramInfo != null && paramInfo.functionAnnos != null)
+                    for (Annotation anno : paramInfo.functionAnnos) {
+                        if (anno instanceof Rounded && ((Rounded) anno).value() == Rounded.Direction.NEAREST)
+                            attributeExpr.append(", 0)"); // round to zero digits beyond the decimal
+                        else
+                            attributeExpr.append(')');
+                    }
+
                 boolean isCollection = queryInfo.entityInfo.collectionElementTypes.containsKey(name);
                 if (isCollection)
                     verifyCollectionsSupported(name, ignoreCase, paramInfo == null ? null : paramInfo.comparisonAnno);
@@ -1376,35 +1423,35 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 queryInfo.paramCount++;
 
                 if (paramInfo == null || paramInfo.comparisonAnno == null) { // Equals
-                    q.append(attributeExpr).append(paramInfo != null && paramInfo.negate ? "<>" : "=");
+                    q.append(attributeExpr).append('=');
                     appendParam(q, ignoreCase, p + 1);
                 } else if (paramInfo.comparisonAnno instanceof GreaterThan) {
-                    q.append(attributeExpr).append(paramInfo.negate ? "<=" : ">");
+                    q.append(attributeExpr).append('>');
                     appendParam(q, ignoreCase, p + 1);
                 } else if (paramInfo.comparisonAnno instanceof GreaterThanEqual) {
-                    q.append(attributeExpr).append(paramInfo.negate ? "<" : ">=");
+                    q.append(attributeExpr).append(">=");
                     appendParam(q, ignoreCase, p + 1);
                 } else if (paramInfo.comparisonAnno instanceof LessThan) {
-                    q.append(attributeExpr).append(paramInfo.negate ? ">=" : "<");
+                    q.append(attributeExpr).append('<');
                     appendParam(q, ignoreCase, p + 1);
                 } else if (paramInfo.comparisonAnno instanceof LessThanEqual) {
-                    q.append(attributeExpr).append(paramInfo.negate ? ">" : "<=");
+                    q.append(attributeExpr).append("<=");
                     appendParam(q, ignoreCase, p + 1);
                 } else if (paramInfo.comparisonAnno instanceof Contains) {
                     if (isCollection) {
-                        q.append(" ?").append(p + 1).append(paramInfo.negate ? " NOT " : " ").append("MEMBER OF ").append(attributeExpr);
+                        q.append(" ?").append(p + 1).append(" MEMBER OF ").append(attributeExpr);
                     } else {
-                        q.append(attributeExpr).append(paramInfo.negate ? " NOT " : " ").append("LIKE CONCAT('%', ");
+                        q.append(attributeExpr).append(" LIKE CONCAT('%', ");
                         appendParam(q, ignoreCase, p + 1).append(", '%')");
                     }
                 } else if (paramInfo.comparisonAnno instanceof Like) {
-                    q.append(attributeExpr).append(paramInfo.negate ? " NOT " : " ").append("LIKE ");
+                    q.append(attributeExpr).append(" LIKE ");
                     appendParam(q, ignoreCase, p + 1);
                 } else if (paramInfo.comparisonAnno instanceof StartsWith) {
-                    q.append(attributeExpr).append(paramInfo.negate ? " NOT " : " ").append("LIKE CONCAT(");
+                    q.append(attributeExpr).append(" LIKE CONCAT(");
                     appendParam(q, ignoreCase, p + 1).append(", '%')");
                 } else if (paramInfo.comparisonAnno instanceof EndsWith) {
-                    q.append(attributeExpr).append(paramInfo.negate ? " NOT " : " ").append("LIKE CONCAT('%', ");
+                    q.append(attributeExpr).append(" LIKE CONCAT('%', ");
                     appendParam(q, ignoreCase, p + 1).append(')');
                 } else if (paramInfo.comparisonAnno instanceof In) {
                     if (ignoreCase)
@@ -1412,7 +1459,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                    " annotations cannot be combined on parameter " + (p + 1) + " of the " +
                                                    queryInfo.method.getName() + " method of the " +
                                                    repositoryInterface.getName() + " repository."); // TODO NLS
-                    q.append(attributeExpr).append(paramInfo.negate ? " NOT " : "").append(" IN ");
+                    q.append(attributeExpr).append(" IN ");
                     appendParam(q, ignoreCase, p + 1);
                 } else {
                     throw new UnsupportedOperationException(paramInfo.comparisonAnno.annotationType().toString());
@@ -1548,17 +1595,18 @@ public class RepositoryImpl<R> implements InvocationHandler {
         ParamInfo[] allParamInfo = annosForAllParams.length == 0 ? null : new ParamInfo[annosForAllParams.length];
         for (int p = 0; p < annosForAllParams.length; p++)
             if (annosForAllParams[p].length > 0) {
-                ParamInfo paramInfo = new ParamInfo();
+                ParamInfo paramInfo = null;
                 for (Annotation anno : annosForAllParams[p])
                     if (anno instanceof By) {
-                        paramInfo.attributeName = ((By) anno).value();
+                        paramInfo = paramInfo == null ? new ParamInfo() : paramInfo;
+                        paramInfo.byAttribute = ((By) anno).value();
                     } else if (anno instanceof Or) {
+                        paramInfo = paramInfo == null ? new ParamInfo() : paramInfo;
                         paramInfo.or = true;
-                    } else if (anno instanceof Not) {
-                        paramInfo.negate = true;
                     } else {
                         String packageName = anno.annotationType().getPackageName();
                         if (COMPARISON_ANNO_PACKAGE.equals(packageName)) {
+                            paramInfo = paramInfo == null ? new ParamInfo() : paramInfo;
                             if (paramInfo.comparisonAnno == null)
                                 paramInfo.comparisonAnno = anno;
                             else
@@ -1567,8 +1615,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                            queryInfo.method.getName() + " method of the " +
                                                            repositoryInterface.getName() + " repository."); // TODO NLS
                         } else if (FUNCTION_ANNO_PACKAGE.equals(packageName)) {
+                            paramInfo = paramInfo == null ? new ParamInfo() : paramInfo;
                             paramInfo.addFunctionAnnotation(anno);
                         } else if (UPDATE_ANNO_PACKAGE.equals(packageName)) {
+                            paramInfo = paramInfo == null ? new ParamInfo() : paramInfo;
                             hasUpdateParam = true;
                             if (paramInfo.updateAnno == null)
                                 paramInfo.updateAnno = anno;
@@ -1579,10 +1629,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                            repositoryInterface.getName() + " repository."); // TODO NLS
                         }
                     }
-                if (paramInfo.hasDataAnnotation()) {
-                    allParamInfo[p] = paramInfo;
-                    isParameterBased = true;
-                }
+                allParamInfo[p] = paramInfo;
+                isParameterBased |= paramInfo != null;
             }
 
         if (methodTypeAnno instanceof Update) {
@@ -2063,7 +2111,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             for (int f = functions.length - 1; f >= 0; f--) {
                 if (functions[f] == Function.IgnoreCase)
                     ignoreCase = true;
-                String functionCall = FUNCTION_CALLS.get(functions[f]);
+                String functionCall = FUNCTION_CALLS.get(functions[f].name());
                 if (functionCall == null)
                     throw new UnsupportedOperationException(functions[f].name()); // should never occur
                 attributeExpr.append(functionCall);

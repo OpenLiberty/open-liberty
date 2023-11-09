@@ -744,7 +744,7 @@ public class DataJPATestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of("Custom Alarm", "Mayo Clinic", "Olmsted Medical", "Reichel Foods"),
-                             businesses.onSouthSide());
+                             businesses.onSouthSideOf("Rochester", "MN", "s"));
     }
 
     /**

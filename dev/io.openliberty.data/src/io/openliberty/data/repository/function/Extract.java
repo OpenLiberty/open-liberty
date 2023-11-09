@@ -20,5 +20,16 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 public @interface Extract {
-    // TODO value=YEAR|QUARTER|MONTH|DAY|HOUR|MINUTE|SECOND
+    enum Field {
+        YEAR,
+        QUARTER,
+        MONTH,
+        WEEK,
+        DAY,
+        HOUR,
+        MINUTE,
+        SECOND
+    }
+
+    Field value();
 }

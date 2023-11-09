@@ -42,19 +42,21 @@ import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.enterprise.concurrent.Asynchronous;
 
-import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
-import io.openliberty.data.repository.Filter;
-import io.openliberty.data.repository.Function;
 import io.openliberty.data.repository.Or;
 import io.openliberty.data.repository.Select;
+import io.openliberty.data.repository.comparison.Contains;
 import io.openliberty.data.repository.comparison.EndsWith;
 import io.openliberty.data.repository.comparison.GreaterThan;
 import io.openliberty.data.repository.comparison.GreaterThanEqual;
 import io.openliberty.data.repository.comparison.LessThan;
 import io.openliberty.data.repository.comparison.LessThanEqual;
+import io.openliberty.data.repository.comparison.Like;
+import io.openliberty.data.repository.function.CharCount;
+import io.openliberty.data.repository.function.IgnoreCase;
 import io.openliberty.data.repository.function.Not;
+import io.openliberty.data.repository.function.Trimmed;
 
 /**
  * Repository with data that is pre-populated.
@@ -220,17 +222,11 @@ public interface Primes {
     Long howManyBetweenExclusive(@By("NumberId") @GreaterThan long exclusiveMin,
                                  @By("NumberId") @LessThan long exclusiveMax);
 
-    @Filter(by = "id", op = Compare.Between)
-    @Filter(by = "romanNumeral", fn = Function.IgnoreCase, op = Compare.Like, value = "%v%")
-    @Filter(by = "name", op = Compare.Contains)
     @OrderBy(value = "id", descending = true)
-    List<Long> inRangeHavingVNumeralAndSubstringOfName(long min, long max, String nameSuffix);
-    // TODO after IgnoreCase is added, switch to:
-    //@OrderBy(value = "id", descending = true)
-    //List<Long> inRangeHavingNumeralLikeAndSubstringOfName(@By("id") @GreaterThanEqual long min,
-    //                                                      @By("id") @LessThanEqual long max,
-    //                                                      @By("romanNumeral") @IgnoreCase @Like String pattern,
-    //                                                      @By("name") @Contains String nameSuffix);
+    List<Long> inRangeHavingNumeralLikeAndSubstringOfName(@By("id") @GreaterThanEqual long min,
+                                                          @By("id") @LessThanEqual long max,
+                                                          @By("romanNumeral") @IgnoreCase @Like String pattern,
+                                                          @By("name") @Contains String nameSuffix);
 
     @Exists
     boolean isFoundWith(long id, String hex);
@@ -317,16 +313,15 @@ public interface Primes {
     @OrderBy(value = "sumOfBits", descending = true)
     KeysetAwarePage<Prime> upTo(long maxNumber, Pageable pagination);
 
-    @Filter(by = "name", fn = Function.CharCount, op = Compare.Between)
     @OrderBy("name")
-    Stream<Prime> whereNameLengthWithin(int minLength, int maxLength);
+    Stream<Prime> whereNameLengthWithin(@By("name") @CharCount @GreaterThanEqual int minLength,
+                                        @By("name") @CharCount @LessThanEqual int maxLength);
 
-    @Filter(by = "name", fn = { Function.Trimmed, Function.IgnoreCase })
-    Optional<Prime> withAnyCaseName(String name);
+    Optional<Prime> withAnyCaseName(@By("name") @Trimmed @IgnoreCase String name);
 
-    @Filter(by = "name", fn = { Function.Trimmed, Function.CharCount })
-    @Filter(by = "id", op = Compare.Between)
-    List<Prime> withNameLengthAndWithin(int length, long min, long max);
+    List<Prime> withNameLengthAndWithin(@By("name") @Trimmed @CharCount int length,
+                                        @By("id") @GreaterThanEqual long min,
+                                        @By("id") @LessThanEqual long max);
 
     @Select("name")
     List<String> withRomanNumeralSuffixAndWithoutNameSuffix(@By("romanNumeral") @EndsWith String numeralSuffix,

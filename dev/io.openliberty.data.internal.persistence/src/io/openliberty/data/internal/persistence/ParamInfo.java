@@ -18,17 +18,15 @@ import java.util.List;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import io.openliberty.data.repository.function.Not;
-
 /**
  * Information about a repository method parameter.
  */
 @Trivial
 class ParamInfo {
     /**
-     * Entity attribute name. Empty string to determine from the parameter name.
+     * Entity attribute name from the By annotation. Otherwise null.
      */
-    String attributeName;
+    String byAttribute;
 
     /**
      * Comparison annotation (such as LessThan) that is specified on the parameter. Otherwise null.
@@ -37,14 +35,8 @@ class ParamInfo {
 
     /**
      * Function annotations (such as AbsoluteValue) that are specified on the parameter. Otherwise null.
-     * The Not function is omitted from this list and tracked separately as the negate field.
      */
     List<Annotation> functionAnnos;
-
-    /**
-     * Indicates if the Not annotation is present.
-     */
-    boolean negate;
 
     /**
      * Indicates if the Or annotation is present.
@@ -57,16 +49,8 @@ class ParamInfo {
     Annotation updateAnno;
 
     void addFunctionAnnotation(Annotation anno) {
-        if (anno instanceof Not) {
-            negate = true;
-        } else {
-            if (functionAnnos == null)
-                functionAnnos = new ArrayList<>();
-            functionAnnos.add(anno);
-        }
-    }
-
-    boolean hasDataAnnotation() {
-        return or || negate || attributeName != null || comparisonAnno != null || functionAnnos != null || updateAnno != null;
+        if (functionAnnos == null)
+            functionAnnos = new ArrayList<>();
+        functionAnnos.add(anno);
     }
 }

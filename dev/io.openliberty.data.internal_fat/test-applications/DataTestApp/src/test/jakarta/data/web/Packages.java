@@ -12,6 +12,9 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import static io.openliberty.data.repository.function.Rounded.Direction.DOWN;
+import static io.openliberty.data.repository.function.Rounded.Direction.UP;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,13 +32,12 @@ import jakarta.data.repository.PageableRepository;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
-import io.openliberty.data.repository.Filter;
-import io.openliberty.data.repository.Function;
 import io.openliberty.data.repository.Or;
 import io.openliberty.data.repository.comparison.GreaterThan;
 import io.openliberty.data.repository.comparison.GreaterThanEqual;
 import io.openliberty.data.repository.comparison.LessThan;
 import io.openliberty.data.repository.comparison.LessThanEqual;
+import io.openliberty.data.repository.function.Rounded;
 import io.openliberty.data.repository.update.Add;
 import io.openliberty.data.repository.update.Divide;
 import io.openliberty.data.repository.update.SubtractFrom;
@@ -126,15 +128,12 @@ public interface Packages extends PageableRepository<Package, Integer> {
     @OrderBy(value = "id")
     KeysetAwarePage<Package> whereVolumeWithin(float minVolume, float maxVolume, Pageable pagination);
 
-    @Filter(by = "height", fn = Function.Rounded)
     @OrderBy(value = "id")
-    List<Integer> withHeightAbout(float height);
+    List<Integer> withHeightAbout(@Rounded float height);
 
-    @Filter(by = "length", fn = Function.RoundedDown)
     @OrderBy(value = "id")
-    List<Integer> withLengthFloored(float length);
+    List<Integer> withLengthFloored(@Rounded(DOWN) float length);
 
-    @Filter(by = "width", fn = Function.RoundedUp)
     @OrderBy(value = "id")
-    List<Integer> withWidthCeiling(float width);
+    List<Integer> withWidthCeiling(@Rounded(UP) float width);
 }
