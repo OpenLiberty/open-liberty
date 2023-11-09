@@ -21,6 +21,8 @@ package org.apache.cxf.microprofile.client.cdi;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,6 +54,7 @@ import org.apache.cxf.microprofile.client.CxfTypeSafeClientBuilder;
 import org.apache.cxf.microprofile.client.config.ConfigFacade;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.eclipse.microprofile.rest.client.spi.RestClientBuilderListener;
 
 public class RestClientBean implements Bean<Object>, PassivationCapable {
     private static final Logger LOG = LogUtils.getL7dLogger(RestClientBean.class); //Liberty change
@@ -93,6 +97,15 @@ public class RestClientBean implements Bean<Object>, PassivationCapable {
     public Object create(CreationalContext<Object> creationalContext) {
         //Liberty change start
         RestClientBuilder builder = new CxfTypeSafeClientBuilder();
+        final RestClientBuilder finalBuilder = builder;
+        AccessController.doPrivileged((PrivilegedAction<Void>)
+                                      () -> {
+                                          for(RestClientBuilderListener listener : ServiceLoader.load(RestClientBuilderListener.class)) {
+                                              listener.onNewBuilder(finalBuilder);
+                                          }
+                                          return null;
+                                      }
+                                  );
         String baseUri = getBaseUri();
         builder = ((CxfTypeSafeClientBuilder)builder).baseUri(URI.create(baseUri));
         List<Class<?>> providers = getConfiguredProviders();

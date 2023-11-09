@@ -25,8 +25,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URL;
+import java.security.AccessController;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,6 +36,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
@@ -58,9 +61,11 @@ import org.apache.cxf.common.util.PropertyUtils;
 import org.apache.cxf.common.util.ReflectionUtil;
 import org.apache.cxf.microprofile.client.CxfTypeSafeClientBuilder;
 import org.apache.cxf.microprofile.client.config.ConfigFacade;
+import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.eclipse.microprofile.rest.client.spi.RestClientBuilderListener;
 
 public class RestClientBean implements Bean<Object>, PassivationCapable {
     public static final String REST_URL_FORMAT = "%s/mp-rest/url";
@@ -115,6 +120,18 @@ public class RestClientBean implements Bean<Object>, PassivationCapable {
     @Override
     public Object create(CreationalContext<Object> creationalContext) {
         CxfTypeSafeClientBuilder builder = new CxfTypeSafeClientBuilder();
+        //Liberty change start
+        final RestClientBuilder finalBuilder = builder;
+        AccessController.doPrivileged((PrivilegedAction<Void>)
+                                      () -> {
+                                          for(RestClientBuilderListener listener : ServiceLoader.load(RestClientBuilderListener.class)) {
+                                              listener.onNewBuilder(finalBuilder);
+                                          }
+                                          return null;
+                                      }
+                                  );
+        //Liberty change end
+
         String baseUri = getBaseUri();
         builder = (CxfTypeSafeClientBuilder) builder.baseUri(URI.create(baseUri));
         List<Class<?>> providers = getConfiguredProviders();
