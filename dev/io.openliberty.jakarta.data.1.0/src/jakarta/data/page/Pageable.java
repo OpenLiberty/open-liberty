@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package jakarta.data.page;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.data.Sort;
 
@@ -47,7 +48,7 @@ public interface Pageable {
 
     public Pageable beforeKeysetCursor(Pageable.Cursor cursor);
 
-    public Cursor cursor();
+    public Optional<Cursor> cursor();
 
     public Mode mode();
 

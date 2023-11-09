@@ -14,6 +14,7 @@ package jakarta.data.page;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -28,7 +29,7 @@ record Pagination(long page,
                 int size,
                 List<Sort> sorts,
                 Mode mode,
-                Cursor cursor)
+                Cursor type)
                 implements Pageable {
 
     Pagination {
@@ -36,7 +37,7 @@ record Pagination(long page,
             throw new IllegalArgumentException("pageNumber: " + page);
         if (size < 1)
             throw new IllegalArgumentException("maxPageSize: " + size);
-        if (mode != Mode.OFFSET && (cursor == null || cursor.size() == 0))
+        if (mode != Mode.OFFSET && (type == null || type.size() == 0))
             throw new IllegalArgumentException("No keyset values were provided.");
     }
 
@@ -61,6 +62,11 @@ record Pagination(long page,
     }
 
     @Override
+    public Optional<Cursor> cursor() {
+        return type == null ? Optional.empty() : Optional.of(type);
+    }
+
+    @Override
     public Pagination next() {
         if (mode == Mode.OFFSET)
             return new Pagination(page + 1, size, sorts, mode, null);
@@ -78,12 +84,12 @@ record Pagination(long page,
 
     @Override
     public Pagination page(long pageNumber) {
-        return new Pagination(pageNumber, size, sorts, mode, cursor);
+        return new Pagination(pageNumber, size, sorts, mode, type);
     }
 
     @Override
     public Pagination size(int maxPageSize) {
-        return new Pagination(page, maxPageSize, sorts, mode, cursor);
+        return new Pagination(page, maxPageSize, sorts, mode, type);
     }
 
     @Override
@@ -94,7 +100,7 @@ record Pagination(long page,
         else
             order = StreamSupport.stream(sorts.spliterator(), false).collect(Collectors.toUnmodifiableList());
 
-        return new Pagination(page, size, order, mode, cursor);
+        return new Pagination(page, size, order, mode, type);
     }
 
     @Override
@@ -102,15 +108,15 @@ record Pagination(long page,
         @SuppressWarnings("unchecked")
         List<Sort> order = sorts == null ? Collections.EMPTY_LIST : List.of(sorts);
 
-        return new Pagination(page, size, order, mode, cursor);
+        return new Pagination(page, size, order, mode, type);
     }
 
     @Override
     public String toString() {
         StringBuilder b = new StringBuilder("Pageable{page=").append(page).append(", size=").append(size);
 
-        if (cursor != null)
-            b.append(", mode=").append(mode).append(", ").append(cursor.size()).append(" keys");
+        if (type != null)
+            b.append(", mode=").append(mode).append(", ").append(type.size()).append(" keys");
 
         for (Sort o : sorts) {
             b.append(", ").append(o.property()).append(o.ignoreCase() ? " IGNORE CASE" : "").append(o.isDescending() ? " DESC" : " ASC");
