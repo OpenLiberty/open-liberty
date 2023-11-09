@@ -70,6 +70,7 @@ public class JakartaEE9Test extends FATServletClient {
         if (JavaInfo.JAVA_VERSION < 11) {
             compatFeatures.remove("mpReactiveStreams-3.0");
             compatFeatures.remove("mpReactiveMessaging-3.0");
+            compatFeatures.remove("mpTelemetry-1.1");
         }
 
         // remove logAnalysis-1.0.  It depends on hpel being configured
