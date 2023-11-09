@@ -37,15 +37,14 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
+import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
-import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.SpanKind;
 
@@ -54,7 +53,6 @@ import io.opentelemetry.api.trace.SpanKind;
  * Spans are exported to Jaeger
  */
 @RunWith(FATRunner.class)
-// Broken on EE7 & 8, see https://github.com/OpenLiberty/open-liberty/issues/26856
 public class CrossFeatureJaegerTest {
 
     private static final String CROSS_FEATURE_TELEMETRY_SERVER = "crossFeatureTelemetryServer";
@@ -63,11 +61,7 @@ public class CrossFeatureJaegerTest {
     private static final AttributeKey<String> JAEGER_VERSION = AttributeKey.stringKey("jaeger.version");
 
     public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
-    // Broken on EE7 & 8, see https://github.com/OpenLiberty/open-liberty/issues/26856
-    public static RepeatTests repeat = TelemetryActions.repeat(CROSS_FEATURE_TELEMETRY_SERVER,
-                                                               MicroProfileActions.MP61,
-                                                               TelemetryActions.MP50_MPTEL11,
-                                                               MicroProfileActions.MP60);
+    public static RepeatTests repeat = FATSuite.allMPRepeats(CROSS_FEATURE_TELEMETRY_SERVER);
 
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);
