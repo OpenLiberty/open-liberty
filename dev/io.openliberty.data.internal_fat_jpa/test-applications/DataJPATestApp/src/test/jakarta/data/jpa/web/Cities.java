@@ -32,6 +32,8 @@ import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Function;
+import io.openliberty.data.repository.comparison.GreaterThanEqual;
+import io.openliberty.data.repository.comparison.LessThanEqual;
 import io.openliberty.data.repository.update.Assign;
 
 /**
@@ -63,12 +65,12 @@ public interface Cities {
     Iterable<CityId> deleteFirst3ByStateName(String state, Sort... sorts);
 
     @Delete
-    @Filter(by = "stateName")
-    Streamable<CityId> deleteSome(String state, Limit limit);
+    Streamable<CityId> deleteSome(@By("stateName") String state,
+                                  Limit limit);
 
     @Delete
-    @Filter(by = "population", op = Compare.Between)
-    CityId[] deleteWithinPopulationRange(int min, int max);
+    CityId[] deleteWithinPopulationRange(@By("population") @GreaterThanEqual int min,
+                                         @By("population") @LessThanEqual int max);
 
     boolean existsById(CityId id);
 
@@ -115,6 +117,11 @@ public interface Cities {
     @Filter(by = "population", op = Compare.GreaterThan, param = "size")
     boolean isBiggerThan(@Param("size") int minPopulation, @Param("name") CityId id);
 
+    // TODO switch to the following after adding support for IdClass:
+    //@Exists
+    //boolean isBiggerThan(@By("population") @GreaterThan int minPopulation,
+    //                     @By("id") CityId id);
+
     @Filter(by = "population", op = Compare.GreaterThan)
     @Filter(by = "id", fn = Function.IgnoreCase, op = Compare.Not)
     @Filter(by = "stateName", op = Compare.StartsWith)
@@ -147,9 +154,10 @@ public interface Cities {
                 @Assign("areaCodes") Set<Integer> newAreaCodes,
                 @Assign("population") int newPopulation);
 
-    @Filter(by = "population", op = Compare.Between, param = { "minSize", "maxSize" })
     @OrderBy(value = "id", descending = true)
-    KeysetAwarePage<City> sizedWithin(@Param("minSize") int minPopulation, @Param("maxSize") int maxPopulation, Pageable pagination);
+    KeysetAwarePage<City> sizedWithin(@By("population") @GreaterThanEqual int minPopulation,
+                                      @By("population") @LessThanEqual int maxPopulation,
+                                      Pageable pagination);
 
     @Save
     City save(City c);

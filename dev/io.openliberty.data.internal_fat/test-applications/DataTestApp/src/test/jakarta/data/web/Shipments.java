@@ -23,7 +23,6 @@ import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 
-import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.update.Assign;
 
@@ -56,19 +55,17 @@ public interface Shipments {
     @OrderBy(value = "orderedAt", descending = true)
     Shipment[] getAll();
 
-    @Filter(by = "id")
     @Select("status")
     String getStatus(long id);
-
-    @Filter(by = "status", value = "CANCELED")
-    @Delete
-    int removeCanceled();
 
     @Delete
     int removeEverything();
 
     @Save
     void save(Shipment s);
+
+    @Delete
+    int statusBasedRemoval(@By("status") String s);
 
     boolean updateLocation(long id,
                            String location,

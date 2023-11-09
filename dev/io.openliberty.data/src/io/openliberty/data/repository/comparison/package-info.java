@@ -13,9 +13,9 @@
 /**
  * <p>This package defines extensions to Jakarta Data that
  * enable you to annotate repository method parameters as
- * indicating they cause an update to be performed.</p>
+ * indicating they cause a comparison to be performed.</p>
  *
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-package io.openliberty.data.repository.update;
+package io.openliberty.data.repository.comparison;
