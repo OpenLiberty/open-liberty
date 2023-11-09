@@ -30,7 +30,7 @@ public class Validation31Test extends FATServletClient {
 
     public static final String APP_NAME = "val31";
 
-    @Server("FATServer")
+    @Server("validation.v31.fat")
     @TestServlet(servlet = Validation31TestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
