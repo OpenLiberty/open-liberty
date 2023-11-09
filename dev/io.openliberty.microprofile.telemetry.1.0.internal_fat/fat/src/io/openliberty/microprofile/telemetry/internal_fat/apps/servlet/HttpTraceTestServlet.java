@@ -216,6 +216,7 @@ public class HttpTraceTestServlet extends FATServlet {
                         .withKind(SERVER)
                         .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
                         .withAttribute(SemanticAttributes.HTTP_ROUTE, "/" + APP_NAME)
+                        .withAttribute(SemanticAttributes.HTTP_TARGET, "/" + APP_NAME + "/" + HELLO_HTML)
                         .withAttribute(SemanticAttributes.HTTP_SCHEME, scheme)
                         .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
                         .withAttribute(SemanticAttributes.NET_HOST_NAME, serverName)
