@@ -152,6 +152,7 @@ public class VerifySignatureUtility {
             URLConnection conn;
             try {
                 logger.fine("Downloading key... " + key.getValue());
+                ArtifactDownloaderUtils.configureProxyAuthentication(envMap);
                 URL keyUrl = new URL(key.getValue());
                 Proxy proxy;
                 if (envMap.get("https.proxyHost") != null) {
