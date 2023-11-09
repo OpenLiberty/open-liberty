@@ -17,8 +17,8 @@
 def appBuildDir = "${buildDir}/test-application"
 
 dependencies { 
-    requiredLibs 'org.apache.directory.server:apacheds-all:2.0.0.AM27',
-	'org.apache.directory.server:kerberos-client:2.0.0.AM27',
+    requiredLibs 'org.apache.directory.server:apacheds-all:2.0.0.AM26',
+	'org.apache.directory.server:kerberos-client:2.0.0.AM26',
     project(':fattest.simplicity'),
     project(':com.ibm.ws.security.registry_test.servlet'),
     project(':com.ibm.ws.com.unboundid'),
