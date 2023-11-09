@@ -39,6 +39,11 @@ class ParamInfo {
     List<Annotation> functionAnnos;
 
     /**
+     * Indicates if the parameter is an IdClass.
+     */
+    boolean isIdClass;
+
+    /**
      * Indicates if the Or annotation is present.
      */
     boolean or;

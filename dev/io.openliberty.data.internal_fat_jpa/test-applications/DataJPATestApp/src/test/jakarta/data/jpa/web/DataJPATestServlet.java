@@ -1231,15 +1231,11 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Repository method with the Filter annotation that queries based on multiple IdClass parameters.
+     * Repository method performing a parameter-based query on a compound entity Id which is an IdClass,
+     * where the method parameter is annotated with By.
      */
     @Test
-    public void testIdClassFilterAnnotation() {
-        assertIterableEquals(List.of("Rochester Minnesota",
-                                     "Rochester New York"),
-                             cities.withNameOf("Rochester")
-                                             .map(c -> c.name + ' ' + c.stateName)
-                                             .collect(Collectors.toList()));
+    public void testIdClassFindByAnnotatedParameter() {
 
         assertIterableEquals(List.of("Springfield Massachusetts",
                                      "Rochester Minnesota",
@@ -1250,10 +1246,23 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Repository method with the Filter annotation that queries based on IdClass as a named parameter.
+     * Repository method performing a parameter-based query on one component of the compound entity Id which is an IdClass.
      */
     @Test
-    public void testIdClassFilterAnnotationWithNamedParameters() {
+    public void testIdClassFindByComponentOfIdClass() {
+        assertIterableEquals(List.of("Rochester Minnesota",
+                                     "Rochester New York"),
+                             cities.withNameOf("Rochester")
+                                             .map(c -> c.name + ' ' + c.stateName)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Repository method performing a parameter-based query on a compound entity Id which is an IdClass,
+     * without annotating the method parameter.
+     */
+    @Test
+    public void testIdClassFindByParametersUnannotated() {
         assertEquals(true, cities.isBiggerThan(100000, CityId.of("Rochester", "Minnesota")));
         assertEquals(false, cities.isBiggerThan(500000, CityId.of("Rochester", "Minnesota")));
     }
@@ -1539,7 +1548,7 @@ public class DataJPATestServlet extends FATServlet {
         try {
             cities.findById(CityId.of("La Crosse", "Wisconsin")).orElseThrow();
 
-            assertEquals(1, cities.replace("La Crosse", "Wisconsin", // TODO CityId.of("La Crosse", "Wisconsin"),
+            assertEquals(1, cities.replace(CityId.of("La Crosse", "Wisconsin"),
                                            "Decorah", "Iowa", 7587, Set.of(563))); // TODO CityId.of("Decorah", "Iowa"), 7587, Set.of(563)));
 
             assertEquals(true, cities.findById(CityId.of("La Crosse", "Wisconsin")).isEmpty());
