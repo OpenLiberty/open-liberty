@@ -19,6 +19,7 @@ import org.osgi.util.tracker.ServiceTracker;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 
 /**
@@ -53,15 +54,19 @@ public class OpenAPIEndpointFilter implements Filter {
             chain.doFilter(req, wrapper);
 
             //Modify Response
-            if (resp.getContentType() != null && resp.getContentType().contains("text/html")) {
-                String content = wrapper.getContentAsString();
+            if (httpServletResp.getContentType() != null && httpServletResp.getContentType().contains("text/html")) {
+                String content = new String(wrapper.getContentAsBytes(), StandardCharsets.UTF_8);
                 // in case we have had a issue creating the tracker earlier - if so leave content as-is
                 if(openAPIEndpointTracker != null) {
                     // replace the default URL for the document endpoint with the value that is being used
                     content = content.replaceAll("/openapi", openAPIEndpointTracker.getService().getOpenAPIDocUrl());
                 }
-                resp.setContentLength(content.length());
-                resp.getWriter().write(content);
+                httpServletResp.setCharacterEncoding(StandardCharsets.UTF_8.name());
+                byte[] cbytes = content.getBytes(StandardCharsets.UTF_8);
+                httpServletResp.setContentLength(cbytes.length);
+                try (ServletOutputStream sos = httpServletResp.getOutputStream()) {
+                    sos.write(cbytes);
+                }
             }
         }
     }

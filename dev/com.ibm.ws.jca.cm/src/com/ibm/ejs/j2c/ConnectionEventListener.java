@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,7 +19,7 @@ package com.ibm.ejs.j2c;
  *
  * Object model : 1 per ManagedConnection
  *
- * An instance of the ConnectionEventListener class is created during initialisation of the
+ * An instance of the ConnectionEventListener class is created during initialization of the
  * MCWrapper class.
  */
 
@@ -39,6 +39,11 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
     private boolean connectionErrorAlreadyIssued = false;
 
     private static final TraceComponent tc = Tr.register(ConnectionEventListener.class, J2CConstants.traceSpec, J2CConstants.messageFile);
+
+    /**
+     * Placeholder when calling matchManagedConnection
+     */
+    private static final int MMC_PLACEHOLDER = 50;
 
     /**
      * Default constructor provided so that subclasses need not override (implement).
@@ -228,7 +233,7 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
         }
 
         String tempString = "state " + mcWrapper.getStateString() + " ";
-        if (mcWrapper.getState() == mcWrapper.STATE_ACTIVE_FREE) {
+        if (mcWrapper.getState() == MCWrapper.STATE_ACTIVE_FREE && mcWrapper.getPoolState() != MMC_PLACEHOLDER) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 if (eve != null)
                     Tr.debug(this, tc, "A connection error occurred for a free mcw listener " +

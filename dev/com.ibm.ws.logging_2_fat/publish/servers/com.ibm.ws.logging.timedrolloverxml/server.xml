@@ -15,9 +15,9 @@
     <include location="../fatTestPorts.xml"/>
     
     <featureManager>
-	   <feature>jsp-2.2</feature>
-       <feature>timedexit-1.0</feature>
+        <feature>jsp-2.2</feature>
+        <feature>timedexit-1.0</feature>
     </featureManager>
 
-    <logging rolloverStartTime="00:00" rolloverInterval="1m" maxFiles="5"/>
+    <logging rolloverStartTime="00:00" rolloverInterval="1m" maxFiles="10"/>
 </server>

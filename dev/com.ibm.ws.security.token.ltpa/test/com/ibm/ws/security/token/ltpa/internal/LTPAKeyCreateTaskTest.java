@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
@@ -30,9 +31,10 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
+import com.ibm.ws.security.filemonitor.LTPAFileMonitor;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
+import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
-import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
 import test.common.SharedOutputManager;
@@ -99,7 +101,8 @@ public class LTPAKeyCreateTaskTest {
         props.put(LTPAConfiguration.CFG_KEY_PASSWORD, new SerializableProtectedString("notUsed".toCharArray()));
         props.put(LTPAConfiguration.CFG_KEY_TOKEN_EXPIRATION, 0L);
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, 0L);
-        props.put(LTPAConfiguration.CFG_KEY_MONITOR_DIRECTORY, false);
+        props.put(LTPAConfiguration.CFG_KEY_MONITOR_VALIDATION_KEYS_DIR, false);
+        props.put(LTPAConfiguration.CFG_KEY_UPDATE_TRIGGER, "polled");
         props.put(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED, 0L);
     }
 
@@ -123,7 +126,12 @@ public class LTPAKeyCreateTaskTest {
     public void call_afterDeactivate() throws Exception {
         mock.checking(new Expectations() {
             {
+                allowing(cc).getBundleContext();
+                will(returnValue(bc));
                 one(executorService).execute(with(any(Runnable.class)));
+
+                one(bc).registerService(with(FileMonitor.class), with(any(LTPAFileMonitor.class)),
+                                        (Hashtable<String, Object>) with(any(Hashtable.class)));
             }
         });
         setupLocationServiceExpecatations();
@@ -180,6 +188,9 @@ public class LTPAKeyCreateTaskTest {
                 allowing(cc).getBundleContext();
                 will(returnValue(bc));
                 one(executorService).execute(with(any(Runnable.class)));
+
+                one(bc).registerService(with(FileMonitor.class), with(any(LTPAFileMonitor.class)),
+                                        (Hashtable<String, Object>) with(any(Hashtable.class)));
             }
         });
         setupLocationServiceExpecatations();

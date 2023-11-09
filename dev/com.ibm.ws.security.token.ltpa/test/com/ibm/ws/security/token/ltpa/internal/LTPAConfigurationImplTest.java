@@ -67,6 +67,7 @@ public class LTPAConfigurationImplTest {
     private static final String PWD = "pwd";
     private static final String ANOTHER_PWD = "anotherPwd";
     private static final boolean DEFAULT_MONITOR_DIR_VALUE = false;
+    private static final String DEFAULT_UPDATE_TRIGGER = "polled";
 
     private final Mockery mock = new JUnit4Mockery() {
         {
@@ -96,7 +97,7 @@ public class LTPAConfigurationImplTest {
 
     @Before
     public void setUp() {
-        props = createProps(PATH_TO_FILE, PWD, 120L, 0L, DEFAULT_MONITOR_DIR_VALUE, 0L);
+        props = createProps(PATH_TO_FILE, PWD, 120L, 0L, DEFAULT_MONITOR_DIR_VALUE, DEFAULT_UPDATE_TRIGGER, 0L);
 
         mock.checking(new Expectations() {
             {
@@ -118,13 +119,15 @@ public class LTPAConfigurationImplTest {
         ltpaConfig = createActivatedLTPAConfigurationImpl();
     }
 
-    private Map<String, Object> createProps(String filePath, String password, long expiration, long monitorInterval, boolean monitorDirectory, long expDiffAllowed) {
+    private Map<String, Object> createProps(String filePath, String password, long expiration, long monitorInterval, boolean monitorValidationKeysDir, String updateTrigger,
+                                            long expDiffAllowed) {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, filePath);
         props.put(LTPAConfiguration.CFG_KEY_PASSWORD, new SerializableProtectedString(password.toCharArray()));
         props.put(LTPAConfiguration.CFG_KEY_TOKEN_EXPIRATION, expiration);
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, monitorInterval);
-        props.put(LTPAConfiguration.CFG_KEY_MONITOR_DIRECTORY, monitorDirectory);
+        props.put(LTPAConfiguration.CFG_KEY_MONITOR_VALIDATION_KEYS_DIR, monitorValidationKeysDir);
+        props.put(LTPAConfiguration.CFG_KEY_UPDATE_TRIGGER, updateTrigger);
         props.put(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED, expDiffAllowed);
         return props;
     }
@@ -256,14 +259,6 @@ public class LTPAConfigurationImplTest {
     }
 
     /**
-     * Tests that there is no file monitor registered by default.
-     */
-    @Test
-    public void fileMonitorRegistration_notCreatedByDefault() throws Exception {
-        assertFalse("The LTPA file monitor registration must not be set.", ltpaConfig.wasSetFileMonitorRegistrationCalled);
-    }
-
-    /**
      * Test method for {@link com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl#getPrimaryKeyPassword()}.
      */
     @Test
@@ -285,6 +280,7 @@ public class LTPAConfigurationImplTest {
     public void modified() {
         setupExecutorServiceExpectations(1);
         setupLocationServiceExpectations(1);
+        //setupFileMonitorRegistrationsExpectations(1);
 
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, PATH_TO_ANOTHER_FILE);
         ltpaConfig.modified(props);
@@ -383,6 +379,7 @@ public class LTPAConfigurationImplTest {
     public void configReady() throws Exception {
         setupExecutorServiceExpectations(1);
         setupLocationServiceExpectations(1);
+        //setupFileMonitorRegistrationsExpectations(1);
 
         LTPAConfigurationImpl ltpaConfig = createActivatedLTPAConfigurationImpl();
 
@@ -399,6 +396,7 @@ public class LTPAConfigurationImplTest {
     public void keyFileFromConfigDirWhenDefaultLocationNotOverridden() {
         setupExecutorServiceExpectations(1);
         setupLocationServiceExpectations(1);
+        //setupFileMonitorRegistrationsExpectations(1);
         final WsResource keysFileInServerConfig = mock.mock(WsResource.class);
         mock.checking(new Expectations() {
             {
@@ -421,6 +419,7 @@ public class LTPAConfigurationImplTest {
     public void keyFileFromOutputDirWhenDefaultLocationNotOverriddenAndKeysFileNotInConfigDir() {
         setupExecutorServiceExpectations(1);
         setupLocationServiceExpectations(1);
+        //setupFileMonitorRegistrationsExpectations(1);
         mock.checking(new Expectations() {
             {
                 one(locateService).resolveResource(DEFAULT_CONFIG_LOCATION);
