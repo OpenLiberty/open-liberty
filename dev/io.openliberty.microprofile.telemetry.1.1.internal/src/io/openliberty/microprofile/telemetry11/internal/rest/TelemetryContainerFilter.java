@@ -145,23 +145,11 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
                 Class<?> resourceClass = resourceInfo.getResourceClass();
                 Method resourceMethod = resourceInfo.getResourceMethod();
 
-                String route = ROUTE_CACHE.getRoute(resourceClass, resourceMethod);
+                String route = checkForSubResources(request, resourceClass, resourceMethod);
 
-                if (route == null) {
-
-                    String contextRoot = request.getUriInfo().getBaseUri().getPath();
-                    UriBuilder template = UriBuilder.fromPath(contextRoot);
-
-                    if (resourceClass.isAnnotationPresent(Path.class)) {
-                        template.path(resourceClass);
-                    }
-
-                    if (resourceMethod.isAnnotationPresent(Path.class)) {
-                        template.path(resourceMethod);
-                    }
-
-                    route = template.toTemplate();
-                    ROUTE_CACHE.putRoute(resourceClass, resourceMethod, route);
+                if (route != null) {
+                    currentSpan.setAttribute(SemanticAttributes.HTTP_ROUTE, route);
+                    currentSpan.updateName(request.getMethod() + " " + route);
                 }
 
                 currentSpan.setAttribute(SemanticAttributes.HTTP_ROUTE, route);
@@ -172,7 +160,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
 
     @Override
     public void filter(final ContainerRequestContext request, final ContainerResponseContext response) {
-        // Note: for async resource methods, this may not run on 	the same thread as the other filter method
+        // Note: for async resource methods, this may not run on the same thread as the other filter method
         // Scope is ended in TelemetryServletRequestListener to ensure it does run on the original request thread
         Instrumenter<ContainerRequestContext, ContainerResponseContext> currentInstrumenter = getInstrumenter();
         if (currentInstrumenter == null) {
@@ -192,6 +180,35 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
             request.removeProperty(SPAN_CONTEXT);
             request.removeProperty(SPAN_PARENT_CONTEXT);
         }
+    }
+
+    private static String checkForSubResources(final ContainerRequestContext request, Class<?> resourceClass, Method resourceMethod) {
+
+        String route = ROUTE_CACHE.getRoute(resourceClass, resourceMethod);
+
+        if (route == null) {
+
+            int checkResourceSize = request.getUriInfo().getMatchedResources().size();
+
+            if (checkResourceSize == 1) {
+
+                String contextRoot = request.getUriInfo().getBaseUri().getPath();
+                UriBuilder template = UriBuilder.fromPath(contextRoot);
+
+                if (resourceClass.isAnnotationPresent(Path.class)) {
+                    template.path(resourceClass);
+                }
+
+                if (resourceMethod.isAnnotationPresent(Path.class)) {
+                    template.path(resourceMethod);
+                }
+
+                route = template.toTemplate();
+                ROUTE_CACHE.putRoute(resourceClass, resourceMethod, route);
+            }
+        }
+        return route;
+
     }
 
     private static class ContainerRequestContextTextMapGetter implements TextMapGetter<ContainerRequestContext> {
@@ -219,26 +236,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
             Class<?> resourceClass = (Class<?>) request.getProperty(REST_RESOURCE_CLASS);
             Method resourceMethod = (Method) request.getProperty(REST_RESOURCE_METHOD);
 
-            String route = ROUTE_CACHE.getRoute(resourceClass, resourceMethod);
-
-            if (route == null) {
-
-                String contextRoot = request.getUriInfo().getBaseUri().getPath();
-                UriBuilder template = UriBuilder.fromPath(contextRoot);
-
-                if (resourceClass.isAnnotationPresent(Path.class)) {
-                    template.path(resourceClass);
-                }
-
-                if (resourceMethod.isAnnotationPresent(Path.class)) {
-                    template.path(resourceMethod);
-                }
-
-                route = template.toTemplate();
-                ROUTE_CACHE.putRoute(resourceClass, resourceMethod, route);
-            }
-
-            return route;
+            return checkForSubResources(request, resourceClass, resourceMethod);
         }
 
         //required

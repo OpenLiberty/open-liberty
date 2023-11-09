@@ -153,30 +153,17 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
                     Class<?> resourceClass = resourceInfo.getResourceClass();
                     Method resourceMethod = resourceInfo.getResourceMethod();
 
-                    String route = ROUTE_CACHE.getRoute(resourceClass, resourceMethod);
+                    String route = checkForSubResources(request, resourceClass, resourceMethod);
 
-                    if (route == null) {
-
-                        String contextRoot = request.getUriInfo().getBaseUri().getPath();
-                        UriBuilder template = UriBuilder.fromPath(contextRoot);
-
-                        if (resourceClass.isAnnotationPresent(Path.class)) {
-                            template.path(resourceClass);
-                        }
-
-                        if (resourceMethod.isAnnotationPresent(Path.class)) {
-                            template.path(resourceMethod);
-                        }
-
-                        route = template.toTemplate();
-                        ROUTE_CACHE.putRoute(resourceClass, resourceMethod, route);
+                    if (route != null) {
+                        currentSpan.setAttribute(SemanticAttributes.HTTP_ROUTE, route);
+                        currentSpan.updateName(route);
                     }
-
-                    currentSpan.setAttribute(SemanticAttributes.HTTP_ROUTE, route);
-                    currentSpan.updateName(route);
                 }
             }
-        } catch (Exception e) {
+        } catch (
+
+        Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
         }
     }
@@ -206,6 +193,34 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
         }
+    }
+
+    private static String checkForSubResources(final ContainerRequestContext request, Class<?> resourceClass, Method resourceMethod) {
+
+        String route = ROUTE_CACHE.getRoute(resourceClass, resourceMethod);
+
+        if (route == null) {
+
+            int checkResourceSize = request.getUriInfo().getMatchedResources().size();
+
+            if (checkResourceSize == 1) {
+
+                String contextRoot = request.getUriInfo().getBaseUri().getPath();
+                UriBuilder template = UriBuilder.fromPath(contextRoot);
+
+                if (resourceClass.isAnnotationPresent(Path.class)) {
+                    template.path(resourceClass);
+                }
+
+                if (resourceMethod.isAnnotationPresent(Path.class)) {
+                    template.path(resourceMethod);
+                }
+
+                route = template.toTemplate();
+                ROUTE_CACHE.putRoute(resourceClass, resourceMethod, route);
+            }
+        }
+        return route;
     }
 
     @Override
@@ -265,26 +280,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
             Class<?> resourceClass = (Class<?>) request.getProperty(REST_RESOURCE_CLASS);
             Method resourceMethod = (Method) request.getProperty(REST_RESOURCE_METHOD);
 
-            String route = ROUTE_CACHE.getRoute(resourceClass, resourceMethod);
-
-            if (route == null) {
-
-                String contextRoot = request.getUriInfo().getBaseUri().getPath();
-                UriBuilder template = UriBuilder.fromPath(contextRoot);
-
-                if (resourceClass.isAnnotationPresent(Path.class)) {
-                    template.path(resourceClass);
-                }
-
-                if (resourceMethod.isAnnotationPresent(Path.class)) {
-                    template.path(resourceMethod);
-                }
-
-                route = template.toTemplate();
-                ROUTE_CACHE.putRoute(resourceClass, resourceMethod, route);
-            }
-
-            return route;
+            return checkForSubResources(request, resourceClass, resourceMethod);
         }
 
         //required
