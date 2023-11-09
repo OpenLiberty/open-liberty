@@ -42,7 +42,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.app.manager.module.ApplicationNestedConfigHelper;
 import com.ibm.ws.app.manager.module.DeployedAppServices;
-import com.ibm.ws.app.manager.module.internal.DeferredCache.FailableProducer;
+import com.ibm.ws.app.manager.module.internal.CaptureCache.FailableSupplier;
 import com.ibm.ws.classloading.ClassLoaderConfigHelper;
 import com.ibm.ws.classloading.ClassLoadingButler;
 import com.ibm.ws.classloading.java2sec.PermissionManager;
@@ -54,6 +54,7 @@ import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.extended.LibraryClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.extended.LibraryContainerInfo;
 import com.ibm.ws.container.service.app.deploy.extended.LibraryContainerInfo.LibraryType;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.permissions.PermissionsConfig;
 import com.ibm.wsspi.adaptable.module.AdaptableModuleFactory;
@@ -120,7 +121,73 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
         }
     }
 
-    protected static final DeferredCache<Container> containerCache = new DeferredCache<>();
+    /**
+     * Static cache of library containers.
+     *
+     * Keys are paths to the library containers.
+     *
+     * Use of a static cache requires that all library containers
+     * for a given file path are identical.
+     */
+    protected static final CaptureCache<Container> containerCache = new CaptureCache<>("container");
+
+    /**
+     * Capture creation of a library container.
+     *
+     * @param libPath The path to the library container.
+     * @param supplier The supplier of the library container.
+     *
+     * @return A new supplier of the library container which will capture the
+     *         result of the base supplier.
+     */
+    protected static FailableSupplier<Container> capture(String key, FailableSupplier<Container> supplier) {
+        return containerCache.capture(key, supplier);
+    }
+
+    /**
+     * Release all library containers registered by this deployed application.
+     *
+     * This clears the library list.
+     */
+    protected void releaseContainers() {
+        for (String libPath : sharedLibDeploymentInfo.consumeLibraryPaths()) {
+            containerCache.release(libPath);
+        }
+    }
+
+    /**
+     * Tie into the superclass uninstall API:
+     *
+     * Make sure to release any library containers
+     * held by this deployed application.
+     */
+    @Override
+    public boolean uninstallApp() {
+        boolean releaseResult;
+        try {
+            releaseContainers();
+            releaseResult = true;
+        } catch (Throwable t) {
+            releaseResult = false;
+            FFDCFilter.processException(t, getClass().getName(), "uninstallApp", this);
+        }
+
+        boolean superResult = super.uninstallApp();
+
+        return releaseResult && superResult;
+    }
+
+    /**
+     * Superclass API: Extend finalize to ensure that any referenced containers
+     * are released. Usually, this will be done when the application is un-installed.
+     * However, an failed initialization might never be uninstalled.
+     */
+    @Override
+    public void finalize() throws Throwable {
+        releaseContainers();
+
+        super.finalize();
+    }
 
     protected static final class SharedLibDeploymentInfo {
         private final WsLocationAdmin locAdmin;
@@ -129,8 +196,9 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
 
         private final List<ContainerInfo> classesContainerInfo = new ArrayList<ContainerInfo>();
 
-        public SharedLibDeploymentInfo(DeployedAppServices deployedAppServices, String parentPid) {
+        private final List<String> libraryPaths = new ArrayList<>();
 
+        public SharedLibDeploymentInfo(DeployedAppServices deployedAppServices, String parentPid) {
             this.locAdmin = deployedAppServices.getLocationAdmin();
             this.artifactFactory = deployedAppServices.getArtifactFactory();
             this.moduleFactory = deployedAppServices.getModuleFactory();
@@ -164,11 +232,9 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
                                          deployedAppServices.getGlobalSharedLibrary());
                 }
             } catch (IOException e) {
-                // Auto FFDC
-                return;
+                return; // Auto FFDC
             } catch (InvalidSyntaxException e) {
-                // Auto FFDC
-                return;
+                return; // Auto FFDC
             }
         }
 
@@ -258,78 +324,107 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
         //
         //       As an alternative, container sharing could be limited by library PID.
 
-        private Container setupContainer(String libraryPid, File libFile) {
-            String libPath = libFile.getAbsolutePath();
-            FailableProducer<Container> containerSource = containerCache.defer(libPath, () -> baseSetupContainer(libraryPid, libFile));
+        // TODO: This seems different than the service API:
+        // com.ibm.ws.app.manager.module.
+        //   DeployedAppServices.setupContainer(String, File)
+        //   DeployedAppInfoFactoryBase.setupContainer(String, File)
+        //   DeployedAppServicesImpl.setupContainer(String, File)
+        // Those seem to create containers for the application itself.  Such
+        // containers will have data specific to the application, and likely
+        // cannot be shared.
+        private Container setupContainer(String libraryPid, File libraryFile) {
+            String libraryPath = libraryFile.getAbsolutePath();
+
+            addLibraryPath(libraryPath);
+
+            FailableSupplier<Container> containerSupplier = capture(libraryPath, () -> baseSetupContainer(libraryPid, libraryFile));
             try {
-                return containerSource.produce();
+                return containerSupplier.get();
             } catch (Exception e) {
                 return null; // Can't happen
             }
         }
 
+        protected void addLibraryPath(String libPath) {
+            libraryPaths.add(libPath);
+        }
+
+        protected List<String> consumeLibraryPaths() {
+            List<String> usePaths = new ArrayList<String>(libraryPaths);
+            libraryPaths.clear();
+            return usePaths;
+        }
+
+        private void debug(String methodName, String text) {
+            Tr.debug(_tc, methodName + ": " + text);
+        }
+
         private Container baseSetupContainer(String libraryPid, File libraryFile) {
-            if (_tc.isDebugEnabled()) {
-                Tr.debug(_tc, "Creating container for library [ " + libraryPid + " ] on [ " + libraryFile.getAbsolutePath() + " ]");
+            String methodName = "baseSetupContainer";
+
+            boolean isDebugEnabled = _tc.isDebugEnabled();
+            if (isDebugEnabled) {
+                debug(methodName, "Creating library container [ " + libraryPid + " ]" +
+                                  " at [ " + libraryFile.getAbsolutePath() + " ]");
             }
 
             if (!FileUtils.fileExists(libraryFile)) {
-                if (_tc.isDebugEnabled()) {
-                    Tr.debug(_tc, "Null library container: the library file does not exist.");
+                if (isDebugEnabled) {
+                    debug(methodName, "Null library container: Library file does not exist");
                 }
                 return null;
             }
 
             File cacheDir = new File(getCacheDir(), libraryPid);
             if (!FileUtils.ensureDirExists(cacheDir)) {
-                if (_tc.isDebugEnabled()) {
-                    Tr.debug(_tc, "Null library container: Cache [ " + cacheDir.getAbsolutePath() + " ] was not created");
+                if (isDebugEnabled) {
+                    debug(methodName, "Null library container: Cache directory [ " + cacheDir.getAbsolutePath() + " ] could not be created");
                 }
                 return null;
             }
-            if (_tc.isDebugEnabled()) {
-                Tr.debug(_tc, "Cache [ " + cacheDir.getAbsolutePath() + " ]");
+            if (isDebugEnabled) {
+                debug(methodName, "Cache directory [ " + cacheDir.getAbsolutePath() + " ]");
             }
 
             ArtifactContainer artifactContainer = artifactFactory.getContainer(cacheDir, libraryFile);
             if (artifactContainer == null) {
-                if (_tc.isDebugEnabled()) {
-                    Tr.debug(_tc, "Null library container: Artifact container creation failed.");
+                if (isDebugEnabled) {
+                    debug(methodName, "Null library container: Artifact container creation failed");
                 }
                 return null;
             }
-            if (_tc.isDebugEnabled()) {
-                Tr.debug(_tc, "Artifact container [ " + artifactContainer + " ]");
+            if (isDebugEnabled) {
+                debug(methodName, "Artifact container [ " + artifactContainer + " ]");
             }
 
             File adaptDir = new File(getCacheAdaptDir(), libraryPid);
             if (!FileUtils.ensureDirExists(adaptDir)) {
-                if (_tc.isDebugEnabled()) {
-                    Tr.debug(_tc, "Null library container: Adapt directory [ " + adaptDir.getAbsolutePath() + " ] was not created");
+                if (isDebugEnabled) {
+                    debug(methodName, "Null library container: Adapt directory [ " + adaptDir.getAbsolutePath() + " ] could not be created");
                 }
                 return null;
             }
-            if (_tc.isDebugEnabled()) {
-                Tr.debug(_tc, "Adapt directory [ " + adaptDir.getAbsolutePath() + " ]");
+            if (isDebugEnabled) {
+                debug(methodName, "Adapt directory [ " + adaptDir.getAbsolutePath() + " ]");
             }
 
             File overlayDir = new File(getCacheOverlayDir(), libraryPid);
             if (!FileUtils.ensureDirExists(overlayDir)) {
-                if (_tc.isDebugEnabled()) {
-                    Tr.debug(_tc, "Null library container: Overlay directory [ " + overlayDir.getAbsolutePath() + " ] was not created");
+                if (isDebugEnabled) {
+                    debug(methodName, "Null library container: Overlay directory [ " + overlayDir.getAbsolutePath() + " ] could not be created");
                 }
                 return null;
             }
-            if (_tc.isDebugEnabled()) {
-                Tr.debug(_tc, "Overlay directory [ " + overlayDir.getAbsolutePath() + " ]");
+            if (isDebugEnabled) {
+                debug(methodName, "Overlay directory [ " + overlayDir.getAbsolutePath() + " ]");
             }
 
             Container adaptableContainer = moduleFactory.getContainer(adaptDir, overlayDir, artifactContainer);
-            if (_tc.isDebugEnabled()) {
+            if (isDebugEnabled) {
                 if (adaptableContainer == null) {
-                    Tr.debug(_tc, "Null library container: Adaptable container creation failed");
+                    debug(methodName, "Null library container: Adaptable container creation failed");
                 } else {
-                    Tr.debug(_tc, "Created library container: Adaptable container [ " + adaptableContainer + " ]");
+                    debug(methodName, "Created library container: Adaptable container [ " + adaptableContainer + " ]");
                 }
             }
             return adaptableContainer;
@@ -460,9 +555,6 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
         return success;
     }
 
-    /**
-     * @return
-     */
     @FFDCIgnore({ MalformedURLException.class })
     protected ProtectionDomain getProtectionDomain() {
         PermissionCollection perms = new Permissions();
@@ -529,10 +621,6 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
         return new CodeSource(new URL("file://" + (loc.startsWith("/") ? "" : "/") + loc), (java.security.cert.Certificate[]) null);
     }
 
-    /**
-     * @param codeSource
-     * @param configuredPermissions
-     */
     private void addPermissions(CodeSource codeSource, List<com.ibm.ws.javaee.dd.permissions.Permission> configuredPermissions) {
         Permission[] permissions = new Permission[configuredPermissions.size()];
 
@@ -549,9 +637,6 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
         }
     }
 
-    /**
-     * @return
-     */
     private boolean java2SecurityEnabled() {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null)
