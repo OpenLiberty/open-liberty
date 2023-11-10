@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
@@ -285,7 +284,13 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
         public String target(final ServletRequest request) {
             if (request instanceof HttpServletRequest) {
                 HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-                return httpServletRequest.getRequestURI();
+                String path = httpServletRequest.getRequestURI();
+                String query = httpServletRequest.getQueryString();
+                if (path != null && query != null && !query.isEmpty()) {
+                    return path + "?" + query;
+                } else {
+                    return path;
+                }
             }
             return null;
         }
