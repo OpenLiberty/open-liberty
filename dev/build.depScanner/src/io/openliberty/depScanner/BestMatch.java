@@ -287,12 +287,16 @@ public class BestMatch {
     }
 
     /**
-     * @param library
-     * @return
+     * When libraries are found to be false positives through transitive dependencies, or test artifacts are found to have "shipped" packages that are actually picked up from
+     * alternative libraries
+     * This list will remove these libraries from consideration - Need to be very careful adding files that "could" be shipped - so these files tend to be much older versions of
+     * libraries that are mainly used in test/build only
      */
     private static boolean filteredLibraries(Module library) {
-        return (library.getGroupId().equals("org.glassfish") && (library.getArtifactId().equals("javax.faces"))) || (library.getArtifactId().equals("tomcat-embed-core"))
-               || (library.getArtifactId().equals("wlp-docGen"));
+        return (library.getGroupId().equals("org.glassfish") && (library.getArtifactId().equals("javax.faces"))) ||
+               (library.getArtifactId().equals("tomcat-embed-core")) ||
+               (library.getArtifactId().equals("woodstox-core") && (library.getVersion().equals("6.2.6") || (library.getVersion().equals("6.2.4")))) ||
+               (library.getArtifactId().equals("wlp-docGen"));
     }
 
     /**
