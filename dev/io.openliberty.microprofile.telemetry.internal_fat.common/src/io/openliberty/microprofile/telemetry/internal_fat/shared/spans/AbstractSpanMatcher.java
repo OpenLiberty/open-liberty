@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal_fat.common;
+package io.openliberty.microprofile.telemetry.internal_fat.shared.spans;
 
 import java.util.ArrayList;
 import java.util.List;

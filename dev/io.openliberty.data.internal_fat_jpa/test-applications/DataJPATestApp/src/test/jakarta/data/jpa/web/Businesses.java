@@ -26,10 +26,12 @@ import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
 
-import io.openliberty.data.repository.Compare;
-import io.openliberty.data.repository.Filter;
-import io.openliberty.data.repository.Function;
 import io.openliberty.data.repository.Select;
+import io.openliberty.data.repository.comparison.GreaterThanEqual;
+import io.openliberty.data.repository.comparison.LessThanEqual;
+import io.openliberty.data.repository.comparison.StartsWith;
+import io.openliberty.data.repository.function.AbsoluteValue;
+import io.openliberty.data.repository.function.IgnoreCase;
 
 /**
  *
@@ -69,12 +71,11 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     Stream<Business> in(@By("location_address.city") String city,
                         @By("location.address_state") String state);
 
-    @Filter(by = "locationAddressCity", value = "Rochester")
-    @Filter(by = "locationAddressState", value = "MN")
-    @Filter(by = "locationAddress.street_direction", fn = Function.IgnoreCase, op = Compare.StartsWith, value = "s")
     @OrderBy("name") // Business.name, not Business.Location.Address.Street.name
     @Select("name")
-    List<String> onSouthSide();
+    List<String> onSouthSideOf(@By("locationAddressCity") String city,
+                               @By("locationAddressState") String state,
+                               @By("locationAddress.street_direction") @IgnoreCase @StartsWith String streetDirectionPrefix);
 
     // Save with a different entity type does not conflict with the primary entity type from BasicRepository
     @Save
@@ -86,6 +87,6 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     @Query("UPDATE Business b SET b.location=?1, b.name=?2 WHERE b.id=?3")
     boolean updateWithJPQL(Location newLocation, String newName, long id);
 
-    @Filter(by = "location.longitude", fn = Function.AbsoluteValue, op = Compare.Between)
-    List<Business> withLongitudeIgnoringSignWithin(float min, float max);
+    List<Business> withLongitudeIgnoringSignWithin(@By("location.longitude") @AbsoluteValue @GreaterThanEqual float min,
+                                                   @By("location.longitude") @AbsoluteValue @LessThanEqual float max);
 }

@@ -3204,7 +3204,7 @@ public class LibertyServer implements LogMonitorClient {
                 // There were unexpected errors in logs, print them
                 // and set an exception to return
                 StringBuffer sb = new StringBuffer("Errors/warnings were found in server ");
-                sb.append(getServerName());
+                sb.append(getServerNameWithRepeatAction());
                 sb.append(" logs:");
                 for (String errorInLog : errorsInLogs) {
                     sb.append("\n <br>");
@@ -3265,7 +3265,7 @@ public class LibertyServer implements LogMonitorClient {
             // There were unexpected errors in logs, print them
             // and set an exception to return
             StringBuilder sb = new StringBuilder("Errors/warnings were found in server ");
-            sb.append(getServerName());
+            sb.append(getServerNameWithRepeatAction());
             sb.append(" logs:");
             if (!j2secIssues.isEmpty()) {
                 // When things go wrong with j2sec, a LOT of things tend to go wrong, so just leave a pointer
@@ -3437,14 +3437,8 @@ public class LibertyServer implements LogMonitorClient {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
         Date d = new Date(System.currentTimeMillis());
 
-        String runLevel = RepeatTestFilter.getRepeatActionsAsString();
-
         String logDirectoryName = "";
-        if (runLevel == null || runLevel.isEmpty()) {
-            logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + serverToUse + "-" + sdf.format(d);
-        } else {
-            logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + serverToUse + "-" + runLevel + "-" + sdf.format(d);
-        }
+        logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + getServerNameWithRepeatAction() + "-" + sdf.format(d);
         LocalFile logFolder = new LocalFile(logDirectoryName);
         RemoteFile serverFolder = new RemoteFile(machine, serverRoot);
 
@@ -3837,6 +3831,15 @@ public class LibertyServer implements LogMonitorClient {
 
     public String getServerName() {
         return serverToUse;
+    }
+
+    public String getServerNameWithRepeatAction() {
+        String repeatActionString = RepeatTestFilter.getRepeatActionsAsString();
+        if (repeatActionString == null || repeatActionString.isEmpty()) {
+            return serverToUse;
+        } else {
+            return serverToUse + "-" + repeatActionString;
+        }
     }
 
     public void deleteFileFromLibertyInstallRoot(String filePath) throws Exception {

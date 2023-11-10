@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,27 +12,27 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.apps.spanTest;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.Tracer;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.Application;
-import jakarta.ws.rs.core.MediaType;
 
 /**
  * A Restful WS resource which can create spans in various ways which are useful for tests
  * <p>
  * Each method returns the current Trace ID so that tests can query the trace store and ensure the correct spans were created.
  */
-@ApplicationPath("/")
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
-public class TestResource extends Application {
+@RequestScoped
+public class TestResource {
 
     public static final String TEST_OPERATION_NAME = "TestOp";
     public static final String TEST_EVENT_NAME = "TestEvent";

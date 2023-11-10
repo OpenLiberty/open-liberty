@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
@@ -31,6 +32,7 @@ import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.Select.Aggregate;
+import io.openliberty.data.repository.comparison.Contains;
 import io.openliberty.data.repository.update.Assign;
 import io.openliberty.data.repository.update.Multiply;
 
@@ -61,12 +63,8 @@ public interface Products {
 
     long inflateAllPrices(@Multiply("price") float rateOfIncrease);
 
-    @Query("UPDATE Product o SET o.price=o.price*?2, o.version=o.version+1 WHERE (o.name LIKE CONCAT('%', ?1, '%'))")
-    // TODO replace with annotated condition on nameContains parameter
-    // @Filter(by = "name", op = Compare.Contains)
-    // @Update(attr = "price", op = Operation.Multiply)
-    // @Update(attr = "version", op = Operation.Add, value = "1")
-    long inflatePrices(String nameContains, float rateOfIncrease);
+    long inflatePrices(@By("name") @Contains String nameContains,
+                       @Multiply("price") float rateOfIncrease);
 
     @Exists
     boolean isNotEmpty();

@@ -14,6 +14,7 @@ package test.jakarta.data.web;
 
 import java.util.Optional;
 
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 
@@ -27,6 +28,7 @@ public interface Vehicles {
 
     Optional<Vehicle> findById(String vin);
 
+    @Delete
     long removeAll();
 
     boolean removeById(String vin);

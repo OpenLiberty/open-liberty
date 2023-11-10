@@ -47,8 +47,6 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
 
     ConvergedClientConfig clientConfig;
     WebSSOUtils webSsoUtils = new WebSSOUtils();
-    
-    private static boolean issuedBetaMessage = false;
 
     public OidcAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ConvergedClientConfig clientConfig) {
         super(request, response, clientConfig.getClientId());
@@ -233,7 +231,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
             addImplicitParameters(authzParameters);
         }
         String resources = getResourcesParameter();
-        if (resources != null && (isImplicit || isRunningBetaMode())) {          
+        if (resources != null) {          
             authzParameters.addParameter("resource", resources);
         }
 
@@ -244,18 +242,6 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
         addForwardLoginParams(authzParameters);
     }
     
-    boolean isRunningBetaMode() {
-        if (!ProductInfo.getBetaEdition()) {
-            return false;
-        } else {
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-            return true;
-        }
-    }
-
     private boolean isACRConfigured() {
         boolean isACR = false;
         String acr_values = null;

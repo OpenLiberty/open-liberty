@@ -458,6 +458,9 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      */
     protected HttpRequestMessageImpl getRequestImpl() {
         if (null == getMyRequest()) {
+            if (getObjectFactory() == null) {
+                return null;
+            }
             setMyRequest(getObjectFactory().getRequest(this));
             getMyRequest().setHeaderChangeLimit(getHttpConfig().getHeaderChangeLimit());
         }
@@ -864,13 +867,20 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     protected void logFinalResponse(long numBytesWritten) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             HttpChannelConfig c = getHttpConfig();
-            Tr.debug(tc, "logFinal", c, c.getAccessLog(), c.getAccessLog().isStarted(), numBytesWritten);
+            Tr.debug(tc, "logFinalResponse", c, c.getAccessLog(), c.getAccessLog().isStarted(), numBytesWritten);
         }
 
         // exit if access logging is disabled
         if (!getHttpConfig().getAccessLog().isStarted()) {
             return;
         }
+        if(getRequest() == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "logFinalResponse", "getRequest() is null. HTTPAccess log entry is skipped." );
+            }
+            return; 
+        }
+
         if (MethodValues.UNDEF.equals(getRequest().getMethodValue())) {
             // don't log anything if there wasn't a real request
             return;

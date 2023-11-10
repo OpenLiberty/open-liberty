@@ -36,6 +36,7 @@ import io.grpc.Status;
 import io.grpc.Status.Code;
 import io.grpc.internal.AbstractServerStream;
 import io.grpc.internal.GrpcUtil;
+import io.grpc.internal.MessageFramer;
 import io.grpc.internal.SerializingExecutor;
 import io.grpc.internal.StatsTraceContext;
 import io.grpc.internal.TransportFrameUtil;
@@ -50,6 +51,7 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import javax.servlet.AsyncContext;
+import javax.servlet.ServletResponse;
 import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletResponse;
 
@@ -69,6 +71,7 @@ final class ServletServerStream extends AbstractServerStream {
 
   ServletServerStream(
       AsyncContext asyncCtx,
+      ServletResponse respParm,
       StatsTraceContext statsTraceCtx,
       int maxInboundMessageSize,
       Attributes attributes,
@@ -81,7 +84,7 @@ final class ServletServerStream extends AbstractServerStream {
     this.authority = authority;
     this.logId = logId;
     this.asyncCtx = asyncCtx;
-    this.resp = (HttpServletResponse) asyncCtx.getResponse();
+    this.resp = (HttpServletResponse)respParm;
     // TODO: previously setWriteListener was called before setting this.writer, which created a  
     // race condition that led to a NPE on the first request.  We should fix this upstream.
     this.writer = new AsyncServletOutputStreamWriter(
@@ -231,6 +234,7 @@ final class ServletServerStream extends AbstractServerStream {
 
   private final class Sink implements AbstractServerStream.Sink {
     final TrailerSupplier trailerSupplier = new TrailerSupplier();
+	private int closedButNoFlush = 0;
 
     @Override
     public void writeHeaders(Metadata headers) {
@@ -248,6 +252,18 @@ final class ServletServerStream extends AbstractServerStream {
     public void writeFrame(
     		@Nullable 
     		WritableBuffer frame, boolean flush, int numMessages) {
+      
+      MessageFramer framer = ServletServerStream.this.framer();
+      if( framer != null && framer.isClosed() && !flush ) {
+    		  if( closedButNoFlush==0) {
+    			 // Liberty change - our stack needs a flush at this point which has been
+    			 // removed from later versions of GRPC. See:
+    			 // https://github.com/grpc/grpc-java/pull/9177/files#diff-2de04da34f7e35c085ca26dc596410983f5ded55a8de11eb97811264dea011f2
+    		     flush = true;
+    		  }
+     		  closedButNoFlush=closedButNoFlush+1;     		 
+      }
+    	
       if (frame == null && !flush) {
         return;
       }

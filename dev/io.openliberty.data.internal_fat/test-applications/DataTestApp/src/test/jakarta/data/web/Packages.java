@@ -12,6 +12,9 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import static io.openliberty.data.repository.function.Rounded.Direction.DOWN;
+import static io.openliberty.data.repository.function.Rounded.Direction.UP;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,16 +25,19 @@ import jakarta.data.Sort;
 import jakarta.data.page.KeysetAwarePage;
 import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Pageable;
+import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.PageableRepository;
-import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
-import io.openliberty.data.repository.Compare;
-import io.openliberty.data.repository.Filter;
-import io.openliberty.data.repository.Function;
+import io.openliberty.data.repository.Or;
+import io.openliberty.data.repository.comparison.GreaterThan;
+import io.openliberty.data.repository.comparison.GreaterThanEqual;
+import io.openliberty.data.repository.comparison.LessThan;
+import io.openliberty.data.repository.comparison.LessThanEqual;
+import io.openliberty.data.repository.function.Rounded;
 import io.openliberty.data.repository.update.Add;
 import io.openliberty.data.repository.update.Divide;
 import io.openliberty.data.repository.update.SubtractFrom;
@@ -41,7 +47,6 @@ import io.openliberty.data.repository.update.SubtractFrom;
  */
 @Repository
 public interface Packages extends PageableRepository<Package, Integer> {
-    Object[] delete(Limit limit, Sort sort);
 
     Optional<Package> deleteByDescription(String description);
 
@@ -53,11 +58,14 @@ public interface Packages extends PageableRepository<Package, Integer> {
 
     LinkedList<?> deleteFirst2ByHeightLessThan(float maxHeight, Sort... sorts);
 
-    long[] deleteFirst3(Sort sort); // invalid return type is not the entity or id
+    long[] deleteFirst3By(Sort sort); // invalid return type is not the entity or id
 
-    List<String> deleteFirst4(Sort sort); // invalid return type is not the entity or id
+    List<String> deleteFirst4By(Sort sort); // invalid return type is not the entity or id
 
-    Collection<Number> deleteFirst5(Sort sort); // invalid return type is not the entity or id
+    Collection<Number> deleteFirst5By(Sort sort); // invalid return type is not the entity or id
+
+    @Delete
+    Object[] destroy(Limit limit, Sort sort);
 
     List<Package> findByHeightBetween(float minHeight, float maxHeight);
 
@@ -90,17 +98,16 @@ public interface Packages extends PageableRepository<Package, Integer> {
                    int id);
 
     @Delete
-    @Filter(by = "id")
-    Package take(int id);
+    Package take(@By("id") int packageNum);
 
     @Delete
-    @Filter(by = "length", op = Compare.Between)
-    List<Package> takeWithin(float minLength, float maxLength);
+    List<Package> takeWithin(@By("length") @GreaterThanEqual float minLength,
+                             @By("length") @LessThanEqual float maxLength);
 
     @Delete
-    @Filter(by = "length", op = Compare.Between)
     @OrderBy("id")
-    List<Package> takeWithinOrdered(float minLength, float maxLength);
+    List<Package> takeWithinOrdered(@By("length") @GreaterThanEqual float minLength,
+                                    @By("length") @LessThanEqual float maxLength);
 
     boolean updateByIdAddHeightMultiplyLengthDivideWidth(int id, float heightToAdd, float lengthMultiplier, float widthDivisor);
 
@@ -111,10 +118,8 @@ public interface Packages extends PageableRepository<Package, Integer> {
     long updateByLengthLessThanEqualAndHeightBetweenMultiplyLengthMultiplyWidthSetHeight(float maxLength, float minHeight, float maxHeight,
                                                                                          float lengthMultiplier, float widthMultiplier, float newHeight);
 
-    @Filter(by = "height", op = Compare.LessThan, param = "min")
-    @Filter(as = Filter.Type.Or, by = "height", op = Compare.GreaterThan, param = "max")
-    KeysetAwarePage<Package> whereHeightNotWithin(@Param("min") float minToExclude,
-                                                  @Param("max") float maxToExclude,
+    KeysetAwarePage<Package> whereHeightNotWithin(@By("height") @LessThan float minToExclude,
+                                                  @Or @By("height") @GreaterThan float maxToExclude,
                                                   Pageable pagination);
 
     @Query("SELECT p FROM Package p WHERE (p.length * p.width * p.height >= ?1 AND p.length * p.width * p.height <= ?2)")
@@ -123,15 +128,12 @@ public interface Packages extends PageableRepository<Package, Integer> {
     @OrderBy(value = "id")
     KeysetAwarePage<Package> whereVolumeWithin(float minVolume, float maxVolume, Pageable pagination);
 
-    @Filter(by = "height", fn = Function.Rounded)
     @OrderBy(value = "id")
-    List<Integer> withHeightAbout(float height);
+    List<Integer> withHeightAbout(@Rounded float height);
 
-    @Filter(by = "length", fn = Function.RoundedDown)
     @OrderBy(value = "id")
-    List<Integer> withLengthFloored(float length);
+    List<Integer> withLengthFloored(@Rounded(DOWN) float length);
 
-    @Filter(by = "width", fn = Function.RoundedUp)
     @OrderBy(value = "id")
-    List<Integer> withWidthCeiling(float width);
+    List<Integer> withWidthCeiling(@Rounded(UP) float width);
 }

@@ -18,6 +18,7 @@ import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
 import jakarta.data.Sort;
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
@@ -29,13 +30,16 @@ import jakarta.data.repository.Save;
  */
 @Repository
 public interface Houses {
-    long deleteAll();
-
-    int deleteBasedOnGarage(Garage.Type garage_type, int garage_door_height);
 
     long deleteById(String parcel);
 
     long deleteByKitchenWidthGreaterThan(int widthAbove);
+
+    @Delete
+    int discardBasedOnGarage(Garage.Type garage_type, int garage_door_height);
+
+    @Delete
+    long dropAll();
 
     boolean existsById(String parcel);
 
@@ -61,6 +65,7 @@ public interface Houses {
     @Insert
     void insert(House h);
 
+    @Delete
     Optional<House> remove(String parcelId);
 
     @Save

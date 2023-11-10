@@ -195,17 +195,19 @@ public class JaegerQueryClient implements AutoCloseable {
                 throw new AssertionError("Interrupted while waiting for spans", e);
             }
         }
-        assertThat("Spans not found within timeout after 3 retries", result, waitCondition);
+        assertThat("Spans not found within timeout after 3 retries: " + result, result, waitCondition);
         return result;
     }
 
     /** {@inheritDoc} */
     @Override
     public void close() throws Exception {
-        Channel channel = client.getChannel();
-        if (channel instanceof ManagedChannel) {
-            ManagedChannel managedChannel = (ManagedChannel) channel;
-            managedChannel.shutdown().awaitTermination(10, TimeUnit.SECONDS);
+        if (client != null) {
+            Channel channel = client.getChannel();
+            if (channel instanceof ManagedChannel) {
+                ManagedChannel managedChannel = (ManagedChannel) channel;
+                managedChannel.shutdown().awaitTermination(10, TimeUnit.SECONDS);
+            }
         }
     }
 

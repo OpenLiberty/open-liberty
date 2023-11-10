@@ -45,6 +45,7 @@ tested.features:\
 
 -buildpath: \
 	com.ibm.ws.componenttest;version=latest,\
+	io.openliberty.microprofile.telemetry.internal_fat.common,\
 	io.openliberty.io.opentelemetry;version=latest,\
 	io.openliberty.mpTelemetry.1.0.thirdparty;version=latest,\
 	io.opentelemetry:opentelemetry-opentracing-shim;version='1.19.0.alpha',\

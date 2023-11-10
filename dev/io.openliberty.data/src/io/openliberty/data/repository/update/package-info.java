@@ -13,7 +13,7 @@
 /**
  * <p>This package defines extensions to Jakarta Data that
  * enable you to annotate repository method parameters as
- * indicating they cause update to be performed.</p>
+ * indicating they cause an update to be performed.</p>
  *
  * @version 1.0
  */

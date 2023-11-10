@@ -14,11 +14,11 @@ package io.openliberty.microprofile.telemetry.internal.tests;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static io.openliberty.microprofile.telemetry.internal.utils.TestConstants.NULL_TRACE_ID;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasKind;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasName;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasNoParent;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasParentSpanId;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasServiceName;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasKind;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasName;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasNoParent;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasParentSpanId;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasServiceName;
 import static io.opentelemetry.api.trace.SpanKind.INTERNAL;
 import static io.opentelemetry.api.trace.SpanKind.SERVER;
 import static org.hamcrest.Matchers.equalTo;

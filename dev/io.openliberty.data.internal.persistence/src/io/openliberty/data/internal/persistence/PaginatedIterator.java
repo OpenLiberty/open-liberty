@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -52,10 +53,10 @@ public class PaginatedIterator<T> implements Iterator<T> {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(this, tc, "getPage " + pagination.page());
 
-        Pageable.Cursor keysetCursor = pagination.cursor();
+        Optional<Pageable.Cursor> keysetCursor = pagination.cursor();
         int maxPageSize = pagination.size();
-        int startAt = keysetCursor == null ? RepositoryImpl.computeOffset(pagination) : 0;
-        String jpql = keysetCursor == null ? queryInfo.jpql : //
+        int startAt = keysetCursor.isEmpty() ? RepositoryImpl.computeOffset(pagination) : 0;
+        String jpql = keysetCursor.isEmpty() ? queryInfo.jpql : //
                         pagination.mode() == Pageable.Mode.CURSOR_NEXT ? queryInfo.jpqlAfterKeyset : //
                                         queryInfo.jpqlBeforeKeyset;
 
@@ -65,8 +66,8 @@ public class PaginatedIterator<T> implements Iterator<T> {
             TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, queryInfo.entityInfo.entityClass);
             queryInfo.setParameters(query, args);
 
-            if (keysetCursor != null)
-                queryInfo.setKeysetParameters(query, keysetCursor);
+            if (keysetCursor.isPresent())
+                queryInfo.setKeysetParameters(query, keysetCursor.get());
 
             if (startAt > 0)
                 query.setFirstResult(startAt);
@@ -79,7 +80,7 @@ public class PaginatedIterator<T> implements Iterator<T> {
             if (hasNext && pagination.mode() == Pageable.Mode.CURSOR_PREVIOUS)
                 Collections.reverse(page);
             if (page.size() == maxPageSize) {
-                if (keysetCursor == null) {
+                if (keysetCursor.isEmpty()) {
                     pagination = pagination.next();
                 } else if (pagination.mode() == Pageable.Mode.CURSOR_NEXT) {
                     Pageable next = pagination.page() == Long.MAX_VALUE ? pagination : pagination.page(pagination.page() + 1);

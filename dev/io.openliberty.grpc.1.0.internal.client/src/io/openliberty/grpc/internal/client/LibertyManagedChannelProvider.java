@@ -1,19 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.grpc.internal.client;
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -47,6 +48,11 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 		return 10;
 	}
 
+	@Override
+	protected Collection<Class<? extends SocketAddress>> getSupportedSocketAddressTypes(){
+		return Collections.singleton(InetSocketAddress.class);
+	}
+	
 	@Override
 	public NettyChannelBuilder builderForAddress(String name, int port) {
 
