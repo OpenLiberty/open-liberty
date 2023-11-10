@@ -980,9 +980,9 @@ readServerEnv()
 criuEnvDefaults() {
   if [ -z "$GLIBC_TUNABLES" ]
   then
-    GLIBC_TUNABLES=glibc.cpu.hwcaps=z14,arch_2_07,-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load:glibc.pthread.rseq=0
+    GLIBC_TUNABLES=glibc.cpu.hwcaps=z14,-arch_3_00,-arch_3_1,-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load:glibc.pthread.rseq=0
   else
-    GLIBC_TUNABLES=${GLIBC_TUNABLES}:glibc.cpu.hwcaps=z14,arch_2_07,-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load:glibc.pthread.rseq=0
+    GLIBC_TUNABLES=${GLIBC_TUNABLES}:glibc.cpu.hwcaps=z14,-arch_3_00,-arch_3_1,-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load:glibc.pthread.rseq=0
   fi
   export GLIBC_TUNABLES
   export LD_BIND_NOT=on
