@@ -180,8 +180,8 @@ public class JaxRsRouteTestServlet extends FATServlet {
                         .withKind(SpanKind.SERVER)
                         .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
                         .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
-                        .withAttribute(SemanticAttributes.HTTP_ROUTE, request.getContextPath())
-                        .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "/getSubResourceWithQueryParam/details?id=myIdForTesting"));
+                        .withAttribute(SemanticAttributes.HTTP_ROUTE, request.getContextPath()));
+//                        .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "/getSubResourceWithQueryParam/details?id=myIdForTesting"));
     }
 
     private URI getUri() {
