@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,14 +46,14 @@ public class ThreadContextClassLoader extends UnifiedClassLoader implements Keye
     private final AtomicReference<Bundle> bundle = new AtomicReference<Bundle>();
     protected final String key;
     private final AtomicInteger refCount = new AtomicInteger(0);
-    private final AtomicReference<ClassLoader> appLoader = new AtomicReference<>();
+    private final ClassLoader appLoader;
     private final ClassLoadingServiceImpl clSvc;
 
     public ThreadContextClassLoader(GatewayClassLoader augLoader, ClassLoader appLoader, String key, ClassLoadingServiceImpl clSvc) {
         super(appLoader instanceof ParentLastClassLoader ? appLoader : augLoader, appLoader instanceof ParentLastClassLoader ? augLoader : appLoader);
         bundle.set(augLoader.getBundle());
         this.key = key;
-        this.appLoader.set(appLoader);
+        this.appLoader = appLoader;
         this.clSvc = clSvc;
     }
 
@@ -89,8 +89,6 @@ public class ThreadContextClassLoader extends UnifiedClassLoader implements Keye
         } catch (BundleException ignored) {
         } catch (IllegalStateException ignored) {
 
-        } finally {
-            destroy();
         }
     }
 
@@ -213,14 +211,8 @@ public class ThreadContextClassLoader extends UnifiedClassLoader implements Keye
         return key;
     }
 
-    @Override
-    public void destroy() {
-        appLoader.set(null);
-        super.destroy();
-    }
-
     final boolean isFor(ClassLoader classLoader) {
-        return classLoader == appLoader.get();
+        return classLoader == appLoader;
     }
 
 }

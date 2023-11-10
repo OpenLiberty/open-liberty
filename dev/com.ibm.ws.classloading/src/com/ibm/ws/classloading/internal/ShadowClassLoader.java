@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,6 +20,8 @@ import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 import org.osgi.framework.Bundle;
 
@@ -63,7 +65,7 @@ class ShadowClassLoader extends LibertyLoader implements Keyed<ClassLoaderIdenti
     };
 
     private final AppClassLoader shadowedLoader;
-    private final List<LibertyLoader> delegateLoaders;
+    private final Iterable<LibertyLoader> delegateLoaders;
 
     ShadowClassLoader(AppClassLoader shadowed) {
         super(getShadow(shadowed.parent));
@@ -219,11 +221,5 @@ class ShadowClassLoader extends LibertyLoader implements Keyed<ClassLoaderIdenti
     @Override
     public Bundle getBundle() {
         return shadowedLoader.getBundle();
-    }
-
-    @Override
-    public void destroy() {
-        delegateLoaders.clear();
-        super.destroy();
     }
 }

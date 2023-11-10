@@ -64,10 +64,6 @@ public final class KeyBasedLockStore<Key, Lock> {
         }
     }
 
-    public void cleanup() {
-        poll();
-    }
-
     @SuppressWarnings("unchecked")
     private final void poll() {
         LockWeakRef lockRef;

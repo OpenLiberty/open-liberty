@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2023 IBM Corporation and others.
+ * Copyright (c) 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,7 +18,6 @@ import java.util.List;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.classloading.LibertyClassLoader;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
@@ -154,17 +153,6 @@ public class ExtendedModuleInfoImpl implements ExtendedModuleInfo, MetaDataGette
             return Collections.unmodifiableList(nestedModuleMetaDataValues);
         } else {
             return Collections.emptyList();
-        }
-    }
-
-    @Override
-    public synchronized void destroy() {
-        if (classLoader != null) {
-            // For WABs, the ClassLoader will be an Equinox ClassLoader
-            if (classLoader instanceof LibertyClassLoader) {
-                ((LibertyClassLoader) classLoader).destroy();
-            }
-            classLoader = null;
         }
     }
 }

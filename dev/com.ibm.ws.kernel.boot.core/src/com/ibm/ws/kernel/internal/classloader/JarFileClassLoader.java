@@ -116,7 +116,6 @@ public class JarFileClassLoader extends SecureClassLoader implements Closeable {
             close(handler);
         }
         resourceHandlers.clear();
-        classNameLockStore.cleanup();
     }
 
     protected void addURL(URL url) {

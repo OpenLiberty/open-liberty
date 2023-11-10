@@ -120,8 +120,8 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
     });
     
     private BundleContext bundleContext;
-    private CanonicalStore<ClassLoaderIdentity, AppClassLoader> aclStore;
-    private CanonicalStore<String, ThreadContextClassLoader> tcclStore;
+    private final CanonicalStore<ClassLoaderIdentity, AppClassLoader> aclStore = new CanonicalStore<ClassLoaderIdentity, AppClassLoader>();
+    private final CanonicalStore<String, ThreadContextClassLoader> tcclStore = new CanonicalStore<String, ThreadContextClassLoader>();
     private RegionDigraph digraph;
     private ClassRedefiner redefiner = new ClassRedefiner(null);
     private final BundleListener listener = new BundleListener() {
@@ -210,8 +210,6 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         generatorRefs.activate(cCtx);
         metaInfServicesRefs.activate(cCtx);
         this.bundleContext = cCtx.getBundleContext();
-        this.aclStore = new CanonicalStore<ClassLoaderIdentity, AppClassLoader>();
-        this.tcclStore = new CanonicalStore<String, ThreadContextClassLoader>();
         // use the system bundle so that it is ensured to see all bundle events
         Bundle systemBundle = this.bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
         BundleContext systemContext = systemBundle.getBundleContext();
@@ -227,7 +225,6 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         systemContext.removeBundleListener(listener);
         this.bundleContext = null;
         this.cleanupRememberedBundles();
-        this.aclStore = null;
         this.resourceProviders.clear();
     }
 
@@ -607,10 +604,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
             protected void update() {
                 AppClassLoader cl = get();
                 if (cl != null) {
-                    if (aclStore != null) {
-                        aclStore.remove(cl);
-                    }
-                    cl.destroy();
+                    aclStore.remove(cl);
                 }
                 deregister();
             }

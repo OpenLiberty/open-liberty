@@ -972,8 +972,6 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         boolean containsContainer(Container container);
 
         Collection<Collection<URL>> getClassPath();
-
-        void destroy();
     }
 
     /**
@@ -1380,19 +1378,6 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
             }
             return containerURLs;
         }
-
-        @Override
-        public void destroy() {
-            classPath.clear();
-            lastFoundURL.clear();
-            lastNotFound.clear();
-            lastReallyNotFoundURL.clear();
-            if (usePackageMap) {
-                packageMap.clear();
-            }
-            containers.clear();
-            outstandingContainers.set(0);
-        }
     }
 
     /**
@@ -1473,11 +1458,6 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         @Override
         public Collection<Collection<URL>> getClassPath() {
             return delegate.getClassPath();
-        }
-
-        @Override
-        public void destroy() {
-            delegate.destroy();
         }
     }
 
@@ -1914,12 +1894,5 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
 
     Collection<Collection<URL>> getClassPath() {
         return smartClassPath.getClassPath();
-    }
-
-    @Override
-    public void destroy() {
-        smartClassPath.destroy();
-        nativeLibraryContainers.clear();
-        super.destroy();
     }
 }

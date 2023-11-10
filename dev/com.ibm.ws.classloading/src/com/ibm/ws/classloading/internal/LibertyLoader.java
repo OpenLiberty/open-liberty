@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.security.SecureClassLoader;
 import java.util.Enumeration;
-import java.util.function.Supplier;
 
 import org.osgi.framework.Bundle;
 
@@ -30,9 +29,6 @@ public abstract class LibertyLoader extends SecureClassLoader implements NoClass
     }
 
     final ClassLoader parent;
-
-    // This is used to help when analyzing ClassLoader leaks to show which ones are active and which ones were destroyed.
-    volatile boolean isDestroyed = false;
 
     public LibertyLoader(ClassLoader parent) {
         super(parent);
@@ -86,10 +82,4 @@ public abstract class LibertyLoader extends SecureClassLoader implements NoClass
     }
 
     public abstract Bundle getBundle();
-
-    @Override
-    public void destroy() {
-        classNameLockStore.cleanup();
-        isDestroyed = true;
-    }
 }
