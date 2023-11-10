@@ -186,7 +186,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             }
         } else if (updateTrigger.equalsIgnoreCase("polled")) {
             if (monitorValidationKeysDir && monitorInterval <= 0) {
-                Tr.warning(tc, "LTPA_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_EQUALS_TO_OR_LESS_THAN_ZERO", monitorInterval);
+                Tr.warning(tc, "LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED", monitorInterval);
             } else if (!monitorValidationKeysDir) {
                 nonConfigValidationKeys = null;
             }
