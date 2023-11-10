@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -365,12 +365,19 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
             String monitorId = (String) fm.getProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME);
             String monitorConfigId = (String) fm.getProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_KEYSTORE_CONFIG_ID);
 
-            if (monitorId != null && monitorId.equals(com.ibm.ws.kernel.filemonitor.FileMonitor.SECURITY_MONITOR_IDENTIFICATION_VALUE)) {
-                if (id == null) {
-                    fileMonitors.get(fm).processFileRefresh(false, null);
-                } else if (monitorConfigId != null && monitorConfigId.equalsIgnoreCase(id)) {
+            if (id == null) {
+                fileMonitors.get(fm).processFileRefresh(false, null);
+            } else if (monitorId != null) {
+                //if id is set it should map to the security LTPA fileMonitor, otherwise it maps to a keystore fileMonitor
+                if (com.ibm.ws.kernel.filemonitor.FileMonitor.SECURITY_LTPA_MONITOR_IDENTIFICATION_VALUE.equals(id)
+                    && com.ibm.ws.kernel.filemonitor.FileMonitor.SECURITY_LTPA_MONITOR_IDENTIFICATION_VALUE.equals(monitorId)) {
                     monitorFound = true;
-                    fileMonitors.get(fm).processFileRefresh(false, null);//Find the provided id specific keyStore monitor and refresh
+                    fileMonitors.get(fm).processFileRefresh(false, null);
+                } else if (monitorId.equals(com.ibm.ws.kernel.filemonitor.FileMonitor.SECURITY_KEYSTORE_MONITOR_IDENTIFICATION_VALUE)) {
+                    if (monitorConfigId != null && monitorConfigId.equalsIgnoreCase(id)) {
+                        monitorFound = true;
+                        fileMonitors.get(fm).processFileRefresh(false, null);//Find the provided id specific keyStore monitor and refresh
+                    }
                 }
             }
         }
