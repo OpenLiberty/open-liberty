@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -40,23 +40,37 @@ public class Servlet3toHealth {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    @AfterClass
-    public static void tearDown() throws Exception {
-        if(server.isStarted()) {
-            server.stopServer("CWWKF0001E");
-        }
+    @After
+    public void tearDown() throws Exception {
+        server.stopServer("CWWKF0001E");
     }
 
     @Test
-    public void servlet3HealthTest() throws Exception {
-        String methodName = "servlet3Test";
+    public void servlet3HealthMaxTest() throws Exception {
+        String envVar = "mpHealth-4.0,mpHealth-3.1,mpHealth-3.0,mpHealth-2.2,mpHealth-2.1,mpHealth-2.0,mpHealth-1.0";
 
         //log out the method name "Entering methodName..."
 
-        LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+        server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+        server.addEnvVar("PREFERRED_FEATURE_VERSIONS", envVar);
         server.startServer();
 
-        assertNotNull(server.waitForStringInLog("mpHealth-1.0"));
+        assertNotNull("Expected mpHealth-2.2 after features resolved but got: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"), server.waitForStringInLog("mpHealth-2.2"));
+
+        server.stopServer("CWWKF0001E");
+    }
+
+    @Test
+    public void servlet3HealthMinTest() throws Exception {
+        String envVar = "mpHealth-1.0,mpHealth-2.0,mpHealth-2.1,mpHealth-2.2,mpHealth-3.0,mpHealth-3.1,mpHealth-4.0";
+
+        //log out the method name "Entering methodName..."
+
+        server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+        server.addEnvVar("PREFERRED_FEATURE_VERSIONS", envVar);
+        server.startServer();
+
+        assertNotNull("Expected mpHealth-1.0 after features resolved but got: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"), server.waitForStringInLog("mpHealth-1.0"));
 
         server.stopServer("CWWKF0001E");
     }

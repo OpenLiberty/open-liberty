@@ -940,7 +940,7 @@ public class FeatureTest {
         for (Entry<String, FeatureInfo> entry : getFeatures().entrySet()) {
             String featureName = entry.getKey();
 
-            if(featureName.contains("unversioned")){
+            if(featureName.contains("versionless")){
                 continue;
             }
 

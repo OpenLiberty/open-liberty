@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.unversioned.mpMetrics-5.1
+symbolicName=io.openliberty.internal.versionless.mpMetrics-5.1
 visibility=private
 singleton=true
 -features= \
