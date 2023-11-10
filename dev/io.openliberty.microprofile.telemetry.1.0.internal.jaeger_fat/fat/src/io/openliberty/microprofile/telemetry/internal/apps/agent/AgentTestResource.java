@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
@@ -145,6 +146,12 @@ public class AgentTestResource extends Application {
         Span span = Span.current();
         withSpanNonBeanMethod();
         return span.getSpanContext().getTraceId();
+    }
+    
+    @GET
+    @Path("/pathparameter/{parameter}")
+    public String callPathParameter(@PathParam("parameter") String parameter) {
+        return Span.current().getSpanContext().getTraceId();
     }
 
     @GET

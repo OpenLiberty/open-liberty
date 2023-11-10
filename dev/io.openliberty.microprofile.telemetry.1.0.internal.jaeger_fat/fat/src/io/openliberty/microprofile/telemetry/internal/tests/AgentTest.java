@@ -175,6 +175,27 @@ public class AgentTest {
         assertThat(services, contains(SERVICE_NAME));
     }
 
+    @Test
+    public void testPathParameter() throws Exception {
+        HttpRequest request = new HttpRequest(server, "/agentTest/pathparameter/param");
+        String traceId = request.run(String.class);
+        traceIdsUsed.add(traceId);
+        Log.info(c, "testBasic", "TraceId is " + traceId);
+
+        List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(1));
+        Log.info(c, "testBasic", "Spans returned: " + spans);
+
+        Span span = spans.get(0);
+
+        assertThat(span, JaegerSpanMatcher.isSpan().withTraceId(traceId)
+                                    .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/pathparameter/{parameter}")
+                                    .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
+        
+        // We shouldn't have any additional spans
+        List<String> services = client.getServices();
+        assertThat(services, contains(SERVICE_NAME));
+    }
+
     /**
      * Test we can manually create spans
      */
