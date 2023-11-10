@@ -6,13 +6,10 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
-def grpcVersion='1.43.2'
+def grpcVersion='1.57.2'
 
 configurations {
   telemetryAgent

@@ -267,7 +267,7 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
         public String route(final ServletRequest request) {
             if (request instanceof HttpServletRequest) {
                 HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-                return httpServletRequest.getRequestURI();
+                return httpServletRequest.getContextPath() + httpServletRequest.getServletPath();
             }
             return null;
         }

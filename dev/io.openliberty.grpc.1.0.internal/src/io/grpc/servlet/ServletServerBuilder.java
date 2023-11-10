@@ -20,27 +20,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.grpc.internal.GrpcUtil.DEFAULT_MAX_MESSAGE_SIZE;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableList;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.ibm.websphere.ras.annotation.Trivial;
-
-import io.grpc.InternalChannelz.SocketStats;
-import io.grpc.InternalInstrumented;
-import io.grpc.InternalLogId;
-import io.grpc.ServerBuilder;
-import io.grpc.ServerStreamTracer;
-import io.grpc.ServerStreamTracer.Factory;
-import io.grpc.Status;
-import io.grpc.internal.AbstractServerImplBuilder;
-import io.grpc.internal.GrpcUtil;
-import io.grpc.internal.InternalServer;
-import io.grpc.internal.ServerImplBuilder;
-import io.grpc.internal.ServerImplBuilder.ClientTransportServersBuilder;
-import io.grpc.internal.ServerListener;
-import io.grpc.internal.ServerTransport;
-import io.grpc.internal.ServerTransportListener;
-import io.grpc.internal.SharedResourceHolder;
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketAddress;
@@ -48,35 +27,66 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.util.concurrent.ListenableFuture;
+
+import io.grpc.ForwardingServerBuilder;
+import io.grpc.InternalChannelz.SocketStats;
+import io.grpc.InternalInstrumented;
+import io.grpc.InternalLogId;
+import io.grpc.Metadata;
+import io.grpc.Server;
+import io.grpc.Attributes;
+import io.grpc.ServerBuilder;
+import io.grpc.ServerStreamTracer;
+import io.grpc.Status;
+
+import io.grpc.internal.GrpcUtil;
+import io.grpc.internal.InternalServer;
+import io.grpc.internal.ServerImplBuilder;
+import io.grpc.internal.ServerListener;
+import io.grpc.internal.ServerStream;
+import io.grpc.internal.ServerTransport;
+import io.grpc.internal.ServerTransportListener;
+import io.grpc.internal.SharedResourceHolder;
+
 /**
- * Builder to build a gRPC server that can run as a servlet.
- * See https://github.com/grpc/grpc-java/issues/5066
+ * Builder to build a gRPC server that can run as a servlet. This is for advanced custom settings.
+ * Normally, users should consider extending the out-of-box {@link GrpcServlet} directly instead.
+ *
+ * <p>The API is experimental. The authors would like to know more about the real usecases. Users
+ * are welcome to provide feedback by commenting on
+ * <a href=https://github.com/grpc/grpc-java/issues/5066>the tracking issue</a>.
  */
-@Trivial
-public final class ServletServerBuilder extends AbstractServerImplBuilder<ServletServerBuilder> {
+public final class ServletServerBuilder extends ForwardingServerBuilder<ServletServerBuilder> {
   List<? extends ServerStreamTracer.Factory> streamTracerFactories;
   int maxInboundMessageSize = DEFAULT_MAX_MESSAGE_SIZE;
 
+  private final ServerImplBuilder serverImplBuilder;
+
   private ScheduledExecutorService scheduler;
+  private boolean internalCaller;
   private boolean usingCustomScheduler;
   private InternalServerImpl internalServer;
-  private ServerImplBuilder builder;
 
   public ServletServerBuilder() {
-    builder = new ServerImplBuilder(
-      new ClientTransportServersBuilder() {
-        @Override
-        public InternalServer buildClientTransportServers(
-            List<? extends ServerStreamTracer.Factory> streamTracerFactories) {
-          return buildTransportServers(streamTracerFactories);
-        }
-      }
-    );
+    serverImplBuilder = new ServerImplBuilder(this::buildTransportServers);
   }
 
+  /**
+   * Builds a gRPC server that can run as a servlet.
+   *
+   * <p>The returned server will not be started or bound to a port.
+   *
+   * <p>Users should not call this method directly. Instead users should call
+   * {@link #buildServletAdapter()} which internally will call {@code build()} and {@code start()}
+   * appropriately.
+   *
+   * @throws IllegalStateException if this method is called by users directly
+   */
   @Override
-  protected ServerBuilder<?> delegate() {
-    return builder;
+  public Server build() {
+    return super.build();
   }
 
   /**
@@ -87,10 +97,15 @@ public final class ServletServerBuilder extends AbstractServerImplBuilder<Servle
   }
 
   private ServerTransportListener buildAndStart() {
+    Server server;
     try {
-      builder.build().start();
+      internalCaller = true;
+      server = build().start();
     } catch (IOException e) {
+      // actually this should never happen
       throw new RuntimeException(e);
+    } finally {
+      internalCaller = false;
     }
 
     if (!usingCustomScheduler) {
@@ -100,16 +115,43 @@ public final class ServletServerBuilder extends AbstractServerImplBuilder<Servle
     // Create only one "transport" for all requests because it has no knowledge of which request is
     // associated with which client socket. This "transport" does not do socket connection, the
     // container does.
-    ServerTransportImpl serverTransport =
-        new ServerTransportImpl(scheduler, usingCustomScheduler);
-    return internalServer.serverListener.transportCreated(serverTransport);
-  }
+    ServerTransportImpl serverTransport = new ServerTransportImpl(scheduler);
+    ServerTransportListener delegate =
+        internalServer.serverListener.transportCreated(serverTransport);
+    return new ServerTransportListener() {
+      @Override
+      public void streamCreated(ServerStream stream, String method, Metadata headers) {
+        delegate.streamCreated(stream, method, headers);
+      }
 
-  private InternalServer buildTransportServers(
-      List<? extends Factory> streamTracerFactories) {
+     @Override
+     public Attributes transportReady(Attributes attributes) {
+       return delegate.transportReady(attributes);
+     }
+      
+     @Override
+     public void transportTerminated() {
+       server.shutdown();
+       delegate.transportTerminated();
+       if (!usingCustomScheduler) {
+          SharedResourceHolder.release(GrpcUtil.TIMER_SERVICE, scheduler);
+       }
+    }
+    };
+  }
+  
+  
+  InternalServer buildTransportServers(
+      List<? extends ServerStreamTracer.Factory> streamTracerFactories) {
     checkNotNull(streamTracerFactories, "streamTracerFactories");
     this.streamTracerFactories = streamTracerFactories;
-    return internalServer = new InternalServerImpl();
+    internalServer = new InternalServerImpl();
+    return internalServer;
+  }
+
+  @Override
+  protected ServerBuilder<?> delegate() {
+    return serverImplBuilder;
   }
 
   /**
@@ -176,12 +218,11 @@ public final class ServletServerBuilder extends AbstractServerImplBuilder<Servle
 
     @Override
     public List<? extends SocketAddress> getListenSocketAddresses() {
-        return Collections.singletonList(getListenSocketAddress());
-    }
+        return Collections.emptyList();
+  }
 
     @Override
     public List<InternalInstrumented<SocketStats>> getListenSocketStatsList() {
-        // sockets are managed by the servlet container
         return null;
     }
   }
@@ -191,25 +232,16 @@ public final class ServletServerBuilder extends AbstractServerImplBuilder<Servle
 
     private final InternalLogId logId = InternalLogId.allocate(ServerTransportImpl.class, null);
     private final ScheduledExecutorService scheduler;
-    private final boolean usingCustomScheduler;
 
-    ServerTransportImpl(
-        ScheduledExecutorService scheduler, boolean usingCustomScheduler) {
+    ServerTransportImpl(ScheduledExecutorService scheduler) {
       this.scheduler = checkNotNull(scheduler, "scheduler");
-      this.usingCustomScheduler = usingCustomScheduler;
     }
 
     @Override
-    public void shutdown() {
-      if (!usingCustomScheduler) {
-        SharedResourceHolder.release(GrpcUtil.TIMER_SERVICE, scheduler);
-      }
-    }
+    public void shutdown() {}
 
     @Override
-    public void shutdownNow(Status reason) {
-      shutdown();
-    }
+    public void shutdownNow(Status reason) {}
 
     @Override
     public ScheduledExecutorService getScheduledExecutorService() {

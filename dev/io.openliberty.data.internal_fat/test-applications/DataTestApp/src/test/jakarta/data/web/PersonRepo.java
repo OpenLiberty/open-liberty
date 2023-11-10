@@ -24,7 +24,6 @@ import jakarta.data.repository.Update;
 import jakarta.transaction.Transactional;
 import jakarta.transaction.Transactional.TxType;
 
-import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.update.Assign;
 
@@ -39,10 +38,9 @@ public interface PersonRepo {
     @Query("SELECT o FROM Person o WHERE o.lastName=?1")
     List<Person> find(String lastName);
 
-    @Filter(by = "lastName")
     @OrderBy("firstName")
     @Select("firstName")
-    List<String> findFirstNames(String surname);
+    List<String> findFirstNames(@By("lastName") String surname);
 
     @Insert
     void insert(Person p);

@@ -241,7 +241,14 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
                 File keyFile = keysFiles.next();
 
                 String fileName = keyFile.getName();
-                String fullFileName = primaryKeyImportDir.concat(fileName);
+                String fullFileName = null;
+
+                if (primaryKeyImportDir != null) {
+                    fullFileName = primaryKeyImportDir.concat(fileName);
+                } else {
+                    Tr.debug(tc, "primaryKeyImportDir is null. Validation keys will not be loaded.");
+                    return validationKeysInDirectory;
+                }
 
                 // Skip the primary LTPA keys file or validationKeys file configured in the valicationKeys element
                 if (primaryKeyImportFile.equals(fullFileName) || isConfiguredValidationKeys(fullFileName)) {

@@ -6,14 +6,11 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-grpcVersion=1.43.2
+grpcVersion=1.57.2
 nettyVersion=4.1.100.Final
 
 

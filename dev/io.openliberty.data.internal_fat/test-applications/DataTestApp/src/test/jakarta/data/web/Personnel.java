@@ -26,9 +26,8 @@ import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 import jakarta.enterprise.concurrent.Asynchronous;
 
-import io.openliberty.data.repository.Compare;
-import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Select;
+import io.openliberty.data.repository.comparison.StartsWith;
 import io.openliberty.data.repository.update.Assign;
 
 /**
@@ -82,9 +81,8 @@ public interface Personnel {
     @Query("SELECT DISTINCT o.lastName FROM Person o ORDER BY o.lastName")
     CompletionStage<String[]> lastNames();
 
-    @Filter(by = "firstName", op = Compare.StartsWith)
     @Select("firstName")
-    Streamable<String> namesThatStartWith(String beginningOfFirstName);
+    Streamable<String> namesThatStartWith(@By("firstName") @StartsWith String beginningOfFirstName);
 
     // An alternative to the above would be to make the Collector class a parameter
     // of the Paginated annotation, although this would rule out easily accessing the
