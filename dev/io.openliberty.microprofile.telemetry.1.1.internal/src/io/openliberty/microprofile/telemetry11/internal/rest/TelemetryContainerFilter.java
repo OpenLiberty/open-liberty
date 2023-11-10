@@ -145,7 +145,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
                 Class<?> resourceClass = resourceInfo.getResourceClass();
                 Method resourceMethod = resourceInfo.getResourceMethod();
 
-                String route = checkForSubResources(request, resourceClass, resourceMethod);
+                String route = getRoute(request, resourceClass, resourceMethod);
 
                 if (route != null) {
                     currentSpan.setAttribute(SemanticAttributes.HTTP_ROUTE, route);
@@ -153,7 +153,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
                 }
 
                 currentSpan.setAttribute(SemanticAttributes.HTTP_ROUTE, route);
-                currentSpan.updateName(request.getMethod()  + " " + route);
+                currentSpan.updateName(request.getMethod() + " " + route);
             }
         }
     }
@@ -182,7 +182,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
         }
     }
 
-    private static String checkForSubResources(final ContainerRequestContext request, Class<?> resourceClass, Method resourceMethod) {
+    private static String getRoute(final ContainerRequestContext request, Class<?> resourceClass, Method resourceMethod) {
 
         String route = ROUTE_CACHE.getRoute(resourceClass, resourceMethod);
 
@@ -190,6 +190,8 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
 
             int checkResourceSize = request.getUriInfo().getMatchedResources().size();
 
+            // Check the resource size using getMatchedResource()
+            // A resource size > 1 indicates that there is a subresource
             if (checkResourceSize == 1) {
 
                 String contextRoot = request.getUriInfo().getBaseUri().getPath();
@@ -236,7 +238,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
             Class<?> resourceClass = (Class<?>) request.getProperty(REST_RESOURCE_CLASS);
             Method resourceMethod = (Method) request.getProperty(REST_RESOURCE_METHOD);
 
-            return checkForSubResources(request, resourceClass, resourceMethod);
+            return getRoute(request, resourceClass, resourceMethod);
         }
 
         //required
