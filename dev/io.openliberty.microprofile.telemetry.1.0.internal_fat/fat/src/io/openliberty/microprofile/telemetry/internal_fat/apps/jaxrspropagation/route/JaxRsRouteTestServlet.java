@@ -132,14 +132,14 @@ public class JaxRsRouteTestServlet extends FATServlet {
                         .withKind(SpanKind.CLIENT)
                         .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
                         .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
-                        .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "getSubResourceWithPathParam/{id}/details"));
+                        .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "/getSubResourceWithPathParam/{id}/details"));
 
         assertThat(serverSpan, isSpan()
                         .withKind(SpanKind.SERVER)
                         .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
                         .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
-                        .withAttribute(SemanticAttributes.HTTP_ROUTE, getPath() + "getSubResourceWithPathParam/{id}/details")
-                        .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "getSubResourceWithPathParam/{id}/details"));
+                        .withAttribute(SemanticAttributes.HTTP_ROUTE, getPath() + "/getSubResourceWithPathParam/{id}/details")
+                        .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "/getSubResourceWithPathParam/myIdForTesting/details"));
     }
 
     @Test
@@ -172,7 +172,8 @@ public class JaxRsRouteTestServlet extends FATServlet {
                         .withKind(SpanKind.SERVER)
                         .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
                         .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
-                        .withAttribute(SemanticAttributes.HTTP_ROUTE, getPath() + "/getSubResourceWithQueryParam"));
+                        .withAttribute(SemanticAttributes.HTTP_ROUTE, getPath() + "/getSubResourceWithQueryParam")
+                        .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "/getSubResourceWithQueryParam?id=myIdForTesting"));
     }
 
     private URI getUri() {

@@ -151,9 +151,6 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
                     currentSpan.setAttribute(SemanticAttributes.HTTP_ROUTE, route);
                     currentSpan.updateName(request.getMethod() + " " + route);
                 }
-
-                currentSpan.setAttribute(SemanticAttributes.HTTP_ROUTE, route);
-                currentSpan.updateName(request.getMethod() + " " + route);
             }
         }
     }
@@ -192,6 +189,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
 
             // Check the resource size using getMatchedResource()
             // A resource size > 1 indicates that there is a subresource
+            // We can't currently compute the route correctly when subresources are used
             if (checkResourceSize == 1) {
 
                 String contextRoot = request.getUriInfo().getBaseUri().getPath();
