@@ -161,9 +161,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
                     }
                 }
             }
-        } catch (
-
-        Exception e) {
+        } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
         }
     }

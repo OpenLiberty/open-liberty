@@ -132,7 +132,7 @@ public class JaxRsRouteTestServlet extends FATServlet {
                         .withKind(SpanKind.CLIENT)
                         .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
                         .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
-                        .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "/getSubResourceWithPathParam/{id}/details"));
+                        .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "/getSubResourceWithPathParam/myIdForTesting/details"));
 
         assertThat(serverSpan, isSpan()
                         .withKind(SpanKind.SERVER)
@@ -166,14 +166,14 @@ public class JaxRsRouteTestServlet extends FATServlet {
                         .withKind(SpanKind.CLIENT)
                         .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
                         .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
-                        .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "/getSubResourceWithQueryParam?id=myIdForTesting"));
+                        .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "/getSubResourceWithQueryParam/details?id=myIdForTesting"));
 
         assertThat(serverSpan, isSpan()
                         .withKind(SpanKind.SERVER)
                         .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
                         .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
-                        .withAttribute(SemanticAttributes.HTTP_ROUTE, getPath() + "/getSubResourceWithQueryParam")
-                        .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "/getSubResourceWithQueryParam?id=myIdForTesting"));
+                        .withAttribute(SemanticAttributes.HTTP_ROUTE, getPath() + "/getSubResourceWithQueryParam/details")
+                        .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "/getSubResourceWithQueryParam/details?id=myIdForTesting"));
     }
 
     private URI getUri() {
