@@ -173,6 +173,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
                     }
 
                     currentSpan.setAttribute(SemanticAttributes.HTTP_ROUTE, route);
+                    currentSpan.updateName(route);
                 }
             }
         } catch (Exception e) {

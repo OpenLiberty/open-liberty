@@ -45,7 +45,6 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
                 TelemetryServletTest.class,
                 TelemetryWithSpanErrorTest.class
 })
-
 public class FATSuite {
 
     public static RepeatTests allMPRepeats(String serverName) {
