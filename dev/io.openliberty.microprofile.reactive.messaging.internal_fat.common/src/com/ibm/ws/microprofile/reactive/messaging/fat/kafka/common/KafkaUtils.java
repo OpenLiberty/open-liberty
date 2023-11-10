@@ -44,6 +44,8 @@ import componenttest.topology.impl.LibertyServer;
 public class KafkaUtils {
 
     public static final String TRUSTSTORE_FILENAME = "kafka-truststore.jks";
+    public static final String KEYSTORE_FILENAME = "kafka-keystore.jks";
+    public static final String KEYSTORE2_FILENAME = "kafka-keystore2.jks";
 
     private final static String KAFKA_REGEX = "E Error.*kafka";
 
@@ -58,6 +60,16 @@ public class KafkaUtils {
 
     public static void copyTrustStore(ExtendedKafkaContainer container, LibertyServer server) throws Exception {
         copyFileToServer(container.getKeystoreFile(), server);
+    }
+
+    public static void copyKeyStoresToServer(ExtendedKafkaContainer container, LibertyServer server) throws Exception {
+        // Copy First Keystore
+        Path tmpDest = Paths.get(KEYSTORE_FILENAME);
+        Files.copy(container.getKeystoreFile().toPath(), tmpDest, StandardCopyOption.REPLACE_EXISTING);
+        server.copyFileToLibertyServerRootUsingTmp(server.getServerRoot(), tmpDest.toString());
+        Path tmpDest2 = Paths.get(KEYSTORE2_FILENAME);
+        Files.copy(container.getKeystoreFile2().toPath(), tmpDest2, StandardCopyOption.REPLACE_EXISTING);
+        server.copyFileToLibertyServerRootUsingTmp(server.getServerRoot(), tmpDest2.toString());
     }
 
     private static void copyFileToServer(File file, LibertyServer server) throws Exception {

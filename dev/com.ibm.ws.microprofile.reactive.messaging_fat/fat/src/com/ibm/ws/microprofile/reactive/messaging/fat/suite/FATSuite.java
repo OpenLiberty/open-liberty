@@ -12,15 +12,14 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
 import com.ibm.ws.microprofile.reactive.messaging.fat.jsonb.JsonbTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.tests.KafkaTestClientProviderTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.invalid.badconfig.KafkaBadConfigTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.invalid.nolib.KafkaNoLibTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.loginModuleClassloading.LoginModuleClassloadingTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.containers.TestContainerSuite;
 
@@ -28,6 +27,8 @@ import componenttest.containers.TestContainerSuite;
 @SuiteClasses({
                 PlaintextTests.class,
                 TlsTests.class,
+                MtlsTests.class,
+                MtlsMultipleKeyStoresTests.class,
                 SaslPlainTests.class,
                 KafkaTestClientProviderTest.class,
                 LoginModuleClassloadingTest.class,
