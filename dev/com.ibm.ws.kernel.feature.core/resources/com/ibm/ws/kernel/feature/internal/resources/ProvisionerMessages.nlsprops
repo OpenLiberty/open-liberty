@@ -233,6 +233,15 @@ UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: T
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=The server configuration contains an incompatible combination of features for the indicated programming models. This conflict can happen if the two incompatible features are configured directly in the server configuration, or if the configured features include different versions of a feature that are incompatible.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Try to specify a compatible version of the configured features that caused the conflict in the server.xml file. If no other versions are available, then the configured features are not compatible with each other and cannot be configured at the same time.
 
+UPDATE_MISSING_VERSIONLESS_ENV_VAR=CWWKF0048E: A value could not be found for environment variable PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_ENV_VAR.explanation=You have versionless features in your configuration and the PREFERRED_FEATURE_VERSIONS environment variable could not be found
+UPDATE_MISSING_VERSIONLESS_ENV_VAR.useraction=Check that the environment variable, PREFERRED_FEATURE_VERSIONS, exists and is spelled correctly.
+
+# CWWKF0049E  {0} = the feature that needs to be specified within PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL=CWWKF0049E: The environment variable, PREFERRED_FEATURE_VERSIONS, does not contain a value for {0}
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.explanation=For each versionless feature in your configuration, there must be a preferred version value for it within PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.useraction=Add a value in PREFERRED_FEATURE_VERSIONS for the feature
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: The feature {0} already exists. It will not be reinstalled. To modify an existing feature, you need to manually uninstall it first.

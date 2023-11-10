@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -40,24 +40,39 @@ public class ee10toMP {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    @AfterClass
-    public static void tearDown() throws Exception {
-        if(server.isStarted()) {
-            server.stopServer("CWWKF0001E");
-        }
+    @After
+    public void tearDown() throws Exception {
+        server.stopServer("CWWKF0001E");
     }
 
     @Test
-    public void ee10toHealthAndMetrics() throws Exception {
-        String methodName = "ee10toHealthAndMetrics";
+    public void ee10toHealthAndMetricsMaxTest() throws Exception {
+        String envVar = "mpMetrics-5.1,mpMetrics-5.0,mpMetrics-4.0,mpMetrics-3.0,mpMetrics-2.3,mpMetrics-2.2,mpMetrics-2.0,mpMetrics-1.1,mpMetrics-1.0,mpHealth-4.0,mpHealth-3.1,mpHealth-3.0,mpHealth-2.2,mpHealth-2.1,mpHealth-2.0,mpHealth-1.0";
 
         //log out the method name "Entering methodName..."
 
-        LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+        server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+        server.addEnvVar("PREFERRED_FEATURE_VERSIONS", envVar);
         server.startServer();
 
-        assertNotNull(server.waitForStringInLog("mpMetrics-5.0"));
-        assertNotNull(server.waitForStringInLog("mpHealth-4.0"));
+        assertNotNull("Expected mpMetrics-5.0 after features resolved but got: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"), server.waitForStringInLog("mpMetrics-5.0"));
+        assertNotNull("Expected mpHealth-4.0 after features resolved but got: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"), server.waitForStringInLog("mpHealth-4.0"));
+
+        server.stopServer("CWWKF0001E");
+    }
+
+    @Test
+    public void ee10toHealthAndMetricsMinTest() throws Exception {
+        String envVar = "mpMetrics-1.0,mpMetrics-1.1,mpMetrics-2.0,mpMetrics-2.2,mpMetrics-2.3,mpMetrics-3.0,mpMetrics-4.0,mpMetrics-5.0,mpMetrics-5.1,mpHealth-1.0,mpHealth-2.0,mpHealth-2.1,mpHealth-2.2,mpHealth-3.0,mpHealth-3.1,mpHealth-4.0";
+
+        //log out the method name "Entering methodName..."
+
+        server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+        server.addEnvVar("PREFERRED_FEATURE_VERSIONS", envVar);
+        server.startServer();
+
+        assertNotNull("Expected mpMetrics-5.0 after features resolved but got: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"), server.waitForStringInLog("mpMetrics-5.0"));
+        assertNotNull("Expected mpHealth-4.0 after features resolved but got: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"), server.waitForStringInLog("mpHealth-4.0"));
 
         server.stopServer("CWWKF0001E");
     }

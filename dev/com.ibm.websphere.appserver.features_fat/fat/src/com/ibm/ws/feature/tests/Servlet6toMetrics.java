@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -40,23 +40,37 @@ public class Servlet6toMetrics {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    @AfterClass
-    public static void tearDown() throws Exception {
-        if(server.isStarted()) {
-            server.stopServer("CWWKF0001E");
-        }
+    @After
+    public void tearDown() throws Exception {
+        server.stopServer("CWWKF0001E");
     }
 
     @Test
-    public void servlet6MetricsTest() throws Exception {
-        String methodName = "servlet6Test";
+    public void servlet6MetricsMaxTest() throws Exception {
+        String envVar = "mpMetrics-5.1,mpMetrics-5.0,mpMetrics-4.0,mpMetrics-3.0,mpMetrics-2.3,mpMetrics-2.2,mpMetrics-2.0,mpMetrics-1.1,mpMetrics-1.0";
 
         //log out the method name "Entering methodName..."
 
-        LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+        server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+        server.addEnvVar("PREFERRED_FEATURE_VERSIONS", envVar);
         server.startServer();
 
-        assertNotNull(server.waitForStringInLog("mpMetrics-5.0"));
+        assertNotNull("Expected mpMetrics-5.1 after features resolved but got: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"), server.waitForStringInLog("mpMetrics-5.1"));
+
+        server.stopServer("CWWKF0001E");
+    }
+
+    @Test
+    public void servlet6MetricsMinTest() throws Exception {
+        String envVar = "mpMetrics-1.0,mpMetrics-1.1,mpMetrics-2.0,mpMetrics-2.2,mpMetrics-2.3,mpMetrics-3.0,mpMetrics-4.0,mpMetrics-5.0,mpMetrics-5.1";
+
+        //log out the method name "Entering methodName..."
+
+        server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+        server.addEnvVar("PREFERRED_FEATURE_VERSIONS", envVar);
+        server.startServer();
+
+        assertNotNull("Expected mpMetrics-5.0 after features resolved but got: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"), server.waitForStringInLog("mpMetrics-5.0"));
 
         server.stopServer("CWWKF0001E");
     }
