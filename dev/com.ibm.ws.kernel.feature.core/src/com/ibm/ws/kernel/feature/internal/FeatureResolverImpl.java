@@ -363,52 +363,30 @@ public class FeatureResolverImpl implements FeatureResolver {
 
     @FFDCIgnore(IllegalArgumentException.class)
     public static String[] parseNameAndVersion(String feature) {
-        return parseNAV.computeIfAbsent(feature, (String feat) -> {
-            // figure out the base symbolic name and 'version'
-            // using last dash as a convention to determine the version and symbolic name
-            String baseName = feat;
-            String version = null;
-            int lastDash = feat.lastIndexOf('-');
-            if (lastDash >= 0) {
-                version = feat.substring(lastDash + 1);
-                try {
-                    Version.parseVersion(version);
-                    baseName = feat.substring(0, lastDash);
-                } catch (IllegalArgumentException e) {
-                    version = null;
-                }
+        String[] result = parseNAV.get(feature);
+        if(result != null){
+            return result;
+        }
+        // figure out the base symbolic name and 'version'
+        // using last dash as a convention to determine the version and symbolic name
+        String baseName = feature;
+        String version = null;
+        int lastDash = feature.lastIndexOf('-');
+        if (lastDash >= 0) {
+            // remove the version part of the symbolic name
+            version = feature.substring(lastDash + 1);
+            // Validate the version syntax
+            try {
+                Version.parseVersion(version);
+                baseName = feature.substring(0, lastDash);
+            } catch (IllegalArgumentException e) {
+                version = null;
             }
-            return new String[] { baseName, version };
-        });
+        }
+        result = new String[] { baseName, version };
+        parseNAV.put(feature, result);
+        return result;
     }
-
-    //DUPLICATE
-    // @FFDCIgnore(IllegalArgumentException.class)
-    // public static String[] parseNameAndVersion(String feature) {
-    //     String[] result = parseNAV.get(feature);
-    //     if(result != null){
-    //         return result;
-    //     }
-    //     // figure out the base symbolic name and 'version'
-    //     // using last dash as a convention to determine the version and symbolic name
-    //     String baseName = feature;
-    //     String version = null;
-    //     int lastDash = feature.lastIndexOf('-');
-    //     if (lastDash >= 0) {
-    //         // remove the version part of the symbolic name
-    //         version = feature.substring(lastDash + 1);
-    //         // Validate the version syntax
-    //         try {
-    //             Version.parseVersion(version);
-    //             baseName = feature.substring(0, lastDash);
-    //         } catch (IllegalArgumentException e) {
-    //             version = null;
-    //         }
-    //     }
-    //     result = new String[] { baseName, version };
-    //     parseNAV.put(feature, result);
-    //     return result;
-    // }
 
     private void processSelected(ProvisioningFeatureDefinition selectedFeature, Set<String> allowedTolerations, Deque<String> chain, Set<String> result,
                                  SelectionContext selectionContext) {
