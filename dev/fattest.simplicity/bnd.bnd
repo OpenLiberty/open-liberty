@@ -116,5 +116,8 @@ fat.test.container.images: testcontainers/ryuk:0.5.1, testcontainers/sshd:1.1.0,
 	org.seleniumhq.selenium:selenium-support;version=4.8.3,\
 	org.bouncycastle:bcpg-jdk18on;version=1.75,\
 	org.bouncycastle:bcpkix-jdk18on;version=1.75,\
-	org.bouncycastle:bcprov-jdk18on;version=1.75
+	org.bouncycastle:bcprov-jdk18on;version=1.75,\
+	org.apache.sshd:sshd-common;version=2.9.2,\
+    org.apache.sshd:sshd-core;version=2.9.2,\
+    org.apache.sshd:sshd-scp;version=2.9.2
 	

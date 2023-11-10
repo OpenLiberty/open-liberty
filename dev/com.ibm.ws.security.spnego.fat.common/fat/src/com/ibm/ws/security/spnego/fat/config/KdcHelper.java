@@ -13,32 +13,26 @@
 package com.ibm.ws.security.spnego.fat.config;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.ConnectException;
 import java.rmi.RemoteException;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.apache.sshd.client.SshClient;
+/*import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.channel.ChannelExec;
 import org.apache.sshd.client.channel.ClientChannelEvent;
 import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.common.channel.Channel;
 import org.apache.sshd.common.channel.ChannelListener;
 import org.apache.sshd.scp.client.ScpClient;
-import org.apache.sshd.scp.client.ScpClientCreator;
+import org.apache.sshd.scp.client.ScpClientCreator;*/
 import org.junit.Ignore;
 
 import com.ibm.websphere.simplicity.ConnectionInfo;
@@ -316,25 +310,27 @@ public abstract class KdcHelper {
     protected void retrieveFile(Machine kdcMachine, String remoteFileName, String copyToFileName) throws Exception {
         String methodName = "retrieveFile";
 
-        SshClient sshClient = getSshClient();
-        try {
-            try (ClientSession sshSession = getSshSession(sshClient, kdcMachine)) {
-
-                if (remoteFileExists(sshSession, remoteFileName)) {
-                    Log.info(thisClass, methodName, "No retrieval was performed because the remote file provided does not exist: " + remoteFileName);
-                    return;
-                }
-
-                Log.info(thisClass, methodName, "Local file: " + copyToFileName + " remote file: " + remoteFileName);
-
-                //        boolean result = RXAProvider.copy(rFile, lFile, true);
-                boolean result = copyFromRemoteFile(sshSession, remoteFileName, copyToFileName);
-
-                Log.info(thisClass, methodName, "Copy remote file to local file result: " + result);
-            }
-        } finally {
-            sshClient.stop();
-        }
+        /*
+         * SshClient sshClient = getSshClient();
+         * try {
+         * try (ClientSession sshSession = getSshSession(sshClient, kdcMachine)) {
+         *
+         * if (remoteFileExists(sshSession, remoteFileName)) {
+         * Log.info(thisClass, methodName, "No retrieval was performed because the remote file provided does not exist: " + remoteFileName);
+         * return;
+         * }
+         *
+         * Log.info(thisClass, methodName, "Local file: " + copyToFileName + " remote file: " + remoteFileName);
+         *
+         * // boolean result = RXAProvider.copy(rFile, lFile, true);
+         * boolean result = copyFromRemoteFile(sshSession, remoteFileName, copyToFileName);
+         *
+         * Log.info(thisClass, methodName, "Copy remote file to local file result: " + result);
+         * }
+         * } finally {
+         * sshClient.stop();
+         * }
+         */
     }
 
     /**
@@ -416,30 +412,32 @@ public abstract class KdcHelper {
         Log.info(thisClass, methodName, "Local file: " + localFile.toString() + " remote file: " + remoteFile.getMachine().getHostname() + ":" + remoteFile.toString());
         boolean result = true;
 
-        for (int i = 1; i <= 5; i++) {
-            try {
-//                result = localFile.copyToDest(remoteFile);
-
-                SshClient sshClient = getSshClient();
-                try (ClientSession sshSession = getSshSession(sshClient, remoteFile.getMachine())) {
-                    result = copyLocalFileToRemote(sshSession, localFile.getAbsolutePath(), remoteFile.getAbsolutePath());
-                } finally {
-                    sshClient.stop();
-                }
-                break;
-            } catch (ConnectException ce) {
-                Log.info(thisClass, methodName, "Failed to copy local file to remote file due to: " + CommonTest.maskHostnameAndPassword(ce.getMessage()));
-                Log.info(thisClass, methodName, "Sleeping for 5 seconds and then will attempt to copy the file again. Try " + (i + 1) + " of 5.");
-                Thread.sleep(5 * 1000);
-            } catch (NumberFormatException nf) {
-                Log.info(thisClass, methodName, "A NumberFormatException, this does not affect test performance, ignore it...");
-                break;
-            } catch (Exception e) {
-                Log.error(thisClass, methodName, e, "Exception thrown: " + e);
-                result = false;
-                break;
-            }
-        }
+        /*
+         * for (int i = 1; i <= 5; i++) {
+         * try {
+         * // result = localFile.copyToDest(remoteFile);
+         *
+         * SshClient sshClient = getSshClient();
+         * try (ClientSession sshSession = getSshSession(sshClient, remoteFile.getMachine())) {
+         * result = copyLocalFileToRemote(sshSession, localFile.getAbsolutePath(), remoteFile.getAbsolutePath());
+         * } finally {
+         * sshClient.stop();
+         * }
+         * break;
+         * } catch (ConnectException ce) {
+         * Log.info(thisClass, methodName, "Failed to copy local file to remote file due to: " + CommonTest.maskHostnameAndPassword(ce.getMessage()));
+         * Log.info(thisClass, methodName, "Sleeping for 5 seconds and then will attempt to copy the file again. Try " + (i + 1) + " of 5.");
+         * Thread.sleep(5 * 1000);
+         * } catch (NumberFormatException nf) {
+         * Log.info(thisClass, methodName, "A NumberFormatException, this does not affect test performance, ignore it...");
+         * break;
+         * } catch (Exception e) {
+         * Log.error(thisClass, methodName, e, "Exception thrown: " + e);
+         * result = false;
+         * break;
+         * }
+         * }
+         */
 
         Log.info(thisClass, methodName, "Copy file to remote host result: " + result);
     }
@@ -454,26 +452,28 @@ public abstract class KdcHelper {
         String methodName = "removeRemoteFileFromRemoteMachine";
         Log.info(thisClass, methodName, "Remote File: " + remoteFile.toString());
         boolean result = true;
-        SshClient sshClient = getSshClient();
-        try {
-//            result = remoteFile.delete();
-
-            try (ClientSession sshSession = getSshSession(sshClient, remoteFile.getMachine())) {
-                result = deleteRemoteFile(sshSession, remoteFile.getAbsolutePath());
-            }
-        } catch (IOException ce) {
-            Log.info(thisClass, methodName, "Failed to delete remote file to remote file due to: " + CommonTest.maskHostnameAndPassword(ce.getMessage()));
-            Log.info(thisClass, methodName, "Sleeping for 5 seconds and then will attempt to delete the file again");
-            Thread.sleep(5 * 1000);
-//            result = remoteFile.delete();
-
-            try (ClientSession sshSession = getSshSession(sshClient, remoteFile.getMachine())) {
-                result = deleteRemoteFile(sshSession, remoteFile.getAbsolutePath());
-            }
-
-        } finally {
-            sshClient.stop();
-        }
+        /*
+         * SshClient sshClient = getSshClient();
+         * try {
+         * // result = remoteFile.delete();
+         *
+         * try (ClientSession sshSession = getSshSession(sshClient, remoteFile.getMachine())) {
+         * result = deleteRemoteFile(sshSession, remoteFile.getAbsolutePath());
+         * }
+         * } catch (IOException ce) {
+         * Log.info(thisClass, methodName, "Failed to delete remote file to remote file due to: " + CommonTest.maskHostnameAndPassword(ce.getMessage()));
+         * Log.info(thisClass, methodName, "Sleeping for 5 seconds and then will attempt to delete the file again");
+         * Thread.sleep(5 * 1000);
+         * // result = remoteFile.delete();
+         *
+         * try (ClientSession sshSession = getSshSession(sshClient, remoteFile.getMachine())) {
+         * result = deleteRemoteFile(sshSession, remoteFile.getAbsolutePath());
+         * }
+         *
+         * } finally {
+         * sshClient.stop();
+         * }
+         */
 
         Log.info(thisClass, methodName, "Remove file from remote host result: " + result);
     }
@@ -858,32 +858,6 @@ public abstract class KdcHelper {
     }
 
     /**
-     * Get a (started) SshClient.
-     *
-     * @return The SshClient.
-     */
-    protected SshClient getSshClient() {
-        SshClient sshClient = SshClient.setUpDefaultClient();
-        sshClient.start();
-        return sshClient;
-    }
-
-    /**
-     * Get an SSH ClientSession to the specified machine.
-     *
-     * @param sshClient The SSH client.
-     * @param machine   The machine to connect to.
-     * @return The session.
-     * @throws IOException If there was an error getting an SSH session to the machine.
-     */
-    protected ClientSession getSshSession(SshClient sshClient, Machine machine) throws IOException {
-        ClientSession session = sshClient.connect(machine.getUsername(), machine.getHostname(), 22).verify(30, TimeUnit.SECONDS).getSession();
-        session.addPasswordIdentity(machine.getPassword());
-        session.auth().verify(30, TimeUnit.SECONDS).isSuccess();
-        return session;
-    }
-
-    /**
      * Execute the command over the SSH session.
      *
      * @param sshSession The SSH ClientSession.
@@ -892,62 +866,64 @@ public abstract class KdcHelper {
      * @return The ProgramOutput.
      * @throws IOException If there was an error executing the command.
      */
-    protected ProgramOutput executeSshCommand(ClientSession sshSession, String command, int timeout) throws IOException {
-        final String methodName = "executeSshCommand";
-        Log.info(thisClass, methodName, "Executing SSH command --> \"{1}\" with a {2}s timeout on session {0}", new Object[] { sshSession, command, timeout });
-
-        try (ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-                        ChannelExec channel = sshSession.createExecChannel(command)) {
-
-            /*
-             * Redirect stdout and stderr to one stream. I don't capture each separately b/c I want
-             * to see the output in temporal order.
-             */
-            channel.setOut(stdout);
-            channel.setErr(stdout);
-            channel.addChannelListener(new SshChannelListener());
-
-            try {
-                long remainingTimeoutMs = TimeUnit.SECONDS.toMillis(timeout);
-
-                /*
-                 * Open the execution channel, and verify it is open.
-                 */
-                long startTimeMs = System.currentTimeMillis();
-                channel.open().verify(remainingTimeoutMs, TimeUnit.MILLISECONDS);
-                remainingTimeoutMs -= System.currentTimeMillis() - startTimeMs;
-
-                if (remainingTimeoutMs <= 0) {
-                    Log.info(thisClass, methodName, "The SSH command timed out.");
-                    throw new IOException("Timed out trying to open a channel with the host to execute the SSH command. The timeout was " + timeout + " seconds.");
-                }
-
-                /*
-                 * Execute the command on the channel and wait for it to complete.
-                 */
-                Set<ClientChannelEvent> ccEvents = channel.waitFor(EnumSet.of(ClientChannelEvent.EXIT_STATUS), remainingTimeoutMs);
-                Log.info(thisClass, methodName, "Client channel returned the following events: " + ccEvents);
-
-                /*
-                 * Did the command timeout? If so throw an exception.
-                 */
-                if (ccEvents.contains(ClientChannelEvent.TIMEOUT)) {
-                    Log.info(thisClass, methodName, "The SSH command timed out. The timeout was " + timeout + " seconds.");
-                    throw new IOException("The SSH command timed out while executing. The timeout was " + timeout + " seconds.");
-                }
-
-                return new ProgramOutput(command, channel.getExitStatus(), new String(stdout.toByteArray()), null);
-            } finally {
-                try {
-                    channel.close(false);
-                } catch (Throwable t) {
-                    // Ignore.
-                }
-
-                logSshOutput(new String(stdout.toByteArray()).trim());
-            }
-        }
-    }
+    /*
+     * protected ProgramOutput executeSshCommand(ClientSession sshSession, String command, int timeout) throws IOException {
+     * final String methodName = "executeSshCommand";
+     * Log.info(thisClass, methodName, "Executing SSH command --> \"{1}\" with a {2}s timeout on session {0}", new Object[] { sshSession, command, timeout });
+     *
+     * try (ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+     * ChannelExec channel = sshSession.createExecChannel(command)) {
+     *
+     *
+     * Redirect stdout and stderr to one stream. I don't capture each separately b/c I want
+     * to see the output in temporal order.
+     *
+     * channel.setOut(stdout);
+     * channel.setErr(stdout);
+     * channel.addChannelListener(new SshChannelListener());
+     *
+     * try {
+     * long remainingTimeoutMs = TimeUnit.SECONDS.toMillis(timeout);
+     *
+     *
+     * Open the execution channel, and verify it is open.
+     *
+     * long startTimeMs = System.currentTimeMillis();
+     * channel.open().verify(remainingTimeoutMs, TimeUnit.MILLISECONDS);
+     * remainingTimeoutMs -= System.currentTimeMillis() - startTimeMs;
+     *
+     * if (remainingTimeoutMs <= 0) {
+     * Log.info(thisClass, methodName, "The SSH command timed out.");
+     * throw new IOException("Timed out trying to open a channel with the host to execute the SSH command. The timeout was " + timeout + " seconds.");
+     * }
+     *
+     *
+     * Execute the command on the channel and wait for it to complete.
+     *
+     * Set<ClientChannelEvent> ccEvents = channel.waitFor(EnumSet.of(ClientChannelEvent.EXIT_STATUS), remainingTimeoutMs);
+     * Log.info(thisClass, methodName, "Client channel returned the following events: " + ccEvents);
+     *
+     *
+     * Did the command timeout? If so throw an exception.
+     *
+     * if (ccEvents.contains(ClientChannelEvent.TIMEOUT)) {
+     * Log.info(thisClass, methodName, "The SSH command timed out. The timeout was " + timeout + " seconds.");
+     * throw new IOException("The SSH command timed out while executing. The timeout was " + timeout + " seconds.");
+     * }
+     *
+     * return new ProgramOutput(command, channel.getExitStatus(), new String(stdout.toByteArray()), null);
+     * } finally {
+     * try {
+     * channel.close(false);
+     * } catch (Throwable t) {
+     * // Ignore.
+     * }
+     *
+     * logSshOutput(new String(stdout.toByteArray()).trim());
+     * }
+     * }
+     * }
+     */
 
     /**
      * Log output from an SSH channel.
@@ -983,11 +959,12 @@ public abstract class KdcHelper {
      * @param remoteFileName The remote file name.
      * @return True if the file exists, false otherwise.
      * @throws IOException If there was an error checking the file.
+     *
+     *                         protected boolean remoteFileExists(ClientSession sshSession, String remoteFileName) throws IOException {
+     *                         remoteFileName = remoteFileName.replace("\\", "/"); // Convert windows path to Linux
+     *                         return executeSshCommand(sshSession, "test -f " + remoteFileName, 5).getReturnCode() != 0;
+     *                         }
      */
-    protected boolean remoteFileExists(ClientSession sshSession, String remoteFileName) throws IOException {
-        remoteFileName = remoteFileName.replace("\\", "/"); // Convert windows path to Linux
-        return executeSshCommand(sshSession, "test -f " + remoteFileName, 5).getReturnCode() != 0;
-    }
 
     /**
      * Copy a remote file to a local file.
@@ -996,37 +973,27 @@ public abstract class KdcHelper {
      * @param remoteFile The remote file to copy.
      * @param localFile  The local file to copy to.
      * @return True if the copy succeeded, false otherwise.
+     *
+     *         protected boolean copyFromRemoteFile(ClientSession sshSession, String remoteFile, String localFile) {
+     *         remoteFile = remoteFile.replace("\\", "/"); // Convert windows path to Linux
+     * 
+     *         Log.info(thisClass, "copyFromRemoteFile", "Copying remote file " + remoteFile + " to local file " + localFile);
+     * 
+     *         boolean success = false;
+     * 
+     *         try {
+     *         ScpClient scpClient = ScpClientCreator.instance().createScpClient(sshSession);
+     *         scpClient.download(remoteFile, new FileOutputStream(localFile));
+     *         success = true;
+     *         } catch (IOException e) {
+     *         Log.error(thisClass, "copyFromRemoteFile", e, "SCP encountered an error downloading the remote file "
+     *         + sshSession.getRemoteAddress() + ":" + remoteFile + " to " + localFile);
+     *         }
+     * 
+     *         Log.info(thisClass, "copyFromRemoteFile", "Copy from remote file was successful? " + success);
+     *         return success;
+     *         }
      */
-    protected boolean copyFromRemoteFile(ClientSession sshSession, String remoteFile, String localFile) {
-        remoteFile = remoteFile.replace("\\", "/"); // Convert windows path to Linux
-
-        Log.info(thisClass, "copyFromRemoteFile", "Copying remote file " + remoteFile + " to local file " + localFile);
-
-        boolean success = false;
-
-        try {
-            ScpClient scpClient = ScpClientCreator.instance().createScpClient(sshSession);
-            scpClient.download(remoteFile, new FileOutputStream(localFile));
-            success = true;
-        } catch (IOException e) {
-            Log.error(thisClass, "copyFromRemoteFile", e, "SCP encountered an error downloading the remote file "
-                                                          + sshSession.getRemoteAddress() + ":" + remoteFile + " to " + localFile);
-        }
-
-        /*
-         * Validate the copy by looking at the size.
-         *
-         * NOTE: Originally added this code to validate the file size matches that on the remote system,
-         * but had issues where the standard output with the file size was not coming back in a timely
-         * fashion, so now we will rely on the SCP download throwing an IOException on failure.
-         */
-//        long remoteSize = Long.valueOf(executeSshCommand(sshSession, "wc -c < " + remoteFile, 10).getStdout().trim());
-//        long localSize = new File(localFile).length();
-//        boolean success = remoteSize == localSize;
-
-        Log.info(thisClass, "copyFromRemoteFile", "Copy from remote file was successful? " + success);
-        return success;
-    }
 
     /**
      * Copy a local file to a remote file.
@@ -1035,36 +1002,26 @@ public abstract class KdcHelper {
      * @param localFile  The local file to copy from.
      * @param remoteFile The remote file to copy to.
      * @return True if the copy succeeded, false otherwise.
+     *
+     *         protected boolean copyLocalFileToRemote(ClientSession sshSession, String localFile, String remoteFile) {
+     *         remoteFile = remoteFile.replace("\\", "/"); // Convert windows path to Linux
+     * 
+     *         Log.info(thisClass, "copyLocalFileToRemote", "Copying local file " + localFile + " to remote file " + remoteFile);
+     * 
+     *         boolean success = false;
+     *         try {
+     *         ScpClient scpClient = ScpClientCreator.instance().createScpClient(sshSession);
+     *         scpClient.upload(localFile, remoteFile);
+     *         success = true;
+     *         } catch (IOException e) {
+     *         Log.error(thisClass, "copyLocalFileToRemote", e, "SCP encountered an error uploading the local file "
+     *         + localFile + " to " + sshSession.getRemoteAddress() + ":" + remoteFile);
+     *         }
+     * 
+     *         Log.info(thisClass, "copyLocalFileToRemote", "Copy to remote file was successful? " + success);
+     *         return success;
+     *         }
      */
-    protected boolean copyLocalFileToRemote(ClientSession sshSession, String localFile, String remoteFile) {
-        remoteFile = remoteFile.replace("\\", "/"); // Convert windows path to Linux
-
-        Log.info(thisClass, "copyLocalFileToRemote", "Copying local file " + localFile + " to remote file " + remoteFile);
-
-        boolean success = false;
-        try {
-            ScpClient scpClient = ScpClientCreator.instance().createScpClient(sshSession);
-            scpClient.upload(localFile, remoteFile);
-            success = true;
-        } catch (IOException e) {
-            Log.error(thisClass, "copyLocalFileToRemote", e, "SCP encountered an error uploading the local file "
-                                                             + localFile + " to " + sshSession.getRemoteAddress() + ":" + remoteFile);
-        }
-
-        /*
-         * Validate the copy by looking at the size.
-         *
-         * NOTE: Originally added this code to validate the file size matches that on the remote system,
-         * but had issues where the standard output with the file size was not coming back in a timely
-         * fashion, so now we will rely on the SCP upload throwing an IOException on failure.
-         */
-//        long remoteSize = Long.valueOf(executeSshCommand(sshSession, "wc -c < " + remoteFile, 10).getStdout().trim());
-//        long localSize = new File(localFile).length();
-//        boolean success = remoteSize == localSize;
-
-        Log.info(thisClass, "copyLocalFileToRemote", "Copy to remote file was successful? " + success);
-        return success;
-    }
 
     /**
      * Delete a remote file.
@@ -1073,46 +1030,48 @@ public abstract class KdcHelper {
      * @param remoteFile The remote file to delete.
      * @return True if the delete succeeded, false otherwise.
      * @throws IOException If the delete failed for some reason.
+     *
+     *                         protected boolean deleteRemoteFile(ClientSession sshSession, String remoteFile) throws IOException {
+     *                         remoteFile = remoteFile.replace("\\", "/"); // Convert windows path to Linux
+     * 
+     *                         Log.info(thisClass, "deleteRemoteFile", "Deleting remote file " + remoteFile);
+     *                         boolean success = executeSshCommand(sshSession, "rm -f " + remoteFile, 5).getReturnCode() == 0;
+     *                         Log.info(thisClass, "deleteRemoteFile", "Delete of remote file was successful? " + success);
+     *                         return success;
+     *                         }
      */
-    protected boolean deleteRemoteFile(ClientSession sshSession, String remoteFile) throws IOException {
-        remoteFile = remoteFile.replace("\\", "/"); // Convert windows path to Linux
-
-        Log.info(thisClass, "deleteRemoteFile", "Deleting remote file " + remoteFile);
-        boolean success = executeSshCommand(sshSession, "rm -f " + remoteFile, 5).getReturnCode() == 0;
-        Log.info(thisClass, "deleteRemoteFile", "Delete of remote file was successful? " + success);
-        return success;
-    }
 
     /**
      * Handler for listenting to SSH channel events.
+     *
+     * class SshChannelListener implements ChannelListener {
+     * private Class<?> thisClass = SshChannelListener.class;
+     * 
+     * @Override
+     *           public void channelInitialized(Channel channel) {
+     *           Log.info(thisClass, "channelInitialized", "Channel: " + channel);
+     *           }
+     * 
+     * @Override
+     *           public void channelOpenSuccess(Channel channel) {
+     *           Log.info(thisClass, "channelOpenSuccess", "Channel: " + channel);
+     *           }
+     * 
+     * @Override
+     *           public void channelOpenFailure(Channel channel,
+     *           Throwable reason) {
+     *           Log.error(thisClass, "channelOpenFailure", reason, "Channel: " + channel);
+     *           }
+     * 
+     * @Override
+     *           public void channelClosed(Channel channel, Throwable reason) {
+     *           Log.error(thisClass, "channelClosed", reason, "Channel: " + channel);
+     *           }
+     * 
+     * @Override
+     *           public void channelStateChanged(Channel channel, String hint) {
+     *           Log.info(thisClass, "channelStateChanged", "Channel: " + channel + ", hint: " + hint);
+     *           }
+     *           }
      */
-    class SshChannelListener implements ChannelListener {
-        private Class<?> thisClass = SshChannelListener.class;
-
-        @Override
-        public void channelInitialized(Channel channel) {
-            Log.info(thisClass, "channelInitialized", "Channel: " + channel);
-        }
-
-        @Override
-        public void channelOpenSuccess(Channel channel) {
-            Log.info(thisClass, "channelOpenSuccess", "Channel: " + channel);
-        }
-
-        @Override
-        public void channelOpenFailure(Channel channel,
-                                       Throwable reason) {
-            Log.error(thisClass, "channelOpenFailure", reason, "Channel: " + channel);
-        }
-
-        @Override
-        public void channelClosed(Channel channel, Throwable reason) {
-            Log.error(thisClass, "channelClosed", reason, "Channel: " + channel);
-        }
-
-        @Override
-        public void channelStateChanged(Channel channel, String hint) {
-            Log.info(thisClass, "channelStateChanged", "Channel: " + channel + ", hint: " + hint);
-        }
-    }
 }
