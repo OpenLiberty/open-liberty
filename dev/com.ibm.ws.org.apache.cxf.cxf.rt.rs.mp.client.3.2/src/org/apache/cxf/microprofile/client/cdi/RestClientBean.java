@@ -44,6 +44,7 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.ws.rs.Priorities;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.microprofile.rest.client.component.CxfRestClientBeanBuilderNotifier;
 
 import org.apache.cxf.common.classloader.ClassLoaderUtils;
 import org.apache.cxf.common.logging.LogUtils;
@@ -93,6 +94,10 @@ public class RestClientBean implements Bean<Object>, PassivationCapable {
     public Object create(CreationalContext<Object> creationalContext) {
         //Liberty change start
         RestClientBuilder builder = new CxfTypeSafeClientBuilder();
+        CxfRestClientBeanBuilderNotifier notifier = CxfRestClientBeanBuilderNotifier.getInstance();
+        if (notifier != null) {
+            notifier.newBuilder(builder);
+        }
         String baseUri = getBaseUri();
         builder = ((CxfTypeSafeClientBuilder)builder).baseUri(URI.create(baseUri));
         List<Class<?>> providers = getConfiguredProviders();

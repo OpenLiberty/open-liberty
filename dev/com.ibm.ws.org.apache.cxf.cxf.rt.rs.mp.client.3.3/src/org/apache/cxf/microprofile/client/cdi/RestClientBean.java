@@ -62,6 +62,8 @@ import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import com.ibm.ws.microprofile.rest.client.component.CxfRestClientBeanBuilderNotifier;
+
 public class RestClientBean implements Bean<Object>, PassivationCapable {
     public static final String REST_URL_FORMAT = "%s/mp-rest/url";
     public static final String REST_URI_FORMAT = "%s/mp-rest/uri";
@@ -115,6 +117,12 @@ public class RestClientBean implements Bean<Object>, PassivationCapable {
     @Override
     public Object create(CreationalContext<Object> creationalContext) {
         CxfTypeSafeClientBuilder builder = new CxfTypeSafeClientBuilder();
+        //Liberty change start
+        CxfRestClientBeanBuilderNotifier notifier = CxfRestClientBeanBuilderNotifier.getInstance();
+        if (notifier != null) {
+            notifier.newBuilder(builder);
+        }
+        //Liberty change end
         String baseUri = getBaseUri();
         builder = (CxfTypeSafeClientBuilder) builder.baseUri(URI.create(baseUri));
         List<Class<?>> providers = getConfiguredProviders();

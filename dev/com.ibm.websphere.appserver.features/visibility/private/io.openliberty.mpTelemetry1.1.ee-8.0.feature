@@ -11,6 +11,7 @@ singleton=true
 -bundles=\
   com.ibm.ws.cdi.interfaces, \
   io.openliberty.microprofile.telemetry.1.1.internal, \
+  io.openliberty.microprofile.telemetry.1.1.internal.cxf, \
   io.openliberty.io.opentelemetry.1.29, \
   io.openliberty.microprofile.telemetry.internal.common
 kind=beta
