@@ -316,7 +316,7 @@ public abstract class KdcHelper {
      */
     protected void retrieveFile(Machine kdcMachine, String remoteFileName, String copyToFileName) throws Exception {
         String methodName = "retrieveFile";
-
+        
         SshClient sshClient = getSshClient();
         try {
             try (ClientSession sshSession = getSshSession(sshClient, kdcMachine)) {

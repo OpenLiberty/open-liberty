@@ -43,8 +43,9 @@ public class Krb5Helper {
     public static final String SUN_JDK_KRB5_LOGIN_REFRESH_KRB5_CONFIG = "sunKrb5LoginRefreshKrb5Config";
     public static Oid KRB5_MECH_OID = null;
     public static Oid SPNEGO_MECH_OID = null;
+    
+    private String jaasConfFile = (System.getProperty("os.name") == "z/OS")? SPNEGOConstants.ZOS_CLIENT_JAAS_CONFIG_FILE:SPNEGOConstants.CLIENT_JAAS_CONFIG_FILE;
 
-    private String jaasConfFile = SPNEGOConstants.CLIENT_JAAS_CONFIG_FILE;
 
     /**
      * Performs a Kerberos login on the given server using the provided login configuration and user credentials.
@@ -194,7 +195,7 @@ public class Krb5Helper {
      */
     public void resetJaasConfFile() {
         Log.info(thisClass, "resetJaasConfFile", "Resetting JAAS config file to: " + SPNEGOConstants.CLIENT_JAAS_CONFIG_FILE);
-        jaasConfFile = SPNEGOConstants.CLIENT_JAAS_CONFIG_FILE;
+        jaasConfFile = (System.getProperty("os.name") == "z/OS")? SPNEGOConstants.ZOS_CLIENT_JAAS_CONFIG_FILE:SPNEGOConstants.CLIENT_JAAS_CONFIG_FILE;
     }
 
     /**

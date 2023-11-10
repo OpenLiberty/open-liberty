@@ -15,13 +15,21 @@ package com.ibm.ws.security.spnego.fat.config;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.security.Security;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.security.Provider;
+import java.security.Security;
+import java.util.Iterator;
 
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
+import java.security.Provider.Service;
 
 import com.ibm.websphere.simplicity.ConnectionInfo;
 import com.ibm.websphere.simplicity.Machine;
@@ -107,6 +115,38 @@ public class InitClass {
     public static void getKDCInfoFromConsul() throws Exception {
         String thisMethod = "getKDCInfoFromConsul";
         Log.info(c, thisMethod, "Getting KDCs from Consul.....");
+
+        Log.info(c, thisMethod, "java Vendor URL : " + System.getProperty("java.vendor.url"));
+        Log.info(c, thisMethod, "java Vendor : " + System.getProperty("java.vendor"));
+        Log.info(c, thisMethod, "java Version : " + System.getProperty("java.version"));
+        Log.info(c, thisMethod, "Java Runtime Name : " + System.getProperty("java.runtime.name"));
+        Log.info(c, thisMethod, "Java Runtime Version : " + System.getProperty("java.runtime.version"));
+        Log.info(c, thisMethod,
+                 "Java Virtual Machine Specification Name : " + System.getProperty("java.vm.specification.name"));
+        Log.info(c, thisMethod,
+                 "Java Virtual Machine Specification Version  : " + System.getProperty("java.vm.specification.version"));
+        Log.info(c, thisMethod,
+                 "Java Virtual Machine Specification Vendor : " + System.getProperty("java.vm.specification.vendor"));
+        Log.info(c, thisMethod, "Java Virtual Machine Implementation Name : " + System.getProperty("java.vm.name"));
+        Log.info(c, thisMethod, "Java Virtual Machine Implementation Version : " + System.getProperty("java.vm.version"));
+        Log.info(c, thisMethod, "Java Virtual Machine Implementation Vendor : " + System.getProperty("java.vm.vendor"));
+        Provider[] providerList = Security.getProviders();
+        for (Provider provider : providerList) {
+            Log.info(c, thisMethod, "Name: " + provider.getName());
+            Log.info(c, thisMethod, "Information:\n" + provider.getInfo());
+
+            Set<Service> serviceList = provider.getServices();
+            for (Service service : serviceList) {
+                Log.info(c, thisMethod, "Service Type: " + service.getType() + " Algorithm " + service.getAlgorithm());
+            }
+        }
+
+        if (Security.getProvider("BC") != null) {
+            Log.info(c, thisMethod, "Bouncy Castle provider is available");
+        }
+        if (Security.getProvider("BC") == null) {
+            Log.info(c, thisMethod, "Bouncy Castle provider NOT is available");
+        }
         List<ExternalTestService> services = null;
 
         try {
@@ -199,9 +239,30 @@ public class InitClass {
     private static void establishConnectionToKDC(String thisMethod, Machine kdcMachine) throws Exception, InterruptedException {
         for (int i = 1; i <= 3; i++) {
             try {
+                Log.info(c, thisMethod, "WRG++++ IM HERE");
+                for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+                    Log.info(c, thisMethod, ste + "\n");
+                }
+                Log.info(c, thisMethod, "WRG++++ IM HERE");
+                if (Security.getProvider("BC") != null) {
+                    Log.info(c, thisMethod, "Bouncy Castle provider is available");
+                }
+                if (Security.getProvider("BC") == null) {
+                    Log.info(c, thisMethod, "Bouncy Castle provider NOT is available");
+                }
+                StackTraceElement[] st = new Throwable().getStackTrace();
                 SshClient sshClient = getSshClient();
+                for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+                    Log.info(c, thisMethod, ste + "\n");
+                }
                 try {
+                    for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+                        Log.info(c, thisMethod, "before getSshSession " + ste + "\n");
+                    }
                     getSshSession(sshClient, kdcMachine);
+                    for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+                        Log.info(c, thisMethod, "after getSshSession " + ste + "\n");
+                    }
                 } finally {
                     sshClient.stop();
                 }
@@ -350,8 +411,8 @@ public class InitClass {
      * "ibm.com", the same value provided for canonicalHostName is returned.
      *
      * @param canonicalHostName
-     * @param issueMsg - Boolean indicating whether a message should be logged if the canonical host name does not
-     *            include the IBM domain.
+     * @param issueMsg          - Boolean indicating whether a message should be logged if the canonical host name does not
+     *                              include the IBM domain.
      * @return
      */
     public static String getShortHostName(String canonicalHostName, boolean issueMsg) {
@@ -387,8 +448,18 @@ public class InitClass {
      * @return The SshClient.
      */
     protected static SshClient getSshClient() {
+        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+            Log.info(c, "getSshClient", "before getting ssh client " + ste + "\n");
+        }
         SshClient sshClient = SshClient.setUpDefaultClient();
+        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+            Log.info(c, "getSshClient", "after getting ssh client " + ste + "\n");
+        }
         sshClient.start();
+        for (String keys : sshClient.getProperties().keySet()) {
+            Log.info(c, "getSshClient", "properties "+keys);
+        }
+
         return sshClient;
     }
 
@@ -396,12 +467,24 @@ public class InitClass {
      * Get an SSH ClientSession to the specified machine.
      *
      * @param sshClient The SSH client.
-     * @param machine The machine to connect to.
+     * @param machine   The machine to connect to.
      * @return The session.
      * @throws IOException If there was an error getting an SSH session to the machine.
      */
     protected static ClientSession getSshSession(SshClient sshClient, Machine machine) throws IOException {
+        if (Security.getProvider("BC") != null) {
+            Log.info(c, "thisMethod", "Bouncy Castle provider is available");
+        }
+        if (Security.getProvider("BC") == null) {
+            Log.info(c, "thisMethod", "Bouncy Castle provider NOT is available");
+        }
+        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+            Log.info(c, "getSshSession", "inside getSshSession " + ste + "\n");
+        }
         ClientSession session = sshClient.connect(machine.getUsername(), machine.getHostname(), 22).verify(30, TimeUnit.SECONDS).getSession();
+        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+            Log.info(c, "getSshSession", "getting getSshSession " + ste + "\n");
+        }
         session.addPasswordIdentity(machine.getPassword());
         session.auth().verify(30, TimeUnit.SECONDS).isSuccess();
         return session;
