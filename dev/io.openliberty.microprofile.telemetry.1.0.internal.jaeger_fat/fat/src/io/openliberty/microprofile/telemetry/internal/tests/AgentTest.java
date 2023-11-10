@@ -50,9 +50,9 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
@@ -150,8 +150,6 @@ public class AgentTest {
      * Test we get the expected span for a basic JAX-RS request
      */
     @Test
-    // Test needs updating to reflect different attributes reported by the agent when instrumenting EE7/8 vs. EE9/10
-    @SkipForRepeat({ TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID })
     public void testBasic() throws Exception {
         HttpRequest request = new HttpRequest(server, "/agentTest");
         String traceId = request.run(String.class);
@@ -163,10 +161,15 @@ public class AgentTest {
 
         Span span = spans.get(0);
 
-        assertThat(span, JaegerSpanMatcher.isSpan().withTraceId(traceId)
-                                          .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/")
-                                          .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
-
+        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL11_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL11_ID)) {
+            assertThat(span, JaegerSpanMatcher.isSpan().withTraceId(traceId)
+                                              .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest")
+                                              .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
+        } else {
+            assertThat(span, JaegerSpanMatcher.isSpan().withTraceId(traceId)
+                                              .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/")
+                                              .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
+        }
         // We shouldn't have any additional spans
         List<String> services = client.getServices();
         assertThat(services, contains(SERVICE_NAME));
@@ -228,7 +231,6 @@ public class AgentTest {
         traceIdsUsed.add(traceId);
 
         List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(2));
-
         Span root = findOneFrom(spans, hasNoParent());
         assertThat(root, hasServiceName(SERVICE_NAME));
         assertThat(root, hasKind(SERVER));
