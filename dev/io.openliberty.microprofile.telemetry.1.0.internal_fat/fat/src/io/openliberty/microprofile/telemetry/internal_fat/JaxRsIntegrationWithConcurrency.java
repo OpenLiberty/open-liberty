@@ -100,7 +100,8 @@ public class JaxRsIntegrationWithConcurrency extends FATServletClient {
         PropertiesAsset appConfig = new PropertiesAsset()
                         .addProperty("otel.sdk.disabled", "false")
                         .addProperty("otel.traces.exporter", "in-memory")
-                        .addProperty("otel.bsp.schedule.delay", "100");
+                        .addProperty("otel.bsp.schedule.delay", "100")
+                        .addProperty("feature.version", FATSuite.getTelemetryVersionUnderTest());
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackage(JaxRsEndpoints.class.getPackage())
                         .addPackage(InMemorySpanExporter.class.getPackage())

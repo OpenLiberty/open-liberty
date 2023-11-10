@@ -55,4 +55,5 @@ tested.features:\
 	com.ibm.websphere.javaee.jaxrs.2.1,\
 	com.ibm.websphere.javaee.annotation.1.2,\
 	com.ibm.websphere.javaee.concurrent.1.0,\
-	io.openliberty.org.eclipse.microprofile.rest.client.2.0
+	io.openliberty.org.eclipse.microprofile.rest.client.2.0,\
+	com.ibm.websphere.org.eclipse.microprofile.config.1.3
