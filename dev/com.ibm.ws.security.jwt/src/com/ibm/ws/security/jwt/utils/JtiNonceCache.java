@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwt.utils;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,14 +21,16 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.security.common.structures.BoundedHashMap;
+
+import io.openliberty.security.common.osgi.SecurityOSGiUtils;
 
 /**
  * Cache containing three internal tables in order to implement a least-recently-used removal algorithm.
@@ -36,6 +40,8 @@ import com.ibm.ws.security.common.structures.BoundedHashMap;
 public class JtiNonceCache {
 
     private static final TraceComponent tc = Tr.register(JtiNonceCache.class);
+
+    private final PrivilegedAction<ScheduledExecutorService> getScheduledExecutorServiceAction = new GetScheduledExecutorServiceAction();
 
     /**
      * Primary hash table containing the most recently used entries.
@@ -53,9 +59,9 @@ public class JtiNonceCache {
     private long timeoutInMilliSeconds = 10 * 60 * 1000;
 
     /**
-     * Timer to schedule the eviction task.
+     * Scheduled executor to run the eviction task.
      */
-    private Timer timer;
+    private ScheduledExecutorService evictionSchedule;
 
     public JtiNonceCache() {
         this(0, 0);
@@ -80,11 +86,31 @@ public class JtiNonceCache {
     }
 
     private void scheduleEvictionTask(long timeoutInMilliSeconds) {
-        EvictionTask evictionTask = new EvictionTask();
-        timer = new Timer(true);
-        long period = timeoutInMilliSeconds;
-        long delay = period;
-        timer.schedule(evictionTask, delay, period);
+        if (System.getSecurityManager() == null) {
+            evictionSchedule = getScheduledExecutorService();
+        } else {
+            evictionSchedule = AccessController.doPrivileged(getScheduledExecutorServiceAction);
+        }
+        if (evictionSchedule != null) {
+            evictionSchedule.scheduleWithFixedDelay(new EvictionTask(), timeoutInMilliSeconds, timeoutInMilliSeconds, TimeUnit.MILLISECONDS);
+        } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to obtain a ScheduledExecutorService");
+            }
+        }
+    }
+
+    private class GetScheduledExecutorServiceAction implements PrivilegedAction<ScheduledExecutorService> {
+
+        @Override
+        public ScheduledExecutorService run() {
+            return getScheduledExecutorService();
+        }
+
+    }
+
+    private ScheduledExecutorService getScheduledExecutorService() {
+        return SecurityOSGiUtils.getService(getClass(), ScheduledExecutorService.class);
     }
 
     /**
@@ -214,7 +240,7 @@ public class JtiNonceCache {
         }
     }
 
-    private class EvictionTask extends TimerTask {
+    private class EvictionTask implements Runnable {
 
         /** {@inheritDoc} */
         @Override
