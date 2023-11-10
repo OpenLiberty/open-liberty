@@ -32,7 +32,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
-import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Select;
 import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
@@ -778,7 +777,6 @@ public class QueryInfo {
      * @param save    The Save annotation if present, otherwise null.
      * @param query   The Query annotation if present, otherwise null.
      * @param orderBy array of OrderBy annotations if present, otherwise an empty array.
-     * @param filters array of Filter annotations if present, otherwise an empty array.
      * @param count   The Count annotation if present, otherwise null.
      * @param exists  The Exists annotation if present, otherwise null.
      * @param select  The Select annotation if present, otherwise null.
@@ -788,8 +786,7 @@ public class QueryInfo {
     @Trivial
     Annotation validateAnnotationCombinations(Delete delete, Insert insert, Update update, Save save,
                                               jakarta.data.repository.Query query, OrderBy[] orderBy,
-                                              Filter[] filters, Count count, Exists exists, Select select) {
-        int f = filters.length == 0 ? 0 : 1;
+                                              Count count, Exists exists, Select select) {
         int o = orderBy.length == 0 ? 0 : 1;
         int q = query == null ? 0 : 1;
         int s = select == null ? 0 : 1;
@@ -803,7 +800,7 @@ public class QueryInfo {
                      (count == null ? 0 : 1) +
                      (exists == null ? 0 : 1);
 
-        if (ius + f > 1 // more than one of (Insert, Update, Save, Filter)
+        if (ius > 1 // more than one of (Insert, Update, Save)
             || iusdce > 1 // more than one of (Insert, Update, Save, Delete, Count, Exists)
             || iusdce + o > 1 // one of (Insert, Update, Save, Delete, Count, Exists) with OrderBy
             || iusdce + q + s > 1) { // one of (Insert, Update, Save, Delete, Count, Exists) with Query or Select, or both Query and Select
@@ -816,8 +813,6 @@ public class QueryInfo {
                     annoClassNames.add(anno.annotationType().getName());
             if (orderBy.length > 0)
                 annoClassNames.add(OrderBy.class.getName());
-            if (filters.length > 0)
-                annoClassNames.add(Filter.class.getName());
             for (Annotation anno : Arrays.asList(count, exists, select))
                 if (anno != null)
                     annoClassNames.add(anno.annotationType().getName());

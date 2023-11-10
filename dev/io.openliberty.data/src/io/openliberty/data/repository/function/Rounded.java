@@ -20,5 +20,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 public @interface Rounded {
-    // TODO value=UP|DOWN|NEAREST?
+    enum Direction {
+        DOWN,
+        NEAREST,
+        UP
+    }
+
+    Direction value() default Direction.NEAREST;
 }

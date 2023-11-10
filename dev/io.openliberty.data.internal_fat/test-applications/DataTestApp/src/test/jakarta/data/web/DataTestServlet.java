@@ -1233,15 +1233,15 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Define a query with Filter annotations.
+     * Define a parameter-based find operation with IgnoreCase, Like, and Contains annotations.
      */
     @Test
-    public void testFilterAnnotation() {
+    public void testFind() {
         assertIterableEquals(List.of(37L, 17L, 7L, 5L), // 11 has no V in the roman numeral and 47 is too big
-                             primes.inRangeHavingVNumeralAndSubstringOfName(5L, 45L, "ve"));
+                             primes.inRangeHavingNumeralLikeAndSubstringOfName(5L, 45L, "%v%", "ve"));
 
         assertIterableEquals(List.of(),
-                             primes.inRangeHavingVNumeralAndSubstringOfName(1L, 18L, "nine"));
+                             primes.inRangeHavingNumeralLikeAndSubstringOfName(1L, 18L, "%v%", "nine"));
     }
 
     /**
@@ -3460,9 +3460,12 @@ public class DataTestServlet extends FATServlet {
         s = shipments.find(3);
         assertEquals("44.029468, -92.483191", s.getLocation());
 
-        assertEquals(true, shipments.cancel(4, OffsetDateTime.now()));
-        assertEquals(true, shipments.cancel(5, OffsetDateTime.now()));
-        assertEquals(false, shipments.cancel(10, OffsetDateTime.now()));
+        assertEquals(true, shipments.cancel(4, Set.of("PREPARING", "READY_FOR_PICKUP"),
+                                            "CANCELED", OffsetDateTime.now()));
+        assertEquals(true, shipments.cancel(5, Set.of("PREPARING", "READY_FOR_PICKUP"),
+                                            "CANCELED", OffsetDateTime.now()));
+        assertEquals(false, shipments.cancel(10, Set.of("PREPARING", "READY_FOR_PICKUP"),
+                                             "CANCELED", OffsetDateTime.now()));
 
         assertEquals(2, shipments.statusBasedRemoval("CANCELED"));
 

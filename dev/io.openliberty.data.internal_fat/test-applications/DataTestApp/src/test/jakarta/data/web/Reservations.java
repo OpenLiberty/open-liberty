@@ -12,6 +12,10 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import static io.openliberty.data.repository.function.Extract.Field.HOUR;
+import static io.openliberty.data.repository.function.Extract.Field.MINUTE;
+import static io.openliberty.data.repository.function.Extract.Field.SECOND;
+
 import java.time.OffsetDateTime;
 import java.util.AbstractCollection;
 import java.util.AbstractList;
@@ -33,13 +37,15 @@ import jakarta.data.Sort;
 import jakarta.data.page.Page;
 import jakarta.data.page.Pageable;
 import jakarta.data.repository.BasicRepository;
+import jakarta.data.repository.By;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
 
-import io.openliberty.data.repository.Compare;
-import io.openliberty.data.repository.Filter;
-import io.openliberty.data.repository.Function;
 import io.openliberty.data.repository.Select;
+import io.openliberty.data.repository.comparison.GreaterThanEqual;
+import io.openliberty.data.repository.comparison.LessThanEqual;
+import io.openliberty.data.repository.function.ElementCount;
+import io.openliberty.data.repository.function.Extract;
 
 /**
  * Uses the Repository interface that is copied from Jakarta NoSQL
@@ -51,9 +57,8 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
     long deleteByHostNot(String host);
 
     @Select("meetingId")
-    @Filter(by = "stop", fn = Function.WithSecond)
     @OrderBy("id")
-    List<Long> endsAtSecond(int second);
+    List<Long> endsAtSecond(@By("stop") @Extract(SECOND) int second);
 
     Iterable<Reservation> findByHost(String host);
 
@@ -119,16 +124,15 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
     int removeByHostNotIn(Collection<String> hosts);
 
     @Select("meetingId")
-    @Filter(by = "start", fn = Function.WithHour, op = Compare.Between)
-    @Filter(by = "start", fn = Function.WithMinute)
     @OrderBy("host")
-    List<Long> startsWithinHoursWithMinute(int minHour, int maxHour, int minute);
+    List<Long> startsWithinHoursWithMinute(@By("start") @Extract(HOUR) @GreaterThanEqual int minHour,
+                                           @By("start") @Extract(HOUR) @LessThanEqual int maxHour,
+                                           @By("start") @Extract(MINUTE) int minute);
 
     int updateByHostAndLocationSetLocation(String host, String currentLocation, String newLocation);
 
     boolean updateByMeetingIDSetHost(long meetingID, String newHost);
 
-    @Filter(by = "invitees", fn = Function.ElementCount)
     @OrderBy("id")
-    Stream<Reservation> withInviteeCount(int size);
+    Stream<Reservation> withInviteeCount(@By("invitees") @ElementCount int size);
 }

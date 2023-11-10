@@ -14,7 +14,6 @@ package io.openliberty.data.internal.persistence;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import io.openliberty.data.repository.Compare;
 import jakarta.data.exceptions.MappingException;
 
 /**
@@ -47,20 +46,6 @@ enum Condition {
         this.operator = operator;
         this.length = length;
         this.supportsCollections = supportsCollections;
-    }
-
-    static Condition forIdClass(Compare comparison) {
-        switch (comparison) {
-            case Equal:
-                return EQUALS;
-            case Null:
-                return NULL;
-            case Empty:
-                return EMPTY;
-            default:
-                throw new MappingException("Repository filter operation " + comparison.name() +
-                                           " cannot be used when the Id of the entity is an IdClass."); // TODO
-        }
     }
 
     Condition negate() {
