@@ -111,6 +111,79 @@ public class JaxRsRouteTestServlet extends FATServlet {
                         .withAttribute(SemanticAttributes.HTTP_ROUTE, getPath() + "/getWithQueryParam"));
     }
 
+    /*
+     * Ideal behaviour for this test would be HHTP_ROUTE = /getSubResourceWithPathParam/{id}/details
+     * Due to the current behaviour when sub resources are used is that only the context root is returned
+     */
+    @Test
+    public void testRouteWithSubResourceWithPathParam() {
+        URI testUri = getUri();
+        Span span = utils.withTestSpan(() -> {
+            Response response = ClientBuilder.newClient().target(testUri).path("getSubResourceWithPathParam/myIdForTesting/details").request()
+                            .build("GET").invoke();
+            System.out.println("RESPONSESSS" + response.toString());
+            assertThat(response.getStatus(), equalTo(200));
+            assertThat(response.readEntity(String.class), equalTo("myIdForTesting"));
+        });
+
+        List<SpanData> spans = exporter.getFinishedSpanItems(3, span.getSpanContext().getTraceId());
+        TestSpans.assertLinearParentage(spans);
+
+        SpanData clientSpan = spans.get(1);
+        SpanData serverSpan = spans.get(2);
+
+        assertThat(clientSpan, isSpan()
+                        .withKind(SpanKind.CLIENT)
+                        .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
+                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
+                        .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "/getSubResourceWithPathParam/myIdForTesting/details"));
+
+        assertThat(serverSpan, isSpan()
+                        .withKind(SpanKind.SERVER)
+                        .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
+                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
+                        .withAttribute(SemanticAttributes.HTTP_ROUTE, request.getContextPath())
+                        .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "/getSubResourceWithPathParam/myIdForTesting/details"));
+    }
+
+    /*
+     * Ideal behaviour for this test would be HHTP_ROUTE = /getSubResourceWithQueryParam/details
+     * Due to the current behaviour when sub resources are used is that only the context root is returned
+     */
+    @Test
+    public void testRouteWithSubResourceWithQueryParam() {
+        URI testUri = getUri();
+        Span span = utils.withTestSpan(() -> {
+            Response response = ClientBuilder.newClient()
+                            .target(testUri)
+                            .path("getSubResourceWithQueryParam/details")
+                            .queryParam("id", "myIdForTesting")
+                            .request()
+                            .build("GET").invoke();
+            assertThat(response.getStatus(), equalTo(200));
+            assertThat(response.readEntity(String.class), equalTo("myIdForTesting"));
+        });
+
+        List<SpanData> spans = exporter.getFinishedSpanItems(3, span.getSpanContext().getTraceId());
+        TestSpans.assertLinearParentage(spans);
+
+        SpanData clientSpan = spans.get(1);
+        SpanData serverSpan = spans.get(2);
+
+        assertThat(clientSpan, isSpan()
+                        .withKind(SpanKind.CLIENT)
+                        .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
+                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
+                        .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "/getSubResourceWithQueryParam/details?id=myIdForTesting"));
+
+        assertThat(serverSpan, isSpan()
+                        .withKind(SpanKind.SERVER)
+                        .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
+                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
+                        .withAttribute(SemanticAttributes.HTTP_ROUTE, request.getContextPath()));
+//                        .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "/getSubResourceWithQueryParam/details?id=myIdForTesting"));
+    }
+
     private URI getUri() {
         try {
             String path = getPath();
