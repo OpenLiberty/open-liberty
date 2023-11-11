@@ -20,11 +20,9 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
-import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.sdk.trace.data.SpanData;
@@ -46,9 +44,6 @@ public class InjectedClientTestServlet extends FATServlet {
     private InMemorySpanExporter exporter;
 
     @Test
-    // Not instrumented properly on EE7/8
-    // See https://github.com/OpenLiberty/open-liberty/issues/26856
-    @SkipForRepeat({ TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID })
     public void testInjectedClient() {
         Span span = testSpans.withTestSpan(() -> {
             assertThat(client.get(), equalTo("OK"));

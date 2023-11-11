@@ -92,7 +92,7 @@ public class RestClientBean implements Bean<Object>, PassivationCapable {
     @Override
     public Object create(CreationalContext<Object> creationalContext) {
         //Liberty change start
-        RestClientBuilder builder = new CxfTypeSafeClientBuilder();
+        RestClientBuilder builder = RestClientBuilder.newBuilder();
         String baseUri = getBaseUri();
         builder = ((CxfTypeSafeClientBuilder)builder).baseUri(URI.create(baseUri));
         List<Class<?>> providers = getConfiguredProviders();
