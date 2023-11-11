@@ -136,6 +136,9 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
 
         compatibleFeatures.remove("mpReactiveMessaging-3.0"); //still in development
 
+        compatibleFeatures.remove("mpHealth"); //versionless features in development
+        compatibleFeatures.remove("mpMetrics");
+
         if (!openLibertyOnly) {
             // stabilized features
             compatibleFeatures.remove("apiDiscovery-1.0");
