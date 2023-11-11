@@ -98,6 +98,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private long expirationDifferenceAllowed;
     private boolean monitorValidationKeysDir;
     private String updateTrigger;
+    private String id;
     private final List<Properties> validationKeys = new ArrayList<Properties>();
     // configValidationKeys are specified in the server xml configuration
     private List<Properties> configValidationKeys = null;
@@ -148,6 +149,10 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
     @Sensitive
     private void loadConfig(Map<String, Object> props) {
+        id = (String) props.get("id");
+        if (id == null) {
+            id = "defaultLtpa";
+        }
         primaryKeyImportFile = (String) props.get(CFG_KEY_IMPORT_FILE);
         SerializableProtectedString sps = (SerializableProtectedString) props.get(CFG_KEY_PASSWORD);
         primaryKeyPassword = sps == null ? null : new String(sps.getChars());
@@ -341,14 +346,14 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         try {
             ltpaFileMonitor = new LTPAFileMonitor(this);
             if (primaryKeyImportDir != null) { // monitor directory and file
-                setFileMonitorRegistration(ltpaFileMonitor.monitorFiles(Arrays.asList(primaryKeyImportDir),
+                setFileMonitorRegistration(ltpaFileMonitor.monitorFiles(id, Arrays.asList(primaryKeyImportDir),
                                                                         Arrays.asList(primaryKeyImportFile),
                                                                         monitorInterval, updateTrigger));
             } else { // monitor only files
                 if (monitorValidationKeysDir && primaryKeyImportDir == null) {
                     Tr.debug(tc, "Since primaryKeyImportDir is null, monitor the primaryKeyImportFile, and not the directory.");
                 }
-                setFileMonitorRegistration(ltpaFileMonitor.monitorFiles(Arrays.asList(primaryKeyImportFile), monitorInterval, updateTrigger));
+                setFileMonitorRegistration(ltpaFileMonitor.monitorFiles(id, Arrays.asList(primaryKeyImportFile), monitorInterval, updateTrigger));
             }
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

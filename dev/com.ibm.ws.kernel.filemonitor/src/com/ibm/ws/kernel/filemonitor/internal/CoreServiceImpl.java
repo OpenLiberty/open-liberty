@@ -363,7 +363,8 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
         boolean monitorFound = false;
         for (ServiceReference<FileMonitor> fm : fileMonitors.keySet()) {
             String monitorId = (String) fm.getProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME);
-            String monitorConfigId = (String) fm.getProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_KEYSTORE_CONFIG_ID);
+            String monitorLtpaConfigId = (String) fm.getProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_LTPA_CONFIG_ID);
+            String monitorKeyStoreConfigId = (String) fm.getProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_KEYSTORE_CONFIG_ID);
 
             if (id == null) {
                 fileMonitors.get(fm).processFileRefresh(false, null);
@@ -371,13 +372,17 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
                 //if id is set it should map to the security LTPA fileMonitor, otherwise it maps to a keystore fileMonitor
                 if (com.ibm.ws.kernel.filemonitor.FileMonitor.SECURITY_LTPA_MONITOR_IDENTIFICATION_VALUE.equals(id)
                     && com.ibm.ws.kernel.filemonitor.FileMonitor.SECURITY_LTPA_MONITOR_IDENTIFICATION_VALUE.equals(monitorId)) {
-                    monitorFound = true;
-                    fileMonitors.get(fm).processFileRefresh(false, null);
-                } else if (monitorId.equals(com.ibm.ws.kernel.filemonitor.FileMonitor.SECURITY_KEYSTORE_MONITOR_IDENTIFICATION_VALUE)) {
-                    if (monitorConfigId != null && monitorConfigId.equalsIgnoreCase(id)) {
+                    if (monitorLtpaConfigId != null && monitorLtpaConfigId.equalsIgnoreCase(id)) {
                         monitorFound = true;
-                        fileMonitors.get(fm).processFileRefresh(false, null);//Find the provided id specific keyStore monitor and refresh
                     }
+                    fileMonitors.get(fm).processFileRefresh(false, null); //Find the provided id specific LTPA monitor and refresh
+                } else if (com.ibm.ws.kernel.filemonitor.FileMonitor.SECURITY_KEYSTORE_MONITOR_IDENTIFICATION_VALUE.equals(id)
+                           && com.ibm.ws.kernel.filemonitor.FileMonitor.SECURITY_KEYSTORE_MONITOR_IDENTIFICATION_VALUE.equals(monitorId)) {
+                    if (monitorKeyStoreConfigId != null && monitorKeyStoreConfigId.equalsIgnoreCase(id)) {
+                        monitorFound = true;
+                    }
+                    fileMonitors.get(fm).processFileRefresh(false, null);//Find the provided id specific keyStore monitor and refresh
+
                 }
             }
         }

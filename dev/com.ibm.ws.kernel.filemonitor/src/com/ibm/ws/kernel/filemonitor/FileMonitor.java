@@ -41,14 +41,22 @@ public interface FileMonitor extends com.ibm.wsspi.kernel.filemonitor.FileMonito
     String MONITOR_KEYSTORE_CONFIG_ID = "monitor.keystore.id";
 
     /**
+     * <h4>Service property</h4>
+     *
+     * The value should be a String, indicating the config id of
+     * ltpa that should be monitored for external update
+     */
+    String MONITOR_LTPA_CONFIG_ID = "monitor.ltpa.id";
+
+    /**
      * Security keystore file monitor that can be identified by this value for external updates
      */
     String SECURITY_KEYSTORE_MONITOR_IDENTIFICATION_VALUE = "com.ibm.ws.security.monitor.keystore";
-    
+
     /**
      * Security LTPA file monitor that can be identified by this value for external updates
      */
-    String SECURITY_LTPA_MONITOR_IDENTIFICATION_VALUE = "monitor.security.ltpa";
+    String SECURITY_LTPA_MONITOR_IDENTIFICATION_VALUE = "com.ibm.security.monitor.ltpa";
 
     /**
      * Called by the monitor service when a scheduled scan completes with

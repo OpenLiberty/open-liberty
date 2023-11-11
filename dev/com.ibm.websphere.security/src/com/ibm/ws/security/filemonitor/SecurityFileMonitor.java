@@ -96,12 +96,13 @@ public class SecurityFileMonitor implements FileMonitor {
         final Hashtable<String, Object> fileMonitorProps = new Hashtable<String, Object>();
         fileMonitorProps.put(FileMonitor.MONITOR_FILES, paths);
 
-        //the ID is currently only set for the keytstore and LTPA monitors, not the SSO monitor
+        //the ID is currently only set for the keystore and LTPA monitors, not the SSO monitor
         if (ID != null && !ID.isEmpty()) {
             if (ID.equals(com.ibm.ws.kernel.filemonitor.FileMonitor.SECURITY_LTPA_MONITOR_IDENTIFICATION_VALUE)) {
                 fileMonitorProps.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME,
                                      com.ibm.ws.kernel.filemonitor.FileMonitor.SECURITY_LTPA_MONITOR_IDENTIFICATION_VALUE);
-            } else {
+                fileMonitorProps.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_LTPA_CONFIG_ID, ID);
+            } else if (ID.equals(com.ibm.ws.kernel.filemonitor.FileMonitor.SECURITY_KEYSTORE_MONITOR_IDENTIFICATION_VALUE)) {
                 //Adding INTERNAL parameter MONITOR_IDENTIFICATION_NAME to identify this monitor.
                 fileMonitorProps.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME,
                                      com.ibm.ws.kernel.filemonitor.FileMonitor.SECURITY_KEYSTORE_MONITOR_IDENTIFICATION_VALUE);
@@ -135,7 +136,8 @@ public class SecurityFileMonitor implements FileMonitor {
 
     /** {@inheritDoc} */
     @Override
-    public void onBaseline(Collection<File> baseline) {}
+    public void onBaseline(Collection<File> baseline) {
+    }
 
     /** {@inheritDoc} */
     @Override

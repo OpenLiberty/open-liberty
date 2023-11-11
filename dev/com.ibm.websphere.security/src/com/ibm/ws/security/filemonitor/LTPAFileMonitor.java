@@ -26,7 +26,7 @@ import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
  */
 public class LTPAFileMonitor extends SecurityFileMonitor {
 
-    protected final String LTPA_FILEMONITOR_ID = com.ibm.ws.kernel.filemonitor.FileMonitor.SECURITY_LTPA_MONITOR_IDENTIFICATION_VALUE;
+//    protected final String LTPA_FILEMONITOR_ID = com.ibm.ws.kernel.filemonitor.FileMonitor.SECURITY_LTPA_MONITOR_IDENTIFICATION_VALUE;
 
     /**
      * @param fileBasedActionable
@@ -35,13 +35,14 @@ public class LTPAFileMonitor extends SecurityFileMonitor {
         super(fileBasedActionable);
     }
 
-    public ServiceRegistration<FileMonitor> monitorFiles(Collection<String> dirs, Collection<String> paths, long pollingRate, String trigger) {
-        return super.monitorFiles(LTPA_FILEMONITOR_ID, dirs, paths, pollingRate, trigger);
+    @Override
+    public ServiceRegistration<FileMonitor> monitorFiles(String id, Collection<String> dirs, Collection<String> paths, long pollingRate, String trigger) {
+        return super.monitorFiles(id, dirs, paths, pollingRate, trigger);
     }
 
     @Override
-    public ServiceRegistration<FileMonitor> monitorFiles(Collection<String> paths, long pollingRate, String trigger) {
-        return super.monitorFiles(LTPA_FILEMONITOR_ID, null, paths, pollingRate, trigger);
+    public ServiceRegistration<FileMonitor> monitorFiles(String id, Collection<String> paths, long pollingRate, String trigger) {
+        return super.monitorFiles(id, null, paths, pollingRate, trigger);
     }
 
     /** {@inheritDoc} */
