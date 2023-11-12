@@ -226,7 +226,7 @@ public class AgentConfigTest {
 
         List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(1));
 
-        assertThat(spans.get(0), hasName("/agentTest"));
+        assertThat(spans.get(0), hasName("/agentTest/"));
 
         // We should still be able to manually create spans with the API
         String traceId2 = new HttpRequest(server, "/agentTest/manualSpans").run(String.class);
