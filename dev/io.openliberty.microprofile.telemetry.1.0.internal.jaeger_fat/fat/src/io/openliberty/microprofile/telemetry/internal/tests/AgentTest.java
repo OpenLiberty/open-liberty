@@ -21,15 +21,18 @@ import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.Jaeger
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasParentSpanId;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasServiceName;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.isSpan;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasAttribute;
 import static io.opentelemetry.api.trace.SpanKind.CLIENT;
 import static io.opentelemetry.api.trace.SpanKind.INTERNAL;
 import static io.opentelemetry.api.trace.SpanKind.SERVER;
+import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.HTTP_ROUTE;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.io.File;
 import java.util.HashSet;
@@ -58,6 +61,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
 import io.openliberty.microprofile.telemetry.internal.apps.agent.AgentTestResource;
+import io.openliberty.microprofile.telemetry.internal.apps.agent.AgentSubResource;
 import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
@@ -110,6 +114,7 @@ public class AgentTest {
         // Construct the test application
         WebArchive jaegerTest = ShrinkWrap.create(WebArchive.class, "agentTest.war")
                                           .addClass(AgentTestResource.class)
+                                          .addClass(AgentSubResource.class)
                                           .addAsLibraries(new File("lib/com.ibm.websphere.org.reactivestreams.reactive-streams.1.0.jar"))
                                           .addAsLibraries(new File("lib/com.ibm.ws.io.reactivex.rxjava.2.2.jar"));
         ShrinkHelper.exportAppToServer(server, jaegerTest, SERVER_ONLY);
@@ -172,9 +177,6 @@ public class AgentTest {
         assertThat(services, contains(SERVICE_NAME));
     }
 
-    /**
-     * Test we can manually create spans
-     */
     @Test
     public void testCreateSubspan() throws Exception {
         HttpRequest request = new HttpRequest(server, "/agentTest/subspan");
@@ -216,6 +218,31 @@ public class AgentTest {
         Span child3 = findOneFrom(spans, hasParentSpanId(child2.getSpanId()));
         assertThat(child3, hasServiceName(SERVICE_NAME));
         assertThat(child3, hasKind(INTERNAL));
+    }
+
+    /**
+     * Test route and target with sub resource
+     */
+    @Test
+    public void testSubResource() throws Exception {
+        HttpRequest request = new HttpRequest(server, "/agentTest/getSubResource/pathParameter/details");
+        String traceId = request.run(String.class);
+        traceIdsUsed.add(traceId);
+        Log.info(c, "testBasic", "TraceId is " + traceId);
+
+        List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(1));
+        Log.info(c, "testBasic", "Spans returned: " + spans);
+        
+        Span span = spans.get(0);
+        assertThat(span, JaegerSpanMatcher.isSpan().withTraceId(traceId)
+                                    .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/getSubResource/{id}/details")
+                                    .withAttribute(SemanticAttributes.HTTP_TARGET, "/agentTest/getSubResource/pathParameter/details")
+                                    .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
+
+        
+        // We shouldn't have any additional spans
+        List<String> services = client.getServices();
+        assertThat(services, contains(SERVICE_NAME));
     }
 
     /**
