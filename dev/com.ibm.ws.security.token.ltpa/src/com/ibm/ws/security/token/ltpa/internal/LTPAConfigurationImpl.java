@@ -291,6 +291,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         if (monitorValidationKeysDir || isValidationKeysFileConfigured) {
             try {
                 // primaryKeyImportFile has already been resolved when the server loads the config, this includes variable and .. being resolved.
+                // primaryKeyImportDir is required to be set to load any validation keys.
                 primaryKeyImportDir = new File(primaryKeyImportFile).getCanonicalFile().getParent() + File.separator;
                 Tr.debug(tc, "primaryKeyImportDir: " + primaryKeyImportDir);
             } catch (IOException e) {
