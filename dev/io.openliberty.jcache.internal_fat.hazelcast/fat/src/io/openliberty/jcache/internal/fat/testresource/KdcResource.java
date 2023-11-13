@@ -390,6 +390,8 @@ public class KdcResource extends ExternalResource {
         String loginContextEntry = IBM_JDK_KRB5_LOGIN;
         String jaasLoginConfig = server.getServerRoot() + JAAS_CONF_FILE;
 
+         Log.info(c, thisMethod, "jaasLoginConfig: " + jaasLoginConfig);
+
         if (realm != null && !realm.isEmpty()) {
             Log.info(c, thisMethod, "Setting system properties java.security.krb5.realm and java.security.krb5.kdc");
             System.setProperty("java.security.krb5.realm", realm);

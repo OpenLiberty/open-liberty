@@ -141,6 +141,7 @@ public class Krb5Helper {
         String thisMethod = "setupLoginConfig";
         Log.info(thisClass, thisMethod, "krb5Config: " + krb5Config + " realm: " + realm + " kdcHostName: " + InitClass.getKDCHostnameMask(kdcHostName));
         String loginContextEntry = IBM_JDK_KRB5_LOGIN;
+        Log.info(thisClass, thisMethod, "jaasConfFile: " + jaasConfFile);
         String jaasLoginConfig = server.getServerRoot() + jaasConfFile;
 
         if (realm != null && !realm.isEmpty()) {
