@@ -24,4 +24,6 @@
     </dataSource>
 
  	<include location="../fatTestPorts.xml"/>
+ 	<include location="serverSessionConfig.xml"/>
+ 	
   </server>
