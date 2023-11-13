@@ -12,12 +12,10 @@ package io.openliberty.microprofile.telemetry11.internal.rest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.AsyncEvent;
@@ -86,7 +84,7 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
         }
         if (lazyCreate) {
             instrumenter = lazyInstrumenter.updateAndGet((i) -> {
-                if (i == null) {                    
+                if (i == null) {
                     return createInstrumenter();
                 } else {
                     return i;
@@ -96,7 +94,7 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
         }
         return instrumenter;
     }
-    
+
     private Instrumenter<ServletRequest, ServletResponse> createInstrumenter() {
         OpenTelemetryInfo otelInfo = OpenTelemetryAccessor.getOpenTelemetryInfo();
         if (tc.isDebugEnabled()) {
@@ -104,8 +102,7 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
         }
         if (otelInfo != null &&
             otelInfo.getEnabled() &&
-            !AgentDetection.isAgentActive() &&
-            !checkDisabled(getTelemetryProperties())) {
+            !AgentDetection.isAgentActive()) {
             InstrumenterBuilder<ServletRequest, ServletResponse> builder = Instrumenter.builder(
                                                                                                 otelInfo.getOpenTelemetry(),
                                                                                                 INSTRUMENTATION_NAME,
@@ -310,17 +307,6 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
             return Collections.emptyList();
         }
 
-    }
-
-    private HashMap<String, String> getTelemetryProperties() {
-        HashMap<String, String> telemetryProperties = new HashMap<>();
-        for (String propertyName : config.getPropertyNames()) {
-            if (propertyName.startsWith("otel") || propertyName.startsWith("OTEL")) {
-                config.getOptionalValue(propertyName.toLowerCase().replace('_', '.'), String.class).ifPresent(
-                    value -> telemetryProperties.put(propertyName.toLowerCase().replace('_', '.'), value));
-            }
-        }
-        return telemetryProperties;
     }
 
     /**
