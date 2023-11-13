@@ -47,6 +47,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.jar.Manifest;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.osgi.framework.Bundle;
 
@@ -110,11 +112,20 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             // AutoFFDC
         }
 
+        // NOTE: More efficient to check for null system prop.
+        Set<String> unforbidden = Stream.of(
+                                         // Comma-delimited string of forbidden class names overriden by the user
+                                         System.getProperty("io.openliberty.classloading.forbiddenClassesExceptions", "").trim().split("\\s*,\\s*"))
+                                         .collect(Collectors.toSet());
+        if (!unforbidden.isEmpty()) {
+            forbidden.removeAll(unforbidden);
+        }
+
         if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, "Loaded Forbidden Set" + forbidden);
         }
         return forbidden;
-    }    
+    }
 
     static {
         ClassLoader.registerAsParallelCapable();
