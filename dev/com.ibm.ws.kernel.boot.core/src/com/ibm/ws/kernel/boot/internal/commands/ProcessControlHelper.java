@@ -95,7 +95,7 @@ public class ProcessControlHelper {
         boolean lockExists = serverLock.lockFileExists();
 
         if (!lockExists) {
-            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.serverLockFileDoesNotExist"), BootstrapConstants.S_LOCK_FILE));
+            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.serverLockFileNotExist"), BootstrapConstants.S_LOCK_FILE));
             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverNotRunning"), serverName));
             return ReturnCode.REDUNDANT_ACTION_STATUS;
         }
