@@ -216,7 +216,7 @@ These occur only after GA of this feature is requested (by adding a `target:ga` 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Other Deliverables**
 
-- [ ] **Standalone Feature Blog Post** - A blog post specifically about your feature or N/A.  ([OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect))
+- [ ] **Standalone Feature Blog Post** - A blog post specifically about your feature or N/A.  (Feature owner and [OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect))
   - This should be strongly considered for larger or more prominent features.
   - Follow [instructions](https://github.com/OpenLiberty/blogs/tree/draft#writing-and-publishing-blog-posts-on-the-openlibertyio-blog) in the blogs repo.
 - [ ] **OL Guides** - OL Guides assessment is complete or N/A. ([OpenLiberty/guide-assessment](https://github.com/orgs/OpenLiberty/teams/guide-assessment/members))
