@@ -27,6 +27,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.WeakHashMap;
 
+// Copied as:
+// dev/com.ibm.ws.org.jboss.weld/src/org/jboss/weld/resources/FileLogger.java
+// dev/io.openliberty.org.jboss.weld4/src/org/jboss/weld/resources/FileLogger.java
+
 public class FileLogger {
     public static final String CLASS_NAME = FileLogger.class.getSimpleName();
 
@@ -49,7 +53,7 @@ public class FileLogger {
     private static String currentFormatted = formatter.format(current);
 
     public static String getFormattedTime() {
-        long currentMs = System.currentTimeMillis();
+        long currentMs = getTime();
         if ((currentMs - current.getTime()) > 10)  {
             current.setTime(currentMs);
             currentFormatted = formatter.format(current);

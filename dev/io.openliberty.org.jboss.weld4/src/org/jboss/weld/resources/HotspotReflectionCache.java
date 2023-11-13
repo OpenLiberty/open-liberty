@@ -47,14 +47,6 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
         }
     }
 
-    protected static final Properties loggerProperties = new Properties();
-    static {
-        loggerProperties.setProperty(FileLogger.FileLoggerProperties.FILE_PROPERTY_NAME, "LTI_W");
-        loggerProperties.setProperty(FileLogger.FileLoggerProperties.PREFIX_PROPERTY_NAME, "WELD: ");
-    }
-
-    protected static final FileLogger logger = (new FileLogger.FileLoggerProperties(loggerProperties)).create();
-
     protected static final void dump(Class<?> targetClass) {
         String className = "HotspotReflectionCache";
         String methodName = "dump";
@@ -62,17 +54,17 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
         String resourceName = FileLogger.getClassResourceName(targetClass);
 
         String text = "Class [ " + targetClass.getName() + " ] as [ " + resourceName + " ]";
-        logger.log(className, methodName, text);
+        FileLogger.fileLog(className, methodName, text);
 
         byte[] classBytes;
         try {
             classBytes = FileLogger.read(targetClass.getClassLoader(), resourceName);
         } catch ( IOException e ) {
-            logger.logStack(className, methodName, "Failed to read [ " + resourceName + " ]", e);
+            FileLogger.fileStack(className, methodName, "Failed to read [ " + resourceName + " ]", e);
             return;
         }
 
-        logger.dump(className, methodName, text, classBytes);
+        FileLogger.fileDump(className, methodName, text, classBytes);
     }
 
     @Override
@@ -89,14 +81,14 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
                         classAnno = element.getAnnotations();
                     }
                     Integer numClassAnno = ( (classAnno == null) ? null : Integer.valueOf(classAnno.length) );
-                    logger.log(className, methodName, "Class [ " + clazz.getName() + " ] [ " + numClassAnno + " ]");
+                    FileLogger.fileLog(className, methodName, "Class [ " + clazz.getName() + " ] [ " + numClassAnno + " ]");
                     return classAnno;
                 }
             }
-             
+
             Annotation[] anno = element.getAnnotations();
             Integer numAnno = ( (anno == null) ? null : Integer.valueOf(anno.length) );
-            logger.log(className, methodName, "Element [ " + element + " ] [ " + numAnno + " ]");
+            FileLogger.fileLog(className, methodName, "Element [ " + element + " ] [ " + numAnno + " ]");
             return anno;
 
         } catch ( IllegalArgumentException e ) {
@@ -108,14 +100,13 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
                 text += " Class [ " + clazz.getName() + " ]:";
             }
 
-            logger.log(className, methodName, text, element);
+            FileLogger.fileLog(className, methodName, text, element);
             if ( clazz != null ) {
                 dump(clazz);
             }
-            logger.logStack(className, methodName, text);
+            FileLogger.fileStack(className, methodName, text);
 
             throw e;
         }
     }
-
 }

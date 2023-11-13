@@ -27,6 +27,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.WeakHashMap;
 
+// Copied from:
+// dev/com.ibm.ws.ras.instrument/src/com/ibm/ws/ras/instrument/internal/main/FileLogger.java
+
 public class FileLogger {
     public static final String CLASS_NAME = FileLogger.class.getSimpleName();
 
@@ -86,15 +89,15 @@ public class FileLogger {
 
     //
 
-    public static final String ENABLED_PROPERTY_NAME = "LTI_TRACE_ENABLED";
+    public static final String ENABLED_PROPERTY_NAME = "JBOSS_HOTSPOT_TRACE_ENABLED";
     public static final boolean enabled;
 
     static {
         String enabledValue = System.getProperty(ENABLED_PROPERTY_NAME);
-        enabled = true; // ( (enabledValue != null) && enabledValue.equalsIgnoreCase("true") );
+        enabled = ( (enabledValue != null) && enabledValue.equalsIgnoreCase("true") );
 
         if ( enabled ) {
-            System.out.println("LTI: Enabled [ " + ENABLED_PROPERTY_NAME + " ] [ " + enabledValue + " ]");
+            System.out.println("JBH: Enabled [ " + ENABLED_PROPERTY_NAME + " ] [ " + enabledValue + " ]");
         }
     }
 
@@ -189,11 +192,11 @@ public class FileLogger {
 
         public FileLogger create() {
             String dirName = getProperty(DIR_PROPERTY_NAME, logHome);
-            String fileName = getProperty(FILE_PROPERTY_NAME, "LTInject");
+            String fileName = getProperty(FILE_PROPERTY_NAME, "JHotspot");
             String fileExt = getProperty(FILE_EXT_PROPERTY_NAME, ".log");
-            String prefix = getProperty(PREFIX_PROPERTY_NAME, "LTI: ");
+            String prefix = getProperty(PREFIX_PROPERTY_NAME, "JBH: ");
             boolean autoflush = getProperty(AUTOFLUSH_PROPERTY_NAME, false);
-            
+
             return new FileLogger(dirName, fileName, fileExt, prefix, autoflush);
         }
 
@@ -204,12 +207,12 @@ public class FileLogger {
         public static final String WLP_LOG1_PROPERTY_NAME = "com.ibm.ws.logging.log.directory";
         public static final String WLP_LOG2_PROPERTY_NAME = "LOG_DIR";
 
-        public static final String DIR_PROPERTY_NAME         = "LTI_TRACE_DIR";
-        public static final String FILE_PROPERTY_NAME        = "LTI_TRACE_FILE";
-        public static final String FILE_EXT_PROPERTY_NAME    = "LTI_TRACE_EXT"; 
-        public static final String PREFIX_PROPERTY_NAME      = "LTI_TRACE_PREFIX";
-        public static final String AUTOFLUSH_PROPERTY_NAME   = "LTI_TRACE_AUTOFLUSH";
-        public static final String PATTERN_PROPERTY_NAME     = "LTI_TRACE_PATTERN";
+        public static final String DIR_PROPERTY_NAME         = "JBOSS_HOTSPOT_TRACE_DIR";
+        public static final String FILE_PROPERTY_NAME        = "JBOSS_HOTSPOT_TRACE_FILE";
+        public static final String FILE_EXT_PROPERTY_NAME    = "JBOSS_HOTSPOT_TRACE_EXT"; 
+        public static final String PREFIX_PROPERTY_NAME      = "JBOSS_HOTSPOT_TRACE_PREFIX";
+        public static final String AUTOFLUSH_PROPERTY_NAME   = "JBOSS_HOTSPOT_TRACE_AUTOFLUSH";
+        public static final String PATTERN_PROPERTY_NAME     = "JBOSS_HOTSPOT_TRACE_PATTERN";
 
         public static final String[] PROPERTY_NAMES = {
             DIR_PROPERTY_NAME,
@@ -235,11 +238,11 @@ public class FileLogger {
 
             this.logHome = selectLogHome();
 
-            System.out.println("LTI: Install Home [ " + WLP_INSTALL_PROPERTY_NAME + " ] [ " + wlpHome + " ]");
-            System.out.println("LTI: Server Name [ " + WLP_SERVER_PROPERTY_NAME + " ] [ " + wlpName + " ]");
-            System.out.println("LTI: Log1 Home [ " + WLP_LOG1_PROPERTY_NAME + " ] [ " + log1Home + " ]");
-            System.out.println("LTI: Log2 Home [ " + WLP_LOG2_PROPERTY_NAME + " ] [ " + log2Home + " ]");
-            System.out.println("LTI: Log Home [ " + logHome + " ]");
+            System.out.println("JBH: Install Home [ " + WLP_INSTALL_PROPERTY_NAME + " ] [ " + wlpHome + " ]");
+            System.out.println("JBH: Server Name [ " + WLP_SERVER_PROPERTY_NAME + " ] [ " + wlpName + " ]");
+            System.out.println("JBH: Log1 Home [ " + WLP_LOG1_PROPERTY_NAME + " ] [ " + log1Home + " ]");
+            System.out.println("JBH: Log2 Home [ " + WLP_LOG2_PROPERTY_NAME + " ] [ " + log2Home + " ]");
+            System.out.println("JBH: Log Home [ " + logHome + " ]");
 
             Properties useProperties = new Properties();
 
@@ -247,7 +250,7 @@ public class FileLogger {
                 String propertyValue = System.getProperty(propertyName);
                 if ( propertyValue != null ) {
                     useProperties.setProperty(propertyName, propertyValue);
-                    System.out.println("LTI: [ " + propertyName + " ] [ " + propertyValue + " ]");
+                    System.out.println("JBH: [ " + propertyName + " ] [ " + propertyValue + " ]");
                 }
             }
 
@@ -368,7 +371,7 @@ public class FileLogger {
         
         if ( (outputDirPath != null) || (outputPrefix != null) ) {
             if ( outputPrefix == null ) {
-                outputPrefix = "LTI: ";
+                outputPrefix = "JBH: ";
             }
             if ( outputSuffix == null ) {
                 outputSuffix = ".log";
@@ -380,7 +383,7 @@ public class FileLogger {
             if ( outputDirPath == null ) {
                 outputDir = new File(".");
                 actualOutputDirPath = outputDir.getAbsolutePath();
-                System.out.println("LTI: Logging [ " + outputPrefix + " ] [ " + outputSuffix + " ]" +
+                System.out.println("JBH: Logging [ " + outputPrefix + " ] [ " + outputSuffix + " ]" +
                                    " to current directory [ " + actualOutputDirPath + " ]");
 
             } else {
@@ -390,15 +393,15 @@ public class FileLogger {
                 if ( !outputDir.exists() ) {
                     outputDir.mkdirs();
                     if ( !outputDir.exists() ) {
-                        System.out.println("LTI: ERROR: Logging [ " + outputPrefix + " ] [ " + outputSuffix + " ]" +
+                        System.out.println("JBH: ERROR: Logging [ " + outputPrefix + " ] [ " + outputSuffix + " ]" +
                                            " failed to create directory [ " + actualOutputDirPath + " ]");
                         outputDir = null;
                     } else {
-                        System.out.println("LTI: Logging [ " + outputPrefix + " ] [ " + outputSuffix + " ]" +
+                        System.out.println("JBH: Logging [ " + outputPrefix + " ] [ " + outputSuffix + " ]" +
                                            " to new directory [ " + actualOutputDirPath + " ]");
                     }
                 } else {
-                    System.out.println("LTI: Logging [ " + outputPrefix + " ] [ " + outputSuffix + " ]" +
+                    System.out.println("JBH: Logging [ " + outputPrefix + " ] [ " + outputSuffix + " ]" +
                                        " to existing directory [ " + actualOutputDirPath + " ]");
                 }
             }
@@ -407,7 +410,7 @@ public class FileLogger {
                 try {
                     useOutputFile = File.createTempFile(outputPrefix, outputSuffix, outputDir);
                 } catch ( IOException e ) {
-                    System.out.println("LTI: ERROR: Failed to create [ " + outputPrefix + " ] [ " + outputSuffix + " ]" +
+                    System.out.println("JBH: ERROR: Failed to create [ " + outputPrefix + " ] [ " + outputSuffix + " ]" +
                                        " [ " + actualOutputDirPath + " ]");
                     e.printStackTrace(System.out);
                 }
@@ -424,7 +427,7 @@ public class FileLogger {
             useOutputPath = null;
             useOutputStream = null;
             useOutputPrinter = System.out;
-            System.out.println("LTI: Logging to Standard Output");
+            System.out.println("JBH: Logging to Standard Output");
 
         } else {
             useOutputPath = this.outputFile.getAbsolutePath();
@@ -432,16 +435,16 @@ public class FileLogger {
             try {
                 useOutputStream = new FileOutputStream(this.outputFile, DO_APPEND);
                 useOutputPrinter = new PrintStream(useOutputStream, this.autoflush);
-                System.out.println("LTI: Logging to [ " + useOutputPath + " ]");                    
+                System.out.println("JBH: Logging to [ " + useOutputPath + " ]");                    
 
             } catch ( IOException e ) {
-                System.out.println("LTI: ERROR: Unable to write to output file [ " + useOutputPath + " ]");
+                System.out.println("JBH: ERROR: Unable to write to output file [ " + useOutputPath + " ]");
                 e.printStackTrace(System.out);
 
                 useOutputPath = null;
                 useOutputStream = null;
                 useOutputPrinter = System.out;
-                System.out.println("LTI: Logging to Standard Output");                
+                System.out.println("JBH: Logging to Standard Output");                
             }
         }
 
