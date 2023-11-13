@@ -90,6 +90,13 @@
 			<systemPath>${io.openliberty.jakarta.servlet.6.0}</systemPath>
 		</dependency>
 		<dependency>
+			<groupId>jakarta.transaction</groupId>
+			<artifactId>jakarta.transaction-api</artifactId>
+			<version>2.0</version>
+			<scope>system</scope>
+			<systemPath>${io.openliberty.jakarta.transaction.2.0}</systemPath>
+		</dependency>
+		<dependency>
 			<groupId>jakarta.enterprise</groupId>
 			<artifactId>jakarta.enterprise.cdi-api</artifactId>
 			<version>4.0</version>
