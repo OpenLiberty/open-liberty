@@ -56,6 +56,7 @@ import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
@@ -100,7 +101,11 @@ public class AgentTest {
 
         client = new JaegerQueryClient(jaegerContainer);
 
-        server.copyFileToLibertyServerRoot("opentelemetry-javaagent.jar");
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            server.copyFileToLibertyServerRoot("agent-119/opentelemetry-javaagent.jar");
+        } else {
+            server.copyFileToLibertyServerRoot("agent-129/opentelemetry-javaagent.jar");
+        }
 
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOltpGrpcUrl());
@@ -193,9 +198,9 @@ public class AgentTest {
         Span span = spans.get(0);
 
         assertThat(span, JaegerSpanMatcher.isSpan().withTraceId(traceId)
-                                    .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/pathparameter/{parameter}")
-                                    .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
-        
+                                          .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/pathparameter/{parameter}")
+                                          .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
+
         // We shouldn't have any additional spans
         List<String> services = client.getServices();
         assertThat(services, contains(SERVICE_NAME));
