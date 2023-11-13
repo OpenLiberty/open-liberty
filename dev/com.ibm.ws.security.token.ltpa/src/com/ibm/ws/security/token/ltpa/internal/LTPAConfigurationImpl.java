@@ -38,7 +38,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.config.xml.nester.Nester;
-import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.security.filemonitor.FileBasedActionable;
 import com.ibm.ws.security.filemonitor.LTPAFileMonitor;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
@@ -235,7 +234,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private List<Properties> getNonConfiguredValidationKeys() {
         List<Properties> validationKeysInDirectory = new ArrayList<Properties>();
         Iterator<File> keysFiles = this.allKeysFiles.iterator();
-        
+
         if (keysFiles != null) {
             while (keysFiles.hasNext()) {
                 File keyFile = keysFiles.next();
@@ -289,15 +288,13 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             }
         }
 
-        if (updateTrigger != null && updateTrigger.equalsIgnoreCase("polled")){
-            if (monitorValidationKeysDir || isValidationKeysFileConfigured) {
-                try {
-                    // primaryKeyImportFile has already been resolved when the server loads the config, this includes variable and .. being resolved.
-                    primaryKeyImportDir = new File(primaryKeyImportFile).getCanonicalFile().getParent() + File.separator;
-                    Tr.debug(tc, "primaryKeyImportDir: " + primaryKeyImportDir);
-                } catch (IOException e) {
-                    Tr.debug(tc, "An exception occurred in resolveActualPrimaryKeysFileLocation method", e);
-                }
+        if (monitorValidationKeysDir || isValidationKeysFileConfigured) {
+            try {
+                // primaryKeyImportFile has already been resolved when the server loads the config, this includes variable and .. being resolved.
+                primaryKeyImportDir = new File(primaryKeyImportFile).getCanonicalFile().getParent() + File.separator;
+                Tr.debug(tc, "primaryKeyImportDir: " + primaryKeyImportDir);
+            } catch (IOException e) {
+                Tr.debug(tc, "An exception occurred in resolveActualPrimaryKeysFileLocation method", e);
             }
         }
 
@@ -353,7 +350,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
                 setFileMonitorRegistration(ltpaFileMonitor.monitorFiles(null, null, Arrays.asList(primaryKeyImportFile), monitorInterval, updateTrigger));
             }
         } catch (Exception e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) { 
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Exception creating the LTPA file monitor.", e);
             }
         }
@@ -407,7 +404,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      */
     private void processValidationKeys() {
         // create, modified and deleted files with validation keys will reload all primary and validation keys.
-        if (updateTrigger != null && updateTrigger.equalsIgnoreCase("polled") && monitorValidationKeysDir) {
+        if (updateTrigger != null && monitorValidationKeysDir) {
             validationKeys.clear();
 
             if (configValidationKeys != null && !configValidationKeys.isEmpty())
@@ -549,7 +546,8 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     }
 
     /**
-     * The keys config is changed if the file, expiration, expirationDifferenceAllowed, moitorInterval, monitorValidationKeysDir, updateTrigger or validationKeys configured were modified.
+     * The keys config is changed if the file, expiration, expirationDifferenceAllowed, moitorInterval, monitorValidationKeysDir, updateTrigger or validationKeys configured were
+     * modified.
      * Changing the password by itself must not be considered a config change that should trigger a keys reload.
      *
      * @param oldKeyImportFile
@@ -560,7 +558,8 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      * @param oldUpdateTrigger
      * @param oldValidationKeys
      */
-    private boolean isKeysConfigChanged(String oldKeyImportFile, Long oldKeyTokenExpiration, Long oldExpirationDifferenceAllowed, boolean oldMonitorValidationKeysDir, String oldUpdateTrigger,
+    private boolean isKeysConfigChanged(String oldKeyImportFile, Long oldKeyTokenExpiration, Long oldExpirationDifferenceAllowed, boolean oldMonitorValidationKeysDir,
+                                        String oldUpdateTrigger,
                                         List<Properties> oldValidationKeys) {
         return ((oldKeyImportFile.equals(primaryKeyImportFile) == false)
                 || (oldKeyTokenExpiration != keyTokenExpiration)
@@ -801,7 +800,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     @Sensitive
     private Properties getValidationKeysProps(Map<String, Object> configProps, String elementName, String... attrKeys) {
         Properties properties = new Properties();
-        if (primaryKeyImportDir == null){
+        if (primaryKeyImportDir == null) {
             Tr.debug(tc, "primaryKeyImportDir is null. Validation keys will not be loaded.");
             return properties;
         }
