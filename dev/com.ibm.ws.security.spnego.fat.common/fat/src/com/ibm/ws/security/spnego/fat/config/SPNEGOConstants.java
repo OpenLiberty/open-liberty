@@ -26,6 +26,7 @@ public class SPNEGOConstants {
     public final static String KDC_REALM_FROM_CONSUL = "realm";
     public final static String KDC2_REALM_FROM_CONSUL = "realm";
     public final static String KRB5_CONF_FROM_CONSUL = "krb5Conf";
+    public final static String ZOS_KRB_CONFIG_FILE="krb.conf";
 
     public final static String IBM_DOMAIN = "ibm.com";
     public final static String MS_KDC_USER_CONSUL = "user";

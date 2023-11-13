@@ -157,7 +157,7 @@ public class InitClass {
             KDC_USER_PWD = services.get(0).getProperties().get(SPNEGOConstants.MS_KDC_USER_PASSWORD_CONSUL);
             KDC_REALM = services.get(0).getProperties().get(SPNEGOConstants.KDC_REALM_FROM_CONSUL);
             KDC_HOST_SHORTNAME = services.get(0).getProperties().get(SPNEGOConstants.KDC_SHORTNAME_FROM_CONSUL);
-            KRB5_CONF = services.get(0).getProperties().get(SPNEGOConstants.KRB5_CONF_FROM_CONSUL);
+            KRB5_CONF =(System.getProperty("os.name")=="z/OS")? SPNEGOConstants.ZOS_KRB_CONFIG_FILE:services.get(0).getProperties().get(SPNEGOConstants.KRB5_CONF_FROM_CONSUL);
             Z_USER = services.get(0).getProperties().get(SPNEGOConstants.Z_USER_FROM_CONSUL);
             FIRST_USER = services.get(0).getProperties().get(SPNEGOConstants.FIRST_USER_FROM_CONSUL);
             SECOND_USER = services.get(0).getProperties().get(SPNEGOConstants.SECOND_USER_FROM_CONSUL);
@@ -177,7 +177,7 @@ public class InitClass {
                 KDC_USER_PWD = services.get(1).getProperties().get(SPNEGOConstants.MS_KDC_USER_PASSWORD_CONSUL);
                 KDC_REALM = services.get(1).getProperties().get(SPNEGOConstants.KDC_REALM_FROM_CONSUL);
                 KDC_HOST_SHORTNAME = services.get(1).getProperties().get(SPNEGOConstants.KDC_SHORTNAME_FROM_CONSUL);
-                KRB5_CONF = services.get(1).getProperties().get(SPNEGOConstants.KRB5_CONF_FROM_CONSUL);
+                KRB5_CONF =(System.getProperty("os.name") == "z/OS")?SPNEGOConstants.ZOS_KRB_CONFIG_FILE:services.get(1).getProperties().get(SPNEGOConstants.KRB5_CONF_FROM_CONSUL);
                 Z_USER = services.get(1).getProperties().get(SPNEGOConstants.Z_USER_FROM_CONSUL);
                 FIRST_USER = services.get(1).getProperties().get(SPNEGOConstants.FIRST_USER_FROM_CONSUL);
                 SECOND_USER = services.get(1).getProperties().get(SPNEGOConstants.SECOND_USER_FROM_CONSUL);
