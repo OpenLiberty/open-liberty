@@ -147,7 +147,13 @@ public class WebProviderAuthenticatorHelper {
             props.remove(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
             props.remove(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME);
             if (!props.isEmpty()  && !subject.isReadOnly()) {
-                privateCredentials.add(props);
+                try {
+                    privateCredentials.add(props);
+                }
+                catch (Exception e) {
+                    //Not throwing an exception. We always have a slight chance of the same subject gets setReadOnly() on another thread just before the above call is made.   
+                    //The purpose of this method is to prevent the Subject from growing. Once the subject is set readOnly, it would not grow any more.  
+                }
             }
         }
     }
