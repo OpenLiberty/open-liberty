@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -41,18 +41,31 @@ public interface FileMonitor extends com.ibm.wsspi.kernel.filemonitor.FileMonito
     String MONITOR_KEYSTORE_CONFIG_ID = "monitor.keystore.id";
 
     /**
-     * Security file monitor that can be identified by this value for external updates
+     * <h4>Service property</h4>
+     *
+     * The value should be a String, indicating the config id of
+     * ltpa that should be monitored for external update
      */
-    String SECURITY_MONITOR_IDENTIFICATION_VALUE = "com.ibm.ws.security.monitor.keystore";
+    String MONITOR_LTPA_CONFIG_ID = "monitor.ltpa.id";
+
+    /**
+     * Security keystore file monitor that can be identified by this value for external updates
+     */
+    String SECURITY_KEYSTORE_MONITOR_IDENTIFICATION_VALUE = "com.ibm.ws.security.monitor.keystore";
+
+    /**
+     * Security LTPA file monitor that can be identified by this value for external updates
+     */
+    String SECURITY_LTPA_MONITOR_IDENTIFICATION_VALUE = "com.ibm.security.monitor.ltpa";
 
     /**
      * Called by the monitor service when a scheduled scan completes with
      * changes (indicated by the presence of files in the corresponding collection).
      *
-     * @param createdFiles A collection of files that were created since the last scan.
+     * @param createdFiles  A collection of files that were created since the last scan.
      * @param modifiedFiles A collection of files that were modified since the last scan.
-     * @param deletedFiles A collection of files that were deleted since the last scan.
-     * @param filter A string used to filter listener notifications. Only the listeners matching the filter are called.
+     * @param deletedFiles  A collection of files that were deleted since the last scan.
+     * @param filter        A string used to filter listener notifications. Only the listeners matching the filter are called.
      */
     void onChange(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles, String filter);
 }
