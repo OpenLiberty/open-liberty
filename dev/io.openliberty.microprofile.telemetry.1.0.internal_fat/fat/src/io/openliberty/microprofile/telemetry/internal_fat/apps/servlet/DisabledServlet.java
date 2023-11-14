@@ -31,11 +31,6 @@ public class DisabledServlet extends FATServlet {
 
     public static final String APP_NAME = "TelemetryServletTestApp";
     public static final String SIMPLE_SERVLET = "simple";
-    public static final String SIMPLE_ASYNC_SERVLET = "simpleAsync";
-    public static final String CONTEXT_ASYNC_SERVLET = "contextAsync";
-    public static final String PLACEHOLDER_SERVLET = "placeholder";
-    public static final String HELLO_HTML = "hello.html";
-    public static final String DICE_JSP = "dice.jsp";
     public static final String INVALID_TRACE_ID = "00000000000000000000000000000000";
 
     @Inject

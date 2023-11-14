@@ -41,7 +41,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.spans.AbstractS
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
 
 /**
- * HTTP request tracing tests
+ * Test with opentelemetry disabled
  */
 @RunWith(FATRunner.class)
 public class TelemetryDisabledServletTest extends FATServletClient {
@@ -72,8 +72,6 @@ public class TelemetryDisabledServletTest extends FATServletClient {
                         .addPackage(TestSpans.class.getPackage())
                         .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
-                        .addAsWebResource(new File("test-applications/TelemetryServletTestApp.war/hello.html"))
-                        .addAsWebResource(new File("test-applications/TelemetryServletTestApp.war/dice.jsp"))
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties")
                         .addAsResource(beans, "META-INF/beans.xml");
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
