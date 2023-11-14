@@ -59,7 +59,7 @@ public class JwtFatUtils extends ServerFileUtils {
 
     public void updateFeatureFileForEE9(LibertyServer server) throws Exception {
 
-        String version = RepeatTestFilter.getMostRecentRepeatAction();
+        String version = RepeatTestFilter.getMostRecentRepeatAction().getID();
         // try to replace the EE9 or EE10 noMpJwt repeat instance name with noMpJwt_ee9 or noMpJwt_ee9 respectively 
         // if this is a different repeat action this will do nothing
         version = version.replace(JakartaEEAction.EE9_ACTION_ID + "_" + JwtFatConstants.NO_MPJWT, JwtFatConstants.NO_MPJWT_EE9);

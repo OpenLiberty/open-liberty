@@ -47,7 +47,7 @@ public class DSOverrideTest extends FATServletClient {
     public TestRule skipJPA20Rule = new TestRule() {
         @Override
         public Statement apply(Statement statement, Description arg1) {
-            if (RepeatWithJPA20.ID.equals(RepeatTestFilter.getMostRecentRepeatAction())) {
+            if (RepeatWithJPA20.ID.equals(RepeatTestFilter.getMostRecentRepeatAction().getID())) {
                 return new Statement() {
                     @Override
                     public void evaluate() throws Throwable {

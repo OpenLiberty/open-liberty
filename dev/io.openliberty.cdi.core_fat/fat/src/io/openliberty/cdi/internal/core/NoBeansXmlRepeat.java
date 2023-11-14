@@ -12,9 +12,27 @@
  *******************************************************************************/
 package io.openliberty.cdi.internal.core;
 
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
+
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTestAction;
 
-public class Repeats {
-    public static final RepeatTestAction WITH_BEANS_XML = new BeansXmlRepeat();
-    public static final RepeatTestAction NO_BEANS_XML = new NoBeansXmlRepeat();
+public class NoBeansXmlRepeat implements RepeatTestAction {
+
+    protected final static String ID = "NO_BEANS_XML_ACTION";
+
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public void setup() throws Exception {
+        //no op. Test code will react when it sees this ID on the stack
+    }
+
+    public String getID() {
+        return ID;
+    }
+
 }
