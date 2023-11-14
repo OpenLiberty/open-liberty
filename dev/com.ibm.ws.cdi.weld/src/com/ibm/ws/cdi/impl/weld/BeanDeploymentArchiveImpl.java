@@ -232,6 +232,10 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
      * @return
      */
     private BeanDiscoveryMode getBeanDiscoveryMode() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "getBeanDiscoveryMode [ " + getHumanReadableName() + " ]");
+        }
+
         if (beanDiscoveryMode == null) {
             BeansXml beansXml = getBeansXml();
 
