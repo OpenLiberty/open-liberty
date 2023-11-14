@@ -29,7 +29,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.MicroProfileActions;
@@ -40,7 +40,7 @@ import io.openliberty.checkpoint.fat.crac.app.fail.restore.CRaCResourceFailResto
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class CRaCResourceFailRestoreTest {
     public static final String APP_NAME = "testApp";
     public static final String APP_PACKAGE = CRaCResourceFailRestoreServlet.class.getPackage().getName();

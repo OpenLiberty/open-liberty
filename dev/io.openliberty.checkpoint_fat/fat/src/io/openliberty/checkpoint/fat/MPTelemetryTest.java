@@ -34,7 +34,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.MicroProfileActions;
@@ -45,7 +45,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 import mpTelemetry.MpTelemetryServlet;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class MPTelemetryTest extends FATServletClient {
 
     public static final String APP_NAME = "mpTelemetry";

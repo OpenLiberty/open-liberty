@@ -19,7 +19,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -29,7 +29,7 @@ import io.openliberty.checkpoint.fat.util.FATUtils;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class RecoveryTestBase extends FATServletClient {
 
     static final String SERVER_NAME = "checkpointTransactionRecovery";

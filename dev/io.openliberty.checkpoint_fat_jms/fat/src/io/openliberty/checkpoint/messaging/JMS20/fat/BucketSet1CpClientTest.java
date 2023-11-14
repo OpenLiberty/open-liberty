@@ -32,7 +32,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -44,7 +44,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
 // Bucket 1 checkpoint JMS Client
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class BucketSet1CpClientTest {
 
     private static LibertyServer clientServer = LibertyServerFactory.getLibertyServer("LiteSet1Client");

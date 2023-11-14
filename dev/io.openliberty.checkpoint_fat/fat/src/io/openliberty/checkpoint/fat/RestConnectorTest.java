@@ -36,7 +36,7 @@ import com.ibm.websphere.simplicity.config.BasicRegistry.User;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -46,7 +46,7 @@ import componenttest.topology.utils.HttpsRequest;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class RestConnectorTest extends FATServletClient {
 
     public static final String SERVER_NAME = "checkpointRestConnector";

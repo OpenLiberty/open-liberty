@@ -28,7 +28,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -40,7 +40,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  * This is to test the @WebServiceRef annotation works in the JAX-WS client
  */
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class WebServiceRefTest {
 
     private static final String SERVER_NAME = "WebServiceRefTestServer";

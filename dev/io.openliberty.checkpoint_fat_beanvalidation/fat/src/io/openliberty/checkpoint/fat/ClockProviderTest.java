@@ -25,7 +25,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import bval.v20.web.BeanVal20TestServlet;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
@@ -44,7 +44,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  * checkpoint and restore.
  */
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class ClockProviderTest extends FATServletClient {
 
     static final String SERVER_NAME = "checkpointBeanValidationUTC";
