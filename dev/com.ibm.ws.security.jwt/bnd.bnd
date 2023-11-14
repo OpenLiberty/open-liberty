@@ -51,6 +51,7 @@ Import-Package: \
     com.ibm.ws.security.common.*, \
     com.ibm.ws.webcontainer.security.jwk, \
     com.ibm.json.java.*, \
+    io.openliberty.security.common.osgi, \
     org.osgi.service.component.*, \
     org.osgi.framework, \
     org.osgi.util.tracker, \
