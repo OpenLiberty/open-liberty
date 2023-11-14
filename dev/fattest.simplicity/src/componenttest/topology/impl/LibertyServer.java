@@ -1968,6 +1968,10 @@ public class LibertyServer implements LogMonitorClient {
             }
         }
 
+        // recalculate the messages and trace logs in case the logsRoot changed
+        this.messageAbsPath = logsRoot + messageFileName;
+        this.traceAbsPath = logsRoot + traceFileName;
+
         //The restore operation returned 0. Verify that running server is from a checkpoint restore and not from a
         // failed restore recovery, unless auto-recovery is enabled
         if (checkpointInfo.criuRestoreDisableRecovery && failedRestore()) {
