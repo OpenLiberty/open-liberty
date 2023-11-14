@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2023 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,21 +10,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package componenttest.application.manager.test;
+package com.ibm.ws.test0;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-        FATTest.class,
-        AutoExtractTest.class,
-        AppOrderTests.class,
-        DropinsTests.class,
-        AppPrereqTest.class,
-        SharedLibTest.class
-})
-public class FATSuite {
-    // EMPTY
+public interface Test0 {
+    void testMethod();
 }

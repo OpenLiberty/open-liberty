@@ -42,7 +42,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.app.manager.module.ApplicationNestedConfigHelper;
 import com.ibm.ws.app.manager.module.DeployedAppServices;
-import com.ibm.ws.app.manager.module.internal.CaptureCache.FailableSupplier;
+import com.ibm.ws.app.manager.module.internal.CaptureCache.BaseCaptureSupplier;
+import com.ibm.ws.app.manager.module.internal.CaptureCache.CaptureSupplier;
 import com.ibm.ws.classloading.ClassLoaderConfigHelper;
 import com.ibm.ws.classloading.ClassLoadingButler;
 import com.ibm.ws.classloading.java2sec.PermissionManager;
@@ -121,6 +122,59 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
         }
     }
 
+    // Data for caching a container ...
+
+    protected static class LibraryContainerData {
+        public LibraryContainerData(String libraryPid, File libraryFile, String libraryPath,
+                                    long libraryFileSize, long libraryFileTime,
+                                    Container libraryContainer) {
+
+            this.libraryPid = libraryPid;
+            this.libraryFile = libraryFile;
+            this.libraryPath = libraryPath;
+
+            this.libraryFileSize = libraryFileSize;
+            this.libraryFileTime = libraryFileTime;
+
+            this.libraryContainer = libraryContainer;
+        }
+
+        public LibraryContainerData(LibraryContainerData other) {
+            this.libraryPid = other.libraryPid;
+            this.libraryFile = other.libraryFile;
+            this.libraryPath = other.libraryPath;
+
+            this.libraryFileSize = other.libraryFileSize;
+            this.libraryFileTime = other.libraryFileTime;
+
+            this.libraryContainer = other.libraryContainer;
+        }
+
+        public final String libraryPid;
+        public final File libraryFile;
+        public final String libraryPath;
+
+        public final long libraryFileSize;
+        public final long libraryFileTime;
+
+        public final Container libraryContainer;
+        
+        //@formatter:off
+        @Override
+        public String toString() {
+            return (new StringBuilder(super.toString()))
+                .append("(")
+                .append(libraryPid)
+                .append(",").append(libraryPath)
+                .append(",").append(libraryFileSize)
+                .append(",").append(libraryFileTime)
+                .append(",").append(libraryContainer)
+                .append(")")
+                .toString();
+        }
+        //@formatter:on
+    }
+
     /**
      * Static cache of library containers.
      *
@@ -129,7 +183,7 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
      * Use of a static cache requires that all library containers
      * for a given file path are identical.
      */
-    protected static final CaptureCache<Container> containerCache = new CaptureCache<>("container");
+    protected static final CaptureCache<LibraryContainerData> containerCache = new CaptureCache<>("container");
 
     /**
      * Capture creation of a library container.
@@ -140,8 +194,9 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
      * @return A new supplier of the library container which will capture the
      *         result of the base supplier.
      */
-    protected static FailableSupplier<Container> capture(String key, FailableSupplier<Container> supplier) {
-        return containerCache.capture(key, supplier);
+    protected static CaptureSupplier<LibraryContainerData> capture(String libPath,
+                                                                   BaseCaptureSupplier<LibraryContainerData> baseSupplier) {
+        return containerCache.capture(libPath, baseSupplier);
     }
 
     /**
@@ -185,7 +240,6 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
     @Override
     public void finalize() throws Throwable {
         releaseContainers();
-
         super.finalize();
     }
 
@@ -310,6 +364,8 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
             }
         }
 
+        //@formatter:off
+
         // TODO: The first library which uses a specified library file has it's PID used by the shared
         //       library container.
         //
@@ -332,16 +388,21 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
         // Those seem to create containers for the application itself.  Such
         // containers will have data specific to the application, and likely
         // cannot be shared.
+
         private Container setupContainer(String libraryPid, File libraryFile) {
             String libraryPath = libraryFile.getAbsolutePath();
 
             addLibraryPath(libraryPath);
 
-            FailableSupplier<Container> containerSupplier = capture(libraryPath, () -> baseSetupContainer(libraryPid, libraryFile));
+            BaseCaptureSupplier<LibraryContainerData> baseSupplier =
+                (LibraryContainerData priorCapture) -> baseSetupContainer(libraryPid, libraryFile, libraryPath, priorCapture);
+
+            CaptureSupplier<LibraryContainerData> containerSupplier = capture(libraryPath, baseSupplier);
+
             try {
-                return containerSupplier.get();
-            } catch (Exception e) {
-                return null; // Can't happen
+                return containerSupplier.get().libraryContainer;
+            } catch ( Exception e ) {
+                return null;
             }
         }
 
@@ -359,59 +420,87 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
             Tr.debug(_tc, methodName + ": " + text);
         }
 
-        private Container baseSetupContainer(String libraryPid, File libraryFile) {
+        private LibraryContainerData baseSetupContainer(String libraryPid, File libraryFile, String libraryPath,
+                                                        LibraryContainerData priorCapture) {
             String methodName = "baseSetupContainer";
 
             boolean isDebugEnabled = _tc.isDebugEnabled();
-            if (isDebugEnabled) {
-                debug(methodName, "Creating library container [ " + libraryPid + " ]" +
-                                  " at [ " + libraryFile.getAbsolutePath() + " ]");
+            if ( isDebugEnabled ) {
+                debug(methodName, "Creating library container [ " + libraryPid + " ]" + " at [ " + libraryPath + " ]");
             }
 
-            if (!FileUtils.fileExists(libraryFile)) {
-                if (isDebugEnabled) {
+            long libraryFileSize;
+            long libraryFileTime;
+
+            if ( !FileUtils.fileExists(libraryFile) ) {
+                libraryFileSize = -1L;
+                libraryFileTime = -1L;
+                if ( isDebugEnabled ) {
                     debug(methodName, "Null library container: Library file does not exist");
                 }
-                return null;
+            } else {
+                libraryFileSize = libraryFile.length();
+                libraryFileTime = libraryFile.lastModified();
+                if ( isDebugEnabled ) {
+                    debug(methodName, "Library size [ " + libraryFileSize + " ] time [ " + libraryFileTime + " ]");
+                }
             }
 
+            if ( (priorCapture != null) &&
+                 (priorCapture.libraryFileSize == libraryFileSize) &&
+                 (priorCapture.libraryFileTime == libraryFileTime) ) {
+                return priorCapture;
+            }
+
+            Container adaptableContainer =
+                ( (libraryFileSize == -1) ? null : baseCreateContainer(libraryPid, libraryFile, libraryPath) );
+
+            return new LibraryContainerData(libraryPid, libraryFile, libraryPath,
+                                            libraryFileSize, libraryFileTime,
+                                            adaptableContainer);
+        }
+
+        private Container baseCreateContainer(String libraryPid, File libraryFile, String libraryPath) {
+            String methodName = "baseCreateContainer";
+            boolean isDebugEnabled = _tc.isDebugEnabled();
+
             File cacheDir = new File(getCacheDir(), libraryPid);
-            if (!FileUtils.ensureDirExists(cacheDir)) {
-                if (isDebugEnabled) {
+            if ( !FileUtils.ensureDirExists(cacheDir) ) {
+                if ( isDebugEnabled ) {
                     debug(methodName, "Null library container: Cache directory [ " + cacheDir.getAbsolutePath() + " ] could not be created");
                 }
                 return null;
             }
-            if (isDebugEnabled) {
+            if ( isDebugEnabled ) {
                 debug(methodName, "Cache directory [ " + cacheDir.getAbsolutePath() + " ]");
             }
 
             ArtifactContainer artifactContainer = artifactFactory.getContainer(cacheDir, libraryFile);
-            if (artifactContainer == null) {
-                if (isDebugEnabled) {
-                    debug(methodName, "Null library container: Artifact container creation failed");
+            if ( artifactContainer == null ) {
+                if ( isDebugEnabled ) {
+                    debug(methodName,  "Null library container: Artifact container creation failed");
                 }
                 return null;
             }
-            if (isDebugEnabled) {
+            if ( isDebugEnabled ) {
                 debug(methodName, "Artifact container [ " + artifactContainer + " ]");
             }
 
-            File adaptDir = new File(getCacheAdaptDir(), libraryPid);
-            if (!FileUtils.ensureDirExists(adaptDir)) {
-                if (isDebugEnabled) {
-                    debug(methodName, "Null library container: Adapt directory [ " + adaptDir.getAbsolutePath() + " ] could not be created");
+            File adaptDir = new File( getCacheAdaptDir(), libraryPid );
+            if ( !FileUtils.ensureDirExists(adaptDir) ) {
+                if ( isDebugEnabled ) {
+                    debug(methodName,  "Null library container: Adapt directory [ " + adaptDir.getAbsolutePath() + " ] could not be created");
                 }
                 return null;
             }
-            if (isDebugEnabled) {
+            if ( isDebugEnabled ) {
                 debug(methodName, "Adapt directory [ " + adaptDir.getAbsolutePath() + " ]");
             }
 
             File overlayDir = new File(getCacheOverlayDir(), libraryPid);
-            if (!FileUtils.ensureDirExists(overlayDir)) {
-                if (isDebugEnabled) {
-                    debug(methodName, "Null library container: Overlay directory [ " + overlayDir.getAbsolutePath() + " ] could not be created");
+            if ( !FileUtils.ensureDirExists(overlayDir) ) {
+                if ( isDebugEnabled ) {
+                    debug(methodName,  "Null library container: Overlay directory [ " + overlayDir.getAbsolutePath() + " ] could not be created");
                 }
                 return null;
             }
@@ -420,15 +509,20 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
             }
 
             Container adaptableContainer = moduleFactory.getContainer(adaptDir, overlayDir, artifactContainer);
-            if (isDebugEnabled) {
-                if (adaptableContainer == null) {
-                    debug(methodName, "Null library container: Adaptable container creation failed");
-                } else {
-                    debug(methodName, "Created library container: Adaptable container [ " + adaptableContainer + " ]");
+            if ( adaptableContainer == null ) {
+                if ( isDebugEnabled ) {
+                    debug(methodName,  "Null library container: Adaptable container creation failed");
                 }
+                return null;
+            }
+
+            if ( isDebugEnabled ) {
+                debug(methodName, "Created library container: Adaptable container [ " + adaptableContainer + " ]");
             }
             return adaptableContainer;
         }
+
+        //@formatter:on
 
         private File getCacheAdaptDir() {
             return locAdmin.getBundleFile(this, "cacheAdapt");

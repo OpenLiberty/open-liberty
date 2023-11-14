@@ -23,16 +23,12 @@ import com.ibm.websphere.ras.TraceComponent;
 
 //@formatter:off
 /**
- * Generic cache of failable supplier results.
- *
- * A failable supplier ({@link CaptureCache.FailableSupplier}
- * is the same as a {@link java.util.function.Supplier} except that
- * {@link CaptureCache.FailableSupplier#get()} may throw an exception.
+ * Generic cache of supplier results.
  *
  * Main APIs:
  *
  * <ul>
- * <li>{@link #capture(String, FailableSupplier<T>)</li>
+ * <li>{@link #capture(String, BaseCaptureSupplier<T>)</li>
  * <li>{@link #release(String)}</li>
  * </ul>
  *
@@ -54,12 +50,6 @@ import com.ibm.websphere.ras.TraceComponent;
  * capture supplier.  This is important because supplier invocations are
  * expected to be expensive, and cache operations should not be impacted
  * by supplier overhead.
- *
- * A capture cache stores both a successful (non-exception) and
- * failed (exception) results.  Unless a supplier is released, multiple
- * invocations of the supplier returned by a capture cache will obtain
- * the same result, including null results, non-exception results, and
- * exception results.
  *
  * Callers must reliable release suppliers to avoid memory leaks.
  */
@@ -170,10 +160,10 @@ public class CaptureCache<T> {
      * @return A unique, internal, copy of the key.
      */
     protected String acquire(String key) {
-        KeyData keyData =
-            keys.computeIfAbsent(key,
-                                 (String missingKey) -> new KeyData( new String(missingKey) ) );
+        Function <String, KeyData> keySource =
+            (String missingKey) -> new KeyData( new String(missingKey) );
 
+        KeyData keyData = keys.computeIfAbsent(key, keySource);
         String uniqueKey = keyData.getKey();
         int newCount = keyData.increment();
 
@@ -221,9 +211,7 @@ public class CaptureCache<T> {
         }
 
         if ( tc.isDebugEnabled() ) {
-            debug( getTag(),
-                   "release",
-                   "[ " + key + " ] [ " + newCount + " ]: [ " + supplier + " ]" );
+            debug( getTag(), "release", "[ " + key + " ] [ " + newCount + " ]: [ " + supplier + " ]" );
         }
     }
 
@@ -283,8 +271,7 @@ public class CaptureCache<T> {
     }
 
     /**
-     * Defer invocation of a failable supplier.  Cache the deferred product as
-     * a capturing failable supplier.
+     * Capture invocation of supplier.
      *
      * Only the first invocation for a specific key will be placed into storage.
      * subsequent invocations for the same key will obtain the previously placed
@@ -299,63 +286,37 @@ public class CaptureCache<T> {
      * @param key The key associated with the product.
      * @param baseSupplier A supplier to associate with the key.
      *
-     * @return A capturing failable supplier.
+     * @return A capturing supplier.
      */
-    public CaptureSupplier<T> capture(String key, FailableSupplier<T> baseSupplier) {
-        Function<String, CaptureSupplier<T>> supplierSupplier =
-            (String useKey) -> new CaptureSupplier<T>(useKey, baseSupplier);
+    public CaptureSupplier<T> capture(String key, BaseCaptureSupplier<T> baseSupplier) {
+        Function<String, CaptureSupplier<T>> supplierSource =
+            (String uniqueKey) -> new CaptureSupplier<T>(uniqueKey, baseSupplier);
 
         synchronized( cacheLock ) {
-            // 'acquire' does two or three things:
-            //
-            // If necessary, a data structure is created and stored.
-            // The key is updated to an internal, unique, string instance.
-            // The count associated with the key is incremented.
-
-            return storage.computeIfAbsent( acquire(key), supplierSupplier );
+            return storage.computeIfAbsent( acquire(key), supplierSource );
         }
     }
 
     //
 
-    /**
-     * Type for failable Suppliers.  See {@link java.util.function.Supplier}.
-     *
-     * Modified to enable {@link java.util.function.Supplier#get} to throw
-     * an exception.
-     *
-     * @param <T> The type which is supplied.
-     */
     @FunctionalInterface
-    public static interface FailableSupplier<T> {
-        T get() throws Exception;
+    public static interface BaseCaptureSupplier<T> {
+        T get(T priorCapture);
     }
 
-    /**
-     * Concrete capturing failable Supplier.
-     *
-     * Wraps a failable Supplier and caches the product.
-     *
-     * @param <T> The type of the product.
-     */
-    public static class CaptureSupplier<T> implements FailableSupplier<T> {
+    public static class CaptureSupplier<T> {
         public static final String INNER_CLASS_NAME = CaptureSupplier.class.getSimpleName();
 
         /**
          * Create a new capture supplier which wraps a base supplier.
          *
-         * The capture supplier will "capture" a null result if the base
-         * supplier is null.
-         *
          * @param tag A tag used to identify the supplier.
          * @param baseSupplier The supplier which is to be captured.
          */
-        public CaptureSupplier(String tag, FailableSupplier<T> baseSupplier) {
+        public CaptureSupplier(String tag, BaseCaptureSupplier<T> baseSupplier) {
             this.tag = tag;
-
             this.baseSupplier = baseSupplier;
-            this.capturedProduct = null;
-            this.capturedException = null;
+            this.captured = null;
         }
 
         //
@@ -369,9 +330,8 @@ public class CaptureCache<T> {
 
         //
 
-        private volatile FailableSupplier<T> baseSupplier;
-        private T capturedProduct;
-        private Exception capturedException;
+        private final BaseCaptureSupplier<T> baseSupplier;
+        private T captured;
 
         /**
          * Type used to answer snapshots of a capturing supplier.
@@ -382,51 +342,23 @@ public class CaptureCache<T> {
          * @param <T> The type which is being supplied.
          */
         public static class SupplierSnapShot<T> {
-            public final FailableSupplier<T> baseSupplier;
-            public final T capturedProduct;
-            public final Exception capturedException;
+            public final BaseCaptureSupplier<T> baseSupplier;
+            public final T captured;
 
-            /**
-             * Record the state of a capture supplier.
-             *
-             * @param baseSupplier The base supplier.  Null if the
-             *     supplier has been invoked.
-             * @param capturedProduct The product.  Null either if
-             *     the supplier has not been invoked, or if an exception
-             *     occurred, or if a null value was obtained.
-             * @param capturedException
-             *     Null either if the supplier has not been invoked, or
-             *     if the supplier was invoked successfully.
-             */
-            protected SupplierSnapShot(FailableSupplier<T> baseSupplier,
-                                       T capturedProduct, Exception capturedException) {
+            protected SupplierSnapShot(BaseCaptureSupplier<T> baseSupplier, T captured) {
                 this.baseSupplier = baseSupplier;
-                this.capturedProduct = capturedProduct;
-                this.capturedException = capturedException;
+                this.captured = captured;
             }
         }
 
         /**
          * Obtain a snapshot of the current state of this capturing Supplier:
          *
-         * If production has not occurred, answer the base Supplier and null product and exception.
-         *
-         * If production has occurred, answer a null base Supplier and the captured product and
-         * exception.
-         *
-         * This operation is thread safe.
-         *
          * @return A snapshot of the current state of this capturing Supplier.
          */
         public SupplierSnapShot<T> snapshot() {
-            // The base supplier becomes null when the supplier is invoked,
-            // at which point the capture values are fixed.
-            if ( baseSupplier == null ) {
-                return new SupplierSnapShot<T>(baseSupplier, capturedProduct, capturedException);
-            } else {
-                synchronized( this ) {
-                    return new SupplierSnapShot<T>(baseSupplier, capturedProduct, capturedException);
-                }
+            synchronized( this ) {
+                return new SupplierSnapShot<T>(baseSupplier, captured);
             }
         }
 
@@ -436,68 +368,21 @@ public class CaptureCache<T> {
         /**
          * Obtain the result from the Supplier.
          *
-         * Either, answer the prior result, or invoke the supplier and return the result.
-         *
-         * The result (or thrown exception) is cached: The supplier is invoked at most once.
-         *
-         * The supplier is cleared following its first invocation.
-         *
          * @return The result from the supplier.
          */
-        @Override
-        public T get() throws Exception {
-            // The base supplier is set to null after it is invoked, at which point
-            // the capture values are fixed.
-
-            String productTime = "prior";
-
-            if ( baseSupplier != null ) {
-                // Synchronize on the capturing supplier, not on the capture cache!
-                // The supplier invocation is expected to occasionally be time consuming.
-                // The usual operations of the capture cache should be independent of
-                // supplier invocations.
-
-                synchronized ( this ) {
-                    if ( baseSupplier != null ) {
-                        productTime = "new";
-                        try {
-                            capturedProduct = baseSupplier.get();
-                        } catch ( Exception baseException ) {
-                            capturedException = baseException;
-                        }
-
-                        // Necessary: References held by the base Supplier must
-                        // be cleared.  Otherwise, input data references would
-                        // be held long after they were needed.
-                        baseSupplier = null;
-                    }
-                }
+        public T get() {
+            T priorProduct;
+            synchronized ( this ) {
+                captured = baseSupplier.get( priorProduct = captured );
             }
-
-            // Check the exception first: A null product can occur
-            // because the supplier threw an exception, or can occur
-            // as the actual supplier result.
-
             if ( tc.isDebugEnabled() ) {
-                Object product;
-                String productType;
-                if ( capturedException != null ) {
-                    product = capturedException;
-                    productType = "exception";
+                if ( captured == priorProduct ) {
+                    debug("get", getTag(), "[ " + priorProduct + " ]");
                 } else {
-                    product = capturedProduct;
-                    productType = "product";
+                    debug("get", getTag(), "[ " + priorProduct + " ] [ " + captured + " ]");
                 }
-                debug("get",
-                      getTag(),
-                      "[ " + product + " ] (" + productTime + " " + productType + ")");
             }
-
-            if ( capturedException != null ) {
-                throw capturedException;
-            } else {
-                return capturedProduct;
-            }
+            return captured;
         }
     }
 }
