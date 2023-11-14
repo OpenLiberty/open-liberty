@@ -292,7 +292,9 @@ public class FeatureUtility {
 			    host = hostURL.getHost();
 			} catch (MalformedURLException e) {
 			    // If protocol is not defined, assume http protocol.
+			    logger.fine("Proxy protocol is not defined: " + e.getMessage());
 			    protocol = "http";
+
 			}
 
 		}

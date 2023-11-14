@@ -30,7 +30,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.testcontainers.containers.Container.ExecResult;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -981,9 +980,8 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    try {
 		checkCommandOutput(po, 0, null, filesList);
 	    } catch(Exception e) {
-		  ExecResult lsResult = proxyContainer.execInContainer("cat", "/var/log/squid/access.log");
-		  String stdout = lsResult.getStdout();
-		  Log.info(c, METHOD_NAME, "Test Failed. Proxy Log: " + stdout);
+		checkProxyLog(METHOD_NAME, proxyContainer);
+		  throw e;
 	    }
 	    
 	    Log.exiting(c, METHOD_NAME);
@@ -1019,9 +1017,8 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    try {
 		checkCommandOutput(po, 0, null, filesList);
 	    } catch (Exception e) {
-		  ExecResult lsResult = proxyContainer.execInContainer("cat", "/var/log/squid/access.log");
-		  String stdout = lsResult.getStdout();
-		  Log.info(c, METHOD_NAME, "Test Failed. Proxy Log: " + stdout);
+		checkProxyLog(METHOD_NAME, proxyContainer);
+		  throw e;
 	    }
 	    
 	    Log.exiting(c, METHOD_NAME);
@@ -1059,9 +1056,8 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    try {
 		checkCommandOutput(po, 0, null, filesList);
 	    } catch (Exception e) {
-		ExecResult lsResult = proxyContainer.execInContainer("cat", "/var/log/squid/access.log");
-		String stdout = lsResult.getStdout();
-		Log.info(c, METHOD_NAME, "Test Failed. Proxy Log: " + stdout);
+		checkProxyLog(METHOD_NAME, proxyContainer);
+		throw e;
 	    }
 	    
 	    Log.exiting(c, METHOD_NAME);

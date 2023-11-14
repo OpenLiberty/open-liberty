@@ -72,7 +72,7 @@ public class ArtifactDownloaderUtils {
     }
 
     public static List<String> getMissingFiles(Set<String> featureURLs, Map<String, Object> envMap,
-                                               MavenRepository repository) throws InterruptedException, ExecutionException {
+                                               MavenRepository repository) throws InterruptedException, ExecutionException, InstallException {
         List<String> result = new Vector<String>();
         logger.fine("number of missing features: " + featureURLs.size());
 
@@ -80,13 +80,15 @@ public class ArtifactDownloaderUtils {
         final ExecutorService executor = Executors.newFixedThreadPool(numThreads);
         final List<Future<?>> futures = new ArrayList<>();
 
+        checkRepositoryPassword(repository.getPassword());
+
         for (String url : featureURLs) {
             Future<?> future = executor.submit(() -> {
                 try {
-                    if (!(exists(url, envMap, repository) == HttpURLConnection.HTTP_OK)) {
+                    if (exists(url, envMap, repository) != HttpURLConnection.HTTP_OK) {
                         result.add(url);
                     }
-                } catch (IOException | InstallException e) {
+                } catch (IOException e) {
                     logger.fine(e.getMessage());
                 }
             });
@@ -110,11 +112,11 @@ public class ArtifactDownloaderUtils {
         return result;
     }
 
-    public static boolean fileIsMissing(String url, Map<String, Object> envMap, MavenRepository repository) throws IOException, InstallException {
+    public static boolean fileIsMissing(String url, Map<String, Object> envMap, MavenRepository repository) throws IOException {
         return !(exists(url, envMap, repository) == HttpURLConnection.HTTP_OK);
     }
 
-    public static int exists(String URLName, Map<String, Object> envMap, MavenRepository repository) throws IOException, InstallException {
+    public static int exists(String URLName, Map<String, Object> envMap, MavenRepository repository) throws IOException {
         try {
             URL url = new URL(URLName);
 
@@ -128,7 +130,7 @@ public class ArtifactDownloaderUtils {
             }
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection(proxy);
-            addBasicAuthentication(url, conn, repository);
+            addBasicAuthentication(conn, repository);
             conn.setRequestMethod("HEAD");
             conn.setConnectTimeout(10000);
             conn.setInstanceFollowRedirects(true);
@@ -285,9 +287,9 @@ public class ArtifactDownloaderUtils {
         return result;
     }
 
-    public static void addBasicAuthentication(URL address, URLConnection conn, MavenRepository repository) throws IOException, InstallException {
+    public static void addBasicAuthentication(URLConnection conn, MavenRepository repository) {
         if (repository.getUserId() != null && repository.getPassword() != null) {
-            final String encodedPassword = formatAndCheckRepositoryPassword(repository.getPassword());
+            final String encodedPassword = formatRepositoryPassword(repository.getPassword());
             conn.setRequestProperty("Authorization", "Basic " + base64Encode(repository.getUserId() + ":" + PasswordUtil.passwordDecode(encodedPassword)));
         } else {
             return;
@@ -307,7 +309,8 @@ public class ArtifactDownloaderUtils {
         System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
 
         if (envMap.get("https.proxyUser") != null) {
-            final String encodedPassword = formatAndCheckRepositoryPassword((String) envMap.get("https.proxyPassword"));
+            final String encodedPassword = formatRepositoryPassword((String) envMap.get("https.proxyPassword"));
+            checkRepositoryPassword(encodedPassword);
             Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
@@ -315,7 +318,8 @@ public class ArtifactDownloaderUtils {
                 }
             });
         } else if (envMap.get("http.proxyUser") != null) {
-            final String encodedPassword = formatAndCheckRepositoryPassword((String) envMap.get("http.proxyPassword"));
+            final String encodedPassword = formatRepositoryPassword((String) envMap.get("http.proxyPassword"));
+            checkRepositoryPassword(encodedPassword);
             Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
@@ -330,15 +334,11 @@ public class ArtifactDownloaderUtils {
      * @return a formated password string
      * @throws InstallException if decoding the password fails due to an unsupported algorithm or invalid password.
      */
-    protected static String formatAndCheckRepositoryPassword(String pwd) throws InstallException {
+    protected static void checkRepositoryPassword(String pwd) throws InstallException {
         String crypto_algorithm = PasswordUtil.getCryptoAlgorithm(pwd);
-        if (!pwd.startsWith("{")) {
-            pwd = "{}" + pwd;
-            logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PWD_NOT_ENCRYPTED")
-                                   + InstallUtils.NEWLINE);
-            return pwd;
+        if (crypto_algorithm == null) {
+            return;
         }
-
         if (PasswordUtil.passwordDecode(pwd) == null) {
             if (!PasswordUtil.isValidCryptoAlgorithm(crypto_algorithm)) {
                 // don't accept unsupported crypto algorithm
@@ -347,7 +347,19 @@ public class ArtifactDownloaderUtils {
                 throw new InstallException(Messages.PASSWORD_UTIL_MESSAGES.getLogMessage("PASSWORDUTIL_CYPHER_EXCEPTION"));
             }
         }
+    }
 
+    /**
+     * @param pwd
+     * @return
+     */
+    protected static String formatRepositoryPassword(String pwd) {
+        if (!pwd.startsWith("{")) {
+            pwd = "{}" + pwd;
+            logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PWD_NOT_ENCRYPTED")
+                                   + InstallUtils.NEWLINE);
+            return pwd;
+        }
         return pwd;
     }
 

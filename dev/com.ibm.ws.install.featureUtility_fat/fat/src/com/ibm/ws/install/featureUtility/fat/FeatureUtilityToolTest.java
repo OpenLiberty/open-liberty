@@ -29,6 +29,9 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.zip.ZipFile;
 
+import org.testcontainers.containers.Container.ExecResult;
+import org.testcontainers.containers.GenericContainer;
+
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
@@ -512,6 +515,17 @@ public abstract class FeatureUtilityToolTest {
 
     }
 
+    /**
+     * @param METHOD_NAME
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    protected void checkProxyLog(final String METHOD_NAME, GenericContainer<?> proxyContainer)
+	    throws IOException, InterruptedException {
+	ExecResult lsResult = proxyContainer.execInContainer("cat", "/var/log/squid/access.log");
+	String stdout = lsResult.getStdout();
+	Log.info(c, METHOD_NAME, "Test Failed. Proxy Log: " + stdout);
+    }
 
 
 

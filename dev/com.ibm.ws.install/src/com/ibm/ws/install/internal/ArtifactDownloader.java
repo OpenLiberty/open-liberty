@@ -304,20 +304,6 @@ public class ArtifactDownloader implements AutoCloseable {
         return result;
     }
 
-    private void configureAuthentication(final MavenRepository repository) throws InstallException {
-
-        if (repository.getUserId() != null && repository.getPassword() != null &&
-            envMap.get("https.proxyUser") == null && envMap.get("http.proxyUser") == null) {
-            final String encodedPassword = ArtifactDownloaderUtils.formatAndCheckRepositoryPassword(repository.getPassword());
-            Authenticator.setDefault(new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(repository.getUserId(), PasswordUtil.passwordDecode(encodedPassword).toCharArray());
-                }
-            });
-        }
-    }
-
     /**
      * Tests the connection of a MavenRepository. If the server returns 404, then this will return false.
      *
@@ -327,6 +313,7 @@ public class ArtifactDownloader implements AutoCloseable {
         try {
             checkValidProxy();
             ArtifactDownloaderUtils.configureProxyAuthentication(envMap);
+            ArtifactDownloaderUtils.checkRepositoryPassword(repository.getPassword());
             int responseCode = ArtifactDownloaderUtils.exists(repository.getRepositoryUrl(), envMap, repository);
             logger.fine("Response code - " + repository.getRepositoryUrl() + ":" + responseCode);
             if (responseCode >= 200 && responseCode < 400) {
@@ -353,7 +340,7 @@ public class ArtifactDownloader implements AutoCloseable {
         }
         URL url = address.toURL();
         URLConnection conn = url.openConnection(proxy);
-        ArtifactDownloaderUtils.addBasicAuthentication(url, conn, repository);
+        ArtifactDownloaderUtils.addBasicAuthentication(conn, repository);
         final String userAgentValue = calculateUserAgent();
         conn.setRequestProperty("User-Agent", userAgentValue);
         conn.connect();
