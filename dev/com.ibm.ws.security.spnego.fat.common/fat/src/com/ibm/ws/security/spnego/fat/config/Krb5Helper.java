@@ -141,6 +141,8 @@ public class Krb5Helper {
         String thisMethod = "setupLoginConfig";
         Log.info(thisClass, thisMethod, "krb5Config: " + krb5Config + " realm: " + realm + " kdcHostName: " + InitClass.getKDCHostnameMask(kdcHostName));
         String loginContextEntry = IBM_JDK_KRB5_LOGIN;
+        Log.info(thisClass, thisMethod, "THE OS IS: "+System.getProperty("os.name"));
+        jaasConfFile = (System.getProperty("os.name").contains("z/OS"))? SPNEGOConstants.ZOS_CLIENT_JAAS_CONFIG_FILE:SPNEGOConstants.CLIENT_JAAS_CONFIG_FILE;
         Log.info(thisClass, thisMethod, "jaasConfFile: " + jaasConfFile);
         String jaasLoginConfig = server.getServerRoot() + jaasConfFile;
 
