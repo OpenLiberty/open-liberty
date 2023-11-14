@@ -22,7 +22,6 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,6 +31,7 @@ import java.util.Map;
 
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
+import javax.management.remote.JMXConnector;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -125,6 +125,8 @@ public class LTPAKeyRotationTests {
     public static void setUp() throws Exception {
         // Copy validation key file (validation1.keys) to the server
         copyFileToServerResourcesSecurityDir("alternate/validation1.keys");
+
+        server.setupForRestConnectorAccess();
 
         server.startServer(true);
 
@@ -1537,7 +1539,7 @@ public class LTPAKeyRotationTests {
         server.setMarkToEndOfLog(server.getDefaultLogFile());
 
         if (fileExists(filePath, 1)) {
-
+            filePath = server.getServerRoot() + "/" + filePath;
             Map<String, String> updatedProperties = new HashMap<>();
             // Read properties from the file and modify accordingly (based on contents)
             try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -1751,9 +1753,10 @@ public class LTPAKeyRotationTests {
      * @throws Exception
      */
     private static void notifyFileChangesWithMbean(List<String> createdFilePaths, List<String> modifiedFilePaths, List<String> deletedFilePaths) throws Exception {
-        MBeanServerConnection mbs = ManagementFactory.getPlatformMBeanServer();
-        ObjectName appMBean;
-        appMBean = new ObjectName("WebSphere:service=com.ibm.ws.kernel.filemonitor.FileNotificationMBean");
+
+        ObjectName appMBean = new ObjectName("WebSphere:service=com.ibm.ws.kernel.filemonitor.FileNotificationMBean");
+        JMXConnector jmxConnector = server.getJMXRestConnector("user1", "user1pwd", "Liberty");
+        MBeanServerConnection mbs = jmxConnector.getMBeanServerConnection();
 
         if (mbs.isRegistered(appMBean)) {
 
@@ -1765,9 +1768,11 @@ public class LTPAKeyRotationTests {
             Object[] params = new Object[] { createdFilePaths, modifiedFilePaths, deletedFilePaths };
 
             Log.info(thisClass, "notifyFileChangesWithMbean", "Calling FileNotificationMBean notifyFileChanges");
-            Log.info(thisClass, "notifyFileChangesWithMbean", "createdFilePaths: " + createdFilePaths.toString()
-                                                              + "modifiedFilePaths: " + modifiedFilePaths.toString()
-                                                              + "deletedFilePaths: " + deletedFilePaths.toString());
+            Log.info(thisClass, "notifyFileChangesWithMbean", "createdFilePaths: " + createdFilePaths != null ? createdFilePaths.toString() : "null"
+                                                                                                                                              + "modifiedFilePaths: "
+                                                                                                                                              + modifiedFilePaths != null ? modifiedFilePaths.toString() : "null"
+                                                                                                                                                                                                           + "deletedFilePaths: "
+                                                                                                                                                                                                           + deletedFilePaths != null ? deletedFilePaths.toString() : "null");
             // Invoke FileNotificationMBean method notifyFileChanges
             mbs.invoke(appMBean, "notifyFileChanges", params,
                        MBEAN_FILE_NOTIFICATION_NOTIFYFILECHANGES_SIGNATURE);
