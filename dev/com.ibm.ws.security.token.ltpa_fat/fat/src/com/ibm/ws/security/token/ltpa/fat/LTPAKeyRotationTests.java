@@ -17,7 +17,21 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.management.MBeanServerConnection;
+import javax.management.ObjectName;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -1296,6 +1310,63 @@ public class LTPAKeyRotationTests {
         updateConfigDynamically(server, serverConfiguration);
     }
 
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI>Set the updateTrigger to mbean, monitorValidationKeysDir to false, and monitorInterval to 0.
+     * <LI>Modify primary LTPA keys file (i.e. ltpa.keys).
+     * <LI>Attempt to access the mbean servlet with valid credentials.
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <OL>
+     * <P>Expected Results:
+     * <OL>
+     * <LI>Successful authentication to mbean servlet with ltpa cookie1 created.
+     * <LI>Liberty server processes modifications made to LTPA keys file initiated by the mbean servlet.
+     * <LI>Failing authentication to simple servlet.
+     * </OL>
+     */
+    @Test
+    @AllowedFFDC({ "java.lang.IllegalArgumentException" })
+    public void testPrimaryLtpaKeysFileModified_updateTrigger_mbean() throws Exception {
+        // Configure the server
+        configureServer("false", "0", true);
+
+        // Set updateTrigger to mbean
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        LTPA ltpa = serverConfiguration.getLTPA();
+        ltpa.updateTrigger = "mbean";
+        updateConfigDynamically(server, serverConfiguration);
+
+        // Initial login to simple servlet for form login1
+        String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+
+        // Get the SSO cookies back from the login
+        String cookie1 = flClient1.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
+
+        // Contents to update ltpa keys with
+        Map<String, String> contents = new HashMap<String, String>() {
+            {
+                put("com.ibm.websphere.ltpa.3DESKey", "eJh1K9My7p4Uj0Gw/X2XDWxyY1C9E3UEp7ji+BJPSDM\\\\=");
+                put("com.ibm.websphere.ltpa.PrivateKey",
+                    "yWoLdBGpxEbeDXnmg7Pb/n2dol240ccEil7bH79AW+7igX0xMikK1YyI2u6Q0IkVBLYugUxaUpFalWoBI5zF4tGRQmhysgwExx8ZPXrNzYQD8bymh75LQ3HAJEw4K3KWbVqKXKae7nj8ufDnE6h5fCA5dMWZT1etZkUIlH4QaBhwZyxRSpJkoUKZDeeaiqqpUoPmOnOWEyaSMxArxN3ozaF8e4fXM2vpEXT7NQhM28S2S60nM0KSnphUXm5ui40XPR4ldFvDsCJ236Q/gKwNRz1puuJ7QLiTLmE4H38pKkbRAl/wtmLSAlhV7Zc6inbKPr7G8Nb2eyCvrXBeBPV91Tf2Ym7ltcqK52emsrx8a5o\\=");
+                put("com.ibm.websphere.ltpa.PublicKey",
+                    "AMX36NElNXpV8bfg36J8M9UWmlSpukmlyBuw21wAGQrWoHYeaCvKWbAJjrcjOeCtJkJonWnI11rxZr/dSWDjJ9Ihz+aIAzVFkeC2MLWEPoB14QCetbKgqOMNfntwh7u0k38x44Buy+HSTQPD1SbQRmIuoyxmYgDo3n4uaIVoOwybAQAB");
+            }
+        };
+
+        // Update LTPA keys file
+        modifyFileIfExists(DEFAULT_KEY_PATH, contents);
+
+        // Notify Liberty server of changes made to LTPA key file via mbean
+        List<String> modifiedFilePaths = Arrays.asList(new String[] { DEFAULT_KEY_PATH });
+        notifyFileChangesWithMbean(null, modifiedFilePaths, null);
+
+        // Attempt to access the simple servlet again with the same cookie and assert it fails and the server needs to login again
+        assertTrue("An expired cookie should result in authorization challenge",
+                   flClient1.accessProtectedServletWithInvalidCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1));
+    }
+
     public void configureServer(String monitorValidationKeysDir, String monitorInterval, Boolean waitForLTPAConfigReadyMessage) throws Exception {
         configureServer(monitorValidationKeysDir, monitorInterval, waitForLTPAConfigReadyMessage, true);
     }
@@ -1447,6 +1518,59 @@ public class LTPAKeyRotationTests {
 
         // Wait for feature update to be completed or LTPA configuration to get ready
         Thread.sleep(200);
+    }
+
+    /**
+     * Modify the file if it exists. If we can't modify it, then
+     * throw an exception as we need to be able to modify the file.
+     * Modifies the keys contained in the filePath with the keys specified in the
+     * contents HashMap
+     *
+     * @param filename
+     * @param newFilePath
+     * @param checkFileIsGone
+     *
+     * @throws Exception
+     */
+    private static void modifyFileIfExists(String filePath, Map<String, String> contents) throws Exception {
+        Log.info(thisClass, "modifyFileIfExists", "\nfilePath: " + filePath + "\ncontents: " + contents);
+        server.setMarkToEndOfLog(server.getDefaultLogFile());
+
+        if (fileExists(filePath, 1)) {
+
+            Map<String, String> updatedProperties = new HashMap<>();
+            // Read properties from the file and modify accordingly (based on contents)
+            try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split("=", 2);
+                    if (parts.length == 2) {
+                        String key = parts[0].trim();
+                        String value = contents.getOrDefault(key, parts[1].trim());
+                        updatedProperties.put(key, value);
+                    }
+                }
+            } catch (IOException e) {
+                throw e;
+            }
+
+            // Update the file with the updated contents
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+                for (Map.Entry<String, String> entry : updatedProperties.entrySet()) {
+                    String key = entry.getKey();
+                    String value = entry.getValue();
+                    writer.write(key + "=" + value);
+                    writer.newLine();
+                }
+
+            } catch (IOException e) {
+                throw e;
+            }
+
+        } else {
+            throw new Exception("Unable to modify file because it does not exist: " + filePath);
+        }
     }
 
     /**
@@ -1616,5 +1740,42 @@ public class LTPAKeyRotationTests {
             // Will not occur monitor interval is set to 0
             server.waitForStringInLog("CWWKS4105I", 5000);
         }
+    }
+
+    /**
+     * Notify Liberty server of created, modified, and/or deleted files via mbean
+     *
+     * @param createdFilePaths
+     * @param modifiedFilePaths
+     * @param deletedFilePaths
+     * @throws Exception
+     */
+    private static void notifyFileChangesWithMbean(List<String> createdFilePaths, List<String> modifiedFilePaths, List<String> deletedFilePaths) throws Exception {
+        MBeanServerConnection mbs = ManagementFactory.getPlatformMBeanServer();
+        ObjectName appMBean;
+        appMBean = new ObjectName("WebSphere:service=com.ibm.ws.kernel.filemonitor.FileNotificationMBean");
+
+        if (mbs.isRegistered(appMBean)) {
+
+            String[] MBEAN_FILE_NOTIFICATION_NOTIFYFILECHANGES_SIGNATURE = new String[] { Collection.class.getName(),
+                                                                                          Collection.class.getName(),
+                                                                                          Collection.class.getName() };
+
+            // Set MBean method notifyFileChanges parameters (createdFiles, modifiedFiles, deletedFiles)
+            Object[] params = new Object[] { createdFilePaths, modifiedFilePaths, deletedFilePaths };
+
+            Log.info(thisClass, "notifyFileChangesWithMbean", "Calling FileNotificationMBean notifyFileChanges");
+            Log.info(thisClass, "notifyFileChangesWithMbean", "createdFilePaths: " + createdFilePaths.toString()
+                                                              + "modifiedFilePaths: " + modifiedFilePaths.toString()
+                                                              + "deletedFilePaths: " + deletedFilePaths.toString());
+            // Invoke FileNotificationMBean method notifyFileChanges
+            mbs.invoke(appMBean, "notifyFileChanges", params,
+                       MBEAN_FILE_NOTIFICATION_NOTIFYFILECHANGES_SIGNATURE);
+            Log.info(thisClass, "notifyFileChangesWithMbean", "Finished FileNotificationMBean notifyFileChanges");
+        } else {
+            Log.info(thisClass, "notifyFileChangesWithMbean", "FileNotificationMBean is not registered.");
+            throw new Exception("FileNotificationMBean is not registered.");
+        }
+
     }
 }
