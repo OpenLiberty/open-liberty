@@ -3,7 +3,6 @@ symbolicName=io.openliberty.internal.versionless.mpMetrics-2.2
 visibility=private
 singleton=true
 -features= \
-    io.openliberty.microProfile.internal-3.2, \
     com.ibm.websphere.appserver.eeCompatible-7.0; ibm.tolerates:="8.0", \
     com.ibm.websphere.appserver.mpMetrics-2.2
 kind=beta
