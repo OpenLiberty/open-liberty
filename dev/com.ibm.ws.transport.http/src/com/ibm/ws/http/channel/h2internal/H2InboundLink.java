@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.http.channel.h2internal;
 
@@ -112,6 +109,11 @@ public class H2InboundLink extends HttpInboundLink {
     // Don't send window update frames until 1/2 the window is used
     volatile boolean limitWindowUpdateFrames = false;
 
+    // Will be overwritten by configured values
+    volatile int maxResetFrames = 100;
+    volatile int resetFrameWindow = 30000; // milliseconds
+    volatile int maxStreamsRefused = 100;
+
     FrameReadProcessor frameReadProcessor = null;
 
     H2MuxTCPReadCallback h2MuxReadCallback = null;
@@ -157,7 +159,7 @@ public class H2InboundLink extends HttpInboundLink {
     };
     private boolean oneTimeEntry = false;
 
-    private final H2RateState rateState = new H2RateState();
+    private final H2RateState rateState;
 
     public H2RateState getH2RateState() {
         return this.rateState;
@@ -218,6 +220,10 @@ public class H2InboundLink extends HttpInboundLink {
         // Initial connection window size and window update limit config values
         connectionReadWindowSize = this.config.getH2ConnectionWindowSize();
         limitWindowUpdateFrames = this.config.getH2LimitWindowUpdateFrames();
+        maxResetFrames = this.config.getH2MaxResetFrames();
+        resetFrameWindow = this.config.getH2ResetFramesWindow();
+        maxStreamsRefused = this.config.getH2MaxStreamsRefused();
+        rateState = new H2RateState(maxResetFrames, resetFrameWindow, maxStreamsRefused);
 
         writeQ = new H2WriteTree();
         writeQ.init(h2MuxTCPWriteContext, h2MuxWriteCallback);
