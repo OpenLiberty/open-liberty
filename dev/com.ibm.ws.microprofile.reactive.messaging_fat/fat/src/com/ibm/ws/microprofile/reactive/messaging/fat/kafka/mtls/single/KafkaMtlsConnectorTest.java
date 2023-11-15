@@ -70,7 +70,7 @@ public class KafkaMtlsConnectorTest {
         ConnectorProperties connectorProperties = new ConnectorProperties(ConnectorProperties.Direction.CONNECTOR, "liberty-kafka")
                 .addAll(MtlsTests.testConnectionProperties())
                 // Add Keystore properties to the connector to complete the certificate authentication
-                .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.TRUSTSTORE_FILENAME)
+                .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE_FILENAME)
                 .addProperty(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, MtlsTests.kafkaContainer.getKeystorePassword());
 
         PropertiesAsset appConfig = new PropertiesAsset()
@@ -91,6 +91,7 @@ public class KafkaMtlsConnectorTest {
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
         KafkaUtils.copyTrustStore(MtlsTests.kafkaContainer, server);
+        KafkaUtils.copyKeyStoresToServer(MtlsTests.kafkaContainer, server);
 
         server.startServer();
     }

@@ -47,7 +47,6 @@ import static componenttest.topology.utils.FATServletClient.runTest;
 @Mode(TestMode.FULL)
 public class KafkaMtlsChannelTest {
 
-
     private static final String APP_NAME = "kafkaMtlsChannelTest";
     private static final String APP_GROUP_ID = "mtls-channel-test-group";
     private static final String SERVER_NAME = "SimpleRxMessagingServer";
@@ -62,11 +61,11 @@ public class KafkaMtlsChannelTest {
     @BeforeClass
     public static void setup() throws Exception {
         ConnectorProperties outgoingProperties = simpleOutgoingChannel(null, BasicMessagingBean.CHANNEL_OUT)
-                .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.TRUSTSTORE_FILENAME)
+                .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE_FILENAME)
                 .addProperty(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, MtlsTests.kafkaContainer.getKeystorePassword());
 
         ConnectorProperties incomingProperties = simpleIncomingChannel(null, BasicMessagingBean.CHANNEL_IN, APP_GROUP_ID)
-                .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.TRUSTSTORE_FILENAME)
+                .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE_FILENAME)
                 .addProperty(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, MtlsTests.kafkaContainer.getKeystorePassword());
 
         ConnectorProperties connectorProperties = new ConnectorProperties(ConnectorProperties.Direction.CONNECTOR, "liberty-kafka")
@@ -92,6 +91,7 @@ public class KafkaMtlsChannelTest {
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
         KafkaUtils.copyTrustStore(MtlsTests.kafkaContainer, server);
+        KafkaUtils.copyKeyStoresToServer(MtlsTests.kafkaContainer, server);
 
         server.startServer();
     }

@@ -23,8 +23,6 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingAct
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import org.apache.kafka.common.config.SslConfigs;
@@ -44,11 +42,10 @@ import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaU
 import static componenttest.topology.utils.FATServletClient.runTest;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
-public class KafkaMtlsChannelConnectorTest {
+public class KafkaMtlsIncorrectKeyTest {
 
-    private static final String APP_NAME = "kafkaMtlsConnectorTest";
-    private static final String APP_GROUP_ID = "mtls-connector-test-group";
+    private static final String APP_NAME = "kafkaMtlsChannelTest";
+    private static final String APP_GROUP_ID = "mtls-channel-test-group";
     private static final String SERVER_NAME = "SimpleRxMessagingServer";
 
     @Server(SERVER_NAME)
@@ -56,28 +53,20 @@ public class KafkaMtlsChannelConnectorTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
-
-        // Channel Properties should take priority over Connector Properties. So provide valid keystore to channels and invalid to Connector.
-        // If invalid keystore is used then the SSL Handshake will fail
         ConnectorProperties outgoingProperties = simpleOutgoingChannel(null, BasicMessagingBean.CHANNEL_OUT)
-                // Valid Keystore
-                .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE_FILENAME)
+                .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE2_FILENAME)
                 .addProperty(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, MtlsTests.kafkaContainer.getKeystorePassword());
 
         ConnectorProperties incomingProperties = simpleIncomingChannel(null, BasicMessagingBean.CHANNEL_IN, APP_GROUP_ID)
-                // Valid Keystore
                 .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE_FILENAME)
                 .addProperty(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, MtlsTests.kafkaContainer.getKeystorePassword());
 
         ConnectorProperties connectorProperties = new ConnectorProperties(ConnectorProperties.Direction.CONNECTOR, "liberty-kafka")
-                .addAll(MtlsTests.testConnectionProperties())
-                // Add Keystore which contains a key not in the Kafka Server truststore, so would be rejected if used
-                .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE2_FILENAME)
-                .addProperty(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, MtlsTests.kafkaContainer.getKeystorePassword());
+                .addAll(MtlsTests.testConnectionProperties());
 
         PropertiesAsset appConfig = new PropertiesAsset()
                 .addProperty(KafkaTestClientProvider.CONNECTION_PROPERTIES_KEY, KafkaTestClientProvider.encodeProperties(MtlsTests.connectionProperties()))
@@ -103,7 +92,7 @@ public class KafkaMtlsChannelConnectorTest {
     }
 
     @Test
-    public void testMtlsConnector() throws Exception {
+    public void testMtlsChannel() throws Exception {
         runTest(server, APP_NAME + "/KafkaMtlsTestServlet", "testMtls");
     }
 

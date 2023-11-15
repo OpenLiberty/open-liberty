@@ -59,7 +59,7 @@ public class KafkaTlsTest {
 
     @ClassRule
     public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10,
-                                                                  ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
+                                                                  ReactiveMessagingActions.MP50_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {

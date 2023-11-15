@@ -26,14 +26,14 @@ import componenttest.containers.TestContainerSuite;
 @RunWith(Suite.class)
 @SuiteClasses({
                 PlaintextTests.class,
-                TlsTests.class,
-                MtlsTests.class,
-                MtlsMultipleKeyStoresTests.class,
                 SaslPlainTests.class,
                 KafkaTestClientProviderTest.class,
                 LoginModuleClassloadingTest.class,
                 KafkaNoLibTest.class,
                 KafkaBadConfigTest.class,
+                TlsTests.class,
+                MtlsTests.class,
+                MtlsMultipleKeyStoresTests.class,
                 JsonbTest.class
 })
 

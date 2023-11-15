@@ -40,7 +40,9 @@ import componenttest.rules.repeater.RepeatTests;
 import io.smallrye.reactive.streams.Engine;
 
 /**
- * Runs the Reactive Streams TCK against our Kafka connector
+ * Runs the Reactive Streams 1.0 TCK against our Kafka connector
+ *
+ * As this is the 1.0 TCK, it is not running the RSO 3.0 TCK, as such, it should not be repeated for RM30.
  * <p>
  * The Reactive Streams TCK is written using TestNG, so this test is a wrapper which launches TestNG to run the tests.
  */

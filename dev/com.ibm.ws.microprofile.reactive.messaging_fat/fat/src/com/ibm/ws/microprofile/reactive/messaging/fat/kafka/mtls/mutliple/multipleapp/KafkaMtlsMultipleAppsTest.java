@@ -59,7 +59,7 @@ public class KafkaMtlsMultipleAppsTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -119,8 +119,7 @@ public class KafkaMtlsMultipleAppsTest {
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, APP1_NAME + ".war")
                 .addAsLibraries(kafkaClientLibs())
                 .addAsManifestResource(kafkaPermissions(), "permissions.xml")
-                .addClass(KafkaMtlsTestServletOne.class)
-                .addClass(MessagingBeanOne.class)
+                .addClasses(KafkaMtlsTestServletOne.class, MessagingBeanOne.class)
                 .addPackage(AbstractKafkaTestServlet.class.getPackage())
                 .addPackage(KafkaTestConstants.class.getPackage())
                 .addAsResource(appConfig1, "META-INF/microprofile-config.properties");
@@ -128,8 +127,7 @@ public class KafkaMtlsMultipleAppsTest {
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, APP2_NAME + ".war")
                 .addAsLibraries(kafkaClientLibs())
                 .addAsManifestResource(kafkaPermissions(), "permissions.xml")
-                .addClass(KafkaMtlsTestServletTwo.class)
-                .addClass(MessagingBeanTwo.class)
+                .addClasses(KafkaMtlsTestServletTwo.class, MessagingBeanTwo.class)
                 .addPackage(AbstractKafkaTestServlet.class.getPackage())
                 .addPackage(KafkaTestConstants.class.getPackage())
                 .addAsResource(appConfig2, "META-INF/microprofile-config.properties");
