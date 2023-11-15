@@ -6,7 +6,7 @@ singleton=true
 IBM-ShortName: javaMail-1.6
 Subsystem-Version: 1.6
 Subsystem-Name: JavaMail 1.6
-IBM-API-Package: \
+IBM-API-Package: javax.activation; type="spec"; require-java:="9", \
  javax.mail; type="spec", \
  javax.mail.internet; type="spec", \
  javax.mail.util; type="spec", \
@@ -27,7 +27,7 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.eeCompatible-8.0, \
   com.ibm.websphere.appserver.javax.mail-1.6
 -bundles=\
-  com.ibm.websphere.javaee.activation.1.1; require-java:="9"; location:="dev/api/spec/,lib/"; apiJar=false, \
+  com.ibm.websphere.javaee.activation.1.1; require-java:="9"; location:="dev/api/spec/,lib/", \
   com.ibm.ws.javamail.1.6,\
   com.ibm.ws.javamail.config
 -jars=com.ibm.websphere.javaee.mail.1.6; location:=dev/api/spec/; mavenCoordinates="javax.mail:javax.mail-api:1.6.2", \
