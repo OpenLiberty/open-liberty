@@ -18,7 +18,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.TraceOptions;
 import com.ibm.wsspi.anno.service.AnnotationService_Logging;
 
-@TraceOptions(traceGroup = AnnotationService_Logging.ANNO_LOGGER_STATE)
+@TraceOptions(traceGroup = AnnotationService_Logging.ANNO_LOGGER_STATE, messageBundle = "com.ibm.ws.anno.resources.internal.AnnoMessages")
 public class AnnotationServiceImpl_Logging implements AnnotationService_Logging {
 
     /**
