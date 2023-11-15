@@ -10,7 +10,7 @@
     <fileset dir="snoopLib" includes="*.jar"/>
   </library>
 
-  <application type="war" id="snoop0" name="snoop0" location="snoop.war" context-root="snoop0">
+  <application type="war" id="snoop0" name="snoop0" location="sharedLibSnoop.war" context-root="snoop0">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 

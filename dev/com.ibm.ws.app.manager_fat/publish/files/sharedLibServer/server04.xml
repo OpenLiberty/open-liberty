@@ -10,19 +10,19 @@
     <fileset dir="snoopLib" includes="*.jar"/>
   </library>
 
-  <application type="war" id="snoop0" name="snoop0" location="snoop.war" context-root="snoop0">
+  <application type="war" id="snoop0" name="snoop0" location="sharedLibSnoop.war" context-root="snoop0">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 
-  <application type="war" id="snoop1" name="snoop1" location="snoop.war" context-root="snoop1">
+  <application type="war" id="snoop1" name="snoop1" location="sharedLibSnoop.war" context-root="snoop1">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 
-  <application type="war" id="snoop2" name="snoop2" location="snoop.war" context-root="snoop2">
+  <application type="war" id="snoop2" name="snoop2" location="sharedLibSnoop.war" context-root="snoop2">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 
-  <application type="war" id="snoop3" name="snoop3" location="snoop.war" context-root="snoop3">
+  <application type="war" id="snoop3" name="snoop3" location="sharedLibSnoop.war" context-root="snoop3">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 

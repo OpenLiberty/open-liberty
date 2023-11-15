@@ -10,67 +10,67 @@
     <fileset dir="snoopLib" includes="*.jar"/>
   </library>
 
-  <application type="war" id="snoop0" name="snoop0" location="snoop.war" context-root="snoop0">
+  <application type="war" id="snoop0" name="snoop0" location="sharedLibSnoop.war" context-root="snoop0">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 
-  <application type="war" id="snoop1" name="snoop1" location="snoop.war" context-root="snoop1">
+  <application type="war" id="snoop1" name="snoop1" location="sharedLibSnoop.war" context-root="snoop1">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 
-  <application type="war" id="snoop2" name="snoop2" location="snoop.war" context-root="snoop2">
+  <application type="war" id="snoop2" name="snoop2" location="sharedLibSnoop.war" context-root="snoop2">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 
-  <application type="war" id="snoop3" name="snoop3" location="snoop.war" context-root="snoop3">
+  <application type="war" id="snoop3" name="snoop3" location="sharedLibSnoop.war" context-root="snoop3">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 
-  <application type="war" id="snoop4" name="snoop4" location="snoop.war" context-root="snoop4">
+  <application type="war" id="snoop4" name="snoop4" location="sharedLibSnoop.war" context-root="snoop4">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 
-  <application type="war" id="snoop5" name="snoop5" location="snoop.war" context-root="snoop5">
+  <application type="war" id="snoop5" name="snoop5" location="sharedLibSnoop.war" context-root="snoop5">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 
-  <application type="war" id="snoop6" name="snoop6" location="snoop.war" context-root="snoop6">
+  <application type="war" id="snoop6" name="snoop6" location="sharedLibSnoop.war" context-root="snoop6">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 
-  <application type="war" id="snoop7" name="snoop7" location="snoop.war" context-root="snoop7">
+  <application type="war" id="snoop7" name="snoop7" location="sharedLibSnoop.war" context-root="snoop7">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 
-  <application type="war" id="snoop8" name="snoop8" location="snoop.war" context-root="snoop8">
+  <application type="war" id="snoop8" name="snoop8" location="sharedLibSnoop.war" context-root="snoop8">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 
-  <application type="war" id="snoop9" name="snoop9" location="snoop.war" context-root="snoop9">
+  <application type="war" id="snoop9" name="snoop9" location="sharedLibSnoop.war" context-root="snoop9">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 
- <application type="war" id="snoop10" name="snoop10" location="snoop.war" context-root="snoop10">
+ <application type="war" id="snoop10" name="snoop10" location="sharedLibSnoop.war" context-root="snoop10">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 
-  <application type="war" id="snoop11" name="snoop11" location="snoop.war" context-root="snoop11">
+  <application type="war" id="snoop11" name="snoop11" location="sharedLibSnoop.war" context-root="snoop11">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 
-  <application type="war" id="snoop12" name="snoop12" location="snoop.war" context-root="snoop12">
+  <application type="war" id="snoop12" name="snoop12" location="sharedLibSnoop.war" context-root="snoop12">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 
-  <application type="war" id="snoop13" name="snoop13" location="snoop.war" context-root="snoop13">
+  <application type="war" id="snoop13" name="snoop13" location="sharedLibSnoop.war" context-root="snoop13">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 
-  <application type="war" id="snoop14" name="snoop14" location="snoop.war" context-root="snoop14">
+  <application type="war" id="snoop14" name="snoop14" location="sharedLibSnoop.war" context-root="snoop14">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 
-  <application type="war" id="snoop15" name="snoop15" location="snoop.war" context-root="snoop15">
+  <application type="war" id="snoop15" name="snoop15" location="sharedLibSnoop.war" context-root="snoop15">
     <classloader delegation="parentLast" commonLibraryRef="snoopLib"/>
   </application>
 

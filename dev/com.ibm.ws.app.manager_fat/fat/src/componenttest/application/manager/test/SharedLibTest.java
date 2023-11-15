@@ -33,13 +33,13 @@ import componenttest.topology.impl.LibertyServerFactory;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 /**
  * Test of shared libraries when there are many applications.
  */
 @RunWith(FATRunner.class)
-public class SharedLibTest extends AbstractAppManagerTest {
-    @Override
+public class SharedLibTest {
     protected Class<?> getLogClass() {
         return SharedLibTest.class;
     }
@@ -47,12 +47,14 @@ public class SharedLibTest extends AbstractAppManagerTest {
     private static LibertyServer server =
         LibertyServerFactory.getLibertyServer("sharedLibServer");
 
-    @Override
     protected LibertyServer getServer() {
         return SharedLibTest.server;
     }
 
     //
+
+    protected final static String PUBLISH_FILES = "publish/files";
+    protected static final String APPS_DIR = "apps";
 
     protected static final int LIB_COUNT = 16;
     protected static final String SHARED_LIB_DIR = "snoopLibs";
@@ -105,6 +107,15 @@ public class SharedLibTest extends AbstractAppManagerTest {
     }
 
     public static void setupServer() throws Exception {
+        // Recreate snoop, even though other tests use the same WAR.
+        // We don't know the test order: We cannot rely on this
+        // test running after the test that creates snoop.
+        WebArchive sharedLibSnoop = ShrinkHelper.buildDefaultApp("sharedLibSnoop.war",
+                                                                 "com.ibm.app.monitor",
+                                                                 "com.ibm.ws.security.web.saml.sample");
+        ShrinkHelper.addDirectory(sharedLibSnoop, "test-applications/snoop.war/resources");
+        ShrinkHelper.exportArtifact(sharedLibSnoop, PUBLISH_FILES, true, true);
+
         // Setup 16 jars in a shared library using four packages.  Reuse
         // the initial four jars.
 
@@ -118,12 +129,12 @@ public class SharedLibTest extends AbstractAppManagerTest {
         }
 
         // Re-use snoop.war.
-        server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, SNOOP_WAR);
+        server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, "sharedLibSnoop.war");
 
         // Do not put in the server configuration ... the test will do this
     }
 
-    public void startServer() throws Exception {
+    public static void startServer() throws Exception {
         server.setServerConfigurationFile("/sharedLibServer/" + SERVER_16_XML);
         server.startServer("SharedLibTest.log");
         assertNotNull( server.waitForStringInLog("TE9900A") );
@@ -141,7 +152,7 @@ public class SharedLibTest extends AbstractAppManagerTest {
     // con.disconnect();
 
     @AfterClass
-    public void stopServer() throws Exception {
+    public static void stopServer() throws Exception {
         if ( server.isStarted() ) {
             server.stopServer();
             // assertActivity(FINAL_RANGE);
@@ -168,7 +179,7 @@ public class SharedLibTest extends AbstractAppManagerTest {
     private static final String START_CODE = "CWWKZ0001I:.*";
     private static final String STOP_CODE = "CWWKZ0009I:.*";
 
-    private void assertActivity(int[] range) {
+    private static void assertActivity(int[] range) {
         System.out.println("Verifying activity ...");
 
         int min = range[0];
@@ -192,13 +203,16 @@ public class SharedLibTest extends AbstractAppManagerTest {
         verifyActivity(min, max, activity);
     }
 
-    private List<String> getActivity(int min, int max, String code) {
+    private static List<String> getActivity(int min, int max, String code) {
         int count = ((max + 1) - min);
 
         List<String> activity = new ArrayList<>(count);
 
         for ( int actionNo = 0; actionNo < count; actionNo++ ) {
             String nextAction = server.waitForStringInLogUsingLastOffset(code);
+            if ( nextAction == null ) {
+                fail("Null action [ " + actionNo + " ] of [ " + count + " ]");
+            }
             System.out.println("Action [ " + nextAction + " ]");
             activity.add(nextAction);
         }
@@ -206,7 +220,7 @@ public class SharedLibTest extends AbstractAppManagerTest {
         return activity;
     }
 
-    private void verifyActivity(int min, int max, List<String> activity) {
+    private static void verifyActivity(int min, int max, List<String> activity) {
         int count = (max + 1) - min;
 
         Set<Integer> expected = new HashSet<>(count);
@@ -235,7 +249,7 @@ public class SharedLibTest extends AbstractAppManagerTest {
     //  com.ibm.ws.app.manager.AppMessageHelper
     // A CWWKZ0001I: Application snoop11 started in 0.763 seconds.
 
-    protected int getAppNo(String action) {
+    protected static int getAppNo(String action) {
         int appLoc = action.indexOf("snoop");
         if ( appLoc == -1 ) {
             fail("No app location [ " + action + " ]");
@@ -248,7 +262,6 @@ public class SharedLibTest extends AbstractAppManagerTest {
         boolean failed;
         if ( appLoc >= actionLength ) {
             failed = true;
-
         } else {
             char c1 = action.charAt(appLoc);
             if ( !Character.isDigit(c1) ) {
@@ -264,9 +277,10 @@ public class SharedLibTest extends AbstractAppManagerTest {
                     if ( c2 != ' ' ) {
                         if ( !Character.isDigit(c2) ) {
                             failed = true;
+
                         } else {
                             appNo *= 10;
-                            appNo += (c2 - 10);
+                            appNo += (c2 - '0');
 
                             if ( appLoc >= actionLength - 2 ) {
                                 failed = true;
