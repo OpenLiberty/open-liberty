@@ -5,5 +5,5 @@ singleton=true
 -features= \
     com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="9.0", \
     io.openliberty.mpHealth-4.0
-kind=beta
-edition=core
+kind=noship
+edition=full

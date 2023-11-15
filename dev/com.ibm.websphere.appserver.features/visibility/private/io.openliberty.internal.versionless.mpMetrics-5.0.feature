@@ -5,5 +5,5 @@ singleton=true
 -features= \
     com.ibm.websphere.appserver.eeCompatible-10.0, \
     io.openliberty.mpMetrics-5.0
-kind=beta
-edition=core
+kind=noship
+edition=full
