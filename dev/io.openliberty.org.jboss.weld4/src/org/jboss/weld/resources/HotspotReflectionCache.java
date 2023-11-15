@@ -24,6 +24,10 @@ import java.util.Properties;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.metadata.TypeStore;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+
 /**
  * {@link ReflectionCache} implementation that works around possible deadlocks in HotSpot:
  *
@@ -67,8 +71,39 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
         FileLogger.fileDump(className, methodName, text, classBytes);
     }
 
+    boolean sentWarning = false;
+
     @Override
+    @FFDCIgnore(Throwable.class)
     protected Annotation[] internalGetAnnotations(AnnotatedElement element) {
+        String prop = "";
+
+        try {
+            prop = getSystemProperty("jboss.hotspot.trace.enabled");
+        } catch (Exception ignored) {}
+
+        if (prop.equals("true")) {
+            if (!sentWarning) {
+                System.out.println("Warning you have enabled logging that should only be seen in an IBM test environment");
+            }
+            return internalGetAnnotationsLogged(element);
+        }
+        return internalGetAnnotationsUnlogged(element);
+    }
+
+    protected Annotation[] internalGetAnnotationsUnlogged(AnnotatedElement element) {
+        if (element instanceof Class<?>) {
+            Class<?> clazz = (Class<?>) element;
+            if (clazz.isAnnotation()) {
+                synchronized (annotationTypeLock) {
+                    return element.getAnnotations();
+                }
+            }
+        }
+        return element.getAnnotations();
+    }
+
+    protected Annotation[] internalGetAnnotationsLogged(AnnotatedElement element) {
         String className = "HotspotReflectionCache";
         String methodName = "internalGetAnnotations";
 
@@ -104,9 +139,18 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
             if ( clazz != null ) {
                 dump(clazz);
             }
-            FileLogger.fileStack(className, methodName, text);
+            FileLogger.fileStack(className, methodName, text, e);
 
             throw e;
         }
+    }
+
+    static private String getSystemProperty(final String name) {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return System.getProperty(name);
+            }
+        });
     }
 }
