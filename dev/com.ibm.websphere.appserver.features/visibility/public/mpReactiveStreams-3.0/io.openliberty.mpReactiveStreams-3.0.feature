@@ -20,6 +20,6 @@ IBM-API-Package: \
   io.openliberty.io.smallrye.reactive.mutiny,\
   io.openliberty.io.smallrye.common2, \
   io.openliberty.org.jboss.logging35
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
