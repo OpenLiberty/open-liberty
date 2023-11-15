@@ -176,7 +176,7 @@ public class Jose4jUtil {
                     userInfoClaims = getClaimsFromUserInfo(userInfoStr);
                     
                 } catch (Exception e) {
-                    Tr.error(tc, "Invalid user info: " + userInfoStr);
+                    Tr.debug(tc, "Invalid user info: " + userInfoStr);
                 }
             }
 
@@ -228,7 +228,6 @@ public class Jose4jUtil {
                 }
                 oidcResult = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK, null, null, props, null);
                 if (isRunningBetaMode()) {
-                    //createWASOidcSession(oidcClientRequest, jwtClaims, clientConfig);
                     createWASOidcSession(oidcClientRequest, idToken.getJwtClaims(), clientConfig);
                 }
                 return oidcResult;
@@ -588,45 +587,40 @@ public class Jose4jUtil {
      * @throws MalformedClaimException
      */
     String getUserName(ConvergedClientConfig clientConfig, List<String> tokensOrderToFetchCallerClaims, Map<String, JwtClaims> tokenClaimsMap) throws MalformedClaimException {
-        String userNameClaim = getUserNameClaim(clientConfig)[1]; 
+        String userNameClaim = getUserNameClaim(clientConfig); 
         String userName = getClaimValueFromTokens(userNameClaim, String.class, tokensOrderToFetchCallerClaims, tokenClaimsMap);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "user name = '" + userName + "' and the user identifier = " + userNameClaim);
         }
 
         if (userName == null) {
-            Tr.error(tc, "OIDC_CLIENT_JWT_MISSING_CLAIM", new Object[] { clientConfig.getClientId(), userNameClaim, getUserNameClaim(clientConfig)[0] });
-            Tr.debug(tc, "There is no principal");
+            String attrUsedToCreateSubject = getUserNameAttribute(clientConfig);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "The " + attrUsedToCreateSubject + " config attribute is used");
+                Tr.debug(tc, "There is no principal");
+            }
+            Tr.error(tc, "OIDC_CLIENT_JWT_MISSING_CLAIM", new Object[] { clientConfig.getClientId(), userNameClaim, attrUsedToCreateSubject });            
         }
         return userName;
     }
+    
+    String getUserNameAttribute(ConvergedClientConfig clientConfig) {
+        String attrUsedToCreateSubject = clientConfig.isSocial() ? "userNameAttribute":"userIdentifier";
+        if (clientConfig.getUserIdentifier() == null) {
+            attrUsedToCreateSubject = clientConfig.isSocial() ? "userNameAttribute" : "userIdentityToCreateSubject"; 
+        }
+        return attrUsedToCreateSubject;
+    }
 
-    /**
-     * Find the claim of the user name from the configuration.
-     *
-     * @param clientConfig
-     * @param tokensOrderToFetchCallerClaims
-     * @param tokenClaimsMap
-     * @return 
-     * @return
-     * @throws MalformedClaimException
-     */
-     String[] getUserNameClaim(ConvergedClientConfig clientConfig) {
-        
-        String attrUsedToCreateSubject = clientConfig.isSocial() ? "userNameAttribute" : "userIdentifier";
+    String getUserNameClaim(ConvergedClientConfig clientConfig) {
         String uid = clientConfig.getUserIdentifier();
         if (uid == null || uid.isEmpty()) {
-            attrUsedToCreateSubject = clientConfig.isSocial() ? "userNameAttribute" : "userIdentityToCreateSubject";
             uid = clientConfig.getUserIdentityToCreateSubject();
         }
-
-        String[] userClaimIdentifiers = {attrUsedToCreateSubject, uid};
-                
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "The " + attrUsedToCreateSubject + " config attribute is used");
             Tr.debug(tc, "the user identifier = " + uid);
         }
-        return userClaimIdentifiers;
+        return uid;
     }
 
     /**
@@ -730,12 +724,13 @@ public class Jose4jUtil {
      * @throws MalformedClaimException
      */
     @SuppressWarnings("unchecked")
+    @FFDCIgnore(MalformedClaimException.class)
     List<String> getGroupIds(ConvergedClientConfig clientConfig, List<String> tokensOrderToFetchCallerClaims, Map<String, JwtClaims> tokenClaimsMap) throws MalformedClaimException {
         String groupIdsClaim = getGroupIdsClaim(clientConfig);
         List<String> groupIds = null;
         try {
             groupIds = getClaimValueFromTokens(groupIdsClaim, List.class, tokensOrderToFetchCallerClaims, tokenClaimsMap);
-        } catch (Exception e) {
+        } catch (MalformedClaimException e) {
         } finally {
             if (groupIds == null) {
                 groupIds = new ArrayList<String>();

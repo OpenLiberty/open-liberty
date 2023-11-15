@@ -455,8 +455,6 @@ public class Jose4jUtilTest extends CommonTestClass {
     public void testGetUserName_fromIdToken() throws Exception {
         mockery.checking(new Expectations() {
             {
-                one(clientConfig).isSocial();
-                will(returnValue(false));
                 one(clientConfig).getUserIdentifier();
                 will(returnValue(CLAIM_NAME_USER_NAME));
             }
@@ -473,8 +471,6 @@ public class Jose4jUtilTest extends CommonTestClass {
     public void testGetUserName_fromIdToken_usingTokenOrder() throws Exception {
         mockery.checking(new Expectations() {
             {
-                one(clientConfig).isSocial();
-                will(returnValue(false));
                 one(clientConfig).getUserIdentifier();
                 will(returnValue(CLAIM_NAME_USER_NAME));
             }
@@ -551,8 +547,6 @@ public class Jose4jUtilTest extends CommonTestClass {
     public void testGetUserName_fromAccessToken() throws Exception {
         mockery.checking(new Expectations() {
             {
-                one(clientConfig).isSocial();
-                will(returnValue(false));
                 one(clientConfig).getUserIdentifier();
                 will(returnValue(CLAIM_NAME_USER_NAME));
             }
@@ -569,8 +563,6 @@ public class Jose4jUtilTest extends CommonTestClass {
     public void testGetUserName_fromUserInfo() throws Exception {
         mockery.checking(new Expectations() {
             {
-                one(clientConfig).isSocial();
-                will(returnValue(false));
                 one(clientConfig).getUserIdentifier();
                 will(returnValue(CLAIM_NAME_USER_NAME));
             }

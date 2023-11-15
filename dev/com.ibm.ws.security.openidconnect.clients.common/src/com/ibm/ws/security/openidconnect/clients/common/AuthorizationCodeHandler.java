@@ -165,25 +165,11 @@ public class AuthorizationCodeHandler {
         setAuthMethodSpecificSettings(tokenRequestBuilder, tokenEndpointAuthMethod);
 
         TokenRequestor tokenRequestor = tokenRequestBuilder.build();
-
         TokenResponse tokenResponse = tokenRequestor.requestTokens();
         Map<String, String> tokens = tokenResponse.asMap();
 
         oidcClientRequest.setTokenType(ClientConstants.TYPE_ID_TOKEN);
-
-        // ----------------------------------------------
-        // TODO: START: TICKET LIBERTY-i-70: to update to include userinfo in addition on to idToken, accessToken in createResultWithJose4J()
-        //              but still need to update the authentication result to include it
-
-        // this has a LOT of dependencies.
         ProviderAuthenticationResult oidcResult = jose4jUtil.createResultWithJose4J(responseState, tokens, clientConfig, oidcClientRequest, sslSocketFactory);
-
-        //go get the userinfo if configured to do so, and update the authentication result to include it.
-        //new UserInfoHelper(clientConfig, sslSupport).getUserInfoIfPossible(oidcResult, tokens, sslSocketFactory, oidcClientRequest);
-
-        // TODO: END: TICKET LIBERTY-i-70: to update
-        // ----------------------------------------------
-
         addAuthCodeToUsedList(authzCode);
 
         return oidcResult;
