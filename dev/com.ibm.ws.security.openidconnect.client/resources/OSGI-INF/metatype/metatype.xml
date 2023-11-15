@@ -164,7 +164,7 @@
          </AD>
          <AD id="tokenRequestOriginHeader" name="%tokenRequestOriginHeader" description="%tokenRequestOriginHeader.desc" required="false" type="String" />
          
-		 <AD id="tokenOrderToFetchCallerClaims" type="String" required="false" name="%tokenOrderToFetchCallerClaims" description="%tokenOrderToFetchCallerClaims.desc" default="IDToken" ibm:beta="true">        
+		 <AD id="tokenOrderToFetchCallerClaims" type="String" required="false" name="%tokenOrderToFetchCallerClaims" description="%tokenOrderToFetchCallerClaims.desc" default="IDToken" >        
         	<Option label="%tokenOrderToFetchCallerClaims.IDToken" value="IDToken" />
          	<Option label="%tokenOrderToFetchCallerClaims.ACCESSAndIDAndUITokens" value="AccessToken IDToken UserInfo" /> 
    		 </AD>    

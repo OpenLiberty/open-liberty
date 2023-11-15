@@ -176,7 +176,9 @@ public class Jose4jUtil {
                     userInfoClaims = getClaimsFromUserInfo(userInfoStr);
                     
                 } catch (Exception e) {
-                    Tr.debug(tc, "Invalid user info: " + userInfoStr);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Invalid user info: " + userInfoStr);
+                    }            
                 }
             }
 
