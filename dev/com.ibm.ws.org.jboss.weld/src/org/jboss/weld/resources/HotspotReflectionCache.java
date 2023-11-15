@@ -39,6 +39,10 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  *
  */
 public class HotspotReflectionCache extends DefaultReflectionCache {
+//This class was extracted from weld source code. 
+//IBM modifications: Adding internalGetAnnotationsLogged, and modifying internalGetAnnotations to call it when a system property is set. internalGetAnnotationsUnlogged is the original weld varient of internalGetAnnotations
+//Originial file: https://github.com/weld/core/blob/2.4/impl/src/main/java/org/jboss/weld/resources/HotspotReflectionCache.java
+//Hopefully we can undo this once we have fixed the bug this tracks
 
     private final Class<?> annotationTypeLock;
 
@@ -74,7 +78,7 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
     boolean sentWarning = false;
 
     @Override
-    @FFDCIgnore(Throwable.class)
+    @FFDCIgnore(Exception.class)
     protected Annotation[] internalGetAnnotations(AnnotatedElement element) {
         String prop = "";
 
@@ -82,8 +86,9 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
             prop = getSystemProperty("jboss.hotspot.trace.enabled");
         } catch (Exception ignored) {}
 
-        if (prop.equals("true")) {
+        if (prop != null && prop.equals("true")) {
             if (!sentWarning) {
+                sentWarning = true;
                 System.out.println("Warning you have enabled logging that should only be seen in an IBM test environment");
             }
             return internalGetAnnotationsLogged(element);

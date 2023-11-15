@@ -95,7 +95,7 @@ public class FileLogger {
 
     static {
         String enabledValue = System.getProperty(ENABLED_PROPERTY_NAME);
-        enabled = true; // ( (enabledValue != null) && enabledValue.equalsIgnoreCase("true") );
+        enabled = ( (enabledValue != null) && enabledValue.equalsIgnoreCase("true") );
 
         if ( enabled ) {
             System.out.println("LTI: Enabled [ " + ENABLED_PROPERTY_NAME + " ] [ " + enabledValue + " ]");
