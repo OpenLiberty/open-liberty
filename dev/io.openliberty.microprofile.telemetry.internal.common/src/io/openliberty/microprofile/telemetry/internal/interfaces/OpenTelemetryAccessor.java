@@ -14,13 +14,14 @@ package io.openliberty.microprofile.telemetry.internal.interfaces;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cdi.CDIService;
 
+import io.openliberty.microprofile.telemetry.internal.common.helpers.OSGIHelpers;
 import io.openliberty.microprofile.telemetry.internal.common.info.ErrorOpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
-import io.openliberty.microprofile.telemetry.internal.common.helpers.OSGIHelpers;
 
 public class OpenTelemetryAccessor {
 
@@ -68,6 +69,15 @@ public class OpenTelemetryAccessor {
      */
     public static Baggage getBaggage() {
         return Baggage.current();
+    }
+
+    /**
+     * Gets the CDIService service
+     *
+     * @return the current CDIService instance
+     */
+    public static CDIService getCdiService() {
+        return OSGIHelpers.getService(CDIService.class, OpenTelemetryAccessor.class);
     }
 
 }
