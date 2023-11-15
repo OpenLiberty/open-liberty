@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.AsyncContext;
@@ -29,9 +28,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.ext.Provider;
-
-import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -63,8 +59,6 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
     private Instrumenter<ServletRequest, ServletResponse> instrumenter;
     private volatile boolean lazyCreate = false;
     private final AtomicReference<Instrumenter<ServletRequest, ServletResponse>> lazyInstrumenter = new AtomicReference<>();
-
-    private final Config config = ConfigProvider.getConfig();
 
     public TelemetryServletFilter() {
     }
@@ -307,23 +301,6 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
             return Collections.emptyList();
         }
 
-    }
-
-    /**
-     * Check if the HTTP tracing should be disabled
-     *
-     * @param oTelConfigs
-     * @return false (default)
-     * @return true if either ENV_DISABLE_HTTP_TRACING_PROPERTY or CONFIG_DISABLE_HTTP_TRACING_PROPERTY equal true
-     */
-    private boolean checkDisabled(Map<String, String> oTelConfigs) {
-        //In order to enable any of the tracing aspects, the configuration otel.sdk.disabled=false must be specified in any of the configuration sources available via MicroProfile Config.
-        if (oTelConfigs.get(ENV_DISABLE_HTTP_TRACING_PROPERTY) != null) {
-            return Boolean.valueOf(oTelConfigs.get(ENV_DISABLE_HTTP_TRACING_PROPERTY));
-        } else if (oTelConfigs.get(CONFIG_DISABLE_HTTP_TRACING_PROPERTY) != null) {
-            return Boolean.valueOf(oTelConfigs.get(CONFIG_DISABLE_HTTP_TRACING_PROPERTY));
-        }
-        return false;
     }
 
     /** {@inheritDoc} */
