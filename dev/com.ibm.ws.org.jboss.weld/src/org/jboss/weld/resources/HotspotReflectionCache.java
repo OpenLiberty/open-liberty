@@ -84,6 +84,7 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
 
         if (prop.equals("true")) {
             if (!sentWarning) {
+                sentWarning = true;
                 System.out.println("Warning you have enabled logging that should only be seen in an IBM test environment");
             }
             return internalGetAnnotationsLogged(element);
