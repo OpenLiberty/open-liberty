@@ -1317,14 +1317,14 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <LI>Set the updateTrigger to mbean, monitorValidationKeysDir to false, and monitorInterval to 0.
      * <LI>Modify primary LTPA keys file (i.e. ltpa.keys).
-     * <LI>Attempt to access the mbean servlet with valid credentials.
+     * <LI>Use the FileNotification MBean to notify the server of the modified keys file
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>Successful authentication to mbean servlet with ltpa cookie1 created.
-     * <LI>Liberty server processes modifications made to LTPA keys file initiated by the mbean servlet.
-     * <LI>Failing authentication to simple servlet.
+     * <LI>Successful authentication to simple servlet will return a valid ltpa cookie1 back to the client.
+     * <LI>Liberty server processes modifications made to LTPA keys file initiated by the FileNotification MBean.
+     * <LI>Failing authentication to simple servlet using the cookie, since the LTPA keys have been changed.
      * </OL>
      */
     @Test
@@ -1349,11 +1349,11 @@ public class LTPAKeyRotationTests {
         // Contents to update ltpa keys with
         Map<String, String> contents = new HashMap<String, String>() {
             {
-                put("com.ibm.websphere.ltpa.3DESKey", "eJh1K9My7p4Uj0Gw/X2XDWxyY1C9E3UEp7ji+BJPSDM\\\\=");
+                put("com.ibm.websphere.ltpa.3DESKey", "eJh1K9My7p4Uj0Gw/X2XDWxyY1C9E3UEp7ji+BJPSDM\\=");
                 put("com.ibm.websphere.ltpa.PrivateKey",
-                    "yWoLdBGpxEbeDXnmg7Pb/n2dol240ccEil7bH79AW+7igX0xMikK1YyI2u6Q0IkVBLYugUxaUpFalWoBI5zF4tGRQmhysgwExx8ZPXrNzYQD8bymh75LQ3HAJEw4K3KWbVqKXKae7nj8ufDnE6h5fCA5dMWZT1etZkUIlH4QaBhwZyxRSpJkoUKZDeeaiqqpUoPmOnOWEyaSMxArxN3ozaF8e4fXM2vpEXT7NQhM28S2S60nM0KSnphUXm5ui40XPR4ldFvDsCJ236Q/gKwNRz1puuJ7QLiTLmE4H38pKkbRAl/wtmLSAlhV7Zc6inbKPr7G8Nb2eyCvrXBeBPV91Tf2Ym7ltcqK52emsrx8a5o\\=");
+                    "kmhgRjTUcxvFJoVw8jxWuh3ffuxym/SLYW8TQYKjK/4TJoPx9h2FJvNHkiaxfvACUWN5Lw5A1c500PRD+kcUtY+05IpNbGd0xu7BsjDQoLaEi4jrtBjT0REEYepsj9QQXnQTG9GL3CuNkSmPLxlHWBKZkDlcv4MtOKn2ozeXQjQ5doAJGDm6qk8QxxB7jGHCdQI9L6G4ic34w6DWV9qKZiX/Yp39neL6jR9mH3e9U7EFyefrtOTF7EUscfikBnw0sQUNnwTx2vMv+Q9QI+ykZMJULvzGKf2fW7Qz+OfQIlTatBCYRWtG0BQGi0BkUULApK2qIxQbvLVT7ijEwg2YsWTREcsnbVvHFmSqTF5jf8w\\=");
                 put("com.ibm.websphere.ltpa.PublicKey",
-                    "AMX36NElNXpV8bfg36J8M9UWmlSpukmlyBuw21wAGQrWoHYeaCvKWbAJjrcjOeCtJkJonWnI11rxZr/dSWDjJ9Ihz+aIAzVFkeC2MLWEPoB14QCetbKgqOMNfntwh7u0k38x44Buy+HSTQPD1SbQRmIuoyxmYgDo3n4uaIVoOwybAQAB");
+                    "AK/MQIy6PT5GCI1qYDhH6b7yyZPdCcc4cgOKyJOkS/F4IHA51rjW5gVUm0gWkqfCkoU6LsWkBetxiJeZ7ECL4mUOSTfEFx4cPtvCu62DxtgleQt6pbEuvtaDalFL6/6p35y2uyuKhX4YiG9w25lLXTNCMfw3mQn+RpC3pVjYKpB9AQAB");
             }
         };
 
@@ -1364,9 +1364,68 @@ public class LTPAKeyRotationTests {
         List<String> modifiedFilePaths = Arrays.asList(new String[] { DEFAULT_KEY_PATH });
         notifyFileChangesWithMbean(null, modifiedFilePaths, null);
 
+        // Wait for the LTPA configuration to be ready after the change
+        assertNotNull("Expected LTPA configuration ready message not found in the log.",
+                      server.waitForStringInLog("CWWKS4105I", 5000));
+
         // Attempt to access the simple servlet again with the same cookie and assert it fails and the server needs to login again
         assertTrue("An expired cookie should result in authorization challenge",
                    flClient1.accessProtectedServletWithInvalidCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1));
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI>Set the updateTrigger to mbean, monitorValidationKeysDir to true, and monitorInterval to 0.
+     * <LI>Create validation2.keys (by renaming ltpa.keys)
+     * <LI>Delete ltpa.keys
+     * <LI>Use the FileNotification MBean to notify the server of the created and deleted keys files
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <OL>
+     * <P>Expected Results:
+     * <OL>
+     * <LI>Successful authentication to simple servlet will return a valid ltpa cookie1 back to the client.
+     * <LI>Liberty server processes modifications made to LTPA keys file initiated by the FileNotification MBean.
+     * <LI>ltpa.keys are regenerated after the deleted files notification from the mbean
+     * <LI>Successful authentication to simple servlet using the cookie, since the original LTPA keys were added in validation2.keys.
+     * </OL>
+     */
+    @Test
+    @AllowedFFDC({ "java.lang.IllegalArgumentException" })
+    public void testPrimaryLtpaKeysFileDeleted_updateTrigger_mbean_validationKeysFileCreated() throws Exception {
+        // Configure the server
+        configureServer("true", "0", true);
+
+        // Set updateTrigger to mbean
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        LTPA ltpa = serverConfiguration.getLTPA();
+        ltpa.updateTrigger = "mbean";
+        updateConfigDynamically(server, serverConfiguration);
+
+        // Initial login to simple servlet for form login1
+        String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+
+        // Get the SSO cookies back from the login
+        String cookie1 = flClient1.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
+
+        moveLogMark();
+        renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY2_PATH, false);
+
+        // Notify Liberty server of changes made to LTPA key file via mbean
+        List<String> createdFilePaths = Arrays.asList(new String[] { VALIDATION_KEY2_PATH });
+        List<String> deltedFilePaths = Arrays.asList(new String[] { DEFAULT_KEY_PATH });
+        notifyFileChangesWithMbean(createdFilePaths, null, deltedFilePaths);
+
+        // Wait for the ltpa.keys file to be regenerated
+        assertNotNull("Expected LTPA configuration ready message not found in the log.",
+                      server.waitForStringInLog("CWWKS4104A", 5000));
+
+        // Wait for the LTPA configuration to be ready after the change
+        assertNotNull("Expected LTPA configuration ready message not found in the log.",
+                      server.waitForStringInLog("CWWKS4105I", 5000));
+
+        flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
     }
 
     public void configureServer(String monitorValidationKeysDir, String monitorInterval, Boolean waitForLTPAConfigReadyMessage) throws Exception {
@@ -1384,6 +1443,7 @@ public class LTPAKeyRotationTests {
      * @throws Exception
      */
     public void configureServer(String monitorValidationKeysDir, String monitorInterval, Boolean waitForLTPAConfigReadyMessage, boolean setLogMarkToEnd) throws Exception {
+        moveLogMark();
         // Get the server configuration
         ServerConfiguration serverConfiguration = server.getServerConfiguration();
         LTPA ltpa = serverConfiguration.getLTPA();
@@ -1593,6 +1653,7 @@ public class LTPAKeyRotationTests {
         if (fileExists(newFilePath, 1)) {
             LibertyFileManager.moveLibertyFile(server.getFileFromLibertyServerRoot(filePath), server.getFileFromLibertyServerRoot(newFilePath));
         } else {
+            Log.info(thisClass, "renameFileIfExists", "Calling server.renameLibertyServerRootFile");
             server.renameLibertyServerRootFile(filePath, newFilePath);
         }
 
@@ -1718,6 +1779,9 @@ public class LTPAKeyRotationTests {
      */
     private void resetServer() throws Exception {
         Log.info(thisClass, "resetServer", "entering");
+
+        moveLogMark(); //make sure the mark is at the end of the log, so we don't use earlier messages.
+
         //we need to put the base config back, otherwise the waits below will timeout on some tests
         configureServer("true", "10", true);
 
@@ -1768,11 +1832,11 @@ public class LTPAKeyRotationTests {
             Object[] params = new Object[] { createdFilePaths, modifiedFilePaths, deletedFilePaths };
 
             Log.info(thisClass, "notifyFileChangesWithMbean", "Calling FileNotificationMBean notifyFileChanges");
-            Log.info(thisClass, "notifyFileChangesWithMbean", "createdFilePaths: " + createdFilePaths != null ? createdFilePaths.toString() : "null"
-                                                                                                                                              + "modifiedFilePaths: "
-                                                                                                                                              + modifiedFilePaths != null ? modifiedFilePaths.toString() : "null"
-                                                                                                                                                                                                           + "deletedFilePaths: "
-                                                                                                                                                                                                           + deletedFilePaths != null ? deletedFilePaths.toString() : "null");
+            Log.info(thisClass, "notifyFileChangesWithMbean", "createdFilePaths: " + (createdFilePaths != null ? createdFilePaths.toString() : "null")
+                                                              + "modifiedFilePaths: "
+                                                              + (modifiedFilePaths != null ? modifiedFilePaths.toString() : "null")
+                                                              + "deletedFilePaths: "
+                                                              + (deletedFilePaths != null ? deletedFilePaths.toString() : "null"));
             // Invoke FileNotificationMBean method notifyFileChanges
             mbs.invoke(appMBean, "notifyFileChanges", params,
                        MBEAN_FILE_NOTIFICATION_NOTIFYFILECHANGES_SIGNATURE);
