@@ -1090,4 +1090,30 @@ public class VisibilityTest {
         return featureAncestors;
     }
 
+    @Test
+    public void testAPITypes() {
+        HashSet<String> validAPITypes = new HashSet<>();
+        for (ExternalPackageType validType : ExternalPackageType.values()) {
+            if (!validType.isSPI) {
+                validAPITypes.add(validType.type);
+            }
+        }
+        validAPITypes.add("internal");
+        StringBuilder errorMessage = new StringBuilder();
+        for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+            FeatureInfo featureInfo = entry.getValue();
+            Set<ExternalPackageInfo> APIs = featureInfo.getAPIs();
+            if (APIs != null) {
+                for (ExternalPackageInfo packageInfo : APIs) {
+                    String type = packageInfo.getType();
+                    if (!validAPITypes.contains(type)) {
+                        errorMessage.append(packageInfo.getPackageName()).append(" in feature ").append(entry.getKey()).append(" has an invalid type ").append(type).append('\n');
+                    }
+                }
+            }
+        }
+        if (errorMessage.length() != 0) {
+            Assert.fail("Found features with APIs with invalid types: \n" + errorMessage.toString());
+        }
+    }
 }
