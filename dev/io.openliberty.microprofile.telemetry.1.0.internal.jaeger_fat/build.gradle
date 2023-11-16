@@ -13,6 +13,7 @@ def grpcVersion='1.57.2'
 
 configurations {
   telemetryAgent
+  telemetryAgent129
   jaegerClient
   zipkinTracer
 }
@@ -37,7 +38,9 @@ dependencies {
   requiredLibs project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0')
   requiredLibs project(':io.openliberty.microprofile.telemetry.internal_fat.common')
   
-  telemetryAgent 'io.opentelemetry.javaagent:opentelemetry-javaagent:1.19.0'
+  telemetryAgent 'io.opentelemetry.javaagent:opentelemetry-javaagent:1.24.0'
+  
+  telemetryAgent129 'io.opentelemetry.javaagent:opentelemetry-javaagent:1.29.0'
   
   //Needed for opentracingZipkin-0.33 user feature
   zipkinTracer 'net.wasdev.wlp.tracer:liberty-opentracing-zipkintracer:3.0:sample@zip'
@@ -61,7 +64,13 @@ dependencies {
 
 task addAgent(type: Copy) {
   from configurations.telemetryAgent
-  into new File(autoFvtDir, 'publish/files')
+  into new File(autoFvtDir, 'publish/files/agent-119')
+  rename { 'opentelemetry-javaagent.jar' }
+}
+
+task addAgent129(type: Copy) {
+  from configurations.telemetryAgent129
+  into new File(autoFvtDir, 'publish/files/agent-129')
   rename { 'opentelemetry-javaagent.jar' }
 }
 
@@ -88,5 +97,6 @@ jar.dependsOn extractZipkinTracer
 addRequiredLibraries.dependsOn copyTestContainers
 addRequiredLibraries.dependsOn addJakartaTransformer
 addRequiredLibraries.dependsOn addAgent
+addRequiredLibraries.dependsOn addAgent129
 addRequiredLibraries.dependsOn addJaegerClientLibs
 addRequiredLibraries.dependsOn copyZipkinTracer

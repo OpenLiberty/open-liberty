@@ -15,11 +15,13 @@ package io.openliberty.microprofile.telemetry.internal.apps.agent;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -140,7 +142,9 @@ public class AgentTestResource extends Application {
 
     @GET
     @Path("/withspanbean")
-    public String callBeanWithSpan() {
+    public String callBeanWithSpan() throws Exception {
+        Method m = AgentTestBean.class.getMethod("withSpanMethod");
+        System.out.println("ANNOTATIONS callBeanWithSpan: " + Arrays.asList(m.getAnnotations()));
         Span span = Span.current();
         bean.withSpanMethod();
         return span.getSpanContext().getTraceId();
@@ -148,12 +152,14 @@ public class AgentTestResource extends Application {
 
     @GET
     @Path("/withspannonbean")
-    public String callNonBeanWithSpan() {
+    public String callNonBeanWithSpan() throws Exception {
+        Method m = AgentTestResource.class.getDeclaredMethod("withSpanNonBeanMethod");
+        System.out.println("ANNOTATIONS callNonBeanWithSpan: " + Arrays.asList(m.getAnnotations()));
         Span span = Span.current();
         withSpanNonBeanMethod();
         return span.getSpanContext().getTraceId();
     }
-    
+
     @GET
     @Path("/pathparameter/{parameter}")
     public String callPathParameter(@PathParam("parameter") String parameter) {
