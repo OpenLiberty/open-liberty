@@ -48,7 +48,6 @@ import componenttest.topology.impl.LibertyServerFactory;
  *
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
 public class S4U2ProxyTest extends CommonTest {
 
     private static final Class<?> c = S4U2ProxyTest.class;
