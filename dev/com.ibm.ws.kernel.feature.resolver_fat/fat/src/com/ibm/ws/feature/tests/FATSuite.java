@@ -30,6 +30,7 @@ import org.junit.runners.Suite.SuiteClasses;
         ee7toMP.class,
         ee8toMP.class,
         ee9toMP.class,
-        ee10toMP.class
+        ee10toMP.class,
+        testErrorMessages.class
 })
 public class FATSuite {}
