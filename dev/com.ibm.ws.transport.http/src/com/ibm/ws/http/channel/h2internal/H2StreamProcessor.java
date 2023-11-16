@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.http.channel.h2internal;
 
@@ -27,6 +24,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.http.channel.h2internal.Constants.Direction;
 import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
+import com.ibm.ws.http.channel.h2internal.exceptions.EnhanceYourCalmException;
 import com.ibm.ws.http.channel.h2internal.exceptions.FlowControlException;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
@@ -126,9 +124,6 @@ public class H2StreamProcessor {
     // handle various stream close conditions
     private boolean rstStreamSent = false;
 
-    // keep track of how many empty data frames have been received
-    private int emptyFrameReceivedCount = 0;
-
     /**
      * Create a stream processor initialized in idle state
      *
@@ -216,6 +211,11 @@ public class H2StreamProcessor {
                          + " H2InboundLink hc: " + muxLink.hashCode());
         }
 
+        H2RateState h2rs = muxLink.getH2RateState();
+        if (direction.equals(Constants.Direction.READ_IN)) {
+            h2rs.updateCounters(frame);
+        }
+
         // if we've already sent a reset frame on this stream , process any window size changes then ignore the new frame
         if (rstStreamSent) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -262,7 +262,6 @@ public class H2StreamProcessor {
 
         ADDITIONAL_FRAME addFrame = ADDITIONAL_FRAME.FIRST_TIME;
         Http2Exception addFrameException = null;
-        H2RateState h2rs = muxLink.getH2RateState();
 
         while (addFrame != ADDITIONAL_FRAME.NO) {
 
@@ -360,23 +359,19 @@ public class H2StreamProcessor {
                     }
                     return;
                 }
+
                 if (addFrame == null || addFrame == ADDITIONAL_FRAME.FIRST_TIME) {
-                    // check to see if this connection is misbehaving
-                    if (isControlFrame(frame)) {
-                        h2rs.incrementReadControlFrameCount();
-                    } else {
-                        h2rs.incrementReadNonControlFrameCount();
-                    }
-                    // check to see if this connection is misbehaving
-                    if (h2rs.isControlRatioExceeded() || h2rs.isStreamMisbehaving(emptyFrameReceivedCount)) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "processNextFrame: too many no-op frames received, sending GOAWAY");
-                        }
+                    if (h2rs.isControlRatioExceeded() || h2rs.isInboundResetsInTimeExceeded() || h2rs.isStreamMisbehaving()) {
                         addFrame = ADDITIONAL_FRAME.GOAWAY;
-                        if (h2rs.isStreamMisbehaving(emptyFrameReceivedCount)) {
-                            addFrameException = new ProtocolException("too many empty frames generated");
+                        if (h2rs.isStreamMisbehaving()) {
+                            addFrameException = new EnhanceYourCalmException("too many empty frames received");
+                            Tr.debug(tc, "processNextFrame: too many empty frames received on stream " + this.myID + ", sending GOAWAY");
+                        } else if (h2rs.isInboundResetsInTimeExceeded()) {
+                            addFrameException = new EnhanceYourCalmException("too many reset frames received");
+                            Tr.debug(tc, "processNextFrame: too many reset frames received on stream " + this.myID + ", sending GOAWAY");
                         } else {
-                            addFrameException = new ProtocolException("too many control frames generated");
+                            addFrameException = new EnhanceYourCalmException("too many control frames received");
+                            Tr.debug(tc, "processNextFrame: too many control frames received on stream " + this.myID + ", sending GOAWAY");
                         }
                         continue;
                     }
@@ -525,6 +520,7 @@ public class H2StreamProcessor {
 
                 try {
                     readWriteTransitionState(direction);
+
                 } catch (CompressionException e) {
                     // if this is a compression exception, something has gone very wrong and the connection is hosed
                     if (addFrame == ADDITIONAL_FRAME.FIRST_TIME) {
@@ -534,6 +530,7 @@ public class H2StreamProcessor {
                         addFrame = ADDITIONAL_FRAME.NO;
                     }
                     continue;
+
                 } catch (Http2Exception e) {
                     if (addFrame == ADDITIONAL_FRAME.FIRST_TIME) {
                         if (e.isConnectionError()) {
@@ -558,7 +555,7 @@ public class H2StreamProcessor {
                     if (addFrame == null || addFrame == ADDITIONAL_FRAME.FIRST_TIME) {
                         if (h2rs.isControlRatioExceeded()) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "processNextFrame: too many control processed, sending GOAWAY");
+                                Tr.debug(tc, "processNextFrame: too many control frames, sending GOAWAY");
                             }
                             addFrame = ADDITIONAL_FRAME.GOAWAY;
                             addFrameException = new ProtocolException("too many control frames generated");
@@ -1051,9 +1048,19 @@ public class H2StreamProcessor {
                 // check to see if too many client streams are currently open for this stream's h2 connection
                 muxLink.incrementActiveClientStreams();
                 if (muxLink.getActiveClientStreams() > muxLink.getLocalConnectionSettings().getMaxConcurrentStreams()) {
-                    RefusedStreamException rse = new RefusedStreamException("too many client-initiated streams are currently active; rejecting this stream");
-                    rse.setConnectionError(false);
-                    throw rse;
+                    muxLink.getH2RateState().incrementRefusedStreamCount();
+                    // Close the connection if too many connection refused errors, otherwise reset the stream
+                    if (muxLink.getH2RateState().tooManyStreamsRefused()) {
+                        Tr.debug(tc, "processIdle entry: Too many streams refused " + muxLink.getH2RateState().getRefusedStreamCount());
+                        EnhanceYourCalmException eyc = new EnhanceYourCalmException("too many client-initiated streams have been refused; closing the connection");
+                        eyc.setConnectionError(true);
+                        throw eyc;
+                    } else {
+                        RefusedStreamException rse = new RefusedStreamException("too many client-initiated streams are currently active; rejecting this stream");
+                        rse.setConnectionError(false);
+                        throw rse;
+                    }
+
                 }
 
                 processHeadersPriority();
@@ -1572,7 +1579,7 @@ public class H2StreamProcessor {
             }
             headerBlock.add(hbf);
         } else {
-            emptyFrameReceivedCount++;
+            muxLink.getH2RateState().incrementEmptyFrameReceivedCount();
         }
     }
 
@@ -1721,7 +1728,7 @@ public class H2StreamProcessor {
         }
         if (currentFrame.getFrameType() == FrameTypes.DATA) {
             if (currentFrame.getPayloadLength() == 0) {
-                emptyFrameReceivedCount++;
+                muxLink.getH2RateState().incrementEmptyFrameReceivedCount();
             } else {
                 dataPayload.add(((FrameData) currentFrame).getData());
             }
@@ -2189,27 +2196,6 @@ public class H2StreamProcessor {
 
     public H2HttpInboundLinkWrap getWrappedInboundLink() {
         return h2HttpInboundLinkWrap;
-    }
-
-    /**
-     * @param frame
-     * @return true if frame is a control frame
-     */
-    public static boolean isControlFrame(Frame frame) {
-        switch (frame.getFrameType()) {
-            case PRIORITY:
-                return true;
-            case RST_STREAM:
-                return true;
-            case SETTINGS:
-                return true;
-            case PING:
-                return true;
-            case GOAWAY:
-                return true;
-            default:
-                return false;
-        }
     }
 
     public boolean getEndStream() {

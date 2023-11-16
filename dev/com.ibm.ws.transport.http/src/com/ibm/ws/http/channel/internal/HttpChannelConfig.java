@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal;
 
@@ -155,10 +152,14 @@ public class HttpChannelConfig {
     /** Connection default initial window size to the spec max **/
     private int http2ConnectionWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
     private int http2ConnectionIdleTimeout = 0;
-    private int http2MaxConcurrentStreams = 200;
+    private int http2MaxConcurrentStreams = 100;
     private int http2MaxFrameSize = 57344; //Default to 56kb
     /** Don't start sending window update frames until 1/2 the window is used **/
     private boolean http2LimitWindowUpdateFrames = false;
+    private int http2MaxResetFrames = 100;
+    // reset frames window size in milliseconds
+    private int http2ResetFramesWindow = 30000;
+    private int http2MaxStreamsRefused = 100;
     /** Identifies if the channel has been configured to use X-Forwarded-* and Forwarded headers */
     private boolean useForwardingHeaders = false;
     /** Regex to be used to verify that proxies in forwarded headers are known to user */
@@ -432,6 +433,15 @@ public class HttpChannelConfig {
                 props.put(HttpConfigConstants.PROPNAME_H2_LIMIT_WINDOW_UPDATE_FRAMES, value);
                 continue;
             }
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_H2_MAX_RESET_FRAMES)) {
+                props.put(HttpConfigConstants.PROPNAME_H2_MAX_RESET_FRAMES, value);
+            }
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_H2_RESET_FRAMES_WINDOW)) {
+                props.put(HttpConfigConstants.PROPNAME_H2_RESET_FRAMES_WINDOW, value);
+            }
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_H2_MAX_STREAMS_REFUSED)) {
+                props.put(HttpConfigConstants.PROPNAME_H2_MAX_STREAMS_REFUSED, value);
+            }
             if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_PURGE_REMAINING_RESPONSE)) {
                 props.put(HttpConfigConstants.PROPNAME_PURGE_REMAINING_RESPONSE, value);
                 continue;
@@ -552,6 +562,9 @@ public class HttpChannelConfig {
         parseH2SettingsInitialWindowSize(props);
         parseH2ConnectionWindowSize(props);
         parseH2LimitWindowUpdateFrames(props);
+        parseH2MaxResetFrames(props);
+        parseH2ResetFramesWindow(props);
+        parseH2MaxStreamsRefused(props);
         parsePurgeRemainingResponseBody(props); //PI81572
         parseRemoteIp(props);
         parseRemoteIpProxies(props);
@@ -847,6 +860,60 @@ public class HttpChannelConfig {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseH2MaxConcurrentStreams", "1");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: Invalid HTTP/2 Max Concurrent Streams; " + value);
+
+                }
+            }
+        }
+    }
+
+    private void parseH2MaxResetFrames(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_H2_MAX_RESET_FRAMES);
+        if (null != value) {
+            try {
+                this.http2MaxResetFrames = convertInteger(value);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: HTTP/2 Max Reset Frames " + getH2MaxResetFrames());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2MaxResetFrames", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid HTTP/2 Max Reset Frames; " + value);
+
+                }
+            }
+        }
+    }
+
+    private void parseH2ResetFramesWindow(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_H2_RESET_FRAMES_WINDOW);
+        if (null != value) {
+            try {
+                this.http2ResetFramesWindow = convertInteger(value);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: HTTP/2 Reset Frames Window " + getH2ResetFramesWindow());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2ResetFramesWindow", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid HTTP/2 Reset Frames Window; " + value);
+
+                }
+            }
+        }
+    }
+
+    private void parseH2MaxStreamsRefused(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_H2_MAX_STREAMS_REFUSED);
+        if (null != value) {
+            try {
+                this.http2MaxStreamsRefused = convertInteger(value);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: HTTP/2 Max Streams Refused " + getH2MaxStreamsRefused());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2MaxStreamsRefused", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid HTTP/2 Max Streams Refused; " + value);
 
                 }
             }
@@ -2329,6 +2396,18 @@ public class HttpChannelConfig {
 
     public int getH2ConnectionWindowSize() {
         return http2ConnectionWindowSize;
+    }
+
+    public int getH2MaxResetFrames() {
+        return http2MaxResetFrames;
+    }
+
+    public int getH2ResetFramesWindow() {
+        return http2ResetFramesWindow;
+    }
+
+    public int getH2MaxStreamsRefused() {
+        return http2MaxStreamsRefused;
     }
 
     /**
