@@ -13,16 +13,18 @@ import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
 import java.util.Set;
 
-import org.osgi.service.component.annotations.Component;
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-
-import io.openliberty.microprofile.telemetry.internal.common.rest.TelemetryServletRequestListener;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+
+import org.osgi.service.component.annotations.Component;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+
+import io.openliberty.microprofile.telemetry.internal.common.rest.TelemetryServletRequestListener;
 
 /**
  * Registers our ServletRequestListener
@@ -37,14 +39,19 @@ public class TelemetryServletContainerInitializer implements ServletContainerIni
     public void onStartup(Set<Class<?>> c, ServletContext sc) throws ServletException {
         sc.addListener(TelemetryServletRequestListener.class);
 
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Enable TelemetryServletFilter");
+        if (ProductInfo.getBetaEdition()) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Enable TelemetryServletFilter");
+            }
+            FilterRegistration.Dynamic filterRegistration = sc.addFilter("io.openliberty.microprofile.telemetry11.internal.rest.TelemetryServletFilter",
+                                                                         TelemetryServletFilter.class);
+            filterRegistration.addMappingForUrlPatterns(null, true, "/*");
+            filterRegistration.setAsyncSupported(true);
+        } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Not on beta driver, disable TelemetryServletFilter");
+            }
         }
-        FilterRegistration.Dynamic filterRegistration = sc.addFilter("io.openliberty.microprofile.telemetry11.internal.rest.TelemetryServletFilter",
-                                                                     TelemetryServletFilter.class);
-        filterRegistration.addMappingForUrlPatterns(null, true, "/*");
-        filterRegistration.setAsyncSupported(true);
-
     }
 
 }
