@@ -30,6 +30,7 @@ import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.config.Authentication;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.LTPA;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
@@ -1021,6 +1022,12 @@ public class LTPAKeyRotationTests {
         // Configure the server
         configureServer("true", "0", true);
 
+        // Set cacheEnabled to false to avoid caching the validation keys
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        Authentication auth = serverConfiguration.getAuthentication();
+        Boolean configurationUpdateNeeded = setAuthenticationCacheEnabledElement(auth, "false");
+        updateConfigDynamically(server, serverConfiguration);
+
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
 
@@ -1036,7 +1043,6 @@ public class LTPAKeyRotationTests {
         String expiryTime = Instant.now().plusSeconds(10).toString();
 
         // Add a new validation keys element with a fileName attribute as "validation2.keys"
-        ServerConfiguration serverConfiguration = server.getServerConfiguration();
         LTPA ltpa = serverConfiguration.getLTPA();
         ConfigElementList<ValidationKeys> validationKeys = ltpa.getValidationKeys();
         ValidationKeys validationKey = new ValidationKeys();
@@ -1056,8 +1062,9 @@ public class LTPAKeyRotationTests {
         assertTrue("An invalid cookie should result in authorization challenge",
                    flClient1.accessProtectedServletWithInvalidCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1));
 
-        // Delete the validation2.keys element
+        // Delete the validation2.keys element and set cacheEnabled back to true
         validationKeys.remove(validationKey);
+        configurationUpdateNeeded = setAuthenticationCacheEnabledElement(auth, "true");
         updateConfigDynamically(server, serverConfiguration);
     }
 
@@ -1161,7 +1168,7 @@ public class LTPAKeyRotationTests {
         // Attempt to access the simple servlet again with the same cookie and assert it fails and the server needs to login again
         assertTrue("An expired cookie should result in authorization challenge",
                    flClient1.accessProtectedServletWithInvalidCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1));
-        
+
         // Reset the expiry to 10m
         configurationUpdateNeeded = setLTPAexpiryElement(ltpa, "10m");
         updateConfigDynamically(server, serverConfiguration);
@@ -1430,6 +1437,15 @@ public class LTPAKeyRotationTests {
 
         if (!validationKey.validUntilDate.equals(value)) {
             validationKey.validUntilDate = value;
+            return true; // Config update is needed
+        }
+        return false; // Config update is not needed;
+    }
+
+    // Function to configure the cacheEnabled element for authentication cache
+    public boolean setAuthenticationCacheEnabledElement(Authentication auth, String value) {
+        if (!auth.cacheEnabled.equals(value)) {
+            auth.cacheEnabled = value;
             return true; // Config update is needed
         }
         return false; // Config update is not needed;
