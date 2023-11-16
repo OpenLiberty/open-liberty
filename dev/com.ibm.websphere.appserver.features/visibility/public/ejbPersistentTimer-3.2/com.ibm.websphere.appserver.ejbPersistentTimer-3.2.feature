@@ -4,6 +4,8 @@ WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-App-ForceRestart: install, \
  uninstall
+IBM-API-Package: \
+  com.ibm.websphere.persistence.mbean; type="ibm-api"
 IBM-ShortName: ejbPersistentTimer-3.2
 Subsystem-Name: Enterprise JavaBeans Persistent Timers 3.2
 -features=com.ibm.websphere.appserver.transaction-1.2, \

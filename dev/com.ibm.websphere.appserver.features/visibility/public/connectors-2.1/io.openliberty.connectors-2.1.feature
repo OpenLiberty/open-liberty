@@ -2,6 +2,14 @@
 symbolicName=io.openliberty.connectors-2.1
 visibility=public
 singleton=true
+IBM-API-Package: \
+  com.ibm.ws.jca.cm.mbean; type="ibm-api", \
+  jakarta.resource; type="spec", \
+  jakarta.resource.cci; type="spec", \
+  jakarta.resource.spi; type="spec", \
+  jakarta.resource.spi.endpoint; type="spec", \
+  jakarta.resource.spi.security; type="spec", \
+  jakarta.resource.spi.work; type="spec"
 IBM-ShortName: connectors-2.1
 WLP-AlsoKnownAs: jca-2.1
 Subsystem-Name: Jakarta Connectors 2.1

@@ -13,6 +13,7 @@ singleton=true
   com.ibm.websphere.security, \
   com.ibm.ws.security.jaas.common, \
   com.ibm.ws.security.authentication.builtin, \
+  com.ibm.ws.security.authentication.tai, \
   com.ibm.ws.security.mp.jwt.proxy,\
   com.ibm.ws.security.kerberos.auth
 kind=ga
