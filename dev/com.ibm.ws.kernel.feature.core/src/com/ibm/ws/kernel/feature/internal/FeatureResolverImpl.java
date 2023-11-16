@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -66,7 +66,7 @@ import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
  */
 public class FeatureResolverImpl implements FeatureResolver {
 
-    long debugTime (long startTime, String text){
+    long debugTime(long startTime, String text) {
         long nextTime = System.nanoTime();
         //System.out.println(Long.toString(nextTime - startTime) + ": " + text);
         return nextTime;
@@ -74,7 +74,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
     static long lastTime = System.nanoTime();
 
-    long debugTime(String text){
+    long debugTime(String text) {
         return lastTime = debugTime(lastTime, text);
     }
 
@@ -95,18 +95,24 @@ public class FeatureResolverImpl implements FeatureResolver {
 
     private static Map<String, String[]> parseNAV = new HashMap<String, String[]>();
 
+    private static final Object tc;
+
     static {
+        Object temp = null;
+        try {
+            temp = Tr.register(FeatureResolverImpl.class, com.ibm.ws.kernel.feature.internal.ProvisionerConstants.TR_GROUP,
+                               com.ibm.ws.kernel.feature.internal.ProvisionerConstants.NLS_PROPS);
+        } catch (Throwable t) {
+            // nothing
+        }
+        tc = temp;
         String[] preferredVersions = (preferedFeatureVersions == null) ? new String[] {} : preferedFeatureVersions.split(",");
         String[][] parsedVersions = new String[preferredVersions.length][2];
-        for(int i = 0; i < preferredVersions.length; i++){
+        for (int i = 0; i < preferredVersions.length; i++) {
             parsedVersions[i] = parseNameAndVersion(preferredVersions[i]);
         }
         parsedPreferedVersions = parsedVersions;
     }
-
-    private static final TraceComponent tc = Tr.register(FeatureResolverImpl.class, com.ibm.ws.kernel.feature.internal.ProvisionerConstants.TR_GROUP,
-                                              com.ibm.ws.kernel.feature.internal.ProvisionerConstants.NLS_PROPS);
-
 
     @Override
     /*
@@ -185,7 +191,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         Set<String> autoFeaturesToInstall = Collections.<String> emptySet();
         Set<String> seenAutoFeatures = new HashSet<String>();
         Set<String> resolved = Collections.emptySet();
-        
+
         //long time = debugTime("Starting resolution...");
         int i = 0;
         do {
@@ -300,7 +306,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         while (selectionContext.currentHasMoreThanInitialBlockedCount() && selectionContext.popPermutation()) {
             i++;
             //if(selectionContext.getCurrent() != null)
-                //debugTime(i + " process current permutation: " + selectionContext.getCurrent()._selected.toString());
+            //debugTime(i + " process current permutation: " + selectionContext.getCurrent()._selected.toString());
             result = processCurrentPermutation(rootFeatures, preResolved, selectionContext);
         }
 
@@ -364,7 +370,7 @@ public class FeatureResolverImpl implements FeatureResolver {
     @FFDCIgnore(IllegalArgumentException.class)
     public static String[] parseNameAndVersion(String feature) {
         String[] result = parseNAV.get(feature);
-        if(result != null){
+        if (result != null) {
             return result;
         }
         // figure out the base symbolic name and 'version'
@@ -492,15 +498,13 @@ public class FeatureResolverImpl implements FeatureResolver {
         if (isBeta) {
             if (baseSymbolicName.startsWith("io.openliberty.internal.versionless.")) {
                 // parse and cache versionless feature versions
-                if (parsedPreferedVersions.length == 0) { 
+                if (parsedPreferedVersions.length == 0) {
                     preferredVersion = "";
                     tolerates = new ArrayList<String>();
-                }
-                else if ((tolerates = selectionContext.copyVersionless(baseSymbolicName)) != null) {
+                } else if ((tolerates = selectionContext.copyVersionless(baseSymbolicName)) != null) {
                     preferredVersion = tolerates.remove(0);
                     symbolicName = baseSymbolicName + "-" + preferredVersion;
-                } 
-                else { 
+                } else {
                     preferredVersion = "";
                     tolerates = new ArrayList<String>();
                     for (String[] nAV : parsedPreferedVersions) {
@@ -508,24 +512,22 @@ public class FeatureResolverImpl implements FeatureResolver {
                             if (preferredVersion.isEmpty()) {
                                 preferredVersion = nAV[1];
                                 symbolicName = baseSymbolicName + "-" + nAV[1];
-                            }
-                            else {
+                            } else {
                                 tolerates.add(nAV[1]);
                             }
                         }
                     }
-                    List<String> allVersions = new ArrayList<String>(tolerates.size()+1);
+                    List<String> allVersions = new ArrayList<String>(tolerates.size() + 1);
                     allVersions.add(preferredVersion);
                     allVersions.addAll(tolerates);
                     selectionContext.putVersionless(baseSymbolicName, allVersions);
                 }
                 if (preferredVersion.isEmpty()) {
-                    if(preferedFeatureVersions == null){
-                        Tr.error(tc, "UPDATE_MISSING_VERSIONLESS_ENV_VAR");
-                    }
-                    else {
+                    if (preferedFeatureVersions == null) {
+                        Tr.error((TraceComponent) tc, "UPDATE_MISSING_VERSIONLESS_ENV_VAR");
+                    } else {
                         String shortName = baseSymbolicName.replace("io.openliberty.internal.versionless.", "");
-                        Tr.error(tc, "UPDATE_MISSING_VERSIONLESS_FEATURE_VAL", new Object[] { shortName } );
+                        Tr.error((TraceComponent) tc, "UPDATE_MISSING_VERSIONLESS_FEATURE_VAL", new Object[] { shortName });
                     }
                     baseSymbolicName = "";
                     symbolicName = "";
@@ -588,7 +590,8 @@ public class FeatureResolverImpl implements FeatureResolver {
      * @return
      */
     private boolean isAccessible(ProvisioningFeatureDefinition includingFeature, ProvisioningFeatureDefinition candidateDef) {
-        return !!!candidateDef.getFeatureName().startsWith("io.openliberty.versionless.") && (candidateDef.getVisibility() != Visibility.PRIVATE || includingFeature.getBundleRepositoryType().equals(candidateDef.getBundleRepositoryType()));
+        return !!!candidateDef.getFeatureName().startsWith("io.openliberty.versionless.")
+               && (candidateDef.getVisibility() != Visibility.PRIVATE || includingFeature.getBundleRepositoryType().equals(candidateDef.getBundleRepositoryType()));
     }
 
     /**
@@ -619,8 +622,8 @@ public class FeatureResolverImpl implements FeatureResolver {
         if (overrideTolerates.contains(tolerate)) {
             return true;
         }
-        if(Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"))){
-            if(chain.peekFirst().startsWith("io.openliberty.versionless.")){
+        if (Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"))) {
+            if (chain.peekFirst().startsWith("io.openliberty.versionless.")) {
                 return true;
             }
         }
@@ -722,7 +725,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         private final AtomicInteger _initialBlockedCount = new AtomicInteger(-1);
         private final Map<String, Collection<Chain>> _preResolveConflicts = new HashMap<String, Collection<Chain>>();
         private Permutation _current = _permutations.getFirst();
-        private Map<String, List<String>> versionless = new HashMap<String, List<String>>();
+        private final Map<String, List<String>> versionless = new HashMap<String, List<String>>();
 
         SelectionContext(FeatureResolver.Repository repository, Set<String> allowedMultipleVersions, EnumSet<ProcessType> supportedProcessTypes) {
             this._repository = repository;
@@ -875,7 +878,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         }
 
-        List<Chain> asList(Chain chain1, Chain chain2){
+        List<Chain> asList(Chain chain1, Chain chain2) {
             List<Chain> result = new ArrayList<Chain>(2);
             result.add(chain1);
             result.add(chain2);
@@ -980,16 +983,16 @@ public class FeatureResolverImpl implements FeatureResolver {
             _current._result.addConflict0(baseFeatureName, conflicts);
         }
 
-        void putVersionless(String feature, List<String> tolerates){
+        void putVersionless(String feature, List<String> tolerates) {
             versionless.put(feature, tolerates);
         }
 
-        List<String> copyVersionless(String feature){
+        List<String> copyVersionless(String feature) {
             List<String> raw = versionless.get(feature);
             return raw == null ? null : new ArrayList<>(raw);
         }
 
-        Permutation getCurrent(){
+        Permutation getCurrent() {
             try {
                 return _current.copy(_preResolveConflicts);
             } catch (DeadEndChain e) {
