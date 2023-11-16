@@ -13,5 +13,6 @@
 package com.ibm.ws.test1;
 
 public interface Test1 {
-    void testMethod();
+    void testMethod1();
+    String TEST_VALUE = "Test1";
 }

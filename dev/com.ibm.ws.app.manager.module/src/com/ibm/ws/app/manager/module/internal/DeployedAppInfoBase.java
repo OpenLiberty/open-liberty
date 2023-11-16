@@ -158,7 +158,7 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
         public final long libraryFileTime;
 
         public final Container libraryContainer;
-        
+
         //@formatter:off
         @Override
         public String toString() {
@@ -449,12 +449,18 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
             if ( (priorCapture != null) &&
                  (priorCapture.libraryFileSize == libraryFileSize) &&
                  (priorCapture.libraryFileTime == libraryFileTime) ) {
+
+                debug(methodName, "Obtained shared library container [ " + priorCapture.libraryContainer + " ]" +
+                                  " [ " + libraryPath + " ] [ " + libraryFile.getName() + " ] [ REUSE ]");
                 return priorCapture;
             }
 
             Container adaptableContainer =
                 ( (libraryFileSize == -1) ? null : baseCreateContainer(libraryPid, libraryFile, libraryPath) );
 
+            debug(methodName, "Obtained shared library container [ " + adaptableContainer + " ]" +
+                            " [ " + libraryPath + " ] [ " + libraryFile.getName() + " ] [ NEW ]");
+            
             return new LibraryContainerData(libraryPid, libraryFile, libraryPath,
                                             libraryFileSize, libraryFileTime,
                                             adaptableContainer);
