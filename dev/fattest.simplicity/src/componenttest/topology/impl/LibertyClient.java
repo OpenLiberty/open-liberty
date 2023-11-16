@@ -679,9 +679,8 @@ public class LibertyClient {
                 JVM_ARGS += " -Xenablefips140-3";
                 JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
                 JVM_ARGS += " -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS";
-                JVM_ARGS += " -Djavax.net.debug=all";
-                //This debug arg is kept for the initial formal SOE builds and will be removed once stable builds are achieved
-                //in Nov.- Dec., 2023.
+                //JVM_ARGS += " -Djavax.net.debug=all";
+                //Uncomment as needed for additional debugging
 
             } else {
                 Log.info(c, "startClientWithArgs", "The JDK version: " + javaInfo.majorVersion() + " and vendor: " + javaInfo.VENDOR);
