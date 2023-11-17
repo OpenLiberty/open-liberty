@@ -1,5 +1,4 @@
 <server>
-
     <include location="../fatTestPorts.xml"/>
     
     <featureManager>
@@ -11,20 +10,4 @@
       <feature>cdi-1.2</feature>
       <feature>ejb-3.2</feature>
     </featureManager>
-    
-    <transaction
-        transactionLogDirectory="TheRecoveryLogsOfJon"
-        recoverOnStartup="true"
-        waitForRecovery="false"
-        heuristicRetryInterval="10"
-    />
-
-    <logging
-      traceSpecification="Transaction=all=enabled"
-      traceFileName="trace.log"
-      maxFileSize="2000"
-      maxFiles="20"
-      traceFormat="BASIC"
-    />
-
 </server>
