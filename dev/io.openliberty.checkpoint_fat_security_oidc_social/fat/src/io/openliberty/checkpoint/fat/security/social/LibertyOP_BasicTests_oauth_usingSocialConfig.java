@@ -42,7 +42,7 @@ import com.ibm.ws.security.social.fat.utils.SocialCommonTest;
 import com.ibm.ws.security.social.fat.utils.SocialConstants;
 import com.ibm.ws.security.social.fat.utils.SocialTestSettings;
 
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -53,7 +53,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
 @LibertyServerWrapper
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class LibertyOP_BasicTests_oauth_usingSocialConfig extends SocialCommonTest {
 
     public static Class<?> thisClass = LibertyOP_BasicTests_oauth_usingSocialConfig.class;

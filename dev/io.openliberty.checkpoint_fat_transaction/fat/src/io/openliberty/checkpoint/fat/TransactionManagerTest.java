@@ -39,7 +39,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
@@ -54,7 +54,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  * Verify startup behaviors for the transaction manager and recovery services.
  */
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class TransactionManagerTest extends FATServletClient {
 
     @ClassRule

@@ -32,7 +32,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
@@ -42,7 +42,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 import mpapp1.MPConfigServlet;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class MPConfigTest extends FATServletClient {
 
     private static final String SERVER_NAME = "checkpointMPConfig";

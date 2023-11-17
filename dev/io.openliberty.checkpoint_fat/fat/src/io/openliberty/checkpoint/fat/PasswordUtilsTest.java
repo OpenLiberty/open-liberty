@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -39,7 +39,7 @@ import junit.framework.AssertionFailedError;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class PasswordUtilsTest extends FATServletClient {
     private static final String APP_NAME = "DefaultPrincipalMappingApp";
     private static final String APP_PACKAGE = "io.openliberty.checkpoint.fat.passwordutil.web";
