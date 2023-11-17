@@ -492,17 +492,17 @@ public class ResponseCompressionHandler {
         CharSequence mimeTypeChars = HttpUtil.getMimeType(response);
         String mimeType = null;
         String mimeTypeWildcard = null;
-        int contentLength = HttpUtil.getContentLength(response, HttpConstants.INT_UNDEFINED);
 
         if (Objects.nonNull(mimeTypeChars)) {
             mimeType = mimeTypeChars.toString();
             mimeTypeWildcard = new StringBuilder().append(mimeType.split(HttpConstants.SLASH)[0]).append(HttpConstants.SLASH).append(HttpConstants.STAR).toString();
         }
 
-        if (contentLength < this.contentLengthMinimum) {
+        if (HttpUtil.isContentLengthSet(response) && HttpUtil.getContentLength(response) < this.contentLengthMinimum) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, method, "Response content length is less than 2048 bytes, do not attempt to compress");
             }
+            MSP.log("Invalid content-length: " + HttpUtil.getContentLength(response, HttpConstants.INT_UNDEFINED));
             isCompliant = Boolean.FALSE;
         }
 

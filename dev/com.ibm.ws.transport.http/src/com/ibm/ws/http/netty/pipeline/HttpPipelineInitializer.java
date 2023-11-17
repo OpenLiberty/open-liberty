@@ -354,6 +354,10 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         public HttpPipelineBuilder(NettyChain chain) {
             this.chain = chain;
+
+            if (httpConfig != null) {
+                httpConfig = null;
+            }
             httpOptions = Collections.emptyMap();
             remoteIp = Collections.emptyMap();
             compression = Collections.emptyMap();
