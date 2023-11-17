@@ -46,4 +46,21 @@ public class HelloWorldResource {
             return "NOTFOUND";
         }
     }
+
+    @Path("opentracingtest")
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String isOpenTracingSPIFound() {
+        try {
+            Class.forName("com.ibm.ws.opentracing.tracer.OpentracingTracerFactory");
+            return "FOUND";
+        } catch (Exception e) {
+        }
+        try {
+            Class.forName("io.openliberty.opentracing.spi.tracer.OpentracingTracerFactory");
+            return "FOUND";
+        } catch (Exception e) {
+        }
+        return "NOTFOUND";
+    }
 }

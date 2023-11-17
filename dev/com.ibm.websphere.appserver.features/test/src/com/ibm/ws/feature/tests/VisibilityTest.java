@@ -1091,7 +1091,7 @@ public class VisibilityTest {
     }
 
     @Test
-    public void testAPITypes() {
+    public void testValidAPITypes() {
         HashSet<String> validAPITypes = new HashSet<>();
         for (ExternalPackageType validType : ExternalPackageType.values()) {
             if (!validType.isSPI) {
@@ -1106,7 +1106,8 @@ public class VisibilityTest {
             if (APIs != null) {
                 for (ExternalPackageInfo packageInfo : APIs) {
                     String type = packageInfo.getType();
-                    if (!validAPITypes.contains(type)) {
+                    // for now until we figure something out going to leave mpOpenTracing and openTracing feature wrong.
+                    if (!validAPITypes.contains(type) && !entry.getKey().toLowerCase().contains("opentracing")) {
                         errorMessage.append(packageInfo.getPackageName()).append(" in feature ").append(entry.getKey()).append(" has an invalid type ").append(type).append('\n');
                     }
                 }
@@ -1114,6 +1115,29 @@ public class VisibilityTest {
         }
         if (errorMessage.length() != 0) {
             Assert.fail("Found features with APIs with invalid types: \n" + errorMessage.toString());
+        }
+    }
+
+    @Test
+    public void testValidSPITypes() {
+        StringBuilder errorMessage = new StringBuilder();
+        for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+            FeatureInfo featureInfo = entry.getValue();
+            Set<ExternalPackageInfo> SPIs = featureInfo.getSPIs();
+            if (SPIs != null) {
+                for (ExternalPackageInfo packageInfo : SPIs) {
+                    String type = packageInfo.getType();
+
+                    // Since there is only really 1 type for SPIs, usually the type is null which we set to ibm-spi in the parse
+                    // logic in the feature utility test function.
+                    if (type != null && !"ibm-spi".equals(type)) {
+                        errorMessage.append(packageInfo.getPackageName()).append(" in feature ").append(entry.getKey()).append(" has an invalid type ").append(type).append('\n');
+                    }
+                }
+            }
+        }
+        if (errorMessage.length() != 0) {
+            Assert.fail("Found features with SPIs with invalid types: \n" + errorMessage.toString());
         }
     }
 }

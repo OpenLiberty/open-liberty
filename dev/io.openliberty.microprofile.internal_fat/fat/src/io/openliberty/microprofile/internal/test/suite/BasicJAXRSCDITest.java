@@ -99,6 +99,11 @@ public class BasicJAXRSCDITest {
         runGetMethod(200, "/helloworld/helloworld/servlettest", JakartaEEAction.isEE10OrLaterActive() ? "NOTFOUND" : "FOUND");
     }
 
+    @Test
+    public void testOpenTracingSPIFoundAsAnAPI() throws Exception {
+        runGetMethod(200, "/helloworld/helloworld/opentracingtest", JakartaEEAction.isEE10OrLaterActive() ? "NOTFOUND" : "FOUND");
+    }
+
     private StringBuilder runGetMethod(int exprc, String requestUri, String testOut) throws IOException {
         URL url = new URL("http://" + getHost() + ":" + getPort() + requestUri);
         int retcode;
