@@ -66,7 +66,7 @@
         </application-bnd>
     </application>
 
-    <authentication id="Basic" cacheEnabled="false" />
+    <authentication id="Basic" cacheEnabled="true" />
 
     <ltpa monitorInterval = "10" monitorValidationKeysDir="true" expiration="10m" updateTrigger="polled" keysPassword="{xor}Lz4sLCgwLTs=">
         <validationKeys fileName="configuredValidation1.keys" password="{xor}Lz4sLCgwLTs=" validUntilDate="2099-01-01T00:00:00Z"/>
