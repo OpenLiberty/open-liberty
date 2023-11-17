@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,18 +22,13 @@ public class StaticTraceTestTransformer extends LibertyTracePreprocessInstrument
 
     StaticTraceTestTransformer() {
         super();
-
     }
     
-    
-    /**
-     * Instrument the classes.
-     */
-    public byte[] transform(byte[] classfileBuffer) throws IllegalClassFormatException {
+    public byte[] transform(String className, byte[] classfileBuffer) throws IllegalClassFormatException {
     	//setFfdc(true);
     	
         try {
-            return transform(new ByteArrayInputStream(classfileBuffer));
+            return transform(className, new ByteArrayInputStream(classfileBuffer));
         } catch (Throwable t) {
             t.printStackTrace();
             return null;
