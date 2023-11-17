@@ -144,6 +144,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
         loadConfig(props);
         setupRuntimeLTPAInfrastructure();
+        debugLTPAConfig(); //prints debug for current LTPA config
     }
 
     @Sensitive
@@ -176,7 +177,6 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         }
 
         if (updateTrigger.equalsIgnoreCase("disabled")) {
-            nonConfigValidationKeys = null;
             if (monitorValidationKeysDir) {
                 Tr.warning(tc, "LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE", monitorValidationKeysDir);
             }
@@ -192,7 +192,12 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         }
 
         combineValidationKeys();
+    }
 
+    /**
+     *
+     */
+    private void debugLTPAConfig() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "primaryKeyImportFile: " + primaryKeyImportFile);
             //Tr.debug(tc, "primaryKeyPassword: " + primaryKeyPassword);
@@ -219,7 +224,9 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "validationKeys", validationKeys);
+            Tr.debug(tc, "configured ValidationKeys: " + configValidationKeys);
+            Tr.debug(tc, "non-configured ValidationKeys: " + nonConfigValidationKeys);
+            Tr.debug(tc, "combined ValidationKeys: " + validationKeys);
         }
     }
 
@@ -377,9 +384,9 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     public void performFileBasedAction(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles) {
         Collection<File> allFiles = getAllFiles(createdFiles, modifiedFiles, deletedFiles);
 
-        processAllKeysFiles(createdFiles, modifiedFiles, deletedFiles); // we've got validation3.keys
+        processAllKeysFiles(createdFiles, modifiedFiles, deletedFiles);
 
-        processValidationKeys(); //
+        processValidationKeys();
 
         if (noValidationKeys()) { // no validationKeys. Keep behavior the same as SecurityFileMonnitor
             if (deletedFiles.isEmpty() == false) {
@@ -397,9 +404,6 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     public void performFileBasedAction(Collection<File> baselineFiles) {
         //load validation keys already in the monitored directory when the monitor is started
         if (!baselineFiles.isEmpty()) {
-            //Tr.audit(tc, "LTPA_KEYS_TO_LOAD", printLTPAKeys(baselineFiles));
-            //TODO: we should have a new info message here for validation keys processed at server startup.
-
             Collection<File> emptyCollection = new HashSet<File>();
             processAllKeysFiles(baselineFiles, emptyCollection, emptyCollection);
 
@@ -551,6 +555,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             unsetFileMonitorRegistration();
             optionallyCreateFileMonitor();
         }
+        debugLTPAConfig(); //prints debug for current LTPA config
     }
 
     /**
