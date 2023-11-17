@@ -238,7 +238,7 @@ else
   ##
   escapeForEval()
   {
-    escapeForEvalResult=\'`safeEcho "$1" | sed s/\'/\'\"\'\"\'/g`\'
+    escapeForEvalResult=\'$(safeEcho "$1" | sed s/\'/\'\"\'\"\'/g)\'
   }
 
   ##
@@ -884,27 +884,28 @@ findRealPath() {
 
 mergeJVMOptions()
 {
-    jvmOptions=$1
+  jvmOptions=$1
 
-    if [ -f "$jvmOptions" ]; then
-      READ_ETC=0
-      saveIFS=$IFS
-      IFS=$newline
-
-      for option in `readNativeFile "$jvmOptions" '[#-]' | LC_ALL=C tr -d '\r'`; do
-        if [ -n "$option" ]; then
-          case $option in
-          \#*);;
+  if [ -f "$jvmOptions" ]; then
+    READ_ETC=0
+    saveIFS=$IFS
+    IFS=$newline
+    
+    for option in $(readNativeFile "$jvmOptions" '[#-]' | LC_ALL=C tr -d '\r'); do
+      if [ -n "$option" ]; then
+        case $option in
+          \#*) 
+              ;;
           *)
-            escapeForEval "${option}"
-            SERVER_JVM_OPTIONS_QUOTED="${SERVER_JVM_OPTIONS_QUOTED} '${option}'"
-            ;;
-          esac
-        fi
-      done
-      IFS=$saveIFS
-    fi
-
+              escapeForEval "${option}"
+              option="${escapeForEvalResult}"
+              SERVER_JVM_OPTIONS_QUOTED="${SERVER_JVM_OPTIONS_QUOTED} ${option}"
+              ;;
+        esac
+      fi
+    done
+    IFS=$saveIFS
+  fi
 }
 
 ##
@@ -916,7 +917,7 @@ readServerEnv()
   if [ -f "$1" ]; then
     saveIFS=$IFS
     IFS=$newline
-    for line in `readNativeFile "$1" '[#_A-Za-z=]' | tr -d '\r'`; do
+    for line in $(readNativeFile "$1" '[#_A-Za-z=]' | tr -d '\r'); do
       case $line in
 
       \#*)
@@ -1011,7 +1012,7 @@ readNativeFile() {
   if ${nativeEBCDIC}; then
     # ASCII 'm' overlaps with EBCDIC '_', so strip it out before detecting the codepage.
     # Note: cat used here to handle ASCII-tagged files.
-    filecontents=`cat "$1" | iconv -f ISO8859-1 -t IBM-1047 | tr -d 'm\r\n'`
+    filecontents=$(cat "$1" | iconv -f ISO8859-1 -t IBM-1047 | tr -d 'm\r\n')
     case $filecontents in
       $2*) iconv -f ISO8859-1 -t IBM-1047 "$1" ;;  # ASCII file.
       *) cat "$1"                # EBCDIC file or ASCII-tagged file.
@@ -1120,7 +1121,6 @@ javaCmd()
     # IgnoreUnrecognizedRestoreOptions to avoid failing to restore if unsupported options are specified to restore
     JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+IgnoreUnrecognizedVMOptions -XX:+IgnoreUnrecognizedRestoreOptions -XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode $X_WLP_IMMUTABLE_VARS"
 
-
     checkCriuUnprivileged
     if [ $DO_CRIU_UNPRIVILEGED = true ]; then
       JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -Dio.openliberty.checkpoint.criu.unprivileged=true"
@@ -1135,7 +1135,6 @@ javaCmd()
     criuEnvDefaults
   fi
   
-
   # Set all the parameters for the java command.  We use eval so that each line
   # in jvm.options is treated as a distinct argument.
   eval "set -- ${JAVA_AGENT_QUOTED} ${JVM_OPTIONS_QUOTED} ${JAVA_DEBUG} ${JVM_ARGS} -jar ${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-server.jar ""$REMAINING_ARGS"
@@ -1236,8 +1235,6 @@ issueMessage()
 
   "${JAVA_CMD}" "$@"
 }
-
-
 
 ##
 ## serverCmdOS400: Launch a server process using the OS400 native launcher.
@@ -1880,8 +1877,8 @@ case "$ACTION" in
     if checkServer true
     then
       serverPIDStatus
-      JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
-      javaCmd '' "${JVM_OPTIONS_QUOTED}" "${SERVER_NAME}" --pid="${PID}" --package "$@" 
+      JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED} 
+      javaCmd '' "${SERVER_NAME}" --pid="${PID}" --package "$@"
       exit $?
     else
       exit 2
