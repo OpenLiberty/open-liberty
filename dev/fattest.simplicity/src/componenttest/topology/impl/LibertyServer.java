@@ -2106,15 +2106,18 @@ public class LibertyServer implements LogMonitorClient {
         final String RESTORE_MESSAGE_CODE = "CWWKC0452I";
         Log.info(c, method, "Checking for restore message: " + RESTORE_MESSAGE_CODE);
 
-        RemoteFile messagesLog = new RemoteFile(machine, messageAbsPath);
+        // The console log is where to check first because its location
+        // cannot change on restore.  The messages one may change while restoring
+        // that makes the file the restore message is in not predictable.
+        RemoteFile logToCheck = getConsoleLogFile();
         // App validation needs the info messages in messages.log
-        if (!messagesLog.exists()) {
-            // NOTE: The HPEL FAT bucket has a strange mechanism to create messages.log for test purposes, which may get messed up
-            Log.info(c, method, "WARNING: messages.log does not exist-- trying app verification step with console.log");
-            messagesLog = getConsoleLogFile();
+        if (!logToCheck.exists()) {
+            // try the messages log
+            Log.info(c, method, "WARNING: console.log does not exist-- trying app verification step with messages.log");
+            logToCheck = new RemoteFile(machine, messageAbsPath);
         }
 
-        String found = waitForStringInLog(RESTORE_MESSAGE_CODE, messagesLog);
+        String found = waitForStringInLog(RESTORE_MESSAGE_CODE, logToCheck);
         if (found == null) {
             Log.info(c, method, "Error: server did not restore successfully.");
             return true;
