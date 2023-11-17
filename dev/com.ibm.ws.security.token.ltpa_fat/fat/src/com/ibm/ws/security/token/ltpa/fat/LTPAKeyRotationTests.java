@@ -1177,7 +1177,7 @@ public class LTPAKeyRotationTests {
         // Attempt to access the simple servlet again with the same cookie and assert it fails and the server needs to login again
         assertTrue("An expired cookie should result in authorization challenge",
                    flClient1.accessProtectedServletWithInvalidCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1));
-        
+
         // Reset the expiry to 10m
         configurationUpdateNeeded = setLTPAexpiryElement(ltpa, "10m");
         updateConfigDynamically(server, serverConfiguration);
@@ -1432,17 +1432,23 @@ public class LTPAKeyRotationTests {
         configureServer(monitorValidationKeysDir, monitorInterval, waitForLTPAConfigReadyMessage, true);
     }
 
+    public void configureServer(String monitorValidationKeysDir, String monitorInterval, Boolean waitForLTPAConfigReadyMessage, boolean setLogMarkToEnd) throws Exception {
+        configureServer("polled", monitorValidationKeysDir, monitorInterval, waitForLTPAConfigReadyMessage, true);
+    }
+
     /**
      * Function to do the server configuration for all the tests.
      * Assert that the server has with a default ltpa.keys file.
      *
+     * @param updateTrigger
      * @param monitorValidationKeysDir
      * @param monitorInterval
      * @param waitForLTPAConfigReadyMessage
      *
      * @throws Exception
      */
-    public void configureServer(String monitorValidationKeysDir, String monitorInterval, Boolean waitForLTPAConfigReadyMessage, boolean setLogMarkToEnd) throws Exception {
+    public void configureServer(String updateTrigger, String monitorValidationKeysDir, String monitorInterval, Boolean waitForLTPAConfigReadyMessage,
+                                boolean setLogMarkToEnd) throws Exception {
         moveLogMark();
         // Get the server configuration
         ServerConfiguration serverConfiguration = server.getServerConfiguration();
@@ -1451,14 +1457,15 @@ public class LTPAKeyRotationTests {
         // Check if the configuration needs to be updated
         boolean configurationUpdateNeeded = false;
 
-        // Set MonitorValidationKeysDir to true, and MonitorInterval to 0
-        configurationUpdateNeeded = setLTPAmonitorValidationKeysDirElement(ltpa, monitorValidationKeysDir) | setLTPAmonitorIntervalElement(ltpa, monitorInterval);
+        configurationUpdateNeeded = setLTPAupdateTriggerElement(ltpa, updateTrigger)
+                                    | setLTPAmonitorValidationKeysDirElement(ltpa, monitorValidationKeysDir)
+                                    | setLTPAmonitorIntervalElement(ltpa, monitorInterval);
 
         // Apply server configuration update if needed
         if (configurationUpdateNeeded) {
             updateConfigDynamically(server, serverConfiguration);
 
-            if (monitorValidationKeysDir.equals("true") && monitorInterval.equals("0")) {
+            if (updateTrigger.equals("polled") && monitorValidationKeysDir.equals("true") && monitorInterval.equals("0")) {
                 // Wait for a warning message message to be logged
                 assertNotNull("Expected LTPA configuration warning message not found in the log.",
                               server.waitForStringInLog("CWWKS4113W", 5000));
