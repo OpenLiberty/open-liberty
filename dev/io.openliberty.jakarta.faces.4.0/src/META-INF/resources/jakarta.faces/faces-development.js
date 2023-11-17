@@ -2336,7 +2336,7 @@ class HiddenInputBuilder {
         const SEP = (0, Const_1.$faces)().separatorchar;
         let existingStates = (0, mona_dish_1.DQ$)(`[name*='${(0, Const_1.$nsp)(this.name)}']`);
         let cnt = existingStates.asArray.map(state => {
-            let ident = state.id.orElse("-1").value;
+            let ident = state.id.orElse("0").value;
             ident = ident.substring(ident.lastIndexOf(SEP) + 1);
             return parseInt(ident);
         })
@@ -2345,7 +2345,7 @@ class HiddenInputBuilder {
         })
             .reduce((item1, item2) => {
             return Math.max(item1, item2);
-        }, -1);
+        }, 0); //we start with 1 (see cnt++)
         //the maximum  new ident is the current max + 1
         cnt++;
         const newElement = mona_dish_1.DQ.fromMarkup((0, Const_1.$nsp)(this.template));
@@ -4069,6 +4069,7 @@ const Lang_1 = __webpack_require__(/*! ../util/Lang */ "./typescript/faces/impl/
 const Const_1 = __webpack_require__(/*! ../core/Const */ "./typescript/faces/impl/core/Const.ts");
 const RequestDataResolver_1 = __webpack_require__(/*! ./RequestDataResolver */ "./typescript/faces/impl/xhrCore/RequestDataResolver.ts");
 var failSaveExecute = Lang_1.ExtLang.failSaveExecute;
+const ExtDomQuery_1 = __webpack_require__(/*! ../util/ExtDomQuery */ "./typescript/faces/impl/util/ExtDomQuery.ts");
 /**
  * Faces XHR Request Wrapper
  * as AsyncRunnable for our Asynchronous queue
@@ -4148,6 +4149,7 @@ class XhrRequest extends AsyncRunnable_1.AsyncRunnable {
                 this.requestContext.$nspEnabled = true;
                 requestPassThroughParams.$nspEnabled = true;
             }
+            this.appendIssuingItem(formData);
             this.responseContext = requestPassThroughParams.deepCopy;
             // we have to shift the internal passthroughs around to build up our response context
             const responseContext = this.responseContext;
@@ -4374,6 +4376,28 @@ class XhrRequest extends AsyncRunnable_1.AsyncRunnable {
         const errorData = (responseFormatError) ? ErrorData_1.ErrorData.fromHttpConnection(exception.source, exception.type, exception.status, exception.responseText, exception.responseCode, exception.status) : ErrorData_1.ErrorData.fromClient(exception);
         const eventHandler = (0, RequestDataResolver_1.resolveHandlerFunc)(this.requestContext, this.responseContext, Const_1.ON_ERROR);
         AjaxImpl_1.Implementation.sendError(errorData, eventHandler);
+    }
+    appendIssuingItem(formData) {
+        const issuingItemId = this.internalContext.getIf(Const_1.CTX_PARAM_SRC_CTL_ID).value;
+        //not encoded
+        if (issuingItemId && formData.getIf(issuingItemId).isAbsent()) {
+            const issuingItem = mona_dish_1.DQ.byId(issuingItemId);
+            const itemValue = issuingItem.inputValue;
+            const arr = new ExtDomQuery_1.ExtConfig({});
+            const type = issuingItem.type.orElse("").value.toLowerCase();
+            //Checkbox and radio only value pass if checked is set, otherwise they should not show
+            //up at all, and if checked is set, they either can have a value or simply being boolean
+            if ((type == "checkbox" || type == "radio") && issuingItem.attr("checked").isAbsent()) {
+                return;
+            }
+            else if ((type == "checkbox" || type == "radio")) {
+                arr.assign(issuingItemId).value = itemValue.orElse(true).value;
+            }
+            else {
+                arr.assign(issuingItemId).value = itemValue.value;
+            }
+            formData.shallowMerge(arr, true, true);
+        }
     }
 }
 exports.XhrRequest = XhrRequest;
