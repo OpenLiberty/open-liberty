@@ -123,11 +123,18 @@ public class WithSpanServlet extends FATServlet {
         assertThat(ids.get(0), not(equalTo(ids.get(1))));
     }
 
+    @Test
+    public void callAnnotatedViaExtension() {
+        String originalSpanId = Span.current().getSpanContext().getSpanId();
+        ReadableSpan span = spanBean.methodAnnotatedViaExtension();
+        assertThat(span.getSpanContext().getSpanId(), not(equalTo(originalSpanId)));
+        assertThat(span.getParentSpanContext().getSpanId(), equalTo(originalSpanId));
+        assertThat(span.getName(), equalTo("nameFromExtension")); // Set in WithSpanExtension
+        assertThat(span.getKind(), equalTo(SpanKind.PRODUCER)); // Set in WithSpanExtension
+    }
+
     @ApplicationScoped
     public static class SpanBean {
-
-        @Inject
-        private SpanBean spanBean;
 
         @Inject
         private SecondSpanBean secondSpanBean;
@@ -176,6 +183,10 @@ public class WithSpanServlet extends FATServlet {
         public String methodNotAnnotated() {
             Span span = Span.current();
             return span.getSpanContext().getSpanId();
+        }
+
+        public ReadableSpan methodAnnotatedViaExtension() {
+            return (ReadableSpan) Span.current();
         }
 
     }
