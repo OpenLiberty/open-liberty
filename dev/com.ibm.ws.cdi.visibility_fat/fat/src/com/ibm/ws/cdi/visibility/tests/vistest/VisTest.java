@@ -405,7 +405,8 @@ public class VisTest extends FATServletClient {
                                                                                      Location.InRuntimeExtSeeApp));
 
     /**
-     * Set of locations that should be visible from regular runtime extensions
+     * Set of locations that should be visible from regular runtime extensions. Note that this means a Runtime Extension can see itself
+     * not that RuntimeExtensionA can see RuntimeExtensionB
      */
     Set<Location> RUNTIME_EXT_REGULAR_VISIBLE_LOCATIONS = new HashSet<Location>(Arrays.asList(Location.InRuntimeExtRegular));
 
