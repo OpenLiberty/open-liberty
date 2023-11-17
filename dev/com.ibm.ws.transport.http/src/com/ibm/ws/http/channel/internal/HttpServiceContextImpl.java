@@ -2862,6 +2862,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 //            setPartialBody(false);
 
             if (nettyContext.channel().hasAttr(NettyHttpConstants.ACCEPT_ENCODING)) {
+                HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
                 String acceptEncoding = nettyContext.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).get();
                 ResponseCompressionHandler compressionHandler = new ResponseCompressionHandler(getHttpConfig(), nettyResponse, acceptEncoding);
                 compressionHandler.process();
@@ -2887,10 +2888,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
                     }
                 }
-                if (Objects.nonNull(buffers)) {
-                    MSP.log("setting new compressed content length of: " + GenericUtils.sizeOf(buffers));
-                    HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
-                }
+//                if (Objects.nonNull(buffers)) {
+//                    MSP.log("setting new compressed content length of: " + GenericUtils.sizeOf(buffers));
+//                    HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
+//                }
             }
 
         }
