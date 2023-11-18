@@ -80,7 +80,7 @@ public class RepeatTestFilter {
         FATRunner.requireFATRunner(clazz.getName());
 
         for (String action : anno.value()) {
-            if (REPEAT_ACTION_STACK.contains(action)) {
+            if (repeatStackContainsActionByID(action)) {
                 log.info("Skipping test class " + clazz.getName() + " on action " + action);
                 return false;
             }

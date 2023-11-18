@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -276,11 +277,16 @@ public abstract class JakartaEEAction extends FeatureReplacementAction {
      * @param transformationRulesAppend The map with the additional transformation rules to add
      */
     public static void transformApp(Path appPath, Path newAppPath, Map<String, String> transformationRulesAppend) {
-        RepeatTestAction action = RepeatTestFilter.getMostRecentRepeatAction();
+        List<RepeatTestAction> actions = RepeatTestFilter.getRepeatActions();
 
-        if (action instanceof JakartaEEAction) {
-            ((JakartaEEAction) action).transformApplication(appPath, newAppPath, transformationRulesAppend);
-        }
+        //If you are running a repeat test inside a repeat test
+        //E.G. a microprofile repeat action inside an EE repeat action
+        //the JakartaEEAction might not be at the top of the stack
+        actions.stream()
+                        .filter(a -> a instanceof JakartaEEAction)
+                        .map(a -> (JakartaEEAction) a)
+                        .findFirst()
+                        .ifPresent(a -> a.transformApplication(appPath, newAppPath, transformationRulesAppend));
     }
 
     /**
@@ -297,11 +303,16 @@ public abstract class JakartaEEAction extends FeatureReplacementAction {
      * @param newAppPath The application path of the transformed file (or <code>null<code>)
      */
     public static void transformApp(Path appPath, Path newAppPath) {
-        RepeatTestAction action = RepeatTestFilter.getMostRecentRepeatAction();
+        List<RepeatTestAction> actions = RepeatTestFilter.getRepeatActions();
 
-        if (action instanceof JakartaEEAction) {
-            ((JakartaEEAction) action).transformApplication(appPath, newAppPath, null);
-        }
+        //If you are running a repeat test inside a repeat test
+        //E.G. a microprofile repeat action inside an EE repeat action
+        //the JakartaEEAction might not be at the top of the stack
+        actions.stream()
+                        .filter(a -> a instanceof JakartaEEAction)
+                        .map(a -> (JakartaEEAction) a)
+                        .findFirst()
+                        .ifPresent(a -> a.transformApplication(appPath, newAppPath, null));
     }
 
     abstract void transformApplication(Path appPath, Path newAppPath, Map<String, String> transformationRulesAppend);
