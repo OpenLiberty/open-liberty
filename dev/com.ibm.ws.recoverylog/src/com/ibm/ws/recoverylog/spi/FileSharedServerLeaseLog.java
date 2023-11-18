@@ -836,15 +836,19 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "getBackendURL", ret);
                 return ret;
-            } catch (Exception e) {
+            } catch (FileNotFoundException e) {
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "getBackendURL: Lease was probably being renewed. Wait 500ms and try one more time", e);
+                    Tr.debug(tc, "getBackendURL: Lease file not found. Recovery is probably done.");
+                break;
+            } catch (IOException e) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "getBackendURL: Lease was probably being renewed. Wait 500ms and try again.", e);
             }
 
-            // Just the one retry
-            if (retries++ > 0) {
+            // Retry for 30s
+            if (retries++ > 60) {
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "getBackendURL: Couldn't access lease file even on a retry.");
+                    Tr.debug(tc, "getBackendURL: Couldn't access lease file even after retrying.");
                 break;
             }
 
