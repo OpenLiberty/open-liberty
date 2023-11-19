@@ -51,7 +51,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingAct
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.SaslPlainTests;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
@@ -62,7 +62,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  * Basic test using a kafka broker with TLS enabled
  */
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class CheckpointKafkaSaslPlainTest {
 
     private static final String APP_NAME = "kafkaSaslTest";
