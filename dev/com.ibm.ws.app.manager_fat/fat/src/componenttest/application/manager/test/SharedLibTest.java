@@ -69,39 +69,77 @@ public class SharedLibTest {
     public static final String SERVER_08_XML = "server08.xml";
     public static final String SERVER_16_XML = "server16.xml";
 
-    public static final String[] SERVER_XMLS = new String[] { SERVER_01_XML, SERVER_04_XML, SERVER_08_XML, SERVER_16_XML };
+    public static final String[] SERVER_XMLS =
+                { SERVER_01_XML, SERVER_04_XML, SERVER_08_XML, SERVER_16_XML };
 
     // Application activity ranges ... negative means stopping.
+
+    // min -> max + 1: 0..15 -> [ 0, 16 ]
+    // -(min + 1) -> -((max + 1) + 1): 0..15 -> [ -1, -17 ]
+    public static final int[] APP_ACTIVITY_RANGE_INITIAL =
+                { 0, 16 }; // Start 0 .. 15
+    public static final int[][] APP_ACTIVITY_RANGES =
+                { { -2, -17 }, { 1, 4 }, { 4, 8 }, { 8, 16 } };
+                // Stop 1 .. 15, Start 1 .. 3, Start 4 .. 7, Start 8 .. 15
+    public static final int[] APP_ACTIVITY_RANGE_FINAL =
+                { -1, -17 }; // Stop 0 .. 15
+
+    // min -> max + 1
+    public static final int[] APP_RUNNING_RANGE_INITIAL =
+                { 0, 16 };
+    public static final int[][] APP_RUNNING_RANGES =
+                { { 0, 1 }, { 0, 4 }, { 0, 8 }, { 0, 16 } };
+    public static final int[] APP_RUNNING_RANGE_FINAL =
+                { 0, 16 };
+
+    public static final String[] APP_NAMES =
+                { "snoop0",  "snoop1",  "snoop2",  "snoop3",
+                  "snoop4",  "snoop5",  "snoop6",  "snoop7",
+                  "snoop8",  "snoop9",  "snoop10", "snoop11",
+                  "snoop12", "snoop13", "snoop14", "snoop15" };
+
+    // Capture history:
     //
-    // Ranges are always min(abs) to max(abs): [1, 3] for starting apps
-    // 1, 2, and 3; [-1, -3] for stopping apps 1, 2, and 3.
+    // initial[4]: last: [16, 4, 0, 12] c[32] r[0]: 32
     //
-    // Activity is of applictions starting or stopping when changing
-    // the server XML.
+    // c0(+16) r0(none)
+    // c1(+4)  r1(none)
+    // c2(+0)  r2(none)
+    // c3(+12) r3(none)
     //
-    // For example going from XMLS[2] to XMLS[3] means
-    // going from 8 apps to 16 apps, which means starting apps 8 to 15.
-    // Going to XMLS[0] means going from XMLS[3] to XMLS[0], which
-    // means going from 16 apps down to 1 app, which means stopping
-    // apps 1 to 15.
+    // update[4-1] last: [1, 1, 0, 0] c[0] r[30]: 2
+    //
+    // r0(-12-3)
+    // r1(-3)
+    // r2(none)
+    // r3(-12)
+    //
+    // update[1-2] last: [4, 4, 0, 0] c[6] r[0]: 8
+    //
+    // c0(+3)
+    // c1(+3)
+    // c2(none)
+    // c3(none)
+    //
+    // update[2-3] last: [8, 4, 4, 0] c[8] r[0]: 16
+    //
+    // c0(+4)
+    // c1(none)
+    // c3(+4)
+    // c4(none)
+    //
+    // update[3-4] last: [16, 4, 0, 12] c[20] r[4]: 32
+    //
+    // c0(+8)
+    // c1(none)
+    // r2(-4)
+    // c3(+12)
 
-    // Going from nothing to 0 through 15.
-    public static final int[] INITIAL_ACTIVITY_RANGE = { 0, 15 };
-
-    public static final int[][] UPDATE_ACTIVITY_RANGES = { { -2, -16 }, { 1, 3 }, { 4, 7 }, { 8, 15 } };
-
-    // Going from 0 through 15 to nothing.
-    public static final int[] FINAL_ACTIVITY_RANGE = { -1, -16 };
-
-    public static final int[] INITIAL_RUNNING_RANGE = { 0, 15 };
-    public static final int[][] RUNNING_RANGES = { { 0, 0 }, { 0, 3 }, { 0, 7 }, { 0, 15 } };
-    public static final int[] FINAL_RUNNING_RANGE = { 0, 15 };
-
-    public static final String[] APP_NAMES = {
-                                               "snoop0", "snoop1", "snoop2", "snoop3",
-                                               "snoop4", "snoop5", "snoop6", "snoop7",
-                                               "snoop8", "snoop9", "snoop10", "snoop11",
-                                               "snoop12", "snoop13", "snoop14", "snoop15" };
+    // initial[4]: last: [16, 4, 0, 12] c[32] r[0]:  32
+    // update[4-1] last: [1, 1, 0, 0]   c[0]  r[30]:  2
+    // update[1-2] last: [4, 4, 0, 0]   c[6]  r[0]:   8
+    // update[2-3] last: [8, 4, 4, 0]   c[8]  r[0]:  16
+    // update[3-4] last: [16, 4, 0, 12] c[20] r[4]:  32
 
     // Usage grids:
 
@@ -136,32 +174,38 @@ public class SharedLibTest {
 
     public static final int NUM_VALUES = 4;
 
-    public static final int[][] valueGrid1 = { { 1, 1, 0, 0 } };
+    public static final int[][] valueGrid1 =
+                { { 1, 1, 0, 0 } };
 
-    public static final int[][] valueGrid4 = { { 1, 1, 0, 0 }, { 1, 1, 0, 0 }, { 1, 1, 0, 0 }, { 1, 1, 0, 0 } };
+    public static final int[][] valueGrid4 =
+                { { 1, 1, 0, 0 }, { 1, 1, 0, 0 }, { 1, 1, 0, 0 }, { 1, 1, 0, 0 } };
 
-    public static final int[][] valueGrid8 = { { 1, 1, 0, 0 }, { 1, 1, 0, 0 }, { 1, 1, 0, 0 }, { 1, 1, 0, 0 },
-                                               { 1, 0, 1, 0 }, { 1, 0, 1, 0 }, { 1, 0, 1, 0 }, { 1, 0, 1, 0 } };
+    public static final int[][] valueGrid8 =
+                { { 1, 1, 0, 0 }, { 1, 1, 0, 0 }, { 1, 1, 0, 0 }, { 1, 1, 0, 0 },
+                  { 1, 0, 1, 0 }, { 1, 0, 1, 0 }, { 1, 0, 1, 0 }, { 1, 0, 1, 0 } };
 
-    public static final int[][] valueGrid16 = { { 1, 1, 0, 0 }, { 1, 1, 0, 0 }, { 1, 1, 0, 0 }, { 1, 1, 0, 0 },
-                                                { 1, 0, 0, 1 }, { 1, 0, 0, 1 }, { 1, 0, 0, 1 }, { 1, 0, 0, 1 },
-                                                { 1, 0, 0, 1 }, { 1, 0, 0, 1 }, { 1, 0, 0, 1 }, { 1, 0, 0, 1 },
-                                                { 1, 0, 0, 1 }, { 1, 0, 0, 1 }, { 1, 0, 0, 1 }, { 1, 0, 0, 1 } };
+    public static final int[][] valueGrid16 =
+                { { 1, 1, 0, 0 }, { 1, 1, 0, 0 }, { 1, 1, 0, 0 }, { 1, 1, 0, 0 },
+                  { 1, 0, 0, 1 }, { 1, 0, 0, 1 }, { 1, 0, 0, 1 }, { 1, 0, 0, 1 },
+                  { 1, 0, 0, 1 }, { 1, 0, 0, 1 }, { 1, 0, 0, 1 }, { 1, 0, 0, 1 },
+                  { 1, 0, 0, 1 }, { 1, 0, 0, 1 }, { 1, 0, 0, 1 }, { 1, 0, 0, 1 } };
 
     public static final int[][][] valueGrids = { valueGrid1, valueGrid4, valueGrid8, valueGrid16 };
 
     protected static final String SNOOP_URL_PREFIX = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/snoop";
     protected static final String SNOOP_RESPONSE = "Shared Library Test Servlet";
 
-    protected static final String[] PRESENT_VALUES = { "<tr><td>com.ibm.ws.test0.Test0</td><td>interface com.ibm.ws.test0.Test0</td><td>TEST_VALUE</td><td>Test0</td></tr>",
-                                                       "<tr><td>com.ibm.ws.test1.Test1</td><td>interface com.ibm.ws.test1.Test1</td><td>TEST_VALUE</td><td>Test1</td></tr>",
-                                                       "<tr><td>com.ibm.ws.test2.Test2</td><td>interface com.ibm.ws.test2.Test2</td><td>TEST_VALUE</td><td>Test2</td></tr>",
-                                                       "<tr><td>com.ibm.ws.test3.Test3</td><td>interface com.ibm.ws.test3.Test3</td><td>TEST_VALUE</td><td>Test3</td></tr>" };
+    protected static final String[] PRESENT_VALUES =
+                { "<tr><td>com.ibm.ws.test0.Test0</td><td>interface com.ibm.ws.test0.Test0</td><td>TEST_VALUE</td><td>Test0</td></tr>",
+                  "<tr><td>com.ibm.ws.test1.Test1</td><td>interface com.ibm.ws.test1.Test1</td><td>TEST_VALUE</td><td>Test1</td></tr>",
+                  "<tr><td>com.ibm.ws.test2.Test2</td><td>interface com.ibm.ws.test2.Test2</td><td>TEST_VALUE</td><td>Test2</td></tr>",
+                  "<tr><td>com.ibm.ws.test3.Test3</td><td>interface com.ibm.ws.test3.Test3</td><td>TEST_VALUE</td><td>Test3</td></tr>" };
 
-    protected static final String[] ABSENT_VALUES = { "<tr><td>com.ibm.ws.test0.Test0</td><td>null</td><td>TEST_VALUE</td><td>null</td></tr>",
-                                                      "<tr><td>com.ibm.ws.test1.Test1</td><td>null</td><td>TEST_VALUE</td><td>null</td></tr>",
-                                                      "<tr><td>com.ibm.ws.test2.Test2</td><td>null</td><td>TEST_VALUE</td><td>null</td></tr>",
-                                                      "<tr><td>com.ibm.ws.test3.Test3</td><td>null</td><td>TEST_VALUE</td><td>null</td></tr>" };
+    protected static final String[] ABSENT_VALUES =
+                { "<tr><td>com.ibm.ws.test0.Test0</td><td>null</td><td>TEST_VALUE</td><td>null</td></tr>",
+                  "<tr><td>com.ibm.ws.test1.Test1</td><td>null</td><td>TEST_VALUE</td><td>null</td></tr>",
+                  "<tr><td>com.ibm.ws.test2.Test2</td><td>null</td><td>TEST_VALUE</td><td>null</td></tr>",
+                  "<tr><td>com.ibm.ws.test3.Test3</td><td>null</td><td>TEST_VALUE</td><td>null</td></tr>" };
 
     protected static final int CONN_TIMEOUT = 10;
 
@@ -227,7 +271,7 @@ public class SharedLibTest {
 
     public static void assertSnoop(int[] range, int[][] expectedValues) throws Exception {
         int min = range[0];
-        int max = range[1];
+        int max = range[1] - 1;
 
         System.out.println("Verifying snoop [ " + min + " ] to [ " + max + " ]");
 
@@ -273,8 +317,8 @@ public class SharedLibTest {
         server.setServerConfigurationFile("/sharedLibServer/" + SERVER_16_XML);
         server.startServer("SharedLibTest.log");
         assertNotNull(server.waitForStringInLog("TE9900A"));
-        assertActivity(INITIAL_ACTIVITY_RANGE);
-        assertSnoop(INITIAL_RUNNING_RANGE, valueGrid16);
+        assertActivity(APP_ACTIVITY_RANGE_INITIAL);
+        assertSnoop(APP_RUNNING_RANGE_INITIAL, valueGrid16);
     }
 
     @AfterClass
@@ -291,17 +335,75 @@ public class SharedLibTest {
     public void testSharedLibs() throws Exception {
         System.out.println("Testing shared libraries ...");
 
+        List<ContainerAction> containerActions = new ArrayList<>();
+
+        CaptureData priorData = assertContainerActions(0, 0, EXPECTED_CAPTURES_0_1,
+                                                       INITIAL_CAPTURES, containerActions);
+
         for (int iter = 0; iter < TEST_ITERATIONS; iter++) {
             int configNo = iter % 4;
             String config = SERVER_XMLS[configNo];
-            int[] activityRange = UPDATE_ACTIVITY_RANGES[configNo];
-            int[] runningRange = RUNNING_RANGES[configNo];
+            int[] activityRange = APP_ACTIVITY_RANGES[configNo];
+            int[] runningRange = APP_RUNNING_RANGES[configNo];
 
             System.out.println("Changing configuration to [ " + config + " ]");
             server.setServerConfigurationFile("/sharedLibServer/" + config);
             assertActivity(activityRange);
             assertSnoop(runningRange, valueGrids[configNo]);
+
+            priorData = assertContainerActions(iter + 1, configNo, EXPECTED_CAPTURES[configNo],
+                                               priorData, containerActions);
         }
+    }
+
+    // [11/17/23, 13:17:42:930 EST] 00000035 id=00000000
+    // com.ibm.ws.app.manager.module.internal.CaptureCache 3
+    // [container].capture:
+    // [ C:\\dev\\repos-pub\\ol-baw\\dev\\build.image\\wlp\\usr\\servers\\sharedLibServer\\snoopLib\\test0.jar ]
+    // [ 1 ]
+
+    // [11/16/23, 16:59:39:253 EST] 0000004d id=00000000
+    // com.ibm.ws.app.manager.module.internal.CaptureCache          3
+    // [container].release:
+    // [ C:\\dev\\repos-pub\\ol-baw\\dev\\build.image\\wlp\\usr\\servers\\sharedLibServer\\snoopLib\\test0.jar ]
+    // [ 15 ]:
+    // [ com.ibm.ws.app.manager.module.internal.CaptureCache$CaptureSupplier@45ea83a8 ]
+
+    private static final String CONTAINER_ACTIVITY = "\\[container\\]\\.";
+
+    private CaptureData assertContainerActions(int iter, int configNo, CaptureData expectedCapture,
+                                               CaptureData priorCapture, List<ContainerAction> actions) throws Exception {
+        int oldActionCount = actions.size();
+
+        List<String> allActionLines = server.findStringsInTrace(CONTAINER_ACTIVITY);
+        int newActionCount = allActionLines.size();
+
+        System.out.println("Container actions [ " + iter + " ] [ " + oldActionCount + " ]");
+        System.out.println("  [ " + CONTAINER_ACTIVITY + " ]");
+        System.out.println("================================================================================");
+
+        for ( int actionNo = oldActionCount; actionNo < newActionCount; actionNo++ ) {
+            String actionLine = allActionLines.get(actionNo);
+            System.out.printf("[%8d][ %s ]\n", actionNo, actionLine);
+
+            ContainerAction action = new ContainerAction(actionLine);
+            actions.add(action);
+            System.out.println(action);
+        }
+
+        System.out.println("--------------------------------------------------------------------------------");
+
+        CaptureData newCapture = new CaptureData(priorCapture, actions, oldActionCount, newActionCount);
+        System.out.println("Capture:  " + newCapture);
+        System.out.println("Expected: " + expectedCapture);
+        System.out.println("================================================================================");
+
+        String error = newCapture.compare(expectedCapture);
+        if ( error != null ) {
+            fail(error);
+        }
+
+        return newCapture;
     }
 
     private static final String START_CODE = "CWWKZ0001I:.*";
@@ -310,19 +412,30 @@ public class SharedLibTest {
     private static void assertActivity(int[] range) {
         System.out.println("Verifying activity ...");
 
+        // [ 0,   16 ] ==> // START 0 .. 15
+
+        // [ 0,    1 ] ==> // START 0 ..  0
+        // [ 1,   16 ] ==> // START 1 .. 15
+
+        // [ -1, -18 ] ==> // STOP  0 .. 15
+        // [ -2, -18 ] ==> // STOP  1 .. 15
+        // [ -1,  -2 ] ==> // STOP  0 ..  1
+
         int min = range[0];
         int max = range[1];
         String code;
         String codeTag;
-        if (min < 0) { // [ -2, -16 ] ==> // STOP 1 ... 15
+        if (min < 0) {
             min = -(min + 1);
             max = -(max + 1);
             code = STOP_CODE;
             codeTag = "Stop";
-        } else { // [ 1, 15 ] ==> START 1 ... 15
+        } else {
             code = START_CODE;
             codeTag = "Start";
         }
+
+        max -= 1;
 
         System.out.println("Min [ " + min + " ] Max [ " + max + " ] Code [ " + code + " ] ( " + codeTag + " )");
 
@@ -434,5 +547,401 @@ public class SharedLibTest {
 
         fail("Bad app number [ " + action + " ]");
         return -1;
+    }
+
+    //
+
+    public static final String ACTION_TAG = "[container].";
+    public static final String CAPTURE_TAG = "capture";
+    public static final String RELEASE_TAG = "release";
+
+    private static class ContainerAction {
+        public final boolean isCapture;
+        public final String archive;
+        public final int references;
+        public final String supplierClass;
+
+        public final String asString;
+
+        @Override
+        public String toString() {
+            return asString;
+        }
+
+        public ContainerAction(String line) {
+            // [container].release:
+            // [ C:\\dev\\repos-pub\\ol-baw\\dev\\build.image\\wlp\\usr\\servers\\sharedLibServer\\snoopLib\\test0.jar ]
+            // [ 15 ]:
+            // [ com.ibm.ws.app.manager.module.internal.CaptureCache$CaptureSupplier@45ea83a8 ]
+
+            int lineLen = line.length();
+
+            int actionOffset = line.indexOf(ACTION_TAG);
+            if ( actionOffset == -1 ) {
+                throw new IllegalArgumentException("No action tag [ " + line + " ]");
+            }
+
+            actionOffset += ACTION_TAG.length();
+            if ( line.regionMatches(actionOffset, CAPTURE_TAG, 0, CAPTURE_TAG.length()) ) {
+                this.isCapture = true;
+            } else if ( line.regionMatches(actionOffset, RELEASE_TAG, 0, RELEASE_TAG.length()) ) {
+                this.isCapture = false;
+            } else {
+                throw new IllegalArgumentException("Bad action [ " + line + " ]");
+            }
+
+            actionOffset += (this.isCapture ? CAPTURE_TAG : RELEASE_TAG).length();
+
+            int firstBrace = -1;
+            int lastBrace = -1;
+
+            int lastSlash = -1;
+
+            while ( (lastBrace == -1) && (actionOffset < lineLen) ) {
+                char c = line.charAt(actionOffset);
+                if ( firstBrace == -1 ) {
+                    if ( c == '[' ) {
+                        firstBrace = actionOffset;
+                    }
+                } else {
+                    if ( c == '[' ) {
+                        throw new IllegalArgumentException("Misplaced open brace [ " + line + " ]");
+                    } else if ( (c == '/') || (c == '\\') ) {
+                        lastSlash = actionOffset;
+                    } else if ( c == ']' ) {
+                        lastBrace = actionOffset;
+                    }
+                }
+                actionOffset++;
+            }
+
+            if ( firstBrace == -1 ) {
+                throw new IllegalArgumentException("Missing open brace [ " + line + " ]");
+            } else if ( lastBrace == -1 ) {
+                throw new IllegalArgumentException("Missing close brace [ " + line + " ]");
+            } else if ( (lastBrace - firstBrace) < 4 ) { // [ x ] // need at least 4
+                throw new IllegalArgumentException("Incomplete archive [ " + line + " ]");
+            } else {
+                firstBrace++; // remove space
+                lastBrace--; // remove space
+            }
+
+            int archiveStart = ( (lastSlash == -1) ? firstBrace : lastSlash );
+            this.archive = line.substring(archiveStart + 1, lastBrace);
+
+            firstBrace = -1;
+            lastBrace = -1;
+
+            while ( (lastBrace == -1) && (actionOffset < lineLen) ) {
+                char c = line.charAt(actionOffset);
+                if ( firstBrace == -1 ) {
+                    if ( c == '[' ) {
+                        firstBrace = actionOffset;
+                    }
+                } else {
+                    if ( c == '[' ) {
+                        throw new IllegalArgumentException("Misplaced open brace [ " + line + " ]");
+                    } else if ( c == ']' ) {
+                        lastBrace = actionOffset;
+                    }
+                }
+                actionOffset++;
+            }
+
+            if ( (lastBrace - firstBrace) < 4 ) { // [ x ] // need at least 4
+                throw new IllegalArgumentException("Incomplete references [ " + line + " ]");
+            } else {
+                firstBrace++; // remove space
+                lastBrace--; // remove space
+            }
+
+            String referencesText = line.substring(firstBrace + 1, lastBrace);
+            try {
+                this.references = Integer.parseInt(referencesText);
+            } catch ( NumberFormatException e ) {
+                throw new IllegalArgumentException("Non-numeric references [ " + line + " ]", e);
+            }
+
+            firstBrace = -1;
+            lastBrace = -1;
+
+            int lastDot = -1;
+
+            while ( (lastBrace == -1) && (actionOffset < lineLen) ) {
+                char c = line.charAt(actionOffset);
+                if ( firstBrace == -1 ) {
+                    if ( c == '[' ) {
+                        firstBrace = actionOffset;
+                    }
+                } else {
+                    if ( c == '[' ) {
+                        throw new IllegalArgumentException("Misplaced open brace [ " + line + " ]");
+                    } else if ( c == '.' ) {
+                        lastDot = actionOffset;
+                    } else if ( c == ']' ) {
+                        lastBrace = actionOffset;
+                    }
+                }
+                actionOffset++;
+            }
+
+            if ( firstBrace == -1 ) {
+                throw new IllegalArgumentException("Missing open brace [ " + line + " ]");
+            } else if ( lastBrace == -1 ) {
+                throw new IllegalArgumentException("Missing close brace [ " + line + " ]");
+            } else if ( (lastBrace - firstBrace) < 4 ) { // [ x ] // need at least 4
+                throw new IllegalArgumentException("Incomplete supplier class [ " + line + " ]");
+            } else {
+                firstBrace++; // remove space
+                lastBrace--; // remove space
+            }
+
+            int supplierStart = ( (lastDot == -1) ? firstBrace : lastDot );
+
+            String useClass = line.substring(supplierStart + 1, lastBrace);
+            if ( useClass.isEmpty() ) {
+                throw new IllegalArgumentException("Empty archive [ " + line + " ]");
+            } else {
+                this.supplierClass = useClass;
+            }
+
+            this.asString = "[" + (isCapture ? "capture" : "release") + "]" +
+                            "[" + String.format("%3d", references) + "]" +
+                            "[" + archive + "]" +
+                            "[" + supplierClass + "]";
+        }
+    }
+
+    //
+
+    // initial[4]: last: [16, 4, 0, 12] c[32] r[0]:  32
+    // update[4-1] last: [1,  1, 0,  0] c[0]  r[30]:  2
+    // update[1-2] last: [4,  4, 0,  0] c[6]  r[0]:   8
+    // update[2-3] last: [8,  4, 4,  0] c[8]  r[0]:  16
+    // update[3-4] last: [16, 4, 0, 12] c[20] r[4]:  32
+
+    public static final CaptureData INITIAL_CAPTURES =
+                    new CaptureData( new int[] { 0, 0, 0, 0 }, 0, 0, 0 );
+
+    public static final CaptureData EXPECTED_CAPTURES_0_1 =
+                    new CaptureData( new int[] { 16, 4, 0, 12 }, 32, 0, 32 );
+
+    public static final CaptureData EXPECTED_CAPTURES_16_1 =
+                    new CaptureData( new int[] { 1, 1, 0, 0 }, 0, 30, 2 );
+
+    public static final CaptureData EXPECTED_CAPTURES_1_4 =
+                    new CaptureData( new int[] { 4, 4, 0, 0 }, 6, 0, 8 );
+
+    public static final CaptureData EXPECTED_CAPTURES_4_8 =
+                    new CaptureData( new int[] { 8, 4, 4, 0 }, 8 + 4, 0 + 4, 16 );
+    // The releases and captures for (4 -> 8) are 4 higher because
+    // the configuration changes for apps 2 and 3, from A: { test0, test1 } to B: { test0, test1 }.
+    // the comparison evidently doesn't compare the actual shared libraries: the comparison
+    // only sees that a different shared library has been set.
+    // similarly for the captures (8 -> 16).
+    public static final CaptureData EXPECTED_CAPTURES_8_16 =
+                    new CaptureData( new int[] { 16, 4, 0, 12 }, 24 + 4, 8 + 4, 32 );
+    // The releases and captures for (8 -> 16) are 4 higher; see the comment
+    // for the captures (4 -> 8).
+
+    public static String fill_3(int value) {
+        return fill(value, 3, ' ');
+    }
+
+    public static String fill_4(int value) {
+        return fill(value, 4, ' ');
+    }
+
+    public static String fill(int value, int width, char fillChar) {
+        char[] valueChars = new char[width];
+
+        int remaining = width;
+
+        if ( value == 0 ) {
+            valueChars[ --remaining ] = '0';
+
+        } else {
+            int initialValue = value;
+
+            while ( (value > 0) && (remaining > 0) ) {
+                int nextDigit = value % 10;
+                value = value / 10;
+
+                valueChars[ --remaining ] = (char) ('0' + nextDigit);
+            }
+
+            if ( value > 0 ) {
+                return Integer.toString(initialValue);
+            }
+        }
+
+        while ( remaining > 0 ) {
+            valueChars[ --remaining ] = fillChar;
+        }
+
+        return new String(valueChars);
+    }
+
+    public static final CaptureData[] EXPECTED_CAPTURES = new CaptureData[]
+                    { EXPECTED_CAPTURES_16_1,
+                      EXPECTED_CAPTURES_1_4,
+                      EXPECTED_CAPTURES_4_8,
+                      EXPECTED_CAPTURES_8_16 };
+
+    public static class CaptureData {
+        public final int[] referenceCounts;
+
+        public final int captureActions;
+        public final int releaseActions;
+        public final int captureTotal;
+
+        public final String asString;
+
+        @Override
+        public String toString() {
+            return asString;
+        }
+
+        private static String asString(int[] refs, int capture, int release, int total) {
+            return "[" + fill_3(refs[0]) +
+                            ", " + fill_3(refs[1]) +
+                            ", " + fill_3(refs[2]) +
+                            ", " + fill_3(refs[3]) + "]" +
+                   " c[" + fill_4(capture) + "]" +
+                   " r[" + fill_4(release) + "]: " +
+                   fill_4(total);
+        }
+
+        public CaptureData(int[] referenceCounts, int captureActions, int releaseActions, int captureTotal) {
+            int captured = 0;
+            for ( int refNo = 0; refNo < referenceCounts.length; refNo++ ) {
+                captured += referenceCounts[refNo];
+            }
+            if ( captured != captureTotal ) {
+                throw new IllegalArgumentException("Inconsistent capture total [ " + captureTotal + " ]");
+            }
+
+            this.referenceCounts = referenceCounts;
+            this.captureActions = captureActions;
+            this.releaseActions = releaseActions;
+            this.captureTotal = captureTotal;
+
+            // [16, 4, 0, 12] c[32] r[0]:  32
+
+            this.asString = asString(referenceCounts,
+                                     captureActions, releaseActions, captureTotal);
+        }
+
+        public CaptureData(int[] referenceCounts, int captureActions, int releaseActions, CaptureData priorData) {
+            this(referenceCounts,
+                 captureActions, releaseActions,
+                 priorData.captureTotal + captureActions + releaseActions);
+        }
+
+        private static int archiveNo(String archive) {
+            int archiveLen = archive.length();
+            if ( archiveLen < 5 ) {
+                throw new IllegalArgumentException("Unexpected archive [ " + archive + " ]");
+            }
+            if ( archive.charAt(archiveLen - 4) != '.' ) {
+                throw new IllegalArgumentException("Non-valid archive [ " + archive + " ]");
+            }
+
+            char archiveChar = archive.charAt(archiveLen - 5);
+            int archiveNo = archiveChar - '0';
+            if ( (archiveNo < 0) || (archiveNo > 3) ) {
+                throw new IllegalArgumentException("Archive out of range [ " + archive + " ]");
+            }
+            return archiveNo;
+        }
+
+        public CaptureData(CaptureData priorData,
+                           List<ContainerAction> actions, int first, int last) {
+
+            int[] useReferenceCounts = new int[4];
+
+            int useCaptureTotal;
+
+            if ( priorData != null ) {
+                for ( int archiveNo = 0; archiveNo < 4; archiveNo++ ) {
+                    useReferenceCounts[archiveNo] = priorData.referenceCounts[archiveNo];
+                }
+                useCaptureTotal = priorData.captureTotal;
+            } else {
+                useCaptureTotal = 0;
+            }
+
+            int useCaptureActions = 0;
+            int useReleaseActions = 0;
+
+            for ( int actionNo = first; actionNo < last; actionNo++ ) {
+                ContainerAction action = actions.get(actionNo);
+
+                if ( action.isCapture ) {
+                    useCaptureActions++;
+                    useCaptureTotal++;
+                } else {
+                    useReleaseActions++;
+                    useCaptureTotal--;
+                }
+
+                useReferenceCounts[ archiveNo(action.archive) ] = action.references;
+
+                // Use the most recent action value.
+                //
+                // Alternatively, the reference counts could be incrementally adjusted:
+                //
+                // int refCount =
+                //   ( useReferenceCounts[ archiveNo(action.archive) ] += (action.isCapture ? +1 : -1) );
+                //
+                // assertEquals(refCount, action.references);
+                //
+                // TODO: Add this test.
+            }
+
+            this.referenceCounts = useReferenceCounts;
+            this.captureActions = useCaptureActions;
+            this.releaseActions = useReleaseActions;
+            this.captureTotal = useCaptureTotal;
+
+            this.asString = asString(useReferenceCounts,
+                                     useCaptureActions, useReleaseActions, useCaptureTotal);
+        }
+
+        public String compare(CaptureData expected) {
+            String error;
+
+            for ( int archiveNo = 0; archiveNo < 4; archiveNo++ ) {
+                error = compare( referenceCounts[archiveNo], expected.referenceCounts[archiveNo],
+                                 "Incorrect references to archive [ " + archiveNo + " ]");
+                if ( error != null ) {
+                    return error;
+                }
+            }
+
+            error = compare( captureActions, expected.captureActions, "Incorrect capture actions");
+            if ( error != null ) {
+                return error;
+            }
+
+            error = compare( releaseActions, expected.releaseActions, "Incorrect release actions");
+            if ( error != null ) {
+                return error;
+            }
+
+            error = compare( captureTotal, expected.captureTotal, "Incorrect capture total");
+            if ( error != null ) {
+                return error;
+            }
+
+            return null;
+        }
+
+        public String compare(int actual, int expected, String message) {
+            if ( actual == expected ) {
+                return null;
+            }
+            return ( message + "; expected [ " + expected + " ] actual [ " + actual + " ]" );
+        }
     }
 }

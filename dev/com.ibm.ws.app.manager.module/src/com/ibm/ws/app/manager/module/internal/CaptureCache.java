@@ -145,6 +145,9 @@ public class CaptureCache<T> {
         }
     }
 
+    private static Function <String, KeyData> keySource =
+        (String missingKey) -> new KeyData( new String(missingKey) );
+
     /**
      * Acquire a key.
      *
@@ -159,18 +162,10 @@ public class CaptureCache<T> {
      *
      * @return A unique, internal, copy of the key.
      */
-    protected String acquire(String key) {
-        Function <String, KeyData> keySource =
-            (String missingKey) -> new KeyData( new String(missingKey) );
-
+    private KeyData acquire(String key) {
         KeyData keyData = keys.computeIfAbsent(key, keySource);
-        String uniqueKey = keyData.getKey();
-        int newCount = keyData.increment();
-
-        if ( tc.isDebugEnabled() ) {
-            debug( getTag(), "acquire", "[ " + key + " ] [ " + newCount + " ]" );
-        }
-        return uniqueKey;
+        keyData.increment();
+        return keyData;
     }
 
     /**
@@ -196,7 +191,7 @@ public class CaptureCache<T> {
             KeyData keyData = keys.get(key);
             if ( keyData == null ) {
                 uniqueKey = null;
-                newCount = 0;
+                newCount = -1;
                 supplier = null;
             } else {
                 uniqueKey = keyData.getKey();
@@ -211,7 +206,9 @@ public class CaptureCache<T> {
         }
 
         if ( tc.isDebugEnabled() ) {
-            debug( getTag(), "release", "[ " + key + " ] [ " + newCount + " ]: [ " + supplier + " ]" );
+            debug( getTag(),
+                   "release",
+                   "[ " + key + " ] [ " + newCount + " ]: [ " + supplier + " ]" );
         }
     }
 
@@ -292,9 +289,23 @@ public class CaptureCache<T> {
         Function<String, CaptureSupplier<T>> supplierSource =
             (String uniqueKey) -> new CaptureSupplier<T>(uniqueKey, baseSupplier);
 
+        KeyData keyData;
+        CaptureSupplier<T> captureSupplier;
+
         synchronized( cacheLock ) {
-            return storage.computeIfAbsent( acquire(key), supplierSource );
+            keyData = acquire(key);
+            captureSupplier = storage.computeIfAbsent( keyData.getKey(), supplierSource );
         }
+
+        if ( tc.isDebugEnabled() ) {
+            debug( getTag(),
+                   "capture",
+                   "[ " + keyData.getKey() + " ]" +
+                   " [ " + keyData.getCount() + " ]" +
+                   " [ " + captureSupplier + " ]" );
+        }
+
+        return captureSupplier;
     }
 
     //
