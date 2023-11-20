@@ -289,8 +289,7 @@ public class ArtifactDownloaderUtils {
 
     public static void addBasicAuthentication(URLConnection conn, MavenRepository repository) {
         if (repository.getUserId() != null && repository.getPassword() != null) {
-            final String encodedPassword = formatRepositoryPassword(repository.getPassword());
-            conn.setRequestProperty("Authorization", "Basic " + base64Encode(repository.getUserId() + ":" + PasswordUtil.passwordDecode(encodedPassword)));
+            conn.setRequestProperty("Authorization", "Basic " + base64Encode(repository.getUserId() + ":" + PasswordUtil.passwordDecode(repository.getPassword())));
         } else {
             return;
         }
@@ -309,21 +308,19 @@ public class ArtifactDownloaderUtils {
         System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
 
         if (envMap.get("https.proxyUser") != null) {
-            final String encodedPassword = formatRepositoryPassword((String) envMap.get("https.proxyPassword"));
-            checkRepositoryPassword(encodedPassword);
+            checkRepositoryPassword((String) envMap.get("https.proxyPassword"));
             Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication((String) envMap.get("https.proxyUser"), PasswordUtil.passwordDecode(encodedPassword).toCharArray());
+                    return new PasswordAuthentication((String) envMap.get("https.proxyUser"), PasswordUtil.passwordDecode((String) envMap.get("https.proxyPassword")).toCharArray());
                 }
             });
         } else if (envMap.get("http.proxyUser") != null) {
-            final String encodedPassword = formatRepositoryPassword((String) envMap.get("http.proxyPassword"));
-            checkRepositoryPassword(encodedPassword);
+            checkRepositoryPassword((String) envMap.get("http.proxyPassword"));
             Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication((String) envMap.get("http.proxyUser"), PasswordUtil.passwordDecode(encodedPassword).toCharArray());
+                    return new PasswordAuthentication((String) envMap.get("http.proxyUser"), PasswordUtil.passwordDecode((String) envMap.get("http.proxyPassword")).toCharArray());
                 }
             });
         }
@@ -335,6 +332,10 @@ public class ArtifactDownloaderUtils {
      * @throws InstallException if decoding the password fails due to an unsupported algorithm or invalid password.
      */
     protected static void checkRepositoryPassword(String pwd) throws InstallException {
+        if (!PasswordUtil.isEncrypted(pwd)) {
+            logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PWD_NOT_ENCRYPTED")
+                                   + InstallUtils.NEWLINE);
+        }
         String crypto_algorithm = PasswordUtil.getCryptoAlgorithm(pwd);
         if (crypto_algorithm == null) {
             return;
@@ -347,20 +348,6 @@ public class ArtifactDownloaderUtils {
                 throw new InstallException(Messages.PASSWORD_UTIL_MESSAGES.getLogMessage("PASSWORDUTIL_CYPHER_EXCEPTION"));
             }
         }
-    }
-
-    /**
-     * @param pwd
-     * @return
-     */
-    protected static String formatRepositoryPassword(String pwd) {
-        if (!pwd.startsWith("{")) {
-            pwd = "{}" + pwd;
-            logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PWD_NOT_ENCRYPTED")
-                                   + InstallUtils.NEWLINE);
-            return pwd;
-        }
-        return pwd;
     }
 
 }
