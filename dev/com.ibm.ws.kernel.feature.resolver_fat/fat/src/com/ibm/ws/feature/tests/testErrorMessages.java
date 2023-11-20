@@ -42,7 +42,7 @@ public class testErrorMessages {
 
     @After
     public void tearDown() throws Exception {
-        server.stopServer("CWWKF0001E");
+        server.stopServer("CWWKF0001E", "CWWKF0048E");
     }
 
     @Test
@@ -56,7 +56,7 @@ public class testErrorMessages {
 
         assertNotNull("Expected error message for no env var", server.waitForStringInLog("CWWKF0048E"));
 
-        server.stopServer("CWWKF0048E");
+        server.stopServer("CWWKF0001E", "CWWKF0048E");
     }
 
     @Test
@@ -71,6 +71,6 @@ public class testErrorMessages {
 
         assertNotNull("Expected error message for no mpMetrics in env var but instead installed features: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"), server.waitForStringInLog("CWWKF0049E"));
 
-        server.stopServer("CWWKF0049E");
+        server.stopServer("CWWKF0001E", "CWWKF0049E");
     }
 }

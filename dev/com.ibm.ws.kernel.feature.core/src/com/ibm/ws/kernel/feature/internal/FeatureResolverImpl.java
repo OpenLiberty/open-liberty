@@ -77,6 +77,8 @@ public class FeatureResolverImpl implements FeatureResolver {
 
     private static final boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
 
+    private static boolean shownVersionlessError = false;
+
     private static final String preferedFeatureVersions = System.getenv("PREFERRED_FEATURE_VERSIONS");
 
     private static String[][] parsedPreferedVersions;
@@ -499,15 +501,19 @@ public class FeatureResolverImpl implements FeatureResolver {
                     selectionContext.putVersionless(baseSymbolicName, allVersions);
                 }
                 if (preferredVersion.isEmpty()) {
-                    if (preferedFeatureVersions == null) {
-                        Tr.error((TraceComponent) tc, "UPDATE_MISSING_VERSIONLESS_ENV_VAR");
-                    } else {
-                        String shortName = baseSymbolicName.replace("io.openliberty.internal.versionless.", "");
-                        Tr.error((TraceComponent) tc, "UPDATE_MISSING_VERSIONLESS_FEATURE_VAL", new Object[] { shortName });
+                    if (!shownVersionlessError) {
+                        shownVersionlessError = true;
+                        if (preferedFeatureVersions == null) {
+                            Tr.error((TraceComponent) tc, "UPDATE_MISSING_VERSIONLESS_ENV_VAR");
+                        }
+                        else {
+                            String shortName = baseSymbolicName.replace("io.openliberty.internal.versionless.", "");
+                            Tr.error((TraceComponent) tc, "UPDATE_MISSING_VERSIONLESS_FEATURE_VAL", new Object[] { shortName });
+                        }
                     }
                     baseSymbolicName = "";
                     symbolicName = "";
-                    //throw error, all configured versionless features must have a value in this env var
+                    return;
                 }
             }
         }
