@@ -19,8 +19,10 @@ import java.io.BufferedReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -354,7 +356,87 @@ public class SharedLibTest {
             priorData = assertContainerActions(iter + 1, configNo, EXPECTED_CAPTURES[configNo],
                                                priorData, containerActions);
         }
+
+        verifyContainers(containerActions);
     }
+
+    protected void verifyContainers(List<ContainerAction> containerActions) {
+        Map<String, String> allSuppliers = new HashMap<>();
+        Map<String, int[]> allTransitions = new HashMap<>();
+
+        for ( ContainerAction action : containerActions ) {
+            boolean isCapture = action.isCapture;
+            String archive = action.archive;
+            int references = action.references;
+            String supplier = action.supplierClass;
+
+            String priorSupplier = allSuppliers.get(archive);
+
+            // Transitions shows the amount of activity there is between
+            // the each initial capture of an archive and each final release
+            // of that archive.  For now, the value is only being displayed.
+            // No tests are done on the value.
+
+            int[] transitions = allTransitions.computeIfAbsent(archive, (String useArchive) -> new int[1]);
+
+            String failure;
+            String success;
+            int adjustment;
+
+            if ( isCapture && (references == 1) ) { // Should add a supplier.
+                if ( priorSupplier != null ) {
+                    failure = "found prior supplier [ " + priorSupplier + " ]";
+                    success = null;
+                } else {
+                    failure = null;
+                    success = "adds supplier [ " + supplier + " ]";
+                    allSuppliers.put(archive, supplier);
+                    transitions[0]++;
+                }
+
+            } else if ( !isCapture && (references == 0) ) { // Should remove a supplier.
+                if ( priorSupplier == null ) {
+                    failure = "found no prior supplier";
+                    success = null;
+                } else if ( !priorSupplier.equals(supplier) ) {
+                    failure = "changed supplier from [ " + priorSupplier + " ] to [ " + supplier + " ]";
+                    success = null;
+                } else {
+                    failure = null;
+                    success = "removed supplier [ " + priorSupplier + " ]";
+                    allSuppliers.remove(archive);
+                    transitions[0]++;
+                }
+
+            } else { // Should leave the supplier unchanged.
+                if ( priorSupplier == null ) {
+                    failure = "found no prior supplier";
+                    success = null;
+                } else if ( !priorSupplier.equals(supplier) ) {
+                    failure = "changed supplier from [ " + priorSupplier + " ] to [ " + supplier + " ]";
+                    success = null;
+                } else {
+                    failure = null; // The correct supplier is associated with the archive.
+                    success = null; // "leaves supplier as [ " + activeSupplier + " ]";
+                    transitions[0]++;
+                }
+            }
+
+            if ( (failure != null) || (success != null) ) {
+                String actionTag = ( isCapture ? "Capture" : "Release" );
+                String prefix = "Action [ " + actionTag + " ] references [ " + references + " ] archive [ " + archive + " ]: ";
+                if ( failure != null ) {
+                    fail(prefix + failure);
+                } else {
+                    System.out.println(prefix + success + ": transitions [ " + transitions[0] + " ]");
+                    if ( !isCapture && (references == 0) ) {
+                        transitions[0] = 0;
+                    }
+                }
+            }
+        }
+    }
+
 
     // [11/17/23, 13:17:42:930 EST] 00000035 id=00000000
     // com.ibm.ws.app.manager.module.internal.CaptureCache 3

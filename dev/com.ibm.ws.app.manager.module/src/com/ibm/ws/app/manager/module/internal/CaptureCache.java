@@ -183,9 +183,16 @@ public class CaptureCache<T> {
      * @param key The key which is to be released.
      */
     public void release(String key) {
+
+        // The count must be retrieved within the cache lock:
+        // Other calls to acquire or release. can happen after
+        // releasing the lock.
+
         String uniqueKey;
         int newCount;
         CaptureSupplier<T> supplier;
+
+        boolean isDebugEnabled = tc.isDebugEnabled();
 
         synchronized( cacheLock ) {
             KeyData keyData = keys.get(key);
@@ -195,19 +202,27 @@ public class CaptureCache<T> {
                 supplier = null;
             } else {
                 uniqueKey = keyData.getKey();
-                newCount = keyData.decrement();
+                newCount = keyData.decrement();//++
                 if ( newCount == 0 ) {
                     keys.remove(key);
                     supplier = storage.remove(uniqueKey);
                 } else {
-                    supplier = storage.get(uniqueKey);
+                    if ( isDebugEnabled ) {
+                        supplier = storage.get(uniqueKey);
+                    } else {
+                        supplier = null;
+                    }
                 }
             }
         }
 
-        if ( tc.isDebugEnabled() ) {
-            debug( getTag(),
-                   "release",
+        // 'release' entries must be logged in this format.
+        // The FAT "com.ibm.ws.app.manager_fat/fat/src/"
+        // "componenttest/application/manager/test/SharedLibTest.java"
+        // scans for and parses these log entries.
+
+        if ( isDebugEnabled ) {
+            debug( getTag(), "release",
                    "[ " + key + " ] [ " + newCount + " ]: [ " + supplier + " ]" );
         }
     }
@@ -292,17 +307,32 @@ public class CaptureCache<T> {
         KeyData keyData;
         CaptureSupplier<T> captureSupplier;
 
+        boolean isDebugEnabled = tc.isDebugEnabled();
+        int count = 0;
+
         synchronized( cacheLock ) {
             keyData = acquire(key);
+
+            // The count must be retrieved within the cache lock:
+            // Other calls to acquire or release can happen after
+            // releasing the lock.
+            if ( isDebugEnabled ) {
+                count = keyData.count;
+            } else {
+                count = 0;
+            }
+
             captureSupplier = storage.computeIfAbsent( keyData.getKey(), supplierSource );
         }
 
-        if ( tc.isDebugEnabled() ) {
-            debug( getTag(),
-                   "capture",
-                   "[ " + keyData.getKey() + " ]" +
-                   " [ " + keyData.getCount() + " ]" +
-                   " [ " + captureSupplier + " ]" );
+        // 'capture' entries must be logged in this format.
+        // The FAT "com.ibm.ws.app.manager_fat/fat/src/"
+        // "componenttest/application/manager/test/SharedLibTest.java"
+        // scans for and parses these log entries.
+
+        if ( isDebugEnabled ) {
+            debug( getTag(), "capture",
+                   "[ " + key + " ] [ " + count + " ] [ " + captureSupplier + " ]" );
         }
 
         return captureSupplier;
