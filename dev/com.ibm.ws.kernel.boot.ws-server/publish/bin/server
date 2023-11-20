@@ -1503,9 +1503,9 @@ else
   }
 fi
 
-#
-# main()
-#
+# ########################################################################### #
+# main()                                                                      #
+# ########################################################################### #
 
 SERVER_UNKNOWN_STATUS=5
 
@@ -1544,12 +1544,13 @@ case $OSTYPE in
 
     case $uname in
       CYGWIN_*)
-        WLP_INSTALL_DIR=`cygpath -ma "${0}"/../..`
+        # This is a very unlikely path. 
+        WLP_INSTALL_DIR=$(cygpath -ma "$(findRealPath "$0" | sed 's|\\|/|g' | sed 's|/[^/]*$||')"/..)
         ;;
 
       *)
-        dirname=`dirname "$0"`
-        WLP_INSTALL_DIR=`unset CDPATH; cd "$dirname/.." && pwd`
+        dirname=$(dirname "$0")
+        WLP_INSTALL_DIR=$(findRealPath "${dirname}/..")
     esac
 esac
 
