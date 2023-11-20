@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -83,6 +83,8 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
     private static final String FORBIDDEN_PROPERTIES = "forbidden.properties";
 
+    public static final String NOTHING_FORBIDDEN_PROPERTY = "io.openliberty.classloading.nothing.forbidden";
+
     /**
      * Load all available {@link #FORBIDDEN_PROPERTIES} resources, answering
      * property keys as forbidden class names.  Forbidden class names must be
@@ -99,6 +101,11 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, "Loading forbidden.properties");
         }
+
+        if (Boolean.getBoolean(NOTHING_FORBIDDEN_PROPERTY)) {
+            return Collections.emptySet();
+        }
+
         Set<String> forbidden = new HashSet<>();
         try (InputStream inputStream = AppClassLoader.class.getResourceAsStream(FORBIDDEN_PROPERTIES)) {
             Properties props = new Properties();
@@ -109,12 +116,11 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         } catch (IOException e) {
             // AutoFFDC
         }
-
         if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, "Loaded Forbidden Set" + forbidden);
         }
         return forbidden;
-    }    
+    }
 
     static {
         ClassLoader.registerAsParallelCapable();

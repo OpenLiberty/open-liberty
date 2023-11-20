@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -84,9 +84,9 @@ public class PolicyExecutorTest {
 
         ConcurrentHashMap<String, PolicyExecutorImpl> policyExecutors = new ConcurrentHashMap<String, PolicyExecutorImpl>();
 
-        PolicyExecutor executor0 = new PolicyExecutorImpl(globalExecutor, "testExpedite-0", null, policyExecutors);
+        PolicyExecutor executor0 = new PolicyExecutorImpl(globalExecutor, "testExpedite-0", null, policyExecutors, null);
         executor0.expedite(0).maxConcurrency(ExecutorServiceImpl.MINIMUM_POOL_SIZE + 3).maxQueueSize(ExecutorServiceImpl.MINIMUM_POOL_SIZE + 2);
-        PolicyExecutor executor2 = new PolicyExecutorImpl(globalExecutor, "testExpedite-2", "myApp", policyExecutors);
+        PolicyExecutor executor2 = new PolicyExecutorImpl(globalExecutor, "testExpedite-2", "myApp", policyExecutors, null);
         executor2.expedite(2).maxConcurrency(4).maxQueueSize(4);
 
         // Share a counter between all tasks to record the order in which they run

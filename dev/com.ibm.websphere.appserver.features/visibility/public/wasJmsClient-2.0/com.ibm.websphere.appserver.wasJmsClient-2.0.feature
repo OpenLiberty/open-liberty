@@ -4,7 +4,15 @@ WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-API-Package: javax.jms; version="2.0"; type="spec", \
- com.ibm.websphere.sib.api.jms; type="internal"
+ com.ibm.websphere.sib.api.jms; type="internal", \
+ com.ibm.websphere.endpoint; type="ibm-api", \
+ com.ibm.ws.jca.cm.mbean; type="ibm-api", \
+ javax.resource; type="spec", \
+ javax.resource.cci; type="spec", \
+ javax.resource.spi; type="spec", \
+ javax.resource.spi.endpoint; type="spec", \
+ javax.resource.spi.security; type="spec", \
+ javax.resource.spi.work; type="spec"
 IBM-ShortName: wasJmsClient-2.0
 Subsystem-Name: JMS 2.0 Client for Message Server
 -features=\

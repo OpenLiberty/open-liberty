@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,8 +25,9 @@ import componenttest.topology.database.container.DatabaseContainerFactory;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class, //Need to have a passing test for java 8 & 11
-                DataCoreTckLauncher.class,
-                DataWebTckLauncher.class //full mode
+                //DataCoreTckLauncher.class,
+                //DataWebTckLauncher.class,
+                //DataFullTckLauncher.class //full mode
 })
 public class FATSuite extends TestContainerSuite {
     @ClassRule

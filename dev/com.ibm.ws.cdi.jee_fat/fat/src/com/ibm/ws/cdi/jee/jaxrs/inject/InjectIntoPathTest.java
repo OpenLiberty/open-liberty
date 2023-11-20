@@ -40,7 +40,9 @@ public class InjectIntoPathTest {
     public static final String APP_NAME = "injectIntoPath";
     public static final String SERVER_NAME = "jaxInjectIntoPathServer";
 
-    //not bothering to repeat with EE8 ... the EE9 version is mostly a transformed version of the EE8 code
+    //RestEasy as used in EE10 has a dependency on the ManagedBean APIs
+    //If the test is repeated using EE11 then this test currently fails because ManagedBean is not in EE11.
+    //That dependency should go away in future and the repeat can be added.
     @ClassRule
     public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE9, EERepeatActions.EE7);
 

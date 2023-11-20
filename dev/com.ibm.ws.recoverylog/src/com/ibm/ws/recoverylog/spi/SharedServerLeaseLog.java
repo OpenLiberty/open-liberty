@@ -33,11 +33,11 @@ public interface SharedServerLeaseLog {
 
     public boolean lockLocalLease(String recoveryIdentity);
 
-    public boolean releaseLocalLease(String recoveryIdentity) throws Exception;
+    public void releaseLocalLease(String recoveryIdentity) throws Exception;
 
     public boolean lockPeerLease(String recoveryIdentity);
 
-    public boolean releasePeerLease(String recoveryIdentity) throws Exception;
+    public void releasePeerLease(String recoveryIdentity) throws Exception;
 
     public void setPeerRecoveryLeaseTimeout(int leaseTimeout);
 

@@ -12,6 +12,7 @@ package io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation
 import static io.openliberty.microprofile.telemetry.internal_fat.common.SpanDataMatcher.isSpan;
 import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.HTTP_METHOD;
 import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.HTTP_STATUS_CODE;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -23,18 +24,20 @@ import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import componenttest.annotation.SkipForRepeat;
 import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
-import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.UriBuilder;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 
 /**
  *
@@ -82,7 +85,9 @@ public class JaxRsResponseCodeTestServlet extends FATServlet {
         doTestForStatusCode(307);
     }
 
+    // Method followRedirects() was unavailable before RestClient 2.0
     @Test
+    @SkipForRepeat({TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID})
     public void testRedirectWithRestClient() {
         JaxRsResponseCodeTestClient client = RestClientBuilder.newBuilder()
                         .baseUri(getBaseUri())

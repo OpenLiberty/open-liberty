@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2014 IBM Corporation and others.
+ * Copyright (c) 2001, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -54,8 +54,8 @@ public class CMMessageDrivenBeanO
     public synchronized UserTransaction getUserTransaction() //d116376
     {
         Tr.error(tc, "METHOD_NOT_ALLOWED_CNTR0047E",
-                 "CMMessageDrivenBeanO.getUserTransaction()");
-        throw new IllegalStateException("Method Not Allowed Exception: See Message-drive Bean Component " +
+                 "EJBContext.getUserTransaction()");
+        throw new IllegalStateException("Method Not Allowed Exception: See Message-driven Bean Component " +
                                         "Contract section of the applicable EJB Specification.");
     }
 

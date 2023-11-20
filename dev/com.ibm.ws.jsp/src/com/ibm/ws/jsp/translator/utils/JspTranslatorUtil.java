@@ -1,18 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsp.translator.utils;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +36,6 @@ import com.ibm.ws.jsp.JspOptions;
 import com.ibm.ws.jsp.configuration.JspConfiguration;
 import com.ibm.ws.jsp.taglib.TagLibraryCache;
 import com.ibm.ws.jsp.taglib.TagLibraryInfoImpl;
-import com.ibm.ws.jsp.tools.JspFileUtils.InnerclassFilenameFilter; //PI12939
 import com.ibm.ws.jsp.translator.JspTranslationException;
 import com.ibm.ws.jsp.translator.JspTranslator;
 import com.ibm.ws.jsp.translator.JspTranslatorFactory;
@@ -92,7 +89,7 @@ public class JspTranslatorUtil {
 
         long startTranslationTime = System.nanoTime();
         FileLocker zosFileLocker = null; //453730
-        if (isZOS && !options.isUseInMemory()) {  //453730  //PK76810 skip if use in memory
+        if (isZOS) {  //453730  //PK76810 skip if use in memory
             zosFileLocker = (FileLocker) new JspClassFactory().getInstanceOf("FileLocker"); //448201
             
             //PK76810  - Starts
@@ -244,24 +241,12 @@ public class JspTranslatorUtil {
         inputMap.put("JspIdConsumerCounter", JspIdConsumerCounter);
         inputMap.put("JspIdConsumerPrefix", JspIdConsumerPrefix);
 
-        String jspVisitorCollectionId = null;
-        String tagFileVisitorCollectionId = null;
-        if (!options.isUseInMemory()) {
-	        jspVisitorCollectionId = JSP_TRANSLATION_ID;
-	        tagFileVisitorCollectionId = TAGFILE_TRANSLATION_ID;
-
+        String jspVisitorCollectionId = JSP_TRANSLATION_ID;
+        String tagFileVisitorCollectionId = TAGFILE_TRANSLATION_ID;
+	    
         if (options.isDebugEnabled()) {
             jspVisitorCollectionId = DEBUG_JSP_TRANSLATION_ID;
             tagFileVisitorCollectionId = DEBUG_TAGFILE_TRANSLATION_ID;
-        }
-        } else {
-	        jspVisitorCollectionId = IN_MEMORY_JSP_TRANSLATION_ID;
-	        tagFileVisitorCollectionId = IN_MEMORY_TAGFILE_TRANSLATION_ID;
-	
-	        if (options.isDebugEnabled()) {
-	            jspVisitorCollectionId = IN_MEMORY_DEBUG_JSP_TRANSLATION_ID;
-	            tagFileVisitorCollectionId = IN_MEMORY_DEBUG_TAGFILE_TRANSLATION_ID;
-	        }
         }
 
         JspTranslator jspTranslator = JspTranslatorFactory.getFactory().createTranslator(jspVisitorCollectionId, jspResources.getInputSource(), context, config, options, tlc.getImplicitTagLibPrefixMap());
@@ -751,4 +736,22 @@ public class JspTranslatorUtil {
             logger.exiting(CLASS_NAME, "deleteClassFiles", "Exiting");
         }
     }
+
+    // PI12939
+    private static class InnerclassFilenameFilter implements FilenameFilter {
+		String filename=null;
+		public InnerclassFilenameFilter(String filename){
+			this.filename=filename;
+		}
+		public boolean accept(File dir, String name) {
+			int dollarIndex = name.indexOf("$");
+			if (dollarIndex > -1) {
+				String nameStart = name.substring(0, dollarIndex);
+				if (this.filename.equals(nameStart)) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
 }

@@ -75,7 +75,7 @@ public class HibernateSearchTest extends FATServletClient {
     @ClassRule
     public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME,
                                                          EERepeatActions.EE10,
-                                                         EERepeatActions.EE9,
+                                                         EERepeatActions.EE11,
                                                          EERepeatActions.EE8);
 
     @BeforeClass

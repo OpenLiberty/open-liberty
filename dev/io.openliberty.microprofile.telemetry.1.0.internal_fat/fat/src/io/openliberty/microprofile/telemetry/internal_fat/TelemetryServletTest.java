@@ -17,6 +17,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PropertiesAsset;
@@ -28,6 +29,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.servlet.HttpTraceTestServlet;
@@ -35,6 +37,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.servlet.SimpleSer
 import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporterProvider;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.spans.AbstractSpanMatcher;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
 
 /**
@@ -53,6 +56,9 @@ public class TelemetryServletTest extends FATServletClient {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
+
     @BeforeClass
     public static void setUp() throws Exception {
         PropertiesAsset appConfig = new PropertiesAsset()
@@ -64,6 +70,7 @@ public class TelemetryServletTest extends FATServletClient {
                         .addPackage(SimpleServlet.class.getPackage())
                         .addPackage(InMemorySpanExporter.class.getPackage())
                         .addPackage(TestSpans.class.getPackage())
+                        .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
                         .addAsWebResource(new File("test-applications/TelemetryServletTestApp.war/hello.html"))
                         .addAsWebResource(new File("test-applications/TelemetryServletTestApp.war/dice.jsp"))

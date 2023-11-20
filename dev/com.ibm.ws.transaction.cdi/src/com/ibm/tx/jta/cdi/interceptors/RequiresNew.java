@@ -23,7 +23,6 @@ import com.ibm.tx.TranConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.uow.UOWSynchronizationRegistry;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 @Transactional(value = TxType.REQUIRES_NEW)
 @Priority(Interceptor.Priority.PLATFORM_BEFORE + 200)
@@ -45,23 +44,10 @@ public class RequiresNew extends TransactionalInterceptor {
      */
 
     @AroundInvoke
-    @FFDCIgnore(value = { Exception.class })
     public Object requiresNew(final InvocationContext context) throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "requiresNew", context);
 
-        Object ret = null;
-        try {
-            ret = runUnderUOWManagingEnablement(UOWSynchronizationRegistry.UOW_TYPE_GLOBAL_TRANSACTION, false, context, "REQUIRES_NEW");
-        } catch (Exception e) {
-            final Exception e1 = processException(context, e);
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "required", e1);
-            throw e1;
-        }
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "requiresNew", ret);
-        return ret;
+        return runUnderUOWManagingEnablement(UOWSynchronizationRegistry.UOW_TYPE_GLOBAL_TRANSACTION, false, context, "REQUIRES_NEW");
     }
 }

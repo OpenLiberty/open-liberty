@@ -31,7 +31,7 @@ import componenttest.topology.utils.tck.TCKRunner;
  * NOTE: This test class is not run since it isn't in the FATSuite.
  * The OpenLiberty implementation of Jakarta Data doesn't support standalone mode,
  * but this test class is nice for manually testing the TCK framework to make sure it works as intended.
- * Keep it around until the TCK is finished beign written.
+ * Keep it around until the TCK is finished being written.
  */
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
@@ -50,12 +50,13 @@ public class DataStandaloneTckLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("jimage.dir", "/jimage/output/");
         additionalProps.put("jakarta.tck.profile", "none");
+
         //FIXME Always skip signature tests since our implementation has experimental API
         additionalProps.put("included.groups", "standalone & persistence & !signature");
 
-        //TODO Remove once TCK is available from stagging repo
-        additionalProps.put("jakarta.data.groupid", "io.openliberty.jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.0-20230802");
+        //TODO Update once TCK is available as GA
+        additionalProps.put("jakarta.data.groupid", "jakarta.data");
+        additionalProps.put("jakarta.data.tck.version", "1.0.0-M1");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckStandalone";

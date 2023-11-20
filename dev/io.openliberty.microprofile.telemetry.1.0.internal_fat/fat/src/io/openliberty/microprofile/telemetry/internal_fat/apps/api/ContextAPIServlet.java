@@ -22,6 +22,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.ContextKey;
 import io.opentelemetry.context.ContextStorage;
@@ -32,14 +33,17 @@ import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.context.propagation.TextMapGetter;
 import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.context.propagation.TextMapSetter;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.servlet.annotation.WebServlet;
+import javax.inject.Inject;
+import javax.enterprise.context.ApplicationScoped;
+import javax.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/testContext")
 @ApplicationScoped // Make this a bean so that there's one bean in the archive, otherwise CDI gets disabled and @Inject doesn't work
 public class ContextAPIServlet extends FATServlet {
 
+    @Inject Span injectedSpan;
+    
     /**
      * Very simple test that we can use a Context
      * {@link Context}
@@ -47,12 +51,22 @@ public class ContextAPIServlet extends FATServlet {
      */
     @Test
     public void testContext() {
+        
         Context context = Context.current();
         ContextKey<Object> key = ContextKey.named("MyKey");
         Object value = new Object();
         context = context.with(key, value);
         Object result = context.get(key);
         assertEquals(value, result);
+    }
+    
+    @Test
+    public void testStoreInContextOnSpanProxy() {
+        Context context = Context.current();
+        Context stuffInContext = injectedSpan.storeInContext(context);
+        Context contextWithStuff = context.with(injectedSpan);
+        assertTrue(contextWithStuff.toString().contains(injectedSpan.toString()));
+        assertTrue(stuffInContext.toString().contains(injectedSpan.toString()));
     }
 
     /**

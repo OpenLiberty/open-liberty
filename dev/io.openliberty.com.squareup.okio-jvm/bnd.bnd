@@ -22,8 +22,8 @@ Import-Package: \
   *
 
 Export-Package: \
-  okio;version="3.4.0",\
-  okio.*;version="3.4.0"
+  okio;version="3.6.0",\
+  okio.*;version="3.6.0"
 
 instrument.disabled: true
 

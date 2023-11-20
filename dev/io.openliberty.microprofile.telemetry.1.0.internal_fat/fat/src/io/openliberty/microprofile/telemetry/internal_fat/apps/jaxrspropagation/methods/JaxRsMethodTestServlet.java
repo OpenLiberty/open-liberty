@@ -10,7 +10,7 @@
 package io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.methods;
 
 import static io.openliberty.microprofile.telemetry.internal_fat.common.SpanDataMatcher.isSpan;
-import static jakarta.ws.rs.client.Entity.text;
+import static javax.ws.rs.client.Entity.text;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
@@ -18,23 +18,28 @@ import static org.hamcrest.Matchers.is;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 
 import org.junit.Test;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
+import componenttest.rules.repeater.MicroProfileActions;
 import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
-import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.Response;
 
 /**
  * Test tracing requests of each JAX-RS method type
@@ -198,6 +203,7 @@ public class JaxRsMethodTestServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat(TelemetryActions.MP14_MPTEL11_ID)
     public void testPatch() {
         URI testUri = getUri();
         Span span = utils.withTestSpan(() -> {
@@ -227,7 +233,8 @@ public class JaxRsMethodTestServlet extends FATServlet {
     }
 
     @Test
-    public void testOptions() {
+    @SkipForRepeat({ TelemetryActions.MP50_MPTEL11_ID, MicroProfileActions.MP60_ID, MicroProfileActions.MP61_ID })
+    public void testOptionsBelowEE9() {
         URI testUri = getUri();
         Span span = utils.withTestSpan(() -> {
             Response response = ClientBuilder.newClient().target(testUri).request()
@@ -235,6 +242,42 @@ public class JaxRsMethodTestServlet extends FATServlet {
                             .invoke();
             assertThat(response.getStatus(), equalTo(200));
             assertThat(response.readEntity(String.class), equalTo("options"));
+
+            // Added in "get" and "split" due to JAX-RS behaviour when providing the headers in JEE7/MP1.4
+            // We manually add PATCH with HttpHeaders.ALLOW so expect the span to contain it in the response header with JaxRs-2.0
+            assertThat(Arrays.asList(response.getStringHeaders().get(HttpHeaders.ALLOW).get(0).split(",", -1)),
+                       containsInAnyOrder("GET", "HEAD", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        });
+
+        List<SpanData> spans = exporter.getFinishedSpanItems(3, span.getSpanContext().getTraceId());
+        TestSpans.assertLinearParentage(spans);
+
+        SpanData clientSpan = spans.get(1);
+        SpanData serverSpan = spans.get(2);
+
+        assertThat(clientSpan, isSpan()
+                        .withKind(SpanKind.CLIENT)
+                        .withAttribute(SemanticAttributes.HTTP_METHOD, "OPTIONS")
+                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
+                        .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString()));
+
+        assertThat(serverSpan, isSpan()
+                        .withKind(SpanKind.SERVER)
+                        .withAttribute(SemanticAttributes.HTTP_METHOD, "OPTIONS")
+                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L));
+    }
+
+    @Test
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID })
+    public void testOptionsAboveEE8() {
+        URI testUri = getUri();
+        Span span = utils.withTestSpan(() -> {
+            Response response = ClientBuilder.newClient().target(testUri).request()
+                            .build("OPTIONS")
+                            .invoke();
+            assertThat(response.getStatus(), equalTo(200));
+            assertThat(response.readEntity(String.class), equalTo("options"));
+
             assertThat(response.getStringHeaders().get(HttpHeaders.ALLOW), containsInAnyOrder("GET", "HEAD", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         });
 

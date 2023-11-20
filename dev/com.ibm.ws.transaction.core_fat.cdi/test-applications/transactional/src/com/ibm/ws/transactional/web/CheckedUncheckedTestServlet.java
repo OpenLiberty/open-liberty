@@ -77,4 +77,17 @@ public class CheckedUncheckedTestServlet extends FATServlet {
             // pass
         }
     }
+
+    @Test
+    @ExpectedFFDC(value = { "java.lang.RuntimeException" })
+    public void testRTENotWrapped() {
+        try {
+            bean.throwRTE();
+            fail();
+        } catch (TransactionalException e) {
+            fail();
+        } catch (RuntimeException e) {
+            // pass
+        }
+    }
 }

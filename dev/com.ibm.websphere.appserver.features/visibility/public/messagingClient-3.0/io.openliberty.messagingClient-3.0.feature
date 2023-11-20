@@ -3,7 +3,15 @@ symbolicName=io.openliberty.messagingClient-3.0
 visibility=public
 singleton=true
 IBM-API-Package: jakarta.jms; type="spec", \
- com.ibm.websphere.sib.api.jms; type="internal"
+ com.ibm.websphere.sib.api.jms; type="internal", \
+ com.ibm.websphere.endpoint; type="ibm-api", \
+ com.ibm.ws.jca.cm.mbean; type="ibm-api", \
+ jakarta.resource.spi; type="spec", \
+ jakarta.resource.cci; type="spec", \
+ jakarta.resource.spi.endpoint; type="spec", \
+ jakarta.resource; type="spec", \
+ jakarta.resource.spi.work; type="spec", \
+ jakarta.resource.spi.security; type="spec"
 IBM-ShortName: messagingClient-3.0
 WLP-AlsoKnownAs: wasJmsClient-3.0
 Subsystem-Name: Messaging Server 3.0 Client

@@ -51,6 +51,7 @@ public class SimpleClientServlet extends HttpServlet {
 
 	private Instant tranEndTime;
 	private int timeout;
+	private float perfFactor;
 	
 	@Resource
 	UserTransaction ut;
@@ -93,10 +94,12 @@ public class SimpleClientServlet extends HttpServlet {
 			}
 			String perf = request.getParameter("perf");
 			if (perf != null && !perf.isEmpty()) {
+				perfFactor = Float.parseFloat(perf);;
 				timeout = Math.round(DEFAULT_TIMEOUT / Float.parseFloat(perf));
 				ut.setTransactionTimeout(timeout);
 				System.out.println("Timeout adjusted to " + timeout);
 			} else {
+				perfFactor = 1f;
 				timeout = Math.round(DEFAULT_TIMEOUT);
 			}
 
@@ -680,7 +683,7 @@ public class SimpleClientServlet extends HttpServlet {
 
 	private String callWebservice(String BASE_URL, String[] XAResouces, int expectedDirection, int sleepTimeServer, boolean clearXAResource)
 			throws MalformedURLException {
-		final int timeout = 300 * 1000;
+		final int timeout = Math.round(300000f / perfFactor);
 		URL wsdlLocation = new URL(BASE_URL
 				+ "/simpleService/WSATSimpleService?wsdl");
 		WSATSimpleService service = new WSATSimpleService(wsdlLocation);

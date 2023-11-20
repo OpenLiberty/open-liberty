@@ -18,7 +18,18 @@ import static java.util.Collections.singletonList;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.ext.Provider;
+
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTelemetryContainerFilter;
@@ -35,15 +46,6 @@ import io.opentelemetry.instrumentation.api.instrumenter.http.HttpServerAttribut
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanNameExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanStatusExtractor;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
-import jakarta.annotation.Nullable;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.container.ContainerRequestContext;
-import jakarta.ws.rs.container.ContainerRequestFilter;
-import jakarta.ws.rs.container.ContainerResponseContext;
-import jakarta.ws.rs.container.ContainerResponseFilter;
-import jakarta.ws.rs.container.ResourceInfo;
-import jakarta.ws.rs.core.UriBuilder;
-import jakarta.ws.rs.ext.Provider;
 
 @Provider
 public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter implements ContainerRequestFilter, ContainerResponseFilter {
@@ -61,11 +63,38 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
     private static final RestRouteCache ROUTE_CACHE = new RestRouteCache();
 
     private Instrumenter<ContainerRequestContext, ContainerResponseContext> instrumenter;
+    private volatile boolean lazyCreate = false;
+    private final AtomicReference<Instrumenter<ContainerRequestContext, ContainerResponseContext>> lazyInstrumenter = new AtomicReference<>();
 
-    @jakarta.ws.rs.core.Context
+    @javax.ws.rs.core.Context
     private ResourceInfo resourceInfo;
 
     public TelemetryContainerFilter() {
+        if (!CheckpointPhase.getPhase().restored()) {
+            lazyCreate = true;
+        } else {
+            instrumenter = createInstrumenter();
+        }
+    }
+
+    private Instrumenter<ContainerRequestContext, ContainerResponseContext> getInstrumenter() {
+        if (instrumenter != null) {
+            return instrumenter;
+        }
+        if (lazyCreate) {
+            instrumenter = lazyInstrumenter.updateAndGet((i) -> {
+                if (i == null) {
+                    return createInstrumenter();
+                } else {
+                    return i;
+                }
+            });
+            lazyCreate = false;
+        }
+        return instrumenter;
+    }
+
+    private Instrumenter<ContainerRequestContext, ContainerResponseContext> createInstrumenter() {
         final OpenTelemetryInfo openTelemetry = OpenTelemetryAccessor.getOpenTelemetryInfo();
         if (openTelemetry.getEnabled() && !AgentDetection.isAgentActive()) {
             InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
@@ -73,28 +102,38 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
                                                                                                                   INSTRUMENTATION_NAME,
                                                                                                                   HttpSpanNameExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER));
 
-            this.instrumenter = builder
+            Instrumenter<ContainerRequestContext, ContainerResponseContext> result = builder
                             .setSpanStatusExtractor(HttpSpanStatusExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
                             .addAttributesExtractor(HttpServerAttributesExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
                             .buildServerInstrumenter(new ContainerRequestContextTextMapGetter());
+            return result;
 
         } else {
-            this.instrumenter = null;
+            return null;
         }
     }
 
     @Override
+    public boolean isEnabled() {
+        if (!CheckpointPhase.getPhase().restored()) {
+            return true;
+        }
+        return getInstrumenter() != null;
+    }
+
+    @Override
     public void filter(final ContainerRequestContext request) {
-        if (instrumenter == null) {
+        Instrumenter<ContainerRequestContext, ContainerResponseContext> currentInstrumenter = getInstrumenter();
+        if (currentInstrumenter == null) {
             return;
         }
 
         Context parentContext = Context.current();
-        if (instrumenter.shouldStart(parentContext, request)) {
+        if (currentInstrumenter.shouldStart(parentContext, request)) {
             request.setProperty(REST_RESOURCE_CLASS, resourceInfo.getResourceClass());
             request.setProperty(REST_RESOURCE_METHOD, resourceInfo.getResourceMethod());
 
-            Context spanContext = instrumenter.start(parentContext, request);
+            Context spanContext = currentInstrumenter.start(parentContext, request);
             Scope scope = spanContext.makeCurrent();
             request.setProperty(SPAN_CONTEXT, spanContext);
             request.setProperty(SPAN_PARENT_CONTEXT, parentContext);
@@ -106,36 +145,22 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
                 Class<?> resourceClass = resourceInfo.getResourceClass();
                 Method resourceMethod = resourceInfo.getResourceMethod();
 
-                String route = ROUTE_CACHE.getRoute(resourceClass, resourceMethod);
+                String route = getRoute(request, resourceClass, resourceMethod);
 
-                if (route == null) {
-
-                    String contextRoot = request.getUriInfo().getBaseUri().getPath();
-                    UriBuilder template = UriBuilder.fromPath(contextRoot);
-
-                    if (resourceClass.isAnnotationPresent(Path.class)) {
-                        template.path(resourceClass);
-                    }
-
-                    if (resourceMethod.isAnnotationPresent(Path.class)) {
-                        template.path(resourceMethod);
-                    }
-
-                    route = template.toTemplate();
-                    ROUTE_CACHE.putRoute(resourceClass, resourceMethod, route);
+                if (route != null) {
+                    currentSpan.setAttribute(SemanticAttributes.HTTP_ROUTE, route);
+                    currentSpan.updateName(request.getMethod() + " " + route);
                 }
-
-                currentSpan.setAttribute(SemanticAttributes.HTTP_ROUTE, route);
             }
         }
     }
 
     @Override
     public void filter(final ContainerRequestContext request, final ContainerResponseContext response) {
-        // Note: for async resource methods, this may not run on 	the same thread as the other filter method
+        // Note: for async resource methods, this may not run on the same thread as the other filter method
         // Scope is ended in TelemetryServletRequestListener to ensure it does run on the original request thread
-
-        if (instrumenter == null) {
+        Instrumenter<ContainerRequestContext, ContainerResponseContext> currentInstrumenter = getInstrumenter();
+        if (currentInstrumenter == null) {
             return;
         }
 
@@ -145,13 +170,45 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
         }
 
         try {
-            instrumenter.end(spanContext, request, response, null);
+            currentInstrumenter.end(spanContext, request, response, null);
         } finally {
             request.removeProperty(REST_RESOURCE_CLASS);
             request.removeProperty(REST_RESOURCE_METHOD);
             request.removeProperty(SPAN_CONTEXT);
             request.removeProperty(SPAN_PARENT_CONTEXT);
         }
+    }
+
+    private static String getRoute(final ContainerRequestContext request, Class<?> resourceClass, Method resourceMethod) {
+
+        String route = ROUTE_CACHE.getRoute(resourceClass, resourceMethod);
+
+        if (route == null) {
+
+            int checkResourceSize = request.getUriInfo().getMatchedResources().size();
+
+            // Check the resource size using getMatchedResource()
+            // A resource size > 1 indicates that there is a subresource
+            // We can't currently compute the route correctly when subresources are used
+            if (checkResourceSize == 1) {
+
+                String contextRoot = request.getUriInfo().getBaseUri().getPath();
+                UriBuilder template = UriBuilder.fromPath(contextRoot);
+
+                if (resourceClass.isAnnotationPresent(Path.class)) {
+                    template.path(resourceClass);
+                }
+
+                if (resourceMethod.isAnnotationPresent(Path.class)) {
+                    template.path(resourceMethod);
+                }
+
+                route = template.toTemplate();
+                ROUTE_CACHE.putRoute(resourceClass, resourceMethod, route);
+            }
+        }
+        return route;
+
     }
 
     private static class ContainerRequestContextTextMapGetter implements TextMapGetter<ContainerRequestContext> {
@@ -179,26 +236,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
             Class<?> resourceClass = (Class<?>) request.getProperty(REST_RESOURCE_CLASS);
             Method resourceMethod = (Method) request.getProperty(REST_RESOURCE_METHOD);
 
-            String route = ROUTE_CACHE.getRoute(resourceClass, resourceMethod);
-
-            if (route == null) {
-
-                String contextRoot = request.getUriInfo().getBaseUri().getPath();
-                UriBuilder template = UriBuilder.fromPath(contextRoot);
-
-                if (resourceClass.isAnnotationPresent(Path.class)) {
-                    template.path(resourceClass);
-                }
-
-                if (resourceMethod.isAnnotationPresent(Path.class)) {
-                    template.path(resourceMethod);
-                }
-
-                route = template.toTemplate();
-                ROUTE_CACHE.putRoute(resourceClass, resourceMethod, route);
-            }
-
-            return route;
+            return getRoute(request, resourceClass, resourceMethod);
         }
 
         //required
@@ -227,7 +265,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
 
         //If one was sent
         @Override
-        public Integer getHttpResponseStatusCode(final ContainerRequestContext request, final ContainerResponseContext response, @Nullable Throwable error) {
+        public Integer getHttpResponseStatusCode(final ContainerRequestContext request, final ContainerResponseContext response, Throwable error) {
             return response.getStatus();
         }
 

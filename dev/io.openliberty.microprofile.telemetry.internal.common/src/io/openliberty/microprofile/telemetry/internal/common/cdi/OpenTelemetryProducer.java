@@ -24,10 +24,10 @@ import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
-import io.optenliberty.microprofile.telemetry.internal.common.helpers.OSGIHelpers;
-import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Produces;
+import io.openliberty.microprofile.telemetry.internal.common.helpers.OSGIHelpers;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 
 @ApplicationScoped
 public class OpenTelemetryProducer {

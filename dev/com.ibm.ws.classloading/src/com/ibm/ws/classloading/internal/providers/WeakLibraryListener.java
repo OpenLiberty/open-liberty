@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,6 +19,7 @@ import java.lang.ref.WeakReference;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
+import com.ibm.ws.classloading.internal.AppClassLoader;
 import com.ibm.ws.classloading.internal.util.RefQueue;
 import com.ibm.wsspi.library.LibraryChangeListener;
 
@@ -29,12 +30,12 @@ import com.ibm.wsspi.library.LibraryChangeListener;
  * It uses a weak reference and a reference queue to clean up any unowned
  * listeners.
  */
-public abstract class WeakLibraryListener extends WeakReference<Object> implements LibraryChangeListener {
+public abstract class WeakLibraryListener extends WeakReference<AppClassLoader> implements LibraryChangeListener {
 
-    private static final RefQueue<Object, WeakLibraryListener> QUEUE = new RefQueue<Object, WeakLibraryListener>();
+    private static final RefQueue<AppClassLoader, WeakLibraryListener> QUEUE = new RefQueue<AppClassLoader, WeakLibraryListener>();
     private volatile ServiceRegistration<LibraryChangeListener> listenerReg;
 
-    protected WeakLibraryListener(String libraryId, String ownerId, Object owner, BundleContext ctx) {
+    protected WeakLibraryListener(String libraryId, String ownerId, AppClassLoader owner, BundleContext ctx) {
         super(owner, QUEUE);
         // clean up any enqueued references
         removeStaleListeners();

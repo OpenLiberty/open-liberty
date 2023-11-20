@@ -12,9 +12,13 @@
  *******************************************************************************/
 package io.openliberty.microprofile.metrics.internal.monitor_fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({ComputedMetricsTest.class, MetricsMonitorTest.class,
@@ -28,9 +32,9 @@ public class FATSuite {
      * It is left here, commented out, for later use when subsequent version of
      * mpMetrics-5.x are available (i.e when 5.1 is released)
      */
-    // @ClassRule
-    // public static RepeatTests r = RepeatTests.withoutModification()
-    // .andWith(new FeatureReplacementAction("mpMetrics-5.0",
-    // "mpMetrics-5.X").withID("MPM5X"));
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new FeatureReplacementAction("mpMetrics-5.0", "mpMetrics-5.1").withID("MPM51").forceAddFeatures(false));
+
 
 }

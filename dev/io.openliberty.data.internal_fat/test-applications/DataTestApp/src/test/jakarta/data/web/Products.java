@@ -18,21 +18,23 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import jakarta.data.repository.By;
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
 import jakarta.transaction.Transactional;
 
-import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Count;
-import io.openliberty.data.repository.Delete;
 import io.openliberty.data.repository.Exists;
-import io.openliberty.data.repository.Filter;
-import io.openliberty.data.repository.Operation;
 import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.Select.Aggregate;
-import io.openliberty.data.repository.Update;
+import io.openliberty.data.repository.comparison.Contains;
+import io.openliberty.data.repository.update.Assign;
+import io.openliberty.data.repository.update.Multiply;
 
 /**
  * Repository interface for the unannotated Product entity, which has a UUID as the Id.
@@ -59,14 +61,10 @@ public interface Products {
     @Select(function = Aggregate.MAXIMUM, value = "price")
     float highestPrice();
 
-    @Update(attr = "price", op = Operation.Multiply)
-    @Update(attr = "version", op = Operation.Add, value = "1")
-    long inflateAllPrices(float rateOfIncrease);
+    long inflateAllPrices(@Multiply("price") float rateOfIncrease);
 
-    @Filter(by = "name", op = Compare.Contains)
-    @Update(attr = "price", op = Operation.Multiply)
-    @Update(attr = "version", op = Operation.Add, value = "1")
-    long inflatePrices(String nameContains, float rateOfIncrease);
+    long inflatePrices(@By("name") @Contains String nameContains,
+                       @Multiply("price") float rateOfIncrease);
 
     @Exists
     boolean isNotEmpty();
@@ -89,14 +87,15 @@ public interface Products {
         return null;
     }
 
+    @Save
     void save(Product p);
 
+    @Save
     Product[] saveMultiple(Product... p);
 
-    @Filter(by = "pk")
-    @Filter(by = "version")
-    @Update(attr = "price")
-    boolean setPrice(UUID id, long currentVersion, float newPrice);
+    boolean setPrice(UUID id,
+                     long version,
+                     @Assign("price") float newPrice);
 
     @Select(function = Aggregate.COUNT, distinct = false, value = { "name", "description", "price" })
     ProductCount stats();
@@ -107,12 +106,19 @@ public interface Products {
     @Select(function = Aggregate.SUM, distinct = true, value = "price")
     float totalOfDistinctPrices();
 
-    @Filter(by = "pk", op = Compare.In)
-    @Update(attr = "price", op = Operation.Divide)
-    @Update(attr = "version", op = Operation.Subtract, value = "1")
+    @Query("UPDATE Product o SET o.price=o.price/?2, o.version=o.version-1 WHERE (o.pk IN ?1)")
+    // TODO switch to annotated parameters once available for conditions
+    //@Filter(by = "pk", op = Compare.In)
+    //@Update(attr = "price", op = Operation.Divide)
+    //@Update(attr = "version", op = Operation.Subtract, value = "1")
     long undoPriceIncrease(Iterable<UUID> productIds, float divisor);
 
+    @Update
     Boolean update(Product product);
 
+    @Update
     Long update(Stream<Product> products);
+
+    @Save
+    Product upsert(Product p);
 }

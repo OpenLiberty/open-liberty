@@ -19,13 +19,13 @@ Bundle-Description: Zipkin Core Library
 bVersion=1.0
 
 Export-Package: \
-  zipkin2;version=2.23.2,\
-  zipkin2.codec;version=2.23.2,\
-  zipkin2.v1;version=2.23.2,\
-  zipkin2.internal;version=2.23.2,\
-  zipkin2.storage;version=2.23.2,\
-  zipkin2.reporter;version=2.16.3,\
-  zipkin2.reporter.*;version=2.16.3
+  zipkin2;version=2.24.3,\
+  zipkin2.codec;version=2.24.3,\
+  zipkin2.v1;version=2.24.3,\
+  zipkin2.internal;version=2.24.3,\
+  zipkin2.storage;version=2.24.3,\
+  zipkin2.reporter;version=2.16.4,\
+  zipkin2.reporter.*;version=2.16.4
 
 instrument.disabled: true
 

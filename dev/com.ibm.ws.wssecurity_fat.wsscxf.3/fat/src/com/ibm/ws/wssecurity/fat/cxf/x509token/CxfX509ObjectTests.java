@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -132,11 +132,12 @@ public class CxfX509ObjectTests {
      * This test invokes a simple jax-ws cxf web service.
      * And the service need the x509 to sign and encrypt the SOAPBody
      * Service client code uses cxf/wss4j apis to create Crypto objects to sign and encrypt the SOAP message.
-     * This test does not require default ws-sec configuration (specified in server.xml)for the service client.
+     * Service client (CxfX509SvcClient) sets the Crypto objects in requestContext
+     * This test does not require default ws-security client configuration (specified in server.xml)for the service client since all the configuration 
+     * is passed via requestContext. we do not include wsSecurityClient element in server.xml
+     * issue 30353
      */
 
-    //4/2021 this test expects to fail with EE8 "java.lang.ClassNotFoundException: org.apache.wss4j.common.crypto.CryptoFactory"
-    //Aruna is aware of the cause from feature definition API packages; waiting for the next stage of update to fix it
 
     @Test
     public void testCxfX509Service() throws Exception {
@@ -159,15 +160,6 @@ public class CxfX509ObjectTests {
         return;
     }
 
-    /**
-     * TestDescription:
-     *
-     * This test invokes a jax-ws cxf web service.
-     * It needs to have X509 key set to sign and encrypt the SOAPBody
-     * The request is request in https.
-     * Though this test is not enforced it yet.
-     *
-     */
     protected void testRoutine(
                                String thisMethod,
                                String testMode, // Positive, positive-1, negative or negative-1... etc

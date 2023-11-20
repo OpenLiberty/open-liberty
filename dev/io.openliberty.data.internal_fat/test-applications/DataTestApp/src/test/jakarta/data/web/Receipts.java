@@ -16,10 +16,8 @@ import java.util.Collection;
 import java.util.Optional;
 
 import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.Repository;
-
-import io.openliberty.data.repository.Delete;
-import io.openliberty.data.repository.Filter;
 
 /**
  * Repository interface for the Receipt entity which is a record
@@ -29,6 +27,5 @@ public interface Receipts extends CrudRepository<Receipt, Long> {
     Optional<Receipt> deleteByPurchaseId(long purchaseId);
 
     @Delete
-    @Filter(by = "customer")
-    Collection<Receipt> deleteFor(String customer);
+    Collection<Receipt> discardFor(String customer);
 }

@@ -52,13 +52,13 @@ public class FATSuite {
         // EE10 requires Java 11.  If we only specify EE10 for lite mode it will cause no tests to run which causes an error.
         // If we are running on Java 8 have EE9 be the lite mode test to run.
         if (JavaInfo.JAVA_VERSION >= 11) {
-            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+            repeat = RepeatTests.with(new EmptyAction())
                             // need widen option to handle jar file within a jar file.
                             .andWith(new JakartaEE9Action().fullFATOnly().withWiden())
                             // need widen option to handle jar file within a jar file.
                             .andWith(new JakartaEE10Action().withWiden());
         } else {
-            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+            repeat = RepeatTests.with(new EmptyAction())
                             // need widen option to handle jar file within a jar file.
                             .andWith(new JakartaEE9Action().withWiden());
         }

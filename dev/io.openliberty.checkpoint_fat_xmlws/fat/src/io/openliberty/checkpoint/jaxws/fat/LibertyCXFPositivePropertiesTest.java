@@ -19,17 +19,22 @@ import java.util.Collections;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.RemoteFile;
+
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEEAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServer.CheckpointInfo;
 import io.openliberty.checkpoint.jaxws.fat.util.ExplodedShrinkHelper;
 import io.openliberty.checkpoint.jaxws.fat.util.TestUtils;
+import io.openliberty.checkpoint.jaxws.suite.FATSuite;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.checkpoint.testapp.jaxws.props.servlet.LibertyCXFPositivePropertiesTestServlet;
 
@@ -63,14 +68,19 @@ import io.openliberty.checkpoint.testapp.jaxws.props.servlet.LibertyCXFPositiveP
  * cxf.ignore.unsupported.policy
  */
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class LibertyCXFPositivePropertiesTest {
 
     public static final String APP_NAME = "libertyCXFProperty";
 
-    @Server("LibertyCXFPositivePropertiesTestServer")
+    private static final String SERVER_NAME = "LibertyCXFPositivePropertiesTestServer";
+
+    @Server(SERVER_NAME)
     @TestServlet(servlet = LibertyCXFPositivePropertiesTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -88,20 +98,24 @@ public class LibertyCXFPositivePropertiesTest {
 
         // For EE10, we test all the properties tested in the other repeats plus the additional Woodstox configuration property
         if (JakartaEEAction.isEE10OrLaterActive()) {
-            TestUtils.publishFileToServer(server,
-                                          "LibertyCXFPropertiesTest", "woodstox-true-bootstrap.properties",
-                                          "", "bootstrap.properties");
+            server.getServerBootstrapPropertiesFile().delete();
+            server.getServerBootstrapPropertiesFile()
+                            .copyFromSource(new RemoteFile(server.getMachine(), server.pathToAutoFVTTestFiles
+                                                                                + "/LibertyCXFPropertiesTest/woodstox-true-bootstrap.properties"),
+                                            false,
+                                            true);
         }
-
-        // first prime the ssl certificate
-        server.startServer("LibertyCXFPropertiesTest.log");
-        assertNotNull("SSL service needs to be started for tests, but the HTTPS was never started", server.waitForStringInLog("CWWKO0219I.*ssl"));
-        server.stopServer();
 
         CheckpointInfo checkpointInfo = new CheckpointInfo(CheckpointPhase.AFTER_APP_START, true, //
                         server -> {
                             assertNotNull("'CWWKZ0001I: ' message not found in log.",
                                           server.waitForStringInLogUsingMark("CWWKZ0001I:.*libertyCXFProperty", 0));
+                            if (JakartaEEAction.isEE10OrLaterActive()) {
+                                // Woodstox StAX provider is disabled for these tests, assert disabling it is shown in logs.
+                                assertNotNull("The org.apache.cxf.stax.allowInsecureParser property failed to disable the Woodstox StAX Provider",
+                                              server.waitForStringInTraceUsingMark("The System Property `org.apache.cxf.stax.allowInsecureParser` is set, using JRE's StAX Provider"));
+
+                            }
                             configureEnvVariable(server, Collections.singletonMap("TEST_HOST", "localhost"));
                         });
 
@@ -130,13 +144,6 @@ public class LibertyCXFPositivePropertiesTest {
         // @Test = testCxfPropertyUsedAlternativePolicy()
         assertNotNull("The test testCxfPropertyUsedAlternativePolicy failed, and 'cxf.ignore.unsupported.policy' was not configured",
                       server.waitForStringInTraceUsingMark("WARNING: Unsupported policy assertions will be ignored"));
-
-        if (JakartaEEAction.isEE10OrLaterActive()) {
-            // Woodstox StAX provider is disabled for these tests, assert disabling it is shown in logs.
-            assertNotNull("The org.apache.cxf.stax.allowInsecureParser property failed to disable the Woodstox StAX Provider",
-                          server.waitForStringInTraceUsingMark("The System Property `org.apache.cxf.stax.allowInsecureParser` is set, using JRE's StAX Provider"));
-
-        }
 
         if (server != null && server.isStarted()) {
             server.stopServer("CWWKO0801E");

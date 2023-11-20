@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -34,17 +35,21 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
+import io.openliberty.checkpoint.jaxws.suite.FATSuite;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class EJBWSBasicTest {
 
-    @Server("EJBWSBasicServer")
+    private static final String SERVER_NAME = "EJBWSBasicServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     private static final String ejbwsbasicjar = "EJBWSBasic";
@@ -55,6 +60,9 @@ public class EJBWSBasicTest {
 
     @Rule
     public final TestName testName = new TestName();
+
+    @ClassRule
+    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
 
     @BeforeClass
     public static void beforeAllTests() throws Exception {
@@ -132,6 +140,9 @@ public class EJBWSBasicTest {
     protected void runTest(String responseString) throws Exception {
 
         String testMethod = testName.getMethodName();
+        if (testMethod.contains("_EE")) {
+            testMethod = testMethod.substring(0, testMethod.indexOf("_EE"));
+        }
 
         StringBuilder sBuilder = new StringBuilder("http://").append(server.getHostname())
                         .append(":")

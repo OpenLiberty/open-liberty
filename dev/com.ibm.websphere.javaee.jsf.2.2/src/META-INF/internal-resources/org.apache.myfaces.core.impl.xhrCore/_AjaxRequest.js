@@ -329,9 +329,8 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
      * which keeps the final Send Representation of the
      */
     getFormData:function () {
-        var formDataDecorator = this._Lang.createFormDataDecorator(jsf.getViewState(this._sourceForm));
-        this._AJAXUTIL.appendIssuingItem(this._source, formDataDecorator);
-        return formDataDecorator;
+        var _AJAXUTIL = this._AJAXUTIL, myfacesOptions = this._context.myfaces;
+        return this._Lang.createFormDataDecorator(jsf.getViewState(this._sourceForm));
     },
 
     /**

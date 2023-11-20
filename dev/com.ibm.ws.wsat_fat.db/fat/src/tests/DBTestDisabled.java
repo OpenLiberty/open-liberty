@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.ws.wsat.fat.util.DBTestBase;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -103,15 +104,6 @@ public class DBTestDisabled extends DBTestBase {
 		ShrinkHelper.defaultDropinApp(client, appName, "com.ibm.ws."+appName+".client","com.ibm.ws."+appName+".server","com.ibm.ws."+appName+".servlet","com.ibm.ws."+appName+".utils");
 		ShrinkHelper.defaultDropinApp(server1, appName, "com.ibm.ws."+appName+".client","com.ibm.ws."+appName+".server","com.ibm.ws."+appName+".servlet","com.ibm.ws."+appName+".utils");
 
-		// ATAssertion with Optional=true exists on Operation level in WSDL
-		appNameOptional = "wsatAppOptional";
-		
-		// ATAssertion exists on Service level in WSDL
-		appNameService = "wsatAppService";
-		
-		// ATAssertion with Optional=true exists on Service level in WSDL
-		appNameServiceOptional = "wsatAppServiceOptional";
-		
 		FATUtils.startServers(client, server1);
 	}
 

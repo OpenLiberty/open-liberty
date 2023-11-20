@@ -5,7 +5,9 @@
 		ws-security.timestamp.timeToLive="60"
 		ws-security.timestamp.futureTimeToLive="60"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
+		ws-security.return.security.error="true"
 		ws-security.cache.config.file="${server.config.dir}/cxf-ehcache_ee8.xml"
+		ws-security.asymmetric.signature.algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
 	>
 	
 	<!-- 3/2021 update with com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j, cxf-ehcache_ee8.xml -->

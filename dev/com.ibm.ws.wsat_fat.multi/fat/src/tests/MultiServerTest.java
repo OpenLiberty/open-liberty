@@ -15,7 +15,6 @@ package tests;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,6 +36,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.ws.wsat.fat.util.DBTestBase;
 import com.ibm.ws.wsat.fat.util.WSATTest;
 
 import componenttest.annotation.AllowedFFDC;

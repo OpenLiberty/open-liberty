@@ -9,12 +9,12 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.apps.crossfeature.telemetry;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-
-@RegisterRestClient(configKey = "testClient")
+@RegisterRestClient
 public interface CrossFeatureClient {
 
     @GET

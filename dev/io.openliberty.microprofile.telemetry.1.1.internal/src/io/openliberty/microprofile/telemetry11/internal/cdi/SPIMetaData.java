@@ -15,15 +15,17 @@ package io.openliberty.microprofile.telemetry11.internal.cdi;
 
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.enterprise.inject.spi.Extension;
 
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
-import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.microprofile.telemetry.internal.common.cdi.OpenTelemetryProducer;
 import io.openliberty.microprofile.telemetry11.internal.rest.TelemetryClientFilter;
 import io.openliberty.microprofile.telemetry11.internal.rest.TelemetryContainerFilter;
@@ -37,9 +39,7 @@ public class SPIMetaData implements CDIExtensionMetadata, CDIExtensionMetadataIn
         //Referencing a class in another jar like this is not best practice, but it works
         //and will avoid the performance overhead of creating two BDAs for mpTelemetry
         beans.add(OpenTelemetryProducer.class);
-        if (!AgentDetection.isAgentActive()) {
-            beans.add(WithSpanInterceptor.class);
-        }
+        beans.add(WithSpanInterceptor.class);
         beans.add(TelemetryClientFilter.class);
         beans.add(TelemetryContainerFilter.class);
         return beans;
@@ -48,6 +48,11 @@ public class SPIMetaData implements CDIExtensionMetadata, CDIExtensionMetadataIn
     @Override
     public boolean applicationBeansVisible() {
         return true;
+    }
+
+    @Override
+    public Set<Class<? extends Extension>> getExtensions() {
+        return Collections.singleton(TelemetryExtension.class);
     }
 
 }

@@ -3,7 +3,8 @@ symbolicName=com.ibm.websphere.appserver.jdbc-4.0
 WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
-IBM-API-Package: com.ibm.wsspi.zos.tx; type="internal"
+IBM-API-Package: com.ibm.wsspi.zos.tx; type="internal", \
+  com.ibm.ws.jca.cm.mbean; type="ibm-api"
 IBM-ShortName: jdbc-4.0
 Subsystem-Name: Java Database Connectivity 4.0
 -features=com.ibm.websphere.appserver.appLifecycle-1.0, \

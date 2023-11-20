@@ -120,7 +120,7 @@ public class UICustomPathTest {
         assertThat("Headerbar image", headerbarWrapper.getCssValue("background-image"), startsWith("url(\"data:image/png"));
 
         // Check we can see and open the operation
-        WebElement testGetOpBlock = waitForElement(driver, By.id("operations-default-get_test"));
+        WebElement testGetOpBlock = waitForElement(driver, By.id("operations-default-get_test__id_"));
         WebElement testGetButton = testGetOpBlock.findElement(By.tagName("button"));
         testGetButton.click();
         WebElement testGet200Response = waitForElement(testGetOpBlock, By.cssSelector("tr.response[data-code=\"200\"]"));

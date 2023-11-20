@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -88,7 +88,6 @@ public class FATSuite {
          */
         if (TestModeFilter.FRAMEWORK_TEST_MODE != Mode.TestMode.FULL) {
             Log.info(ConcurrentTckLauncherFull.class, "createSuiteXML", "Modifying API and Spec packages to exclude specific tests for lite mode.");
-            apiExcludes.add("ee.jakarta.tck.concurrent.api.Trigger");
             specExcludes.addAll(Arrays.asList("ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi",
                                               "ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi_servlet"));
         }
@@ -112,6 +111,12 @@ public class FATSuite {
             Log.info(ConcurrentTckLauncherFull.class, "createSuiteXML", "Skipping Signature Tests on unsupported JDK");
             specExcludes.add("ee.jakarta.tck.concurrent.spec.signature");
         }
+
+        // Skip LastExecutionTests due to bug in TCK: https://github.com/jakartaee/concurrency/issues/258
+        apiExcludes.add("ee.jakarta.tck.concurrent.api.LastExecution");
+
+        // Skip TriggerTests due to bug in TCK: https://github.com/jakartaee/concurrency/issues/270
+        apiExcludes.add("ee.jakarta.tck.concurrent.api.Trigger");
 
         apiPackage.setExclude(new ArrayList<String>(apiExcludes));
         specPackage.setExclude(new ArrayList<String>(specExcludes));

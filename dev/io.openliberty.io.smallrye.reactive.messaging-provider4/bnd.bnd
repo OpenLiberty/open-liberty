@@ -60,6 +60,6 @@ Private-Package: \
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   io.openliberty.io.smallrye.reactive.mutiny;version=latest,\
-  io.openliberty.io.smallrye.common.2.1;version=latest,\
+  io.openliberty.io.smallrye.common2;version=latest,\
   io.openliberty.io.smallrye.reactive.converter-api3;version=latest,\
   io.openliberty.org.jboss.logging35;version=latest

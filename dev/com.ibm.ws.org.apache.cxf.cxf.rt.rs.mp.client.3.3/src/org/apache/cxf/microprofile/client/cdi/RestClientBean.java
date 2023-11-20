@@ -58,6 +58,7 @@ import org.apache.cxf.common.util.PropertyUtils;
 import org.apache.cxf.common.util.ReflectionUtil;
 import org.apache.cxf.microprofile.client.CxfTypeSafeClientBuilder;
 import org.apache.cxf.microprofile.client.config.ConfigFacade;
+import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -114,7 +115,10 @@ public class RestClientBean implements Bean<Object>, PassivationCapable {
 
     @Override
     public Object create(CreationalContext<Object> creationalContext) {
-        CxfTypeSafeClientBuilder builder = new CxfTypeSafeClientBuilder();
+        //Liberty change start
+        CxfTypeSafeClientBuilder builder = (CxfTypeSafeClientBuilder) RestClientBuilder.newBuilder();
+        //Liberty change end
+
         String baseUri = getBaseUri();
         builder = (CxfTypeSafeClientBuilder) builder.baseUri(URI.create(baseUri));
         List<Class<?>> providers = getConfiguredProviders();

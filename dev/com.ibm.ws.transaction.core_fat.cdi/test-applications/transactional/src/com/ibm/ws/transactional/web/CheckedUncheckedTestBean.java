@@ -62,4 +62,9 @@ public class CheckedUncheckedTestBean {
             e.printStackTrace();
         }
     }
+
+    @Transactional
+    public void throwRTE() {
+        throw new RuntimeException();
+    }
 }

@@ -43,7 +43,7 @@ import org.testcontainers.utility.DockerImageName;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -53,7 +53,7 @@ import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class JPATest {
 
     // Updated docker image to use TLS1.2 for secure communication

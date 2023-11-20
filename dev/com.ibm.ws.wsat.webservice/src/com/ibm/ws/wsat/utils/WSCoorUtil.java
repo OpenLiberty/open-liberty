@@ -14,6 +14,7 @@ package com.ibm.ws.wsat.utils;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPBody;
@@ -41,27 +42,91 @@ import org.apache.neethi.All;
 import org.apache.neethi.Assertion;
 import org.apache.neethi.ExactlyOne;
 import org.apache.neethi.PolicyComponent;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.jaxws.wsat.Constants.AssertionStatus;
+import com.ibm.ws.jaxws.wsat.components.WSATConfigService;
+import com.ibm.ws.wsat.service.Handler;
+import com.ibm.ws.wsat.service.Protocol;
 import com.ibm.ws.wsat.service.WSATContext;
-import com.ibm.ws.wsat.service.WSATException;
 import com.ibm.ws.wsat.webservice.client.wscoor.CoordinationContext;
 import com.ibm.ws.wsat.webservice.client.wscoor.CoordinationContextType.Identifier;
 import com.ibm.ws.wsat.webservice.client.wscoor.Expires;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-/**
- *
- */
-@Component(name = "com.ibm.ws.wsat.utils.CommonService", immediate = true, property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.wsat.utils.CommonService",
+           immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE,
+           property = { "service.vendor=IBM" })
 public class WSCoorUtil {
     private static final TraceComponent tc = Tr.register(WSCoorUtil.class, WSCoorConstants.TRACE_GROUP);
 
+    private static final String PROTOCOLSERVICE_REFERENCE_NAME = "protocol";
+    private static final AtomicServiceReference<Protocol> protocolService = new AtomicServiceReference<Protocol>(PROTOCOLSERVICE_REFERENCE_NAME);
+
+    @Reference(name = PROTOCOLSERVICE_REFERENCE_NAME, service = Protocol.class)
+    protected void setProtocolService(ServiceReference<Protocol> ref) {
+        protocolService.setReference(ref);
+    }
+
+    protected void unsetProtocolService(ServiceReference<Protocol> ref) {
+        protocolService.unsetReference(ref);
+    }
+
+    private static final String WSATCONFIGSERVICE_REFERENCE_NAME = "config";
+    private static final AtomicServiceReference<WSATConfigService> configService = new AtomicServiceReference<WSATConfigService>(WSATCONFIGSERVICE_REFERENCE_NAME);
+
+    @Reference(name = WSATCONFIGSERVICE_REFERENCE_NAME, service = WSATConfigService.class)
+    protected void setConfigService(ServiceReference<WSATConfigService> ref) {
+        configService.setReference(ref);
+    }
+
+    protected void unsetConfigService(ServiceReference<WSATConfigService> ref) {
+        configService.unsetReference(ref);
+    }
+
+    private static final String WSATHANDLERSERVICE_REFERENCE_NAME = "handler";
+    private static final AtomicServiceReference<Handler> handlerService = new AtomicServiceReference<Handler>(WSATHANDLERSERVICE_REFERENCE_NAME);
+
+    @Reference(name = WSATHANDLERSERVICE_REFERENCE_NAME, service = Handler.class)
+    protected void setHandlerService(ServiceReference<Handler> ref) {
+        handlerService.setReference(ref);
+    }
+
+    protected void unsetHandlerService(ServiceReference<Handler> ref) {
+        handlerService.unsetReference(ref);
+    }
+
+    @Activate
+    protected void activate(ComponentContext cc, Map<String, Object> properties) {
+        handlerService.activate(cc);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "Handler service: ", handlerService.getService());
+        configService.activate(cc);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "Config service: ", configService.getService());
+        protocolService.activate(cc);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "Protocol service: ", protocolService.getService());
+    }
+
+    @Deactivate
+    protected void deactivate(ComponentContext cc) {
+        handlerService.deactivate(cc);
+        configService.deactivate(cc);
+        protocolService.deactivate(cc);
+    }
+
     public static void checkHandlerServiceReady() {
-        if (WSATOSGIService.getInstance().getHandlerService() == null) {
+        if (handlerService.getService() == null) {
             final RuntimeException re = new RuntimeException("Handler service is not ready");
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Handler service is not ready", re);
@@ -69,23 +134,12 @@ public class WSCoorUtil {
         }
     }
 
-    public static String resolveHost() throws WSATException {
-        String host = "";
-        boolean isWSATSSLEnabled = WSATOSGIService.getInstance().getConfigService().isSSLEnabled();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(
-                     tc,
-                     "resolveHost",
-                     "Checking if enable SSL for WS-AT",
-                     isWSATSSLEnabled);
-        host = WSATOSGIService.getInstance().getConfigService().getWSATUrl();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(
-                     tc,
-                     "resolveHost",
-                     "Checking which url is using for WS-AT",
-                     host);
-        return host;
+    public static WSATConfigService getConfigService() {
+        return configService.getService();
+    }
+
+    public static Protocol getProtocolService() {
+        return protocolService.getService();
     }
 
     public static CoordinationContext createCoordinationContext(WSATContext ctx, EndpointReferenceType epr) {
@@ -313,5 +367,12 @@ public class WSCoorUtil {
             //ignore, nothing we can do
         }
         return null;
+    }
+
+    /**
+     * @return
+     */
+    public static Handler getHandlerService() {
+        return handlerService.getService();
     }
 }

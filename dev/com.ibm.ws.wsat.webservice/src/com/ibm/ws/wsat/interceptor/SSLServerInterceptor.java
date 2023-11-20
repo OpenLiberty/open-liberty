@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,8 +26,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.jaxws.wsat.components.WSATConfigService;
-import com.ibm.ws.wsat.utils.WSATOSGIService;
 import com.ibm.ws.wsat.utils.WSCoorConstants;
+import com.ibm.ws.wsat.utils.WSCoorUtil;
 
 /**
  *
@@ -51,7 +51,7 @@ public class SSLServerInterceptor extends AbstractPhaseInterceptor<Message> {
      */
     @Override
     public void handleMessage(Message msg) throws Fault {
-        WSATConfigService s = WSATOSGIService.getInstance().getConfigService();
+        WSATConfigService s = WSCoorUtil.getConfigService();
         if (null == s) {
             throw new Fault("WSAT configuration service is not avaliable", tc.getLogger());
         }

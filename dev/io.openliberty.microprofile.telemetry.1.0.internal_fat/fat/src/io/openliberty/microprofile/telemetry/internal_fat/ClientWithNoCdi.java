@@ -48,8 +48,7 @@ public class ClientWithNoCdi {
     public static final String NO_CDI_APP_NAME = "clientNoCDI";
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
-                    .andWith(FeatureReplacementAction.BETA_OPTION().fullFATOnly());
+    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
 
     @TestServlets({
                     @TestServlet(contextRoot = NO_CDI_APP_NAME, servlet = ClientTriggeringServlet.class),

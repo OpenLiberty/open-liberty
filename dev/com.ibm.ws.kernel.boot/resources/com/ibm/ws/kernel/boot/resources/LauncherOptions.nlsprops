@@ -262,10 +262,10 @@ option-key.force=\
 option-desc.stop.force=\
 \tSkips the quiesce stage before the server is shut down. Normal server\n\
 \tstop includes a quiesce stage before the server is shut down. The    \n\
-\tquiesce stage, a period of 30 seconds, allows services to perform    \n\
-\tpre-shutdown work; for example, inbound listeners are stopped but    \n\
-\texisting requests are allowed to complete. The --force option has no \n\
-\teffect if server stop was already invoked. If you use the --force    \n\
+\tquiesce stage, which is 30 seconds by default, allows services to    \n\
+\tperform pre-shutdown work; for example, inbound listeners are stopped\n\
+\tbut existing requests are allowed to complete. The --force option has\n\
+\tno effect if server stop was already invoked. If you use the --force \n\
 \toption, you might see unexpected exceptions in the messages.log file \n\
 \tthat occur after the server stop command was received by the server. \n
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -280,4 +280,7 @@ option-desc.stop.timeout=\
 \t                                                                     \n\
 \tThe default timeout value is 30 seconds. If the server consistently  \n\
 \ttakes longer than 30 seconds to stop, consider increasing the timeout\n\
-\tvalue by using the --timeout option.                                 \n
+\tvalue by using the --timeout option.  Setting this timeout to a value\n\
+\tless than the quiesceTimeout value might cause the server stop       \n\
+\tcommand to complete with an error code before the server process     \n\
+\tbegins to shut down.                                                 \n

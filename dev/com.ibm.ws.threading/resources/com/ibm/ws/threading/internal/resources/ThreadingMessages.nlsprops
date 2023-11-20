@@ -56,4 +56,8 @@ CWWKE1204.unable.to.invoke.useraction=No action is necessary if the application 
 
 CWWKE1205.start.timeout=CWWKE1205E: The {0} executor was unable to start the {1} task after {2} nanoseconds because the task exceeded its startTimeout of {3} nanoseconds.
 CWWKE1205.start.timeout.explanation=When a startTimeout is configured on an executor or programmatically requested for a task, the executor tracks the time elapsed between when the task is submitted and when it is possible to run the task. If the elapsed time exceeds the startTimeout, the executor aborts the task instead of starting it. 
-CWWKE1205.start.timeout.useraction=No action is necessary if the application expects some tasks to abort due to exceeding their startTimeout. Otherwise, take any combination of the following actions: increase startTimeout, increase maxConcurrency.
+CWWKE1205.start.timeout.useraction=No action is necessary if the application expects some tasks to abort because they exceed the startTimeout duration. Otherwise, take any combination of the following actions: increase the startTimeout duration, increase the maxConcurrency value.
+
+CWWKE1206.quiesce.timeout.not.valid=CWWKE1206W: The ''{0}'' value that is specified for the ''quiesceTimeout'' attribute on the ''executor'' element in the ''server.xml'' file is not valid.  The default value of 30 seconds is used instead.
+CWWKE1206.quiesce.timeout.not.valid.explanation=The 'quiesceTimeout' value specifies a duration and accepts values in the format XmXs, where 'X' is replaced by a number,'m' represents minutes, and 's' represents seconds.  The default value is '30s' (30 seconds). A value of '1m30s' represents 90 seconds.  
+CWWKE1206.quiesce.timeout.not.valid.useraction=Edit the 'server.xml' file and change the 'quiesceTimeout' attribute on the 'executor' element to a valid duration.

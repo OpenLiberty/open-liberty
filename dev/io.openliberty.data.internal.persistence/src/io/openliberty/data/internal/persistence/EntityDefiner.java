@@ -67,6 +67,7 @@ import com.ibm.wsspi.persistence.InMemoryMappingFile;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import jakarta.data.exceptions.MappingException;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.Attribute;
@@ -88,7 +89,9 @@ public class EntityDefiner implements Runnable {
 
     private final ClassDefiner classDefiner = new ClassDefiner();
     private final String databaseId;
-    private final List<Class<?>> entities = new ArrayList<>();
+    private final Set<Class<?>> entities = new HashSet<>();
+
+    // Mapping of JPA entity class (not record class) to entity information.
     final ConcurrentHashMap<Class<?>, CompletableFuture<EntityInfo>> entityInfoMap = new ConcurrentHashMap<>();
     private final ClassLoader loader;
 
@@ -343,23 +346,27 @@ public class EntityDefiner implements Runnable {
                 for (Class<?> metamodelClass : metamodelClasses)
                     for (Field field : metamodelClass.getFields()) {
                         int mod = field.getModifiers();
-                        if (String.class.equals(field.getType())
+                        if (jakarta.data.model.Attribute.class.equals(field.getType())
                             && Modifier.isPublic(mod)
                             && Modifier.isStatic(mod)
-                            && !Modifier.isFinal(mod)
-                            && Modifier.isVolatile(mod)) {
+                            && Modifier.isFinal(mod)) {
 
                             String fieldName = field.getName();
-                            String value = entityInfo.attributeNames.get(fieldName.toLowerCase());
-                            if (value != null)
+                            String attrName = entityInfo.attributeNames.get(fieldName.toLowerCase());
+                            jakarta.data.model.Attribute attribute = null;
+                            if (attrName != null)
                                 try {
-                                    if (trace && tc.isDebugEnabled())
-                                        Tr.debug(this, tc, "set " + metamodelClass.getSimpleName() + '.' + fieldName + " = " + value);
-                                    field.set(null, value);
+                                    attribute = (jakarta.data.model.Attribute) field.get(null);
                                 } catch (IllegalAccessException | IllegalArgumentException x) {
-                                    System.out.println("Unable to set the value of the " + field + " field to " + value);
+                                    System.out.println("Unable to initialize the " + fieldName + " field of the " +
+                                                       metamodelClass.getName() + " StaticMetamodel class.");
                                     // TODO NLS
                                 }
+                            if (trace && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "initialize " + metamodelClass.getSimpleName() + '.' + fieldName + " (" + attrName + "): " + attribute);
+
+                            if (attribute != null)
+                                attribute.init(AttributeInfoImpl.create(fieldName));
                         }
                     }
             }
@@ -402,9 +409,23 @@ public class EntityDefiner implements Runnable {
 
             Queue<Class<?>> embeddableTypesQueue = new LinkedList<>();
 
+            Set<Class<?>> converterTypes = new HashSet<>(); // TODO why do we need to write converters to orm.xml at all?
+
             for (Class<?> c : entities) {
                 if (c.isAnnotationPresent(Entity.class)) {
                     annotatedEntityClassQueue.add(c);
+
+                    for (Field field : c.getFields()) {
+                        Convert convert = field.getAnnotation(Convert.class);
+                        if (convert != null)
+                            converterTypes.add(convert.converter());
+                    }
+
+                    for (Method method : c.getMethods()) {
+                        Convert convert = method.getAnnotation(Convert.class);
+                        if (convert != null)
+                            converterTypes.add(convert.converter());
+                    }
                 } else {
                     if (c.isRecord()) {
                         String entityClassName = c.getName() + "Entity"; // an entity class is generated for the record
@@ -436,6 +457,11 @@ public class EntityDefiner implements Runnable {
                     xml.append(" </embeddable>").append(EOLN);
                     entityClassInfo.add(xml.toString());
                 }
+
+            for (Class<?> type : converterTypes) {
+                StringBuilder xml = new StringBuilder(500).append(" <converter class=\"").append(type.getName()).append("\"></converter>").append(EOLN);
+                entityClassInfo.add(xml.toString());
+            }
 
             // Discover entities that are indirectly referenced via OneToOne, ManyToMany, and so forth
             for (Class<?> c; (c = annotatedEntityClassQueue.poll()) != null;)

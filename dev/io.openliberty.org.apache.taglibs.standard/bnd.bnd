@@ -6,13 +6,11 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+# Contains Tags 2.0 implementation
 Bundle-SymbolicName: io.openliberty.org.apache.taglibs.standard
 Bundle-Description: Jakarta Standard Tag Library Implementation, version 2.0
 

@@ -289,6 +289,18 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             }
         }
         
+        /**
+         * Add a default value for serverName when using DB2 JCC DataSources
+         * No need to check for URL since URL does not exist on DB2 JCC DataSources only on Driver
+         * Therefore, we are effectively only setting the default server name when a DataSource is used and not when a Driver is used.
+         */
+        if(className.startsWith("com.ibm.db2.jcc") && !props.containsKey("serverName")) {
+            if(trace && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Setting serverName property to localhost");
+            }
+            ((PropertyService) props).setProperty("serverName", "localhost");
+        }
+        
         try {
             T ds = AccessController.doPrivileged(new PrivilegedExceptionAction<T>() {
                 public T run() throws Exception {

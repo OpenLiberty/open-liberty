@@ -15,22 +15,26 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import jakarta.data.repository.KeysetAwarePage;
-import jakarta.data.repository.KeysetAwareSlice;
-import jakarta.data.repository.Limit;
+import jakarta.data.Limit;
+import jakarta.data.Sort;
+import jakarta.data.Streamable;
+import jakarta.data.page.KeysetAwarePage;
+import jakarta.data.page.KeysetAwareSlice;
+import jakarta.data.page.Pageable;
+import jakarta.data.repository.By;
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
-import jakarta.data.repository.Pageable;
-import jakarta.data.repository.Param;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Sort;
-import jakarta.data.repository.Streamable;
+import jakarta.data.repository.Save;
 
-import io.openliberty.data.repository.Compare;
-import io.openliberty.data.repository.Delete;
 import io.openliberty.data.repository.Exists;
-import io.openliberty.data.repository.Filter;
-import io.openliberty.data.repository.Function;
-import io.openliberty.data.repository.Update;
+import io.openliberty.data.repository.comparison.GreaterThan;
+import io.openliberty.data.repository.comparison.GreaterThanEqual;
+import io.openliberty.data.repository.comparison.LessThanEqual;
+import io.openliberty.data.repository.comparison.StartsWith;
+import io.openliberty.data.repository.function.IgnoreCase;
+import io.openliberty.data.repository.function.Not;
+import io.openliberty.data.repository.update.Assign;
 
 /**
  *
@@ -38,16 +42,17 @@ import io.openliberty.data.repository.Update;
 @Repository
 public interface Cities {
     @Exists
-    @Filter(by = "stateName")
-    boolean areFoundIn(String state);
+    boolean areFoundIn(@By("stateName") String state);
 
     long countByStateNameAndIdNotOrIdNotAndName(String state, CityId exceptForInState, CityId exceptForCity, String city);
 
-    void delete(City city); // copied from CrudRepository
+    @Delete
+    void delete(City city); // copied from BasicRepository
 
     // "IN" (which is needed for this) is not supported for composite IDs, but EclipseLink generates SQL
     // that leads to an SQLSyntaxErrorException rather than rejecting it outright
-    void deleteAll(Iterable<City> list); // copied from CrudRepository
+    @Delete
+    void deleteAll(Iterable<City> list); // copied from BasicRepository
 
     long deleteByIdOrId(CityId id1, CityId id2);
 
@@ -60,12 +65,12 @@ public interface Cities {
     Iterable<CityId> deleteFirst3ByStateName(String state, Sort... sorts);
 
     @Delete
-    @Filter(by = "stateName")
-    Streamable<CityId> deleteSome(String state, Limit limit);
+    Streamable<CityId> deleteSome(@By("stateName") String state,
+                                  Limit limit);
 
     @Delete
-    @Filter(by = "population", op = Compare.Between)
-    CityId[] deleteWithinPopulationRange(int min, int max);
+    CityId[] deleteWithinPopulationRange(@By("population") @GreaterThanEqual int min,
+                                         @By("population") @LessThanEqual int max);
 
     boolean existsById(CityId id);
 
@@ -108,49 +113,48 @@ public interface Cities {
     CityId findFirstByNameOrderByPopulationDesc(String name);
 
     @Exists
-    @Filter(by = "id", param = "name")
-    @Filter(by = "population", op = Compare.GreaterThan, param = "size")
-    boolean isBiggerThan(@Param("size") int minPopulation, @Param("name") CityId id);
+    boolean isBiggerThan(@By("population") @GreaterThan int minPopulation,
+                         CityId id);
 
-    @Filter(by = "population", op = Compare.GreaterThan)
-    @Filter(by = "id", fn = Function.IgnoreCase, op = Compare.Not)
-    @Filter(by = "stateName", op = Compare.StartsWith)
     @OrderBy("stateName")
     @OrderBy("name")
-    Stream<City> largerThan(int minPopulation, CityId exceptFor, String statePattern);
+    Stream<City> largerThan(@By("population") @GreaterThan int minPopulation,
+                            @By("id") @IgnoreCase @Not CityId exceptFor,
+                            @By("stateName") @StartsWith String statePattern);
 
+    @Delete
     boolean remove(City city);
 
     Streamable<City> removeByStateName(String state);
 
     Streamable<City> removeByStateNameOrderByName(String state);
 
-    @Filter(by = "id")
-    @Update(attr = "id")
-    @Update(attr = "population")
-    @Update(attr = "areaCodes")
-    int replace(CityId oldId, CityId newId, int newPopulation, Set<Integer> newAreaCodes);
+    int replace(CityId id,
+                @Assign("name") String newCityName,
+                @Assign("stateName") String newStateName,
+                // TODO switch the above to the following once IdClass is supported for updates
+                //@Assign("id") CityId newId,
+                @Assign("population") int newPopulation,
+                @Assign("areaCodes") Set<Integer> newAreaCodes);
 
-    @Filter(by = "id", param = "oldName")
-    @Update(attr = "id", param = "newName")
-    @Update(attr = "population", param = "newSize")
-    @Update(attr = "areaCodes", param = "newAreaCodes")
-    int replace(@Param("oldName") CityId oldId,
-                @Param("newName") CityId newId,
-                @Param("newAreaCodes") Set<Integer> newAreaCodes,
-                @Param("newSize") int newPopulation);
+    int replace(String name,
+                String stateName,
+                @Assign("name") String newCityName,
+                @Assign("stateName") String newStateName,
+                @Assign("areaCodes") Set<Integer> newAreaCodes,
+                @Assign("population") int newPopulation);
 
-    @Filter(by = "population", op = Compare.Between, param = { "minSize", "maxSize" })
     @OrderBy(value = "id", descending = true)
-    KeysetAwarePage<City> sizedWithin(@Param("minSize") int minPopulation, @Param("maxSize") int maxPopulation, Pageable pagination);
+    KeysetAwarePage<City> sizedWithin(@By("population") @GreaterThanEqual int minPopulation,
+                                      @By("population") @LessThanEqual int maxPopulation,
+                                      Pageable pagination);
 
+    @Save
     City save(City c);
 
     int updateByIdAndPopulationSetIdSetPopulationSetAreaCodes(CityId oldId, int oldPopulation,
                                                               CityId newId, int newPopulation, Set<Integer> newAreaCodes);
 
-    @Filter(by = "id", op = Compare.NotNull)
-    @Filter(by = "name")
     @OrderBy("stateName")
     Stream<City> withNameOf(String name);
 }

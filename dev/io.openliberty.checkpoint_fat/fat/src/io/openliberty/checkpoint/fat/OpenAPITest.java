@@ -24,7 +24,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -33,7 +33,7 @@ import openAPIapp.ApplicationRoot;
 import openAPIapp.Endpoints;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class OpenAPITest {
 
     public static final String SERVER_NAME = "openAPIserver";

@@ -11,6 +11,7 @@ package com.ibm.ws.openapi.ui.fat.tests;
 
 import static componenttest.selenium.SeleniumWaits.waitForElement;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -132,6 +133,10 @@ public class UIBasicTest {
         testGetButton.click();
         WebElement testGetDefaultResponse = waitForElement(testGetOpBlock, By.cssSelector("tr.response[data-code=\"default\"]"));
         assertNotNull("response line", testGetDefaultResponse);
+
+        // Check the Required field renders correctly so we know the JS is being interpreted as UTF-8
+        WebElement requiredField = waitForElement(testGetOpBlock, By.cssSelector("div.parameter__name.required"));
+        assertThat("Code page UTF-8 not being used",requiredField.getText(), is("id *"));
     }
 
 }

@@ -103,6 +103,8 @@ public class EnabledOpenTelemetryInfo implements OpenTelemetryInfo {
                     results.add(loggerProvider.shutdown());
                 }
 
+                //This line is just so the thread waits for the previous shutdown() calls to complete, 
+                //or 10 seconds, whichever comes first. No exception will be thrown.
                 CompletableResultCode.ofAll(results).join(10, TimeUnit.SECONDS);
             }
         } catch (Exception e) {

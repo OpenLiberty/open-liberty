@@ -32,7 +32,12 @@ tested.features:\
 	cdi-4.0,\
 	connectors-2.1,\
 	pages-3.1,\
-	servlet-6.0
+	servlet-6.0,\
+	expressionlanguage-6.0,\
+	noship-1.0,\
+	cdi-4.1,\
+	pages-4.0,\
+	servlet-6.1
 	
 test.project: true
 

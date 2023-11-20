@@ -11,10 +11,16 @@
       <feature>cdi-2.0</feature>
     </featureManager>
 
+    <jdbcDriver id="DerbyClientDriver" libraryRef="DerbyClientLib"/>
+    <library id="DerbyClientLib" filesetRef="DerbyClientFileset"/>
+    <fileset id="DerbyClientFileset"
+        dir="${shared.resource.dir}derbyclient"
+        includes="derbyclient.jar"
+    />
+
     <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib" />
     <library id="DerbyLib" filesetRef="DerbyFileset" />
-    <fileset
-        id="DerbyFileset"
+    <fileset id="DerbyFileset"
         dir="${shared.resource.dir}derby"
         includes="derby.jar"
     />
@@ -26,6 +32,7 @@
     <variable name="TX_RETRY_INT" defaultValue="10" />
     <variable name="TX_RECOVERY_ID" defaultValue="${HOSTNAME}cloud001-1" />
     <variable name="TRANLOG_DS_JNDINAME" defaultValue="jdbc/tranlogDataSource" />
+    <variable name="TRANLOG_DS_PORT" defaultValue="9099"/>  <!-- override to 1619 -->
     <variable name="APP_DS_JNDINAME" defaultValue="OVERRIDE_TO_jdbc/derby" />
 
     <transaction
@@ -43,6 +50,19 @@
 
     <dataSource
         id="tranlogDataSource"
+        jdbcDriverRef="DerbyClientDriver"
+        jndiName="${TRANLOG_DS_JNDINAME}"
+        transactional="false">
+      <properties.derby.client
+         databaseName="memory:tranlogdb"
+         createDatabase="create"
+         portNumber="${TRANLOG_DS_PORT}"
+         password="userPassword"/>
+    </dataSource>
+
+    <!-- Embedded database for tx logging
+    <dataSource
+        id="tranlogDataSource"
         jdbcDriverRef="DerbyEmbedded"
         jndiName="${TRANLOG_DS_JNDINAME}"
         transactional="false">
@@ -51,6 +71,7 @@
           createDatabase="create"
       />
     </dataSource>
+    -->
 
     <dataSource
         id="jdbc/derby"

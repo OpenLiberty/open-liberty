@@ -36,6 +36,7 @@ Service-Component:\
 -buildpath: \
 	com.ibm.ws.logging;version=latest, \
 	com.ibm.ws.kernel.service;version=latest, \
+	com.ibm.ws.kernel.boot.core;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \
@@ -48,3 +49,4 @@ Service-Component:\
 	com.ibm.ws.kernel.boot.common;version=latest, \
 	com.ibm.ws.kernel.boot.logging;version=latest, \
 	com.ibm.ws.kernel.security.thread;version=latest
+	

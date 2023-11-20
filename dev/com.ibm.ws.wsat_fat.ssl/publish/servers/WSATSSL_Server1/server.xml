@@ -15,28 +15,24 @@
 	<httpEndpoint httpPort="8091" httpsPort="9444" id="defaultHttpEndpoint"/>
 	
 	<jdbcDriver id="derbyDriver">
-        <library name="derbyLib">
-            <file name="${shared.resource.dir}derby/derby.jar"/>
-        </library>
-    </jdbcDriver>
-    <dataSource id="derbyConnection1" jndiName="jdbc/wsatDataSource1" jdbcDriverRef="derbyDriver" type="javax.sql.XADataSource">
-        <!-- The following configures in-memory Derby.  For Derby on disk, which is needed if the database
-    	is required beyond a single server start, configure the databaseName with a file location such as:
-    	databaseName="${shared.config.dir}/data/derbydb" -->
-    	<properties.derby.embedded createDatabase="create" databaseName="memory:WsatDatabase1"></properties.derby.embedded>
-    </dataSource>
-    
-    <keyStore id="defaultKeyStore" password="password" />
+    <library name="derbyLib">
+        <file name="${shared.resource.dir}derby/derby.jar"/>
+    </library>
+  </jdbcDriver>
 
-    <keyStore password="password" id="defaultTrustStore" location="${server.output.dir}/resources/security/truststore.jks"></keyStore>
+  <dataSource id="derbyConnection1" jndiName="jdbc/wsatDataSource1" jdbcDriverRef="derbyDriver" type="javax.sql.XADataSource">
+    <!-- The following configures in-memory Derby.  For Derby on disk, which is needed if the database
+    is required beyond a single server start, configure the databaseName with a file location such as:
+    databaseName="${shared.config.dir}/data/derbydb" -->
+    <properties.derby.embedded createDatabase="create" databaseName="memory:WsatDatabase1"></properties.derby.embedded>
+  </dataSource>
 
-	<ssl id="myDefaultSSLConfig"
-		keyStoreRef="defaultKeyStore"
-		trustStoreRef="defaultTrustStore" />
-    
-    <wsAtomicTransaction sslEnabled="true" sslRef="myDefaultSSLConfig"/>
-    
-	<logging traceSpecification="com.ibm.ws.jaxws.*=debug:org.apache.cxf.ext.logging.slf4j.Slf4jEventSender=debug:wsat=all:Transaction=all"/>
-    <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
-    <javaPermission codebase="${server.config.dir}/dropins/wsatApp.war" className="java.security.AllPermission"/>
+  <keyStore password="password"/>
+
+  <ssl id="SSLConfig" keyStoreRef="defaultKeyStore"/>
+  
+  <wsAtomicTransaction sslEnabled="true" sslRef="SSLConfig"/>
+
+  <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${server.config.dir}/dropins/wsatApp.war" className="java.security.AllPermission"/>
 </server>

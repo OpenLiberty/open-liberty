@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -85,6 +85,7 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
 //    protected static final String URL_HANDLER_PROP = "java.protocol.handler.pkgs";
     private static final String PKGNAME_DELIMITER = "|";
 
+    public static String IBM_JCE_Plus_FIPS_PROVIDER = "com.ibm.crypto.provider.IBMJCEPlusFIPS";
     private static boolean handlersInitialized = false;
     private static Object _lockObj = new Object();
 
@@ -108,6 +109,24 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         this.keyStoreProvider = keyProvider;
         this.socketFactory = factory;
         this.defaultProtocol = protocolType;
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "defaultProtocol: " + defaultProtocol);
+        }
+
+        if (JavaInfo.isSystemClassAvailable(IBM_JCE_Plus_FIPS_PROVIDER))
+
+        {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "jce plus fips available");
+            }
+            try {
+                com.ibm.ws.ssl.JSSEProviderFactory.initializeFips();
+            } catch (Exception e) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Exception caught initializing FIPS.", new Object[] { e });
+            }
+        }
 
         if (!handlersInitialized && System.getProperty("os.name").equalsIgnoreCase("z/OS")
             && JavaInfo.majorVersion() < 11)
@@ -638,6 +657,10 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         }
 
         final String protocol = protocolVal;
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "protocol:  " + protocolVal);
+        }
 
         try {
             sslContext = AccessController.doPrivileged(new PrivilegedExceptionAction<SSLContext>() {

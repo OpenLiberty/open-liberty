@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.net.ssl.SSLSocketFactory;
 
@@ -90,7 +91,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     private String discoveryEndpointUrl = null;
     private JSONObject discoveryjson = null;
     private boolean discovery = false;
-
+    
     public static final String KEY_DISCOVERY_POLLING_RATE = "discoveryPollingRate";
     private long discoveryPollingRate = 5 * 60 * 1000; // 5 minutes in milliseconds
     private String discoveryDocumentHash = null;
@@ -142,6 +143,9 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     private String tokenEndpointAuthSigningAlgorithm = null;
     public static final String CFG_KEY_TOKEN_REQUEST_ORIGIN_HEADER = "tokenRequestOriginHeader";
     private String tokenRequestOriginHeader = null;
+    
+    public static final String CFG_KEY_TOKEN_ORDER_TOFETCH_CALLER_CLAIMS = "tokenOrderToFetchCallerClaims";
+    private List<String> tokenOrderToFetchCallerClaims;
 
     HttpUtils httputils = new HttpUtils();
     ConfigUtils oidcConfigUtils = new ConfigUtils(null);
@@ -232,6 +236,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         }
 
         performMiscellaneousConfigurationChecks();
+        tokenOrderToFetchCallerClaims = new ArrayList<String>(1);
+        tokenOrderToFetchCallerClaims.add(com.ibm.ws.security.openidconnect.clients.common.Constants.TOKEN_TYPE_ID_TOKEN); //IDToken only for now
     }
 
     void performMiscellaneousConfigurationChecks() {
@@ -980,6 +986,11 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     @Override
     public String getTokenRequestOriginHeader() {
         return tokenRequestOriginHeader;
+    }
+
+    @Override
+    public List<String> getTokenOrderToFetchCallerClaims() {  
+        return tokenOrderToFetchCallerClaims;
     }
 
 }

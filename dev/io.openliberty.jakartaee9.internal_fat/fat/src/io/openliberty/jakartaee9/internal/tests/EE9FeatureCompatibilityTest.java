@@ -118,6 +118,9 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         compatibleFeatures.removeAll(FeatureUtilities.allMpFeatures());
         compatibleFeatures.addAll(FeatureUtilities.compatibleMpFeatures(EEVersion.EE9));
 
+        //MpTelemetry-1.1 is compatible with EE9 but not in Mp50
+        compatibleFeatures.add("mpTelemetry-1.1");
+
         // Value-add features which aren't compatible
         compatibleFeatures.remove("openid-2.0"); // stabilized
         compatibleFeatures.remove("openapi-3.1"); // depends on mpOpenAPI

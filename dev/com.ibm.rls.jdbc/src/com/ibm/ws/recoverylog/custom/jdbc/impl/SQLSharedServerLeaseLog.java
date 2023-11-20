@@ -503,8 +503,8 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                     updateServerLeaseRetry.setNonTransientException(currentSqlEx);
                     // The following method will reset "nonTransientException" if it cannot recover
                     if (_sqlTransientErrorHandlingEnabled) {
-                        failAndReport = updateServerLeaseRetry.retryAfterSQLException(this, currentSqlEx, SQLRetry.getLightweightRetryAttempts(),
-                                                                                      SQLRetry.getLightweightRetrySleepTime());
+                        failAndReport = updateServerLeaseRetry.retryAfterSQLException(this, currentSqlEx, SQLRetry.getTransientRetryAttempts(),
+                                                                                      SQLRetry.getTransientRetrySleepTime());
 
                         if (failAndReport)
                             nonTransientException = updateServerLeaseRetry.getNonTransientException();

@@ -131,7 +131,6 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
 
     private OpenTelemetryInfo createOpenTelemetryInfo() {
         try {
-
             String appName = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getJ2EEName().getApplication();
 
             if (AgentDetection.isAgentActive()) {
@@ -154,6 +153,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
                     return new EnabledOpenTelemetryInfo(true, openTelemetry, appName);
                 }
             }
+
             //By default, MicroProfile Telemetry tracing is off.
             //The absence of an installed SDK is a “no-op” API
             //Operations on a Tracer, or on Spans have no side effects and do nothing
@@ -191,12 +191,12 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
     private static HashMap<String, String> getTelemetryProperties() {
         try {
             Config config = ConfigProvider.getConfig();
-
             HashMap<String, String> telemetryProperties = new HashMap<>();
             for (String propertyName : config.getPropertyNames()) {
-                if (propertyName.startsWith("otel.")) {
-                    config.getOptionalValue(propertyName, String.class).ifPresent(
-                                                                                  value -> telemetryProperties.put(propertyName, value));
+                if (propertyName.startsWith("otel") || propertyName.startsWith("OTEL")) {
+                    String normalizedName = propertyName.toLowerCase().replace('_', '.');
+                    config.getOptionalValue(normalizedName, String.class)
+                        .ifPresent(value -> telemetryProperties.put(normalizedName, value));
                 }
             }
             //Metrics and logs are disabled by default

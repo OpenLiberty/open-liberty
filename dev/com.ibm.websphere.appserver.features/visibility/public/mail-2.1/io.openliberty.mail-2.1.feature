@@ -12,7 +12,26 @@ IBM-API-Package: \
   jakarta.mail.internet; type="spec", \
   jakarta.mail.util; type="spec", \
   jakarta.mail.search; type="spec", \
-  jakarta.mail.event; type="spec"
+  jakarta.mail.event; type="spec", \
+  jakarta.activation; type="spec", \
+  jakarta.annotation; type="spec", \
+  jakarta.annotation.security; type="spec", \
+  jakarta.annotation.sql; type="spec"
+IBM-SPI-Package: \
+  com.ibm.wsspi.adaptable.module, \
+  com.ibm.ws.adaptable.module.structure, \
+  com.ibm.wsspi.adaptable.module.adapters, \
+  com.ibm.wsspi.artifact, \
+  com.ibm.wsspi.artifact.factory, \
+  com.ibm.wsspi.artifact.factory.contributor, \
+  com.ibm.wsspi.artifact.overlay, \
+  com.ibm.wsspi.artifact.equinox.module, \
+  com.ibm.wsspi.anno.classsource, \
+  com.ibm.wsspi.anno.info, \
+  com.ibm.wsspi.anno.service, \
+  com.ibm.wsspi.anno.targets, \
+  com.ibm.wsspi.anno.util, \
+  com.ibm.ws.anno.classsource.specification
 -features=com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0", \
   io.openliberty.jakarta.mail-2.1, \
   io.openliberty.activation.internal-2.1, \

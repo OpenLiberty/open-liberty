@@ -742,7 +742,7 @@ public class ConnectionPoolStatsServlet extends HttpServlet {
             checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
         }
 
-        Thread.sleep(40); // simulate in use time running a query.
+        Thread.sleep(60); // simulate in use time running a query.
 
         long creatingConnectionStartSecondSet = System.currentTimeMillis();
 
@@ -779,11 +779,11 @@ public class ConnectionPoolStatsServlet extends HttpServlet {
             expectedNumManagedConns = 40;
             checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
 
-            Thread.sleep(40); // simulate in use time running a query.
+            Thread.sleep(20); // simulate in use time running a query.
 
             int destroyCountBeforeAbort = getMonitorData(dsStatobjName, "DestroyCount");
 
-            long testvalue = System.currentTimeMillis() - creatingConnectionStartSecondSet + 20;
+            long testvalue = System.currentTimeMillis() - creatingConnectionStartSecondSet + 40;
             String abortInfo = (String) mbeanServer.invoke(dsObjectName.getObjectName(), "abortConnections", new Object[] { "inuse", testvalue }, null);
             String expectedString1 = "20 in use connections added to the in use abort list";
             String expectedString2 = "10 free connections not added to the in use abort list";
@@ -849,7 +849,7 @@ public class ConnectionPoolStatsServlet extends HttpServlet {
             checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
         }
 
-        Thread.sleep(40); // simulate in use time running a query.
+        Thread.sleep(60); // simulate in use time running a query.
 
         long creatingConnectionStartSecondSet = System.currentTimeMillis();
 
@@ -894,11 +894,11 @@ public class ConnectionPoolStatsServlet extends HttpServlet {
             expectedNumManagedConns = 40;
             checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
 
-            Thread.sleep(40); // simulate in use time running a query.
+            Thread.sleep(20); // simulate in use time running a query.
 
             int destroyCountBeforeAbort = getMonitorData(dsStatobjName, "DestroyCount");
 
-            long testvalue = System.currentTimeMillis() - creatingConnectionStartSecondSet + 20;
+            long testvalue = System.currentTimeMillis() - creatingConnectionStartSecondSet + 40;
             String abortInfo = (String) mbeanServer.invoke(dsObjectName.getObjectName(), "abortConnections", new Object[] { "inuse", testvalue }, null);
             String expectedString1 = "20 in use connections added to the in use abort list";
             String expectedString2 = "10 free connections not added to the in use abort list";
@@ -964,7 +964,7 @@ public class ConnectionPoolStatsServlet extends HttpServlet {
             checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
         }
 
-        Thread.sleep(40); // simulate in use time running a query.
+        Thread.sleep(60); // simulate in use time running a query.
 
         long creatingConnectionStartSecondSet = System.currentTimeMillis();
 
@@ -1001,11 +1001,11 @@ public class ConnectionPoolStatsServlet extends HttpServlet {
             expectedNumManagedConns = 40;
             checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
 
-            Thread.sleep(40); // simulate in use time running a query.
+            Thread.sleep(20); // simulate in use time running a query.
 
             int destroyCountBeforeAbort = getMonitorData(dsStatobjName, "DestroyCount");
 
-            long testvalue = System.currentTimeMillis() - creatingConnectionStartSecondSet + 20;
+            long testvalue = System.currentTimeMillis() - creatingConnectionStartSecondSet + 40;
             String abortInfo = (String) mbeanServer.invoke(dsObjectName.getObjectName(), "abortConnections", new Object[] { "inuse", testvalue }, null);
             String expectedString1 = "10 in use connections added to the in use abort list";
             String expectedString2 = "10 free connections not added to the in use abort list";

@@ -48,7 +48,7 @@ LTPA_CONFIG_ERROR=CWWKS4106E: LTPA configuration error. Unable to create or read
 LTPA_CONFIG_ERROR.explanation=The LTPA keys could not be read or created at the specified location.
 LTPA_CONFIG_ERROR.useraction=Ensure the location is accessible by the server process. Any FFDCs might indicate a fatal error in generating or loading the keys.
 
-LTPA_KEYS_TO_LOAD=CWWKS4107A: The following LTPA keys files are either created, deleted, or modified: {0}, or the LTPA configuration was modified. All the LTPA keys are reloaded.
+LTPA_KEYS_TO_LOAD=CWWKS4107A: The LTPA configuration is modified. The following files are modified: {0}. All the LTPA keys in the LTPA configuration are reloaded.
 LTPA_KEYS_TO_LOAD.explanation=The LTPA keys files must be reloaded due to a change to the LTPA keys files or the configuration.
 LTPA_KEYS_TO_LOAD.useraction=Ensure that all servers that participate in single sign-on share the same LTPA keys and password.
 
@@ -56,13 +56,13 @@ LTPA_KEY_CREATE_ERROR=CWWKS4108E: The system cannot create the LTPA key.
 LTPA_KEY_CREATE_ERROR.explanation=The LTPA key cannot be created.
 LTPA_KEY_CREATE_ERROR.useraction=Any FFDCs might indicate a fatal error in generating the keys.
 
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE=CWWKS4109W: The {0} value for the notUseAfterDate attribute for the {1} LTPA validation keys file is in the past. The LTPA validation keys cannot be used.
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.explanation=The LTPA validation keys are used only if the notUseAfterDate attribute value is in the future.
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.useraction=Update the notUseAfterDate attribute value to a future date if the LTPA keys must be used. Otherwise, delete the LTPA keys file.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST=CWWKS4109W: The {0} value for the validUntilDate attribute for the {1} LTPA validation keys file is in the past. The LTPA validation keys cannot be used.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST.explanation=The LTPA validation keys are used only if the validUntilDate attribute value is in the future.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST.useraction=Update the validUntilDate attribute value to a future date if the LTPA keys must be used. Otherwise, delete the LTPA keys file.
 
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT=CWWKS4110E: The {0} value for the notUseAfterDate attribute for the {1} LTPA validation keys file has an invalid date format. The LTPA validation keys cannot be used.
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.explanation=The notUseAfterDate attribute value must be formatted in the ISO date, time, and zone format. The following example shows the ISO date format: "2023-04-18T18:08:35Z".
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.useraction=Update the notUseAfterDate attribute value to a ISO date, time, and zone format.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT=CWWKS4110E: The {0} value for the validUntilDate attribute for the {1} LTPA validation keys file has an invalid date format. The LTPA validation keys cannot be used.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT.explanation=The validUntilDate attribute value must be formatted in the ISO date, time, and zone format. The following example shows the ISO date format: "2023-11-18T18:08:35Z".
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT.useraction=Update the validUntilDate attribute value to the ISO date, time, and zone format (e.g., '2023-11-18T18:08:35Z')
 
 LTPA_VALIDATION_KEYS_MISSING_ATTR=CWWKS4111E: The {0} LTPA validationKeys element that is specified in the server.xml file is missing either the filename, password, or both: {1}.
 LTPA_VALIDATION_KEYS_MISSING_ATTR.explanation=The LTPA validationKeys element requires the filename and password attributes.
@@ -72,6 +72,14 @@ LTPA_KEYS_FILE_DOES_NOT_EXIST=CWWKS4112E: The {0} LTPA validation keys file does
 LTPA_KEYS_FILE_DOES_NOT_EXIST.explanation=The validation keys file does not exist.
 LTPA_KEYS_FILE_DOES_NOT_EXIST.useraction=Make sure that the validation keys file exists in the specified location that is specified by the validationKeys element.
 
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED=CWWKS4113W: The monitorDirectory attribute is set to true but the monitor interval is {0}. No dynamic reload occurs when validation keys files are created, modified or deleted in the directory.
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.explanation= The value for the monitorInterval attribute  is zero or less than zero. The directory cannot be monitored for any create, delete, or modify actions on files with the .keys suffix and dynamic reload cannot occur.
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.useraction=Set the monitorInterval attribute to an interval that is greater than zero.
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED=CWWKS4113W: The LTPA updateTrigger attribute is set to polled, monitorValidationKeysDir is set to true, but monitorInterval is set to {0}. No dynamic reload occurs when LTPA key files are modified.
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED.explanation=The value for the monitorInterval attribute is zero or less than zero. The directory cannot be monitored for any modifications on files with the .keys suffix and dynamic reload cannot occur.
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED.useraction=Set the monitorInterval attribute to an interval that is greater than zero.
+
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE=CWWKS4114W: The updateTrigger attribute is set to disabled and the monitorValidationKeysDir attribute is set to true. No dynamic reload occurs when LTPA key files are modified in the directory.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.explanation=When the updateTrigger attribute is set to disabled, the directory is not monitored for any modifications to files with the .keys suffix and dynamic reload does not occur. Even if the monitorValidationKeysDir attribute is set to true, the attribute is ignored, and the directory is not monitored.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.useraction=Set the value of the updateTrigger attribute to polled or mbean.
+
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO=CWWKS4115W: The updateTrigger attribute is set to disabled and the monitor interval is greater than {0}. No dynamic reload occurs when LTPA key files are modified.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.explanation=When the updateTrigger attribute is set to disabled, the files are not monitored for any modifications on files with the .keys suffix and dynamic reload does not occur. Even if the monitorInterval attribute is set to an interval that is greater than zero, the attribute is ignored, and the files are not monitored.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=Set the value of the updateTrigger attribute to polled or mbean.

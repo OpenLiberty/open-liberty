@@ -54,15 +54,15 @@ public class ComputedMappingTable {
                 MetricUnits.PERCENT, "base", "memory.usedHeap", "memory.maxHeap"}};
         mappingTable.put("memoryStats", memoryTable);
 
-        // String[][] gcTable = new String[][] { { "gc.time.per.cycle",
-        // "gc.time.per.cycle.description",
-        // Constants.GAUGE, MetricUnits.SECONDS, "base", "gc.time", "gc.total" } };
-        // mappingTable.put("gcStats", gcTable);
+        String[][] gcTable = new String[][] { 
+            { "gc.time.per.cycle", "gc.time.per.cycle.description", Constants.GAUGE, MetricUnits.SECONDS, 
+                "base", "gc.time", "gc.total" } };
+        mappingTable.put("gcStats", gcTable);
 
         // Vendor Metrics
         String[][] servletTable = new String[][]{
             {"servlet.request.elapsedTime.per.request", "servlet.request.elapsedTime.per.request.description",
-                   Constants.GAUGE, MetricUnits.SECONDS, "vendor", "servlet.responseTime.total", "servlet.request.total"}};
+                Constants.GAUGE, MetricUnits.SECONDS, "vendor", "servlet.responseTime.total", "servlet.request.total"}};
         mappingTable.put("ServletStats", servletTable);
 
         String[][] connectionPoolTable = new String[][]{

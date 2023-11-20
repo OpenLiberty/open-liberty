@@ -17,26 +17,34 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import jakarta.data.repository.By;
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Insert;
+import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
+
 /**
  * <p>Annotates a repository method to designate it as an exists operation.
- * The {@link Filter &#64;Filter} annotation can be added to provide conditions.</p>
+ * The {@link By &#64;By} annotation along with annotations in the
+ * {@link io.openliberty.data.repository.comparison} package
+ * can be added to provide conditions.</p>
  *
  * <p>Example query:</p>
  *
  * <pre>
  * {@literal @Exists}
- * {@literal @Filter}(by = "email")
- * boolean alreadyRegistered(String email);
+ * boolean hasAtLeastNumOfEmails({@literal @By("emails") @ElementCount @GreaterThanEqual} int min);
  * </pre>
  *
  * <p>Example usage:</p>
  *
  * <pre>
- * foundExisting = customers.alreadyRegistered(emailAddress));
+ * hasEmail = customers.hasAtLeastNumOfEmails(1);
  * </pre>
  *
  * <p>Do not use in combination with the {@link jakarta.data.repository.Query Query},
- * {@link Count}, {@link Delete}, {@link Select}, or {@link Update} annotation.</p>
+ * {@link Count}, {@link Delete}, {@link Insert}, {@link Save}, {@link Select}, or {@link Update} annotation,
+ * or with any annotation in the {@link io.openliberty.data.repository.update} package.</p>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

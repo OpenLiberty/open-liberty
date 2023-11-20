@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.RandomAccess;
 import java.util.stream.Stream;
 
@@ -30,10 +31,10 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
-import jakarta.data.repository.KeysetAwarePage;
-import jakarta.data.repository.Pageable;
-import jakarta.data.repository.Sort;
+import jakarta.data.page.KeysetAwarePage;
+import jakarta.data.page.Pageable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
@@ -56,7 +57,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
         this.queryInfo = queryInfo;
         this.pagination = pagination == null ? Pageable.ofSize(100) : pagination;
         this.isForward = this.pagination.mode() != Pageable.Mode.CURSOR_PREVIOUS;
-        Pageable.Cursor keysetCursor = this.pagination.cursor();
+        Optional<Pageable.Cursor> keysetCursor = this.pagination.cursor();
 
         int maxPageSize = this.pagination.size();
         int firstResult = this.pagination.mode() == Pageable.Mode.OFFSET //
@@ -65,7 +66,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
 
         EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
         try {
-            String jpql = keysetCursor == null ? queryInfo.jpql : //
+            String jpql = keysetCursor.isEmpty() ? queryInfo.jpql : //
                             isForward ? queryInfo.jpqlAfterKeyset : //
                                             queryInfo.jpqlBeforeKeyset;
 
@@ -73,8 +74,8 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
             TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, queryInfo.entityInfo.entityClass);
             queryInfo.setParameters(query, args);
 
-            if (keysetCursor != null)
-                queryInfo.setKeysetParameters(query, keysetCursor);
+            if (keysetCursor.isPresent())
+                queryInfo.setKeysetParameters(query, keysetCursor.get());
 
             query.setFirstResult(firstResult);
             query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1)); // extra position is for knowing whether to expect another page

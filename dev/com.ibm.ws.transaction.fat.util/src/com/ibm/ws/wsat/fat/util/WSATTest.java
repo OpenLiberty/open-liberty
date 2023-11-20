@@ -89,6 +89,7 @@ public abstract class WSATTest {
 			}
 			
 			server.setMarkToEndOfLog();
+			server.setTraceMarkToEndOfDefaultTrace();
 		}
 	}
 }

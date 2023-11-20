@@ -37,11 +37,11 @@ import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.In
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
-import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.core.Response;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.Response;
 
 @SuppressWarnings("serial")
 @WebServlet("/testHttpTrace")
@@ -51,6 +51,7 @@ public class HttpTraceTestServlet extends FATServlet {
     public static final String SIMPLE_SERVLET = "simple";
     public static final String SIMPLE_ASYNC_SERVLET = "simpleAsync";
     public static final String CONTEXT_ASYNC_SERVLET = "contextAsync";
+    public static final String PLACEHOLDER_SERVLET = "placeholder";
     public static final String HELLO_HTML = "hello.html";
     public static final String DICE_JSP = "dice.jsp";
 
@@ -81,6 +82,31 @@ public class HttpTraceTestServlet extends FATServlet {
                         .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
                         .withAttribute(SemanticAttributes.HTTP_ROUTE, "/" + APP_NAME + "/" + SIMPLE_SERVLET)
                         .withAttribute(SemanticAttributes.HTTP_TARGET, "/" + APP_NAME + "/" + SIMPLE_SERVLET)
+                        .withAttribute(SemanticAttributes.HTTP_SCHEME, scheme)
+                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
+                        .withAttribute(SemanticAttributes.NET_HOST_NAME, serverName)
+                        .withAttribute(SemanticAttributes.NET_HOST_PORT, Long.valueOf(serverPort)));
+    }
+
+    @Test
+    public void testServletWithAdditionalPath() throws Exception {
+        String scheme = request.getScheme();
+        String serverName = request.getServerName();
+        int serverPort = request.getServerPort();
+        String pathAddition = "/traceID";
+        URL url = new URL(scheme + "://" + serverName + ":" + serverPort + "/" + APP_NAME + "/" + PLACEHOLDER_SERVLET+ pathAddition);
+
+        String traceId = httpGet(url); // The servlet outputs the traceId
+
+        // The simple servlet will return the traceId
+        List<SpanData> spanDataList = spanExporter.getFinishedSpanItems(1, traceId);
+        SpanData servletSpan = spanDataList.get(0);
+        assertThat(servletSpan, isSpan()
+                        .withNoParent()
+                        .withKind(SERVER)
+                        .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
+                        .withAttribute(SemanticAttributes.HTTP_ROUTE, "/" + APP_NAME + "/" + PLACEHOLDER_SERVLET)
+                        .withAttribute(SemanticAttributes.HTTP_TARGET, "/" + APP_NAME + "/" + PLACEHOLDER_SERVLET + pathAddition)
                         .withAttribute(SemanticAttributes.HTTP_SCHEME, scheme)
                         .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
                         .withAttribute(SemanticAttributes.NET_HOST_NAME, serverName)
@@ -189,7 +215,8 @@ public class HttpTraceTestServlet extends FATServlet {
         assertThat(serverSpan, isSpan()
                         .withKind(SERVER)
                         .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
-                        .withAttribute(SemanticAttributes.HTTP_ROUTE, "/" + APP_NAME + "/" + HELLO_HTML)
+                        .withAttribute(SemanticAttributes.HTTP_ROUTE, "/" + APP_NAME)
+                        .withAttribute(SemanticAttributes.HTTP_TARGET, "/" + APP_NAME + "/" + HELLO_HTML)
                         .withAttribute(SemanticAttributes.HTTP_SCHEME, scheme)
                         .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
                         .withAttribute(SemanticAttributes.NET_HOST_NAME, serverName)

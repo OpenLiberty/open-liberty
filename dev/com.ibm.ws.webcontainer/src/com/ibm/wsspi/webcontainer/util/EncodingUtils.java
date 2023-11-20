@@ -12,26 +12,32 @@
  *******************************************************************************/
 package com.ibm.wsspi.webcontainer.util;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Locale;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.logging.Logger;
-import java.util.logging.Level;
-import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
-import com.ibm.wsspi.webcontainer.WCCustomProperties; 
+import com.ibm.wsspi.webcontainer.WCCustomProperties;
 import com.ibm.wsspi.webcontainer.WebContainer;
 import com.ibm.wsspi.webcontainer.WebContainerConstants;
+import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 
 /**
  *
@@ -55,15 +61,30 @@ public class EncodingUtils {
     protected static final Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.ws.webcontainer.util");
     private static final String CLASS_NAME="com.ibm.wsspi.webcontainer.util.EncodingUtils";
 
-    private static Object lock = new Object();
-    //private static Properties _localeProps = null;
-    //private static Properties _converterProps = null;
-    //private static HashMap _localeMap = new HashMap();
-    //private static HashMap _converterMap = new HashMap();
-    private static boolean inited = false;
-    private static Hashtable supportedEncodingsCache = new Hashtable();
-    private final static byte[] TEST_CHAR = {'a'};
-    public static boolean setContentTypeBySetHeader;
+    private static final Map<String, Charset> supportedEncodingsCache = new ConcurrentHashMap<>();
+
+    /**
+     * This Class is just used as a place holder for an invalid Charset so we don't have to look it up again and found
+     * that it isn't valid again.
+     */
+    private static final Charset NOT_FOUND = new Charset("not_found", new String[0]) {
+        @Override
+        public CharsetEncoder newEncoder() {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public CharsetDecoder newDecoder() {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public boolean contains(Charset cs) {
+            throw new UnsupportedOperationException();
+        }
+    };
+
+    public static final boolean setContentTypeBySetHeader;
 
     static {
     	String propStr = WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.setcontenttypebysetheader");
@@ -78,106 +99,6 @@ public class EncodingUtils {
     	}
     }
     
-    public static void init(){
-    	if (inited==true) return;
-    	//com.ibm.wsspi.http.EncodingUtils encodingUtils = com.ibm.ws.webcontainer.osgi.WebContainer.getEncodingUtils();
-    	
-    	if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
-    		logger.logp(Level.FINE, CLASS_NAME,"init","initing EncodingUtils");
-		synchronized(lock){
-			//296095    Web Services Uncaught exception in service method    WASCC.web.webcontainer    
-			if (inited==true) return;
-			//296095    Web Services Uncaught exception in service method    WASCC.web.webcontainer
-
-			//WebContainer wc = WebContainer.getWebContainer();
-	    	//WebContainerConfig wcConfig = wc.getWebContainerConfig();
-	    	//if (wcConfig !=null ){
-		    	//_localeProps = wcConfig.getLocaleProps();
-		    	//_converterProps = wcConfig.getConverterProps();
-	    	//}
-	    	
-	    	/*if (_localeProps == null){
-	    		if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
-	        		logger.logp(Level.FINE, CLASS_NAME,"init","locale properties using default location");
-	    		_localeProps = new Properties ();
-		        try {
-		                AccessController.doPrivileged(new PrivilegedExceptionAction() {
-		                    public Object run() throws IOException {
-		                        for (Enumeration enumeration = EncodingUtils.class.getClassLoader().getResources("encoding.properties"); enumeration.hasMoreElements();) {
-		                            final URL url = (URL) enumeration.nextElement();
-		                            InputStream is = url.openStream();
-		                            _localeProps.load(is);
-		                            is.close();
-		                            //System.out.println(" _localeProps "+_localeProps);
-		                        }
-		                        return null;
-		                    }
-		                });
-		        }
-		        catch (Throwable ex) {
-                    com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(ex, "com.ibm.ws.webcontainer.srt.SRTRequestUtils", "56");
-		            logger.logp(Level.SEVERE, CLASS_NAME,"init", "failed.to.load.encoding.properties", ex);
-		        }
-	    	}
-	    	else
-	    	{
-	    		if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
-	        		logger.logp(Level.FINE, CLASS_NAME,"init","locale properties specified by webcontainer shell");
-	    	}
-	    	if (_converterProps == null){
-	    		_converterProps = new Properties ();
-	    		if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
-	        		logger.logp(Level.FINE, CLASS_NAME,"init","converter properties using default location");
-		        // get the converter properties
-		        try {
-		                AccessController.doPrivileged(new PrivilegedExceptionAction() {
-		                    public Object run() throws IOException {
-		                        for (Enumeration enumeration = EncodingUtils.class.getClassLoader().getResources("converter.properties"); enumeration.hasMoreElements();) {
-		                            final URL url = (URL) enumeration.nextElement();
-		                            InputStream is = url.openStream();
-		                            _converterProps.load(is);
-		                            is.close();
-		                            //System.out.println(" _jvmProps "+_jvmProps);
-		                        }
-		                        return null;
-		                    }
-		                });
-		
-		                // lowercase the jvm props
-		                Properties newProps = new Properties();
-		
-		                for (Enumeration e = _converterProps.propertyNames(); e.hasMoreElements();) {
-		                    String key = (String) e.nextElement();
-		                    String value = (String) _converterProps.get(key);
-		
-		                    newProps.put(key.toLowerCase(), value);
-		                    //System.out.println(" _jvmProps key, value "+key.toLowerCase()+" "+value);
-		                }
-		                _converterProps = newProps;
-		        }
-		        catch (Throwable ex) {
-                    com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(ex, "com.ibm.ws.webcontainer.srt.SRTRequestUtils", "74");
-		            logger.logp(Level.SEVERE, CLASS_NAME,"init", "failed.to.load.converter.properties", ex);
-		        }
-	    	}
-	    	else
- 	    	{
- 	    		if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
- 	        		logger.logp(Level.FINE, CLASS_NAME,"init","converter properties specified by webcontainer shell");
- 	    	}
-                */
-	        // PK75844 Start
-	    	// set the hash maps
-	        //_localeMap.putAll(_localeProps);
-	        //_converterMap.putAll(_converterProps);
-	        // PK75844 End
-	    	inited = true;
-		}
-    	// set the hash maps
-        // _localeMap.putAll(_localeProps);         PK75844
-        // _converterMap.putAll(_converterProps);   PK75844
-    }
-    
     /**
      * Basically returns everything after ";charset=".  If no charset specified, uses
      * the HTTP default (ASCII) character set.
@@ -187,7 +108,6 @@ public class EncodingUtils {
      * @return The charset encoding.
      */
     public static String getCharsetFromContentType(String type) {
-    	init();
         if (type == null) {
             return null;
         }
@@ -220,7 +140,6 @@ public class EncodingUtils {
      * @return The extracted locales.
      */
     public static Vector getLocales(HttpServletRequest req) {
-    	init();
         String acceptLanguage = ISRTServletRequest.getHeader(req, HttpHeaderKeys.HDR_ACCEPT_LANGUAGE);
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
             logger.logp(Level.FINE, CLASS_NAME,"getLocales", "Accept-Language --> " + acceptLanguage);
@@ -268,7 +187,6 @@ public class EncodingUtils {
      * @return The processed accept languages.
      */
     public static Vector processAcceptLanguage(String acceptLanguage) {
-    	init();
         StringTokenizer languageTokenizer = new StringTokenizer(acceptLanguage, ",");
         TreeMap map = new TreeMap(Collections.reverseOrder());
 
@@ -352,7 +270,6 @@ public class EncodingUtils {
      * @return The extracted locales.
      */ 
     public static Vector extractLocales(Vector languages, boolean secure) {
-    	init();
         Enumeration e = languages.elements();
         Vector l = new Vector();
 
@@ -427,7 +344,6 @@ public class EncodingUtils {
      * @return The encoding.
      */
     public static String getEncodingFromLocale(Locale locale) {
-    	init();
         if (locale == cachedLocale) {
             return cachedEncoding;
         }
@@ -464,7 +380,6 @@ public class EncodingUtils {
      * @return The converter if it exists, otherwise return the encoding.
      */
     public static String getJvmConverter(String encoding) {
-    	init();
         //String converter = (String) _converterMap.get(encoding.toLowerCase());
     	String converter = null;
     	com.ibm.wsspi.http.EncodingUtils encodingUtils = com.ibm.ws.webcontainer.osgi.WebContainer.getEncodingUtils();
@@ -479,8 +394,12 @@ public class EncodingUtils {
             return encoding;
         }
     }
-    
-	 /**
+
+    public static boolean isCharsetSupported (String charset){
+        return getCharsetForName(charset) != null;
+    }
+
+    /**
      * Tests whether the specified charset is supported on the server
      *
      * @param String The charset we want to test
@@ -488,22 +407,22 @@ public class EncodingUtils {
      * @return boolean indicating if supported
      */
     // rewritten as part of PK13492
-    public static boolean isCharsetSupported (String charset){
-        Boolean supported = (Boolean) supportedEncodingsCache.get(charset);
-        if(supported != null){
-            return supported.booleanValue();
-        }
-        try{
-            new String (TEST_CHAR, charset);
-            supportedEncodingsCache.put(charset, Boolean.TRUE);
-        }catch (UnsupportedEncodingException e){
-            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
-                logger.logp(Level.FINE, CLASS_NAME,"isCharsetSupported", "Encountered UnsupportedEncoding charset [" + charset +"]");
+    public static Charset getCharsetForName(String name) {
+        Charset charset = supportedEncodingsCache.get(name);
+        if (charset == null) {
+            try {
+                charset = Charset.forName(name);
+            } catch (IllegalCharsetNameException | UnsupportedCharsetException e) {
+                charset = NOT_FOUND;
             }
-            supportedEncodingsCache.put(charset, Boolean.FALSE);
-            return false;
+            supportedEncodingsCache.put(name, charset);
         }
-        return true;
+        
+        if (charset == NOT_FOUND && com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, "getCharsetForName", "Encountered UnsupportedEncoding charset [" + name + "]");
+        }
+
+        return charset == NOT_FOUND ? null : charset;
     }
     
     public static void setContentTypeByCustomProperty (String type, String matchString, HttpServletResponse resp){

@@ -17,6 +17,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Insert;
+import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
+
 /**
  * <p>Specifies which entity attribute values are retrieved by a repository method
  * find operation and, in the case of multiple entity attributes, also the ordering
@@ -25,9 +30,8 @@ import java.lang.annotation.Target;
  * <p>Example query for single attribute value:</p>
  *
  * <pre>
- * {@literal @Filter}(by = "id")
  * {@literal @Select}("price")
- * Optional{@literal <Float>} priceOf(long productId);
+ * Optional{@literal <Float>} priceOf({@literal @By("id")} long productId);
  * </pre>
  *
  * <p>Example usage:</p>
@@ -39,11 +43,10 @@ import java.lang.annotation.Target;
  * <p>Example query of Employee entities converted to record type Person(firstName, surname):</p>
  *
  * <pre>
- * {@literal @Filter}(by = "age")
  * {@literal @Select}("firstName", "lastName")
  * {@literal @OrderBy}("lastName")
  * {@literal @OrderBy}("firstName")
- * List{@literal <Person>} ofAge(int age);
+ * List{@literal <Person>} ofAge({@literal @By("age")} int yearsOld);
  * </pre>
  *
  * <p>Example usage:</p>
@@ -53,7 +56,8 @@ import java.lang.annotation.Target;
  * </pre>
  *
  * <p>Do not use in combination with the {@link jakarta.data.repository.Query Query},
- * {@link Count}, {@link Delete}, {@link Exists}, or {@link Update} annotation.</p>
+ * {@link Count}, {@link Delete}, {@link Exists}, {@link Insert}, {@link Save}, or {@link Update} annotation,
+ * or with any annotation in the {@link io.openliberty.data.repository.update} package.</p>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

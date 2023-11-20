@@ -12,18 +12,29 @@
  *******************************************************************************/
 package test.jakarta.data.validation.web;
 
-import jakarta.data.repository.CrudRepository;
+import java.util.List;
+
+import jakarta.data.repository.BasicRepository;
+import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 /**
  * Repository for a Jakarta Persistence entity with bean validation annotations.
  */
 @Repository(dataStore = "java:module/jdbc/DerbyDataSource")
-public interface Creatures extends CrudRepository<@Valid Creature, @Positive Long> {
+public interface Creatures extends BasicRepository<@Valid Creature, @Positive Long> {
 
     int countById(Long id);
+
+    @OrderBy("id")
+    @Size(min = 0, max = 3)
+    List<Creature> findByScientificNameStartsWithAndWeightBetween(@NotBlank String genus,
+                                                                  @Positive float minWeight,
+                                                                  @Positive float maxWeight);
 
     boolean updateByIdSetWeight(long id, float newWeight);
 }

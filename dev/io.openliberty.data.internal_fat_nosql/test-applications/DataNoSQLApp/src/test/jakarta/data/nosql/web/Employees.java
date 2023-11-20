@@ -14,11 +14,11 @@ package test.jakarta.data.nosql.web;
 
 import java.util.stream.Stream;
 
-import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.Repository;
 
 @Repository
-public interface Employees extends CrudRepository<Employee, Long> {
+public interface Employees extends BasicRepository<Employee, Long> {
 
     Stream<Employee> findByWageLessThanEqual(float maxWage);
 }

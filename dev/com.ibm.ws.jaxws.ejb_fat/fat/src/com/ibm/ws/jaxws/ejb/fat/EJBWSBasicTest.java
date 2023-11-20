@@ -34,7 +34,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -42,7 +41,6 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
 public class EJBWSBasicTest {
 
     @Server("com.ibm.ws.jaxws.ejb.fat.ejbwsbasic")
@@ -142,6 +140,9 @@ public class EJBWSBasicTest {
     protected void runTest(String responseString) throws Exception {
 
         String testMethod = testName.getMethodName();
+        if (testMethod.contains("_EE")) {
+            testMethod = testMethod.substring(0, testMethod.indexOf("_EE"));
+        }
 
         StringBuilder sBuilder = new StringBuilder("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH).append("?testMethod=").append(testMethod);
         String urlStr = sBuilder.toString();

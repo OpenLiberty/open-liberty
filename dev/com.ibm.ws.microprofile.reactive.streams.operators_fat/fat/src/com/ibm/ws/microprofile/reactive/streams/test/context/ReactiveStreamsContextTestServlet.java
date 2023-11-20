@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,9 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.streams.test.context;
 
+import static com.ibm.ws.microprofile.reactive.streams.test.suite.FATSuite.MP50_RS30_ID;
+import static com.ibm.ws.microprofile.reactive.streams.test.suite.FATSuite.MP60_RS30_ID;
+import static com.ibm.ws.microprofile.reactive.streams.test.suite.FATSuite.MP61_RS30_ID;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -38,10 +41,19 @@ import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.junit.Test;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 /**
- *
+ * Test that reactive streams are run with the correct thread context.
+ * <p>
+ * In RSO 1.0, streams are automatically run asynchronously so we have to test that they're run with the correct context.
+ * <p>
+ * In RSO 3.0, we no longer do any asynchronous execution automatically, so these tests should pass trivially because everything runs on the original thread.
+ * <p>
+ * We have some tests which use blocking operations which only run on RSO 1.0. (Best practice is that reactive streams should not include blocking operations and should instead
+ * call operations that run asynchronously and return a CompletionStage. RSO 1.0 can cope with blocking operations which run immediately when a stream is started but RSO 3.0
+ * expects the user to manually run the run method asynchronously if this is required.)
  */
 @WebServlet("/ReactiveStreamsContextTest")
 public class ReactiveStreamsContextTestServlet extends FATServlet {
@@ -102,7 +114,22 @@ public class ReactiveStreamsContextTestServlet extends FATServlet {
     public void testGetCdiAfterResult() throws Exception {
         CompletableFuture<Void> latch = new CompletableFuture<>();
         CompletionStage<CDI<Object>> result = ReactiveStreams.of(1, 2, 3, 4, 5)
-                        .map(waitFor(latch))
+                        .flatMapCompletionStage(i -> latch.thenApply(x -> i))
+                        .collect(Collectors.toList())
+                        .run()
+                        .thenApply((x) -> threadContextBean.getCdi());
+
+        latch.complete(null);
+
+        CompletionStageResult.from(result).assertResult(instanceOf(CDI.class));
+    }
+
+    @Test
+    @SkipForRepeat({ MP50_RS30_ID, MP60_RS30_ID, MP61_RS30_ID })
+    public void testGetCdiAfterResultBlocking() throws Exception {
+        CompletableFuture<Void> latch = new CompletableFuture<>();
+        CompletionStage<CDI<Object>> result = ReactiveStreams.of(1, 2, 3, 4, 5)
+                        .map(blockingWaitFor(latch))
                         .collect(Collectors.toList())
                         .run()
                         .thenApply((x) -> threadContextBean.getCdi());
@@ -126,7 +153,22 @@ public class ReactiveStreamsContextTestServlet extends FATServlet {
     public void testGetBeanManagerViaJndiAfterResult() {
         CompletableFuture<Void> latch = new CompletableFuture<>();
         CompletionStage<BeanManager> result = ReactiveStreams.of(1)
-                        .map(waitFor(latch))
+                        .flatMapCompletionStage(i -> latch.thenApply(x -> i))
+                        .findFirst()
+                        .run()
+                        .thenApply((x) -> threadContextBean.getBeanManagerViaJndi());
+
+        latch.complete(null);
+
+        CompletionStageResult.from(result).assertResult(instanceOf(BeanManager.class));
+    }
+
+    @Test
+    @SkipForRepeat({ MP50_RS30_ID, MP60_RS30_ID, MP61_RS30_ID })
+    public void testGetBeanManagerViaJndiAfterResultBlocking() {
+        CompletableFuture<Void> latch = new CompletableFuture<>();
+        CompletionStage<BeanManager> result = ReactiveStreams.of(1)
+                        .map(blockingWaitFor(latch))
                         .findFirst()
                         .run()
                         .thenApply((x) -> threadContextBean.getBeanManagerViaJndi());
@@ -150,7 +192,20 @@ public class ReactiveStreamsContextTestServlet extends FATServlet {
     public void testLoadClassFromTcclAfterResult() {
         CompletableFuture<Void> latch = new CompletableFuture<>();
         CompletionStage<Class<?>> result = ReactiveStreams.of(1)
-                        .map(waitFor(latch))
+                        .flatMapCompletionStage(i -> latch.thenApply(x -> i))
+                        .findFirst()
+                        .run()
+                        .thenApply((x) -> threadContextBean.loadClassWithTccl());
+        latch.complete(null);
+        CompletionStageResult.from(result).assertResult(equalTo(ThreadContextBean.class));
+    }
+
+    @Test
+    @SkipForRepeat({ MP50_RS30_ID, MP60_RS30_ID, MP61_RS30_ID })
+    public void testLoadClassFromTcclAfterResultBlocking() {
+        CompletableFuture<Void> latch = new CompletableFuture<>();
+        CompletionStage<Class<?>> result = ReactiveStreams.of(1)
+                        .map(blockingWaitFor(latch))
                         .findFirst()
                         .run()
                         .thenApply((x) -> threadContextBean.loadClassWithTccl());
@@ -172,7 +227,7 @@ public class ReactiveStreamsContextTestServlet extends FATServlet {
     public void testGetConfigValueFromInjectedBeanAfterResult() {
         CompletableFuture<Void> latch = new CompletableFuture<>();
         CompletionStage<String> result = ReactiveStreams.of(1)
-                        .map(waitFor(latch))
+                        .flatMapCompletionStage(i -> latch.thenApply(x -> i))
                         .findFirst()
                         .run()
                         .thenApply((x) -> threadContextBean.getConfigValueFromInjectedBean());
@@ -180,7 +235,20 @@ public class ReactiveStreamsContextTestServlet extends FATServlet {
         CompletionStageResult.from(result).assertResult(is("foobar"));
     }
 
-    private <T> Function<T, T> waitFor(Future<?> latch) {
+    @Test
+    @SkipForRepeat({ MP50_RS30_ID, MP60_RS30_ID, MP61_RS30_ID })
+    public void testGetConfigValueFromInjectedBeanAfterResultBlocking() {
+        CompletableFuture<Void> latch = new CompletableFuture<>();
+        CompletionStage<String> result = ReactiveStreams.of(1)
+                        .map(blockingWaitFor(latch))
+                        .findFirst()
+                        .run()
+                        .thenApply((x) -> threadContextBean.getConfigValueFromInjectedBean());
+        latch.complete(null);
+        CompletionStageResult.from(result).assertResult(is("foobar"));
+    }
+
+    private <T> Function<T, T> blockingWaitFor(Future<?> latch) {
         return (t) -> {
             try {
                 latch.get(5, TimeUnit.SECONDS);

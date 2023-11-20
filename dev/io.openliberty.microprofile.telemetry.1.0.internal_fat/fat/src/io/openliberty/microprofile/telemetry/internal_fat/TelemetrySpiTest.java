@@ -18,6 +18,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PropertiesAsset;
@@ -27,6 +28,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.spi.customizer.CustomizerTestServlet;
@@ -43,6 +45,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.spi.sampler.TestS
 import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporterProvider;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.spans.AbstractSpanMatcher;
 import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvider;
 import io.opentelemetry.sdk.autoconfigure.spi.ConfigurablePropagatorProvider;
 import io.opentelemetry.sdk.autoconfigure.spi.ResourceProvider;
@@ -72,6 +75,9 @@ public class TelemetrySpiTest extends FATServletClient {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
+
     @BeforeClass
     public static void setup() throws Exception {
         // Exporter test
@@ -81,6 +87,7 @@ public class TelemetrySpiTest extends FATServletClient {
                         .addClass(ExporterTestServlet.class)
                         .addClasses(InMemorySpanExporter.class, InMemorySpanExporterProvider.class)
                         .addPackage(TestSpans.class.getPackage())
+                        .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
                         .addAsResource(exporterConfig, "META-INF/microprofile-config.properties");
 
@@ -109,6 +116,7 @@ public class TelemetrySpiTest extends FATServletClient {
                         .addClass(TestResourceProvider.class)
                         .addClasses(InMemorySpanExporter.class, InMemorySpanExporterProvider.class)
                         .addPackage(TestSpans.class.getPackage())
+                        .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addAsServiceProvider(ResourceProvider.class, TestResourceProvider.class)
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
                         .addAsResource(resourceConfig, "META-INF/microprofile-config.properties");
@@ -125,6 +133,7 @@ public class TelemetrySpiTest extends FATServletClient {
                         .addClasses(TestPropagator.class, TestPropagatorProvider.class)
                         .addClasses(InMemorySpanExporter.class, InMemorySpanExporterProvider.class)
                         .addPackage(TestSpans.class.getPackage())
+                        .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addAsServiceProvider(ConfigurablePropagatorProvider.class, TestPropagatorProvider.class)
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
                         .addAsResource(propagatorConfig, "META-INF/microprofile-config.properties");

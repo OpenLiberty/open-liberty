@@ -34,7 +34,7 @@ import com.ibm.websphere.simplicity.config.WebApplication;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.MicroProfileActions;
@@ -46,7 +46,7 @@ import io.openliberty.checkpoint.fat.crac.app.multiple2.MultiApp2Servlet;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class CRaCResourceMultiAppTest {
 
     public static final String APP1_NAME = "testApp1";

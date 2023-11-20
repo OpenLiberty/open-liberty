@@ -30,7 +30,7 @@ public class ValidationKeys extends ConfigElement {
 
     // Atrribute to specify the expiration value for the validation key file
     @XmlAttribute
-    public String notUseAfterDate;
+    public String validUntilDate;
 
     @Override
     public String toString() {
@@ -38,7 +38,7 @@ public class ValidationKeys extends ConfigElement {
         // Attributes
         buf.append("fileName=").append(fileName);
         buf.append(", password=").append(password);
-        buf.append(", notUseAfterDate=").append(notUseAfterDate);
+        buf.append(", validUntilDate=").append(validUntilDate);
         buf.append('}');
         return buf.toString();
     }

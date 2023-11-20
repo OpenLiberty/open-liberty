@@ -289,8 +289,6 @@ public class XidImpl implements Xid, Serializable {
     protected XidImpl(int formatId, TxPrimaryKey pk) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "XidImpl", new Object[] { Integer.toHexString(formatId), pk });
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "Creating XID for a global transaction");
 
         this._formatId = formatId;
 

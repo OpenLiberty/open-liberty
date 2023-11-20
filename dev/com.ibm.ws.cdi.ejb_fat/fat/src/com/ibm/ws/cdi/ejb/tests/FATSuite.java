@@ -36,6 +36,7 @@ import componenttest.rules.repeater.RepeatTests;
                 EjbTimerTest.class,
                 InjectParameterTest.class,
                 InterceptorsTest.class,
+                MdbTest.class,
                 MultipleNamedEJBTest.class,
                 StatefulSessionBeanInjectionTest.class,
 })

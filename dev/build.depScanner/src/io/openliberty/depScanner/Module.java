@@ -14,7 +14,7 @@ public final class Module extends Jar implements Comparable<Module> {
     private static String root;
     private String groupId, artifactId, version;
 
-    public Module(File f) {
+    public Module(File f, boolean fromGradleCache) {
         super(f);
 
         try (JarFile jar = new JarFile(f)) {
@@ -27,7 +27,11 @@ public final class Module extends Jar implements Comparable<Module> {
                 artifactId = props.getProperty(("artifactId"));
                 version = props.getProperty("version");
             } else {
-                File cur = f.getParentFile();
+                File cur = null;
+                if (fromGradleCache)
+                    cur = f.getParentFile().getParentFile(); //Skip the hash dir
+                else
+                    cur = f.getParentFile();
                 version = cleanupVersion(cur.getName());
                 artifactId = (cur = cur.getParentFile()).getName();
 

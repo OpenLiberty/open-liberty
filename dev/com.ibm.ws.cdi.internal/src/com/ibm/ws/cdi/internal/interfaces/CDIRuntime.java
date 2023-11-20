@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -104,15 +104,9 @@ public interface CDIRuntime extends CDIService {
     public boolean skipCreatingBda(CDIArchive archive);
 
     /**
-     * @param archive
-     * @throws CDIException
+     * Create an empty ContextBeginnerEnder.
      */
-    void beginContext(CDIArchive archive) throws CDIException;
-
-    /**
-     *
-     */
-    void endContext();
+    ContextBeginnerEnder createContextBeginnerEnder();
 
     /**
      * @param bundle
@@ -127,6 +121,7 @@ public interface CDIRuntime extends CDIService {
                                                          boolean applicationBDAsVisible,
                                                          boolean extClassesOnly,
                                                          Set<String> extraExtensionClasses) throws CDIException;
+
     /**
      * @return
      */
@@ -222,4 +217,5 @@ public interface CDIRuntime extends CDIService {
      * @return the WeldDevelopmentMode, or {@code null} if does not exist or it is not enabled
      */
     public WeldDevelopmentMode getWeldDevelopmentMode();
+
 }

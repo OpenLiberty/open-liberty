@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -99,7 +99,6 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
     protected void activate(BundleContext ctx) {
         bundleCtx = ctx;
         bundleCtx.addBundleListener(this);
-
     }
 
     @Reference(service = ExecutorService.class,
@@ -339,10 +338,13 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         if (listenerRefs.isEmpty() && existingNotifications.isEmpty())
             return;
 
+        ThreadQuiesce tq = (ThreadQuiesce) executorService;
+        int quiesceTimeout = tq.getQuiesceTimeout();
+
         if (isServer())
-            Tr.audit(tc, "quiesce.begin");
+            Tr.audit(tc, "quiesce.begin", quiesceTimeout);
         else
-            Tr.audit(tc, "client.quiesce.begin");
+            Tr.audit(tc, "client.quiesce.begin", quiesceTimeout);
 
         // If there are RuntimeUpdateNotifications outstanding, submit a thread to wait on them
         if (!existingNotifications.isEmpty()) {
@@ -360,8 +362,6 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
                 }
             });
         }
-
-        ThreadQuiesce tq = (ThreadQuiesce) executorService;
 
         FutureCollection quiesceListenerFutures = new FutureCollection();
 
@@ -401,7 +401,7 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         // Notify the executor service that we are quiescing
 
         long startTime = System.currentTimeMillis();
-        if (tq.quiesceThreads() && quiesceListenerFutures.isComplete(startTime)) {
+        if (tq.quiesceThreads() && quiesceListenerFutures.isComplete(startTime, quiesceTimeout)) {
             if (isServer())
                 Tr.info(tc, "quiesce.end");
             else
@@ -467,10 +467,17 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             quiesceListenerFutures.add(f);
         }
 
+        /**
+         *
+         * @param startTime      - time now in milliseconds
+         * @param quiesceTimeout - timeout in seconds
+         * @return
+         */
         @FFDCIgnore(TimeoutException.class)
-        boolean isComplete(long startTime) {
-            // We will wait 30 seconds past the start time for tasks to complete
-            long endTime = startTime + 30000;
+        boolean isComplete(long startTime, int quiesceTimeout) {
+            // We will wait quiesceTimeout seconds past the start time for tasks to complete
+            // Configured in the <executor> element of server.xml.  Default 30 seconds.
+            long endTime = startTime + quiesceTimeout * 1000;
 
             for (Future<?> f : quiesceListenerFutures) {
                 long waitTime = endTime - System.currentTimeMillis();

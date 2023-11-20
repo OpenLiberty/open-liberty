@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.wsoc;
 
@@ -938,8 +935,8 @@ public class LinkRead {
                             Object appObj = ((Decoder.Text) dc).decode(message);
                             args[msgIndex] = appObj;
                         } catch (DecodeException e) {
-                            connLink.callOnError(e, true);
                             args = null;
+                            connLink.callOnError(e, true);
                         }
                     }
                 }
@@ -1054,6 +1051,7 @@ public class LinkRead {
                             Object appObj = ((Decoder.Binary) dc).decode(message);
                             args[msgIndex] = appObj;
                         } catch (DecodeException e) {
+                            args = null;
                             connLink.callOnError(e, true);
                         }
                     }
@@ -1068,6 +1066,7 @@ public class LinkRead {
                         Object appObj = ((Decoder.BinaryStream) firstDecoder).decode(message);
                         args[msgIndex] = appObj;
                     } catch (DecodeException e) {
+                        args = null;
                         connLink.callOnError(e, true);
                     } catch (IOException e) {
                         // do NOT allow instrumented FFDC to be used here
@@ -1076,6 +1075,7 @@ public class LinkRead {
                                          + " while decoding Decoder.BinaryStream type " + ((Decoder.BinaryStream) firstDecoder).toString()
                                          + "Exception is: " + e.getMessage());
                         }
+                        args = null;
                         //Since IOexception has occured, there is no point int attempting to read message InputStream to convert into
                         //ByteBuffer to pass as first param to form DecodeException. Hence passing just a error message ""IOException decoding BinaryStream"
                         //as first parameter here
@@ -1084,6 +1084,7 @@ public class LinkRead {
                                                       ae.getServerEndpointClass().getName(), ((Decoder.BinaryStream) firstDecoder).getClass().getName());
                         DecodeException de = new DecodeException(msg, e.getMessage(), e);
                         connLink.callOnError(de, true);
+
                     }
                 }
             }

@@ -9,12 +9,13 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.common.rest;
 
+import javax.servlet.ServletRequestEvent;
+import javax.servlet.ServletRequestListener;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.opentelemetry.context.Scope;
-import jakarta.servlet.ServletRequestEvent;
-import jakarta.servlet.ServletRequestListener;
 
 /**
  * Closes the Scope at the end of the request.
@@ -47,5 +48,11 @@ public class TelemetryServletRequestListener implements ServletRequestListener {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
             return;
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void requestInitialized(ServletRequestEvent sre) {
+
     }
 }

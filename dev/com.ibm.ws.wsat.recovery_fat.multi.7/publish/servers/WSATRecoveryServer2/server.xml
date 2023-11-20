@@ -25,7 +25,6 @@
     leaseLength="2m"
     clientInactivityTimeout="15m"
     heuristicRetryInterval="10"
-    heuristicRetryLimit="10"
     recoverOnStartup="true"
     recoveryGroup="server-group"
     recoveryIdentity="WSATRecoveryServer2"

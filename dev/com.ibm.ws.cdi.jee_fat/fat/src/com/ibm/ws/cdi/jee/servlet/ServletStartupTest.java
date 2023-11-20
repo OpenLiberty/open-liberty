@@ -43,7 +43,7 @@ public class ServletStartupTest extends FATServletClient {
     public static final String SERVER_NAME = "cdi12BasicServer";
 
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE9, EERepeatActions.EE8, EERepeatActions.EE7);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE11, EERepeatActions.EE8, EERepeatActions.EE7);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

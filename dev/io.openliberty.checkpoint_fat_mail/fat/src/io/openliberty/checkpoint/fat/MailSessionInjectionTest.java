@@ -22,7 +22,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import JavaMailTestingApp.web.JavamailFATServlet;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -30,7 +30,7 @@ import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class MailSessionInjectionTest extends FATServletClient {
 
     private static final String APP_NAME = "JavaMailTestingApp";

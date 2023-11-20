@@ -28,7 +28,7 @@ import com.ibm.websphere.simplicity.config.JNDIEntry;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -37,7 +37,7 @@ import jndiApp.JNDIservlet;
 import jndiApp.JNDIResourceServlet;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class JNDITest {
 
     public static final String APP_NAME = "jndiApp";

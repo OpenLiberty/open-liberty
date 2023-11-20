@@ -12,7 +12,8 @@ BSD-3-CLAUSE
 BSD-EQUIVALENT  
 CDDL V1  
 CPL  
-EPL V2  
+EPL V2
+GPL-2.0-WITH-CLASSPATH-EXCEPTION  
 LGPL V2.1 
 MIT
 
@@ -193,8 +194,8 @@ PROTO-GOOGLE-COMMON-PROTOS,RESTEASY-CLIENT-MICROPROFILE, RESTEASY-CLIENT-MICROPR
 SWAGGER-CLIENT, SWAGGER-UI, TUNNEL-AGENT, VELOCITY, VELOCITY-ENGINE-CORE, WELD-API, WELD-CORE-JSF, WELD-EJB, WELD-JTA
 WELD-LITE-EXTENSION-TRANSLATOR, WELD-PROBE-CORE, WELD-SPI, WELD-WEB, WOODSTOX-CORE, WOODSTOX-CORE-ASL, WSS4J-BINDINGS
 WSS4J-POLICY, WSS4J-WS-SECURITY-COMMON, WSS4J-WS-SECURITY-DOM, WSS4J-WS-SECURITY-POLICY-STAX, WSS4J-WS-SECURITY-STAX
-WSS4J-WS-SECURITY-WEB, XBEAN-ASM5-SHADED, XBEAN-FINDER-SHADED, XML-RESOLVER
-
+WSS4J-WS-SECURITY-WEB, XBEAN-ASM5-SHADED, XBEAN-FINDER-SHADED, XML-RESOLVER, ASM, ASM-ANALYSIS, ASM-COMMONS,
+ASM-TREE, MICROMETER-COMMONS, MICROMETER-OBSERVATION
 
 
 Apache License
@@ -782,12 +783,38 @@ ORG.ECLIPSE.PERSISTENCE.JPA.JPQL
 ORG.ECLIPSE.PERSISTENCE.CORE
 (https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.core/4.0.1/),
 ORG.ECLIPSE.PERSISTENCE.ASM
-(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.asm/9.4.0/),
+(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.asm/9.6.0),
+(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.asm/9.5.0),
+(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.asm/9.3.0),
 ORG.ECLIPSE.PERSISTENCE.ANTLR
-(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.antlr/2.7.11/)
+(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.antlr/2.7.13/),
+ORG.ECLIPSE.ECJ
+(https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.35.0/),
+(https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.33.0/),
+(https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.26.0/),
 
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+GPL-2.0-WITH-CLASSPATH-EXCEPTION
+
+The Program includes some or all of the following that IBM obtained
+under a GPL-2.0-with-classpath-exception license:
+
+
+JBOSS-ANNOTATIONS-API_SPEC | Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+JAXB-IMPL | Copyright (c)  2014 Oracle and/or its affiliates. All rights reserved.
+CHECKER-COMPAT-QUAL | Copyright (C) 1989, 1991 Free Software Foundation, Inc. All rights reserved.
+
+
+The Program includes some or all of the following available
+under the GNU General Public License. For copies of the source
+code for this software, send an email to identifying the IBM
+product and the GPL-licensed program for which you are
+requesting the source code.
+
+END OF GPL-2.0-WITH-CLASSPATH-EXCEPTION NON-IBM-LICENSE INFORMATION
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 MODIFIABLE THIRD PARTY CODE
@@ -1262,7 +1289,8 @@ under the MIT License:
 
 SLF4J-API (Copyright (c) 2004-2017 QOS.ch), SLF4J-JDK14 (Copyright (c)
 2004-2017 QOS.ch), SLF4J-JDK14 (Copyright (c) 2004-2011 QOS.ch),
-GRAPHQL-JAVA (Copyright (c) 2015 Andreas Marek and Contributors)
+GRAPHQL-JAVA (Copyright (c) 2015 Andreas Marek and Contributors),
+CHECKER-COMPAT-QUAL (Copyright (c) 2004-present by the Checker Framework developers)
 
 Permission is hereby granted, free of charge, to any person obtaining a 
 copy of this software and associated documentation files (the 

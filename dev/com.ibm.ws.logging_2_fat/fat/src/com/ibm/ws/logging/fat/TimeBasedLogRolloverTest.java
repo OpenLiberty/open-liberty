@@ -139,6 +139,12 @@ public class TimeBasedLogRolloverTest {
      */
     @Test
     public void testTimedRolloverEnv() throws Exception {
+        //waits until start of minute before setting up server config
+        //due to the env setup, sometimes the messages log rolls before all the server startup code is validated
+        if (Calendar.getInstance().get(Calendar.SECOND) != 0) {
+            Thread.sleep((60000 - Calendar.getInstance().get(Calendar.SECOND)*1000));
+            Thread.sleep(2000); //padding
+        }
         setUp(server_env, "testTimedRolloverEnv");
         checkForRolledLogsAtTime(getNextRolloverTime(0,1));
     }
@@ -341,6 +347,14 @@ public class TimeBasedLogRolloverTest {
      */
     @Test
     public void testInvalidRolloverStartTime() throws Exception {
+
+        //wait to do a server config update at the start of the minute
+        //this allows enough time for timedexit check
+        if (Calendar.getInstance().get(Calendar.SECOND) != 0) {
+            Thread.sleep((60000 - Calendar.getInstance().get(Calendar.SECOND)*1000));
+            Thread.sleep(2000); //padding
+        }
+
         setUp(server_xml, "testInvalidRolloverStartTime");
         
         //wait to do a server config update at the start of the minute
@@ -350,7 +364,7 @@ public class TimeBasedLogRolloverTest {
         }
         setServerConfiguration(true, false, false, "24:00", "", 0);
         List<String> lines = serverInUse.findStringsInLogs("TRAS3015W");
-        LOG.logp(Level.INFO, CLASS_NAME, "testInvalidRolloverInterval", "Found warning: "+lines.toString());
+        LOG.logp(Level.INFO, CLASS_NAME, "testInvalidRolloverStartTime", "Found warning: "+lines.toString());
         assertTrue("No TRAS3015W warning was found indicating that 24:00 is an invalid rolloverStartTime", lines.size() > 0);
     }
 
@@ -360,6 +374,11 @@ public class TimeBasedLogRolloverTest {
      */
     @Test
     public void testInvalidRolloverInterval() throws Exception {
+        //wait to do a server startup at the start of the minute so that it has sufficient time for timedexit check
+        if (Calendar.getInstance().get(Calendar.SECOND) != 0) {
+            Thread.sleep((60000 - Calendar.getInstance().get(Calendar.SECOND)*1000));
+            Thread.sleep(2000); //padding
+        }
         setUp(server_xml, "testInvalidRolloverInterval");
 
         //wait to do a server config update at the start of the minute

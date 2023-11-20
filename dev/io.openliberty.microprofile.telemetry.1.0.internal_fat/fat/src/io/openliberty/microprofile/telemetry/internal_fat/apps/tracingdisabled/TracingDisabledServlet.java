@@ -19,9 +19,9 @@ import org.junit.Test;
 import componenttest.app.FATServlet;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.TracerProvider;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebServlet;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
 
 @ApplicationScoped
 @WebServlet("/TracingDisabledServlet")

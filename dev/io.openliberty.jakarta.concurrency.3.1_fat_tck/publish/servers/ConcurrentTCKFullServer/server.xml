@@ -51,6 +51,9 @@
 	
     <!-- Ensure JSP can handle lamdas -->
     <jspEngine jdkSourceLevel="18"/>
+    
+    <keyStore id="defaultKeyStore" password="openliberty"/>
+    <quickStartSecurity userName="admin" userPassword="adminpwd"/>
 
     <!-- Security role(s) needed for TCK tests -->
     <orb id="defaultOrb" orbSSLInitTimeout="90"/>

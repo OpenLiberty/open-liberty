@@ -17,16 +17,19 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
+import jakarta.data.Streamable;
+import jakarta.data.repository.By;
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Streamable;
+import jakarta.data.repository.Save;
 import jakarta.enterprise.concurrent.Asynchronous;
 
-import io.openliberty.data.repository.Compare;
-import io.openliberty.data.repository.Delete;
-import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Select;
-import io.openliberty.data.repository.Update;
+import io.openliberty.data.repository.comparison.In;
+import io.openliberty.data.repository.comparison.StartsWith;
+import io.openliberty.data.repository.update.Assign;
 
 /**
  * This is a second repository interface for the Person entity,
@@ -37,10 +40,9 @@ import io.openliberty.data.repository.Update;
 @Repository
 public interface Personnel {
     @Asynchronous
-    @Filter(by = "lastName")
-    @Filter(by = "ssn_id", op = Compare.In)
-    @Update(attr = "lastName")
-    CompletionStage<Integer> changeSurnames(String oldSurname, List<Long> ssnList, String newSurname);
+    CompletionStage<Integer> changeSurnames(@By("lastName") String oldSurname,
+                                            @By("ssn_id") @In List<Long> ssnList,
+                                            @Assign("lastName") String newSurname);
 
     @Asynchronous
     CompletableFuture<Long> countByFirstNameStartsWith(String beginningOfFirstName);
@@ -52,9 +54,11 @@ public interface Personnel {
     CompletableFuture<Void> deleteById(long ssn);
 
     @Asynchronous
+    @Delete
     CompletableFuture<Void> deleteMultiple(Person... people);
 
     @Asynchronous
+    @Delete
     CompletableFuture<Integer> deleteSeveral(Stream<Person> people);
 
     @Asynchronous
@@ -68,15 +72,15 @@ public interface Personnel {
     CompletableFuture<Stream<String>> firstNames(String lastName);
 
     @Asynchronous
+    @Insert
     CompletableFuture<Void> insertAll(Person... people);
 
     @Asynchronous
     @Query("SELECT DISTINCT o.lastName FROM Person o ORDER BY o.lastName")
     CompletionStage<String[]> lastNames();
 
-    @Filter(by = "firstName", op = Compare.StartsWith)
     @Select("firstName")
-    Streamable<String> namesThatStartWith(String beginningOfFirstName);
+    Streamable<String> namesThatStartWith(@By("firstName") @StartsWith String beginningOfFirstName);
 
     // An alternative to the above would be to make the Collector class a parameter
     // of the Paginated annotation, although this would rule out easily accessing the
@@ -87,14 +91,11 @@ public interface Personnel {
     CompletableFuture<Long> removeAll();
 
     @Asynchronous
+    @Save
     CompletableFuture<List<Person>> save(Person... p);
 
-    @Filter(by = "ssn_id")
-    @Update(attr = "lastName")
-    long setSurname(long ssn, String newSurname);
+    long setSurname(@By("ssn_id") long ssn, @Assign("lastName") String newSurname);
 
     @Asynchronous
-    @Filter(by = "ssn_id")
-    @Update(attr = "lastName")
-    CompletableFuture<Boolean> setSurnameAsync(long ssn, String newSurname);
+    CompletableFuture<Boolean> setSurnameAsync(long ssn_id, @Assign String lastName);
 }

@@ -33,14 +33,14 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import WebCacheApp.CachedServlet;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class WebCacheTest {
 
     public static final String SERVER_NAME = "webCacheServer";

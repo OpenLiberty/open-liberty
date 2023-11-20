@@ -14,11 +14,11 @@ package io.openliberty.microprofile.telemetry.internal.tests;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static io.openliberty.microprofile.telemetry.internal.utils.TestConstants.NULL_TRACE_ID;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasKind;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasName;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasNoParent;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasParentSpanId;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.SpanMatcher.hasServiceName;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasKind;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasName;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasNoParent;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasParentSpanId;
+import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasServiceName;
 import static io.opentelemetry.api.trace.SpanKind.INTERNAL;
 import static io.opentelemetry.api.trace.SpanKind.SERVER;
 import static org.hamcrest.Matchers.equalTo;
@@ -49,6 +49,8 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
@@ -57,9 +59,6 @@ import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.TestUtils;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
-
-import componenttest.rules.repeater.MicroProfileActions;
-import componenttest.rules.repeater.RepeatTests;
 
 /**
  * Test all the ways the agent can be configured
@@ -76,10 +75,10 @@ public class AgentConfigTest {
 
     @ClassRule
     public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
-    
+
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat("spanTestServer", MicroProfileActions.MP61, MicroProfileActions.MP60);
-    
+
     public static JaegerQueryClient client;
 
     @BeforeClass

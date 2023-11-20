@@ -21,8 +21,8 @@ import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.baggage.BaggageBuilder;
 import io.opentelemetry.api.baggage.BaggageEntryMetadata;
 import io.opentelemetry.api.baggage.propagation.W3CBaggagePropagator;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.servlet.annotation.WebServlet;
+import javax.enterprise.context.ApplicationScoped;
+import javax.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/testBaggage")

@@ -65,22 +65,23 @@ Private-Package: io.openliberty.microprofile.telemetry10.internal.helper,\
 	io.openliberty.microprofile.telemetry10.internal.sdk
 
 -buildpath: \
-    io.openliberty.jakarta.restfulWS.3.1;version=latest,\
-    io.openliberty.jakarta.annotation.2.1;version=latest,\
-    io.openliberty.jakarta.interceptor.2.1;version=latest,\
-    io.openliberty.jakarta.cdi.4.0;version=latest,\
-    io.openliberty.jakarta.servlet.6.0;version=latest,\
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-    com.ibm.ws.logging.core;version=latest,\
-    com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
-    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-    io.openliberty.io.opentelemetry;version=latest,\
-    io.openliberty.org.eclipse.microprofile.config.3.0,\
-    io.openliberty.org.eclipse.microprofile.rest.client.3.0,\
-    io.openliberty.org.jboss.resteasy.common.ee10;version=latest,\
-    io.openliberty.microprofile.telemetry.internal.common;version=latest,\
-    com.ibm.websphere.org.osgi.core;version=latest,\
-    com.ibm.ws.container.service;version=latest,\
-    com.ibm.ws.kernel.boot.core;version=latest
+	io.openliberty.jakarta.restfulWS.3.1;version=latest,\
+	io.openliberty.jakarta.annotation.2.1;version=latest,\
+	io.openliberty.jakarta.interceptor.2.1;version=latest,\
+	io.openliberty.jakarta.cdi.4.0;version=latest,\
+	io.openliberty.jakarta.servlet.6.0;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	io.openliberty.io.opentelemetry;version=latest,\
+	io.openliberty.org.eclipse.microprofile.config.3.0,\
+	io.openliberty.org.eclipse.microprofile.rest.client.3.0,\
+	io.openliberty.org.jboss.resteasy.common.ee10;version=latest,\
+	io.openliberty.microprofile.telemetry.internal.common.jakarta;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.boot.common;version=latest
 
 WS-TraceGroup: TELEMETRY

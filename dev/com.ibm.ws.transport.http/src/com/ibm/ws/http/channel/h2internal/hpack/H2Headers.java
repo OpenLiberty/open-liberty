@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,7 +14,6 @@ package com.ibm.ws.http.channel.h2internal.hpack;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -308,7 +307,7 @@ public class H2Headers {
                 HuffmanDecoder decoder = new HuffmanDecoder();
                 bytes = decoder.convertHuffmanToAscii(bytes);
             }
-            decodedResult = new String(bytes, Charset.forName(HpackConstants.HPACK_CHAR_SET));
+            decodedResult = new String(bytes, HpackConstants.HPACK_CHAR_SET);
 
         } catch (Exception e) {
             throw new CompressionException("Received an invalid header block fragment");
