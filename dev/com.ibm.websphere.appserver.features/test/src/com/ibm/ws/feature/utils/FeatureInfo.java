@@ -15,470 +15,329 @@ package com.ibm.ws.feature.utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+
+import com.ibm.ws.feature.tasks.FeatureBnd;
+import com.ibm.ws.feature.tasks.FeatureBuilder;
 
 import aQute.bnd.header.Attrs;
 
 public class FeatureInfo {
 
-    /**
-     * Retrieve a property from a feature build. Trim the property value.
-     *
-     * @param builder A feature builder.
-     * @param propertyName The name of the property which is to be retrieved.
-     * @param defaultValue The property value, if the property was not found.
-     *
-     * @return The trimmed property value. The default value if the property was not found.
-     */
-    public static String getProperty(FeatureBuilder builder, String propertyName, String defaultValue) {
-        String propertyValue = builder.getProperty(propertyName);
-        return ((propertyValue == null) ? defaultValue : propertyValue.trim());
+    private String[] lockedAutoFeatures;
+    private Map<String, Attrs> lockedDependentFeatures;
+    private String[] lockedActivatingAutoFeature;
+
+    private Set<String> autoFeatures = new LinkedHashSet<String>();
+    private Map<String, Attrs> dependentFeatures = new LinkedHashMap<String, Attrs>();
+    private Set<String> activatingAutoFeature = new LinkedHashSet<String>();
+
+    private String edition;
+    private String kind;
+
+    private boolean isInit = false;
+    private final File feature;
+    private String name;
+    private boolean isAutoFeature = false;
+    private boolean isParallelActivationEnabled = false;
+    private boolean isDisableOnConflictEnabled = true;
+    private boolean isDisableOnConflictSet = false;
+    private boolean isAlsoKnownAsSet = false;
+    private boolean isSingleton = false;
+    private String visibility = "private";
+    private String shortName;
+
+    private Set<ExternalPackageInfo> APIs;
+    private Set<ExternalPackageInfo> SPIs;
+
+    public FeatureInfo(File feature) {
+        this.feature = feature;
     }
-
-    public static String getProperty(FeatureBuilder builder, String propertyName) {
-        return getProperty(builder, propertyName, null);
-    }
-
-    public static boolean hasProperty(FeatureBuilder builder, String propertyName) {
-        return (getProperty(builder, propertyName) != null);
-    }
-
-    public static boolean hasProperty(FeatureBuilder builder, String propertyName, String value) {
-        String propertyValue = getProperty(builder, propertyName);
-        return ((propertyValue != null) && propertyValue.equals(value));
-    }
-
-    public static boolean getProperty(FeatureBuilder builder, String propertyName, boolean defaultValue) {
-        String propertyValue = getProperty(builder, propertyName, null);
-        if (propertyValue == null) {
-            return defaultValue;
-        } else {
-            return FeatureConstants.BND_TRUE.equals(propertyValue);
-        }
-    }
-
-    //
-
-    public static String getBaseName(String featureName) {
-        int versionIndex = featureName.lastIndexOf('-');
-        if (versionIndex != -1) {
-            return featureName.substring(0, versionIndex);
-        } else {
-            return featureName;
-        }
-    }
-
-    public static String getVersion(String featureName) {
-        int versionIndex = featureName.lastIndexOf('-');
-        if (versionIndex != -1) {
-            return featureName.substring(versionIndex + 1, featureName.length());
-        } else {
-            return null;
-        }
-    }
-
-    //
-
-    //
-
-    /**
-     * Answer an integer level for an edition value.
-     *
-     * The order of these is significant: A dependent feature
-     * cannot have an edition value which is less than its dependency
-     * parent feature.
-     *
-     * @param edition An edition for which to obtain an integer value.
-     * @return The integer value assigned to the edition.
-     */
-    public static int getEditionLevel(String edition) {
-        if (edition == null) {
-            return 99;
-        }
-
-        switch (edition.toLowerCase()) {
-
-            case FeatureConstants.EDITION_FULL:
-                return 0;
-            case FeatureConstants.EDITION_UNSUPPORTED:
-                return 1;
-            case FeatureConstants.EDITION_ZOS:
-                return 2;
-            case FeatureConstants.EDITION_ND:
-                return 3;
-            case FeatureConstants.EDITION_BASE:
-                return 4;
-            case FeatureConstants.EDITION_CORE:
-                return 5;
-            default:
-                // TODO: Is this correct?
-                // This means that unknown edition values never generate
-                // kind conflicts.
-                return 99;
-        }
-    }
-
-    /**
-     * Answer an integer level for an product kind value.
-     *
-     * The order of these is significant: A dependent feature
-     * cannot have an product kind value which is less than the
-     * product kind value of its dependency parent feature.
-     *
-     * @param kind A kind for which to obtain an integer value.
-     * @return The integer value assigned to the kind.
-     */
-    public static int getKindLevel(String kind) {
-        if (kind == null) {
-            return 99;
-        }
-
-        switch (kind.toLowerCase()) {
-            case FeatureConstants.KIND_NOSHIP:
-                return 0;
-            case FeatureConstants.KIND_BETA:
-                return 1;
-            case FeatureConstants.KIND_GA:
-                return 2;
-            default:
-                // TODO: Is this correct?
-                // This means that unknown kind values never generate
-                // kind conflicts.
-                return 99;
-        }
-    }
-
-    //
-
-    /**
-     * Read feature information from a feature file.
-     *
-     * @param featureFile A file containing feature information.
-     *
-     * @throws IOException Thrown if the feature information cannot be read.
-     */
-    public FeatureInfo(File featureFile) throws IOException {
-        this.featureFile = featureFile;
-
-        try (FeatureBuilder builder = new FeatureBuilder()) {
-            builder.setProperties(this.featureFile);
-
-            this.name = getProperty(builder, FeatureConstants.BND_SYMBOLIC_NAME);
-
-            int versionIndex = this.name.lastIndexOf('-');
-            if (versionIndex != -1) {
-                this.baseName = this.name.substring(0, versionIndex);
-                this.version = this.name.substring(versionIndex + 1, this.name.length());
-            } else {
-                this.baseName = this.name;
-                this.version = null;
-            }
-
-            this.shortName = getProperty(builder, FeatureConstants.IBM_SHORT_NAME);
-
-            this.edition = getProperty(builder, FeatureConstants.BND_PRODUCT_EDITION);
-            this.kind = getProperty(builder, FeatureConstants.BND_PRODUCT_KIND);
-            this.isSingleton = getProperty(builder, FeatureConstants.BND_SINGLETON,
-                                           false);
-            this.visibility = getProperty(builder, FeatureConstants.BND_VISIBILITY,
-                                          FeatureConstants.VISIBILITY_PRIVATE);
-
-            //
-
-            this.isAutoFeature = hasProperty(builder, FeatureConstants.IBM_PROVISION_CAPABILITY);
-
-            Set<String> useAutoFeatures = builder.getAutoFeatures();
-            this.autoFeatures = new LinkedHashSet<String>(useAutoFeatures);
-
-            // Inverse auto-features pointer.  Set after all features are created,
-            // after the feature initialization.
-            this.activatingAutoFeature = new LinkedHashSet<String>();
-
-            Set<Map.Entry<String, Attrs>> useFeatures = builder.getFeatures();
-
-            List<String> useDepNames = new ArrayList<>(useFeatures.size());
-            Map<String, Attrs> useDeps = new LinkedHashMap<>(useFeatures.size());
-
-            useFeatures.forEach((Map.Entry<String, Attrs> entry) -> {
-                String depName = entry.getKey();
-                useDepNames.add(depName);
-                useDeps.put(depName, entry.getValue());
-
-            });
-
-            useDepNames.sort(Comparator.comparing(String::toString));
-
-            this.sortedDependentNames = useDepNames;
-            this.dependentFeatures = useDeps;
-
-            //
-
-            this.isParallelActivationEnabled = hasProperty(builder, FeatureConstants.WLP_ACTIVATION_TYPE,
-                                                           FeatureConstants.WLP_ACTIVATION_TYPE_PARALLEL);
-
-            this.isSetDisableOnConflict = hasProperty(builder, FeatureConstants.WLP_DISABLE_ALL_FEATURES_ON_CONFLICT);
-            this.isDisableOnConflictEnabled = getProperty(builder, FeatureConstants.WLP_DISABLE_ALL_FEATURES_ON_CONFLICT,
-                                                          true);
-
-            this.isSetAlsoKnownAs = hasProperty(builder, FeatureConstants.WLP_ALSO_KNOWN_AS);
-            this.alsoKnownAs = getProperty(builder, FeatureConstants.WLP_ALSO_KNOWN_AS);
-        }
-    }
-
-    //
-
-    /**
-     * Display the edition and product kind of a feature.
-     *
-     * @return A print string containing the feature name,
-     *         the feature edition, and the feature product kind.
-     */
-    public String printFeature() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Feature: [");
-        builder.append(getName());
-        builder.append("]");
-        builder.append(" Edition: [");
-        builder.append(getEdition());
-        builder.append("]");
-        builder.append(" Kind: [");
-        builder.append(getKind());
-        builder.append("]");
-
-        builder.append(" File [ ");
-        builder.append(getFeatureFile().getName());
-        builder.append(" ]");
-
-        return builder.toString();
-    }
-
-    //
-
-    private final File featureFile;
 
     public File getFeatureFile() {
-        return featureFile;
+        return feature;
     }
 
-    public String getFeatureFileName() {
-        String fileName = getFeatureFile().getName();
-        int index = fileName.lastIndexOf(FeatureFileConstants.FEATURE_FILE_EXT);
-        return ((index == -1) ? fileName : fileName.substring(0, index));
+    public String[] getAutoFeatures() {
+        if (!isInit)
+            populateInfo();
+
+        return this.lockedAutoFeatures;
     }
-
-    //
-
-    private final String name;
-    private final String baseName;
-    private final String version;
-
-    private final String shortName;
-    private final String edition;
-    private final String kind;
 
     public String getName() {
-        return name;
+        if (!isInit)
+            populateInfo();
+
+        return this.name;
     }
 
-    public String getBaseName() {
-        return baseName;
+    public boolean isAutoFeature() {
+        if (!isInit)
+            populateInfo();
+
+        return this.isAutoFeature;
     }
 
-    public String getVersion() {
-        return version;
+    public boolean isParallelActivationEnabled() {
+        if (!isInit)
+            populateInfo();
+
+        return this.isParallelActivationEnabled;
     }
 
-    public boolean isVersionless() {
-        return (getVersion() == null);
+    public boolean isDisableOnConflictEnabled() {
+        if (!isInit)
+            populateInfo();
+
+        return this.isDisableOnConflictEnabled;
     }
 
-    public String getShortName() {
-        return shortName;
+    public boolean isDisableOnConflictSet() {
+        if (!isInit)
+            populateInfo();
+
+        return this.isDisableOnConflictSet;
     }
 
-    public String getEdition() {
-        return edition;
+    public boolean isAlsoKnownAsSet() {
+        if (!isInit)
+            populateInfo();
+
+        return this.isAlsoKnownAsSet;
     }
-
-    public int getEditionLevel() {
-        return getEditionLevel(getEdition());
-    }
-
-    public boolean isBase() {
-        return FeatureConstants.EDITION_BASE.equals(getEdition());
-    }
-
-    public boolean isFull() {
-        return FeatureConstants.EDITION_FULL.equals(getEdition());
-    }
-
-    public boolean isND() {
-        return FeatureConstants.EDITION_ND.equals(getEdition());
-    }
-
-    public boolean isCore() {
-        return FeatureConstants.EDITION_CORE.equals(getEdition());
-    }
-
-    public boolean isZOS() {
-        return FeatureConstants.EDITION_ZOS.equals(getEdition());
-    }
-
-    public boolean isUnsupported() {
-        return FeatureConstants.EDITION_UNSUPPORTED.equals(getEdition());
-    }
-
-    public String getKind() {
-        return kind;
-    }
-
-    public int getKindLevel() {
-        return getKindLevel(getKind());
-    }
-
-    public boolean isNoShip() {
-        return FeatureConstants.KIND_NOSHIP.equals(getKind());
-    }
-
-    public boolean isBeta() {
-        return FeatureConstants.KIND_BETA.equals(getKind());
-    }
-
-    public boolean isGA() {
-        return FeatureConstants.KIND_GA.equals(getKind());
-    }
-
-    //
-
-    private final boolean isSingleton;
-    private final String visibility;
 
     public boolean isSingleton() {
-        return isSingleton;
+        if (!isInit)
+            populateInfo();
+
+        return this.isSingleton;
     }
 
     public String getVisibility() {
-        return visibility;
+        if (!isInit)
+            populateInfo();
+
+        return this.visibility;
     }
-
-    public boolean isPrivate() {
-        return FeatureConstants.VISIBILITY_PRIVATE.equals(getVisibility());
-    }
-
-    public boolean isProtected() {
-        return FeatureConstants.VISIBILITY_PROTECTED.equals(getVisibility());
-    }
-
-    public boolean isPublic() {
-        return FeatureConstants.VISIBILITY_PUBLIC.equals(getVisibility());
-    }
-
-    //
-
-    private final boolean isAutoFeature;
-
-    public boolean isAutoFeature() {
-        return isAutoFeature;
-    }
-
-    private final Set<String> autoFeatures;
-
-    public Set<String> getAutoFeatures() {
-        return autoFeatures;
-    }
-
-    private final Set<String> activatingAutoFeature;
 
     //Activating autofeature just means "I'm an autofeature, and i *might* activate this other feature
     //So it's like a "Sometimes" dependency, but is potentially useful for figuring out a superset of
     //potential provisioned features.
-
     protected void addActivatingAutoFeature(String featureName) {
-        activatingAutoFeature.add(featureName);
+        if (!isInit)
+            populateInfo();
+
+        if (activatingAutoFeaturesLocked)
+            return;
+
+        this.activatingAutoFeature.add(featureName);
     }
 
-    public Set<String> getActivatingAutoFeatures() {
-        return activatingAutoFeature;
+    public String[] getActivatingAutoFeatures() {
+        if (activatingAutoFeaturesLocked)
+            return this.lockedActivatingAutoFeature;
+        else
+            return null;
+
     }
 
-    //
+    private boolean activatingAutoFeaturesLocked = false;
 
-    private final List<String> sortedDependentNames;
-    private final Map<String, Attrs> dependentFeatures;
-
-    public List<String> getSortedDependentNames() {
-        return sortedDependentNames;
+    protected synchronized void lockActivatingAutoFeatures() {
+        this.lockedActivatingAutoFeature = this.activatingAutoFeature.toArray(new String[this.activatingAutoFeature.size()]);
+        activatingAutoFeaturesLocked = true;
+        activatingAutoFeature = null;
     }
-
-    public void forEachSortedDepName(Consumer<? super String> consumer) {
-        getSortedDependentNames().forEach(consumer);
-    }
-
-    //
 
     public Map<String, Attrs> getDependentFeatures() {
-        return dependentFeatures;
+        if (!isInit)
+            populateInfo();
+
+        return this.lockedDependentFeatures;
     }
 
-    public void forEachDep(FeatureRepo repo,
-                           Consumer<FeatureInfo> consumer) {
-        forEachDepName((String dep) -> consumer.accept(repo.getFeature(dep)));
+    public String getEdition() {
+        if (!isInit)
+            populateInfo();
+
+        return this.edition;
+
     }
 
-    public void forEachResolvedDep(FeatureRepo repo,
-                                   Consumer<FeatureInfo> consumer) {
+    public String getKind() {
+        if (!isInit)
+            populateInfo();
 
-        forEachDepName((String dep) -> {
-            FeatureInfo featureInfo = repo.getFeature(dep);
-            if (featureInfo != null) {
-                consumer.accept(featureInfo);
+        return this.kind;
+    }
+
+    public String getShortName() {
+        if (!isInit)
+            populateInfo();
+
+        return this.shortName;
+    }
+
+    public Set<ExternalPackageInfo> getAPIs() {
+        if (!isInit)
+            populateInfo();
+
+        return this.APIs;
+    }
+
+    public Set<ExternalPackageInfo> getSPIs() {
+        if (!isInit)
+            populateInfo();
+
+        return this.SPIs;
+    }
+
+    private synchronized void populateInfo() {
+        if (isInit)
+            return;
+
+        FeatureBuilder builder = new FeatureBuilder();
+
+        try {
+            builder.setProperties(this.feature);
+
+            String edition = builder.getProperty("edition");
+            String kind = builder.getProperty("kind");
+            this.name = builder.getProperty("symbolicName");
+            this.isAutoFeature = builder.getProperty(FeatureBnd.IBM_PROVISION_CAPABILITY) != null;
+            String activationType = builder.getProperty("WLP-Activation-Type");
+            this.isParallelActivationEnabled = activationType != null && "parallel".equals(activationType.trim());
+            String disableOnConflict = builder.getProperty("WLP-DisableAllFeatures-OnConflict");
+            this.isDisableOnConflictSet = disableOnConflict != null;
+            this.isDisableOnConflictEnabled = disableOnConflict == null || "true".equals(disableOnConflict);
+            this.isAlsoKnownAsSet = builder.getProperty("WLP-AlsoKnownAs") != null;
+            String singleton = builder.getProperty("singleton");
+            this.isSingleton = singleton != null && "true".equals(singleton.trim());
+            String vis = builder.getProperty("visibility");
+            if (vis != null) {
+                visibility = vis.trim();
             }
-        });
+            this.shortName = builder.getProperty(FeatureBnd.IBM_SHORT_NAME);
+
+            this.edition = edition;
+            this.kind = kind;
+
+            String ibmAPIsString = builder.getProperty("IBM-API-Package");
+            String ibmSPIsString = builder.getProperty("IBM-SPI-Package");
+
+            this.APIs = parseExternalPackages(ibmAPIsString, null);
+            this.SPIs = parseExternalPackages(ibmSPIsString, "ibm-spi");
+
+            for (String autoFeature : builder.getAutoFeatures()) {
+                this.autoFeatures.add(autoFeature);
+            }
+            this.lockedAutoFeatures = this.autoFeatures.toArray(new String[this.autoFeatures.size()]);
+
+            for (Map.Entry<String, Attrs> feature : builder.getFeatures()) {
+                this.dependentFeatures.put(feature.getKey(), feature.getValue());
+            }
+
+            this.lockedDependentFeatures = Collections.unmodifiableMap(new LinkedHashMap<String, Attrs>(this.dependentFeatures));
+
+            this.autoFeatures = null;
+            this.dependentFeatures = null;
+
+            builder.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            builder = null;
+        }
+
+        isInit = true;
     }
 
-    public void forEachDep(BiConsumer<? super String, ? super Attrs> consumer) {
-        getDependentFeatures().forEach(consumer);
+    public static final class ExternalPackageInfo {
+
+        final String packageName;
+        final String type;
+
+        ExternalPackageInfo(String packageName, String type) {
+            this.packageName = packageName;
+            this.type = type;
+        }
+
+        public String getPackageName() {
+            return packageName;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(packageName, type);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            ExternalPackageInfo other = (ExternalPackageInfo) obj;
+            return Objects.equals(packageName, other.packageName) && Objects.equals(type, other.type);
+        }
+
+        @Override
+        public String toString() {
+            return packageName + " [" + type + "]";
+        }
     }
 
-    public void forEachDepName(Consumer<? super String> consumer) {
-        getDependentFeatures().keySet().forEach(consumer);
+    private Set<ExternalPackageInfo> parseExternalPackages(String packageList, String defaultType) {
+        if (packageList == null) {
+            return null;
+        }
+
+        String[] packageNames = packageList.split(",");
+        Set<ExternalPackageInfo> extPackageInfoSet = new LinkedHashSet<>();
+        for (String packageName : packageNames) {
+            String[] packageParts = packageName.split(";");
+            String externalPackage = packageParts[0].trim();
+            String type = null;
+            if (packageParts.length > 1) {
+                for (int i = 1; i < packageParts.length; ++i) {
+                    String packagePart = packageParts[i].trim();
+                    if (packagePart.startsWith("type")) {
+                        type = packagePart.substring(packagePart.indexOf('=') + 1).trim();
+                        while (type.startsWith("\"")) {
+                            type = type.substring(1);
+                        }
+                        while (type.endsWith("\"")) {
+                            type = type.substring(0, type.length() - 1);
+                        }
+                        break;
+                    }
+                }
+            }
+            if (type == null) {
+                type = defaultType;
+            }
+            extPackageInfoSet.add(new ExternalPackageInfo(externalPackage, type));
+        }
+        return Collections.unmodifiableSet(extPackageInfoSet);
     }
 
-    //
-
-    private final boolean isParallelActivationEnabled;
-
-    private final boolean isSetDisableOnConflict;
-    private final boolean isDisableOnConflictEnabled;
-
-    private final boolean isSetAlsoKnownAs;
-    private final String alsoKnownAs;
-
-    public boolean isParallelActivationEnabled() {
-        return isParallelActivationEnabled;
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return name + " " + visibility;
     }
 
-    public boolean isDisableOnConflictEnabled() {
-        return isDisableOnConflictEnabled;
-    }
-
-    public boolean isSetDisableOnConflict() {
-        return isSetDisableOnConflict;
-    }
-
-    public boolean isSetAlsoKnownAs() {
-        return isSetAlsoKnownAs;
-    }
-
-    public String getAlsoKnownAs() {
-        return alsoKnownAs;
-    }
 }
