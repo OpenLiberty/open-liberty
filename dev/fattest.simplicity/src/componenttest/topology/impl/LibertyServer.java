@@ -1642,9 +1642,8 @@ public class LibertyServer implements LogMonitorClient {
                 JVM_ARGS += " -Xenablefips140-3";
                 JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
                 JVM_ARGS += " -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS";
-                JVM_ARGS += " -Djavax.net.debug=all";
-                //This debug arg is kept for the initial formal SOE builds and will be removed once stable builds are achieved
-                //in Nov.- Dec., 2023.
+                //JVM_ARGS += " -Djavax.net.debug=all";
+                //Uncomment as needed for additional debugging
 
             } else {
                 Log.info(c, "startServerWithArgs", "The JDK version: " + info.majorVersion() + " and vendor: " + info.VENDOR);
@@ -1968,6 +1967,10 @@ public class LibertyServer implements LogMonitorClient {
             }
         }
 
+        // recalculate the messages and trace logs in case the logsRoot changed
+        this.messageAbsPath = logsRoot + messageFileName;
+        this.traceAbsPath = logsRoot + traceFileName;
+
         //The restore operation returned 0. Verify that running server is from a checkpoint restore and not from a
         // failed restore recovery, unless auto-recovery is enabled
         if (checkpointInfo.criuRestoreDisableRecovery && failedRestore()) {
@@ -2103,15 +2106,18 @@ public class LibertyServer implements LogMonitorClient {
         final String RESTORE_MESSAGE_CODE = "CWWKC0452I";
         Log.info(c, method, "Checking for restore message: " + RESTORE_MESSAGE_CODE);
 
-        RemoteFile messagesLog = new RemoteFile(machine, messageAbsPath);
+        // The console log is where to check first because its location
+        // cannot change on restore.  The messages one may change while restoring
+        // that makes the file the restore message is in not predictable.
+        RemoteFile logToCheck = getConsoleLogFile();
         // App validation needs the info messages in messages.log
-        if (!messagesLog.exists()) {
-            // NOTE: The HPEL FAT bucket has a strange mechanism to create messages.log for test purposes, which may get messed up
-            Log.info(c, method, "WARNING: messages.log does not exist-- trying app verification step with console.log");
-            messagesLog = getConsoleLogFile();
+        if (!logToCheck.exists()) {
+            // try the messages log
+            Log.info(c, method, "WARNING: console.log does not exist-- trying app verification step with messages.log");
+            logToCheck = new RemoteFile(machine, messageAbsPath);
         }
 
-        String found = waitForStringInLog(RESTORE_MESSAGE_CODE, messagesLog);
+        String found = waitForStringInLog(RESTORE_MESSAGE_CODE, logToCheck);
         if (found == null) {
             Log.info(c, method, "Error: server did not restore successfully.");
             return true;
@@ -7029,7 +7035,10 @@ public class LibertyServer implements LogMonitorClient {
      */
     public String waitForStringInTraceUsingMark(String regexp, long timeout) {
         try {
-            return waitForStringInLogUsingMark(regexp, timeout, getMostRecentTraceFile());
+            RemoteFile f = getMostRecentTraceFile();
+
+            Log.info(c, "waitForStringInTrace", "Waiting for \"" + regexp + "\" to be found in " + f);
+            return waitForStringInLogUsingMark(regexp, timeout, f);
         } catch (Exception e) {
             Log.warning(c, "Could not find string in trace log file due to exception " + e);
             return null;

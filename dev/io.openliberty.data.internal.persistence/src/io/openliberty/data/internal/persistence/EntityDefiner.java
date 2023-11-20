@@ -67,6 +67,7 @@ import com.ibm.wsspi.persistence.InMemoryMappingFile;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import jakarta.data.exceptions.MappingException;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.Attribute;
@@ -408,9 +409,23 @@ public class EntityDefiner implements Runnable {
 
             Queue<Class<?>> embeddableTypesQueue = new LinkedList<>();
 
+            Set<Class<?>> converterTypes = new HashSet<>(); // TODO why do we need to write converters to orm.xml at all?
+
             for (Class<?> c : entities) {
                 if (c.isAnnotationPresent(Entity.class)) {
                     annotatedEntityClassQueue.add(c);
+
+                    for (Field field : c.getFields()) {
+                        Convert convert = field.getAnnotation(Convert.class);
+                        if (convert != null)
+                            converterTypes.add(convert.converter());
+                    }
+
+                    for (Method method : c.getMethods()) {
+                        Convert convert = method.getAnnotation(Convert.class);
+                        if (convert != null)
+                            converterTypes.add(convert.converter());
+                    }
                 } else {
                     if (c.isRecord()) {
                         String entityClassName = c.getName() + "Entity"; // an entity class is generated for the record
@@ -442,6 +457,11 @@ public class EntityDefiner implements Runnable {
                     xml.append(" </embeddable>").append(EOLN);
                     entityClassInfo.add(xml.toString());
                 }
+
+            for (Class<?> type : converterTypes) {
+                StringBuilder xml = new StringBuilder(500).append(" <converter class=\"").append(type.getName()).append("\"></converter>").append(EOLN);
+                entityClassInfo.add(xml.toString());
+            }
 
             // Discover entities that are indirectly referenced via OneToOne, ManyToMany, and so forth
             for (Class<?> c; (c = annotatedEntityClassQueue.poll()) != null;)

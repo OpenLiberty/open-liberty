@@ -66,6 +66,8 @@ IBM-Process-Types: server, \
  com.ibm.ws.org.apache.yoko.util.1.5, \
  com.ibm.ws.transport.iiop, \
  com.ibm.ws.org.apache.yoko.rmi.spec.1.5
+-jars=\
+ io.openliberty.corba.2.4; location:="dev/api/spec/,lib/"
 kind=ga
 edition=base
 WLP-Activation-Type: parallel

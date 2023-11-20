@@ -19,6 +19,8 @@ Subsystem-Name: Jakarta Authentication 2.0
   com.ibm.websphere.appserver.eeCompatible-9.0
 -bundles=\
   io.openliberty.security.jaspic.2.0.internal
+-jars=io.openliberty.jaspic.spi; location:=dev/spi/ibm/
+-files=dev/spi/ibm/javadoc/io.openliberty.jaspic.spi_1.1-javadoc.zip
 kind=ga
 edition=core
 WLP-InstantOn-Enabled: true

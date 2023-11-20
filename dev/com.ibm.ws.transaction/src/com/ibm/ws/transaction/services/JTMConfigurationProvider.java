@@ -358,6 +358,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * Use Tr configuration for 'transaction' group.
      */
     @Override
+    @Trivial
     public Level getTraceLevel() {
         return tc.getLoggerLevel();
     }
@@ -375,6 +376,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public String getLeaseCheckStrategy() {
         return (String) _props.get("leaseCheckStrategy");
     }
@@ -386,18 +388,21 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public int getLeaseCheckInterval() {
         Number num = (Number) _props.get("leaseCheckInterval");
         return num.intValue();
     }
 
     @Override
+    @Trivial
     public int getLeaseLength() {
         Number num = (Number) _props.get("leaseLength");
         return num.intValue();
     }
 
     @Override
+    @Trivial
     public int getLeaseRenewalThreshold() {
         Number num = (Number) _props.get("leaseRenewalThreshold");
         return num.intValue();

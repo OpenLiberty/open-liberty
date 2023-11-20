@@ -17,7 +17,21 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.management.MBeanServerConnection;
+import javax.management.ObjectName;
+import javax.management.remote.JMXConnector;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -30,6 +44,7 @@ import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.config.Authentication;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.LTPA;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
@@ -84,6 +99,7 @@ public class LTPAKeyRotationTests {
 
     // Define the paths to the key files
     private static final String DEFAULT_KEY_PATH = "resources/security/ltpa.keys";
+    private static final String CONFIGURED_VALIDATION_KEY1_PATH = "resources/security/configuredValidation1.keys";
     private static final String VALIDATION_KEY1_PATH = "resources/security/validation1.keys";
     private static final String VALIDATION_KEY2_PATH = "resources/security/validation2.keys";
     private static final String VALIDATION_KEY3_PATH = "resources/security/validation3.keys";
@@ -110,6 +126,8 @@ public class LTPAKeyRotationTests {
     public static void setUp() throws Exception {
         // Copy validation key file (validation1.keys) to the server
         copyFileToServerResourcesSecurityDir("alternate/validation1.keys");
+
+        server.setupForRestConnectorAccess();
 
         server.startServer(true);
 
@@ -155,7 +173,7 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 5.
+     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 10.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Rename the ltpa.keys file to validation1.keys.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -164,7 +182,7 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 5.
+     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 10.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is renamed to validation1.keys.
      * <LI>Continued authentication to simple servlet; server is not restarted and does not need to login again.
@@ -175,9 +193,9 @@ public class LTPAKeyRotationTests {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testLTPAFileCreationDeletion_monitorValidationKeysDir_true_monitorInterval_5() throws Exception {
+    public void testLTPAFileCreationDeletion_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
         // Configure the server
-        configureServer("true", "5", true);
+        configureServer("true", "10", true);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -212,7 +230,7 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 5.
+     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 10.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Replace the primary key with a different valid key.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -220,7 +238,7 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 5.
+     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 10.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is replaced with a different key.
      * <LI>Failed authentication to simple servlet.
@@ -229,9 +247,9 @@ public class LTPAKeyRotationTests {
      */
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testLTPAFileReplacement_newValidKey_monitorValidationKeysDir_true_monitorInterval_5() throws Exception {
+    public void testLTPAFileReplacement_newValidKey_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
         // Configure the server
-        configureServer("true", "5", true);
+        configureServer("true", "10", true);
 
         // Copy validation key file (validation2.keys) to the server
         copyFileToServerResourcesSecurityDir("alternate/validation2.keys");
@@ -271,14 +289,14 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 5.
+     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 10.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Replace the primary key with a different invalid key which has garbage values in the private key.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 5.
+     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 10.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is replaced with a different key causing a CWWKS4106E: LTPA configuration error.
      * <LI>Successful authentication to simple servlet since the old cookie is still being used.
@@ -286,9 +304,9 @@ public class LTPAKeyRotationTests {
      */
     //@Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testLTPAFileReplacement_newInvalidKey_monitorValidationKeysDir_true_monitorInterval_5() throws Exception {
+    public void testLTPAFileReplacement_newInvalidKey_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
         // Configure the server
-        configureServer("true", "5", true);
+        configureServer("true", "10", true);
 
         // Copy validation keys file(validation3.keys) to the server. This file has garbage values in the private key.
         copyFileToServerResourcesSecurityDir("alternate/validation3.keys");
@@ -413,18 +431,18 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set MonitorValidationKeysDir to false, and MonitorInterval to 5.
+     * <LI>Set MonitorValidationKeysDir to false, and MonitorInterval to 10.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
-     * <LI>Rename the ltpa.keys file to validation1.keys.
+     * <LI>Rename the ltpa.keys file to configuredValidation1.keys.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
      * <LI>Check for the creation of a new ltpa.keys file.
      * <LI>Attempt to access a new simple servlet configured for form login2 with valid credentials.
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>MonitorValidationKeysDir is set to false, and MonitorInterval to 5.
+     * <LI>MonitorValidationKeysDir is set to false, and MonitorInterval to 10.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
-     * <LI>The ltpa.keys file is renamed to validation1.keys.
+     * <LI>The ltpa.keys file is renamed to configuredValidation1.keys.
      * <LI>Continued authentication to simple servlet; server is not restarted and does not need to login again.
      * <LI>A new ltpa.keys file is created.
      * <LI>Successful authentication to simple servlet with new ltpa cookie2 created and ltpa cookie2 is different from ltpa cookie1.
@@ -433,9 +451,9 @@ public class LTPAKeyRotationTests {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testLTPAFileCreationDeletion_monitorValidationKeysDir_false_monitorInterval_5() throws Exception {
+    public void testLTPAFileCreationDeletion_monitorValidationKeysDir_false_monitorInterval_10() throws Exception {
         // Configure the server
-        configureServer("false", "5", false);
+        configureServer("false", "10", false);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -444,8 +462,8 @@ public class LTPAKeyRotationTests {
         String cookie1 = flClient1.getCookieFromLastLogin();
         assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
 
-        // Rename the ltpa.keys file to validation1.keys
-        renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY1_PATH, false);
+        // Rename the ltpa.keys file to configuredValidation1.keys
+        renameFileIfExists(DEFAULT_KEY_PATH, CONFIGURED_VALIDATION_KEY1_PATH, false);
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
@@ -470,7 +488,7 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set MonitorValidationKeysDir to false, and MonitorInterval to 5.
+     * <LI>Set MonitorValidationKeysDir to false, and MonitorInterval to 10.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Replace the primary key with a different valid key.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
@@ -478,7 +496,7 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>MonitorValidationKeysDir is set to false, and MonitorInterval to 5.
+     * <LI>MonitorValidationKeysDir is set to false, and MonitorInterval to 10.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is replaced with a different key.
      * <LI>Failed authentication to simple servlet.
@@ -487,9 +505,9 @@ public class LTPAKeyRotationTests {
      */
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testLTPAFileReplacement_newValidKey_monitorValidationKeysDir_false_monitorInterval_5() throws Exception {
+    public void testLTPAFileReplacement_newValidKey_monitorValidationKeysDir_false_monitorInterval_10() throws Exception {
         // Configure the server
-        configureServer("false", "5", true);
+        configureServer("false", "10", true);
 
         // Copy validation key file (validation2.keys) to the server
         copyFileToServerResourcesSecurityDir("alternate/validation2.keys");
@@ -620,9 +638,9 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 5.
+     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 10.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
-     * <LI>Rename the ltpa.keys file to validation1.keys.
+     * <LI>Rename the ltpa.keys file to configuredValidation1.keys.
      * <LI>Set fileName to null to make it not configured in the validation keys element.
      * <LI>Check for an exception based on this configuration.
      * <LI>Set fileName value to empty string.
@@ -638,9 +656,9 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 5.
+     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 10.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
-     * <LI>The ltpa.keys file is renamed to validation1.keys.
+     * <LI>The ltpa.keys file is renamed to configuredValidation1.keys.
      * <LI>The fileName attribute is not configured in the validation keys element.
      * <LI>Exception is thrown in the logs since fileName is a required attribute.
      * <LI>The fileName attribute is set to empty string.
@@ -659,7 +677,7 @@ public class LTPAKeyRotationTests {
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testValidationKeys_fileNameAttribute() throws Exception {
         // Configure the server
-        configureServer("true", "5", true);
+        configureServer("true", "10", true);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -669,7 +687,7 @@ public class LTPAKeyRotationTests {
         assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
 
         // Rename the ltpa.keys file to validation1.keys.
-        renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY1_PATH, false);
+        renameFileIfExists(DEFAULT_KEY_PATH, CONFIGURED_VALIDATION_KEY1_PATH, false);
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
@@ -727,7 +745,7 @@ public class LTPAKeyRotationTests {
         deleteFileIfExists(VALIDATION_KEY3_PATH, true);
 
         // Set fileName back to the default ltpa.keys file
-        configurationUpdateNeeded = setLTPAvalidationKeyFileNameElement(ltpa, "validation1.keys");
+        configurationUpdateNeeded = setLTPAvalidationKeyFileNameElement(ltpa, "configuredValidation1.keys");
         updateConfigDynamically(server, serverConfiguration);
 
         // Successful authentication to simple servlet
@@ -737,9 +755,9 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 5.
+     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 10.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
-     * <LI>Rename the ltpa.keys file to validation1.keys.
+     * <LI>Rename the ltpa.keys file to configuredValidation1.keys.
      * <LI>Set password to null to make it not configured in the validation keys element.
      * <LI>Check for an exception based on this configuration.
      * <LI>Set password value to empty string.
@@ -751,9 +769,9 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 5.
+     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 10.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
-     * <LI>The ltpa.keys file is renamed to validation1.keys.
+     * <LI>The ltpa.keys file is renamed to configuredValidation1.keys.
      * <LI>The password attribute is not configured in the validation keys element.
      * <LI>Exception is thrown in the logs since the validation key password must match the primary key password.
      * <LI>The password attribute is set to empty string.
@@ -768,7 +786,7 @@ public class LTPAKeyRotationTests {
     @AllowedFFDC({ "javax.crypto.BadPaddingException", "java.lang.IllegalArgumentException", "java.lang.NullPointerException" })
     public void testValidationKeys_passwordAttribute() throws Exception {
         // Configure the server
-        configureServer("true", "5", true);
+        configureServer("true", "10", true);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -778,7 +796,7 @@ public class LTPAKeyRotationTests {
         assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
 
         // Rename the ltpa.keys file to validation1.keys.
-        renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY1_PATH, false);
+        renameFileIfExists(DEFAULT_KEY_PATH, CONFIGURED_VALIDATION_KEY1_PATH, false);
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
@@ -824,9 +842,9 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 5.
+     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 10.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
-     * <LI>Rename the ltpa.keys file to validation1.keys.
+     * <LI>Rename the ltpa.keys file to configuredValidation1.keys.
      * <LI>Set validUntilDate to null to make it not configured in the validation keys element.
      * <LI>Check for an exception based on this configuration.
      * <LI>Set validUntilDate value to empty string.
@@ -840,9 +858,9 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 5.
+     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 10.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
-     * <LI>The ltpa.keys file is renamed to validation1.keys.
+     * <LI>The ltpa.keys file is renamed to configuredValidation1.keys.
      * <LI>The validUntilDate attribute is not configured in the validation keys element.
      * <LI>Continued authentication to simple servlet; the element is not required to be configured.
      * <LI>The validUntilDate attribute is set to empty string.
@@ -860,7 +878,7 @@ public class LTPAKeyRotationTests {
     @AllowedFFDC({ "java.time.format.DateTimeParseException" })
     public void testValidationKeys_validUntilDateAttribute() throws Exception {
         // Configure the server
-        configureServer("true", "5", true);
+        configureServer("true", "10", true);
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -870,7 +888,7 @@ public class LTPAKeyRotationTests {
         assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
 
         // Rename the ltpa.keys file to validation1.keys.
-        renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY1_PATH, false);
+        renameFileIfExists(DEFAULT_KEY_PATH, CONFIGURED_VALIDATION_KEY1_PATH, false);
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
@@ -920,7 +938,7 @@ public class LTPAKeyRotationTests {
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set MonitorValidationKeysDir to false, and MonitorInterval to 5.
+     * <LI>Set MonitorValidationKeysDir to false, and MonitorInterval to 10.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Add a new validation keys element with a fileName attribute as "validation2.keys".
      * <LI>Rename the ltpa.keys file to validation2.keys.
@@ -932,7 +950,7 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>MonitorValidationKeysDir is set to false, and MonitorInterval to 5.
+     * <LI>MonitorValidationKeysDir is set to false, and MonitorInterval to 10.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>A new validation keys element is added with a fileName attribute as "validation2.keys".
      * <LI>The ltpa.keys file is renamed to validation2.keys.
@@ -1020,6 +1038,12 @@ public class LTPAKeyRotationTests {
         // Configure the server
         configureServer("true", "0", true);
 
+        // Set cacheEnabled to false to avoid caching the validation keys
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        Authentication auth = serverConfiguration.getAuthentication();
+        Boolean configurationUpdateNeeded = setAuthenticationCacheEnabledElement(auth, "false");
+        updateConfigDynamically(server, serverConfiguration);
+
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
 
@@ -1035,7 +1059,6 @@ public class LTPAKeyRotationTests {
         String expiryTime = Instant.now().plusSeconds(10).toString();
 
         // Add a new validation keys element with a fileName attribute as "validation2.keys"
-        ServerConfiguration serverConfiguration = server.getServerConfiguration();
         LTPA ltpa = serverConfiguration.getLTPA();
         ConfigElementList<ValidationKeys> validationKeys = ltpa.getValidationKeys();
         ValidationKeys validationKey = new ValidationKeys();
@@ -1055,15 +1078,16 @@ public class LTPAKeyRotationTests {
         assertTrue("An invalid cookie should result in authorization challenge",
                    flClient1.accessProtectedServletWithInvalidCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1));
 
-        // Delete the validation2.keys element
+        // Delete the validation2.keys element and set cacheEnabled back to true
         validationKeys.remove(validationKey);
+        configurationUpdateNeeded = setAuthenticationCacheEnabledElement(auth, "true");
         updateConfigDynamically(server, serverConfiguration);
     }
 
     /**
      * Verify the following:
      * <OL>
-     * <LI>Set Expiry to 1m, MonitorDirectory to true, and MonitorInterval to 5.
+     * <LI>Set Expiry to 1m, MonitorDirectory to true, and MonitorInterval to 10.
      * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
      * <LI>Wait for 70 seconds.
@@ -1071,7 +1095,7 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>Expiry is set to 1m, MonitorDirectory is set to true, and MonitorInterval to 5.
+     * <LI>Expiry is set to 1m, MonitorDirectory is set to true, and MonitorInterval to 10.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>Successful authentication to simple servlet.
      * <LI>Wait for 70 seconds.
@@ -1081,14 +1105,14 @@ public class LTPAKeyRotationTests {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testExpiredLtpaToken_monitorValidationKeysDir_true_monitorInterval_5() throws Exception {
+    public void testExpiredLtpaToken_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
         // Configure the server
-        configureServer("true", "5", true);
+        configureServer("true", "10", true);
 
         // Set the expiry to 1m
         ServerConfiguration serverConfiguration = server.getServerConfiguration();
         LTPA ltpa = serverConfiguration.getLTPA();
-        ltpa.expiration = "1m";
+        Boolean configurationUpdateNeeded = setLTPAexpiryElement(ltpa, "1m");
         updateConfigDynamically(server, serverConfiguration);
 
         // Initial login to simple servlet for form login1
@@ -1107,6 +1131,10 @@ public class LTPAKeyRotationTests {
         // Attempt to access the simple servlet again with the same cookie and assert it fails and the server needs to login again
         assertTrue("An expired cookie should result in authorization challenge",
                    flClient1.accessProtectedServletWithInvalidCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1));
+
+        // Reset the expiry to 10m
+        configurationUpdateNeeded = setLTPAexpiryElement(ltpa, "10m");
+        updateConfigDynamically(server, serverConfiguration);
     }
 
     /**
@@ -1137,7 +1165,7 @@ public class LTPAKeyRotationTests {
         // Set the expiry to 1m
         ServerConfiguration serverConfiguration = server.getServerConfiguration();
         LTPA ltpa = serverConfiguration.getLTPA();
-        ltpa.expiration = "1m";
+        Boolean configurationUpdateNeeded = setLTPAexpiryElement(ltpa, "1m");
         updateConfigDynamically(server, serverConfiguration);
 
         // Initial login to simple servlet for form login1
@@ -1156,23 +1184,279 @@ public class LTPAKeyRotationTests {
         // Attempt to access the simple servlet again with the same cookie and assert it fails and the server needs to login again
         assertTrue("An expired cookie should result in authorization challenge",
                    flClient1.accessProtectedServletWithInvalidCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1));
+
+        // Reset the expiry to 10m
+        configurationUpdateNeeded = setLTPAexpiryElement(ltpa, "10m");
+        updateConfigDynamically(server, serverConfiguration);
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI>Set UpdateTrigger to disabled, MonitorValidationKeysDir to true, and MonitorInterval to 10.
+     * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
+     * <LI>Rename the ltpa.keys file to validation1.keys.
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <LI>Check for the creation of a new ltpa.keys file.
+     * <LI>Attempt to access a new simple servlet configured for form login2 with valid credentials.
+     * <OL>
+     * <P>Expected Results:
+     * <OL>
+     * <LI>UpdateTrigger is set to disabled, MonitorValidationKeysDir is set to true, and MonitorInterval to 10.
+     * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
+     * <LI>The ltpa.keys file is renamed to validation1.keys.
+     * <LI>Continued authentication to simple servlet; server is not restarted and does not need to login again.
+     * <LI>A new ltpa.keys file is not created.
+     * <LI>Successful authentication to simple servlet with new ltpa cookie2 created.
+     * </OL>
+     */
+    @Test
+    @AllowedFFDC({ "java.lang.IllegalArgumentException" })
+    public void testLTPAFileCreationDeletion_updateTrigger_disabled() throws Exception {
+        // Configure the server
+        configureServer("true", "10", true);
+
+        // Set the updateTrigger to disabled
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        LTPA ltpa = serverConfiguration.getLTPA();
+        Boolean configurationUpdateNeeded = setLTPAupdateTriggerElement(ltpa, "disabled");
+        updateConfigDynamically(server, serverConfiguration);
+
+        // Wait for two warning messages message to be logged
+        assertNotNull("Expected LTPA configuration warning message not found in the log.",
+                      server.waitForStringInLog("CWWKS4114W", 5000));
+
+        assertNotNull("Expected LTPA configuration warning message not found in the log.",
+                      server.waitForStringInLog("CWWKS4115W", 5000));
+
+        // Initial login to simple servlet for form login1
+        String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+
+        // Get the SSO cookies back from the login
+        String cookie1 = flClient1.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
+
+        // Rename the ltpa.keys file to validation1.keys
+        renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY1_PATH, false);
+
+        // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
+        String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
+
+        // Assert that a new ltpa.keys file was not created
+        assertFileWasNotCreated(DEFAULT_KEY_PATH);
+
+        // New login to simple servlet for form login2
+        String response3 = flClient2.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+        String cookie2 = flClient2.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 2 is missing.", cookie2);
+
+        // Reset the updateTrigger to polled
+        configurationUpdateNeeded = setLTPAupdateTriggerElement(ltpa, "polled");
+        updateConfigDynamically(server, serverConfiguration);
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI>Set UpdateTrigger to disabled, MonitorValidationKeysDir to true, and MonitorInterval to 10.
+     * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
+     * <LI>Replace the primary key with a different valid key.
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <LI>Attempt to access a new simple servlet configured for form login2 with valid credentials.
+     * <OL>
+     * <P>Expected Results:
+     * <OL>
+     * <LI>UpdateTrigger is set to disabled, MonitorValidationKeysDir is set to true, and MonitorInterval to 10.
+     * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
+     * <LI>The ltpa.keys file is replaced with a different key.
+     * <LI>Successful authentication to simple servlet, since the server still uses the old key. This occurs when updateTrigger is disabled meaning there is no file/directory
+     * monitoring.
+     * <LI>Successful authentication to simple servlet with new ltpa cookie2 created.
+     * </OL>
+     */
+    @Test
+    @AllowedFFDC({ "java.lang.IllegalArgumentException" })
+    public void testLTPAFileReplacement_newValidKey_updateTrigger_disabled() throws Exception {
+        // Configure the server
+        configureServer("true", "10", true);
+
+        // Set the updateTrigger to disabled
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        LTPA ltpa = serverConfiguration.getLTPA();
+        Boolean configurationUpdateNeeded = setLTPAupdateTriggerElement(ltpa, "disabled");
+        updateConfigDynamically(server, serverConfiguration);
+
+        // Wait for two warning messages message to be logged
+        assertNotNull("Expected LTPA configuration warning message not found in the log.",
+                      server.waitForStringInLog("CWWKS4114W", 5000));
+
+        assertNotNull("Expected LTPA configuration warning message not found in the log.",
+                      server.waitForStringInLog("CWWKS4115W", 5000));
+
+        // Copy validation key file (validation2.keys) to the server
+        copyFileToServerResourcesSecurityDir("alternate/validation2.keys");
+
+        // Initial login to simple servlet for form login1
+        String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+
+        // Get the SSO cookies back from the login
+        String cookie1 = flClient1.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
+
+        // Replace the primary key with a different valid key
+        renameFileIfExists(VALIDATION_KEY2_PATH, DEFAULT_KEY_PATH, true);
+
+        // Attempt to access the simple servlet again with the same cookie and assert it works
+        String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
+
+        // New login to simple servlet for form login2
+        String response3 = flClient2.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+        String cookie2 = flClient2.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 2 is missing.", cookie2);
+
+        // Reset the updateTrigger to polled
+        configurationUpdateNeeded = setLTPAupdateTriggerElement(ltpa, "polled");
+        updateConfigDynamically(server, serverConfiguration);
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI>Set the updateTrigger to mbean, monitorValidationKeysDir to false, and monitorInterval to 0.
+     * <LI>Modify primary LTPA keys file (i.e. ltpa.keys).
+     * <LI>Use the FileNotification MBean to notify the server of the modified keys file
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <OL>
+     * <P>Expected Results:
+     * <OL>
+     * <LI>Successful authentication to simple servlet will return a valid ltpa cookie1 back to the client.
+     * <LI>Liberty server processes modifications made to LTPA keys file initiated by the FileNotification MBean.
+     * <LI>Failing authentication to simple servlet using the cookie, since the LTPA keys have been changed.
+     * </OL>
+     */
+    @Test
+    @AllowedFFDC({ "java.lang.IllegalArgumentException" })
+    public void testPrimaryLtpaKeysFileModified_updateTrigger_mbean() throws Exception {
+        // Configure the server
+        configureServer("false", "0", true);
+
+        // Set updateTrigger to mbean
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        LTPA ltpa = serverConfiguration.getLTPA();
+        ltpa.updateTrigger = "mbean";
+        updateConfigDynamically(server, serverConfiguration);
+
+        // Initial login to simple servlet for form login1
+        String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+
+        // Get the SSO cookies back from the login
+        String cookie1 = flClient1.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
+
+        // Contents to update ltpa keys with
+        Map<String, String> contents = new HashMap<String, String>() {
+            {
+                put("com.ibm.websphere.ltpa.3DESKey", "eJh1K9My7p4Uj0Gw/X2XDWxyY1C9E3UEp7ji+BJPSDM\\=");
+                put("com.ibm.websphere.ltpa.PrivateKey",
+                    "kmhgRjTUcxvFJoVw8jxWuh3ffuxym/SLYW8TQYKjK/4TJoPx9h2FJvNHkiaxfvACUWN5Lw5A1c500PRD+kcUtY+05IpNbGd0xu7BsjDQoLaEi4jrtBjT0REEYepsj9QQXnQTG9GL3CuNkSmPLxlHWBKZkDlcv4MtOKn2ozeXQjQ5doAJGDm6qk8QxxB7jGHCdQI9L6G4ic34w6DWV9qKZiX/Yp39neL6jR9mH3e9U7EFyefrtOTF7EUscfikBnw0sQUNnwTx2vMv+Q9QI+ykZMJULvzGKf2fW7Qz+OfQIlTatBCYRWtG0BQGi0BkUULApK2qIxQbvLVT7ijEwg2YsWTREcsnbVvHFmSqTF5jf8w\\=");
+                put("com.ibm.websphere.ltpa.PublicKey",
+                    "AK/MQIy6PT5GCI1qYDhH6b7yyZPdCcc4cgOKyJOkS/F4IHA51rjW5gVUm0gWkqfCkoU6LsWkBetxiJeZ7ECL4mUOSTfEFx4cPtvCu62DxtgleQt6pbEuvtaDalFL6/6p35y2uyuKhX4YiG9w25lLXTNCMfw3mQn+RpC3pVjYKpB9AQAB");
+            }
+        };
+
+        // Update LTPA keys file
+        modifyFileIfExists(DEFAULT_KEY_PATH, contents);
+
+        // Notify Liberty server of changes made to LTPA key file via mbean
+        List<String> modifiedFilePaths = Arrays.asList(new String[] { DEFAULT_KEY_PATH });
+        notifyFileChangesWithMbean(null, modifiedFilePaths, null);
+
+        // Wait for the LTPA configuration to be ready after the change
+        assertNotNull("Expected LTPA configuration ready message not found in the log.",
+                      server.waitForStringInLog("CWWKS4105I", 5000));
+
+        // Attempt to access the simple servlet again with the same cookie and assert it fails and the server needs to login again
+        assertTrue("An expired cookie should result in authorization challenge",
+                   flClient1.accessProtectedServletWithInvalidCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1));
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI>Set the updateTrigger to mbean, monitorValidationKeysDir to true, and monitorInterval to 0.
+     * <LI>Create validation2.keys (by renaming ltpa.keys)
+     * <LI>Delete ltpa.keys
+     * <LI>Use the FileNotification MBean to notify the server of the created and deleted keys files
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <OL>
+     * <P>Expected Results:
+     * <OL>
+     * <LI>Successful authentication to simple servlet will return a valid ltpa cookie1 back to the client.
+     * <LI>Liberty server processes modifications made to LTPA keys file initiated by the FileNotification MBean.
+     * <LI>ltpa.keys are regenerated after the deleted files notification from the mbean
+     * <LI>Successful authentication to simple servlet using the cookie, since the original LTPA keys were added in validation2.keys.
+     * </OL>
+     */
+    @Test
+    @AllowedFFDC({ "java.lang.IllegalArgumentException" })
+    public void testPrimaryLtpaKeysFileDeleted_updateTrigger_mbean_validationKeysFileCreated() throws Exception {
+        // Configure the server
+        configureServer("true", "0", true);
+
+        // Set updateTrigger to mbean
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        LTPA ltpa = serverConfiguration.getLTPA();
+        ltpa.updateTrigger = "mbean";
+        updateConfigDynamically(server, serverConfiguration);
+
+        // Initial login to simple servlet for form login1
+        String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+
+        // Get the SSO cookies back from the login
+        String cookie1 = flClient1.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
+
+        moveLogMark();
+        renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY2_PATH, false);
+
+        // Notify Liberty server of changes made to LTPA key file via mbean
+        List<String> createdFilePaths = Arrays.asList(new String[] { VALIDATION_KEY2_PATH });
+        List<String> deltedFilePaths = Arrays.asList(new String[] { DEFAULT_KEY_PATH });
+        notifyFileChangesWithMbean(createdFilePaths, null, deltedFilePaths);
+
+        // Wait for the ltpa.keys file to be regenerated
+        assertNotNull("Expected LTPA configuration ready message not found in the log.",
+                      server.waitForStringInLog("CWWKS4104A", 5000));
+
+        // Wait for the LTPA configuration to be ready after the change
+        assertNotNull("Expected LTPA configuration ready message not found in the log.",
+                      server.waitForStringInLog("CWWKS4105I", 5000));
+
+        flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
     }
 
     public void configureServer(String monitorValidationKeysDir, String monitorInterval, Boolean waitForLTPAConfigReadyMessage) throws Exception {
         configureServer(monitorValidationKeysDir, monitorInterval, waitForLTPAConfigReadyMessage, true);
     }
 
+    public void configureServer(String monitorValidationKeysDir, String monitorInterval, Boolean waitForLTPAConfigReadyMessage, boolean setLogMarkToEnd) throws Exception {
+        configureServer("polled", monitorValidationKeysDir, monitorInterval, waitForLTPAConfigReadyMessage, true);
+    }
+
     /**
      * Function to do the server configuration for all the tests.
      * Assert that the server has with a default ltpa.keys file.
      *
+     * @param updateTrigger
      * @param monitorValidationKeysDir
      * @param monitorInterval
      * @param waitForLTPAConfigReadyMessage
      *
      * @throws Exception
      */
-    public void configureServer(String monitorValidationKeysDir, String monitorInterval, Boolean waitForLTPAConfigReadyMessage, boolean setLogMarkToEnd) throws Exception {
+    public void configureServer(String updateTrigger, String monitorValidationKeysDir, String monitorInterval, Boolean waitForLTPAConfigReadyMessage,
+                                boolean setLogMarkToEnd) throws Exception {
+        moveLogMark();
         // Get the server configuration
         ServerConfiguration serverConfiguration = server.getServerConfiguration();
         LTPA ltpa = serverConfiguration.getLTPA();
@@ -1180,17 +1464,18 @@ public class LTPAKeyRotationTests {
         // Check if the configuration needs to be updated
         boolean configurationUpdateNeeded = false;
 
-        // Set MonitorValidationKeysDir to true, and MonitorInterval to 0
-        configurationUpdateNeeded = setLTPAmonitorValidationKeysDirElement(ltpa, monitorValidationKeysDir) | setLTPAmonitorIntervalElement(ltpa, monitorInterval);
+        configurationUpdateNeeded = setLTPAupdateTriggerElement(ltpa, updateTrigger)
+                                    | setLTPAmonitorValidationKeysDirElement(ltpa, monitorValidationKeysDir)
+                                    | setLTPAmonitorIntervalElement(ltpa, monitorInterval);
 
         // Apply server configuration update if needed
         if (configurationUpdateNeeded) {
             updateConfigDynamically(server, serverConfiguration);
 
-            if (monitorValidationKeysDir.equals("true") && monitorInterval.equals("0")) {
+            if (updateTrigger.equals("polled") && monitorValidationKeysDir.equals("true") && monitorInterval.equals("0")) {
                 // Wait for a warning message message to be logged
                 assertNotNull("Expected LTPA configuration warning message not found in the log.",
-                            server.waitForStringInLog("CWWKS4113W", 5000));
+                              server.waitForStringInLog("CWWKS4113W", 5000));
             }
 
             if (waitForLTPAConfigReadyMessage) {
@@ -1297,6 +1582,15 @@ public class LTPAKeyRotationTests {
         return false; // Config update is not needed;
     }
 
+    // Function to configure the cacheEnabled element for authentication cache
+    public boolean setAuthenticationCacheEnabledElement(Authentication auth, String value) {
+        if (!auth.cacheEnabled.equals(value)) {
+            auth.cacheEnabled = value;
+            return true; // Config update is needed
+        }
+        return false; // Config update is not needed;
+    }
+
     // Function to update the server configuration dynamically
     public static void updateConfigDynamically(LibertyServer server, ServerConfiguration config) throws Exception {
         server.setMarkToEndOfLog(server.getDefaultLogFile());
@@ -1309,6 +1603,59 @@ public class LTPAKeyRotationTests {
 
         // Wait for feature update to be completed or LTPA configuration to get ready
         Thread.sleep(200);
+    }
+
+    /**
+     * Modify the file if it exists. If we can't modify it, then
+     * throw an exception as we need to be able to modify the file.
+     * Modifies the keys contained in the filePath with the keys specified in the
+     * contents HashMap
+     *
+     * @param filename
+     * @param newFilePath
+     * @param checkFileIsGone
+     *
+     * @throws Exception
+     */
+    private static void modifyFileIfExists(String filePath, Map<String, String> contents) throws Exception {
+        Log.info(thisClass, "modifyFileIfExists", "\nfilePath: " + filePath + "\ncontents: " + contents);
+        server.setMarkToEndOfLog(server.getDefaultLogFile());
+
+        if (fileExists(filePath, 1)) {
+            filePath = server.getServerRoot() + "/" + filePath;
+            Map<String, String> updatedProperties = new HashMap<>();
+            // Read properties from the file and modify accordingly (based on contents)
+            try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split("=", 2);
+                    if (parts.length == 2) {
+                        String key = parts[0].trim();
+                        String value = contents.getOrDefault(key, parts[1].trim());
+                        updatedProperties.put(key, value);
+                    }
+                }
+            } catch (IOException e) {
+                throw e;
+            }
+
+            // Update the file with the updated contents
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+                for (Map.Entry<String, String> entry : updatedProperties.entrySet()) {
+                    String key = entry.getKey();
+                    String value = entry.getValue();
+                    writer.write(key + "=" + value);
+                    writer.newLine();
+                }
+
+            } catch (IOException e) {
+                throw e;
+            }
+
+        } else {
+            throw new Exception("Unable to modify file because it does not exist: " + filePath);
+        }
     }
 
     /**
@@ -1329,6 +1676,7 @@ public class LTPAKeyRotationTests {
         if (fileExists(newFilePath, 1)) {
             LibertyFileManager.moveLibertyFile(server.getFileFromLibertyServerRoot(filePath), server.getFileFromLibertyServerRoot(newFilePath));
         } else {
+            Log.info(thisClass, "renameFileIfExists", "Calling server.renameLibertyServerRootFile");
             server.renameLibertyServerRootFile(filePath, newFilePath);
         }
 
@@ -1454,14 +1802,18 @@ public class LTPAKeyRotationTests {
      */
     private void resetServer() throws Exception {
         Log.info(thisClass, "resetServer", "entering");
+
+        moveLogMark(); //make sure the mark is at the end of the log, so we don't use earlier messages.
+
         //we need to put the base config back, otherwise the waits below will timeout on some tests
-        configureServer("true", "5", true);
+        configureServer("true", "10", true);
 
         // Delete all ltpa keys files in the security directory
         deleteFileIfExists(DEFAULT_KEY_PATH, false);
         deleteFileIfExists(VALIDATION_KEY1_PATH, true);
         deleteFileIfExists(VALIDATION_KEY2_PATH, true);
         deleteFileIfExists(VALIDATION_KEY3_PATH, true);
+        deleteFileIfExists(CONFIGURED_VALIDATION_KEY1_PATH, true);
 
         // Wait for the LTPA configuration to be ready after the change
         // Will not occur monitor interval is set to 0
@@ -1477,5 +1829,45 @@ public class LTPAKeyRotationTests {
             // Will not occur monitor interval is set to 0
             server.waitForStringInLog("CWWKS4105I", 5000);
         }
+    }
+
+    /**
+     * Notify Liberty server of created, modified, and/or deleted files via mbean
+     *
+     * @param createdFilePaths
+     * @param modifiedFilePaths
+     * @param deletedFilePaths
+     * @throws Exception
+     */
+    private static void notifyFileChangesWithMbean(List<String> createdFilePaths, List<String> modifiedFilePaths, List<String> deletedFilePaths) throws Exception {
+
+        ObjectName appMBean = new ObjectName("WebSphere:service=com.ibm.ws.kernel.filemonitor.FileNotificationMBean");
+        JMXConnector jmxConnector = server.getJMXRestConnector("user1", "user1pwd", "Liberty");
+        MBeanServerConnection mbs = jmxConnector.getMBeanServerConnection();
+
+        if (mbs.isRegistered(appMBean)) {
+
+            String[] MBEAN_FILE_NOTIFICATION_NOTIFYFILECHANGES_SIGNATURE = new String[] { Collection.class.getName(),
+                                                                                          Collection.class.getName(),
+                                                                                          Collection.class.getName() };
+
+            // Set MBean method notifyFileChanges parameters (createdFiles, modifiedFiles, deletedFiles)
+            Object[] params = new Object[] { createdFilePaths, modifiedFilePaths, deletedFilePaths };
+
+            Log.info(thisClass, "notifyFileChangesWithMbean", "Calling FileNotificationMBean notifyFileChanges");
+            Log.info(thisClass, "notifyFileChangesWithMbean", "createdFilePaths: " + (createdFilePaths != null ? createdFilePaths.toString() : "null")
+                                                              + "modifiedFilePaths: "
+                                                              + (modifiedFilePaths != null ? modifiedFilePaths.toString() : "null")
+                                                              + "deletedFilePaths: "
+                                                              + (deletedFilePaths != null ? deletedFilePaths.toString() : "null"));
+            // Invoke FileNotificationMBean method notifyFileChanges
+            mbs.invoke(appMBean, "notifyFileChanges", params,
+                       MBEAN_FILE_NOTIFICATION_NOTIFYFILECHANGES_SIGNATURE);
+            Log.info(thisClass, "notifyFileChangesWithMbean", "Finished FileNotificationMBean notifyFileChanges");
+        } else {
+            Log.info(thisClass, "notifyFileChangesWithMbean", "FileNotificationMBean is not registered.");
+            throw new Exception("FileNotificationMBean is not registered.");
+        }
+
     }
 }

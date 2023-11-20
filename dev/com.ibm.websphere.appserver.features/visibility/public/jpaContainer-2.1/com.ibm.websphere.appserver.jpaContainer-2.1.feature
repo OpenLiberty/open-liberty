@@ -10,7 +10,14 @@ IBM-ShortName: jpaContainer-2.1
 IBM-API-Package: javax.persistence; type="spec", \
  javax.persistence.spi; type="spec", \
  javax.persistence.criteria; type="spec", \
- javax.persistence.metamodel; type="spec"
+ javax.persistence.metamodel; type="spec", \
+ javax.activation; type="spec"; require-java:="9", \
+ javax.xml.bind; type="spec"; require-java:="9", \
+ javax.xml.bind.annotation; type="spec"; require-java:="9", \
+ javax.xml.bind.annotation.adapters; type="spec"; require-java:="9", \
+ javax.xml.bind.attachment; type="spec"; require-java:="9", \
+ javax.xml.bind.helpers; type="spec"; require-java:="9", \
+ javax.xml.bind.util; type="spec"; require-java:="9"
 IBM-App-ForceRestart: uninstall, \
  install
 -features=com.ibm.websphere.appserver.optional.jaxb-2.2, \

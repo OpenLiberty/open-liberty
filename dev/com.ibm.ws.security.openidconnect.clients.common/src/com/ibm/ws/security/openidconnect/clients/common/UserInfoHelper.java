@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -126,7 +126,6 @@ public class UserInfoHelper {
     }
 
     // per oidc-connect-core-1.0 sec 5.3.2, sub claim of userinfo response must match sub claim in id token.
-    // protected boolean isUserInfoValid(String userInfoStr, String subClaim) {
     public boolean isUserInfoValid(String userInfoStr, String subClaim) {
         String userInfoSubClaim = getUserInfoSubClaim(userInfoStr);
         if (userInfoSubClaim == null || subClaim == null || userInfoSubClaim.compareTo(subClaim) != 0) {

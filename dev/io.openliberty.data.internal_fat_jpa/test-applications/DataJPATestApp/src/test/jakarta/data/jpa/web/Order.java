@@ -14,6 +14,7 @@ package test.jakarta.data.jpa.web;
 
 import java.time.OffsetDateTime;
 
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,6 +33,7 @@ public class Order {
 
     public String purchasedBy;
 
+    @Convert(converter = OffsetDateTimeToStringConverter.class)
     public OffsetDateTime purchasedOn;
 
     public float total;

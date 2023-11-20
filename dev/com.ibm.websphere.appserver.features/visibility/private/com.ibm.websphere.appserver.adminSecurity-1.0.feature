@@ -9,7 +9,6 @@ singleton=true
 -bundles=com.ibm.websphere.security, \
  com.ibm.ws.webcontainer.security; start-phase:=SERVICE_EARLY, \
  com.ibm.ws.webcontainer.security.admin, \
- com.ibm.ws.security.authentication.tai, \
  com.ibm.ws.security.sso
 kind=ga
 edition=core

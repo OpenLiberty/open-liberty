@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.webcontainer40.osgi.webapp;
 
@@ -76,7 +73,7 @@ public class WebApp40 extends com.ibm.ws.webcontainer31.osgi.webapp.WebApp31 imp
     @Override
     public int getMajorVersion() {
         int level = WebContainer.getServletContainerSpecLevel();
-        return level == WebContainer.SPEC_LEVEL_60 ? 6 : level == WebContainer.SPEC_LEVEL_50 ? 5 : 4;
+        return level == WebContainer.SPEC_LEVEL_61 ? 6 : level == WebContainer.SPEC_LEVEL_60 ? 6 : level == WebContainer.SPEC_LEVEL_50 ? 5 : 4;
     }
 
     /*
@@ -87,7 +84,7 @@ public class WebApp40 extends com.ibm.ws.webcontainer31.osgi.webapp.WebApp31 imp
      */
     @Override
     public int getMinorVersion() {
-        return 0;
+        return WebContainer.getServletContainerSpecLevel() == WebContainer.SPEC_LEVEL_61 ? 1 : 0;
     }
 
     /*

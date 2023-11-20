@@ -24,6 +24,7 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.OnlyIfSysProp;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -35,7 +36,8 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
 @OnlyIfSysProp("os.name=Linux")
-public class SkipIfCheckpointNotSupportedAnnotationTest extends FATServletClient {
+@CheckpointTest(alwaysRun = true)
+public class JavaInfoIsCriuSupportedTest extends FATServletClient {
 
     public static final String APP_NAME = "app2";
 

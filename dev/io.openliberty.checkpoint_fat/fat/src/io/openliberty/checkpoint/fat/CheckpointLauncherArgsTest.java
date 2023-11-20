@@ -20,7 +20,7 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServer.CheckpointInfo;
@@ -31,7 +31,7 @@ import componenttest.topology.impl.LibertyServer.CheckpointInfo;
  */
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class CheckpointLauncherArgsTest {
 
     @Rule
