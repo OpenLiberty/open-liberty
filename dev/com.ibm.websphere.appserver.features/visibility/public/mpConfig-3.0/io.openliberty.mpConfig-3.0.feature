@@ -11,11 +11,11 @@ IBM-API-Package: \
   io.smallrye.config; type="internal"
 IBM-ShortName: mpConfig-3.0
 Subsystem-Name: MicroProfile Config 3.0
+# io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0" comes from io.openliberty.org.eclipse.microprofile.config-3.0 feature
 -features=com.ibm.websphere.appserver.appmanager-1.0, \
   io.openliberty.jakarta.annotation-2.0; ibm.tolerates:="2.1", \
   io.openliberty.org.eclipse.microprofile.config-3.0, \
   com.ibm.websphere.appserver.internal.slf4j-1.7, \
-  io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0", \
   io.openliberty.jakarta.cdi-3.0; ibm.tolerates:="4.0"
 -bundles=io.openliberty.io.smallrye.config.jakarta, \
  io.openliberty.io.smallrye.common.jakarta, \
