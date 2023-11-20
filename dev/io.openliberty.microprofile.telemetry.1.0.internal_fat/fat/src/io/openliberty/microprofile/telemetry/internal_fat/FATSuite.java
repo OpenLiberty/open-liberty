@@ -45,6 +45,8 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
                 TelemetryGlobalOpenTelemetryTest.class,
                 TelemetryDisabledTest.class,
                 TelemetryServletTest.class,
+                TelemetryDisabledServletTest.class,
+                TelemetryHttpTraceDisabledTest.class,
                 TelemetryWithSpanErrorTest.class
 })
 public class FATSuite {

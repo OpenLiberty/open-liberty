@@ -39,10 +39,10 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.spans.AbstractS
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
 
 /**
- * Test with opentelemetry disabled
+ * Test with otel.trace.http.disabled set to true
  */
 @RunWith(FATRunner.class)
-public class TelemetryDisabledServletTest extends FATServletClient {
+public class TelemetryHttpTraceDisabledTest extends FATServletClient {
 
     public static final String APP_NAME = "TelemetryServletTestApp";
     public static final String SERVER_NAME = "Telemetry10Servlet";
@@ -60,7 +60,8 @@ public class TelemetryDisabledServletTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         PropertiesAsset appConfig = new PropertiesAsset()
-                        .addProperty("otel.sdk.disabled", "true")
+                        .addProperty("otel.sdk.disabled", "false")
+                        .addProperty("otel.trace.http.disabled", "true")
                         .addProperty("otel.traces.exporter", "in-memory")
                         .addProperty("otel.bsp.schedule.delay", "100");
         BeansAsset beans = BeansAsset.getBeansAsset(DiscoveryMode.ALL);

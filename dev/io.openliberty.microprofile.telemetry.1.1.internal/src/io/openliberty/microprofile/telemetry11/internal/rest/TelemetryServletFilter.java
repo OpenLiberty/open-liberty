@@ -29,6 +29,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.ext.Provider;
 
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
@@ -63,6 +66,8 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
     public TelemetryServletFilter() {
     }
 
+    private final Config config = ConfigProvider.getConfig();
+
     @Override
     public void init(FilterConfig config) {
         if (!CheckpointPhase.getPhase().restored()) {
@@ -90,13 +95,16 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
     }
 
     private Instrumenter<ServletRequest, ServletResponse> createInstrumenter() {
+        // Check if the HTTP tracing should be disabled
+        boolean httpTracingDisabled = config.getOptionalValue("otel.trace.http.disabled", Boolean.class).orElse(false);
         OpenTelemetryInfo otelInfo = OpenTelemetryAccessor.getOpenTelemetryInfo();
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "otelInfo.getEnabled()=" + otelInfo.getEnabled());
         }
         if (otelInfo != null &&
             otelInfo.getEnabled() &&
-            !AgentDetection.isAgentActive()) {
+            !AgentDetection.isAgentActive() &&
+            !httpTracingDisabled) {
             InstrumenterBuilder<ServletRequest, ServletResponse> builder = Instrumenter.builder(
                                                                                                 otelInfo.getOpenTelemetry(),
                                                                                                 INSTRUMENTATION_NAME,
