@@ -6,7 +6,6 @@ visibility = private
 
 -features=\
   io.openliberty.servlet.internal-5.0, \
-  io.openliberty.securityAPI.javaee-1.0, \
   io.openliberty.securityAPI.jakarta-1.0
 
 -bundles= io.openliberty.webcontainer.security.internal; start-phase:=SERVICE_EARLY, \

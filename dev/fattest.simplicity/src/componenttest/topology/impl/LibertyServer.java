@@ -7074,7 +7074,10 @@ public class LibertyServer implements LogMonitorClient {
      */
     public String waitForStringInTraceUsingMark(String regexp, long timeout) {
         try {
-            return waitForStringInLogUsingMark(regexp, timeout, getMostRecentTraceFile());
+            RemoteFile f = getMostRecentTraceFile();
+
+            Log.info(c, "waitForStringInTrace", "Waiting for \"" + regexp + "\" to be found in " + f);
+            return waitForStringInLogUsingMark(regexp, timeout, f);
         } catch (Exception e) {
             Log.warning(c, "Could not find string in trace log file due to exception " + e);
             return null;
