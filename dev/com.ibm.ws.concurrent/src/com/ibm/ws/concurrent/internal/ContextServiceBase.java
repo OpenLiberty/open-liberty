@@ -56,8 +56,6 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
@@ -90,14 +88,9 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * Captures and propagates thread context.
  * This class implements the Jakarta/Java EE ContextService as well as MicroProfile ThreadContext.
  */
-@Component(name = "com.ibm.ws.context.service",
-           configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { ResourceFactory.class, ContextService.class, ThreadContext.class, WSContextService.class, ApplicationRecycleComponent.class },
-           property = { "creates.objectClass=javax.enterprise.concurrent.ContextService",
-                        "creates.objectClass=org.eclipse.microprofile.context.ThreadContext" })
-public class ContextServiceImpl implements ContextService, //
+public class ContextServiceBase implements ContextService, //
                 ResourceFactory, ThreadContext, WSContextService, ApplicationRecycleComponent {
-    private static final TraceComponent tc = Tr.register(ContextServiceImpl.class);
+    private static final TraceComponent tc = Tr.register(ContextServiceBase.class);
 
     // Names of references
     private static final String BASE_INSTANCE = "baseInstance",
@@ -171,7 +164,7 @@ public class ContextServiceImpl implements ContextService, //
      * the next time they are used.
      * Populated only when used as a declarative services component (not for MicroProfile builders).
      */
-    private final List<ContextServiceImpl> modificationListeners = new LinkedList<ContextServiceImpl>();
+    private final List<ContextServiceBase> modificationListeners = new LinkedList<ContextServiceBase>();
 
     /**
      * Represents the context propagation settings that are configured on the MicroProfile builder.
@@ -214,7 +207,7 @@ public class ContextServiceImpl implements ContextService, //
     /**
      * Constructor when used as a declarative services component.
      */
-    public ContextServiceImpl() {
+    public ContextServiceBase() {
         this.hash = super.hashCode();
         this.mpBuilderConfig = null; // for MicroProfile builders only
     }
@@ -227,7 +220,7 @@ public class ContextServiceImpl implements ContextService, //
      * @param eeVersion Jakarta/Java EE version that is enabled in the Liberty server.
      * @param config    represents thread context propagation configuration.
      */
-    public ContextServiceImpl(String name, int hash, int eeVersion, ThreadContextConfig config) {
+    public ContextServiceBase(String name, int hash, int eeVersion, ThreadContextConfig config) {
         this.name = name;
         this.hash = hash;
         this.eeVersion = eeVersion;
@@ -280,18 +273,18 @@ public class ContextServiceImpl implements ContextService, //
      * the updates to the base instance.
      */
     private void baseInstanceModified() {
-        ContextServiceImpl[] listeners;
+        ContextServiceBase[] listeners;
 
         lock.writeLock().lock();
         try {
-            listeners = modificationListeners.toArray(new ContextServiceImpl[modificationListeners.size()]);
+            listeners = modificationListeners.toArray(new ContextServiceBase[modificationListeners.size()]);
             modificationListeners.clear();
             threadContextConfigurations = null;
         } finally {
             lock.writeLock().unlock();
         }
 
-        for (ContextServiceImpl listener : listeners)
+        for (ContextServiceBase listener : listeners)
             listener.baseInstanceModified();
     }
 
@@ -722,7 +715,7 @@ public class ContextServiceImpl implements ContextService, //
      *
      * @param contextSvc ContextService that is using this instance as a base instance.
      */
-    private void addComplementaryThreadContextConfigurationsTo(ContextServiceImpl contextSvc) {
+    private void addComplementaryThreadContextConfigurationsTo(ContextServiceBase contextSvc) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         lock.writeLock().lock();
@@ -876,7 +869,7 @@ public class ContextServiceImpl implements ContextService, //
         }
 
         // Inherit complementary thread context config from base instance
-        ContextServiceImpl baseInstance = (ContextServiceImpl) ConcurrencyService.priv.locateService(componentContext, BASE_INSTANCE);
+        ContextServiceBase baseInstance = (ContextServiceBase) ConcurrencyService.priv.locateService(componentContext, BASE_INSTANCE);
         if (baseInstance != null)
             baseInstance.addComplementaryThreadContextConfigurationsTo(this);
 
@@ -901,11 +894,11 @@ public class ContextServiceImpl implements ContextService, //
         if (contextSvcName == null)
             contextSvcName = (String) props.get(CONFIG_ID);
 
-        ContextServiceImpl[] listeners;
+        ContextServiceBase[] listeners;
 
         lock.writeLock().lock();
         try {
-            listeners = modificationListeners.toArray(new ContextServiceImpl[modificationListeners.size()]);
+            listeners = modificationListeners.toArray(new ContextServiceBase[modificationListeners.size()]);
             modificationListeners.clear();
 
             componentContext = context;
@@ -916,7 +909,7 @@ public class ContextServiceImpl implements ContextService, //
             lock.writeLock().unlock();
         }
 
-        for (ContextServiceImpl listener : listeners)
+        for (ContextServiceBase listener : listeners)
             listener.baseInstanceModified();
 
         if (trace && tc.isEntryEnabled())

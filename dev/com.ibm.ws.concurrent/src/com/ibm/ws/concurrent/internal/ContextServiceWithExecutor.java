@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -48,13 +48,13 @@ public class ContextServiceWithExecutor implements ContextService {
     /**
      * ContextService instance that might be shared by multiple managed executors.
      */
-    private final ContextServiceImpl sharedContextSvc;
+    private final ContextServiceBase sharedContextSvc;
 
     /**
      * Constructor when used as a declarative services component.
      */
     @Trivial
-    public ContextServiceWithExecutor(ContextServiceImpl sharedContextSvc, Executor managedExecutor) {
+    public ContextServiceWithExecutor(ContextServiceBase sharedContextSvc, Executor managedExecutor) {
         this.managedExecutor = managedExecutor;
         this.sharedContextSvc = sharedContextSvc;
     }
