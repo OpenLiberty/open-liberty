@@ -10,6 +10,7 @@
 package io.smallrye.reactive.messaging.providers.connectors;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 
 /**
  * This is a dummy version SmallRye's WorkerPoolRegistry which does nothing ... we do not expect it to be called
@@ -22,4 +23,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class WorkerPoolRegistry {
     public static final String WORKER_CONFIG_PREFIX = "smallrye.messaging.worker";
     public static final String WORKER_CONCURRENCY = "max-concurrency";
+
+    public <T> void analyzeWorker(AnnotatedType<T> annotatedType) {}
 }
