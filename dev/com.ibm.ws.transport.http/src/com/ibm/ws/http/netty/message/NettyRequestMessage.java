@@ -10,6 +10,10 @@
 package com.ibm.ws.http.netty.message;
 
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -22,6 +26,7 @@ import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.genericbnf.internal.GenericUtils;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
@@ -245,13 +250,22 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     }
 
     @Override
+    @FFDCIgnore({ MalformedURLException.class, URISyntaxException.class })
     public String getRequestURI() {
         MSP.log("getRequestURI: query.path()" + query.path() + "query uri: " + query.uri());
         if (getMethod().equalsIgnoreCase(HttpMethod.CONNECT.toString())) {
             System.out.println("Found connect method, returning slash");
             return GenericUtils.getEnglishString(SLASH);
         }
-        return query.path();
+        try {
+            URI requestUri = new URL(request.uri()).toURI();
+            // If it works it means we have an absolute URI and not a path
+            return requestUri.getPath();
+        } catch (MalformedURLException e) {
+            return query.path();
+        } catch (URISyntaxException e) {
+            return query.path();
+        }
     }
 
     @Override
@@ -334,9 +348,18 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     }
 
     @Override
+    @FFDCIgnore({ MalformedURLException.class, URISyntaxException.class })
     public void setRequestURI(String uri) {
         // TODO Auto-generated method stub
-        setRequestURI(GenericUtils.getEnglishBytes(uri));
+        try {
+            URI requestUri = new URL(request.uri()).toURI();
+            // If it works it means we have an absolute URI and not a path
+            setRequestURI(GenericUtils.getEnglishBytes(requestUri.getPath()));
+        } catch (MalformedURLException e) {
+            setRequestURI(GenericUtils.getEnglishBytes(uri));
+        } catch (URISyntaxException e) {
+            setRequestURI(GenericUtils.getEnglishBytes(uri));
+        }
     }
 
     @Override
@@ -681,7 +704,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
         return list;
     }
-    
+
     @Override
     public HttpCookie getCookie(String name) {
         if (null == name) {
