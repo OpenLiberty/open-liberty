@@ -20,6 +20,7 @@ import java.util.function.Function;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 //@formatter:off
 /**
@@ -61,6 +62,7 @@ public class CaptureCache<T> {
                     "app.manager",
                     "com.ibm.ws.app.manager.module.internal.resources.Messages");
 
+    @Trivial
     protected static void debug(String tag, String methodName, String text) {
         String debugText = "[" + tag + "]" + "." + methodName + ": " + text;
         Tr.debug(tc, debugText);
@@ -121,6 +123,7 @@ public class CaptureCache<T> {
     /** A simple descriptive tag used for debugging. */
     private final String tag;
 
+    @Trivial
     public String getTag() {
         return tag;
     }
@@ -365,6 +368,7 @@ public class CaptureCache<T> {
         /** A simple descriptive tag used for debugging. */
         private final String tag;
 
+        @Trivial
         public String getTag() {
             return tag;
         }

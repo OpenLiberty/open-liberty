@@ -416,6 +416,7 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
             return usePaths;
         }
 
+        @Trivial
         private void debug(String methodName, String text) {
             Tr.debug(_tc, methodName + ": " + text);
         }
