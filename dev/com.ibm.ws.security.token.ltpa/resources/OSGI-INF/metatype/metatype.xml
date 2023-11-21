@@ -31,10 +31,10 @@
             default="0ms" />
         <AD id="monitorValidationKeysDir" name="%ltpa.monitorValidationKeysDir" description="%ltpa.monitorValidationKeysDir.desc" 
             required="false" type="Boolean"
-            default="false" ibm:beta="true"/>
+            default="false"/>
         <AD id="updateTrigger" name="%ltpa.updateTrigger" description="%ltpa.updateTrigger.desc" 
             required="false" type="String"
-            default="polled" ibm:beta="true">
+            default="polled">
             <Option label="%ltpa.updateTrigger.timed" value="polled"/>
             <Option label="%ltpa.updateTrigger.external" value="mbean"/>
             <Option label="%ltpa.updateTrigger.disabled" value="disabled"/>
@@ -50,7 +50,7 @@
             default="3000ms" /> 
         <AD id="validationKeys" ibm:type="pid" ibm:reference="com.ibm.ws.security.token.ltpa.validationKeys" 
            	required="false" type="String" 
-            ibm:flat="true" cardinality="2147483647" ibm:beta="true"/>        
+            ibm:flat="true" cardinality="2147483647"/>        
     </OCD>
 
     <Designate pid="com.ibm.ws.security.token.ltpa.LTPAConfiguration">
