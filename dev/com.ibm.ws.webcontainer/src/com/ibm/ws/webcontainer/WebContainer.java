@@ -21,9 +21,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -34,6 +36,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -207,6 +210,9 @@ public abstract class WebContainer extends BaseContainer {
     private static boolean servletCachingInitNeeded = true; //TODO: make false and require dynacache to set to true
 
     public static boolean appInstallBegun = false;
+    
+    private static final VHostCache vhostCache = new VHostCache(200);
+    private static final int vHostCacheMRUThreshold = 10;
     
     // Servlet 4.0 : Must be static since referenced from static method
     protected static CacheServletWrapperFactory cacheServletWrapperFactory;
@@ -738,18 +744,27 @@ public abstract class WebContainer extends BaseContainer {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
             logger.logp(Level.FINE, CLASS_NAME, "getHostAliasKey", "host-->"+host +", port-->"+port);
         }
-        StringBuilder vhostKey = new StringBuilder();
+
+        VHostCacheKey vhostCacheKey = new VHostCacheKey(host, port);
+        String vhostKey = vhostCache.get(vhostCacheKey);
+        if(vhostKey != null) {
+            return vhostKey;
+        }
+
+        StringBuilder vhostKeyStringBuilder = new StringBuilder();
         String serverName = host;
         // Begin 255189, Part 1
         if (serverName != null && serverName.length() > 0) {
             if (serverName.charAt(0) == '[' && serverName.charAt(serverName.length() - 1) == ']')
                 serverName = serverName.substring(1, serverName.length() - 1);
-            vhostKey.append(serverName.toLowerCase()); //have to do lower case here instead of mapper since context root is case sensitive, stupid VirtualHostContextRootMapper!
+            vhostKeyStringBuilder.append(serverName.toLowerCase()); //have to do lower case here instead of mapper since context root is case sensitive, stupid VirtualHostContextRootMapper!
         }
         // End 255189, Part 1
-        vhostKey.append(':');
-        vhostKey.append(port);
-        return vhostKey.toString();
+        vhostKeyStringBuilder.append(':');
+        vhostKeyStringBuilder.append(port);
+        vhostKey = vhostKeyStringBuilder.toString();
+        vhostCache.put(vhostCacheKey, vhostKey);
+        return vhostKey;
     }
 
     public void handleRequest(IRequest req, IResponse res, VirtualHost vhost, RequestProcessor processor) throws IOException {
@@ -761,8 +776,11 @@ public abstract class WebContainer extends BaseContainer {
         StringBuilder cacheKey = null;
         WebContainerRequestState reqState = WebContainerRequestState.getInstance(false);
 
-        String vhostKey = getHostAliasKey(req.getServerName(), req.getServerPort());
-
+        String serverName = req.getServerName();
+        int serverPort = req.getServerPort();
+        
+        String vhostKey = getHostAliasKey(serverName, serverPort);
+         
         boolean ardRequest = false;
         if (reqState != null) {
             ardRequest = reqState.isArdRequest();
@@ -2233,4 +2251,108 @@ public abstract class WebContainer extends BaseContainer {
 
     }
     // ================== CLASS ==================
+    
+    private static class VHostCacheKey {
+        private final String serverName;
+        private final int serverPort;
+
+        VHostCacheKey (final String name, final int port) {
+            this.serverName = name;
+            this.serverPort = port;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            VHostCacheKey other = (VHostCacheKey) obj;
+            return serverPort == other.serverPort && Objects.equals(serverName, other.serverName);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(serverName, serverPort);
+        }
+    }
+    
+    /**
+     *  We start with a lightweight, vHost cache implementation, which should suffice for 
+     *  typical cloud native apps. If the number vHostCacheKey exceeds a threshold, 
+     *  we move that vHostCacheKey cache to an MRU implementation, which is slower but avoids the possibility 
+     *  of a memory leak. 
+     */
+    private static class VHostCache {
+        private volatile Map<VHostCacheKey, String> vHostKeyCacheMap = new ConcurrentHashMap<>();
+        private volatile boolean isMRU = false;
+        private final int mruMaxSize;
+
+        VHostCache(int maxSize) {
+            mruMaxSize = maxSize;
+        }
+
+        public void put(VHostCacheKey vhostCacheKey, String vhostKey) {
+            String oldValue = vHostKeyCacheMap.put(vhostCacheKey, vhostKey);
+            if(oldValue == null && !isMRU && vHostKeyCacheMap.size() > vHostCacheMRUThreshold) {
+                synchronized(this){
+                    if(!isMRU && vHostKeyCacheMap.size() > vHostCacheMRUThreshold) {
+                        vHostKeyCacheMap = getMRUVHostCache();
+                        isMRU = true;
+                    }
+                }
+            }
+        }
+
+        public String get(VHostCacheKey key) {
+            return vHostKeyCacheMap.get(key);
+        }
+
+        private Map<VHostCacheKey, String> getMRUVHostCache() {
+            Map<VHostCacheKey, String> newMap = new MRUVHostCache(mruMaxSize);
+            for(Map.Entry<VHostCacheKey, String> entry : vHostKeyCacheMap.entrySet()) {
+                newMap.put(entry.getKey(), entry.getValue());
+            }
+            return newMap;
+        }
+    }
+    
+    private static class MRUVHostCache extends LinkedHashMap<VHostCacheKey, String> {
+        /**  */
+        private static final long serialVersionUID = 1L;
+        private final int maxSize;
+        // Use a read write lock to avoid using a synchronized collection on the LinkedHashMap to allow gets to execute in parallel.
+        private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
+
+        @Override
+        public boolean removeEldestEntry(Map.Entry<VHostCacheKey, String> eldest) {
+            return size() > maxSize;
+        }
+
+        MRUVHostCache(int maxSize) {
+            this.maxSize = maxSize;
+        }
+
+        @Override
+        public String get(Object key) {
+            rwLock.readLock().lock();
+            try {
+                return super.get(key);
+            } finally {
+                rwLock.readLock().unlock();
+            }
+        }
+
+        @Override
+        public String put(VHostCacheKey key, String vhostKey) {
+            rwLock.writeLock().lock();
+            try {
+                return super.put(key, vhostKey);
+            } finally {
+                rwLock.writeLock().unlock();
+            }
+        }
+    }
 }
