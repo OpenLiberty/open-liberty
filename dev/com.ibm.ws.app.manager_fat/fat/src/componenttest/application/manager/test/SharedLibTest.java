@@ -959,26 +959,35 @@ public class SharedLibTest {
             for ( int actionNo = first; actionNo < last; actionNo++ ) {
                 ContainerAction action = actions.get(actionNo);
 
+                int adj;
                 if ( action.isCapture ) {
                     useCaptureActions++;
-                    useCaptureTotal++;
+                    adj = +1;
                 } else {
                     useReleaseActions++;
-                    useCaptureTotal--;
+                    adj = -1;
                 }
 
-                useReferenceCounts[ archiveNo(action.archive) ] = action.references;
+                // The reference count running total can deviate from the value
+                // which appears in the action.
+                //
+                // For example, here, the third and fourth release actions were
+                // logged out of order:
+                //
+                // [8:50:35:620] 00000036 [container].release: [ test0.jar ] [ 4 ]
+                // [8:50:35:628] 0000002d [container].release: [ test0.jar ] [ 3 ]
+                // [8:50:35:658] 00000038 [container].release: [ test0.jar ] [ 1 ]
+                // [8:50:35:659] 0000003b [container].release: [ test0.jar ] [ 2 ]
+                //   : [ CaptureCache$CaptureSupplier@18b9f40d ]
+                //
+                // That out-of-order write occurs because the cache trace write is
+                // performed outside of the cache lock.
+                //
+                // The write could be performed inside of the cache lock, at a cost
+                // to performance.
 
-                // Use the most recent action value.
-                //
-                // Alternatively, the reference counts could be incrementally adjusted:
-                //
-                // int refCount =
-                //   ( useReferenceCounts[ archiveNo(action.archive) ] += (action.isCapture ? +1 : -1) );
-                //
-                // assertEquals(refCount, action.references);
-                //
-                // TODO: Add this test.
+                useReferenceCounts[ archiveNo(action.archive) ] += adj;
+                useCaptureTotal += adj;
             }
 
             this.referenceCounts = useReferenceCounts;
