@@ -44,6 +44,7 @@ Export-Package: \
 	com.ibm.ws.http.logging.source,\
 	com.ibm.ws.http2,\
 	com.ibm.ws.http2.upgrade,\
+	com.ibm.ws.netty.upgrade,\
 	io.openliberty.http.ext
 
 Import-Package: \

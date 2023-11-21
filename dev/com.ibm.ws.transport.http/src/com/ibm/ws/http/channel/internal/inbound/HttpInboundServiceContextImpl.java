@@ -122,13 +122,14 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         init(tsc, link, vc, hcc);
     }
 
-    public HttpInboundServiceContextImpl(ChannelHandlerContext context) {
+    public HttpInboundServiceContextImpl(ChannelHandlerContext context, VirtualConnection vc) {
         super();
         nettyContext = context;
 
         super.init(context);
 
         this.setHeadersParsed();
+        setVC(vc);
 
     }
 
