@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,9 @@
  */
 package com.ibm.ws.transport.iiop.yoko;
 
+import static com.ibm.websphere.ras.Tr.debug;
+import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,17 +32,14 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.transport.iiop.config.ConfigException;
 import com.ibm.ws.transport.iiop.spi.IIOPEndpoint;
+import com.ibm.ws.transport.iiop.spi.OrbConfigurator;
 import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 
 /**
- * A ConfigAdapter instance for the Apache Yoko
- * CORBA support.
- * 
- * @version $Revision: 497125 $ $Date: 2007-01-17 10:51:30 -0800 (Wed, 17 Jan 2007) $
+ * A ConfigAdapter instance for the Apache Yoko CORBA support.
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "orb.type=yoko", "service.ranking:Integer=5" })
 public class ORBConfigAdapter implements com.ibm.ws.transport.iiop.config.ConfigAdapter {
-
     private static final TraceComponent tc = Tr.register(ORBConfigAdapter.class);
 
     /**
@@ -51,8 +51,8 @@ public class ORBConfigAdapter implements com.ibm.ws.transport.iiop.config.Config
      * @exception ConfigException
      */
     @Override
-    public ORB createServerORB(Map<String, Object> config, Map<String, Object> extraConfig, List<IIOPEndpoint> endpoints, Collection<SubsystemFactory> subsystemFactories) throws ConfigException {
-        ORB orb = createORB(translateToTargetArgs(config, subsystemFactories), translateToTargetProps(config, extraConfig, endpoints, subsystemFactories));
+    public ORB createServerORB(Map<String, Object> config, Map<String, Object> extraConfig, List<IIOPEndpoint> endpoints, Collection<OrbConfigurator> orbConfigurators) throws ConfigException {
+        ORB orb = createORB(translateToTargetArgs(config, orbConfigurators), translateToTargetProps(config, extraConfig, endpoints, orbConfigurators));
         return orb;
     }
 
@@ -63,7 +63,7 @@ public class ORBConfigAdapter implements com.ibm.ws.transport.iiop.config.Config
      * @exception ConfigException
      */
     @Override
-    public ORB createClientORB(Map<String, Object> clientProps, Collection<SubsystemFactory> subsystemFactories) throws ConfigException {
+    public ORB createClientORB(Map<String, Object> clientProps, Collection<OrbConfigurator> subsystemFactories)  {
         return createORB(translateToClientArgs(clientProps, subsystemFactories), translateToClientProps(clientProps, subsystemFactories));
     }
 
@@ -81,35 +81,19 @@ public class ORBConfigAdapter implements com.ibm.ws.transport.iiop.config.Config
     }
 
     /**
-     * Translate a CORBABean configuration into an
-     * array of arguments used to configure the ORB
-     * instance.
-     * 
-     * @param server The IiopEndpoint we're creating an ORB instance for.
-     * @param subsystemFactories subsystem factories to translate configuration
-     * 
-     * @return A String{} array containing the initialization
-     *         arguments.
-     * @exception ConfigException if configuration cannot be interpreted
+     * Generate an array of arguments used to initialise an ORB instance.
      */
-    private String[] translateToTargetArgs(Map<String, Object> props, Collection<SubsystemFactory> subsystemFactories) throws ConfigException {
-        ArrayList<String> list = new ArrayList<>();
-
-        for (SubsystemFactory sf : subsystemFactories) {
-            sf.addTargetORBInitArgs(props, list);
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Configargs: " + list);
-        }
-
-        return list.toArray(new String[list.size()]);
+    private String[] translateToTargetArgs(Map<String, Object> props, Collection<OrbConfigurator> orbConfigurators) {
+        final ArrayList<String> list = new ArrayList<>();
+        orbConfigurators.forEach(oc -> oc.addTargetORBInitArgs(props, list));
+        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, "Configargs: " + list);
+        return list.stream().toArray(String[]::new);
     }
 
     private Properties translateToTargetProps(Map<String, Object> config, Map<String, Object> extraConfig, List<IIOPEndpoint> endpoints,
-                                              Collection<SubsystemFactory> subsystemFactories) {
+                                              Collection<OrbConfigurator> subsystemFactories) {
         Properties result = createYokoORBProperties();
-        for (SubsystemFactory sf : subsystemFactories) {
+        for (OrbConfigurator sf : subsystemFactories) {
             addInitializerPropertyForSubsystem(result, sf, true);
             sf.addTargetORBInitProperties(result, config, endpoints, extraConfig);
         }
@@ -136,11 +120,10 @@ public class ORBConfigAdapter implements com.ibm.ws.transport.iiop.config.Config
         return result;
     }
 
-    private void addInitializerPropertyForSubsystem(Properties props, SubsystemFactory subsystemFactory, boolean endpoint) {
-        String initializerClassName = subsystemFactory.getInitializerClassName(endpoint);
-        if (initializerClassName != null) {
-            props.put("org.omg.PortableInterceptor.ORBInitializerClass." + initializerClassName, "");
-        }
+    private void addInitializerPropertyForSubsystem(Properties props, OrbConfigurator orbConfigurators, boolean endpoint) {
+        String initializerClassName = orbConfigurators.getInitializerClassName(endpoint);
+        if (initializerClassName == null) return;
+        props.put("org.omg.PortableInterceptor.ORBInitializerClass." + initializerClassName, "");
     }
 
     /**
@@ -148,23 +131,14 @@ public class ORBConfigAdapter implements com.ibm.ws.transport.iiop.config.Config
      * argument bundle needed to instantiate the
      * client ORB instance.
      * 
-     * @param clientProps configuration properties
-     * @param subsystemFactories configured subsystem factories
      * @return A String array to be passed to ORB.init().
      * @exception ConfigException if configuration cannot be interpreted
      */
-    private String[] translateToClientArgs(Map<String, Object> clientProps, Collection<SubsystemFactory> subsystemFactories) throws ConfigException {
-        ArrayList<String> list = new ArrayList<>();
-
-        for (SubsystemFactory sf : subsystemFactories) {
-            sf.addClientORBInitArgs(clientProps, list);
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Configargs: " + list);
-        }
-
-        return list.toArray(new String[list.size()]);
+    private String[] translateToClientArgs(Map<String, Object> clientProps, Collection<OrbConfigurator> orbConfigurators) {
+        final ArrayList<String> list = new ArrayList<>();
+        orbConfigurators.forEach(oc -> oc.addClientORBInitArgs(clientProps, list));
+        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, "Configargs: " + list);
+        return list.stream().toArray(String[]::new);
     }
 
     /**
@@ -173,18 +147,17 @@ public class ORBConfigAdapter implements com.ibm.ws.transport.iiop.config.Config
      * client ORB instance.
      * 
      * @param clientProps configuration properties
-     * @param subsystemFactories configured subsystem factories
+     * @param orbConfigurators configured subsystem factories
      * 
      * @return A property bundle that can be passed to ORB.init();
      * @exception ConfigException if configuration cannot be interpreted
      */
-    private Properties translateToClientProps(Map<String, Object> clientProps, Collection<SubsystemFactory> subsystemFactories) throws ConfigException {
+    private Properties translateToClientProps(Map<String, Object> clientProps, Collection<OrbConfigurator> orbConfigurators) {
         Properties result = createYokoORBProperties();
-        for (SubsystemFactory sf : subsystemFactories) {
-            addInitializerPropertyForSubsystem(result, sf, false);
-            sf.addClientORBInitProperties(result, clientProps);
-        }
+        orbConfigurators.forEach(oc -> {
+            addInitializerPropertyForSubsystem(result, oc, false);
+            oc.addClientORBInitProperties(result, clientProps);
+        });
         return result;
     }
-
 }
