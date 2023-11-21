@@ -870,8 +870,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
 
     /*********************************** Token Order ******************************************/
     public static final String TOKEN_ORDER_IDTOKEN="IDToken";
-    public static final String TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO="AccessToken IDToken Userinfo";
+    public static final String TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO="AccessToken IDToken UserInfo";
     public static final String TOKEN_TYPE_IDTOKEN="IDToken";
     public static final String TOKEN_TYPE_ACCESSTOKEN="AccessToken";
-    public static final String TOKEN_TYPE_USERINFO="Userinfo";
+    public static final String TOKEN_TYPE_USERINFO="UserInfo";
 }

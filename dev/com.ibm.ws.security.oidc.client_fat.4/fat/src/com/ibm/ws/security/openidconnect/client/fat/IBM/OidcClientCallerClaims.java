@@ -221,6 +221,7 @@ public class OidcClientCallerClaims extends CommonTest {
                 expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, com.ibm.ws.security.fat.common.Constants.OK_STATUS);
             }else{
                 expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, com.ibm.ws.security.fat.common.Constants.UNAUTHORIZED_STATUS);
+                expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that client failed to authenticate the JSON Web Token", MessageConstants.CWWKS1738E_JWT_MISSING_CLAIM);
             }
 
 
@@ -300,7 +301,7 @@ public class OidcClientCallerClaims extends CommonTest {
 
     /******************************* tests *******************************/
     /**
-     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken UserInfo"
      * caller group claim exist in id token only
      * 
      * @throws Exception
@@ -313,7 +314,7 @@ public class OidcClientCallerClaims extends CommonTest {
     
     /******************************* tests *******************************/
     /**
-     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken UserInfo"
      * caller group claim exist in userinfo only
      * 
      * @throws Exception
@@ -326,7 +327,7 @@ public class OidcClientCallerClaims extends CommonTest {
     
     /******************************* tests *******************************/
     /**
-     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken UserInfo"
      * caller group claim exist in idtoken and userinfo
      * 
      * @throws Exception
@@ -340,7 +341,7 @@ public class OidcClientCallerClaims extends CommonTest {
 
     /******************************* tests *******************************/
     /**
-     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken UserInfo"
      * caller group claim exist in Id Token and Acess Token
      *
      * @throws Exception
@@ -354,7 +355,7 @@ public class OidcClientCallerClaims extends CommonTest {
 
     /******************************* tests *******************************/
     /**
-     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken UserInfo"
      * caller group claim exist in AccessToken and User Info only
      *
      * @throws Exception
@@ -369,7 +370,7 @@ public class OidcClientCallerClaims extends CommonTest {
 
     /******************************* tests *******************************/
     /**
-     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken UserInfo"
      * caller group claim exist in all tokens
      *
      * @throws Exception
@@ -386,7 +387,7 @@ public class OidcClientCallerClaims extends CommonTest {
     /******************************* tests *******************************/
     /**
      * testing tokenOrderTofetchCallerClaims="IDToken"
-     * caller group claim exist in all tokens only
+     * caller group claim exist in all tokens
      *
      * @throws Exception
      */
@@ -643,8 +644,8 @@ public class OidcClientCallerClaims extends CommonTest {
     }
 
    /**
-     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
-     * caller claim (upn) does not exist in any token
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken UserInfo"
+     * caller claim (upn) exists in all tokens, but has a different value in each token
      * 
      * @throws Exception
      */   
@@ -670,7 +671,7 @@ public class OidcClientCallerClaims extends CommonTest {
         String accessToken = builder.build();
         expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the role printed in the app output", null, "groupIds=" + "[group:RealmInAccessToken/MyTestRoleInAccessToken]");
         expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the realmName printed in the app output", null, "realmName=" + "RealmInAccessToken");
-        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the realmName printed in the app output", null, "getUserPrincipal: WSPrincipal:userInAccessToken");
+        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the user name printed in the app output", null, "getUserPrincipal: WSPrincipal:userInAccessToken");
        
 
         builder.setClaim("upn","otheruserInIdtoken");
