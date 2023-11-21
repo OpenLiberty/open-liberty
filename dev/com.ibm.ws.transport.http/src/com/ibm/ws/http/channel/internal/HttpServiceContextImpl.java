@@ -62,6 +62,7 @@ import com.ibm.ws.http.netty.message.NettyResponseMessage;
 import com.ibm.ws.http.netty.pipeline.ResponseCompressionHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http2.GrpcServletServices;
+import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
 import com.ibm.wsspi.channelfw.InterChannelCallback;
@@ -114,7 +115,6 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpUtil;
-import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http2.DefaultHttp2Headers;
 import io.netty.handler.codec.http2.Http2Connection;
 import io.netty.handler.codec.http2.Http2Headers;
@@ -2940,8 +2940,12 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
         addBytesWritten(GenericUtils.sizeOf(buffers));
 
-        if (Objects.nonNull(buffers)) {
+        if (this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) != null) {
+            System.out.println("Skipping HTTP content because upgrade was triggered!");
+            System.out.println("Content: " + WsByteBufferUtils.asString(buffers));
 
+        }
+        if (Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
             MSP.log("sendOutgoing are buffers good? " + GenericUtils.sizeOf(buffers));
 
             for (
@@ -3273,8 +3277,13 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
             }
         }
+        if (this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) != null) {
+            System.out.println("Skipping HTTP content because upgrade was triggered!");
+            System.out.println("Content: " + WsByteBufferUtils.asString(buffers));
+
+        }
         DefaultHttpContent content;
-        if (Objects.nonNull(buffers)) {
+        if (Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
             for (WsByteBuffer buffer : buffers) {
                 if (Objects.nonNull(buffer)) {
                     System.out.println("Writing buffer: " + buffer);
@@ -3300,7 +3309,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             // Sending last http content since all data was written
             System.out.println("Sending last http content!");
             this.nettyContext.channel().write(lastContent);
-        } else {
+        } else if (this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "sendFullOutgoing : No buffers to write ");
             }

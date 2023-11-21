@@ -148,10 +148,9 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
         // TODO Need to appropriately build and parse configs
         if (httpConfig.getH2SettingsInitialWindowSize() != Constants.SPEC_INITIAL_WINDOW_SIZE)
             initialSettings.initialWindowSize(httpConfig.getH2SettingsInitialWindowSize());
-        builder = new InboundHttp2ToHttpAdapterBuilder(connection).propagateSettings(false).maxContentLength(64 * 1024).validateHttpHeaders(false);
+        builder = new InboundHttp2ToHttpAdapterBuilder(connection).propagateSettings(false).maxContentLength(Integer.MAX_VALUE).validateHttpHeaders(false);
 //        return new HttpToHttp2ConnectionHandlerBuilder().frameListener(builder.build()).frameLogger(LOGGER).connection(connection).initialSettings(initialSettings).build();
-        HttpToHttp2ConnectionHandler handler = new HttpToHttp2ConnectionHandlerBuilder().frameListener(new LibertyInboundHttp2ToHttpAdapter(connection, 64
-                                                                                                                                                        * 1024, false, false, channel)).frameLogger(LOGGER).connection(connection).initialSettings(initialSettings).build();
+        HttpToHttp2ConnectionHandler handler = new HttpToHttp2ConnectionHandlerBuilder().frameListener(new LibertyInboundHttp2ToHttpAdapter(connection, Integer.MAX_VALUE, false, false, channel)).frameLogger(LOGGER).connection(connection).initialSettings(initialSettings).build();
 // Test for figuring out how max header list size is set
 //        try {
 //            Configuration confg = handler.encoder().configuration().headersConfiguration();

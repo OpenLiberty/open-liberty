@@ -32,6 +32,12 @@ public class NettyVirtualConnectionImpl implements VirtualConnection {
     protected NettyVirtualConnectionImpl() {
     }
 
+    public static NettyVirtualConnectionImpl createVC() {
+        NettyVirtualConnectionImpl vc = new NettyVirtualConnectionImpl();
+        vc.init();
+        return vc;
+    }
+
     public void init() {
         this.stateStore = new HashMap<Object, Object>();
     }
