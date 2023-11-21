@@ -101,5 +101,7 @@ Import-Package: \
     com.ibm.ws.webcontainer.servlet.4.0.jakarta;version=latest,\
     com.ibm.ws.resource;version=latest, \
     com.ibm.ws.kernel.boot.core;version=latest,\
-    io.openliberty.jakarta.servlet.6.0;version=latest,\
-    io.openliberty.webcontainer.servlet.6.0.internal;version=latest
+    io.openliberty.webcontainer.servlet.6.0.internal;version=latest,\
+    io.openliberty.jakarta.servlet.6.1;version=latest,\
+    io.openliberty.webcontainer.servlet.6.1.internal;version=latest
+
