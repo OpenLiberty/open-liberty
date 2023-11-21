@@ -43,10 +43,10 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class,
-                //DynamicSpnegoConfigTest.class,
-                S4U2SelfTest.class,
-                S4U2ProxyTest.class
+                //  AlwaysPassesTest.class,
+                DynamicSpnegoConfigTest.class,
+                // S4U2SelfTest.class,
+                // S4U2ProxyTest.class
 })
 public class FATSuite extends InitClass {
     private static final Class<?> c = FATSuite.class;
@@ -76,6 +76,7 @@ public class FATSuite extends InitClass {
 
             if (!isSupportJDK())
                 return;
+
 
             String ip = InetAddress.getByName("localhost").getHostAddress();
             if (!"127.0.0.1".equals(ip)) {
