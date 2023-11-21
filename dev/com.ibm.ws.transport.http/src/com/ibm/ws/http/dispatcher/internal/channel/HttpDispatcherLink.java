@@ -45,7 +45,9 @@ import com.ibm.ws.http.internal.VirtualHostImpl;
 import com.ibm.ws.http.internal.VirtualHostMap;
 import com.ibm.ws.http.internal.VirtualHostMap.RequestHelper;
 import com.ibm.ws.http.netty.MSP;
+import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
 import com.ibm.ws.http.netty.message.NettyRequestMessage;
+import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.channelfw.ConnectionLink;
@@ -69,12 +71,15 @@ import com.ibm.wsspi.http.ee7.HttpInboundConnectionExtended;
 import com.ibm.wsspi.http.ee8.Http2InboundConnection;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 
-import io.netty.channel.ChannelFuture;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http2.HttpConversionUtil;
+import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 
 /**
  * Connection link object that the HTTP dispatcher provides to CHFW
@@ -187,8 +192,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
         String probe = "DispatcherLink.init";
         MSP.debug(probe);
+        NettyVirtualConnectionImpl nettyVc = NettyVirtualConnectionImpl.createVC();
         nettyContext = context;
-        this.isc = new HttpInboundServiceContextImpl(context);
+        this.isc = new HttpInboundServiceContextImpl(context, nettyVc);
         MSP.debug(probe);
         this.isc.setHttpConfig(config);
         MSP.debug(probe);
@@ -202,6 +208,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         this.response = new HttpResponseImpl(this);
         isc.setNettyResponse(new DefaultHttpResponse(nettyRequest.protocolVersion(), HttpResponseStatus.OK));
         MSP.log("Netty response completed");
+        super.init(nettyVc);
 //        MSP.debug(probe);
 //        this.request = new NettyHttpRequestImpl(HttpDispatcher.useEE7Streams());
 //        MSP.debug(probe);
@@ -210,6 +217,41 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 //        this.response = new NettyHttpResponseImpl(this);
 //        MSP.debug(probe);
 
+    }
+
+    public NettyServletUpgradeHandler prepareForUpgrade() {
+        System.out.println("Decoupling close from codec and adding servlet upgrade handler!");
+        HttpServerKeepAliveHandler handler = nettyContext.channel().pipeline().get(HttpServerKeepAliveHandler.class);
+        if (handler != null) {
+            // Need to remove to keep connection open
+            System.out.println("Removing keepalive handler on servlet upgrade!");
+            nettyContext.channel().pipeline().remove(handler);
+        }
+        // Add Inbound handler to accumulate data which will not belong to HTTP but rather the upgrade protocol
+        System.out.println("Adding Upgrade Handler!");
+        HttpToHttp2ConnectionHandler http2Handler = nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
+        System.out.println(nettyContext.channel().pipeline().names());
+        NettyServletUpgradeHandler upgradeHandler = new NettyServletUpgradeHandler(nettyContext.channel());
+        if (http2Handler == null) { // In HTTP 1.1
+            System.out.println("Found HTTP1!");
+            HttpServerCodec httpHandler = nettyContext.channel().pipeline().get(HttpServerCodec.class);
+            if (httpHandler == null) {
+                System.out.println("Found null handler HTTP!");
+                throw new UnsupportedOperationException("Can't deal with this");
+            }
+            nettyContext.channel().pipeline().addBefore(nettyContext.channel().pipeline().context(httpHandler).name(), "ServletUpgradeHandler", upgradeHandler);
+        } else { // In HTTP2
+            System.out.println("Found HTTP2! Need to check this logic...");
+            nettyContext.channel().pipeline().addBefore(nettyContext.channel().pipeline().context(http2Handler).name(), "ServletUpgradeHandler", upgradeHandler);
+        }
+        System.out.println(nettyContext.channel().pipeline().names());
+        return upgradeHandler;
+    }
+
+    public Channel getUpgradedChannel() {
+        if (nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null)
+            throw new IllegalStateException("Cannot get upgraded channel without setting it up for upgrade first!");
+        return this.nettyContext.channel();
     }
 
     /*
@@ -246,38 +288,40 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 //                MSP.log("Persist clear");
 //                isc.clear();
 //            }
+
+            if (vc != null) {
+                System.out.println("VC not null on netty, checking if streams need to be closed!");
+                String closeNonUpgraded = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
+                if (closeNonUpgraded != null && closeNonUpgraded.equalsIgnoreCase("true")) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "close streams from HttpDispatcherLink.close");
+                    }
+
+                    // This close streams should be synchronous to match with legacy
+                    Exception errorinClosing = this.closeStreams();
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Error closing in streams" + errorinClosing);
+                    }
+
+                    vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "CLOSED_NON_UPGRADED_STREAMS");
+                    return;
+                }
+            }
             if (nettyRequest.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Doing nothing on close since Netty request is HTTP2 enabled. Codec will handle shutdown");
                 }
                 return;
             }
-
-            // TODO Check if we need to do this check
-            ChannelFuture closeFuture;
-            // if (response.isPersistent()) {
-            //     MSP.log("Persist clear");
-            //     isc.clear();
-            // }
-
-//            if (response.isPersistent()) {
-//                response.setHeader(HttpHeaderKeys.HDR_CONNECTION.getName(), "keep-alive");
-//                nettyContext.channel().read();
-//            }
-
             try {
-//                closeFuture = this.nettyContext.channel().close();
-//                closeFuture.sync();
                 // Hopefully should close after write finishes
                 System.out.println("ON close before sync");
                 this.nettyContext.channel().closeFuture().sync();
                 System.out.println("ON close after sync");
             } catch (InterruptedException exception) {
                 exception.printStackTrace();
-            } finally {
-                return;
             }
-
         } else {
             if (this.vc == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -460,6 +504,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         h2link.handleHTTP2DirectConnect(h2link);
         this.setDeviceLink(h2link);
         h2link.processRead(vc, this.getTCPConnectionContext().getReadInterface());
+    }
+
+    public boolean isUsingNetty() {
+        return this.usingNetty;
     }
 
     /*

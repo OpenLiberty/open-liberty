@@ -106,7 +106,8 @@ instrument.disabled: true
     com.ibm.ws.org.apache.commons.fileupload;version=latest,\
     com.ibm.ws.anno;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.kernel.boot.core;version=latest
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	io.openliberty.io.netty
 
 -testpath: \
     org.hamcrest:hamcrest-all;version=1.3, \
