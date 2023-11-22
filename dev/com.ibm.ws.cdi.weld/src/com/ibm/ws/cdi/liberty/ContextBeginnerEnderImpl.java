@@ -161,4 +161,8 @@ public class ContextBeginnerEnderImpl implements ContextBeginnerEnder {
         return currentlyActive.get();
     }
 
+    public static boolean isActive() {
+        return currentlyActive.get() != null;
+    }
+
 }

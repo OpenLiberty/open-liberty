@@ -109,6 +109,13 @@ public interface CDIRuntime extends CDIService {
     ContextBeginnerEnder createContextBeginnerEnder();
 
     /**
+     * Returns true if a Context started by a ContextBeginnerEnder is currently active on the current thread.
+     *
+     * Trying to start a context while one is already active is both unnecessary and will throw an exception
+     */
+    boolean isContextBeginnerEnderActive();
+
+    /**
      * @param bundle
      * @param extra_classes
      * @param extraAnnotations

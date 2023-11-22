@@ -166,7 +166,14 @@ public class EEValidationUtils {
         // We need to set a current component before doing anything to do with JNDI
         CDIRuntime cdiRuntime = cdiArchive.getCDIRuntime();
 
-        try (ContextBeginnerEnder cbe = cdiRuntime.createContextBeginnerEnder().extractComponentMetaData(cdiArchive).beginContext()) {
+        //This method can be invoked as part of application startup, if so don't set a context when one is already active.
+        ContextBeginnerEnder cbe = null;
+
+        try {
+            if (! cdiRuntime.isContextBeginnerEnderActive()) {
+                cbe = cdiRuntime.createContextBeginnerEnder().extractComponentMetaData(cdiArchive).beginContext(); //TODO make this into a  when we start compiling with java 9
+            }
+
             InitialContext c = new InitialContext();
 
             validateJndiLookup(c, lookupString, annotated, declaringClass, cdiArchive);
@@ -175,7 +182,13 @@ public class EEValidationUtils {
             // Failed to look up the object, just return without failing validation
         } catch (CDIException e) {
             throw new IllegalStateException(e);
+        } finally {
+            if (cbe != null) {
+                cbe.close();
+            }
         }
+
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "validateJndiLookup", new Object[] { Util.identity(annotated) });
         }
