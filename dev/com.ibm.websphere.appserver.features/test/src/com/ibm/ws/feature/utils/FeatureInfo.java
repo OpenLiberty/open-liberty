@@ -15,9 +15,11 @@ package com.ibm.ws.feature.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -52,8 +54,9 @@ public class FeatureInfo {
     private String visibility = "private";
     private String shortName;
 
-    private Set<ExternalPackageInfo> APIs;
-    private Set<ExternalPackageInfo> SPIs;
+    // Using a list in order to find duplicates.
+    private List<ExternalPackageInfo> APIs;
+    private List<ExternalPackageInfo> SPIs;
 
     public FeatureInfo(File feature) {
         this.feature = feature;
@@ -184,14 +187,14 @@ public class FeatureInfo {
         return this.shortName;
     }
 
-    public Set<ExternalPackageInfo> getAPIs() {
+    public List<ExternalPackageInfo> getAPIs() {
         if (!isInit)
             populateInfo();
 
         return this.APIs;
     }
 
-    public Set<ExternalPackageInfo> getSPIs() {
+    public List<ExternalPackageInfo> getSPIs() {
         if (!isInit)
             populateInfo();
 
@@ -300,13 +303,13 @@ public class FeatureInfo {
         }
     }
 
-    private Set<ExternalPackageInfo> parseExternalPackages(String packageList, String defaultType) {
+    private List<ExternalPackageInfo> parseExternalPackages(String packageList, String defaultType) {
         if (packageList == null) {
             return null;
         }
 
         String[] packageNames = packageList.split(",");
-        Set<ExternalPackageInfo> extPackageInfoSet = new LinkedHashSet<>();
+        List<ExternalPackageInfo> extPackageInfoSet = new ArrayList<>();
         for (String packageName : packageNames) {
             String[] packageParts = packageName.split(";");
             String externalPackage = packageParts[0].trim();
@@ -331,7 +334,7 @@ public class FeatureInfo {
             }
             extPackageInfoSet.add(new ExternalPackageInfo(externalPackage, type));
         }
-        return Collections.unmodifiableSet(extPackageInfoSet);
+        return Collections.unmodifiableList(extPackageInfoSet);
     }
 
     /** {@inheritDoc} */
