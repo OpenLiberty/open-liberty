@@ -104,8 +104,7 @@ public class LTPAKeyInfoManager {
             if (is != null)
                 try {
                     is.close();
-                } catch (IOException e) {
-                }
+                } catch (IOException e) {}
         }
         return props;
     }
@@ -169,7 +168,7 @@ public class LTPAKeyInfoManager {
      *
      * @param filename
      * @param validUntilDateOdt
-     * 
+     *
      * @return
      */
     public boolean isValidUntilDateExpired(String filename, OffsetDateTime validUntilDateOdt) {
@@ -188,7 +187,7 @@ public class LTPAKeyInfoManager {
     }
 
     @Sensitive
-    byte[] getKeyPasswordBytes(Properties vKeys) {
+    byte[] getKeyPasswordBytes(@Sensitive Properties vKeys) {
         String password = (String) vKeys.get(LTPAConfiguration.CFG_KEY_VALIDATION_PASSWORD);
         return PasswordUtil.passwordDecode(password).getBytes();
     }

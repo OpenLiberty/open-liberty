@@ -28,10 +28,15 @@ import static io.smallrye.reactive.messaging.providers.i18n.ProviderExceptions.e
  * Implementation of the emitter pattern.
  *
  * This is a derivative work based on Smallrye Reactive Messaging EmitterImpl
- * https://github.com/smallrye/smallrye-reactive-messaging/blob/4.9.0/smallrye-reactive-messaging-provider/src/main/java/io/smallrye/reactive/messaging/providers/extension/EmitterImpl.java
+ * https://github.com/smallrye/smallrye-reactive-messaging/blob/4.10.1/smallrye-reactive-messaging-provider/src/main/java/io/smallrye/reactive/messaging/providers/extension/EmitterImpl.java
  *
  * Changelog
  * Replace SmallRye Reactive Messaging ContextAwareMessage with MicroProfile Reactive Messaging Message to remove requirement to include Vert.x
+ *
+ * @param <T> the type of payload sent by the emitter.
+ */
+/**
+ * Implementation of the emitter pattern.
  *
  * @param <T> the type of payload sent by the emitter.
  */
@@ -42,7 +47,7 @@ public class EmitterImpl<T> extends AbstractEmitter<T> implements Emitter<T> {
     }
 
     @Override
-    public synchronized CompletionStage<Void> send(T payload) {
+    public CompletionStage<Void> send(T payload) {
         if (payload == null) {
             throw ex.illegalArgumentForNullValue();
         }
@@ -59,7 +64,7 @@ public class EmitterImpl<T> extends AbstractEmitter<T> implements Emitter<T> {
     }
 
     @Override
-    public synchronized <M extends Message<? extends T>> void send(M msg) {
+    public <M extends Message<? extends T>> void send(M msg) {
         if (msg == null) {
             throw ex.illegalArgumentForNullValue();
         }

@@ -48,12 +48,12 @@ public class ReactiveMessagingTCKLauncher {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKZ000[24]E"); // Ignore app start errors - there are lots of tests for invalid apps
+        server.stopServer("CWWKZ000[24]E", "CWMRX1100E"); // Ignore app start errors - there are lots of tests for invalid apps
     }
 
     @Test
     @Mode(TestMode.FULL)
-    @AllowedFFDC({ "org.jboss.weld.exceptions.DeploymentException", "com.ibm.ws.container.service.state.StateChangeException" }) // The tested deployment exceptions cause FFDC so we have to allow for this.
+    @AllowedFFDC({ "org.jboss.weld.exceptions.DeploymentException", "com.ibm.ws.container.service.state.StateChangeException", "jakarta.enterprise.inject.spi.DeploymentException" }) // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchReactiveMessaging30Tck() throws Exception {
         String bucketName = "io.openliberty.microprofile.reactive.messaging30.internal_fat_tck";
         String testName = this.getClass() + ":launchReactiveMessaging30Tck";

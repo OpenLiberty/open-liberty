@@ -23,4 +23,4 @@ WS-TraceGroup: REACTIVESTREAMS
 instrument.disabled: true
 
 -buildpath: \
-  io.smallrye.reactive:smallrye-reactive-converter-api;version=3.0.0;strategy=exact
+  io.smallrye.reactive:smallrye-reactive-converter-api;version=3.0.1;strategy=exact
