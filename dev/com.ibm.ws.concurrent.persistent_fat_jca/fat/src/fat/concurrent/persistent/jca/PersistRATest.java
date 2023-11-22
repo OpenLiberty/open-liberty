@@ -106,9 +106,11 @@ public class PersistRATest {
         assertNotNull("Server should report it has started",
                       server.waitForStringInLog("CWWKF0011I"));
 
-        // Starting the RAR will asynchronously schedule a persistent task, initializing Derby. 
-        // Wait for the Derby start messages to avoid a test trying to concurrently start Derby.
-        server.waitForStringInLog("DSRA8206I"); // connected to Derby
+        // Starting the RAR will asynchronously schedule a persistent task, initializing Derby 
+        // and inserting a row; which may result in https://issues.apache.org/jira/browse/DERBY-6934
+        // Avoid this by waiting for the insert to complete before continuing with
+        // any test that may attempt to concurrently insert a row (schedule a task).
+        server.waitForStringInLog("PSETestResourceAdapter start task scheduled.");
     }
 
     @AfterClass
