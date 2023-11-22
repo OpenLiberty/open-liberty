@@ -99,6 +99,7 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
         boolean httpTracingDisabled = config.getOptionalValue("otel.trace.http.disabled", Boolean.class).orElse(false);
         OpenTelemetryInfo otelInfo = OpenTelemetryAccessor.getOpenTelemetryInfo();
         if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "otel.trace.http.disabled=" + httpTracingDisabled);
             Tr.debug(tc, "otelInfo.getEnabled()=" + otelInfo.getEnabled());
         }
         if (otelInfo != null &&
