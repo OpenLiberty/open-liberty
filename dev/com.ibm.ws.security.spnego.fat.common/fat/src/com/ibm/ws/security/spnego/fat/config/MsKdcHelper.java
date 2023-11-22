@@ -16,8 +16,8 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Map;
 
-import org.apache.sshd.client.SshClient;
-import org.apache.sshd.client.session.ClientSession;
+//import org.apache.sshd.client.SshClient;
+//import org.apache.sshd.client.session.ClientSession;
 import org.junit.Ignore;
 
 import com.ibm.websphere.simplicity.LocalFile;
@@ -431,6 +431,7 @@ public class MsKdcHelper extends KdcHelper {
         Log.info(thisClass, methodName, "The kdc machine: " + InitClass.getKDCHostnameMask(kdcMachine.getHostname()) + "is connected: " + kdcMachine.isConnected());
 
         ProgramOutput output = null;
+        /*
         SshClient sshClient = getSshClient();
         try {
             ClientSession sshSession = getSshSession(sshClient, kdcMachine);
@@ -460,9 +461,7 @@ public class MsKdcHelper extends KdcHelper {
                         throw e;
                     }
 
-                    /*
-                     * This will cause timeouts to retry, but that should be pretty unusual.
-                     */
+                     // This will cause timeouts to retry, but that should be pretty unusual.
                     failed = true;
                 }
 
@@ -479,6 +478,7 @@ public class MsKdcHelper extends KdcHelper {
         } finally {
             sshClient.stop();
         }
+        */
         return output;
     }
 
