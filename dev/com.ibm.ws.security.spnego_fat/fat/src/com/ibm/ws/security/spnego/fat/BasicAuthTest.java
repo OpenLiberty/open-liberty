@@ -40,7 +40,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
+@SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES})
 public class BasicAuthTest extends CommonTest {
 
     private static final Class<?> c = BasicAuthTest.class;
