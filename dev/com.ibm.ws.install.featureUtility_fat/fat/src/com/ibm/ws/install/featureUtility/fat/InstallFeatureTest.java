@@ -52,7 +52,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	 * Also wait for log "Started Sonatype Nexus.*" to make sure repository is up and running.
 	 */
 	public static GenericContainer<?> nexusContainer = new GenericContainer<>("jiwoo/nexus:1.0")
-        .withStartupTimeout(Duration.of(3, ChronoUnit.MINUTES))
+		.withStartupTimeout(Duration.of(5, ChronoUnit.MINUTES))
         .waitingFor(Wait.forLogMessage("Started Sonatype Nexus.*", 1))
         .withNetwork(network)
         .withNetworkAliases("nexus");
