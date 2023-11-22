@@ -41,7 +41,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
@@ -57,7 +57,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  * Verify checkpoint behaviors over transaction logging configurations.
  */
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class TransactionLogTest extends FATServletClient {
 
     @ClassRule

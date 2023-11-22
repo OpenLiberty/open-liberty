@@ -16,7 +16,25 @@ IBM-API-Package: \
   javax.validation.metadata; type="spec", \
   javax.validation.spi; type="spec",\
   javax.validation.valueextraction; type="spec",\
-  com.ibm.ws.beanvalidation.accessor; type="internal"
+  com.ibm.ws.beanvalidation.accessor; type="internal",\
+  javax.annotation; type="spec",\
+  javax.annotation.security; type="spec",\
+  javax.annotation.sql; type="spec"
+IBM-SPI-Package: \
+  com.ibm.wsspi.adaptable.module,\
+  com.ibm.ws.adaptable.module.structure,\
+  com.ibm.wsspi.adaptable.module.adapters,\
+  com.ibm.wsspi.artifact,\
+  com.ibm.wsspi.artifact.factory,\
+  com.ibm.wsspi.artifact.factory.contributor,\
+  com.ibm.wsspi.artifact.overlay,\
+  com.ibm.wsspi.artifact.equinox.module,\
+  com.ibm.wsspi.anno.classsource,\
+  com.ibm.wsspi.anno.info,\
+  com.ibm.wsspi.anno.service,\
+  com.ibm.wsspi.anno.targets,\
+  com.ibm.wsspi.anno.util,\
+  com.ibm.ws.anno.classsource.specification
 -features=com.ibm.websphere.appserver.internal.optional.jaxb-2.2, \
   com.ibm.websphere.appserver.transaction-1.2, \
   com.ibm.websphere.appserver.eeCompatible-8.0, \

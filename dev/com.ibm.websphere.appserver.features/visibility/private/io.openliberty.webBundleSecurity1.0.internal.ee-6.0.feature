@@ -7,8 +7,7 @@ visibility = private
 
 -features=\
   io.openliberty.servlet.internal-3.0; ibm.tolerates:="3.1, 4.0", \
-  io.openliberty.securityAPI.javaee-1.0, \
-  io.openliberty.securityAPI.jakarta-1.0
+  io.openliberty.securityAPI.javaee-1.0
 
 -bundles= com.ibm.ws.webcontainer.security; start-phase:=SERVICE_EARLY, \
 		  com.ibm.ws.security.authentication.filter, \

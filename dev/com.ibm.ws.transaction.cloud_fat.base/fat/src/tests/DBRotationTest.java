@@ -41,24 +41,21 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
 @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
-public class DBRotationTest extends FATServletClient {
+public class DBRotationTest extends CloudFATServletClient {
     private static final Class<?> c = DBRotationTest.class;
 
     private static final int LOG_SEARCH_TIMEOUT = 300000;
-    public static final String APP_NAME = "transaction";
-    public static final String SERVLET_NAME = APP_NAME + "/Simple2PCCloudServlet";
     private static final String APP_PATH = "../com.ibm.ws.transaction.cloud_fat.base/";
     protected static final int cloud2ServerPort = 9992;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001")
-    public static LibertyServer server1;
+    public static LibertyServer s1;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD002")
-    public static LibertyServer server2;
+    public static LibertyServer s2;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD002.nopeerlocking")
     public static LibertyServer server2nopeerlocking;
@@ -94,6 +91,8 @@ public class DBRotationTest extends FATServletClient {
     @BeforeClass
     public static void init() throws Exception {
         Log.info(c, "init", "BeforeClass");
+
+        initialize(s1, s2, "transaction", "/Simple2PCCloudServlet", runner);
 
         final WebArchive app = ShrinkHelper.buildDefaultAppFromPath(APP_NAME, APP_PATH, "servlets.*");
         final DeployOptions[] dO = new DeployOptions[0];
@@ -407,7 +406,6 @@ public class DBRotationTest extends FATServletClient {
     public void testBackwardCompatibility() throws Exception {
         final String method = "testBackwardCompatibility";
 
-
         serversToCleanup = new LibertyServer[] { server1 };
 
         FATUtils.startServers(runner, server1);
@@ -435,5 +433,15 @@ public class DBRotationTest extends FATServletClient {
         final String msg = "Status of " + server.getServerName() + " is " + status;
         Log.info(c, "checkDead", msg);
         throw new Exception(msg);
+    }
+
+    @Override
+    protected void checkLogAbsence() throws Exception {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    protected void checkLogPresence() throws Exception {
+        // TODO Auto-generated method stub
     }
 }

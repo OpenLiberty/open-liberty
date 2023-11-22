@@ -63,6 +63,8 @@ IBM-API-Package: \
   com.ibm.ws.org.apache.yoko.corba.spec.1.5; require-java:="9",\
   com.ibm.ws.org.apache.yoko.rmi.spec.1.5; require-java:="9",\
   com.ibm.ws.org.apache.yoko.osgi.1.5; require-java:="9"
+-jars=\
+  io.openliberty.corba.2.4; location:="dev/api/spec/,lib/"
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

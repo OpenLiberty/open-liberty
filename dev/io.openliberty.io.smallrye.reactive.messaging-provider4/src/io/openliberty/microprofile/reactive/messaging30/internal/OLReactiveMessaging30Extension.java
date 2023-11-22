@@ -11,6 +11,12 @@ package io.openliberty.microprofile.reactive.messaging30.internal;
 
 import java.lang.annotation.Annotation;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
+import jakarta.enterprise.inject.spi.DeploymentException;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.spi.Connector;
 import org.osgi.service.component.annotations.Component;
@@ -42,6 +48,8 @@ import jakarta.enterprise.inject.spi.Extension;
 
 @Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "application.bdas.visible=true" })
 public class OLReactiveMessaging30Extension extends ReactiveMessagingExtension implements Extension, WebSphereCDIExtension {
+
+    private static final TraceComponent tc = Tr.register(OLReactiveMessaging30Extension.class);
 
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery discovery, BeanManager beanManager) {
         //This bundle has bean-discovery-mode=none so we have to add anything with a CDI annotation here
@@ -85,6 +93,24 @@ public class OLReactiveMessaging30Extension extends ReactiveMessagingExtension i
 
         //org.eclipse.microprofile.reactive.messaging.spi
         addQualifier(Connector.class, discovery, beanManager);
+    }
+
+    @Override
+    protected void afterDeploymentValidation(@Observes AfterDeploymentValidation done, BeanManager beanManager) {
+        // Catch DeploymentException that is thrown if there are any validation errors with the Reactive Messaging Configuration
+        try {
+            MediatorManager mediatorManager = configureMediatorManager(beanManager);
+            startMediatorManager(mediatorManager);
+        } catch (DeploymentException de) {
+            StringBuilder exceptionBuilder = new StringBuilder(de.getLocalizedMessage());
+            for (Throwable t : de.getSuppressed()) {
+                exceptionBuilder.append("\n" + t.getLocalizedMessage());
+            }
+            String appName = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getJ2EEName().getApplication();
+            Tr.error(tc,  Tr.formatMessage(tc, "reactive.messaging.validation.error.CWMRX1100E", appName, exceptionBuilder.toString()));
+            // rethrow DeploymentException to make sure we stop the application correctly.
+            throw de;
+        }
     }
 
     private <T> void addAnnotatedType(Class<T> clazz, BeforeBeanDiscovery discovery, BeanManager beanManager) {

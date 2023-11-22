@@ -231,18 +231,7 @@ public class OIDCClientAuthenticatorUtil {
         }
 
         oidcClientRequest.setTokenType(OidcClientRequest.TYPE_ID_TOKEN);
-
-        // ------------------------------------------------------
-        // TODO: START: ISSUE #25460
         oidcResult = jose4jUtil.createResultWithJose4J(responseState, reqParameters, clientConfig, oidcClientRequest, getSSLSocketFactory(clientConfig));
-
-        // if (clientConfig.getUserInfoEndpointUrl() != null) {
-        //     getUserInfo(clientConfig, reqParameters, oidcClientRequest, oidcResult);
-        // }
-
-        // TODO: END: ISSUE #25460
-        // ------------------------------------------------------
-
         return oidcResult;
     }
 
@@ -261,8 +250,6 @@ public class OIDCClientAuthenticatorUtil {
         new UserInfoHelper(clientConfig, sslSupport).getUserInfoIfPossible(oidcResult, reqParameters, sslSocketFactory, oidcClientRequest);
     }
 
-    // ------------------------------------------------------
-    // TODO: START: ISSUE #25460
     SSLSocketFactory getSSLSocketFactory(ConvergedClientConfig clientConfig) {
         SSLSocketFactory sslSocketFactory = null;
         try {
@@ -277,8 +264,6 @@ public class OIDCClientAuthenticatorUtil {
         }
         return sslSocketFactory;
     }
-    // TODO: END: ISSUE #25460
-    // ------------------------------------------------------
 
     public static boolean checkHttpsRequirement(ConvergedClientConfig clientConfig, String urlStr) {
         boolean metHttpsRequirement = true;

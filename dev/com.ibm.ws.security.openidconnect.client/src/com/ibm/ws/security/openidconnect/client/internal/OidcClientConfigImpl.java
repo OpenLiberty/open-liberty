@@ -567,14 +567,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         // checkValidationEndpointUrl();
 
         // validateAuthzTokenEndpoints(); //TODO: update tests to expect the error if the validation here fails
-        String tokens = configUtils.getConfigAttributeWithDefaultValue(props, CFG_KEY_TOKEN_ORDER_TOFETCH_CALLER_CLAIMS, "IDToken");//getStringArrayConfigAttribute(props, CFG_KEY_TOKEN_ORDER_TOFETCH_CALLER_CLAIMS);
- /*       if (tokens == null) {
-            Tr.info(tc, "@AMMI, null tokens");
-            tokenOrderToFetchCallerClaims = new ArrayList<String>(1);
-            tokenOrderToFetchCallerClaims.add(com.ibm.ws.security.openidconnect.clients.common.Constants.TOKEN_TYPE_ID_TOKEN);
-        } else {    */        
-            tokenOrderToFetchCallerClaims = split(tokens);
-       /* }*/
+        String tokens = configUtils.getConfigAttributeWithDefaultValue(props, CFG_KEY_TOKEN_ORDER_TOFETCH_CALLER_CLAIMS, "IDToken");     
+        tokenOrderToFetchCallerClaims = split(tokens);
         if (discovery) {
             logDiscoveryMessage("OIDC_CLIENT_DISCOVERY_COMPLETE");
         }
@@ -649,7 +643,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             Tr.debug(tc, "accessTokenCacheTimeout:" + accessTokenCacheTimeout);
             Tr.debug(tc, "pkceCodeChallengeMethod:" + pkceCodeChallengeMethod);
             Tr.debug(tc, "tokenRequestOriginHeader:" + tokenRequestOriginHeader);
-            Tr.debug(tc, "tokenOrderToFetchCallerClaims:" + tokenOrderToFetchCallerClaims.toString());
+            Tr.debug(tc, "tokenOrderToFetchCallerClaims:" + tokenOrderToFetchCallerClaims);
         }
 
     }
@@ -1962,7 +1956,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     }
 
     List<String> split(String str) {    
-        List<String> rvalue = new ArrayList<String>(3);
+        List<String> rvalue = new ArrayList<String>();
             if (str.contains(" ")) {
                 StringTokenizer st = new StringTokenizer(str, " ");
                 while (st.hasMoreElements()) {

@@ -45,24 +45,22 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
+import tests.CloudFATServletClient;
 
 @RunWith(FATRunner.class)
-public class SimpleFS2PCCloudTest extends FATServletClient {
+public class SimpleFS2PCCloudTest extends CloudFATServletClient {
 
     private FileLock fLock;
     private FileChannel fChannel;
-    public static final String APP_NAME = "transaction";
-    public static final String SERVLET_NAME = APP_NAME + "/SimpleFS2PCCloudServlet";
     private static final String APP_PATH = "../com.ibm.ws.transaction.cloud_fat.base/";
     protected static final int FScloud2ServerPort = 9992;
     private static final String v1Length = "v1Length";
 
     @Server("FSCLOUD001")
-    public static LibertyServer server1;
+    public static LibertyServer s1;
 
     @Server("FSCLOUD002")
-    public static LibertyServer server2;
+    public static LibertyServer s2;
 
     @Server("longLeaseLengthFSServer1")
     public static LibertyServer longLeaseLengthFSServer1;
@@ -73,8 +71,21 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
                                                         "longLeaseLengthFSServer1",
     };
 
+    @Override
+    protected void checkLogPresence() throws Exception {
+        assertTrue(server1.getServerName() + " transaction log has been deleted", server1.fileExistsInLibertyServerRoot("tranlog/tranlog"));
+        assertTrue(server1.getServerName() + " partner log has been deleted", server1.fileExistsInLibertyServerRoot("tranlog/partnerlog"));
+    }
+
+    @Override
+    protected void checkLogAbsence() throws Exception {
+        assertFalse(server1.getServerName() + " transaction log has not been deleted", server1.fileExistsInLibertyServerRoot("tranlog/tranlog"));
+        assertFalse(server1.getServerName() + " partner log has not been deleted", server1.fileExistsInLibertyServerRoot("tranlog/partnerlog"));
+    }
+
     @BeforeClass
     public static void setUp() throws Exception {
+        initialize(s1, s2, "transaction", "/SimpleFS2PCCloudServlet");
 
         TxShrinkHelper.buildDefaultApp(server1, APP_NAME, APP_PATH, "servlets.*");
         TxShrinkHelper.buildDefaultApp(server2, APP_NAME, APP_PATH, "servlets.*");
@@ -145,8 +156,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         assertNotNull(server1.getServerName() + " did not crash properly", server1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
 
         // At this point server1's recovery log files should (absolutely!) be present
-        assertTrue(server1.getServerName() + " has no transaction log", server1.fileExistsInLibertyServerRoot(tranlog));
-        assertTrue(server1.getServerName() + " has no partner log", server1.fileExistsInLibertyServerRoot(partnerlog));
+        checkLogPresence();
 
         // Now start server2
         server2.setHttpDefaultPort(FScloud2ServerPort);
@@ -163,8 +173,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
                           server2.waitForStringInTrace("Performed recovery for " + server1.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
 
             // Check to see that the peer recovery log files have been deleted
-            assertFalse(server1.getServerName() + " transaction log has not been deleted", server1.fileExistsInLibertyServerRoot(tranlog));
-            assertFalse(server1.getServerName() + " partner log has not been deleted", server1.fileExistsInLibertyServerRoot(partnerlog));
+            checkLogAbsence();
         } finally {
             FATUtils.stopServers(server2);
         }

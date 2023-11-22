@@ -28,9 +28,12 @@
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="rs256"
 		signatureAlgorithm="RS256"
-		tokenOrderToFetchCallerClaims="AccessToken IDToken Userinfo"
-		mapIdentityToRegistryUser="yes"
+		tokenOrderToFetchCallerClaims="AccessToken IDToken UserInfo"
+		mapIdentityToRegistryUser="false"
 		httpsRequired="false"
+		realmIdentifier="realmName"
+		userIdentifier="upn"
+		groupIdentifier="role"
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfig1/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"
@@ -41,15 +44,15 @@
 	>
 	</openidConnectClient>
 
-	<authFilter id="myATSampleFilter">
+	<authFilter id="idTokenOnlyFilter">
 		<requestUrl
-			id="myATRequestUrl"
-			urlPattern="/atOnly"
+			id="idTokenOnlyRequestUrl"
+			urlPattern="/idtokenonly"
 			matchType="contains" />
 	</authFilter>
 
 	<openidConnectClient
-		id="atOnly"
+		id="idtokenonly"
 		scope="openid profile"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
@@ -57,49 +60,19 @@
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="rs256"
 		signatureAlgorithm="RS256"
-		tokenOrderToFetchCallerClaims="AccessToken IDToken Userinfo"
-		mapIdentityToRegistryUser="no"
-		groupIdentifier="role"
+		mapIdentityToRegistryUser="false"
 		httpsRequired="false"
-		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
-		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfig1/authorize"
-		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"
-		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
-		userInfoEndpointEnabled="true"
-		validationMethod="userinfo"
-		authFilterRef="myATSampleFilter"
-	>
-	</openidConnectClient>
-	
-		<authFilter id="noClaimFilter">
-		<requestUrl
-			id="noClaimRequestUrl"
-			urlPattern="/noClaim"
-			matchType="contains" />
-	</authFilter>
-
-	<openidConnectClient
-		id="noClaim"
-		scope="openid profile"
-		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
-		sharedKey="secret"
-		trustStoreRef="trust_allSigAlg"
-		trustAliasName="rs256"
-		signatureAlgorithm="RS256"
-		tokenOrderToFetchCallerClaims="AccessToken IDToken Userinfo"
-		mapIdentityToRegistryUser="no"
+		realmIdentifier="realmName"
 		userIdentifier="upn"
 		groupIdentifier="role"
-		httpsRequired="false"
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfig1/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"
 		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
 		userInfoEndpointEnabled="true"
 		validationMethod="userinfo"
-		authFilterRef="noClaimFilter"
+		authFilterRef="idTokenOnlyFilter"
 	>
-	</openidConnectClient>
+	</openidConnectClient>	
 
 </server>

@@ -66,6 +66,12 @@ public class AgentTestResource extends Application {
         return Span.current().getSpanContext().getTraceId();
     }
 
+    @Path("/getSubResource/{id}")
+    public AgentSubResource getSubResource(@PathParam("id") String id) {
+        Span span = Span.current();
+        return new AgentSubResource(span.getSpanContext().getTraceId());
+    }
+    
     @GET
     @Path("/nestedspans")
     public String createNestedSpans() {

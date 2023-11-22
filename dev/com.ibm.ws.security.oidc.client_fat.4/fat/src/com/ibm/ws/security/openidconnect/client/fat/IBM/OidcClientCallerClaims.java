@@ -12,8 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.fat.IBM;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -99,6 +98,7 @@ public class OidcClientCallerClaims extends CommonTest {
         builder.setExpirationTimeMinutesIntheFuture(5);
         builder.setScope("openid profile");
         builder.setSubject("testuser");
+        builder.setClaim("upn","testuser");
         builder.setRealmName("BasicRealm");
         builder.setTokenType("Bearer");
         builder.setAudience("client01");
@@ -108,95 +108,455 @@ public class OidcClientCallerClaims extends CommonTest {
         return builder;
     }
 
+
     /******************************* tests *******************************/
     /**
-     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
-     * caller claims exist in all tokens
+     * testing tokenOrderTofetchCallerClaims for group claim
+     * caller group claims exist specific tokens
      * 
      * @throws Exception
      */
-    @Test
-    public void OidcClientCallerClaims_claims_exist_in_all_tokens() throws Exception {
+    private void Generic_TokenOrder_Test_For_Group_Claims(String tokenOrderOption, List<String> tokensContainGroupClaim ) throws Exception {
+        
+        String appName = "";
+        List<validationData> expectations = vData.addSuccessStatusCodes(null);
+        if(Constants.TOKEN_ORDER_IDTOKEN.equalsIgnoreCase(tokenOrderOption)){
+            appName = "idtokenonly";
+            expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, com.ibm.ws.security.fat.common.Constants.OK_STATUS);
+            expectations = validationTools.addIdTokenStringValidation(vData, expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.IDToken_STR);
+            if(tokensContainGroupClaim.contains(Constants.TOKEN_TYPE_IDTOKEN)
+            ){
+                expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the role printed in the app output", null, "groupIds=" + "[group:MyTestRealm/MyTestRole]");
+                expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the realmName printed in the app output", null, "realmName=" + "MyTestRealm");
+            }else{
+                expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN, "Did not see the role printed in the app output", null, "groupIds=" + "[group:MyTestRealm/MyTestRole]");
+                expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN, "Did not see the realmName printed in the app output", null, "realmName=" + "MyTestRealm");
+            }
 
-        String appName = "sampleBuilder";
+
+        }else if(Constants.TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO.equalsIgnoreCase(tokenOrderOption)){
+            appName = "sampleBuilder";
+            expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, com.ibm.ws.security.fat.common.Constants.OK_STATUS);
+            expectations = validationTools.addIdTokenStringValidation(vData, expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.IDToken_STR);
+            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the role printed in the app output", null, "groupIds=" + "[group:MyTestRealm/MyTestRole]");
+            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the realmName printed in the app output", null, "realmName=" + "MyTestRealm");
+
+        } 
 
         WebConversation wc = new WebConversation();
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setScope("openid profile");
         updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
 
-        List<validationData> expectations = vData.addSuccessStatusCodes(null);
-        expectations = validationTools.addIdTokenStringValidation(vData, expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.IDToken_STR);
-        // add or update claims (To remove claims you might need to replicate what createBuilderWithDefaultClaims does and just omit the setting of the claim)
-        JWTTokenBuilder builder = createBuilderWithDefaultClaims();
-        builder.setClaim("auth_time", builder.getRawClaims().getClaimValue(PayloadConstants.ISSUED_AT));
-        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the auth_time printed in the app output", null, "\"auth_time\":" + builder.getRawClaims().getClaimValue("auth_time"));
-        builder.setClaim(PayloadConstants.USER_PRINCIPAL_NAME, "myEmail@ibm.com");
-        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the " + PayloadConstants.USER_PRINCIPAL_NAME + " printed in the app output", null, "\"" + PayloadConstants.USER_PRINCIPAL_NAME + "\":\"" + builder.getRawClaims().getClaimValue(PayloadConstants.USER_PRINCIPAL_NAME) + "\"");
-        builder.setClaim("unique_name", builder.getRawClaims().getClaimValue(PayloadConstants.SESSION_ID));
-        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the unique_name printed in the app output", null, "\"unique_name\":\"" + builder.getRawClaims().getClaimValue("unique_name") + "\"");
 
-        // calling build to create a JWT token (as a string)
-        String jwtToken = builder.build();
-
-        // the built token will be passed to the test app via the overrideToken parm - it will be saved to be later returned during the auth process.
-        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", jwtToken); // idt and access token claims will be same
-        genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getTokenEndpt(), Constants.PUTMETHOD, "misc", parms, null, expectations);
-
-        List<endpointSettings> userinfParms = eSettings.addEndpointSettings(null, "userinfoToken", jwtToken);
-        //(That url that the RP will call is:  http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT)
-        genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getUserinfoEndpt(), Constants.PUTMETHOD, "misc", userinfParms, null, expectations);
-        // we created and saved tokens for our test tooling token endpoint and userinfo ep to return to the RP - let's invoke
-        // the protected resource.  The RP will get the auth token, but, instead of getting a at, idt and userinfo from the OP, it will use a
-        // token ep and userinfo ep pointing to the test tooling app that will return the tokens previously obtained using a builder
-        genericRP(_testName, wc, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
-
-    }
-    
-    /**
-     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
-     * caller claims exist in AT only
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void OidcClientCallerClaims_group_claim_exist_in_AT_only() throws Exception {
-
-        String appName = "atOnly";
-
-        WebConversation wc = new WebConversation();
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setScope("openid profile");
-        updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
-
-        List<validationData> expectations = vData.addSuccessStatusCodes(null);
-        expectations = validationTools.addIdTokenStringValidation(vData, expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.IDToken_STR);
 
         // add or update claims (To remove claims you might need to replicate what createBuilderWithDefaultClaims does and just omit the setting of the claim)
         JWTTokenBuilder builder = createBuilderWithDefaultClaims();
-        List<String> groups = new ArrayList<String>();
-        groups.add("ATTestRole");
-        builder.setClaim("role", groups); //group identifier=role
-        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the role printed in the app output", null, "groupIds=" + "[group:ATTestRealm/ATTestRole]");
-        builder.setClaim("realmName", "ATTestRealm"); //realm identifier = realmName
-        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the role printed in the app output", null, "realmName=" + "ATTestRealm");
+        builder.unsetClaim("realmName"); // realmIdentifier = realmName
+        String noRoleClaimToken = builder.build();
+  
+        builder.setClaim("role", Arrays.asList("MyTestRole")); //group identifier=role
+        builder.setClaim("realmName", "MyTestRealm"); //realm identifier = realmName
         // calling build to create a JWT token (as a string)
-        String jwtToken = builder.build();
+        String withRoleClaimToken = builder.build();
+
         // the built token will be passed to the test app via the overrideToken parm - it will be saved to be later returned during the auth process.
-        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", jwtToken);
-        builder = createBuilderWithDefaultClaims();
-        String idt = builder.build();
-        parms = eSettings.addEndpointSettingsIfNotNull(parms, "overrideIDToken", idt);
+        List<endpointSettings> parms = null;
+        List<endpointSettings> userinfoParms = null;
+
+        Set<String> tokeyTypeSet = new HashSet<String>();
+        for(String tokenType : tokensContainGroupClaim){
+            if(Constants.TOKEN_TYPE_ACCESSTOKEN.equalsIgnoreCase(tokenType)){
+                parms = eSettings.addEndpointSettingsIfNotNull(parms, "overrideToken", withRoleClaimToken);
+                tokeyTypeSet.add("overrideToken");
+            }else if(Constants.TOKEN_TYPE_IDTOKEN.equalsIgnoreCase(tokenType)){
+                parms = eSettings.addEndpointSettingsIfNotNull(parms, "overrideIDToken", withRoleClaimToken);
+                tokeyTypeSet.add("overrideIDToken");
+            }if(Constants.TOKEN_TYPE_USERINFO.equalsIgnoreCase(tokenType)){
+                userinfoParms = eSettings.addEndpointSettingsIfNotNull(userinfoParms, "userinfoToken", withRoleClaimToken);
+                tokeyTypeSet.add("userinfoToken");
+            }
+        }
+
+        if(!tokeyTypeSet.contains("overrideToken")){
+            parms = eSettings.addEndpointSettingsIfNotNull(parms, "overrideToken", noRoleClaimToken);
+        }
+
+        if(!tokeyTypeSet.contains("overrideIDToken")){
+            parms = eSettings.addEndpointSettingsIfNotNull(parms, "overrideIDToken", noRoleClaimToken);
+        }
+
+        if(!tokeyTypeSet.contains("userinfoToken")){
+            userinfoParms = eSettings.addEndpointSettingsIfNotNull(userinfoParms, "userinfoToken", noRoleClaimToken);
+        }
+
+        // overwrite the ID Token or Access Token
         genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getTokenEndpt(), Constants.PUTMETHOD, "misc", parms, null, expectations);       
-;
-        List<endpointSettings> userinfParms = eSettings.addEndpointSettings(null, "userinfoToken", idt);
+        
+        // overwrite user info token
         //(That url that the RP will call is:  http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT)
-        genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getUserinfoEndpt(), Constants.PUTMETHOD, "misc", userinfParms, null, expectations);
+        genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getUserinfoEndpt(), Constants.PUTMETHOD, "misc", userinfoParms, null, expectations);
         // we created and saved a jwt for our test tooling token endpoint to return to the RP - let's invoke
         // the protected resource.  The RP will get the auth token, but, instead of getting at, idt and userinfo from the OP, it will use a
         // token endpoint and userinfo pointing to the test tooling apps that will return the tokens previously obtained using a builder
         genericRP(_testName, wc, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
 
+    }
+
+
+    /******************************* tests *******************************/
+    /**
+     * testing tokenOrderTofetchCallerClaims for user claim
+     * caller user claims exist specific tokens
+     *
+     * @throws Exception
+     */
+    private void Generic_TokenOrder_Test_For_User_Claims(String tokenOrderOption, List<String> tokensContainUserClaim ) throws Exception {
+
+        String appName = "";
+        List<validationData> expectations = null;
+        if(Constants.TOKEN_ORDER_IDTOKEN.equalsIgnoreCase(tokenOrderOption)){
+            appName = "idtokenonly";
+            if(tokensContainUserClaim.contains(Constants.TOKEN_TYPE_IDTOKEN)){
+                expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, com.ibm.ws.security.fat.common.Constants.OK_STATUS);
+            }else{
+                expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, com.ibm.ws.security.fat.common.Constants.UNAUTHORIZED_STATUS);
+            }
+
+
+        }else if(Constants.TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO.equalsIgnoreCase(tokenOrderOption)){
+            appName = "sampleBuilder";
+            expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, com.ibm.ws.security.fat.common.Constants.OK_STATUS);
+        }
+
+        WebConversation wc = new WebConversation();
+        TestSettings updatedTestSettings = testSettings.copyTestSettings();
+        updatedTestSettings.setScope("openid profile");
+        updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
+
+
+
+        // add or update claims (To remove claims you might need to replicate what createBuilderWithDefaultClaims does and just omit the setting of the claim)
+        JWTTokenBuilder builder = createBuilderWithDefaultClaims();
+        String withUserClaimToken = builder.build();
+        builder.unsetClaim("upn"); // userIdentifier = upn
+        String noUserClaimToken = builder.build();
+
+
+        // the built token will be passed to the test app via the overrideToken parm - it will be saved to be later returned during the auth process.
+        List<endpointSettings> parms = null;
+        List<endpointSettings> userinfoParms = null;
+
+        Set<String> tokeyTypeSet = new HashSet<String>();
+        for(String tokenType : tokensContainUserClaim){
+            if(Constants.TOKEN_TYPE_ACCESSTOKEN.equalsIgnoreCase(tokenType)){
+                parms = eSettings.addEndpointSettingsIfNotNull(parms, "overrideToken", withUserClaimToken);
+                tokeyTypeSet.add("overrideToken");
+            }else if(Constants.TOKEN_TYPE_IDTOKEN.equalsIgnoreCase(tokenType)){
+                parms = eSettings.addEndpointSettingsIfNotNull(parms, "overrideIDToken", withUserClaimToken);
+                tokeyTypeSet.add("overrideIDToken");
+            }if(Constants.TOKEN_TYPE_USERINFO.equalsIgnoreCase(tokenType)){
+                userinfoParms = eSettings.addEndpointSettingsIfNotNull(userinfoParms, "userinfoToken", withUserClaimToken);
+                tokeyTypeSet.add("userinfoToken");
+            }
+        }
+
+        if(!tokeyTypeSet.contains("overrideToken")){
+            parms = eSettings.addEndpointSettingsIfNotNull(parms, "overrideToken", noUserClaimToken);
+        }
+
+        if(!tokeyTypeSet.contains("overrideIDToken")){
+            parms = eSettings.addEndpointSettingsIfNotNull(parms, "overrideIDToken", noUserClaimToken);
+        }
+
+        if(!tokeyTypeSet.contains("userinfoToken")){
+            userinfoParms = eSettings.addEndpointSettingsIfNotNull(userinfoParms, "userinfoToken", noUserClaimToken);
+        }
+
+        // overwrite the ID Token or Access Token
+        genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getTokenEndpt(), Constants.PUTMETHOD, "misc", parms, null, expectations);
+
+        // overwrite user info token
+        //(That url that the RP will call is:  http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT)
+        genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getUserinfoEndpt(), Constants.PUTMETHOD, "misc", userinfoParms, null, expectations);
+        // we created and saved a jwt for our test tooling token endpoint to return to the RP - let's invoke
+        // the protected resource.  The RP will get the auth token, but, instead of getting at, idt and userinfo from the OP, it will use a
+        // token endpoint and userinfo pointing to the test tooling apps that will return the tokens previously obtained using a builder
+        genericRP(_testName, wc, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
+
+    }
+
+    /******************************* tests *******************************/
+    /**
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * caller group claim exist in access token only
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void AllTokens_group_claim_exist_in_accesstoken_only() throws Exception {
+        Generic_TokenOrder_Test_For_Group_Claims(Constants.TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO, Arrays.asList(Constants.TOKEN_TYPE_ACCESSTOKEN));
+    }
+
+    /******************************* tests *******************************/
+    /**
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * caller group claim exist in id token only
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void AllTokens_group_claim_exist_in_idtoken_only() throws Exception {
+        Generic_TokenOrder_Test_For_Group_Claims(Constants.TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO, 
+                                                 Arrays.asList(Constants.TOKEN_TYPE_IDTOKEN));
+    } 
+    
+    /******************************* tests *******************************/
+    /**
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * caller group claim exist in userinfo only
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void AllTokens_group_claim_exist_in_userinfo_only() throws Exception {
+        Generic_TokenOrder_Test_For_Group_Claims(Constants.TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO, 
+                                                Arrays.asList(Constants.TOKEN_TYPE_USERINFO));
+    }   
+    
+    /******************************* tests *******************************/
+    /**
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * caller group claim exist in idtoken and userinfo
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void AllTokens_group_claim_exist_in_idtoken_and_userinfo() throws Exception {
+        Generic_TokenOrder_Test_For_Group_Claims(Constants.TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO, 
+                                                 Arrays.asList(Constants.TOKEN_TYPE_IDTOKEN,
+                                                               Constants.TOKEN_TYPE_USERINFO));
+    }
+
+    /******************************* tests *******************************/
+    /**
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * caller group claim exist in idtoken and userinfo
+     *
+     * @throws Exception
+     */
+    @Test
+    public void AllTokens_group_claim_exist_in_idtoken_and_accesstoken() throws Exception {
+        Generic_TokenOrder_Test_For_Group_Claims(Constants.TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO,
+                Arrays.asList(Constants.TOKEN_TYPE_IDTOKEN,
+                              Constants.TOKEN_TYPE_ACCESSTOKEN));
+    }
+
+    /******************************* tests *******************************/
+    /**
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * caller group claim exist in all tokens only
+     *
+     * @throws Exception
+     */
+    @Test
+    public void AllTokens_group_claim_exist_in_accesstoken_and_userinfo() throws Exception {
+        Generic_TokenOrder_Test_For_Group_Claims(Constants.TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO,
+                Arrays.asList(Constants.TOKEN_TYPE_ACCESSTOKEN,
+                              Constants.TOKEN_TYPE_USERINFO));
+    }
+
+
+    /******************************* tests *******************************/
+    /**
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * caller group claim exist in all tokens only
+     *
+     * @throws Exception
+     */
+    @Test
+    public void AllTokens_group_claim_exist_in_all_three_tokens() throws Exception {
+        Generic_TokenOrder_Test_For_Group_Claims(Constants.TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO,
+                Arrays.asList(Constants.TOKEN_TYPE_IDTOKEN,
+                        Constants.TOKEN_TYPE_ACCESSTOKEN,
+                        Constants.TOKEN_TYPE_USERINFO));
+    }
+
+
+    /******************************* tests *******************************/
+    /**
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * caller group claim exist in all tokens only
+     *
+     * @throws Exception
+     */
+    @Test
+    public void IDToken_group_claim_exist_in_all_three_tokens() throws Exception {
+        Generic_TokenOrder_Test_For_Group_Claims(Constants.TOKEN_ORDER_IDTOKEN,
+                Arrays.asList(Constants.TOKEN_TYPE_IDTOKEN,
+                        Constants.TOKEN_TYPE_ACCESSTOKEN,
+                        Constants.TOKEN_TYPE_USERINFO));
+    }
+
+
+    /**
+     * testing no config for tokenOrderTofetchCallerClaims, ie tokenOrderTofetchCallerClaims="IDToken"
+     * caller claims exist in AT only
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void IDToken_group_claim_exist_in_accesstoken_only() throws Exception {
+        Generic_TokenOrder_Test_For_Group_Claims(Constants.TOKEN_ORDER_IDTOKEN, 
+                                                 Arrays.asList(Constants.TOKEN_TYPE_ACCESSTOKEN));
+ 
+    }    
+
+
+    /**
+     * testing no config for tokenOrderTofetchCallerClaims, ie tokenOrderTofetchCallerClaims="IDToken"
+     * caller claims exist in ID Token only
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void IDToken_group_claim_exist_in_idtoken_only() throws Exception {
+
+         Generic_TokenOrder_Test_For_Group_Claims(Constants.TOKEN_ORDER_IDTOKEN, 
+                                                 Arrays.asList(Constants.TOKEN_TYPE_IDTOKEN));
+    }   
+    
+    
+    /**
+     * testing no config for tokenOrderTofetchCallerClaims, ie tokenOrderTofetchCallerClaims="IDToken"
+     * caller claims exist in userinfo only
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void IDToken_group_claim_exist_in_userinfo_only() throws Exception {
+
+         Generic_TokenOrder_Test_For_Group_Claims(Constants.TOKEN_ORDER_IDTOKEN, 
+                                                 Arrays.asList(Constants.TOKEN_TYPE_USERINFO));
+    }
+
+    /**
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * caller user claims exist in userinfo only
+     *
+     * @throws Exception
+     */
+    @Test
+    public void IDToken_user_claim_exist_in_userinfo_only() throws Exception {
+
+        Generic_TokenOrder_Test_For_User_Claims(Constants.TOKEN_ORDER_IDTOKEN,
+                Arrays.asList(Constants.TOKEN_TYPE_USERINFO));
+    }
+
+    /**
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * caller user claims exist in access token only
+     *
+     * @throws Exception
+     */
+    @Test
+    public void IDToken_user_claim_exist_in_accesstoken_only() throws Exception {
+
+        Generic_TokenOrder_Test_For_User_Claims(Constants.TOKEN_ORDER_IDTOKEN,
+                Arrays.asList(Constants.TOKEN_TYPE_ACCESSTOKEN));
+    }
+
+
+    /**
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * caller user claims exist in id token only
+     *
+     * @throws Exception
+     */
+    @Test
+    public void AllTokens_user_claim_exist_in_idtoken_only() throws Exception {
+
+        Generic_TokenOrder_Test_For_User_Claims(Constants.TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO,
+                Arrays.asList(Constants.TOKEN_TYPE_IDTOKEN));
+    }
+
+    /**
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * caller user claims exist in access token and user info only
+     *
+     * @throws Exception
+     */
+    @Test
+    public void ALLTokens_user_claim_exist_in_accesstoken_and_userinfo_only() throws Exception {
+
+        Generic_TokenOrder_Test_For_User_Claims(Constants.TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO,
+                Arrays.asList(Constants.TOKEN_TYPE_ACCESSTOKEN, Constants.TOKEN_TYPE_USERINFO));
+    }
+
+    /**
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * caller user claims exist in ID token and user info only
+     *
+     * @throws Exception
+     */
+    @Test
+    public void ALLTokens_user_claim_exist_in_idtoken_and_userinfo_only() throws Exception {
+
+        Generic_TokenOrder_Test_For_User_Claims(Constants.TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO,
+                Arrays.asList(Constants.TOKEN_TYPE_IDTOKEN, Constants.TOKEN_TYPE_USERINFO));
+    }
+
+    /**
+     * testing tokenOrderTofetchCallerClaims="Access Token IDToken Userinfo"
+     * caller user claims exist in userinfo only
+     *
+     * @throws Exception
+     */
+    @Test
+    public void AllTokens_user_claim_exist_in_userinfo_only() throws Exception {
+
+        Generic_TokenOrder_Test_For_User_Claims(Constants.TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO,
+                Arrays.asList(Constants.TOKEN_TYPE_USERINFO));
+    }
+
+    /**
+     * testing no config for tokenOrderTofetchCallerClaims, ie tokenOrderTofetchCallerClaims="IDToken"
+     * caller user claims exist in access token only
+     *
+     * @throws Exception
+     */
+    @Test
+    public void AllTokens_user_claim_exist_in_accesstoken_only() throws Exception {
+
+        Generic_TokenOrder_Test_For_User_Claims(Constants.TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO,
+                Arrays.asList(Constants.TOKEN_TYPE_ACCESSTOKEN));
+    }
+
+
+    /**
+     * testing no config for tokenOrderTofetchCallerClaims, ie tokenOrderTofetchCallerClaims="IDToken"
+     * caller user claims exist in id token only
+     *
+     * @throws Exception
+     */
+    @Test
+    public void IDToken_user_claim_exist_in_idtoken_only() throws Exception {
+
+        Generic_TokenOrder_Test_For_User_Claims(Constants.TOKEN_ORDER_IDTOKEN,
+                Arrays.asList(Constants.TOKEN_TYPE_IDTOKEN));
+    }
+
+    /**
+     * testing no config for tokenOrderTofetchCallerClaims, ie tokenOrderTofetchCallerClaims="IDToken"
+     * caller user claims exist in access token and user info only
+     *
+     * @throws Exception
+     */
+    @Test
+    public void IDToken_user_claim_exist_in_accesstoken_and_userinfo_only() throws Exception {
+
+        Generic_TokenOrder_Test_For_User_Claims(Constants.TOKEN_ORDER_IDTOKEN,
+                Arrays.asList(Constants.TOKEN_TYPE_ACCESSTOKEN, Constants.TOKEN_TYPE_USERINFO));
     }
 
     /**
@@ -206,9 +566,9 @@ public class OidcClientCallerClaims extends CommonTest {
      * @throws Exception
      */   
     @Test
-    public void OidcClientCallerClaims_useridentifier_claim_missing() throws Exception {
+    public void AllTokens_user_claim_missing() throws Exception {
 
-        String appName = "noClaim";
+        String appName = "sampleBuilder";
 
         WebConversation wc = new WebConversation();
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
@@ -216,24 +576,21 @@ public class OidcClientCallerClaims extends CommonTest {
         updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null, Constants.LOGIN_USER);
+       
         expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, com.ibm.ws.security.fat.common.Constants.UNAUTHORIZED_STATUS);
 
         expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that client failed to authenticate the JSON Web Token", MessageConstants.CWWKS1738E_JWT_MISSING_CLAIM);
  
         JWTTokenBuilder builder = createBuilderWithDefaultClaims();
-        builder.setClaim("role", "ATTestRole"); //group identifier=role
-        builder.setClaim("realmName", "ATTestRealm"); //realm identifier = realmName
-
-        String jwtToken = builder.build();
+        builder.unsetClaim("upn"); //unset userIdentifier = upn
+        String jwtTokenWithNoUserClaim = builder.build();
 
         // the built token will be passed to the test app via the overrideToken parm - it will be saved to be later returned during the auth process.
-        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", jwtToken);
-        builder = createBuilderWithDefaultClaims();
-        String idt = builder.build();
-        parms = eSettings.addEndpointSettingsIfNotNull(parms, "overrideIDToken", idt);
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", jwtTokenWithNoUserClaim);
+        parms = eSettings.addEndpointSettingsIfNotNull(parms, "overrideIDToken", jwtTokenWithNoUserClaim);
         genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getTokenEndpt(), Constants.PUTMETHOD, "misc", parms, null, expectations);
   
-        List<endpointSettings> userinfParms = eSettings.addEndpointSettings(null, "userinfoToken", idt);
+        List<endpointSettings> userinfParms = eSettings.addEndpointSettingsIfNotNull(null, "userinfoToken", jwtTokenWithNoUserClaim);
         //(That url that the RP will call is:  http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT)
         genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getUserinfoEndpt(), Constants.PUTMETHOD, "misc", userinfParms, null, expectations);
         // we created and saved tokens for our test tooling token endpoint and userinfo endpoint to return to the RP - let's invoke
@@ -242,5 +599,49 @@ public class OidcClientCallerClaims extends CommonTest {
         genericRP(_testName, wc, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
 
     }
+
+
+    /**
+     * testing tokenOrderTofetchCallerClaims="IDToken"
+     * caller claim (upn) does not exist in any token
+     * 
+     * @throws Exception
+     */   
+    @Test
+    public void IDTokens_user_claim_missing() throws Exception {
+
+        String appName = "idtokenonly";
+
+        WebConversation wc = new WebConversation();
+        TestSettings updatedTestSettings = testSettings.copyTestSettings();
+        updatedTestSettings.setScope("openid profile");
+        updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
+
+        List<validationData> expectations = vData.addSuccessStatusCodes(null, Constants.LOGIN_USER);
+       
+        expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, com.ibm.ws.security.fat.common.Constants.UNAUTHORIZED_STATUS);
+
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that client failed to authenticate the JSON Web Token", MessageConstants.CWWKS1738E_JWT_MISSING_CLAIM);
+ 
+        JWTTokenBuilder builder = createBuilderWithDefaultClaims();
+        builder.unsetClaim("upn"); //unset userIdentifier = upn
+        String jwtTokenWithNoUserClaim = builder.build();
+
+        // the built token will be passed to the test app via the overrideToken parm - it will be saved to be later returned during the auth process.
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", jwtTokenWithNoUserClaim);
+        parms = eSettings.addEndpointSettingsIfNotNull(parms, "overrideIDToken", jwtTokenWithNoUserClaim);
+        genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getTokenEndpt(), Constants.PUTMETHOD, "misc", parms, null, expectations);
+  
+        List<endpointSettings> userinfParms = eSettings.addEndpointSettingsIfNotNull(null, "userinfoToken", jwtTokenWithNoUserClaim);
+        //(That url that the RP will call is:  http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT)
+        genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getUserinfoEndpt(), Constants.PUTMETHOD, "misc", userinfParms, null, expectations);
+        // we created and saved tokens for our test tooling token endpoint and userinfo endpoint to return to the RP - let's invoke
+        // the protected resource.  The RP will get the auth token, but, instead of getting at, idt and userinfo from the OP, it will use a
+        // token ep and userinfo ep pointing to the test tooling app that will return the tokens previously obtained using a builder
+        genericRP(_testName, wc, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
+
+    }
+
+
 
 }

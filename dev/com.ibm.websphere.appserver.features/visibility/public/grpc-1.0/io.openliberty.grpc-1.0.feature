@@ -5,7 +5,12 @@ singleton=true
 IBM-App-ForceRestart: install, \
   uninstall
 IBM-API-Package: \
-  io.openliberty.grpc.annotation; type="ibm-api"
+  io.openliberty.grpc.annotation; type="ibm-api", \
+  com.ibm.websphere.endpoint; type="ibm-api", \
+  io.grpc;  type="stable"
+IBM-SPI-Package: \
+  com.ibm.wsspi.http, \
+  com.ibm.wsspi.http.ee8
 IBM-ShortName: grpc-1.0
 Subsystem-Version: 1.0.0
 Subsystem-Name: gRPC 1.0

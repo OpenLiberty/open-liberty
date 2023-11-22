@@ -1382,12 +1382,14 @@ public class BaseTraceService implements TrService {
      *                   from bootstrap properties
      */
     protected void initializeWriters(LogProviderConfigImpl config) {
+        TraceWriter currentMessagesLog = messagesLog;
+        TraceWriter currentTraceLog = traceLog;
         if (config.isRestore()) {
-            messagesLog = null;
-            traceLog = null;
+            currentMessagesLog = null;
+            currentTraceLog = null;
         }
         // createFileLog may or may not return the original log holder..
-        messagesLog = FileLogHolder.createFileLogHolder(messagesLog,
+        messagesLog = FileLogHolder.createFileLogHolder(currentMessagesLog,
                                                         newFileLogHeader(false, config),
                                                         config.getLogDirectory(),
                                                         config.getMessageFileName(),
@@ -1398,13 +1400,12 @@ public class BaseTraceService implements TrService {
 
         // Always create a traceLog when using Tr -- this file won't actually be
         // created until something is logged to it...
-        TraceWriter oldWriter = traceLog;
         String fileName = config.getTraceFileName();
         if (fileName.equals("stdout")) {
             traceLog = systemOut;
-            LoggingFileUtils.tryToClose(oldWriter);
+            LoggingFileUtils.tryToClose(currentTraceLog);
         } else {
-            traceLog = FileLogHolder.createFileLogHolder(oldWriter == systemOut ? null : oldWriter,
+            traceLog = FileLogHolder.createFileLogHolder(currentTraceLog == systemOut ? null : currentTraceLog,
                                                          newFileLogHeader(true, config),
                                                          config.getLogDirectory(),
                                                          config.getTraceFileName(),

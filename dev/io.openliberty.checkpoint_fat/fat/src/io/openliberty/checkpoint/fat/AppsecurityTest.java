@@ -61,7 +61,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import appsecurity.AppsecurityBean;
 import appsecurity.AppsecurityServlet;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -71,7 +71,7 @@ import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class AppsecurityTest extends FATServletClient {
 
     private static final String SERVER_NAME = "checkpointAppSecurity";

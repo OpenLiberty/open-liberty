@@ -1166,6 +1166,7 @@ public class DataJPATestServlet extends FATServlet {
         o2 = orders.findById(o2.id).get();
 
         assertEquals(168.89f, o2.total, 0.01f);
+        assertEquals(o2.purchasedOn, OffsetDateTime.of(2022, 6, 1, 14, 0, 0, 0, MDT));
     }
 
     /**

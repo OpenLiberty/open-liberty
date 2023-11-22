@@ -34,7 +34,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.transactional.web.TransactionalBeanServlet;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
@@ -60,7 +60,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  * unspecified transaction context.
  */
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class TransactionalBeanTest extends FATServletClient {
 
     static final String SERVER_NAME = "checkpointTransactionalBean";

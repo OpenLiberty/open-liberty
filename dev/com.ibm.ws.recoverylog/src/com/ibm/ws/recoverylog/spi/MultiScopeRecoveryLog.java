@@ -2457,6 +2457,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
             if (_logHandle != null) {
                 try {
                     _logHandle.delete();
+                    _logHandle = null;
                 } catch (Exception e) {
                     FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.MultiScopeRecoveryLog.delete", "2445", this);
                     if (tc.isEntryEnabled())
