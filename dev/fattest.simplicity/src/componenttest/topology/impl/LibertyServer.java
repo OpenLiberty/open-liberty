@@ -3789,11 +3789,11 @@ public class LibertyServer implements LogMonitorClient {
 
     /**
      * Copies a file from the oldAbsolutePath to the newAbsolutePath in the Liberty server.
-     * 
+     *
      * @param oldAbsolutePath The absolute path of the file to copy.
      * @param newAbsolutePath The absolute path of the destination.
      * @param fileName        The name of the file to copy. The file name will be unchanged from source to dest
-     * 
+     *
      * @throws Exception
      */
     public void copyFileToAbsolutePathInLibertyServer(String oldAbsolutePath, String newAbsolutePath, String fileName) throws Exception {
@@ -3806,11 +3806,11 @@ public class LibertyServer implements LogMonitorClient {
 
     /**
      * Renames a file from the oldAbsolutePath to the newAbsolutePath in the Liberty server.
-     * 
+     *
      * @param oldAbsolutePath The absolute path of the file to copy.
      * @param newAbsolutePath The absolute path of the destination.
      * @param fileName        The name of the file to rename. The file name will be unchanged from source to dest
-     * 
+     *
      * @throws Exception
      */
     public void renameFileToAbsolutePathInLibertyServerRootFile(String oldAbsolutePath, String newAbsolutePath, String fileName) throws Exception {
@@ -3901,6 +3901,10 @@ public class LibertyServer implements LogMonitorClient {
 
     public void deleteFileFromLibertyServerRoot(String filePath) throws Exception {
         LibertyFileManager.deleteLibertyFile(machine, (serverRoot + "/" + filePath));
+    }
+
+    public void deleteFileFromAbsolutePathInLibertyServer(String absolutePath) throws Exception {
+        LibertyFileManager.deleteLibertyFile(machine, absolutePath);
     }
 
     public RemoteFile getServerBootstrapPropertiesFile() throws Exception {

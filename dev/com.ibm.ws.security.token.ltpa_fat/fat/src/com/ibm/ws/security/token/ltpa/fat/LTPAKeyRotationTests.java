@@ -1499,7 +1499,7 @@ public class LTPAKeyRotationTests {
         // Move the ltpa.keys file to another relative path within the wlp directory
         moveFileIfExists(relativeDirectory, wlpDirectory + "/resources", "ltpa.keys", false);
 
-        // Re-configure the keysFileName to that locatin with the relative path
+        // Re-configure the keysFileName to that location with the relative path
         configurationUpdateNeeded = setLTPAkeysFileNameElement(ltpa, "${wlp.install.dir}/resources/ltpa.keys");
         updateConfigDynamically(server, serverConfiguration);
 
@@ -1526,12 +1526,15 @@ public class LTPAKeyRotationTests {
         // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
         String response5 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
 
-        // Move the ltpa.keys file back to the default location
-        moveFileIfExists(baseDirectory + "/random", relativeDirectory + "/resources/security", "ltpa.keys", false);
-
         // Re-configure the keysFileName to the default value
         configurationUpdateNeeded = setLTPAkeysFileNameElement(ltpa, "${server.config.dir}/resources/security/ltpa.keys");
         updateConfigDynamically(server, serverConfiguration);
+
+        // Delete the ltpa.keys file from all of the last locations
+        deleteFileFromAbsolutePathIfExists(relativeDirectory + "/ltpa.keys", true);
+        deleteFileFromAbsolutePathIfExists(wlpDirectory + "/resources/ltpa.keys", true);
+        deleteFileFromAbsolutePathIfExists(wlpDirectory + "/test/ltpa.keys", true);
+        deleteFileFromAbsolutePathIfExists(baseDirectory + "/random/ltpa.keys", true);
     }
 
     /**
@@ -1631,15 +1634,17 @@ public class LTPAKeyRotationTests {
         // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
         String response6 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
 
-        // Move the ltpa.keys and validation1.keys files back to the default location
-        moveFileIfExists(baseDirectory + "/random", relativeDirectory + "/resources/security", "ltpa.keys", false);
-        moveFileIfExists(baseDirectory + "/random", relativeDirectory + "/resources/security", "validation1.keys", false);
-
         // Re-configure the keysFileName and validation fileName to the default value
         configurationUpdateNeeded = setLTPAkeysFileNameElement(ltpa, "${server.config.dir}/resources/security/ltpa.keys")
                                     | setLTPAvalidationKeyFileNameElement(ltpa, "configuredValidation1.keys");
         updateConfigDynamically(server, serverConfiguration);
 
+        // Delete the ltpa.keys and validation1.keys file from all of the last locations
+        deleteFileFromAbsolutePathIfExists(relativeDirectory + "/ltpa.keys", true);
+        deleteFileFromAbsolutePathIfExists(wlpDirectory + "/resources/ltpa.keys", true);
+        deleteFileFromAbsolutePathIfExists(wlpDirectory + "/test/ltpa.keys", true);
+        deleteFileFromAbsolutePathIfExists(baseDirectory + "/random/ltpa.keys", true);
+        deleteFileFromAbsolutePathIfExists(baseDirectory + "/random/validation1.keys", true);
     }
 
     // Function to do the server configuration for all the tests.
@@ -1920,7 +1925,7 @@ public class LTPAKeyRotationTests {
         if (absoluteFileExists(filePath + "/" + fileName, 1)) {
             Log.info(thisClass, "moveFileIfExists", "file exists, moving...");
             server.renameFileToAbsolutePathInLibertyServerRootFile(filePath, newFilePath, fileName);
-            Thread.sleep(1000);
+            Thread.sleep(2000);
 
             // Double check to make sure the file is gone
             if (checkFileIsGone && fileExists(filePath + "/" + fileName, 1))
@@ -1945,6 +1950,26 @@ public class LTPAKeyRotationTests {
             // Double check to make sure the file is gone
             if (checkFileIsGone && fileExists(filePath, 1))
                 throw new Exception("Unable to delete file: " + filePath);
+        }
+    }
+
+    /**
+     * Delete the file if it exists. If we can't delete it, then
+     * throw an exception as we need to be able to delete these files.
+     *
+     * @param absolutePath
+     *
+     * @throws Exception
+     */
+    private static void deleteFileFromAbsolutePathIfExists(String absolutePath, boolean checkFileIsGone) throws Exception {
+        Log.info(thisClass, "deleteFileIfExists", "absolutePath: " + absolutePath);
+        if (absoluteFileExists(absolutePath, 1)) {
+            Log.info(thisClass, "deleteFileFromAbsolutePathInLibertyServer", "file exists, deleting...");
+            server.deleteFileFromAbsolutePathInLibertyServer(absolutePath);
+
+            // Double check to make sure the file is gone
+            if (checkFileIsGone && absoluteFileExists(absolutePath, 1))
+                throw new Exception("Unable to delete file: " + absolutePath);
         }
     }
 
