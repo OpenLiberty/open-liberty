@@ -92,11 +92,11 @@ public class TelemetryServletTest extends FATServletClient {
                         .addProperty("otel.bsp.schedule.delay", "100");
         WebArchive appForTrace = ShrinkWrap.create(WebArchive.class, TRACE_APP_NAME + ".war")
                         .addPackage(HttpTraceDisabledServlet.class.getPackage())
-                        .addPackage(SimpleServlet.class.getPackage())
                         .addPackage(InMemorySpanExporter.class.getPackage())
                         .addPackage(TestSpans.class.getPackage())
                         .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
+                        .addAsWebResource(new File("test-applications/TelemetryServletTestApp.war/hello.html"))
                         .addAsResource(httpTraceConfig, "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportAppToServer(server, appForTrace, SERVER_ONLY);

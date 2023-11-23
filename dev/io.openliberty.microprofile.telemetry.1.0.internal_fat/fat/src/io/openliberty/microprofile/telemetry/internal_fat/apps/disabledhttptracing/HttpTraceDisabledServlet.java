@@ -9,18 +9,15 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal_fat.apps.disabledhttptracing;
 
+import static io.openliberty.microprofile.telemetry.internal_fat.common.SpanDataMatcher.hasKind;
 import static io.openliberty.microprofile.telemetry.internal_fat.common.SpanDataMatcher.isSpan;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static io.opentelemetry.api.trace.SpanKind.CLIENT;
+import static io.opentelemetry.api.trace.SpanKind.INTERNAL;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -45,7 +42,7 @@ public class HttpTraceDisabledServlet extends FATServlet {
 
     public static final String APP_NAME = "HttpTraceDisabledServletTestApp";
     public static final String SIMPLE_SERVLET = "simple";
-    public static final String INVALID_TRACE_ID = "00000000000000000000000000000000";
+    public static final String HELLO_HTML = "hello.html";
 
     @Inject
     private HttpServletRequest request;
@@ -57,17 +54,22 @@ public class HttpTraceDisabledServlet extends FATServlet {
     private TestSpans utils;
 
     @Test
-    public void testSimpleServlet() throws Exception {
+    public void testDisabledStaticFile() throws Exception {
         String scheme = request.getScheme();
         String serverName = request.getServerName();
         int serverPort = request.getServerPort();
-        URL url = new URL(scheme + "://" + serverName + ":" + serverPort + "/" + APP_NAME + "/" + SIMPLE_SERVLET);
+        URI uri = new URI(scheme + "://" + serverName + ":" + serverPort + "/" + APP_NAME + "/" + HELLO_HTML);
+        Span span = utils.withTestSpan(() -> {
+            Response response = ClientBuilder.newClient().target(uri).request()
+                            .build("GET").invoke();
+            assertThat(response.getStatus(), equalTo(200));
+        });
+        List<SpanData> spanDataList = spanExporter.getFinishedSpanItems(2, span.getSpanContext().getTraceId());
+        SpanData testSpan = spanDataList.get(0);
+        assertThat(testSpan, hasKind(INTERNAL));
 
-        String traceId = httpGet(url); // The servlet outputs the traceId
-
-        // The simple servlet will return the default invalid traceId
-        assertEquals(traceId, INVALID_TRACE_ID);
-
+        SpanData clientSpan = spanDataList.get(1);
+        assertThat(clientSpan, hasKind(CLIENT));
     }
 
     @Test
@@ -98,27 +100,6 @@ public class HttpTraceDisabledServlet extends FATServlet {
                         .withAttribute(SemanticAttributes.HTTP_ROUTE, getPath() + "/getResource")
                         .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "/getResource"));
 
-    }
-
-    private String httpGet(URL url) throws IOException {
-        HttpURLConnection connection = null;
-        StringBuffer content = new StringBuffer();
-        try {
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            assertEquals(200, connection.getResponseCode());
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String inputLine;
-            while ((inputLine = in.readLine()) != null) {
-                content.append(inputLine);
-            }
-            in.close();
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
-        return content.toString();
     }
 
     private URI getUri() {

@@ -100,10 +100,10 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
 
     private Instrumenter<ServletRequest, ServletResponse> createInstrumenter() {
         // Check if the HTTP tracing should be disabled
-        boolean httpTracingDisabled = config.getOptionalValue("CONFIG_DISABLE_HTTP_TRACING_PROPERTY", Boolean.class).orElse(false);
+        boolean httpTracingDisabled = config.getOptionalValue(CONFIG_DISABLE_HTTP_TRACING_PROPERTY, Boolean.class).orElse(false);
         OpenTelemetryInfo otelInfo = OpenTelemetryAccessor.getOpenTelemetryInfo();
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "CONFIG_DISABLE_HTTP_TRACING_PROPERTY=" + httpTracingDisabled);
+            Tr.debug(tc, CONFIG_DISABLE_HTTP_TRACING_PROPERTY + "=" + httpTracingDisabled);
             Tr.debug(tc, "otelInfo.getEnabled()=" + otelInfo.getEnabled());
         }
         if (otelInfo != null &&
