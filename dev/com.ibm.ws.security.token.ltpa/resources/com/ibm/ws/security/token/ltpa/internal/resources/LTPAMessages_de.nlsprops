@@ -48,7 +48,7 @@ LTPA_CONFIG_ERROR=CWWKS4106E: LTPA-Konfigurationsfehler. Die LTPA-Schl\u00fcssel
 LTPA_CONFIG_ERROR.explanation=Die LTPA-Schl\u00fcssel konnten nicht an der angegebenen Position gelesen oder erstellt werden.
 LTPA_CONFIG_ERROR.useraction=Stellen Sie sicher, dass die Position f\u00fcr den Serverprozess zug\u00e4nglich ist. Alle FFDCs k\u00f6nnen auf einen schwerwiegenden Fehler bei der Generierung oder beim Laden der Schl\u00fcssel hinweisen.
 
-LTPA_KEYS_TO_LOAD=CWWKS4107A: Die folgenden LTPA-Schl\u00fcsseldateien werden entweder erstellt, gel\u00f6scht oder ge\u00e4ndert: {0} oder die LTPA-Konfiguration wurde ge\u00e4ndert. Alle LTPA-Schl\u00fcssel werden erneut geladen.
+LTPA_KEYS_TO_LOAD=CWWKS4107A: Die LTPA-Konfiguration wurde ge\u00e4ndert. Die folgenden Dateien wurden ge\u00e4ndert: {0} Alle LTPA-Schl\u00fcssel in der LTPA-Konfiguration werden erneut geladen.
 LTPA_KEYS_TO_LOAD.explanation=Die LTPA-Schl\u00fcsseldateien m\u00fcssen aufgrund einer \u00c4nderung an den LTPA-Schl\u00fcsseldateien oder an der Konfiguration erneut geladen werden.
 LTPA_KEYS_TO_LOAD.useraction=Stellen Sie sicher, dass alle Server, die am Single Sign-on teilnehmen, dieselben LTPA-Schl\u00fcssel und dasselbe Kennwort verwenden.
 
@@ -56,13 +56,13 @@ LTPA_KEY_CREATE_ERROR=CWWKS4108E: Das System kann den LTPA-Schl\u00fcssel nicht 
 LTPA_KEY_CREATE_ERROR.explanation=Der LTPA-Schl\u00fcssel kann nicht erstellt werden.
 LTPA_KEY_CREATE_ERROR.useraction=Alle FFDCs k\u00f6nnen auf einen schwerwiegenden Fehler bei der Generierung der Schl\u00fcssel hinweisen.
 
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE=CWWKS4109W: Der Wert {0} f\u00fcr das Attribut notUseAfterDate f\u00fcr die LTPA-Validierungsschl\u00fcsseldatei {1} liegt in der Vergangenheit. Die LTPA-Validierungsschl\u00fcssel k\u00f6nnen nicht verwendet werden.
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.explanation=Die LTPA-Validierungsschl\u00fcssel werden nur verwendet, wenn der Wert des Attributs notUseAfterDate in der Zukunft liegt.
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.useraction=Aktualisieren Sie den Wert des Attributs notUseAfterDate auf ein zuk\u00fcnftiges Datum, wenn die LTPA-Schl\u00fcssel verwendet werden m\u00fcssen. L\u00f6schen Sie andernfalls die LTPA-Schl\u00fcsseldatei.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST=CWWKS4109W: Der Wert {0} f\u00fcr das Datumsattribut validUntilf\u00fcr die LTPA-Validierungsschl\u00fcsseldatei {1} liegt in der Vergangenheit. Die LTPA-Validierungsschl\u00fcssel k\u00f6nnen nicht verwendet werden.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST.explanation=Die LTPA-Validierungsschl\u00fcssel werden nur dann verwendet, wenn der Datumsattributwert validUntilin der Zukunft liegt.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST.useraction=Aktualisieren Sie den Datumsattributwert validUntilauf ein zuk\u00fcnftiges Datum, wenn die LTPA-Schl\u00fcssel verwendet werden m\u00fcssen. L\u00f6schen Sie andernfalls die LTPA-Schl\u00fcsseldatei.
 
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT=CWWKS4110E: Der Wert {0} f\u00fcr das Attribut notUseAfterDate f\u00fcr die LTPA-Validierungsschl\u00fcsseldatei {1} hat ein ung\u00fcltiges Datumsformat. Die LTPA-Validierungsschl\u00fcssel k\u00f6nnen nicht verwendet werden.
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.explanation=Der Wert des Attributs notUseAfterDate muss im ISO-Format f\u00fcr Datum, Uhrzeit und Zone formatiert sein. Das folgende Beispiel zeigt das ISO-Datumsformat:2023-04-18T18:08:35Z.
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.useraction=Aktualisieren Sie den Wert des Attributs notUseAfterDate in ein ISO-Format f\u00fcr Datum, Uhrzeit und Zone.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT=CWWKS4110E: Der Wert {0} f\u00fcr das Datumsattribut validUntilf\u00fcr die LTPA-Validierungsschl\u00fcsseldatei {1} hat ein ung\u00fcltiges Datumsformat. Die LTPA-Validierungsschl\u00fcssel k\u00f6nnen nicht verwendet werden.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT.explanation=Der Datumsattributwert validUntilmuss im ISO-Format f\u00fcr Datum, Uhrzeit und Zone formatiert sein. Das folgende Beispiel zeigt das ISO-Datumsformat: "2023-11-18T18:08:35Z"
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT.useraction=Aktualisieren Sie den Datumsattributwert validUntilin das ISO-Format f\u00fcr Datum, Uhrzeit und Zone (z. B. '2023-11-18T18:08:35Z').
 
 LTPA_VALIDATION_KEYS_MISSING_ATTR=CWWKS4111E: Im LTPA-Element validationKeys {0} , das in der Datei server.xml angegeben ist, fehlt der Dateiname und/oder das Kennwort: {1}.
 LTPA_VALIDATION_KEYS_MISSING_ATTR.explanation=Das LTPA-Element validationKeys erfordert die Attribute "filename" und "password".
@@ -72,6 +72,14 @@ LTPA_KEYS_FILE_DOES_NOT_EXIST=CWWKS4112E: Die LTPA-Schl\u00fcsseldatei {0} ist n
 LTPA_KEYS_FILE_DOES_NOT_EXIST.explanation=Die Validierungsschl\u00fcsseldatei ist nicht vorhanden.
 LTPA_KEYS_FILE_DOES_NOT_EXIST.useraction=Stellen Sie sicher, dass die Validierungsschl\u00fcsseldatei an der mit dem Element validationKeys angegebenen Position vorhanden ist.
 
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED=CWWKS4113W: Das Attribut monitorDirectory ist auf ''true'' gesetzt, aber das \u00dcberwachungsintervall ist {0}. Es findet kein dynamisches erneutes Laden statt, wenn Validierungsschl\u00fcsseldateien im Verzeichnis erstellt, ge\u00e4ndert oder gel\u00f6scht werden.
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.explanation= Der Wert f\u00fcr das Attribut monitorInterval ist null oder kleiner als null. Das Verzeichnis kann nicht auf Erstellungs-, L\u00f6sch- oder \u00c4nderungsaktionen f\u00fcr Dateien mit dem Suffix .keys \u00fcberwacht werden und es kann kein dynamisches Neuladen erfolgen.
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.useraction=Setzen Sie das Attribut monitorInterval auf ein Intervall gr\u00f6\u00dfer als null.
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED=CWWKS4113W: Das LTPA-Attribut updateTrigger ist auf ''polled'' gesetzt, monitorValidationKeysDir ist auf ''true'' gesetzt, aber monitorInterval ist auf {0}gesetzt. Es findet kein dynamisches erneutes Laden statt, wenn LTPA-Schl\u00fcsseldateien ge\u00e4ndert werden.
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED.explanation=Der Wert f\u00fcr das Attribut monitorInterval ist null oder kleiner als null. Das Verzeichnis kann nicht auf \u00c4nderungen an Dateien mit dem Suffix .keys \u00fcberwacht werden und es kann kein dynamisches Neuladen erfolgen.
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED.useraction=Setzen Sie das Attribut monitorInterval auf ein Intervall gr\u00f6\u00dfer als null.
+
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE=CWWKS4114W: Das Attribut updateTrigger ist auf "disabled" und das Attribut monitorValidationKeysDir auf "true" gesetzt. Es findet kein dynamisches erneutes Laden statt, wenn LTPA-Schl\u00fcsseldateien im Verzeichnis ge\u00e4ndert werden.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.explanation=Wenn das Attribut updateTrigger auf "disabled" gesetzt ist, wird das Verzeichnis nicht auf \u00c4nderungen an Dateien mit dem Suffix .keys \u00fcberwacht und es findet kein dynamisches Neuladen statt. Auch wenn das Attribut monitorValidationKeysDir auf 'true' gesetzt ist, wird das Attribut ignoriert und das Verzeichnis wird nicht \u00fcberwacht.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.useraction=Setzen Sie den Wert des Attributs updateTrigger auf "polled" oder "mbean".
+
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO=CWWKS4115W: Das Attribut updateTrigger ist inaktiviert und das \u00dcberwachungsintervall ist gr\u00f6\u00dfer als {0}. Es findet kein dynamisches erneutes Laden statt, wenn LTPA-Schl\u00fcsseldateien ge\u00e4ndert werden.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.explanation=Wenn das Attribut updateTrigger auf "disabled" gesetzt ist, werden die Dateien nicht auf \u00c4nderungen an Dateien mit dem Suffix .keys \u00fcberwacht und es findet kein dynamisches Neuladen statt. Selbst wenn das Attribut monitorInterval auf ein Intervall gr\u00f6\u00dfer als null gesetzt ist, wird das Attribut ignoriert und die Dateien werden nicht \u00fcberwacht.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=Setzen Sie den Wert des Attributs updateTrigger auf "polled" oder "mbean".

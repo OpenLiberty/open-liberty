@@ -629,7 +629,7 @@ VALIDATION_INVALID_URL=Format d'URL non pris en charge
 VALIDATION_DUPLICATE_KEY=Nom de propri\u00e9t\u00e9 en double
 VALIDATION_UNSUPPORTED_PROTOCOL=Protocole non pris en charge
 VALIDATION_MISSING_PUBKEY_NAME=Nom de cl\u00e9 publique manquant
-VALIDATION_INVALID_key_URL=URL de cl\u00e9 non prise en charge
+VALIDATION_INVALID_key URL = URL de cl\u00e9 non prise en charge
 VALIDATION_INVALID_KEYID=Format d'ID de cl\u00e9 non valide
 VALIDATION_MISSING_KEYID=ID de cl\u00e9 manquant
 

@@ -48,7 +48,7 @@ LTPA_CONFIG_ERROR=CWWKS4106E: Error de configuraci\u00f3n de LTPA. No se puede c
 LTPA_CONFIG_ERROR.explanation=No se pueden leer ni crear las claves LTPA en la ubicaci\u00f3n especificada.
 LTPA_CONFIG_ERROR.useraction=Compruebe que el proceso de servidor puede acceder a la ubicaci\u00f3n. Los FFDC podr\u00edan indicar un error muy grave al generar o cargar las claves.
 
-LTPA_KEYS_TO_LOAD=CWWKS4107A: Se han creado, suprimido o modificado los siguientes archivos de claves LTPA: {0}, o se ha modificado la configuraci\u00f3n LTPA. Se vuelven a cargar todas las claves LTPA.
+LTPA_KEYS_TO_LOAD=CWWKS4107A: La configuraci\u00f3n LTPA se ha modificado. Se han modificado los archivos siguientes: {0}. Se vuelven a cargar todas las claves LTPA de la configuraci\u00f3n LTPA.
 LTPA_KEYS_TO_LOAD.explanation=Los archivos de claves LTPA se deben volver a cargar debido a un cambio en los archivos de claves LTPA o en la configuraci\u00f3n.
 LTPA_KEYS_TO_LOAD.useraction=Aseg\u00farese de que todos los servidores que participan en el inicio de sesi\u00f3n \u00fanico comparten las mismas claves y contrase\u00f1a LTPA.
 
@@ -56,13 +56,13 @@ LTPA_KEY_CREATE_ERROR=CWWKS4108E: El sistema no puede crear la clave LTPA.
 LTPA_KEY_CREATE_ERROR.explanation=La clave LTPA no se puede crear.
 LTPA_KEY_CREATE_ERROR.useraction=Los FFDC podr\u00edan indicar un error muy grave al generar las claves.
 
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE=CWWKS4109W: El valor {0} para el atributo notUseAfterDate para el archivo de claves de validaci\u00f3n LTPA {1} est\u00e1 en el pasado. Las claves de validaci\u00f3n LTPA no se pueden utilizar.
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.explanation=Las claves de validaci\u00f3n LTPA solo se utilizan si el valor del atributo notUseAfterDate est\u00e1 en el futuro.
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.useraction=Actualice el valor del atributo notUseAfterDate a una fecha futura si se deben utilizar las claves LTPA. De lo contrario, suprima el archivo de claves LTPA.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST=CWWKS4109W: El valor {0} para el atributo de fecha validUntilpara el archivo de claves de validaci\u00f3n LTPA {1} est\u00e1 en el pasado. Las claves de validaci\u00f3n LTPA no se pueden utilizar.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST.explanation=Las claves de validaci\u00f3n LTPA s\u00f3lo se utilizan si el valor del atributo de fecha validUntilest\u00e1 en el futuro.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST.useraction=Actualice el valor del atributo de fecha validUntila una fecha futura si se deben utilizar las claves LTPA. De lo contrario, suprima el archivo de claves LTPA.
 
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT=CWWKS4110E: El valor {0} para el atributo notUseAfterDate para el archivo de claves de validaci\u00f3n LTPA {1} tiene un formato de fecha que no es v\u00e1lido. Las claves de validaci\u00f3n LTPA no se pueden utilizar.
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.explanation=El valor del atributo notUseAfterDate debe tener el formato de fecha, hora y zona ISO. El ejemplo siguiente muestra el formato de fecha ISO: "2023-04-18T18:08:35Z".
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.useraction=Actualice el valor del atributo notUseAfterDate a un formato de fecha, hora y zona ISO.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT=CWWKS4110E: El valor {0} para el atributo de fecha validUntilpara el archivo de claves de validaci\u00f3n LTPA {1} tiene un formato de fecha no v\u00e1lido. Las claves de validaci\u00f3n LTPA no se pueden utilizar.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT.explanation=El valor del atributo de fecha validUntildebe tener el formato de fecha, hora y zona ISO. El ejemplo siguiente muestra el formato de fecha ISO: "2023-11-18T18:08:35Z".
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT.useraction=Actualice el valor del atributo de fecha validUntilal formato de fecha, hora y zona ISO (por ejemplo, '2023-11-18T18:08:35Z')
 
 LTPA_VALIDATION_KEYS_MISSING_ATTR=CWWKS4111E: Al elemento {0} LTPA validationKeys especificado en el archivo server.xml le falta el nombre de archivo, la contrase\u00f1a o ambos: {1}.
 LTPA_VALIDATION_KEYS_MISSING_ATTR.explanation=El elemento validationKeys de LTPA requiere los atributos de nombre de archivo y contrase\u00f1a.
@@ -72,6 +72,14 @@ LTPA_KEYS_FILE_DOES_NOT_EXIST=CWWKS4112E: El archivo de claves de validaci\u00f3
 LTPA_KEYS_FILE_DOES_NOT_EXIST.explanation=El archivo de claves de validaci\u00f3n no existe.
 LTPA_KEYS_FILE_DOES_NOT_EXIST.useraction=Aseg\u00farese de que el archivo de claves de validaci\u00f3n existe en la ubicaci\u00f3n especificada especificada por el elemento validationKeys.
 
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED=CWWKS4113W: El atributo monitorDirectory se ha establecido en true pero el intervalo de supervisi\u00f3n es {0}. No se produce ninguna recarga din\u00e1mica cuando se crean, modifican o suprimen archivos de claves de validaci\u00f3n en el directorio.
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.explanation= El valor del atributo monitorInterval es cero o menor que cero. El directorio no se puede supervisar en busca de acciones de creaci\u00f3n, supresi\u00f3n o modificaci\u00f3n en archivos con el sufijo .keys y no se puede producir una recarga din\u00e1mica.
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.useraction=Establezca el atributo monitorInterval en un intervalo mayor que cero.
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED=CWWKS4113W: El atributo updateTrigger de LTPA se ha establecido en sondeado, monitorValidationKeysDir se ha establecido en true, pero monitorInterval se ha establecido en {0}. No se produce ninguna recarga din\u00e1mica cuando se modifican los archivos de claves LTPA.
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED.explanation=El valor del atributo monitorInterval es cero o menor que cero. No se puede supervisar el directorio para ver si hay modificaciones en los archivos con el sufijo .keys y no se puede producir la recarga din\u00e1mica.
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED.useraction=Establezca el atributo monitorInterval en un intervalo mayor que cero.
+
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE=CWWKS4114W: El atributo updateTrigger se establece en inhabilitado y el atributo monitorValidationKeysDir se establece en true. No se produce ninguna recarga din\u00e1mica cuando los archivos de claves LTPA se modifican en el directorio.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.explanation=Cuando el atributo updateTrigger se establece en inhabilitado, el directorio no se supervisa para ver si hay modificaciones en los archivos con el sufijo .keys y no se produce la recarga din\u00e1mica. Incluso si el atributo monitorValidationKeysDir se establece en true, el atributo se ignora y el directorio no se supervisa.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.useraction=Establezca el valor del atributo updateTrigger en sondeado o mbean.
+
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO=CWWKS4115W: El atributo updateTrigger se ha establecido en inhabilitado y el intervalo de supervisi\u00f3n es mayor que {0}. No se produce ninguna recarga din\u00e1mica cuando se modifican los archivos de claves LTPA.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.explanation=Cuando el atributo updateTrigger se establece en inhabilitado, no se supervisan las modificaciones en los archivos con el sufijo .keys y no se produce la recarga din\u00e1mica. Incluso si el atributo monitorInterval se establece en un intervalo mayor que cero, el atributo se ignora y los archivos no se supervisan.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=Establezca el valor del atributo updateTrigger en sondeado o mbean.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -31,8 +31,8 @@
 # 1100-1199 com.ibm.ws.runtime.update.internal.resources.Messages
 # -------------------------------------------------------------------------------------------------
 
-quiesce.begin=CWWKE1100I: Es wird bis zu 30 Sekunden auf die Stilllegung des Servers gewartet.
-quiesce.begin.explanation=Der Server wartet bis zu 30 Sekunden auf die Stilllegung von Services, bevor er mit dem Systemabschluss fortf\u00e4hrt.
+quiesce.begin=CWWKE1100I: Es wird bis zu {0} Sekunden gewartet, bis der Server in den Quiescemodus versetzt wird.
+quiesce.begin.explanation=Der Server wartet, bis Services in den Wartemodus versetzt werden, bevor er mit dem Herunterfahren fortf\u00e4hrt.
 quiesce.begin.useraction=Es ist keine Aktion erforderlich.
 
 quiesce.end=CWWKE1101I: Serverstilllegung abgeschlossen.
@@ -40,11 +40,11 @@ quiesce.end.explanation=Die Stilllegungsoperation wurde erfolgreich abgeschlosse
 quiesce.end.useraction=Es ist keine Aktion erforderlich.
 
 quiece.warning=CWWKE1102W: Die Stilllegungsoperation wurde nicht abgeschlossen. Der Server stoppt jetzt.
-quiece.warning.explanation=Der Prozess konnte nicht alle Services innerhalb von 30 Sekunden stilllegen.
-quiece.warning.useraction=Sie k\u00f6nnen Fehlernachrichten ignorieren, die als Folge nicht verf\u00fcgbarer erforderlicher Services angezeigt werden.
+quiece.warning.explanation=Der Prozess konnte nicht alle Services innerhalb des Zeitlimits f\u00fcr Quiesce in den Wartemodus versetzen.
+quiece.warning.useraction=Sie k\u00f6nnen Fehlernachrichten ignorieren, die als Folge nicht verf\u00fcgbarer erforderlicher Services angezeigt werden. Wenn das Problem bestehen bleibt, erh\u00f6hen Sie die Dauer f\u00fcrquiesceTimeout, indem Sie das Attribut 'quiesceTimeout' zum Element 'executor 'in der Datei'server.xml' hinzuf\u00fcgen.
 
-client.quiesce.begin=CWWKE1103I: Es wird bis zu 30 Sekunden auf die Stilllegung des Clients gewartet.
-client.quiesce.begin.explanation=Der Client wartet bis zu 30 Sekunden auf die Stilllegung von Services, bevor er mit dem Systemabschluss fortf\u00e4hrt.
+client.quiesce.begin=CWWKE1103I: Bis zu {0} Sekunden warten, bis der Client in den Quiescemodus versetzt wird.
+client.quiesce.begin.explanation=Der Client wartet, bis Services in den Quiescemodus versetzt werden, bevor er mit der Beendigung fortf\u00e4hrt.
 client.quiesce.begin.useraction=Es ist keine Aktion erforderlich.
 
 client.quiesce.end=CWWKE1104I: Clientstilllegung abgeschlossen.
@@ -54,7 +54,6 @@ client.quiesce.end.useraction=Es ist keine Aktion erforderlich.
 notifications.not.complete=CWWKE1105W: {0} Laufzeitupdates wurden nicht innerhalb des Stilllegungszeitraums abgeschlossen. 
 notifications.not.complete.explanation=Mindestens ein Update f\u00fcr Features, Konfigurationen oder Anwendungen wurde vor dem Systemabschluss nicht abgeschlossen.
 notifications.not.complete.useraction=Es ist keine Aktion erforderlich.
-
 
 quiesce.listeners.not.complete=CWWKE1106W: {0} Systemabschlussoperationen wurden nicht innerhalb des Stilllegungszeitraums abgeschlossen. 
 quiesce.listeners.not.complete.explanation=Mindestens eine der w\u00e4hrend des Systemabschlusses eingeleiteten Operationen wurde nicht abgeschlossen. 

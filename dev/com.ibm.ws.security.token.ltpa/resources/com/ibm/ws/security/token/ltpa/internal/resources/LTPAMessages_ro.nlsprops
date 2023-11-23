@@ -48,7 +48,7 @@ LTPA_CONFIG_ERROR=CWWKS4106E: Eroare de configurare LTPA. Nu se poate crea sau c
 LTPA_CONFIG_ERROR.explanation=Cheile LTPA nu au putut fi citite sau create la loca\u0163ia specificat\u0103.
 LTPA_CONFIG_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 loca\u0163ie este accesibil\u0103 procesului de server. Orice FFDC-uri pot indica o eroare fatal\u0103 \u00een generarea sau \u00eenc\u0103rcarea cheilor.
 
-LTPA_KEYS_TO_LOAD=CWWKS4107A: Urm\u0103toarele fi\u0219iere cu chei LTPA sunt fie create, \u0219terse sau modificate: {0} sau configura\u021bia LTPA a fost modificat\u0103. Toate cheile LTPA sunt re\u00eenc\u0103rcate.
+LTPA_KEYS_TO_LOAD=CWWKS4107A: Configura\u021bia LTPA este modificat\u0103. Urm\u0103toarele fi\u0219iere sunt modificate: {0 {0} Toate tastele LTPA din configura\u021bia LTPA sunt re\u00eenc\u0103rcate.
 LTPA_KEYS_TO_LOAD.explanation=Fi\u0219ierele cu chei LTPA trebuie s\u0103 fie re\u00eenc\u0103rcate ca urmare a modific\u0103rii fi\u0219ierelor cu chei LTPA sau a configura\u021biei.
 LTPA_KEYS_TO_LOAD.useraction=Asigura\u021bi-v\u0103 c\u0103 toate serverele care particip\u0103 la semnare unic\u0103 folosesc acelea\u0219i chei LTPA \u0219i aceea\u0219i parol\u0103.
 
@@ -56,13 +56,13 @@ LTPA_KEY_CREATE_ERROR=CWWKS4108E: Sistemul nu poate crea cheia LTPA.
 LTPA_KEY_CREATE_ERROR.explanation=Cheia LTPA nu poate fi creat\u0103.
 LTPA_KEY_CREATE_ERROR.useraction=Orice FFDC ar putea indica o eroare fatal\u0103 \u00een generarea cheilor.
 
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE=CWWKS4109W: Valoarea {0} pentru atributul notUseAfterDate pentru fi\u0219ierul cu chei de validare LTPA {1} este \u00een trecut. Cheile de validare LTPA nu pot fi utilizate.
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.explanation=Cheile de validare LTPA sunt utilizate numai dac\u0103 valoarea atributului notUseAfterDate este \u00een viitor.
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.useraction=Actualiza\u021bi valoarea atributului notUseAfterDate la o dat\u0103 viitoare, dac\u0103 trebuie utilizate cheile LTPA. \u00cen caz contrar, \u0219terge\u021bi fi\u0219ierul cu chei LTPA.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST=CWWKS4109W: The {0} pentru validvalidP\u00e2n\u0103 validUntila atributului de validare a {1} Cheile de validare LTPA nu pot fi utilizate.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST.explanation=Tastele de validare LTPA sunt utilizate numai \u00een cazul \u00een care valoarea atributului " validUntil\u00een viitor.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST.useraction=Actualiza\u021bi validUntil, dac\u0103 trebuie utilizate tastele LTPA. \u00cen caz contrar, \u0219terge\u021bi fi\u0219ierul cu chei LTPA.
 
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT=CWWKS4110E: Valoarea {0} pentru atributul notUseAfterDate pentru fi\u0219ierul cu chei de validare LTPA {1} are un format de dat\u0103 nevalid. Cheile de validare LTPA nu pot fi utilizate.
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.explanation=Valoarea atributului notUseAfterDate trebuie s\u0103 fie formatat\u0103 \u00een formatul ISO de dat\u0103, or\u0103 \u0219i zon\u0103. Urm\u0103torul exemplu arat\u0103 formatul datei ISO: \u201e2023-04-18T18:08:35Z\u201d.
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.useraction=Actualiza\u021bi valoarea atributului notUseAfterDate la un format ISO de dat\u0103, or\u0103 \u0219i zon\u0103.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT=CWWKS4110E: The {0} pentru validvalidP\u00e2n\u0103 validUntila atributului de validare a {1} Cheile de validare LTPA nu pot fi utilizate.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT.explanation=Valoarea atributului " validUntils\u0103 fie formatat\u0103 \u00een formatul ISO al datei, orei \u0219i zonei. Urmatorul exemplu arata formatul datei ISO: "2023-11-18T18:08:35Z".
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT.useraction=Actualiza\u021bi valoarea atributului validUntilla data, ora \u0219i formatul ISO (de exemplu, "2023-11-18T18:08:35Z")
 
 LTPA_VALIDATION_KEYS_MISSING_ATTR=CWWKS4111E: Din elementul {0} LTPA validationKeys specificat \u00een fi\u0219ierul server.xml lipsesc numele de fi\u0219ier, parola sau ambele: {1}.
 LTPA_VALIDATION_KEYS_MISSING_ATTR.explanation=Elementul LTPA validationKeys necesit\u0103 atribute nume de fi\u0219ier \u0219i parol\u0103.
@@ -72,6 +72,14 @@ LTPA_KEYS_FILE_DOES_NOT_EXIST=CWWKS4112E: Fi\u0219ierul cu chei de validare LTPA
 LTPA_KEYS_FILE_DOES_NOT_EXIST.explanation=Fi\u0219ierul cu chei de validare nu exist\u0103.
 LTPA_KEYS_FILE_DOES_NOT_EXIST.useraction=Asigura\u021bi-v\u0103 c\u0103 fi\u0219ierul cu chei de validare exist\u0103 \u00een loca\u021bia specificat\u0103 de elementul validationKeys.
 
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED=CWWKS4113W: Atributul monitorDirectory este setat ca adev\u0103rat, dar intervalul de monitorizare este {0}. Nu are loc o re\u00eenc\u0103rcare dinamic\u0103 atunci c\u00e2nd fi\u0219ierele cu chei de validare sunt create, modificate sau \u0219terse \u00een director.
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.explanation= Valoarea pentru atributul monitorInterval este zero sau mai mic\u0103 dec\u00e2t zero. Directorul nu poate fi monitorizat pentru niciun fel de ac\u021biuni de creare, \u0219tergere sau modificare la fi\u0219ierele cu sufixul .keys \u0219i re\u00eenc\u0103rcarea dinamic\u0103 nu poate avea loc.
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.useraction=Seta\u021bi atributul monitorInterval la un interval care este mai mare dec\u00e2t zero.
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED=CWWKS4113W: The LTPA updateTrigger is set to polled, monitorValidationKeysDir is set to true, but monitorInterval is set to {0}. Nu are loc o re\u00eenc\u0103rcare dinamic\u0103 atunci c\u00e2nd fi\u0219ierele cheie LTPA sunt modificate.
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED.explanation=Valoarea pentru atributul monitorInterval este zero sau mai mic\u0103 dec\u00e2t zero. Directorul nu poate fi monitorizat pentru orice modific\u0103ri asupra fi\u0219ierelor cu sufixul .keys \u0219i re\u00eenc\u0103rcarea dinamic\u0103 nu poate avea loc.
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED.useraction=Seta\u021bi atributul monitorInterval la un interval care este mai mare dec\u00e2t zero.
+
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE=CWWKS4114W: Atributul updateTrigger este setat la dezactivat \u0219i atributul monitorValidationKeysDir este setat la adev\u0103rat. Nu are loc o re\u00eenc\u0103rcare dinamic\u0103 atunci c\u00e2nd fi\u0219ierele cheie LTPA sunt modificate \u00een director.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.explanation=Atunci c\u00e2nd atributul updateTrigger este setat la dezactivat, directorul nu este monitorizat pentru orice modific\u0103ri ale fi\u0219ierelor cu sufixul .keys \u0219i re\u00eenc\u0103rcarea dinamic\u0103 nu are loc. Chiar dac\u0103 atributul " monitorValidationKeysDir este setat la realitate, atributul este ignorat, iar directorul nu este monitorizat.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.useraction=Seta\u021bi valoarea atributului updateTrigger polled sau mbean.
+
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO=CWWKS4115W: Atributul updateTrigger este setat pe dezactivat, iar intervalul monitorului este mai mare dec\u00e2t {0}. Nu are loc o re\u00eenc\u0103rcare dinamic\u0103 atunci c\u00e2nd fi\u0219ierele cheie LTPA sunt modificate.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.explanation=Atunci c\u00e2nd atributul updateTrigger este setat la dezactivat, fi\u0219ierele nu sunt monitorizate pentru orice modific\u0103ri cu privire la fi\u0219ierele cu sufixul .keys \u0219i re\u00eenc\u0103rcarea dinamic\u0103 nu are loc. Chiar dac\u0103 atributul monitorInterval este setat la un interval care este mai mare dec\u00e2t zero, atributul este ignorat, iar fi\u0219ierele nu sunt monitorizate.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=Seta\u021bi valoarea atributului updateTrigger polled sau mbean.

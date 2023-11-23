@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/jwt/resources/JWTMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -19,11 +16,11 @@
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS6000 - CWWKS6100
 JWT_BUILDER_CONFIG_PROCESSED=CWWKS6000I: La configuration de JWT {0} a \u00e9t\u00e9 trait\u00e9e correctement.
-JWT_BUILDER_CONFIG_PROCESSED.explanation=La configuration de JWT (g\u00e9n\u00e9rateur JSON Web Token) a \u00e9t\u00e9 trait\u00e9e correctement.
+JWT_BUILDER_CONFIG_PROCESSED.explanation=La configuration du g\u00e9n\u00e9rateur de jeton Web JSON (JWT) a \u00e9t\u00e9 trait\u00e9e avec succ\u00e8s.
 JWT_BUILDER_CONFIG_PROCESSED.useraction=Aucune
 
 JWT_BUILDER_CONFIG_MODIFIED=CWWKS6001I: La modification de la configuration de JWT {0} a abouti.
-JWT_BUILDER_CONFIG_MODIFIED.explanation=La configuration de JWT (g\u00e9n\u00e9rateur JSON Web Token) a \u00e9t\u00e9 modifi\u00e9e correctement.
+JWT_BUILDER_CONFIG_MODIFIED.explanation=La configuration du g\u00e9n\u00e9rateur de jeton Web JSON (JWT) a \u00e9t\u00e9 modifi\u00e9e.
 JWT_BUILDER_CONFIG_MODIFIED.useraction=Aucune.
 
 # Do not translate "JSON Web Token", "JWT"
@@ -44,7 +41,7 @@ JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND.useraction=V\u00e9rifiez que le chemin de l'
 
 # Do not translate "JSON Web Token", "JWT"
 # 0=Config ID of JWT provider
-JWT_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS6005E: Le service de configuration JWT n''est pas disponible pour le fournisseur [{0}].
+JWT_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS6005E: Le service de configuration de jeton Web JSON n''est pas disponible pour le fournisseur [{0}].
 JWT_CONFIG_SERVICE_NOT_AVAILABLE.explanation=Le fournisseur sp\u00e9cifi\u00e9 dans le message n'existe pas dans la configuration de serveur ou bien la configuration pour ce fournisseur n'a pas \u00e9t\u00e9 trait\u00e9e par le service de configuration.
 JWT_CONFIG_SERVICE_NOT_AVAILABLE.useraction=Inspectez la configuration de serveur pour vous assurer que le fournisseur sp\u00e9cifi\u00e9 est configur\u00e9.
 
@@ -65,7 +62,7 @@ JWT_BUILDER_INVALID.explanation=Aucun g\u00e9n\u00e9rateur JWT (JSON Web Token) 
 JWT_BUILDER_INVALID.useraction=Dans le fichier server.xml, configurez un \u00e9l\u00e9ment jwtBuilder avec l'ID sp\u00e9cifi\u00e9.
 
 # Do not translate "JSON Web Token", "JWT"
-JWT_INVALID_CLAIM_VALUE_ERR=CWWKS6009E: La valeur [{1}] dans la revendication JWT (JSON Web Token) [{0}] n''est pas valide.
+JWT_INVALID_CLAIM_VALUE_ERR=CWWKS6009E: La valeur [{1}] dans la revendication [{0}] JWT (JSON Web Token) n''est pas valide.
 JWT_INVALID_CLAIM_VALUE_ERR.explanation=La valeur sp\u00e9cifi\u00e9e dans la revendication JWT (JSON Web Token) ne correspond pas \u00e0 la sp\u00e9cification JWT.
 JWT_INVALID_CLAIM_VALUE_ERR.useraction=Indiquez une valeur valide pour la revendication sp\u00e9cifi\u00e9e. Pour plus d'informations, voir la sp\u00e9cification JWT.
 
@@ -131,13 +128,13 @@ JWT_INVALID_CLAIMS_ERR.useraction=Assurez-vous que l'ensemble de revendications 
 
 # Do not translate "JSON Web Token", "JWT"
 # 0=Issuer claim of the token, 1=JWT configuration ID, 2=Trusted issuers specified in server configuration
-JWT_ISSUER_NOT_TRUSTED=CWWKS6022E: L''\u00e9metteur [{0}] du jeton JWT (JSON Web Token) fourni ne figure pas comme \u00e9metteur digne de confiance dans la configuration JWT [{1}]. Les \u00e9metteurs dignes de confiance sont [{2}].
+JWT_ISSUER_NOT_TRUSTED=CWWKS6022E: L''\u00e9metteur [{0}] du jeton Web JSON (JWT) fourni n''est pas r\u00e9pertori\u00e9 en tant qu''\u00e9metteur digne de confiance dans la configuration JWT [{1}]. Les \u00e9metteurs dignes de confiance sont [{2}].
 JWT_ISSUER_NOT_TRUSTED.explanation=La configuration du serveur sp\u00e9cifie quels \u00e9metteurs sont dignes de confiance lors de la validation des jetons JWT. Le jeton fourni ne peut pas \u00eatre valid\u00e9 car il ne provient pas d'un \u00e9metteur digne de confiance.
 JWT_ISSUER_NOT_TRUSTED.useraction=Obtenez un nouveau jeton de l'un des \u00e9metteurs dignes de confiance sp\u00e9cifi\u00e9s dans votre configuration de JWT ou ajoutez l'\u00e9metteur sp\u00e9cifi\u00e9 dans le message comme \u00e9metteur digne de confiance dans votre configuration de JWT.
 
 # Do not translate "JSON Web Token", "JWT"
 # 0=Audience claim of the token, 1=JWT configuration ID, 2=Trusted audiences specified in server configuration
-JWT_AUDIENCE_NOT_TRUSTED=CWWKS6023E: L''audience [{0}] du jeton JWT (JSON Web Token) fourni ne figure pas comme audience digne de confiance dans la configuration JWT [{1}]. Les audiences dignes de confiance sont [{2}].
+JWT_AUDIENCE_NOT_TRUSTED=CWWKS6023E: L''audience [{0}] du jeton Web JSON (JWT) fourni n''est pas r\u00e9pertori\u00e9e en tant qu''audience digne de confiance dans la configuration JWT [{1}]. Les audiences dignes de confiance sont [{2}].
 JWT_AUDIENCE_NOT_TRUSTED.explanation=La configuration du serveur indique quelles audiences sont dignes de confiance lors de la validation des jetons JWT. Le jeton fourni n'est pas pr\u00e9vu pour une audience digne de confiance et il ne peut donc pas \u00eatre valid\u00e9.
 JWT_AUDIENCE_NOT_TRUSTED.useraction=Obtenez un nouveau jeton pr\u00e9vu pour l'une des audiences dignes de confiances sp\u00e9cifi\u00e9es dans votre configuration de JWT ou ajoutez l'audience sp\u00e9cifi\u00e9e dans le message comme audience digne de confiance dans votre configuration de JWT.
 
@@ -323,7 +320,7 @@ MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Sp\u00e9cifiez un algorithme d
 
 # Do not translate "JSON Web Token", "AMR", "JWT"
 # 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
-JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: L''AMR [{0}] du jeton Web JSON (JWT) n''est pas r\u00e9pertori\u00e9 en tant qu''AMR digne de confiance dans la configuration du jeton JWT [{1}]. Les AMR dignes de confiance sont les suivants : [{2}].
+JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: Le mod\u00e8le [{0}] AMR du jeton Web JSON (JWT) fourni n''est pas r\u00e9pertori\u00e9 en tant qu''AMR digne de confiance dans la configuration du JWT [{1}]. Les AMR dignes de confiance sont les suivants : [{2}].
 JWT_AMR_CLAIM_NOT_VALID.explanation=La configuration du serveur sp\u00e9cifie les AMR qui sont dignes de confiance lors de la validation des jetons Web JSON (JWT). Le jeton fourni n'est pas pr\u00e9vu pour un AMR digne de confiance ; par cons\u00e9quent, il ne peut pas \u00eatre valid\u00e9.
 JWT_AMR_CLAIM_NOT_VALID.useraction=Obtenez un nouveau jeton pour l'un des AMR dignes de confiances sp\u00e9cifi\u00e9s dans votre configuration de jeton Web JSON (JWT) ou ajoutez l'AMR sp\u00e9cifi\u00e9 dans le message en tant qu'AMR digne de confiance dans votre configuration de jeton Web JSON (JWT).
 
