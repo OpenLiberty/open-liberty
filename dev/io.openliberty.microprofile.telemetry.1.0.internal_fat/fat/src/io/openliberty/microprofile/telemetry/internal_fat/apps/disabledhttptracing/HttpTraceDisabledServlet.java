@@ -41,7 +41,7 @@ import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 public class HttpTraceDisabledServlet extends FATServlet {
 
     public static final String APP_NAME = "HttpTraceDisabledServletTestApp";
-    public static final String HELLO_HTML = "hello.html";
+    public static final String DICE_JSP = "dice.jsp";
 
     @Inject
     private HttpServletRequest request;
@@ -53,12 +53,11 @@ public class HttpTraceDisabledServlet extends FATServlet {
     private TestSpans utils;
 
     @Test
-    public void testDisabledStaticFile() throws Exception {
+    public void testDisabledJsp() throws Exception {
         String scheme = request.getScheme();
         String serverName = request.getServerName();
         int serverPort = request.getServerPort();
-        URI uri = new URI(scheme + "://" + serverName + ":" + serverPort + "/" + APP_NAME + "/" + HELLO_HTML);
-        System.out.println(uri.toString());
+        URI uri = new URI(scheme + "://" + serverName + ":" + serverPort + "/" + APP_NAME + "/" + DICE_JSP);
         Span span = utils.withTestSpan(() -> {
             Response response = ClientBuilder.newClient().target(uri).request()
                             .build("GET").invoke();
