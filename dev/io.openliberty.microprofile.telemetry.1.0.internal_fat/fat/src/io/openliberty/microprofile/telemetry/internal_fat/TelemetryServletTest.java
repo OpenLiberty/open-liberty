@@ -96,7 +96,7 @@ public class TelemetryServletTest extends FATServletClient {
                         .addPackage(TestSpans.class.getPackage())
                         .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
-                        .addAsWebResource(new File("test-applications/TelemetryServletTestApp.war/hello.html"))
+                        .addAsWebResource(new File("test-applications/HttpTraceDisabledServletTestApp.war/hello.html"))
                         .addAsResource(httpTraceConfig, "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportAppToServer(server, appForTrace, SERVER_ONLY);
