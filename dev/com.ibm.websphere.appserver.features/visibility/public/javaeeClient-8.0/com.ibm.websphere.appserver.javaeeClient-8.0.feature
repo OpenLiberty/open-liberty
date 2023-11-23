@@ -7,7 +7,6 @@ IBM-ShortName: javaeeClient-8.0
 Subsystem-Name: Java EE 8 Application Client
 IBM-API-Package: \
   com.ibm.ws.ejb.portable; type="internal", \
-  javax.xml.ws; type="internal", \
   com.ibm.websphere.endpoint; type="ibm-api", \
   com.ibm.websphere.ejbcontainer; type="ibm-api", \
   javax.rmi; type="spec", \

@@ -95,9 +95,6 @@ public class UIOauthTest {
 
         ShrinkHelper.exportDropinAppToServer(server, war, ShrinkHelper.DeployOptions.SERVER_ONLY);
 
-        //Set guards
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
-
         Testcontainers.exposeHostPorts(server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
     }
 
@@ -158,7 +155,7 @@ public class UIOauthTest {
         server.startServer();
         //Reduce possibility that Server is not listening on its HTTPS Port
         //Especially for Windows if certificates are slow to create
-        server.waitForSSLStart();;
+        server.waitForSSLStart();
 
         OAuthTest(CUSTOM_UI_PATH_VALUE);
     }

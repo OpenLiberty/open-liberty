@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -801,9 +802,12 @@ public class VisibilityTest {
 
             Set<ExternalPackageInfo> featureExternalPackages = null;
             if (type.isSPI) {
-                featureExternalPackages = featureInfo.getSPIs();
+                List<ExternalPackageInfo> featureSPIs = featureInfo.getSPIs();
+                if (featureSPIs != null) {
+                    featureExternalPackages = new HashSet<>(featureSPIs);
+                }
             } else {
-                Set<ExternalPackageInfo> featureAPIs = featureInfo.getAPIs();
+                List<ExternalPackageInfo> featureAPIs = featureInfo.getAPIs();
 
                 if (featureAPIs != null) {
                     featureExternalPackages = new LinkedHashSet<>();
@@ -918,9 +922,12 @@ public class VisibilityTest {
                 FeatureInfo featureInfo = key.iterator().next();
 
                 if (type.isSPI) {
-                    featureExternalPackages = featureInfo.getSPIs();
+                    List<ExternalPackageInfo> featureSPIs = featureInfo.getSPIs();
+                    if (featureSPIs != null) {
+                        featureExternalPackages = new HashSet<>(featureSPIs);
+                    }
                 } else {
-                    Set<ExternalPackageInfo> featureAPIs = featureInfo.getAPIs();
+                    List<ExternalPackageInfo> featureAPIs = featureInfo.getAPIs();
 
                     if (featureAPIs != null) {
                         featureExternalPackages = new LinkedHashSet<>();
@@ -1018,7 +1025,7 @@ public class VisibilityTest {
         Set<FeatureInfo> publicAncestors = getPublicFeatureAncestors(featureAncestors, ancestors);
         for (FeatureInfo publicAncestor : publicAncestors) {
             Set<MissingExternalPackageInfo> missingExtPackages = new LinkedHashSet<>();
-            Set<ExternalPackageInfo> ancestorExternalPackages = type.isSPI ? publicAncestor.getSPIs() : publicAncestor.getAPIs();
+            List<ExternalPackageInfo> ancestorExternalPackages = type.isSPI ? publicAncestor.getSPIs() : publicAncestor.getAPIs();
             for (ExternalPackageInfo featureExternalPackage : featureExternalPackages) {
                 if (ancestorExternalPackages == null || !ancestorExternalPackages.contains(featureExternalPackage)) {
                     MissingExternalPackageInfo missingPackage = new MissingExternalPackageInfo(privateFeatureName, featureExternalPackage.getPackageName());
@@ -1102,7 +1109,7 @@ public class VisibilityTest {
         StringBuilder errorMessage = new StringBuilder();
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {
             FeatureInfo featureInfo = entry.getValue();
-            Set<ExternalPackageInfo> APIs = featureInfo.getAPIs();
+            List<ExternalPackageInfo> APIs = featureInfo.getAPIs();
             if (APIs != null) {
                 for (ExternalPackageInfo packageInfo : APIs) {
                     String type = packageInfo.getType();
@@ -1123,7 +1130,7 @@ public class VisibilityTest {
         StringBuilder errorMessage = new StringBuilder();
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {
             FeatureInfo featureInfo = entry.getValue();
-            Set<ExternalPackageInfo> SPIs = featureInfo.getSPIs();
+            List<ExternalPackageInfo> SPIs = featureInfo.getSPIs();
             if (SPIs != null) {
                 for (ExternalPackageInfo packageInfo : SPIs) {
                     String type = packageInfo.getType();
@@ -1138,6 +1145,51 @@ public class VisibilityTest {
         }
         if (errorMessage.length() != 0) {
             Assert.fail("Found features with SPIs with invalid types: \n" + errorMessage.toString());
+        }
+    }
+
+    @Test
+    public void testExternalPackageDuplication() {
+        StringBuilder errorMessage = new StringBuilder();
+        for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+            Map<String, String> packageToTypeMap = new HashMap<>();
+            FeatureInfo featureInfo = entry.getValue();
+            List<ExternalPackageInfo> APIs = featureInfo.getAPIs();
+            if (APIs != null) {
+                for (ExternalPackageInfo packageInfo : APIs) {
+                    String type = packageInfo.getType();
+                    if (packageToTypeMap.putIfAbsent(packageInfo.getPackageName(), type) != null) {
+                        String existingType = packageToTypeMap.get(packageInfo.getPackageName());
+                        // Java / Jakarta Persistence externalizes APIs as both internal and third-party
+                        if ((!type.equals("internal") && !existingType.equals("third-party")) && (!type.equals("third-party") && !existingType.equals("internal"))
+                            && !entry.getKey().startsWith(".com.ibm.websphere.appserver.jpa-") && !entry.getKey().startsWith("io.openliberty.persistence-")) {
+                            errorMessage.append(packageInfo.getPackageName()).append(" in feature ").append(entry.getKey()).append(" is externalized twice").append('\n');
+                            if (!existingType.equals(type)) {
+                                errorMessage.append(packageInfo.getPackageName()).append(" in feature ").append(entry.getKey()).append(" is externalized as two different types ")
+                                            .append(type).append(" and ").append(existingType).append('\n');
+                            }
+                        }
+                    }
+                }
+            }
+            List<ExternalPackageInfo> SPIs = featureInfo.getSPIs();
+            if (SPIs != null) {
+                for (ExternalPackageInfo packageInfo : SPIs) {
+                    if (packageToTypeMap.putIfAbsent(packageInfo.getPackageName(), "ibm-spi") != null) {
+                        // Servlet externalizes APIs as both internal and also as an SPI
+                        if (!packageToTypeMap.get(packageInfo.getPackageName()).equals("internal") && !entry.getKey().startsWith("com.ibm.websphere.appserver.servlet-")) {
+                            errorMessage.append(packageInfo.getPackageName()).append(" in feature ").append(entry.getKey()).append(" is externalized twice").append('\n');
+                            if (!packageToTypeMap.get(packageInfo.getPackageName()).equals("ibm-spi")) {
+                                errorMessage.append(packageInfo.getPackageName()).append(" in feature ").append(entry.getKey()).append(" is externalized as two different types ")
+                                            .append(" ibm-spi and ").append(packageToTypeMap.get(packageInfo.getPackageName())).append('\n');
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (errorMessage.length() != 0) {
+            Assert.fail("Found features with duplicate APIs / SPIs: \n" + errorMessage.toString());
         }
     }
 }

@@ -19,15 +19,12 @@ javac.target: 11
 fat.minimum.java.level: 11
 
 src: \
-	fat/src
+        fat/src
 
 fat.project: true
 
-tested.features=mpTelemetry-1.1,cdi-4.0,mpConfig-3.1,servlet-6.0
+tested.features=mpTelemetry-1.1,cdi-4.0,mpConfig-3.1,servlet-6.0,jsonb-2.0,restfulws-3.0
 
-# Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
-#      or binaries from Artifactory (e.g. org.apache.derby:derbynet)
-# For all project names that match the pattern "*_fat*", dependencies for junit,
-# fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
 -buildpath: \
-        com.ibm.ws.componenttest.2.0
+   com.ibm.ws.componenttest.2.0,\
+   io.openliberty.microprofile.telemetry.internal_fat.common

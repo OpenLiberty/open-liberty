@@ -4,7 +4,6 @@ WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-API-Package: com.ibm.ws.ejb.portable; type="internal", \
- javax.xml.ws; type="internal", \
  com.ibm.websphere.endpoint; type="ibm-api", \
  com.ibm.websphere.ejbcontainer; type="ibm-api", \
  javax.rmi; type="spec", \
