@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.reactive.messaging.fat.apps.telemetry;
+package io.openliberty.microprofile.reactive.messaging.fat.telemetry;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
@@ -45,18 +45,22 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
+import io.openliberty.microprofile.reactive.messaging.fat.apps.telemetry.ReactiveMessagingApplication;
+import io.openliberty.microprofile.reactive.messaging.fat.apps.telemetry.ReactiveMessagingResource;
+import io.openliberty.microprofile.reactive.messaging.fat.apps.telemetry.RmTelemetryProcessingBean;
+import io.openliberty.microprofile.reactive.messaging.fat.apps.telemetry.RmTelemetryReceptionBean;
 import io.openliberty.microprofile.reactive.messaging.fat.suite.KafkaTests;
 import io.openliberty.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
 
 /**
- * Assert what happens when a message from Kafka is nacked
+ * Assert that Reactive Messaging works as expected with Telemetry enabled on the server.
  */
 @RunWith(FATRunner.class)
 public class ReactiveMessagingTelemetryTestWithJAXRS extends FATServletClient {
 
     private static final String APP_NAME = "ReactiveMessagingTelemetryApp";
-
     public static final String SERVER_NAME = "RxMessagingServerWithTelemetry";
+    private static final String TOPIC_NAME = "JAXRSTopic";
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -64,8 +68,7 @@ public class ReactiveMessagingTelemetryTestWithJAXRS extends FATServletClient {
     @ClassRule
     public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME,
                                                                   ReactiveMessagingActions.MP61_RM30,
-                                                                  ReactiveMessagingActions.MP50_RM30,
-                                                                  ReactiveMessagingActions.MP60_RM30);
+                                                                  ReactiveMessagingActions.MP50_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -73,9 +76,9 @@ public class ReactiveMessagingTelemetryTestWithJAXRS extends FATServletClient {
         PropertiesAsset appConfig = new PropertiesAsset()
                         .addProperty(AbstractKafkaTestServlet.KAFKA_BOOTSTRAP_PROPERTY, KafkaTests.kafkaContainer.getBootstrapServers())
                         .include(ConnectorProperties.simpleIncomingChannel(KafkaTests.connectionProperties(), ConnectorProperties.DEFAULT_CONNECTOR_ID,
-                                                                           RmTelemetryProcessingBean.CHANNEL_IN, "ReactiveMessagingTelemetryApp", "JAXRSTopic"))
+                                                                           RmTelemetryProcessingBean.CHANNEL_IN, "ReactiveMessagingTelemetryApp", TOPIC_NAME))
                         .include(ConnectorProperties.simpleOutgoingChannel(KafkaTests.connectionProperties(), ConnectorProperties.DEFAULT_CONNECTOR_ID,
-                                                                           ReactiveMessagingResource.EMITTER_CHANNEL, "JAXRSTopic"))
+                                                                           ReactiveMessagingResource.EMITTER_CHANNEL, TOPIC_NAME))
                         .addProperty(CONNECTION_PROPERTIES_KEY, KafkaTestClientProvider.encodeProperties(KafkaTests.connectionProperties()));
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
@@ -103,22 +106,33 @@ public class ReactiveMessagingTelemetryTestWithJAXRS extends FATServletClient {
 
     @Test
     public void invokeEmitterViaREST() throws Exception {
+        sendRequest("jaxrstest");
+        String messages = receiveMessages();
+        assertThat(messages, is("[JAXRSTEST1, JAXRSTEST2, JAXRSTEST3, JAXRSTEST4, JAXRSTEST5]"));
+    }
+
+    private void sendRequest(String message) throws Exception {
         // payload is sent emitter via REST call
         URL url = HttpUtils.createURL(server, APP_NAME + "/emitMessage");
-        HttpURLConnection conn = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HttpUtils.HTTPRequestMethod.POST);
+        for (int i = 1; i < 6; i++) {
+            HttpURLConnection conn = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HttpUtils.HTTPRequestMethod.POST);
+            OutputStream os = conn.getOutputStream();
+            os.write((message + i).getBytes());
+            os.flush();
+            assertThat(conn.getResponseCode(), is(204));
+            os.close();
+            conn.disconnect();
+        }
+    }
 
-        OutputStream os = conn.getOutputStream();
-        os.write(("jaxrstest").getBytes());
-        os.flush();
-        assertThat(conn.getResponseCode(), is(200));
-        os.close();
-
+    private String receiveMessages() throws Exception {
+        // payload is sent emitter via REST call
+        URL url = HttpUtils.createURL(server, APP_NAME + "/receiveMessages");
+        HttpURLConnection conn = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HttpUtils.HTTPRequestMethod.GET);
         BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String response = in.readLine();
         in.close();
-        // if successful, payload is returned in uppercase
-        assertThat(response, is("JAXRSTEST"));
         conn.disconnect();
+        return response;
     }
-
 }

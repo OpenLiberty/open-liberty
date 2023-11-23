@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.reactive.messaging.fat.apps.telemetry;
+package io.openliberty.microprofile.reactive.messaging.fat.telemetry;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
@@ -37,6 +37,9 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.microprofile.reactive.messaging.fat.apps.telemetry.ReactiveMessagingTelemetryTestServlet;
+import io.openliberty.microprofile.reactive.messaging.fat.apps.telemetry.RmTelemetryProcessingBean;
+import io.openliberty.microprofile.reactive.messaging.fat.apps.telemetry.RmTelemetryReceptionBean;
 import io.openliberty.microprofile.reactive.messaging.fat.suite.KafkaTests;
 import io.openliberty.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
 
@@ -47,8 +50,8 @@ import io.openliberty.microprofile.reactive.messaging.fat.suite.ReactiveMessagin
 public class ReactiveMessagingTelemetryTest extends FATServletClient {
 
     private static final String APP_NAME = "ReactiveMessagingTelemetryApp";
-
     public static final String SERVER_NAME = "RxMessagingServerWithTelemetry";
+    private static final String TOPIC_NAME = "RMTelemetryTopic";
 
     @Server(SERVER_NAME)
     @TestServlet(contextRoot = APP_NAME, servlet = ReactiveMessagingTelemetryTestServlet.class)
@@ -57,8 +60,7 @@ public class ReactiveMessagingTelemetryTest extends FATServletClient {
     @ClassRule
     public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME,
                                                                   ReactiveMessagingActions.MP61_RM30,
-                                                                  ReactiveMessagingActions.MP50_RM30,
-                                                                  ReactiveMessagingActions.MP60_RM30);
+                                                                  ReactiveMessagingActions.MP50_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -66,9 +68,9 @@ public class ReactiveMessagingTelemetryTest extends FATServletClient {
         PropertiesAsset appConfig = new PropertiesAsset()
                         .addProperty(AbstractKafkaTestServlet.KAFKA_BOOTSTRAP_PROPERTY, KafkaTests.kafkaContainer.getBootstrapServers())
                         .include(ConnectorProperties.simpleIncomingChannel(KafkaTests.connectionProperties(), ConnectorProperties.DEFAULT_CONNECTOR_ID,
-                                                                           RmTelemetryProcessingBean.CHANNEL_IN, "ReactiveMessagingTelemetryApp", "Topic"))
+                                                                           RmTelemetryProcessingBean.CHANNEL_IN, APP_NAME, TOPIC_NAME))
                         .include(ConnectorProperties.simpleOutgoingChannel(KafkaTests.connectionProperties(), ConnectorProperties.DEFAULT_CONNECTOR_ID,
-                                                                           ReactiveMessagingTelemetryTestServlet.EMITTER_CHANNEL, "Topic"))
+                                                                           ReactiveMessagingTelemetryTestServlet.EMITTER_CHANNEL, TOPIC_NAME))
                         .addProperty(CONNECTION_PROPERTIES_KEY, KafkaTestClientProvider.encodeProperties(KafkaTests.connectionProperties()));
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")

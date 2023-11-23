@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.reactive.messaging.fat.apps.telemetry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
@@ -20,14 +21,11 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestCons
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-
-/**
- *
- */
 
 @Path("/")
 @ApplicationScoped
@@ -47,13 +45,21 @@ public class ReactiveMessagingResource {
 
     @POST
     @Path("/emitMessage")
-    @Produces(MediaType.APPLICATION_FORM_URLENCODED)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public String emitMessage(String payload) throws Exception {
+    public void emitMessage(String payload) throws Exception {
         // payload is sent to Kafka and returned in upper case via two beans
         emitter.send(payload);
-        List<Message<String>> messages = receptionBean.assertReceivedMessages(1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
-        Message<String> receivedMessage = messages.get(0);
-        return receivedMessage.getPayload();
+    }
+
+    @GET
+    @Path("/receiveMessages")
+    @Produces(MediaType.APPLICATION_FORM_URLENCODED)
+    public String receiveMessages() throws Exception {
+        List<Message<String>> messages = receptionBean.assertReceivedMessages(5, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
+        List<String> response = new ArrayList<String>(messages.size());
+        for (Message<String> message : messages) {
+            response.add(message.getPayload());
+        }
+        return response.toString();
     }
 }
