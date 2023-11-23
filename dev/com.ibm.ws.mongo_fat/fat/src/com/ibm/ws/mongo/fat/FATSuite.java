@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Assume;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -114,5 +115,14 @@ public class FATSuite {
 
         Log.info(c, m, "All MongoDBServices are active: expected=" + mongoDBServices + ",  activates=" + activates.size() + ", deactivates=" + deactivates.size());
         return true;
+    }
+
+    // skip tests when server has fips 140-3 enabled
+    public static void skipTestOnFIPS140_3Enabled(LibertyServer server) throws Exception {
+        final String m = "skipTestOnFIPS140_3Enabled";
+        if (server.isFIPS140_3EnabledAndSupported()) {
+            Log.info(c, m, "FIPS 140-3 is running with the supported IBM JDK 8 on server: " + server.getServerName() + ". Test will not run.");
+            Assume.assumeTrue(false); // This disables this test class. None of the tests in the class will be run.
+        }
     }
 }
