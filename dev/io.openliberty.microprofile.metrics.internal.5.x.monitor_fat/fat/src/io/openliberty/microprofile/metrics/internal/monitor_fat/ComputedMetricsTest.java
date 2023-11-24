@@ -582,6 +582,11 @@ public class ComputedMetricsTest {
        Log.info(c, testName, "------- Hitting the testREST application endpoint to initialize the REST metrics ------");
        getHttpServlet("/testRESTApp/test/get", computedMetricsServer);
 
+       Log.info(c, testName, "------- Wait for the Servlet MBean for the REST test app to get registered in MonitorMetrics, before hitting the /metrics endpoint ------");
+       String mbeanRegStr = computedMetricsServer.waitForStringInLogUsingMark("type=ServletStats,name=testRESTApp.io.openliberty.microprofile.metrics.internal.monitor_fat.rest.TestApplication is registered", 60000, computedMetricsServer.getMostRecentTraceFile());
+
+       Log.info(c, testName, "------- Found Servlet MBean for the REST test app successfully registered trace : " + mbeanRegStr);
+       
        Log.info(c, testName, "------- Make sure all the expected metrics have the \"mp_app=myserver\" tag ------");
        checkForExpectedStrings(getHttpsServlet("/metrics?scope=vendor", computedMetricsServer), expectedMetrics);
        
