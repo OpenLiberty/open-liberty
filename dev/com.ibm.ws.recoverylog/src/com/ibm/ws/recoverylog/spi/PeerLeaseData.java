@@ -65,7 +65,8 @@ public class PeerLeaseData {
             return true;
         } else {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Lease for " + _recoveryIdentity + " has not expired. " + (curTime + _leaseTimeout - _leaseTime) / 1000 + " seconds left.");
+                int secondsLeft = (int) ((curTime + _leaseTimeout - _leaseTime) / 1000);
+                Tr.debug(tc, "Lease for " + _recoveryIdentity + " has not expired. " + secondsLeft + " second" + (secondsLeft != 1 ? "s" : "") + " left.");
             }
             return false;
         }
