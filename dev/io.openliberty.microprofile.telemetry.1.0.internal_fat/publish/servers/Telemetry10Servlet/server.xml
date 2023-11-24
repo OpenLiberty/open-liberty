@@ -14,7 +14,7 @@
     </application>
     
     <application type="war" location="HttpTraceDisabledServletTestApp.war">
-		<classloader apiTypeVisibility="+third-party" />
+        <classloader apiTypeVisibility="+third-party" />
     </application>
     
     <logging traceSpecification="TELEMETRY=all"/>
