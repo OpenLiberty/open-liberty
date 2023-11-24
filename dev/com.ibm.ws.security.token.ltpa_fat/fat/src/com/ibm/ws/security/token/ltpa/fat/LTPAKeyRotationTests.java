@@ -105,6 +105,12 @@ public class LTPAKeyRotationTests {
     private static final String VALIDATION_KEY3_PATH = "resources/security/validation3.keys";
     private static final String VALIDATION_KEYS_PATH = "resources/security/";
 
+    // Define the paths to the server.xml files
+    private static final String relativeDirectory = server.getServerRoot();
+    private static final String wlpDirectory = server.getInstallRoot();
+    private static final String baseDirectory = server.getInstallRootParent();
+
+    // Define the remote message log file
     private static RemoteFile messagesLogFile = null;
 
     @Rule
@@ -741,8 +747,10 @@ public class LTPAKeyRotationTests {
         assertNotNull("Expected invalid keys file exception not found in the log.",
                       server.waitForStringInLog("CWWKS4106E", 5000));
 
-        // Delete the validation3.keys file
+        // Delete the validation3.keys file and wait for the LTPA configuration to be ready after the change
         deleteFileIfExists(VALIDATION_KEY3_PATH, true);
+        assertNotNull("Expected LTPA configuration ready message not found in the log.",
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Set fileName back to the default ltpa.keys file
         configurationUpdateNeeded = setLTPAvalidationKeyFileNameElement(ltpa, "configuredValidation1.keys");
@@ -1435,6 +1443,211 @@ public class LTPAKeyRotationTests {
         flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
     }
 
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI>Set MonitorDirectory to true, and MonitorInterval to 10.
+     * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
+     * <LI>Re-configure the keysFileName to a different relative path within the server config directory and move the file there.
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <LI>Re-configure the keysFileName to another relative path within the wlp directory and move the file there.
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <LI>Re-configure the keysFileName to a different absolute path within the wlp directory and move the file there.
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <LI>Re-configure the keysFileName to another absolute path within the base directory and move the file there.
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <OL>
+     * <P>Expected Results:
+     * <OL>
+     * <LI>MonitorDirectory is set to true, and MonitorInterval to 10.
+     * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
+     * <LI>The ltpa.keys file is moved to a different relative path within the server config directory.
+     * <LI>Successful authentication to simple servlet.
+     * <LI>The ltpa.keys file is moved back to another relative path within the wlp directory.
+     * <LI>Successful authentication to simple servlet.
+     * <LI>The ltpa.keys file is moved to a different absolute path within the wlp directory.
+     * <LI>Successful authentication to simple servlet.
+     * <LI>The ltpa.keys file is moved back to another absolute path within the base directory.
+     * <LI>Successful authentication to simple servlet.
+     * </OL>
+     */
+    @Test
+    @AllowedFFDC({ "java.lang.IllegalArgumentException" })
+    public void testDifferentDirectoriesForPrimaryKeys() throws Exception {
+        // Configure the server
+        configureServer("true", "10", true);
+
+        // Initial login to simple servlet for form login1
+        String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+
+        // Get the SSO cookies back from the login
+        String cookie1 = flClient1.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
+
+        // Move the ltpa.keys file to a different relative path within the server config directory
+        moveFileIfExists(relativeDirectory + "/resources/security", relativeDirectory, "ltpa.keys", false);
+
+        // Re-configure the keysFileName to that location with the relative path
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        LTPA ltpa = serverConfiguration.getLTPA();
+        Boolean configurationUpdateNeeded = setLTPAkeysFileNameElement(ltpa, "${server.config.dir}/ltpa.keys");
+        updateConfigDynamically(server, serverConfiguration);
+
+        // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
+        String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
+
+        // Move the ltpa.keys file to another relative path within the wlp directory
+        moveFileIfExists(relativeDirectory, wlpDirectory + "/resources", "ltpa.keys", false);
+
+        // Re-configure the keysFileName to that location with the relative path
+        configurationUpdateNeeded = setLTPAkeysFileNameElement(ltpa, "${wlp.install.dir}/resources/ltpa.keys");
+        updateConfigDynamically(server, serverConfiguration);
+
+        // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
+        String response3 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
+
+        // Move the ltpa.keys file to a different absolute path within the wlp directory
+        moveFileIfExists(wlpDirectory + "/resources", wlpDirectory + "/test", "ltpa.keys", false);
+
+        // Re-configure the keysFileName to that location with the absolute path
+        configurationUpdateNeeded = setLTPAkeysFileNameElement(ltpa, wlpDirectory + "/test/ltpa.keys");
+        updateConfigDynamically(server, serverConfiguration);
+
+        // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
+        String response4 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
+
+        // Move the ltpa.keys file to another absolute path within the base directory
+        moveFileIfExists(wlpDirectory + "/test", baseDirectory + "/random", "ltpa.keys", false);
+
+        // Re-configure the keysFileName to that location with the absolute path
+        configurationUpdateNeeded = setLTPAkeysFileNameElement(ltpa, baseDirectory + "/random/ltpa.keys");
+        updateConfigDynamically(server, serverConfiguration);
+
+        // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
+        String response5 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
+
+        // Re-configure the keysFileName to the default value
+        configurationUpdateNeeded = setLTPAkeysFileNameElement(ltpa, "${server.config.dir}/resources/security/ltpa.keys");
+        updateConfigDynamically(server, serverConfiguration);
+
+        // Delete the ltpa.keys file from all of the last locations
+        deleteFileFromAbsolutePathIfExists(relativeDirectory + "/ltpa.keys", true);
+        deleteFileFromAbsolutePathIfExists(wlpDirectory + "/resources/ltpa.keys", true);
+        deleteFileFromAbsolutePathIfExists(wlpDirectory + "/test/ltpa.keys", true);
+        deleteFileFromAbsolutePathIfExists(baseDirectory + "/random/ltpa.keys", true);
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI>Set MonitorDirectory to true, and MonitorInterval to 10.
+     * <LI>Attempt to access a simple servlet configured for form login1 with valid credentials.
+     * <LI>Rename the ltpa.keys file to validation1.keys.
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <LI>Re-configure the keysFileName and validation fileName to a different relative path within the server config directory and move the file there.
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <LI>Re-configure the keysFileName and validation fileName to another relative path within the wlp directoryand move the file there.
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <LI>Re-configure the keysFileName and validation fileName to a different absolute path within the wlp directory and move the file there.
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <LI>Re-configure the keysFileName and validation fileName to another absolute path within the base directory and move the file there.
+     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <OL>
+     * <P>Expected Results:
+     * <OL>
+     * <LI>MonitorDirectory is set to true, and MonitorInterval to 10.
+     * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
+     * <LI>The ltpa.keys file is renamed to validation1.keys.
+     * <LI>Successful authentication to simple servlet.
+     * <LI>The validation1.keys file is moved to a different relative path within the server config directory.
+     * <LI>Successful authentication to simple servlet.
+     * <LI>The validation1.keys file is moved back to another relative path within the wlp directory.
+     * <LI>Successful authentication to simple servlet.
+     * <LI>The validation1.keys file is moved to a different absolute path within the wlp directory.
+     * <LI>Successful authentication to simple servlet.
+     * <LI>The validation1.keys file is moved back to another absolute path within the base directory.
+     * <LI>Successful authentication to simple servlet.
+     * </OL>
+     */
+    @Test
+    @AllowedFFDC({ "java.lang.IllegalArgumentException" })
+    public void testDifferentDirectoriesForValidationKeys() throws Exception {
+        // Configure the server
+        configureServer("true", "10", true);
+
+        // Initial login to simple servlet for form login1
+        String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+
+        // Get the SSO cookies back from the login
+        String cookie1 = flClient1.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
+
+        // Rename the ltpa.keys file to validation1.keys
+        renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY1_PATH, false);
+
+        // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
+        String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
+
+        // Move the validation1.keys file to a different relative path within the server config directory
+        moveFileIfExists(relativeDirectory + "/resources/security", relativeDirectory, "validation1.keys", false);
+
+        // Re-configure the keysFileName and validation fileName to that location with the relative path
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        LTPA ltpa = serverConfiguration.getLTPA();
+        Boolean configurationUpdateNeeded = setLTPAkeysFileNameElement(ltpa, "${server.config.dir}/ltpa.keys")
+                                            | setLTPAvalidationKeyFileNameElement(ltpa, "validation1.keys");
+        updateConfigDynamically(server, serverConfiguration);
+
+        // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
+        String response3 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
+
+        // Move the validation2.keys file to another relative path within the wlp directory
+        moveFileIfExists(relativeDirectory, wlpDirectory + "/resources", "validation1.keys", false);
+
+        // Re-configure the keysFileName and validation fileName to that location with the relative path
+        configurationUpdateNeeded = setLTPAkeysFileNameElement(ltpa, "${wlp.install.dir}/resources/ltpa.keys")
+                                    | setLTPAvalidationKeyFileNameElement(ltpa, "validation1.keys");
+        updateConfigDynamically(server, serverConfiguration);
+
+        // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
+        String response4 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
+
+        // Move the validation.keys file to a different absolute path within the wlp directory
+        moveFileIfExists(wlpDirectory + "/resources", wlpDirectory + "/test", "validation1.keys", false);
+
+        // Re-configure the keysFileName and validation fileName to that location with the absolute path
+        configurationUpdateNeeded = setLTPAkeysFileNameElement(ltpa, wlpDirectory + "/test/ltpa.keys")
+                                    | setLTPAvalidationKeyFileNameElement(ltpa, "validation1.keys");
+        updateConfigDynamically(server, serverConfiguration);
+
+        // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
+        String response5 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
+
+        // Move the validation.keys file to another absolute path within the base directory
+        moveFileIfExists(wlpDirectory + "/test", baseDirectory + "/random", "validation1.keys", false);
+
+        // Re-configure the keysFileName and validation fileName to that location with the absolute path
+        configurationUpdateNeeded = setLTPAkeysFileNameElement(ltpa, baseDirectory + "/random/ltpa.keys")
+                                    | setLTPAvalidationKeyFileNameElement(ltpa, "validation1.keys");
+        updateConfigDynamically(server, serverConfiguration);
+
+        // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
+        String response6 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
+
+        // Re-configure the keysFileName and validation fileName to the default value
+        configurationUpdateNeeded = setLTPAkeysFileNameElement(ltpa, "${server.config.dir}/resources/security/ltpa.keys")
+                                    | setLTPAvalidationKeyFileNameElement(ltpa, "configuredValidation1.keys");
+        updateConfigDynamically(server, serverConfiguration);
+
+        // Delete the ltpa.keys and validation1.keys file from all of the last locations
+        deleteFileFromAbsolutePathIfExists(relativeDirectory + "/ltpa.keys", true);
+        deleteFileFromAbsolutePathIfExists(wlpDirectory + "/resources/ltpa.keys", true);
+        deleteFileFromAbsolutePathIfExists(wlpDirectory + "/test/ltpa.keys", true);
+        deleteFileFromAbsolutePathIfExists(baseDirectory + "/random/ltpa.keys", true);
+        deleteFileFromAbsolutePathIfExists(baseDirectory + "/random/validation1.keys", true);
+    }
+
+    // Function to do the server configuration for all the tests.
     public void configureServer(String monitorValidationKeysDir, String monitorInterval, Boolean waitForLTPAConfigReadyMessage) throws Exception {
         configureServer(monitorValidationKeysDir, monitorInterval, waitForLTPAConfigReadyMessage, true);
     }
@@ -1451,6 +1664,7 @@ public class LTPAKeyRotationTests {
      * @param monitorValidationKeysDir
      * @param monitorInterval
      * @param waitForLTPAConfigReadyMessage
+     * @param setLogMarkToEnd
      *
      * @throws Exception
      */
@@ -1490,6 +1704,15 @@ public class LTPAKeyRotationTests {
 
         if (setLogMarkToEnd)
             server.setMarkToEndOfLog(messagesLogFile);
+    }
+
+    // Function to configure the keysFileName to a specific value
+    public boolean setLTPAkeysFileNameElement(LTPA ltpa, String value) {
+        if (!ltpa.keysFileName.equals(value)) {
+            ltpa.keysFileName = value;
+            return true; // Config update is needed
+        }
+        return false; // Config update is not needed;
     }
 
     // Function to set the monitorValidationKeysDir to true or false
@@ -1602,7 +1825,7 @@ public class LTPAKeyRotationTests {
         String logLine = server.waitForStringInLogUsingMark("CWWKG001[7-8]I");
 
         // Wait for feature update to be completed or LTPA configuration to get ready
-        Thread.sleep(200);
+        Thread.sleep(1000);
     }
 
     /**
@@ -1686,6 +1909,31 @@ public class LTPAKeyRotationTests {
     }
 
     /**
+     * Move the file if it exists. If we can't move it, then
+     * throw an exception as we need to be able to move these files.
+     * If checkFileIsGone is true, then we will double check to make
+     * sure the file is gone.
+     *
+     * @param filePath
+     * @param newFilePath
+     * @param checkFileIsGone
+     *
+     * @throws Exception
+     */
+    private static void moveFileIfExists(String filePath, String newFilePath, String fileName, boolean checkFileIsGone) throws Exception {
+        Log.info(thisClass, "moveFileIfExists", "\nfilepath: " + filePath + "\nfileName: " + fileName + "\nnewFilePath: " + newFilePath + "\nfileName: " + fileName);
+        if (absoluteFileExists(filePath + "/" + fileName, 1)) {
+            Log.info(thisClass, "moveFileIfExists", "file exists, moving...");
+            server.renameFileToAbsolutePathInLibertyServerRootFile(filePath, newFilePath, fileName);
+            Thread.sleep(2000);
+
+            // Double check to make sure the file is gone
+            if (checkFileIsGone && fileExists(filePath + "/" + fileName, 1))
+                throw new Exception("Unable to move file: " + filePath + "/" + fileName);
+        }
+    }
+
+    /**
      * Delete the file if it exists. If we can't delete it, then
      * throw an exception as we need to be able to delete these files.
      *
@@ -1702,6 +1950,26 @@ public class LTPAKeyRotationTests {
             // Double check to make sure the file is gone
             if (checkFileIsGone && fileExists(filePath, 1))
                 throw new Exception("Unable to delete file: " + filePath);
+        }
+    }
+
+    /**
+     * Delete the file if it exists. If we can't delete it, then
+     * throw an exception as we need to be able to delete these files.
+     *
+     * @param absolutePath
+     *
+     * @throws Exception
+     */
+    private static void deleteFileFromAbsolutePathIfExists(String absolutePath, boolean checkFileIsGone) throws Exception {
+        Log.info(thisClass, "deleteFileIfExists", "absolutePath: " + absolutePath);
+        if (absoluteFileExists(absolutePath, 1)) {
+            Log.info(thisClass, "deleteFileFromAbsolutePathInLibertyServer", "file exists, deleting...");
+            server.deleteFileFromAbsolutePathInLibertyServer(absolutePath);
+
+            // Double check to make sure the file is gone
+            if (checkFileIsGone && absoluteFileExists(absolutePath, 1))
+                throw new Exception("Unable to delete file: " + absolutePath);
         }
     }
 
@@ -1780,6 +2048,45 @@ public class LTPAKeyRotationTests {
     }
 
     /**
+     * Check to see if the file exists given absolute file path.
+     * We will retry a few times to ensure that the system was not slow to flush the file.
+     *
+     * @param absoluteFilePath
+     * @param numberOfTries
+     *
+     * @throws Exception
+     */
+    private static boolean absoluteFileExists(String absoluteFilePath, int numberOfTries) throws Exception {
+        boolean exists = false;
+        boolean exceptionHasBeenPrinted = false;
+        int count = 0;
+        do {
+            // Sleep 2 seconds
+            if (count != 0) {
+                Thread.sleep(2000);
+                Log.info(thisClass, "fileExists", "waiting 2s...");
+            }
+            try {
+                exists = server.getFileFromLibertyServerWithAbsoluteFilePath(absoluteFilePath).exists();
+            } catch (Exception e) {
+                // The file does not exist if there's an exception
+                Log.info(thisClass, "fileExists", "The file does not exist");
+                exists = false;
+                // We don't want to print the same exception over and over again... so we'll only print it one time.
+                if (!exceptionHasBeenPrinted) {
+                    e.printStackTrace();
+                    exceptionHasBeenPrinted = true;
+                }
+            }
+            count++;
+        }
+        // Wait up to 10 seconds for the key file to appear
+        while ((!exists) && count < numberOfTries);
+
+        return exists;
+    }
+
+    /**
      * Copies a file to the "server/resources/security/" directory
      *
      * @param sourceFile
@@ -1803,9 +2110,10 @@ public class LTPAKeyRotationTests {
     private void resetServer() throws Exception {
         Log.info(thisClass, "resetServer", "entering");
 
-        moveLogMark(); //make sure the mark is at the end of the log, so we don't use earlier messages.
+        // Msure the mark is at the end of the log, so we don't use earlier messages.
+        moveLogMark();
 
-        //we need to put the base config back, otherwise the waits below will timeout on some tests
+        // We need to put the base config back, otherwise the waits below will timeout on some tests
         configureServer("true", "10", true);
 
         // Delete all ltpa keys files in the security directory
@@ -1816,19 +2124,11 @@ public class LTPAKeyRotationTests {
         deleteFileIfExists(CONFIGURED_VALIDATION_KEY1_PATH, true);
 
         // Wait for the LTPA configuration to be ready after the change
-        // Will not occur monitor interval is set to 0
-        server.waitForStringInLog("CWWKS4105I", 5000);
+        assertNotNull("Expected LTPA configuration ready message not found in the log.",
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Assert that a default ltpa.keys file exists prior to next test case
-        if (!fileExists(DEFAULT_KEY_PATH)) {
-            // Copy the default ltpa.keys file to the security directory
-            copyFileToServerResourcesSecurityDir("alternate/validation1.keys");
-            server.renameLibertyServerRootFile(VALIDATION_KEY1_PATH, DEFAULT_KEY_PATH);
-
-            // Wait for the LTPA configuration to be ready after the change
-            // Will not occur monitor interval is set to 0
-            server.waitForStringInLog("CWWKS4105I", 5000);
-        }
+        assertFileWasCreated(DEFAULT_KEY_PATH);
     }
 
     /**
