@@ -91,6 +91,7 @@ public class TelemetryServletTest extends FATServletClient {
                         .addProperty("otel.traces.exporter", "in-memory")
                         .addProperty("otel.bsp.schedule.delay", "100");
         WebArchive appForTrace = ShrinkWrap.create(WebArchive.class, TRACE_APP_NAME + ".war")
+                        .addClass(SimpleServlet.class)
                         .addPackage(HttpTraceDisabledServlet.class.getPackage())
                         .addPackage(InMemorySpanExporter.class.getPackage())
                         .addPackage(TestSpans.class.getPackage())

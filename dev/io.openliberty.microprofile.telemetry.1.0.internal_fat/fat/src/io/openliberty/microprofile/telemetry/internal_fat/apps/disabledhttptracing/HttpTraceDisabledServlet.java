@@ -14,10 +14,16 @@ import static io.openliberty.microprofile.telemetry.internal_fat.common.SpanData
 import static io.opentelemetry.api.trace.SpanKind.CLIENT;
 import static io.opentelemetry.api.trace.SpanKind.INTERNAL;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -42,6 +48,8 @@ public class HttpTraceDisabledServlet extends FATServlet {
 
     public static final String APP_NAME = "HttpTraceDisabledServletTestApp";
     public static final String DICE_JSP = "dice.jsp";
+    public static final String INVALID_TRACE_ID = "00000000000000000000000000000000";
+    public static final String SIMPLE_SERVLET = "simple";
 
     @Inject
     private HttpServletRequest request;
@@ -51,6 +59,17 @@ public class HttpTraceDisabledServlet extends FATServlet {
 
     @Inject
     private TestSpans utils;
+
+    @Test
+    public void testSimpleServlet() throws Exception {
+        String scheme = request.getScheme();
+        String serverName = request.getServerName();
+        int serverPort = request.getServerPort();
+        URL url = new URL(scheme + "://" + serverName + ":" + serverPort + "/" + APP_NAME + "/" + SIMPLE_SERVLET);
+        String traceId = httpGet(url); // The servlet outputs the traceId
+        // The simple servlet will return the default invalid traceId
+        assertEquals(traceId, INVALID_TRACE_ID);
+    }
 
     @Test
     public void testDisabledJsp() throws Exception {
@@ -114,6 +133,27 @@ public class HttpTraceDisabledServlet extends FATServlet {
 
     private String getPath() {
         return request.getContextPath() + "/routeTestEndpoints";
+    }
+
+    private String httpGet(URL url) throws IOException {
+        HttpURLConnection connection = null;
+        StringBuffer content = new StringBuffer();
+        try {
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            assertEquals(200, connection.getResponseCode());
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                content.append(inputLine);
+            }
+            in.close();
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        return content.toString();
     }
 
 }
