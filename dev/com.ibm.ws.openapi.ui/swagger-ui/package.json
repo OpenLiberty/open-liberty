@@ -38,6 +38,9 @@
     "stream-browserify": "^3.0.0",
     "swagger-ui": "^4.18.1"
   },
+  "overrides": {
+    "axios": "^1.6.0"
+  },
   "browserslist": [
     "defaults",
     "firefox >= 38",
