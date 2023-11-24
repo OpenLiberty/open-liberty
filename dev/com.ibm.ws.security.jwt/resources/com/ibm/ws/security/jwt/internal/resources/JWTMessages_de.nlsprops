@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/jwt/resources/JWTMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -19,11 +16,11 @@
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS6000 - CWWKS6100
 JWT_BUILDER_CONFIG_PROCESSED=CWWKS6000I: Die JWT-Konfiguration {0} wurde erfolgreich verarbeitet.
-JWT_BUILDER_CONFIG_PROCESSED.explanation=Die JWT-Konfiguration (JSON Web Token) wurde erfolgreich verarbeitet.
+JWT_BUILDER_CONFIG_PROCESSED.explanation=Die Konfiguration des JWT-Builders (JSON Web Token) wurde erfolgreich verarbeitet.
 JWT_BUILDER_CONFIG_PROCESSED.useraction=Keine.
 
 JWT_BUILDER_CONFIG_MODIFIED=CWWKS6001I: Die \u00c4nderung der JWT-Konfiguration {0} wurde erfolgreich verarbeitet.
-JWT_BUILDER_CONFIG_MODIFIED.explanation=Die JWT-Konfiguration (JSON Web Token) wurde erfolgreich ge\u00e4ndert.
+JWT_BUILDER_CONFIG_MODIFIED.explanation=Die JWT-Builder-Konfiguration (JSON Web Token) wurde erfolgreich ge\u00e4ndert.
 JWT_BUILDER_CONFIG_MODIFIED.useraction=Keine. 
 
 # Do not translate "JSON Web Token", "JWT"
@@ -44,7 +41,7 @@ JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND.useraction=Stellen Sie sicher, dass der URL-
 
 # Do not translate "JSON Web Token", "JWT"
 # 0=Config ID of JWT provider
-JWT_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS6005E: Der JWT-Konfigurationsservice (JSON Web Token) ist f\u00fcr den Provider [{0}] nicht verf\u00fcgbar.
+JWT_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS6005E: Der JSON-Web-Token-Konfigurationsservice ist f\u00fcr den Provider [{0}] nicht verf\u00fcgbar.
 JWT_CONFIG_SERVICE_NOT_AVAILABLE.explanation=Der in der Nachricht angegebene Provider ist nicht in der Serverkonfiguration enthalten oder die Konfiguration f\u00fcr den angegebenen Provider wurde vom Konfigurationsservice nicht verarbeitet.
 JWT_CONFIG_SERVICE_NOT_AVAILABLE.useraction=\u00dcberpr\u00fcfen Sie die Serverkonfiguration, um sicherzustellen, dass der angegebene Provider konfiguriert ist.
 
@@ -65,7 +62,7 @@ JWT_BUILDER_INVALID.explanation=Es ist kein JWT-Builder (JSON Web Token) mit der
 JWT_BUILDER_INVALID.useraction=Konfigurieren Sie in der Datei server.xml ein jwtBuilder-Element mit der angegebenen ID.
 
 # Do not translate "JSON Web Token", "JWT"
-JWT_INVALID_CLAIM_VALUE_ERR=CWWKS6009E: Der Wert [{1}] im JWT-Anspruch (JSON Web Token) [{0}] ist nicht g\u00fcltig.
+JWT_INVALID_CLAIM_VALUE_ERR=CWWKS6009E: Der Wert [{1}] im JWT-Anspruch [{0}] ist ung\u00fcltig.
 JWT_INVALID_CLAIM_VALUE_ERR.explanation=Der angegebene Wert im JWT-Anspruch (JSON Web Token) entspricht nicht der JWT-Spezifikation.
 JWT_INVALID_CLAIM_VALUE_ERR.useraction=Geben Sie einen g\u00fcltigen Wert f\u00fcr den angegebenen Anspruch an. Weitere Informationen finden Sie in der JWT-Spezifikation.
 
@@ -137,7 +134,7 @@ JWT_ISSUER_NOT_TRUSTED.useraction=Fordern Sie ein neues Token von einem der vert
 
 # Do not translate "JSON Web Token", "JWT"
 # 0=Audience claim of the token, 1=JWT configuration ID, 2=Trusted audiences specified in server configuration
-JWT_AUDIENCE_NOT_TRUSTED=CWWKS6023E: Die Zielgruppe [{0}] des angegebenen JSON Web Token (JWT) ist nicht als vertrauensw\u00fcrdige Zielgruppe in der JWT-Konfiguration [{1}] aufgelistet. Die vertrauensw\u00fcrdigen Zielgruppen sind [{2}].
+JWT_AUDIENCE_NOT_TRUSTED=CWWKS6023E: Die Zielgruppe [{0}] des bereitgestellten JSON Web Token (JWT) ist nicht als vertrauensw\u00fcrdige Zielgruppe in der JWT-Konfiguration [{1}] aufgelistet. Die vertrauensw\u00fcrdigen Zielgruppen sind [{2}].
 JWT_AUDIENCE_NOT_TRUSTED.explanation=In der Serverkonfiguration sind die Zielgruppen angegeben, die bei der Validierung von JWTs als vertrauensw\u00fcrdig eingestuft werden. Das angegebene Token ist nicht f\u00fcr eine dieser vertrauensw\u00fcrdigen Zielgruppen bestimmt und deshalb kann das Token nicht validiert werden.
 JWT_AUDIENCE_NOT_TRUSTED.useraction=Fordern Sie ein neues Token f\u00fcr eine der vertrauensw\u00fcrdigen Zielgruppen an, die in Ihrer JWT-Konfiguration angegeben sind, oder f\u00fcgen Sie die in der Nachricht angegebene Zielgruppe als vertrauensw\u00fcrdige Zielgruppe in Ihrer JWT-Konfiguration hinzu.
 
@@ -323,7 +320,7 @@ MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Geben Sie einen unterst\u00fct
 
 # Do not translate "JSON Web Token", "AMR", "JWT"
 # 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
-JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: Der AMR [{0}] des bereitgestellten JWT (JSON Web Token) wird nicht als vertrauensw\u00fcrdiger AMR in der JWT-Konfiguration [{1}] aufgelistet. Die vertrauensw\u00fcrdigen AMRs sind [{2}].
+JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: Das AMR [{0}] des bereitgestellten JSON Web Token (JWT) ist nicht als vertrauensw\u00fcrdiges AMR in der JWT-Konfiguration [{1}] aufgelistet. Die vertrauensw\u00fcrdigen AMRs sind [{2}].
 JWT_AMR_CLAIM_NOT_VALID.explanation=In der Serverkonfiguration wird angegeben, welche AMRs bei der Validierung von JWTs als vertrauensw\u00fcrdig eingestuft werden. Das angegebene Token ist nicht f\u00fcr eine dieser vertrauensw\u00fcrdigen AMRs bestimmt und deshalb kann das Token nicht validiert werden.
 JWT_AMR_CLAIM_NOT_VALID.useraction=Rufen Sie ein neues Token f\u00fcr einen der vertrauensw\u00fcrdigen AMRs ab, die in Ihrer JWT-Konfiguration angegeben sind, oder f\u00fcgen Sie den in der Nachricht angegebenen AMR als vertrauensw\u00fcrdigen AMR in Ihrer JWT-Konfiguration hinzu.
 

@@ -1272,3 +1272,9 @@ jsp.error.page.invalid.erroronelnotfound.useraction=
 jsp.isthreadsafe.warning=CWWJS0003W: Specifica\u021bia Pages 3.1 recomand\u0103 insistent dezvoltatorilor de pagini s\u0103 nu utilizeze directiva de pagin\u0103 depreciat\u0103 isThreadSafe.
 jsp.isthreadsafe.warning.explanation=SingleThreadModel a fost \u00eenl\u0103turat de la Servlet 6.0. Pages 3.1 a perimat isThreadSafe \u0219i are \u00een vedere s\u0103-l \u00eenl\u0103ture \u00eentr-o actualizare Pages viitoare.
 jsp.isthreadsafe.warning.useraction=\u00cenl\u0103tura\u021bi directiva isThreadSafe din toate paginile.
+
+
+jsp.useinmemory.warning=CWWJS0004W: Op\u021biunea "useIn JSP-urile vor fi compilate \u0219i salvate pe disc \u00een schimb.
+jsp.useinmemory.warning.explanation=Aceast\u0103 caracteristic\u0103 nu a fost niciodat\u0103 portat de la tradi\u021bional WebSphere din motive istorice.
+jsp.useinmemory.warning.useraction=Elimina\u021bi op\u021biunea de memorie useInde la server.xml, ibm-web-bnd.xml, sau fi\u0219ierele ibm-web-ext.xmi .
+

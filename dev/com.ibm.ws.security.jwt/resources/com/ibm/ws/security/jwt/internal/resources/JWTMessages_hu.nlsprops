@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/jwt/resources/JWTMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -19,11 +16,11 @@
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS6000 - CWWKS6100
 JWT_BUILDER_CONFIG_PROCESSED=CWWKS6000I: A(z) {0} JWT konfigur\u00e1ci\u00f3 sikeresen feldolgozva.
-JWT_BUILDER_CONFIG_PROCESSED.explanation=A JWT (json webtoken-\u00f6ssze\u00e1ll\u00edt\u00f3) konfigur\u00e1ci\u00f3 sikeresen feldolgoz\u00e1sra ker\u00fclt.
+JWT_BUILDER_CONFIG_PROCESSED.explanation=A JSON Web Token (JWT) \u00f6ssze\u00e1ll\u00edt\u00f3 konfigur\u00e1ci\u00f3ja sikeresen feldolgoz\u00e1sra ker\u00fclt.
 JWT_BUILDER_CONFIG_PROCESSED.useraction=Nincs
 
 JWT_BUILDER_CONFIG_MODIFIED=CWWKS6001I: A(z) {0} JWT konfigur\u00e1ci\u00f3 m\u00f3dos\u00edt\u00e1sa sikeresen feldolgoz\u00e1sra ker\u00fclt.
-JWT_BUILDER_CONFIG_MODIFIED.explanation=A JWT (json webtoken-\u00f6ssze\u00e1ll\u00edt\u00f3) konfigur\u00e1ci\u00f3 sikeresen m\u00f3dos\u00edt\u00e1sra ker\u00fclt.
+JWT_BUILDER_CONFIG_MODIFIED.explanation=A JSON Web Token (JWT) \u00f6ssze\u00e1ll\u00edt\u00f3 konfigur\u00e1ci\u00f3ja sikeresen m\u00f3dos\u00edt\u00e1sra ker\u00fclt.
 JWT_BUILDER_CONFIG_MODIFIED.useraction=Nincs.
 
 # Do not translate "JSON Web Token", "JWT"
@@ -44,7 +41,7 @@ JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u0
 
 # Do not translate "JSON Web Token", "JWT"
 # 0=Config ID of JWT provider
-JWT_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS6005E: A JSON Web Token (JWT) konfigur\u00e1ci\u00f3s szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el a(z) [{0}] szolg\u00e1ltat\u00f3hoz.
+JWT_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS6005E: A JSON Web Token konfigur\u00e1ci\u00f3s szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el a szolg\u00e1ltat\u00f3hoz [{0}].
 JWT_CONFIG_SERVICE_NOT_AVAILABLE.explanation=Az \u00fczenetben megadott szolg\u00e1ltat\u00f3 nem l\u00e9tezik a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban, vagy a megadott szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3j\u00e1t a konfigur\u00e1ci\u00f3s szolg\u00e1ltat\u00e1s nem dolgozta fel.
 JWT_CONFIG_SERVICE_NOT_AVAILABLE.useraction=Vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott szolg\u00e1ltat\u00f3 konfigur\u00e1lva van.
 
@@ -65,7 +62,7 @@ JWT_BUILDER_INVALID.explanation=A megadott azonos\u00edt\u00f3val nem l\u00e9tez
 JWT_BUILDER_INVALID.useraction=A megadott azonos\u00edt\u00f3val \u00e1ll\u00edtson be egy jwtBuilder elemet a server.xml f\u00e1jlban.
 
 # Do not translate "JSON Web Token", "JWT"
-JWT_INVALID_CLAIM_VALUE_ERR=CWWKS6009E: A(z) [{1}] \u00e9rt\u00e9k a(z) [{0}] JSON Web Token (JWT) ig\u00e9nyben nem \u00e9rv\u00e9nyes.
+JWT_INVALID_CLAIM_VALUE_ERR=CWWKS6009E: A [{0}] JSON Web Token (JWT) ig\u00e9ny [{1}] \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
 JWT_INVALID_CLAIM_VALUE_ERR.explanation=A JSON Web Token (JWT) ig\u00e9nyben megadott \u00e9rt\u00e9k nem felel meg a JWT specifik\u00e1ci\u00f3nak.
 JWT_INVALID_CLAIM_VALUE_ERR.useraction=Adjon megfelel\u0151 \u00e9rt\u00e9ket a jelzett ig\u00e9nynek. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt l\u00e1sd a JWT specifik\u00e1ci\u00f3t.
 
@@ -131,13 +128,13 @@ JWT_INVALID_CLAIMS_ERR.useraction=Gondoskodjon megfelel\u0151 ig\u00e9nyk\u00e9s
 
 # Do not translate "JSON Web Token", "JWT"
 # 0=Issuer claim of the token, 1=JWT configuration ID, 2=Trusted issuers specified in server configuration
-JWT_ISSUER_NOT_TRUSTED=CWWKS6022E: A megadott JSON web token (JWT) kibocs\u00e1t\u00f3ja [{0}] nem szerepel megb\u00edzhat\u00f3 kibocs\u00e1t\u00f3k\u00e9nt a(z) [{1}] JWT konfigur\u00e1ci\u00f3ban. Megb\u00edzhat\u00f3 kibocs\u00e1t\u00f3k a k\u00f6vetkez\u0151k: [{2}].
+JWT_ISSUER_NOT_TRUSTED=CWWKS6022E: A megadott JSON Web Token (JWT) [{0}] kibocs\u00e1t\u00f3ja nem szerepel megb\u00edzhat\u00f3 kibocs\u00e1t\u00f3k\u00e9nt a [{1}] JWT konfigur\u00e1ci\u00f3ban. Megb\u00edzhat\u00f3 kibocs\u00e1t\u00f3k a k\u00f6vetkez\u0151k: [{2}].
 JWT_ISSUER_NOT_TRUSTED.explanation=A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 meghat\u00e1rozza a JWT-k \u00e9rv\u00e9nyes\u00edt\u00e9se sor\u00e1n haszn\u00e1lt megb\u00edzhat\u00f3 kibocs\u00e1t\u00f3kat. A megadott token nem megb\u00edzhat\u00f3 kibocs\u00e1t\u00f3t\u00f3l sz\u00e1rmazik, ez\u00e9rt a tokent nem lehet \u00e9rv\u00e9nyes\u00edteni.
 JWT_ISSUER_NOT_TRUSTED.useraction=Szerezzen be \u00faj tokent egy, a JWT konfigur\u00e1ci\u00f3ban szerepl\u0151 megb\u00edzhat\u00f3 kibocs\u00e1t\u00f3t\u00f3l, vagy vegye fel az \u00fczenetben szerepl\u0151 kibocs\u00e1t\u00f3t a JWT konfigur\u00e1ci\u00f3ba megb\u00edzhat\u00f3 kibocs\u00e1t\u00f3k\u00e9nt.
 
 # Do not translate "JSON Web Token", "JWT"
 # 0=Audience claim of the token, 1=JWT configuration ID, 2=Trusted audiences specified in server configuration
-JWT_AUDIENCE_NOT_TRUSTED=CWWKS6023E: A megadott JSON web token (JWT) k\u00f6z\u00f6ns\u00e9ge [{0}] nem szerepel megb\u00edzhat\u00f3 k\u00f6z\u00f6ns\u00e9gk\u00e9nt a(z) [{1}] JWT konfigur\u00e1ci\u00f3ban. Megb\u00edzhat\u00f3 k\u00f6z\u00f6ns\u00e9gek a k\u00f6vetkez\u0151k: [{2}].
+JWT_AUDIENCE_NOT_TRUSTED=CWWKS6023E: A megadott JSON Web Token (JWT) [{0}] k\u00f6z\u00f6ns\u00e9ge nem szerepel megb\u00edzhat\u00f3 k\u00f6z\u00f6ns\u00e9gben a [{1}] JWT konfigur\u00e1ci\u00f3ban. Megb\u00edzhat\u00f3 k\u00f6z\u00f6ns\u00e9gek a k\u00f6vetkez\u0151k: [{2}].
 JWT_AUDIENCE_NOT_TRUSTED.explanation=A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 meghat\u00e1rozza a JWT-k \u00e9rv\u00e9nyes\u00edt\u00e9se sor\u00e1n haszn\u00e1lt megb\u00edzhat\u00f3 k\u00f6z\u00f6ns\u00e9geket. A megadott token nem megb\u00edzhat\u00f3 k\u00f6z\u00f6ns\u00e9gnek sz\u00f3l, ez\u00e9rt a tokent nem lehet \u00e9rv\u00e9nyes\u00edteni.
 JWT_AUDIENCE_NOT_TRUSTED.useraction=Szerezzen be egy, a JWT konfigur\u00e1ci\u00f3ban szerepl\u0151 megb\u00edzhat\u00f3 k\u00f6z\u00f6ns\u00e9gnek sz\u00e1nt \u00faj tokent, vagy vegye fel az \u00fczenetben szerepl\u0151 k\u00f6z\u00f6ns\u00e9get a JWT konfigur\u00e1ci\u00f3ba megb\u00edzhat\u00f3 k\u00f6z\u00f6ns\u00e9gk\u00e9nt.
 
@@ -323,7 +320,7 @@ MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Adjon meg t\u00e1mogatott al\u
 
 # Do not translate "JSON Web Token", "AMR", "JWT"
 # 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
-JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: A megadott JSON web token (JWT) [{0}] AMR t\u00edpus nem szerepel megb\u00edzhat\u00f3 AMR le\u00edr\u00e1sk\u00e9nt a(z) [{1}] JWT konfigur\u00e1ci\u00f3ban. A megb\u00edzhat\u00f3 AMR le\u00edr\u00e1sok: [{2}].
+JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: A megadott JSON Web Token (JWT) [{0}] AMR \u00e9rt\u00e9ke nem szerepel megb\u00edzhat\u00f3 AMR-ben a [{1}] JWT konfigur\u00e1ci\u00f3ban. A megb\u00edzhat\u00f3 AMR le\u00edr\u00e1sok: [{2}].
 JWT_AMR_CLAIM_NOT_VALID.explanation=A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 meghat\u00e1rozza a JWT-k \u00e9rv\u00e9nyes\u00edt\u00e9se sor\u00e1n haszn\u00e1lt megb\u00edzhat\u00f3 hiteles\u00edt\u00e9si met\u00f3dus le\u00edr\u00e1sokat (AMR). A megadott token rendeltet\u00e9se nem egy megb\u00edzhat\u00f3 AMR, ez\u00e9rt a tokent nem \u00e9rv\u00e9nyes\u00edthet\u0151.
 JWT_AMR_CLAIM_NOT_VALID.useraction=Szerezzen be egy, a JWT konfigur\u00e1ci\u00f3ban szerepl\u0151 megb\u00edzhat\u00f3 AMR rendeltet\u00e9s\u0171 \u00faj tokent, vagy vegye fel az \u00fczenetben szerepl\u0151 AMR-t a JWT konfigur\u00e1ci\u00f3ba megb\u00edzhat\u00f3 AMR-k\u00e9nt.
 

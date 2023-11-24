@@ -570,7 +570,7 @@ STATE_DOWNLOAD_FILES_OK=\nTodos los activos se han descargado satisfactoriamente
 STATE_CONTACTING_MAVEN_REPO=Estableciendo una conexi\u00f3n con el repositorio Maven configurado...\nEste proceso puede tardar varios minutos en completarse.
 STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=Conexi\u00f3n satisfactoria al repositorio configurado.
 STATE_READING_ENV_PROPS_FILE=Leyendo {0}/etc/featureUtility.env...
-STATE_STARTING_VERIFY=Verificando firmas...
+STATE_STARTING_VERIFY=Verificando firmas ...
 STATE_VERIFYING=Verificando {0}...
 PROGRESS_STEP=Paso {0} de {1}
 
@@ -629,7 +629,7 @@ VALIDATION_INVALID_URL=Formato de URL no soportado
 VALIDATION_DUPLICATE_KEY=Nombre de propiedad duplicado
 VALIDATION_UNSUPPORTED_PROTOCOL=Protocolo no soportado
 VALIDATION_MISSING_PUBKEY_NAME=Falta el nombre de clave p\u00fablica
-VALIDATION_INVALID_key_URL=URL de clave no soportado
+VALIDATION_INVALID_key URL = URL de clave no soportado
 VALIDATION_INVALID_KEYID=Formato de ID de clave no v\u00e1lido
 VALIDATION_MISSING_KEYID=Falta el ID de clave
 

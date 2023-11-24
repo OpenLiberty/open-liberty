@@ -23,9 +23,9 @@
 
 config.internal.metatype.includeType.documentation=Okre\u015bl zas\u00f3b konfiguracji do do\u0142\u0105czenia do konfiguracji serwera.
 config.internal.metatype.includeType.label=Do\u0142\u0105cz
-config.internal.metatype.includeType.attribute.optional.documentation= Zezwalaj na pomini\u0119cie do\u0142\u0105czonego zasobu, je\u015bli nie zostanie znaleziony.
+config.internal.metatype.includeType.attribute.optional.documentation=Zezwalaj na pomini\u0119cie do\u0142\u0105czonego zasobu, je\u015bli nie zostanie znaleziony.
 config.internal.metatype.includeType.attribute.optional.label=Zas\u00f3b jest opcjonalny
-config.internal.metatype.includeType.attribute.location.documentation=Okre\u015bla po\u0142o\u017cenie zasobu. Mo\u017ce to by\u0107 \u015bcie\u017cka do pliku lub identyfikator URI zasobu zdalnego.
+config.internal.metatype.includeType.attribute.location.documentation=Okre\u015bla\npo\u0142o\u017cenie zasobu. Warto\u015bci\u0105 mo\u017ce by\u0107 \u015bcie\u017cka do pliku, katalog lub identyfikator URI zasobu zdalnego.
 config.internal.metatype.includeType.attribute.location.label=Po\u0142o\u017cenie
 config.internal.metatype.includeType.attribute.onConflict.documentation=Okre\u015bla zachowanie stosowane w przypadku znalezienia konflikt\u00f3w podczas scalania element\u00f3w.
 config.internal.metatype.includeType.attribute.onConflict.label=W razie konfliktu

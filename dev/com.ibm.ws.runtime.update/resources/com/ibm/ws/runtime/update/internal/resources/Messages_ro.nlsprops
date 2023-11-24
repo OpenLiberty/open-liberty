@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -31,8 +31,8 @@
 # 1100-1199 com.ibm.ws.runtime.update.internal.resources.Messages
 # -------------------------------------------------------------------------------------------------
 
-quiesce.begin=CWWKE1100I: A\u015fteptare de p\u00e2n\u0103 la 30 de secunde pentru ca serverul s\u0103 devin\u0103 inactiv.
-quiesce.begin.explanation=Serverul a\u015fteapt\u0103 p\u00e2n\u0103 la 30 de secunde pentru ca serviciile s\u0103 s\u0103 devin\u0103 inactive \u00eenainte de a se opri.
+quiesce.begin=CWWKE1100I: A\u0219teptare pentru p\u00e2n\u0103 la {0} pentru a v\u0103 lini\u0219ti.
+quiesce.begin.explanation=Serverul a\u0219teapt\u0103 ca serviciile s\u0103 se lini\u0219teasc\u0103 \u00eenainte de a continua cu \u00eenchiderea.
 quiesce.begin.useraction=Nicio ac\u0163iune necesar\u0103.
 
 quiesce.end=CWWKE1101I: Dezactivare server complet\u0103.
@@ -40,11 +40,11 @@ quiesce.end.explanation=Opera\u0163ia de dezactivare s-a finalizat cu succes.
 quiesce.end.useraction=Nicio ac\u0163iune necesar\u0103.
 
 quiece.warning=CWWKE1102W: Opera\u0163ia de dezactivare nu s-a finalizat. Serverul se va opri acum.
-quiece.warning.explanation=Procesul nu a putut s\u0103 dezactiveze toate serviciile \u00een 30 de secunde.
-quiece.warning.useraction=Pute\u0163i ignora f\u0103r\u0103 probleme mesajele de eroare care rezult\u0103 din serviciile necesare indisponibile.
+quiece.warning.explanation=Procesul a fost \u00een imposibilitatea de a lini\u0219ti\u021bi toate serviciile \u00een perioada de timeout quiesce.
+quiece.warning.useraction=Pute\u0163i ignora f\u0103r\u0103 probleme mesajele de eroare care rezult\u0103 din serviciile necesare indisponibile. \u00cen cazul \u00een care problema persist\u0103, cre\u0219te durata "quiesceTimeout" prin ad\u0103ugarea atributului "quiesceTimeout" la elementul "executor" \u00een fi\u0219ierul "server.xml".
 
-client.quiesce.begin=CWWKE1103I: A\u015fteptare de p\u00e2n\u0103 la 30 de secunde pentru ca clientul s\u0103 devin\u0103 inactiv.
-client.quiesce.begin.explanation=Clientul  a\u015fteapt\u0103 p\u00e2n\u0103 la 30 de secunde pentru ca serviciile s\u0103 s\u0103 devin\u0103 inactive \u00eenainte de a se opri.
+client.quiesce.begin=CWWKE1103I: A\u0219teptare pentru p\u00e2n\u0103 la {0} secunde pentru client pentru a quiesce.
+client.quiesce.begin.explanation=Clientul a\u0219teapt\u0103 ca serviciile s\u0103 se lini\u0219teasc\u0103 \u00eenainte de a continua cu \u00eenchiderea.
 client.quiesce.begin.useraction=Nicio ac\u0163iune necesar\u0103.
 
 client.quiesce.end=CWWKE1104I: Dezactivare client complet\u0103.

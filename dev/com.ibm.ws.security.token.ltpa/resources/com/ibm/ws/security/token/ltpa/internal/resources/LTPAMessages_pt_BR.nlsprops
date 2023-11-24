@@ -48,7 +48,7 @@ LTPA_CONFIG_ERROR=CWWKS4106E: Erro de configura\u00e7\u00e3o LTPA. N\u00e3o foi 
 LTPA_CONFIG_ERROR.explanation=As chaves LTPA n\u00e3o puderam ser lidas ou criadas no local especificado.
 LTPA_CONFIG_ERROR.useraction=Assegure que o local esteja acess\u00edvel pelo processo do servidor. Quaisquer FFDCs podem indicar um erro fatal na gera\u00e7\u00e3o ou carregamento das chaves.
 
-LTPA_KEYS_TO_LOAD=CWWKS4107A: os arquivos de chaves LTPA a seguir s\u00e3o criados, exclu\u00eddos ou modificados: {0} ou a configura\u00e7\u00e3o LTPA foi modificada. Todas as chaves LTPA s\u00e3o recarregadas.
+LTPA_KEYS_TO_LOAD=CWWKS4107A: a configura\u00e7\u00e3o LTPA \u00e9 modificada. Os seguintes arquivos foram modificados: {0}. Todas as chaves LTPA na configura\u00e7\u00e3o LTPA s\u00e3o recarregadas.
 LTPA_KEYS_TO_LOAD.explanation=Os arquivos de chaves LTPA devem ser recarregados devido a uma mudan\u00e7a nos arquivos de chaves LTPA ou na configura\u00e7\u00e3o.
 LTPA_KEYS_TO_LOAD.useraction=Assegure que todos os servidores que participam da conex\u00e3o \u00fanica compartilhem as mesmas chaves e senha LTPA.
 
@@ -56,13 +56,13 @@ LTPA_KEY_CREATE_ERROR=CWWKS4108E: O sistema n\u00e3o pode criar a chave LTPA.
 LTPA_KEY_CREATE_ERROR.explanation=A chave LTPA n\u00e3o pode ser criada.
 LTPA_KEY_CREATE_ERROR.useraction=Quaisquer FFDCs podem indicar um erro fatal na gera\u00e7\u00e3o das chaves.
 
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE=CWWKS4109W: O valor {0} para o atributo notUseAfterDate para o arquivo de chaves de valida\u00e7\u00e3o LTPA {1} est\u00e1 no passado. As chaves de valida\u00e7\u00e3o LTPA n\u00e3o podem ser usadas.
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.explanation=As chaves de valida\u00e7\u00e3o LTPA ser\u00e3o usadas apenas se o valor de atributo notUseAfterDate estiver no futuro.
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.useraction=Atualize o valor de atributo notUseAfterDate para uma data futura se as chaves LTPA tiverem que ser usadas. Caso contr\u00e1rio, exclua o arquivo de chaves LTPA.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST=CWWKS4109W: O valor {0} para o atributo de Data validUntilpara o arquivo de chave de valida\u00e7\u00e3o LTPA {1} est\u00e1 no passado. As chaves de valida\u00e7\u00e3o LTPA n\u00e3o podem ser usadas.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST.explanation=As chaves de valida\u00e7\u00e3o LTPA ser\u00e3o usadas apenas se o valor do atributo de Data validUntilestiver no futuro.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST.useraction=Atualize o valor do atributo de Data validUntilpara uma data futura se as chaves LTPA precisarem ser usadas. Caso contr\u00e1rio, exclua o arquivo de chaves LTPA.
 
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT=CWWKS4110E: O valor {0} para o atributo notUseAfterDate para o arquivo de chaves de valida\u00e7\u00e3o LTPA {1} possui um formato de data inv\u00e1lido. As chaves de valida\u00e7\u00e3o LTPA n\u00e3o podem ser usadas.
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.explanation=O valor de atributo notUseAfterDate deve estar no formato ISO de data, hora e zona. O exemplo a seguir mostra o formato ISO de data: "2023-04-18T18:08:35Z".
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.useraction=Atualize o valor de atributo notUseAfterDate para um formato ISO de data, hora e zona.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT=CWWKS4110E: O valor {0} para o atributo de Data validUntilpara o arquivo de chaves de valida\u00e7\u00e3o LTPA {1} possui um formato de data inv\u00e1lido. As chaves de valida\u00e7\u00e3o LTPA n\u00e3o podem ser usadas.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT.explanation=O valor do atributo validUntilDate deve ser formatado no formato de data, hora e zona do ISO O exemplo a seguir mostra o formato de data ISO: "2023-11-18T18:08:35Z".
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT.useraction=Atualize o valor do atributo de data validUntilpara o formato de data, hora e zona ISO (por exemplo, '2023-11-18T18:08:35Z')
 
 LTPA_VALIDATION_KEYS_MISSING_ATTR=CWWKS4111E: O elemento {0} LTPA validationKeys especificado no arquivo server.xml n\u00e3o possui o nome do arquivo, a senha ou ambos: {1}.
 LTPA_VALIDATION_KEYS_MISSING_ATTR.explanation=O elemento LTPA validationKeys requer os atributos de nome de arquivo e senha.
@@ -72,6 +72,14 @@ LTPA_KEYS_FILE_DOES_NOT_EXIST=CWWKS4112E: O arquivo de chaves de valida\u00e7\u0
 LTPA_KEYS_FILE_DOES_NOT_EXIST.explanation=O arquivo de chaves de valida\u00e7\u00e3o n\u00e3o existe.
 LTPA_KEYS_FILE_DOES_NOT_EXIST.useraction=Certifique-se de que o arquivo de chaves de valida\u00e7\u00e3o exista no local especificado pelo elemento validationKeys.
 
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED=CWWKS4113W: O atributo monitorDirectory est\u00e1 configurado como true, mas o intervalo do monitor \u00e9 {0}. N\u00e3o ocorre nenhum recarregamento din\u00e2mico quando arquivos de chaves de valida\u00e7\u00e3o s\u00e3o criados, modificados ou exclu\u00eddos no diret\u00f3rio.
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.explanation= O valor de atributo monitorInterval \u00e9 zero ou menor que zero. O diret\u00f3rio n\u00e3o pode ser monitorado para quaisquer a\u00e7\u00f5es de cria\u00e7\u00e3o, exclus\u00e3o ou modifica\u00e7\u00e3o em arquivos com o sufixo .keys e o recarregamento din\u00e2mico n\u00e3o pode ocorrer.
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.useraction=Configure o atributo monitorInterval para um intervalo maior que zero.
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED=CWWKS4113W: O atributo LTPA updateTrigger \u00e9 configurado como pesquisado, monitorValidationKeysDir \u00e9 configurado como true, mas monitorInterval \u00e9 configurado como {0}. N\u00e3o ocorre nenhum recarregamento din\u00e2mico quando os arquivos-chave LTPA s\u00e3o modificados
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED.explanation=O valor de atributo monitorInterval \u00e9 zero ou menor que zero. O diret\u00f3rio n\u00e3o pode ser monitorado para quaisquer modifica\u00e7\u00f5es em arquivos com o sufixo .keys e o recarregamento din\u00e2mico n\u00e3o pode ocorrer
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED.useraction=Configure o atributo monitorInterval para um intervalo maior que zero.
+
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE=CWWKS4114W: O atributo updateTrigger \u00e9 configurado como desativado e o atributo monitorValidationKeysDir \u00e9 configurado como true Nenhum recarregamento din\u00e2mico ocorrer\u00e1 quando os arquivos-chave LTPA forem modificados no diret\u00f3rio
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.explanation=Quando o atributo updateTrigger \u00e9 configurado para desativado, o diret\u00f3rio n\u00e3o \u00e9 monitorado para nenhuma modifica\u00e7\u00e3o nos arquivos com o sufixo .keys e o recarregamento din\u00e2mico n\u00e3o ocorre Mesmo se o atributo monitorValidationKeysDir for configurado como true, o atributo ser\u00e1 ignorado, e o diret\u00f3rio n\u00e3o ser\u00e1 monitorado
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.useraction=Configure o valor do atributo updateTrigger para pesquisado ou mbean
+
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO=CWWKS4115W: O atributo updateTrigger \u00e9 configurado como desativado e o intervalo do monitor \u00e9 maior que {0}. N\u00e3o ocorre nenhum recarregamento din\u00e2mico quando os arquivos-chave LTPA s\u00e3o modificados
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.explanation=Quando o atributo updateTrigger \u00e9 configurado para desativado, os arquivos n\u00e3o s\u00e3o monitorados para nenhuma modifica\u00e7\u00e3o nos arquivos com o sufixo .keys e o recarregamento din\u00e2mico n\u00e3o ocorre Mesmo se o atributo monitorInterval for configurado para um intervalo maior que zero, o atributo ser\u00e1 ignorado e os arquivos n\u00e3o ser\u00e3o monitorados.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=Configure o valor do atributo updateTrigger para pesquisado ou mbean

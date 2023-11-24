@@ -48,7 +48,7 @@ LTPA_CONFIG_ERROR=CWWKS4106E: Erreur dans la configuration LTPA. Impossible de c
 LTPA_CONFIG_ERROR.explanation=Les cl\u00e9s LTPA n'ont pas pu \u00eatre lues ou cr\u00e9\u00e9es \u00e0 l'endroit sp\u00e9cifi\u00e9.
 LTPA_CONFIG_ERROR.useraction=Assurez-vous que l'emplacement indiqu\u00e9 dans le message est accessible au processus du serveur. Les \u00e9ventuelles donn\u00e9es FFDC (diagnostic de premier niveau) g\u00e9n\u00e9r\u00e9es peuvent r\u00e9v\u00e9ler qu'une erreur fatale s'est produite lors de la g\u00e9n\u00e9ration ou du chargement des cl\u00e9s.
 
-LTPA_KEYS_TO_LOAD=CWWKS4107A : Les fichiers de cl\u00e9s LTPA suivants sont cr\u00e9\u00e9s, supprim\u00e9s ou modifi\u00e9s : {0}, ou la configuration LTPA a \u00e9t\u00e9 modifi\u00e9e. Toutes les cl\u00e9s LTPA sont recharg\u00e9es.
+LTPA_KEYS_TO_LOAD=CWWKS4107A: La configuration LTPA est modifi\u00e9e. Les fichiers suivants sont modifi\u00e9s: {0}. Toutes les cl\u00e9s LTPA de la configuration LTPA sont recharg\u00e9es.
 LTPA_KEYS_TO_LOAD.explanation=Les fichiers de cl\u00e9s LTPA doivent \u00eatre recharg\u00e9s en raison d'une modification des fichiers de cl\u00e9s LTPA ou de la configuration.
 LTPA_KEYS_TO_LOAD.useraction=Assurez-vous que tous les serveurs qui participent \u00e0 la connexion unique partagent les m\u00eames cl\u00e9s LTPA et le m\u00eame mot de passe.
 
@@ -56,13 +56,13 @@ LTPA_KEY_CREATE_ERROR=CWWKS4108E: Le syst\u00e8me ne peut pas cr\u00e9er la cl\u
 LTPA_KEY_CREATE_ERROR.explanation=La cl\u00e9 LTPA ne peut pas \u00eatre cr\u00e9\u00e9e.
 LTPA_KEY_CREATE_ERROR.useraction=Les \u00e9ventuelles donn\u00e9es FFDC (diagnostic de premier niveau) g\u00e9n\u00e9r\u00e9es peuvent r\u00e9v\u00e9ler qu'une erreur fatale s'est produite lors de la g\u00e9n\u00e9ration des cl\u00e9s.
 
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE=CWWKS4109W: La valeur {0} de l''attribut notUseAfterDate du fichier de cl\u00e9s de validation LTPA {1} est dans le pass\u00e9. Les cl\u00e9s de validation LTPA ne peuvent pas \u00eatre utilis\u00e9es.
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.explanation=Les cl\u00e9s de validation LTPA sont utilis\u00e9es uniquement si la valeur de l'attribut notUseAfterDate est dans le futur.
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.useraction=Remplacez la valeur de l'attribut notUseAfterDate par une date future si les cl\u00e9s LTPA doivent \u00eatre utilis\u00e9es. Sinon, supprimez le fichier de cl\u00e9s LTPA.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST=CWWKS4109W: La valeur {0} de l''attribut de date validUntilpour le fichier de cl\u00e9s de validation LTPA {1} est dans le pass\u00e9. Les cl\u00e9s de validation LTPA ne peuvent pas \u00eatre utilis\u00e9es.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST.explanation=Les cl\u00e9s de validation LTPA sont utilis\u00e9es uniquement si la valeur de l'attribut de date validUntilest dans le futur.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST.useraction=Mettez \u00e0 jour la valeur de l'attribut de date validUntilsur une date future si les cl\u00e9s LTPA doivent \u00eatre utilis\u00e9es. Sinon, supprimez le fichier de cl\u00e9s LTPA.
 
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT=CWWKS4110E: La valeur {0} de l''attribut notUseAfterDate du fichier de cl\u00e9s de validation LTPA {1} a un format de date non valide. Les cl\u00e9s de validation LTPA ne peuvent pas \u00eatre utilis\u00e9es.
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.explanation=La valeur de l'attribut notUseAfterDate doit \u00eatre au format de date, d'heure et de fuseau horaire ISO. L'exemple suivant montre le format de date ISO : "2023-04-18T18:08:35Z".
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.useraction=Remplacez la valeur de l'attribut notUseAfterDate par un format de date, d'heure et de fuseau horaire ISO.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT=CWWKS4110E: La valeur {0} de l''attribut de date validUntilpour le fichier de cl\u00e9s de validation LTPA {1} a un format de date non valide. Les cl\u00e9s de validation LTPA ne peuvent pas \u00eatre utilis\u00e9es.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT.explanation=La valeur de l'attribut de date validUntildoit \u00eatre format\u00e9e au format de date, d'heure et de fuseau horaire ISO. L'exemple suivant illustre le format de date ISO: "2023-11-18T18:08:35Z".
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT.useraction=Mettez \u00e0 jour la valeur de l'attribut de date validUntilau format de date, d'heure et de zone ISO (par exemple,'2023-11-18T18:08:35Z')
 
 LTPA_VALIDATION_KEYS_MISSING_ATTR=CWWKS4111E: L''\u00e9l\u00e9ment {0} LTPA validationKeys sp\u00e9cifi\u00e9 dans le fichier server.xml ne contient pas le nom de fichier et/ou le mot de passe : {1}.
 LTPA_VALIDATION_KEYS_MISSING_ATTR.explanation=L'\u00e9l\u00e9ment LTPA validationKeys requiert les attributs de nom de fichier et de mot de passe.
@@ -72,6 +72,14 @@ LTPA_KEYS_FILE_DOES_NOT_EXIST=CWWKS4112E: Le fichier de cl\u00e9s de validation 
 LTPA_KEYS_FILE_DOES_NOT_EXIST.explanation=Le fichier de cl\u00e9s de validation n'existe pas.
 LTPA_KEYS_FILE_DOES_NOT_EXIST.useraction=Assurez-vous que le fichier de cl\u00e9s de validation existe dans l'emplacement sp\u00e9cifi\u00e9 par l'\u00e9l\u00e9ment validationKeys.
 
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED=CWWKS4113W: L''attribut monitorDirectory est d\u00e9fini sur true, mais l''intervalle de surveillance est {0}. Aucun rechargement dynamique n''est effectu\u00e9 lorsque des fichiers de cl\u00e9s de validation sont cr\u00e9\u00e9s, modifi\u00e9s ou supprim\u00e9s dans le r\u00e9pertoire.
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.explanation= La valeur de l'attribut monitorInterval est inf\u00e9rieure ou \u00e9gale \u00e0 z\u00e9ro. Le r\u00e9pertoire ne peut pas \u00eatre surveill\u00e9 pour des actions de cr\u00e9ation, de suppression ou de modification des fichiers ayant le suffixe .keys et le rechargement dynamique ne peut pas se produire.
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.useraction=D\u00e9finissez l'attribut monitorInterval sur un intervalle sup\u00e9rieur \u00e0 z\u00e9ro.
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED=CWWKS4113W: L''attribut LTPA updateTrigger est d\u00e9fini sur interroger, monitorValidationKeysDir est d\u00e9fini sur true, mais monitorInterval est d\u00e9fini sur {0}. Aucun rechargement dynamique n''est effectu\u00e9 lorsque les fichiers de cl\u00e9s LTPA sont modifi\u00e9s.
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED.explanation=La valeur de l'attribut monitorInterval est inf\u00e9rieure ou \u00e9gale \u00e0 z\u00e9ro. Le r\u00e9pertoire ne peut pas \u00eatre surveill\u00e9 pour d\u00e9tecter les modifications apport\u00e9es aux fichiers avec le suffixe .keys et le rechargement dynamique ne peut pas se produire.
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED.useraction=D\u00e9finissez l'attribut monitorInterval sur un intervalle sup\u00e9rieur \u00e0 z\u00e9ro.
+
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE=CWWKS4114W: L'attribut updateTrigger est d\u00e9fini sur disabled et l'attributKeysDir monitorValidationest d\u00e9fini sur true. Aucun rechargement dynamique n'est effectu\u00e9 lorsque les fichiers de cl\u00e9s LTPA sont modifi\u00e9s dans le r\u00e9pertoire.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.explanation=Lorsque l'attribut updateTrigger est d\u00e9fini sur d\u00e9sactiv\u00e9, le r\u00e9pertoire n'est pas surveill\u00e9 pour d\u00e9tecter les modifications apport\u00e9es aux fichiers avec le suffixe .keys et le rechargement dynamique n'a pas lieu. M\u00eame si l'attribut monitorValidationKeysDir est d\u00e9fini sur true, l'attribut est ignor\u00e9 et le r\u00e9pertoire n'est pas surveill\u00e9.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.useraction=D\u00e9finissez la valeur de l'attribut updateTrigger sur interroger ou mbean.
+
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO=CWWKS4115W: L''attribut updateTrigger est d\u00e9fini sur d\u00e9sactiv\u00e9 et l''intervalle de surveillance est sup\u00e9rieur \u00e0 {0}. Aucun rechargement dynamique n''est effectu\u00e9 lorsque les fichiers de cl\u00e9s LTPA sont modifi\u00e9s.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.explanation=Lorsque l'attribut updateTrigger est d\u00e9fini sur d\u00e9sactiv\u00e9, les fichiers ne sont pas surveill\u00e9s pour les modifications apport\u00e9es aux fichiers avec le suffixe .keys et le rechargement dynamique n'a pas lieu. M\u00eame si l'attribut monitorInterval est d\u00e9fini sur un intervalle sup\u00e9rieur \u00e0 z\u00e9ro, l'attribut est ignor\u00e9 et les fichiers ne sont pas surveill\u00e9s.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=D\u00e9finissez la valeur de l'attribut updateTrigger sur interroger ou mbean.
