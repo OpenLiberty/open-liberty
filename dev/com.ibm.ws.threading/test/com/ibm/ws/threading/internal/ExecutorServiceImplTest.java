@@ -135,6 +135,7 @@ public class ExecutorServiceImplTest {
 
         componentConfig.put("name", "testExecutor2");
         executorService.modified(componentConfig);
+        ThreadPoolExecutor newThreadPool = executorService.getThreadPool();
 
         // ensure that a new pool got created when we modified the executor
         Assert.assertNotSame(oldThreadPool, newThreadPool);

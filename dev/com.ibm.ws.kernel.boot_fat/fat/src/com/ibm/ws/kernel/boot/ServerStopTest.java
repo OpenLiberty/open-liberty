@@ -17,7 +17,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,7 +36,6 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -48,12 +49,17 @@ public class ServerStopTest {
 
     private static final String SERVER_NAME = "com.ibm.ws.kernel.boot.serverstart.fat";
     private static final String OS = System.getProperty("os.name").toLowerCase();
+    // private static final String serverXml = "server.xml";
     private static final String serverXmlRelativePath = "usr/servers/" + SERVER_NAME + "/server.xml";
     private static String serverXmlFilePath;
+    private static final String jvmOptionsRelativePath = "usr/servers/" + SERVER_NAME + "/jvm.options";
+    private static String jvmOptionsFilePath;
 
     private static LibertyServer server;
     private static final String ENTERING = ">>>>>>>  --------------------- >>>>>>>";
     private static final String EXITING = "<<<<<<< ---------------------  <<<<<<<";
+
+    private static final boolean isBeta = false;
 
     @Rule
     public TestName testName = new TestName();
@@ -61,17 +67,29 @@ public class ServerStopTest {
     @BeforeClass
     public static void beforeClass() {
         Utils.backupFile(serverXmlRelativePath);
+        Utils.backupFile(jvmOptionsRelativePath);
     }
 
     @AfterClass
     public static void afterClass() {
         Utils.restoreFileFromBackup(serverXmlRelativePath);
+        Utils.restoreFileFromBackup(jvmOptionsRelativePath);
     }
 
     @Before
     public void before() {
         server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+        Map<String, String> options = new HashMap<>();
+        if (isBeta) {
+            options.put("-Dcom.ibm.ws.beta.edition", "true");
+            try {
+                server.setJvmOptions(options);
+            } catch (Exception e) {
+
+            }
+        }
         serverXmlFilePath = server.getInstallRoot() + "/" + serverXmlRelativePath;
+        jvmOptionsFilePath = server.getInstallRoot() + "/" + jvmOptionsRelativePath;
     }
 
     @After
@@ -270,9 +288,13 @@ public class ServerStopTest {
      */
     @Test
     public void testQuiesceTimeDefault() throws Exception {
+
         final String METHOD_NAME = "testQuiesceTimeDefault()";
         Log.info(c, METHOD_NAME, ENTERING);
-        assertTrue("", runQuiesceTest("30"));
+        if (isBeta) {
+            createJvmOptionsFileBetaEnabled();
+        }
+        assertTrue("The actual result does not match the expected result.", runQuiesceTest("30"));
         Log.info(c, METHOD_NAME, EXITING);
     }
 
@@ -283,14 +305,24 @@ public class ServerStopTest {
      * Starts & Stops the server and verifies that the expected timeout value is in
      * the quiesce message in the logs.
      */
-    @ExpectedFFDC("java.lang.NumberFormatException")
     @Test
     public void testQuiesceTimeNotValid() throws Exception {
+
         final String METHOD_NAME = "testQuiesceTimeNotValid()";
         Log.info(c, METHOD_NAME, ENTERING);
 
+        if (isBeta) {
+            createJvmOptionsFileBetaEnabled();
+        }
+
         Utils.createFile(serverXmlFilePath, getServerXmlContentsForQuiesceTests("XXXXX"));
+        //Utils.createFile(serverXml, getServerXmlContentsForQuiesceTests("XXXXX"));
+        //server.setServerConfigurationFile("../../" + serverXml);
         assertTrue("", runQuiesceTest("30"));
+
+        RemoteFile consoleLog = server.getConsoleLogFile();
+        List<String> matches = server.findStringsInLogs("CWWKE1108W", consoleLog);
+        assertNotNull("CWWKE1108W expected in console.log, but it was not found.", matches);
         Log.info(c, METHOD_NAME, EXITING);
     }
 
@@ -303,10 +335,18 @@ public class ServerStopTest {
      */
     @Test
     public void testQuiesceTimeValueLessThanDefault() throws Exception {
+
         final String METHOD_NAME = "testQuiesceTimeValueLessThanDefault()";
         Log.info(c, METHOD_NAME, ENTERING);
+
+        if (isBeta) {
+            createJvmOptionsFileBetaEnabled();
+        }
+
         Utils.createFile(serverXmlFilePath, getServerXmlContentsForQuiesceTests("29s"));
-        assertTrue("", runQuiesceTest("30"));
+        //Utils.createFile(serverXml, getServerXmlContentsForQuiesceTests("29s"));
+        //server.setServerConfigurationFile("../../" + serverXml);
+        assertTrue("The actual result does not match the expected result.", runQuiesceTest("30"));
         Log.info(c, METHOD_NAME, EXITING);
     }
 
@@ -319,14 +359,34 @@ public class ServerStopTest {
      */
     @Test
     public void testQuiesceTimeValueGreaterThanDefault() throws Exception {
+
         final String METHOD_NAME = "testQuiesceTimeValueGreaterThanDefault()";
         Log.info(c, METHOD_NAME, ENTERING);
+        String currentDirectory = System.getProperty("user.dir");
+        Log.info(c, METHOD_NAME, "Current directory [" + currentDirectory + "]");
+
+        if (isBeta) {
+            return;
+        }
+//        if (isBeta) {
+//            createJvmOptionsFileBetaEnabled();
+//        }
         Utils.createFile(serverXmlFilePath, getServerXmlContentsForQuiesceTests("1m30s"));
-        assertTrue("", runQuiesceTest("90"));
+        //Utils.createFile(serverXml, getServerXmlContentsForQuiesceTests("1m30s"));
+        //server.setServerConfigurationFile("../../" + serverXml);
+//        if (isBeta) {
+//            assertTrue("The actual result does not match the expected result.", runQuiesceTest("90"));
+//        } else {
+        assertTrue("The actual result does not match the expected result.", runQuiesceTest("30"));
+//        }
         Log.info(c, METHOD_NAME, EXITING);
     }
 
     // -----
+
+    private void createJvmOptionsFileBetaEnabled() {
+        Utils.createFile(jvmOptionsFilePath, "-Dcom.ibm.ws.beta.edition=true");
+    }
 
     public boolean runQuiesceTest(String expectedResult) throws Exception {
         final String METHOD_NAME = "runQuiesceTest";
@@ -334,6 +394,11 @@ public class ServerStopTest {
 
         startServer();
         stopServer();
+//        // Start server with the --clean option
+//        server.startServer(true); // uses --clean
+//        server.waitForStringInLog("CWWKF0011I");
+//        assertTrue("the server should have been started", server.isStarted());
+//        server.stopServer();
 
         RemoteFile consoleLog = server.getConsoleLogFile();
 
@@ -357,7 +422,8 @@ public class ServerStopTest {
         if (lastMatch != null) {
             String actualResult = extractTimeValue(lastMatch);
             if (actualResult != null) {
-                Log.info(c, METHOD_NAME, "return - did test pass? [" + actualResult + "]");
+                Log.info(c, METHOD_NAME, "return - expected [" + expectedResult + "] actual [" + actualResult + "]");
+                Utils.displayFile(consoleLog.getAbsolutePath());
                 return actualResult.equals(expectedResult);
             }
             Log.info(c, METHOD_NAME, "Problem extracting time from quiesce message [" + lastMatch + "]");
@@ -365,6 +431,7 @@ public class ServerStopTest {
             Log.info(c, METHOD_NAME, "Quiesce message" + "[" + quiesceMessage + "]" + "not found in " + consoleLog.getAbsolutePath());
         }
         Log.info(c, METHOD_NAME, "returning false");
+        Utils.displayFile(consoleLog.getAbsolutePath());
         return false;
     }
 
