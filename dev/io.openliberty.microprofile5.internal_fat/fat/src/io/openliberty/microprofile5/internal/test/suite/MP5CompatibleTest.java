@@ -120,7 +120,7 @@ public class MP5CompatibleTest {
                                           false); //validateTimedExit
         } finally {
             server.stopServer("CWWKF0033E: The singleton features .* and .* cannot be loaded at the same time",
-                              "CWWKF0044E: The .* and .* features cannot be loaded at the same time",
+                              "(CWWKF0044E|CWWKF0047E): The .* and .* features cannot be loaded at the same time",
                               "CWWKF0046W: The configuration includes an incompatible combination of features");
         }
     }
