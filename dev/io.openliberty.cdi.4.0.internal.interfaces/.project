@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>io.openliberty.cdi.4.0.interfaces</name>
+	<name>io.openliberty.cdi.4.0.internal.interfaces</name>
 	<comment></comment>
 	<projects>
 	</projects>

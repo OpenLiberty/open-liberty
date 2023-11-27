@@ -4,15 +4,12 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- * IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
 @org.osgi.annotation.versioning.Version("1.0")
 @TraceOptions(traceGroup = "JCDI", messageBundle = "com.ibm.ws.cdi.internal.resources.CDI")
-package com.ibm.ws.cdi40.extension;
+package io.openliberty.cdi40.internal.utils;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
