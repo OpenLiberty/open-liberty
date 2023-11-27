@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2020 IBM Corporation and others.
+ * Copyright (c) 2010, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -1011,7 +1011,14 @@ class ConfigEvaluator {
     private Object convertStringToSingleValue(String rawValue, ExtendedAttributeDefinition attrDef, EvaluationContext context,
                                               boolean ignoreWarnings) throws ConfigEvaluatorException {
         String value = processString(rawValue, attrDef, context, ignoreWarnings);
-        return evaluateString(value, attrDef, context);
+        Object result;
+        try {
+            result = evaluateString(value, attrDef, context);
+        } catch (IllegalArgumentException iae) {
+            issueWarning("error.attribute.validation.exception", context.getConfigElement().getNodeName(), attrDef.getAttributeName(), rawValue, iae.getLocalizedMessage());
+            result = evaluateString(attrDef.getDefaultValue()[0], attrDef, context);
+        }
+        return result;
     }
 
     /**
