@@ -1,0 +1,41 @@
+Manifest-Version: 1.0
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
+Subsystem-Version: 1.0.0.201311011651
+Subsystem-Content: com.ibm.websphere.appserver.servlet-5.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.transaction-2.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jdbc-4.2; type="osgi.subsystem.feature",
+ io.openliberty.restfulWS-3.0; type="osgi.subsystem.feature",
+ io.openliberty.xmlWS-3.0; type="osgi.subsystem.feature",
+ io.openliberty.xmlBinding-3.0; type="osgi.subsystem.feature",
+ io.openliberty.faces-3.0; type="osgi.subsystem.feature",
+ io.openliberty.pages-3.0; type="osgi.subsystem.feature",
+ io.openliberty.cdi-3.0; type="osgi.subsystem.feature",
+ io.openliberty.beanValidation-3.0; type="osgi.subsystem.feature",
+ io.openliberty.enterpriseBeansLite-4.0; type="osgi.subsystem.feature",
+ io.openliberty.enterpriseBeans-4.0; type="osgi.subsystem.feature",
+ io.openliberty.connectors-2.0; type="osgi.subsystem.feature",
+ io.openliberty.persistence-3.0; type="osgi.subsystem.feature",
+ io.openliberty.mdb-4.0; type="osgi.subsystem.feature",
+ io.openliberty.messaging-3.0; type="osgi.subsystem.feature",
+ io.openliberty.appSecurity-4.0; type="osgi.subsystem.feature",
+ io.openliberty.managedBeans-2.0; type="osgi.subsystem.feature",
+ io.openliberty.mail-2.0; type="osgi.subsystem.feature",
+ io.openliberty.batch-2.0; type="osgi.subsystem.feature",
+ io.openliberty.appAuthentication-2.0; type="osgi.subsystem.feature",
+ io.openliberty.appAuthorization-2.0; type="osgi.subsystem.feature",
+ io.openliberty.concurrent-2.0; type="osgi.subsystem.feature",
+ io.openliberty.websocket-2.0; type="osgi.subsystem.feature",
+ io.openliberty.expressionLanguage-4.0; type="osgi.subsystem.feature",
+ io.openliberty.jsonp-2.0; type="osgi.subsystem.feature",
+ io.openliberty.jsonb-2.0; type="osgi.subsystem.feature",
+ io.openliberty.connectorsInboundSecurity-2.0; type="osgi.subsystem.feature",
+ io.openliberty.appClientSupport-2.0; type="osgi.subsystem.feature",
+ io.openliberty.messagingSecurity-3.0; type="osgi.subsystem.feature",
+ io.openliberty.messagingServer-3.0; type="osgi.subsystem.feature",
+ io.openliberty.messagingClient-3.0; type="osgi.subsystem.feature",
+ io.openliberty.webProfile-9.1; type="osgi.subsystem.feature",
+ io.openliberty.jakartaee-9.1; type="osgi.subsystem.feature"
+Subsystem-SymbolicName: io.extension.jeeTestFeature.internal-9.1;visibility:=private; singleton:=true
+Subsystem-ManifestVersion: 1.0
+
