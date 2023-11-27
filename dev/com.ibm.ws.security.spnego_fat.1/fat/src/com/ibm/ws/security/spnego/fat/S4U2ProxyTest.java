@@ -199,8 +199,9 @@ public class S4U2ProxyTest extends CommonTest {
         try {
             List<String> startMsgs = new ArrayList<String>();
             startMsgs.add("CWWKS0008I");
+            testHelper.setShutdownMessages("CWWKE0701E");
             testHelper.reconfigureServer("S4U2Proxy_serverSpnego.xml", name.getMethodName(), startMsgs, SPNEGOConstants.RESTART_SERVER, SPNEGOConstants.JDK_SPECIFIC_RECONFIG);
-
+            testHelper.setShutdownMessages("CWWKE0701E");
             // create token with the mechOid with no delegateClientGssCred
             String spnegoToken = testHelper.createToken(InitClass.FIRST_USER_KRB5_FQN, InitClass.FIRST_USER_KRB5_FQN_PWD, TARGET_SERVER, null, null,
                                                         SPNEGOConstants.KRB5_CONF_FILE,

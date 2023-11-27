@@ -258,7 +258,9 @@ public class S4U2SelfTest extends CommonTest {
         try {
             List<String> startMsgs = new ArrayList<String>();
             startMsgs.add("CWWKS0008I");
+            testHelper.setShutdownMessages("CWWKE0701E");
             testHelper.reconfigureServer("serverS4U2Self.xml", name.getMethodName(), startMsgs, SPNEGOConstants.RESTART_SERVER, SPNEGOConstants.JDK_SPECIFIC_RECONFIG);
+            testHelper.setShutdownMessages("CWWKE0701E");
             generateSpnegoTokenInsideTest();
 
             // Access the servlet using SPNEGO token
