@@ -62,7 +62,7 @@ Subsystem-Name: Jakarta Contexts and Dependency Injection 4.0
  io.openliberty.cdi.4.0.internal.weld, \
  io.openliberty.cdi.4.0.internal.services.fragment, \
  com.ibm.ws.cdi.interfaces.jakarta, \
- io.openliberty.cdi.4.0.interfaces, \
+ io.openliberty.cdi.4.0.internal.interfaces, \
  io.openliberty.cdi.spi; location:="dev/spi/ibm/,lib/"
 -jars=io.openliberty.cdi.4.0.thirdparty; location:="dev/api/third-party/,lib/"; mavenCoordinates="org.jboss.weld:weld-osgi-bundle:5.1.0.Final"
 -files=dev/api/ibm/schema/ibm-managed-bean-bnd_1_0.xsd, \
