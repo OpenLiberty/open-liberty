@@ -57,13 +57,19 @@ public class LTPAConfigurationImplTest {
     private static SharedOutputManager outputMgr;
 
     private static final String PATH_TO_FILE = "/path/to/file";
+    private static final String PATH_TO_DIR = "/path/to/";
     private static final String PATH_TO_ANOTHER_FILE = "/path/to/another/file";
     private static final String DEFAULT_CONFIG_LOCATION_DIR = "${server.config.dir}/resources/security/";
     private static final String DEFAULT_CONFIG_LOCATION = "${server.config.dir}/resources/security/ltpa.keys";
     private static final String DEFAULT_OUTPUT_LOCATION = "${server.output.dir}/resources/security/ltpa.keys";
+    private static final String DEFAULT_VALIDATION_KEY_LOCATION = "${server.config.dir}/resources/security/validation.keys";
     private static final String RESOLVED_DEFAULT_CONFIG_LOCATION = "testServerName/resources/security/ltpa.keys";
     private static final String RESOLVED_DEFAULT_CONFIG_LOCATION_DIR = "testServerName/resources/security/";
     private static final String RESOLVED_DEFAULT_OUTPUT_LOCATION = "testServerName/resources/security/ltpa.keys";
+    private static final String DEFAULT_VALIDATION_KEY_ELEMENT = "<validationKeys fileName=\"validation.keys\" password=\"pwd\" validUntilDate=\"2099-01-01T00:00:00Z\"/>";
+    private static final String DEFAULT_VALIDATION_FILENAME = "validation.keys";
+    private static final String DEFAULT_VALIDATION_PASSWORD = "pwd";
+    private static final String DEFAULT_VALIDATION_VALID_UNTIL_DATE = "2099-01-01T00:00:00Z";
     private static final String PWD = "pwd";
     private static final String ANOTHER_PWD = "anotherPwd";
     private static final boolean DEFAULT_MONITOR_DIR_VALUE = false;
@@ -97,7 +103,8 @@ public class LTPAConfigurationImplTest {
 
     @Before
     public void setUp() {
-        props = createProps(PATH_TO_FILE, PWD, 120L, 0L, DEFAULT_MONITOR_DIR_VALUE, DEFAULT_UPDATE_TRIGGER, 0L);
+        props = createProps(PATH_TO_FILE, PWD, 120L, 0L, DEFAULT_MONITOR_DIR_VALUE, DEFAULT_UPDATE_TRIGGER, 
+                            0L, DEFAULT_VALIDATION_KEY_ELEMENT, DEFAULT_VALIDATION_FILENAME, DEFAULT_VALIDATION_PASSWORD, DEFAULT_VALIDATION_VALID_UNTIL_DATE);
 
         mock.checking(new Expectations() {
             {
@@ -120,7 +127,7 @@ public class LTPAConfigurationImplTest {
     }
 
     private Map<String, Object> createProps(String filePath, String password, long expiration, long monitorInterval, boolean monitorValidationKeysDir, String updateTrigger,
-                                            long expDiffAllowed) {
+                                            long expDiffAllowed, String validationKey, String validationKeyFileName, String validationKeyPassword, String validationKeyValidUntilDate) {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, filePath);
         props.put(LTPAConfiguration.CFG_KEY_PASSWORD, new SerializableProtectedString(password.toCharArray()));
@@ -129,6 +136,21 @@ public class LTPAConfigurationImplTest {
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_VALIDATION_KEYS_DIR, monitorValidationKeysDir);
         props.put(LTPAConfiguration.CFG_KEY_UPDATE_TRIGGER, updateTrigger);
         props.put(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED, expDiffAllowed);
+        // props.put(LTPAConfigurationImpl.CFG_KEY_VALIDATION_ELEMENT, validationKey);
+        // props.put(LTPAConfigurationImpl.CFG_KEY_VALIDATION_FILE_NAME, validationKeyFileName);
+        // props.put(LTPAConfigurationImpl.CFG_KEY_VALIDATION_PASSWORD, validationKeyPassword);
+        // props.put(LTPAConfigurationImpl.CFG_KEY_VALIDATION_VALID_UNTIL_DATE, validationKeyValidUntilDate);
+
+        // Create the first validation key
+        // props.put(LTPAConfiguration.CFG_KEY_VALIDATION_KEYS + ".0." + LTPAConfiguration.CFG_KEY_VALIDATION_REF_TYPE, referenceType);
+        props.put(LTPAConfiguration.CFG_KEY_VALIDATION_KEYS + ".0." + LTPAConfiguration.CFG_KEY_VALIDATION_FILE_NAME, validationKeyFileName);
+        props.put(LTPAConfiguration.CFG_KEY_VALIDATION_KEYS + ".0." + LTPAConfiguration.CFG_KEY_VALIDATION_PASSWORD, new SerializableProtectedString(validationKeyPassword.toCharArray()));
+        props.put(LTPAConfiguration.CFG_KEY_VALIDATION_KEYS + ".0." + LTPAConfiguration.CFG_KEY_VALIDATION_VALID_UNTIL_DATE, validationKeyValidUntilDate);
+
+
+        // Add the list of validation keys to the props hashmap
+        // props.put(LTPAConfiguration.CFG_KEY_VALIDATION_KEYS, validationKeys);
+
         return props;
     }
 
@@ -234,15 +256,45 @@ public class LTPAConfigurationImplTest {
     }
 
     /**
-     * Tests that the file monitor is registered and set in the LTPAConfigImpl object.
+     * Tests that the file monitor is registered and set in the LTPAConfigImpl object when monitorInterval is set.
      */
     @Test
-    public void fileMonitorRegistration() throws Exception {
+    public void fileMonitorRegistration_monitorInterval() throws Exception {
         setupExecutorServiceExpectations(1);
         setupLocationServiceExpectations(1);
         setupFileMonitorRegistrationsExpectations(1);
 
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, 5L);
+        LTPAConfigurationImplTestDouble ltpaConfig = createActivatedLTPAConfigurationImpl();
+
+        assertTrue("The LTPA file monitor registration must be set.", ltpaConfig.wasSetFileMonitorRegistrationCalled);
+    }
+
+    /**
+     * Tests that the file monitor is registered and set in the LTPAConfigImpl object when monitorValidationKeysDir is set.
+     */
+    @Test
+    public void fileMonitorRegistration_monitorValidationKeysDir() throws Exception {
+        setupExecutorServiceExpectations(1);
+        setupLocationServiceExpectations(1);
+        setupFileMonitorRegistrationsExpectations(1);
+
+        props.put(LTPAConfiguration.CFG_KEY_MONITOR_VALIDATION_KEYS_DIR, true);
+        LTPAConfigurationImplTestDouble ltpaConfig = createActivatedLTPAConfigurationImpl();
+
+        assertTrue("The LTPA file monitor registration must be set.", ltpaConfig.wasSetFileMonitorRegistrationCalled);
+    }
+
+    /**
+     * Tests that the file monitor is registered and set in the LTPAConfigImpl object when updateTrigger is set to mbean.
+     */
+    @Test
+    public void fileMonitorRegistration_updateTriggerMbean() throws Exception {
+        setupExecutorServiceExpectations(1);
+        setupLocationServiceExpectations(1);
+        setupFileMonitorRegistrationsExpectations(1);
+
+        props.put(LTPAConfiguration.CFG_KEY_UPDATE_TRIGGER, "mbean");
         LTPAConfigurationImplTestDouble ltpaConfig = createActivatedLTPAConfigurationImpl();
 
         assertTrue("The LTPA file monitor registration must be set.", ltpaConfig.wasSetFileMonitorRegistrationCalled);
@@ -276,6 +328,69 @@ public class LTPAConfigurationImplTest {
                      120, ltpaConfig.getTokenExpiration());
     }
 
+    /**
+     * Test method for {@link com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl#getMonitorInterval()}.
+     */
+    @Test
+    public void getMonitorInterval() {
+        assertEquals("The monitorInterval value was not the expected value",
+                     0L, ltpaConfig.getMonitorInterval());
+    }
+
+    /**
+     * Test method for {@link com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl#getMonitorValidationKeysDir()}.
+     */
+    @Test
+    public void getMonitorValidationKeysDir() {
+        assertEquals("The monitorValidationKeysDir value was not the expected value",
+                     DEFAULT_MONITOR_DIR_VALUE, ltpaConfig.getMonitorValidationKeysDir());
+    }
+
+    /**
+     * Test method for {@link com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl#getUpdateTrigger()}.
+     */
+    @Test
+    public void getUpdateTrigger() {
+        assertEquals("The updateTrigger value was not the expected value",
+                     DEFAULT_UPDATE_TRIGGER, ltpaConfig.getUpdateTrigger());
+    }
+
+    /**
+     * Test method for {@link com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl#getValidationKeys()}.
+     */
+    @Test
+    public void getValidationKeys() {
+        assertEquals("The validationKeys value was not the expected value",
+                     "[{fileName=/path/to/validation.keys, password=pwd, validUntilDate=2099-01-01T00:00:00Z}]", ltpaConfig.getValidationKeys().toString());
+    }
+
+    /**
+     * Test method for {@link com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl#getFirstValidationKeyFileName()}.
+     */
+    @Test
+    public void getFirstValidationKeyFileName() {
+        assertEquals("The first Validation Keys' file name value was not the expected value",
+                     PATH_TO_DIR + DEFAULT_VALIDATION_FILENAME, ltpaConfig.getFirstValidationKeyFileName());
+    }
+
+    /**
+     * Test method for {@link com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl#getFirstValidationKeyPassword()}.
+     */
+    @Test
+    public void getFirstValidationKeyPassword() {
+        assertEquals("The first Validation Keys' password value was not the expected value",
+                     DEFAULT_VALIDATION_PASSWORD, ltpaConfig.getFirstValidationKeyPassword());
+    }
+
+    /**
+     * Test method for {@link com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl#getFirstValidationKeyValidUntilDate()}.
+     */
+    @Test
+    public void getFirstValidationKeyValidUntilDate() {
+        assertEquals("The first Validation Keys' validUntilDate value was not the expected value",
+                     DEFAULT_VALIDATION_VALID_UNTIL_DATE, ltpaConfig.getFirstValidationKeyValidUntilDate());
+    }
+
     @Test
     public void modified() {
         setupExecutorServiceExpectations(1);
@@ -293,6 +408,16 @@ public class LTPAConfigurationImplTest {
         setupFileMonitorRegistrationsExpectations(1);
 
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, 5000L);
+        ltpaConfig.modified(props);
+    }
+
+    @Test
+    public void modified_monitorValidationKeysDirSet_everythingElseTheSame_keysReloaded() {
+        setupExecutorServiceExpectations(0);
+        setupLocationServiceExpectations(1);
+        setupFileMonitorRegistrationsExpectations(1);
+
+        props.put(LTPAConfiguration.CFG_KEY_MONITOR_VALIDATION_KEYS_DIR, true);
         ltpaConfig.modified(props);
     }
 
