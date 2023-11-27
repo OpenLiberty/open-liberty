@@ -13,9 +13,11 @@
 package tests;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 
@@ -32,25 +34,10 @@ import com.ibm.ws.transaction.fat.util.FATUtils;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import web.XAFlowServlet;
 
-/**
- * <li> Application packaging is done in the @BeforeClass, instead of ant scripting.
- * <li> Injects servers via @Server annotation. Annotation value corresponds to the
- * server directory name in 'publish/servers/%annotation_value%' where ports get
- * assigned to the LibertyServer instance when the 'testports.properties' does not
- * get used.
- * <li> Specifies an @RunWith(FATRunner.class) annotation. Traditionally this has been
- * added to bytecode automatically by ant.
- * <li> Uses the @TestServlet annotation to define test servlets. Notice that not all @Test
- * methods are defined in this class. All of the @Test methods are defined on the test
- * servlet referenced by the annotation, and will be run whenever this test class runs.
- */
-@Mode
 @RunWith(FATRunner.class)
 public class XAFlowTest extends FATServletClient {
 
@@ -101,7 +88,6 @@ public class XAFlowTest extends FATServletClient {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testXAFlow002() throws Exception {
         xaflowTest("002");
     }
@@ -113,10 +99,13 @@ public class XAFlowTest extends FATServletClient {
             // We expect this to fail since it is gonna crash the server
             sb = runTestWithResponse(server, SERVLET_NAME, "setupXAFlow" + id);
             Log.info(this.getClass(), method, "setupXAFlow" + id + " returned: " + sb);
-            fail();
-        } catch (Throwable e) {
+            fail(sb.toString());
+        } catch (IOException e) {
             Log.info(getClass(), method, "setupXAFlow" + id + " crashed the server as expected: " + e.getLocalizedMessage());
         }
+
+        // Make sure we get the logs
+        server.postStopServerArchive();
 
         server.setServerStartTimeout(300000); // 5 mins
         ProgramOutput po = server.startServerAndValidate(false, true, true);
@@ -142,7 +131,7 @@ public class XAFlowTest extends FATServletClient {
         }
 
         // Server appears to have started ok
-        server.waitForStringInTrace("Setting state from RECOVERING to ACTIVE");
+        assertNotNull(server.waitForStringInTrace("Setting state from RECOVERING to ACTIVE"));
 
         int attempt = 0;
         while (true) {
