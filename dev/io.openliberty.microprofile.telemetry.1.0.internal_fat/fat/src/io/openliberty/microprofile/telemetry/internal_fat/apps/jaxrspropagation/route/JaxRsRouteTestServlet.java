@@ -141,7 +141,6 @@ public class JaxRsRouteTestServlet extends FATServlet {
         Span span = utils.withTestSpan(() -> {
             Response response = ClientBuilder.newClient().target(testUri).path("getSubResourceWithPathParam/myIdForTesting/details").request()
                             .build("GET").invoke();
-            System.out.println("RESPONSESSS" + response.toString());
             assertThat(response.getStatus(), equalTo(200));
             assertThat(response.readEntity(String.class), equalTo("myIdForTesting"));
         });
