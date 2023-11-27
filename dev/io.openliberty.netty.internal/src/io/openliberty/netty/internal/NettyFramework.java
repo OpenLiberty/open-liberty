@@ -19,6 +19,8 @@ import com.ibm.websphere.channelfw.EndPointMgr;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ServerChannel;
+import io.netty.channel.local.LocalAddress;
 import io.openliberty.netty.internal.exception.NettyException;
 
 public interface NettyFramework {
@@ -69,6 +71,29 @@ public interface NettyFramework {
     BootstrapExtended createUDPBootstrapOutbound(Map<String, Object> options) throws NettyException;
 
     /**
+     * Create a local bootstrap: handles registering the correct EventLoopGroups,
+     * creating a LocalChannel, and implementing and configuration properties.
+     * 
+     * @param options
+     * @return BootstrapExtended
+     * @throws NettyException
+     */
+	ServerBootstrapExtended createLocalBootstrap(ChannelInitializerWrapper initializer, Map<String, Object> options)
+			throws NettyException;
+
+    /**
+     * Create a local bootstrap from Netty outbound: handles registering the
+     * correct EventLoopGroups, creating a LocalChannel, and implementing and
+     * configuration properties.
+     * 
+     * @param options
+     * @return BootstrapExtended
+     * @throws NettyException
+     */
+	BootstrapExtended createLocalBootstrapOutbound(ChannelInitializerWrapper initializer, Map<String, Object> options)
+			throws NettyException;
+   
+    /**
      * Binds a ServerBootstrap to the given host and port, and registers the
      * ServerChannel with this framework
      * 
@@ -106,6 +131,43 @@ public interface NettyFramework {
      * @throws NettyException
      */
     FutureTask<ChannelFuture> startOutbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
+            ChannelFutureListener bindListener) throws NettyException;
+
+    /**
+     * Binds a ServerBootstrap to the LocalAddress, and registers the
+     * ServerChannel with this framework
+     * 
+     * @param bootstrap
+     * @param localAddr - a representation of the local endpoint address
+     * @return ChannelFuture for the ServerChannel, or null if the server is not yet
+     *         started
+     */
+    FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, LocalAddress localAddr,
+            ChannelFutureListener bindListener) throws NettyException;
+
+    /**
+     * Binds a Bootstrap to the given LocalAddress, and registers the Channel with
+     * this framework
+     * 
+     * @param bootstrap
+     * @param localAddr - a representation of the local endpoint address
+     * @return ChannelFuture for the ServerChannel, or null if the server is not yet
+     *         started
+     */
+    FutureTask<ChannelFuture> start(BootstrapExtended bootstrap, LocalAddress localAddr, ChannelFutureListener bindListener)
+            throws NettyException;
+
+    /**
+     * Connects an outbound Bootstrap to the given LocalAddress
+     * and registers the Channel with this framework
+     * 
+     * @param bootstrap
+     * @param localAddr - a representation of the local endpoint address
+     * @param bindListener
+     * @return ChannelFuture
+     * @throws NettyException
+     */
+    FutureTask<ChannelFuture> startOutbound(BootstrapExtended bootstrap, LocalAddress localAddr,
             ChannelFutureListener bindListener) throws NettyException;
 
     /**
@@ -166,5 +228,8 @@ public interface NettyFramework {
      * @return EndPointMgr
      */
     public EndPointMgr getEndpointManager();
+
+
+
 
 }

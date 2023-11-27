@@ -45,8 +45,11 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.ServerChannel;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
+import io.netty.channel.local.LocalAddress;
+import io.netty.channel.local.LocalChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -54,46 +57,47 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import io.openliberty.netty.internal.BootstrapExtended;
+import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
 import io.openliberty.netty.internal.tcp.TCPConfigurationImpl;
 import io.openliberty.netty.internal.tcp.TCPUtils;
 import io.openliberty.netty.internal.udp.UDPUtils;
+import io.openliberty.netty.internal.local.LocalUtils;
 import com.ibm.websphere.channelfw.EndPointMgr;
 
 /**
  * Liberty NettyFramework implementation bundle
  */
 @Component(configurationPid = "io.openliberty.netty.internal", immediate = true, service = { NettyFramework.class,
-        ServerQuiesceListener.class }, property = { "service.vendor=IBM" })
+		ServerQuiesceListener.class }, property = { "service.vendor=IBM" })
 public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework {
 
-    private static final TraceComponent tc = Tr.register(NettyFrameworkImpl.class, NettyConstants.NETTY_TRACE_NAME,
-            NettyConstants.BASE_BUNDLE);
+	private static final TraceComponent tc = Tr.register(NettyFrameworkImpl.class, NettyConstants.NETTY_TRACE_NAME,
+			NettyConstants.BASE_BUNDLE);
 
-    /** Reference to the executor service -- required */
-    private ExecutorService executorService = null;
+	/** Reference to the executor service -- required */
+	private ExecutorService executorService = null;
 
-    /** server started logic borrowed from CHFWBundle */
-    private static AtomicBoolean serverCompletelyStarted = new AtomicBoolean(false);
-    private static Queue<FutureTask<?>> serverStartedTasks = new LinkedBlockingQueue<>();
-    private static Object syncStarted = new Object() {
-    }; // use brackets/inner class to make lock appear in dumps using class name
+	/** server started logic borrowed from CHFWBundle */
+	private static AtomicBoolean serverCompletelyStarted = new AtomicBoolean(false);
+	private static Queue<FutureTask<?>> serverStartedTasks = new LinkedBlockingQueue<>();
+	private static Object syncStarted = new Object() {
+	}; // use brackets/inner class to make lock appear in dumps using class name
 
-    private Map<Channel, ChannelGroup> activeChannelMap = new ConcurrentHashMap<Channel, ChannelGroup>();
-        
-    // TODO: Should we use this or maybe the event loop on activate?
-    private ChannelGroup outboundConnections = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+	private Map<Channel, ChannelGroup> activeChannelMap = new ConcurrentHashMap<Channel, ChannelGroup>();
 
-    private EventLoopGroup parentGroup;
-    private EventLoopGroup childGroup;
+	// TODO: Should we use this or maybe the event loop on activate?
+	private ChannelGroup outboundConnections = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
-    private CHFWBundle chfw;
-    private volatile boolean isActive = false;
+	private EventLoopGroup parentGroup;
+	private EventLoopGroup childGroup;
+
+	private CHFWBundle chfw;
+	private volatile boolean isActive = false;
 
 	private ScheduledExecutorService scheduledExecutorService = null;
-
 
 	@Activate
 	protected void activate(ComponentContext context, Map<String, Object> config) {
@@ -109,466 +113,495 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 	@Deactivate
 	protected void deactivate(ComponentContext context, Map<String, Object> properties) {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-			Tr.event(this, tc, "Deactivate called", new Object[] {context, properties});
+			Tr.event(this, tc, "Deactivate called", new Object[] { context, properties });
 		}
 		EndPointMgrImpl.destroyEndpoints();
 		stopEventLoops();
 	}
 
-    @Modified
-    protected void modified(ComponentContext context, Map<String, Object> config) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "Processing config", config);
-        }
-        // update any framework-specific config
-    }
-    
-    /**
-     * DS method for setting the required channel framework service. For now
-     * this reference is needed for access to EndPointMgr. That code will be split
-     * out.
-     *
-     * @param bundle
-     */
-    @Reference(name = "chfwBundle")
-    protected void setChfwBundle(CHFWBundle bundle) {
-        chfw = bundle;
-    }
+	@Modified
+	protected void modified(ComponentContext context, Map<String, Object> config) {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+			Tr.event(this, tc, "Processing config", config);
+		}
+		// update any framework-specific config
+	}
 
-    /**
-     * This is a required static reference, this won't be called until the component
-     * has been deactivated
-     *
-     * @param bundle CHFWBundle instance to unset
-     */
-    protected void unsetChfwBundle(CHFWBundle bundle) {
-    }
+	/**
+	 * DS method for setting the required channel framework service. For now this
+	 * reference is needed for access to EndPointMgr. That code will be split out.
+	 *
+	 * @param bundle
+	 */
+	@Reference(name = "chfwBundle")
+	protected void setChfwBundle(CHFWBundle bundle) {
+		chfw = bundle;
+	}
 
-    /**
-     * DS method for setting the executor service reference.
-     *
-     * @param executorService the {@link java.util.concurrent.ExecutorService} to
-     *                        queue work to.
-     */
-    @Reference(service = ExecutorService.class, cardinality = ReferenceCardinality.MANDATORY)
-    protected void setExecutorService(ExecutorService executorService) {
-    	this.executorService = executorService;
-    }
+	/**
+	 * This is a required static reference, this won't be called until the component
+	 * has been deactivated
+	 *
+	 * @param bundle CHFWBundle instance to unset
+	 */
+	protected void unsetChfwBundle(CHFWBundle bundle) {
+	}
 
-    /**
-     * DS method for clearing the executor service reference. This is a required
-     * reference, will be called after deactivate.
-     *
-     * @param executorService the service instance to clear
-     */
-    protected void unsetExecutorService(ExecutorService executorService) {
-    	this.executorService = null;
-    }
+	/**
+	 * DS method for setting the executor service reference.
+	 *
+	 * @param executorService the {@link java.util.concurrent.ExecutorService} to
+	 *                        queue work to.
+	 */
+	@Reference(service = ExecutorService.class, cardinality = ReferenceCardinality.MANDATORY)
+	protected void setExecutorService(ExecutorService executorService) {
+		this.executorService = executorService;
+	}
 
-    /**
-     * DS method for setting the scheduled executor service reference.
-     *
-     * @param scheduledExecutorService the {@link java.util.concurrent.ScheduledExecutorService} to
-     *                        queue work to.
-     */
-    @Reference(service = ScheduledExecutorService.class, cardinality = ReferenceCardinality.MANDATORY)
-    protected void setScheduledExecutorService(ScheduledExecutorService scheduledExecutorService) {
-        this.scheduledExecutorService  = scheduledExecutorService;
-    }
+	/**
+	 * DS method for clearing the executor service reference. This is a required
+	 * reference, will be called after deactivate.
+	 *
+	 * @param executorService the service instance to clear
+	 */
+	protected void unsetExecutorService(ExecutorService executorService) {
+		this.executorService = null;
+	}
 
-    /**
-     * DS method for clearing the executor service reference. This is a required
-     * reference, will be called after deactivate.
-     *
-     * @param executorService the service instance to clear
-     */
-    protected void unsetScheduledExecutorService(ScheduledExecutorService scheduledExecutorService) {
-        this.scheduledExecutorService = null;
-    }
-    
-    /**
-     * Returns whether the framework is active
-     * 
-     */
-    public boolean isActive(){
-    	return this.isActive;
-    }
-    
-    /**
-     * Returns whether the framework has been issued to stop
-     * 
-     */
-    public boolean isStopping(){
-    	return isServerCompletelyStarted() && !this.isActive();
-    } 
+	/**
+	 * DS method for setting the scheduled executor service reference.
+	 *
+	 * @param scheduledExecutorService the
+	 *                                 {@link java.util.concurrent.ScheduledExecutorService}
+	 *                                 to queue work to.
+	 */
+	@Reference(service = ScheduledExecutorService.class, cardinality = ReferenceCardinality.MANDATORY)
+	protected void setScheduledExecutorService(ScheduledExecutorService scheduledExecutorService) {
+		this.scheduledExecutorService = scheduledExecutorService;
+	}
 
-    /**
-     * When notified that the server is going to stop, pre-quiesce all chains in the
-     * runtime. This will be called before services start getting torn down..
-     *
-     * @see com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener#serverStopping()
-     */
-    @Override
-    public void serverStopping() {
-    	if (isActive) {
-    		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-    			Tr.event(this, tc, "Destroying all endpoints (closing all channels): " + activeChannelMap.keySet());
-    		}
-    		isActive = false;
-    		// If the system is configured to quiesce connections..
-    		long timeout = getDefaultChainQuiesceTimeout();
+	/**
+	 * DS method for clearing the executor service reference. This is a required
+	 * reference, will be called after deactivate.
+	 *
+	 * @param executorService the service instance to clear
+	 */
+	protected void unsetScheduledExecutorService(ScheduledExecutorService scheduledExecutorService) {
+		this.scheduledExecutorService = null;
+	}
 
-    		if(timeout > 0) {
-                if(activeChannelMap.isEmpty() && outboundConnections.isEmpty()){
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-    					Tr.debug(tc, "No connections to clean up, skipping quiesce creation.");
-    				}
-                    return;
-                }
-    			NettyQuiesceListener quiesce = new NettyQuiesceListener(this, scheduledExecutorService, timeout);
-    			try {
-    				// Go through active endpoints and stop accepting connections
-    				for (Channel channel : activeChannelMap.keySet()) {
-    					// Fire custom user event to let know that the endpoint is being stopped
-    					channel.pipeline().fireUserEventTriggered(QuiesceHandler.QUIESCE_EVENT);
-    				}
-    				// Schedule quiesce tasks
-    				quiesce.startTasks();
-    			} catch (Exception e) {
-    				if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-    					//TODO: change to same log used in traditional channel.
-    					Tr.event(this, tc, "Exception occurred on quiesce", e);
-    				}
-    			}
-    		}
-    	}
-    }
-    
+	/**
+	 * Returns whether the framework is active
+	 * 
+	 */
+	public boolean isActive() {
+		return this.isActive;
+	}
 
-    private void stopEventLoops() {
-    	Future<?> parent = null;
-    	Future<?> child = null;
-    	Future<?> global = null;
-    	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Gracefully shutting down parentGroup Event Loop " + parentGroup);
-        }
-    	if (parentGroup != null) {
-    		parent = parentGroup.shutdownGracefully();
-    	}
-    	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Gracefully shutting down childGroup Event Loop " + childGroup);
-        }
-    	if (childGroup != null) {
-    		child = childGroup.shutdownGracefully();
-    	}
+	/**
+	 * Returns whether the framework has been issued to stop
+	 * 
+	 */
+	public boolean isStopping() {
+		return isServerCompletelyStarted() && !this.isActive();
+	}
 
-    	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Gracefully shutting down GlobalEventExecutor " + GlobalEventExecutor.INSTANCE);
-        }
-    	global = GlobalEventExecutor.INSTANCE.shutdownGracefully();
-    	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Waiting for parentGroup Event Loop shutdown...");
-        }
-    	if (parent != null) {
-    		parent.awaitUninterruptibly();
-    	}
-    	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Waiting for childGroup Event Loop shutdown...");
-        }
-    	if (child != null) {
-    		child.awaitUninterruptibly();
-    	}
-    	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Waiting for GlobalEventExecutor shutdown...");
-        }
-    	if (global != null) {
-    		global.awaitUninterruptibly();
-    	}
-    	
-    	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Event loops finished clean up!");
-        }
-    }
+	/**
+	 * When notified that the server is going to stop, pre-quiesce all chains in the
+	 * runtime. This will be called before services start getting torn down..
+	 *
+	 * @see com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener#serverStopping()
+	 */
+	@Override
+	public void serverStopping() {
+		if (isActive) {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+				Tr.event(this, tc, "Destroying all endpoints (closing all channels): " + activeChannelMap.keySet());
+			}
+			isActive = false;
+			// If the system is configured to quiesce connections..
+			long timeout = getDefaultChainQuiesceTimeout();
 
-    
+			if (timeout > 0) {
+				if (activeChannelMap.isEmpty() && outboundConnections.isEmpty()) {
+					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+						Tr.debug(tc, "No connections to clean up, skipping quiesce creation.");
+					}
+					return;
+				}
+				NettyQuiesceListener quiesce = new NettyQuiesceListener(this, scheduledExecutorService, timeout);
+				try {
+					// Go through active endpoints and stop accepting connections
+					for (Channel channel : activeChannelMap.keySet()) {
+						// Fire custom user event to let know that the endpoint is being stopped
+						channel.pipeline().fireUserEventTriggered(QuiesceHandler.QUIESCE_EVENT);
+					}
+					// Schedule quiesce tasks
+					quiesce.startTasks();
+				} catch (Exception e) {
+					if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+						// TODO: change to same log used in traditional channel.
+						Tr.event(this, tc, "Exception occurred on quiesce", e);
+					}
+				}
+			}
+		}
+	}
 
-    /**
-     * Declarative services method that is invoked once the server is started. Only
-     * after this method is invoked is the initial polling for persistent tasks
-     * performed.
-     * 
-     * {@See CHFWBundle}
-     *
-     * @param ref reference to the ServerStarted service
-     */
-    @Reference(service = ServerStarted.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
-    protected void setServerStarted(ServiceReference<ServerStarted> ref) {
-        // set will be called when the ServerStarted service has been registered (by the
-        // FeatureManager as of 9/2015). This is a signal that
-        // the server is fully started, but before the "smarter planet" message has been
-        // output. Use this signal to run tasks, mostly likely tasks that will
-        // finish the port listening logic, that need to run at the end of server
-        // startup
+	private void stopEventLoops() {
+		Future<?> parent = null;
+		Future<?> child = null;
+		Future<?> global = null;
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			Tr.debug(tc, "Gracefully shutting down parentGroup Event Loop " + parentGroup);
+		}
+		if (parentGroup != null) {
+			parent = parentGroup.shutdownGracefully();
+		}
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			Tr.debug(tc, "Gracefully shutting down childGroup Event Loop " + childGroup);
+		}
+		if (childGroup != null) {
+			child = childGroup.shutdownGracefully();
+		}
 
-        FutureTask<?> task;
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "Netty Framework signaled- Server Completely Started signal received");
-        }
-        while ((task = serverStartedTasks.poll()) != null) {
-            try {
-            	if(!task.isCancelled())
-            		executorService.submit(task);
-            } catch (Exception e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "caught exception performing late cycle server startup task: " + e);
-                }
-            }
-        }
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			Tr.debug(tc, "Gracefully shutting down GlobalEventExecutor " + GlobalEventExecutor.INSTANCE);
+		}
+		global = GlobalEventExecutor.INSTANCE.shutdownGracefully();
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			Tr.debug(tc, "Waiting for parentGroup Event Loop shutdown...");
+		}
+		if (parent != null) {
+			parent.awaitUninterruptibly();
+		}
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			Tr.debug(tc, "Waiting for childGroup Event Loop shutdown...");
+		}
+		if (child != null) {
+			child.awaitUninterruptibly();
+		}
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			Tr.debug(tc, "Waiting for GlobalEventExecutor shutdown...");
+		}
+		if (global != null) {
+			global.awaitUninterruptibly();
+		}
 
-        synchronized (syncStarted) {
-            serverCompletelyStarted.set(true);
-            isActive = true;
-            syncStarted.notifyAll();
-        }
-    }
-    
-    /**
-     * Method is called to run a task if the server has already started, if the
-     * server has not started that task is queued to be run when the server start
-     * signal has been received.
-     *
-     * @param callable - task to run
-     * @return Callable return null if the task was not ran, but queued, else return
-     *         the task to denote it has ran.
-     * @throws Exception
-     */
-    public <T> FutureTask<T> runWhenServerStarted(Callable<T> callable) throws Exception {
-        synchronized (syncStarted) {
-        	FutureTask<T> future = new FutureTask<T>(callable);
-            if (!serverCompletelyStarted.get()) {
-                serverStartedTasks.add(future);
-            }else {
-            	this.executorService.submit(future);
-            }
-            return future;
-        }
-    }
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			Tr.debug(tc, "Event loops finished clean up!");
+		}
+	}
 
-    /*
-     * If the server has not completely started, then wait until it has been. The
-     * server will be "completely" started when the server start signal has been
-     * received and any tasks waiting on that signal before running have now been
-     * run.
-     */
-    @FFDCIgnore({ InterruptedException.class })
-    public static void waitServerCompletelyStarted() {
-        synchronized (syncStarted) {
-            if (serverCompletelyStarted.get() == false) {
-                try {
-                    syncStarted.wait();
-                } catch (InterruptedException x) {
-                    // assume we can go on then
-                }
-            }
-        }
-        return;
-    }
+	/**
+	 * Declarative services method that is invoked once the server is started. Only
+	 * after this method is invoked is the initial polling for persistent tasks
+	 * performed.
+	 * 
+	 * {@See CHFWBundle}
+	 *
+	 * @param ref reference to the ServerStarted service
+	 */
+	@Reference(service = ServerStarted.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
+	protected void setServerStarted(ServiceReference<ServerStarted> ref) {
+		// set will be called when the ServerStarted service has been registered (by the
+		// FeatureManager as of 9/2015). This is a signal that
+		// the server is fully started, but before the "smarter planet" message has been
+		// output. Use this signal to run tasks, mostly likely tasks that will
+		// finish the port listening logic, that need to run at the end of server
+		// startup
 
-    /**
-     * non-blocking method to return the state of server startup with respect to the
-     * server being completely started. The server will be "completely" started when
-     * the server start signal has been received and any tasks waiting on that
-     * signal before running have now been run.
-     *
-     * @return
-     */
-    public static boolean isServerCompletelyStarted() {
-        return serverCompletelyStarted.get();
-    }
-    
-    @Override
-    public void registerEndpointQuiesce(Channel chan, Callable quiesce) {
-    	if(chan != null && getActiveChannelsMap().containsKey(chan)) {
-    		ChannelHandler quiesceHandler = new QuiesceHandler(quiesce);
-        	chan.pipeline().addLast(quiesceHandler);
-    	}else {
-    		if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                Tr.warning(tc, "Attempted to add a Quiesce Task to a channel which is not an endpoint. Quiesce will not be added and will be ignored.");
-            }
-    	}
-    }
+		FutureTask<?> task;
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			Tr.debug(this, tc, "Netty Framework signaled- Server Completely Started signal received");
+		}
+		while ((task = serverStartedTasks.poll()) != null) {
+			try {
+				if (!task.isCancelled())
+					executorService.submit(task);
+			} catch (Exception e) {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc, "caught exception performing late cycle server startup task: " + e);
+				}
+			}
+		}
 
-    /**
-     * Declarative Services method for unsetting the ServerStarted service
-     *
-     * @param ref reference to the service
-     */
-    protected synchronized void unsetServerStarted(ServiceReference<ServerStarted> ref) {
-        // server is shutting down
-        serverCompletelyStarted.set(false);
-    }
+		synchronized (syncStarted) {
+			serverCompletelyStarted.set(true);
+			isActive = true;
+			syncStarted.notifyAll();
+		}
+	}
 
-    @Override
-    public ServerBootstrapExtended createTCPBootstrap(Map<String, Object> tcpOptions) throws NettyException {
-        return TCPUtils.createTCPBootstrap(this, tcpOptions);
-    }
+	/**
+	 * Method is called to run a task if the server has already started, if the
+	 * server has not started that task is queued to be run when the server start
+	 * signal has been received.
+	 *
+	 * @param callable - task to run
+	 * @return Callable return null if the task was not ran, but queued, else return
+	 *         the task to denote it has ran.
+	 * @throws Exception
+	 */
+	public <T> FutureTask<T> runWhenServerStarted(Callable<T> callable) throws Exception {
+		synchronized (syncStarted) {
+			FutureTask<T> future = new FutureTask<T>(callable);
+			if (!serverCompletelyStarted.get()) {
+				serverStartedTasks.add(future);
+			} else {
+				this.executorService.submit(future);
+			}
+			return future;
+		}
+	}
 
-    @Override
-    public BootstrapExtended createTCPBootstrapOutbound(Map<String, Object> tcpOptions) throws NettyException {
-        return TCPUtils.createTCPBootstrapOutbound(this, tcpOptions);
-    }
+	/*
+	 * If the server has not completely started, then wait until it has been. The
+	 * server will be "completely" started when the server start signal has been
+	 * received and any tasks waiting on that signal before running have now been
+	 * run.
+	 */
+	@FFDCIgnore({ InterruptedException.class })
+	public static void waitServerCompletelyStarted() {
+		synchronized (syncStarted) {
+			if (serverCompletelyStarted.get() == false) {
+				try {
+					syncStarted.wait();
+				} catch (InterruptedException x) {
+					// assume we can go on then
+				}
+			}
+		}
+		return;
+	}
 
-    @Override
-    public BootstrapExtended createUDPBootstrap(Map<String, Object> options) throws NettyException {
-        return UDPUtils.createUDPBootstrap(this, options);
-    }
+	/**
+	 * non-blocking method to return the state of server startup with respect to the
+	 * server being completely started. The server will be "completely" started when
+	 * the server start signal has been received and any tasks waiting on that
+	 * signal before running have now been run.
+	 *
+	 * @return
+	 */
+	public static boolean isServerCompletelyStarted() {
+		return serverCompletelyStarted.get();
+	}
 
-    @Override
-    public BootstrapExtended createUDPBootstrapOutbound(Map<String, Object> options) throws NettyException {
-        return UDPUtils.createUDPBootstrapOutbound(this, options);
-    }
+	@Override
+	public void registerEndpointQuiesce(Channel chan, Callable quiesce) {
+		if (chan != null && getActiveChannelsMap().containsKey(chan)) {
+			ChannelHandler quiesceHandler = new QuiesceHandler(quiesce);
+			chan.pipeline().addLast(quiesceHandler);
+		} else {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+				Tr.warning(tc,
+						"Attempted to add a Quiesce Task to a channel which is not an endpoint. Quiesce will not be added and will be ignored.");
+			}
+		}
+	}
 
-    @Override
-    public FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
-            ChannelFutureListener bindListener) throws NettyException {
-        return TCPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
-    }
+	/**
+	 * Declarative Services method for unsetting the ServerStarted service
+	 *
+	 * @param ref reference to the service
+	 */
+	protected synchronized void unsetServerStarted(ServiceReference<ServerStarted> ref) {
+		// server is shutting down
+		serverCompletelyStarted.set(false);
+	}
 
-    @Override
-    public FutureTask<ChannelFuture> start(BootstrapExtended bootstrap, String inetHost, int inetPort,
-            ChannelFutureListener bindListener) throws NettyException {
-        return UDPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
-    }
+	@Override
+	public ServerBootstrapExtended createTCPBootstrap(Map<String, Object> tcpOptions) throws NettyException {
+		return TCPUtils.createTCPBootstrap(this, tcpOptions);
+	}
 
-    @Override
-    public FutureTask<ChannelFuture> startOutbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
-    		ChannelFutureListener bindListener) throws NettyException {
-    	if (bootstrap.getConfiguration() instanceof TCPConfigurationImpl) {
-    		return TCPUtils.startOutbound(this, bootstrap, inetHost, inetPort, bindListener);
-    	} else {
-    		return UDPUtils.startOutbound(this, bootstrap, inetHost, inetPort, bindListener);
-    	}
-    }
+	@Override
+	public BootstrapExtended createTCPBootstrapOutbound(Map<String, Object> tcpOptions) throws NettyException {
+		return TCPUtils.createTCPBootstrapOutbound(this, tcpOptions);
+	}
 
-    @Override
-    public ChannelFuture stop(Channel channel) {
-    	ChannelGroup group = activeChannelMap.get(channel);
-    	if(group != null) {
-    		group.close().addListener(innerFuture -> {
-    			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "channel group" + group + " has closed...");
-                }
-    		});
-    		activeChannelMap.remove(channel);
-    	}
-    	return channel.close();
-    }
+	@Override
+	public BootstrapExtended createUDPBootstrap(Map<String, Object> options) throws NettyException {
+		return UDPUtils.createUDPBootstrap(this, options);
+	}
 
-    @Override
-    public void stop(Channel channel, long timeout) {
-    	if (timeout == -1) {
-    		timeout = getDefaultChainQuiesceTimeout();
-    	}
-    	ChannelFuture future = stop(channel);
-    	if (future != null) {
-    		future.awaitUninterruptibly(timeout, TimeUnit.MILLISECONDS);
-    	}
-    }
-    
+	@Override
+	public BootstrapExtended createUDPBootstrapOutbound(Map<String, Object> options) throws NettyException {
+		return UDPUtils.createUDPBootstrapOutbound(this, options);
+	}
 
-    @Override
-    public Set<Channel> getActiveChannels() {
-        return activeChannelMap.keySet();
-    }
-    
+	@Override
+	public ServerBootstrapExtended createLocalBootstrap(ChannelInitializerWrapper initializer,
+			Map<String, Object> options) throws NettyException {
+		return LocalUtils.createLocalBootstrap(this, initializer, options);
+	}
 
-    public Map<Channel, ChannelGroup> getActiveChannelsMap() {
-        return activeChannelMap;
-    }
-    
-    public ChannelGroup getOutboundConnections() {
-        return outboundConnections;
-    }
+	@Override
+	public BootstrapExtended createLocalBootstrapOutbound(ChannelInitializerWrapper initializer,
+			Map<String, Object> options) throws NettyException {
+		return LocalUtils.createLocalBootstrapOutbound(this, initializer, options);
+	}
 
-    @Override
-    public long getDefaultChainQuiesceTimeout() {
-        if (chfw != null) {
-            return chfw.getFramework().getDefaultChainQuiesceTimeout();
-        } else {
-            return 0;
-        }
-    }
+	@Override
+	public FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
+			ChannelFutureListener bindListener) throws NettyException {
+		return TCPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
+	}
 
-    @Override
-    public void destroy() {
-        // destroy covered by serverStopping
-    }
-    
-    @Override
-    public String toString() {
-    	StringBuffer buf = new StringBuffer();
-    	buf.append("NettyFrameworkImpl@").append(Integer.toHexString(System.identityHashCode(this)));
-    	buf.append(": {");
-    	buf.append("Parent Group: ");
-    	buf.append(getParentGroup());
-    	if(getParentGroup() != null) {
-    		buf.append(" isShuttingDown? ");
-    		buf.append(getParentGroup().isShuttingDown());
-    		buf.append(" isShutDown? ");
-    		buf.append(getParentGroup().isShutdown());
-    		buf.append(" isTerminated? ");
-    		buf.append(getParentGroup().isTerminated());
-    	}
-    	buf.append(", Child Group: ");
-    	buf.append(getChildGroup());
-    	if(getChildGroup() != null) {
-    		buf.append(" isShuttingDown? ");
-    		buf.append(getChildGroup().isShuttingDown());
-    		buf.append(" isShutDown? ");
-    		buf.append(getChildGroup().isShutdown());
-    		buf.append(" isTerminated? ");
-    		buf.append(getChildGroup().isTerminated());
-    	}
-    	buf.append(", EndpointManager: ");
-    	buf.append(getEndpointManager());
-    	buf.append(", Default Chain Quiesce Timeout: ");
-    	buf.append(getDefaultChainQuiesceTimeout());
-    	buf.append(", Outbound Connections: ");
-    	buf.append(getOutboundConnections());
-    	buf.append(", Active Endpoints: ");
-    	buf.append(getActiveChannels());
-    	buf.append(", Active endpoint maps: ");
-    	buf.append(getActiveChannelsMap());
-    	buf.append(", Is Active: ");
-    	buf.append(isActive());
-    	buf.append(", Is Stopping: ");
-    	buf.append(isStopping());
-    	buf.append("}");
-    	return buf.toString();
-    }
+	@Override
+	public FutureTask<ChannelFuture> start(BootstrapExtended bootstrap, String inetHost, int inetPort,
+			ChannelFutureListener bindListener) throws NettyException {
+		return UDPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
+	}
 
-    public EventLoopGroup getParentGroup() {
-        return this.parentGroup;
-    }
+	@Override
+	public FutureTask<ChannelFuture> startOutbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
+			ChannelFutureListener bindListener) throws NettyException {
+		if (bootstrap.getConfiguration() instanceof TCPConfigurationImpl) {
+			return TCPUtils.startOutbound(this, bootstrap, inetHost, inetPort, bindListener);
+		} else {
+			return UDPUtils.startOutbound(this, bootstrap, inetHost, inetPort, bindListener);
+		}
+	}
 
-    public EventLoopGroup getChildGroup() {
-        return this.childGroup;
-    }
+	@Override
+	public ChannelFuture stop(Channel channel) {
+		ChannelGroup group = activeChannelMap.get(channel);
+		if (group != null) {
+			group.close().addListener(innerFuture -> {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc, "channel group" + group + " has closed...");
+				}
+			});
+			activeChannelMap.remove(channel);
+		}
+		return channel.close();
+	}
 
-    private void logChannelStopped(Channel channel) {
-        if (channel instanceof NioServerSocketChannel || channel instanceof NioSocketChannel) {
-            TCPUtils.logChannelStopped(channel);
-        } else if (channel instanceof NioDatagramChannel) {
-            UDPUtils.logChannelStopped(channel);
-        } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "unexpected channel type: " + channel);
-            }
-        }
-    }
+	@Override
+	public void stop(Channel channel, long timeout) {
+		if (timeout == -1) {
+			timeout = getDefaultChainQuiesceTimeout();
+		}
+		ChannelFuture future = stop(channel);
+		if (future != null) {
+			future.awaitUninterruptibly(timeout, TimeUnit.MILLISECONDS);
+		}
+	}
 
-    @Override
-    public EndPointMgr getEndpointManager() {
-        return EndPointMgrImpl.getRef();
-    }
+	@Override
+	public Set<Channel> getActiveChannels() {
+		return activeChannelMap.keySet();
+	}
+
+	public Map<Channel, ChannelGroup> getActiveChannelsMap() {
+		return activeChannelMap;
+	}
+
+	public ChannelGroup getOutboundConnections() {
+		return outboundConnections;
+	}
+
+	@Override
+	public long getDefaultChainQuiesceTimeout() {
+		if (chfw != null) {
+			return chfw.getFramework().getDefaultChainQuiesceTimeout();
+		} else {
+			return 0;
+		}
+	}
+
+	@Override
+	public void destroy() {
+		// destroy covered by serverStopping
+	}
+
+	@Override
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("NettyFrameworkImpl@").append(Integer.toHexString(System.identityHashCode(this)));
+		buf.append(": {");
+		buf.append("Parent Group: ");
+		buf.append(getParentGroup());
+		if (getParentGroup() != null) {
+			buf.append(" isShuttingDown? ");
+			buf.append(getParentGroup().isShuttingDown());
+			buf.append(" isShutDown? ");
+			buf.append(getParentGroup().isShutdown());
+			buf.append(" isTerminated? ");
+			buf.append(getParentGroup().isTerminated());
+		}
+		buf.append(", Child Group: ");
+		buf.append(getChildGroup());
+		if (getChildGroup() != null) {
+			buf.append(" isShuttingDown? ");
+			buf.append(getChildGroup().isShuttingDown());
+			buf.append(" isShutDown? ");
+			buf.append(getChildGroup().isShutdown());
+			buf.append(" isTerminated? ");
+			buf.append(getChildGroup().isTerminated());
+		}
+		buf.append(", EndpointManager: ");
+		buf.append(getEndpointManager());
+		buf.append(", Default Chain Quiesce Timeout: ");
+		buf.append(getDefaultChainQuiesceTimeout());
+		buf.append(", Outbound Connections: ");
+		buf.append(getOutboundConnections());
+		buf.append(", Active Endpoints: ");
+		buf.append(getActiveChannels());
+		buf.append(", Active endpoint maps: ");
+		buf.append(getActiveChannelsMap());
+		buf.append(", Is Active: ");
+		buf.append(isActive());
+		buf.append(", Is Stopping: ");
+		buf.append(isStopping());
+		buf.append("}");
+		return buf.toString();
+	}
+
+	public EventLoopGroup getParentGroup() {
+		return this.parentGroup;
+	}
+
+	public EventLoopGroup getChildGroup() {
+		return this.childGroup;
+	}
+
+	private void logChannelStopped(Channel channel) {
+		if (channel instanceof NioServerSocketChannel || channel instanceof NioSocketChannel) {
+			TCPUtils.logChannelStopped(channel);
+		} else if (channel instanceof NioDatagramChannel) {
+			UDPUtils.logChannelStopped(channel);
+		} else {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "unexpected channel type: " + channel);
+			}
+		}
+	}
+
+	@Override
+	public EndPointMgr getEndpointManager() {
+		return EndPointMgrImpl.getRef();
+	}
+
+	@Override
+	public FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, LocalAddress localAddr,
+			ChannelFutureListener bindListener) throws NettyException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public FutureTask<ChannelFuture> start(BootstrapExtended bootstrap, LocalAddress localAddr,
+			ChannelFutureListener bindListener) throws NettyException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public FutureTask<ChannelFuture> startOutbound(BootstrapExtended bootstrap, LocalAddress localAddr,
+			ChannelFutureListener bindListener) throws NettyException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

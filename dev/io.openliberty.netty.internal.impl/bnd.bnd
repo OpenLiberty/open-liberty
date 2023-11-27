@@ -57,7 +57,23 @@ Private-Package: \
 	io.openliberty.accesslists.internal,\
 	io.openliberty.io.netty;version=latest,\
 	io.openliberty.netty.internal;version=latest,\
-	io.openliberty.endpoint
+	io.openliberty.endpoint,\
+	io.netty.transport,\
+	io.netty.transport,\
+	io.netty.transport,\
+	io.netty.transport,\
+	io.netty.transport,\
+	org.eclipse.osgi,\
+	osgi.core,\
+	biz.aQute.bnd,\
+	org.osgi.service.component.annotations,\
+	org.osgi.service.component,\
+	io.netty.common,\
+	io.netty.common,\
+	io.netty.common,\
+	io.netty.common,\
+	io.netty.common,\
+	io.netty.handler
 
 -testpath: \
     org.hamcrest:hamcrest-all;version=1.3, \
