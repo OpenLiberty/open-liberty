@@ -11,6 +11,7 @@ package io.openliberty.checkpoint.fat;
 
 import static io.openliberty.checkpoint.fat.FATSuite.configureEnvVariable;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
+import static java.util.Collections.emptyMap;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -66,6 +67,7 @@ public class OpenAPIConfigTest extends FATServletClient {
     public static void deployApp() throws Exception {
         // Set guards
         server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
+
         // Deploy test app
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addClass(OpenAPIConfigTestResource.class);
@@ -86,7 +88,11 @@ public class OpenAPIConfigTest extends FATServletClient {
 
     @After
     public void teardown() throws Exception {
-        server.stopServer();
+        try {
+            server.stopServer();
+        } finally {
+            configureEnvVariable(server, emptyMap());
+        }
     }
 
     @Test
@@ -96,7 +102,7 @@ public class OpenAPIConfigTest extends FATServletClient {
         assertDocumentPath(DEFAULT_DOC_PATH);
         assertUiPath(DEFAULT_UI_PATH);
 
-        server.stopServer();
+        server.stopServer(false, "");
 
         Map<String, String> configMap = new HashMap<>();
         configMap.put("OPEN_API_DOC_PATH", "/foo");
