@@ -18,8 +18,6 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
-
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -56,7 +54,7 @@ public class DualServerDynamicDBRotationTest2 extends DualServerDynamicCoreTest2
 
     @AfterClass
     public static void afterClass() throws Exception {
-        TxTestContainerSuite.afterSuite();
+        dropTables();
     }
 
     @After
