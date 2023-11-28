@@ -111,7 +111,7 @@ public class CommonTestHelper {
      */
     public void reconfigureServer(String newServerXml, String testName, List<String> waitForMessages, boolean restartServer, boolean needsJDKConversion) throws Exception {
         String thisMethod = "reconfigureServer";
-
+        InitClass.OTHER_SUPPORT_JDKS = true;
         if (InitClass.OTHER_SUPPORT_JDKS && needsJDKConversion) {
             Log.info(thisClass, thisMethod, "Converting server.xml: " + newServerXml + " to jdk 11 format.");
             newServerXml = convertServerXMLTojdk11(newServerXml);
