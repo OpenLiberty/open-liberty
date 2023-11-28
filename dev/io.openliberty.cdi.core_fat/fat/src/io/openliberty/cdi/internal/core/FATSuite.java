@@ -1,20 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.cdi.internal.core;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static componenttest.rules.repeater.EERepeatActions.EE10;
+import static componenttest.rules.repeater.EERepeatActions.EE11;
 import static componenttest.rules.repeater.EERepeatActions.EE7;
 import static componenttest.rules.repeater.EERepeatActions.EE8;
 import static componenttest.rules.repeater.EERepeatActions.EE9;
@@ -35,7 +33,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import io.openliberty.cdi.internal.core.events.CDIEventTest;
@@ -61,16 +58,7 @@ public class FATSuite {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r;
-
-    static {
-        if (JavaInfo.JAVA_VERSION >= 11) {
-            r = EERepeatActions.repeat("cdiCoreServer", EE10, EE7, EE8, EE9);
-        } else {
-            // EE10 requires Java 11, so if we're not using that, select EE9 in lite mode instead
-            r = EERepeatActions.repeat("cdiCoreServer", EE9, EE7, EE8);
-        }
-    }
+    public static RepeatTests r = EERepeatActions.repeat("cdiCoreServer", EE11, EE10, EE7, EE8, EE9);
 
     @BeforeClass
     public static void setup() throws Exception {

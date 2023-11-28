@@ -1,0 +1,74 @@
+#*******************************************************************************
+# Copyright (c) 2020, 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 21
+javac.target: 21
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
+
+Bundle-SymbolicName: io.openliberty.jakarta.cdi.4.1; singleton:=true
+
+#these exports are copied from the manifest files of the original bundles
+Export-Package: \
+ jakarta.decorator;version="4.1";uses:="jakarta.enterprise.inject",\
+ jakarta.enterprise.context;version="4.1";uses:="jakarta.enterprise.util,jakarta.inject",\
+ jakarta.enterprise.context.control;version="4.1";uses:="jakarta.enterprise.context,jakarta.interceptor",\
+ jakarta.enterprise.context.spi;version="4.1",\
+ jakarta.enterprise.event;version="4.1";uses:="jakarta.enterprise.util",\
+ jakarta.enterprise.inject;version="4.1";uses:="jakarta.enterprise.context,jakarta.enterprise.inject.spi,jakarta.enterprise.util,jakarta.inject",\
+ jakarta.enterprise.inject.build.compatible.spi;version="4.1";uses:="jakarta.enterprise.context.spi,jakarta.enterprise.event,jakarta.enterprise.inject,jakarta.enterprise.inject.spi,jakarta.enterprise.invoke,jakarta.enterprise.lang.model,jakarta.enterprise.lang.model.declarations,jakarta.enterprise.lang.model.types",\
+ jakarta.enterprise.inject.literal;version="4.1";uses:="jakarta.enterprise.util,jakarta.inject",\
+ jakarta.enterprise.inject.se;version="4.1";uses:="jakarta.enterprise.inject,jakarta.enterprise.inject.spi",\
+ jakarta.enterprise.inject.spi;version="4.1";uses:="jakarta.el,jakarta.enterprise.context.spi,jakarta.enterprise.event,jakarta.enterprise.inject,jakarta.enterprise.inject.spi.configurator,jakarta.enterprise.invoke,jakarta.interceptor",\
+ jakarta.enterprise.inject.spi.configurator;version="4.1";uses:="jakarta.enterprise.context.spi,jakarta.enterprise.event,jakarta.enterprise.inject,jakarta.enterprise.inject.spi,jakarta.enterprise.util",\
+ jakarta.enterprise.invoke;version="4.1",\
+ jakarta.enterprise.util;version="4.1",\
+ jakarta.enterprise.inject.spi.el;version="4.1";uses:="jakarta.el",\
+ jakarta.enterprise.lang.model;version="4.1";uses:="jakarta.enterprise.lang.model.declarations,jakarta.enterprise.lang.model.types",\
+ jakarta.enterprise.lang.model.declarations;version="4.1";uses:="jakarta.enterprise.lang.model,jakarta.enterprise.lang.model.types",\
+ jakarta.enterprise.lang.model.types;version="4.1";uses:="jakarta.enterprise.lang.model,jakarta.enterprise.lang.model.declarations",\
+ jakarta.inject;version="2.0.1"
+
+#these imports are copied from the manifest files of the original bundles
+Import-Package: \
+ jakarta.el;version="5.0",\
+ jakarta.enterprise.context;version="[4.1,5)",\
+ jakarta.enterprise.context.spi;version="[4.1,5)",\
+ jakarta.enterprise.event;version="[4.1,5)",\
+ jakarta.enterprise.inject;version="[4.1,5)",\
+ jakarta.enterprise.inject.spi;version="[4.1,5)",\
+ jakarta.enterprise.inject.spi.configurator;version="[4.1,5)",\
+ jakarta.enterprise.invoke;version="[4.1,5)",\
+ jakarta.enterprise.lang.model;version="[4.1,5)",\
+ jakarta.enterprise.lang.model.declarations;version="[4.1,5)",\
+ jakarta.enterprise.lang.model.types;version="[4.1,5)",\
+ jakarta.enterprise.util;version="[4.1,5)",\
+ jakarta.inject;version="[2.0,3)",\
+ jakarta.interceptor;version="[2.2,3)"
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
+
+-includeresource: \
+   @${repo;jakarta.inject:jakarta.inject-api;2.0.1;EXACT}!/!(META-INF/maven/*|module-info.class),\
+   @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;4.1.0.Alpha1;EXACT}!/!(META-INF/maven/*|module-info.class),\
+   @${repo;jakarta.enterprise:jakarta.enterprise.cdi-el-api;4.1.0.Alpha1;EXACT}!/!(META-INF/maven/*|module-info.class),\
+   @${repo;jakarta.enterprise:jakarta.enterprise.lang-model;4.1.0.Alpha1;EXACT}!/!(META-INF/maven/*|module-info.class)
+
+-maven-dependencies: \
+   dep1;groupId=jakarta.inject;artifactId=jakarta.inject-api;version=2.0.1;scope=runtime,\
+   dep2;groupId=jakarta.enterprise;artifactId=jakarta.enterprise.cdi-api;version=4.1.0.Alpha1;scope=runtime,\
+   dep3;groupId=jakarta.enterprise;artifactId=jakarta.enterprise.cdi-el-api;version=4.1.0.Alpha1;scope=runtime,\
+   dep4;groupId=jakarta.enterprise;artifactId=jakarta.enterprise.lang-model;version=4.1.0.Alpha1;scope=runtime
+
+

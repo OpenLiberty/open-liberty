@@ -21,8 +21,6 @@ import java.util.Properties;
 
 import javax.security.auth.Subject;
 
-import org.jboss.weld.proxy.WeldClientProxy;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -33,6 +31,7 @@ import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
+import io.openliberty.cdi40.internal.utils.CDI40Utils;
 import io.openliberty.security.jakartasec.JakartaSec30Constants;
 import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitionHolder;
 import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitionWrapper;
@@ -446,9 +445,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         if (openIdContextInstance != null) {
             OpenIdContext openIdContext = openIdContextInstance.get();
 
-            if (openIdContext instanceof WeldClientProxy) {
-                openIdContextImpl = (OpenIdContextImpl) ((WeldClientProxy) openIdContext).getMetadata().getContextualInstance();
-            }
+            openIdContextImpl = (OpenIdContextImpl) CDI40Utils.getContextualInstanceFromProxy(openIdContext);
         }
         return openIdContextImpl;
     }
@@ -521,7 +518,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     }
 
     private AuthenticationStatus processResultFromExpirationCheck(ProviderAuthenticationResult providerAuthenticationResult, Client client,
-                                                           HttpMessageContext httpMessageContext) throws AuthenticationException {
+                                                                  HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
 
         if (providerAuthenticationResult != null) {

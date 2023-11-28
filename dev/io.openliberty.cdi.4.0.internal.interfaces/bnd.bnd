@@ -6,15 +6,12 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: io.openliberty.cdi.4.0.interfaces
-Bundle-SymbolicName: io.openliberty.cdi.4.0.interfaces
+Bundle-Name: io.openliberty.cdi.4.0.internal.interfaces
+Bundle-SymbolicName: io.openliberty.cdi.4.0.internal.interfaces
 Bundle-Description:CDI 4.0 Liberty Interfaces, version ${bVersion}
 
 javac.source: 11
@@ -22,16 +19,19 @@ javac.target: 11
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
-Import-Package: *
+Import-Package: org.jboss.weld.proxy;version="[5.1,7)",\
+                *
 
-Export-Package: com.ibm.ws.cdi40.extension
+Export-Package: io.openliberty.cdi40.internal.extension,\
+                io.openliberty.cdi40.internal.utils
 
 WS-TraceGroup: JCDI
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-	com.ibm.ws.cdi.internal.jakarta,\
-	com.ibm.ws.cdi.interfaces.jakarta,\
-	io.openliberty.jakarta.cdi.4.0,\
+	com.ibm.ws.cdi.internal.jakarta;version=latest,\
+	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
+	io.openliberty.jakarta.cdi.4.0;version=latest,\
+	io.openliberty.org.jboss.weld5;version=latest,\
 	org.eclipse.osgi

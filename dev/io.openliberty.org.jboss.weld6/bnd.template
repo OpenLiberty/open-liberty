@@ -1,0 +1,57 @@
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+###################################################################################
+### This is a template file used for generating check-me-in-if-i-change.bnd     ###
+### Changes to Export-Package and Import-Package should be made in build.gradle ###
+###################################################################################
+
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.org.jboss.weld6; singleton:=true
+
+-include= -../generated.build.id, -liberty-release.props
+bFullVersion=${version;==;${bVersion}}.${libertyBundleMicroVersion}
+Build-Identifier: SNAPSHOT-${now}
+Bundle-Version: ${bFullVersion}.${if;${driver;gradle};${version.qualifier};eclipse}
+
+Service-Component: \
+  com.ibm.ws.weld.deserializationClassProvider;\
+    implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    properties:="service.vendor=IBM,\
+      packages=org.jboss.weld.annotated\
+        |org.jboss.weld.annotated.slim\
+        |org.jboss.weld.annotated.slim.backed\
+        |org.jboss.weld.annotated.slim.unbacked\
+        |org.jboss.weld.bean\
+        |org.jboss.weld.bean.builtin\
+        |org.jboss.weld.bean.proxy.util\
+        |org.jboss.weld.contexts.beanstore\
+        |org.jboss.weld.contexts.conversation\
+        |org.jboss.weld.contexts\
+        |org.jboss.weld.ejb\
+        |org.jboss.weld.event\
+        |org.jboss.weld.injection\
+        |org.jboss.weld.injection.attributes\
+        |org.jboss.weld.literal\
+        |org.jboss.weld.manager\
+        |org.jboss.weld.module.ejb\
+        |org.jboss.weld.proxy\
+        |org.jboss.weld.serialization\
+        |org.jboss.weld.util.bean\
+        |org.jboss.weld.util.collections"
+
+# Automatically filled in by build.gradle
+Export-Package: \
+#INSERTEXPORTS
+
+# Automatically filled in by build.gradle
+Import-Package: \
+#INSERTIMPORTS

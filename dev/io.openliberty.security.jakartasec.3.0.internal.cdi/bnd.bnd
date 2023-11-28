@@ -29,6 +29,7 @@ Export-Package: \
     io.openliberty.security.jakartasec.cdi.extensions
 
 Import-Package: \
+        io.openliberty.cdi40.internal.utils,\
 	!*.internal.*,\
 	!com.ibm.ws.kernel.boot.cmdline,\
 	javax.security.auth,\
@@ -59,12 +60,12 @@ src: src, resources
 	io.openliberty.jakarta.jsonp.2.1,\
 	io.openliberty.jakarta.security.3.0,\
 	io.openliberty.jakarta.servlet.6.0,\
-	io.openliberty.org.jboss.weld5;version=latest,\
 	io.openliberty.security.jakartasec.2.0.internal,\
 	io.openliberty.security.jakartasec.2.0.internal.cdi,\
 	io.openliberty.security.jakartasec.3.0.internal,\
 	io.openliberty.security.oidcclientcore.internal.jakarta,\
 	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
+	io.openliberty.cdi.4.0.internal.interfaces;version=latest,\
 	io.openliberty.webcontainer.security.internal;version=latest,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.websphere.security;version=latest,\

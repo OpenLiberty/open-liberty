@@ -1,0 +1,199 @@
+import org.gradle.api.java.archives.internal.DefaultManifest
+import org.gradle.api.internal.file.IdentityFileResolver
+
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+////// Update me when updating weld ////
+def weldVersion = "6.0.0.Alpha1"     ////
+////////////////////////////////////////
+
+def unzippDir = "${buildDir}/unzip"
+def pathToOSManifest = "${unzippDir}/MANIFEST.MF"
+def pathToTemplateManifest = "${buildDir}/../../bnd.template"
+def tempPathToNewManifest = "${buildDir}/check-me-in-if-i-change.bnd"
+def pathToNewManifest = "${buildDir}/../../check-me-in-if-i-change.bnd"
+
+
+/////// Modifications to the bnd begin here ///////////////////
+
+def additionalExports = """\
+ org.jboss.weldx.transaction;version=\\"${weldVersion}\\",\\\\
+ org.jboss.weld.bean.proxy.util;version=\\"${weldVersion}\\",\\\\
+ org.jboss.weld.annotated.enhanced;version=\\"${weldVersion}\\",\\\\
+ org.jboss.weld.executor;version=\\"${weldVersion}\\",\\\\
+ org.jboss.weld.metadata;version=\\"${weldVersion}\\",\\\\
+ org.jboss.weld.resolution;version=\\"${weldVersion}\\",\\\\
+ org.jboss.weld.resources;version=\\"${weldVersion}\\",\\\\
+ org.jboss.weld.util.collections;version=\\"${weldVersion}\\",\\\\
+"""
+
+def additionalImports = """\
+ javax.security.auth,\\\\
+ jakarta.xml.ws;version="[4.0,5)",\\\\
+"""
+
+// Key is a property, value is an addition.
+def additionalPropertiesForExports = [
+  "org.jboss.weld.event": "thread-context=true"
+]
+
+//////// Modifications end here ////////////////
+
+
+configurations {
+  weld {
+    transitive = false
+  }
+}
+
+dependencies {
+  weld "org.jboss.weld:weld-osgi-bundle:${weldVersion}"
+}
+
+//This task creates a temporay updated bnd file. updateWeldManifest will copy it into the right place. checkWeldManifest will throw an exception if the tempoary manifest and the current manifest differ
+//Note that this task runs too late for gradle to use the generated bnd file. This is why the task to do the actual update is not part of the regular build.
+task bndMagic {
+
+    doFirst{
+        copy {   
+            configurations.weld.asFileTree.each {
+               from(zipTree(it).matching { include '**/MANIFEST.MF' }.singleFile)
+            }
+            into unzippDir
+        }
+
+        ArrayList<String> upstreamExports = extractFromManifest("Export-Package:")
+        ArrayList<String> upstreamImports = extractFromManifest("Import-Package:")
+
+        ///////////////////////// Synchronization check starts /////////////////////////////////////
+        //Check if the weld version in the upstream osgi bundle matches ${weldVersion}
+        //In other words check to see if someone updated cnf without updating ${weldVersion}
+
+        File cnfDepFile = cnf.file('oss_dependencies.maven')
+        Path pathToCnfDepFile = Paths.get(cnfDepFile.getAbsolutePath()) //toPath() causes a compile error
+        String searchString = "org.jboss.weld:weld-osgi-bundle:${weldVersion}"
+
+        List<String> foundMatch = Files.lines(pathToCnfDepFile)
+        .filter(line -> line.contains(searchString))
+        .collect(Collectors.toList())
+
+        if (foundMatch.isEmpty()) {
+            throw new GradleException("The weld version ${weldVersion} was not found in the cnf/oss_dependencies.maven. Did you change the version in cnf/oss_dependencies.maven but not in this project's build.gradle?")
+        }
+        ///////////////////////// Synchronization check complete ////////////////////////////////
+
+        //Make updates to existing exports (currently we have no updates for imports)
+        for (int i = 0; i < upstreamExports.size(); i++) {
+            for (String key : additionalPropertiesForExports.keySet()) {
+                String[] split = upstreamExports.get(i).split(";")
+                if (split[0].equals(key)) {                  
+                    split[0] = split[0] + ";" + additionalPropertiesForExports.get(key)
+                    String updatedEntry = String.join(";", split)
+                    upstreamExports.set(i, updatedEntry)
+                }
+            }
+        }
+
+        // Compile the full exports string. Consisting of: 
+        // 1) The new exports we add - a trailing new line char is included in the string
+        // A single whitespace charachter because String.join won't do a prefix to the first entry.
+        // Every entry followed by a ',\' a line break, and a whitespace to start the next line.
+        String exportsBndFormat = additionalExports + " " + String.join(",\\\\" + "\n" + " ", upstreamExports)
+
+        // The input string uses the same format
+        String importsBndFormat = additionalImports + " " + String.join(",\\\\" + "\n"	 + " ", upstreamImports)
+
+        String templateFile = Files.readString(Paths.get("${pathToTemplateManifest}"));
+        templateFile = templateFile.replaceAll("#INSERTEXPORTS", exportsBndFormat).replaceAll("#INSERTIMPORTS", importsBndFormat)
+
+        try (PrintWriter out = new PrintWriter("${tempPathToNewManifest}")) {
+            out.print(templateFile)
+            out.flush()
+        }
+    }
+}
+
+//Valid inputs: "Export-Package:", "Import-Package:"
+ext.extractFromManifest = { sectionHeader ->
+    def returnArray = new ArrayList<String>()
+
+    //First put all the exports/imports into one big string.
+    String bigImportExportString = ""
+    try (BufferedReader br = new BufferedReader(new FileReader("${pathToOSManifest}"))) {
+        String line = br.readLine()
+        boolean foundSection = false
+        while (line != null) {
+            if (foundSection && !line.startsWith(" ")) { //The first line that does not start with a whitespace will be the end of a section
+                break
+            } else if (foundSection) {
+                bigImportExportString = bigImportExportString + line
+            } else if (line.contains(sectionHeader)) {
+                bigImportExportString = bigImportExportString + line.replaceAll(sectionHeader, "")
+                foundSection = true;
+            }
+            line = br.readLine()
+        }
+    }
+
+    //now remove all the whitespace and split into individual imports.
+    bigImportExportString=bigImportExportString.replaceAll("\s","")
+
+    int copyStartIndex = 0
+    boolean insideQuote = false
+
+    int index = 0
+    while (index < bigImportExportString.size()) {
+       char c = bigImportExportString.charAt(index)
+       if (c == '"') { 
+           insideQuote = !insideQuote
+       }
+       if (c == ',' && !insideQuote) {
+           returnArray.add(bigImportExportString.substring(copyStartIndex, index))
+           copyStartIndex = index+1 //This +1  skips over the ',' seperating two entries. As a seperator they're not part of either.
+       }
+       if (index == bigImportExportString.size() -1) {
+           returnArray.add(bigImportExportString.substring(copyStartIndex))
+       }
+       index++
+    }
+
+    return returnArray
+}
+
+task updateWeldPackages {
+    dependsOn bndMagic
+    doFirst {
+        // To avoid even touching the file if we do not need to, check we don't have an identical file already
+        if (! Files.exists(Paths.get(pathToNewManifest)) || Files.mismatch(Paths.get(tempPathToNewManifest), Paths.get(pathToNewManifest)) != -1L) {
+            Files.copy(Paths.get(tempPathToNewManifest), Paths.get(pathToNewManifest), StandardCopyOption.REPLACE_EXISTING)
+        }
+    }
+}
+
+task checkWeldPackages {
+    dependsOn bndMagic
+
+    doFirst {
+        if (! Files.exists(Paths.get(pathToNewManifest))) {
+            throw new GradleException('check-me-in-if-i-change.bnd does not exist. You really should not have seen this error, running the task updateWeldPackages should fix it, but make sure you understand how you got here')
+        }
+
+        String tempFileString = Files.readString(Paths.get(tempPathToNewManifest)).replaceAll("\\r\\n?", "\n")
+        String newFileString = Files.readString(Paths.get(pathToNewManifest)).replaceAll("\\r\\n?", "\n")
+
+        if (! tempFileString.equals(newFileString)) {
+            throw new GradleException('The generated bnd file did not mach the pre-existing bnd file. If you are updating weld this means the upstream manifest has changed, run updateWeldPackages and remember to check in the updated bnd file')
+        }
+    }
+}
+
+compileJava {
+    dependsOn checkWeldPackages
+}
