@@ -36,6 +36,7 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -47,11 +48,14 @@ import componenttest.topology.impl.LibertyServerFactory;
 public class ServerStopTest {
     private static final Class<?> c = ServerStopTest.class;
 
+    private static final String ILLEGAL_ARGUMENT_EXCEPTION_CLASS = "java.lang.IllegalArgumentException";
+
     private static final String SERVER_NAME = "com.ibm.ws.kernel.boot.serverstart.fat";
     private static final String OS = System.getProperty("os.name").toLowerCase();
-    // private static final String serverXml = "server.xml";
+
     private static final String serverXmlRelativePath = "usr/servers/" + SERVER_NAME + "/server.xml";
     private static String serverXmlFilePath;
+
     private static final String jvmOptionsRelativePath = "usr/servers/" + SERVER_NAME + "/jvm.options";
     private static String jvmOptionsFilePath;
 
@@ -59,7 +63,7 @@ public class ServerStopTest {
     private static final String ENTERING = ">>>>>>>  --------------------- >>>>>>>";
     private static final String EXITING = "<<<<<<< ---------------------  <<<<<<<";
 
-    private static final boolean isBeta = false;
+    private static final boolean isBeta = true;
 
     @Rule
     public TestName testName = new TestName();
@@ -79,8 +83,11 @@ public class ServerStopTest {
     @Before
     public void before() {
         server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
-        Map<String, String> options = new HashMap<>();
+        serverXmlFilePath = server.getInstallRoot() + "/" + serverXmlRelativePath;
+        jvmOptionsFilePath = server.getInstallRoot() + "/" + jvmOptionsRelativePath;
+
         if (isBeta) {
+            Map<String, String> options = new HashMap<>();
             options.put("-Dcom.ibm.ws.beta.edition", "true");
             try {
                 server.setJvmOptions(options);
@@ -88,8 +95,6 @@ public class ServerStopTest {
 
             }
         }
-        serverXmlFilePath = server.getInstallRoot() + "/" + serverXmlRelativePath;
-        jvmOptionsFilePath = server.getInstallRoot() + "/" + jvmOptionsRelativePath;
     }
 
     @After
@@ -278,7 +283,7 @@ public class ServerStopTest {
         Log.info(c, METHOD_NAME, "<");
     }
 
-    ///////  BEGIN QUIESE TESTS
+    ///////  BEGIN QUIESCE TESTS
 
     /**
      * Test - Quiesce NOT configured.
@@ -291,38 +296,37 @@ public class ServerStopTest {
 
         final String METHOD_NAME = "testQuiesceTimeDefault()";
         Log.info(c, METHOD_NAME, ENTERING);
-        if (isBeta) {
-            createJvmOptionsFileBetaEnabled();
-        }
+
+        Utils.createFile(serverXmlFilePath, getServerXmlContentsForQuiesceTests(null));
         assertTrue("The actual result does not match the expected result.", runQuiesceTest("30"));
         Log.info(c, METHOD_NAME, EXITING);
     }
 
     /**
      * Test - Quiesce configured but NOT valid.
-     * Ensure default quiesce timeout is used when quiesceTimeout when the configured
-     * timeout value is NOT valid.
+     * Ensure default quiesce timeout is used when the configured quiesceTimeout value is NOT valid.
      * Starts & Stops the server and verifies that the expected timeout value is in
      * the quiesce message in the logs.
      */
+    @ExpectedFFDC(ILLEGAL_ARGUMENT_EXCEPTION_CLASS)
     @Test
     public void testQuiesceTimeNotValid() throws Exception {
 
         final String METHOD_NAME = "testQuiesceTimeNotValid()";
         Log.info(c, METHOD_NAME, ENTERING);
 
-        if (isBeta) {
-            createJvmOptionsFileBetaEnabled();
-        }
-
         Utils.createFile(serverXmlFilePath, getServerXmlContentsForQuiesceTests("XXXXX"));
-        //Utils.createFile(serverXml, getServerXmlContentsForQuiesceTests("XXXXX"));
-        //server.setServerConfigurationFile("../../" + serverXml);
         assertTrue("", runQuiesceTest("30"));
 
         RemoteFile consoleLog = server.getConsoleLogFile();
-        List<String> matches = server.findStringsInLogs("CWWKE1108W", consoleLog);
-        assertNotNull("CWWKE1108W expected in console.log, but it was not found.", matches);
+        // expect: [WARNING ] CWWKG0075E: The value XXXXX is not valid for attribute Quiesce timeout of configuration element applicationManager. The validation message was: Could not parse configuration value as a duration: XXXXX.
+        List<String> matches = server.findStringsInLogs("CWWKG0075E:", consoleLog);
+        assertNotNull("CWWKG0075E: expected in console.log, but it was not found.", matches);
+        // Log the matches.  Expecting one match.
+        for (String s : matches) {
+            Log.info(c, METHOD_NAME, "matches [" + s + "]");
+        }
+
         Log.info(c, METHOD_NAME, EXITING);
     }
 
@@ -339,13 +343,8 @@ public class ServerStopTest {
         final String METHOD_NAME = "testQuiesceTimeValueLessThanDefault()";
         Log.info(c, METHOD_NAME, ENTERING);
 
-        if (isBeta) {
-            createJvmOptionsFileBetaEnabled();
-        }
-
         Utils.createFile(serverXmlFilePath, getServerXmlContentsForQuiesceTests("29s"));
-        //Utils.createFile(serverXml, getServerXmlContentsForQuiesceTests("29s"));
-        //server.setServerConfigurationFile("../../" + serverXml);
+
         assertTrue("The actual result does not match the expected result.", runQuiesceTest("30"));
         Log.info(c, METHOD_NAME, EXITING);
     }
@@ -362,31 +361,18 @@ public class ServerStopTest {
 
         final String METHOD_NAME = "testQuiesceTimeValueGreaterThanDefault()";
         Log.info(c, METHOD_NAME, ENTERING);
-        String currentDirectory = System.getProperty("user.dir");
-        Log.info(c, METHOD_NAME, "Current directory [" + currentDirectory + "]");
+
+        Utils.createFile(serverXmlFilePath, getServerXmlContentsForQuiesceTests("1m30s"));
 
         if (isBeta) {
-            return;
+            assertTrue("The actual result does not match the expected result.", runQuiesceTest("90"));
+        } else {
+            assertTrue("The actual result does not match the expected result.", runQuiesceTest("30"));
         }
-//        if (isBeta) {
-//            createJvmOptionsFileBetaEnabled();
-//        }
-        Utils.createFile(serverXmlFilePath, getServerXmlContentsForQuiesceTests("1m30s"));
-        //Utils.createFile(serverXml, getServerXmlContentsForQuiesceTests("1m30s"));
-        //server.setServerConfigurationFile("../../" + serverXml);
-//        if (isBeta) {
-//            assertTrue("The actual result does not match the expected result.", runQuiesceTest("90"));
-//        } else {
-        assertTrue("The actual result does not match the expected result.", runQuiesceTest("30"));
-//        }
         Log.info(c, METHOD_NAME, EXITING);
     }
 
     // -----
-
-    private void createJvmOptionsFileBetaEnabled() {
-        Utils.createFile(jvmOptionsFilePath, "-Dcom.ibm.ws.beta.edition=true");
-    }
 
     public boolean runQuiesceTest(String expectedResult) throws Exception {
         final String METHOD_NAME = "runQuiesceTest";
@@ -438,10 +424,16 @@ public class ServerStopTest {
     ///////  END QUIESE TESTS
 
     public String getServerXmlContentsForQuiesceTests(String timeout) {
-        return "<server>\n" +
-               "    <include location=\"../fatTestPorts.xml\"/>\n" +
-               "    <applicationManager quiesceTimeout=\"" + timeout + "\"/>\n" +
-               "</server>";
+        String result = "<server>\n" +
+                        "    <featureManager>\n" +
+                        "       <feature>jsp-2.3</feature>\n" +
+                        "    </featureManager>\n" +
+                        "    <include location=\"../fatTestPorts.xml\"/>\n";
+        if (timeout != null) {
+            result += "    <applicationManager quiesceTimeout=\"" + timeout + "\"/>\n";
+        }
+        result += "</server>";
+        return result;
     }
 
     private static final Pattern timePattern = Pattern.compile("Waiting for up to (\\d+) seconds");
