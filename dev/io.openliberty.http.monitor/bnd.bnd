@@ -1,0 +1,72 @@
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+Bundle-Name: io.openliberty.http.monitor
+Bundle-SymbolicName: io.openliberty.http.monitor
+Bundle-Description: io.openliberty.http.monitor; version=${bVersion}
+
+Include-Resource:\
+  META-INF=resources/META-INF
+
+src: src, resources
+
+-dsannotations: \
+  io.openliberty.http.monitor.ServletContainerInitializer
+
+app-resources= \
+  META-INF/services/jakarta.ws.rs.ext.Providers
+
+Service-Component: \
+  io.openliberty.http.monitor.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"
+
+WS-TraceGroup: 
+
+Import-Package: \
+    !*.internal.*,\
+    *
+
+Export-Package: \
+  io.openliberty.http.monitor;thread-context=true,\
+  io.openliberty.http.monitor.rest;thread-context=true
+
+Liberty-Monitoring-Components: \
+			io.openliberty.http.monitor.HttpMetricsMonitor
+
+#DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
+# com.ibm.websphere.monitor.annotation;version="1.0.0", \
+# com.ibm.websphere.monitor.jmx;version="1.0.0"
+#jakarta.ws.rs.*;version="1.0.0"
+
+-buildpath: \
+    com.ibm.ws.logging;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.wsspi.org.osgi.service.event;version=latest,\
+	io.openliberty.webcontainer.servlet.6.0.internal,\
+	com.ibm.ws.transport.http,\
+	com.ibm.ws.webcontainer.servlet.4.0.jakarta,\
+	com.ibm.ws.monitor,\
+	io.openliberty.jakarta.servlet.6.0;version=latest,\
+	com.ibm.ws.webcontainer.jakarta;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	io.openliberty.jakarta.restfulWS.3.1,\
+	io.openliberty.jakarta.annotation.2.1;version=latest
