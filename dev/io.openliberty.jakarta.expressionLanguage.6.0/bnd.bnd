@@ -16,7 +16,7 @@ Bundle-Description: Jakarta Expression Language, version 6.0
 javac.source: 17
 javac.target: 17
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
 
 Export-Package: \
  jakarta.el;thread-context=true; version="6.0.0"
