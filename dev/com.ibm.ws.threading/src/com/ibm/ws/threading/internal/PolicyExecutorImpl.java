@@ -148,6 +148,11 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     private final AtomicReference<State> state = new AtomicReference<State>(State.ACTIVE);
 
     /**
+     * Whether or not to create virtual threads.
+     */
+    private volatile boolean virtual;
+
+    /**
      * Operations related to virtual threads that are only available on Java 21+.
      */
     private final VirtualThreadOps virtualThreadOps;
@@ -293,6 +298,20 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         int a;
         while ((a = expeditesAvailable.get()) > 0 && !expeditesAvailable.compareAndSet(a, a - 1));
         return a; // returning the value rather than true/false will enable better debug
+    }
+
+    /**
+     * Arranges for a callback to run asynchronously, either on a virtual thread or on the
+     * Liberty global executor.
+     *
+     * @param callback the callback action.
+     */
+    @Trivial
+    public void asyncCallback(Runnable callback) {
+        if (virtual && virtualThreadOps != null)
+            virtualThreadOps.createVirtualThread(identifier + "-Callback", false, null, callback).start();
+        else
+            globalExecutor.submit(callback);
     }
 
     @Override
@@ -494,7 +513,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     && cbQueueSize.compareAndSet(callback, null)) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "callback: queue capacity < " + callback.threshold, callback.runnable);
-                    globalExecutor.submit(callback.runnable);
+                    asyncCallback(callback.runnable);
                 }
 
                 policyTaskFuture.accept(false);
@@ -1056,7 +1075,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 && cbQueueSize.compareAndSet(callback, null)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "callback: queue capacity < " + callback.threshold, callback.runnable);
-                globalExecutor.submit(callback.runnable);
+                asyncCallback(callback.runnable);
             }
         }
 
@@ -1093,7 +1112,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             && cbConcurrency.compareAndSet(callback, null)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "callback: concurrency > " + max, runnable);
-            globalExecutor.submit(runnable);
+            asyncCallback(runnable);
         }
         return previous == null ? null : previous.runnable;
     }
@@ -1124,7 +1143,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             && cbQueueSize.compareAndSet(callback, null)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "callback: queue capacity < " + minAvailable, runnable);
-            globalExecutor.submit(runnable);
+            asyncCallback(runnable);
         }
         return previous == null ? null : previous.runnable;
     }
@@ -1163,7 +1182,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     && cbLateStart.compareAndSet(callback, null)) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "callback: late start " + delay + "ns > " + callback.threshold + "ns", callback.runnable);
-                    globalExecutor.submit(callback.runnable);
+                    asyncCallback(callback.runnable);
                 }
             }
 
@@ -1173,7 +1192,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 && cbConcurrency.compareAndSet(callback, null)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "callback: concurrency > " + callback.threshold, callback.runnable);
-                globalExecutor.submit(callback.runnable);
+                asyncCallback(callback.runnable);
             }
 
             if (state.get().canStartTask) {
@@ -1377,6 +1396,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         long u_maxWaitForEnqueue = (Long) props.get("maxWaitForEnqueue");
         boolean u_runIfQueueFull = (Boolean) props.get("runIfQueueFull");
         long u_startTimeout = null == (v = props.get("startTimeout")) ? -1l : (Long) v;
+        boolean useVirtualThreads = (Boolean) props.get("virtual");
 
         // Validation that cannot be performed by metatype:
         if (u_expedite > u_max)
@@ -1395,6 +1415,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         maxPolicy = u_maxPolicy;
         runIfQueueFull = u_runIfQueueFull;
         startTimeout = u_startTimeout == -1 ? -1 : TimeUnit.MILLISECONDS.toNanos(u_startTimeout);
+        virtual = useVirtualThreads;
 
         int a, queueCapacityAdded;
         synchronized (configLock) {
@@ -1423,7 +1444,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 && cbQueueSize.compareAndSet(callback, null)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "callback: queue capacity < " + callback.threshold, callback.runnable);
-                globalExecutor.submit(callback.runnable);
+                asyncCallback(callback.runnable);
             }
         }
 
@@ -1450,6 +1471,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         out.println(INDENT + "maxWaitForEnqueue = " + TimeUnit.NANOSECONDS.toMillis(maxWaitForEnqueueNS.get()) + " ms");
         out.println(INDENT + "runIfQueueFull = " + runIfQueueFull);
         out.println(INDENT + "startTimeout = " + (startTimeout == -1 ? "None" : TimeUnit.NANOSECONDS.toMillis(startTimeout) + " ms"));
+        out.println(INDENT + "virtual = " + virtual);
         int numRunningThreads, numRunningPrioritizedThreads;
         synchronized (configLock) {
             numRunningThreads = maxConcurrency - maxConcurrencyConstraint.availablePermits();
