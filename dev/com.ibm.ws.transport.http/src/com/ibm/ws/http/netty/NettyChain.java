@@ -226,6 +226,11 @@ public class NettyChain extends HttpChain {
 
         boolean sameConfig = newConfig.unchanged(oldConfig);
 
+        if (newConfig.unchanged(oldConfig)) {
+            System.out.println("Found unchanged config! Doing nothing");
+            return;
+        }
+
         // MSP.log("chainState for stop condition -> " + chainState.get());
 
         // if (!sameConfig && chainState.get() != ChainState.STOPPED.val) {
