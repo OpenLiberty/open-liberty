@@ -171,7 +171,7 @@ public class EEValidationUtils {
 
         try {
             if (! cdiRuntime.isContextBeginnerEnderActive()) {
-                cbe = cdiRuntime.createContextBeginnerEnder().extractComponentMetaData(cdiArchive).beginContext(); //TODO make this into a  when we start compiling with java 9
+                cbe = cdiRuntime.createContextBeginnerEnder().extractComponentMetaData(cdiArchive).beginContext(); //TODO make this into a try-with-resources when we start compiling with java 9
             }
 
             InitialContext c = new InitialContext();

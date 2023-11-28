@@ -123,7 +123,8 @@ public class CheckpointKafkaSaslPlainTest {
                                  try {
                                      configureEnvVariable(server, ENV_AFTER_CHECKPOINT);
                                  } catch (Exception e) {
-                                     e.printStackTrace();
+                                     Log.error(CheckpointKafkaSaslPlainTest.class, e.toString(), e);
+                                     throw new RuntimeException(e);
                                  }
                              });
 

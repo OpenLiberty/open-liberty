@@ -110,7 +110,7 @@ public class OLReactiveMessaging30Extension extends ReactiveMessagingExtension i
     @Override
     protected void afterDeploymentValidation(@Observes AfterDeploymentValidation done, BeanManager beanManager) {
         final ContextBeginnerEnder contextBeginnerEnder = createContextBeginnerEnderIfCheckpointEnabled();
-        final MediatorManager mediatorManager = configureMediatorManager(beanManager); //TODO I only fonud one DeploymentException in the small rye source so there's no need for a second catch (DeploymentException) block. But double check this with the team. 
+        final MediatorManager mediatorManager = configureMediatorManager(beanManager);
 
         CheckpointHook checkpointHook = new CheckpointHook() {
 
@@ -151,10 +151,17 @@ public class OLReactiveMessaging30Extension extends ReactiveMessagingExtension i
             Bundle b = FrameworkUtil.getBundle(ReactiveMessagingExtension.class);
             if (b != null) {
                 BundleContext bc = b.getBundleContext();
-                ServiceReference<CDIService> sr = bc.getServiceReference(CDIService.class);
-                CDIService service = bc.getService(sr);
-                CDIRuntime cdiRuntime = (CDIRuntime) service;
-                return cdiRuntime.cloneActiveContextBeginnerEnder();
+                ServiceReference<CDIService> sr = null;
+                try {
+                    sr = bc.getServiceReference(CDIService.class);
+                    CDIService service = bc.getService(sr);
+                    CDIRuntime cdiRuntime = (CDIRuntime) service;
+                    return cdiRuntime.cloneActiveContextBeginnerEnder();
+                } finally {
+                    if (sr != null) {
+                        bc.ungetService(sr);
+                    }
+                }
             }
         }
         return null;
