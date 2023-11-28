@@ -5,5 +5,5 @@ singleton=true
 -features= \
     com.ibm.websphere.appserver.eeCompatible-8.0, \
     com.ibm.websphere.appserver.mpHealth-3.0
-kind=noship
-edition=full
+kind=beta
+edition=core
