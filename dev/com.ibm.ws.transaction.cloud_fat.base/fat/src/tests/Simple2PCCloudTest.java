@@ -197,7 +197,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         }
 
         // Server appears to have started ok. Check for key string to see whether peer recovery has succeeded
-        server2.waitForStringInTrace("Performed recovery for cloud001");
+        assertNotNull(server2.waitForStringInTrace("Performed recovery for cloud001", FATUtils.LOG_SEARCH_TIMEOUT));
         // "CWWKE0701E" error message is allowed
         FATUtils.stopServers(new String[] { "CWWKE0701E" }, server2);
 

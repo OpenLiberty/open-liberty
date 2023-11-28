@@ -410,6 +410,13 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
     @Override
     @Trivial
+    public int getLeaseExpiryThreshold() {
+        Number num = (Number) _props.get("leaseExpiryThreshold");
+        return num.intValue();
+    }
+
+    @Override
+    @Trivial
     public String getServerName() {
         String serverName = "";
         synchronized (this) {
@@ -535,8 +542,6 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
     @Override
     public ResourceFactory getResourceFactory() {
-
-//WAS THIS        _theDataSourceFactory = dataSourceFactoryRef.getService();
         try {
             _theDataSourceFactory = dataSourceFactoryRef.getServiceWithException();
         } catch (Exception ex) {
@@ -578,7 +583,6 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     @Trivial
     public String getRecoveryGroup() {
-
         _recoveryGroup = (String) _props.get("recoveryGroup");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getRecoveryGroup {0}", _recoveryGroup);
@@ -861,8 +865,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @see com.ibm.tx.config.ConfigurationProvider#getTimeBetweenHeartbeats()
      */
     @Override
+    @Trivial
     public int getTimeBetweenHeartbeats() {
         Number num = (Number) _props.get("timeBetweenHeartbeats");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getTimeBetweenHeartbeats: {0}", num);
         return num.intValue();
     }
 
@@ -872,8 +879,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @see com.ibm.tx.config.ConfigurationProvider#getPeerTimeBeforeStale()
      */
     @Override
+    @Trivial
     public int getPeerTimeBeforeStale() {
         Number num = (Number) _props.get("peerTimeBeforeStale");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getPeerTimeBeforeStale: {0}", num);
         return num.intValue();
     }
 
@@ -883,8 +893,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @see com.ibm.tx.config.ConfigurationProvider#getLightweightLogRetryInterval()
      */
     @Override
+    @Trivial
     public int getLightweightLogRetryInterval() {
         Number num = (Number) _props.get("lightweightLogRetryInterval");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getLightweightLogRetryInterval: {0}", num);
         return num.intValue();
     }
 
@@ -894,8 +907,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @see com.ibm.tx.config.ConfigurationProvider#getLightweightLogRetryLimit()
      */
     @Override
+    @Trivial
     public int getLightweightLogRetryLimit() {
         Number num = (Number) _props.get("lightweightLogRetryLimit");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getLightweightLogRetryLimit: {0}", num);
         return num.intValue();
     }
 
@@ -905,8 +921,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @see com.ibm.tx.config.ConfigurationProvider#getLogRetryInterval()
      */
     @Override
+    @Trivial
     public int getLogRetryInterval() {
         Number num = (Number) _props.get("logRetryInterval");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getLogRetryInterval: {0}", num);
         return num.intValue();
     }
 
@@ -916,8 +935,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @see com.ibm.tx.config.ConfigurationProvider#getLogRetryLimit()
      */
     @Override
+    @Trivial
     public int getLogRetryLimit() {
         Number num = (Number) _props.get("logRetryLimit");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getLogRetryLimit: {0}", num);
         return num.intValue();
     }
 

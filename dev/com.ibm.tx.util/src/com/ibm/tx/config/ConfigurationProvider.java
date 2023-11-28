@@ -231,6 +231,8 @@ public interface ConfigurationProvider {
 
     public int getLeaseRenewalThreshold();
 
+    public int getLeaseExpiryThreshold();
+
     public String getBackendURL();
 
     /**
