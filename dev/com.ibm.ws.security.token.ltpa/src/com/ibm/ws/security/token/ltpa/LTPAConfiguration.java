@@ -127,19 +127,4 @@ public interface LTPAConfiguration {
      * @return validation Keys
      */
     List<Properties> getValidationKeys();
-
-    /**
-     * @return the first validation key's file name
-     */
-    String getFirstValidationKeyFileName();
-
-    /**
-     * @return the first validation key's file password
-     */
-    String getFirstValidationKeyPassword();
-
-    /**
-     * @return the first validation key's not use after date
-     */
-    String getFirstValidationKeyValidUntilDate();
 }

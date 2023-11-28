@@ -196,6 +196,28 @@ public class LTPAConfigurationImplTest {
             super.setFileMonitorRegistration(ltpaFileMonitorRegistration);
             wasSetFileMonitorRegistrationCalled = true;
         }
+
+        /**
+         * @return the first validation key's file name
+         */
+        public String getFirstValidationKeyFileName() {
+            return getValidationKeys().get(0).getProperty(CFG_KEY_VALIDATION_FILE_NAME);
+        }
+
+
+        /**
+         * @return the first validation key's file password
+         */
+        public String getFirstValidationKeyPassword() {
+            return getValidationKeys().get(0).getProperty(CFG_KEY_VALIDATION_PASSWORD);
+        }
+
+        /**
+         * @return the first validation key's not use after date
+         */
+        public String getFirstValidationKeyValidUntilDate() {
+            return getValidationKeys().get(0).getProperty(CFG_KEY_VALIDATION_VALID_UNTIL_DATE);
+        }
     }
 
     @After
@@ -403,7 +425,7 @@ public class LTPAConfigurationImplTest {
 
     @Test
     public void modified_monitorIntervalSet_everythingElseTheSame_keysNotReloaded() {
-        setupExecutorServiceExpectations(0);
+        setupExecutorServiceExpectations(1);
         setupLocationServiceExpectations(1);
         setupFileMonitorRegistrationsExpectations(1);
 
@@ -413,7 +435,7 @@ public class LTPAConfigurationImplTest {
 
     @Test
     public void modified_monitorValidationKeysDirSet_everythingElseTheSame_keysReloaded() {
-        setupExecutorServiceExpectations(0);
+        setupExecutorServiceExpectations(1);
         setupLocationServiceExpectations(1);
         setupFileMonitorRegistrationsExpectations(1);
 
@@ -473,7 +495,7 @@ public class LTPAConfigurationImplTest {
 
     @Test
     public void modified_monitorIntervalSetToZero_everythingElseTheSame_unregistersListener() throws Exception {
-        setupExecutorServiceExpectations(1);
+        setupExecutorServiceExpectations(2);
         setupLocationServiceExpectations(2);
         setupFileMonitorRegistrationsExpectations(1);
 

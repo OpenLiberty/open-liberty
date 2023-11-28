@@ -812,25 +812,6 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         return validationKeys;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public String getFirstValidationKeyFileName() {
-        return validationKeys.get(0).getProperty(CFG_KEY_VALIDATION_FILE_NAME);
-    }
-
-    /** {@inheritDoc} */
-    @Sensitive
-    @Override
-    public String getFirstValidationKeyPassword() {
-        return validationKeys.get(0).getProperty(CFG_KEY_VALIDATION_PASSWORD);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getFirstValidationKeyValidUntilDate() {
-        return validationKeys.get(0).getProperty(CFG_KEY_VALIDATION_VALID_UNTIL_DATE);
-    }
-
     /*
      *
      */
