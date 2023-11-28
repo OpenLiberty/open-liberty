@@ -16,10 +16,10 @@ import java.util.concurrent.FutureTask;
 
 import com.ibm.websphere.channelfw.EndPointMgr;
 
+import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ServerChannel;
 import io.netty.channel.local.LocalAddress;
 import io.openliberty.netty.internal.exception.NettyException;
 
@@ -74,6 +74,7 @@ public interface NettyFramework {
      * Create a local bootstrap: handles registering the correct EventLoopGroups,
      * creating a LocalChannel, and implementing and configuration properties.
      * 
+     * @param initializer - and initializer for a particular protocol channel
      * @param options
      * @return BootstrapExtended
      * @throws NettyException
@@ -86,6 +87,7 @@ public interface NettyFramework {
      * correct EventLoopGroups, creating a LocalChannel, and implementing and
      * configuration properties.
      * 
+     * @param initializer - and initializer for a particular protocol channel
      * @param options
      * @return BootstrapExtended
      * @throws NettyException
@@ -228,8 +230,5 @@ public interface NettyFramework {
      * @return EndPointMgr
      */
     public EndPointMgr getEndpointManager();
-
-
-
 
 }

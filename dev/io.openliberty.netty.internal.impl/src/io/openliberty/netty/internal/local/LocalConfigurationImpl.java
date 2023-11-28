@@ -28,11 +28,6 @@ import io.openliberty.netty.internal.impl.NettyConstants;
 import io.openliberty.netty.internal.tcp.TCPChannelInitializerImpl;
 import io.openliberty.netty.internal.tcp.ValidateUtils;
 
-/**
- * Configuration object for an individual TCP channel instance.
- * 
- * Adapted from {@link com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration}
- */
 @Trivial
 public class LocalConfigurationImpl implements BootstrapConfiguration, FFDCSelfIntrospectable {
 
@@ -58,23 +53,29 @@ public class LocalConfigurationImpl implements BootstrapConfiguration, FFDCSelfI
 	}
 
 	/**
-	 * Apply this config to a {@link io.netty.bootstrap.ServerBootstrap} Note that
-	 * most props are implemented via handlers, see
-	 * {@link TCPChannelInitializerImpl}
+	 * Apply this config to a {@link io.netty.bootstrap.ServerBootstrap} 
+	 * Note that most props are implemented via handlers, 
+	 * see the initialisation wrapper for the protocol
 	 * 
 	 * @param bootstrap
 	 */
 	public void applyConfiguration(ServerBootstrap bootstrap) {
+		if(!inbound) {
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	/**
-	 * Apply this config to a {@link io.netty.bootstrap.Bootstrap} Note that most
-	 * props are implemented via handlers, see {@link TCPChannelInitializerImpl}
-	 * 
+	 * Apply this config to a {@link io.netty.bootstrap.Bootstrap} 
+	 * Note that most props are implemented via handlers, 
+	 * see the initialisation wrapper for the protocol
 	 * @param bootstrap
 	 */
 	@Override
 	public void applyConfiguration(Bootstrap bootstrap) {
+		if(inbound) {
+			throw new UnsupportedOperationException();
+		}
 	}
 
     /**
@@ -84,6 +85,11 @@ public class LocalConfigurationImpl implements BootstrapConfiguration, FFDCSelfI
         return this.inbound;
     }
     
+    /**
+     * A useful function to omit standard OSGi config from the dumps of Channels' config
+     * @param key
+     * @return
+     */
 	//@formatter:off
     private boolean skipKey(String key) {
         return key.equals("id") ||
@@ -96,32 +102,16 @@ public class LocalConfigurationImpl implements BootstrapConfiguration, FFDCSelfI
     }
     //@formatter:on
 
-	private void setValues() throws NettyException {
-
-		String key = null;
-		NettyException e = null;
-
-		for (Entry<String, Object> entry : this.channelProperties.entrySet()) {
-			key = (String) entry.getKey();
-			Object value = entry.getValue();
-
-			if (skipKey(key)) {
-				// skip osgi standard properties
-				continue;
-			}
-			// TODO GDH
-		}
-		
-	}
-
+    
 	protected ChannelData getChannelData() {
 		return this.channelData;
 	}
 
+	/* This is abstract to ensure that local channels implement introspection */
 	@Override
 	public String[] introspectSelf() {
-		// TODO Auto-generated method stub
-		return null;
+		//TODO GDH 
+		return new String[] {"There is probably more to be implemented here"};
 	}
 
 }

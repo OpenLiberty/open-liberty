@@ -9,12 +9,13 @@
  *******************************************************************************/
 package io.openliberty.netty.internal.local;
 
-import java.net.SocketAddress;
+import java.net.SocketAddress; // This is a marker interface rather than an actual TCP Socket
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -24,14 +25,16 @@ import io.netty.util.AttributeKey;
 import io.openliberty.netty.internal.impl.NettyConstants;
 
 /**
- * Channel handler which logs connection events 
+ * Channel handler which logs TCP connection events to ensure that logging between Netty and Channelfw are 
+ * as closely related as possible.
  */
 @Trivial
 class LocalLoggingHandler extends LoggingHandler{
 
-	 private static final TraceComponent tc = Tr.register(LocalUtils.class, NettyConstants.NETTY_TRACE_NAME,
-	            NettyConstants.BASE_BUNDLE);	
-	 
+	private static final TraceComponent tc = Tr.register(LocalUtils.class, NettyConstants.NETTY_TRACE_NAME,
+			NettyConstants.BASE_BUNDLE);
+	
+
 	public LocalLoggingHandler(){
 		super(LocalLoggingHandler.class);
 	}
@@ -41,6 +44,8 @@ class LocalLoggingHandler extends LoggingHandler{
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
 			Tr.event(ctx.channel(), tc, "handler added to" + ctx + ", channel " + ctx.channel());
 		}
+		//ctx.channel().attr(BYTES_READ_KEY).getAndSet(0);
+		super.handlerAdded(ctx);
 	}
 
 	@Override
@@ -51,16 +56,10 @@ class LocalLoggingHandler extends LoggingHandler{
 		ctx.fireChannelRegistered();
 	}
 
-	
-	//TODO GDH  local and remote addresses are actually subclasses of SocketAddresses but this is an
-    // abstract marker interface which could easily be implemented for the local channels too
-	// We need to pass the LocalChannel object into the OL classes from Wola/LocalChannel land -
-	// could even make use of the channel factory form if the method rather than channel.
-	
-	
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            // Note a LocalChannel can still implement the equivalent of remote/local address strings
 			Tr.event(ctx.channel(), tc, "SocketChannel accepted, local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress());
 		}
 		ctx.fireChannelActive();
@@ -98,7 +97,7 @@ class LocalLoggingHandler extends LoggingHandler{
 	@Override
 	public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-			Tr.event(ctx.channel(), tc, "read completed.");
+			Tr.event(ctx.channel(), tc, "read completed. Read: " /* + ctx.channel().attr(BYTES_READ_KEY).getAndSet(0) + " bytes" */);
 		}
 		ctx.fireChannelReadComplete();
 	}
@@ -106,16 +105,27 @@ class LocalLoggingHandler extends LoggingHandler{
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-			Tr.event(ctx.channel(), tc, "read (async) called for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress());
+			Tr.event(ctx.channel(), tc, "read (async) called for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress()+ " bytes read: "+((ByteBuf) msg).readableBytes());
 		}
+//		ctx.channel().attr(BYTES_READ_KEY).getAndSet(ctx.channel().attr(BYTES_READ_KEY).get() + ((ByteBuf) msg).readableBytes());
 		ctx.fireChannelRead(msg);
 	}
 
 	@Override
 	public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-			Tr.event(ctx.channel(), tc, "write (async) requested for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress());
+			Tr.event(ctx.channel(), tc, "write (async) requested for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress()+ (msg instanceof ByteBuf ? " bytes to be written: "+((ByteBuf) msg).readableBytes() : " object to write: " + msg));
 		}
+		Integer bytesToWrite = ((ByteBuf) msg).readableBytes();
+		ctx.write(msg, promise).addListener(new ChannelFutureListener() {
+			@Override
+			public void operationComplete(ChannelFuture future) throws Exception {
+				if(future.isSuccess() && TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+					Tr.event(ctx.channel(), tc, "write (async) finished sucessfully for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress()+ " wrote: " + bytesToWrite + " bytes");
+				else if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+					Tr.event(ctx.channel(), tc, "write (async) FAILED for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress()+" did not write : "+ bytesToWrite + " bytes");
+			}
+		});
 	}
 
 	@Override

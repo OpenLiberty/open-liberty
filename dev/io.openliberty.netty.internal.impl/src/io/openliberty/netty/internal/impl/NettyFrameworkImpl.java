@@ -64,6 +64,7 @@ import io.openliberty.netty.internal.exception.NettyException;
 import io.openliberty.netty.internal.tcp.TCPConfigurationImpl;
 import io.openliberty.netty.internal.tcp.TCPUtils;
 import io.openliberty.netty.internal.udp.UDPUtils;
+import io.openliberty.netty.internal.local.LocalChannelInitializerWrapper;
 import io.openliberty.netty.internal.local.LocalUtils;
 import com.ibm.websphere.channelfw.EndPointMgr;
 

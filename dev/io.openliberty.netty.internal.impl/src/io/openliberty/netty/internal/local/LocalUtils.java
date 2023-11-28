@@ -58,16 +58,17 @@ public class LocalUtils {
 	 */
 	public static ServerBootstrapExtended createLocalBootstrap(NettyFrameworkImpl framework,
 			ChannelInitializerWrapper protocolInitializer, Map<String, Object> options) throws NettyException {
+	
 		LocalConfigurationImpl config = new LocalConfigurationImpl(options, true);
 
 		ServerBootstrapExtended bs = new ServerBootstrapExtended();
 		bs.group(framework.getParentGroup(), framework.getChildGroup());
-		bs.setBaseInitializer(protocolInitializer);
-
+		bs.setBaseInitializer(protocolInitializer);		
 		bs.applyConfiguration(config);
 
 		//TODO server concerns other than protocol needs?
-		ChannelInitializerWrapper serverInitializer = new LocalChannelInitializerImpl(config, framework);
+		// So we are going to 
+		//ChannelInitializerWrapper serverInitializer = new LocalChannelInitializerWrapper(config, framework);
 
 		return bs;
 	}
@@ -83,7 +84,9 @@ public class LocalUtils {
 	 */
 	public static BootstrapExtended createLocalBootstrapOutbound(NettyFrameworkImpl framework,
 			ChannelInitializerWrapper protocolInitializer, Map<String, Object> options) throws NettyException {
+
 		LocalConfigurationImpl config = new LocalConfigurationImpl(options, false);
+		
 		BootstrapExtended bs = new BootstrapExtended();
 		bs.group(framework.getChildGroup());
 

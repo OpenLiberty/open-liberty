@@ -9,8 +9,6 @@
  *******************************************************************************/
 package io.openliberty.netty.internal.local;
 
-import java.util.concurrent.TimeUnit;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
@@ -22,23 +20,26 @@ import io.openliberty.netty.internal.impl.NettyConstants;
 import io.openliberty.netty.internal.impl.NettyFrameworkImpl;
 
 /**
- * Registers channel handlers which implement various TCP configuration options. Handlers are
- * initialized with the current values of the registered TCPConfiguration.
- * 
- * Currently these handlers implement the following tcpOptions: 
- * inactivityTimeout, maxOpenConnections, addressExcludeList, addressIncludeList, hostNameExcludeList, hostNameIncludeList
+ * This class is a common superclass for non-{port:host} based Netty channels in Liberty.
+ * It adds handlers that are common across different local protocols that are useful
+ * to the server management. A particular local protocol is expected to subclass this
+ * to add protocol specific handlers and call super.initChannel(Channel) to invoke the
+ * initialisation of common handlers here - the call to super.initChannel should be made
+ * after protocol specific handlers are added.
+ *
+ * This enables OpenLiberty Netty code to handle local channels that
+ * are not open source.
  */
-public class LocalChannelInitializerImpl extends ChannelInitializerWrapper {
+public abstract class LocalChannelInitializerWrapper extends ChannelInitializerWrapper {
 	
-	 private static final TraceComponent tc = Tr.register(LocalChannelInitializerImpl.class, NettyConstants.NETTY_TRACE_NAME,
+	 private static final TraceComponent tc = Tr.register(LocalChannelInitializerWrapper.class, NettyConstants.NETTY_TRACE_NAME,
 	            NettyConstants.BASE_BUNDLE);	
 
     LocalConfigurationImpl config;
-
 	NettyFrameworkImpl bundle;
     
     
-    public LocalChannelInitializerImpl(BootstrapConfiguration config, NettyFrameworkImpl bundle) {
+    public LocalChannelInitializerWrapper(BootstrapConfiguration config, NettyFrameworkImpl bundle) {
     	this.bundle = bundle;
         this.config = (LocalConfigurationImpl) config;
     }
@@ -46,6 +47,9 @@ public class LocalChannelInitializerImpl extends ChannelInitializerWrapper {
     @Override
     protected void initChannel(Channel channel) throws Exception {
     	// TODO Add logging equal to channelfw
+
+    	
+    	// DO not start a channel when the server is closing down.
     	if(bundle.isStopping()) {
     		if(TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             	Tr.event(tc, "Tried to start channel: " + channel + " while framework was shutting down. " + bundle);
@@ -53,23 +57,12 @@ public class LocalChannelInitializerImpl extends ChannelInitializerWrapper {
     		channel.close();
     		return;
     	}
+
+    	//TODO The logging handler appears to do more than logging (search for 'write') - worth investigating
         if (TraceComponent.isAnyTracingEnabled()) {
-   //     	channel.pipeline().addFirst(NettyConstants.TCP_LOGGING_HANDLER_NAME, new TCPLoggingHandler());
+        	channel.pipeline().addFirst(NettyConstants.LOCAL_LOGGING_HANDLER_NAME, new LocalLoggingHandler());
 		}
-  //      if (config.getInactivityTimeout() > 0) {
-  //          channel.pipeline().addLast(NettyConstants.INACTIVITY_TIMEOUT_HANDLER_NAME, new InactivityTimeoutHandler(0, 0, config.getInactivityTimeout(), TimeUnit.MILLISECONDS));
-  //      }
         
-    
-        
-  //      if (config.getAccessLists() != null) {
-  //          AccessListHandler includeHandler = new AccessListHandler(config.getAccessLists());
-  //          channel.pipeline().addLast(NettyConstants.ACCESSLIST_HANDLER_NAME, includeHandler);
-  //      }
-    
-        //      MaxOpenConnectionsHandler maxHandler = new MaxOpenConnectionsHandler(config.getMaxOpenConnections());
-//        channel.pipeline().addLast(NettyConstants.MAX_OPEN_CONNECTIONS_HANDLER_NAME, maxHandler);
-  
         Channel parent = channel.parent();
         if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
         	Tr.debug(tc, "Initializing channel: " + channel + " found parent to be: " + parent);
@@ -79,7 +72,8 @@ public class LocalChannelInitializerImpl extends ChannelInitializerWrapper {
         // Add channel to endpoint ChannelGroup if known
         if(parent != null) {
         	ChannelGroup group = bundle.getActiveChannelsMap().get(parent);
-        //	channel.closeFuture().addListener(innerFuture -> TCPUtils.logChannelStopped(channel));
+
+        	channel.closeFuture().addListener(innerFuture -> LocalUtils.logChannelStopped(channel));
         	if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             	Tr.debug(tc, "Found group to be: " + group + " for parent: " + parent);
             }
