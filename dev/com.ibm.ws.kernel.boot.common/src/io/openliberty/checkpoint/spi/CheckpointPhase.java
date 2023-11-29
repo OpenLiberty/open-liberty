@@ -249,7 +249,7 @@ public enum CheckpointPhase {
             hooks = phase.getAndClearHooks(multiThreaded);
 
             for (CheckpointHook hook : hooks) {
-                debug(() -> "prepare operation on static hook: " + hook);
+                debug(() -> "prepare operation on static " + (multiThreaded ? "multi-threaded" : "single-threaded") + " hook: " + hook);
                 hook.prepare();
             }
             // reverse for restore call during checkpoint
@@ -271,7 +271,7 @@ public enum CheckpointPhase {
         @Override
         public void restore() {
             for (CheckpointHook hook : hooks) {
-                debug(() -> "prepare operation on static hook: " + hook);
+                debug(() -> "restore operation on static " + (multiThreaded ? "multi-threaded" : "single-threaded") + " hook: " + hook);
                 hook.restore();
             }
             // release references to hooks now
