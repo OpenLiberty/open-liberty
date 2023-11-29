@@ -13,7 +13,7 @@ bVersion=1.0
 javac.source: 17
 javac.target: 17
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
 
 Bundle-Name: WAS WebContainer
 Bundle-SymbolicName: io.openliberty.webcontainer.servlet.6.1.internal.factories
