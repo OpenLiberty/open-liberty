@@ -12,11 +12,13 @@ package io.openliberty.org.apache.myfaces50.fat;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.fat.util.FatLogHandler;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.custom.junit.runner.FATRunner;
@@ -54,6 +56,14 @@ public class FATSuite {
         } catch (Exception e) {
             //ignore only using for debugging
         }
+    }
+
+    /**
+     * @see {@link FatLogHandler#generateHelpFile()}
+     */
+    @BeforeClass
+    public static void generateHelpFile() {
+        FatLogHandler.generateHelpFile();
     }
 
 }

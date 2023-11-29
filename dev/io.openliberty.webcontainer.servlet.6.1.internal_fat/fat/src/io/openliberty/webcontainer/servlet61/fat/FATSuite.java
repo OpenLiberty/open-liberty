@@ -9,9 +9,12 @@
  *******************************************************************************/
 package io.openliberty.webcontainer.servlet61.fat;
 
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import com.ibm.ws.fat.util.FatLogHandler;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 
@@ -20,5 +23,13 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 AlwaysPassesTest.class
 })
 public class FATSuite {
+
+    /**
+     * @see {@link FatLogHandler#generateHelpFile()}
+     */
+    @BeforeClass
+    public static void generateHelpFile() {
+        FatLogHandler.generateHelpFile();
+    }
 
 }

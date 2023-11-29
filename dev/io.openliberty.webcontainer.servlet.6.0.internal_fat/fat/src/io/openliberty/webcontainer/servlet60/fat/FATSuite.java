@@ -9,9 +9,12 @@
  *******************************************************************************/
 package io.openliberty.webcontainer.servlet60.fat;
 
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import com.ibm.ws.fat.util.FatLogHandler;
 
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60CookieSetAttributeTest;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60GetMappingAsyncDispatchTest;
@@ -46,5 +49,13 @@ import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60XPoweredByHeader
                 Servlet60URIPathCanonicalizationWebXMLTest.class
 })
 public class FATSuite {
+
+    /**
+     * @see {@link FatLogHandler#generateHelpFile()}
+     */
+    @BeforeClass
+    public static void generateHelpFile() {
+        FatLogHandler.generateHelpFile();
+    }
 
 }

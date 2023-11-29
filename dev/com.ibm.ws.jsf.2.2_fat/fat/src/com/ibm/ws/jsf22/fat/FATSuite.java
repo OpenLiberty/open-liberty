@@ -16,6 +16,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.jsf22.fat.tests.CDIConfigByACPTests;
@@ -48,15 +49,12 @@ import com.ibm.ws.jsf22.fat.tests.JSFHtmlUnit;
 import com.ibm.ws.jsf22.fat.tests.JSFServerTest;
 import com.ibm.ws.jsf22.fat.tests.JSFSimpleHtmlUnit;
 
+import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
-
-import  org.testcontainers.utility.DockerImageName;
-
-import componenttest.containers.TestContainerSuite;
 
 /**
  * JSF 2.2 Tests
@@ -105,14 +103,6 @@ import componenttest.containers.TestContainerSuite;
 })
 public class FATSuite extends TestContainerSuite {
 
-    /**
-     * @see {@link FatLogHandler#generateHelpFile()}
-     */
-    @BeforeClass
-    public static void generateHelpFile() {
-        FatLogHandler.generateHelpFile();
-    }
-
     @ClassRule
     public static RepeatTests repeat;
 
@@ -148,4 +138,13 @@ public class FATSuite extends TestContainerSuite {
             return DockerImageName.parse("selenium/standalone-chrome:4.8.3");
         }
     }
+
+    /**
+     * @see {@link FatLogHandler#generateHelpFile()}
+     */
+    @BeforeClass
+    public static void generateHelpFile() {
+        FatLogHandler.generateHelpFile();
+    }
+
 }
