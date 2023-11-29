@@ -9,8 +9,8 @@ IBM-ShortName: opentracing-1.2
 Subsystem-Name: Opentracing 1.2
 IBM-API-Package: io.opentracing;  type="third-party",\
                  io.opentracing.tag;  type="third-party",\
-                 io.opentracing.propagation;  type="third-party", \
-                 com.ibm.ws.opentracing.tracer; type="ibm-spi"
+                 io.opentracing.propagation;  type="third-party"
+IBM-SPI-Package: com.ibm.ws.opentracing.tracer
 -features=com.ibm.websphere.appserver.mpConfig-1.3; ibm.tolerates:="1.4", \
   com.ibm.websphere.appserver.jaxrs-2.0; ibm.tolerates:="2.1", \
   com.ibm.websphere.appserver.cdi-1.2; ibm.tolerates:="2.0"
