@@ -838,10 +838,10 @@ public class PageContextImpl extends PageContext {
 
     private void addImportsToELContext() {
         // For Pages 3.1
-        DirectiveInfo  directiveInfo;
+        DirectiveInfo directiveInfo;
         if (servlet instanceof DirectiveInfo) {
-            directiveInfo  =  (DirectiveInfo) servlet; 
-            if(directiveInfo.isErrorOnELNotFound()){
+            directiveInfo = (DirectiveInfo) servlet;
+            if (directiveInfo.isErrorOnELNotFound()) {
                 this.elContext.putContext(jakarta.servlet.jsp.el.NotFoundELResolver.class, true);
             }
             for (String _package : directiveInfo.getImportPackageList()) {
@@ -854,7 +854,7 @@ public class PageContextImpl extends PageContext {
             for (String _static : directiveInfo.getImportStaticList()) {
                 try {
                     this.elContext.getImportHandler().importStatic(_static);
-                } catch(ELException e){
+                } catch (jakarta.el.ELException e) {
                     // ignore if importing a static field from interface or via someClass.*
                     // https://github.com/OpenLiberty/open-liberty/issues/25135
                 }
