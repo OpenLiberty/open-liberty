@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -64,6 +64,8 @@ public class IfxConnection implements Connection {
     private static boolean _testingLeaselogDeleteFlag;
     private static boolean _testingLeaselogClaimFlag;
     private static boolean _testingLeaselogGetFlag;
+
+    private static boolean _peerRecoveryPauseEnabled;
 
     IfxConnection(Connection realConn) {
         System.out.println("IfxConnection(" + wrappedConn + "): construct wrapped connection using - " + realConn);
@@ -892,6 +894,21 @@ public class IfxConnection implements Connection {
      */
     public static void setQueryFailoverEnabled(boolean queryFailoverEnabled) {
         IfxConnection._queryFailoverEnabled = queryFailoverEnabled;
+    }
+
+    /**
+     * @return the failoverEnabled
+     */
+    public static boolean isPeerRecoveryPauseEnabled() {
+        return _peerRecoveryPauseEnabled;
+    }
+
+    /**
+     * @param failoverEnabled
+     *            the failoverEnabled to set
+     */
+    public static void setPeerRecoveryPause(boolean peerRecoveryPauseEnabled) {
+        IfxConnection._peerRecoveryPauseEnabled = peerRecoveryPauseEnabled;
     }
 
     /**

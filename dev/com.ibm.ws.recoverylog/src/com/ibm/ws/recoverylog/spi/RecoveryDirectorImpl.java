@@ -638,8 +638,6 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
 
         if (localRecovery) {
             Tr.info(tc, "CWRLS0012_DIRECT_LOCAL_RECOVERY", failureScope.serverName());
-        } else {
-            Tr.info(tc, "CWRLS0013_DIRECT_PEER_RECOVERY", failureScope.serverName());
         }
 
         if (tc.isEntryEnabled())
