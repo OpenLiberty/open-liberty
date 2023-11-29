@@ -1523,7 +1523,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             numRunningThreads = maxConcurrency - maxConcurrencyConstraint.availablePermits();
             numRunningPrioritizedThreads = expedite - expeditesAvailable.get();
         }
-        out.println(INDENT + "Total Enqueued for async execution = " + numRunningThreads + " (" + numRunningPrioritizedThreads + " expedited)");
+        out.println(INDENT + "Total Enqueued for Async Execution = " + numRunningThreads + " (" + numRunningPrioritizedThreads + " expedited)");
         out.println(INDENT + "withheldConcurrency = " + withheldConcurrency.get());
         out.println(INDENT + "Remaining Queue Capacity = " + maxQueueSizeConstraint.availablePermits());
         out.println(INDENT + "state = " + state.toString());
