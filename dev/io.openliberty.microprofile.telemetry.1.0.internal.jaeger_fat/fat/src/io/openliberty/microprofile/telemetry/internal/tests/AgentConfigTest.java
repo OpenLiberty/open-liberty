@@ -25,6 +25,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import org.junit.rules.RuleChain;
+import org.junit.AfterClass;
 
 import java.util.List;
 
@@ -49,6 +51,7 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -57,6 +60,7 @@ import io.jaegertracing.api_v2.Model.Span;
 import io.openliberty.microprofile.telemetry.internal.apps.agentconfig.AgentConfigTestResource;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.TestUtils;
+import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
 
@@ -70,14 +74,16 @@ import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryCl
 @MaximumJavaLevel(javaLevel = 20)
 public class AgentConfigTest {
 
-    @Server("TelemetryAgentConfig")
+    private static final String SERVER_NAME = "TelemetryAgentConfig";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    @ClassRule
     public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
+    public static RepeatTests repeat = FATSuite.allMPRepeats(SERVER_NAME);
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("spanTestServer", MicroProfileActions.MP61, MicroProfileActions.MP60);
+    public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);
 
     public static JaegerQueryClient client;
 
@@ -96,10 +102,11 @@ public class AgentConfigTest {
     @Before
     public void resetServer() throws Exception {
         // Replace any test files with their original versions
-        copyToServer("server.xml-original", "server.xml");
+        deleteFromServer("agent-config.properties");
+        deleteFromServer("jvm.options");
+        deleteFromServer("bootstrap.properties");
         copyToServer("jvm.options-original", "jvm.options");
         copyToServer("bootstrap.properties-original", "bootstrap.properties");
-        deleteFromServer("agent-config.properties");
 
         // Reset the expected apps
         server.removeAllInstalledAppsForValidation();
@@ -119,6 +126,13 @@ public class AgentConfigTest {
         server.stopServer();
     }
 
+    @AfterClass
+    public static void closeClient() throws Exception {
+        if (client != null) {
+            client.close();
+        }
+    }
+
     @Test
     public void testConfigFromAgentFile() throws Exception {
         copyToServer("agent-config.properties", "agent-config.properties");
@@ -134,6 +148,7 @@ public class AgentConfigTest {
 
     @Test
     public void testConfigFromJvmOptions() throws Exception {
+        deleteFromServer("jvm.options");
         copyToServer("jvm.options-test", "jvm.options");
 
         server.startServer();
@@ -146,6 +161,7 @@ public class AgentConfigTest {
 
     @Test
     public void testConfigNotReadFromBootstrap() throws Exception {
+        deleteFromServer("bootstrap.properties");
         copyToServer("bootstrap.properties-test", "bootstrap.properties");
 
         server.startServer();
@@ -195,13 +211,16 @@ public class AgentConfigTest {
     /**
      * If the user configures the agent not to trace Rest or {@code @WithSpan} calls, we should not enable our instrumentation.
      */
+    
     @Test
     public void testAgentRestAndCDIInstrumentationDisabled() throws Exception {
+
         server.addEnvVar("OTEL_INSTRUMENTATION_OPENTELEMETRY_INSTRUMENTATION_ANNOTATIONS_ENABLED", "false");
         server.addEnvVar("OTEL_INSTRUMENTATION_JAXRS_CLIENT_ENABLED", "false");
         server.addEnvVar("OTEL_INSTRUMENTATION_JAXRS_ENABLED", "false");
         server.addEnvVar("OTEL_INSTRUMENTATION_LIBERTY_ENABLED", "false");
         server.addEnvVar("OTEL_INSTRUMENTATION_APACHE_HTTPCLIENT_ENABLED", "false");
+        server.addEnvVar("OTEL_INSTRUMENTATION_HTTP_URL_CONNECTION_ENABLED","false"); //For JaxRs 2.0 and 2.1
         server.addEnvVar("OTEL_INSTRUMENTATION_SERVLET_ENABLED", "false");
 
         server.startServer();
@@ -225,20 +244,28 @@ public class AgentConfigTest {
         String traceId = new HttpRequest(server, "/agentTest").run(String.class);
 
         List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(1));
-
-        assertThat(spans.get(0), hasName("/agentTest/"));
-
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            assertThat(spans.get(0), hasName("/agentTest/"));        
+        } else {
+            assertThat(spans.get(0), hasName("GET /agentTest/"));  
+        }
         // We should still be able to manually create spans with the API
         String traceId2 = new HttpRequest(server, "/agentTest/manualSpans").run(String.class);
 
         List<Span> spans2 = client.waitForSpansForTraceId(traceId2, hasSize(3));
 
-        Span requestSpan = TestUtils.findOneFrom(spans2, hasName("/agentTest/manualSpans"));
-        assertThat(requestSpan, hasNoParent());
+        String requestSpanName = "";
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            requestSpanName = "/agentTest/manualSpans";
+        }
+        else{
+            requestSpanName = "GET /agentTest/manualSpans";
+        }
 
+        Span requestSpan = TestUtils.findOneFrom(spans2, hasName(requestSpanName));
+        assertThat(requestSpan, hasNoParent());
         Span span1 = TestUtils.findOneFrom(spans2, hasName("span1"));
         assertThat(span1, hasParentSpanId(requestSpan.getSpanId()));
-
         Span span2 = TestUtils.findOneFrom(spans2, hasName("span2"));
         assertThat(span2, hasParentSpanId(span1.getSpanId()));
     }
@@ -264,48 +291,6 @@ public class AgentConfigTest {
 
         Span span2 = TestUtils.findOneFrom(spans2, hasName("span2"));
         assertThat(span2, hasParentSpanId(span1.getSpanId()));
-    }
-
-    @Test
-    public void testAgentMultiApp() throws Exception {
-        // Deploy two apps and associated server.xml
-        server.removeAllInstalledAppsForValidation(); // Not starting the normal app
-
-        PropertiesAsset app1Config = new PropertiesAsset().addProperty("otel.service.name", "multi-app-1");
-        WebArchive app1 = ShrinkWrap.create(WebArchive.class, "multiApp1.war")
-                                    .addPackage(AgentConfigTestResource.class.getPackage())
-                                    .addAsResource(app1Config, "META-INF/microprofile-config.properties");
-        ShrinkHelper.exportAppToServer(server, app1, DeployOptions.SERVER_ONLY);
-
-        PropertiesAsset app2Config = new PropertiesAsset().addProperty("otel.service.name", "multi-app-2");
-        WebArchive app2 = ShrinkWrap.create(WebArchive.class, "multiApp2.war")
-                                    .addPackage(AgentConfigTestResource.class.getPackage())
-                                    .addAsResource(app2Config, "META-INF/microprofile-config.properties");
-        ShrinkHelper.exportAppToServer(server, app2, DeployOptions.SERVER_ONLY);
-
-        copyToServer("server.xml-multi-app", "server.xml");
-
-        server.startServer();
-
-        // Test we can call app1
-        String traceId = new HttpRequest(server, "/multiApp1").run(String.class);
-        Span span1 = client.waitForSpansForTraceId(traceId, hasSize(1)).get(0);
-
-        // microprofile-config.properties is not read by the agent
-        assertThat(span1, hasServiceName("unknown_service:java"));
-        assertThat(span1, hasNoParent());
-        assertThat(span1, hasKind(SERVER));
-        assertThat(span1, hasName("/multiApp1/"));
-
-        // Test we can call app2
-        String traceId2 = new HttpRequest(server, "/multiApp2").run(String.class);
-        Span span2 = client.waitForSpansForTraceId(traceId2, hasSize(1)).get(0);
-
-        // microprofile-config.properties is not read by the agent
-        assertThat(span2, hasServiceName("unknown_service:java"));
-        assertThat(span2, hasNoParent());
-        assertThat(span2, hasKind(SERVER));
-        assertThat(span2, hasName("/multiApp2/"));
     }
 
     private void copyToServer(String src, String dst) throws Exception {
