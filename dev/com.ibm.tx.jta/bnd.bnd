@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017,2023 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -27,16 +27,17 @@ Bundle-Vendor: IBM
 WS-TraceGroup: Transaction
 DynamicImport-Package: *
 Import-Package: \
- com.ibm.tx,\
- com.ibm.tx.config,\
- com.ibm.tx.util,\
- com.ibm.tx.util.alarm,\
- com.ibm.ws.recoverylog.spi,\
- javax.resource,\
- javax.resource.spi,\
- javax.resource.spi.work,\
- javax.transaction;version="1.1.0",\
- javax.transaction.xa;version="1.1.0"
+  com.ibm.tx,\
+  com.ibm.tx.config,\
+  com.ibm.tx.util,\
+  com.ibm.tx.util.alarm,\
+  com.ibm.ws.kernel.service.util,\
+  com.ibm.ws.recoverylog.spi,\
+  javax.resource,\
+  javax.resource.spi,\
+  javax.resource.spi.work,\
+  javax.transaction.xa;version="1.1.0",\
+  javax.transaction;version="1.1.0"
 
 Bundle-Activator: com.ibm.tx.jta.util.TxBundleTools
 
@@ -49,36 +50,36 @@ Service-Component: \
  # TODO can we scrap the test export?
 # all packages have packageinfo files (package-info.java with @version javadoc)
 Export-Package: \
- com.ibm.tx.jta,\
- com.ibm.tx.jta.config,\
- com.ibm.tx.jta.impl,\
- com.ibm.tx.jta.util,\
- com.ibm.tx.jta.util.alarm,\
- com.ibm.tx.ltc,\
- com.ibm.tx.ltc.impl,\
- com.ibm.ws.LocalTransaction.resources;version="2.0.0",\
- com.ibm.ws.LocalTransaction;version="2.0.0",\
- com.ibm.ws.Transaction,\
- com.ibm.ws.Transaction.JTA,\
- com.ibm.ws.Transaction.JTS,\
- com.ibm.ws.Transaction.resources;version="1.0.16",\
- com.ibm.ws.Transaction.test,\
- com.ibm.ws.uow;version="2.0.0",\
- com.ibm.wsspi.tx
+  com.ibm.tx.jta,\
+  com.ibm.tx.jta.config,\
+  com.ibm.tx.jta.impl,\
+  com.ibm.tx.jta.util,\
+  com.ibm.tx.jta.util.alarm,\
+  com.ibm.tx.ltc,\
+  com.ibm.tx.ltc.impl,\
+  com.ibm.ws.LocalTransaction.resources;version="2.0.0",\
+  com.ibm.ws.LocalTransaction;version="2.0.0",\
+  com.ibm.ws.Transaction,\
+  com.ibm.ws.Transaction.JTA,\
+  com.ibm.ws.Transaction.JTS,\
+  com.ibm.ws.Transaction.resources;version="1.0.16",\
+  com.ibm.ws.Transaction.test,\
+  com.ibm.ws.uow;version="2.0.0",\
+  com.ibm.wsspi.tx
 
 instrument.disabled: true
 
 -buildpath: \
- com.ibm.tx.util;version=latest,\
- com.ibm.websphere.javaee.connector.1.6;version=latest,\
- com.ibm.websphere.javaee.transaction.1.1;version=latest,\
- com.ibm.websphere.org.osgi.core;version=latest,\
- com.ibm.websphere.org.osgi.service.component;version=latest,\
- com.ibm.ws.classloading;version=latest,\
- com.ibm.ws.kernel.service;version=latest,\
- com.ibm.ws.logging.core,\
- com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
- com.ibm.ws.recoverylog;version=latest,\
- com.ibm.ws.resource;version=latest,\
- com.ibm.ws.kernel.boot.common;version=latest
- 
+  com.ibm.tx.util;version=latest,\
+  com.ibm.websphere.javaee.connector.1.6;version=latest,\
+  com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+  com.ibm.websphere.org.osgi.core;version=latest,\
+  com.ibm.websphere.org.osgi.service.component;version=latest,\
+  com.ibm.ws.classloading;version=latest,\
+  com.ibm.ws.kernel.boot.common;version=latest,\
+  com.ibm.ws.kernel.service;version=latest,\
+  com.ibm.ws.logging.core,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.recoverylog;version=latest,\
+  com.ibm.ws.resource;version=latest
+
