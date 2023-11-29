@@ -127,7 +127,7 @@ public class FaultToleranceTck20Launcher {
         boolean isFullMode = TestModeFilter.shouldRun(TestMode.FULL);
 
         String suiteFileName;
-        switch (RepeatTestFilter.getMostRecentRepeatAction()) {
+        switch (RepeatTestFilter.getMostRecentRepeatAction().getID()) {
             case MicroProfileActions.MP22_ID:
             case MicroProfileActions.MP30_ID:
                 // For test configurations which only differ my the version of mpMetrics, just run the metrics tests

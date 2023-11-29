@@ -17,6 +17,7 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.RepeatTestAction;
 
 /**
  * Repeats a test in a given set of configurations
@@ -38,16 +39,16 @@ import componenttest.custom.junit.runner.RepeatTestFilter;
  */
 public class RepeatRule<T> implements TestRule {
 
-    private T[] repeats;
+    private RepeatTestAction[] repeats;
 
-    private T currentRepeat;
+    private RepeatTestAction currentRepeat;
 
     @SafeVarargs
-    public RepeatRule(T... repeats) {
+    public RepeatRule(RepeatTestAction... repeats) {
         this.repeats = repeats;
     }
 
-    public T getRepeat() {
+    public RepeatTestAction getRepeat() {
         return currentRepeat;
     }
 
@@ -57,9 +58,9 @@ public class RepeatRule<T> implements TestRule {
 
             @Override
             public void evaluate() throws Throwable {
-                for (T repeat : repeats) {
+                for (RepeatTestAction repeat : repeats) {
                     currentRepeat = repeat;
-                    RepeatTestFilter.activateRepeatAction(repeat.toString());
+                    RepeatTestFilter.activateRepeatAction(repeat);
                     try {
                         statement.evaluate();
                     } finally {
@@ -70,5 +71,4 @@ public class RepeatRule<T> implements TestRule {
             }
         };
     }
-
 }

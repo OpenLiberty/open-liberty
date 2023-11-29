@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -255,13 +256,13 @@ public abstract class JakartaEEAction extends FeatureReplacementAction {
     public static void transformApp(Path appPath, Path newAppPath, EEVersion eeVersion) {
         switch (eeVersion) {
             case EE9:
-                JakartaEE9Action.transformApplication(appPath, newAppPath, null);
+                JakartaEE9Action.staticTransformApplication(appPath, newAppPath, null);
                 break;
             case EE10:
-                JakartaEE10Action.transformApplication(appPath, newAppPath, null);
+                JakartaEE10Action.staticTransformApplication(appPath, newAppPath, null);
                 break;
             case EE11:
-                JakartaEE11Action.transformApplication(appPath, newAppPath, null);
+                JakartaEE11Action.staticTransformApplication(appPath, newAppPath, null);
                 break;
             default:
                 // do nothing
@@ -276,13 +277,16 @@ public abstract class JakartaEEAction extends FeatureReplacementAction {
      * @param transformationRulesAppend The map with the additional transformation rules to add
      */
     public static void transformApp(Path appPath, Path newAppPath, Map<String, String> transformationRulesAppend) {
-        if (RepeatTestFilter.isRepeatActionActive(EE9_ACTION_ID)) {
-            JakartaEE9Action.transformApplication(appPath, newAppPath, transformationRulesAppend);
-        } else if (RepeatTestFilter.isRepeatActionActive(EE10_ACTION_ID)) {
-            JakartaEE10Action.transformApplication(appPath, newAppPath, transformationRulesAppend);
-        } else if (RepeatTestFilter.isRepeatActionActive(EE11_ACTION_ID)) {
-            JakartaEE11Action.transformApplication(appPath, newAppPath, transformationRulesAppend);
-        }
+        List<RepeatTestAction> actions = RepeatTestFilter.getRepeatActions();
+
+        //If you are running a repeat test inside a repeat test
+        //E.G. a microprofile repeat action inside an EE repeat action
+        //the JakartaEEAction might not be at the top of the stack
+        actions.stream()
+                        .filter(a -> a instanceof JakartaEEAction)
+                        .map(a -> (JakartaEEAction) a)
+                        .findFirst()
+                        .ifPresent(a -> a.transformApplication(appPath, newAppPath, transformationRulesAppend));
     }
 
     /**
@@ -299,14 +303,19 @@ public abstract class JakartaEEAction extends FeatureReplacementAction {
      * @param newAppPath The application path of the transformed file (or <code>null<code>)
      */
     public static void transformApp(Path appPath, Path newAppPath) {
-        if (RepeatTestFilter.isRepeatActionActive(EE9_ACTION_ID)) {
-            JakartaEE9Action.transformApplication(appPath, newAppPath, null);
-        } else if (RepeatTestFilter.isRepeatActionActive(EE10_ACTION_ID)) {
-            JakartaEE10Action.transformApplication(appPath, newAppPath, null);
-        } else if (RepeatTestFilter.isRepeatActionActive(EE11_ACTION_ID)) {
-            JakartaEE11Action.transformApplication(appPath, newAppPath, null);
-        }
+        List<RepeatTestAction> actions = RepeatTestFilter.getRepeatActions();
+
+        //If you are running a repeat test inside a repeat test
+        //E.G. a microprofile repeat action inside an EE repeat action
+        //the JakartaEEAction might not be at the top of the stack
+        actions.stream()
+                        .filter(a -> a instanceof JakartaEEAction)
+                        .map(a -> (JakartaEEAction) a)
+                        .findFirst()
+                        .ifPresent(a -> a.transformApplication(appPath, newAppPath, null));
     }
+
+    abstract void transformApplication(Path appPath, Path newAppPath, Map<String, String> transformationRulesAppend);
 
     protected static void transformApp(Path appPath, Path newAppPath, Map<String, String> defaultTransformationRules,
                                        Map<String, String> transformationRulesAppend, boolean widen) {
