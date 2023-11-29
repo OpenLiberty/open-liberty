@@ -114,7 +114,7 @@
             <scope>system</scope>
             <systemPath>${io.openliberty.jakarta.mail.2.1_}</systemPath>
         </dependency>
-        
+
         <dependency>
             <groupId>jakarta.activation</groupId>
             <artifactId>jakarta.activation-api</artifactId>
