@@ -41,7 +41,6 @@
   "browserslist": [
     "defaults",
     "firefox >= 38",
-    "IE 11",
     "Chrome >= 49",
     "Edge >= 20"
   ]

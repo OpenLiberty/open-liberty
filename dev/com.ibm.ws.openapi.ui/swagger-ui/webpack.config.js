@@ -82,19 +82,6 @@ module.exports = {
         include: [
           path.resolve(__dirname, 'src/'),
           path.resolve(__dirname, 'node_modules/swagger-ui/dist/'),
-          // Additional libraries which need transformed for IE11 compatibility
-          path.resolve(__dirname, 'node_modules/buffer/'),
-          path.resolve(__dirname, 'node_modules/fraction.js/'),
-          path.resolve(__dirname, 'node_modules/patch-package/'),
-          path.resolve(__dirname, 'node_modules/drange/'),
-          path.resolve(__dirname, 'node_modules/serialize-error/'),
-          path.resolve(__dirname, 'node_modules/highlight.js/'),
-          path.resolve(__dirname, 'node_modules/randexp/'),
-          path.resolve(__dirname, 'node_modules/ret/'),
-          path.resolve(__dirname, 'node_modules/formdata-node/'),
-          path.resolve(__dirname, 'node_modules/fast-json-patch/'),
-          path.resolve(__dirname, 'node_modules/react-redux/'),
-          path.resolve(__dirname, 'node_modules/swagger-client/'),
         ],
         loader: "babel-loader",
         options: {
@@ -161,8 +148,7 @@ module.exports = {
   output: {
     filename: '[name]-bundle-[contenthash].js',
     path: outputPath,
-    library: 'SwaggerUI',
-    publicPath: '' // Needed for IE
+    library: 'SwaggerUI'
   },
   ignoreWarnings: [/Failed to parse source map/],
 };
