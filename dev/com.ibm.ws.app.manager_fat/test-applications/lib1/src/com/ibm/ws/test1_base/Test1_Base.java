@@ -10,9 +10,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.test0;
+package com.ibm.ws.test1_base;
 
-public interface Test0 {
-    void testMethod0();
-    String TEST_VALUE = "Test0";
+public interface Test1_Base {
+    void testMethod1();
+    String TEST_VALUE = "Test1";
 }

@@ -26,10 +26,14 @@ public class SharedLibServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     public static final String[] LIB_PROBE_CLASS_NAMES = {
-                                                           "com.ibm.ws.test0.Test0",
-                                                           "com.ibm.ws.test1.Test1",
-                                                           "com.ibm.ws.test2.Test2",
-                                                           "com.ibm.ws.test3.Test3"
+        "com.ibm.ws.test0_base.Test0_Base",
+        "com.ibm.ws.test0_alt.Test0_Alt",
+
+        "com.ibm.ws.test1_base.Test1_Base",
+        "com.ibm.ws.test1_alt.Test1_Alt",
+
+        "com.ibm.ws.test2_base.Test2_Base",
+        "com.ibm.ws.test3_base.Test3_Base"
     };
 
     public static final String LIB_PROBE_FIELD_NAME = "TEST_VALUE";
@@ -54,6 +58,8 @@ public class SharedLibServlet extends HttpServlet {
             return null;
         }
     }
+
+    public static final int PROBE_DATA_WIDTH = 4;
 
     public static void getProbeData(String className, String fieldName, Object[] probeData) {
         Class<?> probeClass = getProbeClass(className);
@@ -104,7 +110,7 @@ public class SharedLibServlet extends HttpServlet {
                       "Context Path", req.getContextPath());
 
         int numProbes = LIB_PROBE_CLASS_NAMES.length;
-        Object[][] probeData = new Object[numProbes][4];
+        Object[][] probeData = new Object[numProbes][PROBE_DATA_WIDTH];
         for (int probeNo = 0; probeNo < numProbes; probeNo++) {
             getProbeData(LIB_PROBE_CLASS_NAMES[probeNo], LIB_PROBE_FIELD_NAME, probeData[probeNo]);
         }

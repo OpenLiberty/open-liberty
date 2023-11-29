@@ -10,9 +10,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.test2;
+package com.ibm.ws.test0_alt;
 
-public interface Test2 {
-    void testMethod2();
-    String TEST_VALUE = "Test2";
+public interface Test0_Alt {
+    void testMethod0_Alt();
+    String TEST_VALUE = "Test0_Alt";
 }
