@@ -13,14 +13,16 @@
 package com.ibm.ws.security.token.ltpa.internal;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 
 import org.jmock.Expectations;
@@ -103,7 +105,7 @@ public class LTPAConfigurationImplTest {
 
     @Before
     public void setUp() {
-        props = createProps(PATH_TO_FILE, PWD, 120L, 0L, DEFAULT_MONITOR_DIR_VALUE, DEFAULT_UPDATE_TRIGGER, 
+        props = createProps(PATH_TO_FILE, PWD, 120L, 0L, DEFAULT_MONITOR_DIR_VALUE, DEFAULT_UPDATE_TRIGGER,
                             0L, DEFAULT_VALIDATION_KEY_ELEMENT, DEFAULT_VALIDATION_FILENAME, DEFAULT_VALIDATION_PASSWORD, DEFAULT_VALIDATION_VALID_UNTIL_DATE);
 
         mock.checking(new Expectations() {
@@ -127,7 +129,8 @@ public class LTPAConfigurationImplTest {
     }
 
     private Map<String, Object> createProps(String filePath, String password, long expiration, long monitorInterval, boolean monitorValidationKeysDir, String updateTrigger,
-                                            long expDiffAllowed, String validationKey, String validationKeyFileName, String validationKeyPassword, String validationKeyValidUntilDate) {
+                                            long expDiffAllowed, String validationKey, String validationKeyFileName, String validationKeyPassword,
+                                            String validationKeyValidUntilDate) {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, filePath);
         props.put(LTPAConfiguration.CFG_KEY_PASSWORD, new SerializableProtectedString(password.toCharArray()));
@@ -136,20 +139,12 @@ public class LTPAConfigurationImplTest {
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_VALIDATION_KEYS_DIR, monitorValidationKeysDir);
         props.put(LTPAConfiguration.CFG_KEY_UPDATE_TRIGGER, updateTrigger);
         props.put(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED, expDiffAllowed);
-        // props.put(LTPAConfigurationImpl.CFG_KEY_VALIDATION_ELEMENT, validationKey);
-        // props.put(LTPAConfigurationImpl.CFG_KEY_VALIDATION_FILE_NAME, validationKeyFileName);
-        // props.put(LTPAConfigurationImpl.CFG_KEY_VALIDATION_PASSWORD, validationKeyPassword);
-        // props.put(LTPAConfigurationImpl.CFG_KEY_VALIDATION_VALID_UNTIL_DATE, validationKeyValidUntilDate);
 
-        // Create the first validation key
-        // props.put(LTPAConfiguration.CFG_KEY_VALIDATION_KEYS + ".0." + LTPAConfiguration.CFG_KEY_VALIDATION_REF_TYPE, referenceType);
+        // Create one validation key in props
         props.put(LTPAConfiguration.CFG_KEY_VALIDATION_KEYS + ".0." + LTPAConfiguration.CFG_KEY_VALIDATION_FILE_NAME, validationKeyFileName);
-        props.put(LTPAConfiguration.CFG_KEY_VALIDATION_KEYS + ".0." + LTPAConfiguration.CFG_KEY_VALIDATION_PASSWORD, new SerializableProtectedString(validationKeyPassword.toCharArray()));
+        props.put(LTPAConfiguration.CFG_KEY_VALIDATION_KEYS + ".0." + LTPAConfiguration.CFG_KEY_VALIDATION_PASSWORD,
+                  new SerializableProtectedString(validationKeyPassword.toCharArray()));
         props.put(LTPAConfiguration.CFG_KEY_VALIDATION_KEYS + ".0." + LTPAConfiguration.CFG_KEY_VALIDATION_VALID_UNTIL_DATE, validationKeyValidUntilDate);
-
-
-        // Add the list of validation keys to the props hashmap
-        // props.put(LTPAConfiguration.CFG_KEY_VALIDATION_KEYS, validationKeys);
 
         return props;
     }
@@ -203,7 +198,6 @@ public class LTPAConfigurationImplTest {
         public String getFirstValidationKeyFileName() {
             return getValidationKeys().get(0).getProperty(CFG_KEY_VALIDATION_FILE_NAME);
         }
-
 
         /**
          * @return the first validation key's file password
@@ -321,6 +315,21 @@ public class LTPAConfigurationImplTest {
 
         assertTrue("The LTPA file monitor registration must be set.", ltpaConfig.wasSetFileMonitorRegistrationCalled);
     }
+    
+    /**
+     * Tests that the file monitor is not registered and set in the LTPAConfigImpl object when updateTrigger is set to disabled.
+     */
+    @Test
+    public void fileMonitorRegistration_updateTriggerDisabled() throws Exception {
+        setupExecutorServiceExpectations(1);
+        setupLocationServiceExpectations(1);
+        setupFileMonitorRegistrationsExpectations(0);
+
+        props.put(LTPAConfiguration.CFG_KEY_UPDATE_TRIGGER, "disabled");
+        LTPAConfigurationImplTestDouble ltpaConfig = createActivatedLTPAConfigurationImpl();
+
+        assertTrue("The LTPA file monitor registration must not be set.", !ltpaConfig.wasSetFileMonitorRegistrationCalled);
+    }
 
     @SuppressWarnings("deprecation")
     private void setupFileMonitorRegistrationsExpectations(final int numberOfInvocations) {
@@ -431,6 +440,8 @@ public class LTPAConfigurationImplTest {
 
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, 5000L);
         ltpaConfig.modified(props);
+
+        assertTrue("Expected CWWKS4107A message was not logged", outputMgr.checkForStandardOut("CWWKS4107A:.*"));
     }
 
     @Test
@@ -441,6 +452,8 @@ public class LTPAConfigurationImplTest {
 
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_VALIDATION_KEYS_DIR, true);
         ltpaConfig.modified(props);
+
+        assertTrue("Expected CWWKS4107A message was not logged", outputMgr.checkForStandardOut("CWWKS4107A:.*"));
     }
 
     @Test
@@ -450,6 +463,22 @@ public class LTPAConfigurationImplTest {
         setupFileMonitorRegistrationsExpectations(2);
 
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, 5L);
+        LTPAConfigurationImplTestDouble ltpaConfig = createActivatedLTPAConfigurationImpl();
+
+        props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, PATH_TO_ANOTHER_FILE);
+        ltpaConfig.modified(props);
+        assertTrue("The old file monitor must be unset.", ltpaConfig.wasUnsetFileMonitorRegistrationCalled);
+        assertTrue("Expected CWWKS4107A message was not logged",
+                   outputMgr.checkForStandardOut("CWWKS4107A:.*" + PATH_TO_ANOTHER_FILE));
+    }
+
+    @Test
+    public void modified_monitorValidationKeysDirSame_fileChanged_unregistersListenerAndCreatesKeys() throws Exception {
+        setupExecutorServiceExpectations(2);
+        setupLocationServiceExpectations(2);
+        setupFileMonitorRegistrationsExpectations(2);
+
+        props.put(LTPAConfiguration.CFG_KEY_MONITOR_VALIDATION_KEYS_DIR, true);
         LTPAConfigurationImplTestDouble ltpaConfig = createActivatedLTPAConfigurationImpl();
 
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, PATH_TO_ANOTHER_FILE);
@@ -470,6 +499,23 @@ public class LTPAConfigurationImplTest {
 
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, PATH_TO_ANOTHER_FILE);
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, 10L);
+        ltpaConfig.modified(props);
+        assertTrue("The old file monitor must be unset.", ltpaConfig.wasUnsetFileMonitorRegistrationCalled);
+        assertTrue("Expected CWWKS4107A message was not logged",
+                   outputMgr.checkForStandardOut("CWWKS4107A:.*" + PATH_TO_ANOTHER_FILE));
+    }
+
+    @Test
+    public void modified_fileAndMonitorValidationKeysDirChanged_unregistersListenerAndCreatesKeys() throws Exception {
+        setupExecutorServiceExpectations(2);
+        setupLocationServiceExpectations(2);
+        setupFileMonitorRegistrationsExpectations(1);
+
+        props.put(LTPAConfiguration.CFG_KEY_MONITOR_VALIDATION_KEYS_DIR, true);
+        LTPAConfigurationImplTestDouble ltpaConfig = createActivatedLTPAConfigurationImpl();
+
+        props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, PATH_TO_ANOTHER_FILE);
+        props.put(LTPAConfiguration.CFG_KEY_MONITOR_VALIDATION_KEYS_DIR, false);
         ltpaConfig.modified(props);
         assertTrue("The old file monitor must be unset.", ltpaConfig.wasUnsetFileMonitorRegistrationCalled);
         assertTrue("Expected CWWKS4107A message was not logged",
@@ -505,21 +551,21 @@ public class LTPAConfigurationImplTest {
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, 0L);
         ltpaConfig.modified(props);
         assertTrue("The old file monitor must be unset.", ltpaConfig.wasUnsetFileMonitorRegistrationCalled);
-        assertFalse("Message CWWKS4107A was not expected", outputMgr.checkForStandardOut("CWWKS4107A:.*"));
+        assertTrue("Expected CWWKS4107A message was not logged", outputMgr.checkForStandardOut("CWWKS4107A:.*"));
     }
 
     @Test
     public void modified_passwordChanged_doNotUnregisterOrCreateKeys() throws Exception {
-        setupExecutorServiceExpectations(1);
+        setupExecutorServiceExpectations(2);
         setupLocationServiceExpectations(2);
-        setupFileMonitorRegistrationsExpectations(1);
+        setupFileMonitorRegistrationsExpectations(2);
 
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, 5L);
         LTPAConfigurationImplTestDouble ltpaConfig = createActivatedLTPAConfigurationImpl();
 
         props.put(LTPAConfiguration.CFG_KEY_PASSWORD, new SerializableProtectedString(ANOTHER_PWD.toCharArray()));
         ltpaConfig.modified(props);
-        assertFalse("The old file monitor must not be unset.", ltpaConfig.wasUnsetFileMonitorRegistrationCalled);
+        assertTrue("The old file monitor must be unset.", ltpaConfig.wasUnsetFileMonitorRegistrationCalled);
     }
 
     @Test
@@ -580,4 +626,32 @@ public class LTPAConfigurationImplTest {
                      RESOLVED_DEFAULT_OUTPUT_LOCATION, ltpaConfig.getPrimaryKeyFile());
     }
 
+    @Test
+    public void maskKeysPasswords_replacesPasswordWithMask() {
+        setupExecutorServiceExpectations(1);
+        setupLocationServiceExpectations(1);
+        // setupFileMonitorRegistrationsExpectations(1);
+
+        final String originalPassword = "{xor}Lz4sLCgwLTs=";
+        final String maskedPassword = "*not null*";
+        props.put(LTPAConfiguration.CFG_KEY_PASSWORD, new SerializableProtectedString(originalPassword.toCharArray()));
+
+        LTPAConfigurationImplTestDouble ltpaConfig = createActivatedLTPAConfigurationImpl();
+
+        Properties inputProps = new Properties();
+        inputProps.setProperty("password", originalPassword);
+        List<Properties> inputList = new ArrayList<>();
+        inputList.add(inputProps);
+
+        Properties expectedProps = new Properties();
+        expectedProps.setProperty("password", maskedPassword);
+        List<Properties> expectedList = new ArrayList<>();
+        expectedList.add(expectedProps);
+
+        // Act
+        List<Properties> outputList = ltpaConfig.testMaskKeysPasswords(inputList);
+
+        // Assert
+        assertEquals("The password was not masked correctly", expectedList, outputList);   
+    }
 }

@@ -812,6 +812,10 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         return validationKeys;
     }
 
+    protected List<Properties> testMaskKeysPasswords(List<Properties> originalList) {
+        return maskKeysPasswords(originalList);
+    }
+
     /*
      *
      */
