@@ -1,0 +1,51 @@
+<!--
+    Copyright (c) 2022,2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+  <featureManager>
+    <feature>componenttest-2.0</feature>
+    <feature>concurrent-3.0</feature> <!-- for @Asynchronous -->
+    <feature>data-1.0</feature>
+    <feature>jdbc-4.3</feature>
+    <feature>jndi-1.0</feature>
+    <!-- persistence-3.1 must NOT be added so that we cover Jakarta Data with JDBC only -->
+    <feature>servlet-6.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="DataTestApp.war">
+    <classloader commonLibraryRef="DerbyLib"/>
+  </application>
+
+  <application location="ProviderTestApp.war"/>
+
+  <authData id="auth1" user="user1" password="pwd1"/>
+  <authData id="auth2" user="user2" password="pwd2"/>
+
+  <!-- For DataSourceDefinition java:app/jdbc/DerbyDataSource which is used by the Vehicles repository -->
+  <library id="DerbyLib">
+    <file name="${shared.resource.dir}/derby/derby.jar"/>
+  </library>
+
+  <!-- For all other repositories: -->
+  <dataSource id="DefaultDataSource" fat.modify="true">
+    <jdbcDriver libraryRef="JDBCLibrary"/>
+    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb" user="dbuser1" password="dbpwd1"/>
+  </dataSource>
+
+  <library id="JDBCLibrary">
+    <fileset dir="${shared.resource.dir}/jdbc" includes="derby.jar"/>
+  </library>
+
+</server>

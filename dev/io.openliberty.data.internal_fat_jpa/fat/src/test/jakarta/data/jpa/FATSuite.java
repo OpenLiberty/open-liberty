@@ -22,7 +22,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                DataJPATest.class
+                DataJPATest.class,
+                DataJPATestCheckpoint.class
 })
 public class FATSuite extends TestContainerSuite {
 }
