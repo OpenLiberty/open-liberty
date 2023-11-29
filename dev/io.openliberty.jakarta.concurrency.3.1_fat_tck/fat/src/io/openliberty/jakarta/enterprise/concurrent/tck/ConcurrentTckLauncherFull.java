@@ -51,8 +51,8 @@ public class ConcurrentTckLauncherFull {
     @BeforeClass
     public static void setUp() throws Exception {
         //TODO Remove once TCK is available from stagging repo
-        additionalProps.put("jakarta.concurrent.tck.groupid", "io.openliberty.jakarta.enterprise.concurrent");
-        additionalProps.put("jakarta.concurrent.tck.version", "3.1.0-20230802");
+        additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
+        additionalProps.put("jakarta.concurrent.tck.version", "3.1.0-M1");
 
         //Jakarta TCK platform
         additionalProps.put("jakarta.tck.platform", "full");
