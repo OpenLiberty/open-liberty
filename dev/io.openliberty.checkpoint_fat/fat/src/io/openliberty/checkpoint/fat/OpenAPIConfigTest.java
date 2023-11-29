@@ -89,7 +89,7 @@ public class OpenAPIConfigTest extends FATServletClient {
     @After
     public void teardown() throws Exception {
         try {
-            server.stopServer();
+            server.stopServer("CWWKE0701E: .*BundleContext is no longer valid io.openliberty.microprofile.openapi.2.0.internal.servlet*");
         } finally {
             configureEnvVariable(server, emptyMap());
         }
