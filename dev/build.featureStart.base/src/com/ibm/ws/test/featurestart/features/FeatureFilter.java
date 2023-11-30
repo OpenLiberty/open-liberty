@@ -67,6 +67,12 @@ public class FeatureFilter {
             // location variable.
             return "Required variable 'wmqJmsClient.rar.location' is not set";
 
+        } else if (shortName.equalsIgnoreCase("mpHealth") ||
+                   shortName.equalsIgnoreCase("mpMetrics")){
+            // Versionless feature cannot run by itself
+            // Requires other features to be configured for it to resolve
+            return "Cannot start by itself";
+
         } else {
             return null;
         }

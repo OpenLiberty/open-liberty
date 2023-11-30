@@ -472,6 +472,10 @@ public class VisibilityTest {
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {
             String featureName = entry.getKey();
 
+            if (featureName.contains("versionless")) {
+                continue;
+            }
+
             FeatureInfo featureInfo = entry.getValue();
             Set<String> processedFeatures = new HashSet<>();
             Map<String, Attrs> depFeatures = featureInfo.getDependentFeatures();
