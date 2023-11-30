@@ -211,7 +211,7 @@ These occur only after GA of this feature is requested (by adding a `target:ga` 
   - Note: This is for inclusion into the overall [release blog post](https://openliberty.io/blog/?search=release&key=tag).  If, in addition, you'd also like to create a dedicated blog post about your feature, then follow the "Standalone Feature Blog Post" instructions under the [Other Deliverables](#other-deliverables) section.
 
 ### **Post GM** (Complete before GA)
-- [ ] After confirming this feature has been included in the GM driver, close this issue.
+- [ ] After confirming this feature has been included in the GM driver, feature owner closes this issue.
 
 ### **Post GA**
 - [ ] Remove the `target:ga` and `target:YY00X` labels, and add the appropriate `release:YY00X`. ([OpenLiberty/release-manager](https://github.com/orgs/OpenLiberty/teams/release-manager))
