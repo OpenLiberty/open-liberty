@@ -787,25 +787,33 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         return ltpaKeysChangeNotifierService.getService();
     }
 
+    /** {@inheritDoc} */
     @Override
     public long getMonitorInterval() {
         return monitorInterval;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean getMonitorValidationKeysDir() {
         return monitorValidationKeysDir;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getUpdateTrigger() {
         return updateTrigger;
     }
 
+    /** {@inheritDoc} */
     @Sensitive
     @Override
     public List<Properties> getValidationKeys() {
         return validationKeys;
+    }
+
+    protected List<Properties> testMaskKeysPasswords(List<Properties> originalList) {
+        return maskKeysPasswords(originalList);
     }
 
     /*
