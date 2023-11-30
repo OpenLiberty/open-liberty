@@ -2710,10 +2710,16 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         //we simulate the dom level 2 form element here
         var _newCls = null;
         var bufInstance = null;
+        var _Lang = this;
         if (!this.FormDataDecoratorArray) {
             this.FormDataDecoratorArray = function (theFormData) {
                 this._valBuf = theFormData;
                 this._idx = {};
+                var _t = this;
+                _Lang.arrForEach(theFormData, function(item) {
+                    var key = item[0];
+                    _t._idx[decodeURIComponent(key)] = true;
+                });
             };
             _newCls = this.FormDataDecoratorArray;
             _newCls.prototype.append = function (key, val) {
@@ -2732,6 +2738,12 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
                 this._preprocessedData = theFormData;
                 this._valBuf = [];
                 this._idx = {};
+                var _t = this;
+                var keyValuePairs = theFormData.split(/\&/gi);
+                _Lang.arrForEach(keyValuePairs, function(item) {
+                    var key = _Lang.trim(item.split(/\=/gi)[0]);
+                    _t._idx[decodeURIComponent(key)] = true;
+                });
             };
             _newCls = this.FormDataDecoratorString;
             _newCls.prototype.append = function (key, val) {
@@ -2740,7 +2752,8 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
             };
             //for now we check only for keys which are added subsequently otherwise we do not perform any checks
             _newCls.prototype.hasKey = function (key) {
-                return !!this._idx[key];
+                var _t = this;
+                return !!(this._idx[key]);
             };
             _newCls.prototype.makeFinal = function () {
                 if (this._preprocessedData != "") {
@@ -2751,9 +2764,15 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
             };
         }
         if (!this.FormDataDecoratorOther) {
+            /**
+             * expected a form data object
+             * @param theFormData object of type form data or something similar
+             * @constructor
+             */
             this.FormDataDecoratorOther = function (theFormData) {
                 this._valBuf = theFormData;
                 this._idx = {};
+
             };
             _newCls = this.FormDataDecoratorOther;
             _newCls.prototype.append = function (key, val) {
@@ -2761,7 +2780,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
                 this._idx[key] = true;
             };
             _newCls.prototype.hasKey = function (key) {
-                return !!this._idx[key];
+                return !!(this._idx[key] || this._valBuf.has(key));
             };
             _newCls.prototype.makeFinal = function () {
                 return this._valBuf;
@@ -2776,6 +2795,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         }
         return bufInstance;
     },
+    
     /**
      * define a property mechanism which is browser neutral
      * we cannot use the existing setter and getter mechanisms
@@ -5744,10 +5764,26 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
      * @param item
      * @param targetBuf
      */
-    appendIssuingItem: function (item, targetBuf) {
+     appendIssuingItem: function (item, targetBuf) {
         // if triggered by a Button send it along
-        if (item && item.type && item.type.toLowerCase() == "submit") {
-            targetBuf.append(item.name, item.value);
+        var identifier = item.id || item.name;
+        var type = ((item && item.type) || "").toLowerCase();
+
+        if(targetBuf.hasKey(identifier)) { //already processed within the values
+            return;
+        }
+
+        //MYFACES-4606 we cannot send a value on an unchecked box as issuing element
+        var isCheckboxRadio = "checkbox" == type || "radio" == type;
+        if(isCheckboxRadio && !item.checked) {
+            return;
+        } else if (isCheckboxRadio) {
+            var value = ("undefined" == typeof item.value || null == item.value) ? true : item.value;
+            targetBuf.append(identifier, value);
+        //item must have a valid value to be able to be appended, without it no dice!
+        } else if(!(("undefined" == typeof item.value) || (null == item.value))) {
+            var itemValue = item.value;
+            targetBuf.append(identifier, itemValue);
         }
     },
 
@@ -6984,8 +7020,9 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
      * which keeps the final Send Representation of the
      */
     getFormData:function () {
-        var _AJAXUTIL = this._AJAXUTIL, myfacesOptions = this._context.myfaces;
-        return this._Lang.createFormDataDecorator(jsf.getViewState(this._sourceForm));
+        var formDataDecorator = this._Lang.createFormDataDecorator(jsf.getViewState(this._sourceForm));
+        this._AJAXUTIL.appendIssuingItem(this._source, formDataDecorator);
+        return formDataDecorator;
     },
 
     /**
