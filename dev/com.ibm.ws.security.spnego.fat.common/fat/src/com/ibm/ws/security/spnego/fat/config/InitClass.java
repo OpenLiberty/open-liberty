@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,8 @@ package com.ibm.ws.security.spnego.fat.config;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.security.Provider;
+import java.security.Security;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -22,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import com.ibm.websphere.simplicity.ConnectionInfo;
 import com.ibm.websphere.simplicity.Machine;
@@ -108,6 +111,10 @@ public class InitClass {
         String thisMethod = "getKDCInfoFromConsul";
         Log.info(c, thisMethod, "Getting KDCs from Consul.....");
         List<ExternalTestService> services = null;
+
+        Log.info(c, thisMethod, "ZECH >>> SETTING BC PROVIDER before trying ssh connection to KDC");
+        Provider bcProvider = new BouncyCastleProvider();
+        Security.addProvider(bcProvider);
 
         try {
             //obtaining kdcp and kdc_r information
@@ -350,8 +357,8 @@ public class InitClass {
      * "ibm.com", the same value provided for canonicalHostName is returned.
      *
      * @param canonicalHostName
-     * @param issueMsg - Boolean indicating whether a message should be logged if the canonical host name does not
-     *            include the IBM domain.
+     * @param issueMsg          - Boolean indicating whether a message should be logged if the canonical host name does not
+     *                              include the IBM domain.
      * @return
      */
     public static String getShortHostName(String canonicalHostName, boolean issueMsg) {
@@ -396,7 +403,7 @@ public class InitClass {
      * Get an SSH ClientSession to the specified machine.
      *
      * @param sshClient The SSH client.
-     * @param machine The machine to connect to.
+     * @param machine   The machine to connect to.
      * @return The session.
      * @throws IOException If there was an error getting an SSH session to the machine.
      */

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,6 +25,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.security.auth.kerberos.KerberosPrincipal;
 
@@ -232,11 +235,7 @@ public class ApacheDSandKDC {
         final String methodName = "setupService";
 
         // Uncomment to add more logging, will log a ton to output.txt, use only when needed
-//        Logger root = Logger.getLogger("");
-//        root.setLevel(Level.FINEST);
-//        for (Handler handler : root.getHandlers()) {
-//            handler.setLevel(Level.FINEST);
-//        }
+
         ldapPrincipal = ldapUser + "/" + ldapServerHostName + "@" + DOMAIN;
 
         ldapUserDN = "uid=" + ldapUser + "," + BASE_DN;
@@ -268,12 +267,26 @@ public class ApacheDSandKDC {
             serverPrincipal = fixServicePrincipalName(ldapPrincipal,
                                                       new Dn(ldapUserDN), ldapServer);
         }
+        Log.info(c, methodName, "setting extra debugging!!!");
+        System.setProperty("javax.net.debug", "all");
+        System.setProperty("com.ibm.security.jgss.debug", "all");
+        System.setProperty("com.ibm.security.krb5.Krb5Debug", "all");
+        System.setProperty("sun.security.krb5.debug", "true");
+
+        Logger root = Logger.getLogger("");
+        root.setLevel(Level.FINEST);
+        for (Handler handler : root.getHandlers()) {
+            Log.info(c, methodName, "setting logging handler: " + handler.getClass().getCanonicalName());
+            handler.setLevel(Level.FINEST);
+        }
 
         createTicketCacheFile();
 
-        createKeyTabFile();
+        throw new Exception("Ending test early!");
 
-        Log.info(c, methodName, "KDC Port: " + kdcServer.getTcpPort() + ", LDAP Port: " + ldapServer.getPort());
+        //createKeyTabFile();
+
+        //Log.info(c, methodName, "KDC Port: " + kdcServer.getTcpPort() + ", LDAP Port: " + ldapServer.getPort());
 
     }
 
