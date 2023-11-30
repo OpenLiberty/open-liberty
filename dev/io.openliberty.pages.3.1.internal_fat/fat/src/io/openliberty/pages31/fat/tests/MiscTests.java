@@ -154,11 +154,12 @@ public class MiscTests {
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
 
-        assertEquals(200, response.getResponseCode());
+        assertEquals(200, response.getResponseCode()); // Verifies no exception occurs if a page tries to import a field from an interface via EL
         assertTrue("Static field not found in Expression Language Environment", response.getText().contains("EL Field expression: CAFFE NERO"));
         assertTrue("Static method not found in Expression Language Environment", response.getText().contains("EL Method expression: LATTE"));
         assertTrue("Static field not found in Pages Environment", response.getText().contains("JSP Field expression: CAFFE NERO"));
         assertTrue("Static method not found in Pages Environment", response.getText().contains("JSP Method expression: LATTE"));
+        assertTrue("Interface field not found in Pages Environment", response.getText().contains("JSP Static Interface Field expression: INTERFACE_FIELD"));
     }
 
 }

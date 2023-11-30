@@ -24,7 +24,7 @@
     <br/>
     EL Method expression: ${SPECIALTY()}
     <br>
-    EL Interface Field expression: ${FIELD}
+    EL Interface Field expression: ${FIELD} (will NOT be evaluated - see OLGH25135) 
     <br>
 
     <br/>
