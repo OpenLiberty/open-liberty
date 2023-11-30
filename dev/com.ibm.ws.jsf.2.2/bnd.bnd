@@ -14,8 +14,6 @@ bSymbolicName=com.ibm.ws.jsf.2.2
 Bundle-Name: WAS JSF 2.2
 Bundle-SymbolicName: com.ibm.ws.jsf.2.2
 Bundle-Description: WAS JSF 2.2, version ${bVersion}
-WLP-ServerName: IBM WebSphere Application Server
-WLP-ServerVersion: ${libertyBetaVersion}
 
 app-resources= \
   META-INF/services/org.apache.myfaces.spi.WebConfigProviderFactory | \
