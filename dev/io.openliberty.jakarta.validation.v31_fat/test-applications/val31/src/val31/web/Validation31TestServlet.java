@@ -12,6 +12,8 @@
  *******************************************************************************/
 package val31.web;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
@@ -36,6 +38,7 @@ public class Validation31TestServlet extends FATServlet {
      */
     @Test
     public void basicRecordTest() throws Exception {
+
         Person p = new Person("Mark");
         Person np = new Person(null);
 
@@ -52,14 +55,23 @@ public class Validation31TestServlet extends FATServlet {
     public void recordValidatePropertyAndValueTest() throws Exception {
         // TODO create a test using the Validator.validateProperty and Validator.validateValue methods
         // on a record
+        Person propertydata = new Person(null);
+        Set<ConstraintViolation<Person>> propertyViolations = validator.validateProperty(propertydata, "name");
+        Set<ConstraintViolation<Person>> valueViolations = validator.validateValue(Person.class, "name", null);
+        assertTrue("Record Person(null) should have validated with one violation", propertyViolations.size() == 1);
+        assertEquals(1, valueViolations.size());
     }
 
     /**
      * Test that the result of a method on a record can be validated.
      */
+
     @Test
     public void recordMethodValidationTest() throws Exception {
         // TODO Add a method that includes validation to a record class and confirm that it can be validated
+        String name = "x";
+        Person propertydata = new Person(name);
+        assertFalse(propertydata.checkLength());
     }
 
     /**
@@ -70,6 +82,10 @@ public class Validation31TestServlet extends FATServlet {
         // TODO test that cascade validation occurs by creating a record which contains another record class
         // (For example a Person that has an Email address) then confirm that it validates both.
         // See section 5.6.4 of the Bean Validation specification
+
+        Employee emp = new Employee(null, new EmailAddress("emp1@gmail.com"));
+        Set<ConstraintViolation<Employee>> violations = validator.validate(emp);
+        assertEquals(1, violations.size());
     }
 
     /**
@@ -80,6 +96,12 @@ public class Validation31TestServlet extends FATServlet {
     public void convertGroupsRecordsTest() throws Exception {
         // TODO See section 5.4 of the Bean Validation specification for groups
         // and section 5.4.5 for group conversion
+        Registeration reg = new Registeration("x1asas", false);
+        Company cmp2 = new Company("CompanyName1", reg);
+        Set<ConstraintViolation<Company>> constraintViolations = validator.validate(cmp2);
+        assertTrue("Record Person(null) should have validated with one violation", constraintViolations.size() > 0);
+        System.out.println(constraintViolations.size());
+        assertEquals(2, constraintViolations.size());
     }
 
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package val31.web;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 /**
@@ -17,4 +18,14 @@ import jakarta.validation.constraints.NotNull;
  */
 public record Person(@NotNull String name) {
 
+    @Valid
+    public boolean checkLength() {
+        String val = this.name;
+        boolean check = false;
+        int x = val.length();
+        if (x > 2 && x <= 12) {
+            check = true;
+        }
+        return check;
+    }
 }
