@@ -58,4 +58,8 @@ public class PolicyExecutorVirtualThreadTest extends FATServletClient {
         runTest(server, "vtpolicyapp/PolicyVirtualThreadServlet", "testMaxConcurrencyWithVirtualThreads");
     }
 
+    @Test
+    public void testMaxPolicyStrictWithVirtualThreads() throws Exception {
+        runTest(server, "vtpolicyapp/PolicyVirtualThreadServlet", "testMaxPolicyStrictWithVirtualThreads");
+    }
 }
