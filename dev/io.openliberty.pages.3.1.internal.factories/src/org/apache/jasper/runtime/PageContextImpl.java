@@ -838,10 +838,10 @@ public class PageContextImpl extends PageContext {
 
     private void addImportsToELContext() {
         // For Pages 3.1
-        DirectiveInfo  directiveInfo;
+        DirectiveInfo directiveInfo;
         if (servlet instanceof DirectiveInfo) {
-            directiveInfo  =  (DirectiveInfo) servlet; 
-            if(directiveInfo.isErrorOnELNotFound()){
+            directiveInfo = (DirectiveInfo) servlet;
+            if (directiveInfo.isErrorOnELNotFound()) {
                 this.elContext.putContext(jakarta.servlet.jsp.el.NotFoundELResolver.class, true);
             }
             for (String _package : directiveInfo.getImportPackageList()) {
@@ -850,10 +850,14 @@ public class PageContextImpl extends PageContext {
             for (String _class : directiveInfo.getImportClassList()) {
                 this.elContext.getImportHandler().importClass(_class);
             }
-            // This does not work with importStatic com.example.Math.*
-            // Follow up on #24182 for importing static en masse
+
             for (String _static : directiveInfo.getImportStaticList()) {
-                this.elContext.getImportHandler().importStatic(_static);
+                try {
+                    this.elContext.getImportHandler().importStatic(_static);
+                } catch (jakarta.el.ELException e) {
+                    // ignore if importing a static field from interface or via someClass.*
+                    // https://github.com/OpenLiberty/open-liberty/issues/25135
+                }
             }
         }
     }
