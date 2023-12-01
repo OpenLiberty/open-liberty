@@ -73,7 +73,7 @@ public class Agent129Test {
 
     private static final Class<Agent129Test> c = Agent129Test.class;
     private static final String SERVICE_NAME = "Test service";
-    private static final String SERVER_NAME = "TelemetryAgent";
+    private static final String SERVER_NAME = "Telemetry129Agent";
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
