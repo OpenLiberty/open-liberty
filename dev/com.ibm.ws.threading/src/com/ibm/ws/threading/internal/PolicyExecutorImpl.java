@@ -29,6 +29,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -153,6 +154,12 @@ public class PolicyExecutorImpl implements PolicyExecutor {
      * Allow setting this to true only if virtualThreadOps is non-null.
      */
     private volatile boolean virtual;
+
+    /**
+     * Factory for virtual threads. Only available on Java 21+.
+     * This is populated the first time virtual is set to true.
+     */
+    private volatile ThreadFactory virtualThreadFactory;
 
     /**
      * Operations related to virtual threads that are only available on Java 21+.
@@ -313,7 +320,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     @Trivial
     public void asyncCallback(Runnable callback) {
         if (virtual)
-            virtualThreadOps.createVirtualThread(identifier + "-Callback", false, null, callback).start();
+            virtualThreadFactory.newThread(callback).start();
         else
             libertyThreadPool.submit(callback);
     }
@@ -411,7 +418,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             if (num > maxConcurrency)
                 throw new IllegalArgumentException("expedite: " + num + " > maxConcurrency: " + maxConcurrency);
 
-            if (virtual && num < Integer.MAX_VALUE)
+            if (virtual && num != 0)
                 throw new IllegalArgumentException("expedite: " + num + ", virtual: true");
 
             if (state.get() != State.ACTIVE)
@@ -626,7 +633,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         asyncTask.expedite = false;
         boolean submitted = false;
         try {
-            virtualThreadOps.createVirtualThread(identifier, false, null, asyncTask).start();
+            virtualThreadFactory.newThread(asyncTask).start();
             submitted = true;
         } finally {
             if (!submitted) {
@@ -1442,7 +1449,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         if (u_expedite > u_max)
             throw new IllegalArgumentException("expedite: " + u_expedite + " > max: " + u_max);
 
-        if (useVirtualThreads && u_expedite < Integer.MAX_VALUE)
+        if (useVirtualThreads && u_expedite != 0)
             throw new IllegalArgumentException("expedite: " + u_expedite + ", virtual: true");
 
         if (u_maxWaitForEnqueue < 0 || u_maxWaitForEnqueue > maxMS)
@@ -1458,7 +1465,6 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         maxPolicy = u_maxPolicy;
         runIfQueueFull = u_runIfQueueFull;
         startTimeout = u_startTimeout == -1 ? -1 : TimeUnit.MILLISECONDS.toNanos(u_startTimeout);
-        virtual = useVirtualThreads;
 
         int a, queueCapacityAdded;
         synchronized (configLock) {
@@ -1478,6 +1484,11 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             else if (queueCapacityAdded < 0)
                 maxQueueSizeConstraint.reducePermits(-queueCapacityAdded);
             maxQueueSize = u_maxQueueSize;
+
+            if (useVirtualThreads && virtualThreadFactory == null)
+                virtualThreadFactory = virtualThreadOps.createFactoryOfVirtualThreads(identifier + '-', 1L, false, null);
+
+            virtual = useVirtualThreads;
         }
 
         if (queueCapacityAdded < 0) {

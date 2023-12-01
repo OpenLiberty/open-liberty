@@ -50,7 +50,7 @@ import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = { PolicyExecutorProvider.class, ServerQuiesceListener.class })
 public class PolicyExecutorProvider implements ServerQuiesceListener {
     @Reference(target = "(component.name=com.ibm.ws.threading)")
-    private ExecutorService globalExecutor;
+    private ExecutorService libertyThreadPool;
 
     /**
      * Programmatically created instances (via PolicyExecutorProvider) which have not yet been shut down.
@@ -77,7 +77,7 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
      * @throws NullPointerException  if the specified identifier is null
      */
     public PolicyExecutor create(Map<String, Object> props) {
-        PolicyExecutor executor = new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, (String) props.get("config.displayId"), null, policyExecutors, virtualThreadOps);
+        PolicyExecutor executor = new PolicyExecutorImpl((ExecutorServiceImpl) libertyThreadPool, (String) props.get("config.displayId"), null, policyExecutors, virtualThreadOps);
         executor.updateConfig(props);
         return executor;
     }
@@ -92,7 +92,7 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
      * @throws NullPointerException  if the specified identifier is null
      */
     public PolicyExecutor create(String identifier) {
-        return new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, "PolicyExecutorProvider-" + identifier, null, policyExecutors, virtualThreadOps);
+        return new PolicyExecutorImpl((ExecutorServiceImpl) libertyThreadPool, "PolicyExecutorProvider-" + identifier, null, policyExecutors, virtualThreadOps);
     }
 
     /**
@@ -106,7 +106,7 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
      * @throws NullPointerException  if the specified identifier is null
      */
     public PolicyExecutor create(String fullIdentifier, String owner) {
-        return new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, fullIdentifier, owner, policyExecutors, virtualThreadOps);
+        return new PolicyExecutorImpl((ExecutorServiceImpl) libertyThreadPool, fullIdentifier, owner, policyExecutors, virtualThreadOps);
     }
 
     public void introspectPolicyExecutors(PrintWriter out) {
