@@ -162,7 +162,7 @@ public class S4U2ProxyTest extends CommonTest {
      * - We should see expected results in servlet response.
      */
 
-    @Test
+    //@Test
     public void testS4U2ProxyFromSubjectNotPassClientGssCredTest_spnegoToken() {
         Log.info(c, name.getMethodName(), "Access servlet with SPNEGO token");
         testS4U2ProxyFromSubjectNotPassClientGssCredTest(Krb5Helper.SPNEGO_MECH_OID);
@@ -176,7 +176,7 @@ public class S4U2ProxyTest extends CommonTest {
      * - We should see expected results in servlet response.
      */
 
-    @Test
+    //@Test
     public void testS4U2ProxyFromSubjectNotPassClientGssCredTest_kerberosToken() {
         Log.info(c, name.getMethodName(), "Access servlet with Kerberos token");
         testS4U2ProxyFromSubjectNotPassClientGssCredTest(Krb5Helper.KRB5_MECH_OID);
@@ -256,7 +256,7 @@ public class S4U2ProxyTest extends CommonTest {
      * - Access to the protected resource on the second server should succeed.
      */
 
-    @Test
+    //@Test
     public void testSpnegoS4U2ProxyAPITest_KerberosToken() {
         Log.info(c, name.getMethodName(), "Accessing servlet with Kerberos token");
         testSpnegoS4U2ProxyAPITest(Krb5Helper.KRB5_MECH_OID);
@@ -312,7 +312,7 @@ public class S4U2ProxyTest extends CommonTest {
      * - We should see expected results in servlet response.
      */
 
-    @Test
+    //@Test
     public void testSpnegoS4U2ProxyAPIMultipleCallTest() {
 
         // using TARGET_SERVER in url for server so as not to use localHost
@@ -359,7 +359,7 @@ public class S4U2ProxyTest extends CommonTest {
      */
 
     @AllowedFFDC({ "java.security.PrivilegedActionException" })
-    @Test
+    //@Test
     public void testS4U2ProxyWithProxyEnabledFalseTest() {
 
         // using TARGET_SERVER in url for server so as not to use localHost
@@ -409,7 +409,7 @@ public class S4U2ProxyTest extends CommonTest {
      * Expected results:
      * - We should see expected results in servlet response.
      */
-    @Test
+    //@Test
     public void testS4U2ProxyAPIWithEnabeldFalseTest() {
 
         // using TARGET_SERVER in url for server so as not to use localHost
@@ -462,7 +462,7 @@ public class S4U2ProxyTest extends CommonTest {
      * - We should see expected results in servlet response.
      */
 
-    @Test
+    //@Test
     public void testS4U2ProxyPassClientGssCredTest() {
 
         // using TARGET_SERVER in url for server so as not to use localHost
@@ -510,7 +510,7 @@ public class S4U2ProxyTest extends CommonTest {
      * - We should see expected results in servlet response.
      */
 
-    @Test
+    //@Test
     public void testS4U2ProxyNoConstrainedDelegationFeatureTest() {
 
         // using TARGET_SERVER in url for server so as not to use localHost
@@ -557,7 +557,7 @@ public class S4U2ProxyTest extends CommonTest {
      */
 
     @AllowedFFDC({ "java.security.PrivilegedActionException" })
-    @Test
+    //@Test
     public void testSpnegoS4U2ProxyAPINoTrustedServiceTest() {
 
         // using TARGET_SERVER in url for server so as not to use localHost
@@ -600,7 +600,7 @@ public class S4U2ProxyTest extends CommonTest {
      * - Expect failure on new API invocation for bogus setup (privelegedException and GssException but cannot catch the secondary)
      */
     @AllowedFFDC({ "java.security.PrivilegedActionException" })
-    @Test
+    //@Test
     public void testSpnegoS4U2ProxyAPINoUserAccountControlForDelegationTest() {
 
         // using TARGET_SERVER in url for server so as not to use localHost

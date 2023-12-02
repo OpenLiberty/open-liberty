@@ -397,7 +397,6 @@ public class InitClass {
                 rdnString.append(chars.charAt(index));
             }
             rndHostName = rdnString.toString();
-            rndHostName = "flash067";
             libertyHostMap.put(canonicalHostName, rndHostName);
             isRndHostName = false;
         }

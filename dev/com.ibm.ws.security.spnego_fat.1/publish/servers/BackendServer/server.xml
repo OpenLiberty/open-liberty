@@ -69,7 +69,7 @@
 
 	<httpEndpoint
 		id="defaultHttpEndpoint"
-		host="*"
+		host="zrock052.pok.ibm.com"
 		httpPort="${bvt.prop.HTTP_secondary}"
 		httpsPort="${bvt.prop.HTTP_secondary.secure}" />
 	        
