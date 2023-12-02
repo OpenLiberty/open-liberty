@@ -28,3 +28,4 @@ Subsystem-Name: MicroProfile Reactive Messaging 3.0
 kind=beta
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true
