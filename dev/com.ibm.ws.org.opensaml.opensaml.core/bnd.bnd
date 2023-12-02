@@ -13,10 +13,10 @@
 -include= jar:${fileuri;${repo;org.opensaml:opensaml-core;3.4.5}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -sub: *.bnd
-
+opensamlVersion=3.4.5
 
 -buildpath: \
-    org.opensaml:opensaml-core;version=3.4.5,\
+    org.opensaml:opensaml-core;version=${opensamlVersion},\
     net.shibboleth.utilities:java-support;version=7.5.1,\
     com.ibm.ws.org.joda.time.2.9.9;version=latest,\
     io.openliberty.org.bouncycastle.bcpkix-jdk18on;version=latest,\
