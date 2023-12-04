@@ -806,9 +806,9 @@ org.ow2.asm:asm:9.6
 org.postgresql:postgresql:42.4.2
 org.powermock:powermock-core:1.5
 org.quartz-scheduler:quartz:2.3.2
-org.reactivestreams:reactive-streams-examples:1.0.3
-org.reactivestreams:reactive-streams-tck:1.0.3
-org.reactivestreams:reactive-streams:1.0.3
+org.reactivestreams:reactive-streams-examples:1.0.4
+org.reactivestreams:reactive-streams-tck:1.0.4
+org.reactivestreams:reactive-streams:1.0.4
 org.rnorth.duct-tape:duct-tape:1.0.8
 org.rnorth.visible-assertions:visible-assertions:2.1.2
 org.seleniumhq.selenium:selenium-api:4.8.3
