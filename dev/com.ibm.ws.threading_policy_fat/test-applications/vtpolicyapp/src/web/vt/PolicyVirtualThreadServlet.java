@@ -311,7 +311,8 @@ public class PolicyVirtualThreadServlet extends HttpServlet {
         threadNames.add(thread4.getName());
         threadNames.add(thread5.getName());
 
-        assertEquals(threadNames.toString(), 5, threadNames.size());
+        // The submitting thread will run 1 or 2 of the tasks. All others must run on different virtual threads,
+        assertEquals(threadNames.toString(), true, threadNames.size() == 5 || threadNames.size() == 4);
 
         executor.shutdownNow();
     }
