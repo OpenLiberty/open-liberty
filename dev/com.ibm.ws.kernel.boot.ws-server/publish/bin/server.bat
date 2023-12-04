@@ -733,8 +733,7 @@ goto:eof
       goto:eof
     )
 
-    set IBM_JAVA_OPTIONS=!IBM_JAVA_OPTIONS! -Xverbosegclog:!X_LOG_DIR!\verbosegc.%%seq.log,10,1024
-    set OPENJ9_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS! -Xverbosegclog:!X_LOG_DIR!\verbosegc.%%seq.log,10,1024
+    set OPENJ9_JAVA_OPTIONS=-Xverbosegclog:!X_LOG_DIR!\verbosegc.%%seq.log,10,1024 !OPENJ9_JAVA_OPTIONS!
 goto:eof
 
 @REM

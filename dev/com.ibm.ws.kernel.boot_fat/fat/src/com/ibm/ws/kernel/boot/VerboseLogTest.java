@@ -3,10 +3,12 @@ package com.ibm.ws.kernel.boot;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.beans.Transient;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -51,6 +53,7 @@ public class VerboseLogTest {
     static String serverCommand;
     static File jvmoptionsserverroot;
     static File serverEnvServerRoot;
+    static boolean isOpenJ9 = false;
 
     @BeforeClass
     public static void before() throws Exception {
@@ -64,6 +67,19 @@ public class VerboseLogTest {
             serverCommand = "bin\\server.bat";
         else
             serverCommand = "bin/server";
+
+        try {
+            File javaHomeRelease = new File(System.getenv("JAVA_HOME") + "/release");
+            InputStream is = new FileInputStream(javaHomeRelease);
+            Properties props = new Properties();
+            props.load(is);
+            if(props.getProperty("JVM_VARIANT").contains("Openj9")){
+                isOpenJ9 = true;
+            }
+        }
+        catch (Exception e) {
+            //nothing
+        }
     }
 
     @After
@@ -96,13 +112,23 @@ public class VerboseLogTest {
         server.resetStarted();
 
         assertTrue("the server should have been started", server.isStarted());
-        assertTrue("verbosegc log should have been created", verboseLog.exists());
+
+        //Only have verbosegc log if jvm is OpenJ9
+        if(isOpenJ9) {
+            assertTrue("verbosegc log should have been created", verboseLog.exists());
+        }
+        else {
+            assertTrue("verbosegc log should not have been created because the JVM is not OpenJ9", !verboseLog.exists());
+        }
 
         server.stopServer();
     }
 
     @Test
     public void testJvmTurnOffVerbose() throws Exception {
+        //Only run if jvm is OpenJ9
+        assumeTrue(isOpenJ9);
+
         // Test with jvm.options to turn off verbose log, no verbose log should appear
         Log.entering(c, testName.getMethodName());
 
@@ -137,6 +163,9 @@ public class VerboseLogTest {
 
     @Test
     public void testServerEnvTurnOffVerbose() throws Exception {
+        //Only run if jvm is OpenJ9
+        assumeTrue(isOpenJ9);
+
         // Test with server.env to turn off verbose log, no verbose log should appear
         Log.entering(c, testName.getMethodName());
 
@@ -171,6 +200,9 @@ public class VerboseLogTest {
 
     @Test
     public void testServerEnvKeepVerbose() throws Exception {
+        //Only run if jvm is OpenJ9
+        assumeTrue(isOpenJ9);
+        
         // Test with server.env to keep verbose log, verbose log should appear
         Log.entering(c, testName.getMethodName());
 
@@ -205,6 +237,9 @@ public class VerboseLogTest {
 
     @Test
     public void testJvmChangeVerbose() throws Exception {
+        //Only run if jvm is OpenJ9
+        assumeTrue(isOpenJ9);
+        
         // Test with jvm.options, change location or file name, the jvm.options log should be the one shown
         Log.entering(c, testName.getMethodName());
 
@@ -239,6 +274,9 @@ public class VerboseLogTest {
 
     @Test
     public void testStartChangeVerbose() throws Exception {
+        //Only run if jvm is OpenJ9
+        assumeTrue(isOpenJ9);
+        
         // Test with command variable, change location or file name, the jvm.options log should be the one shown
         // ex. ./bin/server start --verbose:gc
         Log.entering(c, testName.getMethodName());
