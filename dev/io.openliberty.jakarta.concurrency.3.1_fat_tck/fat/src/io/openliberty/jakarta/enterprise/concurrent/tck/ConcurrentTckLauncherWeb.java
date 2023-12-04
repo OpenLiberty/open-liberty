@@ -36,7 +36,7 @@ import componenttest.topology.utils.tck.TCKRunner;
  * tests as if they were running as simplicity junit FAT tests in the standard location.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 17)
+@MinimumJavaLevel(javaLevel = 21)
 public class ConcurrentTckLauncherWeb {
 
     final static Map<String, String> additionalProps = new HashMap<>();
@@ -46,7 +46,7 @@ public class ConcurrentTckLauncherWeb {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        //TODO Remove once TCK is available from stagging repo
+        //Comment out to use snapshot version
         additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
         additionalProps.put("jakarta.concurrent.tck.version", "3.1.0-M1");
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ import componenttest.topology.utils.tck.TCKRunner;
  */
 @Mode(FULL)
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 17)
+@MinimumJavaLevel(javaLevel = 21)
 public class ConcurrentTckLauncherFull {
 
     final static Map<String, String> additionalProps = new HashMap<>();
@@ -50,7 +50,7 @@ public class ConcurrentTckLauncherFull {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        //TODO Remove once TCK is available from stagging repo
+        //Comment out to use snapshot version
         additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
         additionalProps.put("jakarta.concurrent.tck.version", "3.1.0-M1");
 

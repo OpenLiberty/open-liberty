@@ -25,7 +25,7 @@ import componenttest.topology.impl.JavaInfo;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class, //Need to have a passing test for Java 8 and Java 11
+                AlwaysPassesTest.class, //Need to have a passing test for Java 8, 11, and 17
                 ConcurrentTckLauncherFull.class, //FULL MODE
                 ConcurrentTckLauncherWeb.class //LITE MODE
 })

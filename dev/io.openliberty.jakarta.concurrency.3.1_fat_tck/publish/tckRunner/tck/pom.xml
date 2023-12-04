@@ -87,16 +87,15 @@
             <version>${jakarta.concurrent.tck.version}</version>
         </dependency>
         <!-- API Dependency -->
-        <!-- TODO update to Jakarta EE 11 feature -->
         <dependency>
             <groupId>jakarta.enterprise.concurrent</groupId>
             <artifactId>jakarta.enterprise.concurrent-api</artifactId>
             <version>${jakarta.concurrent.version}</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.concurrency.3.0}</systemPath>
+            <systemPath>${io.openliberty.jakarta.concurrency.3.1}</systemPath>
         </dependency>
         <!-- Other API Dependencies -->
-        <!-- TODO update to Jakarta EE 11 feature -->
+        <!-- TODO update to Jakarta EE 11 bundles -->
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
