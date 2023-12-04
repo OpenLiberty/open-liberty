@@ -28,8 +28,8 @@ import io.openliberty.microprofile.telemetry.internal_fat.common.SpanDataMatcher
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.sdk.trace.data.SpanData;
-import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebServlet;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
 import junit.framework.Assert;
 
 @WebServlet("/testMessageAndRestClientTestServlet")

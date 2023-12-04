@@ -21,9 +21,9 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.core.Response;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 
 @ApplicationScoped
 public class SimpleReactiveMessagingBean {

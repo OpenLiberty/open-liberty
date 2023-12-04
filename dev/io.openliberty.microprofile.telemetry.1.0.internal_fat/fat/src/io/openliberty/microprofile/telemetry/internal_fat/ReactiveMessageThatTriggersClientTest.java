@@ -12,6 +12,8 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
+import java.util.Set;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -30,7 +32,9 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureSet;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.rest.client.server.JaxRsApplication;
@@ -38,6 +42,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.rest.rest.client.
 import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporterProvider;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import io.openliberty.microprofile.telemetry.internal_fat.shared.spans.AbstractSpanMatcher;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
 
@@ -50,7 +55,7 @@ public class ReactiveMessageThatTriggersClientTest extends FATServletClient {
     public static final String SERVER_NAME = "Telemetry10ReactiveAndJaxClient";
 
     @ClassRule
-    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
+    public static RepeatTests r = TelemetryActions.repeat(SERVER_NAME, MicroProfileActions.MP61, MicroProfileActions.MP60, TelemetryActions.MP50_MPTEL11);
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = MessageAndRestClientTestServlet.class, contextRoot = APP_NAME)
