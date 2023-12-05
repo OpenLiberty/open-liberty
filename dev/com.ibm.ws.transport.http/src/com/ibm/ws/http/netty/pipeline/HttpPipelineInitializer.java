@@ -36,6 +36,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpMessage;
+import io.netty.handler.codec.http.HttpObjectDecoder;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler;
@@ -224,7 +225,15 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
      * @param pipeline ChannelPipeline to update as necessary
      */
     private void setupHttp11Pipeline(ChannelPipeline pipeline) {
-        pipeline.addLast(NETTY_HTTP_SERVER_CODEC, new HttpServerCodec());
+//        long maxHeaderSize = httpConfig.getLimitOfFieldSize() * httpConfig.getLimitOnNumberOfHeaders() * 1L;
+//        if (maxHeaderSize > Integer.MAX_VALUE)
+//            maxHeaderSize = Integer.MAX_VALUE;
+//        pipeline.addLast(NETTY_HTTP_SERVER_CODEC,
+//                         new HttpServerCodec(HttpObjectDecoder.DEFAULT_MAX_INITIAL_LINE_LENGTH, (int) maxHeaderSize, httpConfig.getIncomingBodyBufferSize()));
+        // POC Codec for custom validation?
+//        HttpServerCodec sourceCodec = new HttpServerCodec(HttpObjectDecoder.DEFAULT_MAX_INITIAL_LINE_LENGTH, HttpObjectDecoder.DEFAULT_MAX_HEADER_SIZE, httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders());
+        HttpServerCodec sourceCodec = new HttpServerCodec(HttpObjectDecoder.DEFAULT_MAX_INITIAL_LINE_LENGTH, Integer.MAX_VALUE, httpConfig.getIncomingBodyBufferSize());
+        pipeline.addLast(NETTY_HTTP_SERVER_CODEC, sourceCodec);
         pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));
         addPreHttpCodecHandlers(pipeline);
         addPreDispatcherHandlers(pipeline, false);
@@ -317,7 +326,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         if (!isHttp2) {
             pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
             //TODO: this is a very large number, check best practice
-            pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new LibertyHttpObjectAggregator(maxContentLength));
+            pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null,
+                               new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
         }
 
         //pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new HttpObjectAggregator(maxContentLength);

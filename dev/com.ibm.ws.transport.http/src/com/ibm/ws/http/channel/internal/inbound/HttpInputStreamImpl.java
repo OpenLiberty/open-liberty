@@ -15,6 +15,7 @@ package com.ibm.ws.http.channel.internal.inbound;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Objects;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -129,6 +130,12 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 }
                 this.buffer.release();
                 this.buffer = null;
+            }
+            if (Objects.nonNull(this.nettyRequest)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "checkBuffer, No need to read from channel because in Netty we have everything from the request so returning false");
+                }
+                return false;
             }
             try {
                 this.buffer = this.isc.getRequestBodyBuffer();
@@ -541,6 +548,23 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             firstReadCompleteforMulti = false;
             readChannelComplete = false;
             dataAlreadyReadFromChannel = false;
+            if (Objects.nonNull(this.nettyRequest)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Setting up Netty multiread!");
+                }
+                if (buffer == null) {
+                    throw new UnsupportedOperationException("We should have data when working with Netty");
+                }
+                postDataBuffer.add(postDataIndex, this.buffer);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "setupforMultiRead, Netty buffer ->" + postDataBuffer.get(postDataIndex)
+                                 + " ,buffersize ->" + postDataBuffer.size() + " ,index ->" + postDataIndex);
+                }
+                postDataIndex = 0;
+                // Set first read complete and read from channel complete
+                firstReadCompleteforMulti = true;
+                readChannelComplete = true;
+            }
         }
     }
 

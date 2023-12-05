@@ -13,7 +13,6 @@
 package com.ibm.wsspi.http.ee7;
 
 import java.io.IOException;
-import java.util.Objects;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -161,8 +160,7 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
                         Tr.debug(tc, "HTTP Channel believes it has read all the data, checking to ensure it has given us all the data");
                     }
                     //If checkBuffer returns false, we want to return true since it means all the data has been read
-                    //In netty whe this is called we alredy have the entire data
-                    isFinished = (isc instanceof HttpInboundServiceContextImpl && Objects.nonNull(((HttpInboundServiceContextImpl) isc).getNettyContext())) || !checkBuffer();
+                    isFinished = !checkBuffer();
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "HTTP Channel does not believe it has read all the data");

@@ -81,6 +81,13 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
     }
 
     @Override
+    public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
+        // TODO Auto-generated method stub
+        System.out.println("Writeability changed!!");
+        super.channelWritabilityChanged(ctx);
+    }
+
+    @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
         MSP.log("Closing context because of: ");
         cause.printStackTrace();

@@ -1426,20 +1426,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
 //        if (!usingNetty) {
 
-            if (vc != null) { // This is added for Upgrade Servlet3.1 WebConnection
-                String webconn = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
-                if (webconn != null && webconn.equalsIgnoreCase("CLOSED_NON_UPGRADED_STREAMS")) {
-                    vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "null");
-                } else {
-                    WebConnCanCloseSync.lock();
-                    try {
-                        if (WebConnCanClose) {
-                            error = closeStreams();
-                        }
-                    } finally {
-                        WebConnCanCloseSync.unlock();
-                    }
-                }
+        if (vc != null) { // This is added for Upgrade Servlet3.1 WebConnection
+            String webconn = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
+            if (webconn != null && webconn.equalsIgnoreCase("CLOSED_NON_UPGRADED_STREAMS")) {
+                vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "null");
             } else {
                 WebConnCanCloseSync.lock();
                 try {
@@ -1450,6 +1440,16 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                     WebConnCanCloseSync.unlock();
                 }
             }
+        } else {
+            WebConnCanCloseSync.lock();
+            try {
+                if (WebConnCanClose) {
+                    error = closeStreams();
+                }
+            } finally {
+                WebConnCanCloseSync.unlock();
+            }
+        }
 //        }
 
         close(getVirtualConnection(), error);
@@ -1605,7 +1605,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 }
 
                 if (ic.decrementNeeded.compareAndSet(true, false)) {
-                        //  ^ set back to false in case close is called more than once after destroy is called (highly unlikely)
+                    //  ^ set back to false in case close is called more than once after destroy is called (highly unlikely)
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "decrementNeeded is true: decrement active connection");
                     }
