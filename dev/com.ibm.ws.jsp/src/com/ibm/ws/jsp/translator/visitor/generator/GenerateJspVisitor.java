@@ -82,7 +82,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
                     logger.logp(Level.FINEST, CLASS_NAME, "visit", "entering code generation phase CLASS_SECTION");
                 }
                 generateClassSection(validatorResult);
-                if (PagesVersionHandler.isPages31Loaded()) {
+                if (PagesVersionHandler.isPages31OrHigherLoaded()) {
                     generateIsErrorOnELFoundMethod(jspConfiguration.errorOnELNotFound());
                     generateImportGetters();
                 }
