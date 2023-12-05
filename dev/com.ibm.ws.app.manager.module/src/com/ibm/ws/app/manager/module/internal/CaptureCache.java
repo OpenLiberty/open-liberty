@@ -55,17 +55,26 @@ import com.ibm.websphere.ras.annotation.Trivial;
  * Callers must reliable release suppliers to avoid memory leaks.
  */
 public class CaptureCache<T> {
-    // Trace with the application manager.
-    // TODO: Move DeferredCache to a more common location.
     private static final TraceComponent tc =
         Tr.register(CaptureCache.class,
                     "app.manager",
                     "com.ibm.ws.app.manager.module.internal.resources.Messages");
 
+    // This format is used by the FAT tests.  Code in the tests which locates
+    // and parses the cache trace will need to be updated if this debugging format
+    // is updated.  See:
+    // componenttest.application.manager.test.SharedLibTestUtils.ContainerAction.ContainerAction(String)
+
     @Trivial
     protected static void debug(String tag, String methodName, String text) {
         String debugText = "[" + tag + "]" + "." + methodName + ": " + text;
         Tr.debug(tc, debugText);
+    }
+
+    @Trivial
+    protected static void warning(String tag, String methodName, String text) {
+        String warningText = "[" + tag + "]" + "." + methodName + ": " + text;
+        Tr.warning(tc, warningText);
     }
 
     //
@@ -205,8 +214,11 @@ public class CaptureCache<T> {
                 supplier = null;
             } else {
                 uniqueKey = keyData.getKey();
-                newCount = keyData.decrement();//++
-                if ( newCount == 0 ) {
+                newCount = keyData.decrement();
+                // Guard against corruption of the key data.
+                // The count should never go below zero.  But if it
+                // does, still remove the key from storage.
+                if ( newCount <= 0 ) {
                     keys.remove(key);
                     supplier = storage.remove(uniqueKey);
                 } else {
@@ -224,21 +236,46 @@ public class CaptureCache<T> {
         // "componenttest/application/manager/test/SharedLibTest.java"
         // scans for and parses these log entries.
 
-        if ( isDebugEnabled ) {
-            debug( getTag(), "release",
-                   "[ " + key + " ] [ " + newCount + " ]: [ " + supplier + " ]" );
+        if ( isDebugEnabled || (newCount < 0) ) {
+            String baseText = "[ " + key + " ] [ " + newCount + " ]: [ " + supplier + " ]";
+            if ( isDebugEnabled ) {
+                debug( getTag(), "release", baseText);
+            }
+            if ( newCount < 0 ) {
+                // This should happen only if there is an update to key data which
+                // breaks internal access rules.
+                warning( getTag(), "release", "Unexpected: " + baseText);
+            }
         }
     }
 
-    // Store a caching Supplier.  That moves production outside of management of
-    // storage.  The production call is expected to require a large amount of time.
-    //
-    // TODO: An additional context specific value might be added.  See the TODO in
-    //       DeployedAppInfoBase in regards to the use of the library PID.
+    // Consideration for the future: An additional context specific value might be added.
+    // See comments in DeployedAppInfoBase in regards to the use of the library PID,
+    // on or around line 370.
 
     /**
      * Supplier storage.  Keys are the internal, unique, string values.
      * Supplier storage uses an {@link IdentityHashMap}.
+     *
+     * Two levels of data storage are provided:
+     *
+     * A capture cache stores suppliers.
+     *
+     * Each supplier stores the value that it supplies.
+     *
+     * The capture retains suppliers using a reference count mechanism.
+     *
+     * Suppliers store valued based on logic specific to the supplier.  In the
+     * simplest cases, a supplier might have a pre-computed value.  More typically,
+     * a supplier obtains a target value on the first request for that value.
+     *
+     * The supplier may include logic which causes the refresh of the supplied
+     * value.  That is done by the implementation provided by DeployedAppInfoBase,
+     * which records the size and the time-stamp of the file which was used to
+     * create a supplied container.  Subsequent requests for the container check
+     * the current file values against the values stamp which were present when
+     * the container was created.  If the size or time-stamp changed, the container
+     * is replaced with a new, up to date container.
      */
     private final Map<String, CaptureSupplier<T>> storage;
 

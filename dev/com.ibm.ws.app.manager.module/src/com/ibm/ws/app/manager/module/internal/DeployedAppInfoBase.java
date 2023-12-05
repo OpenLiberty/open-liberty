@@ -183,7 +183,7 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
      * Use of a static cache requires that all library containers
      * for a given file path are identical.
      */
-    protected static final CaptureCache<LibraryContainerData> containerCache = new CaptureCache<>("container");
+    protected static final CaptureCache<LibraryContainerData> libraryContainerCache = new CaptureCache<>("container");
 
     /**
      * Capture creation of a library container.
@@ -194,9 +194,9 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
      * @return A new supplier of the library container which will capture the
      *         result of the base supplier.
      */
-    protected static CaptureSupplier<LibraryContainerData> capture(String libPath,
-                                                                   BaseCaptureSupplier<LibraryContainerData> baseSupplier) {
-        return containerCache.capture(libPath, baseSupplier);
+    protected static CaptureSupplier<LibraryContainerData> captureLibraryContainer(String libPath,
+                                                                                   BaseCaptureSupplier<LibraryContainerData> baseSupplier) {
+        return libraryContainerCache.capture(libPath, baseSupplier);
     }
 
     /**
@@ -204,9 +204,9 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
      *
      * This clears the library list.
      */
-    protected void releaseContainers() {
+    protected void releaseLibraryContainers() {
         for (String libPath : sharedLibDeploymentInfo.consumeLibraryPaths()) {
-            containerCache.release(libPath);
+            libraryContainerCache.release(libPath);
         }
     }
 
@@ -220,7 +220,7 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
     public boolean uninstallApp() {
         boolean releaseResult;
         try {
-            releaseContainers();
+            releaseLibraryContainers();
             releaseResult = true;
         } catch (Throwable t) {
             releaseResult = false;
@@ -239,7 +239,7 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
      */
     @Override
     public void finalize() throws Throwable {
-        releaseContainers();
+        releaseLibraryContainers();
         super.finalize();
     }
 
@@ -366,19 +366,19 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
 
         //@formatter:off
 
-        // TODO: The first library which uses a specified library file has it's PID used by the shared
-        //       library container.
+        // The first library which uses a specified library file has it's PID used by the shared
+        // library container, which is used by cache folders associated with the container.  The
+        // consequence is that any cached data is shared between all users of the container.
         //
-        //       This only matters if the same library file is used by more than one library.
+        // This would matter for application containers, which store various data, such as the
+        // parsed descriptor, and which must have distinct caches.
         //
-        //       This might not be significant: The additional associated folders are possibly never used.
+        // For shared libraries, there would be a problem if different users of the same library
+        // container store (cache) different data in association with the container.
         //
-        //       Even if used, would the cached data be different for different libraries?  For example,
-        //       extracted nested archives would be the same.  On the other hand, application specific class
-        //       loading historical information or cached classes (which capture a history) would be application
-        //       specific.
-        //
-        //       As an alternative, container sharing could be limited by library PID.
+        // Note that sharing of cache data is not necessarily a problem, depending on whether the
+        // cache data was specific to the shared library, or if the cache data included context
+        // specific values.
 
         // TODO: This seems different than the service API:
         // com.ibm.ws.app.manager.module.
@@ -397,7 +397,7 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
             BaseCaptureSupplier<LibraryContainerData> baseSupplier =
                 (LibraryContainerData priorCapture) -> baseSetupContainer(libraryPid, libraryFile, libraryPath, priorCapture);
 
-            CaptureSupplier<LibraryContainerData> containerSupplier = capture(libraryPath, baseSupplier);
+            CaptureSupplier<LibraryContainerData> containerSupplier = captureLibraryContainer(libraryPath, baseSupplier);
 
             try {
                 return containerSupplier.get().libraryContainer;
@@ -461,7 +461,7 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
 
             debug(methodName, "Obtained shared library container [ " + adaptableContainer + " ]" +
                             " [ " + libraryPath + " ] [ " + libraryFile.getName() + " ] [ NEW ]");
-            
+
             return new LibraryContainerData(libraryPid, libraryFile, libraryPath,
                                             libraryFileSize, libraryFileTime,
                                             adaptableContainer);
