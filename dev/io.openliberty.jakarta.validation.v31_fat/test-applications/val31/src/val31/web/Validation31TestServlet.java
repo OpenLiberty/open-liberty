@@ -59,7 +59,7 @@ public class Validation31TestServlet extends FATServlet {
         Set<ConstraintViolation<Person>> propertyViolations = validator.validateProperty(propertydata, "name");
         Set<ConstraintViolation<Person>> valueViolations = validator.validateValue(Person.class, "name", null);
         assertTrue("Record Person(null) should have validated with one violation", propertyViolations.size() == 1);
-        assertEquals(1, valueViolations.size());
+        assertEquals("Record Person(null) should have validated with one violation", 1, valueViolations.size());
     }
 
     /**
@@ -83,7 +83,7 @@ public class Validation31TestServlet extends FATServlet {
         // (For example a Person that has an Email address) then confirm that it validates both.
         // See section 5.6.4 of the Bean Validation specification
 
-        Employee emp = new Employee(null, new EmailAddress("emp1@gmail.com"));
+        Employee emp = new Employee(null, new EmailAddress("emp1@example.com"));
         Set<ConstraintViolation<Employee>> violations = validator.validate(emp);
         assertEquals(1, violations.size());
     }
