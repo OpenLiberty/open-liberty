@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015,2021 IBM Corporation and others.
+ * Copyright (c) 2015,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,7 +22,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import com.ibm.ws.threading.ScheduledPolicyExecutorTask;
+import com.ibm.ws.threading.ScheduledCustomExecutorTask;
 
 /**
  * Wrapper for the ScheduledFuture returned on overridden scheduleWithFixedRate and scheduleWithFixedDelay methods.
@@ -299,8 +299,8 @@ class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runna
         try {
             long scheduleTime = this.m_periodInterval;
             if (!this.m_scheduledWithDelay) {
-                if (m_runnable instanceof ScheduledPolicyExecutorTask) {
-                    this.m_myNextExecutionTime = ((ScheduledPolicyExecutorTask) m_runnable).getNextFixedRateExecutionTime(m_myNextExecutionTime, m_periodInterval);
+                if (m_runnable instanceof ScheduledCustomExecutorTask) {
+                    this.m_myNextExecutionTime = ((ScheduledCustomExecutorTask) m_runnable).getNextFixedRateExecutionTime(m_myNextExecutionTime, m_periodInterval);
                 } else {
                     this.m_myNextExecutionTime = this.m_myNextExecutionTime + this.m_periodInterval;
                 }
