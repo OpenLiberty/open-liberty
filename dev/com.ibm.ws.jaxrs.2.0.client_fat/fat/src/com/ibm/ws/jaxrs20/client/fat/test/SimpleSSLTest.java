@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -49,6 +49,10 @@ public class SimpleSSLTest extends FATServletClient {
             server.startServer("server.log", true);
             assertNotNull("The server did not start", server.waitForStringInLog("CWWKF0011I"));
             assertNotNull("FeatureManager did not report update was complete", server.waitForStringInLog("CWWKF0008I"));
+
+            // appSecurity-2.0 is not needed for SSL
+            // You MUST wait for the security service to report that it is ready.
+//            assertNotNull("The security service did not report that it was ready.", server.waitForStringInLog("CWWKS0008I"));
         } catch (Exception e) {
             System.out.println(e.toString());
         }
