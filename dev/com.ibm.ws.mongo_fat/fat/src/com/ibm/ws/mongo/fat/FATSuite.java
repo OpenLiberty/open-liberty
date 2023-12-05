@@ -28,10 +28,12 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                AlwaysPassesTest.class,
                 MongoBasicTest.class,
                 MongoSSLTest.class,
                 MongoSSLInvalidTrustTest.class,
