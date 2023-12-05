@@ -622,6 +622,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                          "Caught SQLException when opening SQL RecoveryLog " + _logName + " for server " + _serverName + " SQLException: " + sqlex);
                             // Set the exception that will be reported
                             currentSqlEx = sqlex;
+                        } catch (PeerLostLogOwnershipException ple) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Caught PeerLostLogOwnershipException: " + ple);
+                            nonTransientException = ple;
                         } finally {
                             if (openSuccess) {
                                 // Attempt a close. If it fails, trace the failure but allow processing to continue
@@ -663,27 +667,40 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                 }
 
                                 boolean failAndReport = true;
-                                // Set the exception that will be reported
-                                nonTransientException = currentSqlEx;
-                                OpenLogRetry openLogRetry = new OpenLogRetry();
-                                openLogRetry.setNonTransientException(currentSqlEx);
-                                // The following method will reset "nonTransientException" if it cannot recover
-                                if (_sqlTransientErrorHandlingEnabled) {
-                                    failAndReport = openLogRetry.retryAfterSQLException(this, currentSqlEx);
+                                // If currentSqlEx is non-null, then we potentially have a condition that may be retried. If it is not null, then
+                                // the nonTransientException will have been set.
+                                if (currentSqlEx != null) {
+                                    // Set the exception that will be reported
+                                    nonTransientException = currentSqlEx;
+                                    OpenLogRetry openLogRetry = new OpenLogRetry();
+                                    openLogRetry.setNonTransientException(currentSqlEx);
+                                    // The following method will reset "nonTransientException" if it cannot recover
+                                    if (_sqlTransientErrorHandlingEnabled) {
+                                        failAndReport = openLogRetry.retryAfterSQLException(this, currentSqlEx);
 
-                                    if (failAndReport)
-                                        nonTransientException = openLogRetry.getNonTransientException();
+                                        if (failAndReport)
+                                            nonTransientException = openLogRetry.getNonTransientException();
+                                    }
                                 }
 
                                 // We've been through the while loop
                                 if (failAndReport) {
-                                    Tr.audit(tc, "WTRN0100E: " +
-                                                 "Cannot recover from SQLException when opening SQL RecoveryLog " + _logName + " for server " + _serverName + " Exception: "
-                                                 + nonTransientException);
-                                    markFailed(nonTransientException);
-                                    if (tc.isEntryEnabled())
-                                        Tr.exit(tc, "openLog", "InternalLogException");
-                                    throw new InternalLogException(nonTransientException);
+                                    // In the case where peer log ownership has been lost, either on first execution or retry, then re-throw the exception
+                                    // without auditing.
+                                    if (nonTransientException instanceof PeerLostLogOwnershipException) {
+                                        if (tc.isEntryEnabled())
+                                            Tr.exit(tc, "openLog", "PeerLostLogOwnershipException");
+                                        PeerLostLogOwnershipException ple = new PeerLostLogOwnershipException(nonTransientException);
+                                        throw ple;
+                                    } else {
+                                        Tr.audit(tc, "WTRN0100E: " +
+                                                     "Cannot recover from SQLException when opening SQL RecoveryLog " + _logName + " for server " + _serverName + " Exception: "
+                                                     + nonTransientException);
+                                        markFailed(nonTransientException);
+                                        if (tc.isEntryEnabled())
+                                            Tr.exit(tc, "openLog", "InternalLogException");
+                                        throw new InternalLogException(nonTransientException);
+                                    }
                                 } else {
                                     Tr.audit(tc, "WTRN0108I: Have recovered from SQLException when opening SQL RecoveryLog " + _logName + " for server " + _serverName);
                                 }
@@ -2590,12 +2607,15 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * @param conn
      * @throws SQLException
      */
-    private void checkHADBLock(Connection conn) throws SQLException {
+    private void checkHADBLock(Connection conn) throws SQLException, InternalLogException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "checkHADBLock", new java.lang.Object[] { conn, this });
 
+        boolean takeLock = false;
         Statement readForUpdateStmt = null;
         ResultSet readForUpdateRS = null;
+        Statement updateStmt = null;
+        PreparedStatement specStatement = null;
 
         try {
             readForUpdateStmt = conn.createStatement();
@@ -2613,28 +2633,75 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         Tr.debug(tc, "ANOTHER server OWNS the lock");
                     // Report the cases under the new locking scheme.
                     if (_isHomeServer) {
-                        // This is unexpected under the new locking scheme
+                        // This is unexpected under the new locking scheme, we will assert our ownership of the log
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "The Home Server DOES NOT OWN the HA lock row");
+                        takeLock = true;
                     } else {
                         // Handle peer server cases
                         if (ConfigurationProviderManager.getConfigurationProvider().peerRecoveryPrecedence()) {
-                            // This is not expected
+                            // This is not expected under the new locking scheme, we will assert our ownership of the log
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "The Peer Server should OWN the HA lock row");
+                            takeLock = true;
                         } else {
                             // The assumption is that a home server has claimed the logs aggressively
                             // and is in the process of recovering them.
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "The Peer Server NO LONGER OWNS the HA lock row");
+                            // Instantiate a PeerLostLogOwnershipException which is less "noisy" than its parent InternalLogException
+                            PeerLostLogOwnershipException ple = new PeerLostLogOwnershipException("Another server (" + storedServerName + ") has locked the HA lock row", null);
+                            markFailed(ple, false, true); // second parameter "false" as we do not wish to fire out error messages
+                            if (tc.isEntryEnabled())
+                                Tr.exit(tc, "checkHADBLock", ple);
+                            throw ple;
                         }
                     }
 
+                    if (takeLock) {
+                        updateStmt = conn.createStatement();
+
+                        String updateString = "UPDATE " +
+                                              _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
+                                              " SET SERVER_NAME = '" + _currentProcessServerName +
+                                              "' WHERE RU_ID = -1";
+
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Updating HA Lock using update string - " + updateString);
+                        int ret = updateStmt.executeUpdate(updateString);
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Have updated HA Lock row with return: " + ret);
+                    }
                 }
             } else {
                 // This is unexpected under the new locking scheme
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "There is no HA lock row");
+                if (_isHomeServer) {
+                    // Construct an InternalLogException to be thrown
+                    InternalLogException ile = new InternalLogException("SQL RecoveryLog " + _logName + " on home server with failure scope " + _failureScope
+                                                                        + " has an empty HA lock row on open", null);
+                    markFailed(ile);
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "checkHADBLock", ile);
+                    throw ile;
+                } else {
+                    // Handle peer server cases
+                    if (ConfigurationProviderManager.getConfigurationProvider().peerRecoveryPrecedence()) {
+                        // Construct an InternalLogException to be thrown
+                        InternalLogException ile = new InternalLogException("SQL RecoveryLog " + _logName + " on a peer server with failure scope " + _failureScope
+                                                                            + " has an empty HA lock row on open", null);
+                        markFailed(ile);
+                        if (tc.isEntryEnabled())
+                            Tr.exit(tc, "checkHADBLock", ile);
+                        throw ile;
+                    } else {
+                        // In this case instantiate a PeerLostLogOwnershipException which is less "noisy" than its parent InternalLogException
+                        PeerLostLogOwnershipException ple = new PeerLostLogOwnershipException("No lock row but this is peer recovery", null);
+                        markFailed(ple, false, true); // second parameter "false" as we do not wish to fire out error messages
+                        if (tc.isEntryEnabled())
+                            Tr.exit(tc, "checkHADBLock", ple);
+                        throw ple;
+                    }
+                }
             }
         } finally {
             // tidy up JDBC objects (but DON'T end the tran)
@@ -2646,6 +2713,16 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             if (readForUpdateStmt != null)
                 try {
                     readForUpdateStmt.close();
+                } catch (Exception e) {
+                }
+            if (updateStmt != null)
+                try {
+                    updateStmt.close();
+                } catch (Exception e) {
+                }
+            if (specStatement != null)
+                try {
+                    specStatement.close();
                 } catch (Exception e) {
                 }
         }
