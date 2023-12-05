@@ -22,6 +22,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.microprofile.telemetry.internal.tests.AgentConfigTest;
+import io.openliberty.microprofile.telemetry.internal.tests.AgentConfigMultiAppTest;
 import io.openliberty.microprofile.telemetry.internal.tests.AgentTest;
 import io.openliberty.microprofile.telemetry.internal.tests.CrossFeatureJaegerTest;
 import io.openliberty.microprofile.telemetry.internal.tests.CrossFeatureZipkinTest;
@@ -40,6 +41,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
                 AlwaysPassesTest.class, //Must keep this test to run something in the Java 6 builds.
                 AgentTest.class,
                 AgentConfigTest.class,
+                AgentConfigMultiAppTest.class,
                 CrossFeatureJaegerTest.class,
                 CrossFeatureZipkinTest.class,
                 JaegerSecureOtelCollectorTest.class,
