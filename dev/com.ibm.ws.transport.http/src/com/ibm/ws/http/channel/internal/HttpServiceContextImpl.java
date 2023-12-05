@@ -121,6 +121,7 @@ import io.netty.handler.codec.http2.Http2Headers;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.codec.http2.LastStreamSpecificHttpContent;
+import io.openliberty.http.constants.HttpGenerics;
 
 /**
  * Common code shared between both the Inbound and Outbound HTTP service
@@ -2856,13 +2857,21 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
     final protected void sendOutgoing(WsByteBuffer[] wsbb) throws IOException {
         WsByteBuffer[] buffers = wsbb;
+        boolean addedCompressionContentLength = false;
         if (!headersSent() && Objects.nonNull(buffers)) {
 
             //HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(wsbb));
 //            setPartialBody(false);
 
             if (nettyContext.channel().hasAttr(NettyHttpConstants.ACCEPT_ENCODING)) {
-                HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
+                System.out.println("Compression is enabled!!");
+                if (getResponse().getContentLength() == HttpGenerics.NOT_SET) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Found compression with no content length set. Setting and removing afterwards " + GenericUtils.sizeOf(buffers));
+                    }
+                    addedCompressionContentLength = true;
+                    HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
+                }
                 String acceptEncoding = nettyContext.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).get();
                 ResponseCompressionHandler compressionHandler = new ResponseCompressionHandler(getHttpConfig(), nettyResponse, acceptEncoding);
                 compressionHandler.process();
@@ -2904,6 +2913,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 //                complete = true;
                 System.out.println("Setting content length!!");
                 msg.setContentLength(GenericUtils.sizeOf(buffers));
+            } else if (addedCompressionContentLength || (!msg.isChunkedEncodingSet() && msg.getContentLength() == HttpGenerics.NOT_SET)) {
+                System.out.println("Setting transfer encoding due to no content length or transfer header!!");
+                HttpUtil.setTransferEncodingChunked(nettyResponse, true);
             }
 
             if (msg.isBodyExpected()) {
@@ -2953,6 +2965,12 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
             WsByteBuffer buffer : buffers) {
                 if (Objects.nonNull(buffer)) { // Write buffer
+                    if (buffer.remaining() == 0) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Ignoring buffer with no content");
+                        }
+                        continue;
+                    }
                     System.out.println("Writing buffer: " + buffer);
                     System.out.println("Content: " + WsByteBufferUtils.asString(buffer));
                     String streamId = nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), "-1");
@@ -3244,6 +3262,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (!isPartialBody() && !getRequest().getMethod().equals(MethodValues.HEAD.getName())) {
 //                complete = true;
                 getResponse().setContentLength(GenericUtils.sizeOf(buffers));
+            } else if (!msg.isChunkedEncodingSet() && msg.getContentLength() == HttpGenerics.NOT_SET) {
+                System.out.println("Setting transfer encoding due to no content length or transfer header!!");
+                HttpUtil.setTransferEncodingChunked(nettyResponse, true);
             }
 
             if (msg.isBodyExpected()) {
@@ -3287,6 +3308,12 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
             for (WsByteBuffer buffer : buffers) {
                 if (Objects.nonNull(buffer)) {
+                    if (buffer.remaining() == 0) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Ignoring buffer with no content");
+                        }
+                        continue;
+                    }
                     System.out.println("Writing buffer: " + buffer);
                     System.out.println("Content: " + WsByteBufferUtils.asString(buffer));
                     String streamId = nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), "-1");

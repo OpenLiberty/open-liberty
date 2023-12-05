@@ -149,13 +149,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     }
 
     @Override
-    public void setContentLength(long length) {
-        // TODO Auto-generated method stub
-        super.setContentLength(length);
-        HttpUtil.setContentLength(nettyResponse, length);
-    }
-
-    @Override
     public void setConnection(ConnectionValues value) {
         //TODO Netty already sets this, no op?
         // Wrong need to set this on occasions like 404s
