@@ -96,7 +96,8 @@ public class CDIListenersTest extends LoggingTest {
         }
         //SHARED_SERVER.startIfNotStarted();
         //SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CDI12_TEST_V2_LISTENERS_APP_NAME);
-        SHARED_SERVER.getLibertyServer().startServer(CDIListenersTest.class.getSimpleName() + ".log");
+        // SHARED_SERVER.getLibertyServer().startServer(CDIListenersTest.class.getSimpleName() + ".log");
+        SHARED_SERVER.startIfNotStarted();
         SHARED_SERVER.getLibertyServer().waitForStringInLogUsingMark("CWWKO0219I*");
     }
 
