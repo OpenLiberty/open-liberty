@@ -63,6 +63,12 @@ public class DBRotationTest extends CloudFATServletClient {
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleasecompete")
     public static LibertyServer longLeaseCompeteServer1;
 
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.shortlease")
+    public static LibertyServer shortLeaseServer1;
+
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.norecoverygroup")
+    public static LibertyServer noRecoveryGroupServer1;
+
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.peerServerPrecedence")
     public static LibertyServer peerPrecedenceServer1;
 
@@ -80,6 +86,8 @@ public class DBRotationTest extends CloudFATServletClient {
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.peerServerPrecedence",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.longleaselogfail",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.noShutdown",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD001.shortlease",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD001.norecoverygroup",
     };
 
     private LibertyServer[] serversToCleanup;
@@ -104,6 +112,8 @@ public class DBRotationTest extends CloudFATServletClient {
         ShrinkHelper.exportAppToServer(server1, app, dO);
         ShrinkHelper.exportAppToServer(server2, app, dO);
         ShrinkHelper.exportAppToServer(longLeaseCompeteServer1, app, dO);
+        ShrinkHelper.exportAppToServer(shortLeaseServer1, app, dO);
+        ShrinkHelper.exportAppToServer(noRecoveryGroupServer1, app, dO);
         ShrinkHelper.exportAppToServer(peerPrecedenceServer1, app, dO);
         ShrinkHelper.exportAppToServer(longLeaseLogFailServer1, app, dO);
         ShrinkHelper.exportAppToServer(noShutdownServer1, app, dO);
@@ -476,6 +486,28 @@ public class DBRotationTest extends CloudFATServletClient {
 
         // Now tidy up after test
         runTest(server1, SERVLET_NAME, "tidyupV1LeaseLog");
+    }
+
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
+    public void testLeaseIndexBackwardCompatibility() throws Exception {
+        final String method = "testLeaseIndexBackwardCompatibility";
+
+        serversToCleanup = new LibertyServer[] { shortLeaseServer1 };
+
+        FATUtils.startServers(runner, noRecoveryGroupServer1);
+
+        runTest(noRecoveryGroupServer1, SERVLET_NAME, "setupNonUniqueLeaseLog");
+
+        FATUtils.stopServers(noRecoveryGroupServer1);
+
+        FATUtils.startServers(runner, shortLeaseServer1);
+
+        // Check for key strings to see whether the lease has been updated and read
+        shortLeaseServer1.setTraceMarkToEndOfDefaultTrace();
+        assertNotNull("Lease Renewer has not fired", shortLeaseServer1.waitForStringInTrace("Have updated Server row", LOG_SEARCH_TIMEOUT));
+        assertNotNull("Lease checker has not fired", shortLeaseServer1.waitForStringInTrace("Lease Table: read recoveryId", LOG_SEARCH_TIMEOUT));
+        Log.info(c, method, "testLeaseIndexBackwardCompatibility is complete");
     }
 
     // Returns false if the server is alive, throws Exception otherwise

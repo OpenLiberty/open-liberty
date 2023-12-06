@@ -370,4 +370,79 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
             }
         }
     }
+
+    public void setupNonUniqueLeaseLog(HttpServletRequest request,
+                                       HttpServletResponse response) throws Exception {
+
+        final String genericTableString = "CREATE TABLE WAS_LEASES_LOG" +
+                                          "( SERVER_IDENTITY VARCHAR(128), RECOVERY_GROUP VARCHAR(128), LEASE_OWNER VARCHAR(128), " +
+                                          "LEASE_TIME BIGINT) ";
+
+        final String oracleTableString = "CREATE TABLE WAS_LEASES_LOG" +
+                                         "( SERVER_IDENTITY VARCHAR(128), RECOVERY_GROUP VARCHAR(128), LEASE_OWNER VARCHAR(128), " +
+                                         "LEASE_TIME NUMBER(19)) ";
+
+        final String postgreSQLTableString = "CREATE TABLE WAS_LEASES_LOG" +
+                                             "( SERVER_IDENTITY VARCHAR (128) UNIQUE NOT NULL, RECOVERY_GROUP VARCHAR (128) NOT NULL, LEASE_OWNER VARCHAR (128) NOT NULL, "
+                                             +
+                                             "LEASE_TIME BIGINT);";
+
+        try (Connection con = getConnection(dsTranLog)) {
+            con.setAutoCommit(false);
+            DatabaseMetaData mdata = con.getMetaData();
+            String dbName = mdata.getDatabaseProductName();
+            boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
+            boolean isOracle = dbName.toLowerCase().contains("oracle");
+            boolean isSQLServer = dbName.toLowerCase().contains("microsoft sql");
+            Statement stmt = null;
+            // Statement used to drop table
+            try {
+                stmt = con.createStatement();
+                String dropTableString = "DROP TABLE WAS_LEASES_LOG";
+                System.out.println("setupNonIndexedLeaseLog: Drop table using: " + dropTableString);
+                int dropReturn = stmt.executeUpdate(dropTableString);
+                con.commit();
+            } catch (Exception ex) {
+                System.out.println("setupNonIndexedLeaseLog: caught exception in testSetup: " + ex);
+            }
+
+            try {
+                // Now set up old school WAS_LEASES_LOG table
+                stmt = con.createStatement();
+                if (isOracle) {
+                    System.out.println("setupNonIndexedLeaseLog: Create Oracle Table using: " + oracleTableString);
+                    stmt.executeUpdate(oracleTableString);
+                    String oracleIndexString = "CREATE INDEX IXWS_LEASE ON WAS_LEASES_LOG( \"SERVER_IDENTITY\" ASC) ";
+
+                    System.out.println("setupNonIndexedLeaseLog: Create SQL Server index using: " + oracleIndexString);
+
+                    // Create index on the new table
+                    stmt.execute(oracleIndexString);
+                } else if (isPostgreSQL) {
+                    System.out.println("setupNonIndexedLeaseLog: Create PostgreSQL Table using: " + postgreSQLTableString);
+                    stmt.execute(postgreSQLTableString);
+                    String postgresqlIndexString = "CREATE INDEX IXWS_LEASE ON WAS_LEASES_LOG( SERVER_IDENTITY ASC) ";
+
+                    System.out.println("setupNonIndexedLeaseLog: Create SQL Server index using: " + postgresqlIndexString);
+
+                    // Create index on the new table
+                    stmt.execute(postgresqlIndexString);
+                } else {
+                    System.out.println("setupNonIndexedLeaseLog: Create Generic Table using: " + genericTableString);
+                    stmt.executeUpdate(genericTableString);
+                    String genericIndexString = "CREATE INDEX IXWS_LEASE ON WAS_LEASES_LOG( \"SERVER_IDENTITY\" ASC) ";
+
+                    System.out.println("setupNonIndexedLeaseLog: Create SQL Server index using: " + genericIndexString);
+
+                    // Create index on the new table
+                    stmt.execute(genericIndexString);
+                }
+                con.commit();
+                System.out.println("setupNonIndexedLeaseLog: new table created");
+
+            } catch (Exception ex) {
+                System.out.println("setupNonIndexedLeaseLog: caught exception in testSetup: " + ex);
+            }
+        }
+    }
 }
