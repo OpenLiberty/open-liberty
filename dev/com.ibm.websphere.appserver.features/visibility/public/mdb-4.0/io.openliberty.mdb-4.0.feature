@@ -83,7 +83,7 @@ IBM-SPI-Package: \
   com.ibm.ws.anno.classsource.specification
 Subsystem-Category: JakartaEE9Application
 -features=com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0, 11.0", \
-  io.openliberty.connectors-2.0; ibm.tolerates:="2.1", \
+  io.openliberty.mdb4.0.internal.ee-9.0; ibm.tolerates:="10.0", \
   io.openliberty.ejbCore-2.0, \
   io.openliberty.jakarta.interceptor-2.0; ibm.tolerates:="2.1, 2.2", \
   io.openliberty.jakarta.enterpriseBeans-4.0, \
