@@ -14,8 +14,8 @@ Bundle-Name: WAS WebContainer
 Bundle-SymbolicName: io.openliberty.webcontainer.servlet.6.1.internal
 Bundle-Description: WAS WebContainer with Servlet 6.1 support
 
-javac.source: 17
-javac.target: 17
+javac.source: 21
+javac.target: 21
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
 
