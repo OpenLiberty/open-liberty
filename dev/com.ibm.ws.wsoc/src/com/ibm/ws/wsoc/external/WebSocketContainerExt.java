@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -39,9 +39,9 @@ public class WebSocketContainerExt implements WebSocketContainer {
     private static final TraceComponent tc = Tr.register(WebSocketContainerExt.class);
 
     // config parameters that are owned at the Container level
-    long defaultAsyncSendTimeout = 0; // don't timeout async sends unless told to do so by the user/app    
+    long defaultAsyncSendTimeout = 0; // don't timeout async sends unless told to do so by the user/app
     long defaultMaxSessionIdleTimeout = -1; // default is no session timeout
-    int defaultMaxBinaryMessageBufferSize = (int) Constants.DEFAULT_MAX_MSG_SIZE; // the max message size if not overridden by the annotated endpoint annotation 
+    int defaultMaxBinaryMessageBufferSize = (int) Constants.DEFAULT_MAX_MSG_SIZE; // the max message size if not overridden by the annotated endpoint annotation
     int defaultMaxTextMessageBufferSize = (int) Constants.DEFAULT_MAX_MSG_SIZE; // the max message size if not overridden by the annotated endpoint annotation
 
     @Override
@@ -86,7 +86,7 @@ public class WebSocketContainerExt implements WebSocketContainer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.websocket.WebSocketContainer#connectToServer(java.lang.Object, java.net.URI)
      */
     @Override
@@ -101,7 +101,7 @@ public class WebSocketContainerExt implements WebSocketContainer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.websocket.WebSocketContainer#connectToServer(java.lang.Class, java.net.URI)
      */
     @Override
@@ -126,7 +126,7 @@ public class WebSocketContainerExt implements WebSocketContainer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.websocket.WebSocketContainer#connectToServer(javax.websocket.Endpoint, javax.websocket.ClientEndpointConfig, java.net.URI)
      */
     @Override
@@ -141,7 +141,7 @@ public class WebSocketContainerExt implements WebSocketContainer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.websocket.WebSocketContainer#connectToServer(java.lang.Class, javax.websocket.ClientEndpointConfig, java.net.URI)
      */
     @Override
@@ -175,7 +175,7 @@ public class WebSocketContainerExt implements WebSocketContainer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.websocket.WebSocketContainer#getInstalledExtensions()
      */
     @Override
