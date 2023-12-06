@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,7 +34,24 @@ public interface ManagedThreadFactory extends JNDIEnvironmentRef, Describable {
      * @see #getPriority
      */
     boolean isSetPriority();
-    
+
+    /**
+     * @return &lt;virtual&gt; if specified
+     * @see #isSetVirutal
+     */
+    boolean isVirtual();
+
+    /**
+     * @return true if &lt;virtual&gt; is specified
+     * @see #isVirtual
+     */
+    boolean isSetVirtual();
+
+    /**
+     * @return &lt;qualifier&gt; elements as a read-only list
+     */
+    String[] getQualifier();
+
     /**
      * @return &lt;property&gt; elements as a read-only list
      */
