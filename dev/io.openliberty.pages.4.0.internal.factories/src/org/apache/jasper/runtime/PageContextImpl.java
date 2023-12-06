@@ -74,9 +74,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.jasper.el.ELContextImpl;
-import org.apache.jasper.el.ExpressionEvaluatorImpl;
-import org.apache.jasper.el.FunctionMapperImpl;
-import org.apache.jasper.el.VariableResolverImpl;
 
 import com.ibm.websphere.servlet.error.ServletErrorReport;
 import com.ibm.ws.jsp.Constants;
@@ -98,11 +95,8 @@ import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspFactory;
 import jakarta.servlet.jsp.JspWriter;
 import jakarta.servlet.jsp.PageContext;
-import jakarta.servlet.jsp.el.ELException;
-import jakarta.servlet.jsp.el.ExpressionEvaluator;
-import jakarta.servlet.jsp.el.VariableResolver;
 import jakarta.servlet.jsp.tagext.BodyContent;
-
+import jakarta.el.ELException;
 /**
  * Implementation of the PageContext class from the JSP spec.
  * Also doubles as a VariableResolver for the EL.
@@ -121,9 +115,6 @@ public class PageContextImpl extends PageContext {
     static {
         logger = Logger.getLogger("com.ibm.ws.jsp");
     }
-
-    // The variable resolver, for evaluating EL expressions.
-    private VariableResolver variableResolver;
 
     private BodyContentImpl[] outs;
     private int depth;
@@ -589,13 +580,6 @@ public class PageContextImpl extends PageContext {
         JspRuntimeLibrary.include(request, response, relativeUrlPath, out, flush);
     }
 
-    //LIDB4147-9 Begin
-    @Override
-    public VariableResolver getVariableResolver() {
-        return new VariableResolverImpl(this.getELContext());
-    }
-    //LIDB4147-9 End
-
     @Override
     public void forward(String relativeUrlPath) throws ServletException, IOException {
         // JSP.4.5 If the buffer was flushed, throw IllegalStateException
@@ -670,18 +654,6 @@ public class PageContextImpl extends PageContext {
         return out;
     }
 
-    /**
-     * Provides programmatic access to the ExpressionEvaluator.
-     * The JSP Container must return a valid instance of an
-     * ExpressionEvaluator that can parse EL expressions.
-     */
-    //LIDB4147-9 Begin
-    @Override
-    public ExpressionEvaluator getExpressionEvaluator() {
-        return new ExpressionEvaluatorImpl(this.applicationContext.getExpressionFactory());
-    }
-    //LIDB4147-9 End
-
     @Override
     public void handlePageException(Exception ex) throws IOException, ServletException {
         // Should never be called since handleException() called with a
@@ -742,15 +714,14 @@ public class PageContextImpl extends PageContext {
                 throw (RuntimeException) t;
 
             Throwable rootCause = null;
-            if (t instanceof JspException) {
-                rootCause = ((JspException) t).getRootCause();
-            } else if (t instanceof ELException) {
-                rootCause = ((ELException) t).getRootCause();
+            if (t instanceof JspException || t instanceof ELException) {
+                rootCause = t.getCause();
             }
 
             if (rootCause != null) {
                 throw new ServletErrorReport(t.getMessage(), rootCause);
             }
+            
             throw new ServletErrorReport(t);
         }
     }
@@ -797,7 +768,7 @@ public class PageContextImpl extends PageContext {
     @SuppressWarnings("unchecked")
     public static Object proprietaryEvaluate(final String expression,
                                              final Class expectedType, final PageContext pageContext,
-                                             final ProtectedFunctionMapper functionMap, final boolean escape) throws ELException {
+                                             final ProtectedFunctionMapper functionMap, final boolean escape) throws jakarta.el.ELException {
         Object retValue;
         ExpressionFactory exprFactorySetInPageContext = (ExpressionFactory) pageContext.getAttribute(Constants.JSP_EXPRESSION_FACTORY_OBJECT);
         if (exprFactorySetInPageContext == null) {
@@ -806,7 +777,7 @@ public class PageContextImpl extends PageContext {
         final ExpressionFactory exprFactory = exprFactorySetInPageContext;
         //if (SecurityUtil.isPackageProtectionEnabled()) {
         ELContextImpl ctx = (ELContextImpl) pageContext.getELContext();
-        ctx.setFunctionMapper(new FunctionMapperImpl(functionMap));
+        ctx.setFunctionMapper(functionMap);
         ValueExpression ve = exprFactory.createValueExpression(ctx, expression, expectedType);
         retValue = ve.getValue(ctx);
         if (escape && retValue != null) {
@@ -838,10 +809,10 @@ public class PageContextImpl extends PageContext {
 
     private void addImportsToELContext() {
         // For Pages 3.1
-        DirectiveInfo  directiveInfo;
+        DirectiveInfo directiveInfo;
         if (servlet instanceof DirectiveInfo) {
-            directiveInfo  =  (DirectiveInfo) servlet; 
-            if(directiveInfo.isErrorOnELNotFound()){
+            directiveInfo = (DirectiveInfo) servlet;
+            if (directiveInfo.isErrorOnELNotFound()) {
                 this.elContext.putContext(jakarta.servlet.jsp.el.NotFoundELResolver.class, true);
             }
             for (String _package : directiveInfo.getImportPackageList()) {
@@ -850,10 +821,14 @@ public class PageContextImpl extends PageContext {
             for (String _class : directiveInfo.getImportClassList()) {
                 this.elContext.getImportHandler().importClass(_class);
             }
-            // This does not work with importStatic com.example.Math.*
-            // Follow up on #24182 for importing static en masse
+
             for (String _static : directiveInfo.getImportStaticList()) {
-                this.elContext.getImportHandler().importStatic(_static);
+                try {
+                    this.elContext.getImportHandler().importStatic(_static);
+                } catch (ELException e) {
+                    // ignore if importing a static field from interface or via someClass.*
+                    // https://github.com/OpenLiberty/open-liberty/issues/25135
+                }
             }
         }
     }

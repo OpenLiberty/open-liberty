@@ -71,12 +71,12 @@ public final class ProtectedFunctionMapper extends jakarta.el.FunctionMapper {
      * @throws RuntimeException
      *             if no method with the given signature could be found.
      */
-    public void mapFunction(String fnQName, final Class<?> c,
+    public void mapFunction(String prefix, String fnName, final Class<?> c,
             final String methodName, final Class<?>[] args) {
         // Skip if null values were passed in. They indicate a function
         // added via a lambda or ImportHandler; nether of which need to be
         // placed in the Map.
-        if (fnQName == null) {
+        if (fnName == null) {
             return;
         }
         Method method;
@@ -88,7 +88,7 @@ public final class ProtectedFunctionMapper extends jakarta.el.FunctionMapper {
                             + e.getMessage());
         }
 
-        this.fnmap.put(fnQName, method);
+        this.fnmap.put(prefix + ":" + fnName, method);
     }
 
     /**

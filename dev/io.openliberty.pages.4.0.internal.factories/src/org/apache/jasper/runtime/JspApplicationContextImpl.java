@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 import jakarta.el.CompositeELResolver;
 import jakarta.el.ELContextEvent;
 import jakarta.el.ELContextListener;
+import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
 import jakarta.servlet.ServletContext;
@@ -133,6 +134,13 @@ public class JspApplicationContextImpl implements JspApplicationContext {
         }
 
         return ctx;
+    }
+
+    protected void fireListeners(ELContext elContext) {
+        ELContextEvent event = new ELContextEvent(elContext);
+        for (ELContextListener contextListener : this.contextListeners) {
+            contextListener.contextCreated(event);
+        }
     }
 
     private ELResolver createELResolver() {

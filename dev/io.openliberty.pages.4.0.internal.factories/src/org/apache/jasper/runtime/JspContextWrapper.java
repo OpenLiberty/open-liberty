@@ -51,7 +51,7 @@ import jakarta.servlet.jsp.tagext.BodyContent;
 import jakarta.servlet.jsp.tagext.JspTag;
 import jakarta.servlet.jsp.tagext.VariableInfo;
 
-import org.apache.jasper.compiler.Localizer;
+import com.ibm.ws.jsp.JspCoreException;
 
 /**
  * Implementation of a JSP Context Wrapper.
@@ -65,7 +65,7 @@ import org.apache.jasper.compiler.Localizer;
  * @author Jan Luehe
  * @author Jacob Hookom
  */
-public class JspContextWrapper extends PageContext{
+public class JspContextWrapper extends PageContext {
 
     private final JspTag jspTag;
 
@@ -128,8 +128,8 @@ public class JspContextWrapper extends PageContext{
     public Object getAttribute(String name) {
 
         if (name == null) {
-            throw new NullPointerException(Localizer
-                    .getMessage("jsp.error.attribute.null_name"));
+            throw new NullPointerException(
+                    JspCoreException.getMsg("jsp.error.attribute.null_name"));
         }
 
         return pageAttributes.get(name);
@@ -139,8 +139,8 @@ public class JspContextWrapper extends PageContext{
     public Object getAttribute(String name, int scope) {
 
         if (name == null) {
-            throw new NullPointerException(Localizer
-                    .getMessage("jsp.error.attribute.null_name"));
+            throw new NullPointerException(
+            JspCoreException.getMsg("jsp.error.attribute.null_name"));
         }
 
         if (scope == PAGE_SCOPE) {
@@ -154,8 +154,8 @@ public class JspContextWrapper extends PageContext{
     public void setAttribute(String name, Object value) {
 
         if (name == null) {
-            throw new NullPointerException(Localizer
-                    .getMessage("jsp.error.attribute.null_name"));
+            throw new NullPointerException(
+            JspCoreException.getMsg("jsp.error.attribute.null_name"));
         }
 
         if (value != null) {
@@ -169,8 +169,8 @@ public class JspContextWrapper extends PageContext{
     public void setAttribute(String name, Object value, int scope) {
 
         if (name == null) {
-            throw new NullPointerException(Localizer
-                    .getMessage("jsp.error.attribute.null_name"));
+            throw new NullPointerException(
+            JspCoreException.getMsg("jsp.error.attribute.null_name"));
         }
 
         if (scope == PAGE_SCOPE) {
@@ -188,8 +188,8 @@ public class JspContextWrapper extends PageContext{
     public Object findAttribute(String name) {
 
         if (name == null) {
-            throw new NullPointerException(Localizer
-                    .getMessage("jsp.error.attribute.null_name"));
+            throw new NullPointerException(
+            JspCoreException.getMsg("jsp.error.attribute.null_name"));
         }
 
         Object o = pageAttributes.get(name);
@@ -217,8 +217,8 @@ public class JspContextWrapper extends PageContext{
     public void removeAttribute(String name) {
 
         if (name == null) {
-            throw new NullPointerException(Localizer
-                    .getMessage("jsp.error.attribute.null_name"));
+            throw new NullPointerException(
+            JspCoreException.getMsg("jsp.error.attribute.null_name"));
         }
 
         pageAttributes.remove(name);
@@ -233,8 +233,8 @@ public class JspContextWrapper extends PageContext{
     public void removeAttribute(String name, int scope) {
 
         if (name == null) {
-            throw new NullPointerException(Localizer
-                    .getMessage("jsp.error.attribute.null_name"));
+            throw new NullPointerException(
+            JspCoreException.getMsg("jsp.error.attribute.null_name"));
         }
 
         if (scope == PAGE_SCOPE) {
@@ -248,8 +248,8 @@ public class JspContextWrapper extends PageContext{
     public int getAttributesScope(String name) {
 
         if (name == null) {
-            throw new NullPointerException(Localizer
-                    .getMessage("jsp.error.attribute.null_name"));
+            throw new NullPointerException(
+            JspCoreException.getMsg("jsp.error.attribute.null_name"));
         }
 
         if (pageAttributes.get(name) != null) {
@@ -541,8 +541,8 @@ public class JspContextWrapper extends PageContext{
                 return pageContext;
             }
             if (key == NotFoundELResolver.class) {
-                if (jspTag instanceof JspSourceDirectives) {
-                    return Boolean.valueOf(((JspSourceDirectives) jspTag).getErrorOnELNotFound());
+                if (jspTag instanceof com.ibm.ws.jsp.runtime.DirectiveInfo) {
+                    return Boolean.valueOf(((com.ibm.ws.jsp.runtime.DirectiveInfo) jspTag).isErrorOnELNotFound());
                 } else {
                     // returning Boolean.FALSE would have the same effect
                     return null;
@@ -555,14 +555,14 @@ public class JspContextWrapper extends PageContext{
         public ImportHandler getImportHandler() {
             if (importHandler == null) {
                 importHandler = new ImportHandler();
-                if (jspTag instanceof JspSourceImports) {
-                    Set<String> packageImports = ((JspSourceImports) jspTag).getPackageImports();
+                if (jspTag instanceof com.ibm.ws.jsp.runtime.DirectiveInfo) {
+                    List<String> packageImports = ((com.ibm.ws.jsp.runtime.DirectiveInfo) jspTag).getImportPackageList();
                     if (packageImports != null) {
                         for (String packageImport : packageImports) {
                             importHandler.importPackage(packageImport);
                         }
                     }
-                    Set<String> classImports = ((JspSourceImports) jspTag).getClassImports();
+                    List<String> classImports = ((com.ibm.ws.jsp.runtime.DirectiveInfo) jspTag).getImportClassList();
                     if (classImports != null) {
                         for (String classImport : classImports) {
                             importHandler.importClass(classImport);
