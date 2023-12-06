@@ -14,6 +14,8 @@
     <keyStore id="clientKeyStore" location="key.jks" type="JKS" password="passw0rd" />
     <keyStore id="clientTrustStore" location="trust.jks" type="JKS" password="passw0rd" />
 
+    <quickStartSecurity userName="test" userPassword="testpwd" />
+
     <!--  Don't include ./fatTestPorts.xml when using ${bvt.prop.HTTP_secondary} and ${bvt.prop.HTTP_secondary.secure} -->
     <httpEndpoint id="defaultHttpEndpoint"
         host="*"
