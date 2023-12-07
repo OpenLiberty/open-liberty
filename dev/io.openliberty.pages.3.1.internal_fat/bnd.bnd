@@ -22,6 +22,12 @@ src: \
 
 fat.project: true
 
+tested.features:\
+    expressionlanguage-6.0,\
+    noship-1.0,\
+    pages-4.0,\
+    servlet-6.1
+
 -buildpath: \
     io.openliberty.jakarta.pages.3.1;version=latest,\
     io.openliberty.jakarta.cdi.4.0;version=latest,\
