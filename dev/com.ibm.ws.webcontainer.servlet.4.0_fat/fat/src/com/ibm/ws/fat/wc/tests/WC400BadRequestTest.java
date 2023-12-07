@@ -10,6 +10,7 @@
 package com.ibm.ws.fat.wc.tests;
 
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
 import static org.junit.Assert.assertTrue;
 
 import java.util.logging.Logger;
@@ -49,7 +50,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
+@SkipForRepeat({ EE10_FEATURES, EE11_FEATURES })
 @Mode(TestMode.FULL)
 public class WC400BadRequestTest {
 

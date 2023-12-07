@@ -6,13 +6,11 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static org.junit.Assert.assertTrue;
@@ -109,7 +107,7 @@ public class WCServerTest {
      *                       if something goes horribly wrong
      */
     @Test
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
     public void testServletXPoweredByHeader() throws Exception {
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + SERVLET_40_APP_JAR_NAME + "/MyServlet";
         String expectedResponse = "Hello World";
@@ -176,7 +174,7 @@ public class WCServerTest {
      *                       if something goes horribly wrong
      */
     @Test
-    @SkipForRepeat({ NO_MODIFICATION, EE10_FEATURES })
+    @SkipForRepeat({ NO_MODIFICATION, EE10_FEATURES, EE11_FEATURES })
     public void testServletXPoweredByHeader_Servlet50_Enabled() throws Exception {
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + SERVLET_40_APP_JAR_NAME + "/MyServlet";
         String expectedResponse = "Hello World";
@@ -240,7 +238,11 @@ public class WCServerTest {
         }
         HttpUtils.findStringInReadyUrl(server, "/" + SERVLET_40_APP_JAR_NAME + "/MyServlet?TestMajorMinorVersion=true", majorVersionExpectedResult);
 
-        HttpUtils.findStringInReadyUrl(server, "/" + SERVLET_40_APP_JAR_NAME + "/MyServlet?TestMajorMinorVersion=true", "minorVersion: 0");
+        if (JakartaEEAction.isEE11Active()) {
+            HttpUtils.findStringInReadyUrl(server, "/" + SERVLET_40_APP_JAR_NAME + "/MyServlet?TestMajorMinorVersion=true", "minorVersion: 1");
+        } else {
+            HttpUtils.findStringInReadyUrl(server, "/" + SERVLET_40_APP_JAR_NAME + "/MyServlet?TestMajorMinorVersion=true", "minorVersion: 0");
+        }
     }
 
     /**
