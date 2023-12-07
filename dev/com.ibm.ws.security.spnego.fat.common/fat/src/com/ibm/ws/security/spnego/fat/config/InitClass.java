@@ -397,6 +397,7 @@ public class InitClass {
                 rdnString.append(chars.charAt(index));
             }
             rndHostName = rdnString.toString();
+            rndHostName = "zrock052";
             libertyHostMap.put(canonicalHostName, rndHostName);
             isRndHostName = false;
         }

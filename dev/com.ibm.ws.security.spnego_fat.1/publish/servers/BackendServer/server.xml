@@ -24,7 +24,7 @@
 	
     <spnego id="mySpnego"
        	allowLocalHost="true"
-       	servicePrincipalNames="HTTP/localhost"
+       	servicePrincipalNames="HTTP/zrock052@FYRE11.IBM.COM"
        	includeClientGSSCredentialInSubject="false"
     	krb5Config="${server.config.dir}/resources/security/kerberos/krb5.conf"
     	krb5Keytab="${server.config.dir}/resources/security/kerberos/krb5.keytab"
