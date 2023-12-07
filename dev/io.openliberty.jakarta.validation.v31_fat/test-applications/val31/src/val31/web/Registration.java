@@ -10,8 +10,16 @@
  *******************************************************************************/
 package val31.web;
 
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotNull;
+
 /**
 *
 */
-public interface RegistrationChecks {
+public record Registration(
+                @NotNull String companyid,
+                @AssertTrue(
+                            message = "Company should be registered",
+                            groups = RegistrationChecks.class) boolean isRegistered) {
+
 }

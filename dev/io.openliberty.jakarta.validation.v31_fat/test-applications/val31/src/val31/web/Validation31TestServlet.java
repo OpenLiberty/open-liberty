@@ -13,9 +13,9 @@
 package val31.web;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.junit.Test;
@@ -39,13 +39,12 @@ public class Validation31TestServlet extends FATServlet {
     @Test
     public void basicRecordTest() throws Exception {
 
-        Person p = new Person("Mark");
+        Person p = new Person("SampleName");
         Person np = new Person(null);
 
         assertTrue("Record Person(\"Mark\") should have validated with no violations", validator.validate(p).size() == 0);
         Set<ConstraintViolation<Person>> violations = validator.validate(np);
         assertTrue("Record Person(null) should have validated with one violation", violations.size() == 1);
-        System.out.println(violations.toArray()[0]);
     }
 
     /**
@@ -69,9 +68,13 @@ public class Validation31TestServlet extends FATServlet {
     @Test
     public void recordMethodValidationTest() throws Exception {
         // TODO Add a method that includes validation to a record class and confirm that it can be validated
-        String name = "x";
-        Person propertydata = new Person(name);
-        assertFalse(propertydata.checkLength());
+
+        Person object = new Person("x");
+        Method method = Person.class.getMethod("getPersons");
+        String returnValue = object.getPersons();
+        Set<ConstraintViolation<Person>> violations = validator.forExecutables()
+                        .validateReturnValue(object, method, returnValue);
+        assertEquals("Record Person('x') should have validated with one violation", 1, violations.size());
     }
 
     /**
@@ -85,7 +88,7 @@ public class Validation31TestServlet extends FATServlet {
 
         Employee emp = new Employee(null, new EmailAddress("emp1@example.com"));
         Set<ConstraintViolation<Employee>> violations = validator.validate(emp);
-        assertEquals(1, violations.size());
+        assertEquals("Record Employee() should have validated with one violation", 1, violations.size());
     }
 
     /**
@@ -96,12 +99,13 @@ public class Validation31TestServlet extends FATServlet {
     public void convertGroupsRecordsTest() throws Exception {
         // TODO See section 5.4 of the Bean Validation specification for groups
         // and section 5.4.5 for group conversion
-        Registeration reg = new Registeration("x1asas", false);
-        Company cmp2 = new Company("CompanyName1", reg);
-        Set<ConstraintViolation<Company>> constraintViolations = validator.validate(cmp2);
-        assertTrue("Record Person(null) should have validated with one violation", constraintViolations.size() > 0);
-        System.out.println(constraintViolations.size());
-        assertEquals(2, constraintViolations.size());
+
+        Registration reg = new Registration("x1asas", true);
+        Set<ConstraintViolation<Registration>> constraintViolations = validator.validate(reg, RegistrationChecks.class);;
+        assertTrue("Record Registeration should have validated with no violations", constraintViolations.size() == 0);
+        Company cmp2 = new Company(" sds", reg);
+        Set<ConstraintViolation<Company>> constraintViolations2 = validator.validate(cmp2, RegistrationChecks.class);;
+        assertTrue("Record Company should have validated with no violations after convertion", constraintViolations2.size() == 0);
     }
 
 }
