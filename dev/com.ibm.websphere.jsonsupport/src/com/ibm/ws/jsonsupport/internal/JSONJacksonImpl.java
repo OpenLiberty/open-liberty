@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,7 @@ package com.ibm.ws.jsonsupport.internal;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
@@ -58,7 +59,14 @@ public class JSONJacksonImpl implements JSON {
     @Override
     public String stringify(Object o) throws JSONMarshallException {
         try {
-            return mapper.writeValueAsString(o);
+            // Create a StringWriter to capture the JSON string
+            StringWriter sw = new StringWriter();
+
+            // Use ObjectMapper.write(Writer w, Object o) to serialize the object to the StringWriter
+            mapper.writeValue(sw, o);
+
+            // Get the JSON string from the StringWriter
+            return sw.toString();
         } catch (JsonMappingException e) {
             throw new JSONMarshallException("Unable to parse non-well-formed content", e);
         } catch (JsonGenerationException e) {
