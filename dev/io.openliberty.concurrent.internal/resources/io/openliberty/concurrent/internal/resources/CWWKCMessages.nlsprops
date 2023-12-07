@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2023 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -46,7 +46,9 @@ CWWKC1204.not.serializable=CWWKC1204E: Cannot create a serializable contextual p
 CWWKC1204.not.serializable.explanation=Third-party thread context types are not compatible with serialization and cannot be configured to be propagated for serializable contextual proxies.
 CWWKC1204.not.serializable.useraction=Update the application to request a non-serializable contextual proxy or ensure that no third-party context types are configured to be propagated.
 
-
+CWWKC1205.qualifier.class.not.found=CWWKC1205E: Qualifier annotation {0}, which is defined by the application deployment descriptor, could not be loaded by application classloader.
+CWWKC1205.qualifier.class.not.found.explanation=The <qualifier> element(s) configured via application.xml or web.xml contained a class name which could not be loaded.
+CWWKC1205.qualifier.class.not.found.useraction=Verify the <qualifier> element(s) were configured with a fully qualified class name, and the class is present within the application.
 
 # Messages for @Asynchronous that are shared with other bundles:
 

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,6 +13,7 @@
 package io.openliberty.concurrent.internal.processor;
 
 import java.lang.reflect.Member;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -45,6 +46,11 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_HUNG_TASK_THRESHOLD = "hungTaskThreshold";
     private static final String KEY_MAX_ASYNC = "maxAsync";
+    private static final String KEY_VIRTUAL = "virtual";
+    private static final String KEY_QUALIFIER = "qualifier";
+
+    private static final boolean DEFAULT_VIRTUAL = false;
+    private static final Class<?>[] DEFAULT_QUALIFIER = new Class<?>[] {};
 
     private String contextServiceJndiName;
     private boolean XMLContextServiceRef;
@@ -57,6 +63,12 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
 
     private Integer maxAsync;
     private boolean XMLMaxAsync;
+
+    private boolean virtual;
+    private boolean XMLvirtual;
+
+    private Class<?>[] qualifier;
+    private boolean XMLqualifer;
 
     private Map<String, String> properties;
     private final Set<String> XMLProperties = new HashSet<String>();
@@ -83,7 +95,9 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
             Tr.entry(this, tc, "merge", toString(annotation), instanceClass, member,
                      (XMLContextServiceRef ? "(xml)" : "     ") + "contextServiceRef: " + contextServiceJndiName + " << " + annotation.context(),
                      (XMLHungTaskThreshold ? "(xml)" : "     ") + "hungTaskThreshold: " + hungTaskThreshold + " << " + annotation.hungTaskThreshold(),
-                     (XMLMaxAsync ? "         (xml)" : "              ") + "maxAsync: " + maxAsync + " << " + annotation.maxAsync());
+                     (XMLMaxAsync ? "         (xml)" : "              ") + "maxAsync: " + maxAsync + " << " + annotation.maxAsync(),
+                     (XMLvirtual ? "          (xml)" : "               ") + "virtual: " + virtual + " << " + annotation.virtual(),
+                     (XMLqualifer ? "         (xml)" : "             ") + "qualifier: " + toString(qualifier) + " << " + toString(annotation.qualifiers()));
 
         if (member != null) {
             // ManagedScheduledExecutorDefinition is a class-level annotation only.
@@ -94,13 +108,17 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
         description = mergeAnnotationValue(description, XMLDescription, "", KEY_DESCRIPTION, ""); // ManagedScheduledExecutorDefinition has no description attribute
         hungTaskThreshold = mergeAnnotationValue(hungTaskThreshold, XMLHungTaskThreshold, annotation.hungTaskThreshold(), KEY_HUNG_TASK_THRESHOLD, -1L);
         maxAsync = mergeAnnotationValue(maxAsync, XMLMaxAsync, annotation.maxAsync(), KEY_MAX_ASYNC, -1);
+        virtual = mergeAnnotationBoolean(virtual, XMLvirtual, annotation.virtual(), KEY_VIRTUAL, DEFAULT_VIRTUAL);
+        qualifier = mergeAnnotationValue(qualifier, XMLqualifer, annotation.qualifiers(), KEY_QUALIFIER, DEFAULT_QUALIFIER);
         properties = mergeAnnotationProperties(properties, XMLProperties, new String[] {}); // ManagedScheduledExecutorDefinition has no properties attribute
 
         if (trace)
             Tr.exit(this, tc, "merge", new String[] {
                                                       (XMLContextServiceRef ? "(xml)" : "     ") + "contextServiceRef= " + contextServiceJndiName,
                                                       (XMLHungTaskThreshold ? "(xml)" : "     ") + "hungTaskThreshold= " + hungTaskThreshold,
-                                                      (XMLMaxAsync ? "         (xml)" : "              ") + "maxAsync= " + maxAsync
+                                                      (XMLMaxAsync ? "         (xml)" : "              ") + "maxAsync= " + maxAsync,
+                                                      (XMLvirtual ? "          (xml)" : "               ") + "virtual= " + virtual,
+                                                      (XMLqualifer ? "         (xml)" : "             ") + "qualifier= " + toString(qualifier)
             });
     }
 
@@ -110,7 +128,9 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
             Tr.entry(this, tc, "mergeXML", mxd, mxd.getName(),
                      (XMLContextServiceRef ? "(xml)" : "     ") + "contextServiceRef: " + contextServiceJndiName + " << " + mxd.getContextServiceRef(),
                      (XMLHungTaskThreshold ? "(xml)" : "     ") + "hungTaskThreshold: " + hungTaskThreshold + " << " + mxd.getHungTaskThreshold(),
-                     (XMLMaxAsync ? "         (xml)" : "              ") + "maxAsync: " + maxAsync + " << " + mxd.getMaxAsync());
+                     (XMLMaxAsync ? "         (xml)" : "              ") + "maxAsync: " + maxAsync + " << " + mxd.getMaxAsync(),
+                     (XMLvirtual ? "          (xml)" : "               ") + "virtual: " + virtual + " << " + mxd.isVirtual(),
+                     (XMLqualifer ? "         (xml)" : "             ") + "qualifier: " + toString(qualifier) + " << " + toString(mxd.getQualifier()));
 
         List<Description> descriptionList = mxd.getDescriptions();
 
@@ -135,6 +155,20 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
             XMLMaxAsync = true;
         }
 
+        if (mxd.isSetVirtual()) {
+            virtual = mergeXMLValue(virtual, mxd.isVirtual(), "virtual", KEY_VIRTUAL, null);
+            XMLvirtual = true;
+        }
+
+        Class<?>[] qualifierValues = toQualifierClassArray(mxd.getQualifier());
+        if (qualifierValues == null || qualifierValues.length == 0) {
+            if (qualifier == null)
+                qualifier = DEFAULT_QUALIFIER;
+        } else {
+            qualifier = mergeXMLValue(qualifier, qualifierValues, "qualifier", KEY_QUALIFIER, null);
+            XMLqualifer = true;
+        }
+
         List<Property> mxdProps = mxd.getProperties();
         properties = mergeXMLProperties(properties, XMLProperties, mxdProps);
 
@@ -142,7 +176,9 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
             Tr.exit(this, tc, "mergeXML", new String[] {
                                                          (XMLContextServiceRef ? "(xml)" : "     ") + "contextServiceRef= " + contextServiceJndiName,
                                                          (XMLHungTaskThreshold ? "(xml)" : "     ") + "hungTaskThreshold= " + hungTaskThreshold,
-                                                         (XMLMaxAsync ? "         (xml)" : "              ") + "maxAsync= " + maxAsync
+                                                         (XMLMaxAsync ? "         (xml)" : "              ") + "maxAsync= " + maxAsync,
+                                                         (XMLvirtual ? "          (xml)" : "               ") + "virtual= " + virtual,
+                                                         (XMLqualifer ? "         (xml)" : "             ") + "qualifier= " + toString(qualifier)
             });
     }
 
@@ -154,6 +190,8 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
         mergeSavedValue(description, managedScheduledExecutorBinding.description, "description");
         mergeSavedValue(hungTaskThreshold, managedScheduledExecutorBinding.hungTaskThreshold, "hung-task-threshold");
         mergeSavedValue(maxAsync, managedScheduledExecutorBinding.maxAsync, "max-async");
+        mergeSavedValue(virtual, managedScheduledExecutorBinding.virtual, "virtual");
+        mergeSavedValue(qualifier, managedScheduledExecutorBinding.qualifier, "qualifier");
         mergeSavedValue(properties, managedScheduledExecutorBinding.properties, "properties");
     }
 
@@ -169,6 +207,8 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
         addOrRemoveProperty(props, KEY_DESCRIPTION, description);
         addOrRemoveProperty(props, KEY_HUNG_TASK_THRESHOLD, hungTaskThreshold);
         addOrRemoveProperty(props, KEY_MAX_ASYNC, maxAsync);
+        addOrRemoveProperty(props, KEY_VIRTUAL, virtual);
+        addOrRemoveProperty(props, KEY_QUALIFIER, qualifier);
 
         setObjects(null, createDefinitionReference(null, ManagedScheduledExecutorService.class.getName(), props));
     }
@@ -181,7 +221,34 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
                         .append(", context=").append(anno.context()) //
                         .append(", hungTaskThreshold=").append(anno.hungTaskThreshold()) //
                         .append(", maxAsync=").append(anno.maxAsync()) //
+                        .append(", virtual=").append(anno.virtual()) //
+                        .append(", qualifier=").append(Arrays.toString(anno.qualifiers())) //
                         .append(")");
         return b.toString();
+    }
+
+    @Trivial
+    private static final <T> String toString(T[] list) {
+        if (list == null || list.length == 0)
+            return "Unspecified";
+        boolean none = true;
+        for (int i = 0; none && i < list.length; i++)
+            none &= list[i] == null || list[i].toString().isEmpty();
+        return none ? "None" : Arrays.toString(list);
+    }
+
+    @Trivial
+    private static final Class<?>[] toQualifierClassArray(String[] classList) throws IllegalArgumentException {
+        Class<?>[] clazzArray = new Class<?>[classList.length];
+        for (int i = 0; i < classList.length; i++) {
+            try {
+                //TODO is there a certain classloader I should be using to load this class? ApplicationClassLoader?
+                clazzArray[i] = Class.forName(classList[i]);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1205.qualifier.class.not.found", classList[i]), e);
+            }
+        }
+
+        return clazzArray;
     }
 }
