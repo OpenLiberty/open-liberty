@@ -74,6 +74,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.jasper.el.ELContextImpl;
+import org.apache.jasper.runtime.JspContextWrapper.ELContextWrapper;
 
 import com.ibm.websphere.servlet.error.ServletErrorReport;
 import com.ibm.ws.jsp.Constants;
@@ -681,6 +682,9 @@ public class PageContextImpl extends PageContext {
             request.setAttribute("jakarta.servlet.error.status_code", new Integer(HttpServletResponse.SC_INTERNAL_SERVER_ERROR));
             request.setAttribute("jakarta.servlet.error.request_uri", ((HttpServletRequest) request).getRequestURI());
             request.setAttribute("jakarta.servlet.error.servlet_name", config.getServletName());
+            // Pages 4.0
+            request.setAttribute("jakarta.servlet.error.method", ((HttpServletRequest) request).getMethod()); 
+            request.setAttribute("jakarta.servlet.error.query_string", ((HttpServletRequest) request).getQueryString());
             try {
                 forward(errorPageURL);
             } catch (IllegalStateException ise) {
@@ -775,9 +779,14 @@ public class PageContextImpl extends PageContext {
             exprFactorySetInPageContext = JspFactory.getDefaultFactory().getJspApplicationContext(pageContext.getServletContext()).getExpressionFactory();
         }
         final ExpressionFactory exprFactory = exprFactorySetInPageContext;
-        //if (SecurityUtil.isPackageProtectionEnabled()) {
-        ELContextImpl ctx = (ELContextImpl) pageContext.getELContext();
-        ctx.setFunctionMapper(functionMap);
+        ELContext ctx = pageContext.getELContext();
+        ELContextImpl ctxImpl;
+        if (ctx instanceof ELContextWrapper) {
+            ctxImpl = (ELContextImpl) ((ELContextWrapper) ctx).getWrappedELContext();
+        } else {
+            ctxImpl = (ELContextImpl) ctx;
+        }
+        ctxImpl.setFunctionMapper(functionMap);
         ValueExpression ve = exprFactory.createValueExpression(ctx, expression, expectedType);
         retValue = ve.getValue(ctx);
         if (escape && retValue != null) {

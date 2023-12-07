@@ -311,6 +311,8 @@ public abstract class JspVisitor {
                                 logger.logp(Level.FINEST, CLASS_NAME, "processJspElement","Skipping the jsp:params element as it is a no operation for Pages 3.1+");
                             }
                         }
+                    } else if(PagesVersionHandler.isPages40OrHigherLoaded()) {
+                         throw new JspTranslationException(jspElement, "pages.removed.element.error", new Object[] { jspElement.getTagName() });
                     }
                 }
                 else if (jspElementType.equals(Constants.JSP_FALLBACK_TYPE)) {
@@ -333,6 +335,8 @@ public abstract class JspVisitor {
                                 logger.logp(Level.FINEST, CLASS_NAME, "processJspElement","Skipping the jsp:fallback element as it is a no operation for Pages 3.1+");
                             }
                         }
+                    } else if(PagesVersionHandler.isPages40OrHigherLoaded()) {
+                         throw new JspTranslationException(jspElement, "pages.removed.element.error", new Object[] { jspElement.getTagName() });
                     }
                 }
                 else if (jspElementType.equals(Constants.JSP_INCLUDE_TYPE)) {
@@ -379,6 +383,8 @@ public abstract class JspVisitor {
                                 logger.logp(Level.FINEST, CLASS_NAME, "processJspElement","Skipping the jsp:plugin element as it is a no operation for Pages 3.1+");
                             }
                         }
+                    } else if(PagesVersionHandler.isPages40OrHigherLoaded()) {
+                         throw new JspTranslationException(jspElement, "pages.removed.element.error", new Object[] { jspElement.getTagName() });
                     }
                 }
                 else if (jspElementType.equals(Constants.JSP_ATTRIBUTE_TYPE)) {
@@ -416,7 +422,7 @@ public abstract class JspVisitor {
                     visitJspOutputEnd(jspElement);
                 }
                 else {
-                    throw new JspTranslationException(jspElement, "jsp.error.element.unknown", new Object[] { jspElement.getTagName() });
+                    throw new JspTranslationException(jspElement, "pages.removed.element.error", new Object[] { jspElement.getTagName() });
                 } 
             }
             else if (jspElement.getTagName().indexOf(':') != -1) {

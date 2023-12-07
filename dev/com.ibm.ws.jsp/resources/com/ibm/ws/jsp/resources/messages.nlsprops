@@ -1278,3 +1278,6 @@ jsp.useinmemory.warning=CWWJS0004W: The 'useInMemory' JSP Option is not supporte
 jsp.useinmemory.warning.explanation=This feature was never ported from Traditional WebSphere for historical reasons.
 jsp.useinmemory.warning.useraction=Remove the useInMemory option from the server.xml, ibm-web-bnd.xml, or the ibm-web-ext.xmi files.
 
+pages.removed.element.error=CWWJS0005E: The {0} element was removed in Pages 4.0 and therefore is no longer supported.
+pages.removed.element.error.explanation=The jsp plugin and related actions were deprecated in Pages 3.1 and removed in 4.0. 
+pages.removed.element.error.useraction= Remove the jsp plugin, fallback, and params elements from your web app.
