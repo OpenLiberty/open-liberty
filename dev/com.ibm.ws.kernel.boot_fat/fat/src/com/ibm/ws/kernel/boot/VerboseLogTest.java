@@ -60,7 +60,7 @@ public class VerboseLogTest {
         server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
         executionDir = server.getInstallRoot();
         verboseLog = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/logs/verbosegc.001.log");
-        verboseLogServerRoot = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/verbosegc.001.log");
+        verboseLogServerRoot = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/verbosegc.log");
         jvmoptionsserverroot = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/jvm.options");
         serverEnvServerRoot = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/server.env");
         if (server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS)
@@ -90,11 +90,14 @@ public class VerboseLogTest {
     }
 
     @Test
-    public void testDefaultVerboseLogging() throws Exception {
+    public void testNonOpenJ9DefaultVerboseLogging() throws Exception {
+        //Only run if jvm is not OpenJ9
+        assumeTrue(!isOpenJ9);
+
         // Test with no jvm.options, verbose log should appear by default
         Log.entering(c, testName.getMethodName());
 
-        delJvmOptions();
+        deleteLeftoverFiles();
 
         String[] parms = new String[2];
         parms[0] = "start";
@@ -112,27 +115,51 @@ public class VerboseLogTest {
         server.resetStarted();
 
         assertTrue("the server should have been started", server.isStarted());
-
-        //Only have verbosegc log if jvm is OpenJ9
-        if(isOpenJ9) {
-            assertTrue("verbosegc log should have been created", verboseLog.exists());
-        }
-        else {
-            assertTrue("verbosegc log should not have been created because the JVM is not OpenJ9", !verboseLog.exists());
-        }
+        assertTrue("verbosegc log should not have been created because the JVM is not OpenJ9", !verboseLog.exists());
 
         server.stopServer();
     }
 
     @Test
-    public void testJvmTurnOffVerbose() throws Exception {
+    public void testOpenJ9DefaultVerboseLogging() throws Exception {
+        //Only run if jvm is OpenJ9
+        assumeTrue(isOpenJ9);
+
+        // Test with no jvm.options, verbose log should appear by default
+        Log.entering(c, testName.getMethodName());
+
+        deleteLeftoverFiles();
+
+        String[] parms = new String[2];
+        parms[0] = "start";
+        parms[1] = SERVER_NAME;
+
+        Properties envVars = new Properties();
+        envVars.put("CDPATH", ".");
+
+        ProgramOutput po = server.getMachine().execute(serverCommand, parms, executionDir, envVars);
+
+        Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
+        Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKF0011I");
+        server.resetStarted();
+
+        assertTrue("the server should have been started", server.isStarted());
+        assertTrue("verbosegc log should have been created", verboseLog.exists());
+
+        server.stopServer();
+    }
+
+    @Test
+    public void testOpenJ9JvmTurnOffVerbose() throws Exception {
         //Only run if jvm is OpenJ9
         assumeTrue(isOpenJ9);
 
         // Test with jvm.options to turn off verbose log, no verbose log should appear
         Log.entering(c, testName.getMethodName());
 
-        delJvmOptions();
+        deleteLeftoverFiles();
 
         String[] parms = new String[2];
         parms[0] = "start";
@@ -162,14 +189,14 @@ public class VerboseLogTest {
     }
 
     @Test
-    public void testServerEnvTurnOffVerbose() throws Exception {
+    public void testOpenJ9ServerEnvTurnOffVerbose() throws Exception {
         //Only run if jvm is OpenJ9
         assumeTrue(isOpenJ9);
 
         // Test with server.env to turn off verbose log, no verbose log should appear
         Log.entering(c, testName.getMethodName());
 
-        delJvmOptions();
+        deleteLeftoverFiles();
 
         String[] parms = new String[2];
         parms[0] = "start";
@@ -199,14 +226,14 @@ public class VerboseLogTest {
     }
 
     @Test
-    public void testServerEnvKeepVerbose() throws Exception {
+    public void testOpenJ9ServerEnvKeepVerbose() throws Exception {
         //Only run if jvm is OpenJ9
         assumeTrue(isOpenJ9);
         
         // Test with server.env to keep verbose log, verbose log should appear
         Log.entering(c, testName.getMethodName());
 
-        delJvmOptions();
+        deleteLeftoverFiles();
 
         String[] parms = new String[2];
         parms[0] = "start";
@@ -236,14 +263,14 @@ public class VerboseLogTest {
     }
 
     @Test
-    public void testJvmChangeVerbose() throws Exception {
+    public void testOpenJ9JvmChangeVerbose() throws Exception {
         //Only run if jvm is OpenJ9
         assumeTrue(isOpenJ9);
         
         // Test with jvm.options, change location or file name, the jvm.options log should be the one shown
         Log.entering(c, testName.getMethodName());
 
-        delJvmOptions();
+        deleteLeftoverFiles();
 
         String[] parms = new String[2];
         parms[0] = "start";
@@ -251,7 +278,7 @@ public class VerboseLogTest {
 
         Writer isw = new OutputStreamWriter(new FileOutputStream(jvmoptionsserverroot), "UTF-8");
         BufferedWriter bw = new BufferedWriter(isw);
-        bw.write("-Xverbosegclog:verbosegc.%seq.log,10,1024\n");
+        bw.write("-Xverbosegclog:verbosegc.log\n");
         bw.close();
 
         Properties envVars = new Properties();
@@ -273,7 +300,7 @@ public class VerboseLogTest {
     }
 
     @Test
-    public void testStartChangeVerbose() throws Exception {
+    public void testOpenJ9StartChangeVerbose() throws Exception {
         //Only run if jvm is OpenJ9
         assumeTrue(isOpenJ9);
         
@@ -281,12 +308,13 @@ public class VerboseLogTest {
         // ex. ./bin/server start --verbose:gc
         Log.entering(c, testName.getMethodName());
 
-        delJvmOptions();
+        deleteLeftoverFiles();
 
-        String[] parms = new String[3];
+        String[] parms = new String[4];
         parms[0] = "start";
         parms[1] = SERVER_NAME;
-        parms[2] = "-Xverbosegclog:verbosegc.%seq.log,10,1024";
+        parms[2] = "--";
+        parms[3] = "-Xverbosegclog:verbosegc.log";
 
         Properties envVars = new Properties();
         envVars.put("CDPATH", ".");
@@ -306,12 +334,18 @@ public class VerboseLogTest {
         server.stopServer();
     }
 
-    private void delJvmOptions() {
+    private void deleteLeftoverFiles() {
         if(jvmoptionsserverroot.exists()){
             jvmoptionsserverroot.delete();
         }
         if(serverEnvServerRoot.exists()){
             serverEnvServerRoot.delete();
+        }
+        if(verboseLog.exists()){
+            verboseLog.delete();
+        }
+        if(verboseLogServerRoot.exists()){
+            verboseLogServerRoot.delete();
         }
     }
 }
