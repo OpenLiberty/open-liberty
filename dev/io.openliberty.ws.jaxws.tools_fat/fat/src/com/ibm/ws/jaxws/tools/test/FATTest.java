@@ -379,7 +379,7 @@ public class FATTest {
 
     // Not required for xmlWS-3.0
     @Test
-    @SkipForRepeat(JakartaEEAction.EE9_ACTION_ID)
+    @SkipForRepeat({JakartaEEAction.EE9_ACTION_ID, JakartaEEAction.EE10_ACTION_ID})
     public void testWsImportToolWithoutTarget() throws Exception {
 
         server.waitForStringInLog("CWWKZ0001I.*PeopleService");

@@ -23,7 +23,10 @@ fat.project: true
 tested.features:\
 	servlet-5.0,\
 	servlet-4.0,\
-	xmlws-3.0
+	xmlws-3.0, \
+	xmlws-4.0, \
+	xmlbinding-4.0, \
+	servlet-6.0
 	
 -buildpath:\
     com.ibm.websphere.javaee.jws.1.0;version=latest,\
