@@ -94,7 +94,7 @@ public class LibertyClient {
     protected static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
     protected static final String MAC_RUN = PrivHelper.getProperty("fat.on.mac");
     protected static final String GLOBAL_TRACE = PrivHelper.getProperty("global.trace.spec", "").trim();
-    protected static final boolean GLOBAL_JAVA2SECURITY = FAT_TEST_LOCALRUN //
+    protected static final boolean GLOBAL_JAVA2SECURITY = javaInfo.MAJOR > 17 ? false : FAT_TEST_LOCALRUN //
                     ? Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "true")) //
                     : Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "false"));
 
@@ -672,7 +672,8 @@ public class LibertyClient {
         // if we have FIPS 140-3 enabled, and the matched java/platform, add JVM arg
         if (isFIPS140_3EnabledAndSupported()) {
             Log.info(c, "startClientWithArgs", "The JDK version: " + javaInfo.majorVersion() + " and vendor: " + JavaInfo.Vendor.IBM);
-            Log.info(c, "startClientWithArgs", "FIPS 140-3 global build properties is set for Client " + getClientName() + " with IBM Java 8, adding JVM arguments -Xenablefips140-3, ...,  to run with FIPS 140-3 enabled");
+            Log.info(c, "startClientWithArgs", "FIPS 140-3 global build properties is set for Client " + getClientName()
+                                               + " with IBM Java 8, adding JVM arguments -Xenablefips140-3, ...,  to run with FIPS 140-3 enabled");
 
             JVM_ARGS += " -Xenablefips140-3";
             JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
@@ -3927,14 +3928,14 @@ public class LibertyClient {
     public boolean isFIPS140_3EnabledAndSupported() {
         String methodName = "isFIPS140_3EnabledAndSupported";
         boolean isIBMJVM8 = (javaInfo.majorVersion() == 8) && (javaInfo.VENDOR == Vendor.IBM);
-        if(GLOBAL_CLIENT_FIPS_140_3){
+        if (GLOBAL_CLIENT_FIPS_140_3) {
             Log.info(c, methodName, "Liberty client is running JDK version: " + javaInfo.majorVersion() + " and vendor: " + javaInfo.VENDOR);
-            if(isIBMJVM8) {
-                Log.info(c, methodName, "global build properties FIPS_140_3 is set for client " + getClientName() + 
-                                            " and IBM java 8 is available to run with FIPS 140-3 enabled.");
+            if (isIBMJVM8) {
+                Log.info(c, methodName, "global build properties FIPS_140_3 is set for client " + getClientName() +
+                                        " and IBM java 8 is available to run with FIPS 140-3 enabled.");
             } else {
                 Log.info(c, methodName, "The global build properties FIPS_140_3 is set for client " + getClientName() +
-                                            ",  but no IBM java 8 on liberty client to run with FIPS 140-3 enabled.");
+                                        ",  but no IBM java 8 on liberty client to run with FIPS 140-3 enabled.");
             }
         }
         return GLOBAL_CLIENT_FIPS_140_3 && isIBMJVM8;
