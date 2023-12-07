@@ -13,8 +13,8 @@ bVersion=1.0
 Bundle-SymbolicName: io.openliberty.jakarta.expressionLanguage.6.0; singleton:=true
 Bundle-Description: Jakarta Expression Language, version 6.0
 
-javac.source: 17
-javac.target: 17
+javac.source: 21
+javac.target: 21
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
 

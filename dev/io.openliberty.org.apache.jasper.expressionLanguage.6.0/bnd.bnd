@@ -14,8 +14,8 @@ Bundle-SymbolicName: io.openliberty.org.apache.jasper.expressionLanguage.6.0
 Bundle-Description: Jakarta Expression Language EE11 Implementation, version 6.0
 Implementation-Version: 6.0.0
 
-javac.source: 17
-javac.target: 17
+javac.source: 21
+javac.target: 21
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
 
