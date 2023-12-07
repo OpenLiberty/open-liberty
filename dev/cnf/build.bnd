@@ -51,6 +51,7 @@ javac.encoding: UTF-8
 #  off:     do not specify a release
 javac.args.release: source
 -sources: false
+-jpms-multi-release: false
 
 instrument.disabled: ${if;${test.project};true;false}
 instrument.classesIncludes: **/*.class
