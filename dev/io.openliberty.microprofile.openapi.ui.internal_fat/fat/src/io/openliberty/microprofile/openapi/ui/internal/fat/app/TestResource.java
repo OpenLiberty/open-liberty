@@ -9,20 +9,41 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi.ui.internal.fat.app;
 
-import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.Path;
-
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 
 /**
  * Very basic application so that we have something to look at in the OpenAPI UI
  */
-@ApplicationPath("/")
+
 @Path("/test")
 public class TestResource {
 
     @Path("/{id}")
     @GET
-    public int testGet(@PathParam("id") int id) {return id;}
+    public int testGet(@PathParam("id") int id) {
+        return id;
+    }
+
+    @Path("/{id}")
+    @PUT
+    public void testPut(@PathParam("id") int id) {
+        // store a message
+    }
+
+    @Path("/{id}")
+    @POST
+    public void testPost(@PathParam("id") int id) {
+        // store a message
+    }
+
+    @Path("/{id}")
+    @DELETE
+    public void testDelete(@PathParam("id") int id) {
+        // delete a message
+    }
 }
