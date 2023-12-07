@@ -12,6 +12,8 @@
  *******************************************************************************/
 package test.jakarta.data.datastore;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -37,8 +39,14 @@ public class DataStoreTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive war = ShrinkHelper.buildDefaultApp("DataStoreTestWeb", "test.jakarta.data.datastore.web");
-        ShrinkHelper.exportAppToServer(server, war);
+        WebArchive DataStoreTestWeb = ShrinkHelper.buildDefaultApp("DataStoreTestWeb", "test.jakarta.data.datastore.web");
+
+        EnterpriseArchive DataStoreTestApp = ShrinkWrap.create(EnterpriseArchive.class, "DataStoreTestApp.ear");
+        DataStoreTestApp.addAsModule(DataStoreTestWeb);
+        //DataStoreTestApp.addAsModule(DataStoreTestEJB);
+        //ShrinkHelper.addDirectory(DataStoreTestApp, "test-applications/DataStoreTestApp/resources");
+        ShrinkHelper.exportAppToServer(server, DataStoreTestApp);
+
         server.startServer();
     }
 

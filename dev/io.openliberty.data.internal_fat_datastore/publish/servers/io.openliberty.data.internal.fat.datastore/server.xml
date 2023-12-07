@@ -22,7 +22,7 @@
 
   <include location="../fatTestPorts.xml"/>
 
-  <application location="DataStoreTestWeb.war">
+  <application location="DataStoreTestApp.ear">
     <classloader commonLibraryRef="DerbyLib"/>
   </application>
 
@@ -32,7 +32,12 @@
 
   <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="DerbyLib"/>
-    <properties.derby.embedded createDatabase="create" databaseName="memory:defaultdb" user="dbuser1" password="dbpwd1"/>
+    <properties.derby.embedded createDatabase="create" databaseName="memory:defaultdb" user="defaultuser1" password="defaultpwd1"/>
+  </dataSource>
+
+  <dataSource id="ServerDataSource" jndiName="jdbc/ServerDataSource">
+    <jdbcDriver libraryRef="DerbyLib"/>
+    <properties.derby.embedded createDatabase="create" databaseName="memory:serverdb" user="serveruser1" password="serverpwd1"/>
   </dataSource>
 
   <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
