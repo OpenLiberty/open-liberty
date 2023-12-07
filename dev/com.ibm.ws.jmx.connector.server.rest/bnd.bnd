@@ -31,6 +31,7 @@ Private-Package: \
   com.ibm.ws.jmx.connector.server.internal.resources.*
 
 Import-Package: \
+  com.ibm.websphere.jsonsupport;version='[1.0,2.0)', \
   *
 
 Export-Package: \
@@ -94,7 +95,7 @@ instrument.classesExcludes: com/ibm/ws/jmx/connector/server/internal/resources/*
 	com.ibm.ws.jmx.request;version=latest,\
 	com.ibm.websphere.rest.handler;version=latest,\
 	com.ibm.ws.rest.handler;version=latest,\
-	com.ibm.websphere.jsonsupport;version=latest,\
+	io.openliberty.jsonsupport.internal;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
