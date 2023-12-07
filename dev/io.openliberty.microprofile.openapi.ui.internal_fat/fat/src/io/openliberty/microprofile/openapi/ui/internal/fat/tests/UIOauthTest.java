@@ -44,6 +44,7 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.microprofile.openapi.ui.internal.fat.app.SecureTestResource;
+import io.openliberty.microprofile.openapi.ui.internal.fat.app.TestApplication;
 
 @RunWith(FATRunner.class)
 public class UIOauthTest {
