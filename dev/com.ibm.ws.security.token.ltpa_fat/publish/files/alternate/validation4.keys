@@ -1,7 +1,7 @@
 #Mon Oct 30 08:10:41 PDT 2023
-# Bad Validation Keys - Garbage 3DESKey
+# Bad Validation Keys - Swapped 3DESKey
 com.ibm.websphere.ltpa.version=1.0
-com.ibm.websphere.ltpa.3DESKey=eJh1K9My7p4Uj0Gw/X2XDWxyY1garbage7ji+BJPSDM\=
+com.ibm.websphere.ltpa.3DESKey=f3PeTkRWxehkpYfG0q1HDdNHqEp+kh3Yp7ji+BJPSDM\=
 com.ibm.websphere.ltpa.PrivateKey=kmhgRjTUcxvFJoVw8jxWuh3ffuxym/SLYW8TQYKjK/4TJoPx9h2FJvNHkiaxfvACUWN5Lw5A1c500PRD+kcUtY+05IpNbGd0xu7BsjDQoLaEi4jrtBjT0REEYepsj9QQXnQTG9GL3CuNkSmPLxlHWBKZkDlcv4MtOKn2ozeXQjQ5doAJGDm6qk8QxxB7jGHCdQI9L6G4ic34w6DWV9qKZiX/Yp39neL6jR9mH3e9U7EFyefrtOTF7EUscfikBnw0sQUNnwTx2vMv+Q9QI+ykZMJULvzGKf2fW7Qz+OfQIlTatBCYRWtG0BQGi0BkUULApK2qIxQbvLVT7ijEwg2YsWTREcsnbVvHFmSqTF5jf8w\=
 com.ibm.websphere.CreationHost=localhost
 com.ibm.websphere.ltpa.Realm=BasicRealm
