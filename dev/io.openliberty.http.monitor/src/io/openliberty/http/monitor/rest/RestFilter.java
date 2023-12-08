@@ -58,6 +58,7 @@ public class RestFilter implements ContainerRequestFilter, ContainerResponseFilt
     @Override
     public void filter(ContainerRequestContext reqCtx) throws IOException {
     	System.out.println("REST:in actual");
+    	//^DC:debug don't really need the in filter.
     }
 
     @Override
@@ -106,21 +107,4 @@ public class RestFilter implements ContainerRequestFilter, ContainerResponseFilt
 //    	System.out.println("servlet response status code" + servletResponse.getStatus());
         
     }
-
-
-
-    /*
-
-
-    /*
-     * Clean up the resources that were created for each resource method within an
-     * application
-     */
-    static void cleanApplication(String appName) {
-
-    }
-
-
-
-
 }

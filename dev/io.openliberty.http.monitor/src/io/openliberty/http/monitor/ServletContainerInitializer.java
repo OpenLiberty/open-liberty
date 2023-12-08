@@ -32,7 +32,7 @@ public class ServletContainerInitializer implements jakarta.servlet.ServletConta
         FilterRegistration.Dynamic filterRegistration = sc
                 .addFilter("io.openliberty.http.monitor.ServletFilter", ServletFilter.class);
         filterRegistration.addMappingForUrlPatterns(null, true, "/*");
-        // filterRegistration.setAsyncSupported(true);
+        //filterRegistration.setAsyncSupported(true);
 
     }
 }

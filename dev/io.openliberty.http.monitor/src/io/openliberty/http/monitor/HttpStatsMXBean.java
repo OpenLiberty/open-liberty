@@ -14,10 +14,30 @@ package io.openliberty.http.monitor;
  */
 public interface HttpStatsMXBean {
 
-    /**
-     *
-     * @return
-     */
+	//metadata
+	
+	public String getRequestMethod();
+	
+	public int getResponseStatus();
+	
+	public String getHttpRoute();
+	
+	public String getScheme();
+	
+	public String getNetworkProtocolName();
+	
+	public String getNetworkProtocolVersion();
+		
+	public String getServerName();
+	
+	public int getServerPort();
+	
+	//actual values
+	
+	public long getCount();
+	
     public double getDuration();
 
+    
+    
 }

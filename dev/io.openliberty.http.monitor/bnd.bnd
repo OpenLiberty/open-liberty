@@ -27,7 +27,8 @@ Include-Resource:\
 src: src, resources
 
 -dsannotations: \
-  io.openliberty.http.monitor.ServletContainerInitializer
+  io.openliberty.http.monitor.ServletContainerInitializer,\
+  io.openliberty.http.monitor.RestMetricManager
 
 app-resources= \
   META-INF/services/jakarta.ws.rs.ext.Providers
@@ -42,7 +43,9 @@ Service-Component: \
 WS-TraceGroup: 
 
 Import-Package: \
+    com.ibm.ws.http.dispatcher.internal.channel.\
     !*.internal.*,\
+    !jakarta.ws.rs.*,\
     *
 
 Export-Package: \
@@ -50,7 +53,13 @@ Export-Package: \
   io.openliberty.http.monitor.rest;thread-context=true
 
 Liberty-Monitoring-Components: \
-			io.openliberty.http.monitor.HttpMetricsMonitor
+			io.openliberty.http.monitor.HttpStatsMonitor
+
+DynamicImport-Package: \
+  jakarta.ws.rs;version="[3.1.0,4.0.0)",\
+  jakarta.ws.rs.*;version="[3.1.0,4.0.0)",\
+  io.openliberty.microprofile.metrics50.*,\
+  org.eclipse.microprofile.metrics.*;version="[5.0.0,6.0.0)"
 
 #DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
 # com.ibm.websphere.monitor.annotation;version="1.0.0", \
@@ -69,4 +78,7 @@ Liberty-Monitoring-Components: \
 	com.ibm.ws.webcontainer.jakarta;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	io.openliberty.jakarta.restfulWS.3.1,\
-	io.openliberty.jakarta.annotation.2.1;version=latest
+	io.openliberty.jakarta.annotation.2.1;version=latest,\
+	io.openliberty.microprofile.metrics.5.1.internal;version=latest,\
+	io.openliberty.org.eclipse.microprofile.metrics.5.0;version=latest,\
+	com.ibm.ws.channelfw;version=latest

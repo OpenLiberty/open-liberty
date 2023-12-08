@@ -12,7 +12,8 @@ IBM-ShortName: monitor-1.0
 Manifest-Version: 1.0
 Subsystem-Name: Performance Monitoring 1.0
 -features=com.ibm.websphere.appserver.containerServices-1.0
--bundles=com.ibm.ws.monitor
+-bundles=com.ibm.ws.monitor,\
+  io.openliberty.http.monitor
 -jars=com.ibm.websphere.appserver.api.monitor; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.monitor_1.1-javadoc.zip
 kind=ga
