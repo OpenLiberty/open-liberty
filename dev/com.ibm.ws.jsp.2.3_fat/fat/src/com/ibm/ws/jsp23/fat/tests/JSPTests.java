@@ -745,6 +745,7 @@ public class JSPTests {
      * @throws Exception
      *                       if something goes wrong
      */
+    @SkipForRepeat(SkipForRepeat.EE11_FEATURES) // ELContextImpl (within org.apache.jaspser.el) arguments changed changed in Pages 4.0
     @Test
     public void testJSP23ResolutionVariableProperties() throws Exception {
         String[] expectedInResponse = { "class org.apache.el.stream.StreamELResolverImpl",
