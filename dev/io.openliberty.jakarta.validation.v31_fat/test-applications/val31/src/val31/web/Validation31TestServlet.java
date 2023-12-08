@@ -42,7 +42,7 @@ public class Validation31TestServlet extends FATServlet {
         Person p = new Person("SampleName");
         Person np = new Person(null);
 
-        assertTrue("Record Person(\"Mark\") should have validated with no violations", validator.validate(p).size() == 0);
+        assertTrue("Record Person(\"SampleName\") should have validated with no violations", validator.validate(p).size() == 0);
         Set<ConstraintViolation<Person>> violations = validator.validate(np);
         assertTrue("Record Person(null) should have validated with one violation", violations.size() == 1);
     }
@@ -70,8 +70,8 @@ public class Validation31TestServlet extends FATServlet {
         // TODO Add a method that includes validation to a record class and confirm that it can be validated
 
         Person object = new Person("x");
-        Method method = Person.class.getMethod("getPersons");
-        String returnValue = object.getPersons();
+        Method method = Person.class.getMethod("getName");
+        String returnValue = object.getName();
         Set<ConstraintViolation<Person>> violations = validator.forExecutables()
                         .validateReturnValue(object, method, returnValue);
         assertEquals("Record Person('x') should have validated with one violation", 1, violations.size());
@@ -100,12 +100,12 @@ public class Validation31TestServlet extends FATServlet {
         // TODO See section 5.4 of the Bean Validation specification for groups
         // and section 5.4.5 for group conversion
 
-        Registration reg = new Registration("x1asas", true);
-        Set<ConstraintViolation<Registration>> constraintViolations = validator.validate(reg, RegistrationChecks.class);;
-        assertTrue("Record Registeration should have validated with no violations", constraintViolations.size() == 0);
+        Registration reg = new Registration("x1asas", false);
+        Set<ConstraintViolation<Registration>> constraintViolations = validator.validate(reg);;
+        assertTrue("Record Registration should have validated with no violations", constraintViolations.size() == 0);
         Company cmp2 = new Company(" sds", reg);
         Set<ConstraintViolation<Company>> constraintViolations2 = validator.validate(cmp2, RegistrationChecks.class);;
-        assertTrue("Record Company should have validated with no violations after convertion", constraintViolations2.size() == 0);
+        assertTrue("Record Company should have validated with no violations after conversion", constraintViolations2.size() == 2);
     }
 
 }

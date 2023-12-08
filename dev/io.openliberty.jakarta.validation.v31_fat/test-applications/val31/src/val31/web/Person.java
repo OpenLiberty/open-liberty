@@ -19,7 +19,7 @@ import jakarta.validation.constraints.Size;
 public record Person(@NotNull String name) {
 
     @Size(min = 6)
-    public String getPersons() {
+    public String getName() {
         return this.name;
     }
 
