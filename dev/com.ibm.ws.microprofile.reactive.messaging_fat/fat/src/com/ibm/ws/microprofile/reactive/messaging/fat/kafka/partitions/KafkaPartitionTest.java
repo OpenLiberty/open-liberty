@@ -55,7 +55,7 @@ public class KafkaPartitionTest {
 
     private static final String APP_NAME = "KafkaPartitionTest";
 
-    public static final String SERVER_NAME = "SimpleRxMessagingServer";
+    public static final String SERVER_NAME = "ConcurrentRxMessagingServer";
 
     @Server(SERVER_NAME)
     @TestServlets({
