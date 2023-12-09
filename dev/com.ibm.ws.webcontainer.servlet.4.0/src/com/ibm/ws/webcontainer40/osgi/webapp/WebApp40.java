@@ -73,7 +73,7 @@ public class WebApp40 extends com.ibm.ws.webcontainer31.osgi.webapp.WebApp31 imp
     @Override
     public int getMajorVersion() {
         int level = WebContainer.getServletContainerSpecLevel();
-        return level == WebContainer.SPEC_LEVEL_61 ? 6 : level == WebContainer.SPEC_LEVEL_60 ? 6 : level == WebContainer.SPEC_LEVEL_50 ? 5 : 4;
+        return level == WebContainer.SPEC_LEVEL_60 ? 6 : level == WebContainer.SPEC_LEVEL_50 ? 5 : 4;
     }
 
     /*
@@ -84,7 +84,7 @@ public class WebApp40 extends com.ibm.ws.webcontainer31.osgi.webapp.WebApp31 imp
      */
     @Override
     public int getMinorVersion() {
-        return WebContainer.getServletContainerSpecLevel() == WebContainer.SPEC_LEVEL_61 ? 1 : 0;
+        return 0;
     }
 
     /*

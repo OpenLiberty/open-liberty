@@ -23,7 +23,12 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
 # file, and place an @version javadoc tag in package-level javadoc. 
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
-#Export-Package: \
+Export-Package: \
+    io.openliberty.webcontainer61.osgi.srt*;provide:=true,\
+    io.openliberty.webcontainer61.osgi.webapp*;provide:=true,\
+    io.openliberty.webcontainer61.srt*;provide:=true
+    
+    
 
 Import-Package: \
     com.ibm.websphere.security, \
@@ -53,5 +58,6 @@ instrument.disabled: true
 	com.ibm.ws.javaee.dd;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.websphere.security;version=latest,\
+	io.openliberty.webcontainer.servlet.6.0.internal,\
 	io.openliberty.jakarta.servlet.6.1;version=latest,\
 	io.openliberty.session.6.0.internal;version=latest

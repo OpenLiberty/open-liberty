@@ -80,7 +80,6 @@ Import-Package: \
     io.openliberty.webcontainer60.session.impl, \
     io.openliberty.webcontainer60.osgi.request, \
     io.openliberty.webcontainer60.osgi.response, \
-    io.openliberty.webcontainer60.osgi.srt, \
     *
 
 -buildpath: \
