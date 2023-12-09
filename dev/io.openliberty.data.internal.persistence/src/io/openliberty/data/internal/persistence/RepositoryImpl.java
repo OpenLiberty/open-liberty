@@ -573,6 +573,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private Object findAndUpdate(Object arg, QueryInfo queryInfo, EntityManager em) throws Exception {
         List<Object> results;
 
+        boolean hasSingularEntityParam = false;
         if (queryInfo.entityParamType.isArray()) {
             int length = Array.getLength(arg);
             results = new ArrayList<>(length);
@@ -596,6 +597,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     }
                 }
             } else {
+                hasSingularEntityParam = true;
                 results = new ArrayList<>(1);
                 Object entity = findAndUpdateOne(arg, queryInfo, em);
                 if (entity != null) {
@@ -609,6 +611,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             for (int i = 0; i < results.size(); i++)
                 results.set(i, queryInfo.entityInfo.toRecord(results.get(i)));
 
+        Class<?> returnType = queryInfo.method.getReturnType();
         Object returnValue;
         if (queryInfo.returnArrayType != null) {
             Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
@@ -626,10 +629,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
             else if (Iterator.class.equals(multiType))
                 returnValue = results.iterator();
             else
-                throw new UnsupportedOperationException(multiType + " is an unsupported return type."); // TODO NLS
+                throw new MappingException("The " + returnType.getName() + " return type of the " +
+                                           queryInfo.method.getName() + " method of the " +
+                                           queryInfo.method.getDeclaringClass().getName() +
+                                           " class is not a valid return type for a repository " +
+                                           "@Update" + " method. Valid return types include " +
+                                           getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
         }
 
-        Class<?> returnType = queryInfo.method.getReturnType();
         if (Optional.class.equals(returnType)) {
             returnValue = returnValue == null ? Optional.empty() : Optional.of(returnValue);
         } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
@@ -639,7 +646,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                        queryInfo.method.getName() + " method of the " +
                                        queryInfo.method.getDeclaringClass().getName() +
                                        " class is not a valid return type for a repository " +
-                                       "@Update" + " method."); // TODO NLS
+                                       "@Update" + " method. Valid return types include " +
+                                       getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
         }
 
         return returnValue;
@@ -2073,6 +2081,35 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
+     * Returns some of the more commonly used return types that are valid for a life cycle method.
+     *
+     * @param singularClassName        simple class name of the entity
+     * @param hasSingularEntityParam   if the life cycle method entity parameter is singular (not an Iterable or array)
+     * @param includeBooleanAndNumeric whether to include boolean and numeric types as valid.
+     * @return some of the more commonly used return types that are valid for a life cycle method.
+     */
+    private List<String> getValidReturnTypes(String singularClassName, boolean hasSingularEntityParam, boolean includeBooleanAndNumeric) {
+        List<String> validReturnTypes = new ArrayList<>();
+        if (includeBooleanAndNumeric) {
+            validReturnTypes.add("boolean");
+            validReturnTypes.add("int");
+            validReturnTypes.add("long");
+        }
+
+        validReturnTypes.add("void");
+
+        if (hasSingularEntityParam) {
+            validReturnTypes.add(singularClassName);
+        } else {
+            validReturnTypes.add(singularClassName + "[]");
+            validReturnTypes.add("Iterable<" + singularClassName + ">");
+            validReturnTypes.add("List<" + singularClassName + ">");
+        }
+
+        return validReturnTypes;
+    }
+
+    /**
      * Inserts entities (or records) into the database.
      * An error is raised if any of the entities (or records) already exist in the database.
      *
@@ -2087,6 +2124,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         boolean resultVoid = void.class.equals(singleType) || Void.class.equals(singleType);
         ArrayList<Object> results;
 
+        boolean hasSingularEntityParam = false;
         if (queryInfo.entityParamType.isArray()) {
             int length = Array.getLength(arg);
             results = resultVoid ? null : new ArrayList<>(length);
@@ -2112,6 +2150,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
                 em.flush();
             } else {
+                hasSingularEntityParam = true;
                 results = resultVoid ? null : new ArrayList<>(1);
                 Object entity = toEntity(arg);
                 em.persist(entity);
@@ -2121,6 +2160,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             }
         }
 
+        Class<?> returnType = queryInfo.method.getReturnType();
         Object returnValue;
         if (resultVoid) {
             returnValue = null;
@@ -2145,11 +2185,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 else if (Iterator.class.equals(multiType))
                     returnValue = results.iterator();
                 else
-                    throw new UnsupportedOperationException(multiType + " is an unsupported return type."); // TODO NLS
+                    throw new MappingException("The " + returnType.getName() + " return type of the " +
+                                               queryInfo.method.getName() + " method of the " +
+                                               queryInfo.method.getDeclaringClass().getName() +
+                                               " class is not a valid return type for a repository " +
+                                               "@Insert" + " method. Valid return types include " +
+                                               getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
             }
         }
 
-        Class<?> returnType = queryInfo.method.getReturnType();
         if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
             returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
@@ -2157,7 +2201,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                        queryInfo.method.getName() + " method of the " +
                                        queryInfo.method.getDeclaringClass().getName() +
                                        " class is not a valid return type for a repository " +
-                                       "@Insert" + " method."); // TODO NLS
+                                       "@Insert" + " method. Valid return types include " +
+                                       getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
         }
 
         return returnValue;
@@ -3096,6 +3141,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         boolean resultVoid = void.class.equals(singleType) || Void.class.equals(singleType);
         List<Object> results;
 
+        boolean hasSingularEntityParam = false;
         if (queryInfo.entityParamType.isArray()) {
             results = new ArrayList<>();
             int length = Array.getLength(arg);
@@ -3113,6 +3159,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     results.add(em.merge(toEntity(e)));
                 em.flush();
             } else {
+                hasSingularEntityParam = true;
                 results = resultVoid ? null : new ArrayList<>(1);
                 Object entity = em.merge(toEntity(arg));
                 if (results != null)
@@ -3121,6 +3168,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             }
         }
 
+        Class<?> returnType = queryInfo.method.getReturnType();
         Object returnValue;
         if (resultVoid) {
             returnValue = null;
@@ -3145,11 +3193,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 else if (Iterator.class.equals(multiType))
                     returnValue = results.iterator();
                 else
-                    throw new UnsupportedOperationException(multiType + " is an unsupported return type."); // TODO NLS
+                    throw new MappingException("The " + returnType.getName() + " return type of the " +
+                                               queryInfo.method.getName() + " method of the " +
+                                               queryInfo.method.getDeclaringClass().getName() +
+                                               " class is not a valid return type for a repository " +
+                                               "@Save" + " method. Valid return types include " +
+                                               getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
             }
         }
 
-        Class<?> returnType = queryInfo.method.getReturnType();
         if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
             returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
@@ -3157,7 +3209,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                        queryInfo.method.getName() + " method of the " +
                                        queryInfo.method.getDeclaringClass().getName() +
                                        " class is not a valid return type for a repository " +
-                                       "@Save" + " method."); // TODO NLS
+                                       "@Save" + " method. Valid return types include " +
+                                       getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
         }
 
         return returnValue;
