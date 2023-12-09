@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadFactory;
@@ -92,7 +93,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
     private final AtomicInteger expeditesAvailable = new AtomicInteger();
 
-    String identifier;
+    final String identifier;
 
     ExecutorServiceImpl libertyThreadPool;
 
@@ -156,10 +157,10 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     private volatile boolean virtual;
 
     /**
-     * Factory for virtual threads. Only available on Java 21+.
-     * This is populated the first time virtual is set to true.
+     * An executor for running tasks on a thread from this policy executor's ThreadFactory for virtual threads.
+     * Only available on Java 21+. This is populated the first time virtual is set to true.
      */
-    private volatile ThreadFactory virtualThreadFactory;
+    private volatile Executor virtualThreadExecutor;
 
     /**
      * Operations related to virtual threads that are only available on Java 21+.
@@ -273,6 +274,39 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     /**
+     * An executor for running tasks on a thread from this policy executor's ThreadFactory for virtual threads.
+     */
+    private class VirtualThreadExecutor implements Executor {
+        private final ThreadFactory threadFactory;
+
+        @Trivial
+        private VirtualThreadExecutor() {
+            threadFactory = virtualThreadOps.createFactoryOfVirtualThreads(identifier + '-', 1L, false, null);
+        }
+
+        @Override
+        public void execute(Runnable task) {
+            threadFactory.newThread(task).start();
+        }
+
+        @Override
+        @Trivial
+        public int hashCode() {
+            return PolicyExecutorImpl.this.hashCode();
+        }
+
+        @Override
+        @Trivial
+        public String toString() {
+            String tf = threadFactory.toString();
+            return new StringBuilder(tf.length() + 31) //
+                            .append("VirtualThreadExecutor@").append(Integer.toHexString(hashCode())) //
+                            .append(' ').append(tf) //
+                            .toString();
+        }
+    }
+
+    /**
      * This constructor is used by PolicyExecutorProvider.
      *
      * @param libertyThreadPool the Liberty thread pool, which was obtained by the PolicyExecutorProvider via declarative services.
@@ -320,7 +354,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     @Trivial
     public void asyncCallback(Runnable callback) {
         if (virtual)
-            virtualThreadFactory.newThread(callback).start();
+            virtualThreadExecutor.execute(callback);
         else
             libertyThreadPool.submit(callback);
     }
@@ -633,7 +667,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         asyncTask.expedite = false;
         boolean submitted = false;
         try {
-            virtualThreadFactory.newThread(asyncTask).start();
+            virtualThreadExecutor.execute(asyncTask);
             submitted = true;
         } finally {
             if (!submitted) {
@@ -694,6 +728,11 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     @Override
     public int getRunningTaskCount() {
         return runningCount.get();
+    }
+
+    @Override
+    public Executor getVirtualThreadExecutor() {
+        return virtual == true ? virtualThreadExecutor : null;
     }
 
     @Override
@@ -1485,8 +1524,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 maxQueueSizeConstraint.reducePermits(-queueCapacityAdded);
             maxQueueSize = u_maxQueueSize;
 
-            if (useVirtualThreads && virtualThreadFactory == null)
-                virtualThreadFactory = virtualThreadOps.createFactoryOfVirtualThreads(identifier + '-', 1L, false, null);
+            if (useVirtualThreads && virtualThreadExecutor == null)
+                virtualThreadExecutor = new VirtualThreadExecutor();
 
             virtual = useVirtualThreads;
         }
