@@ -254,10 +254,13 @@ public class UIOauthTest {
 
         WebElement getOperationButton = getOperation.findElement(By.cssSelector("button"));
         getOperationButton.click();
-        WebElement tryOutButton = getOperation.findElement(By.cssSelector("button.btn.try-out__btn"));
+        WebElement tryOutButton = waitForElement(getOperation, By.cssSelector("button.btn.try-out__btn"));
         tryOutButton.click();
-        WebElement executeButton = getOperation.findElement(By.cssSelector("button.btn.execute"));
+        //get the GET `/test` operation from `default`
+        getOperation = waitForElement(driver, By.id("operations-default-get_test"));
+        WebElement executeButton = waitForElement(getOperation, By.cssSelector("button.btn.execute"));
         executeButton.click();
+        getOperation = waitForElement(driver, By.id("operations-default-get_test"));
         WebElement testGet200Response = waitForElement(getOperation, By.cssSelector("tr.response[data-code=\"200\"]"));
         assertNotNull("200 response line", testGet200Response);
     }

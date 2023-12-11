@@ -145,6 +145,7 @@ public class UIBasicTest {
         WebElement testGet200Response = waitForElement(testGetOpBlock, By.cssSelector("tr.response[data-code=\"200\"]"));
         assertNotNull("200 response line", testGet200Response);
 
+        // Test that all APIs are displayed with the correct colours
         assertThat(testGetOpBlock.getCssValue("background"), startsWith("rgba(31, 111, 240, 0.1)"));
         assertThat(testGetOpBlock.getCssValue("border-color"), is("rgb(31, 111, 240)"));
         WebElement testGetIcon = testGetOpBlock.findElement(By.tagName("span"));
@@ -168,6 +169,7 @@ public class UIBasicTest {
         WebElement testPostIcon = testPostOpBlock.findElement(By.tagName("span"));
         assertThat(testPostIcon.getCssValue("background"), startsWith("rgb(32, 128, 80)"));
 
+        // Check that version stamp is present with correct colors
         WebElement versionStamp = waitForElement(driver, By.cssSelector("small.version-stamp"));
         assertThat(versionStamp.getCssValue("background"), startsWith("rgb(93, 130, 3)"));
 
