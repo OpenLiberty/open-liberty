@@ -24,7 +24,7 @@
 	
     <spnego id="mySpnego"
        	allowLocalHost="true"
-       	servicePrincipalNames="HTTP/localhost"
+       	servicePrincipalNames="HTTP/zrock052@FYRE11.IBM.COM"
        	includeClientGSSCredentialInSubject="false"
     	krb5Config="${server.config.dir}/resources/security/kerberos/krb5.conf"
     	krb5Keytab="${server.config.dir}/resources/security/kerberos/krb5.keytab"
@@ -69,7 +69,7 @@
 
 	<httpEndpoint
 		id="defaultHttpEndpoint"
-		host="*"
+		host="zrock052.pok.ibm.com"
 		httpPort="${bvt.prop.HTTP_secondary}"
 		httpsPort="${bvt.prop.HTTP_secondary.secure}" />
 	        

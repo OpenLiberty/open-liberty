@@ -34,11 +34,12 @@ import java.util.stream.Collectors;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.channel.ChannelExec;
 import org.apache.sshd.client.channel.ClientChannelEvent;
+import org.apache.sshd.client.scp.ScpClient;
+import org.apache.sshd.client.scp.ScpClientCreator;
 import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.common.channel.Channel;
 import org.apache.sshd.common.channel.ChannelListener;
-import org.apache.sshd.scp.client.ScpClient;
-import org.apache.sshd.scp.client.ScpClientCreator;
+
 import org.junit.Ignore;
 
 import com.ibm.websphere.simplicity.ConnectionInfo;
@@ -315,7 +316,7 @@ public abstract class KdcHelper {
      */
     protected void retrieveFile(Machine kdcMachine, String remoteFileName, String copyToFileName) throws Exception {
         String methodName = "retrieveFile";
-
+        
         SshClient sshClient = getSshClient();
         try {
             try (ClientSession sshSession = getSshSession(sshClient, kdcMachine)) {
