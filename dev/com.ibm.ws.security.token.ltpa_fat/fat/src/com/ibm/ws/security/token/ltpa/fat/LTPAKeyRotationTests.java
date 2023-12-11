@@ -220,7 +220,7 @@ public class LTPAKeyRotationTests {
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
@@ -267,7 +267,7 @@ public class LTPAKeyRotationTests {
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -281,7 +281,7 @@ public class LTPAKeyRotationTests {
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Attempt to access the simple servlet again with the same cookie and assert it fails and the server needs to login again
         assertTrue("An invalid cookie should result in authorization challenge",
@@ -311,31 +311,36 @@ public class LTPAKeyRotationTests {
      * <OL>
      * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 10.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
-     * <LI>The ltpa.keys file is replaced with a different key causing a CWWKS4106E: LTPA configuration error.
+     * <LI>The ltpa.keys file is replaced with a different 3DES key causing a CWWKS4106E: LTPA configuration error.
      * <LI>Successful authentication to simple servlet since the old cookie is still being used.
-     * <LI>The ltpa.keys file is replaced with a different key causing a CWWKS4106E: LTPA configuration error.
-     * <LI>Successful authentication to simple servlet since the old cookie is still being used.
-     * </OL>
+     * <LI>The ltpa.keys file is replaced with a different 3DES key.
+     * <LI>Unsuccessful authentication to simple servlet since the decryption fails with the swapped 3DES values.
      */
     @Test
-    @AllowedFFDC({ "javax.crypto.BadPaddingException", "java.lang.IllegalArgumentException" })
-    public void testLTPAFileReplacement_newInvalid3DESKey_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
+    @AllowedFFDC({ "javax.crypto.BadPaddingException", "java.lang.IllegalArgumentException",  "java.lang.NullPointerException" })
+    public void testLTPAFileReplacement_invalid3DESKey_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
         // Configure the server
         configureServer("true", "10", true);
+
+        // Set cacheEnabled to false to avoid caching the validation keys
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        Authentication auth = serverConfiguration.getAuthentication();
+        Boolean configurationUpdateNeeded = setAuthenticationCacheEnabledElement(auth, "false");
+        updateConfigDynamically(server, serverConfiguration);
 
         // Copy validation keys file (validation1.keys) to the server. This file has a valid 3DES key.
         copyFileToServerResourcesSecurityDir("alternate/validation1.keys");
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Replace the primary key with the valid key
         renameFileIfExists(VALIDATION_KEY1_PATH, DEFAULT_KEY_PATH, true);
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -349,16 +354,14 @@ public class LTPAKeyRotationTests {
 
         // Wait for the LTPA configuration modified message after the change
         assertNotNull("Expected LTPA configuration modified message not found in the log.",
-                      server.waitForStringInLog("CWWKS4107A", 1000));
-        
-        Thread.sleep(1000);
+                      server.waitForStringInLog("CWWKS4107A", 5000));
 
         // Replace the primary key with a different invalid key
         renameFileIfExists(BAD_3DES_VALIDATION_KEY1_PATH, DEFAULT_KEY_PATH, true);
 
         // Check for the following exception message in the log
         assertNotNull("Expected LTPA configuration error message not found in the log.",
-                      server.waitForStringInLog("CWWKS4106E", 1000));
+                      server.waitForStringInLog("CWWKS4106E", 5000));
 
         // Attempt to access the simple servlet again with the same ltpa cookie1 and assert it works
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
@@ -368,19 +371,26 @@ public class LTPAKeyRotationTests {
 
         // Wait for the LTPA configuration modified message after the change
         assertNotNull("Expected LTPA configuration modified message not found in the log.",
-                      server.waitForStringInLog("CWWKS4107A", 1000));
-        
-        Thread.sleep(1000);
+                      server.waitForStringInLog("CWWKS4107A", 5000));
 
         // Replace the primary key with a different invalid key
         renameFileIfExists(BAD_3DES_VALIDATION_KEY2_PATH, DEFAULT_KEY_PATH, true);
 
-        // Check for the following exception message in the log
-        assertNotNull("Expected LTPA configuration error message not found in the log.",
-                      server.waitForStringInLog("CWWKS4106E", 1000));
+        // Wait for the LTPA configuration to be ready after the change
+        assertNotNull("Expected LTPA configuration ready message not found in the log.",
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
-        // Attempt to access the simple servlet again with the same ltpa cookie1 and assert it works
-        String response3 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
+        // Attempt to access the simple servlet again with the same ltpa cookie1 and assert it fails due to the decryption failure
+        assertTrue("An invalid cookie should result in authorization challenge",
+                   flClient1.accessProtectedServletWithInvalidCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1));
+        
+        // Wait for a security token cannot be validated message in the log
+        assertNotNull("Expected security token cannot be validated message not found in the log.",
+                      server.waitForStringInLog("CWWKS4001I", 5000));
+
+        // Set cacheEnabled back to true
+        configurationUpdateNeeded = setAuthenticationCacheEnabledElement(auth, "true");
+        updateConfigDynamically(server, serverConfiguration);
     }
 
     /**
@@ -391,37 +401,43 @@ public class LTPAKeyRotationTests {
      * <LI>Replace the primary key with a different invalid key which has garbage values in the Private key.
      * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
      * <LI>Replace the primary key with a different invalid key which has swapped values in the Private key from another validation.keys file.
-     * <LI>Retry access to the simple servlet configured for form login1 with ltpa cookie1.
+     * <LI>Try to access the simple servlet configured for form login2 with valid credentials.
      * <OL>
      * <P>Expected Results:
      * <OL>
      * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 10.
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
-     * <LI>The ltpa.keys file is replaced with a different key causing a CWWKS4106E: LTPA configuration error.
+     * <LI>The ltpa.keys file is replaced with a different Private key causing a CWWKS4106E: LTPA configuration error.
      * <LI>Successful authentication to simple servlet since the old cookie is still being used.
-     * <LI>The ltpa.keys file is replaced with a different key causing a CWWKS4106E: LTPA configuration error.
-     * <LI>Successful authentication to simple servlet since the old cookie is still being used.
+     * <LI>The ltpa.keys file is replaced with a different Private key.
+     * <LI>Successful authorization to simple servlet, but unsuccessful authentication since the decryption fails with the swapped Private Key values.
      * </OL>
      */
     @Test
-    @AllowedFFDC({ "javax.crypto.BadPaddingException", "java.lang.IllegalArgumentException" })
-    public void testLTPAFileReplacement_newInvalidPrivateKey_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
+    @AllowedFFDC({ "javax.crypto.BadPaddingException", "java.lang.IllegalArgumentException",  "java.lang.NullPointerException" })
+    public void testLTPAFileReplacement_invalidPrivateKey_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
         // Configure the server
         configureServer("true", "10", true);
+
+        // Set cacheEnabled to false to avoid caching the validation keys
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        Authentication auth = serverConfiguration.getAuthentication();
+        Boolean configurationUpdateNeeded = setAuthenticationCacheEnabledElement(auth, "false");
+        updateConfigDynamically(server, serverConfiguration);
 
         // Copy validation keys file (validation1.keys) to the server. This file has a valid Private key.
         copyFileToServerResourcesSecurityDir("alternate/validation1.keys");
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Replace the primary key with the valid key
         renameFileIfExists(VALIDATION_KEY1_PATH, DEFAULT_KEY_PATH, true);
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -435,16 +451,14 @@ public class LTPAKeyRotationTests {
 
         // Wait for the LTPA configuration modified message after the change
         assertNotNull("Expected LTPA configuration modified message not found in the log.",
-                      server.waitForStringInLog("CWWKS4107A", 1000));
-        
-        Thread.sleep(1000);
+                      server.waitForStringInLog("CWWKS4107A", 5000));
 
         // Replace the primary key with a different invalid key
         renameFileIfExists(BAD_PRIVATE_VALIDATION_KEY1_PATH, DEFAULT_KEY_PATH, true);
 
         // Check for the following exception message in the log
         assertNotNull("Expected LTPA configuration error message not found in the log.",
-                      server.waitForStringInLog("CWWKS4106E", 1000));
+                      server.waitForStringInLog("CWWKS4106E", 5000));
 
         // Attempt to access the simple servlet again with the same ltpa cookie1 and assert it works
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
@@ -454,19 +468,26 @@ public class LTPAKeyRotationTests {
 
         // Wait for the LTPA configuration modified message after the change
         assertNotNull("Expected LTPA configuration modified message not found in the log.",
-                      server.waitForStringInLog("CWWKS4107A", 1000));
-        
-        Thread.sleep(1000);
+                      server.waitForStringInLog("CWWKS4107A", 5000));
 
         // Replace the primary key with a different invalid key
         renameFileIfExists(BAD_PRIVATE_VALIDATION_KEY2_PATH, DEFAULT_KEY_PATH, true);
 
-        // Check for the following exception message in the log
-        assertNotNull("Expected LTPA configuration error message not found in the log.",
-                      server.waitForStringInLog("CWWKS4106E", 1000));
+        // Wait for the LTPA configuration to be ready after the change
+        assertNotNull("Expected LTPA configuration ready message not found in the log.",
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
-        // Attempt to access the simple servlet again with the same ltpa cookie1 and assert it works
-        String response3 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
+        // Attempt initial login to simple servlet for form login2
+        assertTrue("Authentication should fail with decryption failure",
+                   flClient2.accessProtectedServletWithAuthorizedCredentialsExpectsFailure(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword));
+        
+        // Wait for a security token cannot be validated message in the log
+        assertNotNull("Expected security token cannot be validated message not found in the log.",
+                      server.waitForStringInLog("CWWKS4001I", 5000));
+
+        // Set cacheEnabled back to true
+        configurationUpdateNeeded = setAuthenticationCacheEnabledElement(auth, "true");
+        updateConfigDynamically(server, serverConfiguration);
     }
 
     /**
@@ -485,29 +506,35 @@ public class LTPAKeyRotationTests {
      * <LI>Successful authentication to simple servlet with ltpa cookie1 created.
      * <LI>The ltpa.keys file is replaced with a different key causing a CWWKS4106E: LTPA configuration error.
      * <LI>Successful authentication to simple servlet since the old cookie is still being used.
-     * <LI>The ltpa.keys file is replaced with a different key causing a CWWKS4106E: LTPA configuration error.
-     * <LI>Successful authentication to simple servlet since the old cookie is still being used.
+     * <LI>The ltpa.keys file is replaced with a different Public key.
+     * <LI>Unsuccessful authentication to simple servlet since the decryption fails with the swapped Public Key values.
      * </OL>
      */
     @Test
-    @AllowedFFDC({ "javax.crypto.BadPaddingException", "java.lang.IllegalArgumentException" })
-    public void testLTPAFileReplacement_newInvalidPublicKey_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
+    @AllowedFFDC({ "javax.crypto.BadPaddingException", "java.lang.IllegalArgumentException",  "java.lang.NullPointerException" })
+    public void testLTPAFileReplacement_invalidPublicKey_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
         // Configure the server
         configureServer("true", "10", true);
+
+        // Set cacheEnabled to false to avoid caching the validation keys
+        ServerConfiguration serverConfiguration = server.getServerConfiguration();
+        Authentication auth = serverConfiguration.getAuthentication();
+        Boolean configurationUpdateNeeded = setAuthenticationCacheEnabledElement(auth, "false");
+        updateConfigDynamically(server, serverConfiguration);
 
         // Copy validation keys file (validation1.keys) to the server. This file has a valid Public key.
         copyFileToServerResourcesSecurityDir("alternate/validation1.keys");
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Replace the primary key with the valid key
         renameFileIfExists(VALIDATION_KEY1_PATH, DEFAULT_KEY_PATH, true);
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -521,16 +548,14 @@ public class LTPAKeyRotationTests {
 
         // Wait for the LTPA configuration modified message after the change
         assertNotNull("Expected LTPA configuration modified message not found in the log.",
-                      server.waitForStringInLog("CWWKS4107A", 1000));
-        
-        Thread.sleep(1000);
+                      server.waitForStringInLog("CWWKS4107A", 5000));
 
         // Replace the primary key with a different invalid key
         renameFileIfExists(BAD_PUBLIC_VALIDATION_KEY1_PATH, DEFAULT_KEY_PATH, true);
 
         // Check for the following exception message in the log
         assertNotNull("Expected LTPA configuration error message not found in the log.",
-                      server.waitForStringInLog("CWWKS4106E", 1000));
+                      server.waitForStringInLog("CWWKS4106E", 5000));
 
         // Attempt to access the simple servlet again with the same ltpa cookie1 and assert it works
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
@@ -540,19 +565,26 @@ public class LTPAKeyRotationTests {
 
         // Wait for the LTPA configuration modified message after the change
         assertNotNull("Expected LTPA configuration modified message not found in the log.",
-                      server.waitForStringInLog("CWWKS4107A", 1000));
-        
-        Thread.sleep(1000);
+                      server.waitForStringInLog("CWWKS4107A", 5000));
 
         // Replace the primary key with a different invalid key
         renameFileIfExists(BAD_PUBLIC_VALIDATION_KEY2_PATH, DEFAULT_KEY_PATH, true);
 
-        // Check for the following exception message in the log
-        assertNotNull("Expected LTPA configuration error message not found in the log.",
-                      server.waitForStringInLog("CWWKS4106E", 1000));
+        // Wait for the LTPA configuration to be ready after the change
+        assertNotNull("Expected LTPA configuration ready message not found in the log.",
+                      server.waitForStringInLog("CWWKS4105I", 5000));
+
+        // Attempt to access the simple servlet again with the same ltpa cookie1 and assert it fails and the server needs to login again
+        assertTrue("An invalid cookie should result in authorization challenge",
+                   flClient1.accessProtectedServletWithInvalidCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1));
         
-        // Attempt to access the simple servlet again with the same ltpa cookie1 and assert it works
-        String response3 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
+        // Wait for a security token cannot be validated message in the log
+        assertNotNull("Expected security token cannot be validated message not found in the log.",
+                      server.waitForStringInLog("CWWKS4001I", 5000));
+
+        // Set cacheEnabled back to true
+        configurationUpdateNeeded = setAuthenticationCacheEnabledElement(auth, "true");
+        updateConfigDynamically(server, serverConfiguration);
     }
 
     /**
@@ -591,6 +623,7 @@ public class LTPAKeyRotationTests {
 
         // Rename the ltpa.keys file to validation1.keys
         renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY1_PATH, false);
+        Thread.sleep(1000);
 
         // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
@@ -640,6 +673,7 @@ public class LTPAKeyRotationTests {
 
         // Replace the primary key with a different valid key
         renameFileIfExists(VALIDATION_KEY2_PATH, DEFAULT_KEY_PATH, true);
+        Thread.sleep(1000);
 
         // Attempt to access the simple servlet again with the same cookie and assert it works
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
@@ -689,7 +723,7 @@ public class LTPAKeyRotationTests {
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
@@ -746,7 +780,7 @@ public class LTPAKeyRotationTests {
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Attempt to access the simple servlet again with the same cookie and assert it fails and the server needs to login again
         assertTrue("An invalid cookie should result in authorization challenge",
@@ -798,6 +832,7 @@ public class LTPAKeyRotationTests {
 
         // Rename the ltpa.keys file to validation1.keys
         renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY1_PATH, false);
+        Thread.sleep(1000);
 
         // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
@@ -847,6 +882,7 @@ public class LTPAKeyRotationTests {
 
         // Replace the primary key with a different valid key
         renameFileIfExists(VALIDATION_KEY2_PATH, DEFAULT_KEY_PATH, true);
+        Thread.sleep(1000);
 
         // Attempt to access the simple servlet again with the same cookie and assert it works
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
@@ -913,7 +949,7 @@ public class LTPAKeyRotationTests {
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Set fileName to null to make it not configured in the validation keys element.
         ServerConfiguration serverConfiguration = server.getServerConfiguration();
@@ -923,10 +959,10 @@ public class LTPAKeyRotationTests {
 
         // Exceptions are thrown in the logs since fileName is a required attribute
         assertNotNull("Expected fileName is missing exception not found in the log.",
-                      server.waitForStringInLog("CWWKG0058E", 3000));
+                      server.waitForStringInLog("CWWKG0058E", 5000));
 
         assertNotNull("Expected fileName is missing exception not found in the log.",
-                      server.waitForStringInLog("CWWKS4111E", 3000));
+                      server.waitForStringInLog("CWWKS4111E", 5000));
 
         // Set fileName value to empty string
         configurationUpdateNeeded = setLTPAvalidationKeyFileNameElement(ltpa, "");
@@ -934,7 +970,7 @@ public class LTPAKeyRotationTests {
 
         // Exception is thrown in the logs since fileName is a required attribute
         assertNotNull("Expected fileName is missing exception not found in the log.",
-                      server.waitForStringInLog("CWWKS4111E", 3000));
+                      server.waitForStringInLog("CWWKS4111E", 5000));
 
         // Set fileName value to a non-existent file
         configurationUpdateNeeded = setLTPAvalidationKeyFileNameElement(ltpa, "nonExistentFile.keys");
@@ -942,7 +978,7 @@ public class LTPAKeyRotationTests {
 
         // Exception is thrown in the logs since the file does not exist
         assertNotNull("Expected key file does not exist exception not found in the log.",
-                      server.waitForStringInLog("CWWKS4112E", 3000));
+                      server.waitForStringInLog("CWWKS4112E", 5000));
 
         // Set fileName's path to a different path than the default ltpa.keys file
         configurationUpdateNeeded = setLTPAvalidationKeyFileNameElement(ltpa, "alternate/validation1.keys");
@@ -950,7 +986,7 @@ public class LTPAKeyRotationTests {
 
         // Exception is thrown in the logs since the file does not exist
         assertNotNull("Expected key file does not exist exception not found in the log.",
-                      server.waitForStringInLog("CWWKS4112E", 3000));
+                      server.waitForStringInLog("CWWKS4112E", 5000));
 
         // Copy validation key file (validation5.keys) to the server.
         copyFileToServerResourcesSecurityDir("alternate/validation5.keys");
@@ -961,12 +997,12 @@ public class LTPAKeyRotationTests {
 
         // Exception is thrown in the logs since the file is invalid. CWWKS4106E: LTPA configuration error.
         assertNotNull("Expected LTPA configuration error message not found in the log.",
-                      server.waitForStringInLog("CWWKS4106E", 3000));
+                      server.waitForStringInLog("CWWKS4106E", 5000));
 
         // Delete the validation5.keys file and wait for the LTPA configuration to be ready after the change
         deleteFileIfExists(BAD_PRIVATE_VALIDATION_KEY1_PATH, true);
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Set fileName back to the default ltpa.keys file
         configurationUpdateNeeded = setLTPAvalidationKeyFileNameElement(ltpa, "configuredValidation1.keys");
@@ -1024,7 +1060,7 @@ public class LTPAKeyRotationTests {
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Set password value to null
         ServerConfiguration serverConfiguration = server.getServerConfiguration();
@@ -1034,10 +1070,10 @@ public class LTPAKeyRotationTests {
 
         // Exceptions are thrown in the logs since the validation key password is a required attribute if ltpa element has password configured
         assertNotNull("Expected password is missing exception not found in the log.",
-                      server.waitForStringInLog("CWWKG0058E", 3000));
+                      server.waitForStringInLog("CWWKG0058E", 5000));
 
         assertNotNull("Expected password is missing exception not found in the log.",
-                      server.waitForStringInLog("CWWKS4111E", 3000));
+                      server.waitForStringInLog("CWWKS4111E", 5000));
 
         // Set password value to empty string
         configurationUpdateNeeded = setLTPAvalidationKeyPasswordElement(ltpa, "");
@@ -1045,7 +1081,7 @@ public class LTPAKeyRotationTests {
 
         // Exception is thrown in the logs since the validation key password is a required attribute if ltpa element has password configured
         assertNotNull("Expected password is missing exception not found in the log.",
-                      server.waitForStringInLog("CWWKS4111E", 3000));
+                      server.waitForStringInLog("CWWKS4111E", 5000));
 
         // Set password value to an incorrect password
         configurationUpdateNeeded = setLTPAvalidationKeyPasswordElement(ltpa, "{xor}incorrectPassword=");
@@ -1053,7 +1089,7 @@ public class LTPAKeyRotationTests {
 
         // Exception is thrown in the logs since the validation key password must match the primary key password
         assertNotNull("Expected problems during password decryption encountered exception not found in the log.",
-                      server.waitForStringInLog("CWWKS1859E", 3000));
+                      server.waitForStringInLog("CWWKS1859E", 5000));
 
         // Set password value to a correct password
         configurationUpdateNeeded = setLTPAvalidationKeyPasswordElement(ltpa, validationKeyPassword);
@@ -1116,7 +1152,7 @@ public class LTPAKeyRotationTests {
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Set validUntilDate value to null
         ServerConfiguration serverConfiguration = server.getServerConfiguration();
@@ -1126,7 +1162,7 @@ public class LTPAKeyRotationTests {
         
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Continued authentication to simple servlet; the element is not required to be configured
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
@@ -1137,7 +1173,7 @@ public class LTPAKeyRotationTests {
 
         // Exception is thrown in the logs for the empty date string
         assertNotNull("Expected invalid date format exception not found in the log.",
-                      server.waitForStringInLog("CWWKS4110E", 3000));
+                      server.waitForStringInLog("CWWKS4110E", 5000));
 
         // Set validUntilDate value to an invalid date string
         configurationUpdateNeeded = setLTPAvalidationKeyValidUntilDateElement(ltpa, "2023-18T18:08:35Z");
@@ -1145,7 +1181,7 @@ public class LTPAKeyRotationTests {
 
         // Exception is thrown in the logs for the invalid date string
         assertNotNull("Expected invalid date format exception not found in the log.",
-                      server.waitForStringInLog("CWWKS4110E", 3000));
+                      server.waitForStringInLog("CWWKS4110E", 5000));
 
         // Set validUntilDate value to a date string in the past
         configurationUpdateNeeded = setLTPAvalidationKeyValidUntilDateElement(ltpa, "2023-01-01T00:00:00Z");
@@ -1153,7 +1189,7 @@ public class LTPAKeyRotationTests {
 
         // Message is thrown in the logs for a expired date string
         assertNotNull("Expected expired date exception not found in the log.",
-                      server.waitForStringInLog("CWWKS4109W", 3000));
+                      server.waitForStringInLog("CWWKS4109W", 5000));
 
         // Set validUntilDate value to a valid date string in the future
         configurationUpdateNeeded = setLTPAvalidationKeyValidUntilDateElement(ltpa, "2099-01-01T00:00:00Z");
@@ -1161,7 +1197,7 @@ public class LTPAKeyRotationTests {
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Successful authentication to simple servlet
         String response3 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
@@ -1220,6 +1256,7 @@ public class LTPAKeyRotationTests {
 
         // Rename the ltpa.keys file to validation2.keys
         renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY2_PATH, false);
+        Thread.sleep(1000);
 
         // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
@@ -1285,6 +1322,7 @@ public class LTPAKeyRotationTests {
 
         // Rename the ltpa.keys file to validation2.keys
         renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY2_PATH, false);
+        Thread.sleep(1000);
 
         // Configure the time of expiry as 10 seconds from present time
         String currentTime = Instant.now().toString();
@@ -1387,7 +1425,6 @@ public class LTPAKeyRotationTests {
      * <LI>Failing authentication to simple servlet.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testExpiredLtpaToken_monitorValidationKeysDir_false_monitorInterval_0() throws Exception {
@@ -1456,10 +1493,10 @@ public class LTPAKeyRotationTests {
 
         // Wait for two warning messages message to be logged
         assertNotNull("Expected LTPA configuration warning message not found in the log.",
-                      server.waitForStringInLog("CWWKS4114W", 3000));
+                      server.waitForStringInLog("CWWKS4114W", 5000));
 
         assertNotNull("Expected LTPA configuration warning message not found in the log.",
-                      server.waitForStringInLog("CWWKS4115W", 3000));
+                      server.waitForStringInLog("CWWKS4115W", 5000));
 
         // Initial login to simple servlet for form login1
         String response1 = flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
@@ -1470,6 +1507,7 @@ public class LTPAKeyRotationTests {
 
         // Rename the ltpa.keys file to validation1.keys
         renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY1_PATH, false);
+        Thread.sleep(1000);
 
         // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
@@ -1520,10 +1558,10 @@ public class LTPAKeyRotationTests {
 
         // Wait for two warning messages message to be logged
         assertNotNull("Expected LTPA configuration warning message not found in the log.",
-                      server.waitForStringInLog("CWWKS4114W", 3000));
+                      server.waitForStringInLog("CWWKS4114W", 5000));
 
         assertNotNull("Expected LTPA configuration warning message not found in the log.",
-                      server.waitForStringInLog("CWWKS4115W", 3000));
+                      server.waitForStringInLog("CWWKS4115W", 5000));
 
         // Copy validation key file (validation2.keys) to the server
         copyFileToServerResourcesSecurityDir("alternate/validation2.keys");
@@ -1537,6 +1575,7 @@ public class LTPAKeyRotationTests {
 
         // Replace the primary key with a different valid key
         renameFileIfExists(VALIDATION_KEY2_PATH, DEFAULT_KEY_PATH, true);
+        Thread.sleep(1000);
 
         // Attempt to access the simple servlet again with the same cookie and assert it works
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
@@ -1605,7 +1644,7 @@ public class LTPAKeyRotationTests {
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Attempt to access the simple servlet again with the same cookie and assert it fails and the server needs to login again
         assertTrue("An expired cookie should result in authorization challenge",
@@ -1649,7 +1688,8 @@ public class LTPAKeyRotationTests {
         assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
 
         moveLogMark();
-        renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY2_PATH, false);
+        renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY2_PATH, false); 
+        Thread.sleep(1000);
 
         // Notify Liberty server of changes made to LTPA key file via mbean
         List<String> createdFilePaths = Arrays.asList(new String[] { VALIDATION_KEY2_PATH });
@@ -1658,11 +1698,11 @@ public class LTPAKeyRotationTests {
 
         // Wait for the ltpa.keys file to be regenerated
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4104A", 3000));
+                      server.waitForStringInLog("CWWKS4104A", 5000));
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
     }
@@ -1809,6 +1849,10 @@ public class LTPAKeyRotationTests {
         // Rename the ltpa.keys file to validation1.keys
         renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY1_PATH, false);
 
+        // Wait for the LTPA configuration to be ready after the change
+        assertNotNull("Expected LTPA configuration ready message not found in the log.",
+                      server.waitForStringInLog("CWWKS4105I", 5000));
+
         // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
 
@@ -1913,13 +1957,13 @@ public class LTPAKeyRotationTests {
             if (updateTrigger.equals("polled") && monitorValidationKeysDir.equals("true") && monitorInterval.equals("0")) {
                 // Wait for a warning message message to be logged
                 assertNotNull("Expected LTPA configuration warning message not found in the log.",
-                              server.waitForStringInLog("CWWKS4113W", 3000));
+                              server.waitForStringInLog("CWWKS4113W", 5000));
             }
 
             if (waitForLTPAConfigReadyMessage) {
                 // Wait for the LTPA configuration to be ready after the change
                 assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                              server.waitForStringInLog("CWWKS4105I", 3000));
+                              server.waitForStringInLog("CWWKS4105I", 5000));
             }
         }
 
@@ -2149,7 +2193,7 @@ public class LTPAKeyRotationTests {
         if (absoluteFileExists(filePath + "/" + fileName, 1)) {
             Log.info(thisClass, "moveFileIfExists", "file exists, moving...");
             server.renameFileToAbsolutePathInLibertyServerRootFile(filePath, newFilePath, fileName);
-            Thread.sleep(2000);
+            Thread.sleep(3000);
 
             // Double check to make sure the file is gone
             if (checkFileIsGone && fileExists(filePath + "/" + fileName, 1))
@@ -2248,7 +2292,7 @@ public class LTPAKeyRotationTests {
         do {
             // Sleep 2 seconds
             if (count != 0) {
-                Thread.sleep(2000);
+                Thread.sleep(3000);
                 Log.info(thisClass, "fileExists", "waiting 2s...");
             }
             try {
@@ -2287,7 +2331,7 @@ public class LTPAKeyRotationTests {
         do {
             // Sleep 2 seconds
             if (count != 0) {
-                Thread.sleep(2000);
+                Thread.sleep(3000);
                 Log.info(thisClass, "fileExists", "waiting 2s...");
             }
             try {
@@ -2348,7 +2392,7 @@ public class LTPAKeyRotationTests {
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 3000));
+                      server.waitForStringInLog("CWWKS4105I", 5000));
 
         // Assert that a default ltpa.keys file exists prior to next test case
         assertFileWasCreated(DEFAULT_KEY_PATH);
