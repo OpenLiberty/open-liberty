@@ -61,7 +61,7 @@ public class KafkaMtlsChannelConnectorTest {
     @BeforeClass
     public static void setup() throws Exception {
 
-        // Channel Properties should take priority over Connector Properties. So provide valid keystore to channels and invalid to Connector.
+        // Connector properties defined on a Channel take precedence over those defined on the Connector. So provide valid keystore to the channels and invalid to Connector.
         // If invalid keystore is used then the SSL Handshake will fail
         ConnectorProperties outgoingProperties = simpleOutgoingChannel(null, BasicMessagingBean.CHANNEL_OUT)
                 // Valid Keystore
@@ -100,11 +100,6 @@ public class KafkaMtlsChannelConnectorTest {
         KafkaUtils.copyKeyStoresToServer(MtlsTests.kafkaContainer, server);
 
         server.startServer();
-    }
-
-    @Test
-    public void testMtlsConnector() throws Exception {
-        runTest(server, APP_NAME + "/KafkaMtlsTestServlet", "testMtls");
     }
 
     @AfterClass

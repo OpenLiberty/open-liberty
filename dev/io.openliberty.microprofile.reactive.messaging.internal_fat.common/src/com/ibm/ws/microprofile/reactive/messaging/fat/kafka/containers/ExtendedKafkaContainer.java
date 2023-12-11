@@ -128,12 +128,36 @@ public class ExtendedKafkaContainer extends GenericContainer<ExtendedKafkaContai
         return this;
     }
 
+    /**
+     * Get Primary Keystore file
+     *
+     * The contents of this keystore is used as the basis of trust and key stores for both Liberty and Kafka
+     * therefore its contents should always be trusted if used on either side of the communication
+     * @return
+     */
     public File getKeystoreFile() {
         return new File(KEYSTORE_FILENAME);
     }
 
+    /**
+     * Gets a secondary Keystore file if MTLS has been enabled, otherwise returns null
+     *
+     * This should be used for Client keystores such as RM Channels or connector
+     *
+     * By default, this keystore is not included in the truststores of either Liberty or Kafka so would, if used as the keystore
+     * for either server or client sides should result in a SSL Handshake error
+     *
+     * If you want to include the contents of this keystore in the truststore used for kafka, then `mergeKeyStores()` must be used
+     * to created a merged server truststore.
+     *
+     * @return
+     */
     public File getKeystoreFile2() {
-        return new File(KEYSTORE_FILENAME2);
+        if(mtls) {
+            return new File(KEYSTORE_FILENAME2);
+        } else {
+            return null;
+        }
     }
 
     public String getKeystorePassword() {
@@ -164,17 +188,18 @@ public class ExtendedKafkaContainer extends GenericContainer<ExtendedKafkaContai
             withEnv("KAFKA_SSL_TRUSTSTORE_FILENAME", KEYSTORE_FILENAME);
             withEnv("KAFKA_SSL_TRUSTSTORE_CREDENTIALS", KEYSTORE_PASSWORD_FILENAME);
             withEnv("KAFKA_SSL_ENABLED_PROTOCOLS", "TLSv1.2");
-            //MTLS only works if TLS is enabled.
-            if(mtls){
-                //Enable Client Authentication - by default this is `requested`, which allows non-cert based requests to succeed
+            // MTLS only works if TLS is enabled.
+            if (mtls) {
+                // Enable Client Authentication - by default this is `requested`, which allows non-cert based requests to succeed
                 withEnv("KAFKA_SSL_CLIENT_AUTH", "required");
                 // Generate Second Keystore
+                // Second key store contents is not included in the Kafka server truststore so is by default rejected
                 subCommands.add(getCertGenerationCommand(KEYSTORE_FILEPATH2, KEYSTORE_PASSWORD, getHost()));
-                // Combine the keys into a Third option
-                if(mergeKeystores){
+                // Combine the keys into a single store that can be used by the kafka server
+                if (mergeKeystores) {
                     subCommands.add(mergeKeyStoresCommand(KEYSTORE_FILEPATH, KEYSTORE_FILEPATH_COMBINED, "kafka-testcontainers", KEYSTORE_PASSWORD));
                     subCommands.add(mergeKeyStoresCommand(KEYSTORE_FILEPATH2, KEYSTORE_FILEPATH_COMBINED, "kafka-testcontainers2", KEYSTORE_PASSWORD));
-                    // Change TrustStore location to combined store
+                    // Change Kafka Server TrustStore location to combined store
                     withEnv("KAFKA_SSL_TRUSTSTORE_FILENAME", KEYSTORE_FILENAME_COMBINED);
                 }
             }
@@ -273,7 +298,7 @@ public class ExtendedKafkaContainer extends GenericContainer<ExtendedKafkaContai
     }
 
     /**
-     * Use to combine Keystore files into a single one to use as a truststore
+     * Combine Keystore files into a single one to use as a truststore
      * @param keystoreFilePath
      * @param outputFilePath
      * @param password will be used for both the extraction and for the output store

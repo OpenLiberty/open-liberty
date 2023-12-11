@@ -15,6 +15,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaReade
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClient;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaWriter;
 import componenttest.app.FATServlet;
+import org.junit.Test;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -33,7 +34,7 @@ public class KafkaMtlsTestServlet extends FATServlet {
 
     private static final long serialVersionUID = 1L;
 
-
+    @Test
     public void testMtls() throws Exception {
 
         try(KafkaReader<String, String> reader = kafkaTestClient.readerFor(BasicMessagingBean.CHANNEL_OUT);
@@ -45,6 +46,14 @@ public class KafkaMtlsTestServlet extends FATServlet {
             List<String> msgs = reader.assertReadMessages(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
 
             assertThat(msgs, contains("cba", "zyx"));
+        }
+    }
+
+    // This is manually called as this tests when there is an untrusted key used by a kafka client
+    public void testIncorrectMtls() throws Exception {
+        try(KafkaWriter<String, String> writer = kafkaTestClient.writerFor(BasicMessagingBean.CHANNEL_IN)){
+            writer.sendMessage("abc");
+            writer.sendMessage("xyz");
         }
     }
 }

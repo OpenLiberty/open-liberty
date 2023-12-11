@@ -15,6 +15,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.ExtendedK
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.mtls.single.KafkaMtlsChannelConnectorTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.mtls.single.KafkaMtlsChannelTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.mtls.single.KafkaMtlsConnectorTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.mtls.single.KafkaMtlsIncorrectKeyTest;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.containers.TestContainerSuite;
 import org.apache.kafka.clients.admin.AdminClient;
@@ -34,7 +35,8 @@ import java.util.Map;
 @SuiteClasses({
         KafkaMtlsConnectorTest.class,
         KafkaMtlsChannelTest.class,
-        KafkaMtlsChannelConnectorTest.class
+        KafkaMtlsChannelConnectorTest.class,
+        KafkaMtlsIncorrectKeyTest.class
 })
 public class MtlsTests extends TestContainerSuite {
 

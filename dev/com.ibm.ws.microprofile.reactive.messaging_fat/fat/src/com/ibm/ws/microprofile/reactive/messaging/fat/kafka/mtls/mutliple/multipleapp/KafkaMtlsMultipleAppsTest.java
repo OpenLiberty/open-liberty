@@ -79,8 +79,6 @@ public class KafkaMtlsMultipleAppsTest {
         //
         // Setting on the Connectors does not resolve the issue as it then generates slightly different, but still related issues.
 
-        // TODO: Check with Andrew if I have a Scooby Doo
-
         // App One Connection Properties
         ConnectorProperties outgoingProperties = simpleOutgoingChannel(null, MessagingBeanOne.CHANNEL_OUT)
                 .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE_FILENAME)
@@ -146,7 +144,7 @@ public class KafkaMtlsMultipleAppsTest {
         runTest(server, APP1_NAME + "/KafkaMtlsServletOne", "putMessages");
         runTest(server, APP2_NAME + "/KafkaMtlsServletTwo", "putMessages");
 
-        // the Kafka JMX issues are reported as Errors, not expcetions/ffdcs or have codes
+        // the Kafka JMX issues are reported as Errors, not exceptions/ffdcs or have codes
         // so is not picked up on shutdown of the server, meaning that it passes
         assertNull("Unexpected Kafka Error",
                 server.waitForStringInLog("E Error.*kafka", 1000));

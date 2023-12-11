@@ -13,7 +13,6 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.ExtendedKafkaContainer;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.mtls.mutliple.multipleapp.KafkaMtlsMultipleAppsTest;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.mtls.mutliple.singleapp.KafkaMtlsMultipleChannelsTest;
 import componenttest.containers.SimpleLogConsumer;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -30,7 +29,6 @@ import java.util.Map;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        KafkaMtlsMultipleChannelsTest.class,
         KafkaMtlsMultipleAppsTest.class
 })
 public class MtlsMultipleKeyStoresTests {

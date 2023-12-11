@@ -96,11 +96,6 @@ public class KafkaMtlsConnectorTest {
         server.startServer();
     }
 
-    @Test
-    public void testMtlsConnector() throws Exception {
-        runTest(server, APP_NAME + "/KafkaMtlsTestServlet", "testMtls");
-    }
-
     @AfterClass
     public static void teardownTest() throws Exception {
         try {

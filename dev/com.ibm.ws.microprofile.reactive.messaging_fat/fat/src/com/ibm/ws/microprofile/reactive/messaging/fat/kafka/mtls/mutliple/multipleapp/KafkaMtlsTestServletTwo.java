@@ -34,6 +34,10 @@ public class KafkaMtlsTestServletTwo extends FATServlet {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Manually invoked from the test class
+     * @throws Exception
+     */
     public void putMessages() throws Exception {
         try(KafkaReader<String, String> reader = kafkaTestClient.readerFor(MessagingBeanTwo.CHANNEL_OUT);
             KafkaWriter<String, String> writer = kafkaTestClient.writerFor(MessagingBeanTwo.CHANNEL_IN)){

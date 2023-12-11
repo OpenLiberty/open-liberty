@@ -71,8 +71,6 @@ public class KafkaMtlsChannelTest {
         ConnectorProperties connectorProperties = new ConnectorProperties(ConnectorProperties.Direction.CONNECTOR, "liberty-kafka")
                 .addAll(MtlsTests.testConnectionProperties());
 
-
-
         PropertiesAsset appConfig = new PropertiesAsset()
                 .addProperty(KafkaTestClientProvider.CONNECTION_PROPERTIES_KEY, KafkaTestClientProvider.encodeProperties(MtlsTests.connectionProperties()))
                 .include(incomingProperties)
@@ -94,11 +92,6 @@ public class KafkaMtlsChannelTest {
         KafkaUtils.copyKeyStoresToServer(MtlsTests.kafkaContainer, server);
 
         server.startServer();
-    }
-
-    @Test
-    public void testMtlsChannel() throws Exception {
-        runTest(server, APP_NAME + "/KafkaMtlsTestServlet", "testMtls");
     }
 
     @AfterClass

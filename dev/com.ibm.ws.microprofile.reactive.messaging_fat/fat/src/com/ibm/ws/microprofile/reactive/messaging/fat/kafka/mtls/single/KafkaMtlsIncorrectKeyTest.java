@@ -17,14 +17,20 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProp
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaReader;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClient;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaWriter;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.MtlsTests;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.RepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.config.SslConfigs;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -34,13 +40,23 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleIncomingChannel;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleOutgoingChannel;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
 import static componenttest.topology.utils.FATServletClient.runTest;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.junit.Assert.assertNotNull;
 
+/**
+ * This test covers the interactions that occur if at least one channel is using an incorrect certificate
+ */
 @RunWith(FATRunner.class)
 public class KafkaMtlsIncorrectKeyTest {
 
@@ -48,8 +64,10 @@ public class KafkaMtlsIncorrectKeyTest {
     private static final String APP_GROUP_ID = "mtls-channel-test-group";
     private static final String SERVER_NAME = "SimpleRxMessagingServer";
 
+    private static String inTopicName;
+    private static String outTopicName;
+
     @Server(SERVER_NAME)
-    @TestServlet(contextRoot = APP_NAME, servlet = KafkaMtlsTestServlet.class)
     public static LibertyServer server;
 
     @ClassRule
@@ -57,11 +75,21 @@ public class KafkaMtlsIncorrectKeyTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ConnectorProperties outgoingProperties = simpleOutgoingChannel(null, BasicMessagingBean.CHANNEL_OUT)
+
+        inTopicName = BasicMessagingBean.CHANNEL_IN + RepeatTestFilter.getRepeatActionsAsString();
+        outTopicName = BasicMessagingBean.CHANNEL_OUT + RepeatTestFilter.getRepeatActionsAsString();
+
+        // Given the deliberate breaking in the test, the topics don't end up
+        List<NewTopic> newTopics = new ArrayList<>();
+        newTopics.add(new NewTopic(inTopicName, 2, (short) 1));
+        newTopics.add(new NewTopic(outTopicName, 2, (short) 1));
+        MtlsTests.getAdminClient().createTopics(newTopics).all().get(KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
+
+        ConnectorProperties outgoingProperties = simpleOutgoingChannel(null, ConnectorProperties.DEFAULT_CONNECTOR_ID, BasicMessagingBean.CHANNEL_OUT, outTopicName)
                 .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE2_FILENAME)
                 .addProperty(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, MtlsTests.kafkaContainer.getKeystorePassword());
 
-        ConnectorProperties incomingProperties = simpleIncomingChannel(null, BasicMessagingBean.CHANNEL_IN, APP_GROUP_ID)
+        ConnectorProperties incomingProperties = simpleIncomingChannel(null, ConnectorProperties.DEFAULT_CONNECTOR_ID, BasicMessagingBean.CHANNEL_IN, APP_GROUP_ID, inTopicName)
                 .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE_FILENAME)
                 .addProperty(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, MtlsTests.kafkaContainer.getKeystorePassword());
 
@@ -87,19 +115,41 @@ public class KafkaMtlsIncorrectKeyTest {
 
         KafkaUtils.copyTrustStore(MtlsTests.kafkaContainer, server);
         KafkaUtils.copyKeyStoresToServer(MtlsTests.kafkaContainer, server);
+        KafkaUtils.copyTrustStoreToTest(MtlsTests.kafkaContainer);
 
         server.startServer();
     }
 
     @Test
-    public void testMtlsChannel() throws Exception {
-        runTest(server, APP_NAME + "/KafkaMtlsTestServlet", "testMtls");
+    @AllowedFFDC("org.apache.kafka.common.errors.SslAuthenticationException")
+    public void testIncorrectMtlsChannel() throws Exception {
+
+        // We write from the test to the kafka server so we can guarantee that we are putting messages on the initial topic
+        KafkaTestClient kafkaTestClient = new KafkaTestClient(MtlsTests.connectionProperties());
+
+        try(KafkaWriter<String, String> writer = kafkaTestClient.writerFor(inTopicName)){
+            writer.sendMessage("abc");
+            writer.sendMessage("xyz");
+        }
+
+        // We should have two messages on the Incoming channel, so show we still put some messages on the topics
+        try(KafkaReader<String, String> reader = kafkaTestClient.readerFor(inTopicName)) {
+            List<String> messages = reader.assertReadMessages(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
+        }
+        try(KafkaReader<String, String> reader = kafkaTestClient.readerFor(outTopicName)) {
+            reader.assertReadMessages(0, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
+        }
+
+        assertNotNull("Did not find SSL Auth issue in logs",
+                server.waitForStringInLog("CWMRX1003E.*SslAuthenticationException"));
     }
 
     @AfterClass
+    @AllowedFFDC("org.apache.kafka.common.errors.SslAuthenticationException")
     public static void teardownTest() throws Exception {
         try {
-            server.stopServer();
+            //
+            server.stopServer("CWMRX1011E", "CWMRX1004E", "CWMRX1003E");
         } finally {
             KafkaUtils.deleteKafkaTopics(MtlsTests.getAdminClient());
         }
