@@ -34,6 +34,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestCons
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
+import com.ibm.ws.microprofile.reactive.messaging.fat.metrics.MetricsUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -108,7 +109,7 @@ public class MultiAppMetricsTest extends FATServletClient {
         runTest(server, APP_TWO_NAME + "/MultiAppMetricsTestServletTwo", "stringToReverse");
 
         URL url = HttpUtils.createURL(server, "/metrics");
-        Map<String, Integer> overallMetrics = MetricsTest.getMetrics(url);
+        Map<String, Integer> overallMetrics = MetricsUtils.getReactiveMessagingMetrics(url);
         assertThat(overallMetrics.get(MessagingBeanOne.CHANNEL_IN), is(4));
         assertThat(overallMetrics.get(MessagingBeanOne.CHANNEL_OUT), is(4));
 
