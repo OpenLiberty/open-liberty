@@ -1338,7 +1338,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         HttpInboundChannel channel = link.getChannel();
         VirtualConnection vc = link.getVirtualConnection();
         H2InboundLink h2Link = new H2InboundLink(channel, vc, getTCPConnectionContext());
-
+        boolean bodyReadAndQueued = false;
         if(this.isc != null) {
             if(this.isc.isIncomingBodyExpected() && !this.isc.isBodyComplete()){
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1359,10 +1359,12 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Got exception reading request and queueing up data. Can't handle request upgrade to HTTP2.", e);
                     }
+                    body.cleanupforMultiRead();
                     vc.getStateMap().put(h2InitError, true);
                     return false;
                 }
                 body.resetReaderChannelMultiRead();
+                bodyReadAndQueued = true;
             }else{
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "No body needed for request. Continuing upgrade as normal.");
@@ -1387,7 +1389,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             // A problem occurred with the connection start up, a trace message will be issued from waitForConnectionInit()
             vc.getStateMap().put(h2InitError, true);
         }
-
+        if(bodyReadAndQueued)
+            isc.setBodyComplete();
         return rc;
     }
 

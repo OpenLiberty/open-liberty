@@ -318,7 +318,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * Set the body complete flag to true when we've finished reading it.
      *
      */
-    private void setBodyComplete() {
+    public final void setBodyComplete() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "setBodyComplete() called");
         }
