@@ -90,7 +90,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     boolean ignoreAudClaimIfNotConfigured = false;
 
     public static final String CFG_KEY_HOST_NAME_VERIFICATION_ENABLED = "hostNameVerificationEnabled";
-    protected boolean hostNameVerificationEnabled = false;
+    protected boolean hostNameVerificationEnabled = true;
 
     public static final String KEY_TRUSTED_ALIAS = "keyName";
     private String trustAliasName = null;
