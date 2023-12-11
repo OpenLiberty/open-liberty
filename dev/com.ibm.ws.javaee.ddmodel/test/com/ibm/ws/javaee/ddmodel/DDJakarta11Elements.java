@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,99 +27,56 @@ import com.ibm.ws.javaee.dd.common.ManagedThreadFactory;
 import com.ibm.ws.javaee.dd.common.Property;
 
 /*
- * jakartaee_10.xsd - jakartaee_9.xsd
+ * jakartaee_11.xsd - jakartaee_10.xsd
+ *   <xsd:import namespace="http://www.w3.org/XML/1998/namespace"
+              schemaLocation="https://www.w3.org/2001/xml.xsd"/>
 
-  <xsd:group name="jndiEnvironmentRefsGroup">
-      <xsd:element name="context-service" type="jakartaee:context-serviceType" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="managed-executor" type="jakartaee:managed-executorType" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="managed-scheduled-executor" type="jakartaee:managed-scheduled-executorType" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="managed-thread-factory" type="jakartaee:managed-thread-factoryType" minOccurs="0" maxOccurs="unbounded"/>
+<xsd:complexType name="context-serviceType">
+      <xsd:element name="qualifier"
+                   type="jakartaee:fully-qualified-classType"
+                   minOccurs="0"
+                   maxOccurs="unbounded">
+      </xsd:element>
+</xsd:complexType>
 
-  j2ee_1_4.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
-  javaee_5.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
-  javaee_6.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
-  javaee_7.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
-  javaee_8.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
-  jakartaee_9.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
-  jakartaee_10.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
+<xsd:complexType name="managed-executorType">
+      <xsd:element name="virtual"
+                   type="jakartaee:true-falseType"
+                   minOccurs="0"
+                   maxOccurs="1">
+      </xsd:element>
+      <xsd:element name="qualifier"
+                   type="jakartaee:fully-qualified-classType"
+                   minOccurs="0"
+                   maxOccurs="unbounded">
+      </xsd:element>
+</xsd:complexType>
 
-  ejb-jar_4_0.xsd:      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
-  ejb-jar_4_0.xsd:      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
-  ejb-jar_4_0.xsd:      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
-  ejb-jar_4_0.xsd:      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
+<xsd:complexType name="managed-scheduled-executorType">
+      <xsd:element name="virtual"
+                   type="jakartaee:true-falseType"
+                   minOccurs="0"
+                   maxOccurs="1">
+      </xsd:element>
+      <xsd:element name="qualifier"
+                   type="jakartaee:fully-qualified-classType"
+                   minOccurs="0"
+                   maxOccurs="unbounded">
+      </xsd:element>
+</xsd:complexType>
 
-  web-app_2_4.xsd:      <xsd:group ref="j2ee:jndiEnvironmentRefsGroup"/>
-  web-app_2_5.xsd:      <xsd:group ref="javaee:jndiEnvironmentRefsGroup"/>
-
-  web-common_3_0.xsd:      <xsd:group ref="javaee:jndiEnvironmentRefsGroup"/>
-  --> web-app_3_0.xsd
-  --> web-fragment_3_0.xsd
-  web-common_5_0.xsd:      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
-  --> web-app_5_0.xsd
-  --> web-fragment_5_0.xsd
-  web-common_6_0.xsd:      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
-  --> web-app_6_0.xsd
-  --> web-fragment_6_0.xsd
-
-  ejb-jar_4_0.xsd
-    <xsd:complexType name="entity-beanType">
-    <xsd:complexType name="interceptorType">
-    <xsd:complexType name="message-driven-beanType">
-    <xsd:complexType name="session-beanType">
-      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
-
-  web-common_6_0.xsd:
-    <xsd:group name="web-commonType">
-      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
- */
-
-/*
-    <xsd:complexType name="context-serviceType">
-    <xsd:sequence>
-      <xsd:element name="description" type="jakartaee:descriptionType" minOccurs="0"/>
-      <xsd:element name="name" type="jakartaee:jndi-nameType"/>
-      <xsd:element name="cleared" type="jakartaee:string" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="propagated" type="jakartaee:string" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="unchanged" type="jakartaee:string" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="property" type="jakartaee:propertyType" minOccurs="0" maxOccurs="unbounded"/>
-    </xsd:sequence>
-    <xsd:attribute name="id" type="xsd:ID"/>
-  </xsd:complexType>
-
-  <xsd:complexType name="managed-executorType">
-    <xsd:sequence>
-      <xsd:element name="description" type="jakartaee:descriptionType" minOccurs="0"/>
-      <xsd:element name="name" type="jakartaee:jndi-nameType"/>
-      <xsd:element name="context-service-ref" type="jakartaee:jndi-nameType" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="max-async" type="jakartaee:xsdPositiveIntegerType" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="hung-task-threshold" type="jakartaee:xsdPositiveIntegerType" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="property" type="jakartaee:propertyType" minOccurs="0" maxOccurs="unbounded"/>
-    </xsd:sequence>
-    <xsd:attribute name="id" type="xsd:ID"/>
-  </xsd:complexType>
-
-  <xsd:complexType name="managed-scheduled-executorType">
-    <xsd:sequence>
-      <xsd:element name="description" type="jakartaee:descriptionType" minOccurs="0"/>
-      <xsd:element name="name" type="jakartaee:jndi-nameType"/>
-      <xsd:element name="context-service-ref" type="jakartaee:jndi-nameType" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="max-async" type="jakartaee:xsdPositiveIntegerType" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="hung-task-threshold" type="jakartaee:xsdPositiveIntegerType" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="property" type="jakartaee:propertyType" minOccurs="0" maxOccurs="unbounded"/>
-    </xsd:sequence>
-    <xsd:attribute name="id" type="xsd:ID"/>
-  </xsd:complexType>
-
-  <xsd:complexType name="managed-thread-factoryType">
-    <xsd:sequence>
-      <xsd:element name="description" type="jakartaee:descriptionType" minOccurs="0">
-      <xsd:element name="name" type="jakartaee:jndi-nameType"/>
-      <xsd:element name="context-service-ref" type="jakartaee:jndi-nameType" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="priority" type="jakartaee:priorityType" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="property" type="jakartaee:propertyType" minOccurs="0" maxOccurs="unbounded"/>
-    </xsd:sequence>
-    <xsd:attribute name="id" type="xsd:ID"/>
-  </xsd:complexType>
+<xsd:complexType name="managed-thread-factoryType">
+      <xsd:element name="virtual"
+                   type="jakartaee:true-falseType"
+                   minOccurs="0"
+                   maxOccurs="1">
+      </xsd:element>
+      <xsd:element name="qualifier"
+                   type="jakartaee:fully-qualified-classType"
+                   minOccurs="0"
+                   maxOccurs="unbounded">
+      </xsd:element>
+</xsd:complexType>
 */
 public class DDJakarta11Elements {
 
@@ -178,6 +135,12 @@ public class DDJakarta11Elements {
     }
 
     public static void verify(List<String> names, int expected, int actual) {
+        if (expected != actual) {
+            Assert.assertEquals(dotNames(names), expected, actual);
+        }
+    }
+
+    public static void verify(List<String> names, boolean expected, boolean actual) {
         if (expected != actual) {
             Assert.assertEquals(dotNames(names), expected, actual);
         }
@@ -272,6 +235,8 @@ public class DDJakarta11Elements {
                                                      "  <unchanged>Transaction</unchanged>\n" +
                                                      "  <unchanged>Remaining</unchanged>\n" +
                                                      "  <unchanged>Other</unchanged>\n" +
+                                                     "  <qualifier>com.ibm.test.Qualifier1</qualifier>\n" +
+                                                     "  <qualifier>com.ibm.test.Qualifier2</qualifier>\n" +
                                                      "  <property>\n" +
                                                      "    <name>CS01</name>\n" +
                                                      "    <value>CS01-value</value>\n" +
@@ -302,6 +267,10 @@ public class DDJakarta11Elements {
                  (useNames) -> verify(useNames,
                                       contextService.getUnchanged(),
                                       "Application", "Security", "Transaction", "Remaining", "Other"));
+        withName(names, "qualifier",
+                 (useNames) -> verify(useNames,
+                                      contextService.getQualifier(),
+                                      "com.ibm.test.Qualifier1", "com.ibm.test.Qualifier2"));
         withName(names, "properties",
                  (useNames) -> verifyDoubleton(useNames,
                                                "CS01", "CS01-value", "CS02", "CS02-value",
@@ -314,6 +283,8 @@ public class DDJakarta11Elements {
                                                       "  <context-service-ref>java:comp</context-service-ref>\n" +
                                                       "  <max-async>10</max-async>\n" +
                                                       "  <hung-task-threshold>1000</hung-task-threshold>\n" +
+                                                      "  <virtual>true</virtual>\n" +
+                                                      "  <qualifier>com.ibm.test.Qualifier3</qualifier>\n" +
                                                       "  <property>\n" +
                                                       "    <name>ME01</name>\n" +
                                                       "    <value>ME01-value</value>\n" +
@@ -337,6 +308,12 @@ public class DDJakarta11Elements {
                  (useNames) -> verify(useNames, 10, executor.getMaxAsync()));
         withName(names, "hungTaskThreshold",
                  (useNames) -> verify(useNames, 1000, (int) executor.getHungTaskThreshold()));
+        withName(names, "virtual",
+                 (useNames) -> verify(useNames, true, executor.isVirtual()));
+        withName(names, "qualifier",
+                 (useNames) -> verify(useNames,
+                                      executor.getQualifier(),
+                                      "com.ibm.test.Qualifier3"));
         withName(names, "properties",
                  (useNames) -> verifyDoubleton(useNames,
                                                "ME01", "ME01-value", "ME02", "ME02-value",
@@ -349,6 +326,9 @@ public class DDJakarta11Elements {
                                                                 "  <context-service-ref>java:module</context-service-ref>\n" +
                                                                 "  <max-async>11</max-async>\n" +
                                                                 "  <hung-task-threshold>1100</hung-task-threshold>\n" +
+                                                                "  <qualifier>com.ibm.test.Qualifier4</qualifier>\n" +
+                                                                "  <qualifier>com.ibm.test.Qualifier5</qualifier>\n" +
+                                                                "  <qualifier>com.ibm.test.Qualifier6</qualifier>\n" +
                                                                 "  <property>\n" +
                                                                 "    <name>MSE01</name>\n" +
                                                                 "    <value>MSE01-value</value>\n" +
@@ -372,6 +352,12 @@ public class DDJakarta11Elements {
                  (useNames) -> verify(useNames, 11, executor.getMaxAsync()));
         withName(names, "hungTaskThreshold",
                  (useNames) -> verify(useNames, 1100, (int) executor.getHungTaskThreshold()));
+        withName(names, "virtual",
+                 (useNames) -> verify(useNames, false, executor.isVirtual())); //Default value should be false
+        withName(names, "qualifier",
+                 (useNames) -> verify(useNames,
+                                      executor.getQualifier(),
+                                      "com.ibm.test.Qualifier4", "com.ibm.test.Qualifier5", "com.ibm.test.Qualifier6"));
         withName(names, "properties",
                  (useNames) -> verifyDoubleton(useNames,
                                                "MSE01", "MSE01-value", "MSE02", "MSE02-value",
@@ -383,6 +369,7 @@ public class DDJakarta11Elements {
                                                             "  <name>MTF01:name</name>\n" +
                                                             "  <context-service-ref>java:app</context-service-ref>\n" +
                                                             "  <priority>10</priority>\n" +
+                                                            "  <virtual>false</virtual>\n" +
                                                             "  <property>\n" +
                                                             "    <name>MTF01</name>\n" +
                                                             "    <value>MTF01-value</value>\n" +
@@ -404,6 +391,11 @@ public class DDJakarta11Elements {
                  (useNames) -> verify(useNames, "java:app", factory.getContextServiceRef()));
         withName(names, "priority",
                  (useNames) -> verify(useNames, 10, factory.getPriority()));
+        withName(names, "virtual",
+                 (useNames) -> verify(useNames, false, factory.isVirtual()));
+        withName(names, "qualifier",
+                 (useNames) -> verify(useNames,
+                                      factory.getQualifier())); //None provided
         withName(names, "properties",
                  (useNames) -> verifyDoubleton(useNames,
                                                "MTF01", "MTF01-value", "MTF02", "MTF02-value",
@@ -412,7 +404,7 @@ public class DDJakarta11Elements {
 
     //
 
-    public static void verifyEE10(List<String> names, JNDIEnvironmentRefs refs) {
+    public static void verifyEE11(List<String> names, JNDIEnvironmentRefs refs) {
         List<ContextService> services = refs.getContextServices();
         DDJakarta11Elements.verifySize(names, 1, services);
         DDJakarta11Elements.verify(names, services.get(0));
