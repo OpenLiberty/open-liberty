@@ -38,7 +38,7 @@ dependencies {
   requiredLibs project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0')
   requiredLibs project(':io.openliberty.microprofile.telemetry.internal_fat.common')
   
-  telemetryAgent 'io.opentelemetry.javaagent:opentelemetry-javaagent:1.24.0'
+  telemetryAgent 'io.opentelemetry.javaagent:opentelemetry-javaagent:1.19.0'
   
   telemetryAgent129 'io.opentelemetry.javaagent:opentelemetry-javaagent:1.29.0'
   
