@@ -1,9 +1,9 @@
-#Mon Oct 30 08:10:41 PDT 2023
-# Bad Validation Keys - Swapped PrivateKey
+#Mon Dec 11 14:22:34 EST 2023
+# Swapped PrivateKey Value
 com.ibm.websphere.ltpa.version=1.0
-com.ibm.websphere.ltpa.3DESKey=eJh1K9My7p4Uj0Gw/X2XDWxyY1C9E3UEp7ji+BJPSDM\=
-com.ibm.websphere.ltpa.PrivateKey=epnxDPZQxUAeZMQGM+MIvJ1CRKRxr9d6I/0vV47pneNNJ31Mf06XdvuOo8U+NRl66vWXUj1TWc4UT66gNH0Ez54/x1IYuFiw9ry9SWfbx1TKfy5N4sugxiq6YSy2F6Tvuzw7tgrDFCh9yrtea5+VYCy1MIXzjGtUU1S0cKCse4i34D2kdBpSeUzaBFB7LpNg9W0LIYy8lmreVCNF0oLglnm38TbgPbtsYtSbD7JosuqqtWoZE99NYbh/iWOVuE1iFQ6QjMlVI+O21QSsXG1whDnpv3VHcaESwrgLyb6wUXbI4K4us1C79T9MTGfNX4ltqnIJixJbKYhMWQ/yHAwP1bvwVZool6fUvPXeaeBVnr0\=
+com.ibm.websphere.ltpa.3DESKey=+cZqCHdzLNY8GjY27CweEF8oRFwmvqbup7ji+BJPSDM\=
+com.ibm.websphere.ltpa.PrivateKey=qTcIrDePMavLGS7bOnV8lC8eUIQ/QMAuGJPXvI/dTCl5FvhtdlYh3R4YEhnC8G66fOjPRxRX7vEUT1P+EzR6iMAmoH+7UryQi9hXn3mVZGGXqyPSgi/VvbD5j+YGPyf0PLYZCaxMsozsWxzGsYiLfVHTQkkavS6OFm44Bw/HJfo0e2FpbYElU/dg1X9kBuXDilZfQRl+JDYQQ50zy3ta/fLv5H1ocIUAIVk/87OZKjMya4kmUmIOmxs8Mi4Ddz3NzqWrhTCpMqtT++ueArDeGhi0VVNbpnYvSNlpML8MjyIxTAmeCeOctAlK0qCijm89yTpAR80pP9hIzX+U/c1MRyrO1wdZw4XiYf9hfmztCl8\=
 com.ibm.websphere.CreationHost=localhost
 com.ibm.websphere.ltpa.Realm=BasicRealm
-com.ibm.websphere.ltpa.PublicKey=AK/MQIy6PT5GCI1qYDhH6b7yyZPdCcc4cgOKyJOkS/F4IHA51rjW5gVUm0gWkqfCkoU6LsWkBetxiJeZ7ECL4mUOSTfEFx4cPtvCu62DxtgleQt6pbEuvtaDalFL6/6p35y2uyuKhX4YiG9w25lLXTNCMfw3mQn+RpC3pVjYKpB9AQAB
-com.ibm.websphere.CreationDate=Mon Oct 30 08\:10\:41 PDT 2023
+com.ibm.websphere.ltpa.PublicKey=AIFD6M04Gm11rSKCGd4le/E+5xgKUx9skKKKmAWa0Et6FGLMBF4tzwgS0jxwA7mMjYA6l5DkOUGQMUn83PdAUBlogO7dNy80chh+MbMgMMxIzgh6dKGPop+iC4X2GLmMY70vJA4fDSe/qk7CorDP8dj/+VRYmeN9DY+U83ldwkmJAQAB
+com.ibm.websphere.CreationDate=Mon Dec 11 14\:22\:34 EST 2023

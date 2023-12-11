@@ -642,6 +642,58 @@ public class FormLoginClient extends ServletClientImpl {
     }
 
     /**
+     * Access a protected URL pattern that is part of the context root with 
+     * authorized credentials. However, Access is not granted and the client 
+     * is directed to the form login page due to decrytion failure.
+     *
+     * @param urlPattern
+     *                       URL pattern that is under of the context root.
+     * @param user
+     *                      User to authenticate as.
+     * @param password
+     *                     Password to authenticate with.
+     * @return true if access was redirected to the form login page
+     */
+    public boolean accessProtectedServletWithAuthorizedCredentialsExpectsFailure(String urlPattern, String user, String password) {
+        String url = servletURL + urlPattern;
+        logger.info("accessProtectedServletWithAuthorizedCredentials: "
+                    + url + " user=" + user + " password="
+                    + password);
+        try {
+            accessFormLoginPage(client, url);
+            String location = performFormLogin(client, url, user, password, 200);
+            Map<String, String> addlHeaders = null;
+            int expectedStatusCode = 200;
+
+            // Get method on form login page
+            HttpGet getMethod = new HttpGet(location);
+            if (addlHeaders != null) {
+                for (Entry<String, String> entry : addlHeaders.entrySet()) {
+                    getMethod.setHeader(entry.getKey(), entry.getValue());
+                }
+            }
+            HttpResponse response = client.execute(getMethod);
+
+            logger.info("getMethod status: " + response.getStatusLine());
+            assertEquals("Expected " + expectedStatusCode + " was not returned",
+                         expectedStatusCode, response.getStatusLine().getStatusCode());
+
+            String content = EntityUtils.toString(response.getEntity());
+            logger.info("Servlet content: " + content);
+            EntityUtils.consume(response.getEntity());
+
+            // Verify we get the form login JSP
+            assertTrue("Did not find expected form login page: " + FORM_LOGIN_PAGE,
+                       content.contains(FORM_LOGIN_PAGE));
+            return true;
+
+        } catch (IOException e) {
+            failWithMessage("Caught unexpected exception: " + e);
+            return false;
+        }
+    }
+
+    /**
      *
      * Constructs the URL to be used to find the logout page - logout.html.
      *
