@@ -4,8 +4,13 @@ name: Update OpenAPI UI dependencies
 
 on: workflow_dispatch
 
+permissions: {}
+
 jobs:
   update-openapi-ui:
+    permissions:
+      contents: write
+      pull-requests: write
     name: Update OpenAPI UI Dependencies
     runs-on: ubuntu-latest
     defaults:
@@ -13,7 +18,7 @@ jobs:
         working-directory: ./dev/com.ibm.ws.openapi.ui/swagger-ui
     steps:
     - name: Checkout Open Liberty
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Use Node.js v16
       uses: actions/setup-node@v3
       with:
@@ -51,7 +56,7 @@ jobs:
         git commit -m "Update Swagger UI to $SWAGGER_UI_VERSION [auto]"
         git push
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@18f7dc018cc2cd597073088f7c7591b9d1c02672 #3.14.0
+      uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38 #5.0.2
       id: create-pr
       if: ${{ env.GITHUB_REF_NAME == 'integration' }}
       with:
