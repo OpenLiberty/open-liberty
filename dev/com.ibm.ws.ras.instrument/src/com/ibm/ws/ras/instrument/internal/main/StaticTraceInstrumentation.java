@@ -45,8 +45,8 @@ import com.ibm.ws.ras.instrument.internal.xml.TraceConfigFileParser;
 public class StaticTraceInstrumentation extends AbstractInstrumentation {
     public static final String CLASS_NAME = "StaticInstrumentation";
 
-    public static boolean isLoggable(String className) {
-        return FileLogger.isLoggable(className);
+    public static boolean isLoggable(String path) {
+        return FileLogger.isLoggable(path);
     }
 
     public PrintWriter fileWriter() {
@@ -160,12 +160,12 @@ public class StaticTraceInstrumentation extends AbstractInstrumentation {
      *         the <code>InputStream</code>
      */
     @Override
-    final protected byte[] transform(String className, InputStream classStream) throws IOException {
+    final protected byte[] transform(String path, InputStream classStream) throws IOException {
         String methodName = "transform";
-        boolean isLoggable = isLoggable(className);
+        boolean isLoggable = isLoggable(path);
         
         if ( isLoggable ) {                         
-            fileLog(methodName, "Class", className);
+            fileLog(methodName, "Class", path);
         }
 
         // To keep the processing simple, read in the entire class stream
@@ -179,11 +179,11 @@ public class StaticTraceInstrumentation extends AbstractInstrumentation {
         try {
             initialBytes = read(classStream);
         } catch ( IOException e ) {
-            fileStack(methodName, "Read failure [ " + className + " ]", e);
+            fileStack(methodName, "Read failure [ " + path + " ]", e);
             return null;
         }
 
-        ClassInfo classInfo = readConfig(className, initialBytes);
+        ClassInfo classInfo = readConfig(path, initialBytes);
 
         // Merging the class information does not change whether the class is enabled
         // for instrumentation.
@@ -215,7 +215,7 @@ public class StaticTraceInstrumentation extends AbstractInstrumentation {
             classReader.accept(classVisitor, readOptions);
 
         } catch ( Throwable t ) {
-            fileStack(methodName, "Instrumentation failure [ " + className + " ]", t);
+            fileStack(methodName, "Instrumentation failure [ " + path + " ]", t);
 
             if ( !isDebug() && !isLoggable ) {
                 classReader = new ClassReader(initialBytes);

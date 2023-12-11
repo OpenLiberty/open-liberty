@@ -48,8 +48,8 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
 
     public static final String CLASS_NAME = "RuntimeTransformer";
 
-    public static boolean isLoggable(String className) {
-        return FileLogger.isLoggable(className);
+    public static boolean isLoggable(String path) {
+        return FileLogger.isLoggable(path);
     }
 
     public static PrintWriter fileWriter() {
@@ -283,8 +283,8 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
             Tr.exit(tc, "retransformClass");
     }
     
-    public static byte[] transform(String className, byte[] bytes) throws IOException {
-        return transform(className, bytes, true);
+    public static byte[] transform(String path, byte[] bytes) throws IOException {
+        return transform(path, bytes, true);
     }
 
     protected static boolean visit(
@@ -393,10 +393,10 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
         return result;
     }
 
-    public static byte[] transform(String className, byte[] classBytes, boolean skipIfNotPreprocessed) throws IOException {
+    public static byte[] transform(String path, byte[] classBytes, boolean skipIfNotPreprocessed) throws IOException {
         String methodName = "transform";
 
-        boolean isLoggable = isLoggable(className);
+        boolean isLoggable = isLoggable(path);
         boolean isDumpable = tc.isDumpEnabled();
 
         // The reader is created early and is provided to the class writer
@@ -440,7 +440,7 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
         try {
             classReader.accept(tracingClassAdapter, skipDebugData ? ClassReader.SKIP_DEBUG : 0);
         } catch (Throwable t) {
-            fileStack(methodName, "Class read failure [ " + className + " ]", t);
+            fileStack(methodName, "Class read failure [ " + path + " ]", t);
             throw new IOException("Unable to instrument class stream with trace: " + t.getMessage(), t);
         }
 
@@ -464,20 +464,20 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
      */
     @Override
     public byte[] transform(ClassLoader loader,
-                            String className,
+                            String path,
                             Class<?> classBeingRedefined,
                             ProtectionDomain protectionDomain,
                             byte[] initialBytes) throws IllegalClassFormatException {
 
         String methodName = "transform";
 
-        boolean isLoggable = isLoggable(className);
+        boolean isLoggable = isLoggable(path);
         
         String failureReason = isTransformPossible(initialBytes);
 
         if ( failureReason != null ) {
             if ( isLoggable ) {
-                fileLog(methodName, "Ignore [ " + className + " ]: " + failureReason);
+                fileLog(methodName, "Ignore [ " + path + " ]: " + failureReason);
             }
             return null;
         }
@@ -491,22 +491,22 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
 
         if ( !traceEnabledForClass ) {
             if ( isLoggable ) {         
-                fileLog(methodName, "Ignore: Trace not enabled for class", className);
+                fileLog(methodName, "Ignore: Trace not enabled for class", path);
             }
             return null;
         }
 
         if ( isLoggable ) {                 
-            fileLog(methodName, "Class", className);            
+            fileLog(methodName, "Class", path);            
             fileDump(methodName, "Initial bytes", initialBytes);
         }
 
         byte[] finalBytes;
         try {
-            finalBytes = transform(className, initialBytes);
+            finalBytes = transform(path, initialBytes);
         } catch (Throwable t) {
-            fileStack(methodName, "Transform failure [ " + className + " ]", t); 
-            Tr.error(tc, "INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2", className, t);
+            fileStack(methodName, "Transform failure [ " + path + " ]", t); 
+            Tr.error(tc, "INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2", path, t);
             return null;
         }
         

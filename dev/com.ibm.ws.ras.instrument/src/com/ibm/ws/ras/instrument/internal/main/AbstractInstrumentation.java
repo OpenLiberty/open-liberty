@@ -479,6 +479,10 @@ public abstract class AbstractInstrumentation {
     /**
      * Instrument the class at the current position in the specified input stream.
      * 
+     * @param path this is the aproximate path to the class resource. 
+     *        The class resource is either a file or a jar entry. A filepath will
+     *        be relative to an unknown ancestor.
+     *
      * @param classfileStream the class file byte stream to be transformed
      * 
      * @return instrumented class file or null if the class has already
@@ -487,6 +491,6 @@ public abstract class AbstractInstrumentation {
      * @throws IOException if an error is encountered while reading from
      *             the <code>InputStream</code>
      */
-    protected abstract byte[] transform(String className, InputStream classfileStream) throws IOException;
+    protected abstract byte[] transform(String path, InputStream classfileStream) throws IOException;
 
 }

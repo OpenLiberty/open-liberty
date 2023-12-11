@@ -62,8 +62,8 @@ class Transformer extends StaticTraceInstrumentation implements ClassFileTransfo
 
     public static final String CLASS_NAME = "StaticTransformer";
 
-    public static boolean isLoggable(String className) {
-        return FileLogger.isLoggable(className);
+    public static boolean isLoggable(String path) {
+        return FileLogger.isLoggable(path);
     }
 
     public static void fileLog(String methodName, String text) {
@@ -177,7 +177,7 @@ class Transformer extends StaticTraceInstrumentation implements ClassFileTransfo
     }
 
     public byte[] transform(ClassLoader loader,
-                            String className,
+                            String path,
                             Class<?> classBeingRedefined,
                             ProtectionDomain protectionDomain,
                             byte[] classBytes) throws IllegalClassFormatException {
@@ -185,37 +185,37 @@ class Transformer extends StaticTraceInstrumentation implements ClassFileTransfo
         String methodName = "transform";
         
         // Don't modify our own package
-        if (className.startsWith(Transformer.class.getPackage().getName().replaceAll("\\.", "/"))) {
-            fileLog(methodName, "Ignore 'com.ibm.ws.ras.instrument.internal' class", className);
+        if (path.startsWith(Transformer.class.getPackage().getName().replaceAll("\\.", "/"))) {
+            fileLog(methodName, "Ignore 'com.ibm.ws.ras.instrument.internal' class", path);
             return null;
         }
 
         // Don't modify the java.util.logging classes
-        if (className.startsWith("java/util/logging/")) {
-            fileLog(methodName, "Ignore 'java.util.logging' class", className);         
+        if (path.startsWith("java/util/logging/")) {
+            fileLog(methodName, "Ignore 'java.util.logging' class", path);         
             return null;
         }
 
         boolean include = false;
         for (String s : includesList) {
-            if (className.startsWith(s) || s.equals("/")) {
+            if (path.startsWith(s) || s.equals("/")) {
                 include = true;
                 break;
             }
         }
         if ( !include ) {
-            fileLog(methodName, "Ignore: Class is not included", className);
+            fileLog(methodName, "Ignore: Class is not included", path);
             return null;
         }
         
         for (String s : excludesList) {
-            if (className.startsWith(s) || s.equals("/")) {
-                fileLog(methodName, "Ignore: Class is excluded", className);                
+            if (path.startsWith(s) || s.equals("/")) {
+                fileLog(methodName, "Ignore: Class is excluded", path);                
                 return null;
             }
         }
 
-        String internalPackageName = className.replaceAll("/[^/]+$", "");
+        String internalPackageName = path.replaceAll("/[^/]+$", "");
         PackageInfo packageInfo = getPackageInfo(internalPackageName);
         if (packageInfo == null && loader != null) {
             String packageInfoResourceName = internalPackageName + "/package-info.class";
@@ -225,9 +225,9 @@ class Transformer extends StaticTraceInstrumentation implements ClassFileTransfo
         }
 
         try {
-            return transform(className, new ByteArrayInputStream(classBytes));
+            return transform(path, new ByteArrayInputStream(classBytes));
         } catch (Throwable t) {
-            fileStack(methodName, "Transform failure [ " + className + " ]", t);            
+            fileStack(methodName, "Transform failure [ " + path + " ]", t);            
             t.printStackTrace();
             return null;
         }

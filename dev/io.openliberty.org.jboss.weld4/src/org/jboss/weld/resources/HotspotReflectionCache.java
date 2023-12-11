@@ -47,6 +47,8 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
 
     private final Class<?> annotationTypeLock;
 
+    private static final String JBOSS_HOTSPOT_TRACE_ENABLED = getSystemProperty("jboss.hotspot.trace.enabled");
+
     public HotspotReflectionCache(TypeStore store) {
         super(store);
         try {
@@ -81,13 +83,7 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
     @Override
     @FFDCIgnore(Exception.class)
     protected Annotation[] internalGetAnnotations(AnnotatedElement element) {
-        String prop = "";
-
-        try {
-            prop = getSystemProperty("jboss.hotspot.trace.enabled");
-        } catch (Exception ignored) {}
-
-        if (prop != null && prop.equals("true")) {
+        if (JBOSS_HOTSPOT_TRACE_ENABLED != null && JBOSS_HOTSPOT_TRACE_ENABLED.equals("true")) {
             if (!sentWarning) {
                 sentWarning = true;
                 System.out.println("Warning you have enabled logging that should only be seen in an IBM test environment");
@@ -152,11 +148,15 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
     }
 
     static private String getSystemProperty(final String name) {
-        return AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            public String run() {
-                return System.getProperty(name);
-            }
-        });
+        try {
+            return AccessController.doPrivileged(new PrivilegedAction<String>() {
+                @Override
+                public String run() {
+                    return System.getProperty(name);
+                }
+            });
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
