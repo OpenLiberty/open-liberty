@@ -92,9 +92,9 @@ public class ContextServiceType extends JNDIEnvironmentRefType implements Contex
     }
 
     @Override
-    public String[] getQualifier() {
-        if (qualifier != null) {
-            return qualifier.getArray();
+    public String[] getQualifiers() {
+        if (qualifiers != null) {
+            return qualifiers.getArray();
         } else {
             return XSDTokenType.ListType.getEmptyArray();
         }
@@ -115,7 +115,7 @@ public class ContextServiceType extends JNDIEnvironmentRefType implements Contex
     private StringType.ListType cleared;
     private StringType.ListType propagated;
     private StringType.ListType unchanged;
-    private XSDTokenType.ListType qualifier;
+    private XSDTokenType.ListType qualifiers;
     private PropertyType.ListType properties;
 
     public ContextServiceType() {
@@ -168,10 +168,10 @@ public class ContextServiceType extends JNDIEnvironmentRefType implements Contex
         if ("qualifier".equals(localName)) {
             XSDTokenType unchanged_element = new XSDTokenType();
             parser.parse(unchanged_element);
-            if (qualifier == null) {
-                qualifier = new XSDTokenType.ListType();
+            if (qualifiers == null) {
+                qualifiers = new XSDTokenType.ListType();
             }
-            qualifier.add(unchanged_element);
+            qualifiers.add(unchanged_element);
             return true;
         }
 
@@ -204,7 +204,7 @@ public class ContextServiceType extends JNDIEnvironmentRefType implements Contex
         diag.describeIfSet("cleared", cleared);
         diag.describeIfSet("propagated", propagated);
         diag.describeIfSet("unchanged", unchanged);
-        diag.describeIfSet("qualifier", qualifier);
+        diag.describeIfSet("qualifier", qualifiers);
     }
 
     @Override

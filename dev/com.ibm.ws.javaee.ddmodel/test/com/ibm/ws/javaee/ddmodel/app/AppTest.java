@@ -141,12 +141,6 @@ public class AppTest extends AppTestBase {
         DDJakarta10Elements.verify(names, factories.get(0));
     }
 
-    // TODO Verify new elements to EE 11 cannot be used with EE 10 schema
-    // I do not see any other schema additions testing for this.
-    // I assume it is up to the component (i.e. concurrency) to
-    // warn the user if they configure an element that is for EE 11 while
-    // using the EE 10 feature.
-
     // Verify new elements to EE 11 are parsed correctly
 
     @Test

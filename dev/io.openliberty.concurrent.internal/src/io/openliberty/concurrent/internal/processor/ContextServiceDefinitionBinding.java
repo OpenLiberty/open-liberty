@@ -45,12 +45,12 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_PROPAGATED = "propagated";
     private static final String KEY_UNCHANGED = "unchanged";
-    private static final String KEY_QUALIFIER = "qualifier";
+    private static final String KEY_QUALIFIERS = "qualifiers";
 
     private static final String[] DEFAULT_CLEARED = new String[] { ContextServiceDefinition.TRANSACTION };
     private static final String[] DEFAULT_PROPAGATED = new String[] { ContextServiceDefinition.ALL_REMAINING };
     private static final String[] DEFAULT_UNCHANGED = new String[] {};
-    private static final Class<?>[] DEFAULT_QUALIFIER = new Class<?>[] {};
+    private static final Class<?>[] DEFAULT_QUALIFIERS = new Class<?>[] {};
 
     private String[] cleared;
     private boolean XMLcleared;
@@ -64,8 +64,8 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
     private String[] unchanged;
     private boolean XMLunchanged;
 
-    private Class<?>[] qualifier;
-    private boolean XMLqualifer;
+    private Class<?>[] qualifiers;
+    private boolean XMLqualifers;
 
     private Map<String, String> properties;
     private final Set<String> XMLProperties = new HashSet<String>();
@@ -93,7 +93,7 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
                      (XMLcleared ? "   (xml)" : "        ") + "cleared: " + toString(cleared) + " << " + toString(annotation.cleared()),
                      (XMLpropagated ? "(xml)" : "     ") + "propagated: " + toString(propagated) + " << " + toString(annotation.propagated()),
                      (XMLunchanged ? " (xml)" : "      ") + "unchanged: " + toString(unchanged) + " << " + toString(annotation.unchanged()),
-                     (XMLqualifer ? "  (xml)" : "      ") + "qualifier: " + toString(qualifier) + " << " + toString(annotation.qualifiers()));
+                     (XMLqualifers ? " (xml)" : "     ") + "qualifiers: " + toString(qualifiers) + " << " + toString(annotation.qualifiers()));
 
         if (member != null) {
             // ContextServiceDefinition is a class-level annotation only.
@@ -110,7 +110,7 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
 
         unchanged = mergeAnnotationValue(unchanged, XMLunchanged, annotation.unchanged(), KEY_UNCHANGED, DEFAULT_UNCHANGED);
 
-        qualifier = mergeAnnotationValue(qualifier, XMLqualifer, annotation.qualifiers(), KEY_QUALIFIER, DEFAULT_QUALIFIER);
+        qualifiers = mergeAnnotationValue(qualifiers, XMLqualifers, annotation.qualifiers(), KEY_QUALIFIERS, DEFAULT_QUALIFIERS);
 
         properties = mergeAnnotationProperties(properties, XMLProperties, new String[] {}); // ContextServiceDefinition has no properties attribute
 
@@ -119,7 +119,7 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
                                                       (XMLcleared ? "   (xml)" : "        ") + "cleared= " + toString(cleared),
                                                       (XMLpropagated ? "(xml)" : "     ") + "propagated= " + toString(propagated),
                                                       (XMLunchanged ? " (xml)" : "      ") + "unchanged= " + toString(unchanged),
-                                                      (XMLqualifer ? "  (xml)" : "      ") + "qualifier= " + toString(qualifier)
+                                                      (XMLqualifers ? " (xml)" : "     ") + "qualifiers= " + toString(qualifiers)
             });
     }
 
@@ -130,8 +130,7 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
                      (XMLcleared ? "   (xml)" : "        ") + "cleared: " + toString(cleared) + " << " + toString(csd.getCleared()),
                      (XMLpropagated ? "(xml)" : "     ") + "propagated: " + toString(propagated) + " << " + toString(csd.getPropagated()),
                      (XMLunchanged ? " (xml)" : "      ") + "unchanged: " + toString(unchanged) + " << " + toString(csd.getUnchanged()),
-                     (XMLqualifer ? "  (xml)" : "      ") + "qualifier: " + toString(qualifier) + " << " + toString(csd.getQualifier())
-            );
+                     (XMLqualifers ? " (xml)" : "     ") + "qualifiers: " + toString(qualifiers) + " << " + toString(csd.getQualifiers()));
 
         List<Description> descriptionList = csd.getDescriptions();
 
@@ -164,13 +163,13 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
             XMLunchanged |= true;
         }
 
-        Class<?>[] qualifierValues = toQualifierClassArray(csd.getQualifier());
+        Class<?>[] qualifierValues = toQualifierClassArray(csd.getQualifiers());
         if (qualifierValues == null || qualifierValues.length == 0) {
-            if (qualifier == null)
-                qualifier = DEFAULT_QUALIFIER;
+            if (qualifiers == null)
+                qualifiers = DEFAULT_QUALIFIERS;
         } else {
-            qualifier = mergeXMLValue(qualifier, qualifierValues, "qualifier", KEY_QUALIFIER, null);
-            XMLqualifer = true;
+            qualifiers = mergeXMLValue(qualifiers, qualifierValues, "qualifier", KEY_QUALIFIERS, null);
+            XMLqualifers = true;
         }
 
         List<Property> csdProps = csd.getProperties();
@@ -181,7 +180,7 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
                                                          (XMLcleared ? "   (xml)" : "        ") + "cleared= " + toString(cleared),
                                                          (XMLpropagated ? "(xml)" : "     ") + "propagated= " + toString(propagated),
                                                          (XMLunchanged ? " (xml)" : "      ") + "unchanged= " + toString(unchanged),
-                                                         (XMLqualifer ? "  (xml)" : "      ") + "qualifier= " + toString(qualifier)
+                                                         (XMLqualifers ? " (xml)" : "     ") + "qualifiers= " + toString(qualifiers)
             });
     }
 
@@ -193,7 +192,7 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
         mergeSavedValue(description, contextServiceBinding.description, "description");
         mergeSavedValue(propagated, contextServiceBinding.propagated, "propagated");
         mergeSavedValue(unchanged, contextServiceBinding.unchanged, "unchanged");
-        mergeSavedValue(qualifier, contextServiceBinding.qualifier, "qualifier");
+        mergeSavedValue(qualifiers, contextServiceBinding.qualifiers, "qualifier");
         mergeSavedValue(properties, contextServiceBinding.properties, "properties");
 
     }
@@ -210,7 +209,7 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
         addOrRemoveProperty(props, KEY_DESCRIPTION, description);
         addOrRemoveProperty(props, KEY_PROPAGATED, propagated);
         addOrRemoveProperty(props, KEY_UNCHANGED, unchanged);
-        addOrRemoveProperty(props, KEY_QUALIFIER, qualifier);
+        addOrRemoveProperty(props, KEY_QUALIFIERS, qualifiers);
 
         setObjects(null, createDefinitionReference(null, jakarta.enterprise.concurrent.ContextService.class.getName(), props));
     }
@@ -223,7 +222,7 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
                         .append(", cleared=").append(Arrays.toString(anno.cleared())) //
                         .append(", propagated=").append(Arrays.toString(anno.propagated())) //
                         .append(", unchanged=").append(Arrays.toString(anno.unchanged())) //
-                        .append(", qualifier=").append(Arrays.toString(anno.qualifiers())) //
+                        .append(", qualifiers=").append(Arrays.toString(anno.qualifiers())) //
                         .append(")");
         return b.toString();
     }

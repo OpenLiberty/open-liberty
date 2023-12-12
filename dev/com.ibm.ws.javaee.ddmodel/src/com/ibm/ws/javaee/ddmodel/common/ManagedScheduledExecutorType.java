@@ -92,9 +92,9 @@ public class ManagedScheduledExecutorType extends JNDIEnvironmentRefType impleme
     }
 
     @Override
-    public String[] getQualifier() {
-        if (qualifier != null) {
-            return qualifier.getArray();
+    public String[] getQualifiers() {
+        if (qualifiers != null) {
+            return qualifiers.getArray();
         } else {
             return XSDTokenType.ListType.getEmptyArray();
         }
@@ -116,7 +116,7 @@ public class ManagedScheduledExecutorType extends JNDIEnvironmentRefType impleme
     private XSDIntegerType maxAsync;
     private XSDIntegerType hungTaskThreshold;
     private XSDBooleanType virtual;
-    private XSDTokenType.ListType qualifier;
+    private XSDTokenType.ListType qualifiers;
     private PropertyType.ListType properties;
 
     public ManagedScheduledExecutorType() {
@@ -174,10 +174,10 @@ public class ManagedScheduledExecutorType extends JNDIEnvironmentRefType impleme
         if ("qualifier".equals(localName)) {
             XSDTokenType unchanged_element = new XSDTokenType();
             parser.parse(unchanged_element);
-            if (qualifier == null) {
-                qualifier = new XSDTokenType.ListType();
+            if (qualifiers == null) {
+                qualifiers = new XSDTokenType.ListType();
             }
-            qualifier.add(unchanged_element);
+            qualifiers.add(unchanged_element);
             return true;
         }
 
@@ -211,7 +211,7 @@ public class ManagedScheduledExecutorType extends JNDIEnvironmentRefType impleme
         diag.describeIfSet("hung-task-threshold", hungTaskThreshold);
         diag.describeIfSet("max-async", maxAsync);
         diag.describeIfSet("virtual", virtual);
-        diag.describeIfSet("qualifier", qualifier);
+        diag.describeIfSet("qualifier", qualifiers);
     }
 
     @Override

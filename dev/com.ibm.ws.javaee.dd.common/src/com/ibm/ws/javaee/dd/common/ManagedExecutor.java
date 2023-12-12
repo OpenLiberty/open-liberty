@@ -62,7 +62,7 @@ public interface ManagedExecutor extends JNDIEnvironmentRef, Describable {
     /**
      * @return &lt;qualifier&gt; elements as a read-only list
      */
-    String[] getQualifier();
+    String[] getQualifiers();
 
     /**
      * @return &lt;property&gt; elements as a read-only list

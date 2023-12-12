@@ -81,9 +81,9 @@ public class ManagedThreadFactoryType extends JNDIEnvironmentRefType implements 
     }
 
     @Override
-    public String[] getQualifier() {
-        if (qualifier != null) {
-            return qualifier.getArray();
+    public String[] getQualifiers() {
+        if (qualifiers != null) {
+            return qualifiers.getArray();
         } else {
             return XSDTokenType.ListType.getEmptyArray();
         }
@@ -104,7 +104,7 @@ public class ManagedThreadFactoryType extends JNDIEnvironmentRefType implements 
     private JNDINameType contextServiceRef;
     private XSDIntegerType priority;
     private XSDBooleanType virtual;
-    private XSDTokenType.ListType qualifier;
+    private XSDTokenType.ListType qualifiers;
     private PropertyType.ListType properties;
 
     public ManagedThreadFactoryType() {
@@ -155,10 +155,10 @@ public class ManagedThreadFactoryType extends JNDIEnvironmentRefType implements 
         if ("qualifier".equals(localName)) {
             XSDTokenType unchanged_element = new XSDTokenType();
             parser.parse(unchanged_element);
-            if (qualifier == null) {
-                qualifier = new XSDTokenType.ListType();
+            if (qualifiers == null) {
+                qualifiers = new XSDTokenType.ListType();
             }
-            qualifier.add(unchanged_element);
+            qualifiers.add(unchanged_element);
             return true;
         }
 
@@ -191,7 +191,7 @@ public class ManagedThreadFactoryType extends JNDIEnvironmentRefType implements 
         diag.describe("context-service-ref", contextServiceRef);
         diag.describeIfSet("priority", priority);
         diag.describeIfSet("virtual", virtual);
-        diag.describeIfSet("qualifier", qualifier);
+        diag.describeIfSet("qualifier", qualifiers);
     }
 
     @Override

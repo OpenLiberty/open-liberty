@@ -43,7 +43,7 @@ public class ApplicationDDParser extends DDParserSpec {
     }
     
     public static int getMaxImplemented() {
-        return Application.VERSION_9; //TODO should this be updated to 10?
+        return Application.VERSION_10;
     }
     
     @Override

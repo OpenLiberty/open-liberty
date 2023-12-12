@@ -45,10 +45,10 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_PRIORITY = "priority";
     private static final String KEY_VIRTUAL = "virtual";
-    private static final String KEY_QUALIFIER = "qualifier";
+    private static final String KEY_QUALIFIERS = "qualifiers";
 
     private static final boolean DEFAULT_VIRTUAL = false;
-    private static final Class<?>[] DEFAULT_QUALIFIER = new Class<?>[] {};
+    private static final Class<?>[] DEFAULT_QUALIFIERS = new Class<?>[] {};
 
     private String contextServiceJndiName;
     private boolean XMLContextServiceRef;
@@ -62,8 +62,8 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
     private boolean virtual;
     private boolean XMLvirtual;
 
-    private Class<?>[] qualifier;
-    private boolean XMLqualifer;
+    private Class<?>[] qualifiers;
+    private boolean XMLqualifers;
 
     private Map<String, String> properties;
     private final Set<String> XMLProperties = new HashSet<String>();
@@ -91,7 +91,7 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
                      (XMLContextServiceRef ? "(xml)" : "     ") + "contextServiceRef: " + contextServiceJndiName + " << " + annotation.context(),
                      (XMLPriority ? "         (xml)" : "              ") + "priority: " + priority + " << " + annotation.priority(),
                      (XMLvirtual ? "          (xml)" : "               ") + "virtual: " + virtual + " << " + annotation.virtual(),
-                     (XMLqualifer ? "         (xml)" : "             ") + "qualifier: " + toString(qualifier) + " << " + toString(annotation.qualifiers()));
+                     (XMLqualifers ? "        (xml)" : "            ") + "qualifiers: " + toString(qualifiers) + " << " + toString(annotation.qualifiers()));
 
         if (member != null) {
             // ManagedThreadFactoryDefinition is a class-level annotation only.
@@ -102,7 +102,7 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
         description = mergeAnnotationValue(description, XMLDescription, "", KEY_DESCRIPTION, ""); // ManagedThreadFactoryDefinition has no description attribute
         priority = mergeAnnotationValue(priority, XMLPriority, annotation.priority(), KEY_PRIORITY, Thread.NORM_PRIORITY);
         virtual = mergeAnnotationBoolean(virtual, XMLvirtual, annotation.virtual(), KEY_VIRTUAL, DEFAULT_VIRTUAL);
-        qualifier = mergeAnnotationValue(qualifier, XMLqualifer, annotation.qualifiers(), KEY_QUALIFIER, DEFAULT_QUALIFIER);
+        qualifiers = mergeAnnotationValue(qualifiers, XMLqualifers, annotation.qualifiers(), KEY_QUALIFIERS, DEFAULT_QUALIFIERS);
         properties = mergeAnnotationProperties(properties, XMLProperties, new String[] {}); // ManagedThreadFactoryDefinition has no properties attribute
 
         if (trace)
@@ -110,7 +110,7 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
                                                       (XMLContextServiceRef ? "(xml)" : "     ") + "contextServiceRef= " + contextServiceJndiName,
                                                       (XMLPriority ? "         (xml)" : "              ") + "priority= " + priority,
                                                       (XMLvirtual ? "          (xml)" : "               ") + "virtual= " + virtual,
-                                                      (XMLqualifer ? "         (xml)" : "             ") + "qualifier= " + toString(qualifier)
+                                                      (XMLqualifers ? "        (xml)" : "            ") + "qualifiers= " + toString(qualifiers)
             });
     }
 
@@ -121,7 +121,7 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
                      (XMLContextServiceRef ? "(xml)" : "     ") + "contextServiceRef: " + contextServiceJndiName + " << " + mtfd.getContextServiceRef(),
                      (XMLPriority ? "         (xml)" : "              ") + "priority: " + priority + " << " + mtfd.getPriority(),
                      (XMLvirtual ? "          (xml)" : "               ") + "virtual: " + virtual + " << " + mtfd.isVirtual(),
-                     (XMLqualifer ? "         (xml)" : "             ") + "qualifier: " + toString(qualifier) + " << " + toString(mtfd.getQualifier()));
+                     (XMLqualifers ? "        (xml)" : "            ") + "qualifiers: " + toString(qualifiers) + " << " + toString(mtfd.getQualifiers()));
 
         List<Description> descriptionList = mtfd.getDescriptions();
 
@@ -146,13 +146,13 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
             XMLvirtual = true;
         }
 
-        Class<?>[] qualifierValues = toQualifierClassArray(mtfd.getQualifier());
+        Class<?>[] qualifierValues = toQualifierClassArray(mtfd.getQualifiers());
         if (qualifierValues == null || qualifierValues.length == 0) {
-            if (qualifier == null)
-                qualifier = DEFAULT_QUALIFIER;
+            if (qualifiers == null)
+                qualifiers = DEFAULT_QUALIFIERS;
         } else {
-            qualifier = mergeXMLValue(qualifier, qualifierValues, "qualifier", KEY_QUALIFIER, null);
-            XMLqualifer = true;
+            qualifiers = mergeXMLValue(qualifiers, qualifierValues, "qualifier", KEY_QUALIFIERS, null);
+            XMLqualifers = true;
         }
 
         List<Property> mxdProps = mtfd.getProperties();
@@ -163,7 +163,7 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
                                                          (XMLContextServiceRef ? "(xml)" : "     ") + "contextServiceRef= " + contextServiceJndiName,
                                                          (XMLPriority ? "         (xml)" : "              ") + "priority= " + priority,
                                                          (XMLvirtual ? "          (xml)" : "               ") + "virtual= " + virtual,
-                                                         (XMLqualifer ? "         (xml)" : "             ") + "qualifier= " + toString(qualifier)
+                                                         (XMLqualifers ? "        (xml)" : "            ") + "qualifiers= " + toString(qualifiers)
             });
     }
 
@@ -175,7 +175,7 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
         mergeSavedValue(description, managedThreadFactoryBinding.description, "description");
         mergeSavedValue(priority, managedThreadFactoryBinding.priority, "priority");
         mergeSavedValue(virtual, managedThreadFactoryBinding.virtual, "virtual");
-        mergeSavedValue(qualifier, managedThreadFactoryBinding.qualifier, "qualifier");
+        mergeSavedValue(qualifiers, managedThreadFactoryBinding.qualifiers, "qualifier");
         mergeSavedValue(properties, managedThreadFactoryBinding.properties, "properties");
     }
 
@@ -191,7 +191,7 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
         addOrRemoveProperty(props, KEY_DESCRIPTION, description);
         addOrRemoveProperty(props, KEY_PRIORITY, priority);
         addOrRemoveProperty(props, KEY_VIRTUAL, virtual);
-        addOrRemoveProperty(props, KEY_QUALIFIER, qualifier);
+        addOrRemoveProperty(props, KEY_QUALIFIERS, qualifiers);
 
         setObjects(null, createDefinitionReference(null, jakarta.enterprise.concurrent.ManagedThreadFactory.class.getName(), props));
     }
@@ -204,7 +204,7 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
                         .append(", context=").append(anno.context()) //
                         .append(", priority=").append(anno.priority()) //
                         .append(", virtual=").append(anno.virtual()) //
-                        .append(", qualifier=").append(Arrays.toString(anno.qualifiers())) //
+                        .append(", qualifiers=").append(Arrays.toString(anno.qualifiers())) //
                         .append(")");
         return b.toString();
     }

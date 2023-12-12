@@ -47,10 +47,10 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
     private static final String KEY_HUNG_TASK_THRESHOLD = "hungTaskThreshold";
     private static final String KEY_MAX_ASYNC = "maxAsync";
     private static final String KEY_VIRTUAL = "virtual";
-    private static final String KEY_QUALIFIER = "qualifier";
+    private static final String KEY_QUALIFIERS = "qualifiers";
 
     private static final boolean DEFAULT_VIRTUAL = false;
-    private static final Class<?>[] DEFAULT_QUALIFIER = new Class<?>[] {};
+    private static final Class<?>[] DEFAULT_QUALIFIERS = new Class<?>[] {};
 
     private String contextServiceJndiName;
     private boolean XMLContextServiceRef;
@@ -67,8 +67,8 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
     private boolean virtual;
     private boolean XMLvirtual;
 
-    private Class<?>[] qualifier;
-    private boolean XMLqualifer;
+    private Class<?>[] qualifiers;
+    private boolean XMLqualifers;
 
     private Map<String, String> properties;
     private final Set<String> XMLProperties = new HashSet<String>();
@@ -97,7 +97,7 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
                      (XMLHungTaskThreshold ? "(xml)" : "     ") + "hungTaskThreshold: " + hungTaskThreshold + " << " + annotation.hungTaskThreshold(),
                      (XMLMaxAsync ? "         (xml)" : "              ") + "maxAsync: " + maxAsync + " << " + annotation.maxAsync(),
                      (XMLvirtual ? "          (xml)" : "               ") + "virtual: " + virtual + " << " + annotation.virtual(),
-                     (XMLqualifer ? "         (xml)" : "             ") + "qualifier: " + toString(qualifier) + " << " + toString(annotation.qualifiers()));
+                     (XMLqualifers ? "        (xml)" : "            ") + "qualifiers: " + toString(qualifiers) + " << " + toString(annotation.qualifiers()));
 
         if (member != null) {
             // ManagedExecutorDefinition is a class-level annotation only.
@@ -109,7 +109,7 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
         hungTaskThreshold = mergeAnnotationValue(hungTaskThreshold, XMLHungTaskThreshold, annotation.hungTaskThreshold(), KEY_HUNG_TASK_THRESHOLD, -1L);
         maxAsync = mergeAnnotationValue(maxAsync, XMLMaxAsync, annotation.maxAsync(), KEY_MAX_ASYNC, -1);
         virtual = mergeAnnotationBoolean(virtual, XMLvirtual, annotation.virtual(), KEY_VIRTUAL, DEFAULT_VIRTUAL);
-        qualifier = mergeAnnotationValue(qualifier, XMLqualifer, annotation.qualifiers(), KEY_QUALIFIER, DEFAULT_QUALIFIER);
+        qualifiers = mergeAnnotationValue(qualifiers, XMLqualifers, annotation.qualifiers(), KEY_QUALIFIERS, DEFAULT_QUALIFIERS);
         properties = mergeAnnotationProperties(properties, XMLProperties, new String[] {}); // ManagedExecutorDefinition has no properties attribute
 
         if (trace)
@@ -118,7 +118,7 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
                                                       (XMLHungTaskThreshold ? "(xml)" : "     ") + "hungTaskThreshold= " + hungTaskThreshold,
                                                       (XMLMaxAsync ? "         (xml)" : "              ") + "maxAsync= " + maxAsync,
                                                       (XMLvirtual ? "          (xml)" : "               ") + "virtual= " + virtual,
-                                                      (XMLqualifer ? "         (xml)" : "             ") + "qualifier= " + toString(qualifier)
+                                                      (XMLqualifers ? "        (xml)" : "            ") + "qualifiers= " + toString(qualifiers)
             });
     }
 
@@ -130,7 +130,7 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
                      (XMLHungTaskThreshold ? "(xml)" : "     ") + "hungTaskThreshold: " + hungTaskThreshold + " << " + mxd.getHungTaskThreshold(),
                      (XMLMaxAsync ? "         (xml)" : "              ") + "maxAsync: " + maxAsync + " << " + mxd.getMaxAsync(),
                      (XMLvirtual ? "          (xml)" : "               ") + "virtual: " + virtual + " << " + mxd.isVirtual(),
-                     (XMLqualifer ? "         (xml)" : "             ") + "qualifier: " + toString(qualifier) + " << " + toString(mxd.getQualifier()));
+                     (XMLqualifers ? "        (xml)" : "            ") + "qualifiers: " + toString(qualifiers) + " << " + toString(mxd.getQualifiers()));
 
         List<Description> descriptionList = mxd.getDescriptions();
 
@@ -160,13 +160,13 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
             XMLvirtual = true;
         }
 
-        Class<?>[] qualifierValues = toQualifierClassArray(mxd.getQualifier());
+        Class<?>[] qualifierValues = toQualifierClassArray(mxd.getQualifiers());
         if (qualifierValues == null || qualifierValues.length == 0) {
-            if (qualifier == null)
-                qualifier = DEFAULT_QUALIFIER;
+            if (qualifiers == null)
+                qualifiers = DEFAULT_QUALIFIERS;
         } else {
-            qualifier = mergeXMLValue(qualifier, qualifierValues, "qualifier", KEY_QUALIFIER, null);
-            XMLqualifer = true;
+            qualifiers = mergeXMLValue(qualifiers, qualifierValues, "qualifier", KEY_QUALIFIERS, null);
+            XMLqualifers = true;
         }
 
         List<Property> mxdProps = mxd.getProperties();
@@ -178,7 +178,7 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
                                                          (XMLHungTaskThreshold ? "(xml)" : "     ") + "hungTaskThreshold= " + hungTaskThreshold,
                                                          (XMLMaxAsync ? "         (xml)" : "              ") + "maxAsync= " + maxAsync,
                                                          (XMLvirtual ? "          (xml)" : "               ") + "virtual= " + virtual,
-                                                         (XMLqualifer ? "         (xml)" : "              ") + "qualifier= " + toString(qualifier)
+                                                         (XMLqualifers ? "        (xml)" : "            ") + "qualifiers= " + toString(qualifiers)
             });
     }
 
@@ -191,7 +191,7 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
         mergeSavedValue(hungTaskThreshold, managedExecutorBinding.hungTaskThreshold, "hung-task-threshold");
         mergeSavedValue(maxAsync, managedExecutorBinding.maxAsync, "max-async");
         mergeSavedValue(virtual, managedExecutorBinding.virtual, "virtual");
-        mergeSavedValue(qualifier, managedExecutorBinding.qualifier, "qualifier");
+        mergeSavedValue(qualifiers, managedExecutorBinding.qualifiers, "qualifier");
         mergeSavedValue(properties, managedExecutorBinding.properties, "properties");
     }
 
@@ -208,7 +208,7 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
         addOrRemoveProperty(props, KEY_HUNG_TASK_THRESHOLD, hungTaskThreshold);
         addOrRemoveProperty(props, KEY_MAX_ASYNC, maxAsync);
         addOrRemoveProperty(props, KEY_VIRTUAL, virtual);
-        addOrRemoveProperty(props, KEY_QUALIFIER, qualifier);
+        addOrRemoveProperty(props, KEY_QUALIFIERS, qualifiers);
 
         setObjects(null, createDefinitionReference(null, ManagedExecutorService.class.getName(), props));
     }
@@ -222,7 +222,7 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
                         .append(", hungTaskThreshold=").append(anno.hungTaskThreshold()) //
                         .append(", maxAsync=").append(anno.maxAsync()) //
                         .append(", virtual=").append(anno.virtual()) //
-                        .append(", qualifier=").append(Arrays.toString(anno.qualifiers())) //
+                        .append(", qualifiers=").append(Arrays.toString(anno.qualifiers())) //
                         .append(")");
         return b.toString();
     }

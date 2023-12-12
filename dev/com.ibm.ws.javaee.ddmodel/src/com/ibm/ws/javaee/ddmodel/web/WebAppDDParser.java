@@ -44,7 +44,7 @@ public class WebAppDDParser extends DDParserSpec {
     }
     
     public static int getMaxImplemented() {
-        return WebApp.VERSION_5_0; //TODO should this be updated to 6.0
+        return WebApp.VERSION_6_0;
     }
     
     @Override    

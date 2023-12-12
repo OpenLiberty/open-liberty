@@ -269,7 +269,7 @@ public class DDJakarta11Elements {
                                       "Application", "Security", "Transaction", "Remaining", "Other"));
         withName(names, "qualifier",
                  (useNames) -> verify(useNames,
-                                      contextService.getQualifier(),
+                                      contextService.getQualifiers(),
                                       "com.ibm.test.Qualifier1", "com.ibm.test.Qualifier2"));
         withName(names, "properties",
                  (useNames) -> verifyDoubleton(useNames,
@@ -312,7 +312,7 @@ public class DDJakarta11Elements {
                  (useNames) -> verify(useNames, true, executor.isVirtual()));
         withName(names, "qualifier",
                  (useNames) -> verify(useNames,
-                                      executor.getQualifier(),
+                                      executor.getQualifiers(),
                                       "com.ibm.test.Qualifier3"));
         withName(names, "properties",
                  (useNames) -> verifyDoubleton(useNames,
@@ -356,7 +356,7 @@ public class DDJakarta11Elements {
                  (useNames) -> verify(useNames, false, executor.isVirtual())); //Default value should be false
         withName(names, "qualifier",
                  (useNames) -> verify(useNames,
-                                      executor.getQualifier(),
+                                      executor.getQualifiers(),
                                       "com.ibm.test.Qualifier4", "com.ibm.test.Qualifier5", "com.ibm.test.Qualifier6"));
         withName(names, "properties",
                  (useNames) -> verifyDoubleton(useNames,
@@ -395,7 +395,7 @@ public class DDJakarta11Elements {
                  (useNames) -> verify(useNames, false, factory.isVirtual()));
         withName(names, "qualifier",
                  (useNames) -> verify(useNames,
-                                      factory.getQualifier())); //None provided
+                                      factory.getQualifiers())); //None provided
         withName(names, "properties",
                  (useNames) -> verifyDoubleton(useNames,
                                                "MTF01", "MTF01-value", "MTF02", "MTF02-value",
