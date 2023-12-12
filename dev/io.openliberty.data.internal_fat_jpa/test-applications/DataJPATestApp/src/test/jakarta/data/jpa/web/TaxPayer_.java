@@ -10,15 +10,18 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import jakarta.data.metamodel.CollectionAttribute;
 import jakarta.data.metamodel.SortableAttribute;
 import jakarta.data.metamodel.StaticMetamodel;
 
 /**
- * Static metamodel for an non-JPA entity type to ignore.
+ * Static metamodel for the TaxPayer entity.
  */
-@StaticMetamodel(java.time.Period.class)
-public class EntityModelUnknown_ {
-    public static final SortableAttribute days = SortableAttribute.get();
-    public static final SortableAttribute months = SortableAttribute.get();
-    public static final SortableAttribute years = null;
+@StaticMetamodel(TaxPayer.class)
+public interface TaxPayer_ {
+    CollectionAttribute bankAccounts = CollectionAttribute.get();
+    SortableAttribute filingStatus = SortableAttribute.get();
+    SortableAttribute income = SortableAttribute.get();
+    SortableAttribute numDependents = SortableAttribute.get();
+    SortableAttribute ssn = SortableAttribute.get(); // the id attribute
 }

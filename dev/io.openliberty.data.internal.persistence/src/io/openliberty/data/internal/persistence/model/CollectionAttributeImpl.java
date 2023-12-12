@@ -10,21 +10,21 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data.model;
+package io.openliberty.data.internal.persistence.model;
 
-import jakarta.data.Sort;
+import com.ibm.websphere.ras.annotation.Trivial;
+
+import jakarta.data.metamodel.CollectionAttribute;
 
 /**
- * Method signatures are copied from Jakarta Data.
+ * Attribute information for the static metamodel.
  */
-public interface AttributeInfo {
-    Sort asc();
+@Trivial
+public record CollectionAttributeImpl(
+                String name)
+                implements CollectionAttribute {
 
-    Sort ascIgnoreCase();
-
-    Sort desc();
-
-    Sort descIgnoreCase();
-
-    String name();
+    public static CollectionAttributeImpl create(String name) {
+        return new CollectionAttributeImpl(name);
+    }
 }

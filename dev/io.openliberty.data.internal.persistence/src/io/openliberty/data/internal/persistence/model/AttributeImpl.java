@@ -5,20 +5,25 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
+ * SPDX-License-Identifier: EPL-2.0
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.jpa.web;
+package io.openliberty.data.internal.persistence.model;
 
-import jakarta.data.metamodel.SortableAttribute;
-import jakarta.data.metamodel.StaticMetamodel;
+import com.ibm.websphere.ras.annotation.Trivial;
+
+import jakarta.data.metamodel.Attribute;
 
 /**
- * Static metamodel for an non-JPA entity type to ignore.
+ * Attribute information for the static metamodel.
  */
-@StaticMetamodel(java.time.Period.class)
-public class EntityModelUnknown_ {
-    public static final SortableAttribute days = SortableAttribute.get();
-    public static final SortableAttribute months = SortableAttribute.get();
-    public static final SortableAttribute years = null;
+@Trivial
+public record AttributeImpl(
+                String name)
+                implements Attribute {
+    public static AttributeImpl create(String name) {
+        return new AttributeImpl(name);
+    }
 }

@@ -10,30 +10,26 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data.internal.persistence;
+package io.openliberty.data.internal.persistence.model;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import jakarta.data.Sort;
-import jakarta.data.model.AttributeInfo;
+import jakarta.data.metamodel.SortableAttribute;
 
 /**
  * Attribute information for the static metamodel.
  */
 @Trivial
-record AttributeInfoImpl(
+public record SortableAttributeImpl(
                 String name,
                 Sort asc,
-                Sort ascIgnoreCase,
-                Sort desc,
-                Sort descIgnoreCase)
-                implements AttributeInfo {
+                Sort desc)
+                implements SortableAttribute {
 
-    static AttributeInfoImpl create(String name) {
-        return new AttributeInfoImpl(name, //
+    public static SortableAttributeImpl create(String name) {
+        return new SortableAttributeImpl(name, //
                         Sort.asc(name), //
-                        Sort.ascIgnoreCase(name), //
-                        Sort.desc(name), //
-                        Sort.descIgnoreCase(name));
+                        Sort.desc(name));
     }
 }

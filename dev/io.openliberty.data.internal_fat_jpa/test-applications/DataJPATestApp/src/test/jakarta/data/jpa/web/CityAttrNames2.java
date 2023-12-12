@@ -10,8 +10,10 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
-import jakarta.data.model.Attribute;
-import jakarta.data.model.StaticMetamodel;
+import jakarta.data.metamodel.Attribute;
+import jakarta.data.metamodel.SortableAttribute;
+import jakarta.data.metamodel.StaticMetamodel;
+import jakarta.data.metamodel.TextAttribute;
 
 /**
  * Static metamodel for the City entity.
@@ -19,9 +21,9 @@ import jakarta.data.model.StaticMetamodel;
 @StaticMetamodel(City.class)
 public class CityAttrNames2 {
     public static final Attribute areaCodes = Attribute.get();
-    public static final Attribute changeCount = Attribute.get();
+    public static final SortableAttribute changeCount = SortableAttribute.get();
     public static final Attribute id = Attribute.get();
-    public static final Attribute ignore = Attribute.get();
+    public static final SortableAttribute ignore = SortableAttribute.get();
     public static volatile long population; // ignored due to data type
-    public static final Attribute name = null;
+    public static final TextAttribute name = null;
 }
