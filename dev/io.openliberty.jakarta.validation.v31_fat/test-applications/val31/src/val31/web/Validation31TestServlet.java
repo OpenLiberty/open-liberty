@@ -101,11 +101,11 @@ public class Validation31TestServlet extends FATServlet {
         // and section 5.4.5 for group conversion
 
         Registration reg = new Registration("x1asas", false);
-        Set<ConstraintViolation<Registration>> constraintViolations = validator.validate(reg);;
+        Set<ConstraintViolation<Registration>> constraintViolations = validator.validate(reg);
         assertTrue("Record Registration should have validated with no violations", constraintViolations.size() == 0);
         Company cmp2 = new Company(" sds", reg);
-        Set<ConstraintViolation<Company>> constraintViolations2 = validator.validate(cmp2, RegistrationChecks.class);;
-        assertTrue("Record Company should have validated with no violations after conversion", constraintViolations2.size() == 2);
+        Set<ConstraintViolation<Company>> constraintViolations2 = validator.validate(cmp2, RegistrationChecks.class);
+        assertTrue("Record Company should have validated with 2 violations after conversion", constraintViolations2.size() == 2);
     }
 
 }
