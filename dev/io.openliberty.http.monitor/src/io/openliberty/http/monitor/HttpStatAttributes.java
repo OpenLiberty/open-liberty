@@ -8,7 +8,17 @@ public class HttpStatAttributes {
 	Optional<Integer> responseStatus = Optional.ofNullable(null);
 	Optional<Exception> exception = Optional.ofNullable(null);
 	
+	Optional<String> error = Optional.ofNullable(null);
 	
+	
+	public Optional<String> getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = Optional.ofNullable(error);
+	}
+
 	String requestMethod, scheme, networkProtocolName, networkProtocolVersion, serverName;
 	int serverPort;
 	

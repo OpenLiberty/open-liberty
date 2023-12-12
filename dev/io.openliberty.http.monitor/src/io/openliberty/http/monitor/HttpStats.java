@@ -20,66 +20,68 @@ import com.ibm.websphere.monitor.meters.StatisticsMeter;
  */
 public class HttpStats extends Meter implements HttpStatsMXBean {
 
-    private final StatisticsMeter responseTime;
-    private String requestMethod, httpRoute;
-    private int responseStatus;
-    
-    
-    //others
-    
-    private String scheme, serverName, networkProtocolName, networkProtocolVersion;
-    private int serverPort;
+	private final StatisticsMeter responseTime;
+	private String requestMethod, httpRoute;
+	private int responseStatus;
 
-    public HttpStats() {
+	private String error = null;;
 
-        responseTime = new StatisticsMeter();
-        responseTime.setDescription("Cumulative Response Time (NanoSeconds) for a HTTP connection");
-        responseTime.setUnit("ns");
-    }
-    
-    public HttpStats(HttpStatAttributes httpStatAttributes) {
-        responseTime = new StatisticsMeter();
-        responseTime.setDescription("Cumulative Response Time (NanoSeconds) for a HTTP connection");
-        responseTime.setUnit("ns");
-        
-        
-        this.requestMethod = httpStatAttributes.getRequestMethod();
-        this.httpRoute = httpStatAttributes.getHttpRoute().orElse("");
-        this.responseStatus = httpStatAttributes.getResponseStatus().orElse(-1);
-        
-        this.scheme = httpStatAttributes.getScheme();
-        
-        this.networkProtocolName  = httpStatAttributes.getNetworkProtocolName();
-        
-        this.networkProtocolVersion = httpStatAttributes.getNetworkProtocolVersion();
-        
-        this.serverName = httpStatAttributes.getServerName();
-        
-        this.serverPort = httpStatAttributes.getServerPort();
-    }
+	// others
 
-    /**
-     * 
-     * @param durationNanos in nanoseconds
-     */
-    public void updateDuration(long durationNanos) {
-        responseTime.addDataPoint(durationNanos);
-    }
-    
-    public void updateDuration(Duration duration) {
-        responseTime.addDataPoint(duration.toNanos());
-    }
+	private String scheme, serverName, networkProtocolName, networkProtocolVersion;
+	private int serverPort;
 
-    @Override
-    public double getDuration() {
-        return responseTime.getTotal();
-    }
+	public HttpStats() {
+
+		responseTime = new StatisticsMeter();
+		responseTime.setDescription("Cumulative Response Time (NanoSeconds) for a HTTP connection");
+		responseTime.setUnit("ns");
+	}
+
+	public HttpStats(HttpStatAttributes httpStatAttributes) {
+		responseTime = new StatisticsMeter();
+		responseTime.setDescription("Cumulative Response Time (NanoSeconds) for a HTTP connection");
+		responseTime.setUnit("ns");
+
+		this.requestMethod = httpStatAttributes.getRequestMethod();
+		this.httpRoute = httpStatAttributes.getHttpRoute().orElse("");
+		this.responseStatus = httpStatAttributes.getResponseStatus().orElse(-1);
+
+		this.scheme = httpStatAttributes.getScheme();
+
+		this.networkProtocolName = httpStatAttributes.getNetworkProtocolName();
+
+		this.networkProtocolVersion = httpStatAttributes.getNetworkProtocolVersion();
+
+		this.serverName = httpStatAttributes.getServerName();
+
+		this.serverPort = httpStatAttributes.getServerPort();
+
+		this.error = httpStatAttributes.getError().orElse("");
+	}
+
+	/**
+	 * 
+	 * @param durationNanos in nanoseconds
+	 */
+	public void updateDuration(long durationNanos) {
+		responseTime.addDataPoint(durationNanos);
+	}
+
+	public void updateDuration(Duration duration) {
+		responseTime.addDataPoint(duration.toNanos());
+	}
+
+	@Override
+	public double getDuration() {
+		return responseTime.getTotal();
+	}
 
 	@Override
 	public String getRequestMethod() {
 		return requestMethod;
 	}
-	
+
 	public void setRequestMethod(String requestMethod) {
 		this.requestMethod = requestMethod;
 	}
@@ -101,32 +103,37 @@ public class HttpStats extends Meter implements HttpStatsMXBean {
 
 	@Override
 	public String getScheme() {
-		// TODO Auto-generated method stub
+
 		return scheme;
 	}
 
 	@Override
 	public String getNetworkProtocolName() {
-		// TODO Auto-generated method stub
+
 		return networkProtocolName;
 	}
 
 	@Override
 	public String getNetworkProtocolVersion() {
-		// TODO Auto-generated method stub
+
 		return networkProtocolVersion;
 	}
 
 	@Override
 	public String getServerName() {
-		// TODO Auto-generated method stub
+
 		return serverName;
 	}
 
 	@Override
 	public int getServerPort() {
-		// TODO Auto-generated method stub
+
 		return serverPort;
+	}
+
+	@Override
+	public String getError() {
+		return error;
 	}
 
 }

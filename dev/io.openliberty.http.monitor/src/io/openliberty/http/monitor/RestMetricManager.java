@@ -30,7 +30,7 @@ public class RestMetricManager {
 	public static void updateHttpMetrics(HttpStatAttributes httpStatAttributes, Duration duration) {
 		
 		if(sharedMetricRegistries == null) {
-			System.out.println("did not acquire shared metric registries");
+			//System.out.println("did not acquire shared metric registries");
 			return;
 		}
 		

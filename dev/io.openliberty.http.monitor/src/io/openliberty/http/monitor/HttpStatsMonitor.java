@@ -54,7 +54,6 @@ public class HttpStatsMonitor extends StatisticActions {
 	 */
 	{
 		if (instance == null) {
-			System.out.println("Registering singleton actual");
 			instance = this;
 		} else {
 			Tr.debug(tc, "singleton already registered " + instance);
@@ -83,9 +82,8 @@ public class HttpStatsMonitor extends StatisticActions {
 		long elapsedNanos = System.nanoTime() - tl_startNanos.get();
 		HttpStatAttributes retrievedHttpStatAttr = tl_httpStats.get();
 
-		System.out.println(" welcome home ");
 
-		System.out.println(retrievedHttpStatAttr);
+		//System.out.println(retrievedHttpStatAttr);
 
 		if (retrievedHttpStatAttr == null) {
 			// Pretty important to get those httpAttributes
@@ -113,6 +111,7 @@ public class HttpStatsMonitor extends StatisticActions {
 		httpStat.setNetworkProtocolVersion(networkVersion);
 	}
 
+	//TODO: Use this instead.
 	private void testJustHttpDispatcherLink(HttpDispatcherLink hdl ) {
 		
 		System.out.println("Testing it out - START");
@@ -163,7 +162,7 @@ public class HttpStatsMonitor extends StatisticActions {
 
 		if (probedHttpDispatcherLinkObj != null) {
 
-			testJustHttpDispatcherLink((HttpDispatcherLink)probedHttpDispatcherLinkObj);
+//			testJustHttpDispatcherLink((HttpDispatcherLink)probedHttpDispatcherLinkObj);
 			
 //				Method getRequestMethod = probedHttpDispatcherLinkObj.getClass().getMethod("getRequest", null);
 //
@@ -214,10 +213,10 @@ public class HttpStatsMonitor extends StatisticActions {
 					serverName = hisc.getLocalAddr().getHostAddress();
 				}
 
-				System.out.println("servername " + serverName);
+				//System.out.println("servername " + serverName);
 				httpStatAttributes.setServerName(serverName);
 
-				System.out.println("port " + hisc.getLocalPort());
+				//System.out.println("port " + hisc.getLocalPort());
 				httpStatAttributes.setServerPort(hisc.getLocalPort());
 
 			} catch (NoSuchFieldException e) { // getDeclaredField() call
@@ -277,7 +276,7 @@ public class HttpStatsMonitor extends StatisticActions {
 			return HttpConnByRoute.get(key);
 		}
 
-		HttpStats httpMetricStats = new HttpStats();
+		HttpStats httpMetricStats = new HttpStats(statAttri);
 		HttpConnByRoute.put(key, httpMetricStats);
 		return httpMetricStats;
 

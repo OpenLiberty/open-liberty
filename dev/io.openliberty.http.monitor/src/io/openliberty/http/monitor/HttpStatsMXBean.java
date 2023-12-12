@@ -32,6 +32,8 @@ public interface HttpStatsMXBean {
 	
 	public int getServerPort();
 	
+	public String getError();
+	
 	//actual values
 	
 	public long getCount();

@@ -126,7 +126,7 @@ public class ServletFilter implements Filter {
 						
 						//Can be null for direct match with servlet URL pattern with no wildcard
 						String pathInfo = wadc40.getPathInfo();
-						System.out.println("path Info: " + pathInfo); // Deal with null....
+						//System.out.println("path Info: " + pathInfo); // Deal with null....
 						
 
 						HttpServletMapping httpServletMapping = wadc40.getServletMapping();
@@ -186,7 +186,7 @@ public class ServletFilter implements Filter {
 							} else {
 								// unknown scenario
 							}
-							System.out.println("Servlet Mapping pattern: " + pattern);
+							//System.out.println("Servlet Mapping pattern: " + pattern);
 						} else if (pathInfo != null){
 
 							/*
@@ -205,7 +205,7 @@ public class ServletFilter implements Filter {
 							else if (pathInfo.equals("/")) {
 								httpRoute = contextPath + "/";
 								httpStat.setHttpRoute(httpRoute);
-								System.out.println(" DEFAULT PAGE : ");
+								//System.out.println(" DEFAULT PAGE : ");
 							} else {
 								// something really weird has happened?!
 							}

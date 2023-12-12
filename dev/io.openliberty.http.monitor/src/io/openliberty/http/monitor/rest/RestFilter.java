@@ -57,7 +57,6 @@ public class RestFilter implements ContainerRequestFilter, ContainerResponseFilt
 
     @Override
     public void filter(ContainerRequestContext reqCtx) throws IOException {
-    	System.out.println("REST:in actual");
     	//^DC:debug don't really need the in filter.
     }
 
@@ -90,7 +89,7 @@ public class RestFilter implements ContainerRequestFilter, ContainerResponseFilt
 
     		route = template.toTemplate();
     		if (route != null && !route.isEmpty()) {
-            	System.out.println("RestfulWsMonitorFilter: servlet request httproute: " + route);
+            	//System.out.println("RestfulWsMonitorFilter: servlet request httproute: " + route);
                 servletRequest.setAttribute("RESTFUL.HTTP.ROUTE", route);
     		}
 
