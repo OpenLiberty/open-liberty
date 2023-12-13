@@ -23,12 +23,16 @@
 #
 
 #-----------------------------------------------------------------------------------------------------------------------------
-# Messages used by Reactive Streams Operators CDI Autofeature - range is TODO-TODO
+# CWMRX   0000-0999       MicroProfile Reactive Streams    
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
 #-----------------------------------------------------------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Messages used by Reactive Streams Operators CDI
 #-----------------------------------------------------------------------------------------------------------------------------
+CWMRX0000.cannot.serviceload.reactivestreamsengine=CWMRX0000:Unable to service load ReactiveStreamsEngine from the producer.
+CWMRX0000.cannot.serviceload.reactivestreamsengine.explanation=An internal error is preventing the creation of the injected ReactiveStreamEngine instances.
+CWMRX0000.cannot.serviceload.reactivestreamsengine.useraction=Review the server messages.log file and FFDC logs to identify the problem.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Streams error message
