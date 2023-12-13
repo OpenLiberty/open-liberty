@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
 #COMPONENTPREFIX JSPG CWWJS
@@ -1273,11 +1270,23 @@ jsp.isthreadsafe.warning=CWWJS0003W: The Pages 3.1 specification strongly advise
 jsp.isthreadsafe.warning.explanation=SingleThreadModel was removed from Servlet 6.0. Pages 3.1 deprecated isThreadSafe with plans to remove it in a future Pages update.
 jsp.isthreadsafe.warning.useraction=Remove the isThreadSafe directive from all pages.
 
-
 jsp.useinmemory.warning=CWWJS0004W: The 'useInMemory' JSP Option is not supported. The JSPs will be compiled and saved on disk instead.
 jsp.useinmemory.warning.explanation=This feature was never ported from Traditional WebSphere for historical reasons.
 jsp.useinmemory.warning.useraction=Remove the useInMemory option from the server.xml, ibm-web-bnd.xml, or the ibm-web-ext.xmi files.
 
-pages.removed.element.error=CWWJS0005E: The {0} element was removed in Pages 4.0 and therefore is no longer supported.
+jsp.javasourcelevel.warning=CWWJS0004W: Requested javaSourceLevel={0} exceeds installed Java {1}, therefore forcing to {1}.
+jsp.javasourcelevel.warning.explanation=File cannot be compiled with a higher source than the available JDK level. 
+jsp.javasourcelevel.warning.useraction=Specify the javaSourceLevel at or below the available JDK level.
+
+jsp.bothsourcelevelset.warning=CWWJS0005W: Specified both javaSourceLevel={0} and jdkSourceLevel={1}. Defaulting to javaSourceLevel={0}
+jsp.bothsourcelevelset.warning.explanation= Only one source level attribute can be used at a time.
+jsp.bothsourcelevelset.warning.useraction= Select one source level attribute. javaSourceLevel is recommended as jdkSourceLevel is stabalized.  
+
+jsp.javasourcelevel.value=CWWJS0006I: The value of the JSP attribute javaSourceLevel is \"{0}\".
+jsp.javasourcelevel.value.explanation =
+jsp.javasourcelevel.value.useraction =
+
+pages.removed.element.error=CWWJS0007E: The {0} element was removed in Pages 4.0 and therefore is no longer supported.
 pages.removed.element.error.explanation=The jsp plugin and related actions were deprecated in Pages 3.1 and removed in 4.0. 
 pages.removed.element.error.useraction= Remove the jsp plugin, fallback, and params elements from your web app.
+
