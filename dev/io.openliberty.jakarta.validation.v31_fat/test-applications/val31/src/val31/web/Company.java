@@ -10,17 +10,18 @@
  *******************************************************************************/
 package val31.web;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.groups.ConvertGroup;
+import jakarta.validation.groups.Default;
 
 /**
- *
- */
-public record Person(@NotNull String name) {
+*
+*/
+public record Company(
+                @NotNull String companyName,
+                @Valid @ConvertGroup(from = Default.class, to = RegistrationChecks.class) Registration registeration)
 
-    @Size(min = 6)
-    public String getName() {
-        return this.name;
-    }
+{
 
 }
