@@ -18,12 +18,16 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
+
+import componenttest.custom.junit.runner.FATRunner;
 
 /**
  * Basic test for KafkaTestClientProvider text encoding
  */
+@RunWith(FATRunner.class)
 public class KafkaTestClientProviderTest {
 
     @Test
