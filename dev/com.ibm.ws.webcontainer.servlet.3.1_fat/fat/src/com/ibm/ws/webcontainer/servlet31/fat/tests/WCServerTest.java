@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2023 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,9 @@
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE8_OR_LATER_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_OR_LATER_FEATURES;
 import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.io.File;
@@ -217,7 +216,7 @@ public class WCServerTest extends LoggingTest {
      *                       if something goes horribly wrong
      */
     @Test
-    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
+    @SkipForRepeat(EE8_OR_LATER_FEATURES)
     public void test_Servlet31() throws Exception {
         WebResponse response = this.verifyResponse("/TestServlet31/MyServlet", "Hello World");
 
@@ -375,7 +374,7 @@ public class WCServerTest extends LoggingTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
+    @SkipForRepeat(EE8_OR_LATER_FEATURES)
     public void test_ServletContextMinorMajorVersion() throws Exception {
         this.verifyResponse("/TestServlet31/MyServlet?TestMajorMinorVersion=true",
                             "majorVersion: 3");
@@ -485,7 +484,7 @@ public class WCServerTest extends LoggingTest {
      */
     @Test
     @Mode(TestMode.FULL)
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
+    @SkipForRepeat(EE9_OR_LATER_FEATURES)
     public void test_DecodeUrlPlusSignDefault() throws Exception {
         this.verifyResponse("/TestServlet31/noplus+sign.html", "This file has a space in the name");
     }
