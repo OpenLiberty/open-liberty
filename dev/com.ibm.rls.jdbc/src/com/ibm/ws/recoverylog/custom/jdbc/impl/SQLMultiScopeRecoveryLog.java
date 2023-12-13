@@ -503,7 +503,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * @exception LogAllocationException The recovery log could not be created.
      * @exception InternalLogException   An unexpected failure has occured.
      */
+
     @Override
+    @FFDCIgnore({ PeerLostLogOwnershipException.class })
     public void openLog() throws LogCorruptedException, LogAllocationException, InternalLogException {
 
         synchronized (_DBAccessIntentLock) {
@@ -618,10 +620,21 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
                             openSuccess = true;
                         } catch (SQLException sqlex) {
-                            Tr.audit(tc, "WTRN0107W: " +
-                                         "Caught SQLException when opening SQL RecoveryLog " + _logName + " for server " + _serverName + " SQLException: " + sqlex);
                             // Set the exception that will be reported
                             currentSqlEx = sqlex;
+                            if (_useNewLockingScheme && !_isHomeServer && !ConfigurationProviderManager.getConfigurationProvider().peerRecoveryPrecedence()) {
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "Not the home server and the underlying table may have been deleted");
+                                if (isTableDeleted(sqlex)) {
+                                    PeerLostLogOwnershipException ple = new PeerLostLogOwnershipException("Underlying table is missing", null);
+                                    nonTransientException = ple;
+                                    currentSqlEx = null;
+                                }
+                            }
+                            if (currentSqlEx != null) {
+                                Tr.audit(tc, "WTRN0107W: " +
+                                             "Caught SQLException when opening SQL RecoveryLog " + _logName + " for server " + _serverName + " SQLException: " + currentSqlEx);
+                            }
                         } catch (PeerLostLogOwnershipException ple) {
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "Caught PeerLostLogOwnershipException: " + ple);
@@ -688,8 +701,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                     // In the case where peer log ownership has been lost, either on first execution or retry, then re-throw the exception
                                     // without auditing.
                                     if (nonTransientException instanceof PeerLostLogOwnershipException) {
-                                        if (tc.isEntryEnabled())
-                                            Tr.exit(tc, "openLog", "PeerLostLogOwnershipException");
                                         PeerLostLogOwnershipException ple = new PeerLostLogOwnershipException(nonTransientException);
                                         throw ple;
                                     } else {
@@ -707,6 +718,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
                             }
                         } // end finally
+                    } catch (PeerLostLogOwnershipException ple) {
+                        if (tc.isEntryEnabled())
+                            Tr.exit(tc, "openLog", ple);
+                        throw ple;
                     } catch (Throwable exc) {
                         FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.SQLMultiScopeRecoveryLog.openLog", "500", this);
                         if (tc.isEventEnabled())
@@ -2074,10 +2089,21 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 }
                 // Catch and report an SQLException. In the finally block we'll determine whether the condition is transient or not.
                 catch (SQLException sqlex) {
-                    Tr.audit(tc, "WTRN0107W: " +
-                                 "Caught SQLException when forcing SQL RecoveryLog " + _logName + " for server " + _serverName + " SQLException: " + sqlex);
                     // Set the exception that will be reported
                     currentSqlEx = sqlex;
+                    if (_useNewLockingScheme && !_isHomeServer && !ConfigurationProviderManager.getConfigurationProvider().peerRecoveryPrecedence()) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Not the home server and the underlying table may have been deleted");
+                        if (isTableDeleted(sqlex)) {
+                            PeerLostLogOwnershipException ple = new PeerLostLogOwnershipException("Underlying table is missing", null);
+                            nonTransientException = ple;
+                            currentSqlEx = null;
+                        }
+                    }
+                    if (currentSqlEx != null) {
+                        Tr.audit(tc, "WTRN0107W: " +
+                                     "Caught SQLException when forcing SQL RecoveryLog " + _logName + " for server " + _serverName + " SQLException: " + currentSqlEx);
+                    }
                 } catch (PeerLostLogOwnershipException ple) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Caught PeerLostLogOwnershipException: " + ple);
@@ -2464,6 +2490,37 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         if (tc.isEntryEnabled())
             Tr.exit(tc, "takeHADBLock", lockSuccess);
         return lockSuccess;
+    }
+
+    private boolean isTableDeleted(SQLException sqlex) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "isTableDeleted ", new Object[] { sqlex });
+        boolean noTable = false;
+        int sqlErrorCode = sqlex.getErrorCode();
+        String sqlmessage = sqlex.getMessage();
+
+        if (tc.isEventEnabled()) {
+            Tr.event(tc, " SQL exception:");
+            Tr.event(tc, " Message: " + sqlex.getMessage());
+            Tr.event(tc, " SQLSTATE: " + sqlex.getSQLState());
+            Tr.event(tc, " Error code: " + sqlErrorCode);
+        }
+        if (_isDB2) {
+            if (sqlErrorCode == -204)
+                noTable = true;
+        } else if (_isOracle) {
+            if (sqlErrorCode == 942)
+                noTable = true;
+        } else if (_isPostgreSQL) {
+            if (sqlmessage.contains("relation") && sqlmessage.contains("does not exist"))
+                noTable = true;
+        } else if (_isSQLServer) {
+            if (sqlErrorCode == 208)
+                noTable = true;
+        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "isTableDeleted", noTable);
+        return noTable;
     }
 
     //------------------------------------------------------------------------------
@@ -4565,6 +4622,20 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 Tr.debug(tc, "claimPeerRecoveryLogs failed with SQLException: " + sqlex);
             // Set the exception that will be reported
             currentSqlEx = sqlex;
+            if (!ConfigurationProviderManager.getConfigurationProvider().peerRecoveryPrecedence()) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Check whether the underlying table has been deleted");
+                if (isTableDeleted(sqlex)) {
+                    // Slightly clunky, but prevents retries in this case
+                    PeerLostLogOwnershipException ple = new PeerLostLogOwnershipException("Underlying table is missing", null);
+                    nonTransientException = ple;
+                    currentSqlEx = null;
+                }
+            }
+            if (currentSqlEx != null) {
+                Tr.audit(tc, "WTRN0107W: " +
+                             "Caught SQLException when opening SQL RecoveryLog " + _logName + " for server " + _serverName + " SQLException: " + currentSqlEx);
+            }
         } catch (Exception exc) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "claimPeerRecoveryLogs failed with Exception: " + exc);

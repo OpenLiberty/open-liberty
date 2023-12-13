@@ -1930,6 +1930,18 @@ public class RecoveryManager implements Runnable {
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "run");
                     return;
+                } catch (PeerLostLogOwnershipException ple) {
+                    // No messaging in this case
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
+                    closeLogs();
+
+                    recoveryFailed(ple);
+                    Tr.audit(tc,
+                             "WTRN0107W: Server with identity " + _localRecoveryIdentity + " attempted but failed to recover the logs of peer server "
+                                 + serverName);
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "run");
                 } catch (InternalLogException exc) {
                     if (!localRecovery && _shutdownInProgress) {
                         if (tc.isDebugEnabled())
@@ -2031,6 +2043,18 @@ public class RecoveryManager implements Runnable {
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "run");
                     return;
+                } catch (PeerLostLogOwnershipException ple) {
+                    // No messaging in this case
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
+                    closeLogs();
+
+                    recoveryFailed(ple);
+                    Tr.audit(tc,
+                             "WTRN0107W: Server with identity " + _localRecoveryIdentity + " attempted but failed to recover the logs of peer server "
+                                 + serverName);
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "run");
                 } catch (InternalLogException exc) {
                     if (!localRecovery && _shutdownInProgress) {
                         if (tc.isDebugEnabled())

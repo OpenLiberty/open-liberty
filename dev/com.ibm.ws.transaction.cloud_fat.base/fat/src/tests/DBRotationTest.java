@@ -66,6 +66,9 @@ public class DBRotationTest extends CloudFATServletClient {
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.shortlease")
     public static LibertyServer shortLeaseServer1;
 
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD002.shortlease")
+    public static LibertyServer shortLeaseServer2;
+
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.norecoverygroup")
     public static LibertyServer noRecoveryGroupServer1;
 
@@ -88,6 +91,7 @@ public class DBRotationTest extends CloudFATServletClient {
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.noShutdown",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.shortlease",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.norecoverygroup",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD002.shortlease",
     };
 
     private LibertyServer[] serversToCleanup;
@@ -113,6 +117,7 @@ public class DBRotationTest extends CloudFATServletClient {
         ShrinkHelper.exportAppToServer(server2, app, dO);
         ShrinkHelper.exportAppToServer(longLeaseCompeteServer1, app, dO);
         ShrinkHelper.exportAppToServer(shortLeaseServer1, app, dO);
+        ShrinkHelper.exportAppToServer(shortLeaseServer2, app, dO);
         ShrinkHelper.exportAppToServer(noRecoveryGroupServer1, app, dO);
         ShrinkHelper.exportAppToServer(peerPrecedenceServer1, app, dO);
         ShrinkHelper.exportAppToServer(longLeaseLogFailServer1, app, dO);
@@ -508,6 +513,35 @@ public class DBRotationTest extends CloudFATServletClient {
         assertNotNull("Lease Renewer has not fired", shortLeaseServer1.waitForStringInTrace("Have updated Server row", LOG_SEARCH_TIMEOUT));
         assertNotNull("Lease checker has not fired", shortLeaseServer1.waitForStringInTrace("Lease Table: read recoveryId", LOG_SEARCH_TIMEOUT));
         Log.info(c, method, "testLeaseIndexBackwardCompatibility is complete");
+    }
+
+    @Test
+    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
+    public void testAggressiveDBRecoveryTakeover() throws Exception {
+        final String method = "testAggressiveDBRecoveryTakeover";
+        if (!TxTestContainerSuite.isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
+            StringBuilder sb = null;
+
+            serversToCleanup = new LibertyServer[] { server1, shortLeaseServer2 };
+
+            FATUtils.startServers(runner, server1);
+            try {
+                // We expect this to fail since it is gonna crash the server
+                runTest(server1, SERVLET_NAME, "setupRecForAggressiveTakeover");
+            } catch (IOException e) {
+            }
+
+            assertNotNull(server1.getServerName() + " didn't crash properly", server1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
+
+            // Now start server2
+            shortLeaseServer2.setHttpDefaultPort(cloud2ServerPort);
+            FATUtils.startServers(runner, shortLeaseServer2);
+            FATUtils.startServers(runner, server1);
+
+            // Servers appear to have started ok. Check for key string to see whether peer recovery has succeeded
+            assertNotNull("peer unexpectedly recovered home server logs", server1.waitForStringInTrace("WTRN0140I: Recovered transaction", LOG_SEARCH_TIMEOUT));
+        }
+        Log.info(c, method, "test complete");
     }
 
     // Returns false if the server is alive, throws Exception otherwise

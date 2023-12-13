@@ -75,8 +75,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
     protected final HashMap<String, FailureScopeController> failureScopeControllerTable = new HashMap<String, FailureScopeController>();
 
-    private RecoveryLog _transactionLog;
-    private RecoveryLog _partnerLog;
+    private RecoveryLog _homePartnerLog;
     // In the special case where we are operating in the cloud, we'll also work with a "lease" log
     SharedServerLeaseLog _leaseLog;
 
@@ -175,10 +174,12 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     @Override
     public void initiateRecovery(FailureScope fs) throws RecoveryFailedException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "initiateRecovery", fs);
+            Tr.entry(tc, "initiateRecovery", this, fs);
         String recoveredServerIdentity = fs.serverName();
         FailureScopeController fsc = null;
         ConfigurationProvider cp = null;
+        RecoveryLog transactionLog = null;
+        RecoveryLog partnerLog = null;
 
         final boolean localRecovery = recoveredServerIdentity.equals(localRecoveryIdentity);
 
@@ -320,11 +321,11 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     //
                     // Create the Transaction log
                     //
-                    _transactionLog = rlm.getRecoveryLog(fs, transactionLogProps);
+                    transactionLog = rlm.getRecoveryLog(fs, transactionLogProps);
 
                     // Configure the SQL HADB Retry parameters
-                    if (_transactionLog != null && _transactionLog instanceof HeartbeatLog) {
-                        HeartbeatLog heartbeatLog = (HeartbeatLog) _transactionLog;
+                    if (transactionLog != null && transactionLog instanceof HeartbeatLog) {
+                        HeartbeatLog heartbeatLog = (HeartbeatLog) transactionLog;
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "The transaction log is a Heartbeatlog, configure SQL HADB retry parameters");
                         configureSQLHADBRetryParameters(heartbeatLog, cp);
@@ -333,11 +334,16 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     //
                     // Create the Partner (XAResources) log
                     //
-                    _partnerLog = rlm.getRecoveryLog(fs, partnerLogProps);
+                    partnerLog = rlm.getRecoveryLog(fs, partnerLogProps);
+                    if (localRecovery) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Set the home partnerLog to " + partnerLog);
+                        _homePartnerLog = partnerLog;
+                    }
 
                     // Configure the SQL HADB Retry parameters
-                    if (_partnerLog != null && _partnerLog instanceof HeartbeatLog) {
-                        HeartbeatLog heartbeatLog = (HeartbeatLog) _partnerLog;
+                    if (partnerLog != null && partnerLog instanceof HeartbeatLog) {
+                        HeartbeatLog heartbeatLog = (HeartbeatLog) partnerLog;
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "The partner log is a Heartbeatlog, configure SQL HADB retry parameters");
                         cp = ConfigurationProviderManager.getConfigurationProvider();
@@ -372,7 +378,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 // Create the RecoveryManager and associate it with the logs
                 //
                 if (fsc != null) {
-                    fsc.createRecoveryManager(this, _transactionLog, _partnerLog, null, applId, epoch);
+                    fsc.createRecoveryManager(this, transactionLog, partnerLog, null, applId, epoch);
 
                     // Initiate recovery on a separate thread.
                     // Cannot use default threadpool threads as these are subject to hang detection and if we
@@ -522,30 +528,30 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                             Tr.debug(tc, "Caught exception on lock release - " + e);
                     }
 
-                    // If Recovery Failed, then by default we shall bring down the Liberty Server
+                    // If Recovery Failed, then by default, if this is the home server, we shall bring down the Liberty Server
                     if (fsc != null && fsc.getRecoveryManager().recoveryFailed()) {
-                        RecoveryFailedException rex = new RecoveryFailedException("Home server recovery failed in peer environment");
                         // Check the system property but by default we want the server to be shutdown if we, the server
                         // that owns the logs is not able to recover them. The System Property supports the tWAS style
                         // of processing.
-                        if (localRecovery && !doNotShutdownOnRecoveryFailure()) {
-                            cp = ConfigurationProviderManager.getConfigurationProvider();
-                            if (cp == null) {
-                                if (tc.isEntryEnabled())
-                                    Tr.exit(tc, "initiateRecovery", "ConfigurationProvider is null");
-                                throw new RecoveryFailedException("ConfigurationProvider is null");
+                        if (localRecovery) {
+                            if (!doNotShutdownOnRecoveryFailure()) {
+                                cp = ConfigurationProviderManager.getConfigurationProvider();
+                                if (cp == null) {
+                                    if (tc.isEntryEnabled())
+                                        Tr.exit(tc, "initiateRecovery", "ConfigurationProvider is null");
+                                    throw new RecoveryFailedException("ConfigurationProvider is null");
+                                }
+                                cp.shutDownFramework();
                             }
-                            cp.shutDownFramework();
+
+                            RecoveryFailedException rex = new RecoveryFailedException("Home server recovery failed in peer environment");
+                            if (tc.isEntryEnabled())
+                                Tr.exit(tc, "initiateRecovery", rex);
+
+                            // Output a message as to why we are terminating the server as in
+                            Tr.error(tc, "CWRLS0024_EXC_DURING_RECOVERY", rex.toString());
+                            throw rex;
                         }
-                        // Drive recovery failure processing
-                        _recoveryManager.recoveryFailed(rex);
-
-                        if (tc.isEntryEnabled())
-                            Tr.exit(tc, "initiateRecovery", rex);
-
-                        // Output a message as to why we are terminating the server as in
-                        Tr.error(tc, "CWRLS0024_EXC_DURING_RECOVERY", rex.toString());
-                        throw rex;
                     }
 
                     // Only spawn timeout manager if this is the local server and recovery succeeded
@@ -703,7 +709,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
     public synchronized void stop(boolean immediate) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "stop", new Object[] { Boolean.valueOf(immediate) });
+            Tr.entry(tc, "stop", new Object[] { this, Boolean.valueOf(immediate) });
 
         // Set the flag to signify that the server is stopping
         _serverStopping = true;
@@ -713,10 +719,10 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
         // Drive the serverStopping() method on the SQLMultiScopeRecoveryLog if appropriate. This will manage
         // the cancelling of the HADB Log Availability alarm
-        if (_partnerLog != null && _partnerLog instanceof HeartbeatLog) {
+        if (_homePartnerLog != null && _homePartnerLog instanceof HeartbeatLog) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "The log is a Heartbeatlog");
-            HeartbeatLog heartbeatLog = (HeartbeatLog) _partnerLog;
+            HeartbeatLog heartbeatLog = (HeartbeatLog) _homePartnerLog;
             heartbeatLog.serverStopping();
         }
 
@@ -769,7 +775,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     @Override
     public ArrayList<String> processLeasesForPeers(String recoveryIdentity, String recoveryGroup) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "processLeasesForPeers", new Object[] { recoveryIdentity, recoveryGroup });
+            Tr.entry(tc, "processLeasesForPeers", new Object[] { this, recoveryIdentity, recoveryGroup });
         ArrayList<String> peersToRecover = null;
 
         if (_leaseLog != null) {
@@ -968,7 +974,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     @Override
     public HeartbeatLog getHeartbeatLog(FailureScope fs) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "getHeartbeatLog", fs);
+            Tr.entry(tc, "getHeartbeatLog", this, fs);
         RecoveryLog partnerLog = null;
         HeartbeatLog heartbeatLog = null;
         String recoveredServerIdentity = null;
