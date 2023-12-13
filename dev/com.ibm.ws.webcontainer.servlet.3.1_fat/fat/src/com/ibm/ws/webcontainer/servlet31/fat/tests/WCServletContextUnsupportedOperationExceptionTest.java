@@ -10,6 +10,7 @@
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
@@ -87,7 +88,7 @@ public class WCServletContextUnsupportedOperationExceptionTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES)
+    @SkipForRepeat({ EE10_FEATURES, EE11_FEATURES })
     public void test_ProgrammaticListenerAddition_Throws_UnsupportedOperationException() throws Exception {
         // PI41941: Changed the message. Wait for the full message.
         String logMessage = server

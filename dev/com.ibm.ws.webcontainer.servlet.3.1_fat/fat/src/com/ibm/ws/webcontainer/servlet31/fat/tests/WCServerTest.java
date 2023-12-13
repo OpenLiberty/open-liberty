@@ -6,14 +6,12 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
@@ -212,14 +210,14 @@ public class WCServerTest extends LoggingTest {
 
     /**
      * Sample test for running with Servlet 3.1
-     * This test is skipped for servlet-4.0 and servlet-5.0 because
+     * This test is skipped for servlet-4.0, servlet-5.0, servlet-6.0, and servlet-6.1 because
      * there is already a test for this in the 4.0 fat bucket.
      *
      * @throws Exception
      *                       if something goes horribly wrong
      */
     @Test
-    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
     public void test_Servlet31() throws Exception {
         WebResponse response = this.verifyResponse("/TestServlet31/MyServlet", "Hello World");
 
@@ -371,13 +369,13 @@ public class WCServerTest extends LoggingTest {
     /**
      * Verifies that the ServletContext.getMinorVersion() returns 1 and
      * ServletContext.getMajorVersion() returns 3 for Servlet 3.1.
-     * This test is skipped for servlet-4.0 and servlet-5.0 because
+     * This test is skipped for servlet-4.0, servlet-5.0, servlet-6.0, and servlet-6.1 because
      * there is already a test for this in the 4.0 fat bucket.
      *
      * @throws Exception
      */
     @Test
-    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
     public void test_ServletContextMinorMajorVersion() throws Exception {
         this.verifyResponse("/TestServlet31/MyServlet?TestMajorMinorVersion=true",
                             "majorVersion: 3");
@@ -487,7 +485,7 @@ public class WCServerTest extends LoggingTest {
      */
     @Test
     @Mode(TestMode.FULL)
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
     public void test_DecodeUrlPlusSignDefault() throws Exception {
         this.verifyResponse("/TestServlet31/noplus+sign.html", "This file has a space in the name");
     }
