@@ -24,6 +24,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 Export-Package: \
+    io.openliberty.webcontainer61.facade*;provide:=true,\
     io.openliberty.webcontainer61.osgi.srt*;provide:=true,\
     io.openliberty.webcontainer61.osgi.webapp*;provide:=true,\
     io.openliberty.webcontainer61.srt*;provide:=true

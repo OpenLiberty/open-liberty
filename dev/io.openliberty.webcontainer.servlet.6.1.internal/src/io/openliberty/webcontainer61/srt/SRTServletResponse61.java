@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.webcontainer61.srt;
 
+import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,6 +36,20 @@ public class SRTServletResponse61 extends SRTServletResponse60 implements HttpSe
         }
 
         super.initForNextResponse(resp);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see jakarta.servlet.ServletResponse#setCharacterEncoding(java.nio.charset.Charset)
+     */
+    @Override
+    public void setCharacterEncoding(Charset charset) {
+        String encoding = charset.name();
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //306998.15
+            logger.entering(CLASS_NAME, "setCharacterEncoding", "Charset encoding [" + encoding + "] [" + this + "]");
+        }
+        super.setCharacterEncoding(encoding);
     }
 
     @Override
