@@ -9,10 +9,19 @@
  *******************************************************************************/
 package io.openliberty.microprofile.reactive.messaging.internal.interfaces;
 
+import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
+
 /**
- *
+ * An object which can be notified when the server quiesces.
+ * <p>
+ * Must be manually registered with {@link QuiesceRegister}.
+ * <p>
+ * Used by components in Reactive Messaging which aren't OSGi components and so can't easily register themselves as a {@link ServerQuiesceListener}
  */
 public interface QuiesceParticipant {
 
+    /**
+     * Called when the server is stopping
+     */
     void quiesce();
 }

@@ -9,9 +9,26 @@
  *******************************************************************************/
 package io.openliberty.microprofile.reactive.messaging.internal.interfaces;
 
+/**
+ * Allows {@link QuiesceParticipant}s to register and unregister themselves.
+ * <p>
+ * An instance of this interface should be obtained by looking up the singleton service from OSGi.
+ */
 public interface QuiesceRegister {
 
+    /**
+     * Register an object to be notified about the server quiescing
+     * <p>
+     * All objects passed to this method must later be passed to {@link #remove(QuiesceParticipant)} to avoid a memory leak.
+     *
+     * @param participant the object to register
+     */
     void register(QuiesceParticipant participant);
 
+    /**
+     * Deregister an object for notifications about the server quiescing
+     *
+     * @param participant the object to deregister
+     */
     void remove(QuiesceParticipant participant);
 }

@@ -11,6 +11,8 @@ package io.openliberty.microprofile.reactive.messaging.internal.interfaces;
 
 /**
  * Represents a context which can be applied to a thread
+ * <p>
+ * Instances can be created via {@link RMAsyncProvider#captureContext()}
  */
 public interface RMContext {
 

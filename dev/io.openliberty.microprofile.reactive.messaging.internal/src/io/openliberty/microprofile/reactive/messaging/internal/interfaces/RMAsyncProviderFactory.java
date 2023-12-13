@@ -10,9 +10,17 @@
 package io.openliberty.microprofile.reactive.messaging.internal.interfaces;
 
 /**
- *
+ * Creates {@link RMAsyncProvider} instances.
+ * <p>
+ * An instance of this interface should be obtained by looking up the singleton service in OSGi.
  */
 public interface RMAsyncProviderFactory {
 
-    RMAsyncProvider getAsyncProvider(String contextServiceRef);
+    /**
+     * Creates an {@code RMAsyncProvider} which uses the named context service to capture thread context
+     *
+     * @param contextServiceName the context service name, or {@code null} to use the default context service
+     * @return the async provider
+     */
+    RMAsyncProvider getAsyncProvider(String contextServiceName);
 }

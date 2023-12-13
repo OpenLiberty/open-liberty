@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.reactive.messaging.internal;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,16 +22,22 @@ import io.openliberty.microprofile.reactive.messaging.internal.interfaces.Quiesc
 import io.openliberty.microprofile.reactive.messaging.internal.interfaces.QuiesceRegister;
 
 /**
- *
+ * The singleton implementation of {@link QuiesceRegister}
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class QuiesceRegisterImpl implements ServerQuiesceListener, QuiesceRegister {
 
-    private final Set<QuiesceParticipant> participants = new HashSet<>();
+    private final Set<QuiesceParticipant> participants = Collections.synchronizedSet(new HashSet<>());
 
     @Override
     public void serverStopping() {
-        for (QuiesceParticipant participant : participants) {
+        Set<QuiesceParticipant> participantsCopy;
+        // Avoid holding a lock on participants while calling quiesce() to avoid deadlock in case remove() is called at the same time
+        synchronized (participants) {
+            participantsCopy = new HashSet<>(participants);
+        }
+
+        for (QuiesceParticipant participant : participantsCopy) {
             participant.quiesce();
         }
     }

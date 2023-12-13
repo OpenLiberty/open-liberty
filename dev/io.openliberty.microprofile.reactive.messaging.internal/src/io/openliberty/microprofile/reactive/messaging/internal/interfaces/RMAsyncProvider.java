@@ -14,6 +14,8 @@ import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Provides the services needed for Reactive Messaging components to do asynchronous tasks
+ * <p>
+ * Instances must be created via {@link RMAsyncProviderFactory}
  */
 public interface RMAsyncProvider {
 
