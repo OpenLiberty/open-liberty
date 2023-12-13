@@ -264,6 +264,14 @@ public class JaxRsIntegration extends FATServletClient {
         }
     }
 
+    @Test
+    public void testIntegrationWithJaxRsClientWithSpan() throws Exception {
+        HttpRequest pokeJax = new HttpRequest(server, "/" + APP_NAME + "/endpoints/jaxrsclientwithspan");
+        String traceId = readTraceId(pokeJax);
+        HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspanswithspan/" + traceId);
+        assertEquals(TEST_PASSED, readspans.run(String.class));
+    }
+
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
