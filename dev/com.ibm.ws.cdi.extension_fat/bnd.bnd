@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -51,7 +48,7 @@ tested.features:\
         cdi-4.1,\
         pages-4.0,\
         servlet-6.1,\
-        faces-5.0,\
+        faces-4.1,\
         beanvalidation-3.1
 	
 fat.project: true
