@@ -17,7 +17,7 @@ export PERSISTENCE_JAR=$(find $WLP_SPEC -name 'io.openliberty.jakarta.persistenc
 export SERVLET_JAR=$(find $WLP_SPEC -name 'io.openliberty.jakarta.servlet.6.0*' -print)
 export TRANSACTION_JAR=$(find $WLP_SPEC -name 'io.openliberty.jakarta.transaction.2.0*' -print)
 
-export JUNIT_JAR=$PWD/../../cnf/cache/6.4.0/bnd-cache/biz.aQute.junit/biz.aQute.junit-6.4.0.jar
+export JUNIT_JAR=$PWD/../../cnf/cache/7.0.0/bnd-cache/biz.aQute.junit/biz.aQute.junit-7.0.0.jar
 export COMPONENTTEST_JAR=$PWD/../../com.ibm.ws.componenttest.2.0/build/libs/com.ibm.ws.componenttest.2.0.jar
 
 export LIB_CLASSPATH=$ANNOTATION_JAR:$EJB_JAR:$PERSISTENCE_JAR:$SERVLET_JAR:$TRANSACTION_JAR:$JUNIT_JAR:$COMPONENTTEST_JAR
