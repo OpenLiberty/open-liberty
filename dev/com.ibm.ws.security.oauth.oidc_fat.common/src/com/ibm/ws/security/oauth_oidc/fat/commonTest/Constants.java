@@ -145,6 +145,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT = "invokeBackChannelLogoutEndpoint";
 
     public static final String PERFORM_IDP_LOGOUT = "performIDPLogout";
+    public static final String PERFORM_SP_LOGOUT = "performSPLogout";
     public static final String PROCESS_LOGOUT_CONTINUE = "processLogoutContinue";
     public static final String PROCESS_LOGOUT_PROPAGATE_YES = "processLogoutPropagateYes";
     public static final String PROCESS_LOGOUT_REDIRECT = "processLogoutRedirect";
@@ -220,6 +221,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String[] INVOKE_RS_PROTECTED_RESOURCE_LOGIN_ACTIONS = { INVOKE_RS_PROTECTED_RESOURCE, PERFORM_LOGIN };
     //    public static final String[] IDP_INITIATED_LOGOUT = { PERFORM_IDP_LOGOUT, PROCESS_LOGOUT_CONTINUE, PROCESS_LOGOUT_PROPAGATE_YES };
     public static final String[] IDP_INITIATED_LOGOUT = { PERFORM_IDP_LOGOUT, PROCESS_LOGOUT_PROPAGATE_YES };
+    public static final String[] SP_INITIATED_LOGOUT = { PERFORM_SP_LOGOUT, PROCESS_LOGOUT_PROPAGATE_YES };
 
     /* ******************** steps in the RP test process ***************** */
     public static final String SPECIFY_PROVIDER = "specifyProvider";

@@ -32,21 +32,33 @@ public class AfterLogoutStates {
     // by default assume everything exists
     // cookie states
     boolean opCookieExists = true;
+    boolean opCookieStillValid = true;
     boolean opCookieMatchesPrevious = true;
 
     boolean clientCookieExists = true;
+    boolean clientCookieStillValid = true;
     boolean clientCookieMatchesPrevious = true;
+    boolean client2CookieExists = true;
+    boolean client2CookieStillValid = true;
+    boolean client2CookieMatchesPrevious = true;
 
     boolean opJSessionIdExists = true;
+    boolean opJSessionIdStillValid = true;
     boolean opJSessionIdMatchesPrevious = true;
 
     boolean clientJSessionIdExists = true;
+    boolean clientJSessionIdStillValid = true;
     boolean clientJSessionIdMatchesPrevious = true;
+    boolean client2JSessionIdExists = true;
+    boolean client2JSessionIdStillValid = true;
+    boolean client2JSessionIdMatchesPrevious = true;
 
     boolean spCookieExists = true;
+    boolean spCookieStillValid = true;
     boolean spCookieMatchesPrevious = true;
 
     boolean idpCookieExists = true;
+    boolean idpCookieStillValid = true;
     boolean idpCookieMatchesPrevious = true;
 
     // Session access
@@ -70,6 +82,8 @@ public class AfterLogoutStates {
     boolean isUsingInvalidIntrospect = false;
 
     boolean isUsingSaml = false;
+
+    boolean isTokenLimitExceeded = false;
 
     public enum BCL_FORM {
         VALID, TEST_BCL, OMITTED, INVALID
@@ -142,12 +156,6 @@ public class AfterLogoutStates {
             }
         }
 
-        //        if (settings.getRsTokenType() == null || settings.getRsTokenType().equals(Constants.JWT_TOKEN)) {
-        //            isUsingJwtToken = true;
-        //        } else {
-        //            isUsingJwtToken = false;
-        //        }
-
         // set the states of cookies and tokens after logout based on:
         // the type of logout/end_session,
         // whether the BCL endpoint is a real bcl endpoint, or a test app
@@ -161,75 +169,32 @@ public class AfterLogoutStates {
 
     }
 
-    //    public AfterLogoutStates(boolean usesRealBCLEndpoint, String flowType, String logoutMethod, String sessionEndpoint, String tokenType, boolean usesSaml) {
-    //
-    //        Log.info(thisClass, "AfterLogoutStates", "flowType: " + flowType + " logoutMethod: " + logoutMethod);
-    //
-    //        isUsingSaml = usesSaml;
-    //
-    //        if (flowType == null || flowType.equals(Constants.RP_FLOW)) {
-    //            Log.info(thisClass, "AfterLogoutStates", "flowType: " + flowType + " (in OIDC path)");
-    //            isUsingOidcNotSocial = true;
-    //        } else {
-    //            Log.info(thisClass, "AfterLogoutStates", "flowType: " + flowType + " (in Social path)");
-    //            isUsingOidcNotSocial = false;
-    //        }
-    //        if (logoutMethod.equals(Constants.END_SESSION) || logoutMethod.equals(Constants.SAML_IDP_INITIATED_LOGOUT)) {
-    //            isUsingEndSessionNotHttpLogout = true;
-    //        } else {
-    //            if (logoutMethod.equals(Constants.LOGOUT_ENDPOINT)) {
-    //                isUsingLogoutNotHttpLogout = true;
-    //            } else {
-    //                isUsingHttpLogoutOnRP = true;
-    //                if (sessionEndpoint != null) {
-    //                    if (sessionEndpoint.equals(Constants.LOGOUT_ENDPOINT)) {
-    //                        isUsingLogoutWithHttpLogout = true;
-    //                    } else {
-    //                        isUsingEndSessionWithHttpLogout = true;
-    //                    }
-    //                }
-    //            }
-    //        }
-    //
-    //        if (tokenType == null || tokenType.equals(Constants.JWT_TOKEN)) {
-    //            isUsingJwtToken = true;
-    //        } else {
-    //            isUsingJwtToken = false;
-    //        }
-    //
-    //        // set the states of cookies and tokens after logout based on:
-    //        // the type of logout/end_session,
-    //        // whether the BCL endpoint is a real bcl endpoint, or a test app
-    //        setAccessTokenExpectedStateAfterLogout();
-    //        setRefreshTokenExpectedStateAfterLogout();
-    //        setOPCookiesExpectedStatesAfterLogout();
-    //        setClientCookiesExpectedStatesAfterLogout(usesRealBCLEndpoint);
-    //        setReuseWebClientExpectedStateAfterLogout(usesRealBCLEndpoint);
-    //        setSPCookiesExpectedStatesAfterLogout(usesRealBCLEndpoint);
-    //        setIDPCookiesExpectedStatesAfterLogout(usesRealBCLEndpoint);
-    //
-    //    }
-
     public void printStates() {
 
         String thisMethod = "AfterLogoutStates";
 
         Log.info(thisClass, thisMethod, "opCookieExists: " + opCookieExists);
+        Log.info(thisClass, thisMethod, "opCookieStillValid: " + opCookieStillValid);
         Log.info(thisClass, thisMethod, "opCookieMatchesPrevious: " + opCookieMatchesPrevious);
 
         Log.info(thisClass, thisMethod, "clientCookieExists: " + clientCookieExists);
+        Log.info(thisClass, thisMethod, "clientCookieStillValid: " + clientCookieStillValid);
         Log.info(thisClass, thisMethod, "clientCookieMatchesPrevious: " + clientCookieMatchesPrevious);
 
         Log.info(thisClass, thisMethod, "opJSessionIdExists: " + opJSessionIdExists);
+        Log.info(thisClass, thisMethod, "opJSessionIdStillValid: " + opJSessionIdStillValid);
         Log.info(thisClass, thisMethod, "opJSessionIdMatchesPrevious: " + opJSessionIdMatchesPrevious);
 
         Log.info(thisClass, thisMethod, "clientJSessionIdExists: " + clientJSessionIdExists);
+        Log.info(thisClass, thisMethod, "clientJSessionIdStillValid: " + clientJSessionIdStillValid);
         Log.info(thisClass, thisMethod, "clientJSessionIdMatchesPrevious: " + clientJSessionIdMatchesPrevious);
 
         Log.info(thisClass, thisMethod, "spCookieExists: " + spCookieExists);
+        Log.info(thisClass, thisMethod, "spCookieStillValid: " + spCookieStillValid);
         Log.info(thisClass, thisMethod, "spCookieMatchesPrevious: " + spCookieMatchesPrevious);
 
         Log.info(thisClass, thisMethod, "idpCookieExists: " + idpCookieExists);
+        Log.info(thisClass, thisMethod, "idpCookieStillValid: " + idpCookieStillValid);
         Log.info(thisClass, thisMethod, "idpCookieMatchesPrevious: " + idpCookieMatchesPrevious);
 
         // Session access
@@ -250,6 +215,7 @@ public class AfterLogoutStates {
         Log.info(thisClass, thisMethod, "isUsingLogoutWithHttpLogout: " + isUsingLogoutWithHttpLogout);
         //        Log.info(thisClass, thisMethod, "isUsingJwtToken: " + isUsingJwtToken);
         Log.info(thisClass, thisMethod, "isUsingIntrospect: " + isUsingIntrospect);
+        Log.info(thisClass, thisMethod, "isTokenLimitExceeded: " + isTokenLimitExceeded);
 
     }
 
@@ -294,7 +260,7 @@ public class AfterLogoutStates {
     }
 
     /**
-     * The OP SSO cookie wll be removed when:
+     * The OP SSO cookie will be removed when:
      * end_session is used (this means all ways it can be invoked (from test request, from client app, from SAML)
      * req.logout is used (this means all ways that it can be invoked (from test request to the OP, or from client app)
      * So, even in cases where we're using a test app as the bcl endpoint (in the OP), the OP SSO cookie should no longer be
@@ -303,17 +269,23 @@ public class AfterLogoutStates {
      */
     public void setOPCookiesExpectedStatesAfterLogout(VariationSettings vSettings) {
 
-        // TODO - may need a bcl check of some form
         if (vSettings.isOPReqLogoutInvoked) {
             opCookieExists = false;
+            opCookieStillValid = false;
             if (isUsingSaml) {
                 opCookieMatchesPrevious = true;
             } else {
                 opCookieMatchesPrevious = false;
             }
         } else {
-            opCookieExists = true;
-            opCookieMatchesPrevious = true;
+            if (isUsingSaml) {
+                opCookieExists = false;
+                opCookieStillValid = false;
+                opCookieMatchesPrevious = true;
+            } else {
+                opCookieExists = true;
+                opCookieMatchesPrevious = true;
+            }
         }
         //        if (isUsingHttpLogoutOnRP && !(isUsingLogoutWithHttpLogout || isUsingEndSessionWithHttpLogout)) {
         //            opCookieExists = true;
@@ -348,10 +320,17 @@ public class AfterLogoutStates {
 
         // TODO - verify this
         // the cookies are cleaned up when req.logout is invoked on the RP, or we using the real bcl endpoint - end_session will invalidate the client cookie in a round about way
+        if (vSettings.logoutMethodTested == Constants.HTTP_SESSION && vSettings.sessionLogoutEndpoint == null) {
+            clientCookieExists = true;
+            clientCookieStillValid = false;
+            clientCookieMatchesPrevious = false;
+            return;
+        }
         if (vSettings.isOPReqLogoutInvoked && (bcl_form == BCL_FORM.VALID) || vSettings.isRPReqLogoutInvoked) {
             //        if (vSettings.isRPReqLogoutInvoked || (usesRealBCLEndpoint && vSettings.flowUsesBCL) || vSettings.isEndSessionEndpointInvoked) {
             //        if ((usesRealBCLEndpoint || isUsingHttpLogoutOnRP) && !isUsingHttpLogoutOnOP && (!(isUsingLogoutNotHttpLogout && isUsingSaml))) {
             clientCookieExists = false;
+            clientCookieStillValid = false;
             clientCookieMatchesPrevious = false;
         }
 
@@ -362,7 +341,11 @@ public class AfterLogoutStates {
         Log.info(thisClass, "setReuseWebClientExpectedStateAfterLogout", "usesRealBCLEndpoint: " + (bcl_form != BCL_FORM.OMITTED) + " isUsingHttpLogout: " + isUsingHttpLogoutOnRP + " isUsingLogoutNotHttpLogout: " + isUsingLogoutNotHttpLogout + " isUsingSaml: " + isUsingSaml);
 
         //        if ((usesRealBCLEndpoint || isUsingHttpLogoutOnRP) && (!(isUsingLogoutNotHttpLogout && isUsingSaml) || isUsingHttpLogoutOnOP)) {
-        if (vSettings.isOPReqLogoutInvoked && (bcl_form == BCL_FORM.VALID) || vSettings.isRPReqLogoutInvoked) {
+        Log.info(thisClass, "setReuseWebClientExpectedStateAfterLogout", bcl_form.toString());
+        Log.info(thisClass, "setReuseWebClientExpectedStateAfterLogout", Boolean.toString(vSettings.isOPReqLogoutInvoked));
+        Log.info(thisClass, "setReuseWebClientExpectedStateAfterLogout", Boolean.toString(vSettings.isRPReqLogoutInvoked));
+
+        if ((vSettings.isOPReqLogoutInvoked && (bcl_form == BCL_FORM.VALID) || vSettings.isRPReqLogoutInvoked) && !(vSettings.logoutMethodTested.equals(Constants.HTTP_SESSION) && vSettings.sessionLogoutEndpoint == null)) {
             appSessionAccess = false;
         }
     }
@@ -370,14 +353,29 @@ public class AfterLogoutStates {
     public void setSPCookiesExpectedStatesAfterLogout(BCL_FORM bcl_form, VariationSettings vSettings) {
 
         // The SP cookie won't be set/used when NOT using SAML, so it'll match (null before logout and null after logout)
-        if (isUsingSaml) {
+        //        if (isUsingSaml) {
+        //            spCookieExists = false;
+        //            spCookieMatchesPrevious = false;
+        //        } else {
+        //            if ((bcl_form != BCL_FORM.OMITTED) && vSettings.flowUsesBCL || vSettings.isRPReqLogoutInvoked) {
+        //                spCookieExists = false;
+        //            }
+        //            spCookieMatchesPrevious = true;
+        //        }
+
+        if (!isUsingSaml) {
             spCookieExists = false;
+            spCookieStillValid = false;
             spCookieMatchesPrevious = false;
         } else {
-            if ((bcl_form != BCL_FORM.OMITTED) && vSettings.flowUsesBCL || vSettings.isRPReqLogoutInvoked) {
+            if (vSettings.isOPReqLogoutInvoked) {
                 spCookieExists = false;
+                spCookieStillValid = false;
+                spCookieMatchesPrevious = false;
+            } else {
+                spCookieExists = true;
+                spCookieMatchesPrevious = true;
             }
-            spCookieMatchesPrevious = true;
         }
 
     }
@@ -393,6 +391,7 @@ public class AfterLogoutStates {
     public void setOPSSOCookiesRemoved() throws Exception {
 
         opCookieExists = false;
+        opCookieStillValid = false;
         opCookieMatchesPrevious = false;
 
     }
@@ -400,6 +399,7 @@ public class AfterLogoutStates {
     public void setOPJSessionIdRemoved() throws Exception {
 
         opJSessionIdExists = false;
+        opJSessionIdStillValid = false;
         opJSessionIdMatchesPrevious = false;
 
     }
@@ -414,9 +414,11 @@ public class AfterLogoutStates {
 
         if (isSaml) {
             opCookieExists = false;
+            opCookieStillValid = false;
             opCookieMatchesPrevious = false;
         } else {
             opCookieExists = true;
+            opCookieStillValid = true;
             opCookieMatchesPrevious = true;
         }
         opJSessionIdExists = true;
@@ -427,6 +429,7 @@ public class AfterLogoutStates {
     public void setClientSSOCookiesRemoved() throws Exception {
 
         clientCookieExists = false;
+        clientCookieStillValid = false;
         clientCookieMatchesPrevious = false;
 
     }
@@ -434,6 +437,7 @@ public class AfterLogoutStates {
     public void setClientJSessionIdRemoved() throws Exception {
 
         clientJSessionIdExists = false;
+        clientJSessionIdStillValid = false;
         clientJSessionIdMatchesPrevious = false;
 
     }
@@ -447,9 +451,25 @@ public class AfterLogoutStates {
     public void setClientNoCookiesRemoved() throws Exception {
 
         clientCookieExists = true;
+        clientCookieStillValid = true;
         clientCookieMatchesPrevious = true;
         clientJSessionIdExists = true;
+        clientJSessionIdStillValid = true;
         clientJSessionIdMatchesPrevious = true;
+
+    }
+
+    public void setSPCookiesNotRemoved(boolean isSaml) throws Exception {
+
+        if (isSaml) {
+            spCookieExists = true;
+            spCookieStillValid = true;
+            spCookieMatchesPrevious = true;
+        } else {
+            spCookieExists = false;
+            spCookieStillValid = false;
+            spCookieMatchesPrevious = true;
+        }
 
     }
 
@@ -474,6 +494,14 @@ public class AfterLogoutStates {
         return opCookieExists;
     }
 
+    public void setOpCookieStillValid(boolean value) {
+        opCookieStillValid = value;
+    }
+
+    public boolean getOpCookieStillValid() {
+        return opCookieStillValid;
+    }
+
     //    public void setOpCookieMatchesPrevious(boolean value) {
     //        opCookieMatchesPrevious = value;
     //    }
@@ -490,12 +518,44 @@ public class AfterLogoutStates {
         return clientCookieExists;
     }
 
+    public void setClientCookieStillValid(boolean value) {
+        clientCookieStillValid = value;
+    }
+
+    public boolean getClientCookieStillValid() {
+        return clientCookieStillValid;
+    }
+
     public void setClientCookieMatchesPrevious(boolean value) {
         clientCookieMatchesPrevious = value;
     }
 
     public boolean getClientCookieMatchesPrevious() {
         return clientCookieMatchesPrevious;
+    }
+
+    public void setClient2CookieExists(boolean value) {
+        client2CookieExists = value;
+    }
+
+    public boolean getClient2CookieExists() {
+        return client2CookieExists;
+    }
+
+    public void setClient2CookieStillValid(boolean value) {
+        client2CookieStillValid = value;
+    }
+
+    public boolean getClient2CookieStillValid() {
+        return client2CookieStillValid;
+    }
+
+    public void setClient2CookieMatchesPrevious(boolean value) {
+        client2CookieMatchesPrevious = value;
+    }
+
+    public boolean getClient2CookieMatchesPrevious() {
+        return client2CookieMatchesPrevious;
     }
 
     //    public void setOpJSessionIdExists(boolean value) {
@@ -514,12 +574,24 @@ public class AfterLogoutStates {
         return opJSessionIdMatchesPrevious;
     }
 
+    //    public void setOpJSessionIdMatchesPrevious(boolean value) {
+    //        opJSessionIdMatchesPrevious = value;
+    //    }
+
+    public boolean getOpJSessionIdStillValid() {
+        return opJSessionIdStillValid;
+    }
+
     //    public void setClientJSessionIdExists(boolean value) {
     //        clientJSessionIdExists = value;
     //    }
 
     public boolean getClientJSessionIdExists() {
         return clientJSessionIdExists;
+    }
+
+    public boolean getClientJSessionIdStillValid() {
+        return clientJSessionIdStillValid;
     }
 
     public void setClientJSessionIdMatchesPrevious(boolean value) {
@@ -532,12 +604,38 @@ public class AfterLogoutStates {
 
     }
 
+    public boolean getClient2JSessionIdExists() {
+        return client2JSessionIdExists;
+    }
+
+    public boolean getClient2JSessionIdStillValid() {
+        return client2JSessionIdStillValid;
+    }
+
+    public void setClient2JSessionIdMatchesPrevious(boolean value) {
+        client2JSessionIdMatchesPrevious = value;
+
+    }
+
+    public boolean getClient2JSessionIdMatchesPrevious() {
+        return client2JSessionIdMatchesPrevious;
+
+    }
+
     public boolean getSpCookieExists() {
         return spCookieExists;
     }
 
     public void setSpCookieExists(boolean value) {
         spCookieExists = value;
+    }
+
+    public boolean getSpCookieStillValid() {
+        return spCookieStillValid;
+    }
+
+    public void setSpCookieStillValid(boolean value) {
+        spCookieStillValid = value;
     }
 
     public boolean getSpCookieMatchesPrevious() {
@@ -598,4 +696,11 @@ public class AfterLogoutStates {
         return isUsingInvalidIntrospect;
     }
 
+    public void setIsTokenLimitExceeded(boolean value) {
+        isTokenLimitExceeded = value;
+    }
+
+    public boolean getIsTokenLimitExceeded() {
+        return isTokenLimitExceeded;
+    }
 }

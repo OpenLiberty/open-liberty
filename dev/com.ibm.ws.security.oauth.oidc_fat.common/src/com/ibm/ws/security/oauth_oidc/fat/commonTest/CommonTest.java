@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -178,7 +178,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
     public static String classOverrideValidationEndpointValue = null;
 
     @Rule
-    public final TestName testName = new TestName();
+    public static final TestName testName = new TestName();
     public static String _testName = "";
 
     /**
@@ -950,6 +950,9 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
             if (validationTools.isInList(testActions, Constants.PERFORM_IDP_LOGOUT)) {
                 thePage = helpers.performIDPLogout(testcase, webClient, thePage, settings, expectations);
+            }
+            if (validationTools.isInList(testActions, Constants.PERFORM_SP_LOGOUT)) {
+                thePage = helpers.performSPLogout(testcase, webClient, thePage, settings, expectations);
             }
 
             if (validationTools.isInList(testActions, Constants.PROCESS_LOGOUT_CONTINUE)) {

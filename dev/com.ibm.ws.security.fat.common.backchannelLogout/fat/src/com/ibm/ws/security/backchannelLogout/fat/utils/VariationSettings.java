@@ -70,7 +70,7 @@ public class VariationSettings extends CommonTest {
             }
         }
         if (currentRepeatAction.contains(Constants.HTTP_SESSION)) {
-            if (currentRepeatAction.contains(Constants.OIDC_RP)) {
+            if (currentRepeatAction.contains(Constants.OIDC_RP) || currentRepeatAction.contains(SocialConstants.SOCIAL)) {
                 reqLogoutServer = Constants.OIDC_RP;
                 isRPReqLogoutInvoked = true;
             } else {
@@ -87,8 +87,13 @@ public class VariationSettings extends CommonTest {
                 isOPReqLogoutInvoked = true;
             } else {
                 if (currentRepeatAction.contains(Constants.LOGOUT_ENDPOINT)) {
+                    if (currentRepeatAction.toUpperCase().contains(Constants.SAML)) {
+                        finalAppWithoutPostRedirect = "/ibm/saml20/spOP/slo"; // all tests should be using the same provider spOP
+                        isLogoutEndpointInvoked = true;
+                    } else {
+                        finalAppWithoutPostRedirect = Constants.LOGOUT_ENDPOINT;
+                    }
                     sessionLogoutEndpoint = Constants.LOGOUT_ENDPOINT;
-                    finalAppWithoutPostRedirect = Constants.LOGOUT_ENDPOINT;
                     // override for configs that use post redrects - using the logout endpoint on the OP will NOT result in a call to them
                     finalAppWithPostRedirect = Constants.LOGOUT_ENDPOINT;
                     isLogoutEndpointInvoked = true;
@@ -121,6 +126,8 @@ public class VariationSettings extends CommonTest {
                     if (currentRepeatAction.contains(Constants.SAML_IDP_INITIATED_LOGOUT)) {
                         logoutMethodTested = Constants.SAML_IDP_INITIATED_LOGOUT;
                         finalAppWithoutPostRedirect = Constants.samlLogoutPage;
+                        isOPReqLogoutInvoked = true;
+                        flowUsesBCL = true;
                     } else {
                         logoutMethodTested = Constants.LOGOUT_ENDPOINT;
                         flowUsesBCL = true;
@@ -151,9 +158,12 @@ public class VariationSettings extends CommonTest {
         Log.info(thisClass, "printVariationSettings", "usesSAML: " + Boolean.toString(usesSAML));
         Log.info(thisClass, "printVariationSettings", "finalAppWithPostRedirect: " + finalAppWithPostRedirect);
         Log.info(thisClass, "printVariationSettings", "finalAppWithoutPostRedirect: " + finalAppWithoutPostRedirect);
-        Log.info(thisClass, "printVariationSettings", "isEndSessionEndpointInvoked: " + isEndSessionEndpointInvoked);
-        Log.info(thisClass, "printVariationSettings", "isLogoutEndpointInvoked: " + isLogoutEndpointInvoked);
-        Log.info(thisClass, "printVariationSettings", "isRevokeEndpointInvoked: " + isRevokeEndpointInvoked);
+        Log.info(thisClass, "printVariationSettings", "isEndSessionEndpointInvoked: " + Boolean.toString(isEndSessionEndpointInvoked));
+        Log.info(thisClass, "printVariationSettings", "isLogoutEndpointInvoked: " + Boolean.toString(isLogoutEndpointInvoked));
+        Log.info(thisClass, "printVariationSettings", "isRevokeEndpointInvoked: " + Boolean.toString(isRevokeEndpointInvoked));
+        Log.info(thisClass, "printVariationSettings", "isRPReqLogoutInvoked: " + Boolean.toString(isRPReqLogoutInvoked));
+        Log.info(thisClass, "printVariationSettings", "isOPReqLogoutInvoked: " + Boolean.toString(isOPReqLogoutInvoked));
+        Log.info(thisClass, "printVariationSettings", "flowUsesBCL: " + Boolean.toString(flowUsesBCL));
 
     }
 }

@@ -13,6 +13,7 @@
 <server>
 
 	<variable name="bclRoot" value="notSet"/>
+	<!-- need issuerIdentifier for SAML flows -->
 
 	<openidConnectProvider
 		id="OidcConfigSample_mainPath"
@@ -21,57 +22,68 @@
 		keyStoreRef="key_allSigAlg"
 		tokenEndpointAuthMethodsSupported="client_secret_post, client_secret_basic, none"
 		allowPublicClients="true"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_mainPath"
 		oauthProviderRef="OAuthConfigSample_mainPath" />
 
 	<openidConnectProvider
 		id="OidcConfigSample_defaultBCLTimeout"
 		signatureAlgorithm="HS256"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_defaultBCLTimeout"
 		oauthProviderRef="OAuthConfigSample_defaultBCLTimeout" />
 
 	<openidConnectProvider
 		id="OidcConfigSample_shortBCLTimeout"
 		signatureAlgorithm="HS256"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_shortBCLTimeout"
 		oauthProviderRef="OAuthConfigSample_shortBCLTimeout"
 		backchannelLogoutRequestTimeout="5s" />
 
 	<openidConnectProvider
 		id="OidcConfigSample_invalidBCL"
 		signatureAlgorithm="HS256"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_invalidBCL"
 		oauthProviderRef="OAuthConfigSample_invalidBCL" />
 
 	<openidConnectProvider
 		id="OidcConfigSample_logger1"
 		signatureAlgorithm="HS256"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_logger1"
 		oauthProviderRef="OAuthConfigSample_logger1" />
 
 	<openidConnectProvider
 		id="OidcConfigSample_logger2"
 		signatureAlgorithm="HS256"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_logger2"
 		oauthProviderRef="OAuthConfigSample_logger2" />
 
 	<openidConnectProvider
 		id="OidcConfigSample_logger3"
 		signatureAlgorithm="HS256"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_logger3"
 		oauthProviderRef="OAuthConfigSample_logger3" />
 
 	<openidConnectProvider
 		id="OidcConfigSample_logger4"
 		signatureAlgorithm="HS256"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_logger4"
 		oauthProviderRef="OAuthConfigSample_logger4" />
 
 	<openidConnectProvider
 		id="OidcConfigSample_useLogoutTokenForAccess"
 		signatureAlgorithm="HS256"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_useLogoutTokenForAccess"
 		oauthProviderRef="OAuthConfigSample_useLogoutTokenForAccess" />
 
 	<openidConnectProvider
 		id="OidcConfigSample_multiClientWithAndWithoutBCL"
 		signatureAlgorithm="HS256"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_multiClientWithAndWithoutBCL"
 		oauthProviderRef="OAuthConfigSample_multiClientWithAndWithoutBCL" />
 
 	<openidConnectProvider
 		id="OidcConfigSample_checkDuplicateBCLCalls"
 		signatureAlgorithm="HS256"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_checkDuplicateBCLCalls"
 		oauthProviderRef="OAuthConfigSample_checkDuplicateBCLCalls" />
 
 	<openidConnectProvider
@@ -81,6 +93,7 @@
 		keyStoreRef="key_allSigAlg"
 		tokenEndpointAuthMethodsSupported="client_secret_post, client_secret_basic, none"
 		allowPublicClients="true"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_true"
 		oauthProviderRef="OAuthConfigSample_http_httpsRequired_true" />
 
 	<openidConnectProvider
@@ -90,17 +103,20 @@
 		keyStoreRef="key_allSigAlg"
 		tokenEndpointAuthMethodsSupported="client_secret_post, client_secret_basic, none"
 		allowPublicClients="true"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_false"
 		oauthProviderRef="OAuthConfigSample_http_httpsRequired_false" />
 
 	<openidConnectProvider
 		id="OidcConfigSample_idTokenCacheEnabledFalse"
 		signatureAlgorithm="HS256"
 		idTokenCacheEnabled="false"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_idTokenCacheEnabledFalse"
 		oauthProviderRef="OAuthConfigSample_idTokenCacheEnabledFalse" />
 
 	<openidConnectProvider
 		id="OidcConfigSample_accessTokenCacheEnabledFalse"
 		signatureAlgorithm="HS256"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_accessTokenCacheEnabledFalse"
 		oauthProviderRef="OAuthConfigSample_accessTokenCacheEnabledFalse" />
 
 	<openidConnectProvider
@@ -108,6 +124,7 @@
 		signatureAlgorithm="RS256"
 		keyAliasName="rs256"
 		keyStoreRef="key_allSigAlg"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_userClientTokenLimit"
 		oauthProviderRef="OAuthConfigSample_userClientTokenLimit" />
 
 	<openidConnectProvider
@@ -116,6 +133,7 @@
 		keyAliasName="rs256"
 		keyStoreRef="key_allSigAlg"
 		tokenEndpointAuthMethodsSupported="client_secret_post, client_secret_basic, none"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_appPasswords"
 		oauthProviderRef="OAuthConfigSample_appPasswords" />
 
 	<openidConnectProvider
@@ -124,6 +142,7 @@
 		keyAliasName="rs256"
 		keyStoreRef="key_allSigAlg"
 		tokenEndpointAuthMethodsSupported="client_secret_post, client_secret_basic, none"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_appTokens"
 		oauthProviderRef="OAuthConfigSample_appTokens" />
 
 	</server>

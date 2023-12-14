@@ -30,12 +30,11 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.backchannelLogout.fat.utils.AfterLogoutStates.BCL_FORM;
 import com.ibm.ws.security.backchannelLogout.fat.utils.BackChannelLogout_RegisterClients;
 import com.ibm.ws.security.backchannelLogout.fat.utils.Constants;
-import com.ibm.ws.security.backchannelLogout.fat.utils.SkipIfSocialClient;
-import com.ibm.ws.security.backchannelLogout.fat.utils.SkipIfUsesMongoDB;
-import com.ibm.ws.security.backchannelLogout.fat.utils.SkipIfUsesMongoDBOrSocialClient;
 import com.ibm.ws.security.backchannelLogout.fat.utils.TokenKeeper;
+import com.ibm.ws.security.backchannelLogout.fat.utils.VariationSettings;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
 import com.ibm.ws.security.fat.common.social.SocialConstants;
@@ -163,7 +162,6 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
     public static void setUp() throws Exception {
 
         currentRepeatAction = RepeatTestFilter.getRepeatActionsAsString();
-        initSkipFlags();
 
         makeRandomSettingSelections();
 
@@ -173,8 +171,9 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
         // start an OIDC RP or a Social oidc client
         startClientsBasedOnRepeat(tokenType);
 
-        // set some test flags based on the repeat action - these flags will be used by the test cases and test methods to determine the steps to run or what to expect
-        setConfigBasedOnRepeat();
+        //        // set some test flags based on the repeat action - these flags will be used by the test cases and test methods to determine the steps to run or what to expect
+        //        setConfigBasedOnRepeat();
+        vSettings = new VariationSettings(currentRepeatAction);
 
         registerClientsIfNeeded();
 
@@ -221,8 +220,6 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
                 testOPServer = commonSetUp("com.ibm.ws.security.backchannelLogout_fat.op.mongo", adjustServerConfig("op_server_multiServerTests.xml"), Constants.OIDC_OP, serverApps, Constants.DO_NOT_USE_DERBY, Constants.USE_MONGODB, extraMsgs, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, Constants.X509_CERT, Constants.JUNIT_REPORTING);
                 // register clients after all servers are started and we know everyone's ports
                 testSettings.setStoreType(StoreType.CUSTOM);
-                SkipIfUsesMongoDB.usesMongoDB = true;
-                SkipIfUsesMongoDBOrSocialClient.usesMongoDB = true;
             } else {
                 testOPServer = commonSetUp("com.ibm.ws.security.backchannelLogout_fat.op", adjustServerConfig("op_server_multiServerTests.xml"), Constants.OIDC_OP, serverApps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, Constants.X509_CERT);
             }
@@ -308,8 +305,6 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
 
             testSettings.setFlowType(SocialConstants.SOCIAL);
             //            clientServer.addIgnoredServerException(MessageConstants.CWWKG0058E_CONFIG_MISSING_REQUIRED_ATTRIBUTE); // the social client isn't happy with the public client not having a secret
-            SkipIfSocialClient.socialClient = true;
-            SkipIfUsesMongoDBOrSocialClient.socialClient = true;
         }
 
         clientServer.setRestoreServerBetweenTests(false);
@@ -641,7 +636,7 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
         saveInstanceForMultiServerLogout(getStringValue(new JwtTokenForTest(keeper2_1.getIdToken()).getMapPayload(), Constants.IDTOK_SESSION_ID), bclEndpoint2_5);
 
         // logout expectations
-        List<validationData> logoutExpectations = initLogoutExpectations(vSettings.finalAppWithoutPostRedirect, reuseWebClientForLogout);
+        List<validationData> logoutExpectations = initLogoutExpectations(BCL_FORM.TEST_BCL, vSettings.finalAppWithoutPostRedirect, reuseWebClientForLogout);
         // check for error messages when the logout test app tries to invoke bcl for the instance on the RS server - there should be nothing to clean up for a propagated access
         if (shouldWeReallyLogout) {
             logoutExpectations = validationTools.addMessageExpectation(genericTestServer, logoutExpectations, Constants.LOGOUT, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Message log did not contain message indicating that a there was a problem invoking the back channel logout.", MessageConstants.CWWKS1541E_BACK_CHANNEL_LOGOUT_ERROR + ".*bcl_multiServer_client1-1.*");

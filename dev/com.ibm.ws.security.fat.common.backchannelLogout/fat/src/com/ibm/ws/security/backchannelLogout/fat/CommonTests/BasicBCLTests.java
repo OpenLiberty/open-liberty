@@ -33,9 +33,6 @@ import com.ibm.ws.security.backchannelLogout.fat.utils.AfterLogoutStates;
 import com.ibm.ws.security.backchannelLogout.fat.utils.AfterLogoutStates.BCL_FORM;
 import com.ibm.ws.security.backchannelLogout.fat.utils.BackChannelLogout_RegisterClients;
 import com.ibm.ws.security.backchannelLogout.fat.utils.Constants;
-import com.ibm.ws.security.backchannelLogout.fat.utils.SkipIfSocialClient;
-import com.ibm.ws.security.backchannelLogout.fat.utils.SkipIfUsesMongoDB;
-import com.ibm.ws.security.backchannelLogout.fat.utils.SkipIfUsesMongoDBOrSocialClient;
 import com.ibm.ws.security.backchannelLogout.fat.utils.TokenKeeper;
 import com.ibm.ws.security.backchannelLogout.fat.utils.VariationSettings;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
@@ -115,21 +112,18 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // note:  using the method addRepeat below instead of adding test repeats in line to simplify hacking up the tests locally to ony run one or 2 variations (all the calls are the same - dont' have to worry about using "with" vs "andWith")
         RepeatTests rTests = null;
         if (callingProject.equals(Constants.OIDC)) {
+            rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.END_SESSION + "_" + localStore));
             if (TestModeFilter.shouldRun(TestMode.FULL)) {
                 if (!theOS.equals("ISERIES")) {
-                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + Constants.MONGODB));
+                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.END_SESSION + "_" + Constants.MONGODB));
                 }
-                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + localStore));
-                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.LOGOUT_ENDPOINT + "_" + localStore));
+                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.LOGOUT_ENDPOINT + "_" + localStore));
                 //                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.REVOCATION_ENDPOINT + "_" + localStore));
                 //                // needs resolution of issue https://github.com/OpenLiberty/open-liberty/issues/26615
                 //                //                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC__OP + "_" + Constants.HTTP_SESSION));
                 rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.HTTP_SESSION));
                 rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
                 rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
-            } else {
-                // LITE mode only run one instance
-                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.END_SESSION + "_" + localStore));
             }
         } else {
             if (callingProject.equals(Constants.SOCIAL)) {
@@ -137,27 +131,22 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
                 // LITE mode only run one instance
                 if (TestModeFilter.shouldRun(TestMode.FULL)) {
                     rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.LOGOUT_ENDPOINT));
-                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.REVOCATION_ENDPOINT));
+                    //                    //                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.REVOCATION_ENDPOINT));
                     rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.HTTP_SESSION));
                     rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
                     rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
                 }
             } else {
+                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML_IDP_INITIATED_LOGOUT));
                 if (TestModeFilter.shouldRun(TestMode.FULL)) {
-                    //    chc                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML_IDP_INITIATED_LOGOUT));
-                    //    //            rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.logout)); sp logout
-                    //    chc                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.LOGOUT_ENDPOINT));
-                    //    chc                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.END_SESSION));
-                    //    chc                 rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
-                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
-                } else {
-                    // LITE mode only run one instance
+                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML_SP_INITIATED_LOGOUT));
                     rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.END_SESSION));
+                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.LOGOUT_ENDPOINT));
+                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.OIDC_RP + "_" + Constants.HTTP_SESSION));
                 }
 
             }
         }
-        // TODO - should we try to test with SP initiated and ibm_security_logout flows using saml?
 
         return rTests;
 
@@ -167,12 +156,9 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     public static void setUp() throws Exception {
 
         currentRepeatAction = RepeatTestFilter.getRepeatActionsAsString();
-        initSkipFlags();
 
         makeRandomSettingSelections();
 
-        // set some test flags based on the repeat action - these flags will be used by the test cases and test methods to determine the steps to run or what to expect
-        //        setConfigBasedOnRepeat();
         vSettings = new VariationSettings(currentRepeatAction);
 
         // Start a normal OP, or an OP that uses SAML to authorize (in this case, we need to fire up a server running Shibboleth
@@ -229,8 +215,6 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
                 testOPServer = commonSetUp("com.ibm.ws.security.backchannelLogout_fat.op.mongo", adjustServerConfig("op_server_basicTests.xml"), Constants.OIDC_OP, serverApps, Constants.DO_NOT_USE_DERBY, Constants.USE_MONGODB, extraMsgs, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, Constants.X509_CERT, Constants.JUNIT_REPORTING);
                 // register clients after all servers are started and we know everyone's ports
                 testSettings.setStoreType(StoreType.CUSTOM);
-                SkipIfUsesMongoDB.usesMongoDB = true;
-                SkipIfUsesMongoDBOrSocialClient.usesMongoDB = true;
             } else {
                 testOPServer = commonSetUp("com.ibm.ws.security.backchannelLogout_fat.op", adjustServerConfig("op_server_basicTests.xml"), Constants.OIDC_OP, serverApps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, Constants.X509_CERT);
             }
@@ -286,8 +270,6 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             vars = updateClientCookieNameAndPort(clientServer, "clientCookieName", Constants.clientCookieName);
             testSettings.setFlowType(SocialConstants.SOCIAL);
             clientServer.addIgnoredServerExceptions(MessageConstants.CWWKG0058E_CONFIG_MISSING_REQUIRED_ATTRIBUTE, MessageConstants.CWWKS1740W_RS_REDIRECT_TO_RP, MessageConstants.CWWKS1725E_VALIDATION_ENDPOINT_URL_NOT_VALID_OR_FAILED); // the social client isn't happy with the public client not having a secret
-            SkipIfSocialClient.socialClient = true;
-            SkipIfUsesMongoDBOrSocialClient.socialClient = true;
         }
 
         updateServerSettings(clientServer, vars);
@@ -297,7 +279,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         clientServer.addIgnoredServerExceptions(MessageConstants.CWWKS1541E_BACK_CHANNEL_LOGOUT_ERROR, MessageConstants.CWWKS1543E_BACK_CHANNEL_LOGOUT_REQUEST_VALIDATION_ERROR);
 
         if (currentRepeatAction.contains(Constants.HTTP_SESSION)) {
-            if (currentRepeatAction.contains(Constants.OIDC_RP)) {
+            if (currentRepeatAction.contains(Constants.OIDC_RP) || currentRepeatAction.contains(SocialConstants.SOCIAL)) {
                 logoutApp = clientServer.getHttpsString() + "/simpleLogoutTestApp/simpleLogout";
             } else {
                 logoutApp = testOPServer.getHttpsString() + "/simpleLogoutTestApp/simpleLogout";
@@ -381,16 +363,16 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         updatedTestSettings.setTestURL(server.getHttpsString() + "/formlogin/simple/" + client);
         updatedTestSettings.setProtectedResource(server.getHttpsString() + "/formlogin/simple/" + client);
         // set logout url - end_session
-        if (vSettings.logoutMethodTested.equals(Constants.SAML_IDP_INITIATED_LOGOUT)) { // update for idp/sp initiated
+        if (vSettings.logoutMethodTested.equals(Constants.SAML_IDP_INITIATED_LOGOUT)) {
             updatedTestSettings.setEndSession(testIDPServer.getHttpsString() + "/idp/profile/Logout");
         } else {
-            updatedTestSettings.setEndSession(updatedTestSettings.getEndSession().replace("OidcConfigSample", provider));
-            if (vSettings.logoutMethodTested.equals(Constants.LOGOUT_ENDPOINT)) {
-                updatedTestSettings.setEndSession(updatedTestSettings.getEndSession().replace(Constants.END_SESSION_ENDPOINT, Constants.LOGOUT_ENDPOINT));
-                //            } else {
-                //                if (vSettings.logoutMethodTested.equals(Constants.REVOCATION_ENDPOINT)) {
-                //                    updatedTestSettings.setEndSession(updatedTestSettings.getEndSession().replace(Constants.END_SESSION_ENDPOINT, Constants.REVOCATION_ENDPOINT));
-                //                }
+            if (vSettings.logoutMethodTested.equals(Constants.SAML_SP_INITIATED_LOGOUT)) {
+                updatedTestSettings.setEndSession(testOPServer.getHttpsString() + "/ibm/saml20/defaultSP/logout");
+            } else {
+                updatedTestSettings.setEndSession(updatedTestSettings.getEndSession().replace("OidcConfigSample", provider));
+                if (vSettings.logoutMethodTested.equals(Constants.LOGOUT_ENDPOINT)) {
+                    updatedTestSettings.setEndSession(updatedTestSettings.getEndSession().replace(Constants.END_SESSION_ENDPOINT, Constants.LOGOUT_ENDPOINT));
+                }
             }
         }
         updatedTestSettings.setTokenEndpt(updatedTestSettings.getTokenEndpt().replace("OidcConfigSample", provider));
@@ -605,67 +587,6 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         }
     }
 
-    //    /**
-    //     * Invoke either end_session or the test "simpleLogout" app - and if invoking "simpleLogout" have the app invoke
-    //     * either the logout endpoint in the OP, or end_session
-    //     *
-    //     * @param webClient
-    //     *            the client to get the context from
-    //     * @param settings
-    //     *            the current test settings (used to get the end_session endpoint)
-    //     * @param logoutExpectations
-    //     *            the expectations to validate
-    //     * @param previousResponse
-    //     *            in the case of end_session, the prevous response to get the id_token from (to use as the hint)
-    //     * @return the http reponse for further validation
-    //     * @throws Exception
-    //     */
-    //    public Object invokeLogout(WebClient webClient, TestSettings settings, List<validationData> logoutExpectations, Object previousResponse) throws Exception {
-    //
-    //        String thisMethod = "invokeLogout";
-    //
-    //        String opLogoutEndpoint = null;
-    //
-    //        //        // Debug
-    //        //        Log.info(thisClass, thisMethod, "Debug vSettings.logoutMethodTested: " + vSettings.logoutMethodTested);
-    //        //        Log.info(thisClass, thisMethod, "Debug finalApp: " + vSettings.finalAppWithPostRedirect);
-    //        //        Log.info(thisClass, thisMethod, "Debug defaultApp: " + vSettings.finalAppWithoutPostRedirect);
-    //        //        Log.info(thisClass, thisMethod, "Debug logoutApp: " + logoutApp);
-    //        //        Log.info(thisClass, thisMethod, "Debug vSettings.sessionLogoutEndpoint: " + vSettings.sessionLogoutEndpoint);
-    //
-    //        switch (vSettings.logoutMethodTested) {
-    //        case Constants.SAML_IDP_INITIATED_LOGOUT: // update for idp/sp initiated
-    //            return genericOP(_testName, webClient, settings, Constants.IDP_INITIATED_LOGOUT, logoutExpectations, previousResponse, null);
-    //        case Constants.END_SESSION:
-    //        case Constants.LOGOUT_ENDPOINT:
-    //            // invoke end_session on the op - test controls if the id_token is passed as the id_token_hint by either passing or not passing the previous response
-    //            String[] logoutActions = Constants.LOGOUT_ONLY_ACTIONS;
-    //            if (loginMethod.equals(Constants.SAML)) {
-    //                logoutActions = new String[] { Constants.LOGOUT, Constants.PROCESS_LOGOUT_PROPAGATE_YES };
-    //            }
-    //            return genericOP(_testName, webClient, settings, logoutActions, logoutExpectations, previousResponse, null);
-    //        case Constants.HTTP_SESSION:
-    //            String id_token = null;
-    //            if (vSettings.sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT)) {
-    //                opLogoutEndpoint = testOPServer.getHttpsString() + "/oidc/endpoint/" + settings.getProvider() + "/" + Constants.LOGOUT_ENDPOINT;
-    //            } else {
-    //                if (previousResponse != null) {
-    //                    id_token = validationTools.getIDToken(settings, previousResponse);
-    //                }
-    //                opLogoutEndpoint = settings.getEndSession();
-    //            }
-    //            List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "opLogoutUri", opLogoutEndpoint);
-    //            if (id_token != null) {
-    //                parms = eSettings.addEndpointSettingsIfNotNull(parms, "id_token_hint", id_token);
-    //            }
-    //            return genericInvokeEndpoint(_testName, webClient, null, logoutApp, Constants.POSTMETHOD, Constants.LOGOUT, parms, null, logoutExpectations, testSettings);
-    //        default:
-    //            fail("Logout method wasn't specified");
-    //            return null;
-    //        }
-    //
-    //    }
-
     /**
      * Create expectations for the condition where we try to use a logout_token as an access token
      *
@@ -727,21 +648,6 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     }
 
-    public List<validationData> setTooManyLoginsExpectations(boolean firstTime) throws Exception {
-
-        String loginStep = ((vSettings.loginMethod.equals(Constants.SAML) ? Constants.PERFORM_IDP_LOGIN : Constants.LOGIN_USER));
-
-        List<validationData> tooManyLoginsExpectations = vData.addSuccessStatusCodes(null, loginStep);
-        tooManyLoginsExpectations = vData.addResponseStatusExpectation(tooManyLoginsExpectations, loginStep, Constants.BAD_REQUEST_STATUS);
-        tooManyLoginsExpectations = vData.addExpectation(tooManyLoginsExpectations, loginStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not receive a message stating that there are too many logins for the user.", null, MessageConstants.CWOAU0066E_EXCEEDED_MAX_USER_REQUESTS);
-        tooManyLoginsExpectations = validationTools.addMessageExpectation(testOPServer, tooManyLoginsExpectations, loginStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that there are too many logins for the user and client id.", MessageConstants.CWOAU0054E_EXCEEDED_USER_CLIENT_TOKEN_LIMIT);
-        if (firstTime) { // an ffdc is issued the first time we hit this - in some cases, we may hit this failure multiple times - subsequent calls won't get the ffdc
-            tooManyLoginsExpectations = validationTools.addMessageExpectation(testOPServer, tooManyLoginsExpectations, loginStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that there are too many login requests for the user.", MessageConstants.CWOAU0066E_EXCEEDED_MAX_USER_REQUESTS);
-        }
-
-        return tooManyLoginsExpectations;
-    }
-
     /********************************************** Tests **********************************************/
 
     /**
@@ -769,6 +675,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         AfterLogoutStates states = new AfterLogoutStates(BCL_FORM.VALID, updatedTestSettings, vSettings);
         //states.setIsUsingIntrospect(true);
 
+        webClient.getOptions().setJavaScriptEnabled(true);
         // Make sure that all cookies and tokens have been cleaned up
         validateLogoutResult(webClient, updatedTestSettings, tokens, states);
 
@@ -892,7 +799,6 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         TokenKeeper tokens = setTokenKeeperFromUnprotectedApp(webClient, updatedTestSettings, 1);
 
         // logout expectations - just make sure we landed on the end_session/logout page - always with a good status code
-        //  chc      invokeLogout(webClient, updatedTestSettings, initLogoutWithPublicClientFailureExpectations(vSettings.finalAppWithoutPostRedirect, client), response);
         invokeLogout(webClient, updatedTestSettings, initLogoutExpectations(vSettings.finalAppWithoutPostRedirect), response);
 
         // Access and refresh tokens should not be cleaned up since the BCL endpoint is not considered valid
@@ -1080,6 +986,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     @Test
     public void BasicBCLTests_mainPath_confidentialClient_multipleLogins() throws Exception {
 
+        starIt = true;
+
         WebClient webClient1 = getAndSaveWebClient(true);
         WebClient webClient2 = getAndSaveWebClient(true);
 
@@ -1088,7 +996,6 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         Object response1 = accessProtectedApp(webClient1, updatedTestSettings);
         accessProtectedApp(webClient2, updatedTestSettings);
 
-        //        TokenKeeper tokens = new TokenKeeper(webClient, response, updatedTestSettings.getFlowType());
         TokenKeeper tokens1 = setTokenKeeperFromUnprotectedApp(webClient1, updatedTestSettings, 1);
         TokenKeeper tokens2 = setTokenKeeperFromUnprotectedApp(webClient2, updatedTestSettings, 1);
 
@@ -1101,24 +1008,22 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
         AfterLogoutStates states2 = new AfterLogoutStates(BCL_FORM.VALID, updatedTestSettings, vSettings);
         if (currentRepeatAction.contains(Constants.HTTP_SESSION) && vSettings.sessionLogoutEndpoint == null) {
-            states2.setOPNoCookiesRemoved(false);
+            states2.setOPNoCookiesRemoved(isUsingSaml());
             states2.setIsAppSessionAccess(true);
             states2.setClientNoCookiesRemoved();
         } else {
-            states2.setOPNoCookiesRemoved(isUsingSaml());
             states2.setIsAppSessionAccess(isUsingSaml());
             states2.setSpCookieExists(isUsingSaml());
+            states2.setSpCookieStillValid(isUsingSaml());
             states2.setSpCookieMatchesPrevious(isUsingSaml());
             states2.setClientCookieExists(isUsingSaml());
-            states2.setClientCookieMatchesPrevious(!isUsingSaml());
+            states2.setClientCookieMatchesPrevious(false);
         }
-        //        states2.setSpCookieExists(isUsingSaml());
-        //        states2.setSpCookieMatchesPrevious(isUsingSaml());
-        //        states2.setClientCookieExists(!isUsingSaml());
-        //        states2.setClientCookieMatchesPrevious(!isUsingSaml());
         // Make sure that all cookies and tokens have been cleaned up
         Log.info(thisClass, _testName, "webClient1");
         validateLogoutResult(webClient1, updatedTestSettings, tokens1, states1);
+        recordTest(false, true, "other webClient");
+        starIt = true;
         Log.info(thisClass, _testName, "webClient2");
         validateLogoutResult(webClient2, updatedTestSettings, tokens2, states2);
 
@@ -1136,6 +1041,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     @Test
     //    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogout.class) // bcl wouldn't be invoked using this logout, so skip test
     public void BasicBCLTests_confirmBCLUriCalledForEachLogin_withIdTokenHint() throws Exception {
+
+        starIt = true;
 
         clientServer.getServer().initializeAnyExistingMarks();
 
@@ -1169,7 +1076,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             logoutExpectations = addDidInvokeBCLExpectation(logoutExpectations, updatedTestSettings3, null);
             logoutExpectations = addDidInvokeBCLExpectation(logoutExpectations, updatedTestSettings4, null);
         } else {
-            logoutExpectations = validationTools.addMessageExpectation(clientServer, logoutExpectations, Constants.LOGOUT, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Message log did not contain message indicating that the OP endpoints are not being callef rom the logout test app that calls req.logout(): ", "NOT Invoking provider logout or end_session endpoint on the OP");
+            logoutExpectations = validationTools.addMessageExpectation(clientServer, logoutExpectations, Constants.LOGOUT, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Message log did not contain message indicating that the OP endpoints are not being called from the logout test app that calls req.logout(): ", "NOT Invoking provider logout or end_session endpoint on the OP");
             logoutExpectations = addDidNotInvokeBCLExpectation(logoutExpectations, updatedTestSettings1, "1");
             logoutExpectations = addDidNotInvokeBCLExpectation(logoutExpectations, updatedTestSettings2, "2");
             logoutExpectations = addDidNotInvokeBCLExpectation(logoutExpectations, updatedTestSettings3, "3");
@@ -1203,6 +1110,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     //    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogout.class) // bcl wouldn't be invoked using this logout, so skip test
     public void BasicBCLTests_confirmBCLUriCalledForEachLogin_withoutIdTokenHint() throws Exception {
 
+        starIt = true;
+
         // the app that this test uses will record a count of how many times its been called, reset the count at the beginning of the test
         resetBCLAppCounter();
 
@@ -1224,7 +1133,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
         // logout expectations
         List<validationData> logoutExpectations = initLogoutExpectations(vSettings.finalAppWithoutPostRedirect);
-        if (!(currentRepeatAction.contains(Constants.HTTP_SESSION) && vSettings.sessionLogoutEndpoint == null)) {
+        if (!((currentRepeatAction.contains(Constants.HTTP_SESSION) && vSettings.sessionLogoutEndpoint == null) || currentRepeatAction.contains(Constants.SAML_SP_INITIATED_LOGOUT))) {
             logoutExpectations = addDidInvokeBCLExpectation(logoutExpectations, updatedTestSettings1, null);
             logoutExpectations = addDidInvokeBCLExpectation(logoutExpectations, updatedTestSettings2, null);
             logoutExpectations = addDidInvokeBCLExpectation(logoutExpectations, updatedTestSettings3, null);
@@ -1245,6 +1154,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogout.class) // bcl wouldn't be invoked using this logout, so skip test
     public void BasicBCLTests_confirmBCLUriCalledForEachUserLogin_withIdTokenHint() throws Exception {
+
+        starIt = true;
 
         clientServer.getServer().initializeAnyExistingMarks();
 
@@ -1302,8 +1213,10 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
      * @throws Exception
      */
     @Test
-    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogout.class) // bcl wouldn't be invoked using this logout, so skip test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogoutOrSAMLSPInitiatedLogout.class) // bcl wouldn't be invoked using this logout, so skip test
     public void BasicBCLTests_confirmBCLUriCalledForEachUserLogin_withoutIdTokenHint() throws Exception {
+
+        starIt = true;
 
         // the app that this test uses will record a count of how many times its been called, reset the count at the beginning of the test
         resetBCLAppCounter();
@@ -1344,6 +1257,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogout.class) // bcl wouldn't be invoked using this logout, so skip test
     public void BasicBCLTests_noDuplicateLogoutRequests_withIdTokenHint() throws Exception {
+
+        starIt = true;
 
         // the app that this test uses will record a count of how many times its been called, reset the count at the beginning of the test
         resetBCLAppCounter();
@@ -1391,6 +1306,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogout.class) // bcl wouldn't be invoked using this logout, so skip test
     public void BasicBCLTests_idTokenCacheEnabled_false_withIdTokenHint() throws Exception {
 
+        starIt = true;
+
         // the app that this test uses will record a count of how many times its been called, reset the count at the beginning of the test
         resetBCLAppCounter();
 
@@ -1425,6 +1342,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogout.class) // bcl wouldn't be invoked using this logout, so skip test
     public void BasicBCLTests_idTokenCacheEnabled_false_withoutIdTokenHint() throws Exception {
+
+        starIt = true;
 
         // the app that this test uses will record a count of how many times its been called, reset the count at the beginning of the test
         resetBCLAppCounter();
@@ -1461,6 +1380,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogout.class) // bcl wouldn't be invoked using this logout, so skip test
     public void BasicBCLTests_accessTokenCacheEnabled_false_withIdTokenHint() throws Exception {
+
+        starIt = true;
 
         clientServer.getServer().initializeAnyExistingMarks();
 
@@ -1508,8 +1429,10 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
      * @throws Exception
      */
     @Test
-    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogout.class) // bcl wouldn't be invoked using this logout, so skip test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogoutOrSAMLSPInitiatedLogout.class) // bcl wouldn't be invoked using this logout, so skip test
     public void BasicBCLTests_accessTokenCacheEnabled_false_withoutIdTokenHint() throws Exception {
+
+        starIt = true;
 
         clientServer.getServer().initializeAnyExistingMarks();
 
@@ -1570,13 +1493,12 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         TokenKeeper tokens = setTokenKeeperFromUnprotectedApp(webClient, updatedTestSettings, 1);
 
         // logout expectations - just make sure we landed on the post logout redirect page - always with a good status code
-        List<validationData> logoutExpectations = initLogoutExpectations(vSettings.finalAppWithPostRedirect);
+        List<validationData> logoutExpectations = initLogoutExpectations(BCL_FORM.TEST_BCL, vSettings.finalAppWithPostRedirect);
 
         invokeLogout(webClient, updatedTestSettings, logoutExpectations, response);
 
         // Test has a test app configured for the backchannelLogoutUri - so just the normal end_session steps will be performed - set expected states accordingly
         AfterLogoutStates states = new AfterLogoutStates(BCL_FORM.TEST_BCL, updatedTestSettings, vSettings);
-        //        AfterLogoutStates states = new AfterLogoutStates(BCL_FORM.TEST_BCL, updatedTestSettings, vSettings);
 
         // Make sure that we do NOT need to log in to gain access to the app after we've only logged out on the OP (still have client cookie)
         // test uses a bcl uri that just sleeps
@@ -1591,6 +1513,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     @Test
     public void BasicBCLTests_defaultBCLTimeout_multipleLoginsWithinOP() throws Exception {
 
+        starIt = true;
+
         WebClient webClient1 = getAndSaveWebClient(true);
         WebClient webClient2 = getAndSaveWebClient(true);
 
@@ -1604,7 +1528,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         TokenKeeper tokens2 = setTokenKeeperFromUnprotectedApp(webClient2, updatedTestSettings2, 1);
 
         // logout expectations - just make sure we landed on the post logout redirect page - always with a good status code
-        List<validationData> logoutExpectations = initLogoutExpectations(vSettings.finalAppWithPostRedirect);
+        List<validationData> logoutExpectations = initLogoutExpectations(BCL_FORM.TEST_BCL, vSettings.finalAppWithPostRedirect);
 
         invokeLogout(webClient2, updatedTestSettings2, logoutExpectations, response);
 
@@ -1612,13 +1536,18 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         AfterLogoutStates states = new AfterLogoutStates(BCL_FORM.TEST_BCL, updatedTestSettings2, vSettings);
 
         validateLogoutResult(webClient2, updatedTestSettings2, tokens2, states);
+        recordTest(false, true, "other webClient");
 
         AfterLogoutStates otherStates = new AfterLogoutStates(BCL_FORM.TEST_BCL, updatedTestSettings1, vSettings);
         // now, since we didn't do the logout using webClient1, there are some things that will still exist (that had been cleaned up for webClient2)
         otherStates.setOPNoCookiesRemoved(isUsingSaml());
+        if (!(currentRepeatAction.contains(Constants.HTTP_SESSION) && vSettings.sessionLogoutEndpoint == null)) {
+            otherStates.setOpCookieStillValid(false);
+        }
         otherStates.setClientNoCookiesRemoved();
         otherStates.setIsAppSessionAccess(true);
         otherStates.setSpCookieExists(true);
+        otherStates.setSpCookieStillValid(true);
         otherStates.setSpCookieMatchesPrevious(true);
         validateLogoutResult(webClient1, updatedTestSettings1, tokens1, otherStates);
 
@@ -1643,7 +1572,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         TokenKeeper tokens = setTokenKeeperFromUnprotectedApp(webClient, updatedTestSettings, 1);
 
         // logout expectations - just make sure we landed on the post logout redirect page - always with a good status code
-        List<validationData> logoutExpectations = initLogoutExpectations(vSettings.finalAppWithPostRedirect);
+        List<validationData> logoutExpectations = initLogoutExpectations(BCL_FORM.TEST_BCL, vSettings.finalAppWithPostRedirect);
         logoutExpectations = validationTools.addMessageExpectation(testOPServer, logoutExpectations, Constants.LOGOUT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that a there was a problem invoking the back channel logout.", MessageConstants.CWWKS1649E_BACK_CHANNEL_LOGOUT_TIMEOUT);
 
         invokeLogout(webClient, updatedTestSettings, logoutExpectations, response);
@@ -1678,7 +1607,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         TokenKeeper tokens = setTokenKeeperFromUnprotectedApp(webClient, updatedTestSettings, 1);
 
         // logout expectations - just make sure we landed on the post logout redirect page - always with a good status code
-        List<validationData> logoutExpectations = initLogoutExpectations(vSettings.finalAppWithPostRedirect);
+        List<validationData> logoutExpectations = initLogoutExpectations(BCL_FORM.TEST_BCL, vSettings.finalAppWithPostRedirect);
         logoutExpectations = validationTools.addMessageExpectation(testOPServer, logoutExpectations, Constants.LOGOUT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that a there was a problem invoking the back channel logout.", MessageConstants.CWWKS1648E_BACK_CHANNEL_LOGOUT_INVALID_URI);
 
         invokeLogout(webClient, updatedTestSettings, logoutExpectations, response);
@@ -1712,9 +1641,9 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         TokenKeeper tokens = setTokenKeeperFromUnprotectedApp(webClient, updatedTestSettings, 1);
 
         // logout expectations - just make sure we landed on the post logout redirect page - always with a good status code
-        List<validationData> logoutExpectations = initLogoutExpectations(vSettings.finalAppWithPostRedirect);
+        List<validationData> logoutExpectations = initLogoutExpectations(BCL_FORM.OMITTED, vSettings.finalAppWithPostRedirect);
 
-        invokeLogout(webClient, updatedTestSettings, logoutExpectations, response);
+        invokeLogout(webClient, updatedTestSettings, logoutExpectations, response, false);
 
         // Make sure that we do NOT need to log in to gain access to the app after we've only logged out on the OP (still have client cookie)
         // test uses a bcl uri that just sleeps
@@ -1758,14 +1687,14 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         List<validationData> logoutExpectations = null;
         // logout expectations - just make sure we landed on the post logout redirect page - always with a good status code
         if (vSettings.logoutMethodTested.equals(Constants.END_SESSION)) {
-            logoutExpectations = initLogoutExpectations(vSettings.finalAppWithoutPostRedirect);
+            logoutExpectations = initLogoutExpectations(BCL_FORM.OMITTED, vSettings.finalAppWithoutPostRedirect);
         } else {
-            logoutExpectations = initLogoutExpectations(vSettings.finalAppWithPostRedirect);
+            logoutExpectations = initLogoutExpectations(BCL_FORM.OMITTED, vSettings.finalAppWithPostRedirect);
         }
 
         // don't pass the response from login - that will prevent the id_token from being sent on the logout
         testOPServer.addIgnoredServerException(MessageConstants.CWWKS1636E_POST_LOGOUT_REDIRECT_MISMATCH);
-        invokeLogout(webClient, updatedTestSettings, logoutExpectations, null);
+        invokeLogout(webClient, updatedTestSettings, logoutExpectations, null, false);
 
         // Make sure that we do NOT need to log in to gain access to the app after we've only logged out on the OP (still have client cookie)
         // test uses a bcl uri that just sleeps
@@ -1799,7 +1728,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         TokenKeeper tokens = setTokenKeeperFromUnprotectedApp(webClient, updatedTestSettings, 1);
 
         // logout expectations - just make sure we landed on the post logout redirect page - always with a good status code
-        List<validationData> logoutExpectations = initLogoutExpectations(vSettings.finalAppWithPostRedirect);
+        List<validationData> logoutExpectations = initLogoutExpectations(BCL_FORM.TEST_BCL, vSettings.finalAppWithPostRedirect);
         logoutExpectations = validationTools.addMessageExpectation(testOPServer, logoutExpectations, Constants.LOGOUT, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Message log did not contain message indicating that a there was a problem invoking the back channel logout.", MessageConstants.CWWKS1648E_BACK_CHANNEL_LOGOUT_INVALID_URI + ".*BackChannelLogout_400_Servlet.*");
 
         invokeLogout(webClient, updatedTestSettings, logoutExpectations, response);
@@ -1833,7 +1762,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         TokenKeeper tokens = setTokenKeeperFromUnprotectedApp(webClient, updatedTestSettings, 1);
 
         // logout expectations - just make sure we landed on the post logout redirect page - always with a good status code
-        List<validationData> logoutExpectations = initLogoutExpectations(vSettings.finalAppWithPostRedirect);
+        List<validationData> logoutExpectations = initLogoutExpectations(BCL_FORM.TEST_BCL, vSettings.finalAppWithPostRedirect);
         logoutExpectations = validationTools.addMessageExpectation(testOPServer, logoutExpectations, Constants.LOGOUT, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Message log did not contain message indicating that a there was a problem invoking the back channel logout.", MessageConstants.CWWKS1648E_BACK_CHANNEL_LOGOUT_INVALID_URI + ".*BackChannelLogout_501_Servlet.*");
 
         invokeLogout(webClient, updatedTestSettings, logoutExpectations, response);
@@ -1858,6 +1787,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogout.class) // bcl wouldn't be invoked using this logout, so skip test
     public void BasicBCLTests_backchannelLogoutUri_returnsMultipleDifferentFailures() throws Exception {
 
+        starIt = true;
+
         WebClient webClient1 = getAndSaveWebClient(true);
         WebClient webClient2 = getAndSaveWebClient(true);
 
@@ -1872,7 +1803,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         TokenKeeper tokens2 = setTokenKeeperFromUnprotectedApp(webClient2, updatedTestSettings2, 1);
 
         // logout expectations - just make sure we landed on the post logout redirect page - always with a good status code
-        List<validationData> logoutExpectations = initLogoutExpectations(vSettings.finalAppWithPostRedirect);
+        List<validationData> logoutExpectations = initLogoutExpectations(BCL_FORM.TEST_BCL, vSettings.finalAppWithPostRedirect);
         logoutExpectations = validationTools.addMessageExpectation(testOPServer, logoutExpectations, Constants.LOGOUT, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Message log did not contain message indicating that a there was a problem invoking the back channel logout.", MessageConstants.CWWKS1648E_BACK_CHANNEL_LOGOUT_INVALID_URI + ".*BackChannelLogout_400_Servlet.*");
         logoutExpectations = validationTools.addMessageExpectation(testOPServer, logoutExpectations, Constants.LOGOUT, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Message log did not contain message indicating that a there was a problem invoking the back channel logout.", MessageConstants.CWWKS1648E_BACK_CHANNEL_LOGOUT_INVALID_URI + ".*BackChannelLogout_501_Servlet.*");
 
@@ -1886,6 +1817,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
         states.setAllTokensCleanedUp(); // after logout, this test expects access and refresh tokens to be invalid
         validateLogoutResult(webClient1, updatedTestSettings1, tokens1, states);
+        recordTest(false, true, "other webClient");
+        starIt = true;
 
         AfterLogoutStates otherStates = new AfterLogoutStates(BCL_FORM.TEST_BCL, updatedTestSettings1, vSettings);
         // now, since we didn't do the logout using webClient1, there are some things that will still exist (that had been cleaned up for webClient2)
@@ -1894,7 +1827,11 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         otherStates.setClientNoCookiesRemoved();
         otherStates.setIsAppSessionAccess(true);
         otherStates.setSpCookieExists(true);
+        otherStates.setSpCookieStillValid(true);
         otherStates.setSpCookieMatchesPrevious(true);
+        if (!(vSettings.logoutMethodTested == Constants.HTTP_SESSION && vSettings.sessionLogoutEndpoint == null)) {
+            otherStates.setOpCookieStillValid(false);
+        }
         validateLogoutResult(webClient2, updatedTestSettings2, tokens2, otherStates);
 
     }
@@ -1925,7 +1862,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         response = accessProtectedApp(webClient3, updatedTestSettings3);
 
         // logout expectations
-        List<validationData> logoutExpectations = initLogoutExpectations(vSettings.finalAppWithPostRedirect);
+        List<validationData> logoutExpectations = initLogoutExpectations(BCL_FORM.TEST_BCL, vSettings.finalAppWithPostRedirect);
         logoutExpectations = validationTools.addMessageExpectation(testOPServer, logoutExpectations, Constants.LOGOUT, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Message log did not contain message indicating that a there was a problem invoking the back channel logout.", MessageConstants.CWWKS1648E_BACK_CHANNEL_LOGOUT_INVALID_URI + ".*BackChannelLogout_400_Servlet - 1.*");
         logoutExpectations = validationTools.addMessageExpectation(testOPServer, logoutExpectations, Constants.LOGOUT, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Message log did not contain message indicating that a there was a problem invoking the back channel logout.", MessageConstants.CWWKS1648E_BACK_CHANNEL_LOGOUT_INVALID_URI + ".*BackChannelLogout_400_Servlet - 2.*");
         logoutExpectations = validationTools.addMessageExpectation(testOPServer, logoutExpectations, Constants.LOGOUT, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Message log did not contain message indicating that a there was a problem invoking the back channel logout.", MessageConstants.CWWKS1648E_BACK_CHANNEL_LOGOUT_INVALID_URI + ".*BackChannelLogout_400_Servlet - 3.*");
@@ -2018,14 +1955,12 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // error messages for when we try to use the logout_token with a client that validates with introspect
         List<validationData> expectations = setUseLogoutTokenAsAccessTokenExpectations(action, updatedTestSettings, Constants.INTROSPECTION_ENDPOINT);
 
-        //        helpers.invokeProtectedResource(_testName, getAndSaveWebClient(true), logoutToken, Constants.HEADER, updatedTestSettings, expectations, action);
         accessProtectedAppViaPropagation(logoutToken, updatedTestSettings, expectations, action);
 
         // error messages are slightly different when we try to use the logout_token with a client that validates with userinfo
         updatedTestSettings.setProtectedResource(clientServer.getHttpsString() + "/formlogin/simple/" + "useLogoutTokenForAccess_userinfo");
         expectations = setUseLogoutTokenAsAccessTokenExpectations(action, updatedTestSettings, Constants.USERINFO_ENDPOINT);
 
-        //        helpers.invokeProtectedResource(_testName, getAndSaveWebClient(true), logoutToken, Constants.HEADER, updatedTestSettings, expectations, action);
         accessProtectedAppViaPropagation(logoutToken, updatedTestSettings, expectations, action);
 
     }
@@ -2090,12 +2025,14 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
         // update the end_session endpoint so we try to do the logout with another provider
         updatedTestSettings.setEndSession(updatedTestSettings.getEndSession().replace("OidcConfigSample_mainPath", "OidcConfigSample_http_httpsRequired_true"));
+        updatedTestSettings.setProvider("OidcConfigSample_http_httpsRequired_true");
 
         List<validationData> expectations = vData.addSuccessStatusCodes();
 
         String logoutStep = ((vSettings.loginMethod.equals(Constants.SAML) ? Constants.PROCESS_LOGOUT_PROPAGATE_YES : Constants.LOGOUT));
         expectations = vData.addResponseStatusExpectation(expectations, logoutStep, Constants.OK_STATUS);
         if (vSettings.logoutMethodTested == Constants.END_SESSION_ENDPOINT) {
+            logoutStep = Constants.LOGOUT;
             expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not fail to logout.", null, Constants.UNSUCCESSFUL_LOGOUT_MSG);
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the provider failed to validate the id_token.", MessageConstants.CWWKS1625E_FAILED_TO_VALIDATE_ID_TOKEN);
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the issuer did not match.", MessageConstants.CWWKS1646E_BACK_CHANNEL_LOGOUT_ISSUER_MISMATCH);
@@ -2112,28 +2049,14 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the issuer did not match.", MessageConstants.CWWKS1646E_BACK_CHANNEL_LOGOUT_ISSUER_MISMATCH);
         }
         if (vSettings.logoutMethodTested == Constants.HTTP_SESSION && vSettings.sessionLogoutEndpoint != null && vSettings.sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT)) {
-            expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not successfully logout.", null, "Logout successful");
-            expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the issuer did not match.", MessageConstants.CWWKS1648E_BACK_CHANNEL_LOGOUT_INVALID_URI);
+            expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did fail to logout.", null, "An exception occurred during logout");
+            expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the provider failed to validate the id_token.", MessageConstants.CWWKS1643E_BACK_CHANNEL_LOGOUT_CANNOT_EXTRACT_CLAIMS);
+            expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the provider failed to build the logout token.", MessageConstants.CWWKS1642E_BACK_CHANNEL_LOGOUT_FAILURE_BUILDING_LOGOUT_TOKEN);
+            expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the issuer did not match.", MessageConstants.CWWKS1646E_BACK_CHANNEL_LOGOUT_ISSUER_MISMATCH);
         }
 
-        //        if (vSettings.sessionLogoutEndpoint != null) {
-        //            expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not successfully logout.", null, Constants.UNSUCCESSFUL_LOGOUT_MSG);
-        //            expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the issuer did not match.", MessageConstants.CWWKS1646E_BACK_CHANNEL_LOGOUT_ISSUER_MISMATCH);
-        //            expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the provider failed to validate the id_token.", MessageConstants.CWWKS1625E_FAILED_TO_VALIDATE_ID_TOKEN);
-        //        } else {
-        //            expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the provider failed to build the logout token.", MessageConstants.CWWKS1642E_BACK_CHANNEL_LOGOUT_FAILURE_BUILDING_LOGOUT_TOKEN);
-        //            expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the issuer did not match.", MessageConstants.CWWKS1646E_BACK_CHANNEL_LOGOUT_ISSUER_MISMATCH);
-        //            if ((vSettings.sessionLogoutEndpoint != null && vSettings.sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT) || vSettings.logoutMethodTested.equals(Constants.LOGOUT_ENDPOINT))) {
-        //                expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the provider failed to validate the id_token.", MessageConstants.CWWKS1643E_BACK_CHANNEL_LOGOUT_CANNOT_EXTRACT_CLAIMS);
-        //                expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did fail to logout.", null, "An exception occurred during logout");
-        //            } else {
-        //                expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the provider failed to validate the id_token.", MessageConstants.CWWKS1625E_FAILED_TO_VALIDATE_ID_TOKEN);
-        //                expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not successfully logout.", null, Constants.UNSUCCESSFUL_LOGOUT_MSG);
-        //                //                        expectations = initLogoutExpectations(vSettings.finalAppWithoutPostRedirect);
-        //            }
-        //        }
         // logout expectations - just make sure we landed on the logout page - always with a good status code
-        invokeLogout(webClient, updatedTestSettings, expectations, response);
+        invokeLogout(webClient, updatedTestSettings, expectations, response, false);
 
         // Test uses the standard backchannelLogoutUri - so end_session with bcl steps should be performed - set expected states accordingly
         AfterLogoutStates states = new AfterLogoutStates(BCL_FORM.INVALID, updatedTestSettings, vSettings);
@@ -2144,6 +2067,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             states.setIsRefreshTokenValid(true);
             states.setOPNoCookiesRemoved(isUsingSaml());
             states.setClientNoCookiesRemoved();
+            states.setSPCookiesNotRemoved(isUsingSaml());
         }
         if (vSettings.logoutMethodTested == Constants.LOGOUT_ENDPOINT) {
             states.setIsAppSessionAccess(true);
@@ -2153,32 +2077,30 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             states.setClientNoCookiesRemoved();
         }
         if (vSettings.logoutMethodTested == Constants.HTTP_SESSION && vSettings.sessionLogoutEndpoint != null && vSettings.sessionLogoutEndpoint.equals(Constants.END_SESSION_ENDPOINT)) {
-            states.setIsAppSessionAccess(false);
+            states.setIsAppSessionAccess(true);
             states.setIsAccessTokenValid(true);
             states.setIsRefreshTokenValid(true);
             states.setOPNoCookiesRemoved(isUsingSaml());
-            states.setClientAllCookiesRemoved();
+            states.setClientCookieExists(true);
+            states.setClientCookieMatchesPrevious(false);
         }
         if (vSettings.logoutMethodTested == Constants.HTTP_SESSION && vSettings.sessionLogoutEndpoint != null && vSettings.sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT)) {
+            states.setIsAppSessionAccess(true);
+            states.setIsAccessTokenValid(true);
+            states.setIsRefreshTokenValid(true);
+            states.setOPNoCookiesRemoved(isUsingSaml());
+            states.setClientCookieExists(true);
+            states.setClientCookieMatchesPrevious(false);
+        }
+
+        if (vSettings.logoutMethodTested == Constants.SAML_IDP_INITIATED_LOGOUT) {
             states.setIsAppSessionAccess(false);
             states.setIsAccessTokenValid(false);
             states.setIsRefreshTokenValid(false);
-            states.setOpCookieExists(isUsingSaml());
+            states.setOpCookieExists(false);
             states.setClientAllCookiesRemoved();
+            states.setClient2CookieStillValid(false);
         }
-        //            if (vSettings.logoutMethodTested != Constants.HTTP_SESSION || (vSettings.logoutMethodTested == Constants.HTTP_SESSION && vSettings.sessionLogoutEndpoint != null)) {
-        //            states.setIsAccessTokenValid(true);
-        //            states.setIsRefreshTokenValid(true);
-        //            //            if (!(vSettings.sessionLogoutEndpoint != null && vSettings.sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT) || vSettings.logoutMethodTested.equals(Constants.LOGOUT_ENDPOINT))) {
-        //            //                states.setOPNoCookiesRemoved(isUsingSaml());
-        //            //            }
-        //            states.setOPNoCookiesRemoved(isUsingSaml());
-        //            states.setClientNoCookiesRemoved();
-        //            states.setIsAppSessionAccess(true);
-        //            //        } else {
-        //            //
-        //        }
-        //states.setIsUsingIntrospect(true);
         states.setIsUsingInvalidIntrospect(false);
 
         // Make sure that all cookies and tokens have been cleaned up
@@ -2200,7 +2122,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         Object response = accessProtectedApp(webClient1, updatedTestSettings);
         accessProtectedApp(webClient2, null, updatedTestSettings, setTooManyLoginsExpectations(true));
 
-        TokenKeeper tokens1 = setTokenKeeperFromUnprotectedApp(webClient1, updatedTestSettings, 1);
+        TokenKeeper tokens = setTokenKeeperFromUnprotectedApp(webClient1, updatedTestSettings, 1);
 
         // logout expectations - just make sure we landed on the logout page - always with a good status code
         invokeLogout(webClient1, updatedTestSettings, initLogoutExpectations(vSettings.finalAppWithoutPostRedirect), response);
@@ -2208,8 +2130,12 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // Test uses the standard backchannelLogoutUri - so end_session with bcl steps should be performed - set expected states accordingly
         AfterLogoutStates states = new AfterLogoutStates(BCL_FORM.VALID, updatedTestSettings, vSettings);
 
+        states.setIsTokenLimitExceeded((vSettings.logoutMethodTested == Constants.HTTP_SESSION && vSettings.sessionLogoutEndpoint == null));
+        states.setClientCookieExists(false);
+        states.setClientCookieMatchesPrevious(false);
+
         // Make sure that all cookies and tokens have been cleaned up
-        validateLogoutResult(webClient1, updatedTestSettings, tokens1, states);
+        validateLogoutResult(webClient1, updatedTestSettings, tokens, states);
 
         if ((currentRepeatAction.contains(Constants.HTTP_SESSION) && vSettings.sessionLogoutEndpoint == null)) {
             // the logout would not clean up the cache, so, the login will fail
@@ -2270,7 +2196,9 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         validateLogoutResult(webClient, updatedTestSettings, tokens, states);
 
         // After logging out make sure that the cache has been cleaned out and we can log in again.
-        accessProtectedApp(webClient, updatedTestSettings);
+        if (!states.getIsAppSessionAccess()) {
+            accessProtectedApp(webClient, updatedTestSettings);
+        }
 
         Log.info(thisClass, _testName, "************************************************************ BEFORE reusing access_tokens from app_passwords ***************************************************************");
         // Now, let's see if the access_tokens created from the app_passwords are still valid after logout
@@ -2323,7 +2251,9 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         validateLogoutResult(webClient, updatedTestSettings, tokens, states);
 
         // After logging out make sure that the cache has been cleaned out and we can log in again.
-        accessProtectedApp(webClient, updatedTestSettings);
+        if (!states.getIsAppSessionAccess()) {
+            accessProtectedApp(webClient, updatedTestSettings);
+        }
 
         Log.info(thisClass, _testName, "************************************************************ BEFORE validating the app_Tokens ***************************************************************");
         // Finally, let's see if app_Tokens are still valid
@@ -2338,6 +2268,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     @Mode(TestMode.LITE)
     @Test
     public void BasicBCLTests_appPasswords_additionalClient() throws Exception {
+
+        starIt = true;
 
         testOPServer.addIgnoredServerExceptions(MessageConstants.CWWKS1454E_ACCESS_TOKEN_NOT_VALID, MessageConstants.CWOAU0029E_TOKEN_NOT_IN_CACHE);
         WebClient webClient1 = getAndSaveWebClient(true);
@@ -2360,9 +2292,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         List<TokenValues> tokenValues2a = appPTcommon.createAndValidateAppPasswordsFromSameAccessToken(updatedTestSettings2, tokens2.getAccessToken(), _testName, "bcl_appPasswordsClient2", AppPasswordsAndTokensCommonTest.unknownLifetime, 3);
 
         List<validationData> accessTokenExpectations1 = vData.addSuccessStatusCodes();
-        //        accessTokenExpectations1 = vData.addExpectation(accessTokenExpectations1, Constants.INVOKE_PROTECTED_RESOURCE, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the back channel logout test app", null, updatedTestSettings1.getTestURL());
         List<validationData> accessTokenExpectations2 = vData.addSuccessStatusCodes();
-        //        accessTokenExpectations2 = vData.addExpectation(accessTokenExpectations2, Constants.INVOKE_PROTECTED_RESOURCE, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the back channel logout test app", null, updatedTestSettings2.getTestURL());
 
         // create access_tokens from client1's app_passwords
         List<String> createdAccessTokens1 = new ArrayList<>();
@@ -2392,23 +2322,27 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // Make sure that all cookies and tokens have been cleaned up
         Log.info(thisClass, _testName, "webClient1");
         validateLogoutResult(webClient1, updatedTestSettings1, tokens1, states1);
+        recordTest(false, true, "other webClient");
+        starIt = true;
 
         // Test uses the standard backchannelLogoutUri - so end_session with bcl steps should be performed - set expected states accordingly
         AfterLogoutStates states2 = new AfterLogoutStates(BCL_FORM.VALID, updatedTestSettings2, vSettings);
         if (currentRepeatAction.contains(Constants.HTTP_SESSION) && vSettings.sessionLogoutEndpoint == null) {
-            states2.setOPNoCookiesRemoved(false);
+            states2.setOPNoCookiesRemoved(isUsingSaml());
             states2.setIsAppSessionAccess(true);
             states2.setSpCookieExists(true);
             states2.setSpCookieMatchesPrevious(true);
             states2.setClientCookieExists(true);
+            states2.setClientCookieStillValid(true);
             states2.setClientCookieMatchesPrevious(true);
         } else {
-            states2.setOPNoCookiesRemoved(isUsingSaml());
             states2.setIsAppSessionAccess(isUsingSaml());
             states2.setSpCookieExists(isUsingSaml());
+            states2.setSpCookieStillValid(isUsingSaml());
             states2.setSpCookieMatchesPrevious(isUsingSaml());
             states2.setClientCookieExists(isUsingSaml());
-            states2.setClientCookieMatchesPrevious(!isUsingSaml());
+            states2.setClientCookieStillValid(false);
+            states2.setClientCookieMatchesPrevious(false);
         }
 
         // Make sure that all cookies and tokens have been cleaned up
@@ -2447,6 +2381,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     @Test
     public void BasicBCLTests_appTokens_additionalClient() throws Exception {
 
+        starIt = true;
+
         testOPServer.addIgnoredServerExceptions(MessageConstants.CWWKS1454E_ACCESS_TOKEN_NOT_VALID, MessageConstants.CWOAU0029E_TOKEN_NOT_IN_CACHE);
         WebClient webClient1 = getAndSaveWebClient(true);
         WebClient webClient2 = getAndSaveWebClient(true);
@@ -2466,9 +2402,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         List<TokenValues> tokenValues2a = appPTcommon.createAndValidateAppTokensFromSameAccessToken(updatedTestSettings2, tokens2.getAccessToken(), _testName, "bcl_appTokensClient2", AppPasswordsAndTokensCommonTest.unknownLifetime, 3);
 
         List<validationData> appTokenExpectations1 = vData.addSuccessStatusCodes();
-        //        appTokenExpectations1 = vData.addExpectation(appTokenExpectations1, Constants.INVOKE_PROTECTED_RESOURCE, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the back channel logout test app", null, updatedTestSettings1.getTestURL());
         List<validationData> appTokenExpectations2 = vData.addSuccessStatusCodes();
-        //        appTokenExpectations2 = vData.addExpectation(appTokenExpectations2, Constants.INVOKE_PROTECTED_RESOURCE, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the back channel logout test app", null, updatedTestSettings2.getTestURL());
 
         // Make sure that the app tokens are good
         for (TokenValues tv : tokenValues1) {
@@ -2489,9 +2423,13 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
         // Make sure that all cookies and tokens have been cleaned up
         validateLogoutResult(webClient1, updatedTestSettings1, tokens1, states);
+        recordTest(false, true, "other webClient");
+        starIt = true;
 
         // After logging out make sure that the cache has been cleaned out and we can log in again.
-        accessProtectedApp(webClient1, updatedTestSettings1);
+        if (!states.getIsAppSessionAccess()) {
+            accessProtectedApp(webClient1, updatedTestSettings1);
+        }
         // After logging out make sure that the cache has been cleaned out and we can log in again.
         AfterLogoutStates states2 = new AfterLogoutStates(BCL_FORM.VALID, updatedTestSettings2, vSettings);
 
@@ -2523,6 +2461,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
      * One login and then end_session/logout
      *
      */
+    // SAML IDP Initiated logout can't log anything out with cookies, so there is nothing to really test.
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingSAMLIDPInitiatedLogout.class)
     @Mode(TestMode.LITE)
     @Test
     public void BasicBCLTests_mainPath_confidentialClient_useNewClientToLogout() throws Exception {
@@ -2537,21 +2477,31 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
         // logout expectations - just make sure we landed on the logout page - always with a good status code
 
-        invokeLogout(getAndSaveWebClient(true), updatedTestSettings, initLogoutExpectations(vSettings.finalAppWithoutPostRedirect, false), response, false);
+        String logoutLandingPage = vSettings.finalAppWithoutPostRedirect;
+        if (isUsingSaml() && vSettings.logoutMethodTested.equals(Constants.LOGOUT_ENDPOINT)) {
+            logoutLandingPage = Constants.LOGOUT_ENDPOINT;
+        }
+        invokeLogout(getAndSaveWebClient(true), updatedTestSettings, initLogoutExpectations(BCL_FORM.VALID, logoutLandingPage, false), response, false);
 
         // Test uses the standard backchannelLogoutUri - so end_session with bcl steps should be performed - set expected states accordingly
         AfterLogoutStates states = new AfterLogoutStates(BCL_FORM.VALID, updatedTestSettings, vSettings);
         //states.setIsUsingIntrospect(true);
         states.setOPNoCookiesRemoved(isUsingSaml());
-        if (vSettings.logoutMethodTested.equals(Constants.LOGOUT_ENDPOINT) || (currentRepeatAction.contains(Constants.HTTP_SESSION) && vSettings.sessionLogoutEndpoint == null) ||
-                (vSettings.logoutMethodTested == Constants.HTTP_SESSION && vSettings.sessionLogoutEndpoint != null && vSettings.sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT))) {
-            states.setIsAppSessionAccess(true);
+        states.setIsAppSessionAccess(true);
+        states.setClientCookieExists(true);
+        states.setClientCookieMatchesPrevious(false);
+        if (isUsingSaml() && !vSettings.logoutMethodTested.equals(Constants.IDP_INITIATED_LOGOUT)) {
+            states.setSpCookieExists(true);
+            states.setSpCookieStillValid(true);
+            states.setSpCookieMatchesPrevious(true);
+        }
+        if (currentRepeatAction.contains(Constants.HTTP_SESSION) && vSettings.sessionLogoutEndpoint == null) {
             states.setSpCookieExists(true);
             states.setSpCookieMatchesPrevious(true);
-            states.setClientCookieExists(true);
-            states.setClientCookieMatchesPrevious(true);
             states.setIsAccessTokenValid(true);
             states.setIsRefreshTokenValid(true);
+            states.setClientCookieMatchesPrevious(true);
+            states.setClientCookieStillValid(true);
         }
         // Make sure that all cookies and tokens have been cleaned up
         validateLogoutResult(webClient, updatedTestSettings, tokens, states);
@@ -2563,6 +2513,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
      * One login and then end_session/logout
      *
      */
+    /** check on this - accessTokenInLtpaCookie does not exist in the social client config, so, skip this test **/
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfSocialClient.class)
     @Mode(TestMode.LITE)
     @Test
     public void BasicBCLTests_mainPath_confidentialClient_accessTokenCacheEnabled_false() throws Exception {
@@ -2587,7 +2539,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     }
 
-    /** chc - check on this - accessTokenInLtpaCookie does not exist in the social client config, so, skip this test **/
+    /** check on this - accessTokenInLtpaCookie does not exist in the social client config, so, skip this test **/
     @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfSocialClient.class)
     @Mode(TestMode.LITE)
     @Test
@@ -2606,31 +2558,13 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
         // Test uses the standard backchannelLogoutUri - so end_session with bcl steps should be performed - set expected states accordingly
         AfterLogoutStates states = new AfterLogoutStates(BCL_FORM.VALID, updatedTestSettings, vSettings);
-        //states.setIsUsingIntrospect(true);
 
+        if (currentRepeatAction.contains(Constants.HTTP_SESSION) && vSettings.sessionLogoutEndpoint == null) {
+            states.setClientCookieStillValid(true);
+        }
         // Make sure that all cookies and tokens have been cleaned up
         validateLogoutResult(webClient, updatedTestSettings, tokens, states);
 
     }
 
-    /**
-     * Various config attributes that may be affected by, or affect bcl
-     *
-     * OAuth (OP)
-     * revokeAccessTokensWithRefreshTokens - shouldn't affect or be affected by bcl
-     * accessTokenCacheEnabled - test added
-     *
-     * OIDC (OP)
-     *
-     * oidc client (RP)
-     * accessTokenInLtpaCookie - test added
-     * validationMethod - have tests using userinfo and introspect
-     *
-     *
-     * oidcclient (Social)
-     *
-     *
-     *
-     *
-     */
 }
