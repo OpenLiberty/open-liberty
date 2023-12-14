@@ -36,7 +36,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 /**
  * JSP 2.3 tests which use Java 1.8 specific features.
  *
- * Tests must only run when Java 1.8 is in use.
+ * Tests must only run when Java 1.8 or later is in use.
  *
  * Tests that just need to drive a simple request using our WebBrowser object can be placed in this class.
  *
@@ -89,6 +89,14 @@ public class JSPJava8Test {
         assertTrue("The response did not contain: onetwothreefour", response.getText().contains("onetwothreefour"));
     }
 
+    /**
+     * Same test as testJava8JSP, but using the runtime JDK (via JSP's useJDKCompiler option rather than the default Eclipse Compiler for Java (ECJ))
+     *
+     * https://openliberty.io/docs/latest/reference/config/jspEngine.html
+     * 
+     * @throws Exception if something goes horribly wrong
+     *                
+     */
     @Test
     public void testJava8viaUseJDKCompiler() throws Exception {
 

@@ -16,7 +16,7 @@
         <feature>localConnector-1.0</feature>
     </featureManager>
 
-    <logging traceSpecification="*=info=enabled:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:TCPChannel=all:GenericBNF=all:com.ibm.ws.jsp*=all" maxFileSize="32" maxFiles="24" traceFormat="BASIC"/>
+    <logging traceSpecification="*=info=enabled:com.ibm.ws.jsp*=all" maxFileSize="32" maxFiles="24" traceFormat="BASIC"/>
 
     <jspEngine javaSourceLevel="11"/>
 

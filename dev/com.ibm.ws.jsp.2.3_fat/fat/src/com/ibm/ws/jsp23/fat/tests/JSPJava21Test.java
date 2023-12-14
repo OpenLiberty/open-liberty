@@ -40,15 +40,12 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 /**
  * JSP 2.3 tests which use Java 21 specific features.
  *
- * Tests must only run when Java 21 is in use.
- *
- * Tests that just need to drive a simple request using our WebBrowser object can be placed in this class.
+ * Tests must only run when Java 21 or later is in use.
  *
  */
-// No need to run against cdi-2.0 since these tests don't use CDI at all.
 @Mode(TestMode.FULL)
 @MinimumJavaLevel(javaLevel = 21)
-@SkipForRepeat("CDI-2.0")
+@SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
 @RunWith(FATRunner.class)
 public class JSPJava21Test {
     private static final String APP_NAME = "TestJSPWithJava21";
@@ -96,6 +93,14 @@ public class JSPJava21Test {
         assertTrue("The response did not contain: success", response.getText().contains("switch success!"));
     }
 
+     /**
+     * Same test as testJava21JSP, but using the runtime JDK (via JSP's useJDKCompiler option rather than the default Eclipse Compiler for Java (ECJ))
+     *
+     * https://openliberty.io/docs/latest/reference/config/jspEngine.html
+     * 
+     * @throws Exception if something goes horribly wrong
+     *                
+     */
     @Test
     public void testJava21viaUseJDKCompiler() throws Exception {
 

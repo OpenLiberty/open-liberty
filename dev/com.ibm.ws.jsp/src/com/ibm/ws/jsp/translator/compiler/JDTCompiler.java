@@ -107,14 +107,14 @@ public class JDTCompiler implements JspCompiler {
                 compilerOptionsMap.put(CompilerOptions.OPTION_LineNumberAttribute, CompilerOptions.GENERATE);
             compilerOptionsMap.put(CompilerOptions.OPTION_LocalVariableAttribute, CompilerOptions.GENERATE);
             compilerOptionsMap.put(CompilerOptions.OPTION_SourceFileAttribute, CompilerOptions.GENERATE);
-            compilerOptionsMap.put(CompilerOptions.OPTION_PreserveUnusedLocal, CompilerOptions.PRESERVE);            
+            compilerOptionsMap.put(CompilerOptions.OPTION_PreserveUnusedLocal, CompilerOptions.PRESERVE);
         }
         compilerOptionsMap.put(CompilerOptions.OPTION_Encoding, javaEncoding);
         
         if (javaSourceLevel != -1) {
             compilerOptionsMap.put(CompilerOptions.OPTION_Source, javaSourceLevel.toString());
-            compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, javaSourceLevel.toString());  
-            compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, javaSourceLevel.toString());  
+            compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, javaSourceLevel.toString());
+            compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, javaSourceLevel.toString());
         }
         else if (jdkSourceLevel == 14) {
             compilerOptionsMap.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_4);
@@ -128,20 +128,20 @@ public class JDTCompiler implements JspCompiler {
         }
         //PM04610 start
         else if (jdkSourceLevel == 16) {
-            compilerOptionsMap.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_6); 
+            compilerOptionsMap.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_6);
             compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_6);  // 341708        
             compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_6); // 412312
         }
         //PM04610 end
         else if (jdkSourceLevel == 17) {
-            compilerOptionsMap.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_7); 
-            compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_7); 
+            compilerOptionsMap.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_7);
+            compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_7);
             compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_7);
         }
         //126902 start
         else if (jdkSourceLevel == 18) {
-            compilerOptionsMap.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_8); 
-            compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_8); 
+            compilerOptionsMap.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_8);
+            compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_8);
             compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_8);
         }
         //126902 end

@@ -39,15 +39,12 @@ import componenttest.topology.impl.LibertyServer;
 /**
  * JSP 2.3 tests which use Java 11 specific features.
  *
- * Tests must only run when Java 11 is in use. Runs only in FULL as Java 8 and 17 test also cover these options.
- *
- * Tests that just need to drive a simple request using our WebBrowser object can be placed in this class.
+ * Tests must only run when Java 11 is in use.
  *
  */
-// No need to run against cdi-2.0 since these tests don't use CDI at all.
 @Mode(TestMode.FULL)
 @MinimumJavaLevel(javaLevel = 11)
-@SkipForRepeat("CDI-2.0")
+@SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
 @RunWith(FATRunner.class)
 public class JSPJava11Test {
     private static final String APP_NAME = "TestJSPWithJava11";
@@ -96,6 +93,14 @@ public class JSPJava11Test {
         assertTrue("Java 11's Map copyOf method failed", response.getText().contains("{key=success-copyof}"));
     }
 
+    /**
+     * Same test as testJava11JSP, but using the runtime JDK (via JSP's useJDKCompiler option rather than the default Eclipse Compiler for Java (ECJ))
+     * 
+     * https://openliberty.io/docs/latest/reference/config/jspEngine.html
+     *
+     * @throws Exception if something goes horribly wrong
+     *                
+     */
     @Test
     public void testJava11viaUseJDKCompiler() throws Exception {
 
