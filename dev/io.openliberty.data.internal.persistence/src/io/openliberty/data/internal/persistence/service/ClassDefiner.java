@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data.internal.persistence;
+package io.openliberty.data.internal.persistence.service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -21,7 +21,7 @@ import java.security.ProtectionDomain;
 /**
  * Initially copied from @nmittles pull #25248
  */
-public class ClassDefiner {
+class ClassDefiner {
     /**
      * Accessible {@link ClassLoader#findLoadedClass}. This field is lazily
      * initialized by {@link #findLoadedClass}.
@@ -48,7 +48,7 @@ public class ClassDefiner {
      * @param className   the class name
      * @return the class, or null if not loaded
      */
-    public Class<?> findLoadedClass(ClassLoader classLoader, String className) {
+    Class<?> findLoadedClass(ClassLoader classLoader, String className) {
         try {
             Method findLoadedClassMethod = svFindLoadedClassMethod;
             if (findLoadedClassMethod == null) {
@@ -87,7 +87,7 @@ public class ClassDefiner {
      * @throws LinkageError     if a class is defined twice within the given class loader
      * @throws ClassFormatError if the bytes passed in are invalid
      */
-    public Class<?> defineClass(ClassLoader classLoader, String className, byte[] classbytes) {
+    Class<?> defineClass(ClassLoader classLoader, String className, byte[] classbytes) {
         Method defineClassMethod = svDefineClassMethod;
         if (defineClassMethod == null) {
             Permissions perms = new Permissions();
@@ -144,7 +144,7 @@ public class ClassDefiner {
      * @throws LinkageError     if a class is defined twice within the given class loader
      * @throws ClassFormatError if the bytes passed in are invalid
      */
-    public Class<?> findLoadedOrDefineClass(ClassLoader classLoader, String className, byte[] classbytes) {
+    Class<?> findLoadedOrDefineClass(ClassLoader classLoader, String className, byte[] classbytes) {
         Class<?> klass = findLoadedClass(classLoader, className);
         if (klass == null) {
             try {

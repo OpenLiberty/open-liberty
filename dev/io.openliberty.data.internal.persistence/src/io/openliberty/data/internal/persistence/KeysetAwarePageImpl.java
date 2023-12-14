@@ -64,7 +64,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
                         ? RepositoryImpl.computeOffset(this.pagination) //
                         : 0;
 
-        EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
+        EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
         try {
             String jpql = keysetCursor.isEmpty() ? queryInfo.jpql : //
                             isForward ? queryInfo.jpqlAfterKeyset : //
@@ -101,7 +101,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
      */
     @FFDCIgnore(Exception.class)
     private long countTotalElements() {
-        EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
+        EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
         try {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "query for count: " + queryInfo.jpqlCount);

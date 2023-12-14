@@ -44,6 +44,8 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.osgi.framework.BundleContext;
@@ -57,14 +59,17 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.resource.ResourceFactory;
 
-import io.openliberty.data.internal.persistence.EntityDefiner;
+import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.QueryInfo;
+import io.openliberty.data.internal.persistence.provider.PUnitEMBuilder;
+import io.openliberty.data.internal.persistence.service.DBStoreEMBuilder;
 import jakarta.annotation.Generated;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.metamodel.StaticMetamodel;
@@ -87,6 +92,7 @@ import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.inject.spi.WithAnnotations;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 
 /**
  * CDI extension to handle the injection of repository implementations
@@ -108,68 +114,80 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
     private final Queue<Bean<?>> repositoryBeans = new ConcurrentLinkedQueue<>();
 
     /**
-     * Map of repository type to databaseStore id.
+     * Map of repository type to EntityManagerBuilder.
      * Entries are removed as they are processed to allow for the CDI extension methods to be invoked again
      * for different applications or the same application being restarted.
      */
-    private final ConcurrentHashMap<AnnotatedType<?>, String> repositoryTypes = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<AnnotatedType<?>, EntityManagerBuilder> repositoryTypes = new ConcurrentHashMap<>();
 
     /**
      * Map of entity class to list of static metamodel class.
      */
     private final Map<Class<?>, List<Class<?>>> staticMetamodels = new HashMap<>();
 
-    /**
-     * A key for a group of entities for the same backend database
-     * that are loaded with the same class loader.
-     */
-    @Trivial
-    private static class EntityGroupKey {
-        private final String databaseId;
-        private final int hash;
-        private final ClassLoader loader;
-
-        EntityGroupKey(String databaseId, ClassLoader loader) {
-            this.loader = loader;
-            this.databaseId = databaseId;
-            hash = loader.hashCode() + databaseId.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            EntityGroupKey k;
-            return o instanceof EntityGroupKey
-                   && databaseId.equals((k = (EntityGroupKey) o).databaseId)
-                   && loader.equals(k.loader);
-        }
-
-        @Override
-        public int hashCode() {
-            return hash;
-        }
-    }
-
+    @FFDCIgnore(NamingException.class)
     @Trivial
     public <T> void annotatedRepository(@Observes @WithAnnotations(Repository.class) ProcessAnnotatedType<T> event) {
-        AnnotatedType<T> type = event.getAnnotatedType();
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
 
+        AnnotatedType<T> type = event.getAnnotatedType();
         Repository repository = type.getAnnotation(Repository.class);
 
         String provider = repository.provider();
         boolean provide = Repository.ANY_PROVIDER.equals(provider) || "OpenLiberty".equalsIgnoreCase(provider); // TODO provider name
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+        if (trace && tc.isDebugEnabled())
             Tr.debug(this, tc, "annotatedRepository to " + (provide ? "provide" : "ignore"),
                      repository.toString(), type.getJavaClass().getName());
 
         if (provide) {
-            String dataStore = repository.dataStore();
-            if (dataStore.length() == 0)
-                dataStore = "defaultDatabaseStore";
-            else
-                dataStore = findOrCreateDatabaseStore(dataStore, type);
+            Class<?> repositoryInterface = type.getJavaClass();
+            ClassLoader loader = repositoryInterface.getClassLoader();
 
-            repositoryTypes.put(type, dataStore);
+            EntityManagerBuilder builder = null;
+            String dataStore = repository.dataStore();
+            boolean isJNDIName;
+            if (dataStore.length() == 0) {
+                dataStore = "defaultDatabaseStore";
+                isJNDIName = false;
+            } else {
+                isJNDIName = dataStore.startsWith("java:");
+
+                if (isJNDIName) {
+                    try {
+                        Object resource = InitialContext.doLookup(dataStore);
+                        if (resource instanceof EntityManagerFactory)
+                            builder = new PUnitEMBuilder((EntityManagerFactory) resource, dataStore, loader);
+
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, dataStore + " is the JNDI name for " + resource);
+                    } catch (NamingException x) {
+                    }
+                } else {
+                    // Check for resource references and persistence unit references where java:comp/env/ is omitted:
+                    String javaCompName = "java:comp/env/" + dataStore;
+                    try {
+                        Object resource = InitialContext.doLookup(javaCompName);
+
+                        if (resource instanceof EntityManagerFactory)
+                            builder = new PUnitEMBuilder((EntityManagerFactory) resource, javaCompName, loader);
+
+                        if (builder != null || resource instanceof DataSource) {
+                            isJNDIName = true;
+                            dataStore = javaCompName;
+                        }
+
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, dataStore + " is the JNDI name for " + resource);
+                    } catch (NamingException x) {
+                    }
+                }
+            }
+
+            if (builder == null)
+                builder = new DBStoreEMBuilder(findOrCreateDatabaseStore(dataStore, isJNDIName, type), loader);
+
+            repositoryTypes.put(type, builder);
         }
     }
 
@@ -199,42 +217,39 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
 
     public void afterTypeDiscovery(@Observes AfterTypeDiscovery event, BeanManager beanMgr) {
         // Group entities by data access provider and class loader
-        Map<EntityGroupKey, EntityDefiner> entityGroups = new HashMap<>();
+        Map<EntityManagerBuilder, EntityManagerBuilder> entityGroups = new HashMap<>();
 
-        for (Iterator<Map.Entry<AnnotatedType<?>, String>> it = repositoryTypes.entrySet().iterator(); it.hasNext();) {
-            Map.Entry<AnnotatedType<?>, String> entry = it.next();
+        for (Iterator<Map.Entry<AnnotatedType<?>, EntityManagerBuilder>> it = repositoryTypes.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<AnnotatedType<?>, EntityManagerBuilder> entry = it.next();
             it.remove();
 
             AnnotatedType<?> repositoryType = entry.getKey();
-            String databaseStoreId = entry.getValue();
+            EntityManagerBuilder entityManagerBuilder = entry.getValue();
             Class<?> repositoryInterface = repositoryType.getJavaClass();
-            ClassLoader loader = repositoryInterface.getClassLoader();
 
             Class<?>[] primaryEntityClassReturnValue = new Class<?>[1];
             Map<Class<?>, List<QueryInfo>> queriesPerEntityClass = new HashMap<>();
             if (discoverEntityClasses(repositoryType, queriesPerEntityClass, primaryEntityClassReturnValue)) {
-                EntityGroupKey entityGroupKey = new EntityGroupKey(databaseStoreId, loader);
-                EntityDefiner entityDefiner = entityGroups.get(entityGroupKey);
-                if (entityDefiner == null)
-                    entityGroups.put(entityGroupKey, entityDefiner = new EntityDefiner(entityGroupKey.databaseId, loader));
+                EntityManagerBuilder previous = entityGroups.putIfAbsent(entityManagerBuilder, entityManagerBuilder);
+                entityManagerBuilder = previous == null ? entityManagerBuilder : previous;
 
                 for (Class<?> entityClass : queriesPerEntityClass.keySet())
-                    entityDefiner.add(entityClass);
+                    entityManagerBuilder.add(entityClass);
 
                 BeanAttributes<?> attrs = beanMgr.createBeanAttributes(repositoryType);
                 Bean<?> bean = beanMgr.createBean(attrs, repositoryInterface, new RepositoryProducer.Factory<>( //
                                 repositoryInterface, beanMgr, provider, this, //
-                                entityDefiner, primaryEntityClassReturnValue[0], queriesPerEntityClass));
+                                entityManagerBuilder, primaryEntityClassReturnValue[0], queriesPerEntityClass));
                 repositoryBeans.add(bean);
             }
         }
 
-        for (EntityDefiner entityDefiner : entityGroups.values()) {
-            provider.executor.submit(entityDefiner);
+        for (EntityManagerBuilder builder : entityGroups.values()) {
+            provider.executor.submit(builder);
         }
 
-        for (EntityDefiner entityDefiner : entityGroups.values()) {
-            entityDefiner.populateStaticMetamodelClasses(staticMetamodels);
+        for (EntityManagerBuilder builder : entityGroups.values()) {
+            builder.populateStaticMetamodelClasses(staticMetamodels);
         }
     }
 
@@ -248,11 +263,12 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
      * Locates an existing databaseStore or creates a new one corresponding to the
      * dataStore name that is specified on the Repository annotation.
      *
-     * @param name dataStore name specified on the Repository annotation.
-     * @param type AnnotatedType for the interface that is annotated with the Repository annotation.
+     * @param name       dataStore name specified on the Repository annotation.
+     * @param isJNDIName indicates if the dataStore name is a JNDI name (begins with java: or is inferred to be java:comp/env/...)
+     * @param type       AnnotatedType for the interface that is annotated with the Repository annotation.
      * @return id of databaseStore to use.
      */
-    private String findOrCreateDatabaseStore(String name, AnnotatedType<?> type) {
+    private String findOrCreateDatabaseStore(String name, boolean isJNDIName, AnnotatedType<?> type) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
@@ -262,7 +278,6 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
         String component = jeeName == null ? null : jeeName.getComponent();
         String qualifiedName = null;
         boolean javaApp = false, javaModule = false, javaComp = false;
-        boolean isJNDIName = name.startsWith("java:");
 
         // Qualify resource reference and DataSourceDefinition JNDI names with the application/module/component name to make them unique
         if (isJNDIName) {
