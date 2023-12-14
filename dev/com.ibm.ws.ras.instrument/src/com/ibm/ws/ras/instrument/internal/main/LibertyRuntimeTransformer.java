@@ -310,7 +310,7 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
         String methodName = "transform";
 
         boolean isLoggable = isLoggableClassName(className);
-        
+
         String failureReason = isTransformPossible(initialBytes);
 
         if ( failureReason != null ) {
@@ -319,7 +319,7 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
             }
             return null;
         }
-            
+
         boolean traceEnabledForClass = injectAtTransform;
         if (!injectAtTransform && classBeingRedefined != null) {
             WeakReference<TraceComponent> tcReference = traceComponentByClass.get(classBeingRedefined);
@@ -347,18 +347,22 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
             Tr.error(tc, "INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2", className, t);
             return null;
         }
-        
+
         if ( isLoggable && (finalBytes != null) ) {
             fileDump(methodName, "Final bytes", finalBytes);
         }
         return finalBytes;        
     }
-    
-    public static byte[] transform(String path, byte[] bytes) throws IOException {
-        return transform(path, bytes, true);
+
+    //
+
+    public static byte[] transform(String className, byte[] bytes) throws IOException {
+        return transform(className, bytes, true);
     }    
     
-    //
+    public static byte[] transform(byte[] bytes, boolean skipIfNotPreprocessed) throws IOException {
+        return transform(null, bytes, skipIfNotPreprocessed);
+    }
 
     /*
      * Perform transformation of class bytes.
@@ -373,9 +377,7 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
      * if frame computation is required, which is caught and the transformation is
      * attempted a second time with frame computation enabled.
      * 
-     * @param path An approximate path to the class resource.  See
-     *     {@link AbstractInstrumentation#transform(String, InputStream)}
-     *     for a discussion of the path parameter.
+     * @param className Optional: The name of the target class.
      * @param classBytes The class bytes which are to be transformed.
      * @param skipIfNotPreprocessed Control parameter.  When true, the
      *     transformation will be skipped if the target class was not
@@ -383,10 +385,12 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
      *     
      * @return The transformed class bytes.  Null if no changes were made.
      */
-    public static byte[] transform(String path, byte[] classBytes, boolean skipIfNotPreprocessed) throws IOException {
+    public static byte[] transform(String className, byte[] classBytes, boolean skipIfNotPreprocessed) throws IOException {
         String methodName = "transform";
 
-        boolean isLoggable = isLoggablePath(path);
+        String debugClassName = ((className != null) ? className : "**UNKNOWN**" );
+
+        boolean isLoggable = (className != null) && isLoggableClassName(className);
         boolean isDumpable = tc.isDumpEnabled();
 
         // The reader is created early and is provided to the class writer
@@ -423,7 +427,7 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
                 isModified = visit(classReader, classVisitor,
                                    AbstractRasClassAdapter.THROW_COMPUTE_FRAMES,
                                    skipIfNotPreprocessed);
-
+                
             } catch ( ComputeRequiredException e ) {
                 // Second try: Use COMPUTE_FRAMES and !THROW_COMPUTE_FRAMES.
 
@@ -441,19 +445,19 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
             }
 
         } catch ( Throwable t ) {
-            fileStack(methodName, "Instrumentation failure [ " + path + " ]", t);
-            throw new IOException("Instrumentation failure [ " + path + " ]: " + t.getMessage(), t);
+            fileStack(methodName, "Trace instrumentation failure [ " + debugClassName + " ]", t);
+            throw new IOException("Trace instrumentation failure [ " + debugClassName + " ]: " + t.getMessage(), t);
         }
 
         if ( isDumpable && isModified ) {
-            Tr.dump(tc, "Transformed class", baseDumpWriter);
+            Tr.dump(tc, "Transformed class [ " + debugClassName + " ]", baseDumpWriter);
         }
         if ( isLoggable ) {
-            fileLog(methodName, "IsModified", Boolean.valueOf(isModified));
+            fileLog(methodName, "IsModified [ " + debugClassName + " ]", Boolean.valueOf(isModified));
         }
         return ( !isModified ? null : classWriter.toByteArray() );
     }
-    
+
     /**
      * Conditionally wrap a class writer with logging visitors.
      * 
