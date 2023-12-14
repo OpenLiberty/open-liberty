@@ -24,7 +24,7 @@ import io.openliberty.pages40.fat.tests.PagesELTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                // Pages40ChangesTest.class,
+                Pages40ChangesTest.class,
                 PagesELTests.class
 })
 public class FATSuite {

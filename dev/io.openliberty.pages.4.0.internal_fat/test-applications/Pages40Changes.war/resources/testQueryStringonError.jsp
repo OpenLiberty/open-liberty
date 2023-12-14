@@ -8,7 +8,7 @@
     SPDX-License-Identifier: EPL-2.0
  -->
 <html>
-<title>positiveErrorPage</title>
+<title>testQueryStringonError</title>
 <body>
 
 <!-- We are setting the error page to "errorPage.jsp" where iserrorpage is true -->

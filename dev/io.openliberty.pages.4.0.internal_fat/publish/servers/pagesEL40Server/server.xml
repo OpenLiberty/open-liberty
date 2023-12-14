@@ -14,9 +14,5 @@
     <featureManager>
         <feature>pages-4.0</feature>
     </featureManager>
-
-    <javaPermission className="java.util.PropertyPermission" name="dtm.debug" actions="read"/>
-
-    <javaPermission className="java.util.PropertyPermission" name="user.dir" actions="read"/>
-
+    
 </server>

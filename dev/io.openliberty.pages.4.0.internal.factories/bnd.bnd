@@ -19,15 +19,10 @@ Bundle-Name: Open Liberty Pages 4.0 Factories
 Bundle-SymbolicName: io.openliberty.pages.4.0.internal.factories
 Bundle-Description: WAS Pages 4.0, version ${bVersion}
 
-WLP-ServerName: IBM WebSphere Application Server
-WLP-ServerVersion: ${liberty.beta.version}
-
 -dsannotations: com.ibm.ws.jsp23.webcontainerext.JspVersionFactoryImpl, \
 com.ibm.ws.jsp23.webcontainerext.ws.PrepareJspHelper23Factory, \
 com.ibm.ws.jsp23.translator.visitor.validator.ElValidatorExtFactoryImpl, \
 com.ibm.ws.jsp23.translator.visitor.generator.GeneratorUtilsExtFactoryImpl
-
-# Note these factories were copied from the  io.openliberty.pages.3.1.internal.factories bundle
 
 Export-Package: \
 	com.ibm.ws.jsp.speclevel, \
@@ -97,12 +92,12 @@ instrument.classesExcludes: org/apache/**/*.class
    io.openliberty.jakarta.servlet.6.0;version=latest,\
    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
    com.ibm.ws.webcontainer.servlet.3.1;version=latest,\
-	com.ibm.ws.container.service;version=latest,\
-	com.ibm.ws.logging.core,\
-	com.ibm.wsspi.org.osgi.service.component.annotations, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-	com.ibm.ws.javaee.version;version=latest, \
-	io.openliberty.el.internal.cdi;version=latest,\
+   com.ibm.ws.container.service;version=latest,\
+   com.ibm.ws.logging.core,\
+   com.ibm.wsspi.org.osgi.service.component.annotations, \
+   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+   com.ibm.ws.javaee.version;version=latest, \
+   io.openliberty.el.internal.cdi;version=latest,\
    com.ibm.ws.webcontainer.jakarta;version=latest,\
    com.ibm.ws.webcontainer.servlet.3.1.jakarta;version=latest,\
    com.ibm.ws.jsp.jakarta;version=latest
