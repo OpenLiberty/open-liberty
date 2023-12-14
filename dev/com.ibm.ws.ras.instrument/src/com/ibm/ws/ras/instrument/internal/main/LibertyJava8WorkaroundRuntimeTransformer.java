@@ -306,12 +306,12 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
      */
     @Override
     public byte[] transform(ClassLoader loader,
-                            String path,
+                            String className,
                             Class<?> classBeingRedefined,
                             ProtectionDomain protectionDomain,
                             byte[] classfileBuffer) throws IllegalClassFormatException {
      	if (detailedTransformTrace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "transform", loader, path, classBeingRedefined, protectionDomain);
+            Tr.entry(this, tc, "transform", loader, className, classBeingRedefined, protectionDomain);
 
 		    	
 		if (!isJava8TraceEnabled)
@@ -325,7 +325,7 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
             try {
                 newClassBytes = transform(classfileBuffer);
             } catch (Throwable t) {
-                Tr.error(tc, "INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2", path, t);
+                Tr.error(tc, "INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2", className, t);
             }
         }
 

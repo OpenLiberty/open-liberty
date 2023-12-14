@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -477,20 +477,36 @@ public abstract class AbstractInstrumentation {
     }
 
     /**
-     * Instrument the class at the current position in the specified input stream.
+     * Instrument the class at the current position in the specified
+     * input stream.  Answer the instrumented class bytes.
      * 
-     * @param path this is the aproximate path to the class resource. 
-     *        The class resource is either a file or a jar entry. A filepath will
-     *        be relative to an unknown ancestor.
+     * Instrumentation may be declined, in which case null is returned.
+     * For example, if the class was already instrumented, or if the
+     * class is marked as trivial, or if the class is a trace
+     * instrumentation class.
+     * 
+     * The path value is used only to determine when to enable logging
+     * for the target class, or as a logged value.  The path value does
+     * not impact instrumentation.
+     * 
+     * The resource of the target class is usually either a file or a
+     * jar entry.  Correspondingly, the path value is either a file
+     * path or a jar entry name.  In neither case is the value directly
+     * mappable to a class name: As a file path, the value will be
+     * relative to an unknown parent file.  As an entry name, the value
+     * may include additional directories, such as WEB-INF/classes (for
+     * a class from a WAR file) or META-INF (for multi-version classes).
+     * However, the value should contain a base name and extension.
+     * 
+     * @param path The approximate path of the class resource. 
      *
-     * @param classfileStream the class file byte stream to be transformed
+     * @param classStream An input stream to the class resource.
      * 
-     * @return instrumented class file or null if the class has already
-     *         been instrumented.
-     * 
-     * @throws IOException if an error is encountered while reading from
-     *             the <code>InputStream</code>
+     * @return The instrumented class bytes.  Null if instrumentation
+     *     was not performed.
+     *
+     * @throws IOException Thrown if the class bytes could not be read.
      */
-    protected abstract byte[] transform(String path, InputStream classfileStream) throws IOException;
+    protected abstract byte[] transform(String path, InputStream classStream) throws IOException;
 
 }

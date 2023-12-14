@@ -19,13 +19,12 @@ package org.jboss.weld.resources;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.util.Properties;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.metadata.TypeStore;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
@@ -40,14 +39,26 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  */
 public class HotspotReflectionCache extends DefaultReflectionCache {
 
-//This class was extracted from weld source code. 
+//This class was extracted from weld source code.
 //IBM modifications: Adding internalGetAnnotationsLogged, and modifying internalGetAnnotations to call it when a system property is set. internalGetAnnotationsUnlogged is the original weld varient of internalGetAnnotations
 //original file: https://github.com/weld/core/blob/4.0/impl/src/main/java/org/jboss/weld/resources/HotspotReflectionCache.java
 //Hopefully we can undo this once we have fixed the bug this tracks
 
     private final Class<?> annotationTypeLock;
 
-    private static final String JBOSS_HOTSPOT_TRACE_ENABLED = getSystemProperty("jboss.hotspot.trace.enabled");
+    private static final String JBOSS_HOTSPOT_TRACE_ENABLED_VALUE = getSystemProperty("jboss.hotspot.trace.enabled");
+
+    private static final boolean JBOSS_HOTSPOT_TRACE_ENABLED = ((JBOSS_HOTSPOT_TRACE_ENABLED_VALUE != null) &&
+                                                                JBOSS_HOTSPOT_TRACE_ENABLED_VALUE.equals("true"));
+
+    private static volatile boolean sentWarning;
+
+    private static void sendWarning() {
+        if (!sentWarning) {
+            sentWarning = true;
+            System.out.println("Warning you have enabled logging that should only be seen in an IBM test environment");
+        }
+    }
 
     public HotspotReflectionCache(TypeStore store) {
         super(store);
@@ -70,7 +81,7 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
         byte[] classBytes;
         try {
             classBytes = FileLogger.read(targetClass.getClassLoader(), resourceName);
-        } catch ( IOException e ) {
+        } catch (IOException e) {
             FileLogger.fileStack(className, methodName, "Failed to read [ " + resourceName + " ]", e);
             return;
         }
@@ -78,16 +89,11 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
         FileLogger.fileDump(className, methodName, text, classBytes);
     }
 
-    boolean sentWarning = false;
-
     @Override
     @FFDCIgnore(Exception.class)
     protected Annotation[] internalGetAnnotations(AnnotatedElement element) {
-        if (JBOSS_HOTSPOT_TRACE_ENABLED != null && JBOSS_HOTSPOT_TRACE_ENABLED.equals("true")) {
-            if (!sentWarning) {
-                sentWarning = true;
-                System.out.println("Warning you have enabled logging that should only be seen in an IBM test environment");
-            }
+        if (JBOSS_HOTSPOT_TRACE_ENABLED) {
+            sendWarning();
             return internalGetAnnotationsLogged(element);
         }
         return internalGetAnnotationsUnlogged(element);
@@ -110,35 +116,35 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
         String methodName = "internalGetAnnotations";
 
         try {
-            if ( element instanceof Class<?> ) {
+            if (element instanceof Class<?>) {
                 Class<?> clazz = (Class<?>) element;
-                if ( clazz.isAnnotation() ) {
+                if (clazz.isAnnotation()) {
                     Annotation[] classAnno;
-                    synchronized ( annotationTypeLock ) {
+                    synchronized (annotationTypeLock) {
                         classAnno = element.getAnnotations();
                     }
-                    Integer numClassAnno = ( (classAnno == null) ? null : Integer.valueOf(classAnno.length) );
+                    Integer numClassAnno = ((classAnno == null) ? null : Integer.valueOf(classAnno.length));
                     FileLogger.fileLog(className, methodName, "Class [ " + clazz.getName() + " ] [ " + numClassAnno + " ]");
                     return classAnno;
                 }
             }
 
             Annotation[] anno = element.getAnnotations();
-            Integer numAnno = ( (anno == null) ? null : Integer.valueOf(anno.length) );
+            Integer numAnno = ((anno == null) ? null : Integer.valueOf(anno.length));
             FileLogger.fileLog(className, methodName, "Element [ " + element + " ] [ " + numAnno + " ]");
             return anno;
 
-        } catch ( IllegalArgumentException e ) {
+        } catch (IllegalArgumentException e) {
             String text = "Constant Pool GREP:";
             Class<?> clazz = null;
 
-            if ( element instanceof Class<?> ) {
+            if (element instanceof Class<?>) {
                 clazz = (Class<?>) element;
                 text += " Class [ " + clazz.getName() + " ]:";
             }
 
             FileLogger.fileLog(className, methodName, text, element);
-            if ( clazz != null ) {
+            if (clazz != null) {
                 dump(clazz);
             }
             FileLogger.fileStack(className, methodName, text, e);

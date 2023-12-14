@@ -115,8 +115,12 @@ public class FileLogger {
         }
     }
 
-    public static boolean isLoggable(String className) {
-        return ( (loggerProperties != null) && loggerProperties.isLoggable(className) );
+    public static boolean isLoggablePath(String path) {
+        return ( (loggerProperties != null) && loggerProperties.isLoggablePath(path) );
+    }
+    
+    public static boolean isLoggableClassName(String className) {
+        return ( (loggerProperties != null) && loggerProperties.isLoggableClassName(className) );
     }
 
     public static PrintWriter fileWriter() {
@@ -342,15 +346,32 @@ public class FileLogger {
             }
         }
 
-        public boolean isLoggable(String className) {
+        public boolean isLoggablePath(String path) {
             String usePattern = getPattern();
             if ( (usePattern == null) || usePattern.isEmpty() ) {
                 return true;
             } else {
-                className = className.replace('/', '.');
+                // Need to handle both separators on windows:
+                // The path might originate from a jar entry,
+                // which always uses '/'.  The path might be a file
+                // path, which uses '\\'.
+
+                String className = path.replace(File.separatorChar, '.');
+                if ( File.separatorChar == '\\' ) {
+                    className = className.replace('/', '.');
+                }
+                return ( className.contains(usePattern) );
+            }            
+        }
+        
+        public boolean isLoggableClassName(String className) {
+            String usePattern = getPattern();
+            if ( (usePattern == null) || usePattern.isEmpty() ) {
+                return true;
+            } else {
                 return ( className.contains(usePattern) );
             }
-        }
+        }        
     }
 
     //
