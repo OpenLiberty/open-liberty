@@ -25,6 +25,7 @@ import static org.objectweb.asm.Opcodes.V17;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -34,13 +35,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
@@ -49,18 +54,27 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.cm.Configuration;
 
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.InMemoryMappingFile;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
+import com.ibm.wsspi.resource.ResourceFactory;
 
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
+import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import jakarta.data.exceptions.MappingException;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
@@ -89,9 +103,162 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
      */
     private PersistenceServiceUnit persistenceServiceUnit;
 
-    public DBStoreEMBuilder(String databaseStoreId, ClassLoader repositoryClassLoader) {
+    /**
+     * Locates an existing databaseStore or creates a new one corresponding to the
+     * dataStore name that is specified on the Repository annotation.
+     *
+     * @param dataStore             dataStore name specified on the Repository annotation.
+     * @param isJNDIName            indicates if the dataStore name is a JNDI name (begins with java: or is inferred to be java:comp/env/...)
+     * @param type                  AnnotatedType for the interface that is annotated with the Repository annotation.
+     * @param repositoryClassLoader class loader for repositories.
+     * @param provider              OSGi service that provides the CDI extension.
+     */
+    public DBStoreEMBuilder(String dataStore, boolean isJNDIName, AnnotatedType<?> type, ClassLoader repositoryClassLoader,
+                            DataExtensionProvider provider) {
         super(repositoryClassLoader);
-        this.databaseStoreId = databaseStoreId;
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        J2EEName jeeName = cData == null ? null : cData.getJ2EEName();
+        String application = jeeName == null ? null : jeeName.getApplication();
+        String module = jeeName == null ? null : jeeName.getModule();
+        String component = jeeName == null ? null : jeeName.getComponent();
+        String qualifiedName = null;
+        boolean javaApp = false, javaModule = false, javaComp = false;
+
+        // Qualify resource reference and DataSourceDefinition JNDI names with the application/module/component name to make them unique
+        if (isJNDIName) {
+            javaApp = dataStore.regionMatches(5, "app", 0, 3);
+            javaModule = !javaApp && dataStore.regionMatches(5, "module", 0, 6);
+            // TODO detect web module metadata to avoid including component
+            javaComp = !javaApp && !javaModule && dataStore.regionMatches(5, "comp", 0, 4);
+            StringBuilder s = new StringBuilder(dataStore.length() + 80);
+            if (application != null && (javaApp || javaModule || javaComp)) {
+                s.append("application[").append(application).append(']').append('/');
+                if (module != null && (javaModule || javaComp)) {
+                    s.append("module[").append(module).append(']').append('/');
+                    if (component != null && javaComp)
+                        s.append("component[").append(component).append(']').append('/');
+                }
+            }
+            qualifiedName = s.append("databaseStore[").append(dataStore).append(']').toString();
+
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "computed qualified dataStore name from JNDI name as " + qualifiedName);
+        }
+
+        Map<String, Configuration> dbStoreConfigurations = provider.dbStoreConfigAllApps.get(application);
+        Configuration dbStoreConfig = dbStoreConfigurations == null ? null : dbStoreConfigurations.get(isJNDIName ? qualifiedName : dataStore);
+        String dbStoreId = dbStoreConfig == null ? null : (String) dbStoreConfig.getProperties().get("id");
+        if (dbStoreId == null)
+            try {
+                BundleContext bc = FrameworkUtil.getBundle(DatabaseStore.class).getBundleContext();
+                ServiceReference<ResourceFactory> dsRef = null;
+                if (isJNDIName) {
+                    // Look for DataSourceDefinition with jndiName and application/module/component matching
+                    String filter = "(&(service.factoryPid=com.ibm.ws.jdbc.dataSource)" + //
+                                    (javaApp || javaModule || javaComp ? FilterUtils.createPropertyFilter("application", application) : "") + //
+                                    (javaModule || javaComp ? FilterUtils.createPropertyFilter("module", module) : "") + //
+                                    (javaComp ? FilterUtils.createPropertyFilter("component", component) : "") + //
+                                    FilterUtils.createPropertyFilter("jndiName", dataStore) + ')';
+                    Collection<ServiceReference<ResourceFactory>> dsRefs = bc.getServiceReferences(ResourceFactory.class, filter);
+                    if (!dsRefs.isEmpty()) {
+                        dbStoreId = qualifiedName;
+                        dsRef = dsRefs.iterator().next();
+                    }
+                } else {
+                    // Look for databaseStore with id matching
+                    String filter = FilterUtils.createPropertyFilter("id", dataStore);
+                    Collection<ServiceReference<DatabaseStore>> dbStoreRefs = bc.getServiceReferences(DatabaseStore.class, filter);
+                    if (!dbStoreRefs.isEmpty()) {
+                        dbStoreId = dataStore;
+                    } else {
+                        // Look for dataSource with id matching
+                        filter = "(&(service.factoryPid=com.ibm.ws.jdbc.dataSource)" + FilterUtils.createPropertyFilter("id", dataStore) + ')';
+                        Collection<ServiceReference<ResourceFactory>> dsRefs = bc.getServiceReferences(ResourceFactory.class, filter);
+                        if (!dsRefs.isEmpty()) {
+                            dbStoreId = "application[" + application + "]/databaseStore[" + dataStore + ']';
+                            dsRef = dsRefs.iterator().next();
+                        } else {
+                            // Look for dataSource with jndiName matching
+                            filter = "(&(service.factoryPid=com.ibm.ws.jdbc.dataSource)" + FilterUtils.createPropertyFilter("jndiName", dataStore) + ')';
+                            dsRefs = bc.getServiceReferences(ResourceFactory.class, filter);
+                            if (!dsRefs.isEmpty()) {
+                                dbStoreId = "application[" + application + "]/databaseStore[" + dataStore + ']';
+                                dsRef = dsRefs.iterator().next();
+                            } // else no databaseStore or dataSource is found
+                        }
+                    }
+                }
+                if (dbStoreId == null) {
+                    // Create a ResourceFactory that can delegate back to a resource reference lookup
+                    ResourceFactory delegator = new DelegatingResourceFactory(dataStore, cData);
+                    Hashtable<String, Object> svcProps = new Hashtable<String, Object>();
+                    dbStoreId = isJNDIName ? qualifiedName : ("application[" + application + "]/databaseStore[" + dataStore + ']');
+                    String id = dbStoreId + "/ResourceFactory";
+                    svcProps.put("id", id);
+                    svcProps.put("config.displayId", id);
+                    if (application != null)
+                        svcProps.put("application", application);
+                    ServiceRegistration<ResourceFactory> reg = bc.registerService(ResourceFactory.class, delegator, svcProps);
+                    dsRef = reg.getReference();
+
+                    Queue<ServiceRegistration<ResourceFactory>> registrations = provider.delegatorsAllApps.get(application);
+                    if (registrations == null) {
+                        Queue<ServiceRegistration<ResourceFactory>> empty = new ConcurrentLinkedQueue<>();
+                        if ((registrations = provider.delegatorsAllApps.putIfAbsent(application, empty)) == null)
+                            registrations = empty;
+                    }
+                    registrations.add(reg);
+                }
+
+                // If we generated a databaseStore id, then create the configuration for it,
+                if (dbStoreId != dataStore) {
+                    if (dbStoreConfigurations == null) {
+                        Map<String, Configuration> empty = new ConcurrentHashMap<>();
+                        if ((dbStoreConfigurations = provider.dbStoreConfigAllApps.putIfAbsent(application, empty)) == null)
+                            dbStoreConfigurations = empty;
+                    }
+
+                    String dataSourceId = (String) dsRef.getProperty("id");
+                    boolean nonJTA = Boolean.FALSE.equals(dsRef.getProperty("transactional"));
+
+                    Hashtable<String, Object> svcProps = new Hashtable<String, Object>();
+                    svcProps.put("id", dbStoreId);
+                    svcProps.put("config.displayId", dbStoreId);
+
+                    if (dataSourceId == null)
+                        svcProps.put("DataSourceFactory.target", "(jndiName=" + dsRef.getProperty("jndiName") + ')');
+                    else
+                        svcProps.put("DataSourceFactory.target", "(id=" + dataSourceId + ')');
+
+                    svcProps.put("AuthData.target", "(service.pid=${authDataRef})");
+                    svcProps.put("AuthData.cardinality.minimum", 0);
+
+                    svcProps.put("NonJTADataSourceFactory.cardinality.minimum", nonJTA ? 1 : 0);
+                    if (nonJTA)
+                        svcProps.put("NonJTADataSourceFactory.target", svcProps.get("DataSourceFactory.target"));
+                    else
+                        svcProps.put("NonJTADataSourceFactory.target", "(&(service.pid=${nonTransactionalDataSourceRef})(transactional=false))");
+
+                    // TODO should the databaseStore properties be configurable somehow when DataSourceDefinition is used?
+                    // The following would allow them in the annotation's properties list, as "data.createTables=true", "data.tablePrefix=TEST"
+                    svcProps.put("createTables", !"FALSE".equalsIgnoreCase((String) dsRef.getProperty("properties.0.data.createTables")));
+                    svcProps.put("dropTables", !"TRUE".equalsIgnoreCase((String) dsRef.getProperty("properties.0.data.dropTables")));
+                    svcProps.put("tablePrefix", Objects.requireNonNullElse((String) dsRef.getProperty("properties.0.data.tablePrefix"), "DATA"));
+                    svcProps.put("keyGenerationStrategy", Objects.requireNonNullElse((String) dsRef.getProperty("properties.0.data.keyGenerationStrategy"), "AUTO"));
+
+                    dbStoreConfig = provider.configAdmin.createFactoryConfiguration("com.ibm.ws.persistence.databaseStore", bc.getBundle().getLocation());
+                    dbStoreConfig.update(svcProps);
+                    dbStoreConfigurations.put(isJNDIName ? qualifiedName : dataStore, dbStoreConfig);
+                }
+            } catch (InvalidSyntaxException | IOException x) {
+                throw new RuntimeException(x);
+            } catch (Error | RuntimeException x) {
+                throw x;
+            }
+
+        databaseStoreId = dbStoreId;
     }
 
     /**
