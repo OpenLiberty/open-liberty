@@ -286,23 +286,23 @@ public abstract class ByteToMessageDecoder extends ChannelInboundHandlerAdapter 
             CodecOutputList out = CodecOutputList.newInstance();
             try {
                 first = cumulation == null;
-                System.out.println("First? "+first);
-                System.out.println("Cumulation before cumulate: " + ((cumulation == null) ? null : ByteBufUtil.hexDump(cumulation)));
+//                System.out.println("First? "+first);
+//                System.out.println("Cumulation before cumulate: " + ((cumulation == null) ? null : ByteBufUtil.hexDump(cumulation)));
                 cumulation = cumulator.cumulate(ctx.alloc(),
                         first ? Unpooled.EMPTY_BUFFER : cumulation, (ByteBuf) msg);
-                System.out.println("Cumulation after cumulate: " + ((cumulation == null) ? null : ByteBufUtil.hexDump(cumulation)));
+//                System.out.println("Cumulation after cumulate: " + ((cumulation == null) ? null : ByteBufUtil.hexDump(cumulation)));
                 callDecode(ctx, cumulation, out);
             } catch (DecoderException e) {
-            	System.out.println("Decoder exception");
+//            	System.out.println("Decoder exception");
                 throw e;
             } catch (Exception e) {
-            	System.out.println("Normal exception");
+//            	System.out.println("Normal exception");
                 throw new DecoderException(e);
             } finally {
                 try {
-                	System.out.println("In finally");
+//                	System.out.println("In finally");
                     if (cumulation != null && !cumulation.isReadable()) {
-                    	System.out.println("Should release!");
+//                    	System.out.println("Should release!");
                         numReads = 0;
                         try {
                             cumulation.release();
@@ -315,18 +315,18 @@ public abstract class ByteToMessageDecoder extends ChannelInboundHandlerAdapter 
                         }
                         cumulation = null;
                     } else if (++numReads >= discardAfterReads) {
-                    	System.out.println("Should discard!");
+//                    	System.out.println("Should discard!");
                         // We did enough reads already try to discard some bytes, so we not risk to see a OOME.
                         // See https://github.com/netty/netty/issues/4275
                         numReads = 0;
                         discardSomeReadBytes();
                     }
-                    System.out.println("Firing channel read");
+//                    System.out.println("Firing channel read");
                     int size = out.size();
                     firedChannelRead |= out.insertSinceRecycled();
                     fireChannelRead(ctx, out, size);
                 } finally {
-                	System.out.println("In finally 2");
+//                	System.out.println("In finally 2");
                     out.recycle();
                 }
             }
@@ -359,7 +359,7 @@ public abstract class ByteToMessageDecoder extends ChannelInboundHandlerAdapter 
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-    	System.out.println("Decoder read complete!!");
+//    	System.out.println("Decoder read complete!!");
         numReads = 0;
         discardSomeReadBytes();
         if (selfFiredChannelRead && !firedChannelRead && !ctx.channel().config().isAutoRead()) {
@@ -370,9 +370,9 @@ public abstract class ByteToMessageDecoder extends ChannelInboundHandlerAdapter 
     }
 
     protected final void discardSomeReadBytes() {
-    	System.out.println("In discardSomeBytes!");
+//    	System.out.println("In discardSomeBytes!");
         if (cumulation != null && !first && cumulation.refCnt() == 1) {
-        	System.out.println("In discardSomeBytes discarding!");
+//        	System.out.println("In discardSomeBytes discarding!");
             // discard some bytes if possible to make more room in the
             // buffer but only if the refCnt == 1  as otherwise the user may have
             // used slice().retain() or duplicate().retain().
@@ -462,9 +462,9 @@ public abstract class ByteToMessageDecoder extends ChannelInboundHandlerAdapter 
         try {
             while (in.isReadable()) {
                 final int outSize = out.size();
-                System.out.println("In callDecode 1!");
+//                System.out.println("In callDecode 1!");
                 if (outSize > 0) {
-                	System.out.println("In callDecode 2!");
+//                	System.out.println("In callDecode 2!");
                     fireChannelRead(ctx, out, outSize);
                     out.clear();
 
@@ -478,15 +478,15 @@ public abstract class ByteToMessageDecoder extends ChannelInboundHandlerAdapter 
                     }
                 }
 
-                System.out.println("In callDecode 3!");
+//                System.out.println("In callDecode 3!");
                 int oldInputLength = in.readableBytes();
-                System.out.println("Length: " + oldInputLength);
+//                System.out.println("Length: " + oldInputLength);
                 decodeRemovalReentryProtection(ctx, in, out);
 
                 // Check if this handler was removed before continuing the loop.
                 // If it was removed, it is not safe to continue to operate on the buffer.
                 
-                System.out.println("In callDecode 4!");
+//                System.out.println("In callDecode 4!");
                 //
                 // See https://github.com/netty/netty/issues/1664
                 if (ctx.isRemoved()) {
@@ -494,17 +494,17 @@ public abstract class ByteToMessageDecoder extends ChannelInboundHandlerAdapter 
                 }
 
                 if (out.isEmpty()) {
-                	System.out.println("In callDecode 5! readableBytes: "+in.readableBytes());
+//                	System.out.println("In callDecode 5! readableBytes: "+in.readableBytes());
                     if (oldInputLength == in.readableBytes()) {
-                    	System.out.println("In callDecode 6!");
+//                    	System.out.println("In callDecode 6!");
                         break;
                     } else {
-                    	System.out.println("In callDecode 7!");
+//                    	System.out.println("In callDecode 7!");
                         continue;
                     }
                 }
                 
-                System.out.println("In callDecode 8!"+in.readableBytes());
+//                System.out.println("In callDecode 8!"+in.readableBytes());
 
                 if (oldInputLength == in.readableBytes()) {
                     throw new DecoderException(
@@ -517,10 +517,10 @@ public abstract class ByteToMessageDecoder extends ChannelInboundHandlerAdapter 
                 }
             }
         } catch (DecoderException e) {
-        	System.out.println("Decoder exception2");
+//        	System.out.println("Decoder exception2");
             throw e;
         } catch (Exception cause) {
-        	System.out.println("Exception 2");
+//        	System.out.println("Exception 2");
             throw new DecoderException(cause);
         }
     }
@@ -551,7 +551,7 @@ public abstract class ByteToMessageDecoder extends ChannelInboundHandlerAdapter 
             throws Exception {
         decodeState = STATE_CALLING_CHILD_DECODE;
         try {
-        	System.out.println("decodeRemovalReentryProtection");
+//        	System.out.println("decodeRemovalReentryProtection");
             decode(ctx, in, out);
         } finally {
             boolean removePending = decodeState == STATE_HANDLER_REMOVED_PENDING;

@@ -16,7 +16,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -103,6 +102,7 @@ import com.ibm.wsspi.tcpchannel.TCPRequestContext;
 import com.ibm.wsspi.tcpchannel.TCPWriteCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.VoidChannelPromise;
@@ -121,6 +121,7 @@ import io.netty.handler.codec.http2.Http2Headers;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.codec.http2.LastStreamSpecificHttpContent;
+import io.netty.handler.codec.http2.StreamSpecificHttpContent;
 import io.openliberty.http.constants.HttpGenerics;
 
 /**
@@ -2258,21 +2259,17 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
         if (getResponse() instanceof NettyResponseMessage) {
 
+            // TODO Check this as I believe it's not needed any longer
             if (HttpUtil.isContentLengthSet(response)) {
-                System.out.println("Contentlength IS set for response!!!!!!!!");
                 this.nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(HttpUtil.getContentLength(response));
-            } else
-                System.out.println("Contentlength IS NOT set for response!!!!!!!!");
+            }
 
             ((NettyResponseMessage) getResponse()).processCookies();
         }
 
-        MSP.log("should write netty response");
+        this.nettyContext.channel().write(this.nettyResponse);
 
-        this.nettyContext.channel().writeAndFlush(this.nettyResponse);
         this.setHeadersSent();
-        //setupCompressionHandler();
-
     }
 
     /**
@@ -2791,6 +2788,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "prepareOutgoing: partial: " + isPartialBody() + " chunked: " + msg.isChunkedEncodingSet() + " cl: " + msg.getContentLength());
                 }
+                System.out.println("prepareOutgoing: partial: " + isPartialBody() + " chunked: " + msg.isChunkedEncodingSet() + " cl: " + msg.getContentLength());
 
                 boolean complete = false;
 
@@ -2800,6 +2798,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 // Content-Length values by caller
                 // PK48697 - only update these if the message allows it
                 if (!isPartialBody() && msg.shouldUpdateBodyHeaders()) {
+                    System.out.println("Setting content length!");
                     complete = true;
                     msg.setContentLength(GenericUtils.sizeOf(buffers));
                     if (msg.isChunkedEncodingSet()) {
@@ -2860,11 +2859,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         boolean addedCompressionContentLength = false;
         if (!headersSent() && Objects.nonNull(buffers)) {
 
-            //HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(wsbb));
-//            setPartialBody(false);
-
             if (nettyContext.channel().hasAttr(NettyHttpConstants.ACCEPT_ENCODING)) {
-                System.out.println("Compression is enabled!!");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Compression enabled. Prepping data");
+                }
                 if (getResponse().getContentLength() == HttpGenerics.NOT_SET) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Found compression with no content length set. Setting and removing afterwards " + GenericUtils.sizeOf(buffers));
@@ -2876,11 +2874,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 ResponseCompressionHandler compressionHandler = new ResponseCompressionHandler(getHttpConfig(), nettyResponse, acceptEncoding);
                 compressionHandler.process();
                 if (compressionHandler.getEncoding() != null) {
-                    MSP.log("setting compression attribute -> " + compressionHandler.getEncoding());
                     setupCompressionHandler(compressionHandler.getEncoding());
                     // check whether we need to pass data through the compression handler
                     if (null != this.compressHandler) {
-
                         List<WsByteBuffer> list = this.compressHandler.compress(buffers);
                         if (this.isFinalWrite) {
                             list.addAll(this.compressHandler.finish());
@@ -2897,10 +2893,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
                     }
                 }
-//                if (Objects.nonNull(buffers)) {
-//                    MSP.log("setting new compressed content length of: " + GenericUtils.sizeOf(buffers));
-//                    HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
-//                }
             }
 
         }
@@ -2909,6 +2901,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             boolean complete = false;
             HttpResponseMessage msg = getResponse();
             System.out.println("Checking and sending headers!");
+            System.out.println("sendOutgoing: partial: " + isPartialBody() + " chunked: " + msg.isChunkedEncodingSet() + " cl: " + msg.getContentLength());
             if (!isPartialBody() && !getRequest().getMethod().equals(MethodValues.HEAD.getName())) {
 //                complete = true;
                 System.out.println("Setting content length!!");
@@ -2953,13 +2946,16 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
         addBytesWritten(GenericUtils.sizeOf(buffers));
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Number of bytes to write: " + getNumBytesWritten());
+        }
+
         if (this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) != null) {
             System.out.println("Skipping HTTP content because upgrade was triggered!");
             System.out.println("Content: " + WsByteBufferUtils.asString(buffers));
 
         }
         if (Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
-            MSP.log("sendOutgoing are buffers good? " + GenericUtils.sizeOf(buffers));
 
             for (
 
@@ -2971,23 +2967,36 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                         }
                         continue;
                     }
-                    System.out.println("Writing buffer: " + buffer);
-                    System.out.println("Content: " + WsByteBufferUtils.asString(buffer));
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Writing buffer from sendOutgoing: " + buffer);
+                        //TODO Remove this as it generates too much tracing
+//                        Tr.debug(tc, "Content: " + WsByteBufferUtils.asString(buffer));
+                    }
                     String streamId = nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), "-1");
-//                    AbstractMap.SimpleEntry<Integer, WsByteBuffer> entry = new AbstractMap.SimpleEntry<Integer, WsByteBuffer>(Integer.valueOf(streamId), buffer.duplicate());
-                    AbstractMap.SimpleEntry<Integer, WsByteBuffer> entry = new AbstractMap.SimpleEntry<Integer, WsByteBuffer>(Integer.valueOf(streamId), HttpDispatcher.getBufferManager().wrap(WsByteBufferUtils.asByteArray(buffer)));
-                    this.nettyContext.channel().write(entry);
-//                    this.nettyContext.channel().writeAndFlush(buffer);
-                } else {
-                    MSP.log("This is weird!!! Sending a null buffer?!?!?!");
+//                    AbstractMap.SimpleEntry<Integer, WsByteBuffer> entry = new AbstractMap.SimpleEntry<Integer, WsByteBuffer>(Integer.valueOf(streamId), HttpDispatcher.getBufferManager().wrap(WsByteBufferUtils.asByteArray(buffer)));
+//                    this.nettyContext.channel().write(entry);
+                    this.nettyContext.channel().write(new StreamSpecificHttpContent(Integer.valueOf(streamId), Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer))));
                 }
-//                else // Write last http content
-//                    this.nettyContext.channel().write(new DefaultLastHttpContent());
             }
-            System.out.println("Writing on pipeline for: " + this.nettyContext + " channel: " + this.nettyContext.channel());
-            this.nettyContext.channel().pipeline().names().forEach(handler -> System.out.println(handler));
-            this.nettyContext.channel().flush();
         }
+        if (getResponse().getContentLength() != HttpGenerics.NOT_SET && getResponse().getContentLength() == getNumBytesWritten()) {
+            System.out.println("Writing out last http content due to finished content length");
+            NettyResponseMessage resp = (NettyResponseMessage) getResponse();
+            HttpHeaders trailers = resp.getNettyTrailers();
+            DefaultLastHttpContent lastContent;
+            if (trailers.isEmpty())
+                lastContent = new LastStreamSpecificHttpContent(Integer.valueOf(nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(),
+                                                                                                            "-1")));
+            else {
+                System.out.println("Adding trailers to last http content! " + trailers.toString());
+                lastContent = new LastStreamSpecificHttpContent(Integer.valueOf(nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(),
+                                                                                                            "-1")), trailers);
+            }
+            // Sending last http content since all data was written
+            this.nettyContext.channel().write(lastContent);
+            this.isFinalWrite = true;
+        }
+        this.nettyContext.channel().flush();
     }
 
     /**
@@ -3197,10 +3206,16 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @throws IOException
      */
     final protected void sendFullOutgoing(WsByteBuffer[] wsbb) throws IOException {
-        this.isFinalWrite = true;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "sendFullOutgoing : " + isOutgoingBodyValid() + ", " + wsbb + ", " + this);
         }
+
+        if (this.isFinalWrite) {
+            System.out.println("Nothing to do here  since already final write in sendFullOutgoing, setting sent and continuing");
+            setMessageSent();
+            return;
+        }
+        this.isFinalWrite = true;
 
         WsByteBuffer[] buffers = wsbb;
         // TODO: Do we need to add this?
@@ -3246,13 +3261,18 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 //        }
 
         this.addBytesWritten(GenericUtils.sizeOf(buffers));
+        // TODO check this as I believe it is not longer required
         this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_BYTES_WRITTEN).set(numBytesWritten);
 
-        MSP.log("headers sent? " + headersSent());
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Number of bytes to write: " + getNumBytesWritten());
+        }
+
         if (!headersSent()) {
             boolean complete = false;
             HttpResponseMessage msg = getResponse();
             System.out.println("Checking and sending headers!");
+            System.out.println("sendOutgoing: partial: " + isPartialBody() + " chunked: " + msg.isChunkedEncodingSet() + " cl: " + msg.getContentLength());
 
             // if a finishMessage started this write, then always set the
             // Content-Length header to the input size... removes chunked
@@ -3261,6 +3281,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             // PK48697 - only update these if the message allows it
             if (!isPartialBody() && !getRequest().getMethod().equals(MethodValues.HEAD.getName())) {
 //                complete = true;
+                System.out.println("Setting content length!!");
                 getResponse().setContentLength(GenericUtils.sizeOf(buffers));
             } else if (!msg.isChunkedEncodingSet() && msg.getContentLength() == HttpGenerics.NOT_SET) {
                 System.out.println("Setting transfer encoding due to no content length or transfer header!!");
@@ -3314,13 +3335,16 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                         }
                         continue;
                     }
-                    System.out.println("Writing buffer: " + buffer);
-                    System.out.println("Content: " + WsByteBufferUtils.asString(buffer));
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Writing buffer from sendFullOutgoing: " + buffer);
+                        //TODO Remove this as it generates too much tracing
+//                        Tr.debug(tc, "Content: " + WsByteBufferUtils.asString(buffer));
+                    }
                     String streamId = nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), "-1");
 //                    AbstractMap.SimpleEntry<Integer, WsByteBuffer> entry = new AbstractMap.SimpleEntry<Integer, WsByteBuffer>(Integer.valueOf(streamId), buffer.duplicate());
-                    AbstractMap.SimpleEntry<Integer, WsByteBuffer> entry = new AbstractMap.SimpleEntry<Integer, WsByteBuffer>(Integer.valueOf(streamId), HttpDispatcher.getBufferManager().wrap(WsByteBufferUtils.asByteArray(buffer)));
-                    this.nettyContext.channel().write(entry);
-//                    this.nettyContext.channel().write(buffer);
+//                    AbstractMap.SimpleEntry<Integer, WsByteBuffer> entry = new AbstractMap.SimpleEntry<Integer, WsByteBuffer>(Integer.valueOf(streamId), HttpDispatcher.getBufferManager().wrap(WsByteBufferUtils.asByteArray(buffer)));
+//                    this.nettyContext.channel().write(entry);
+                    this.nettyContext.channel().write(new StreamSpecificHttpContent(Integer.valueOf(streamId), Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer))));
                 }
             }
             NettyResponseMessage resp = (NettyResponseMessage) getResponse();
@@ -3352,10 +3376,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 lastContent = new LastStreamSpecificHttpContent(Integer.valueOf(nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(),
                                                                                                             "-1")), trailers);
             }
+            System.out.println("Sending last http content!");
             this.nettyContext.channel().write(lastContent);
         }
         this.nettyContext.channel().flush();
-        MSP.log("set message sent");
         setMessageSent();
     }
 

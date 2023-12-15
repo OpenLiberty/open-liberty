@@ -209,14 +209,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         isc.setNettyResponse(new DefaultHttpResponse(nettyRequest.protocolVersion(), HttpResponseStatus.OK));
         MSP.log("Netty response completed");
         super.init(nettyVc);
-//        MSP.debug(probe);
-//        this.request = new NettyHttpRequestImpl(HttpDispatcher.useEE7Streams());
-//        MSP.debug(probe);
-//        ((NettyHttpRequestImpl) this.request).init(request, context.channel(), isc);
-//        MSP.debug(probe);
-//        this.response = new NettyHttpResponseImpl(this);
-//        MSP.debug(probe);
-
     }
 
     public NettyServletUpgradeHandler prepareForUpgrade() {
@@ -290,7 +282,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 //            }
 
             if (vc != null) {
-                System.out.println("VC not null on netty, checking if streams need to be closed!");
                 String closeNonUpgraded = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
                 if (closeNonUpgraded != null && closeNonUpgraded.equalsIgnoreCase("true")) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -316,9 +307,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             }
             try {
                 // Hopefully should close after write finishes
-                System.out.println("ON close before sync");
                 this.nettyContext.channel().closeFuture().sync();
-                System.out.println("ON close after sync");
             } catch (InterruptedException exception) {
                 exception.printStackTrace();
             }
@@ -526,7 +515,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             this.isc.setRemoteAddr(remoteAddress);
 
         }
-        System.out.println("MSP: ready 1");
         // Make sure to initialize the response in case of an early-return-error message
         //((NettyHttpRequestImpl) this.request).init(this.nettyRequest, this.nettyContext.channel(), this.isc);
         // MSP.log("Init Request");

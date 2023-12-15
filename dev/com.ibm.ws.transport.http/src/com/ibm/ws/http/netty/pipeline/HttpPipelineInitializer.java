@@ -337,7 +337,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         // if (httpConfig.useAutoCompression()) {
         //   pipeline.addLast(new NettyHttpContentCompressor());
         //}
-        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new ByteBufferCodec());
+//        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new ByteBufferCodec());
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new TransportInboundHandler(httpConfig));
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new TransportOutboundHandler(httpConfig));
         if (httpConfig.useForwardingHeaders()) {
