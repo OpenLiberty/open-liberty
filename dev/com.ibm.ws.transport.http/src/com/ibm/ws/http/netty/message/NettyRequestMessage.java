@@ -215,7 +215,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             method = MethodValues.find(request.method().name());
 
         }
-        System.out.println("Returning method: " + method.getName());
         return method.getName();
     }
 
@@ -364,7 +363,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public void setRequestURI(byte[] uri) {
-        System.out.println("setRequestURI Netty called but limited work done");
         // TODO Auto-generated method stub
         // Just check for validity of URI
         if (null == uri || 0 == uri.length) {

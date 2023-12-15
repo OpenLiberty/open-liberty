@@ -151,7 +151,6 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
         InboundHttp2ToHttpAdapterBuilder builder = new InboundHttp2ToHttpAdapterBuilder(connection).propagateSettings(false).validateHttpHeaders(false);
         if (maxContentlength > 0)
             builder.maxContentLength(maxContentlength);
-        System.out.println("Found length to be: " + maxContentlength);
         Http2Settings initialSettings = new Http2Settings().maxConcurrentStreams(httpConfig.getH2MaxConcurrentStreams()).maxFrameSize(httpConfig.getH2MaxFrameSize());
         // TODO Need to appropriately build and parse configs
         if (httpConfig.getH2SettingsInitialWindowSize() != Constants.SPEC_INITIAL_WINDOW_SIZE)
@@ -171,9 +170,6 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
 //            System.out.println("Got error trying to update Max Header List Size!");
 //            e1.printStackTrace();
 //        }
-        System.out.println("Got max header list size: " + initialSettings.maxHeaderListSize());
-        System.out.println("Limit window update frames? " + httpConfig.getH2LimitWindowUpdateFrames());
-        System.out.println("Connection window size: " + httpConfig.getH2ConnectionWindowSize());
         if (!httpConfig.getH2LimitWindowUpdateFrames()) {
             ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowUpdateRatio(0.99999f);
             try {

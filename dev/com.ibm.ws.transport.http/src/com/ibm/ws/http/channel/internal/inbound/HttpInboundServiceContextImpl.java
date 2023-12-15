@@ -565,7 +565,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      */
     @Override
     public HttpResponseMessage getResponse() {
-        MSP.log("ISC - getResponse() - response: " + Objects.isNull(response) + ", context: " + Objects.nonNull(nettyContext));
+//        MSP.log("ISC - getResponse() - response: " + Objects.isNull(response) + ", context: " + Objects.nonNull(nettyContext));
         if (Objects.isNull(this.response) && Objects.nonNull(this.nettyContext)) {
             this.response = new NettyResponseMessage(nettyResponse, this, nettyRequest);
         }
@@ -681,6 +681,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
         if (getHttpConfig().useNetty()) {
             sendHeaders(this.nettyResponse);
+            this.nettyContext.channel().flush();
         } else {
             sendHeaders(getResponseImpl());
             if (getResponseImpl().isTemporaryStatusCode()) {
@@ -985,11 +986,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                 return;
             }
 
-            if(getRequest() == null) {
+            if (getRequest() == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "logFinalResponse", "getRequest() is null. HTTPAccess log entry is skipped." );
+                    Tr.debug(tc, "logFinalResponse", "getRequest() is null. HTTPAccess log entry is skipped.");
                 }
-                return; 
+                return;
             }
 
             if (MethodValues.UNDEF.equals(getRequest().getMethodValue())) {

@@ -588,7 +588,6 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             // Note: this logic only works for sync writes
 //            if (writingBody && !((HttpInboundServiceContextImpl) isc).getHttpConfig().useNetty()) {
             if (writingBody) {
-                System.out.println("In here, marking as having content!");
                 this.output[0].clear();
                 for (int i = 1; i < this.output.length; i++) {
                     if (null != this.output[i]) {

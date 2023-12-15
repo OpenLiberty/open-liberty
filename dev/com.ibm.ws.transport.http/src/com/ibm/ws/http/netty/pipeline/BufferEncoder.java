@@ -50,9 +50,11 @@ public class BufferEncoder extends MessageToMessageEncoder<AbstractMap.SimpleEnt
         // Check if "Content-Length" is set for this channel
         boolean hasContentLength = context.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH);
 
+        System.out.println("Encode: bytes written before this: " + bytesWritten + ", bytes to write: " + message.remaining());
+
         bytesWritten += message.remaining();
 
-        MSP.log("Encode: bytes written: " + bytesWritten + ", bytes to write: " + message.remaining());
+        System.out.println("Encode: bytes written: " + bytesWritten);
         System.out.println("Encode Got content: " + WsByteBufferUtils.asString(message));
 
         // If "Content-Length" is set, check if it matches the bytes written
@@ -61,23 +63,26 @@ public class BufferEncoder extends MessageToMessageEncoder<AbstractMap.SimpleEnt
 
             if (!doLastHttpContent) {
                 // Send content with "Content-Length" header
+                System.out.println("Sending http content from encoder!");
                 out.add(new StreamSpecificHttpContent(streamId, Unpooled.wrappedBuffer(message.getWrappedByteBuffer())));
             } else {
                 // Send last HTTP content
-                System.out.println("Sending last http content");
+//                System.out.println("Sending last http content");
+                System.out.println("Sending last http content from encoder!");
                 out.add(new LastStreamSpecificHttpContent(streamId, Unpooled.wrappedBuffer(message.getWrappedByteBuffer())));
             }
         } else {
             // If "Content-Length" is not set, determine whether it's HTTP/2 or HTTP/1.1 with chunked encoding
             if (isHttp2(context)) {
                 // Send content as HTTP/2
-                System.out.println("Sending HTTP/2 content");
+//                System.out.println("Sending HTTP/2 content");
                 out.add(new StreamSpecificHttpContent(streamId, Unpooled.wrappedBuffer(message.getWrappedByteBuffer())));
             } else {
                 // Send content with chunked encoding
-                System.out.println("Sending chunked input");
+//                System.out.println("Sending chunked input");
                 ChunkedInput<ByteBuf> chunkedInput = new WsByteBufferChunkedInput(message);
                 MSP.log("Should be writing a chunk of size: " + chunkedInput.length());
+                System.out.println("Writing chunk from encoder!");
                 context.writeAndFlush(chunkedInput);
             }
         }
