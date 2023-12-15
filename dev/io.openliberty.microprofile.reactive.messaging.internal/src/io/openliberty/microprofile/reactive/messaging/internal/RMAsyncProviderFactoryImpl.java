@@ -87,7 +87,7 @@ public class RMAsyncProviderFactoryImpl implements RMAsyncProviderFactory {
     @Reference(service = WSContextService.class, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.MULTIPLE)
     protected void addContextService(WSContextService contextService, Map<String, Object> properties) {
         String name = getContextServiceName(properties);
-        if (name != null) {
+        if ((name != null) && !isApplicationDefinedContextService(properties)) {
             namedContextServices.put(name, contextService);
         }
     }
@@ -99,7 +99,7 @@ public class RMAsyncProviderFactoryImpl implements RMAsyncProviderFactory {
      */
     protected void updatedContextService(WSContextService contextService, Map<String, Object> properties) {
         String name = getContextServiceName(properties);
-        if (name == null) {
+        if ((name == null) || isApplicationDefinedContextService(properties)) {
             namedContextServices.values().remove(contextService);
         } else if (!contextService.equals(namedContextServices.get(name))) {
             // If name has changed, remove and re-add
@@ -128,6 +128,16 @@ public class RMAsyncProviderFactoryImpl implements RMAsyncProviderFactory {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Returns whether a context service is one defined within an application using {@code @ContextServiceDefinition}.
+     *
+     * @param properties the service properties of the {@code WSContextService} service to check
+     * @return {@code true} if the service properties are for an application-defined context service, otherwise {@code false}
+     */
+    private boolean isApplicationDefinedContextService(Map<String, Object> properties) {
+        return !"file".equals(properties.get("config.source"));
     }
 
     @Override
