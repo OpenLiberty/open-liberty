@@ -84,12 +84,12 @@ public class DatabaseStoreImpl implements DatabaseStore {
     /**
      * Reference to the default authentication data.
      */
-    private ServiceReference<?> authDataRef;
+    private final ServiceReference<?> authDataRef;
 
     /**
      * Resource factory for the data source.
      */
-    private ResourceFactory dataSourceFactory;
+    private final ResourceFactory dataSourceFactory;
 
     /**
      * Indicates if this database store instance has been deactivated.
@@ -99,17 +99,17 @@ public class DatabaseStoreImpl implements DatabaseStore {
     /**
      * A service that controls local transactions.
      */
-    private LocalTransactionCurrent localTranCurrent;
+    private final LocalTransactionCurrent localTranCurrent;
 
     /**
      * Resource factory for the non-transactional data source.
      */
-    private ResourceFactory nonJTADataSourceFactory;
+    private final ResourceFactory nonJTADataSourceFactory;
 
     /**
      * The persistence service.
      */
-    private PersistenceService persistenceService;
+    private final PersistenceService persistenceService;
 
     /**
      * Configuration properties for this instance.
@@ -144,16 +144,49 @@ public class DatabaseStoreImpl implements DatabaseStore {
     /**
      * Resource config factory.
      */
-    private ResourceConfigFactory resourceConfigFactory;
+    private final ResourceConfigFactory resourceConfigFactory;
 
     /**
      * Transaction manager.
      */
-    private EmbeddableWebSphereTransactionManager tranMgr;
+    private final EmbeddableWebSphereTransactionManager tranMgr;
 
     @Activate
-    public DatabaseStoreImpl(Map<String, ?> properties) throws Exception {
+    public DatabaseStoreImpl(Map<String, ?> properties, //
+
+                             // static mandatory references
+                             @Reference(name = "DataSourceFactory", target = "(id=unbound)") ResourceFactory dataSourceFactory, //
+                             @Reference LocalTransactionCurrent localTranCurrent, //
+                             @Reference PersistenceService persistenceService, //
+                             @Reference ResourceConfigFactory resourceConfigFactory, //
+                             @Reference EmbeddableWebSphereTransactionManager tranMgr, //
+
+                             // static optional refereences
+                             @Reference(name = "AuthData",
+                                 service = AuthData.class,
+                                 cardinality = ReferenceCardinality.OPTIONAL,
+                                 policy = ReferencePolicy.STATIC,
+                                 target = "(id=unbound)",
+                                 policyOption = ReferencePolicyOption.GREEDY) ServiceReference<AuthData> authDataRef, //
+                             @Reference(name = "NonJTADataSourceFactory",
+                                 cardinality = ReferenceCardinality.OPTIONAL,
+                                 policy = ReferencePolicy.STATIC,
+                                 policyOption = ReferencePolicyOption.GREEDY,
+                                 target = "(id=unbound)") ResourceFactory nonJTADataSourceFactory
+                    ) throws Exception {
+
         this.properties = properties;
+
+        // static mandatory references
+        this.dataSourceFactory = dataSourceFactory;
+        this.localTranCurrent = localTranCurrent;
+        this.persistenceService = persistenceService;
+        this.resourceConfigFactory = resourceConfigFactory;
+        this.tranMgr = tranMgr;
+
+        // static optional references
+        this.authDataRef = authDataRef;
+        this.nonJTADataSourceFactory = nonJTADataSourceFactory;
 
         // The database store should be lazily initialized by the components using it, so there is no need
         // for the database store implementation to have its own lazy initialization.
@@ -876,147 +909,6 @@ public class DatabaseStoreImpl implements DatabaseStore {
                     localTranCurrent.resume(suspendedLTC);
             }
         }
-    }
-
-    /**
-     * Declarative Services method for setting the service reference for the default auth data
-     *
-     * @param ref reference to the service
-     */
-    @Reference(service = AuthData.class,
-               cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.STATIC,
-               target = "(id=unbound)",
-               policyOption = ReferencePolicyOption.GREEDY)
-    protected void setAuthData(ServiceReference<AuthData> ref) {
-        authDataRef = ref;
-    }
-
-    /**
-     * Declarative Services method for setting the resource factory for the data source.
-     *
-     * @param svc the service
-     */
-    @Reference(target = "(id=unbound)")
-    protected void setDataSourceFactory(ResourceFactory svc) {
-        dataSourceFactory = svc;
-    }
-
-    /**
-     * Declarative Services method for setting the LocalTransactionCurrent.
-     *
-     * @param ref the service
-     */
-    @Reference
-    protected void setLocalTransactionCurrent(LocalTransactionCurrent svc) {
-        localTranCurrent = svc;
-    }
-
-    /**
-     * Declarative Services method for setting the resource factory for the non-transactional data source.
-     *
-     * @param svc the service
-     */
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.STATIC,
-               policyOption = ReferencePolicyOption.GREEDY,
-               target = "(id=unbound)")
-    protected void setNonJTADataSourceFactory(ResourceFactory svc) {
-        nonJTADataSourceFactory = svc;
-    }
-
-    /**
-     * Declarative Services method for setting the persistence service.
-     *
-     * @param svc the service
-     */
-    @Reference
-    protected void setPersistenceService(PersistenceService svc) {
-        persistenceService = svc;
-    }
-
-    /**
-     * Declarative services method for setting the resource config factory.
-     *
-     * @param svc the service
-     */
-    @Reference(service = ResourceConfigFactory.class)
-    protected void setResourceConfigFactory(ResourceConfigFactory svc) {
-        resourceConfigFactory = svc;
-    }
-
-    /**
-     * Declarative Services method for setting the transaction manager
-     *
-     * @param svc the service
-     */
-    @Reference
-    protected void setTransactionManager(EmbeddableWebSphereTransactionManager svc) {
-        tranMgr = svc;
-    }
-
-    /**
-     * Declarative Services method for unsetting the service reference for default auth data
-     *
-     * @param ref reference to the service
-     */
-
-    protected void unsetAuthData(ServiceReference<AuthData> ref) {
-        authDataRef = null;
-    }
-
-    /**
-     * Declarative Services method for unsetting the resource factory for the data source.
-     *
-     * @param svc the service
-     */
-    protected void unsetDataSourceFactory(ResourceFactory svc) {
-        dataSourceFactory = null;
-    }
-
-    /**
-     * Declarative Services method for unsetting the LocalTransactionCurrent.
-     *
-     * @param svc the service
-     */
-    protected void unsetLocalTransactionCurrent(LocalTransactionCurrent svc) {
-        localTranCurrent = null;
-    }
-
-    /**
-     * Declarative Services method for unsetting the resource factory for the non-transactional data source.
-     *
-     * @param svc the service
-     */
-    protected void unsetNonJTADataSourceFactory(ResourceFactory svc) {
-        nonJTADataSourceFactory = null;
-    }
-
-    /**
-     * Declarative Services method for unsetting the persistence service.
-     *
-     * @param svc the service
-     */
-    protected void unsetPersistenceService(PersistenceService svc) {
-        persistenceService = null;
-    }
-
-    /**
-     * Declarative Services method for unsetting the resource config factory.
-     *
-     * @param svc the service
-     */
-    protected void unsetResourceConfigFactory(ResourceConfigFactory svc) {
-        resourceConfigFactory = null;
-    }
-
-    /**
-     * Declarative Services method for unsetting the transaction manager
-     *
-     * @param svc the service
-     */
-    protected void unsetTransactionManager(EmbeddableWebSphereTransactionManager svc) {
-        tranMgr = null;
     }
 
     @Override
