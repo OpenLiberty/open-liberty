@@ -37,21 +37,21 @@ triggers:
 
 # DISABLED - this causes #biuld to run 2 builds, one of which always appears to
 # run the z/OS tests.
-#- type: github
-#  triggerName: "ol-pbbeta-build"
-#  triggerRank: 50
-#  groups: ["LibertyDev"]
-#  keyword: "#build"
-#  propertyDefinitions:
-#  # If a user defines this property, set it for all steps that use it except the "Distributed Full FATs" step
-#  # because those steps are set to use a value calculated by the PR Changes step.
-#  - name: fat.buckets.to.run
-#    defaultValue: ${PR Changes:fat.buckets.to.run}
-#    steps:
-#    - stepName: Compile Liberty Images
-#    - stepName: Compile FATs
-#    - stepName: Determine FATs Needed
-#    - stepName: Distributed Lite FATs
+- type: github
+  triggerName: "ol-pbbeta-build"
+  triggerRank: 50
+  groups: ["LibertyDev"]
+  keyword: "#build"
+  propertyDefinitions:
+  # If a user defines this property, set it for all steps that use it except the "Distributed Full FATs" step
+  # because those steps are set to use a value calculated by the PR Changes step.
+  - name: fat.buckets.to.run
+    defaultValue: ${PR Changes:fat.buckets.to.run}
+    steps:
+    - stepName: Compile Liberty Images
+    - stepName: Compile FATs
+    - stepName: Determine FATs Needed
+    - stepName: Distributed Lite FATs
     
 - type: manual
   triggerName: "ol-pbbeta-manual"
