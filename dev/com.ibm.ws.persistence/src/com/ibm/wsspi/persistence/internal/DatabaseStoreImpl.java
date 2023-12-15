@@ -242,7 +242,15 @@ public class DatabaseStoreImpl implements DatabaseStore {
             }
         }
 
-
+        // NOTE the order is important for the calls to createResource below on
+        // dataSourceFactory and nonJTADataSourceFactory.
+        // DO NOT change the order they are called here without addressing the fact
+        // that the sharing scope is modified to unshareable on the resourceInfo before calling
+        // nonJTADataSourceFactory.createResource
+        SpecialEntitySet entitySet = entityClassNames.length == 0 ? SpecialEntitySet.NONE : recognizeSpecialEntityPackage(entityClassNames[0]);
+        DataSource dataSource = (DataSource) dataSourceFactory.createResource(resourceInfo);
+        // Check the product name for support and compute strategy
+        String strategy = checkSupportedDBProductComputeStrategy(dataSource, entitySet);
 
         DataSource nonJTADataSource;
         if (nonJTADataSourceFactory == null)
@@ -263,12 +271,6 @@ public class DatabaseStoreImpl implements DatabaseStore {
 
         // TODO: replace temporary code specific to persistentExecutor with general solution that applies the
         // table prefix, schema, and keyGenerationStrategy to all entities
-
-
-        SpecialEntitySet entitySet = entityClassNames.length == 0 ? SpecialEntitySet.NONE : recognizeSpecialEntityPackage(entityClassNames[0]);
-        DataSource dataSource = (DataSource) dataSourceFactory.createResource(resourceInfo);
-        // Check the product name for support and compute strategy
-        String strategy = checkSupportedDBProductComputeStrategy(dataSource, entitySet);
 
         List<InMemoryMappingFile> inMemoryFiles;
         if (entitySet.equals(SpecialEntitySet.PERSISTENT_EXECUTOR)) {
