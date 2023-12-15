@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -52,7 +52,7 @@ public class PageImpl<T> implements Page<T> {
             && Pageable.class.equals(queryInfo.method.getParameterTypes()[0]))
             throw new NullPointerException("Pageable: null");
 
-        EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
+        EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
         try {
             @SuppressWarnings("unchecked")
             TypedQuery<T> query = (TypedQuery<T>) em.createQuery(queryInfo.jpql, queryInfo.entityInfo.entityClass);
@@ -80,7 +80,7 @@ public class PageImpl<T> implements Page<T> {
         if (pagination.page() == 1L && results.size() <= pagination.size() && pagination.size() < Integer.MAX_VALUE)
             return results.size();
 
-        EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
+        EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
         try {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "query for count: " + queryInfo.jpqlCount);

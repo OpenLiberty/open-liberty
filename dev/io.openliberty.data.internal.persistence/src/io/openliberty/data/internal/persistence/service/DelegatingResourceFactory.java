@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data.internal.persistence.cdi;
+package io.openliberty.data.internal.persistence.service;
 
 import javax.naming.InitialContext;
 

@@ -14,8 +14,15 @@ package test.jakarta.data.datastore.web;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceUnit;
 import jakarta.servlet.annotation.WebServlet;
+
+import javax.naming.InitialContext;
 
 import org.junit.Test;
 
@@ -27,6 +34,13 @@ public class DataStoreTestServlet extends FATServlet {
 
     @Inject
     DefaultDSRepo defaultDSRepo;
+
+    // A prefix of java:comp/env/ is implied for name
+    @PersistenceUnit(name = "persistence/MyPersistenceUnitRef", unitName = "MyPersistenceUnit")
+    EntityManagerFactory emf;
+
+    @Inject
+    PersistenceUnitRepo persistenceUnitRepo;
 
     @Inject
     ServerDSIdRepo serverDSIdRepo;
@@ -44,6 +58,37 @@ public class DataStoreTestServlet extends FATServlet {
         defaultDSRepo.insert(DefaultDSEntity.of(25L, "twenty-five"));
 
         assertEquals(true, defaultDSRepo.existsByIdAndValue(25L, "twenty-five"));
+    }
+
+    /**
+     * Verify that the EntityManagerFactory for the PersistenceUnit reference can be looked up by its JNDI name:
+     */
+    @Test
+    public void testPersistenceUnitRefIsAvailable() throws Exception {
+        EntityManagerFactory emf = InitialContext.doLookup("java:comp/env/persistence/MyPersistenceUnitRef");
+        EntityManager em = emf.createEntityManager();
+        em.close();
+    }
+
+    /**
+     * Use a repository that specifies the a persistence unit reference, persistence/MyPersistenceUnitRef,
+     * without explicitly including java:comp.
+     */
+    @Test
+    public void testPersistenceUnitRefWithoutJavaComp() {
+        PersistenceUnitEntity e51 = PersistenceUnitEntity.of("TestPersistenceUnit-fifty-one", 51);
+        PersistenceUnitEntity e52 = PersistenceUnitEntity.of("TestPersistenceUnit-fifty-two", 52);
+        PersistenceUnitEntity e56 = PersistenceUnitEntity.of("TestPersistenceUnit-fifty-six", 56);
+        List<PersistenceUnitEntity> inserted = persistenceUnitRepo.save(List.of(e51, e52, e56));
+        assertEquals(inserted.toString(), 3, inserted.size());
+
+        assertEquals(3, persistenceUnitRepo.countByIdStartsWith("TestPersistenceUnit-"));
+
+        e52.value = 152;
+        e56.value = 156;
+
+        List<PersistenceUnitEntity> updated = persistenceUnitRepo.save(List.of(e52, e56));
+        assertEquals(updated.toString(), 2, updated.size());
     }
 
     /**

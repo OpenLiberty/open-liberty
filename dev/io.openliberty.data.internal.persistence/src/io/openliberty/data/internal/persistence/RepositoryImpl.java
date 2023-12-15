@@ -170,10 +170,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private final Class<R> repositoryInterface;
     private final EntityValidator validator;
 
-    public RepositoryImpl(DataExtensionProvider provider, DataExtension extension, EntityDefiner definer,
+    public RepositoryImpl(DataExtensionProvider provider, DataExtension extension, EntityManagerBuilder builder,
                           Class<R> repositoryInterface, Class<?> primaryEntityClass,
                           Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
-        this.primaryEntityInfoFuture = primaryEntityClass == null ? null : definer.entityInfoMap.computeIfAbsent(primaryEntityClass, EntityInfo::newFuture);
+        this.primaryEntityInfoFuture = primaryEntityClass == null ? null : builder.entityInfoMap.computeIfAbsent(primaryEntityClass, EntityInfo::newFuture);
         this.provider = provider;
         this.repositoryInterface = repositoryInterface;
         Object validation = provider.validationService();
@@ -201,7 +201,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     else
                         jpaEntityClass = entityClass;
 
-                    CompletableFuture<EntityInfo> entityInfoFuture = definer.entityInfoMap.computeIfAbsent(jpaEntityClass, EntityInfo::newFuture);
+                    CompletableFuture<EntityInfo> entityInfoFuture = builder.entityInfoMap.computeIfAbsent(jpaEntityClass, EntityInfo::newFuture);
 
                     queries.put(queryInfo.method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(queryInfo),
                                                                                this::completeQueryInfo));
@@ -2065,7 +2065,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private <T> T getResource(Class<T> type) {
         Deque<EntityManager> resources = defaultMethodResources.get();
         if (EntityManager.class.equals(type)) {
-            EntityManager em = primaryEntityInfoFuture.join().persister.createEntityManager();
+            EntityManager em = primaryEntityInfoFuture.join().builder.createEntityManager();
             if (resources == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, type + " accessed outside the scope of repository default method",
@@ -2303,12 +2303,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                 switch (queryInfo.type) {
                     case SAVE: {
-                        em = entityInfo.persister.createEntityManager();
+                        em = entityInfo.builder.createEntityManager();
                         returnValue = save(args[0], queryInfo, em);
                         break;
                     }
                     case INSERT: {
-                        em = entityInfo.persister.createEntityManager();
+                        em = entityInfo.builder.createEntityManager();
                         returnValue = insert(args[0], queryInfo, em);
                         break;
                     }
@@ -2378,7 +2378,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         else if (Slice.class.equals(multiType) || Page.class.equals(multiType) || pagination != null && Streamable.class.equals(multiType))
                             returnValue = new PageImpl<>(queryInfo, limit == null ? pagination : toPageable(limit), args);
                         else {
-                            em = entityInfo.persister.createEntityManager();
+                            em = entityInfo.builder.createEntityManager();
 
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                                 Tr.debug(this, tc, "createQuery", queryInfo.jpql, entityInfo.entityClass.getName());
@@ -2545,7 +2545,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     }
                     case DELETE:
                     case UPDATE: {
-                        em = entityInfo.persister.createEntityManager();
+                        em = entityInfo.builder.createEntityManager();
 
                         jakarta.persistence.Query update = em.createQuery(queryInfo.jpql);
                         queryInfo.setParameters(update, args);
@@ -2556,7 +2556,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         break;
                     }
                     case DELETE_WITH_ENTITY_PARAM: {
-                        em = entityInfo.persister.createEntityManager();
+                        em = entityInfo.builder.createEntityManager();
 
                         Object arg = args[0] instanceof Stream //
                                         ? ((Stream<?>) args[0]).sequential().collect(Collectors.toList()) //
@@ -2589,7 +2589,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         break;
                     }
                     case UPDATE_WITH_ENTITY_PARAM: {
-                        em = entityInfo.persister.createEntityManager();
+                        em = entityInfo.builder.createEntityManager();
 
                         Object arg = args[0] instanceof Stream //
                                         ? ((Stream<?>) args[0]).sequential().collect(Collectors.toList()) //
@@ -2611,12 +2611,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         break;
                     }
                     case UPDATE_WITH_ENTITY_PARAM_AND_RESULT: {
-                        em = entityInfo.persister.createEntityManager();
+                        em = entityInfo.builder.createEntityManager();
                         returnValue = findAndUpdate(args[0], queryInfo, em);
                         break;
                     }
                     case COUNT: {
-                        em = entityInfo.persister.createEntityManager();
+                        em = entityInfo.builder.createEntityManager();
 
                         TypedQuery<Long> query = em.createQuery(queryInfo.jpql, Long.class);
                         queryInfo.setParameters(query, args);
@@ -2648,7 +2648,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         break;
                     }
                     case EXISTS: {
-                        em = entityInfo.persister.createEntityManager();
+                        em = entityInfo.builder.createEntityManager();
 
                         jakarta.persistence.Query query = em.createQuery(queryInfo.jpql);
                         query.setMaxResults(1);
@@ -2899,7 +2899,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             }
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && jpql != queryInfo.jpql)
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && jpql != queryInfo.jpql)
             Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
 
         TypedQuery<?> delete = em.createQuery(jpql, entityInfo.entityClass);

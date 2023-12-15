@@ -25,7 +25,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import io.openliberty.data.internal.persistence.EntityDefiner;
+import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.QueryInfo;
 import io.openliberty.data.internal.persistence.RepositoryImpl;
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -52,7 +52,7 @@ public class RepositoryProducer<R, P> implements Producer<R> {
     @Trivial
     static class Factory<P> implements ProducerFactory<P> {
         private final BeanManager beanMgr;
-        private final EntityDefiner entityDefiner;
+        private final EntityManagerBuilder entityManagerBuilder;
         private final DataExtension extension;
         private RepositoryImpl<?> handler;
         private final ReentrantReadWriteLock handlerLock = new ReentrantReadWriteLock();
@@ -62,9 +62,9 @@ public class RepositoryProducer<R, P> implements Producer<R> {
         private final Class<?> repositoryInterface;
 
         Factory(Class<?> repositoryInterface, BeanManager beanMgr, DataExtensionProvider provider, DataExtension extension,
-                EntityDefiner entityDefiner, Class<?> primaryEntityClass, Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
+                EntityManagerBuilder entityManagerBuilder, Class<?> primaryEntityClass, Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
             this.beanMgr = beanMgr;
-            this.entityDefiner = entityDefiner;
+            this.entityManagerBuilder = entityManagerBuilder;
             this.extension = extension;
             this.primaryEntityClass = primaryEntityClass;
             this.provider = provider;
@@ -93,7 +93,7 @@ public class RepositoryProducer<R, P> implements Producer<R> {
                         handlerLock.writeLock().lock();
 
                         if (handler == null)
-                            handler = new RepositoryImpl<>(provider, extension, entityDefiner, //
+                            handler = new RepositoryImpl<>(provider, extension, entityManagerBuilder, //
                                             repositoryInterface, primaryEntityClass, queriesPerEntityClass);
                     } finally {
                         // Downgrade to read lock for rest of method

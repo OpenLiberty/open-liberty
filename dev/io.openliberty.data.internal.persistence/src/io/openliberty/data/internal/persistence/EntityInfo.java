@@ -26,13 +26,13 @@ import java.util.SortedMap;
 import java.util.concurrent.CompletableFuture;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import jakarta.data.Sort;
 import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.Inheritance;
 
 /**
+ * Entity information
  */
 class EntityInfo {
     // properly cased/qualified JPQL attribute name --> accessor methods or fields (multiple in the case of embeddable)
@@ -44,6 +44,8 @@ class EntityInfo {
     // properly cased/qualified JPQL attribute name --> type
     final SortedMap<String, Class<?>> attributeTypes;
 
+    final EntityManagerBuilder builder;
+
     // properly cased/qualified JPQL attribute name --> type of collection
     final Map<String, Class<?>> collectionElementTypes;
 
@@ -52,7 +54,6 @@ class EntityInfo {
     final SortedMap<String, Member> idClassAttributeAccessors; // null if no IdClass
     final boolean inheritance;
     final String name;
-    final PersistenceServiceUnit persister;
     final Class<?> recordClass; // null if not a record
     final String versionAttributeName; // null if unversioned
 
@@ -72,8 +73,9 @@ class EntityInfo {
                Class<?> idType,
                SortedMap<String, Member> idClassAttributeAccessors,
                String versionAttributeName,
-               PersistenceServiceUnit persister) {
+               EntityManagerBuilder entityManagerBuilder) {
         this.name = entityName;
+        this.builder = entityManagerBuilder;
         this.entityClass = entityClass;
         this.attributeAccessors = attributeAccessors;
         this.attributeNames = attributeNames;
@@ -82,7 +84,6 @@ class EntityInfo {
         this.relationAttributeNames = relationAttributeNames;
         this.idType = idType;
         this.idClassAttributeAccessors = idClassAttributeAccessors;
-        this.persister = persister;
         this.recordClass = recordClass;
         this.versionAttributeName = versionAttributeName;
 
