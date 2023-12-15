@@ -54,9 +54,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
                 @Override
                 public void run() {
                     try {
-//                        DefaultFullHttpRequest req = new DefaultFullHttpRequest(request.protocolVersion(), request.method(), request.uri(), request.content(), request.headers(), request.trailingHeaders());
                         System.out.println("New request on pipeline for : " + context + " channel: " + context.channel());
-                        context.channel().pipeline().names().forEach(handler -> System.out.println(handler));
                         newRequest(context, msg);
                     } catch (Throwable t) {
                         try {
@@ -89,7 +87,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
 
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
-        MSP.log("Closing context because of: ");
+        System.out.println("Closing context because of: ");
         cause.printStackTrace();
         if (cause instanceof Http2Exception.StreamException) {
             System.out.println("Got a HTTP2 stream exception!! Need to close the stream");

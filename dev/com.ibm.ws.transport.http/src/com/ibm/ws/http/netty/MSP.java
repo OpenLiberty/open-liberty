@@ -15,14 +15,17 @@ package com.ibm.ws.http.netty;
 public final class MSP {
 
     static long counter = 0;
+    static boolean enabled = false;
 
     public static void log(String msg) {
-        System.out.println("MSP: " + msg);
+        if (enabled)
+            System.out.println("MSP: " + msg);
     }
 
     public static void debug(String probe) {
         counter++;
-        System.out.println("MSP: " + probe + "-" + counter);
+        if (enabled)
+            System.out.println("MSP: " + probe + "-" + counter);
     }
 
 }
