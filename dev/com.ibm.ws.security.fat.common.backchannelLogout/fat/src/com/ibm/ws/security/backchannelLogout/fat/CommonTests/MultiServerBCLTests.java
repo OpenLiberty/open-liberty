@@ -27,8 +27,6 @@ import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.ibm.websphere.simplicity.Machine;
-import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.backchannelLogout.fat.utils.AfterLogoutStates.BCL_FORM;
 import com.ibm.ws.security.backchannelLogout.fat.utils.BackChannelLogout_RegisterClients;
@@ -54,7 +52,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
-import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServerWrapper;
 
@@ -81,23 +78,13 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
     public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
 
     /**
-     * Repeat tests using OIDC (with a Local or Custom Store) or OIDC with SAML OP's, OIDC and Social clients, end_session or http
-     * session logout and when http session logout, have it invoke either the logout or end_session in the OP
+     * Repeat tests using OIDC (with a Local Store) or OIDC with SAML OP's, OIDC and Social clients, end_session
      * While it would be nice to run all types of clients with all server configuration (and easy to do), it just takes too long
      * to run
      * Variations:
-     * OIDC_end_session_MONGODB - OIDC Client - invoke end_session on the OP
      * OIDC_end_session_LOCALSTORE - OIDC Client - invoke end_session on the OP
-     * OIDC_http_session_end_session - OIDC Client - invoke test app on the RP that does a HttpServletRequest.logout(), then
-     * invokes the end_session endpoint of the OP Provider
-     * OIDC_http_session_logout - OIDC Client - invoke test app on the RP that does a HttpServletRequest.logout(), then invokes
-     * the logout endpoint of the OP Provider
      * Social_end_session - Social Client - invoke end_session on the OP
-     * Social_http_session_end_session - Social Client - invoke test app on the Social Client that does a
-     * HttpServletRequest.logout(), then invokes the end_session endpoint of the OP Provider
-     * Social_http_session_logout - Social Client - invoke test app on the Social Client that does a HttpServletRequest.logout(),
-     * then invokes the logout endpoint of the OP Provider
-     * SAML_logout - OP with SAML to perform authorize - invoke logout on the IDP
+     * SAML_end_session - OP with SAML to perform authorize - invoke end_session on the SP
      *
      * @return RepeatTests object for each variation of this class that will be run
      */
@@ -106,51 +93,15 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
         String localStore = "LOCALSTORE";
         Log.info(thisClass, "createRepeats", "Starting createRepeats");
 
-        OperatingSystem theOS = null;
-        try {
-            theOS = Machine.getLocalMachine().getOperatingSystem();
-        } catch (Exception e) {
-            Log.info(thisClass, "createRepeats", e.getMessage());
-            Log.info(thisClass, "createRepeats", "Received an exception trying to determine if the current OS is iSeries - Mongo DB tests would be skipped on iSeries - assume that it's not iSeries");
-            theOS = OperatingSystem.LINUX;
-        }
-        // note:  using the method addRepeat below instead of adding test repeats in line to simplify hacking up the tests locally to ony run one or 2 variations (all the calls are the same - dont' have to worry about using "with" vs "andWith")
+        // Using limited repeats since these tests search for messages not to appear in the logs and those timeouts cause the tests to take too long to run
         RepeatTests rTests = null;
         if (callingProject.equals(Constants.OIDC)) {
-            if (TestModeFilter.shouldRun(TestMode.FULL)) {
-                //                if (!theOS.equals(OperatingSystem.ISERIES)) {
-                //                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + Constants.MONGODB));
-                //                }
-                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + localStore));
-                //                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.LOGOUT_ENDPOINT + "_" + localStore));
-                //                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
-                //                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
-            } else {
-                // LITE mode only run one instance
-                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + localStore));
-            }
+            rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + localStore));
         } else {
             if (callingProject.equals(Constants.SOCIAL)) {
                 rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.END_SESSION));
-                // LITE mode only run one instance
-                if (TestModeFilter.shouldRun(TestMode.FULL)) {
-                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.LOGOUT_ENDPOINT));
-                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
-                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
-                }
             } else {
-                if (TestModeFilter.shouldRun(TestMode.FULL)) {
-                    //                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML_IDP_INITIATED_LOGOUT));
-                    //                    //                                        rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.logout)); sp logout
-                    //                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.LOGOUT_ENDPOINT));
-                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.END_SESSION));
-                    //                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
-                    //                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
-                } else {
-                    // LITE mode only run one instance
-                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.END_SESSION));
-                }
-
+                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.END_SESSION));
             }
         }
 
@@ -165,15 +116,14 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
 
         makeRandomSettingSelections();
 
+        // set some test flags based on the repeat action - these flags will be used by the test cases and test methods to determine the steps to run or what to expect
+        vSettings = new VariationSettings(currentRepeatAction);
+
         // Start a normal OP, or an OP that uses SAML to authorize (in this case, we need to fire up a server running Shibboleth
         startProviderBasedOnRepeat(tokenType);
 
         // start an OIDC RP or a Social oidc client
         startClientsBasedOnRepeat(tokenType);
-
-        //        // set some test flags based on the repeat action - these flags will be used by the test cases and test methods to determine the steps to run or what to expect
-        //        setConfigBasedOnRepeat();
-        vSettings = new VariationSettings(currentRepeatAction);
 
         registerClientsIfNeeded();
 
@@ -198,7 +148,7 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
         };
 
         // we can re-use the basic OP config
-        if (currentRepeatAction.contains(Constants.SAML)) {
+        if (vSettings.loginMethod.equals(Constants.SAML)) {
             Log.info(thisClass, "setUp", "pickAnIDP: " + pickAnIDP);
             // IDP server uses ports bvt.prop.security_3_HTTP_default*
             testIDPServer = commonSetUp("com.ibm.ws.security.saml.sso-2.0_fat.shibboleth", "server_orig.xml", Constants.IDP_SERVER_TYPE, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.SKIP_CHECK_FOR_SECURITY_STARTED, true);
@@ -265,7 +215,7 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
             clientApps.add(Constants.simpleLogoutApp);
         }
 
-        if (currentRepeatAction.contains(Constants.OIDC) || currentRepeatAction.contains(Constants.SAML)) {
+        if (vSettings.loginMethod.equals(Constants.OIDC) || vSettings.loginMethod.equals(Constants.SAML)) {
             skipServerStart = true;
             clientServer = commonSetUp("com.ibm.ws.security.backchannelLogout_fat.rp", adjustServerConfig("rp_server_multiServerTests.xml"), Constants.OIDC_RP, clientApps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, Constants.X509_CERT);
             updateClientCookieNameAndPort(clientServer, "clientCookieName", Constants.clientCookieName, false);
@@ -316,6 +266,14 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
 
         clientServer.addIgnoredServerExceptions(MessageConstants.CWWKS1541E_BACK_CHANNEL_LOGOUT_ERROR, MessageConstants.CWWKS1543E_BACK_CHANNEL_LOGOUT_REQUEST_VALIDATION_ERROR);
 
+        if (currentRepeatAction.contains(Constants.HTTP_SESSION)) {
+            //            if (currentRepeatAction.contains(Constants.OIDC_RP) || currentRepeatAction.contains(SocialConstants.SOCIAL)) {
+            logoutApp = clientServer.getHttpsString() + "/simpleLogoutTestApp/simpleLogout";
+            //            } else {
+            //                logoutApp = testOPServer.getHttpsString() + "/simpleLogoutTestApp/simpleLogout";
+            //            }
+        }
+
     }
 
     public static void registerClientsIfNeeded() throws Exception {
@@ -326,61 +284,6 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
             regClients.registerClientsForMultiServerBCLTests();
             testOPServer.addIgnoredServerException(MessageConstants.CWWKS1420E_CLIENT_NOT_AUTHORIZED_TO_INTROSPECT);
         }
-    }
-
-    /**
-     * Update test settings with test case specific values
-     *
-     * @param server
-     *            the clientServer instance that the test will use (there may be multiple RPs/Social clients
-     * @param provider
-     *            the OP provider that the openidconnect client belongs to
-     * @param client
-     *            the openidconnect client that the test uses - we're using this as part of the test app names
-     * @param user
-     *            the test user to use
-     * @param passwd
-     *            the password for the test user
-     * @param usePostLogout
-     *            flag indicating if OP Provider config that the test uses specifies a post logout url this will (used to tell the
-     *            logout test method to pass the post logout url in its request - it has to match whats in the config - the values
-     *            set based on the flag also tells our validation code where we would finally land)
-     * @return updated test settings
-     * @throws Exception
-     */
-    protected TestSettings updateTestSettingsProviderAndClient(TestServer server, String provider, String client, String user, String passwd, boolean usePostLogout) throws Exception {
-
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-
-        Log.info(thisClass, "updateTestSettingProviderAndClient", server.getServer().getServerName());
-        updatedTestSettings.setProvider(provider);
-        updatedTestSettings.setTestURL(server.getHttpsString() + "/formlogin/simple/" + client);
-        updatedTestSettings.setProtectedResource(server.getHttpsString() + "/formlogin/simple/" + client);
-        // set logout url - end_session
-        if (vSettings.logoutMethodTested.equals(Constants.SAML)) {
-            updatedTestSettings.setEndSession(testIDPServer.getHttpsString() + "/idp/profile/Logout");
-        } else {
-            updatedTestSettings.setEndSession(updatedTestSettings.getEndSession().replace("OidcConfigSample", provider));
-            if (vSettings.logoutMethodTested.equals(Constants.LOGOUT_ENDPOINT)) {
-                updatedTestSettings.setEndSession(updatedTestSettings.getEndSession().replace(Constants.END_SESSION_ENDPOINT, Constants.LOGOUT_ENDPOINT));
-            }
-        }
-        updatedTestSettings.setTokenEndpt(updatedTestSettings.getTokenEndpt().replace("OidcConfigSample", provider));
-        updatedTestSettings.setClientID(client);
-        updatedTestSettings.setClientSecret("mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"); // all of the clients are using the same secret
-        updatedTestSettings.setUserName(user);
-        updatedTestSettings.setUserPassword(passwd);
-        updatedTestSettings.setAdminUser(user);
-        updatedTestSettings.setAdminPswd(passwd);
-        updatedTestSettings.setScope("openid profile");
-        if (usePostLogout) {
-            updatedTestSettings.setPostLogoutRedirect(server.getHttpString() + Constants.postLogoutJSessionIdApp);
-        } else {
-            updatedTestSettings.setPostLogoutRedirect(null);
-        }
-
-        return updatedTestSettings;
-
     }
 
     protected void resetMultiServerLogout() throws Exception {
@@ -450,7 +353,6 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
                 addToAllowableTimeoutCount(1); // the search for the logout_token will result in a "timed out" message that we need to account for
                 Log.info(thisClass, this_method, "Back Channel Logout was NOT called for: " + sidFromIdToken);
             } else {
-                // TODO - need to update this for this class instance
                 fail("Back Channel Logout was not called for sid: " + sidFromIdToken + " and should have been");
             }
             return null;
@@ -471,51 +373,6 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
         }
         return null;
     }
-
-    //        /**
-    //         * Invoke either end_session or the test "simpleLogout" app - and if invoking "simpleLogout" have the app invoke
-    //         * either the logout endpoint in the OP, or end_session
-    //         *
-    //         * @param webClient
-    //         *            the client to get the context from
-    //         * @param settings
-    //         *            the current test settings (used to get the end_session endpoint)
-    //         * @param logoutExpectations
-    //         *            the expectations to validate
-    //         * @param previousResponse
-    //         *            in the case of end_session, the prevous response to get the id_token from (to use as the hint)
-    //         * @return the http reponse for further validation
-    //         * @throws Exception
-    //         */
-    //        public Object invokeLogout(WebClient webClient, TestSettings settings, List<validationData> logoutExpectations, String id_token) throws Exception {
-    //
-    //            String opLogoutEndpoint = null;
-    //
-    //            switch (logoutMethodTested) {
-    //            case Constants.SAML:
-    //                return genericOP(_testName, webClient, settings, Constants.IDP_INITIATED_LOGOUT, logoutExpectations, null, id_token);
-    //            case Constants.END_SESSION:
-    //            case Constants.LOGOUT_ENDPOINT:
-    //                // invoke end_session on the op - test controls if the id_token is passed as the id_token_hint by either passing or not passing the previous response
-    //                Object response = genericOP(_testName, webClient, settings, Constants.LOGOUT_ONLY_ACTIONS, logoutExpectations, null, id_token);
-    //                return response;
-    //            case Constants.HTTP_SESSION:
-    //                if (sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT)) {
-    //                    opLogoutEndpoint = testOPServer.getHttpsString() + "/oidc/endpoint/" + settings.getProvider() + "/" + Constants.LOGOUT_ENDPOINT;
-    //                } else {
-    //                    opLogoutEndpoint = settings.getEndSession();
-    //                }
-    //                List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "opLogoutUri", opLogoutEndpoint);
-    //                if (id_token != null) {
-    //                    parms = eSettings.addEndpointSettingsIfNotNull(parms, "id_token_hint", id_token);
-    //                }
-    //                return genericInvokeEndpoint(_testName, webClient, null, logoutApp, Constants.POSTMETHOD, Constants.LOGOUT, parms, null, logoutExpectations, testSettings);
-    //            default:
-    //                fail("Logout method wasn't specified");
-    //                return null;
-    //            }
-    //
-    //        }
 
     public TokenKeeper invokeAndSave(TestSettings settings, String bclEndpoint) throws Exception {
 
@@ -558,8 +415,13 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
 
         clientServer.getServer().initializeAnyExistingMarks();
 
-        boolean usingLogoutEndpoint = currentRepeatAction.contains(Constants.LOGOUT_ENDPOINT);
-        boolean shouldWeReallyLogout = reuseWebClientForLogout || (passHint && !usingLogoutEndpoint);
+        //        boolean usingLogoutEndpoint = currentRepeatAction.contains(Constants.LOGOUT_ENDPOINT);
+        //        boolean shouldWeReallyLogout = reuseWebClientForLogout || (passHint && !usingLogoutEndpoint);
+        //        boolean shouldWeReallyLogout = reuseWebClientForLogout || passHint;
+        Log.info(thisClass, "complexTest", "reuseWebClientForLogout: " + Boolean.toString(reuseWebClientForLogout));
+        Log.info(thisClass, "complexTest", "passHint: " + Boolean.toString(passHint));
+        Log.info(thisClass, "complexTest", "http_session with no end_session/logout: " + Boolean.toString(currentRepeatAction.contains(Constants.HTTP_SESSION) && vSettings.sessionLogoutEndpoint == null));
+        boolean shouldWeReallyLogout = (reuseWebClientForLogout || (passHint)) && (!(currentRepeatAction.contains(Constants.HTTP_SESSION) && vSettings.sessionLogoutEndpoint == null));
 
         String provider1 = "OidcConfigSample_multiServer1";
         String provider1_client1 = "bcl_multiServer_client1-1";
