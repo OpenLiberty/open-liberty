@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,8 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import io.openliberty.asm.ASMHelper;
+
 /**
  * Injects all Throwable.printStackTrace(PrintStream) calls with a decision to override
  * itself to squash stack traces into one line.
@@ -31,7 +33,7 @@ class ThrowableMethodAdapter extends MethodVisitor implements Opcodes {
     private final String signature;
 
     public ThrowableMethodAdapter(MethodVisitor mv, String name, String desc, String signature) {
-        super(ASM8, mv);
+        super(ASMHelper.getCurrentASM(), mv);
         this.name = name;
         this.desc = desc;
         this.signature = signature;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,17 +16,19 @@ package com.ibm.ws.ras.instrument.internal.introspect;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Opcodes;
 
+import io.openliberty.asm.ASMHelper;
+
 public class TraceObjectFieldAnnotationVisitor extends AnnotationVisitor {
 
     private String fieldName;
     private String fieldDescriptor;
 
     public TraceObjectFieldAnnotationVisitor() {
-        super(Opcodes.ASM9);
+        super(ASMHelper.getCurrentASM());
     }
 
     public TraceObjectFieldAnnotationVisitor(AnnotationVisitor av) {
-        super(Opcodes.ASM9, av);
+        super(ASMHelper.getCurrentASM(), av);
     }
 
     @Override
