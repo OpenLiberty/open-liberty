@@ -46,7 +46,21 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
 
     private final Class<?> annotationTypeLock;
 
-    private static final String JBOSS_HOTSPOT_TRACE_ENABLED = getSystemProperty("jboss.hotspot.trace.enabled");
+    private static final String JBOSS_HOTSPOT_TRACE_ENABLED_VALUE =
+                    getSystemProperty("jboss.hotspot.trace.enabled");
+
+    private static final boolean JBOSS_HOTSPOT_TRACE_ENABLED =
+                    ( (JBOSS_HOTSPOT_TRACE_ENABLED_VALUE != null) &&
+                      JBOSS_HOTSPOT_TRACE_ENABLED_VALUE.equals("true") );
+    
+    private static volatile boolean sentWarning;
+
+    private static void sendWarning() {
+        if (!sentWarning) {
+            sentWarning = true;
+            System.out.println("Warning you have enabled logging that should only be seen in an IBM test environment");
+        }
+    }
 
     public HotspotReflectionCache(TypeStore store) {
         super(store);
@@ -77,22 +91,11 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
         FileLogger.fileDump(className, methodName, text, classBytes);
     }
 
-    boolean sentWarning = false;
-
     @Override
     @FFDCIgnore(Exception.class)
     protected Annotation[] internalGetAnnotations(AnnotatedElement element) {
-        String prop = "";
-
-        try {
-            prop = getSystemProperty("jboss.hotspot.trace.enabled");
-        } catch (Exception ignored) {}
-
-        if (JBOSS_HOTSPOT_TRACE_ENABLED != null && JBOSS_HOTSPOT_TRACE_ENABLED.equals("true")) {	
-            if (!sentWarning) {
-                sentWarning = true;
-                System.out.println("Warning you have enabled logging that should only be seen in an IBM test environment");
-            }
+        if (JBOSS_HOTSPOT_TRACE_ENABLED) {
+            sendWarning();
             return internalGetAnnotationsLogged(element);
         }
         return internalGetAnnotationsUnlogged(element);

@@ -43,10 +43,10 @@ import com.ibm.ws.ras.instrument.internal.xml.TraceConfigFileParser;
  * class files and class files in jars with trace.
  */
 public class StaticTraceInstrumentation extends AbstractInstrumentation {
-    public static final String CLASS_NAME = "StaticInstrumentation";
+    private static final String CLASS_NAME = "StaticTraceInstrumentation";
 
-    public static boolean isLoggable(String path) {
-        return FileLogger.isLoggable(path);
+    public static boolean isLoggablePath(String path) {
+        return FileLogger.isLoggablePath(path);
     }
 
     public PrintWriter fileWriter() {
@@ -151,18 +151,12 @@ public class StaticTraceInstrumentation extends AbstractInstrumentation {
     }
 
     /**
-     * Instrument the class at the current position in the specified input stream.
-     * 
-     * @return instrumented class file or null if the class has already
-     *         been instrumented.
-     * 
-     * @throws IOException if an error is encountered while reading from
-     *         the <code>InputStream</code>
+     * {@inheritDoc}
      */
     @Override
     final protected byte[] transform(String path, InputStream classStream) throws IOException {
         String methodName = "transform";
-        boolean isLoggable = isLoggable(path);
+        boolean isLoggable = isLoggablePath(path);
         
         if ( isLoggable ) {                         
             fileLog(methodName, "Class", path);
@@ -183,7 +177,7 @@ public class StaticTraceInstrumentation extends AbstractInstrumentation {
             return null;
         }
 
-        ClassInfo classInfo = readConfig(path, initialBytes);
+        ClassInfo classInfo = readConfig(initialBytes);
 
         // Merging the class information does not change whether the class is enabled
         // for instrumentation.
@@ -239,43 +233,20 @@ public class StaticTraceInstrumentation extends AbstractInstrumentation {
         return finalBytes;
     }
 
-    private ClassInfo readConfig(String className, byte[] classBytes) throws IOException {
-        String methodName = "readConfig";
-
-        ClassReader classReader = new ClassReader(classBytes);
-        ClassWriter classWriter = new ClassWriter(classReader, 0);
-
-        // Sets the ASM version opcode.  See the initializer.
-        TraceConfigClassVisitor classVisitor = new TraceConfigClassVisitor(classWriter);
-
-        classReader.accept(classVisitor, 0);
-
-        byte[] updatedClassBytes = classWriter.toByteArray();
-        if ( !Arrays.equals(classBytes, updatedClassBytes) ) {
-            fileLog(methodName, "Class [ " + className + " ] Change detected:");
-            fileDump(methodName, "Old bytes:", classBytes);
-            fileDump(methodName, "New bytes:", updatedClassBytes);
-        } else {
-            fileLog(methodName, "Class [ " + className + " ] Unchanged");
-        }
-
-        return classVisitor.getClassInfo();
-    }
-
-    // Updated step of reading class information.
-    // Note the step of rewriting the class bytes has been
-    // removed.  The trace configuration visitor is a read-only
-    // visitor.  There is no need to rewrite the class bytes.
-
-    private ClassInfo readConfig_new(byte[] classBytes) throws IOException {
-        // TFB: Returning null would cause an NPE when the
-        //      caller attempted to obtain the package name.
-        //
-        // if ( !introspectAnnotations ) {
-        //     return null;
-        // }
-
-        // Sets the ASM version opcode.  See the initializer.
+    /**
+     * Read the trace configuration information of a class.
+     * 
+     * This is simplified relative to prior implementations:
+     * Previously, a class writer was included in the visitor
+     * stack.  Since the trace configuration visitor is a read
+     * only visitor, the inclusion of the writer is an
+     * unnecessary, expensive, step. 
+     * 
+     * @param classBytes The bytes of the class.
+     * 
+     * @return Class information read from the class bytes.
+     */
+    private ClassInfo readConfig(byte[] classBytes) {
         TraceConfigClassVisitor classVisitor = new TraceConfigClassVisitor();
 
         ClassReader classReader = new ClassReader(classBytes);
@@ -283,52 +254,6 @@ public class StaticTraceInstrumentation extends AbstractInstrumentation {
 
         return classVisitor.getClassInfo();
     }
-
-    // Old step of reading class information.  Note the replacement of the
-    // class bytes with the class writer bytes.
-    //
-    // Per ClassWriter JavaDoc, the replaced bytes should be exactly the same,
-    // since no changes were made.
-    //
-    // See: https://asm.ow2.io/javadoc/org/objectweb/asm/ClassWriter.html#%3Cinit%3E(org.objectweb.asm.ClassReader,int), 
-    //
-    // Constructs a new ClassWriter object and enables optimizations
-    // for "mostly add" bytecode transformations. These optimizations
-    // are the following:
-    //
-    // The constant pool and bootstrap methods from the original class
-    // are copied as is in the new class, which saves time. New
-    // constant pool entries and new bootstrap methods will be added
-    // at the end if necessary, but unused constant pool entries or
-    // bootstrap methods won't be removed.
-    //
-    // Methods that are not transformed are copied as is in the new
-    // class, directly from the original class bytecode (i.e. without
-    // emitting visit events for all the method instructions), which
-    // saves a lot of time. Untransformed methods are detected by the
-    // fact that the ClassReader receives MethodVisitor objects that
-    // come from a ClassWriter (and not from any other ClassVisitor
-    // instance).
-    //
-    // TFB: I can't tell if the use of the trace config class visitor
-    //      breaks the "untransformed methods" detection strategy.
-    //
-    //    private ClassInfo readConfig_old(byte[] classBytes) throws IOException {
-    //        ClassReader classReader = new ClassReader(inputStream);
-    //        ClassWriter classWriter = new ClassWriter(classReader, 0);
-    //
-    //        // Sets the ASM version opcode.  See the initializer.
-    //        TraceConfigClassVisitor classVisitor = new TraceConfigClassVisitor(classWriter);
-    //
-    //        classReader.accept(classVisitor, 0);
-    //
-    //        ClassInfo classInfo = classVisitor.getClassInfo();
-    //
-    //        byte[] updatedClassBytes = classWriter.toByteArray();
-    //        InputStream classInputStream = new ByteArrayInputStream(updatedClassBytes);
-    //
-    //        return new ClassConfigData(classInputStream, classInfo);
-    //    }
 
     /**
      * Find process the package annotations present in the jars
