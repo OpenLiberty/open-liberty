@@ -15,8 +15,11 @@ package io.openliberty.microprofile.openapi31.fat.tck;
 import java.util.HashMap;
 import java.util.Map;
 
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -40,6 +43,9 @@ public class OpenAPITckTest {
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests repeatTests = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP61, MicroProfileActions.MP60);
 
     @BeforeClass
     public static void setUp() throws Exception {
